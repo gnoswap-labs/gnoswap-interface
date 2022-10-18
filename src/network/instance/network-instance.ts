@@ -1,17 +1,17 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { NetworkInstanceConfig } from '.';
 
 export class NetworkInstance {
-  private axiosInstance: AxiosInstance;
+  private networkInstance: AxiosInstance;
 
   constructor(config: NetworkInstanceConfig) {
-    this.axiosInstance = axios.create({
+    this.networkInstance = axios.create({
       baseURL: config.host,
       timeout: config.timeout || 1500,
     });
   }
 
-  public get = (url: string) => {
-    return this.axiosInstance.get(url);
+  public get = <T>(url: string) => {
+    return this.networkInstance.get<any, AxiosResponse<T>, any>(url);
   };
 }

@@ -9,7 +9,7 @@
     "dev": "rollup -w -c --environment FORMAT:esm",
     "build:default": "rollup -c",
     "build": "rimraf dist/* && run-p build:default",
-    "test": "jest --verbose"
+    "test": "jest"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
