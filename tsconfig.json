@@ -15,9 +15,10 @@
     "rootDir": ".",
     "outDir": "./dist",
     "declaration": true,
-    "noImplicitAny": false,
-    "declarationDir": "./dist/@types",
-    "typeRoots": ["./dist/@types"]
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "declarationDir": "dist/@types"
   },
-  "exclude": ["node_modules", "*.spec.*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.*"]
 }
