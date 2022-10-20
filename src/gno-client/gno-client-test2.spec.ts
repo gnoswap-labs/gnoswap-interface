@@ -20,6 +20,7 @@ beforeEach(() => {
 describe('GnoClient, 생성자', () => {
   test('환경변수 확인', async () => {
     const host = process.env.NETWORK_TEST2_HOST;
+
     expect(host).not.toBeUndefined();
   });
 
@@ -39,18 +40,17 @@ describe('GnoClient, 상태검사 - isHealth ', () => {
   });
 });
 
-/**
- * 0: description
- * 1: address
- * 2: expected_status
- */
-const ADDRESS_STATUS_SET: Array<[string, string, string]> = [
-  ['정상회원, 상태값: ACTIVE', ACCOUNT_ADDRESS, 'ACTIVE'],
-  ['트랜잭션이 없는 회원, 상태값: IN_ACTIVE', ACCOUNT_ADDRESS_INITIALIZE, 'IN_ACTIVE'],
-  ['없는회원, 상태값: NONE', ACCOUNT_ADDRESS_INVALID, 'NONE'],
-];
 describe('GnoClient, 계정조회 - getAccount ', () => {
-  test.each(ADDRESS_STATUS_SET)('%s', async (_, address, expectedStatus) => {
+  /**
+   * 0: description
+   * 1: address
+   * 2: expected_status
+   */
+  test.each([
+    ['정상회원, 상태값: ACTIVE', ACCOUNT_ADDRESS, 'ACTIVE'],
+    ['트랜잭션이 없는 회원, 상태값: IN_ACTIVE', ACCOUNT_ADDRESS_INITIALIZE, 'IN_ACTIVE'],
+    ['없는회원, 상태값: NONE', ACCOUNT_ADDRESS_INVALID, 'NONE'],
+  ])('%s', async (_, address, expectedStatus) => {
     const account = await gnoClient.getAccount(address);
 
     expect(account).toBeInstanceOf(Object);
@@ -64,27 +64,21 @@ describe('GnoClient, 계정조회 - getAccount ', () => {
   });
 });
 
-/**
- * 0: description
- * 1: address
- * 2: expected_has_data
- */
-const ADDRESS_BALANCE_SET: Array<[string, string, boolean]> = [
-  ['정상회원, 값 존재여부: true', ACCOUNT_ADDRESS, true],
-  ['트랜잭션이 없는 회원, 값 존재여부: false', ACCOUNT_ADDRESS_INITIALIZE, false],
-  ['없는회원, 값 존재여부: false', ACCOUNT_ADDRESS_INVALID, false],
-];
 describe('GnoClient, 잔액조회 - getBalances ', () => {
-  test.each(ADDRESS_BALANCE_SET)('%s', async (_, address: string, expectedHasData) => {
+  /**
+   * 0: description
+   * 1: address
+   * 2: expected_has_data
+   */
+  test.each([
+    ['정상회원, 값 존재여부: true', ACCOUNT_ADDRESS, true],
+    ['트랜잭션이 없는 회원, 값 존재여부: false', ACCOUNT_ADDRESS_INITIALIZE, false],
+    ['없는회원, 값 존재여부: false', ACCOUNT_ADDRESS_INVALID, false],
+  ])('%s', async (_, address: string, expectedHasData) => {
     const balances = await gnoClient.getBalances(address);
 
     expect(balances).toBeInstanceOf(Object);
     expect(balances).toHaveProperty('balances');
-
-    if (expectedHasData) {
-      expect(balances.balances).not.toEqual('');
-    } else {
-      expect(balances.balances).toEqual('');
-    }
+    expect(balances.balances !== '').toBe(expectedHasData);
   });
 });
