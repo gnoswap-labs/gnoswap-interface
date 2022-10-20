@@ -8,6 +8,13 @@
       "problemMatcher": [],
       "label": "npm: build",
       "detail": "rimraf dist/* && run-p build:default"
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "label": "npm: dev",
+      "detail": "rollup -w -c --environment FORMAT:esm"
     }
   ]
 }

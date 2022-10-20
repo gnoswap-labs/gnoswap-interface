@@ -7,7 +7,11 @@ export class Test2ApiFetcher implements Test2Api {
   private networkInstance: NetworkInstance;
 
   constructor() {
-    this.networkInstance = new NetworkInstance({ host: 'https://rpc.test2.gno.land' });
+    const host = process.env.NETWORK_TEST2_HOST;
+    if (!host) {
+      throw Error("Not Found Environment's variables");
+    }
+    this.networkInstance = new NetworkInstance({ host });
   }
 
   private get = async <T>(uri: string): Promise<T> => {

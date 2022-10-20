@@ -1,12 +1,28 @@
 import { GnoClient } from '..';
+const path = require('path');
 
 const ACCOUNT_ADDRESS = 'g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae';
-const ACCOUNT_ADDRESS_BLANK = 'g1qgr7980ry7f6rqr9cs6d45y09k5u6dzhjksksn';
+const ACCOUNT_ADDRESS_INITIALIZE = 'g1qgr7980ry7f6rqr9cs6d45y09k5u6dzhjksksn';
 const ACCOUNT_ADDRESS_INVALID = 'aaa';
 
-const gnoClient = GnoClient.createByNetworkTest2();
+let gnoClient;
+
+/**
+ * 테스트 초기화 함수
+ * 1. GnoClient 초기화
+ * 2. 환경변수 등록
+ */
+beforeEach(() => {
+  require('dotenv').config('./.env');
+  gnoClient = GnoClient.createByNetworkTest2();
+});
 
 describe('GnoClient, 생성자', () => {
+  test('환경변수 확인', async () => {
+    const host = process.env.NETWORK_TEST2_HOST;
+    expect(host).not.toBeUndefined();
+  });
+
   test('성공', async () => {
     expect(gnoClient).not.toBeNull();
   });
@@ -23,9 +39,19 @@ describe('GnoClient, 상태검사 - isHealth ', () => {
   });
 });
 
+/**
+ * 0: description
+ * 1: address
+ * 2: expected_status
+ */
+const ADDRESS_STATUS_SET: Array<[string, string, string]> = [
+  ['정상회원, 상태값: ACTIVE', ACCOUNT_ADDRESS, 'ACTIVE'],
+  ['트랜잭션이 없는 회원, 상태값: IN_ACTIVE', ACCOUNT_ADDRESS_INITIALIZE, 'IN_ACTIVE'],
+  ['없는회원, 상태값: NONE', ACCOUNT_ADDRESS_INVALID, 'NONE'],
+];
 describe('GnoClient, 계정조회 - getAccount ', () => {
-  test('정상 회원', async () => {
-    const account = await gnoClient.getAccount(ACCOUNT_ADDRESS);
+  test.each(ADDRESS_STATUS_SET)('%s', async (_, address, expectedStatus) => {
+    const account = await gnoClient.getAccount(address);
 
     expect(account).toBeInstanceOf(Object);
     expect(account).toHaveProperty('address');
@@ -34,49 +60,31 @@ describe('GnoClient, 계정조회 - getAccount ', () => {
     expect(account).toHaveProperty('accountNumber');
     expect(account).toHaveProperty('sequence');
 
-    expect(account.status).toBe('ACTIVE');
-  });
-
-  test('트랜잭션이 없는 회원', async () => {
-    const account = await gnoClient.getAccount(ACCOUNT_ADDRESS_BLANK);
-
-    expect(account).toBeInstanceOf(Object);
-    expect(account).toHaveProperty('address');
-    expect(account).toHaveProperty('coins');
-    expect(account).toHaveProperty('publicKey');
-    expect(account).toHaveProperty('accountNumber');
-    expect(account).toHaveProperty('sequence');
-
-    expect(account.status).toBe('IN_ACTIVE');
-  });
-
-  test('없는 회원', async () => {
-    const account = await gnoClient.getAccount(ACCOUNT_ADDRESS_INVALID);
-
-    expect(account).toBeInstanceOf(Object);
-    expect(account).toHaveProperty('address');
-    expect(account).toHaveProperty('coins');
-    expect(account).toHaveProperty('publicKey');
-    expect(account).toHaveProperty('accountNumber');
-    expect(account).toHaveProperty('sequence');
-
-    expect(account.status).toBe('NONE');
+    expect(account.status).toBe(expectedStatus);
   });
 });
 
+/**
+ * 0: description
+ * 1: address
+ * 2: expected_has_data
+ */
+const ADDRESS_BALANCE_SET: Array<[string, string, boolean]> = [
+  ['정상회원, 값 존재여부: true', ACCOUNT_ADDRESS, true],
+  ['트랜잭션이 없는 회원, 값 존재여부: false', ACCOUNT_ADDRESS_INITIALIZE, false],
+  ['없는회원, 값 존재여부: false', ACCOUNT_ADDRESS_INVALID, false],
+];
 describe('GnoClient, 잔액조회 - getBalances ', () => {
-  test('정상 회원 잔액조회', async () => {
-    const balances = await gnoClient.getBalances(ACCOUNT_ADDRESS);
+  test.each(ADDRESS_BALANCE_SET)('%s', async (_, address: string, expectedHasData) => {
+    const balances = await gnoClient.getBalances(address);
 
     expect(balances).toBeInstanceOf(Object);
     expect(balances).toHaveProperty('balances');
-  });
 
-  test('비활성 회원 및 없는회원', async () => {
-    const balances = await gnoClient.getBalances(ACCOUNT_ADDRESS_BLANK);
-
-    expect(balances).toBeInstanceOf(Object);
-    expect(balances).toHaveProperty('balances');
-    expect(balances.balances).toBe('');
+    if (expectedHasData) {
+      expect(balances.balances).not.toEqual('');
+    } else {
+      expect(balances.balances).toEqual('');
+    }
   });
 });
