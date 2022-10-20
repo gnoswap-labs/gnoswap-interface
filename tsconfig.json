@@ -19,7 +19,7 @@
     "strictNullChecks": true,
     "declarationDir": "dist/@types",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],
