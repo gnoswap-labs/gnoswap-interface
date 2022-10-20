@@ -56,14 +56,22 @@ export class NetworkTest2 implements GnoClientApi {
 
   public getAccount = async (address: string) => {
     const result = await this.fetcher.executeAbciQuery('GET_ACCOUNT_INFO', { address });
+    if (!result.response?.ResponseBase?.Data || result.response?.ResponseBase?.Data === null) {
+      return GnoClientResnpose.AccountNone;
+    }
+
     const plainData = atob(result.response.ResponseBase.Data);
-    const accountDataOfTest2: Test2Response.AbciQueryAuthAccount = JSON.parse(plainData);
+    const accountDataOfTest2: Test2Response.AbciQueryAuthAccount | null = JSON.parse(plainData);
     const accountData = Test2Mapper.AbciQueryAuthAccountMapper.toAccount(accountDataOfTest2);
     return accountData;
   };
 
   public getBalances = async (address: string) => {
     const result = await this.fetcher.executeAbciQuery('GET_BALANCES', { address });
+    if (!result.response?.ResponseBase?.Data || result.response?.ResponseBase?.Data === null) {
+      return GnoClientResnpose.BalancesDefault;
+    }
+
     const plainData = atob(result.response.ResponseBase.Data);
     const balanceDataOfTest2: string = JSON.parse(plainData);
     const balanceData = Test2Mapper.AbciQueryBankBalancesMapper.toBalances(balanceDataOfTest2);

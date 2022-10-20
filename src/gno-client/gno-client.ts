@@ -1,15 +1,23 @@
 import { NetworkTest2 } from '..';
 import { GnoClientApi } from './api';
 
+type GnoNetworkVersion = 'MAIN' | 'TEST2' | 'TEST3' | 'NONE';
 export class GnoClient implements GnoClientApi {
   private network: GnoClientApi;
 
-  constructor(network: GnoClientApi) {
+  private networkVersion: GnoNetworkVersion;
+
+  constructor(network: GnoClientApi, networkVersion: GnoNetworkVersion) {
     this.network = network;
+    this.networkVersion = networkVersion;
   }
 
   public static createByNetworkTest2() {
-    return new GnoClient(new NetworkTest2());
+    return new GnoClient(new NetworkTest2(), 'TEST2');
+  }
+
+  public get version() {
+    return this.networkVersion;
   }
 
   public isHealth = async () => this.network.isHealth();

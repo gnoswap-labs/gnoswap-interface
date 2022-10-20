@@ -2,7 +2,7 @@ export interface AbciQuery {
   response: {
     ResponseBase: {
       Error: string | null;
-      Data: string;
+      Data: string | null;
       Events: string | null;
       Log: string | null;
       Info: string | null;
