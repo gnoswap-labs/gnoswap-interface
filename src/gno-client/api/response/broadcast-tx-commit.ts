@@ -1,12 +1,12 @@
 export interface BroadcastTxCommit {
   height: string;
   hash: string;
-  deliver_tx: {
+  deliverTx: {
     log: string;
     data: string;
     code: string;
   };
-  check_tx: {
+  checkTx: {
     log: string;
     data: string;
     code: string;

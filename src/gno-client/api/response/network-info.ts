@@ -1,36 +1,36 @@
 export interface NetworkInfo {
-  node_info: {
-    version_set: Array<{
-      Name: string;
-      Version: string;
-      Optional: boolean;
+  nodeInfo: {
+    versionSet: Array<{
+      name: string;
+      version: string;
+      optional: boolean;
     }>;
-    net_address: string;
+    netAddress: string;
     network: string;
     software: string;
     version: string;
     channels: string;
     moniker: string;
     other: {
-      tx_index: string;
-      rpc_address: string;
+      txIndex: string;
+      rpcAddress: string;
     };
   };
 
-  sync_info: {
-    latest_block_hash: string;
-    latest_app_hash: string;
-    latest_block_height: string;
-    latest_block_time: string;
-    catching_up: boolean;
+  syncInfo: {
+    latestBlockHash: string;
+    latestAppHash: string;
+    latestBlockHeight: string;
+    latestBlockTime: string;
+    catchingUp: boolean;
   };
 
-  validator_info: {
+  validatorInfo: {
     address: string;
-    pub_key: {
-      '@type': string;
+    pubKey: {
+      type: string;
       value: string;
     };
-    voting_power: string;
+    votingPower: string;
   };
 }

@@ -1,52 +1,52 @@
 export interface Genesis {
   genesis: {
-    genesis_time: string;
-    chain_id: string;
-    consensus_params: {
-      Block: {
-        MaxTxBytes: string;
-        MaxDataBytes: string;
-        MaxBlockBytes: string;
-        MaxGas: string;
-        TimeIotaMS: string;
+    genesisTime: string;
+    chainId: string;
+    consensusParams: {
+      block: {
+        maxTxBytes: string;
+        maxDataBytes: string;
+        maxBlockBytes: string;
+        maxGas: string;
+        timeIotaMs: string;
       };
-      Validator: {
-        PubKeyTypeURLs: Array<string>;
+      validator: {
+        pubKeyTypeUrLs: Array<string>;
       };
     };
     validators: Array<{
       address: string;
-      pub_key: {
-        '@type': string;
+      pubKey: {
+        type: string;
         value: string;
       };
       power: string;
       name: string;
     }>;
-    app_hash: string | null;
-    app_state: {
-      '@type': string;
+    appHash: string | null;
+    appState: {
+      type: string;
       balances: Array<string>;
       txs: Array<{
         msg: Array<{
-          '@type': string;
+          type: string;
           creator: string;
           package: {
-            Name: string;
-            Path: string;
-            Files: Array<{
-              Name: string;
-              Body: string;
+            name: string;
+            path: string;
+            files: Array<{
+              name: string;
+              body: string;
             }>;
           };
           deposit: string;
         }>;
         fee: {
-          gas_wanted: string;
-          gas_fee: string;
+          gasWanted: string;
+          gasFee: string;
         };
         signatures: Array<{
-          pub_key: string | null;
+          pubKey: string | null;
           signature: string | null;
         }>;
         memo: string;
