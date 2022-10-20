@@ -13,11 +13,15 @@ export class NetworkTest2 implements GnoClientApi {
   };
 
   public getNetwrokInfo = async () => {
-    return this.fetcher.getNetwrokInfo();
+    const networkInfoOfTest2 = await this.fetcher.getNetwrokInfo();
+    const networkInfo = Test2Mapper.StatusMapper.toNetworkInfo(networkInfoOfTest2);
+    return networkInfo;
   };
 
   public getGenesis = async () => {
-    return this.fetcher.getGenesis();
+    const genesisOfTest2 = await this.fetcher.getGenesis();
+    const genesis = Test2Mapper.GenesisMapper.toGenesis(genesisOfTest2);
+    return genesis;
   };
 
   public getBlocks = async (minHeight: number, maxHeight: number) => {
@@ -43,7 +47,10 @@ export class NetworkTest2 implements GnoClientApi {
   public getAbciInfo = async () => {};
 
   public broadcastTxCommit = async (tx: string) => {
-    return this.fetcher.broadcastTxCommit(tx);
+    const txCommitResponseOfTest2 = await this.fetcher.broadcastTxCommit(tx);
+    const txCommitResponse =
+      Test2Mapper.BroadcastTxCommitMapper.toBroadcastTxCommit(txCommitResponseOfTest2);
+    return txCommitResponse;
   };
 
   public broadcastTxSync = async (tx: string) => {

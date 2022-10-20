@@ -1,7 +1,8 @@
+import { GnoClientResnpose } from '@/gno-client';
 import { Test2Response } from '..';
 
 export class GenesisMapper {
-  public static toGenesis = (genesis: Test2Response.Genesis) => {
+  public static toGenesis = (genesis: Test2Response.Genesis): GnoClientResnpose.Genesis => {
     const genesisValue = genesis.genesis;
     return {
       genesisTime: genesisValue.genesis_time,
@@ -35,7 +36,23 @@ export class GenesisMapper {
         balances: genesisValue.app_state.balances,
         txs: genesisValue.app_state.txs.map((txsItem) => {
           return {
-            memo: txsItem.memo,
+            msg: txsItem.msg.map((msgItem) => {
+              return {
+                type: msgItem['@type'],
+                creator: msgItem.creator,
+                package: {
+                  name: msgItem.package.Name,
+                  path: msgItem.package.Path,
+                  files: msgItem.package.Files.map((fileItem) => {
+                    return {
+                      name: fileItem.Name,
+                      body: fileItem.Body,
+                    };
+                  }),
+                },
+                deposit: msgItem.deposit,
+              };
+            }),
             fee: {
               gasWanted: txsItem.fee.gas_wanted,
               gasFee: txsItem.fee.gas_fee,
@@ -46,13 +63,7 @@ export class GenesisMapper {
                 signature: signatureItem.signature,
               };
             }),
-            msg: txsItem.msg.map((msgItem) => {
-              return {
-                type: msgItem['@type'],
-                creator: msgItem.creator,
-                package: msgItem.package,
-              };
-            }),
+            memo: txsItem.memo,
           };
         }),
       },
