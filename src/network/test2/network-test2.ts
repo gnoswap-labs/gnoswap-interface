@@ -1,5 +1,5 @@
 import { GnoClientApi, GnoClientResnpose } from '@/gno-client';
-import { Test2ApiFetcher } from './api';
+import { Test2ApiFetcher, Test2Mapper, Test2Response } from './api';
 
 export class NetworkTest2 implements GnoClientApi {
   private fetcher: Test2ApiFetcher;
@@ -57,14 +57,16 @@ export class NetworkTest2 implements GnoClientApi {
   public getAccount = async (address: string) => {
     const result = await this.fetcher.executeAbciQuery('GET_ACCOUNT_INFO', { address });
     const plainData = atob(result.response.ResponseBase.Data);
-    const accountData: GnoClientResnpose.Account = JSON.parse(plainData);
+    const accountDataOfTest2: Test2Response.AbciQueryAuthAccount = JSON.parse(plainData);
+    const accountData = Test2Mapper.AbciQueryAuthAccountMapper.toAccount(accountDataOfTest2);
     return accountData;
   };
 
   public getBalances = async (address: string) => {
     const result = await this.fetcher.executeAbciQuery('GET_BALANCES', { address });
     const plainData = atob(result.response.ResponseBase.Data);
-    const balanceData: string = JSON.parse(plainData);
+    const balanceDataOfTest2: string = JSON.parse(plainData);
+    const balanceData = Test2Mapper.AbciQueryBankBalancesMapper.toBalances(balanceDataOfTest2);
     return balanceData;
   };
 }
