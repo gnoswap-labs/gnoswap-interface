@@ -37,35 +37,35 @@ export class Test2ApiFetcher implements Test2Api {
   };
 
   public getBlock = async (height: number) => {
-    this.get(Test2ApiPath.createPathOfBlock(height));
+    return this.get(Test2ApiPath.createPathOfBlock(height));
   };
 
   public getBlockResults = async (height: number) => {
-    this.get(Test2ApiPath.createPathOfBlockResults(height));
+    return this.get(Test2ApiPath.createPathOfBlockResults(height));
   };
 
   public getBlockCommit = async (height: number) => {
-    this.get(Test2ApiPath.createPathOfBlockCommit(height));
+    return this.get(Test2ApiPath.createPathOfBlockCommit(height));
   };
 
   public getValidators = async () => {
-    this.get(Test2ApiPath.createPathOfValidators());
+    return this.get(Test2ApiPath.createPathOfValidators());
   };
 
   public getConsensusState = async () => {
-    this.get(Test2ApiPath.createPathOfConsensusState());
+    return this.get(Test2ApiPath.createPathOfConsensusState());
   };
 
   public getConsensusParams = async (height: number) => {
-    this.get(Test2ApiPath.createPathOfConsensusParams(height));
+    return this.get(Test2ApiPath.createPathOfConsensusParams(height));
   };
 
   public getUnconfirmedTxs = async () => {
-    this.get(Test2ApiPath.createPathOfUnconfirmedTxs());
+    return this.get(Test2ApiPath.createPathOfUnconfirmedTxs());
   };
 
   public getNumUnconfirmedTxs = async () => {
-    this.get(Test2ApiPath.createPathOfNumUnconfirmedTxs());
+    return this.get(Test2ApiPath.createPathOfNumUnconfirmedTxs());
   };
 
   public broadcastTxCommit = async (tx: string) => {
@@ -83,7 +83,7 @@ export class Test2ApiFetcher implements Test2Api {
   };
 
   public getAbciInfo = async () => {
-    this.get(Test2ApiPath.createPathOfAbciInfo());
+    return this.get(Test2ApiPath.createPathOfAbciInfo());
   };
 
   public executeAbciQuery = async (
