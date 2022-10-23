@@ -13,7 +13,9 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint"],
-  "rules": {},
+  "rules": {
+    "@typescript-eslint/no-var-requires": 0
+  },
   "settings": {
     "import/resolver": {
       "typescript": {}
