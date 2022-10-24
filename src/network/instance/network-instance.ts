@@ -7,7 +7,7 @@ export class NetworkInstance {
   constructor(config: NetworkInstanceConfig) {
     this.networkInstance = axios.create({
       baseURL: config.host,
-      timeout: config.timeout || 1500,
+      timeout: config.timeout || 15000,
     });
   }
 

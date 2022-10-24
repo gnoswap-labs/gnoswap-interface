@@ -1,5 +1,4 @@
-import { GnoClient } from '..';
-const path = require('path');
+import { GnoClient } from '.';
 
 const ACCOUNT_ADDRESS = 'g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae';
 const ACCOUNT_ADDRESS_INITIALIZE = 'g1qgr7980ry7f6rqr9cs6d45y09k5u6dzhjksksn';

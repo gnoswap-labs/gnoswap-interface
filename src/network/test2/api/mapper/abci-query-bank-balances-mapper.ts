@@ -1,4 +1,4 @@
-import { GnoClientResnpose } from '@/gno-client';
+import { GnoClientResnpose } from '@/api';
 
 export class AbciQueryBankBalancesMapper {
   public static toBalances = (balacnes: string): GnoClientResnpose.Balacnes => {

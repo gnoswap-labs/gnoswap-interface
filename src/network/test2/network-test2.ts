@@ -1,4 +1,4 @@
-import { GnoClientApi, GnoClientResnpose } from '@/gno-client';
+import { GnoClientApi, GnoClientResnpose } from '@/api';
 import { Test2ApiFetcher, Test2Mapper, Test2Response } from './api';
 
 export class NetworkTest2 implements GnoClientApi {

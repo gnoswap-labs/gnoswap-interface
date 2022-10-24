@@ -1,4 +1,4 @@
-import { NetworkTest2 } from '..';
+import { NetworkTest2 } from './network';
 import { GnoClientApi } from './api';
 
 type GnoNetworkVersion = 'MAIN' | 'TEST2' | 'TEST3' | 'NONE';
