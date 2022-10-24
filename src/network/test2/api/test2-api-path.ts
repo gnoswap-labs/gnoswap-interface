@@ -47,4 +47,7 @@ export class Test2ApiPath {
     let queryPath = this.queryTypeToPath[queryType];
     return `/abci_query?path=%22${queryPath}/${request.address}%22`;
   };
+
+  public static tempCreatePathOfHistory = (address: string) =>
+    `https://api.adena.app/history2/all/${address}`;
 }

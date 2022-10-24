@@ -37,4 +37,6 @@ export interface Test2Api {
     queryType: Test2ApiAbciQueryType,
     request: { [key in string]: any },
   ) => Promise<Test2Response.AbciQuery>;
+
+  getHistoryTemp: (address: string) => Promise<Array<any>>;
 }
