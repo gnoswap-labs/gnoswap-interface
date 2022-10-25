@@ -84,4 +84,8 @@ export class NetworkTest2 implements GnoClientApi {
     const balanceData = Test2Mapper.AbciQueryBankBalancesMapper.toBalances(balanceDataOfTest2);
     return balanceData;
   };
+
+  public getTransactionHistory = async (address: string) => {
+    return this.fetcher.getTransactionHistory(address);
+  };
 }

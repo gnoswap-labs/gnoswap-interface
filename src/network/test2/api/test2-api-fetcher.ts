@@ -2,6 +2,7 @@ import { NetworkInstance } from './../../';
 import { Test2ApiAbciQueryType, Test2Response } from '.';
 import { Test2Api } from '.';
 import { Test2ApiPath } from '.';
+import axios from 'axios';
 
 export class Test2ApiFetcher implements Test2Api {
   private networkInstance: NetworkInstance;
@@ -93,5 +94,12 @@ export class Test2ApiFetcher implements Test2Api {
     return this.get<Test2Response.AbciQuery>(
       Test2ApiPath.createPathOfAbciQuery(queryType, request),
     );
+  };
+
+  public getTransactionHistory = async (address: string) => {
+    const result = await axios.get<Array<Test2Response.History>>(
+      Test2ApiPath.createPathOfHistoryTemp(address),
+    );
+    return result.data;
   };
 }

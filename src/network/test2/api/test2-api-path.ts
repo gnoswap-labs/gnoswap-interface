@@ -48,6 +48,6 @@ export class Test2ApiPath {
     return `/abci_query?path=%22${queryPath}/${request.address}%22`;
   };
 
-  public static tempCreatePathOfHistory = (address: string) =>
+  public static createPathOfHistoryTemp = (address: string) =>
     `https://api.adena.app/history2/all/${address}`;
 }

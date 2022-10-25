@@ -1,5 +1,6 @@
 import { NetworkTest2 } from './network';
 import { GnoClientApi } from './api';
+import { TransactionHistory } from './api/response';
 
 type GnoNetworkVersion = 'MAIN' | 'TEST2' | 'TEST3' | 'NONE';
 export class GnoClient implements GnoClientApi {
@@ -56,4 +57,7 @@ export class GnoClient implements GnoClientApi {
   public getAccount = async (address: string) => this.network.getAccount(address);
 
   public getBalances = async (address: string) => this.network.getBalances(address);
+
+  public getTransactionHistory = async (address: string) =>
+    this.network.getTransactionHistory(address);
 }

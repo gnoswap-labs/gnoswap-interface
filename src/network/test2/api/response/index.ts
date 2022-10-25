@@ -7,3 +7,4 @@ export * from './broadcast-tx-sync';
 export * from './common';
 export * from './genesis';
 export * from './status';
+export * from './history';

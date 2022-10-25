@@ -121,4 +121,20 @@ describe('테스트넷2 API 호출', () => {
 
     expect(result).not.toBeUndefined();
   });
+
+  test('(임시) 트랜잭션 내역 조회 - getHistory', async () => {
+    const result = await fetcher.getTransactionHistory('g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae');
+    expect(Array.isArray(result)).toBeTruthy();
+    expect(result.length).toBeGreaterThan(0);
+    expect(result[0]).toHaveProperty('height');
+    expect(result[0]).toHaveProperty('date');
+    expect(result[0]).toHaveProperty('hash');
+    expect(result[0]).toHaveProperty('result');
+    expect(result[0]).toHaveProperty('type');
+    expect(result[0]).toHaveProperty('from');
+    expect(result[0]).toHaveProperty('to');
+    expect(result[0]).toHaveProperty('send');
+    expect(result[0]).toHaveProperty('func');
+    expect(result[0]).toHaveProperty('fee');
+  });
 });
