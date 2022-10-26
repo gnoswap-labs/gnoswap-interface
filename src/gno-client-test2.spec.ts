@@ -1,7 +1,7 @@
 import { GnoClient } from '.';
 
 const ACCOUNT_ADDRESS = 'g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae';
-const ACCOUNT_ADDRESS_INITIALIZE = 'g1qgr7980ry7f6rqr9cs6d45y09k5u6dzhjksksn';
+const ACCOUNT_ADDRESS_INITIALIZE = 'g1ngek6feu3ne9m9680yxj40sehrfaaqu7sauk4h';
 const ACCOUNT_ADDRESS_INVALID = 'aaa';
 
 let gnoClient;
