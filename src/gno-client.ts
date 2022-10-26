@@ -1,6 +1,5 @@
 import { NetworkTest2 } from './network';
 import { GnoClientApi } from './api';
-import { TransactionHistory } from './api/response';
 
 type GnoNetworkVersion = 'MAIN' | 'TEST2' | 'TEST3' | 'NONE';
 export class GnoClient implements GnoClientApi {
