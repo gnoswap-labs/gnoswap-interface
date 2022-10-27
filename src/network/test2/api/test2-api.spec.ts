@@ -8,7 +8,6 @@ let fetcher: Test2ApiFetcher;
  * 2. Fetcher 초기화
  */
 beforeEach(() => {
-  require('dotenv').config('./.env');
   fetcher = new Test2ApiFetcher();
 });
 

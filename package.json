@@ -11,13 +11,6 @@
     "build": "rimraf dist/* && run-p build:default",
     "test": "jest"
   },
-  "jest": {
-    "rootDir": ".",
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "verbose": true
-  },
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-env": "^7.19.4",
@@ -37,6 +30,7 @@
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "rollup-plugin-uglify": "^6.0.4",
+    "ts-jest": "^29.0.3",
     "typescript": "^4.8.4"
   },
   "dependencies": {

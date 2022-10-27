@@ -12,7 +12,6 @@ let gnoClient;
  * 2. 환경변수 등록
  */
 beforeEach(() => {
-  require('dotenv').config('./.env');
   gnoClient = GnoClient.createByNetworkTest2();
 });
 
