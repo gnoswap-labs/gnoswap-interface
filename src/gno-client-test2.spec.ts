@@ -4,7 +4,7 @@ const ACCOUNT_ADDRESS = 'g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae';
 const ACCOUNT_ADDRESS_INITIALIZE = 'g1ngek6feu3ne9m9680yxj40sehrfaaqu7sauk4h';
 const ACCOUNT_ADDRESS_INVALID = 'aaa';
 
-let gnoClient;
+let gnoClient: GnoClient;
 
 /**
  * 테스트 초기화 함수
@@ -12,7 +12,24 @@ let gnoClient;
  * 2. 환경변수 등록
  */
 beforeEach(() => {
-  gnoClient = GnoClient.createByNetworkTest2();
+  gnoClient = GnoClient.createNetworkByType(
+    {
+      chainId: 'test2',
+      chainName: 'Testnet 2',
+      addressPrefix: 'g1',
+      rpcUrl: 'https://rpc.test2.gno.land',
+      gnoUrl: 'https://rpc.test2.gno.land',
+      explorerUrl: 'https://api.adena.app',
+      httpUrl: 'localhost',
+      token: {
+        coinDenom: 'GNOT',
+        coinDecimals: 6,
+        coinMinimalDenom: 'gnot',
+      },
+      gasPrice: 0.00000000000001,
+    },
+    'TEST2',
+  );
 });
 
 describe('GnoClient, 생성자', () => {
@@ -27,7 +44,7 @@ describe('GnoClient, 생성자', () => {
   });
 
   test('버전', async () => {
-    expect(gnoClient.version).toBe('TEST2');
+    expect(gnoClient.mapperVersion).toBe('TEST2');
   });
 });
 

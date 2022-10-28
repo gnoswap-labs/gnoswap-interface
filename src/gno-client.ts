@@ -1,23 +1,51 @@
-import { NetworkTest2 } from './network';
+import { NetworkConfig, NetworkTest2 } from './network';
 import { GnoClientApi } from './api';
+import { NetworkCommon } from './network/common';
 
-type GnoNetworkVersion = 'MAIN' | 'TEST2' | 'TEST3' | 'NONE';
+type MapperType = 'MAIN' | 'TEST2' | 'TEST3' | 'COMMON' | 'NONE';
 export class GnoClient implements GnoClientApi {
   private network: GnoClientApi;
 
-  private networkVersion: GnoNetworkVersion;
+  private networkConfig: NetworkConfig;
 
-  constructor(network: GnoClientApi, networkVersion: GnoNetworkVersion) {
+  private mapperType: MapperType;
+
+  constructor(network: GnoClientApi, networkConfig: NetworkConfig, mapperType: MapperType) {
     this.network = network;
-    this.networkVersion = networkVersion;
+    this.networkConfig = networkConfig;
+    this.mapperType = mapperType;
   }
 
-  public static createByNetworkTest2() {
-    return new GnoClient(new NetworkTest2(), 'TEST2');
+  public get chainId() {
+    return this.networkConfig.chainId;
   }
 
-  public get version() {
-    return this.networkVersion;
+  public get chainName() {
+    return this.networkConfig.chainName;
+  }
+
+  public get url() {
+    return this.networkConfig.rpcUrl;
+  }
+
+  public get gasPrice() {
+    return this.networkConfig.gasPrice;
+  }
+
+  public get token() {
+    return this.networkConfig.token;
+  }
+
+  public static createNetwork(networkConfig: NetworkConfig) {
+    return new GnoClient(new NetworkCommon(networkConfig), networkConfig, 'COMMON');
+  }
+
+  public static createNetworkByType(networkConfig: NetworkConfig, mapperType: MapperType) {
+    return new GnoClient(new NetworkCommon(networkConfig), networkConfig, mapperType);
+  }
+
+  public get mapperVersion() {
+    return this.mapperType;
   }
 
   public isHealth = async () => this.network.isHealth();

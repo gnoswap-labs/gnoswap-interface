@@ -1,12 +1,12 @@
 import { GnoClientApi, GnoClientResnpose } from '@/api';
 import { NetworkConfig } from '../network-config';
-import { Test2ApiFetcher, Test2Mapper, Test2Response } from './api';
+import { CommonApiFetcher, CommonMapper, CommonResponse } from './api';
 
-export class NetworkTest2 implements GnoClientApi {
-  private fetcher: Test2ApiFetcher;
+export class NetworkCommon implements GnoClientApi {
+  private fetcher: CommonApiFetcher;
 
   constructor(config: NetworkConfig) {
-    this.fetcher = new Test2ApiFetcher(config);
+    this.fetcher = new CommonApiFetcher(config);
   }
 
   public isHealth = async () => {
@@ -14,14 +14,14 @@ export class NetworkTest2 implements GnoClientApi {
   };
 
   public getNetwrokInfo = async () => {
-    const networkInfoOfTest2 = await this.fetcher.getNetwrokInfo();
-    const networkInfo = Test2Mapper.StatusMapper.toNetworkInfo(networkInfoOfTest2);
+    const networkInfoOfCommon = await this.fetcher.getNetwrokInfo();
+    const networkInfo = CommonMapper.StatusMapper.toNetworkInfo(networkInfoOfCommon);
     return networkInfo;
   };
 
   public getGenesis = async () => {
-    const genesisOfTest2 = await this.fetcher.getGenesis();
-    const genesis = Test2Mapper.GenesisMapper.toGenesis(genesisOfTest2);
+    const genesisOfCommon = await this.fetcher.getGenesis();
+    const genesis = CommonMapper.GenesisMapper.toGenesis(genesisOfCommon);
     return genesis;
   };
 
@@ -48,9 +48,9 @@ export class NetworkTest2 implements GnoClientApi {
   public getAbciInfo = async () => {};
 
   public broadcastTxCommit = async (tx: string) => {
-    const txCommitResponseOfTest2 = await this.fetcher.broadcastTxCommit(tx);
+    const txCommitResponseOfCommon = await this.fetcher.broadcastTxCommit(tx);
     const txCommitResponse =
-      Test2Mapper.BroadcastTxCommitMapper.toBroadcastTxCommit(txCommitResponseOfTest2);
+      CommonMapper.BroadcastTxCommitMapper.toBroadcastTxCommit(txCommitResponseOfCommon);
     return txCommitResponse;
   };
 
@@ -69,8 +69,8 @@ export class NetworkTest2 implements GnoClientApi {
     }
 
     const plainData = atob(result.response.ResponseBase.Data);
-    const accountDataOfTest2: Test2Response.AbciQueryAuthAccount | null = JSON.parse(plainData);
-    const accountData = Test2Mapper.AbciQueryAuthAccountMapper.toAccount(accountDataOfTest2);
+    const accountDataOfCommon: CommonResponse.AbciQueryAuthAccount | null = JSON.parse(plainData);
+    const accountData = CommonMapper.AbciQueryAuthAccountMapper.toAccount(accountDataOfCommon);
     return accountData;
   };
 
@@ -81,8 +81,8 @@ export class NetworkTest2 implements GnoClientApi {
     }
 
     const plainData = atob(result.response.ResponseBase.Data);
-    const balanceDataOfTest2: string = JSON.parse(plainData);
-    const balanceData = Test2Mapper.AbciQueryBankBalancesMapper.toBalances(balanceDataOfTest2);
+    const balanceDataOfCommon: string = JSON.parse(plainData);
+    const balanceData = CommonMapper.AbciQueryBankBalancesMapper.toBalances(balanceDataOfCommon);
     return balanceData;
   };
 

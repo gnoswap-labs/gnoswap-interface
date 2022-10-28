@@ -1,4 +1,4 @@
-import { NetworkInstance } from './../../';
+import { NetworkInstance, NetworkConfig } from './../../';
 import { Test2ApiAbciQueryType, Test2Response } from '.';
 import { Test2Api } from '.';
 import { Test2ApiPath } from '.';
@@ -7,8 +7,8 @@ import axios from 'axios';
 export class Test2ApiFetcher implements Test2Api {
   private networkInstance: NetworkInstance;
 
-  constructor() {
-    const host = process.env.NETWORK_TEST2_HOST;
+  constructor(config: NetworkConfig) {
+    const host = config.rpcUrl;
     if (!host) {
       throw Error("Not Found Environment's variables");
     }

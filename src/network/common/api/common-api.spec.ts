@@ -1,6 +1,6 @@
-import { Test2ApiFetcher } from '.';
+import { CommonApiFetcher } from '.';
 
-let fetcher: Test2ApiFetcher;
+let fetcher: CommonApiFetcher;
 
 /**
  * 테스트 초기화 함수
@@ -8,7 +8,7 @@ let fetcher: Test2ApiFetcher;
  * 2. Fetcher 초기화
  */
 beforeEach(() => {
-  fetcher = new Test2ApiFetcher({
+  fetcher = new CommonApiFetcher({
     chainId: 'test2',
     chainName: 'Testnet 2',
     addressPrefix: 'g1',
@@ -25,9 +25,9 @@ beforeEach(() => {
   });
 });
 
-describe('테스트넷2 Axios 인스턴스 생성', () => {
+describe('공통 Axios 인스턴스 생성', () => {
   test('성공', () => {
-    const fetcher = new Test2ApiFetcher({
+    const fetcher = new CommonApiFetcher({
       chainId: 'test2',
       chainName: 'Testnet 2',
       addressPrefix: 'g1',
@@ -47,7 +47,7 @@ describe('테스트넷2 Axios 인스턴스 생성', () => {
   });
 });
 
-describe('테스트넷2 API 호출', () => {
+describe('공통 API 호출', () => {
   test('서버상태 확인 - getHealth', async () => {
     const result = await fetcher.getHealth();
 
