@@ -1,4 +1,4 @@
-import { NetworkConfig, NetworkTest2 } from './network';
+import { NetworkConfig } from './network';
 import { GnoClientApi } from './api';
 import { NetworkCommon } from './network/common';
 
