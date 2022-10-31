@@ -1,9 +1,17 @@
-export interface Balacnes {
-  balances: string;
+export interface Balances {
+  balances: Array<{
+    amount: string;
+    unit: string;
+  }>;
 }
 
 const defaultValue = {
-  balances: '0',
+  balances: [
+    {
+      amount: '0.000000',
+      unit: 'ugnot',
+    },
+  ],
 };
 
 export const BalancesDefault = {

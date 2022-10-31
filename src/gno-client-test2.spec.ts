@@ -86,14 +86,15 @@ describe('GnoClient, 잔액조회 - getBalances ', () => {
    * 2: expected_has_data
    */
   test.each([
-    ['정상회원, 값 존재여부: true', ACCOUNT_ADDRESS, true],
-    ['트랜잭션이 없는 회원, 값 존재여부: false', ACCOUNT_ADDRESS_INITIALIZE, false],
-    ['없는회원, 값 존재여부: false', ACCOUNT_ADDRESS_INVALID, false],
+    ['정상회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS, 1],
+    ['트랜잭션이 없는 회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INITIALIZE, 1],
+    ['없는회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INVALID, 1],
   ])('%s', async (_, address: string, expectedHasData) => {
     const balances = await gnoClient.getBalances(address);
 
-    expect(balances).toBeInstanceOf(Object);
     expect(balances).toHaveProperty('balances');
-    expect(balances.balances !== '').toBe(expectedHasData);
+    expect(balances.balances).toHaveLength(1);
+    expect(balances.balances[0]).toHaveProperty('amount');
+    expect(balances.balances[0]).toHaveProperty('unit');
   });
 });
