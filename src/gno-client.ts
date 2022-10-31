@@ -1,16 +1,16 @@
-import { NetworkConfig } from './network';
+import { NetworkConfig, NetworkTest2 } from './network';
 import { GnoClientApi } from './api';
 import { NetworkCommon } from './network/common';
 
-type MapperType = 'MAIN' | 'TEST2' | 'TEST3' | 'COMMON' | 'NONE';
+export type NetworkMapperType = 'MAIN' | 'TEST2' | 'TEST3' | 'COMMON' | 'NONE';
 export class GnoClient implements GnoClientApi {
   private network: GnoClientApi;
 
   private networkConfig: NetworkConfig;
 
-  private mapperType: MapperType;
+  private mapperType: NetworkMapperType;
 
-  constructor(network: GnoClientApi, networkConfig: NetworkConfig, mapperType: MapperType) {
+  constructor(network: GnoClientApi, networkConfig: NetworkConfig, mapperType: NetworkMapperType) {
     this.network = network;
     this.networkConfig = networkConfig;
     this.mapperType = mapperType;
@@ -40,8 +40,15 @@ export class GnoClient implements GnoClientApi {
     return new GnoClient(new NetworkCommon(networkConfig), networkConfig, 'COMMON');
   }
 
-  public static createNetworkByType(networkConfig: NetworkConfig, mapperType: MapperType) {
-    return new GnoClient(new NetworkCommon(networkConfig), networkConfig, mapperType);
+  public static createNetworkByType(networkConfig: NetworkConfig, mapperType: NetworkMapperType) {
+    switch (mapperType) {
+      case 'TEST2':
+        return new GnoClient(new NetworkTest2(networkConfig), networkConfig, mapperType);
+      case 'TEST3':
+      case 'MAIN':
+      default:
+        return new GnoClient(new NetworkCommon(networkConfig), networkConfig, mapperType);
+    }
   }
 
   public get mapperVersion() {
