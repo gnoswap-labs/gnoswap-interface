@@ -21,7 +21,7 @@ export class Test2ApiFetcher implements Test2Api {
   };
 
   public getHealth = async (): Promise<boolean> => {
-    const result = await this.get<{}>(Test2ApiPath.createPathOfHealth());
+    const result = await this.get<object>(Test2ApiPath.createPathOfHealth());
     return typeof result === 'object';
   };
 
