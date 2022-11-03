@@ -32,11 +32,11 @@ export class CommonApiPath {
 
   public static createPathOfNumUnconfirmedTxs = () => `/num_unconfirmed_txs`;
 
-  public static createPathOfBroadcastTxCommit = (tx: string) => `/broadcast_tx_commit?tx=${tx}`;
+  public static createPathOfBroadcastTxCommit = (tx: string) => `/broadcast_tx_commit?tx=[${tx}]`;
 
-  public static createPathOfBroadcastTxSync = (tx: string) => `/broadcast_tx_sync?tx=${tx}`;
+  public static createPathOfBroadcastTxSync = (tx: string) => `/broadcast_tx_sync?tx=[${tx}]`;
 
-  public static createPathOfBroadcastTxAsync = (tx: string) => `/broadcast_tx_async?tx=${tx}`;
+  public static createPathOfBroadcastTxAsync = (tx: string) => `/broadcast_tx_async?tx=[${tx}]`;
 
   public static createPathOfAbciInfo = () => `/abci_info`;
 
@@ -44,7 +44,7 @@ export class CommonApiPath {
     queryType: CommonApiAbciQueryType,
     request: { [key in string]: any },
   ) => {
-    let queryPath = this.queryTypeToPath[queryType];
+    const queryPath = this.queryTypeToPath[queryType];
     return `/abci_query?path=%22${queryPath}/${request.address}%22`;
   };
 
