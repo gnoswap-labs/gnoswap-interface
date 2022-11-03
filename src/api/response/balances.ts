@@ -1,6 +1,6 @@
 export interface Balances {
   balances: Array<{
-    amount: number;
+    amount: string;
     unit: string;
   }>;
 }
@@ -8,7 +8,7 @@ export interface Balances {
 const defaultValue = {
   balances: [
     {
-      amount: 0.0,
+      amount: '0.0',
       unit: 'ugnot',
     },
   ],
