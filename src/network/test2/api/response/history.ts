@@ -7,8 +7,8 @@ export interface History {
     reason: string;
   };
   type: string;
-  from: string;
-  to: string;
+  from?: string;
+  to?: string;
   send: string;
   func: string;
   fee: string;

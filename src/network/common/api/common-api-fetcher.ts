@@ -21,7 +21,7 @@ export class CommonApiFetcher implements CommonApi {
   };
 
   public getHealth = async (): Promise<boolean> => {
-    const result = await this.get<{}>(CommonApiPath.createPathOfHealth());
+    const result = await this.get<object>(CommonApiPath.createPathOfHealth());
     return typeof result === 'object';
   };
 
