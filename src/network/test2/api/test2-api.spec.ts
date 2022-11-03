@@ -158,8 +158,6 @@ describe('테스트넷2 API 호출', () => {
     expect(result[0]).toHaveProperty('hash');
     expect(result[0]).toHaveProperty('result');
     expect(result[0]).toHaveProperty('type');
-    expect(result[0]).toHaveProperty('from');
-    expect(result[0]).toHaveProperty('to');
     expect(result[0]).toHaveProperty('send');
     expect(result[0]).toHaveProperty('func');
     expect(result[0]).toHaveProperty('fee');
