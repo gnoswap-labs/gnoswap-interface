@@ -29,23 +29,41 @@ export class NetworkCommon implements GnoClientApi {
     return this.fetcher.getBlocks(minHeight, maxHeight);
   };
 
-  public getBlock = async (height: number) => {};
+  public getBlock = async (height: number) => {
+    return this.fetcher.getBlock(height);
+  };
 
-  public getBlockResults = async (height: number) => {};
+  public getBlockResults = async (height: number) => {
+    return this.fetcher.getBlockResults(height);
+  };
 
-  public getBlockCommit = async (height: number) => {};
+  public getBlockCommit = async (height: number) => {
+    return this.fetcher.getBlockCommit(height);
+  };
 
-  public getValidators = async () => {};
+  public getValidators = async () => {
+    return this.fetcher.getValidators();
+  };
 
-  public getConsensusState = async () => {};
+  public getConsensusState = async () => {
+    return this.fetcher.getConsensusState();
+  };
 
-  public getConsensusParams = async (height: number) => {};
+  public getConsensusParams = async (height: number) => {
+    return this.fetcher.getConsensusParams(height);
+  };
 
-  public getUnconfirmedTxs = async () => {};
+  public getUnconfirmedTxs = async () => {
+    return this.fetcher.getUnconfirmedTxs();
+  };
 
-  public getNumUnconfirmedTxs = async () => {};
+  public getNumUnconfirmedTxs = async () => {
+    return this.fetcher.getNumUnconfirmedTxs();
+  };
 
-  public getAbciInfo = async () => {};
+  public getAbciInfo = async () => {
+    return this.fetcher.getAbciInfo();
+  };
 
   public broadcastTxCommit = async (tx: string) => {
     const txCommitResponseOfCommon = await this.fetcher.broadcastTxCommit(tx);
