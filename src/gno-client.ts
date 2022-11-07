@@ -1,4 +1,4 @@
-import { NetworkConfig, NetworkTest2 } from './network';
+import { NetworkConfig, NetworkTest2, NetworkTest3 } from './network';
 import { GnoClientApi } from './api';
 import { NetworkCommon } from './network/common';
 
@@ -54,6 +54,7 @@ export class GnoClient implements GnoClientApi {
       case 'TEST2':
         return new GnoClient(new NetworkTest2(networkConfig), networkConfig, mapperType);
       case 'TEST3':
+        return new GnoClient(new NetworkTest3(networkConfig), networkConfig, mapperType);
       case 'MAIN':
       default:
         return new GnoClient(new NetworkCommon(networkConfig), networkConfig, mapperType);
