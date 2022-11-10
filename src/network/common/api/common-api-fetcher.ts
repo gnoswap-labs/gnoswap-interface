@@ -2,17 +2,17 @@ import { NetworkInstance, NetworkConfig } from '../..';
 import { CommonApiAbciQueryType, CommonResponse } from '.';
 import { CommonApi } from '.';
 import { CommonApiPath } from '.';
-import axios from 'axios';
+import axios, { AxiosAdapter } from 'axios';
 
 export class CommonApiFetcher implements CommonApi {
   private networkInstance: NetworkInstance;
 
-  constructor(config: NetworkConfig) {
+  constructor(config: NetworkConfig, axiosAdapter?: AxiosAdapter) {
     const host = config.rpcUrl;
     if (!host) {
       throw Error("Not Found Environment's variables");
     }
-    this.networkInstance = new NetworkInstance({ host });
+    this.networkInstance = new NetworkInstance({ host }, axiosAdapter);
   }
 
   private get = async <T>(uri: string): Promise<T> => {

@@ -1,12 +1,13 @@
 import { GnoClientApi, GnoClientResnpose } from '@/api';
+import { AxiosAdapter } from 'axios';
 import { NetworkConfig } from '../network-config';
 import { Test2ApiFetcher, Test2Mapper, Test2Response } from './api';
 
 export class NetworkTest2 implements GnoClientApi {
   private fetcher: Test2ApiFetcher;
 
-  constructor(config: NetworkConfig) {
-    this.fetcher = new Test2ApiFetcher(config);
+  constructor(config: NetworkConfig, axiosAdapter?: AxiosAdapter) {
+    this.fetcher = new Test2ApiFetcher(config, axiosAdapter);
   }
 
   public isHealth = async () => {

@@ -2,17 +2,17 @@ import { NetworkInstance, NetworkConfig } from '../..';
 import { Test3ApiAbciQueryType, Test3Response } from '.';
 import { Test3Api } from '.';
 import { Test3ApiPath } from '.';
-import axios from 'axios';
+import axios, { AxiosAdapter } from 'axios';
 
 export class Test3ApiFetcher implements Test3Api {
   private networkInstance: NetworkInstance;
 
-  constructor(config: NetworkConfig) {
+  constructor(config: NetworkConfig, axiosAdapter?: AxiosAdapter) {
     const host = config.rpcUrl;
     if (!host) {
       throw Error("Not Found Environment's variables");
     }
-    this.networkInstance = new NetworkInstance({ host });
+    this.networkInstance = new NetworkInstance({ host }, axiosAdapter);
   }
 
   private get = async <T>(uri: string): Promise<T> => {

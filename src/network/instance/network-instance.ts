@@ -1,13 +1,14 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosAdapter, AxiosInstance, AxiosResponse } from 'axios';
 import { NetworkInstanceConfig } from '.';
 
 export class NetworkInstance {
   private networkInstance: AxiosInstance;
 
-  constructor(config: NetworkInstanceConfig) {
+  constructor(config: NetworkInstanceConfig, axiosAdapter?: AxiosAdapter) {
     this.networkInstance = axios.create({
       baseURL: config.host,
       timeout: config.timeout || 15000,
+      adapter: axiosAdapter,
     });
   }
 
