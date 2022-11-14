@@ -46,6 +46,10 @@ export class GnoClient implements GnoClientApi {
     };
   }
 
+  public clone = () => {
+    return GnoClient.createNetworkByType(this.networkConfig, this.mapperType);
+  };
+
   public static createNetwork(networkConfig: NetworkConfig) {
     return new GnoClient(new NetworkCommon(networkConfig), networkConfig, 'COMMON');
   }
