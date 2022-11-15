@@ -29,10 +29,6 @@ export class GnoClient implements GnoClientApi {
     return this.networkConfig.rpcUrl;
   }
 
-  public get gasPrice() {
-    return this.networkConfig.gasPrice;
-  }
-
   public get token() {
     return this.networkConfig.token;
   }
@@ -40,9 +36,9 @@ export class GnoClient implements GnoClientApi {
   public get config() {
     return {
       chainId: this.chainId,
-      coinDenom: this.token.coinDenom,
-      coinMinimalDenom: this.token.coinMinimalDenom,
-      coinDecimals: this.token.coinDecimals,
+      coinDenom: this.token.denom,
+      coinMinimalDenom: this.token.minimalDenom,
+      coinDecimals: Math.abs(Math.log10(this.token.minimalUnit)),
     };
   }
 
