@@ -14,36 +14,32 @@ beforeEach(() => {
     addressPrefix: 'g1',
     rpcUrl: 'https://rpc.test2.gno.land',
     gnoUrl: 'https://rpc.test2.gno.land',
-    explorerUrl: 'https://api.adena.app',
-    httpUrl: 'localhost',
+    apiUrl: 'https://api.adena.app',
     token: {
-      coinDenom: 'GNOT',
-      coinDecimals: 6,
-      coinMinimalDenom: 'gnot',
+      denom: 'GNOT',
+      unit: 1,
+      minimalDenom: 'gnot',
+      minimalUnit: 0.000001,
     },
-    gasPrice: 0.00000000000001,
   });
 });
 
 describe('공통 Axios 인스턴스 생성', () => {
   test('성공', () => {
-    const fetcher = new CommonApiFetcher({
+    fetcher = new CommonApiFetcher({
       chainId: 'test2',
       chainName: 'Testnet 2',
       addressPrefix: 'g1',
       rpcUrl: 'https://rpc.test2.gno.land',
       gnoUrl: 'https://rpc.test2.gno.land',
-      explorerUrl: 'https://api.adena.app',
-      httpUrl: 'localhost',
+      apiUrl: 'https://api.adena.app',
       token: {
-        coinDenom: 'GNOT',
-        coinDecimals: 6,
-        coinMinimalDenom: 'gnot',
+        denom: 'GNOT',
+        unit: 1,
+        minimalDenom: 'gnot',
+        minimalUnit: 0.000001,
       },
-      gasPrice: 0.00000000000001,
     });
-
-    expect(fetcher).not.toBeNull();
   });
 });
 
