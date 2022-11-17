@@ -14,19 +14,18 @@ let gnoClient: GnoClient;
 beforeEach(() => {
   gnoClient = GnoClient.createNetworkByType(
     {
-      chainId: 'test2',
+      chainId: 'test3',
       chainName: 'Testnet 2',
       addressPrefix: 'g1',
-      rpcUrl: 'https://rpc.test2.gno.land',
-      gnoUrl: 'https://rpc.test2.gno.land',
-      explorerUrl: 'https://api.adena.app',
-      httpUrl: 'localhost',
+      rpcUrl: 'https://rpc.test3.gno.land',
+      gnoUrl: 'https://rpc.test3.gno.land',
+      apiUrl: 'https://api.adena.app',
       token: {
-        coinDenom: 'GNOT',
-        coinDecimals: 6,
-        coinMinimalDenom: 'gnot',
+        denom: 'GNOT',
+        unit: 1,
+        minimalDenom: 'ugnot',
+        minimalUnit: 0.000001,
       },
-      gasPrice: 0.00000000000001,
     },
     'TEST2',
   );
@@ -86,9 +85,9 @@ describe('GnoClient, 잔액조회 - getBalances ', () => {
    * 2: expected_has_data
    */
   test.each([
-    ['정상회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS, 1],
-    ['트랜잭션이 없는 회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INITIALIZE, 1],
-    ['없는회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INVALID, 1],
+    ['정상회원, balacnes 배열 길이: 1', 'g14vhcdsyf83ngsrrqc92kmw8q9xakqjm0v8448t', 1],
+    // ['트랜잭션이 없는 회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INITIALIZE, 1],
+    // ['없는회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INVALID, 1],
   ])('%s', async (_, address: string, expectedHasData) => {
     const balances = await gnoClient.getBalances(address);
 
