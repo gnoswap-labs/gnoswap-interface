@@ -62,8 +62,8 @@ describe('GnoClient, 계정조회 - getAccount ', () => {
    */
   test.each([
     ['정상회원, 상태값: ACTIVE', ACCOUNT_ADDRESS, 'ACTIVE'],
-    // ['트랜잭션이 없는 회원, 상태값: IN_ACTIVE', ACCOUNT_ADDRESS_INITIALIZE, 'IN_ACTIVE'],
-    // ['없는회원, 상태값: NONE', ACCOUNT_ADDRESS_INVALID, 'NONE'],
+    ['트랜잭션이 없는 회원, 상태값: IN_ACTIVE', ACCOUNT_ADDRESS_INITIALIZE, 'IN_ACTIVE'],
+    ['없는회원, 상태값: NONE', ACCOUNT_ADDRESS_INVALID, 'NONE'],
   ])('%s', async (_, address, expectedStatus) => {
     const account = await gnoClient.getAccount(address);
 
