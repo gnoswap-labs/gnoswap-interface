@@ -96,10 +96,8 @@ export class Test2ApiFetcher implements Test2Api {
     );
   };
 
+  // Deprecated on onbloc
   public getTransactionHistory = async (address: string) => {
-    const result = await axios.get<Array<Test2Response.History>>(
-      Test2ApiPath.createPathOfHistoryTemp(address),
-    );
-    return result.data;
+    return [];
   };
 }

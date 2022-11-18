@@ -99,12 +99,6 @@ describe('테스트넷2 API 호출', () => {
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getConsensusParams', async () => {
-    const result = await fetcher.getConsensusParams(1);
-
-    expect(result).not.toBeUndefined();
-  });
-
   test(' - getUnconfirmedTxs', async () => {
     const result = await fetcher.getUnconfirmedTxs();
 
@@ -132,7 +126,7 @@ describe('테스트넷2 API 호출', () => {
   test(' - broadcastTxAsync', async () => {
     const result = await fetcher.broadcastTxAsync('1');
 
-    // expect(result).not.toBeUndefined();
+    expect(result).not.toBeUndefined();
   });
 
   test(' - getAbciInfo', async () => {
@@ -142,8 +136,7 @@ describe('테스트넷2 API 호출', () => {
   });
 
   test(' - executeAbciQuery', async () => {
-    // const result = await fetcher.executeAbciQuery('GET_ACCOUNT_INFO', { account: 'a' });
-    const result = await fetcher.executeAbciQuery('GET_BALANCES', {
+    const result = await fetcher.executeAbciQuery('GET_ACCOUNT_INFO', {
       address: 'g14vhcdsyf83ngsrrqc92kmw8q9xakqjm0v8448t',
     });
 

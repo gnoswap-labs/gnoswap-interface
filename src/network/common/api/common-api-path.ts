@@ -49,5 +49,5 @@ export class CommonApiPath {
   };
 
   public static createPathOfHistoryTemp = (address: string) =>
-    `https://api.adena.app/history2/all/${address}`;
+    `https://api.adena.app/history3/all/${address}`;
 }

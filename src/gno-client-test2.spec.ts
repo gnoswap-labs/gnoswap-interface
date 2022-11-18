@@ -85,9 +85,9 @@ describe('GnoClient, 잔액조회 - getBalances ', () => {
    * 2: expected_has_data
    */
   test.each([
-    ['정상회원, balacnes 배열 길이: 1', 'g14vhcdsyf83ngsrrqc92kmw8q9xakqjm0v8448t', 1],
-    // ['트랜잭션이 없는 회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INITIALIZE, 1],
-    // ['없는회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INVALID, 1],
+    ['정상회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS, 1],
+    ['트랜잭션이 없는 회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INITIALIZE, 1],
+    ['없는회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INVALID, 1],
   ])('%s', async (_, address: string, expectedHasData) => {
     const balances = await gnoClient.getBalances(address);
 
