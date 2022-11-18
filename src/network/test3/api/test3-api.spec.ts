@@ -58,11 +58,6 @@ describe('테스트넷2 API 호출', () => {
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getGenesis', async () => {
-    // const result = await fetcher.getGenesis();
-    // expect(result).not.toBeUndefined();
-  });
-
   test(' - getBlocks', async () => {
     const result = await fetcher.getBlocks(1, 2);
 
@@ -109,18 +104,6 @@ describe('테스트넷2 API 호출', () => {
     const result = await fetcher.getNumUnconfirmedTxs();
 
     expect(result).not.toBeUndefined();
-  });
-
-  test(' - broadcastTxCommit', async () => {
-    const result = await fetcher.broadcastTxCommit('1');
-
-    // expect(result).not.toBeUndefined();
-  });
-
-  test(' - broadcastTxSync', async () => {
-    const result = await fetcher.broadcastTxSync('1');
-
-    // expect(result).not.toBeUndefined();
   });
 
   test(' - broadcastTxAsync', async () => {
