@@ -85,6 +85,8 @@ workflows:
   build-and-deploy:
     jobs:
       - build:
+          context:
+            - SLACK_GNOSWAP
           filters:
             branches:
               only:
@@ -92,6 +94,10 @@ workflows:
                 - develop
                 - environment
       - deploy:
+          context:
+            - AWS_DEPLOY
+            - SLACK_GNOSWAP
+            - GNOSWAP_FRONT_MAIN_ARGS
           requires:
             - build
           filters:
