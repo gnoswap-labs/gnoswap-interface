@@ -1,0 +1,109 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@4.12.1
+  aws-ecr: circleci/aws-ecr@8.2.1
+
+commands:
+  init-slack:
+    steps:
+      - run:
+          name: Setup Message Info
+          when: always
+          command: |
+            SLACK_TEMPLATE_BUILD_START=$(cat .circleci/template/slack-build-start.json)
+            SLACK_TEMPLATE_BUILD_FINISH=$(cat .circleci/template/slack-build-finish.json)
+            SLACK_TEMPLATE_BUILD_FAIL=$(cat .circleci/template/slack-build-fail.json)
+            SLACK_TEMPLATE_DEPLOY_SUCCESS=$(cat .circleci/template/slack-deploy-success.json)
+            SLACK_TEMPLATE_DEPLOY_FAIL=$(cat .circleci/template/slack-deploy-fail.json)
+            echo "export SLACK_TEMPLATE_BUILD_START='${SLACK_TEMPLATE_BUILD_START}'" >> $BASH_ENV
+            echo "export SLACK_TEMPLATE_BUILD_FINISH='${SLACK_TEMPLATE_BUILD_FINISH}'" >> $BASH_ENV
+            echo "export SLACK_TEMPLATE_BUILD_FAIL='${SLACK_TEMPLATE_BUILD_FAIL}'" >> $BASH_ENV
+            echo "export SLACK_TEMPLATE_DEPLOY_SUCCESS='${SLACK_TEMPLATE_DEPLOY_SUCCESS}'" >> $BASH_ENV
+            echo "export SLACK_TEMPLATE_DEPLOY_FAIL='${SLACK_TEMPLATE_DEPLOY_FAIL}'" >> $BASH_ENV
+            source $BASH_ENV
+  notification-build-start:
+    steps:
+      - slack/notify:
+          channel: "C04LTJY4GCS"
+          event: always
+          template: SLACK_TEMPLATE_BUILD_START
+  notification-build-finish:
+    steps:
+      - slack/notify:
+          channel: "C04LTJY4GCS"
+          event: pass
+          template: SLACK_TEMPLATE_BUILD_FINISH
+  notification-build-fail:
+    steps:
+      - slack/notify:
+          channel: "C04LTJY4GCS"
+          event: fail
+          template: SLACK_TEMPLATE_BUILD_FAIL
+  notification-deploy-success:
+    steps:
+      - slack/notify:
+          channel: "C04LTJY4GCS"
+          event: pass
+          template: SLACK_TEMPLATE_DEPLOY_SUCCESS
+  notification-deploy-fail:
+    steps:
+      - slack/notify:
+          channel: "C04LTJY4GCS"
+          event: fail
+          template: SLACK_TEMPLATE_DEPLOY_FAIL
+  init-deploy-environment:
+    steps:
+      - run:
+          name: Initialize Deploy Environment
+          when: always
+          command: |
+            mv "Dockerfile.${CIRCLE_BRANCH}" "Dockerfile"
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:stable
+        environment:
+          TZ: "Asia/Seoul"
+    steps:
+      - checkout
+      - init-slack
+      - notification-build-start
+
+  deploy:
+    machine:
+      image: ubuntu-2004:current
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - init-deploy-environment
+      - aws-ecr/build-and-push-image:
+          repo: "${SERVICE_NAME}"
+          tag: '${CIRCLE_BRANCH},$(date "+%Y%m%d%H%M%S")'
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh "${SERVER_ADDRESS}" "./circle-ci-deploy.sh ${SERVICE_NAME} ${CIRCLE_BRANCH} ${CIRCLE_BRANCH} ${PORT}"
+      - init-slack
+      - notification-deploy-success
+      - notification-deploy-fail
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+                - develop
+                - environment
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+                - environment

@@ -1,0 +1,73 @@
+{
+    "text": "[Gnoswap Front] Start...",
+    "blocks": [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "[Gnoswap Front] Start...",
+                "emoji": true
+            }
+        }
+    ],
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "fields": [
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Project*: \"$CIRCLE_PROJECT_REPONAME\""
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Branch*: $CIRCLE_BRANCH"
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Commit*: $CIRCLE_SHA1"
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Author*: $CIRCLE_USERNAME"
+                        }
+                    ],
+                    "accessory": {
+                        "type": "image",
+                        "image_url": "https://cdn-images-1.medium.com/fit/c/36/36/1*KsQUYlzEvCEKcPj0YmWOEQ.jpeg",
+                        "alt_text": "CircleCI logo"
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "빌드내용 확인",
+                                "emoji": true
+                            },
+                            "value": "current_version",
+                            "url": "$CIRCLE_BUILD_URL"
+                        },
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Github",
+                                "emoji": true
+                            },
+                            "value": "current_version",
+                            "url": "https://github.com/onbloc/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
