@@ -70,13 +70,6 @@ jobs:
       docker_layer_caching: true
     steps:
       - checkout
-      - run:
-          name: Deploy Over SSH
-          command: |
-            echo "SERVER_ADDRESS: ${SERVER_ADDRESS}" 
-            echo "SERVICE_NAME: ${SERVICE_NAME}" 
-            echo "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
-            echo "SLACK_ACCESS_TOKEN"
       - aws-ecr/build-and-push-image:
           repo: "${SERVICE_NAME}"
           tag: '${CIRCLE_BRANCH},$(date "+%Y%m%d%H%M%S")'
