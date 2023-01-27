@@ -104,4 +104,3 @@ workflows:
             branches:
               only:
                 - main
-                - environment
