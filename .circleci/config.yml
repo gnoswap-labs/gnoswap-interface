@@ -43,13 +43,13 @@ commands:
   notification-deploy-success:
     steps:
       - slack/notify:
-          channel: "C04LTJY4GCS"
+          channel: "C04LTJY4GCS,C04LWHYHC92"
           event: pass
           template: SLACK_TEMPLATE_DEPLOY_SUCCESS
   notification-deploy-fail:
     steps:
       - slack/notify:
-          channel: "C04LTJY4GCS"
+          channel: "C04LTJY4GCS,C04LWHYHC92"
           event: fail
           template: SLACK_TEMPLATE_DEPLOY_FAIL
 
