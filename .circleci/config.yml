@@ -52,13 +52,6 @@ commands:
           channel: "C04LTJY4GCS"
           event: fail
           template: SLACK_TEMPLATE_DEPLOY_FAIL
-  init-deploy-environment:
-    steps:
-      - run:
-          name: Initialize Deploy Environment
-          when: always
-          command: |
-            mv "Dockerfile.${CIRCLE_BRANCH}" "Dockerfile"
 
 jobs:
   build:
@@ -77,7 +70,6 @@ jobs:
       docker_layer_caching: true
     steps:
       - checkout
-      - init-deploy-environment
       - aws-ecr/build-and-push-image:
           repo: "${SERVICE_NAME}"
           tag: '${CIRCLE_BRANCH},$(date "+%Y%m%d%H%M%S")'
