@@ -64,7 +64,7 @@
                                 "emoji": true
                             },
                             "value": "current_version",
-                            "url": "http://ec2-3-39-237-79.ap-northeast-2.compute.amazonaws.com"
+                            "url": "http://ec2-3-39-237-79.ap-northeast-2.compute.amazonaws.com:3000/"
                         }
                     ]
                 }
