@@ -15,12 +15,6 @@ beforeEach(() => {
     gnoUrl: 'https://rpc.test2.gno.land',
     apiUrl: 'https://api.adena.app',
     linkUrl: 'https://gnoscan.io',
-    token: {
-      denom: 'GNOT',
-      unit: 1,
-      minimalDenom: 'ugnot',
-      minimalUnit: 0.000001,
-    }
   },
     'TEST2',
   );

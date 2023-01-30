@@ -32,17 +32,8 @@ export class GnoClient implements GnoClientApi {
     return this.networkConfig.linkUrl;
   }
 
-  public get token() {
-    return this.networkConfig.token;
-  }
-
   public get config() {
-    return {
-      chainId: this.chainId,
-      coinDenom: this.token.denom,
-      coinMinimalDenom: this.token.minimalDenom,
-      coinDecimals: Math.abs(Math.log10(this.token.minimalUnit)),
-    };
+    return this.networkConfig;
   }
 
   public clone = () => {

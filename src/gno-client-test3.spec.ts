@@ -15,12 +15,6 @@ beforeEach(() => {
     gnoUrl: 'https://rpc.test3.gno.land',
     apiUrl: 'https://api.adena.app',
     linkUrl: 'https://gnoscan.io',
-    token: {
-      denom: 'GNOT',
-      unit: 1,
-      minimalDenom: 'ugnot',
-      minimalUnit: 0.000001,
-    }
   },
     'TEST3',
   );
@@ -85,7 +79,7 @@ describe('get balances', () => {
     const balances = await gnoClient.getBalances(address);
 
     expect(balances).toHaveProperty('balances');
-    expect(balances.balances).toHaveLength(1);
+    expect(balances.balances).toHaveLength(expectedHasData);
     expect(balances.balances[0]).toHaveProperty('amount');
     expect(balances.balances[0]).toHaveProperty('unit');
   });
