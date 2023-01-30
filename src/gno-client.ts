@@ -1,9 +1,8 @@
 import { NetworkConfig, NetworkTest2, NetworkTest3 } from './network';
 import { GnoClientApi } from './api';
-import { NetworkCommon } from './network/common';
 import { AxiosAdapter } from 'axios';
 
-export type NetworkMapperType = 'MAIN' | 'TEST2' | 'TEST3' | 'COMMON' | 'NONE';
+export type NetworkMapperType = 'TEST2' | 'TEST3';
 export class GnoClient implements GnoClientApi {
   private network: GnoClientApi;
 
@@ -51,7 +50,7 @@ export class GnoClient implements GnoClientApi {
   };
 
   public static createNetwork(networkConfig: NetworkConfig) {
-    return new GnoClient(new NetworkCommon(networkConfig), networkConfig, 'COMMON');
+    return new GnoClient(new NetworkTest3(networkConfig), networkConfig, 'TEST3');
   }
 
   public static createNetworkByType(
@@ -67,15 +66,9 @@ export class GnoClient implements GnoClientApi {
           mapperType,
         );
       case 'TEST3':
-        return new GnoClient(
-          new NetworkTest3(networkConfig, axiosAdapter),
-          networkConfig,
-          mapperType,
-        );
-      case 'MAIN':
       default:
         return new GnoClient(
-          new NetworkCommon(networkConfig, axiosAdapter),
+          new NetworkTest3(networkConfig, axiosAdapter),
           networkConfig,
           mapperType,
         );
