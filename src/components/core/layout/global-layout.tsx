@@ -1,16 +1,14 @@
 import React from "react";
-import styled from "styled-components";
-import mixins from "@/common/styles/mixins";
+import styled, { ThemeProvider } from "styled-components";
 import { ChildrenProps } from "@/common/types/global-prop-types";
+import { theme } from "@/common/styles";
 
 export const GlobalLayout = ({ children }: ChildrenProps) => {
 	return (
-		<>
+		<ThemeProvider theme={theme}>
 			<Wrapper>{children}</Wrapper>
-		</>
+		</ThemeProvider>
 	);
 };
 
-const Wrapper = styled.div`
-	${mixins.flexbox("column", "center", "center")}
-`;
+const Wrapper = styled.div``;

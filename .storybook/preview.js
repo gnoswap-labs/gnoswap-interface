@@ -12,16 +12,3 @@ export const parameters = {
 		},
 	},
 };
-
-export const decorators = [
-	Story => (
-		<>
-			<GlobalStyle />
-			<Story />
-		</>
-	),
-];
-
-const Themes = [theme];
-
-addDecorator(withThemesProvider(Themes), ThemeProvider);

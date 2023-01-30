@@ -1,5 +1,4 @@
-import { css, DefaultTheme } from "styled-components";
-import { fontWeight } from "../values/style-constant";
+import { DefaultTheme } from "styled-components";
 
 const lightColor = {
 	background50: "#FFFFFF",
