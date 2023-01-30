@@ -105,7 +105,8 @@ export class NetworkCommon implements GnoClientApi {
     return balanceData;
   };
 
-  public getTransactionHistory = async (address: string) => {
-    return this.fetcher.getTransactionHistory(address);
+  public getTransactionHistory = async (address: string, page?: number) => {
+    const result = await this.fetcher.getTransactionHistory(address, page ?? 0);
+    return result;
   };
 }

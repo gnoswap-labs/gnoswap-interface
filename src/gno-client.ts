@@ -29,6 +29,10 @@ export class GnoClient implements GnoClientApi {
     return this.networkConfig.rpcUrl;
   }
 
+  public get linkUrl() {
+    return this.networkConfig.linkUrl;
+  }
+
   public get token() {
     return this.networkConfig.token;
   }
@@ -119,6 +123,6 @@ export class GnoClient implements GnoClientApi {
 
   public getBalances = async (address: string) => this.network.getBalances(address);
 
-  public getTransactionHistory = async (address: string) =>
-    this.network.getTransactionHistory(address);
+  public getTransactionHistory = async (address: string, page?: number) =>
+    this.network.getTransactionHistory(address, page ?? 0);
 }
