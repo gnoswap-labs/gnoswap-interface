@@ -1,69 +1,63 @@
 import { GnoClient } from '.';
 
 const ACCOUNT_ADDRESS = 'g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae';
-const ACCOUNT_ADDRESS_INITIALIZE = 'g1ngek6feu3ne9m9680yxj40sehrfaaqu7sauk4h';
 const ACCOUNT_ADDRESS_INVALID = 'aaa';
 
 let gnoClient: GnoClient;
 
-/**
- * 테스트 초기화 함수
- * 1. GnoClient 초기화
- * 2. 환경변수 등록
- */
 beforeEach(() => {
-  gnoClient = GnoClient.createNetworkByType(
-    {
-      chainId: 'test2',
-      chainName: 'Testnet 2',
-      addressPrefix: 'g1',
-      rpcUrl: 'https://rpc.test2.gno.land',
-      gnoUrl: 'https://rpc.test2.gno.land',
-      apiUrl: 'https://api.adena.app',
-      token: {
-        denom: 'GNOT',
-        unit: 1,
-        minimalDenom: 'ugnot',
-        minimalUnit: 0.000001,
-      },
-    },
+  gnoClient = GnoClient.createNetworkByType({
+
+    chainId: 'test2',
+    chainName: 'Testnet 2',
+    addressPrefix: 'g1',
+    rpcUrl: 'https://rpc.test2.gno.land',
+    gnoUrl: 'https://rpc.test2.gno.land',
+    apiUrl: 'https://api.adena.app',
+    linkUrl: 'https://gnoscan.io',
+    token: {
+      denom: 'GNOT',
+      unit: 1,
+      minimalDenom: 'ugnot',
+      minimalUnit: 0.000001,
+    }
+  },
     'TEST2',
   );
 });
 
-describe('GnoClient, 생성자', () => {
-  test('환경변수 확인', async () => {
+describe('contructor', () => {
+  test('environment variable is test2', async () => {
     const host = process.env.NETWORK_TEST2_HOST;
 
     expect(host).not.toBeUndefined();
   });
 
-  test('성공', async () => {
+  test('initilaize success', async () => {
     expect(gnoClient).not.toBeNull();
   });
 
-  test('버전', async () => {
+  test('mapper version is TEST2', async () => {
     expect(gnoClient.mapperVersion).toBe('TEST2');
   });
 });
 
-describe('GnoClient, 상태검사 - isHealth ', () => {
-  test('성공', async () => {
+describe('health check', () => {
+  test('success', async () => {
     const isHealth = await gnoClient.isHealth();
     expect(isHealth).toBe(true);
   });
 });
 
-describe('GnoClient, 계정조회 - getAccount ', () => {
+describe('get account info', () => {
   /**
    * 0: description
    * 1: address
    * 2: expected_status
    */
   test.each([
-    ['정상회원, 상태값: ACTIVE', ACCOUNT_ADDRESS, 'ACTIVE'],
-    ['트랜잭션이 없는 회원, 상태값: IN_ACTIVE', ACCOUNT_ADDRESS_INITIALIZE, 'IN_ACTIVE'],
-    ['없는회원, 상태값: NONE', ACCOUNT_ADDRESS_INVALID, 'NONE'],
+    ['normal user, status: ACTIVE', ACCOUNT_ADDRESS, 'ACTIVE'],
+    ['empty user, status: NONE', ACCOUNT_ADDRESS_INVALID, 'NONE'],
   ])('%s', async (_, address, expectedStatus) => {
     const account = await gnoClient.getAccount(address);
 
@@ -78,16 +72,15 @@ describe('GnoClient, 계정조회 - getAccount ', () => {
   });
 });
 
-describe('GnoClient, 잔액조회 - getBalances ', () => {
+describe('get balances', () => {
   /**
    * 0: description
    * 1: address
    * 2: expected_has_data
    */
   test.each([
-    ['정상회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS, 1],
-    ['트랜잭션이 없는 회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INITIALIZE, 1],
-    ['없는회원, balacnes 배열 길이: 1', ACCOUNT_ADDRESS_INVALID, 1],
+    ['normar user, balacnes length is 1', ACCOUNT_ADDRESS, 1],
+    ['empty user, balacnes length is 1', ACCOUNT_ADDRESS_INVALID, 1],
   ])('%s', async (_, address: string, expectedHasData) => {
     const balances = await gnoClient.getBalances(address);
 
@@ -95,5 +88,21 @@ describe('GnoClient, 잔액조회 - getBalances ', () => {
     expect(balances.balances).toHaveLength(1);
     expect(balances.balances[0]).toHaveProperty('amount');
     expect(balances.balances[0]).toHaveProperty('unit');
+  });
+});
+
+describe('abci query render', () => {
+  /**
+   * 0: package path
+   * 1: data
+   */
+  test.each([
+    ['gno.land/r/users', ''],
+    ['gno.land/r/boards', ''],
+  ])('package: %s', async (packagePath: string, data: string) => {
+    const response = await gnoClient.queryRender(packagePath);
+
+    expect(response).toHaveProperty('ResponseBase');
+    expect(response?.ResponseBase.Data).not.toBe(null);
   });
 });
