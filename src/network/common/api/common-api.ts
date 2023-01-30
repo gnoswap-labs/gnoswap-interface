@@ -1,4 +1,5 @@
-import { CommonApiAbciQueryType, CommonResponse } from '.';
+import { QueryType } from '@/api/gno-client-api-abci-query-type';
+import { CommonResponse } from '.';
 
 export interface CommonApi {
   getHealth: () => Promise<boolean>;
@@ -34,8 +35,11 @@ export interface CommonApi {
   broadcastTxAsync: (tx: string) => Promise<CommonResponse.BroadcastTxAsync>;
 
   executeAbciQuery: (
-    queryType: CommonApiAbciQueryType,
-    request: { [key in string]: any },
+    queryType: QueryType,
+    request: {
+      query?: { [key in string]: string };
+      data?: Array<string>
+    }
   ) => Promise<CommonResponse.AbciQuery>;
 
   getTransactionHistory: (address: string, page: number) => Promise<CommonResponse.History>;

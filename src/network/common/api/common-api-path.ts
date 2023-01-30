@@ -1,10 +1,6 @@
-import { CommonApiAbciQueryType } from '.';
+import { QueryType, QUERY_PATH } from '@/api/gno-client-api-abci-query-type';
 
 export class CommonApiPath {
-  private static queryTypeToPath: { [key in CommonApiAbciQueryType]: string } = {
-    GET_ACCOUNT_INFO: 'auth/accounts',
-    GET_BALANCES: 'bank/balances',
-  };
 
   public static createPathOfHealth = () => `/health`;
 
@@ -41,11 +37,22 @@ export class CommonApiPath {
   public static createPathOfAbciInfo = () => `/abci_info`;
 
   public static createPathOfAbciQuery = (
-    queryType: CommonApiAbciQueryType,
-    request: { [key in string]: any },
+    queryType: QueryType,
+    request: {
+      query?: { [key in string]: string };
+      data?: Array<string>
+    }
   ) => {
-    const queryPath = this.queryTypeToPath[queryType];
-    return `/abci_query?path=%22${queryPath}/${request.address}%22`;
+    const { query, data } = request;
+    let queryPath = QUERY_PATH[queryType];
+    let dataPath = "";
+    if (query) {
+      Object.keys(query).forEach(key => queryPath = queryPath.replace(`:${key}`, query[key]));
+    }
+    if (data) {
+      dataPath = `&data="${data.join("\\n")}"`
+    }
+    return `/abci_query?path="${queryPath}"${dataPath}`;
   };
 
   public static createPathOfHistoryTemp = (address: string, page: number) =>

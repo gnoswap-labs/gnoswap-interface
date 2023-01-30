@@ -82,7 +82,10 @@ export class NetworkCommon implements GnoClientApi {
   };
 
   public getAccount = async (address: string) => {
-    const result = await this.fetcher.executeAbciQuery('GET_ACCOUNT_INFO', { address });
+    const query = {
+      address
+    };
+    const result = await this.fetcher.executeAbciQuery('GET_ACCOUNT_INFO', { query });
     if (!result.response?.ResponseBase?.Data || result.response?.ResponseBase?.Data === null) {
       return GnoClientResnpose.AccountNone;
     }
@@ -94,7 +97,10 @@ export class NetworkCommon implements GnoClientApi {
   };
 
   public getBalances = async (address: string) => {
-    const result = await this.fetcher.executeAbciQuery('GET_BALANCES', { address });
+    const query = {
+      address
+    };
+    const result = await this.fetcher.executeAbciQuery('GET_BALANCES', { query });
     if (!result.response?.ResponseBase?.Data || result.response?.ResponseBase?.Data === null) {
       return GnoClientResnpose.BalancesDefault;
     }
@@ -109,4 +115,42 @@ export class NetworkCommon implements GnoClientApi {
     const result = await this.fetcher.getTransactionHistory(address, page ?? 0);
     return result;
   };
+
+  public queryRender = async (packagePath: string, data?: Array<string>) => {
+    const result = await this.fetcher.executeAbciQuery('QUERY_RENDER', { data: [packagePath, ...data ?? [""]] });
+    const abciQueryResponse = CommonMapper.AbciQueryMapper.toAbciQuery(result);
+    return abciQueryResponse;
+  }
+
+  public queryEval = async (packagePath: string, functionName: string, data?: Array<string>) => {
+    const functionParams = data?.map(param => `\"${param}\"`).join(',') ?? [""];
+    const functionData = `${functionName}(${functionParams})`
+    const result = await this.fetcher.executeAbciQuery('QUERY_EVAL', { data: [packagePath, functionData] });
+    const abciQueryResponse = CommonMapper.AbciQueryMapper.toAbciQuery(result);
+    return abciQueryResponse;
+  }
+
+  public queryPackage = async (packagePath: string) => {
+    const result = await this.fetcher.executeAbciQuery('QUERY_PACKAGE', { data: [packagePath] });
+    const abciQueryResponse = CommonMapper.AbciQueryMapper.toAbciQuery(result);
+    return abciQueryResponse;
+  }
+
+  public queryFunctions = async (packagePath: string) => {
+    const result = await this.fetcher.executeAbciQuery('QUERY_FUNCTIONS', { data: [packagePath] });
+    const abciQueryResponse = CommonMapper.AbciQueryMapper.toAbciQuery(result);
+    return abciQueryResponse;
+  }
+
+  public queryFile = async (packagePath: string) => {
+    const result = await this.fetcher.executeAbciQuery('QUERY_FILE', { data: [packagePath] });
+    const abciQueryResponse = CommonMapper.AbciQueryMapper.toAbciQuery(result);
+    return abciQueryResponse;
+  }
+
+  public queryStore = async (packagePath: string) => {
+    const result = await this.fetcher.executeAbciQuery('QUERY_STORE', { data: [packagePath] });
+    const abciQueryResponse = CommonMapper.AbciQueryMapper.toAbciQuery(result);
+    return abciQueryResponse;
+  }
 }

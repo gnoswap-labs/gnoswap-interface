@@ -1,8 +1,9 @@
 import { NetworkInstance, NetworkConfig } from '../..';
-import { CommonApiAbciQueryType, CommonResponse } from '.';
+import { CommonResponse } from '.';
 import { CommonApi } from '.';
 import { CommonApiPath } from '.';
-import axios, { AxiosAdapter } from 'axios';
+import { AxiosAdapter } from 'axios';
+import { QueryType } from '@/api/gno-client-api-abci-query-type';
 
 export class CommonApiFetcher implements CommonApi {
   private networkInstance: NetworkInstance;
@@ -90,8 +91,11 @@ export class CommonApiFetcher implements CommonApi {
   };
 
   public executeAbciQuery = async (
-    queryType: CommonApiAbciQueryType,
-    request: { [x: string]: any },
+    queryType: QueryType,
+    request: {
+      query?: { [key in string]: string };
+      data?: Array<string>
+    }
   ) => {
     return this.get<CommonResponse.AbciQuery>(
       CommonApiPath.createPathOfAbciQuery(queryType, request),
