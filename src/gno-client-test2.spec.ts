@@ -10,9 +10,7 @@ beforeEach(() => {
 
     chainId: 'test2',
     chainName: 'Testnet 2',
-    addressPrefix: 'g1',
     rpcUrl: 'https://rpc.test2.gno.land',
-    gnoUrl: 'https://rpc.test2.gno.land',
     apiUrl: 'https://api.adena.app',
     linkUrl: 'https://gnoscan.io',
   },

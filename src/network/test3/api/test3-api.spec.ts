@@ -6,9 +6,7 @@ beforeEach(() => {
   fetcher = new Test3ApiFetcher({
     chainId: 'test3',
     chainName: 'Testnet 3',
-    addressPrefix: 'g1',
     rpcUrl: 'https://rpc.test3.gno.land',
-    gnoUrl: 'https://rpc.test3.gno.land',
     apiUrl: 'https://api.adena.app',
     linkUrl: 'https://gnoscan.io'
   });
