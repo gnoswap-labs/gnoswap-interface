@@ -2,141 +2,112 @@ import { Test3ApiFetcher } from '.';
 
 let fetcher: Test3ApiFetcher;
 
-/**
- * 테스트 초기화 함수
- * 1. 환경변수 등록
- * 2. Fetcher 초기화
- */
 beforeEach(() => {
   fetcher = new Test3ApiFetcher({
     chainId: 'test3',
-    chainName: 'Testnet 2',
+    chainName: 'Testnet 3',
     addressPrefix: 'g1',
     rpcUrl: 'https://rpc.test3.gno.land',
     gnoUrl: 'https://rpc.test3.gno.land',
     apiUrl: 'https://api.adena.app',
+    linkUrl: 'https://gnoscan.io',
     token: {
       denom: 'GNOT',
       unit: 1,
       minimalDenom: 'ugnot',
       minimalUnit: 0.000001,
-    },
+    }
   });
 });
 
-describe('테스트넷2 Axios 인스턴스 생성', () => {
-  test('성공', () => {
-    fetcher = new Test3ApiFetcher({
-      chainId: 'test3',
-      chainName: 'Testnet 2',
-      addressPrefix: 'g1',
-      rpcUrl: 'https://rpc.test3.gno.land',
-      gnoUrl: 'https://rpc.test3.gno.land',
-      apiUrl: 'https://api.adena.app',
-      token: {
-        denom: 'GNOT',
-        unit: 1,
-        minimalDenom: 'ugnot',
-        minimalUnit: 0.000001,
-      },
-    });
-
-    expect(fetcher).not.toBeNull();
-  });
-});
-
-describe('테스트넷2 API 호출', () => {
-  test('서버상태 확인 - getHealth', async () => {
+describe('testnet3 api', () => {
+  test('health check', async () => {
     const result = await fetcher.getHealth();
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getNetwrokInfo', async () => {
+  test('network info is not undefiend', async () => {
     const result = await fetcher.getNetwrokInfo();
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getBlocks', async () => {
+  test('get blocks by 1 to 2 is not undefiend', async () => {
     const result = await fetcher.getBlocks(1, 2);
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getBlock', async () => {
+  test('get block by 100 is not undefiend', async () => {
     const result = await fetcher.getBlock(100);
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getBlockResults', async () => {
+  test('get block result by 1 is not undefiend', async () => {
     const result = await fetcher.getBlockResults(1);
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getBlockCommit', async () => {
+  test('get block commit info by 1 is not undefiend', async () => {
     const result = await fetcher.getBlockCommit(1);
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getValidators', async () => {
+  test('get validators is not undefiend', async () => {
     const result = await fetcher.getValidators();
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getConsensusState', async () => {
+  test('get consensus state is not undefiend', async () => {
     const result = await fetcher.getConsensusState();
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getUnconfirmedTxs', async () => {
+  test('get unconfirmed txs is not undefiend', async () => {
     const result = await fetcher.getUnconfirmedTxs();
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getNumUnconfirmedTxs', async () => {
+  test('get num unconfirmed txs is not undefiend', async () => {
     const result = await fetcher.getNumUnconfirmedTxs();
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - broadcastTxAsync', async () => {
+  test('broadcast tx async is not undefiend', async () => {
     const result = await fetcher.broadcastTxAsync('1');
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - getAbciInfo', async () => {
+  test('get abci info is not undefiend', async () => {
     const result = await fetcher.getAbciInfo();
 
     expect(result).not.toBeUndefined();
   });
 
-  test(' - executeAbciQuery', async () => {
+  test('execute abci query is not undefiend', async () => {
     const result = await fetcher.executeAbciQuery('GET_ACCOUNT_INFO', {
-      address: 'g14vhcdsyf83ngsrrqc92kmw8q9xakqjm0v8448t',
+      query: {
+        address: 'g14vhcdsyf83ngsrrqc92kmw8q9xakqjm0v8448t',
+      }
     });
 
     expect(result).not.toBeUndefined();
   });
 
-  test('(임시) 트랜잭션 내역 조회 - getHistory', async () => {
-    const result = await fetcher.getTransactionHistory('g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae');
-    expect(Array.isArray(result)).toBeTruthy();
-    expect(result.length).toBeGreaterThan(0);
-    expect(result[0]).toHaveProperty('height');
-    expect(result[0]).toHaveProperty('date');
-    expect(result[0]).toHaveProperty('hash');
-    expect(result[0]).toHaveProperty('result');
-    expect(result[0]).toHaveProperty('type');
-    expect(result[0]).toHaveProperty('send');
-    expect(result[0]).toHaveProperty('func');
-    expect(result[0]).toHaveProperty('fee');
+  test('execute abci query by QUERY_RENDER and gno.land/r/demo/users is not undefined', async () => {
+    const result = await fetcher.executeAbciQuery('QUERY_RENDER', {
+      data: ['gno.land/r/demo/users', '']
+    });
+
+    expect(result).not.toBeUndefined();
   });
 });
