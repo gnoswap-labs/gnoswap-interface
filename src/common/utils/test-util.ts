@@ -35,12 +35,23 @@ export const generateTxHash = () => {
 	return `${generateNumber(1, 10000)}_0`;
 };
 
-const generateNumberPlus = () => {
+export const generateNumberPlus = () => {
 	return generateNumber(1, 10000);
 };
 
-const generateNumberMinus = () => {
+export const generateNumberMinus = () => {
 	return generateNumber(-10000, 0);
+};
+
+export const generateTokenMetas = () => {
+	const image0 =
+		"https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png";
+	const image1 =
+		"https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png";
+	return {
+		images: [image0, image1],
+		names: ["GNOT", "GNOS"],
+	};
 };
 
 const generateRandomString = (length: number) => {
