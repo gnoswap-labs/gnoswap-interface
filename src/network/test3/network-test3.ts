@@ -1,4 +1,4 @@
-import { GnoClientApi, GnoClientResnpose } from '@/api';
+import { GnoClientApi, GnoClientResnpose } from '../../api';
 import { AxiosAdapter } from 'axios';
 import { NetworkConfig } from '../network-config';
 import { Test3ApiFetcher, Test3Mapper, Test3Response } from './api';

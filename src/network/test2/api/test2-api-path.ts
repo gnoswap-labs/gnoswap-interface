@@ -1,4 +1,4 @@
-import { QueryType, QUERY_PATH } from "@/api";
+import { QueryType, QUERY_PATH } from "../../../api";
 
 export class Test2ApiPath {
 

@@ -3,7 +3,7 @@ import { Test3Response } from '.';
 import { Test3Api } from '.';
 import { Test3ApiPath } from '.';
 import axios, { AxiosAdapter } from 'axios';
-import { QueryType } from '@/api/gno-client-api-abci-query-type';
+import { QueryType } from '../../../api/gno-client-api-abci-query-type';
 
 export class Test3ApiFetcher implements Test3Api {
   private networkInstance: NetworkInstance;

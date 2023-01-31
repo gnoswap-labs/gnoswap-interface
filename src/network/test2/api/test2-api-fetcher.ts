@@ -3,7 +3,7 @@ import { Test2Response } from '.';
 import { Test2Api } from '.';
 import { Test2ApiPath } from '.';
 import { AxiosAdapter } from 'axios';
-import { QueryType } from '@/api';
+import { QueryType } from '../../../api';
 
 export class Test2ApiFetcher implements Test2Api {
   private networkInstance: NetworkInstance;

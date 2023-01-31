@@ -1,4 +1,4 @@
-import { QueryType } from '@/api/gno-client-api-abci-query-type';
+import { QueryType } from '../../../api';
 import { Test3Response } from '.';
 
 export interface Test3Api {

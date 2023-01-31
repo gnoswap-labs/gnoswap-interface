@@ -1,4 +1,4 @@
-import { QueryType } from '@/api';
+import { QueryType } from '../../../api';
 import { Test2Response } from '.';
 
 export interface Test2Api {
