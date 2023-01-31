@@ -2,8 +2,8 @@ import { NetworkInstance, NetworkConfig } from './../../';
 import { Test2Response } from '.';
 import { Test2Api } from '.';
 import { Test2ApiPath } from '.';
-import axios, { AxiosAdapter } from 'axios';
-import { QueryType } from '@/api/gno-client-api-abci-query-type';
+import { AxiosAdapter } from 'axios';
+import { QueryType } from '@/api';
 
 export class Test2ApiFetcher implements Test2Api {
   private networkInstance: NetworkInstance;
