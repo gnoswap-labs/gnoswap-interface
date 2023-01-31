@@ -1,6 +1,12 @@
 import { StorageKeyType } from "@/common/values";
+import { GnoClient } from "gno-client";
 
 export const getItem = (key: StorageKeyType) => {
+	const gnoClient = GnoClient.createNetworkByType(
+		{ chainId: "sdf", chainName: "sdf", rpcUrl: "sdf" },
+		"TEST3",
+	);
+	console.log(gnoClient);
 	return localStorage.getItem(key);
 };
 
