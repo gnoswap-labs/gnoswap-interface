@@ -1,1 +1,3 @@
-export interface RemoveLiquidityResponse {}
+export interface RemoveLiquidityResponse {
+	tx_hash: string;
+}

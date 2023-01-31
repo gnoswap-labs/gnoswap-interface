@@ -1,1 +1,3 @@
-export interface StakeResponse {}
+export interface StakeResponse {
+	tx_hash: string;
+}

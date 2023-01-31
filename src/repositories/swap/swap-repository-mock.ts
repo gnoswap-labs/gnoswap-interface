@@ -1,3 +1,4 @@
+import { generateNumber, generateTxHash } from "@/common/utils/test-util";
 import {
 	SwapExpectedResultResponse,
 	SwapFeeReponse,
@@ -12,11 +13,16 @@ export class SwapRepositoryMock implements SwapRepository {
 		token0Symbol: string,
 		token1Symbol: string,
 	): Promise<SwapRateResponse> => {
-		return {};
+		return {
+			ratio: generateNumber(0, 100),
+		};
 	};
 
 	public getSwapFee = async (): Promise<SwapFeeReponse> => {
-		return {};
+		return {
+			usd_value: generateNumber(0, 10000),
+			fee: generateNumber(0, 1),
+		};
 	};
 
 	public getExpectedSwapResult = async (
@@ -25,12 +31,18 @@ export class SwapRepositoryMock implements SwapRepository {
 		token1Symbol: string,
 		token1Amount: string,
 	): Promise<SwapExpectedResultResponse> => {
-		return {};
+		return {
+			price_impact: generateNumber(0, 10000),
+			min_received: generateNumber(0, 10000),
+			gas_fee: generateNumber(0, 1),
+		};
 	};
 
 	public setSlippage = async (slippage: number): Promise<void> => {};
 
 	public swap = async (request: SwapRequest): Promise<SwapResposne> => {
-		return {};
+		return {
+			tx_hash: generateTxHash(),
+		};
 	};
 }

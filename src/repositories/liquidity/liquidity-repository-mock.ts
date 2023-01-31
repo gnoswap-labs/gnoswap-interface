@@ -1,4 +1,4 @@
-import { generateTxHash } from "@/common/utils/test-util";
+import { generateNumberPlus, generateTxHash } from "@/common/utils/test-util";
 import {
 	AddLiquidityResponse,
 	ClaimRewardResponse,
@@ -58,14 +58,16 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	public removeLiquidities = async (
 		request: RemoveLiquidityRequest,
 	): Promise<RemoveLiquidityResponse> => {
-		return {};
+		return {
+			tx_hash: generateTxHash(),
+		};
 	};
 
 	public getLiquidityRewardBy = async (
 		poolId: string,
 		address: string,
 	): Promise<LiquidityRewardResponse> => {
-		return {};
+		return LiquidityRepositoryMock.generateReward();
 	};
 
 	public claimReward = async (
@@ -73,6 +75,14 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	): Promise<ClaimRewardResponse> => {
 		return {
 			tx_hash: generateTxHash(),
+		};
+	};
+
+	private static generateReward = (): LiquidityRewardResponse => {
+		return {
+			claimable_rewards: generateNumberPlus(),
+			daily_earnings: generateNumberPlus(),
+			total_balance: generateNumberPlus(),
 		};
 	};
 }

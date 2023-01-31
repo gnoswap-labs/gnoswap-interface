@@ -1,1 +1,3 @@
-export interface UnstakeResponse {}
+export interface UnstakeResponse {
+	tx_hash: string;
+}

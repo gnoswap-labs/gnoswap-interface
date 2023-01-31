@@ -7,30 +7,31 @@ import {
 	TotalStakingResultResponse,
 	TotalUnstakingResultResponse,
 	UnstakeResponse,
-	UnstakingPeriodInfoResponse,
+	StakingPeriodListResponse,
 } from "./response";
 
 export interface StakingRepository {
-	getUnstakingPeriods: () => Promise<UnstakingPeriodInfoResponse>;
+	getStakingPeriods: () => Promise<StakingPeriodListResponse>;
 
 	getLPTokensByAddress: (address: string) => Promise<LpTokenListResponse>;
 
-	getLPTokenDetailByTokenId: (
-		tokenId: string,
+	getLPTokenDetailBy: (
+		liquidityId: string,
+		address: string,
 	) => Promise<LpTokenDetailInfoResponse>;
 
 	getStakesByAddress: (address: string) => Promise<StakingListResponse>;
 
 	getTotalStakingResultBy: (
+		liquidityIds: Array<string>,
 		period: string,
-		tokenIds: Array<string>,
 	) => Promise<TotalStakingResultResponse>;
 
 	stake: (request: StakeRequest) => Promise<StakeResponse>;
 
 	getTotalUnstakingResultBy: (
+		liquidityIds: Array<string>,
 		period: string,
-		tokenIds: Array<string>,
 	) => Promise<TotalUnstakingResultResponse>;
 
 	unstake: (request: StakeRequest) => Promise<UnstakeResponse>;

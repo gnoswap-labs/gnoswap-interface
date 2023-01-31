@@ -1,1 +1,3 @@
-export interface SwapRateResponse {}
+export interface SwapRateResponse {
+	ratio: number;
+}
