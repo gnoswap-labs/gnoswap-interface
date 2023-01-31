@@ -3,7 +3,7 @@ import { GnoClientApi } from './api';
 import { AxiosAdapter } from 'axios';
 
 export type NetworkMapperType = 'TEST2' | 'TEST3';
-export class GnoClient implements GnoClientApi {
+export class GnoClient {
   private network: GnoClientApi;
 
   private networkConfig: NetworkConfig;
