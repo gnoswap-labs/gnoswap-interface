@@ -5,4 +5,4 @@ export * from "./staking-list-response";
 export * from "./total-staking-result-response";
 export * from "./total-unstaking-result-response";
 export * from "./unstake-response";
-export * from "./unstaking-period-info-response";
+export * from "./staking-period-list-response";
