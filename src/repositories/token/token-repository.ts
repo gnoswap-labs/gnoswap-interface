@@ -1,21 +1,26 @@
 import {
 	TokenDetailListResponse,
 	TokenListResponse,
-	TokenResponse,
+	TokenInfoResponse,
 } from "./response";
 
 export interface TokenRepository {
 	getTokens: (option: {
 		keyword?: string;
 		type?: string;
+		address?: string;
 	}) => Promise<TokenListResponse>;
 
-	getTokensBySymbols: (symbols: Array<string>) => Promise<TokenListResponse>;
+	getRecentSearchTokensByAddress: (
+		address: string,
+	) => Promise<TokenListResponse>;
+
+	getPopularTokensByAddress: (address: string) => Promise<TokenListResponse>;
 
 	getTokenDetails: (option: {
 		keyword?: string;
 		type?: string;
 	}) => Promise<TokenDetailListResponse>;
 
-	getTokenBySymbol: (symbol: string) => Promise<TokenResponse>;
+	getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
 }
