@@ -1,13 +1,17 @@
 {
-  "presets": ["next/babel"],
-  "plugins": [
-    [
-      "babel-plugin-styled-components",
-      {
-        "fileName": true,
-        "displayName": true,
-        "pure": true
-      }
-    ]
-  ]
+	"presets": [
+		"next/babel",
+		["@babel/preset-env", { "targets": { "node": "current" } }],
+		"@babel/preset-typescript"
+	],
+	"plugins": [
+		[
+			"babel-plugin-styled-components",
+			{
+				"fileName": true,
+				"displayName": true,
+				"pure": true
+			}
+		]
+	]
 }

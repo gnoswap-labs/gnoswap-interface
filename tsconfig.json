@@ -20,6 +20,6 @@
 			"styled-components": ["./node_modules/styled-components"]
 		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
 	"exclude": ["node_modules", "libs"]
 }
