@@ -1,3 +1,11 @@
+export {};
+
+declare global {
+	interface Window {
+		adena?: any;
+	}
+}
+
 declare module "*.mdx";
 
 declare module "*.svg" {
@@ -9,10 +17,4 @@ declare module "*.svg" {
 
 	const src: string;
 	export default src;
-}
-
-declare global {
-	interface Window {
-		adena?: any;
-	}
 }
