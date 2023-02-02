@@ -1,3 +1,5 @@
+import { AmountType } from "@/common/types/data-prop-types";
+
 export interface AccountInfoResposne {
 	status: string;
 	address: string;
