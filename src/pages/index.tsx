@@ -5,14 +5,14 @@ import styled from "styled-components";
 export default function Home() {
 	const [text, setText] = useState("");
 
-	const contexts = useGnoswapContext();
+	const { accountService } = useGnoswapContext();
 
 	useEffect(() => {
 		init();
-	}, [contexts]);
+	}, []);
 
 	const init = async () => {
-		const result = (await contexts?.accountService.getAccountInfo()) ?? "";
+		const result = (await accountService.getAccountInfo()) ?? "";
 		setText(`${JSON.stringify(result)}`);
 	};
 
