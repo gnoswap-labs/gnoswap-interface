@@ -1,7 +1,8 @@
 export type FeeOptions = "0.01%" | "0.05%" | "0.3%" | "1%";
-export type StakedOptions = "Staked" | "Unstaking" | "Unstaked";
-export type LiquidityRangeOptions = "in" | "out";
+export type StakedOptions = "NONE" | "STAKED" | "UNSTAKING" | "UNSTAKED";
+export type LiquidityProvideOptions = "NONE" | "PROVIDED";
 export type IncentivizedOptions =
-	| "Incentivized"
-	| "Non-incentivized"
-	| "External Incentivized";
+	| "INCENTIVIZED"
+	| "NON-INCENTIVIZED"
+	| "EXTERNAL_INCENTIVIZED";
+export type StatusOptions = "SUCCESS" | "PENDING" | "FAILED";

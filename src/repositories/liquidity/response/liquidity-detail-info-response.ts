@@ -1,11 +1,13 @@
+import { FeeOptions, IncentivizedOptions } from "@/common/values/data-constant";
+
 export interface LiquidityDetailInfoResponse {
 	token_pair_logo: Array<string>;
 
 	token_pair_name: Array<string>;
 
-	fee: "0.01%" | "0.05%" | "0.3%" | "1%";
+	fee: FeeOptions;
 
-	label: "Incentivized" | "Non-incentivized" | "External Incentivized";
+	label: IncentivizedOptions;
 
 	liquidity: SummaryLiquidity;
 
