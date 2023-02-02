@@ -1,3 +1,5 @@
+import { FeeOptions, IncentivizedOptions } from "@/common/values/data-constant";
+
 export interface LiquidityDetailInfoResponse {
 	pool_id: string;
 	liquidity_id: string;
