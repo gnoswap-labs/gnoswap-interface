@@ -5,6 +5,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { GlobalLayout } from "@/components/core/layout";
 import { ErrorBoundary } from "@/components/core/error-boundary";
 import { GlobalStyle } from "@/common/styles";
+import { GnoswapProvider } from "@/common/providers";
 
 export default function App({ Component, pageProps }: AppProps) {
 	const [queryClient] = useState(
@@ -23,14 +24,16 @@ export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Hydrate state={pageProps.dehydratedState}>
-				<RecoilRoot>
-					<GlobalStyle />
-					<ErrorBoundary fallback={<div>ERROR</div>}>
-						<GlobalLayout>
-							<Component {...pageProps} />
-						</GlobalLayout>
-					</ErrorBoundary>
-				</RecoilRoot>
+				<GnoswapProvider>
+					<RecoilRoot>
+						<GlobalStyle />
+						<ErrorBoundary fallback={<div>ERROR</div>}>
+							<GlobalLayout>
+								<Component {...pageProps} />
+							</GlobalLayout>
+						</ErrorBoundary>
+					</RecoilRoot>
+				</GnoswapProvider>
 			</Hydrate>
 		</QueryClientProvider>
 	);
