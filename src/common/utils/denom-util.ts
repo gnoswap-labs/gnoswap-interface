@@ -59,6 +59,7 @@ const isDefaultDenom = (amount: Amount, denomConfig: DenomConfig) => {
 const convertTextToAmount = (text: string) => {
 	const balance = text
 		.trim()
+		// eslint-disable-next-line quotes
 		.replace('"', "")
 		.match(/[a-zA-Z]+|[0-9]+(?:\.[0-9]+|)/g);
 
