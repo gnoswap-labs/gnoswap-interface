@@ -1,3 +1,4 @@
+import { AccountInfoMapper } from "@/models/account/account-info-mapper";
 import { AccountRepository } from "@/repositories/account";
 
 export class AccountService {
@@ -7,7 +8,8 @@ export class AccountService {
 		this.accountRepository = accountRepository;
 	}
 
-	public getAccountInfo = () => {
-		return this.accountRepository.getAccount();
+	public getAccountInfo = async () => {
+		const accountInfo = await this.accountRepository.getAccount();
+		return AccountInfoMapper.fromResopnse(accountInfo);
 	};
 }

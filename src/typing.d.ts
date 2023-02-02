@@ -1,3 +1,11 @@
+export {};
+
+declare global {
+	interface Window {
+		adena?: any;
+	}
+}
+
 declare module "*.mdx";
 
 declare module "*.svg" {

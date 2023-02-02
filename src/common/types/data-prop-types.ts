@@ -1,4 +1,6 @@
+import BigNumber from "bignumber.js";
+
 export interface AmountType {
-	value: number;
+	value: BigNumber;
 	denom: string;
 }
