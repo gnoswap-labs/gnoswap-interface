@@ -9,11 +9,10 @@ export default function Home() {
 
 	useEffect(() => {
 		init();
-		console.log(contexts);
 	}, [contexts]);
 
 	const init = async () => {
-		const result = (await contexts?.accountRepository.getAccount()) ?? "";
+		const result = (await contexts?.accountService.getAccountInfo()) ?? "";
 		setText(`${JSON.stringify(result)}`);
 	};
 

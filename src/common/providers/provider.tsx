@@ -4,6 +4,7 @@ import { PoolRepositoryMock } from "@/repositories/pool";
 import { StakingRepositoryMock } from "@/repositories/staking";
 import { SwapRepositoryMock } from "@/repositories/swap";
 import { TokenRepositoryMock } from "@/repositories/token";
+import { AccountService } from "@/service/account-service";
 import React from "react";
 import { GnoswapContext } from "./context";
 
@@ -19,9 +20,12 @@ export const GnoswapProvider = ({ children }: Props) => {
 	const swapRepository = new SwapRepositoryMock();
 	const tokenRepository = new TokenRepositoryMock();
 
+	const accountService = new AccountService(accountRepository);
+
 	return (
 		<GnoswapContext.Provider
 			value={{
+				accountService,
 				accountRepository,
 				liquidityRepository,
 				poolRepository,
