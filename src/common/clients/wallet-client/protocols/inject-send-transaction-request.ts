@@ -1,6 +1,6 @@
 import { InjectResponse } from "./inject-response";
 
-interface Transaction {
+export interface InjectSendTransactionRequestParam {
 	messages: Array<TransactionMessage>;
 	gasFee: number;
 	gasWanted: number;
@@ -13,5 +13,7 @@ interface TransactionMessage {
 }
 
 export interface InjectSendTransactionRequest {
-	sendTransaction: (transaction: Transaction) => Promise<InjectResponse<any>>;
+	sendTransaction: (
+		transaction: InjectSendTransactionRequestParam,
+	) => Promise<InjectResponse<any>>;
 }

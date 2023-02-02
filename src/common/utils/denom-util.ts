@@ -40,6 +40,12 @@ export const toDefaultDenom = (amount: Amount, denomConfig: DenomConfig) => {
 	};
 };
 
+export const textToBalances = (balancesText: string) => {
+	const balanceTexts = balancesText.split(",");
+	const balances = balanceTexts.map(convertTextToAmount);
+	return balances;
+};
+
 const isMinimalDenom = (amount: Amount, denomConfig: DenomConfig) => {
 	const denom = amount.denom;
 	return denom.toLowerCase() === denomConfig.minimalDenom.toLowerCase();
@@ -48,4 +54,15 @@ const isMinimalDenom = (amount: Amount, denomConfig: DenomConfig) => {
 const isDefaultDenom = (amount: Amount, denomConfig: DenomConfig) => {
 	const denom = amount.denom;
 	return denom.toUpperCase() === denomConfig.defaultDenom.toUpperCase();
+};
+
+const convertTextToAmount = (text: string) => {
+	const balance = text
+		.trim()
+		.replace('"', "")
+		.match(/[a-zA-Z]+|[0-9]+(?:\.[0-9]+|)/g);
+
+	const value = balance && balance?.length > 0 ? balance[0] : 0.0;
+	const denom = balance && balance?.length > 1 ? balance[1] : "";
+	return { value: BigNumber(value), denom };
 };
