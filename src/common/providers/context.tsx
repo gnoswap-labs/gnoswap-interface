@@ -4,7 +4,7 @@ import { PoolRepository } from "@/repositories/pool";
 import { StakingRepository } from "@/repositories/staking";
 import { SwapRepository } from "@/repositories/swap";
 import { TokenRepository } from "@/repositories/token";
-import { AccountService } from "@/service/account-service";
+import { AccountService } from "@/service/account/account-info-service";
 import { createContext } from "react";
 
 export interface GnoswapContextProps {

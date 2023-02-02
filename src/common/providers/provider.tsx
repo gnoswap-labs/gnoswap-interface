@@ -4,7 +4,7 @@ import { PoolRepositoryMock } from "@/repositories/pool";
 import { StakingRepositoryMock } from "@/repositories/staking";
 import { SwapRepositoryMock } from "@/repositories/swap";
 import { TokenRepositoryMock } from "@/repositories/token";
-import { AccountService } from "@/service/account-service";
+import { AccountService } from "@/service/account/account-info-service";
 import React from "react";
 import { GnoswapContext } from "./context";
 
