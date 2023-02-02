@@ -14,13 +14,12 @@ export class SwapRepositoryMock implements SwapRepository {
 		token1Symbol: string,
 	): Promise<SwapRateResponse> => {
 		return {
-			ratio: generateNumber(0, 100),
+			rate: generateNumber(0, 100),
 		};
 	};
 
 	public getSwapFee = async (): Promise<SwapFeeReponse> => {
 		return {
-			usd_value: generateNumber(0, 10000),
 			fee: generateNumber(0, 1),
 		};
 	};

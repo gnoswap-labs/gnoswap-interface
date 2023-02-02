@@ -1,5 +1,27 @@
 export interface LiquidityRewardResponse {
-	total_balance: number;
-	daily_earnings: number;
-	claimable_rewards: number;
+	liquidity_id: string;
+	liquidity_type: "NONE" | "PROVIDED";
+	is_claim: boolean;
+	total_balance: TokenPair;
+	daily_earning: TokenPair;
+	reward: {
+		staking: TokenPair;
+		swap_fee: TokenPair;
+	};
+}
+
+interface TokenPair {
+	total: number;
+	token0: TokenBalance;
+	token1: TokenBalance;
+}
+
+interface TokenBalance {
+	token_id: string;
+	name: string;
+	symbol: string;
+	amount: {
+		value: number;
+		denom: string;
+	};
 }

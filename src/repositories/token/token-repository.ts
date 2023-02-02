@@ -1,10 +1,27 @@
 import {
-	TokenDetailListResponse,
 	TokenListResponse,
 	TokenInfoResponse,
+	SummaryPopularTokenListResponse,
+	SummaryHighestRewardListResponse,
+	SummaryRecentlyAddedListResponse,
+	TokenSearchListResponse,
 } from "./response";
 
+interface SearchOption {
+	keyword: string;
+	type: string;
+}
+
+interface PageOption {
+	page?: number;
+	limit?: number;
+}
+
 export interface TokenRepository {
+	searchTokens: (
+		searchOption: SearchOption,
+	) => Promise<TokenSearchListResponse>;
+
 	getTokens: (option: {
 		keyword?: string;
 		type?: string;
@@ -15,12 +32,11 @@ export interface TokenRepository {
 		address: string,
 	) => Promise<TokenListResponse>;
 
-	getPopularTokensByAddress: (address: string) => Promise<TokenListResponse>;
+	getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
 
-	getTokenDetails: (option: {
-		keyword?: string;
-		type?: string;
-	}) => Promise<TokenDetailListResponse>;
+	getSummaryHighestRewardTokens: () => Promise<SummaryHighestRewardListResponse>;
+
+	getSummaryRecentlyAddedTokens: () => Promise<SummaryRecentlyAddedListResponse>;
 
 	getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
 }

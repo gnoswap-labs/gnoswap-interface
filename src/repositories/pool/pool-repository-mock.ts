@@ -1,28 +1,28 @@
-import { generateNumber, generateTokenMetas } from "@/common/utils/test-util";
 import {
-	PoolDetailListResponse,
+	generateId,
+	generateIndex,
+	generateNumber,
+	generateNumberPlus,
+	generateToken0,
+	generateToken1,
+	generateTokenMetas,
+} from "@/common/utils/test-util";
+import {
+	PoolListResponse,
 	PoolInfoResposne,
-	RewardPoolListResponse,
 	PoolRepository,
 	PoolSummaryAprResposne,
 	PoolSummaryLiquidityResposne,
 	PoolSummaryVolumeResposne,
+	PoolChartResopnse,
 } from ".";
 
 export class PoolRepositoryMock implements PoolRepository {
-	getRewardPools = async (): Promise<RewardPoolListResponse> => {
+	getPools = async (option?: {} | undefined): Promise<PoolListResponse> => {
 		return PoolRepositoryMock.generatePools();
 	};
 
-	getPools = async (
-		option?: {} | undefined,
-	): Promise<PoolDetailListResponse> => {
-		return PoolRepositoryMock.generatePools();
-	};
-
-	getPoolsByAddress = async (
-		address: string,
-	): Promise<PoolDetailListResponse> => {
+	getPoolsByAddress = async (address: string): Promise<PoolListResponse> => {
 		return PoolRepositoryMock.generatePools();
 	};
 
@@ -30,26 +30,36 @@ export class PoolRepositoryMock implements PoolRepository {
 		return PoolRepositoryMock.generatePoolInfo();
 	};
 
+	getPoolChartTicks = async (poolId: string): Promise<PoolChartResopnse> => {
+		return {
+			pool_id: generateId(),
+			ticks: [],
+		};
+	};
+
 	getPoolSummaryLiquidityById =
 		async (): Promise<PoolSummaryLiquidityResposne> => {
+			const token1Rate = generateNumber(0, 100);
 			return {
 				changed_of_24h: generateNumber(1000000000, 90000000000),
-				fiat_value: generateNumber(1000000000, 90000000000),
+				liquidity: PoolRepositoryMock.generateTokenPair(),
+				pooled_rate_token0: 100 - token1Rate,
+				pooled_rate_token1: token1Rate,
 			};
 		};
 
 	getPoolSummaryVolumeById = async (): Promise<PoolSummaryVolumeResposne> => {
 		return {
 			changed_of_24h: generateNumber(1000000000, 90000000000),
-			fiat_value: generateNumber(1000000000, 90000000000),
+			volume: generateNumber(1000000000, 90000000000),
 		};
 	};
 
 	getPoolSummaryAprById = async (): Promise<PoolSummaryAprResposne> => {
 		return {
-			fiat_value: generateNumber(1000, 90000000),
+			apr: generateNumber(1000, 90000000),
 			fees: generateNumber(1000, 90000000),
-			rewards: generateNumber(1000, 90000000),
+			reward_rate: generateNumber(0, 10),
 		};
 	};
 
@@ -59,34 +69,40 @@ export class PoolRepositoryMock implements PoolRepository {
 		);
 
 		return {
+			total: pools.length,
+			hits: pools.length,
 			pools,
 		};
 	};
 
 	private static generatePoolInfo = () => {
-		const { images, names } = generateTokenMetas();
-
 		return {
 			pool_id: `${generateNumber(0, 100000)}`,
-			token_pair_logo: images,
-			token_pair_name: names,
-			fee: "0.01%" as "0.01%" | "0.05%" | "0.3%" | "1%",
-			liquidity: generateNumber(100, 2000),
+			incentive_type: [
+				"INCENTIVZED",
+				"NON_INCENTIVZED",
+				"EXTERNAL_INCENTIVZED",
+			][generateIndex(3)] as
+				| "INCENTIVZED"
+				| "NON_INCENTIVZED"
+				| "EXTERNAL_INCENTIVZED",
+			fee_rate: 0.01,
+			liquidity: PoolRepositoryMock.generateTokenPair(),
 			apr: generateNumber(0, 100),
-			trading_volumn_24h: generateNumber(1000000000, 90000000000),
+			volumn_24h: generateNumber(1000000000, 90000000000),
 			fees_24h: generateNumber(100, 900000000),
-			status: "Staked" as "Staked" | "Unstaking" | "Unstaked",
-			value: generateNumber(100, 2000),
-			label: "Incentivized" as
-				| "Incentivized"
-				| "Non-incentivized"
-				| "External Incentivized",
-			details: {
-				current_price: generateNumber(100, 2000),
-				liquidity_range: "in" as "in" | "out",
-				min_price: generateNumber(100, 2000),
-				max_price: generateNumber(0, 100),
-			},
+			rewards: PoolRepositoryMock.generateTokenPair(),
+		};
+	};
+
+	private static generateTokenPair = () => {
+		const token0Amount = generateNumberPlus();
+		const token1Amount = generateNumberPlus();
+		const total = token0Amount + token1Amount;
+		return {
+			total,
+			token0: generateToken0(),
+			token1: generateToken1(),
 		};
 	};
 }

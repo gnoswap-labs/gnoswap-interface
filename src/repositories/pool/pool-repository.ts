@@ -1,20 +1,20 @@
 import {
-	PoolDetailListResponse,
+	PoolListResponse,
 	PoolInfoResposne,
-	RewardPoolListResponse,
 	PoolSummaryAprResposne,
 	PoolSummaryLiquidityResposne,
 	PoolSummaryVolumeResposne,
+	PoolChartResopnse,
 } from "./response";
 
 export interface PoolRepository {
-	getRewardPools: () => Promise<RewardPoolListResponse>;
+	getPools: (option?: {}) => Promise<PoolListResponse>;
 
-	getPools: (option?: {}) => Promise<PoolDetailListResponse>;
-
-	getPoolsByAddress: (address: string) => Promise<PoolDetailListResponse>;
+	getPoolsByAddress: (address: string) => Promise<PoolListResponse>;
 
 	getPoolById: (poolId: string) => Promise<PoolInfoResposne>;
+
+	getPoolChartTicks: (poolId: string) => Promise<PoolChartResopnse>;
 
 	getPoolSummaryLiquidityById: (
 		poolId: string,

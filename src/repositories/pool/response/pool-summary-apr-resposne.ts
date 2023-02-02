@@ -1,7 +1,5 @@
 export interface PoolSummaryAprResposne {
-	fiat_value: number; // fees + rewards = fiat_value
-
+	apr: number;
 	fees: number;
-
-	rewards: number;
+	reward_rate: number;
 }

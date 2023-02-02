@@ -1,9 +1,18 @@
-import { generateNumberPlus, generateTxHash } from "@/common/utils/test-util";
+import {
+	generateBoolean,
+	generateId,
+	generateIndex,
+	generateNumberPlus,
+	generateToken0,
+	generateToken1,
+	generateTokenMetas,
+	generateTxHash,
+} from "@/common/utils/test-util";
 import {
 	AddLiquidityResponse,
 	ClaimRewardResponse,
 	LiquidityDetailInfoResponse,
-	LiquidityListResponse,
+	LiquidityDetailListResponse,
 	LiquidityRepository,
 	LiquidityRewardResponse,
 	RemoveLiquidityResponse,
@@ -18,30 +27,12 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	public getLiquidityDetailById = async (
 		liquidityId: string,
 	): Promise<LiquidityDetailInfoResponse> => {
-		return {
-			token_pair_logo: [""],
-			token_pair_name: [""],
-			fee: "0.01%",
-			label: "Incentivized",
-			liquidity: {
-				changed_of_24h: 1,
-				usd_value: 1,
-			},
-			volume: {
-				changed_of_24h: 1,
-				usd_value: 1,
-			},
-			apr: {
-				fees: 1,
-				fiat_value: 1,
-				rewards: 1,
-			},
-		};
+		return LiquidityRepositoryMock.generateLiquidity();
 	};
 
 	public getLiquiditiesByAddress = async (
 		address: string,
-	): Promise<LiquidityListResponse> => {
+	): Promise<LiquidityDetailListResponse> => {
 		return {
 			liquidities: [],
 		};
@@ -64,10 +55,10 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	};
 
 	public getLiquidityRewardBy = async (
-		poolId: string,
 		address: string,
+		poolId: string,
 	): Promise<LiquidityRewardResponse> => {
-		return LiquidityRepositoryMock.generateReward();
+		return LiquidityRepositoryMock.generateLiquidity();
 	};
 
 	public claimReward = async (
@@ -78,11 +69,41 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		};
 	};
 
-	private static generateReward = (): LiquidityRewardResponse => {
+	private static generateLiquidity = () => {
+		const liquidityTypes = ["NONE", "PROVIDED"];
+		const stakeTypes = ["NONE", "STAKED", "UNSTAKING"];
 		return {
-			claimable_rewards: generateNumberPlus(),
-			daily_earnings: generateNumberPlus(),
-			total_balance: generateNumberPlus(),
+			pool_id: generateId(),
+			liquidity_id: generateId(),
+			liquidity_type: liquidityTypes[generateIndex(2)] as "NONE" | "PROVIDED",
+			stake_type: stakeTypes[generateIndex(3)] as
+				| "NONE"
+				| "STAKED"
+				| "UNSTAKING",
+			is_claim: generateBoolean(),
+			in_range: generateBoolean(),
+			max_rate: 2.4,
+			min_rate: 0.14,
+			fee_rate: 0.5,
+			liquidity: LiquidityRepositoryMock.generateTokenPair(),
+			apr: LiquidityRepositoryMock.generateTokenPair(),
+			total_balance: LiquidityRepositoryMock.generateTokenPair(),
+			daily_earning: LiquidityRepositoryMock.generateTokenPair(),
+			reward: {
+				staking: LiquidityRepositoryMock.generateTokenPair(),
+				swap_fee: LiquidityRepositoryMock.generateTokenPair(),
+			},
+		};
+	};
+
+	private static generateTokenPair = () => {
+		const token0Amount = generateNumberPlus();
+		const token1Amount = generateNumberPlus();
+		const total = token0Amount + token1Amount;
+		return {
+			total,
+			token0: generateToken0(),
+			token1: generateToken1(),
 		};
 	};
 }

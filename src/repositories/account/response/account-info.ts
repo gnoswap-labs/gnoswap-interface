@@ -1,8 +1,12 @@
 export interface AccountInfoResposne {
+	status: string;
 	address: string;
-	username: string;
-	amount: {
-		value: number;
-		denom: string;
+	coins: string;
+	publicKey: {
+		"@type": string;
+		value: string;
 	};
+	accountNumber: number;
+	sequence: number;
+	chainId: string;
 }

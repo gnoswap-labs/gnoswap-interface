@@ -1,11 +1,7 @@
 import { StakeRequest } from "./request";
 import {
-	LpTokenDetailInfoResponse,
-	LpTokenListResponse,
 	StakeResponse,
 	StakingListResponse,
-	TotalStakingResultResponse,
-	TotalUnstakingResultResponse,
 	UnstakeResponse,
 	StakingPeriodListResponse,
 } from "./response";
@@ -13,26 +9,14 @@ import {
 export interface StakingRepository {
 	getStakingPeriods: () => Promise<StakingPeriodListResponse>;
 
-	getLPTokensByAddress: (address: string) => Promise<LpTokenListResponse>;
-
-	getLPTokenDetailBy: (
-		liquidityId: string,
-		address: string,
-	) => Promise<LpTokenDetailInfoResponse>;
-
 	getStakesByAddress: (address: string) => Promise<StakingListResponse>;
 
-	getTotalStakingResultBy: (
-		liquidityIds: Array<string>,
-		period: string,
-	) => Promise<TotalStakingResultResponse>;
+	getStakesByAddressAndPoolId: (
+		address: string,
+		poolId: string,
+	) => Promise<StakingListResponse>;
 
 	stake: (request: StakeRequest) => Promise<StakeResponse>;
-
-	getTotalUnstakingResultBy: (
-		liquidityIds: Array<string>,
-		period: string,
-	) => Promise<TotalUnstakingResultResponse>;
 
 	unstake: (request: StakeRequest) => Promise<UnstakeResponse>;
 }

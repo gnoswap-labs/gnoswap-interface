@@ -1,5 +1,4 @@
 export interface PoolSummaryVolumeResposne {
-	fiat_value: number;
-
+	volume: number;
 	changed_of_24h: number;
 }

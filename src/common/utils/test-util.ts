@@ -4,17 +4,45 @@ export const generateAddress = () => {
 	return `g${generateRandomString(39)}`;
 };
 
+export const generateId = () => {
+	return `${Math.round(generateNumberPlus())}`;
+};
+
+export const generateIndex = (length: number) => {
+	return Math.round(generateNumberPlus()) % length;
+};
+
+export const generateBoolean = () => {
+	const index = generateIndex(2);
+	const results = [true, false];
+	return results[index];
+};
+
+export const rand = () => {
+	return `${Math.round(generateNumberPlus())}`;
+};
+
 export const generateToken0 = () => {
 	return {
-		denom: "GNOT",
-		value: generateNumberPlus(),
+		token_id: `${generateAddress}`,
+		name: "GNOT",
+		symbol: "GNOLAND",
+		amount: {
+			value: generateNumberPlus(),
+			denom: "ugnot",
+		},
 	};
 };
 
 export const generateToken1 = () => {
 	return {
-		denom: "GNOS",
-		value: generateNumberPlus(),
+		token_id: `${generateAddress}`,
+		name: "GNOS",
+		symbol: "GNOSWAP",
+		amount: {
+			value: generateNumberPlus(),
+			denom: "ugnos",
+		},
 	};
 };
 

@@ -1,17 +1,30 @@
-import { generateNumber, generateTokenMetas } from "@/common/utils/test-util";
 import {
-	TokenDetailListResponse,
+	generateNumber,
+	generateToken0,
+	generateTokenMetas,
+} from "@/common/utils/test-util";
+import {
 	TokenListResponse,
 	TokenRepository,
 	TokenInfoResponse,
+	SummaryHighestRewardListResponse,
+	SummaryRecentlyAddedListResponse,
+	SummaryPopularTokenListResponse,
+	TokenSearchListResponse,
 } from ".";
 
 export class TokenRepositoryMock implements TokenRepository {
-	public getTokens = async (option: {
-		keyword?: string | undefined;
-		type?: string | undefined;
-		address?: string | undefined;
-	}): Promise<TokenListResponse> => {
+	public searchTokens = async (
+		searchOption: any,
+	): Promise<TokenSearchListResponse> => {
+		return {
+			hits: 0,
+			total: 0,
+			tokens: [],
+		};
+	};
+
+	public getTokens = async (): Promise<TokenListResponse> => {
 		return TokenRepositoryMock.generateTokens();
 	};
 
@@ -21,21 +34,43 @@ export class TokenRepositoryMock implements TokenRepository {
 		return TokenRepositoryMock.generateTokens();
 	};
 
-	public getPopularTokensByAddress = async (
-		address: string,
-	): Promise<TokenListResponse> => {
-		return TokenRepositoryMock.generateTokens();
-	};
+	public getSummaryPopularTokens =
+		async (): Promise<SummaryPopularTokenListResponse> => {
+			return {
+				hits: 0,
+				total: 0,
+				tokens: [],
+			};
+		};
 
-	public getTokenDetails = async (option: {
-		keyword?: string | undefined;
-		type?: string | undefined;
-	}): Promise<TokenDetailListResponse> => {
-		return TokenRepositoryMock.generateTokens();
-	};
+	public getSummaryHighestRewardTokens =
+		async (): Promise<SummaryHighestRewardListResponse> => {
+			return {
+				hits: 0,
+				total: 0,
+				pairs: [],
+			};
+		};
+
+	public getSummaryRecentlyAddedTokens =
+		async (): Promise<SummaryRecentlyAddedListResponse> => {
+			return {
+				hits: 0,
+				total: 0,
+				pairs: [],
+			};
+		};
 
 	public getTokenById = async (tokenId: string): Promise<TokenInfoResponse> => {
-		return TokenRepositoryMock.generateTokenSimple();
+		const { names } = generateTokenMetas();
+		return {
+			name: names[0],
+			symbol: names[0],
+			balance: {
+				amount: generateNumber(100, 500000),
+				denom: names[0],
+			},
+		};
 	};
 
 	private static generateTokens = () => {
@@ -43,18 +78,20 @@ export class TokenRepositoryMock implements TokenRepository {
 			TokenRepositoryMock.generateToken,
 		);
 		return {
+			hits: tokens.length,
+			total: tokens.length,
 			tokens,
 		};
 	};
 
 	private static generateToken = () => {
-		const { images, names } = generateTokenMetas();
+		const { names } = generateTokenMetas();
 		const graph = new Array(20).map(_ => generateNumber(0, 100));
 		return {
-			token_name: names[0],
-			token_symbol: names[0],
-			token_type: "native",
-			current_price: generateNumber(100, 500000),
+			name: names[0],
+			symbol: names[0],
+			type: "native",
+			price: generateNumber(100, 500000),
 			balance: generateNumber(100, 500000),
 			usd_value: generateNumber(100, 500000),
 			price_of_1h: generateNumber(100, 500000),
@@ -63,26 +100,26 @@ export class TokenRepositoryMock implements TokenRepository {
 			m_cap: generateNumber(100, 500000),
 			tvl: generateNumber(100, 500000),
 			volume: generateNumber(100, 500000),
-			mostLiquidPool: {
-				logos: images,
-				denoms: names,
-				rate: "0.3",
-			},
+			most_liquidity_pool: TokenRepositoryMock.generateTokenPair(),
 			graph,
 		};
 	};
 
-	private static generateTokenSimple = () => {
-		const { images, names } = generateTokenMetas();
-		const graph = new Array(20).map(_ => generateNumber(0, 100));
+	private static generateTokenPair = () => {
+		const { names } = generateTokenMetas();
 		return {
-			logo: images[0],
-			name: names[0],
-			symbol: names[0],
-			amount: {
-				value: generateNumber(1000, 500000),
-				denom: names[0],
+			token0: {
+				token_id: `${generateNumber(100, 500000)}`,
+				name: names[0],
+				symbol: names[0],
 			},
+			token1: {
+				token_id: `${generateNumber(100, 500000)}`,
+				name: names[1],
+				symbol: names[1],
+			},
+			fee_tier: 0.3,
+			apr: generateNumber(0, 100),
 		};
 	};
 }

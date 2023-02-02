@@ -7,7 +7,7 @@ import {
 	AddLiquidityResponse,
 	ClaimRewardResponse,
 	LiquidityDetailInfoResponse,
-	LiquidityListResponse,
+	LiquidityDetailListResponse,
 	LiquidityRewardResponse,
 	RemoveLiquidityResponse,
 } from "./response";
@@ -17,7 +17,9 @@ export interface LiquidityRepository {
 		liquidityId: string,
 	) => Promise<LiquidityDetailInfoResponse>;
 
-	getLiquiditiesByAddress: (address: string) => Promise<LiquidityListResponse>;
+	getLiquiditiesByAddress: (
+		address: string,
+	) => Promise<LiquidityDetailListResponse>;
 
 	addLiquidity: (request: AddLiquidityRequest) => Promise<AddLiquidityResponse>;
 
@@ -26,8 +28,8 @@ export interface LiquidityRepository {
 	) => Promise<RemoveLiquidityResponse>;
 
 	getLiquidityRewardBy: (
-		poolId: string,
 		address: string,
+		poolId: string,
 	) => Promise<LiquidityRewardResponse>;
 
 	claimReward: (request: ClaimRewardReqeust) => Promise<ClaimRewardResponse>;

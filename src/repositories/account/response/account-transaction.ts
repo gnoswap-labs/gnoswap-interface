@@ -1,11 +1,13 @@
 export interface AccountTransactionResponse {
-	transactions: Array<AccountTransaction>;
+	total: number;
+	hits: number;
+	txs: Array<AccountTransaction>;
 }
 
 interface AccountTransaction {
-	tx_logo: string;
 	tx_hash: string;
-	desc: string;
-	status: "success" | "pending" | "failed";
+	logo: string;
+	description: string;
+	status: "SUCCESS" | "FAILED" | "PENDING";
 	created_at: string;
 }

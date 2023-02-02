@@ -3,22 +3,31 @@ export interface TokenListResponse {
 }
 
 interface TokenInfo {
-	token_name: string;
-	token_symbol: string;
-	token_type: string;
-	current_price: number;
+	name: string;
+	symbol: string;
+	type: string;
+	price: number;
 	price_of_1h: number;
 	price_of_24h: number;
 	price_of_7d: number;
 	m_cap: number;
 	tvl: number;
 	volume: number;
-	mostLiquidPool: LiquiditySimpleInfo;
+	most_liquidity_pool: MostLiquidityPoolInfo;
 	graph: Array<number>;
 }
 
-interface LiquiditySimpleInfo {
-	logos: Array<string>;
-	denoms: Array<string>;
-	rate: string;
+interface MostLiquidityPoolInfo {
+	token0: {
+		token_id: string;
+		name: string;
+		symbol: string;
+	};
+	token1: {
+		token_id: string;
+		name: string;
+		symbol: string;
+	};
+	fee_tier: number;
+	apr: number;
 }

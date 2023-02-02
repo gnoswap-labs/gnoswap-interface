@@ -1,16 +1,13 @@
 export interface SwapRequest {
 	token0: {
-		symbol: string;
-		logo: string;
+		tokenId: string;
 		amount: number;
 	};
 	token1: {
-		symbol: string;
-		logo: string;
+		tokenId: string;
 		amount: number;
 	};
+	type: "EXACT_IN" | "EXACT_OUT";
 	slippage: number;
 	gasFee: number;
-	priceImpact?: number;
-	minReceived?: number;
 }

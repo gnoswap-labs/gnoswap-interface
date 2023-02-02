@@ -2,7 +2,7 @@ import {
 	generateAddress,
 	generateNumber,
 	generateTime,
-	generateToken0,
+	generateNumberPlus,
 } from "@/common/utils/test-util";
 import { faker } from "@faker-js/faker";
 import {
@@ -24,31 +24,40 @@ export class AccountRepositoryMock implements AccountRepository {
 
 	private static generateAccount = () => {
 		return {
+			status: "ACTIVE",
 			address: generateAddress(),
-			username: faker.name.firstName(),
-			amount: generateToken0(),
+			coins: `${Math.round(generateNumberPlus())}ugnot`,
+			publicKey: {
+				"@type": generateAddress(),
+				value: generateAddress(),
+			},
+			accountNumber: Math.round(generateNumberPlus()),
+			sequence: Math.round(generateNumberPlus()),
+			chainId: "test3",
 		};
 	};
 
 	private static generateTransactions = () => {
 		const statusIndex = Math.round(generateNumber(7, 15));
-		let transactions = [];
+		let txs = [];
 		for (let i = 0; i < statusIndex; i++) {
-			transactions.push(AccountRepositoryMock.generateTransaction());
+			txs.push(AccountRepositoryMock.generateTransaction());
 		}
 		return {
-			transactions,
+			total: txs.length,
+			hits: txs.length,
+			txs,
 		};
 	};
 
 	private static generateTransaction = () => {
 		const statusIndex = Math.round(generateNumber(1, 3));
-		const statuses = ["success", "pending", "failed"];
+		const statuses = ["SUCCESS", "PENDING", "FAILED"];
 		return {
-			tx_logo: "https://adena.app/assets/images/logo.svg",
 			tx_hash: `${generateNumber(1, 1000)}_0`,
-			desc: faker.word.interjection(),
-			status: statuses[statusIndex % 3] as "success" | "pending" | "failed",
+			logo: "https://adena.app/assets/images/logo.svg",
+			description: faker.word.interjection(),
+			status: statuses[statusIndex % 3] as "SUCCESS" | "PENDING" | "FAILED",
 			created_at: generateTime().toUTCString(),
 		};
 	};

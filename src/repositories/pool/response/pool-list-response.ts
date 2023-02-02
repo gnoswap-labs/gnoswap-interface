@@ -1,4 +1,10 @@
-export interface PoolInfoResposne {
+export interface PoolListResponse {
+	hits: number;
+	total: number;
+	pools: Array<PoolInfo>;
+}
+
+interface PoolInfo {
 	pool_id: string;
 	incentive_type: "INCENTIVZED" | "NON_INCENTIVZED" | "EXTERNAL_INCENTIVZED";
 	fee_rate: number;

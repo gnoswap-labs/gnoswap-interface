@@ -1,4 +1,8 @@
-export interface LiquidityDetailInfoResponse {
+export interface LiquidityDetailListResponse {
+	liquidities: Array<LiquidityInfo>;
+}
+
+interface LiquidityInfo {
 	pool_id: string;
 	liquidity_id: string;
 	liquidity_type: "NONE" | "PROVIDED";
@@ -8,8 +12,8 @@ export interface LiquidityDetailInfoResponse {
 	min_rate: number;
 	fee_rate: number;
 	liquidity: TokenPair;
-	reward: {
-		swap_fee: TokenPair;
+	rewards: {
+		swap: TokenPair;
 		staking: TokenPair;
 	};
 	apr: TokenPair;

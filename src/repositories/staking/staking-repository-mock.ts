@@ -5,13 +5,9 @@ import {
 	generateTxHash,
 } from "@/common/utils/test-util";
 import {
-	LpTokenDetailInfoResponse,
-	LpTokenListResponse,
 	StakeResponse,
 	StakingListResponse,
 	StakingRepository,
-	TotalStakingResultResponse,
-	TotalUnstakingResultResponse,
 	UnstakeResponse,
 	StakingPeriodListResponse,
 } from ".";
@@ -40,43 +36,23 @@ export class StakingRepositoryMock implements StakingRepository {
 		};
 	};
 
-	public getLPTokensByAddress = async (
-		address: string,
-	): Promise<LpTokenListResponse> => {
-		return StakingRepositoryMock.generateLiquidities();
-	};
-
-	public getLPTokenDetailBy = async (
-		liquidityId: string,
-		address: string,
-	): Promise<LpTokenDetailInfoResponse> => {
-		return StakingRepositoryMock.generateLiquidity();
-	};
-
 	public getStakesByAddress = async (
 		address: string,
 	): Promise<StakingListResponse> => {
 		return StakingRepositoryMock.generateStakes();
 	};
 
-	public getTotalStakingResultBy = async (
-		liquidityIds: string[],
-		period: string,
-	): Promise<TotalStakingResultResponse> => {
-		return StakingRepositoryMock.generateStakeResult();
+	public getStakesByAddressAndPoolId = async (
+		address: string,
+		poolId: string,
+	): Promise<StakingListResponse> => {
+		return StakingRepositoryMock.generateStakes();
 	};
 
 	public stake = async (request: StakeRequest): Promise<StakeResponse> => {
 		return {
 			tx_hash: generateTxHash(),
 		};
-	};
-
-	public getTotalUnstakingResultBy = async (
-		liquidityIds: string[],
-		period: string,
-	): Promise<TotalUnstakingResultResponse> => {
-		return StakingRepositoryMock.generateStakeResult();
 	};
 
 	public unstake = async (request: StakeRequest): Promise<UnstakeResponse> => {
