@@ -9,11 +9,11 @@ import {
 } from "@/common/utils/test-util";
 import {
 	PoolListResponse,
-	PoolInfoResposne,
+	PoolInfoResponse,
 	PoolRepository,
-	PoolSummaryAprResposne,
-	PoolSummaryLiquidityResposne,
-	PoolSummaryVolumeResposne,
+	PoolSummaryAprResponse,
+	PoolSummaryLiquidityResponse,
+	PoolSummaryVolumeResponse,
 	PoolChartResopnse,
 } from ".";
 
@@ -26,7 +26,7 @@ export class PoolRepositoryMock implements PoolRepository {
 		return PoolRepositoryMock.generatePools();
 	};
 
-	getPoolById = async (poolId: string): Promise<PoolInfoResposne> => {
+	getPoolById = async (poolId: string): Promise<PoolInfoResponse> => {
 		return PoolRepositoryMock.generatePoolInfo();
 	};
 
@@ -38,7 +38,7 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	getPoolSummaryLiquidityById =
-		async (): Promise<PoolSummaryLiquidityResposne> => {
+		async (): Promise<PoolSummaryLiquidityResponse> => {
 			const token1Rate = generateNumber(0, 100);
 			return {
 				changed_of_24h: generateNumber(1000000000, 90000000000),
@@ -48,14 +48,14 @@ export class PoolRepositoryMock implements PoolRepository {
 			};
 		};
 
-	getPoolSummaryVolumeById = async (): Promise<PoolSummaryVolumeResposne> => {
+	getPoolSummaryVolumeById = async (): Promise<PoolSummaryVolumeResponse> => {
 		return {
 			changed_of_24h: generateNumber(1000000000, 90000000000),
 			volume: generateNumber(1000000000, 90000000000),
 		};
 	};
 
-	getPoolSummaryAprById = async (): Promise<PoolSummaryAprResposne> => {
+	getPoolSummaryAprById = async (): Promise<PoolSummaryAprResponse> => {
 		return {
 			apr: generateNumber(1000, 90000000),
 			fees: generateNumber(1000, 90000000),
@@ -76,6 +76,7 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	private static generatePoolInfo = () => {
+		const rewardPair = PoolRepositoryMock.generateTokenPair();
 		return {
 			pool_id: `${generateNumber(0, 100000)}`,
 			incentive_type: [
@@ -91,7 +92,7 @@ export class PoolRepositoryMock implements PoolRepository {
 			apr: generateNumber(0, 100),
 			volumn_24h: generateNumber(1000000000, 90000000000),
 			fees_24h: generateNumber(100, 900000000),
-			rewards: PoolRepositoryMock.generateTokenPair(),
+			rewards: [rewardPair.token0, rewardPair.token1],
 		};
 	};
 

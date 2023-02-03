@@ -1,8 +1,9 @@
-export interface PoolSummaryLiquidityResposne {
+export interface PoolInfoResponse {
+	pool_id: string;
+	incentive_type: "INCENTIVZED" | "NON_INCENTIVZED" | "EXTERNAL_INCENTIVZED";
+	fee_rate: number;
 	liquidity: TokenPair;
-	pooled_rate_token0: number;
-	pooled_rate_token1: number;
-	changed_of_24h: number;
+	rewards: Array<TokenBalance>;
 }
 
 interface TokenPair {

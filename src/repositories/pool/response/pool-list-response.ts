@@ -12,7 +12,7 @@ interface PoolInfo {
 	apr: number;
 	volumn_24h: number;
 	fees_24h: number;
-	rewards: TokenPair;
+	rewards: Array<TokenBalance>;
 }
 
 interface TokenPair {

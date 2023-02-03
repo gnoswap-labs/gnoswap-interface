@@ -1,7 +1,7 @@
-import { AccountInfoResposne, AccountTransactionResponse } from "./response";
+import { AccountInfoResponse, AccountTransactionResponse } from "./response";
 
 export interface AccountRepository {
-	getAccount: () => Promise<AccountInfoResposne>;
+	getAccount: () => Promise<AccountInfoResponse>;
 
 	getTransactions: (address: string) => Promise<AccountTransactionResponse>;
 }

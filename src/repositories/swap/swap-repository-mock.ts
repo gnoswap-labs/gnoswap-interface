@@ -4,7 +4,7 @@ import {
 	SwapFeeReponse,
 	SwapRateResponse,
 	SwapRepository,
-	SwapResposne,
+	SwapResponse,
 } from ".";
 import { SwapRequest } from "./request";
 
@@ -39,7 +39,7 @@ export class SwapRepositoryMock implements SwapRepository {
 
 	public setSlippage = async (slippage: number): Promise<void> => {};
 
-	public swap = async (request: SwapRequest): Promise<SwapResposne> => {
+	public swap = async (request: SwapRequest): Promise<SwapResponse> => {
 		return {
 			tx_hash: generateTxHash(),
 		};

@@ -3,7 +3,7 @@ import {
 	SwapExpectedResultResponse,
 	SwapFeeReponse,
 	SwapRateResponse,
-	SwapResposne,
+	SwapResponse,
 } from "./response";
 
 export interface SwapRepository {
@@ -23,5 +23,5 @@ export interface SwapRepository {
 
 	setSlippage: (slippage: number) => Promise<void>;
 
-	swap: (request: SwapRequest) => Promise<SwapResposne>;
+	swap: (request: SwapRequest) => Promise<SwapResponse>;
 }

@@ -6,13 +6,13 @@ import {
 } from "@/common/utils/test-util";
 import { faker } from "@faker-js/faker";
 import {
-	AccountInfoResposne,
+	AccountInfoResponse,
 	AccountRepository,
 	AccountTransactionResponse,
 } from ".";
 
 export class AccountRepositoryMock implements AccountRepository {
-	public getAccount = async (): Promise<AccountInfoResposne> => {
+	public getAccount = async (): Promise<AccountInfoResponse> => {
 		return AccountRepositoryMock.generateAccount();
 	};
 
