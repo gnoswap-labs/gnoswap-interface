@@ -17,6 +17,7 @@ import { AdenaClient } from "../clients/wallet-client/adena-client";
 import { GnoswapContext } from "./context";
 import { StorageClient, WebStorageClient } from "../clients/storage-client";
 import { PoolService } from "@/services/pool/pool-service";
+import { LiquidityService } from "@/services/liquidity/liquidity-service";
 
 interface Props {
 	children: React.ReactNode;
@@ -48,12 +49,14 @@ export const GnoswapProvider = ({ children }: Props) => {
 
 	const accountService = new AccountService(accountRepository);
 	const poolService = new PoolService(poolRepository);
+	const liquidityService = new LiquidityService(liquidityRepository);
 
 	return (
 		<GnoswapContext.Provider
 			value={{
 				accountService,
 				poolService,
+				liquidityService,
 				accountRepository,
 				liquidityRepository,
 				poolRepository,
