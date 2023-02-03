@@ -4,6 +4,6 @@ export interface StakingPoolInfoModel {
 
 interface StakingPoolInfoType {
 	period: number;
-	total_apr: number;
+	totalApr: number;
 	benefits: Array<string>;
 }

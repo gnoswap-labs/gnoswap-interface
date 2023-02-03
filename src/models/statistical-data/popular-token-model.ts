@@ -5,9 +5,9 @@ export interface PopularTokenModel {
 }
 
 interface SummaryTokenType {
-	token_id: string;
+	tokenId: string;
 	name: string;
 	symbol: string;
 	change_24h: string;
-	logo_url: string; // token_id로 github에 매핑시킨 값으로 로고 이미지 url 값으로 사용 될 예정
+	logoUrl: string; // token_id로 github에 매핑시킨 값으로 로고 이미지 url 값으로 사용 될 예정
 }

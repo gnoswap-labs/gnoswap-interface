@@ -5,18 +5,18 @@ import {
 } from "@/common/values/data-constant";
 
 export interface StakingLiquidityModel {
-	staking_liquidities: Array<StakingLiquidityType>;
+	stakingLiquidities: Array<StakingLiquidityType>;
 }
 
 interface StakingLiquidityType {
-	pool_id: string;
-	liquidity_id: string;
-	liquidity_type: LiquidityProvideOptions;
-	stake_type: StakedOptions;
-	token_pair: TokenPairModel;
-	in_range: boolean;
-	min_price: number;
-	max_price: number;
+	poolId: string;
+	liquidityId: string;
+	liquidityType: LiquidityProvideOptions;
+	stakeType: StakedOptions;
+	tokenPair: TokenPairModel;
+	inRange: boolean;
+	minPrice: number;
+	maxPrice: number;
 	rewards: {
 		swap: TokenPairModel;
 		staking: TokenPairModel;

@@ -1,7 +1,7 @@
 import { AmountType } from "@/common/types/data-prop-types";
 
 export interface TokenDefaultModel {
-	token_id: string;
+	tokenId: string;
 	name: string;
 	symbol: string;
 	amount: AmountType;

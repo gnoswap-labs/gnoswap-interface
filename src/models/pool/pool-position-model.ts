@@ -9,24 +9,24 @@ export interface PoolPositionModel {
 }
 
 interface PoolPositionType {
-	pool_id: string;
-	liquidity_id: string;
-	liquidity_type: LiquidityProvideOptions;
-	pool_position: PoolPairPositionType;
-	current_pool: CurrentPoolType;
-	rate_graph: RangeGraphType;
-	price_graph: PriceGraphType;
+	poolId: string;
+	liquidityId: string;
+	liquidityType: LiquidityProvideOptions;
+	poolPosition: PoolPairPositionType;
+	currentPool: CurrentPoolType;
+	rateGraph: RangeGraphType;
+	priceGraph: PriceGraphType;
 }
 
 interface PoolPairPositionType {
-	token_pair: TokenPairModel;
-	fee_rate: FeeOptions;
-	stake_type: StakedOptions;
+	tokenPair: TokenPairModel;
+	feeRate: FeeOptions;
+	stakeType: StakedOptions;
 }
 
 interface RangeGraphType {
-	max_rate: FeeOptions;
-	min_rate: FeeOptions;
+	maxRate: FeeOptions;
+	minRate: FeeOptions;
 }
 
 interface PriceGraphType {
@@ -35,10 +35,10 @@ interface PriceGraphType {
 }
 
 interface CurrentPoolType {
-	liquidity_id: string;
-	in_range: boolean;
-	token_pair: TokenPairModel;
-	current_price: number;
-	min_price: number;
-	max_price: number;
+	liquidityId: string;
+	inRange: boolean;
+	tokenPair: TokenPairModel;
+	currentPrice: number;
+	minPrice: number;
+	maxPrice: number;
 }

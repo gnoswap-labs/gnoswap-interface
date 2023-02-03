@@ -6,23 +6,23 @@ export interface TokenTableModel {
 }
 
 interface TokenDetailType {
-	token_id: string;
+	tokenId: string;
 	name: string;
 	symbol: string;
 	type: string;
 	price: number;
-	price_of_1h: number;
-	price_of_24h: number;
-	price_of_7d: number;
-	m_cap: number;
+	priceOf1h: number;
+	priceOf24h: number;
+	priceOf7d: number;
+	mCap: number;
 	tvl: number;
 	volume: number;
-	most_liquidity_pool: MostLiquidityPoolType;
+	mostLiquidityPool: MostLiquidityPoolType;
 	graph: Array<number>;
 }
 
 interface MostLiquidityPoolType {
-	fee_tier: number;
+	feeTier: number;
 	apr: number;
-	token_pair: TokenPairModel;
+	tokenPair: TokenPairModel;
 }

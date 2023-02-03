@@ -7,9 +7,9 @@ export interface AccountHistoryModel {
 }
 
 interface TransactionModel {
-	tx_hash: string;
-	tx_logo: string[];
+	txHash: string;
+	txLogo: string[];
 	desc: string;
 	status: StatusOptions;
-	created_at: string;
+	createdAt: string;
 }

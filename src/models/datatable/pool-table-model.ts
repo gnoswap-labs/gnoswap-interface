@@ -8,13 +8,13 @@ export interface PoolTableModel {
 }
 
 interface PoolDetailType {
-	pool_id: string;
-	token_pair: TokenPairModel;
-	fee_rate: FeeOptions;
+	poolId: string;
+	tokenPair: TokenPairModel;
+	feeRate: FeeOptions;
 	liquidity: number;
 	apr: number;
-	volumn_24h: number;
-	fees_24h: number;
+	volumn24h: number;
+	fees24h: number;
 	rewards: Array<string>;
-	incentive_type: IncentivizedOptions;
+	incentiveType: IncentivizedOptions;
 }

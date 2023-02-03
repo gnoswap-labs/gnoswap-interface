@@ -1,11 +1,11 @@
 import { TokenPairModel } from "./../../../token/token-pair-model";
 
 export interface LiquidityCompositionModel {
-	token_pair: TokenPairModel;
-	token_rate: TokenPairRate;
+	tokenPair: TokenPairModel;
+	tokenRate: TokenPairRate;
 }
 
 interface TokenPairRate {
-	rate_tokenA: number;
-	rate_tokenB: number;
+	rateTokenA: number;
+	rateTokenB: number;
 }

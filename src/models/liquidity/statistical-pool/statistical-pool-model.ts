@@ -4,7 +4,7 @@ import { PoolPairModel } from "./pool-pair";
 import { VolumnModel } from "./volumn";
 
 export interface StatisticalPoolModel {
-	pool_pair: PoolPairModel;
+	poolPair: PoolPairModel;
 	liquidity: LiquidityModel;
 	volumn: VolumnModel;
 	apr: AprModel;

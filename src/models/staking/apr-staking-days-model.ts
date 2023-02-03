@@ -1,9 +1,9 @@
 export interface AprStakingDaysModel {
-	staking_days: Array<AprStakingDaysType>;
+	stakingDays: Array<AprStakingDaysType>;
 }
 
 interface AprStakingDaysType {
 	period: number;
-	total_apr: number;
+	totalApr: number;
 	benefits: Array<string>;
 }
