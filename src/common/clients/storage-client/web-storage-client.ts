@@ -1,34 +1,44 @@
 import { StorageClient } from ".";
 
 export class WebStorageClient implements StorageClient {
-	private storage: Storage;
+	private storageType: "LOCAL" | "SESSION";
 
-	constructor(storage: Storage) {
-		this.storage = storage;
+	constructor(storageType: "LOCAL" | "SESSION") {
+		this.storageType = storageType;
+	}
+
+	get storage() {
+		if (!window) {
+			return;
+		}
+		if (this.storageType === "LOCAL") {
+			return window.localStorage;
+		}
+		return window.sessionStorage;
 	}
 
 	public get = (key: string) => {
-		const value = this.storage.getItem(key);
+		const value = this.storage?.getItem(key) ?? null;
 		return value;
 	};
 
 	public set = (key: string, value: string) => {
-		this.storage.setItem(key, value);
+		this.storage?.setItem(key, value);
 	};
 
 	public remove = (key: string) => {
-		this.storage.removeItem(key);
+		this.storage?.removeItem(key);
 	};
 
 	public clear = () => {
-		this.storage.clear();
+		this.storage?.clear();
 	};
 
 	public static createLocalStorageClient() {
-		return new WebStorageClient(localStorage);
+		return new WebStorageClient("LOCAL");
 	}
 
 	public static createSessionStorageClient() {
-		return new WebStorageClient(sessionStorage);
+		return new WebStorageClient("SESSION");
 	}
 }
