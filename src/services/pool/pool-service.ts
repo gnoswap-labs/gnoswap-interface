@@ -10,25 +10,69 @@ export class PoolService {
 		this.poolRepository = poolRepository;
 	}
 
+	public getPoolById = async (poolId: string) => {
+		return this.poolRepository
+			.getPoolById(poolId)
+			.then(PoolModelMapper.fromResponse)
+			.catch(_ => null);
+	};
+
 	public getPools = async () => {
+		return this.poolRepository
+			.getPools()
+			.then(PoolModelMapper.fromListResponse)
+			.catch(_ => []);
+	};
+
+	public getPoolsByAddress = async (address: string) => {
+		return this.poolRepository
+			.getPoolsByAddress(address)
+			.then(PoolModelMapper.fromListResponse)
+			.catch(_ => []);
+	};
+
+	public getPoolsByIncentivizedType = async (
+		incentivizedType: IncentivizedOptions,
+	) => {
+		return this.getPools().then(pools =>
+			pools.filter(pool =>
+				PoolService.equalsIncentivizedType(pool, incentivizedType),
+			),
+		);
+	};
+
+	public getRewardPools = async () => {
+		return this.getPools().then(pools =>
+			pools.filter(PoolService.existsReward),
+		);
+	};
+
+	public getPoolSummary = async (poolId: string) => {
+		return Promise.all([
+			this.poolRepository.getPoolSummaryLiquidityById(poolId),
+			this.poolRepository.getPoolSummaryVolumeById(poolId),
+			this.poolRepository.getPoolSummaryAprById(poolId),
+		]).then(values => {
+			return {
+				liquidity: values[0],
+				volume: values[1],
+				apr: values[2],
+			};
+		});
+	};
+
+	public getChartTicksByPoolId = async (poolId: string) => {
 		try {
-			const poolListData = await this.poolRepository.getPools();
-			const pools = PoolModelMapper.fromListResponse(poolListData);
-			return pools;
+			const ticks = await this.poolRepository.getPoolChartTicks(poolId);
+			return ticks;
 		} catch (e) {
 			console.log(e);
 			return [];
 		}
 	};
 
-	public getPoolsByIncentivizedType = async (
-		incentivizedType: IncentivizedOptions,
-	) => {
-		const pools = await this.getPools();
-		const filteredPools = pools.filter(pool =>
-			PoolService.equalsIncentivizedType(pool, incentivizedType),
-		);
-		return filteredPools;
+	private static existsReward = (pool: PoolModel) => {
+		return pool.rewards.some(reward => reward.amount.value.isGreaterThan(0));
 	};
 
 	private static equalsIncentivizedType = (
