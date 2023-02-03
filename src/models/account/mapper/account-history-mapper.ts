@@ -1,6 +1,5 @@
 import { StatusOptions } from "@/common/values/data-constant";
 import { AccountTransactionResponse } from "@/repositories/account";
-import BigNumber from "bignumber.js";
 import { AccountHistoryModel } from "../account-history-model";
 
 export class AccountHistoryMapper {
@@ -12,11 +11,11 @@ export class AccountHistoryMapper {
 			total: 0,
 			txs: [
 				{
-					tx_hash: "",
-					tx_logo: [""],
+					txHash: "",
+					txLogo: [""],
 					desc: "",
 					status: "SUCCESS",
-					created_at: "",
+					createdAt: "",
 				},
 			],
 		};
