@@ -1,5 +1,6 @@
 import { IncentivizedOptions } from "@/common/values/data-constant";
 import { PoolModelMapper } from "@/models/pool/mapper/pool-model-mapper";
+import { PoolDetailModel } from "@/models/pool/pool-detail-model";
 import { PoolModel } from "@/models/pool/pool-model";
 import { PoolRepository } from "@/repositories/pool";
 
@@ -14,21 +15,30 @@ export class PoolService {
 		return this.poolRepository
 			.getPoolById(poolId)
 			.then(PoolModelMapper.fromResponse)
-			.catch(_ => null);
+			.catch(error => {
+				console.log(error);
+				return null;
+			});
 	};
 
 	public getPools = async () => {
 		return this.poolRepository
 			.getPools()
 			.then(PoolModelMapper.fromListResponse)
-			.catch(_ => []);
+			.catch<Array<PoolDetailModel>>(error => {
+				console.log(error);
+				return [];
+			});
 	};
 
 	public getPoolsByAddress = async (address: string) => {
 		return this.poolRepository
 			.getPoolsByAddress(address)
 			.then(PoolModelMapper.fromListResponse)
-			.catch(_ => []);
+			.catch<Array<PoolDetailModel>>(error => {
+				console.log(error);
+				return [];
+			});
 	};
 
 	public getPoolsByIncentivizedType = async (
@@ -52,27 +62,33 @@ export class PoolService {
 			this.poolRepository.getPoolSummaryLiquidityById(poolId),
 			this.poolRepository.getPoolSummaryVolumeById(poolId),
 			this.poolRepository.getPoolSummaryAprById(poolId),
-		]).then(values => {
-			return {
-				liquidity: values[0],
-				volume: values[1],
-				apr: values[2],
-			};
-		});
+		])
+			.then(values => {
+				return {
+					liquidity: values[0],
+					volume: values[1],
+					apr: values[2],
+				};
+			})
+			.catch(error => {
+				console.log(error);
+				return null;
+			});
 	};
 
-	public getChartTicksByPoolId = async (poolId: string) => {
-		try {
-			const ticks = await this.poolRepository.getPoolChartTicks(poolId);
-			return ticks;
-		} catch (e) {
-			console.log(e);
-			return [];
-		}
+	public getChartTicksByPoolId = (poolId: string) => {
+		return this.poolRepository
+			.getPoolChartTicks(poolId)
+			.then(response => response.ticks)
+			.catch(error => {
+				console.log(error);
+				return null;
+			});
 	};
 
 	private static existsReward = (pool: PoolModel) => {
-		return pool.rewards.some(reward => reward.amount.value.isGreaterThan(0));
+		const reward = pool.rewards;
+		return reward.some(reward => reward.amount.value.isGreaterThan(0));
 	};
 
 	private static equalsIncentivizedType = (
