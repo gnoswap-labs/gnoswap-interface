@@ -7,7 +7,7 @@ import {
 } from "@/common/utils/test-util";
 import { faker } from "@faker-js/faker";
 import {
-	AccountInfoResposne,
+	AccountInfoResponse,
 	AccountRepository,
 	AccountTransactionResponse,
 } from ".";

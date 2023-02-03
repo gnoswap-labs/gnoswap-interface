@@ -8,7 +8,7 @@ import { PoolRepositoryMock } from "@/repositories/pool";
 import { StakingRepositoryMock } from "@/repositories/staking";
 import { SwapRepositoryMock } from "@/repositories/swap";
 import { TokenRepositoryMock } from "@/repositories/token";
-import { AccountService } from "@/services/account/account-info-service";
+import { AccountService } from "@/services/account/account-service";
 import { GnoClient, GnoClientApi } from "gno-client";
 import { NetworkClient } from "../clients/network-client";
 import { AxiosClient } from "../clients/network-client/axios-client";
