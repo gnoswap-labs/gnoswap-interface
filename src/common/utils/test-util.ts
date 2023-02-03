@@ -24,7 +24,7 @@ export const rand = () => {
 
 export const generateToken0 = () => {
 	return {
-		token_id: `${generateAddress}`,
+		token_id: `${generateAddress()}`,
 		name: "GNOT",
 		symbol: "GNOLAND",
 		amount: {
@@ -36,7 +36,7 @@ export const generateToken0 = () => {
 
 export const generateToken1 = () => {
 	return {
-		token_id: `${generateAddress}`,
+		token_id: `${generateAddress()}`,
 		name: "GNOS",
 		symbol: "GNOSWAP",
 		amount: {
