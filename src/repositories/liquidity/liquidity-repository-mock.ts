@@ -2,6 +2,7 @@ import {
 	generateBoolean,
 	generateId,
 	generateIndex,
+	generateInteger,
 	generateNumberPlus,
 	generateToken0,
 	generateToken1,
@@ -33,8 +34,11 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	public getLiquiditiesByAddress = async (
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
+		const liquidities = [...new Array(generateInteger(5, 40))].map(
+			LiquidityRepositoryMock.generateLiquidity,
+		);
 		return {
-			liquidities: [],
+			liquidities,
 		};
 	};
 
@@ -91,7 +95,7 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 			daily_earning: LiquidityRepositoryMock.generateTokenPair(),
 			reward: {
 				staking: LiquidityRepositoryMock.generateTokenPair(),
-				swap_fee: LiquidityRepositoryMock.generateTokenPair(),
+				swap: LiquidityRepositoryMock.generateTokenPair(),
 			},
 		};
 	};

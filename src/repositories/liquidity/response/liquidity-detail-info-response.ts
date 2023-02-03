@@ -11,7 +11,7 @@ export interface LiquidityDetailInfoResponse {
 	fee_rate: number;
 	liquidity: TokenPair;
 	reward: {
-		swap_fee: TokenPair;
+		swap: TokenPair;
 		staking: TokenPair;
 	};
 	apr: TokenPair;

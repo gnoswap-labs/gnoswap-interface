@@ -12,7 +12,7 @@ interface LiquidityInfo {
 	min_rate: number;
 	fee_rate: number;
 	liquidity: TokenPair;
-	rewards: {
+	reward: {
 		swap: TokenPair;
 		staking: TokenPair;
 	};

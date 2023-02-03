@@ -6,7 +6,7 @@ export interface LiquidityRewardResponse {
 	daily_earning: TokenPair;
 	reward: {
 		staking: TokenPair;
-		swap_fee: TokenPair;
+		swap: TokenPair;
 	};
 }
 
