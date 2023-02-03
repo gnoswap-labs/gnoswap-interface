@@ -1,8 +1,8 @@
-import { StatusOptions } from "@/common/values/data-constant";
+import { ActiveStatusOptions } from "@/common/values/data-constant";
 import { AmountType } from "@/common/types/data-prop-types";
 
 export interface AccountInfoModel {
-	status: StatusOptions;
+	status: ActiveStatusOptions;
 	address: string;
 	amount: AmountType;
 }

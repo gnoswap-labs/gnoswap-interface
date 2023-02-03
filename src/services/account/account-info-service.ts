@@ -1,4 +1,4 @@
-import { AccountInfoMapper } from "@/models/account/account-info-mapper";
+import { AccountInfoMapper } from "@/models/account/mapper/account-info-mapper";
 import { AccountRepository } from "@/repositories/account";
 
 export class AccountService {

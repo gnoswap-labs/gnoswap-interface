@@ -1,5 +1,5 @@
 import { useGnoswapContext } from "@/common/hooks/use-gnoswap-context";
-import { AccountInfoMapper } from "@/models/account/account-info-mapper";
+import { AccountInfoMapper } from "@/models/account/mapper/account-info-mapper";
 import { AccountInfoModel } from "@/models/account/account-info-model";
 import React, { useContext, useEffect, useState } from "react";
 

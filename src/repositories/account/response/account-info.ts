@@ -1,7 +1,8 @@
 import { AmountType } from "@/common/types/data-prop-types";
+import { ActiveStatusOptions } from "@/common/values/data-constant";
 
-export interface AccountInfoResposne {
-	status: string;
+export interface AccountInfoResponse {
+	status: ActiveStatusOptions;
 	address: string;
 	coins: string;
 	publicKey: {
