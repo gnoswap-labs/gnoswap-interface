@@ -15,6 +15,7 @@ import { AxiosClient } from "../clients/network-client/axios-client";
 import { WalletClient } from "../clients/wallet-client";
 import { AdenaClient } from "../clients/wallet-client/adena-client";
 import { GnoswapContext } from "./context";
+import { StorageClient, WebStorageClient } from "../clients/storage-client";
 
 interface Props {
 	children: React.ReactNode;
@@ -23,6 +24,10 @@ interface Props {
 export const GnoswapProvider = ({ children }: Props) => {
 	const walletClient: WalletClient = AdenaClient.createAdenaClient();
 	const networkClient: NetworkClient = AxiosClient.createAxiosClient();
+	const localStorageClient: StorageClient =
+		WebStorageClient.createLocalStorageClient();
+	const sessionStorageClient: StorageClient =
+		WebStorageClient.createSessionStorageClient();
 	const gnoClient: GnoClientApi = GnoClient.createNetworkByType(
 		{
 			chainId: "test3",
