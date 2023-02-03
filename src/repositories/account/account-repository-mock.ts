@@ -1,3 +1,4 @@
+import { InjectSendTransactionRequestParam } from "@/common/clients/wallet-client/protocols";
 import {
 	generateAddress,
 	generateNumber,
@@ -20,6 +21,32 @@ export class AccountRepositoryMock implements AccountRepository {
 		address: string,
 	): Promise<AccountTransactionResponse> => {
 		return AccountRepositoryMock.generateTransactions();
+	};
+
+	public existsWallet = () => {
+		return true;
+	};
+
+	public addEstablishedSite = async () => {
+		return {
+			code: 0,
+			status: "0",
+			type: "0",
+			message: "0",
+			data: null,
+		};
+	};
+
+	public sendTransaction = async (
+		request: InjectSendTransactionRequestParam,
+	) => {
+		return {
+			code: 0,
+			status: "0",
+			type: "0",
+			message: "0",
+			data: null,
+		};
 	};
 
 	private static generateAccount = () => {

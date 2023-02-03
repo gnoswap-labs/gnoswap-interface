@@ -1,4 +1,5 @@
 import { WalletClient } from "@/common/clients/wallet-client";
+import { InjectSendTransactionRequestParam } from "@/common/clients/wallet-client/protocols/inject-send-transaction-request";
 import {
 	generateAddress,
 	generateNumber,
@@ -26,6 +27,24 @@ export class AccountRepositoryInstance implements AccountRepository {
 
 	public getTransactions = async (address: string) => {
 		return AccountRepositoryInstance.generateTransactions();
+	};
+
+	public existsWallet = () => {
+		const result = this.walletClient.existsWallet();
+		return result;
+	};
+
+	public addEstablishedSite = async () => {
+		const SITE_NAME = "Gnoswap";
+		const result = await this.walletClient.addEstablishedSite(SITE_NAME);
+		return result;
+	};
+
+	public sendTransaction = async (
+		request: InjectSendTransactionRequestParam,
+	) => {
+		const result = await this.walletClient.sendTransaction(request);
+		return result;
 	};
 
 	private static generateAccount = () => {
