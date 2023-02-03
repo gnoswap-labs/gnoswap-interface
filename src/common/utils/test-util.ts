@@ -46,6 +46,10 @@ export const generateToken1 = () => {
 	};
 };
 
+export const generateInteger = (minNumber: number, maxNumber: number) => {
+	return Math.round(Math.random() * (maxNumber - minNumber) + minNumber);
+};
+
 export const generateNumber = (minNumber: number, maxNumber: number) => {
 	return Math.random() * (maxNumber - minNumber) + minNumber;
 };

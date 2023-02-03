@@ -1,6 +1,7 @@
 import {
 	generateId,
 	generateIndex,
+	generateInteger,
 	generateNumber,
 	generateNumberPlus,
 	generateToken0,
@@ -64,7 +65,7 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	private static generatePools = () => {
-		const pools = new Array(generateNumber(5, 40)).map(
+		const pools = [...new Array(generateInteger(5, 40))].map(
 			PoolRepositoryMock.generatePoolInfo,
 		);
 
@@ -79,7 +80,7 @@ export class PoolRepositoryMock implements PoolRepository {
 		const rewardPair = PoolRepositoryMock.generateTokenPair();
 		return {
 			pool_id: `${generateNumber(0, 100000)}`,
-			incentive_type: [
+			incentivized_type: [
 				"INCENTIVZED",
 				"NON_INCENTIVZED",
 				"EXTERNAL_INCENTIVZED",

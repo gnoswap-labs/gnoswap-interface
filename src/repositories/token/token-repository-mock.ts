@@ -1,4 +1,6 @@
 import {
+	generateId,
+	generateInteger,
 	generateNumber,
 	generateToken0,
 	generateTokenMetas,
@@ -64,17 +66,18 @@ export class TokenRepositoryMock implements TokenRepository {
 	public getTokenById = async (tokenId: string): Promise<TokenInfoResponse> => {
 		const { names } = generateTokenMetas();
 		return {
+			token_id: generateId(),
 			name: names[0],
 			symbol: names[0],
-			balance: {
-				amount: generateNumber(100, 500000),
+			amount: {
+				value: generateNumber(100, 500000),
 				denom: names[0],
 			},
 		};
 	};
 
 	private static generateTokens = () => {
-		const tokens = new Array(generateNumber(5, 40)).map(
+		const tokens = [...new Array(generateInteger(5, 40))].map(
 			TokenRepositoryMock.generateToken,
 		);
 		return {

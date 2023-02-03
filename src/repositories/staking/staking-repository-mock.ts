@@ -1,4 +1,5 @@
 import {
+	generateInteger,
 	generateNumber,
 	generateNumberPlus,
 	generateTokenMetas,
@@ -62,7 +63,7 @@ export class StakingRepositoryMock implements StakingRepository {
 	};
 
 	private static generateLiquidities = () => {
-		const liquidities = new Array(generateNumber(5, 40)).map(
+		const liquidities = [...new Array(generateInteger(5, 40))].map(
 			StakingRepositoryMock.generateLiquidity,
 		);
 		return {
@@ -86,7 +87,7 @@ export class StakingRepositoryMock implements StakingRepository {
 	};
 
 	private static generateStakes = () => {
-		const stakes = new Array(generateNumber(5, 10)).map(
+		const stakes = new Array(generateInteger(5, 10)).map(
 			StakingRepositoryMock.generateStake,
 		);
 		return {
@@ -105,7 +106,7 @@ export class StakingRepositoryMock implements StakingRepository {
 	};
 
 	private static generateStakeResult = () => {
-		const items = new Array(generateNumber(5, 40));
+		const items = [...new Array(generateInteger(5, 40))];
 		const liquidities = items.map(StakingRepositoryMock.generateLiquidity);
 		const unclaimedRewards = items.map(StakingRepositoryMock.generateLiquidity);
 		return {
