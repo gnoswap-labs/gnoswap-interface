@@ -1,7 +1,6 @@
+import { returnNullWithLog } from "@/common/utils/error-util";
 import { TransactionHashModelMapper } from "@/models/common/mapper/transaction-hash-model-mapper";
-import { LiquidityDetailModel } from "@/models/liquidity/liquidity-detail-model";
 import { LiquidityModelMapper } from "@/models/liquidity/mapper/liquildity-model-mapper";
-import { LiquidityRewardModelMapper } from "@/models/liquidity/mapper/liquildity-reward-model-mapper";
 import { TokenPairModelMapper } from "@/models/token/mapper/token-pair-model-mapper";
 import { TokenPairModel } from "@/models/token/token-pair-model";
 import { LiquidityRepository } from "@/repositories/liquidity";
@@ -16,7 +15,8 @@ export class LiquidityService {
 	public getLiquidity = (liquidityId: string) => {
 		return this.liquidityRepository
 			.getLiquidityById(liquidityId)
-			.then(LiquidityModelMapper.fromDetailResponse);
+			.then(LiquidityModelMapper.fromDetailResponse)
+			.catch(returnNullWithLog);
 	};
 
 	public addLiquidity = (
@@ -29,12 +29,13 @@ export class LiquidityService {
 		},
 	) => {
 		const request = {
-			liquidity: TokenPairModelMapper.toSimple(liquidity),
+			liquidity: TokenPairModelMapper.toRequest(liquidity),
 			options,
 		};
 		return this.liquidityRepository
 			.addLiquidityBy(request)
-			.then(TransactionHashModelMapper.fromResponse);
+			.then(TransactionHashModelMapper.fromResponse)
+			.catch(returnNullWithLog);
 	};
 
 	public removeLiquidities = (liquidityIds: Array<string>) => {
@@ -50,10 +51,7 @@ export class LiquidityService {
 		return this.liquidityRepository
 			.getLiquiditiesByAddress(address)
 			.then(LiquidityModelMapper.fromDetailListResponse)
-			.catch<Array<LiquidityDetailModel>>(error => {
-				console.log(error);
-				return [];
-			});
+			.catch(returnNullWithLog);
 	};
 
 	public getLiquiditiesByAddressAndPoolId = (
@@ -63,13 +61,10 @@ export class LiquidityService {
 		return this.liquidityRepository
 			.getLiquiditiesByAddress(address)
 			.then(LiquidityModelMapper.fromDetailListResponse)
-			.catch<Array<LiquidityDetailModel>>(error => {
-				console.log(error);
-				return [];
-			});
+			.catch(returnNullWithLog);
 	};
 
-	public getAvailStakeLiquiditiesBy = (
+	public getAvailStakeLiquidities = (
 		address: string,
 		period: number,
 		poolId: string,
@@ -77,13 +72,10 @@ export class LiquidityService {
 		return this.liquidityRepository
 			.getAvailStakeLiquiditiesBy(address, period, poolId)
 			.then(LiquidityModelMapper.fromDetailListResponse)
-			.catch<Array<LiquidityDetailModel>>(error => {
-				console.log(error);
-				return [];
-			});
+			.catch(returnNullWithLog);
 	};
 
-	public getAvailUnstakeLiquiditiesBy = (
+	public getAvailUnstakeLiquidities = (
 		address: string,
 		period: number,
 		poolId: string,
@@ -91,9 +83,6 @@ export class LiquidityService {
 		return this.liquidityRepository
 			.getAvailUnstakeLiquiditiesBy(address, period, poolId)
 			.then(LiquidityModelMapper.fromDetailListResponse)
-			.catch<Array<LiquidityDetailModel>>(error => {
-				console.log(error);
-				return [];
-			});
+			.catch(returnNullWithLog);
 	};
 }

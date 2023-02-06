@@ -1,4 +1,6 @@
 export interface LiquidityDetailListResponse {
+	total: number;
+	hits: number;
 	liquidities: Array<LiquidityInfo>;
 }
 

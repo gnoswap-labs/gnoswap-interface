@@ -1,3 +1,4 @@
+import { LiquidityError } from "@/common/errors/liquidity";
 import {
 	generateBoolean,
 	generateId,
@@ -28,6 +29,9 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	public getLiquidityById = async (
 		liquidityId: string,
 	): Promise<LiquidityDetailInfoResponse> => {
+		if (liquidityId === "0") {
+			throw new LiquidityError("NOT_FOUND_LIQUIDITY");
+		}
 		return LiquidityRepositoryMock.generateLiquidity();
 	};
 
@@ -38,6 +42,8 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 			LiquidityRepositoryMock.generateLiquidity,
 		);
 		return {
+			total: liquidities.length,
+			hits: liquidities.length,
 			liquidities,
 		};
 	};
@@ -47,10 +53,15 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		period: number,
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
+		if (address === "") {
+			throw new LiquidityError("NOT_FOUND_LIQUIDITY");
+		}
 		const liquidities = [...new Array(generateInteger(5, 40))].map(
 			LiquidityRepositoryMock.generateLiquidity,
 		);
 		return {
+			total: liquidities.length,
+			hits: liquidities.length,
 			liquidities,
 		};
 	};
@@ -64,6 +75,8 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 			LiquidityRepositoryMock.generateLiquidity,
 		);
 		return {
+			total: liquidities.length,
+			hits: liquidities.length,
 			liquidities,
 		};
 	};
