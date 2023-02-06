@@ -33,4 +33,14 @@ export class TokenModelMapper {
 			denom,
 		};
 	}
+
+	public static toSimple(model: TokenDefaultModel) {
+		return {
+			tokenId: model.tokenId,
+			amount: {
+				...model.amount,
+				value: model.amount.value.toString(),
+			},
+		};
+	}
 }

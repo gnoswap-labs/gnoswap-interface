@@ -17,4 +17,13 @@ export class TokenPairModelMapper {
 			token1: TokenModelMapper.fromResponse(token1),
 		};
 	}
+
+	public static toSimple(model: TokenPairModel) {
+		const { token0, token1 } = model;
+
+		return {
+			token0: TokenModelMapper.toSimple(token0),
+			token1: TokenModelMapper.toSimple(token1),
+		};
+	}
 }
