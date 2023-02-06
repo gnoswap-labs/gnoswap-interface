@@ -34,7 +34,7 @@ export class TokenModelMapper {
 		};
 	}
 
-	public static toSimple(model: TokenDefaultModel) {
+	public static toRequest(model: TokenDefaultModel) {
 		return {
 			tokenId: model.tokenId,
 			amount: {

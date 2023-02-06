@@ -12,8 +12,12 @@ import { LiquidityDetailModel } from "../liquidity-detail-model";
 
 export class LiquidityModelMapper {
 	public static fromDetailListResponse(details: LiquidityDetailListResponse) {
-		const liquidities = details.liquidities;
-		return liquidities.map(LiquidityModelMapper.fromDetailResponse);
+		const { total, hits, liquidities } = details;
+		return {
+			total,
+			hits,
+			liquidities: liquidities.map(LiquidityModelMapper.fromDetailResponse),
+		};
 	}
 
 	public static fromDetailResponse(
