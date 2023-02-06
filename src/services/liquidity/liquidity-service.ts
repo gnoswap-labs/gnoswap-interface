@@ -16,7 +16,7 @@ export class LiquidityService {
 	/**
 	 * Get single liquidity information.
 	 *
-	 * @param		liquidityId
+	 * @param liquidityId
 	 * @returns	Liquidity data model, Return null on error
 	 */
 	public getLiquidity = (
@@ -31,8 +31,8 @@ export class LiquidityService {
 	/**
 	 * Add liquidity to the liquidity pool.
 	 *
-	 * @param liquidity	Liquidity information to add
-	 * @param options 	Option to add liquidity
+	 * @param liquidity Liquidity information to add
+	 * @param options Option to add liquidity
 	 * @returns transaction hash
 	 */
 	public addLiquidity = (
