@@ -99,6 +99,7 @@ describe("addLiquidity", () => {
 	it("add liquidity resposne is success", async () => {
 		const spyFnAddLiquidity = jest.spyOn(liquidityRepository, "addLiquidityBy");
 		// given
+		const poolId = "1";
 		const liquidity = {
 			token0: {
 				tokenId: "1",
@@ -127,7 +128,11 @@ describe("addLiquidity", () => {
 		};
 
 		// when
-		const response = await liquidityService.addLiquidity(liquidity, options);
+		const response = await liquidityService.addLiquidity(
+			poolId,
+			liquidity,
+			options,
+		);
 
 		// then
 		expect(spyFnAddLiquidity).toBeCalledTimes(1);
@@ -140,6 +145,7 @@ describe("addLiquidity", () => {
 			.fn()
 			.mockRejectedValue(new Error("Adena timeout"));
 		// given
+		const poolId = "1";
 		const liquidity = {
 			token0: {
 				tokenId: "1",
@@ -168,7 +174,11 @@ describe("addLiquidity", () => {
 		};
 
 		// when
-		const response = await liquidityService.addLiquidity(liquidity, options);
+		const response = await liquidityService.addLiquidity(
+			poolId,
+			liquidity,
+			options,
+		);
 
 		// then
 		expect(response).toBeNull();
