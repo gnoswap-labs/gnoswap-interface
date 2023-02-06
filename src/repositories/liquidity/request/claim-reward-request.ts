@@ -1,3 +1,3 @@
 export interface ClaimRewardReqeust {
-	liquidityId: string;
+	poolId: string;
 }

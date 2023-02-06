@@ -1,7 +1,3 @@
-import {
-	LiquidityProvideOptions,
-	StakedOptions,
-} from "@/common/values/data-constant";
 import { TokenPairModel } from "../token/token-pair-model";
 import { LiquidityModel } from "./liquidity-model";
 import { LiquidityRewardModel } from "./liquidity-reward-model";

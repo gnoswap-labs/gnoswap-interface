@@ -25,7 +25,7 @@ import {
 } from "./request";
 
 export class LiquidityRepositoryMock implements LiquidityRepository {
-	public getLiquidityDetailById = async (
+	public getLiquidityById = async (
 		liquidityId: string,
 	): Promise<LiquidityDetailInfoResponse> => {
 		return LiquidityRepositoryMock.generateLiquidity();
@@ -42,7 +42,33 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		};
 	};
 
-	public addLiquidity = async (
+	public getAvailStakeLiquiditiesBy = async (
+		poolId: string,
+		period: number,
+		address: string,
+	): Promise<LiquidityDetailListResponse> => {
+		const liquidities = [...new Array(generateInteger(5, 40))].map(
+			LiquidityRepositoryMock.generateLiquidity,
+		);
+		return {
+			liquidities,
+		};
+	};
+
+	public getAvailUnstakeLiquiditiesBy = async (
+		poolId: string,
+		period: number,
+		address: string,
+	): Promise<LiquidityDetailListResponse> => {
+		const liquidities = [...new Array(generateInteger(5, 40))].map(
+			LiquidityRepositoryMock.generateLiquidity,
+		);
+		return {
+			liquidities,
+		};
+	};
+
+	public addLiquidityBy = async (
 		request: AddLiquidityRequest,
 	): Promise<AddLiquidityResponse> => {
 		return {
@@ -50,7 +76,7 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		};
 	};
 
-	public removeLiquidities = async (
+	public removeLiquiditiesBy = async (
 		request: RemoveLiquidityRequest,
 	): Promise<RemoveLiquidityResponse> => {
 		return {
@@ -58,15 +84,15 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		};
 	};
 
-	public getLiquidityRewardBy = async (
+	public getLiquidityRewardByAddressAndPoolId = async (
 		address: string,
 		poolId: string,
 	): Promise<LiquidityRewardResponse> => {
 		return LiquidityRepositoryMock.generateLiquidity();
 	};
 
-	public claimReward = async (
-		request: ClaimRewardReqeust,
+	public claimRewardByPoolId = async (
+		poolId: string,
 	): Promise<ClaimRewardResponse> => {
 		return {
 			tx_hash: generateTxHash(),

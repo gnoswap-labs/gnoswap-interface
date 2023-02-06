@@ -13,7 +13,7 @@ import {
 } from "./response";
 
 export interface LiquidityRepository {
-	getLiquidityDetailById: (
+	getLiquidityById: (
 		liquidityId: string,
 	) => Promise<LiquidityDetailInfoResponse>;
 
@@ -21,16 +21,30 @@ export interface LiquidityRepository {
 		address: string,
 	) => Promise<LiquidityDetailListResponse>;
 
-	addLiquidity: (request: AddLiquidityRequest) => Promise<AddLiquidityResponse>;
+	getAvailStakeLiquiditiesBy: (
+		poolId: string,
+		period: number,
+		address: string,
+	) => Promise<LiquidityDetailListResponse>;
 
-	removeLiquidities: (
+	getAvailUnstakeLiquiditiesBy: (
+		poolId: string,
+		period: number,
+		address: string,
+	) => Promise<LiquidityDetailListResponse>;
+
+	addLiquidityBy: (
+		request: AddLiquidityRequest,
+	) => Promise<AddLiquidityResponse>;
+
+	removeLiquiditiesBy: (
 		request: RemoveLiquidityRequest,
 	) => Promise<RemoveLiquidityResponse>;
 
-	getLiquidityRewardBy: (
+	getLiquidityRewardByAddressAndPoolId: (
 		address: string,
 		poolId: string,
 	) => Promise<LiquidityRewardResponse>;
 
-	claimReward: (request: ClaimRewardReqeust) => Promise<ClaimRewardResponse>;
+	claimRewardByPoolId: (poolId: string) => Promise<ClaimRewardResponse>;
 }
