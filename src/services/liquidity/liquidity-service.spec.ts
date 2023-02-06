@@ -135,7 +135,7 @@ describe("addLiquidity", () => {
 		expect(response?.txHash).toBeTruthy();
 	});
 
-	it("add liquidity resposne is timeout", async () => {
+	it("add liquidity resposne is timeout error", async () => {
 		liquidityRepository.addLiquidityBy = jest
 			.fn()
 			.mockRejectedValue(new Error("Adena timeout"));
@@ -193,9 +193,33 @@ describe("removeLiquidity", () => {
 		expect(response?.txHash).toBeTruthy();
 	});
 
-	it("remove liquidity response is fail", async () => {});
+	it("remove liquidity response is fail", async () => {
+		liquidityRepository.removeLiquiditiesBy = jest.fn().mockResolvedValue(null);
+		// given
+		const liquidityIds = ["1", "2", "3"];
 
-	it("remove liquidity response is timeout", async () => {});
+		// when
+		const response = await liquidityService.removeLiquidities(liquidityIds);
+
+		// then
+		expect(liquidityRepository.removeLiquiditiesBy).toBeCalledTimes(1);
+		expect(response).toBeFalsy();
+	});
+
+	it("remove liquidity response is timeout error", async () => {
+		liquidityRepository.removeLiquiditiesBy = jest
+			.fn()
+			.mockRejectedValue(new Error("Adena timeout"));
+		// given
+		const liquidityIds = ["1", "2", "3"];
+
+		// when
+		const response = await liquidityService.removeLiquidities(liquidityIds);
+
+		// then
+		expect(liquidityRepository.removeLiquiditiesBy).toBeCalledTimes(1);
+		expect(response).toBeFalsy();
+	});
 });
 
 export {};

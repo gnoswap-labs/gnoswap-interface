@@ -44,7 +44,8 @@ export class LiquidityService {
 		};
 		return this.liquidityRepository
 			.removeLiquiditiesBy(request)
-			.then(TransactionHashModelMapper.fromResponse);
+			.then(TransactionHashModelMapper.fromResponse)
+			.catch(returnNullWithLog);
 	};
 
 	public getLiquiditiesByAddress = (address: string) => {
