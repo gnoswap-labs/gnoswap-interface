@@ -2,7 +2,7 @@ export interface StakingPeriodListResponse {
 	periods: Array<StakingPeriodInfo>;
 }
 
-interface StakingPeriodInfo {
+export interface StakingPeriodInfo {
 	period: number;
 
 	apr: number;

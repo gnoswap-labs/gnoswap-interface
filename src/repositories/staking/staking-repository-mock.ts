@@ -13,6 +13,7 @@ import {
 	StakingPeriodListResponse,
 } from ".";
 import { StakeRequest } from "./request";
+import { UnstakeRequest } from "./request/unstake-request";
 
 export class StakingRepositoryMock implements StakingRepository {
 	public getStakingPeriods = async (): Promise<StakingPeriodListResponse> => {
@@ -50,13 +51,15 @@ export class StakingRepositoryMock implements StakingRepository {
 		return StakingRepositoryMock.generateStakes();
 	};
 
-	public stake = async (request: StakeRequest): Promise<StakeResponse> => {
+	public stakeBy = async (request: StakeRequest): Promise<StakeResponse> => {
 		return {
 			tx_hash: generateTxHash(),
 		};
 	};
 
-	public unstake = async (request: StakeRequest): Promise<UnstakeResponse> => {
+	public unstakeBy = async (
+		request: UnstakeRequest,
+	): Promise<UnstakeResponse> => {
 		return {
 			tx_hash: generateTxHash(),
 		};

@@ -1,4 +1,5 @@
 import { StakeRequest } from "./request";
+import { UnstakeRequest } from "./request/unstake-request";
 import {
 	StakeResponse,
 	StakingListResponse,
@@ -9,14 +10,7 @@ import {
 export interface StakingRepository {
 	getStakingPeriods: () => Promise<StakingPeriodListResponse>;
 
-	getStakesByAddress: (address: string) => Promise<StakingListResponse>;
+	stakeBy: (request: StakeRequest) => Promise<StakeResponse>;
 
-	getStakesByAddressAndPoolId: (
-		address: string,
-		poolId: string,
-	) => Promise<StakingListResponse>;
-
-	stake: (request: StakeRequest) => Promise<StakeResponse>;
-
-	unstake: (request: StakeRequest) => Promise<UnstakeResponse>;
+	unstakeBy: (request: UnstakeRequest) => Promise<UnstakeResponse>;
 }
