@@ -1,4 +1,5 @@
 import { TransactionHashModelMapper } from "@/models/common/mapper/transaction-hash-model-mapper";
+import { StakingPeriodInfoModelMapper } from "@/models/staking/mapper/staking-period-info-model-mapper";
 import { StakingRepository } from "@/repositories/staking";
 
 export class StakingService {
@@ -9,7 +10,9 @@ export class StakingService {
 	}
 
 	public getPeriodInfos = () => {
-		return this.stakingRepository.getStakingPeriods();
+		return this.stakingRepository
+			.getStakingPeriods()
+			.then(StakingPeriodInfoModelMapper.fromListResponse);
 	};
 
 	public stake = (period: number, liquidityIds: Array<string>) => {
