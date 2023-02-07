@@ -4,3 +4,8 @@ export interface AmountType {
 	value: BigNumber;
 	denom: string;
 }
+
+export interface AmountNumberType {
+	value: number;
+	denom: string;
+}
