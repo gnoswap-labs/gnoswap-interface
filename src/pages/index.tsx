@@ -16,11 +16,8 @@ export default function Home() {
 
 	const onClickGetHistoryButton = () => {
 		accountService
-			.connectAdenaWallet()
-			.then(res => console.log("connectAdenaWallet : ", res));
-		// accountRepository
-		// 	.getTransactions("123")
-		// 	.then(res => console.log("history : ", res));
+			.getNotifications("123")
+			.then(res => console.log("history : ", res));
 	};
 
 	return (
@@ -28,8 +25,7 @@ export default function Home() {
 			<button onClick={onClickGetAccountButton}>아데나 회원정보 조회</button>
 			<br /> <br /> <br />
 			<button onClick={onClickGetHistoryButton}>히스토리 조회</button>
-			{/* <h1>{JSON.stringify(accountInfo, null, 2)}</h1>
-			<h1>{JSON.stringify(history, null, 2)}</h1> */}
+			<br /> <br /> <br />
 		</div>
 	);
 }

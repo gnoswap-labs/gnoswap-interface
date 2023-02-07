@@ -26,7 +26,7 @@ export class AccountService {
 			.addEstablishedSite()
 			.then(res => ([0, 4001].includes(res.code) ? true : false))
 			.catch(err => {
-				return err;
+				throw new AccountError("WALLET_CONNECT_FAILED");
 			});
 	};
 
@@ -34,25 +34,27 @@ export class AccountService {
 
 	public getNotifications = async (address: string) => {
 		return await this.accountRepository
-			.getNotifications(address)
-			.then(AccountHistoryMapper.fromResopnse)
-			.catch(() => {
-				throw new AccountError("WALLET_CONNECT_FAILED");
-			});
+			.getNotificationsByAddress(address)
+			.then(res => AccountHistoryMapper.fromResopnse(res))
+			.catch(() => {});
 	};
 
-	public createNotification = async (transaction: TransactionModel) => {
-		return await this.accountRepository.createNotification().then();
+	public createNotification = async (
+		address: string,
+		transaction: TransactionModel,
+	) => {
+		// return await this.accountRepository.createNotification().then();
 	};
 
 	public updateNotificationStatus = async (
+		address: string,
 		txHash: string,
 		status: StatusOptions,
 	) => {
-		return await this.accountRepository.updateNotificationStatus();
+		// return await this.accountRepository.updateNotificationStatus();
 	};
 
-	public deleteAllNotification = async () => {
-		return this.accountRepository.deleteAllNotifications();
+	public deleteAllNotification = async (address: string) => {
+		// return this.accountRepository.deleteAllNotifications();
 	};
 }

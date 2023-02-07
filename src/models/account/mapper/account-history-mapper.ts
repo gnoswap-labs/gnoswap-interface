@@ -8,16 +8,10 @@ import {
 } from "../account-history-model";
 
 export class AccountHistoryMapper {
-	public static fromResopnse(
-		response: AccountTransactionResponse,
-	): AccountHistoryModel {
+	public static fromResopnse(response: AccountTransactionResponse): any {
+		console.log("----", response);
 		return {
-			txs: [],
-			// txs: response.txs.map(AccountHistoryMapper.mappedTransactionItem),
+			txs: response,
 		};
 	}
-
-	// private static mappedTransactionItem(txItem: AccountTransaction): TransactionModel {
-	// 	return
-	// }
 }
