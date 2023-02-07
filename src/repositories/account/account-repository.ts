@@ -27,7 +27,7 @@ export interface AccountRepository {
 		transaction: TransactionModel,
 	) => Promise<boolean>;
 
-	updateNotifiactionStatus: (
+	updateNotificationStatus: (
 		address: string,
 		txHash: string,
 		status: StatusOptions,

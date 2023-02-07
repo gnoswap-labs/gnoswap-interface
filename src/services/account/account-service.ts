@@ -1,11 +1,9 @@
+import { AccountWalletMapper } from "./../../models/account/mapper/account-wallet-mapper";
 import { TransactionModel } from "./../../models/account/account-history-model";
 import { StatusOptions } from "@/common/values/data-constant";
-import { StorageClient } from "./../../common/clients/storage-client/storage-client";
-import { AccountHistoryMapper } from "./../../models/account/mapper/account-history-mapper";
 import { AccountInfoMapper } from "@/models/account/mapper/account-info-mapper";
 import { AccountRepository } from "@/repositories/account";
 import { returnNullWithLog } from "@/common/utils/error-util";
-import { AccountError } from "@/common/errors/account";
 
 export class AccountService {
 	private accountRepository: AccountRepository;
@@ -15,8 +13,10 @@ export class AccountService {
 	}
 
 	public getAccountInfo = async () => {
-		const accountInfo = await this.accountRepository.getAccount();
-		return AccountInfoMapper.fromResopnse(accountInfo);
+		return await this.accountRepository
+			.getAccount()
+			.then(AccountInfoMapper.fromResopnse)
+			.catch(returnNullWithLog);
 	};
 
 	public connectAdenaWallet = async () => {
@@ -24,10 +24,8 @@ export class AccountService {
 		if (!existsWalletCheck) return false;
 		return await this.accountRepository
 			.addEstablishedSite()
-			.then(res => ([0, 4001].includes(res.code) ? true : false))
-			.catch(err => {
-				throw new AccountError("WALLET_CONNECT_FAILED");
-			});
+			.then(AccountWalletMapper.fromResopnse)
+			.catch(returnNullWithLog);
 	};
 
 	public disconnectAdenaWallet = async () => {};
@@ -35,15 +33,16 @@ export class AccountService {
 	public getNotifications = async (address: string) => {
 		return await this.accountRepository
 			.getNotificationsByAddress(address)
-			.then(res => AccountHistoryMapper.fromResopnse(res))
-			.catch(() => {});
+			.catch(returnNullWithLog);
 	};
 
 	public createNotification = async (
 		address: string,
 		transaction: TransactionModel,
 	) => {
-		// return await this.accountRepository.createNotification().then();
+		return await this.accountRepository
+			.createNotification(address, transaction)
+			.catch(returnNullWithLog);
 	};
 
 	public updateNotificationStatus = async (
@@ -51,10 +50,14 @@ export class AccountService {
 		txHash: string,
 		status: StatusOptions,
 	) => {
-		// return await this.accountRepository.updateNotificationStatus();
+		return await this.accountRepository
+			.updateNotificationStatus(address, txHash, status)
+			.catch(returnNullWithLog);
 	};
 
 	public deleteAllNotification = async (address: string) => {
-		// return this.accountRepository.deleteAllNotifications();
+		return await this.accountRepository
+			.deleteAllNotifications(address)
+			.catch(returnNullWithLog);
 	};
 }
