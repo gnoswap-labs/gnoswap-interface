@@ -3,9 +3,9 @@ import { TokenDefaultModel } from "./../token/token-default-model";
 import { NotificationType, StatusOptions } from "@/common/values/data-constant";
 
 export interface AccountHistoryModel {
-	txs: Array<TransactionType>;
+	txs: Array<TransactionModel>;
 }
-interface TransactionType {
+export interface TransactionModel {
 	txType: NotificationType;
 	txHash: string;
 	tokenInfo: TokenDefaultModel | TokenPairModel;

@@ -47,7 +47,9 @@ export class AccountRepositoryInstance implements AccountRepository {
 	): Promise<AccountHistoryModel> => {
 		const history = this.getHistory();
 		if (!history[address]) {
-			throw new Error("Not found history");
+			return {
+				txs: [],
+			};
 		}
 
 		return history[address];
@@ -120,9 +122,10 @@ export class AccountRepositoryInstance implements AccountRepository {
 	};
 
 	private getHistory = () => {
-		const historyValue = this.localStorageClient.get("transaction-history");
+		let historyValue = this.localStorageClient.get("transaction-history");
 		if (!historyValue || historyValue === "") {
-			throw new Error("Not found history");
+			historyValue = JSON.stringify(historyValue);
+			this.localStorageClient.set("transaction-history", historyValue);
 		}
 
 		let history: { [key in string]: AccountHistoryModel } = {};
