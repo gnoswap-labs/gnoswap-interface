@@ -5,14 +5,9 @@ import { AccountRepository } from "@/repositories/account";
 
 export class AccountService {
 	private accountRepository: AccountRepository;
-	private storageClient: StorageClient;
 
-	constructor(
-		accountRepository: AccountRepository,
-		storageClient: StorageClient,
-	) {
+	constructor(accountRepository: AccountRepository) {
 		this.accountRepository = accountRepository;
-		this.storageClient = storageClient;
 	}
 
 	public getAccountInfo = async () => {
@@ -34,11 +29,11 @@ export class AccountService {
 	public disconnectAdenaWallet = async () => {};
 
 	public getHistoryTxs = async (address: string) => {
-		const historyTxs = await this.accountRepository.getTransactions(address);
-		const aa = AccountHistoryMapper.fromResopnse(historyTxs);
+		// const historyTxs = await this.accountRepository.getTransactions(address);
+		// const aa = AccountHistoryMapper.fromResopnse(historyTxs);
 	};
 
 	public clearAllHistoryTxs = async () => {
-		return this.storageClient.remove("transaction-history");
+		// return this.storageClient.remove("transaction-history");
 	};
 }
