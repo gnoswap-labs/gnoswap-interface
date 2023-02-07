@@ -1,4 +1,4 @@
-import { AmountType } from "@/common/types/data-prop-types";
+import { AmountNumberType, AmountType } from "@/common/types/data-prop-types";
 import BigNumber from "bignumber.js";
 import { TokenDefaultModel } from "../token-default-model";
 
@@ -6,12 +6,7 @@ interface TokenResponse {
 	token_id: string;
 	name: string;
 	symbol: string;
-	amount: AmountResponse;
-}
-
-interface AmountResponse {
-	value: number;
-	denom: string;
+	amount: AmountNumberType;
 }
 
 export class TokenModelMapper {
@@ -26,7 +21,7 @@ export class TokenModelMapper {
 		};
 	}
 
-	public static mappedAmount(response: AmountResponse): AmountType {
+	public static mappedAmount(response: AmountNumberType): AmountType {
 		const { denom, value } = response;
 		return {
 			value: BigNumber(value),

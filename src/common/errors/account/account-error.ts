@@ -9,6 +9,10 @@ const ERROR_VALUE = {
 		status: 1001,
 		type: "NOT_FOUND_ADDRESS",
 	},
+	WALLET_CONNECT_FAILED: {
+		status: 1002,
+		type: "WALLET_CONNECT_FAILED",
+	},
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;
