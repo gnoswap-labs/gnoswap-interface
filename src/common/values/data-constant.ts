@@ -7,3 +7,16 @@ export type IncentivizedOptions =
 	| "EXTERNAL_INCENTIVIZED";
 export type StatusOptions = "SUCCESS" | "PENDING" | "FAILED";
 export type ActiveStatusOptions = "ACTIVE" | "IN_ACTIVE";
+export enum NotificationType {
+	"Approve" = 0,
+	"CreatePool" = 1,
+	"AddLiquidity" = 2,
+	"RemoveLiquidity" = 3,
+	"Stake" = 4,
+	"UnStake" = 5,
+	"Claim" = 6,
+	"AddIncentive" = 7,
+	"Swap" = 8,
+	"Wrap" = 9,
+	"UnWrap" = 10,
+}

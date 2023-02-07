@@ -2,26 +2,34 @@ import { useGnoswapContext } from "@/common/hooks/use-gnoswap-context";
 import { AccountInfoMapper } from "@/models/account/mapper/account-info-mapper";
 import { AccountInfoModel } from "@/models/account/account-info-model";
 import React, { useContext, useEffect, useState } from "react";
+import { AccountHistoryModel } from "@/models/account/account-history-model";
 
 export default function Home() {
 	const [accountInfo, setAccountInfo] = useState<AccountInfoModel>();
+	const [history, setHistory] = useState<any>();
 
 	const { accountService, accountRepository } = useGnoswapContext();
 
-	const text = JSON.stringify(accountInfo, null, 2);
-
 	const onClickGetAccountButton = () => {
-		accountRepository
-			.getTransactions("123")
-			.then(res => console.log("txs", res));
-		// accountService.getAccountInfo().then(setAccountInfo);
+		accountService.getAccountInfo().then(res => console.log("account : ", res));
+	};
+
+	const onClickGetHistoryButton = () => {
+		accountService
+			.connectAdenaWallet()
+			.then(res => console.log("connectAdenaWallet : ", res));
+		// accountRepository
+		// 	.getTransactions("123")
+		// 	.then(res => console.log("history : ", res));
 	};
 
 	return (
-		<>
-			<h1>text</h1>
+		<div style={{ padding: "3rem" }}>
 			<button onClick={onClickGetAccountButton}>아데나 회원정보 조회</button>
-			<h1>{text}</h1>
-		</>
+			<br /> <br /> <br />
+			<button onClick={onClickGetHistoryButton}>히스토리 조회</button>
+			{/* <h1>{JSON.stringify(accountInfo, null, 2)}</h1>
+			<h1>{JSON.stringify(history, null, 2)}</h1> */}
+		</div>
 	);
 }

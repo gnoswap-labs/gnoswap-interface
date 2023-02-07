@@ -48,7 +48,10 @@ export const GnoswapProvider = ({ children }: Props) => {
 	const swapRepository = new SwapRepositoryMock();
 	const tokenRepository = new TokenRepositoryMock();
 
-	const accountService = new AccountService(accountRepository);
+	const accountService = new AccountService(
+		accountRepository,
+		localStorageClient,
+	);
 	const poolService = new PoolService(poolRepository);
 	const liquidityService = new LiquidityService(liquidityRepository);
 	const stakingService = new StakingService(stakingRepository);
