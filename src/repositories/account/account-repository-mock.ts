@@ -12,7 +12,7 @@ import {
 	AccountTransactionResponse,
 } from ".";
 
-export class AccountRepositoryMock implements AccountRepository {
+export class AccountRepositoryMock {
 	public getAccount = async (): Promise<AccountInfoResponse> => {
 		return AccountRepositoryMock.generateAccount();
 	};

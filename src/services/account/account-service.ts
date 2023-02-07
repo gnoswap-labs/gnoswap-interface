@@ -9,14 +9,9 @@ import { AccountError } from "@/common/errors/account";
 
 export class AccountService {
 	private accountRepository: AccountRepository;
-	private storageClient: StorageClient;
 
-	constructor(
-		accountRepository: AccountRepository,
-		storageClient: StorageClient,
-	) {
+	constructor(accountRepository: AccountRepository) {
 		this.accountRepository = accountRepository;
-		this.storageClient = storageClient;
 	}
 
 	public getAccountInfo = async () => {
