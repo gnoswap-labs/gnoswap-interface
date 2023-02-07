@@ -1,0 +1,16 @@
+{
+	"tokens": [
+		{
+			"token_id": "1",
+			"rate": 1
+		},
+		{
+			"token_id": "2",
+			"rate": 1.4
+		},
+		{
+			"token_id": "3",
+			"rate": 0.7
+		}
+	]
+}

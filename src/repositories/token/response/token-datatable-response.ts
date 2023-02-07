@@ -1,11 +1,13 @@
-export interface TokenListResponse {
-	tokens: Array<TokenInfo>;
+export interface TokenDatatableResponse {
+	hits: number;
+	total: number;
+	tokens: Array<TokenTableData>;
 }
 
-interface TokenInfo {
+interface TokenTableData {
 	name: string;
+	type: "NATIVE" | "GRC20";
 	symbol: string;
-	type: string;
 	price: number;
 	price_of_1h: number;
 	price_of_24h: number;

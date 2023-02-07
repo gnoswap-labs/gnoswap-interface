@@ -1,0 +1,36 @@
+{
+	"total": 3,
+	"hits": 3,
+	"tokens": [
+		{
+			"token_id": "1",
+			"name": "Gnoland",
+			"symbol": "GNO.LAND",
+			"change_24h": -24,
+			"amount": {
+				"value": 1000000000,
+				"denom": "ugnot"
+			}
+		},
+		{
+			"token_id": "2",
+			"name": "Gnoswap",
+			"symbol": "GNOSWAP",
+			"change_24h": 4.5,
+			"amount": {
+				"value": 4505000000,
+				"denom": "gnosh"
+			}
+		},
+		{
+			"token_id": "3",
+			"name": "Cosmos",
+			"symbol": "Cosmos",
+			"change_24h": 12.7,
+			"amount": {
+				"value": 1005400000,
+				"denom": "uatom"
+			}
+		}
+	]
+}

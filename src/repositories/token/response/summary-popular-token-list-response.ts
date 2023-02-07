@@ -8,5 +8,5 @@ interface PopularTokenInfo {
 	token_id: string;
 	name: string;
 	symbol: string;
-	change_24h: string;
+	change_24h: number;
 }
