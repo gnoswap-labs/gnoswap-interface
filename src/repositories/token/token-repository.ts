@@ -14,11 +14,6 @@ interface SearchOption {
 	type: string;
 }
 
-interface PageOption {
-	page?: number;
-	limit?: number;
-}
-
 export interface TokenRepository {
 	getAllTokenMetas: () => Promise<TokenMetaListResponse>;
 
@@ -28,11 +23,7 @@ export interface TokenRepository {
 		searchOption: SearchOption,
 	) => Promise<TokenSearchListResponse>;
 
-	getTokenDatatable: (option: {
-		keyword?: string;
-		type?: string;
-		address?: string;
-	}) => Promise<TokenDatatableResponse>;
+	getTokenDatatable: () => Promise<TokenDatatableResponse>;
 
 	getRecentSearchTokensByAddress: (
 		address: string,
