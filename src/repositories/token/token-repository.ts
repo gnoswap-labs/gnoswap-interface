@@ -1,10 +1,12 @@
 import {
-	TokenListResponse,
+	TokenDatatableResponse,
 	TokenInfoResponse,
 	SummaryPopularTokenListResponse,
 	SummaryHighestRewardListResponse,
 	SummaryRecentlyAddedListResponse,
 	TokenSearchListResponse,
+	ExchangeRateResponse,
+	TokenMetaListResponse,
 } from "./response";
 
 interface SearchOption {
@@ -18,19 +20,23 @@ interface PageOption {
 }
 
 export interface TokenRepository {
+	getAllTokenMetas: () => Promise<TokenMetaListResponse>;
+
+	getExchangeRateByTokenId: (tokenId: string) => Promise<ExchangeRateResponse>;
+
 	searchTokens: (
 		searchOption: SearchOption,
 	) => Promise<TokenSearchListResponse>;
 
-	getTokens: (option: {
+	getTokenDatatable: (option: {
 		keyword?: string;
 		type?: string;
 		address?: string;
-	}) => Promise<TokenListResponse>;
+	}) => Promise<TokenDatatableResponse>;
 
 	getRecentSearchTokensByAddress: (
 		address: string,
-	) => Promise<TokenListResponse>;
+	) => Promise<TokenDatatableResponse>;
 
 	getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
 

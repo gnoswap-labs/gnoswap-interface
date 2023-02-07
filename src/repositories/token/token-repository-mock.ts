@@ -1,128 +1,80 @@
 import {
-	generateId,
-	generateInteger,
-	generateNumber,
-	generateToken0,
-	generateTokenMetas,
-} from "@/common/utils/test-util";
-import {
-	TokenListResponse,
+	ExchangeRateResponse,
+	TokenDatatableResponse,
 	TokenRepository,
 	TokenInfoResponse,
 	SummaryHighestRewardListResponse,
 	SummaryRecentlyAddedListResponse,
 	SummaryPopularTokenListResponse,
 	TokenSearchListResponse,
+	TokenMetaListResponse,
 } from ".";
 
+import mockTokenInfos from "./mock/token-infos.json";
+import mockTokenDatatable from "./mock/token-datatable.json";
+import mockTokenMetas from "./mock/token-metas.json";
+import mockExchangeRate from "./mock/exchange-rates.json";
+import mockSummaryHighestRewards from "./mock/summary-highest-rewards.json";
+import mockSummaryPopularTokens from "./mock/summary-popular-tokens.json";
+import mockSummaryRecentAdded from "./mock/summary-recent-added.json";
+
 export class TokenRepositoryMock implements TokenRepository {
-	public searchTokens = async (
-		searchOption: any,
-	): Promise<TokenSearchListResponse> => {
+	public getAllTokenMetas = async (): Promise<TokenMetaListResponse> => {
+		return mockTokenMetas;
+	};
+
+	public getExchangeRateByTokenId = async (
+		tokenId: string,
+	): Promise<ExchangeRateResponse> => {
+		const rate = mockExchangeRate.tokens.find(
+			token => token.token_id === tokenId,
+		)?.rate;
+		if (!rate) {
+			throw new Error("Not found token");
+		}
 		return {
-			hits: 0,
-			total: 0,
-			tokens: [],
+			rate,
 		};
 	};
 
-	public getTokens = async (): Promise<TokenListResponse> => {
-		return TokenRepositoryMock.generateTokens();
+	public searchTokens = async (
+		searchOption: any,
+	): Promise<TokenSearchListResponse> => {
+		return mockTokenInfos;
+	};
+
+	public getTokenDatatable = async (): Promise<TokenDatatableResponse> => {
+		return mockTokenDatatable as TokenDatatableResponse;
 	};
 
 	public getRecentSearchTokensByAddress = async (
 		address: string,
-	): Promise<TokenListResponse> => {
-		return TokenRepositoryMock.generateTokens();
+	): Promise<TokenDatatableResponse> => {
+		return mockTokenDatatable as TokenDatatableResponse;
 	};
 
 	public getSummaryPopularTokens =
 		async (): Promise<SummaryPopularTokenListResponse> => {
-			return {
-				hits: 0,
-				total: 0,
-				tokens: [],
-			};
+			return mockSummaryPopularTokens;
 		};
 
 	public getSummaryHighestRewardTokens =
 		async (): Promise<SummaryHighestRewardListResponse> => {
-			return {
-				hits: 0,
-				total: 0,
-				pairs: [],
-			};
+			return mockSummaryHighestRewards;
 		};
 
 	public getSummaryRecentlyAddedTokens =
 		async (): Promise<SummaryRecentlyAddedListResponse> => {
-			return {
-				hits: 0,
-				total: 0,
-				pairs: [],
-			};
+			return mockSummaryRecentAdded;
 		};
 
 	public getTokenById = async (tokenId: string): Promise<TokenInfoResponse> => {
-		const { names } = generateTokenMetas();
-		return {
-			token_id: generateId(),
-			name: names[0],
-			symbol: names[0],
-			amount: {
-				value: generateNumber(100, 500000),
-				denom: names[0],
-			},
-		};
-	};
-
-	private static generateTokens = () => {
-		const tokens = [...new Array(generateInteger(5, 40))].map(
-			TokenRepositoryMock.generateToken,
+		const token = mockTokenInfos.tokens.find(
+			token => token.token_id === tokenId,
 		);
-		return {
-			hits: tokens.length,
-			total: tokens.length,
-			tokens,
-		};
-	};
-
-	private static generateToken = () => {
-		const { names } = generateTokenMetas();
-		const graph = new Array(20).map(_ => generateNumber(0, 100));
-		return {
-			name: names[0],
-			symbol: names[0],
-			type: "native",
-			price: generateNumber(100, 500000),
-			balance: generateNumber(100, 500000),
-			usd_value: generateNumber(100, 500000),
-			price_of_1h: generateNumber(100, 500000),
-			price_of_24h: generateNumber(100, 500000),
-			price_of_7d: generateNumber(100, 500000),
-			m_cap: generateNumber(100, 500000),
-			tvl: generateNumber(100, 500000),
-			volume: generateNumber(100, 500000),
-			most_liquidity_pool: TokenRepositoryMock.generateTokenPair(),
-			graph,
-		};
-	};
-
-	private static generateTokenPair = () => {
-		const { names } = generateTokenMetas();
-		return {
-			token0: {
-				token_id: `${generateNumber(100, 500000)}`,
-				name: names[0],
-				symbol: names[0],
-			},
-			token1: {
-				token_id: `${generateNumber(100, 500000)}`,
-				name: names[1],
-				symbol: names[1],
-			},
-			fee_tier: 0.3,
-			apr: generateNumber(0, 100),
-		};
+		if (!token) {
+			throw new Error("Not found token");
+		}
+		return token;
 	};
 }

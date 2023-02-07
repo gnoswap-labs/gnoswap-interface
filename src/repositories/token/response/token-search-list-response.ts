@@ -8,8 +8,8 @@ interface TokenSearchInfoResponse {
 	token_id: string;
 	name: string;
 	symbol: string;
-	balance: {
-		amount: number;
+	amount: {
+		value: number;
 		denom: string;
 	};
 }
