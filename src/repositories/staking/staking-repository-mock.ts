@@ -15,7 +15,7 @@ import {
 import { StakeRequest } from "./request";
 import { UnstakeRequest } from "./request/unstake-request";
 
-export class MockStakingRepository implements StakingRepository {
+export class StakingRepositoryMock implements StakingRepository {
 	public getStakingPeriods = async (): Promise<StakingPeriodListResponse> => {
 		return {
 			periods: [
@@ -41,14 +41,14 @@ export class MockStakingRepository implements StakingRepository {
 	public getStakesByAddress = async (
 		address: string,
 	): Promise<StakingListResponse> => {
-		return MockStakingRepository.generateStakes();
+		return StakingRepositoryMock.generateStakes();
 	};
 
 	public getStakesByAddressAndPoolId = async (
 		address: string,
 		poolId: string,
 	): Promise<StakingListResponse> => {
-		return MockStakingRepository.generateStakes();
+		return StakingRepositoryMock.generateStakes();
 	};
 
 	public stakeBy = async (request: StakeRequest): Promise<StakeResponse> => {
@@ -67,7 +67,7 @@ export class MockStakingRepository implements StakingRepository {
 
 	private static generateLiquidities = () => {
 		const liquidities = [...new Array(generateInteger(5, 40))].map(
-			MockStakingRepository.generateLiquidity,
+			StakingRepositoryMock.generateLiquidity,
 		);
 		return {
 			liquidities,
@@ -91,7 +91,7 @@ export class MockStakingRepository implements StakingRepository {
 
 	private static generateStakes = () => {
 		const stakes = new Array(generateInteger(5, 10)).map(
-			MockStakingRepository.generateStake,
+			StakingRepositoryMock.generateStake,
 		);
 		return {
 			stakes,
@@ -110,8 +110,8 @@ export class MockStakingRepository implements StakingRepository {
 
 	private static generateStakeResult = () => {
 		const items = [...new Array(generateInteger(5, 40))];
-		const liquidities = items.map(MockStakingRepository.generateLiquidity);
-		const unclaimedRewards = items.map(MockStakingRepository.generateLiquidity);
+		const liquidities = items.map(StakingRepositoryMock.generateLiquidity);
+		const unclaimedRewards = items.map(StakingRepositoryMock.generateLiquidity);
 		return {
 			total: liquidities.length,
 			period: "7",

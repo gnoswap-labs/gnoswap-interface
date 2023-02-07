@@ -1,9 +1,9 @@
 import { LiquidityService } from "./liquidity-service";
-import { MockLiquidityRepository } from "@/repositories/liquidity";
+import { LiquidityRepositoryMock } from "@/repositories/liquidity";
 import { LiquidityError } from "@/common/errors/liquidity";
 import BigNumber from "bignumber.js";
 
-const liquidityRepository = new MockLiquidityRepository();
+const liquidityRepository = new LiquidityRepositoryMock();
 const liquidityService = new LiquidityService(liquidityRepository);
 
 beforeEach(() => {

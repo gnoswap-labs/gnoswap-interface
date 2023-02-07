@@ -1,9 +1,9 @@
-import { PoolListInfoResponse, PoolRepository, MockPoolRepository } from ".";
+import { PoolListInfoResponse, PoolRepository, PoolRepositoryMock } from ".";
 
 let poolRepository: PoolRepository;
 
 beforeEach(() => {
-	poolRepository = new MockPoolRepository();
+	poolRepository = new PoolRepositoryMock();
 });
 
 describe("pool repository", () => {

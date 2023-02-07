@@ -18,17 +18,17 @@ import {
 	PoolChartResopnse,
 } from ".";
 
-export class MockPoolRepository implements PoolRepository {
+export class PoolRepositoryMock implements PoolRepository {
 	getPools = async (option?: {} | undefined): Promise<PoolListResponse> => {
-		return MockPoolRepository.generatePools();
+		return PoolRepositoryMock.generatePools();
 	};
 
 	getPoolsByAddress = async (address: string): Promise<PoolListResponse> => {
-		return MockPoolRepository.generatePools();
+		return PoolRepositoryMock.generatePools();
 	};
 
 	getPoolById = async (poolId: string): Promise<PoolInfoResponse> => {
-		return MockPoolRepository.generatePoolInfo();
+		return PoolRepositoryMock.generatePoolInfo();
 	};
 
 	getPoolChartTicks = async (poolId: string): Promise<PoolChartResopnse> => {
@@ -43,7 +43,7 @@ export class MockPoolRepository implements PoolRepository {
 			const token1Rate = generateNumber(0, 100);
 			return {
 				changed_of_24h: generateNumber(1000000000, 90000000000),
-				liquidity: MockPoolRepository.generateTokenPair(),
+				liquidity: PoolRepositoryMock.generateTokenPair(),
 				pooled_rate_token0: 100 - token1Rate,
 				pooled_rate_token1: token1Rate,
 			};
@@ -66,7 +66,7 @@ export class MockPoolRepository implements PoolRepository {
 
 	private static generatePools = () => {
 		const pools = [...new Array(generateInteger(5, 40))].map(
-			MockPoolRepository.generatePoolInfo,
+			PoolRepositoryMock.generatePoolInfo,
 		);
 
 		return {
@@ -77,7 +77,7 @@ export class MockPoolRepository implements PoolRepository {
 	};
 
 	private static generatePoolInfo = () => {
-		const rewardPair = MockPoolRepository.generateTokenPair();
+		const rewardPair = PoolRepositoryMock.generateTokenPair();
 		return {
 			pool_id: `${generateNumber(0, 100000)}`,
 			incentivized_type: [
@@ -89,7 +89,7 @@ export class MockPoolRepository implements PoolRepository {
 				| "NON_INCENTIVZED"
 				| "EXTERNAL_INCENTIVZED",
 			fee_rate: 0.01,
-			liquidity: MockPoolRepository.generateTokenPair(),
+			liquidity: PoolRepositoryMock.generateTokenPair(),
 			apr: generateNumber(0, 100),
 			volumn_24h: generateNumber(1000000000, 90000000000),
 			fees_24h: generateNumber(100, 900000000),

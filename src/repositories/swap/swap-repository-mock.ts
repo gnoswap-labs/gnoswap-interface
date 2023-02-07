@@ -8,7 +8,7 @@ import {
 } from ".";
 import { SwapRequest } from "./request";
 
-export class MockSwapRepository implements SwapRepository {
+export class SwapRepositoryMock implements SwapRepository {
 	public getSwapRate = async (
 		token0Symbol: string,
 		token1Symbol: string,

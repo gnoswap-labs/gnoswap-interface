@@ -15,7 +15,7 @@ import {
 	TokenSearchListResponse,
 } from ".";
 
-export class MockTokenRepository implements TokenRepository {
+export class TokenRepositoryMock implements TokenRepository {
 	public searchTokens = async (
 		searchOption: any,
 	): Promise<TokenSearchListResponse> => {
@@ -27,13 +27,13 @@ export class MockTokenRepository implements TokenRepository {
 	};
 
 	public getTokens = async (): Promise<TokenListResponse> => {
-		return MockTokenRepository.generateTokens();
+		return TokenRepositoryMock.generateTokens();
 	};
 
 	public getRecentSearchTokensByAddress = async (
 		address: string,
 	): Promise<TokenListResponse> => {
-		return MockTokenRepository.generateTokens();
+		return TokenRepositoryMock.generateTokens();
 	};
 
 	public getSummaryPopularTokens =
@@ -78,7 +78,7 @@ export class MockTokenRepository implements TokenRepository {
 
 	private static generateTokens = () => {
 		const tokens = [...new Array(generateInteger(5, 40))].map(
-			MockTokenRepository.generateToken,
+			TokenRepositoryMock.generateToken,
 		);
 		return {
 			hits: tokens.length,
@@ -103,7 +103,7 @@ export class MockTokenRepository implements TokenRepository {
 			m_cap: generateNumber(100, 500000),
 			tvl: generateNumber(100, 500000),
 			volume: generateNumber(100, 500000),
-			most_liquidity_pool: MockTokenRepository.generateTokenPair(),
+			most_liquidity_pool: TokenRepositoryMock.generateTokenPair(),
 			graph,
 		};
 	};

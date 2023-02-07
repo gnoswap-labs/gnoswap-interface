@@ -11,10 +11,10 @@ export default function Home() {
 	const text = JSON.stringify(accountInfo, null, 2);
 
 	const onClickGetAccountButton = () => {
-		// accountRepository
-		// 	.getTransactions("123")
-		// 	.then(res => console.log("txs", res));
-		accountService.getAccountInfo().then(setAccountInfo);
+		accountRepository
+			.getTransactions("123")
+			.then(res => console.log("txs", res));
+		// accountService.getAccountInfo().then(setAccountInfo);
 	};
 
 	return (
