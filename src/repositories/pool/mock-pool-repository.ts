@@ -18,17 +18,17 @@ import {
 	PoolChartResopnse,
 } from ".";
 
-export class PoolRepositoryMock implements PoolRepository {
+export class MockPoolRepository implements PoolRepository {
 	getPools = async (option?: {} | undefined): Promise<PoolListResponse> => {
-		return PoolRepositoryMock.generatePools();
+		return MockPoolRepository.generatePools();
 	};
 
 	getPoolsByAddress = async (address: string): Promise<PoolListResponse> => {
-		return PoolRepositoryMock.generatePools();
+		return MockPoolRepository.generatePools();
 	};
 
 	getPoolById = async (poolId: string): Promise<PoolInfoResponse> => {
-		return PoolRepositoryMock.generatePoolInfo();
+		return MockPoolRepository.generatePoolInfo();
 	};
 
 	getPoolChartTicks = async (poolId: string): Promise<PoolChartResopnse> => {
@@ -43,7 +43,7 @@ export class PoolRepositoryMock implements PoolRepository {
 			const token1Rate = generateNumber(0, 100);
 			return {
 				changed_of_24h: generateNumber(1000000000, 90000000000),
-				liquidity: PoolRepositoryMock.generateTokenPair(),
+				liquidity: MockPoolRepository.generateTokenPair(),
 				pooled_rate_token0: 100 - token1Rate,
 				pooled_rate_token1: token1Rate,
 			};
@@ -66,7 +66,7 @@ export class PoolRepositoryMock implements PoolRepository {
 
 	private static generatePools = () => {
 		const pools = [...new Array(generateInteger(5, 40))].map(
-			PoolRepositoryMock.generatePoolInfo,
+			MockPoolRepository.generatePoolInfo,
 		);
 
 		return {
@@ -77,7 +77,7 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	private static generatePoolInfo = () => {
-		const rewardPair = PoolRepositoryMock.generateTokenPair();
+		const rewardPair = MockPoolRepository.generateTokenPair();
 		return {
 			pool_id: `${generateNumber(0, 100000)}`,
 			incentivized_type: [
@@ -89,7 +89,7 @@ export class PoolRepositoryMock implements PoolRepository {
 				| "NON_INCENTIVZED"
 				| "EXTERNAL_INCENTIVZED",
 			fee_rate: 0.01,
-			liquidity: PoolRepositoryMock.generateTokenPair(),
+			liquidity: MockPoolRepository.generateTokenPair(),
 			apr: generateNumber(0, 100),
 			volumn_24h: generateNumber(1000000000, 90000000000),
 			fees_24h: generateNumber(100, 900000000),

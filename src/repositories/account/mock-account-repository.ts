@@ -12,15 +12,15 @@ import {
 	AccountTransactionResponse,
 } from ".";
 
-export class AccountRepositoryMock implements AccountRepository {
+export class MockAccountRepository implements AccountRepository {
 	public getAccount = async (): Promise<AccountInfoResponse> => {
-		return AccountRepositoryMock.generateAccount();
+		return MockAccountRepository.generateAccount();
 	};
 
 	public getTransactions = async (
 		address: string,
 	): Promise<AccountTransactionResponse> => {
-		return AccountRepositoryMock.generateTransactions();
+		return MockAccountRepository.generateTransactions();
 	};
 
 	public existsWallet = () => {
@@ -68,7 +68,7 @@ export class AccountRepositoryMock implements AccountRepository {
 		const statusIndex = Math.round(generateNumber(7, 15));
 		let txs = [];
 		for (let i = 0; i < statusIndex; i++) {
-			txs.push(AccountRepositoryMock.generateTransaction());
+			txs.push(MockAccountRepository.generateTransaction());
 		}
 		return {
 			total: txs.length,

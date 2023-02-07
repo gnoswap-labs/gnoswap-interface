@@ -1,3 +1,3 @@
 export * from "./response";
 export * from "./pool-repository";
-export * from "./pool-repository-mock";
+export * from "./mock-pool-repository";

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
 	AccountRepositoryInstance,
-	AccountRepositoryMock,
+	MockAccountRepository,
 } from "@/repositories/account";
-import { LiquidityRepositoryMock } from "@/repositories/liquidity";
-import { PoolRepositoryMock } from "@/repositories/pool";
-import { StakingRepositoryMock } from "@/repositories/staking";
-import { SwapRepositoryMock } from "@/repositories/swap";
-import { TokenRepositoryMock } from "@/repositories/token";
+import { MockLiquidityRepository } from "@/repositories/liquidity";
+import { MockPoolRepository } from "@/repositories/pool";
+import { MockStakingRepository } from "@/repositories/staking";
+import { MockSwapRepository } from "@/repositories/swap";
+import { MockTokenRepository } from "@/repositories/token";
 import { AccountService } from "@/services/account/account-service";
 import { GnoClient, GnoClientApi } from "gno-client";
 import { NetworkClient } from "../clients/network-client";
@@ -42,11 +42,11 @@ export const GnoswapProvider = ({ children }: Props) => {
 		"TEST3",
 	);
 	const accountRepository = new AccountRepositoryInstance(walletClient);
-	const liquidityRepository = new LiquidityRepositoryMock();
-	const poolRepository = new PoolRepositoryMock();
-	const stakingRepository = new StakingRepositoryMock();
-	const swapRepository = new SwapRepositoryMock();
-	const tokenRepository = new TokenRepositoryMock();
+	const liquidityRepository = new MockLiquidityRepository();
+	const poolRepository = new MockPoolRepository();
+	const stakingRepository = new MockStakingRepository();
+	const swapRepository = new MockSwapRepository();
+	const tokenRepository = new MockTokenRepository();
 
 	const accountService = new AccountService(accountRepository);
 	const poolService = new PoolService(poolRepository);

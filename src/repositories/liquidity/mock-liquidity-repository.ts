@@ -25,21 +25,21 @@ import {
 	ClaimRewardReqeust,
 } from "./request";
 
-export class LiquidityRepositoryMock implements LiquidityRepository {
+export class MockLiquidityRepository implements LiquidityRepository {
 	public getLiquidityById = async (
 		liquidityId: string,
 	): Promise<LiquidityDetailInfoResponse> => {
 		if (liquidityId === "0") {
 			throw new LiquidityError("NOT_FOUND_LIQUIDITY");
 		}
-		return LiquidityRepositoryMock.generateLiquidity();
+		return MockLiquidityRepository.generateLiquidity();
 	};
 
 	public getLiquiditiesByAddress = async (
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
 		const liquidities = [...new Array(generateInteger(5, 40))].map(
-			LiquidityRepositoryMock.generateLiquidity,
+			MockLiquidityRepository.generateLiquidity,
 		);
 		return {
 			total: liquidities.length,
@@ -57,7 +57,7 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 			throw new LiquidityError("NOT_FOUND_LIQUIDITY");
 		}
 		const liquidities = [...new Array(generateInteger(5, 40))].map(
-			LiquidityRepositoryMock.generateLiquidity,
+			MockLiquidityRepository.generateLiquidity,
 		);
 		return {
 			total: liquidities.length,
@@ -72,7 +72,7 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
 		const liquidities = [...new Array(generateInteger(5, 40))].map(
-			LiquidityRepositoryMock.generateLiquidity,
+			MockLiquidityRepository.generateLiquidity,
 		);
 		return {
 			total: liquidities.length,
@@ -101,7 +101,7 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		address: string,
 		poolId: string,
 	): Promise<LiquidityRewardResponse> => {
-		return LiquidityRepositoryMock.generateLiquidity();
+		return MockLiquidityRepository.generateLiquidity();
 	};
 
 	public claimRewardByPoolId = async (
@@ -128,13 +128,13 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 			max_rate: 2.4,
 			min_rate: 0.14,
 			fee_rate: 0.5,
-			liquidity: LiquidityRepositoryMock.generateTokenPair(),
-			apr: LiquidityRepositoryMock.generateTokenPair(),
-			total_balance: LiquidityRepositoryMock.generateTokenPair(),
-			daily_earning: LiquidityRepositoryMock.generateTokenPair(),
+			liquidity: MockLiquidityRepository.generateTokenPair(),
+			apr: MockLiquidityRepository.generateTokenPair(),
+			total_balance: MockLiquidityRepository.generateTokenPair(),
+			daily_earning: MockLiquidityRepository.generateTokenPair(),
 			reward: {
-				staking: LiquidityRepositoryMock.generateTokenPair(),
-				swap: LiquidityRepositoryMock.generateTokenPair(),
+				staking: MockLiquidityRepository.generateTokenPair(),
+				swap: MockLiquidityRepository.generateTokenPair(),
 			},
 		};
 	};
