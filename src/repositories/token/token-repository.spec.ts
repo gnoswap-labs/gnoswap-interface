@@ -1,6 +1,7 @@
+import { MockStorageClient } from "@/common/clients/storage-client/mock-storage-client";
 import { TokenRepositoryMock } from "./token-repository-mock";
 
-const tokenRepository = new TokenRepositoryMock();
+const tokenRepository = new TokenRepositoryMock(new MockStorageClient("LOCAL"));
 
 describe("getAllTokenMetas", () => {
 	it("success", async () => {
