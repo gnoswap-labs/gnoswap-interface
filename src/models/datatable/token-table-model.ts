@@ -1,3 +1,4 @@
+import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenPairModel } from "./../token/token-pair-model";
 export interface TokenTableModel {
 	hits: number;
@@ -5,11 +6,11 @@ export interface TokenTableModel {
 	tokens: Array<TokenDetailType>;
 }
 
-interface TokenDetailType {
+export interface TokenDetailType {
 	tokenId: string;
+	type: TokenTableSelectType;
 	name: string;
 	symbol: string;
-	type: string;
 	price: number;
 	priceOf1h: number;
 	priceOf24h: number;
@@ -21,7 +22,7 @@ interface TokenDetailType {
 	graph: Array<number>;
 }
 
-interface MostLiquidityPoolType {
+export interface MostLiquidityPoolType {
 	feeTier: number;
 	apr: number;
 	tokenPair: TokenPairModel;

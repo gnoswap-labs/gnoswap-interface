@@ -1,3 +1,5 @@
+import { amountEmptyBigNumInit } from "./../../../common/values/global-initial-value";
+import { amountFormatToBignum } from "./../../../common/utils/denom-util";
 import { AmountNumberType, AmountType } from "@/common/types/data-prop-types";
 import BigNumber from "bignumber.js";
 import { TokenDefaultModel } from "../token-default-model";
@@ -32,10 +34,9 @@ export class TokenModelMapper {
 	public static toRequest(model: TokenDefaultModel) {
 		return {
 			tokenId: model.tokenId,
-			amount: {
-				...model.amount,
-				value: model.amount.value.toString(),
-			},
+			amount: model.amount
+				? amountFormatToBignum(model.amount)
+				: amountEmptyBigNumInit,
 		};
 	}
 }

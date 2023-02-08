@@ -9,3 +9,7 @@ export interface AmountNumberType {
 	value: number;
 	denom: string;
 }
+export interface SearchOption {
+	keyword: string;
+	type: string;
+}

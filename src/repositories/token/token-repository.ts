@@ -1,3 +1,4 @@
+import { SearchOption } from "@/common/types/data-prop-types";
 import {
 	TokenDatatableResponse,
 	TokenInfoResponse,
@@ -8,11 +9,6 @@ import {
 	ExchangeRateResponse,
 	TokenMetaListResponse,
 } from "./response";
-
-interface SearchOption {
-	keyword: string;
-	type: string;
-}
 
 export interface TokenRepository {
 	getAllTokenMetas: () => Promise<TokenMetaListResponse>;

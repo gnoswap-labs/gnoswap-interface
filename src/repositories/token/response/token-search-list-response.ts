@@ -4,7 +4,7 @@ export interface TokenSearchListResponse {
 	tokens: Array<TokenSearchInfoResponse>;
 }
 
-interface TokenSearchInfoResponse {
+export interface TokenSearchInfoResponse {
 	token_id: string;
 	name: string;
 	symbol: string;

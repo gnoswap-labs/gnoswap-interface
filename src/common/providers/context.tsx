@@ -8,10 +8,12 @@ import { AccountService } from "@/services/account/account-service";
 import { LiquidityService } from "@/services/liquidity/liquidity-service";
 import { PoolService } from "@/services/pool/pool-service";
 import { StakingService } from "@/services/staking/staking-service";
+import { TokenService } from "@/services/token/token-service";
 import { createContext } from "react";
 
 export interface GnoswapContextProps {
 	accountService: AccountService;
+	tokenService: TokenService;
 	poolService: PoolService;
 	liquidityService: LiquidityService;
 	stakingService: StakingService;

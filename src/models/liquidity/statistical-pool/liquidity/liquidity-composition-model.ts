@@ -6,6 +6,6 @@ export interface LiquidityCompositionModel {
 }
 
 interface TokenPairRate {
-	rateTokenA: number;
-	rateTokenB: number;
+	rateToken0: number;
+	rateToken1: number;
 }

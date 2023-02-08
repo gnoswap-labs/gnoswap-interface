@@ -4,7 +4,7 @@ export interface TokenDatatableResponse {
 	tokens: Array<TokenTableData>;
 }
 
-interface TokenTableData {
+export interface TokenTableData {
 	token_id: string;
 	name: string;
 	type: "NATIVE" | "GRC20";
@@ -20,7 +20,7 @@ interface TokenTableData {
 	graph: Array<number>;
 }
 
-interface MostLiquidityPoolInfo {
+export interface MostLiquidityPoolInfo {
 	token0: {
 		token_id: string;
 		name: string;

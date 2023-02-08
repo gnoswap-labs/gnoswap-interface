@@ -11,7 +11,6 @@ import { AccountRepository } from ".";
 
 export class AccountRepositoryInstance implements AccountRepository {
 	private walletClient: WalletClient;
-
 	private localStorageClient: StorageClient<StorageKeyType>;
 
 	constructor(walletClient: WalletClient, localStorageClient: StorageClient) {

@@ -19,6 +19,7 @@ import { StorageClient, WebStorageClient } from "../clients/storage-client";
 import { PoolService } from "@/services/pool/pool-service";
 import { LiquidityService } from "@/services/liquidity/liquidity-service";
 import { StakingService } from "@/services/staking/staking-service";
+import { TokenService } from "@/services/token/token-service";
 
 interface Props {
 	children: React.ReactNode;
@@ -52,6 +53,7 @@ export const GnoswapProvider = ({ children }: Props) => {
 	const tokenRepository = new TokenRepositoryMock();
 
 	const accountService = new AccountService(accountRepository);
+	const tokenService = new TokenService(tokenRepository);
 	const poolService = new PoolService(poolRepository);
 	const liquidityService = new LiquidityService(liquidityRepository);
 	const stakingService = new StakingService(stakingRepository);
@@ -60,6 +62,7 @@ export const GnoswapProvider = ({ children }: Props) => {
 		<GnoswapContext.Provider
 			value={{
 				accountService,
+				tokenService,
 				poolService,
 				liquidityService,
 				stakingService,
