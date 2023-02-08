@@ -16,10 +16,11 @@ export interface TokenRepository {
 
 	getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
 
-	searchTokens: (
-		keyword: string,
-		address: string,
-	) => Promise<TokenSearchListResponse>;
+	searchTokens: (keyword: string) => Promise<TokenSearchListResponse>;
+
+	createSearchLog: (searchToken: any) => boolean;
+
+	getSearchLogs: () => Array<any>;
 
 	getAllExchangeRates: (tokenId: string) => Promise<ExchangeRateResponse>;
 

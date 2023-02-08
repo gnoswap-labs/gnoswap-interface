@@ -7,7 +7,7 @@ export type IncentivizedOptions =
 	| "EXTERNAL_INCENTIVIZED";
 export type StatusOptions = "SUCCESS" | "PENDING" | "FAILED";
 export type ActiveStatusOptions = "ACTIVE" | "IN_ACTIVE";
-export type TokenTableSelectType = "NATIVE" | "GRC20";
+export type TokenTableSelectType = "NATIVE" | "GRC20" | "ALL";
 export enum NotificationType {
 	"Approve" = 0,
 	"CreatePool" = 1,

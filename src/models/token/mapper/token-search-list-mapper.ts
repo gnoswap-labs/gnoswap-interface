@@ -1,26 +1,35 @@
 import { amountFormatToBignum } from "@/common/utils/denom-util";
 import {
-	TokenSearchInfoResponse,
+	TokenInfoResponse,
+	TokenSearchItemResponse,
 	TokenSearchListResponse,
 } from "@/repositories/token";
-import { TokenListModel } from "../token-list-model";
 import { TokenDefaultModel } from "../token-default-model";
+import {
+	TokenSearchItemType,
+	TokenSearchListModel,
+} from "../token-search-list-model";
 
 export class TokenSearchListMapper {
 	public static fromResponse(
 		response: TokenSearchListResponse,
-	): TokenListModel {
-		const { hits, total, tokens } = response;
+	): TokenSearchListModel {
 		return {
-			hits,
-			total,
-			tokens: tokens.map(TokenSearchListMapper.mappedTokenKeyValue),
+			items: response.items.map(TokenSearchListMapper.mappedSearchList),
 		};
 	}
 
-	private static mappedTokenKeyValue(
-		t: TokenSearchInfoResponse,
-	): TokenDefaultModel {
+	private static mappedSearchList(
+		item: TokenSearchItemResponse,
+	): TokenSearchItemType {
+		return {
+			searchType: item.search_type,
+			changeRate: item.change_rate,
+			token: TokenSearchListMapper.mappedTokenModel(item.token),
+		};
+	}
+
+	private static mappedTokenModel(t: TokenInfoResponse): TokenDefaultModel {
 		return {
 			tokenId: t.token_id,
 			name: t.name,

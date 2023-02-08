@@ -75,7 +75,9 @@ export default function Home() {
 	};
 
 	const onClickSearchToken = () => {
-		tokenService.getSearchTokens({ keyword: "asd", type: "asd" });
+		tokenService
+			.getSearchTokenDatatable({ keyword: "1", type: "ALL" })
+			.then(res => console.log("Search Token : ", res));
 	};
 
 	return (

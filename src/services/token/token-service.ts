@@ -8,6 +8,8 @@ import { TokenModelMapper } from "@/models/token/mapper/token-model-mapper";
 import { returnNullWithLog } from "@/common/utils/error-util";
 import { SearchOption } from "@/common/types/data-prop-types";
 import { TokenTableSelectType } from "@/common/values/data-constant";
+import { TokenTableModel } from "@/models/datatable/token-table-model";
+import { TokenSearchItemType } from "@/models/token/token-search-list-model";
 
 export class TokenService {
 	private tokenRepository: TokenRepository;
@@ -25,12 +27,12 @@ export class TokenService {
 			.catch(returnNullWithLog);
 	};
 
-	public getTokenDatatable = async (type?: TokenTableSelectType) => {
+	public getTokenDatatable = async (type: TokenTableSelectType = "ALL") => {
 		if (type === "GRC20") {
-			return this.getGRC20TokenDatatable().catch(returnNullWithLog);
+			return await this.getGRC20TokenDatatable().catch(returnNullWithLog);
 		}
 
-		return this.getAllTokenDatatable().catch(returnNullWithLog);
+		return await this.getAllTokenDatatable().catch(returnNullWithLog);
 	};
 
 	private getAllTokenDatatable = async () => {
@@ -40,8 +42,32 @@ export class TokenService {
 	};
 
 	private getGRC20TokenDatatable = async () => {
-		return await this.getAllTokenDatatable().then(res =>
-			res.tokens.filter(token => token.type === "GRC20"),
+		return await this.getAllTokenDatatable().then(res => ({
+			...res,
+			tokens: res.tokens.filter(token => token.type === "GRC20"),
+		}));
+	};
+
+	public getSearchTokenDatatable = async ({
+		keyword,
+		type = "ALL",
+	}: {
+		keyword: string;
+		type: TokenTableSelectType;
+	}) => {
+		return await this.getTokenDatatable(type)
+			.then(res =>
+				this.searchTokenKeywordFilter(keyword, res as TokenTableModel),
+			)
+			.catch(returnNullWithLog);
+	};
+
+	private searchTokenKeywordFilter = async (
+		keyword: string,
+		data: TokenTableModel,
+	) => {
+		return data?.tokens.filter(
+			token => token.name.includes(keyword) || token.symbol.includes(keyword),
 		);
 	};
 
@@ -66,12 +92,16 @@ export class TokenService {
 			.catch(returnNullWithLog);
 	};
 
-	public getSearchTokens = async (searchOption: SearchOption) => {
-		// return await this.tokenRepository
-		// 	.searchTokens(searchOption)
-		// 	.then(TokenSearchListMapper.fromResponse)
-		// 	.catch(returnNullWithLog);
+	public searchTokens = async (keyword: string) => {
+		return await this.tokenRepository
+			.searchTokens(keyword)
+			.then(TokenSearchListMapper.fromResponse)
+			.catch(returnNullWithLog);
 	};
 
-	public getRecentSearchTokensByAddess = async () => {};
+	public createSearchLog = async (searchToken: TokenSearchItemType) => {
+		return this.tokenRepository.createSearchLog(searchToken);
+	};
+
+	public getSearchLogs = async () => {};
 }
