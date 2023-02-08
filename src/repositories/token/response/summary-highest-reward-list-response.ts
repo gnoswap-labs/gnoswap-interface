@@ -4,7 +4,8 @@ export interface SummaryHighestRewardListResponse {
 	pairs: Array<HighestRewardPairInfo>;
 }
 
-export interface HighestRewardPairInfo {
+interface HighestRewardPairInfo {
+	pool_id: string;
 	token0: {
 		token_id: string;
 		name: string;
