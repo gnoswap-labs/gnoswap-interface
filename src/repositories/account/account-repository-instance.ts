@@ -74,7 +74,7 @@ export class AccountRepositoryInstance implements AccountRepository {
 		return true;
 	};
 
-	public updateNotifiactionStatus = async (
+	public updateNotificationStatus = async (
 		address: string,
 		txHash: string,
 		status: StatusOptions,
