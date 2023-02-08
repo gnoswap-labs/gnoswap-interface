@@ -6,6 +6,7 @@ export interface RecentlyAddedPoolModel {
 }
 
 export interface SummaryRecentlyPairType {
+	poolId: string;
 	feeTier: number;
 	apr: number;
 	tokenPair: TokenPairModel;

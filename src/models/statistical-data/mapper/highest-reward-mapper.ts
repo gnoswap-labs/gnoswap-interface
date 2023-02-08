@@ -24,6 +24,7 @@ export class HighestRewardMapper {
 		t: HighestRewardPairInfo,
 	): SummaryHighestPairType {
 		return {
+			poolId: t.pool_id,
 			tokenPair: {
 				token0: {
 					tokenId: t.token0.token_id,

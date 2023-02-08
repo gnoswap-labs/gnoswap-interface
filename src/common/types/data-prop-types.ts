@@ -13,3 +13,8 @@ export interface SearchOption {
 	keyword: string;
 	type: string;
 }
+
+export interface RecentSearchOption {
+	keyword: string;
+	address?: string;
+}

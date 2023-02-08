@@ -24,6 +24,7 @@ export class RecentlyAddedMapper {
 		t: RecentlyAddedPairInfo,
 	): SummaryRecentlyPairType {
 		return {
+			poolId: t.pool_id,
 			tokenPair: {
 				token0: {
 					tokenId: t.token0.token_id,

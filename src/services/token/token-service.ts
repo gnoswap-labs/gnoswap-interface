@@ -1,4 +1,4 @@
-import { TokenSearchListMapper } from "./../../models/token/mapper/token-search-list-mapper";
+import { TokenSearchListMapper } from "@/models/token/mapper/token-search-list-mapper";
 import { RecentlyAddedMapper } from "@/models/statistical-data/mapper/recently-added-mapper";
 import { HighestRewardMapper } from "@/models/statistical-data/mapper/highest-reward-mapper";
 import { PopularTokenMapper } from "@/models/statistical-data/mapper/popular-token-mapper";

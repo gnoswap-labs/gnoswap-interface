@@ -51,12 +51,6 @@ export default function Home() {
 	};
 
 	const onClickTokenDatatable = () => {
-		// tokenService
-		// 	.getTokenDatatable()
-		// 	.then(res => console.log("Token Datatable : ", res));
-		// tokenRepository
-		// 	.getSummaryPopularTokens()
-		// 	.then(res => console.log("tegst : ", res));
 		tokenService
 			.getTokenDatatable("GRC20")
 			.then(res => console.log("tegst : ", res));

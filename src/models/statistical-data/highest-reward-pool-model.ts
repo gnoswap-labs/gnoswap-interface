@@ -6,6 +6,7 @@ export interface HighestRewardPoolModel {
 }
 
 export interface SummaryHighestPairType {
+	poolId: string;
 	feeTier: number;
 	apr: number;
 	tokenPair: TokenPairModel;
