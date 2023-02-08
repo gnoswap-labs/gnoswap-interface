@@ -19,8 +19,17 @@ import mockSummaryHighestRewards from "./mock/summary-highest-rewards.json";
 import mockSummaryPopularTokens from "./mock/summary-popular-tokens.json";
 import mockSummaryRecentAdded from "./mock/summary-recent-added.json";
 import mockSearchTokens from "./mock/search-tokens.json";
+import { StorageClient } from "@/common/clients/storage-client";
+import { TokenSearchItemType } from "@/models/token/token-search-list-model";
+import { StorageKeyType } from "@/common/values";
 
 export class TokenRepositoryMock implements TokenRepository {
+	private localStorageClient: StorageClient<StorageKeyType>;
+
+	constructor(localStorageClient: StorageClient) {
+		this.localStorageClient = localStorageClient;
+	}
+
 	public getAllTokenMetas = async (): Promise<TokenMetaListResponse> => {
 		return mockTokenMetas;
 	};
@@ -42,20 +51,28 @@ export class TokenRepositoryMock implements TokenRepository {
 		};
 	};
 
-	public createSearchLog = (searchToken: any) => {
+	public createSearchLog = (searchToken: TokenSearchItemType) => {
+		const searchLogs = [searchToken, ...this.getSearchLogs()];
+		this.localStorageClient.set(
+			"search-token-logs",
+			JSON.stringify(searchLogs),
+		);
 		return true;
 	};
 
-	public getSearchLogs = () => {
-		const items = mockSearchTokens.items
-			.filter(item => item.search_type !== "POPULAR_TOKEN")
-			.map(item => {
-				return {
-					...item,
-					search_type: "RECENT",
-				};
-			});
-		return items;
+	public getSearchLogs = (): Array<TokenSearchItemType> => {
+		const logValue = this.localStorageClient.get("search-token-logs");
+		if (!logValue) {
+			return [];
+		}
+
+		let logs: Array<TokenSearchItemType> = [];
+		try {
+			logs = JSON.parse(logValue);
+		} catch (e) {
+			throw new Error("Not found history");
+		}
+		return logs;
 	};
 
 	public getAllExchangeRates = async (
