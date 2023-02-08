@@ -1,9 +1,9 @@
 export interface TokenSearchListResponse {
-	recentTokens: Array<TokenSearchItemResponse>;
-	popularTokens: Array<TokenSearchItemResponse>;
+	items: Array<TokenSearchItemResponse>;
 }
 
 interface TokenSearchItemResponse {
+	search_type: string;
 	change_rate: number;
 	token: {
 		token_id: string;

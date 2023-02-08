@@ -26,9 +26,36 @@ export class TokenRepositoryMock implements TokenRepository {
 	};
 
 	public searchTokens = async (
-		searchOption: any,
+		keyword: string,
 	): Promise<TokenSearchListResponse> => {
-		return mockSearchTokens;
+		if (keyword.length < 1) {
+			return {
+				items: mockSearchTokens.items.filter(
+					item => item.search_type === "POPULAR_TOKEN",
+				),
+			};
+		}
+		return {
+			items: mockSearchTokens.items.filter(
+				item => item.search_type !== "POPULAR_TOKEN",
+			),
+		};
+	};
+
+	public createSearchLog = (searchToken: any) => {
+		return true;
+	};
+
+	public getSearchLogs = () => {
+		const items = mockSearchTokens.items
+			.filter(item => item.search_type !== "POPULAR_TOKEN")
+			.map(item => {
+				return {
+					...item,
+					search_type: "RECENT",
+				};
+			});
+		return items;
 	};
 
 	public getAllExchangeRates = async (

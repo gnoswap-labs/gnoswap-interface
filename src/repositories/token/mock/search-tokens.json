@@ -1,7 +1,8 @@
 {
-	"recentTokens": [
+	"items": [
 		{
 			"change_rate": 4.678,
+			"search_type": "POPULAR_TOKEN",
 			"token": {
 				"token_id": "1",
 				"name": "Gnoland",
@@ -14,6 +15,7 @@
 		},
 		{
 			"change_rate": 0,
+			"search_type": "POPULAR_TOKEN",
 			"token": {
 				"token_id": "3",
 				"name": "Cosmos",
@@ -23,11 +25,10 @@
 					"denom": "uatom"
 				}
 			}
-		}
-	],
-	"popularTokens": [
+		},
 		{
 			"change_rate": 4.678,
+			"search_type": "TOKEN",
 			"token": {
 				"token_id": "1",
 				"name": "Gnoland",
@@ -40,6 +41,7 @@
 		},
 		{
 			"change_rate": -12.4,
+			"search_type": "TOKEN",
 			"token": {
 				"token_id": "2",
 				"name": "Gnoswap",
@@ -52,6 +54,7 @@
 		},
 		{
 			"change_rate": 0,
+			"search_type": "TOKEN",
 			"token": {
 				"token_id": "3",
 				"name": "Cosmos",
