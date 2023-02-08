@@ -5,6 +5,7 @@ export interface TokenDatatableResponse {
 }
 
 interface TokenTableData {
+	token_id: string;
 	name: string;
 	type: "NATIVE" | "GRC20";
 	symbol: string;
@@ -24,11 +25,19 @@ interface MostLiquidityPoolInfo {
 		token_id: string;
 		name: string;
 		symbol: string;
+		amount?: {
+			value: number;
+			denom: string;
+		};
 	};
 	token1: {
 		token_id: string;
 		name: string;
 		symbol: string;
+		amount?: {
+			value: number;
+			denom: string;
+		};
 	};
 	fee_tier: number;
 	apr: number;
