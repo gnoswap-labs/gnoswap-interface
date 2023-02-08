@@ -5,6 +5,7 @@ export interface SummaryHighestRewardListResponse {
 }
 
 interface HighestRewardPairInfo {
+	pool_id: string;
 	token0: {
 		token_id: string;
 		name: string;

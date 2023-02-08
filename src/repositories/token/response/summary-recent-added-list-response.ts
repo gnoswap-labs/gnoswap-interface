@@ -5,6 +5,7 @@ export interface SummaryRecentlyAddedListResponse {
 }
 
 interface RecentlyAddedPairInfo {
+	pool_id: string;
 	token0: {
 		token_id: string;
 		name: string;
