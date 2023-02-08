@@ -1,12 +1,9 @@
 import {
-	generateId,
-	generateIndex,
 	generateInteger,
 	generateNumber,
 	generateNumberPlus,
 	generateToken0,
 	generateToken1,
-	generateTokenMetas,
 } from "@/common/utils/test-util";
 import {
 	PoolListResponse,
@@ -18,45 +15,57 @@ import {
 	PoolChartResopnse,
 } from ".";
 
+import PoolDetailDatas from "./mock/pool-details.json";
+
 export class PoolRepositoryMock implements PoolRepository {
+	getPoolById = async (poolId: string): Promise<PoolInfoResponse> => {
+		const { pools } = PoolDetailDatas;
+		const pool = pools.find(p => p.pool_id === poolId);
+		if (!pool) {
+			throw new Error("Not found pool");
+		}
+		return pool as PoolInfoResponse;
+	};
+
 	getPools = async (option?: {} | undefined): Promise<PoolListResponse> => {
-		return PoolRepositoryMock.generatePools();
+		return PoolDetailDatas as PoolListResponse;
 	};
 
 	getPoolsByAddress = async (address: string): Promise<PoolListResponse> => {
-		return PoolRepositoryMock.generatePools();
-	};
-
-	getPoolById = async (poolId: string): Promise<PoolInfoResponse> => {
-		return PoolRepositoryMock.generatePoolInfo();
+		return PoolDetailDatas as PoolListResponse;
 	};
 
 	getPoolChartTicks = async (poolId: string): Promise<PoolChartResopnse> => {
 		return {
-			pool_id: generateId(),
-			ticks: [],
+			pool_id: poolId,
+			ticks: PoolRepositoryMock.generateTicks(),
 		};
 	};
 
-	getPoolSummaryLiquidityById =
-		async (): Promise<PoolSummaryLiquidityResponse> => {
-			const token1Rate = generateNumber(0, 100);
-			return {
-				changed_of_24h: generateNumber(1000000000, 90000000000),
-				liquidity: PoolRepositoryMock.generateTokenPair(),
-				pooled_rate_token0: 100 - token1Rate,
-				pooled_rate_token1: token1Rate,
-			};
+	getPoolSummaryLiquidityById = async (
+		poolId: string,
+	): Promise<PoolSummaryLiquidityResponse> => {
+		const token1Rate = generateNumber(0, 100);
+		return {
+			changed_of_24h: generateNumber(1000000000, 90000000000),
+			liquidity: PoolRepositoryMock.generateTokenPair(),
+			pooled_rate_token0: 100 - token1Rate,
+			pooled_rate_token1: token1Rate,
 		};
+	};
 
-	getPoolSummaryVolumeById = async (): Promise<PoolSummaryVolumeResponse> => {
+	getPoolSummaryVolumeById = async (
+		poolId: string,
+	): Promise<PoolSummaryVolumeResponse> => {
 		return {
 			changed_of_24h: generateNumber(1000000000, 90000000000),
 			volume: generateNumber(1000000000, 90000000000),
 		};
 	};
 
-	getPoolSummaryAprById = async (): Promise<PoolSummaryAprResponse> => {
+	getPoolSummaryAprById = async (
+		poolId: string,
+	): Promise<PoolSummaryAprResponse> => {
 		return {
 			apr: generateNumber(1000, 90000000),
 			fees: generateNumber(1000, 90000000),
@@ -64,37 +73,14 @@ export class PoolRepositoryMock implements PoolRepository {
 		};
 	};
 
-	private static generatePools = () => {
-		const pools = [...new Array(generateInteger(5, 40))].map(
-			PoolRepositoryMock.generatePoolInfo,
-		);
-
-		return {
-			total: pools.length,
-			hits: pools.length,
-			pools,
-		};
-	};
-
-	private static generatePoolInfo = () => {
-		const rewardPair = PoolRepositoryMock.generateTokenPair();
-		return {
-			pool_id: `${generateNumber(0, 100000)}`,
-			incentivized_type: [
-				"INCENTIVZED",
-				"NON_INCENTIVZED",
-				"EXTERNAL_INCENTIVZED",
-			][generateIndex(3)] as
-				| "INCENTIVZED"
-				| "NON_INCENTIVZED"
-				| "EXTERNAL_INCENTIVZED",
-			fee_rate: 0.01,
-			liquidity: PoolRepositoryMock.generateTokenPair(),
-			apr: generateNumber(0, 100),
-			volumn_24h: generateNumber(1000000000, 90000000000),
-			fees_24h: generateNumber(100, 900000000),
-			rewards: [rewardPair.token0, rewardPair.token1],
-		};
+	private static generateTicks = () => {
+		const ticks = [...new Array(20)].map((_, index) => {
+			return {
+				tick: index,
+				value: generateInteger(0, 100),
+			};
+		});
+		return ticks;
 	};
 
 	private static generateTokenPair = () => {
