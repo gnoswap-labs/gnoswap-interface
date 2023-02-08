@@ -1,5 +1,6 @@
 import { TokenPairModel } from "./../token/token-pair-model";
 import { IncentivizedOptions, FeeOptions } from "@/common/values/data-constant";
+import BigNumber from "bignumber.js";
 
 export interface PoolTableModel {
 	hits: number;
@@ -11,10 +12,10 @@ interface PoolDetailType {
 	poolId: string;
 	tokenPair: TokenPairModel;
 	feeRate: FeeOptions;
-	liquidity: number;
-	apr: number;
-	volumn24h: number;
-	fees24h: number;
+	liquidity: BigNumber;
+	apr: BigNumber;
+	volumn24h: BigNumber;
+	fees24h: BigNumber;
 	rewards: Array<string>;
 	incentiveType: IncentivizedOptions;
 }

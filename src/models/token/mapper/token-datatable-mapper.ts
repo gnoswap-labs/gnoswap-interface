@@ -10,6 +10,7 @@ import {
 } from "@/repositories/token";
 import { amountEmptyBigNumInit } from "@/common/values/global-initial-value";
 import { amountFormatToBignum } from "@/common/utils/denom-util";
+import BigNumber from "bignumber.js";
 
 export class TokenDatatableMapper {
 	public static fromResponse(
@@ -29,13 +30,13 @@ export class TokenDatatableMapper {
 			type: t.type,
 			name: t.name,
 			symbol: t.symbol,
-			price: t.price,
-			priceOf1h: t.price_of_1h,
-			priceOf24h: t.price_of_24h,
-			priceOf7d: t.price_of_7d,
-			mCap: t.m_cap,
-			tvl: t.tvl,
-			volume: t.volume,
+			price: BigNumber(t.price),
+			priceOf1h: BigNumber(t.price_of_1h),
+			priceOf24h: BigNumber(t.price_of_24h),
+			priceOf7d: BigNumber(t.price_of_7d),
+			mCap: BigNumber(t.m_cap),
+			tvl: BigNumber(t.tvl),
+			volume: BigNumber(t.volume),
 			mostLiquidityPool: TokenDatatableMapper.mappedMostLiquidityPool(
 				t.most_liquidity_pool,
 			),

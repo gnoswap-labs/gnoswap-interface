@@ -1,3 +1,4 @@
+import { ExchangeRateMapper } from "./../../models/token/mapper/exchange-rate-mapper";
 import { TokenSearchListMapper } from "@/models/token/mapper/token-search-list-mapper";
 import { RecentlyAddedMapper } from "@/models/statistical-data/mapper/recently-added-mapper";
 import { HighestRewardMapper } from "@/models/statistical-data/mapper/highest-reward-mapper";
@@ -6,10 +7,10 @@ import { TokenDatatableMapper } from "@/models/token/mapper/token-datatable-mapp
 import { TokenRepository } from "@/repositories/token";
 import { TokenModelMapper } from "@/models/token/mapper/token-model-mapper";
 import { returnNullWithLog } from "@/common/utils/error-util";
-import { SearchOption } from "@/common/types/data-prop-types";
 import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenTableModel } from "@/models/datatable/token-table-model";
 import { TokenSearchItemType } from "@/models/token/token-search-list-model";
+import BigNumber from "bignumber.js";
 
 export class TokenService {
 	private tokenRepository: TokenRepository;
@@ -18,7 +19,43 @@ export class TokenService {
 		this.tokenRepository = tokenRepository;
 	}
 
-	public getExchangeRateByAllTokens = async () => {};
+	public getExchangeRateByAllTokens = async () => {
+		/**
+		 * 1. 토큰 메타데이터 가져오기
+		 * 2. 토큰 별 환율정보 가져오기 (getAllExchangeRates) - 기준 'GNOT'
+		 *
+		 * 		rates: [
+		 * 			{
+		 * 				tokenId: 2, // ETH
+		 * 				rate: 1.4
+		 * 			},
+		 * 			{
+		 * 				tokenId: 3 // GNOS - 우리가 발생할 토큰
+		 * 				rate: 14.2
+		 * 			}
+		 * 		]
+		 *
+		 * 3. 달러 가치를 가져오기 (getUSDExchangeRate) - 기준 'GNOT'
+		 * 		{
+		 * 			value: 1.5
+		 * 		}
+		 * 		1.5(GNOT 달러가치) * 1.4(GNOT 대비 ETH 가치) => ETH Dollar
+		 */
+	};
+
+	public getAllExchangeRates = async (tokenId: string) => {
+		return await this.tokenRepository
+			.getAllExchangeRates(tokenId)
+			.then(ExchangeRateMapper.fromResponse)
+			.catch(returnNullWithLog);
+	};
+
+	public getUSDExchangeRate = async (tokenId: string) => {
+		return await this.tokenRepository
+			.getUSDExchangeRate(tokenId)
+			.then(res => ({ ...res, rate: BigNumber(res.rate) }))
+			.catch(returnNullWithLog);
+	};
 
 	public getTokenById = async (tokenId: string) => {
 		return await this.tokenRepository
@@ -103,5 +140,7 @@ export class TokenService {
 		return this.tokenRepository.createSearchLog(searchToken);
 	};
 
-	public getSearchLogs = async () => {};
+	public getSearchLogs = () => {
+		return this.tokenRepository.getSearchLogs();
+	};
 }

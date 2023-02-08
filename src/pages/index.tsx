@@ -5,14 +5,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { AccountHistoryModel } from "@/models/account/account-history-model";
 import BigNumber from "bignumber.js";
 import { generateId } from "@/common/utils/test-util";
-import { TokenService } from "@/services/token/token-service";
 
 export default function Home() {
 	const [accountInfo, setAccountInfo] = useState<AccountInfoModel>();
 	const [history, setHistory] = useState<any>();
 
-	const { accountService, accountRepository, tokenService, tokenRepository } =
-		useGnoswapContext();
+	const {
+		accountService,
+		accountRepository,
+		tokenService,
+		tokenRepository,
+		swapService,
+	} = useGnoswapContext();
 
 	const onClickGetAccountButton = () => {
 		accountService.getAccountInfo().then(res => console.log("account : ", res));
@@ -51,9 +55,7 @@ export default function Home() {
 	};
 
 	const onClickTokenDatatable = () => {
-		tokenService
-			.getTokenDatatable("GRC20")
-			.then(res => console.log("tegst : ", res));
+		tokenService.getTokenDatatable().then(res => console.log("tegst : ", res));
 	};
 
 	const onClickPopularTokens = () => {
@@ -76,8 +78,26 @@ export default function Home() {
 
 	const onClickSearchToken = () => {
 		tokenService
-			.getSearchTokenDatatable({ keyword: "1", type: "ALL" })
+			.getSearchTokenDatatable({ keyword: "Gno", type: "ALL" })
 			.then(res => console.log("Search Token : ", res));
+	};
+
+	const onClickExchangeRates = () => {
+		tokenService
+			.getAllExchangeRates("1")
+			.then(res => console.log("Exchange Rates : ", res));
+	};
+
+	const onClickUSDExchangeRate = () => {
+		tokenService
+			.getUSDExchangeRate("1")
+			.then(res => console.log("USD Exchange Rate : ", res));
+	};
+
+	const onClickAllTokenMeta = () => {
+		tokenRepository
+			.getAllTokenMetas()
+			.then(res => console.log("Token Metas : ", res));
 	};
 
 	return (
@@ -97,8 +117,12 @@ export default function Home() {
 			<button onClick={onClickRecentlyTokens}>Recently Tokens 조회</button>
 			<br /> <br /> <br />
 			<button onClick={onClickSearchToken}>토큰 검색</button>
-			{/* <h1>{JSON.stringify(accountInfo, null, 2)}</h1>
-			<h1>{JSON.stringify(history, null, 2)}</h1> */}
+			<br /> <br /> <br />
+			<button onClick={onClickExchangeRates}>Exchange Rates 조회</button>
+			<br /> <br /> <br />
+			<button onClick={onClickUSDExchangeRate}>USD Exchange Rate 조회</button>
+			<br /> <br /> <br />
+			<button onClick={onClickAllTokenMeta}>Token Meta 조회</button>
 		</div>
 	);
 }

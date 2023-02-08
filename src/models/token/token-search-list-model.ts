@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { TokenDefaultModel } from "./token-default-model";
 
 export interface TokenSearchListModel {
@@ -6,6 +7,6 @@ export interface TokenSearchListModel {
 
 export interface TokenSearchItemType {
 	searchType: string;
-	changeRate: number;
+	changeRate: BigNumber;
 	token: TokenDefaultModel;
 }
