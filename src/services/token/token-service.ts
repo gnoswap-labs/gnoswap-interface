@@ -67,10 +67,10 @@ export class TokenService {
 	};
 
 	public getSearchTokens = async (searchOption: SearchOption) => {
-		return await this.tokenRepository
-			.searchTokens(searchOption)
-			.then(TokenSearchListMapper.fromResponse)
-			.catch(returnNullWithLog);
+		// return await this.tokenRepository
+		// 	.searchTokens(searchOption)
+		// 	.then(TokenSearchListMapper.fromResponse)
+		// 	.catch(returnNullWithLog);
 	};
 
 	public getRecentSearchTokensByAddess = async () => {};

@@ -8,28 +8,28 @@ import {
 	TokenSearchListResponse,
 	ExchangeRateResponse,
 	TokenMetaListResponse,
+	USDExchangeRateResponse,
 } from "./response";
 
 export interface TokenRepository {
 	getAllTokenMetas: () => Promise<TokenMetaListResponse>;
 
-	getExchangeRateByTokenId: (tokenId: string) => Promise<ExchangeRateResponse>;
+	getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
 
 	searchTokens: (
-		searchOption: SearchOption,
+		keyword: string,
+		address: string,
 	) => Promise<TokenSearchListResponse>;
 
-	getTokenDatatable: () => Promise<TokenDatatableResponse>;
+	getAllExchangeRates: (tokenId: string) => Promise<ExchangeRateResponse>;
 
-	getRecentSearchTokensByAddress: (
-		address: string,
-	) => Promise<TokenDatatableResponse>;
+	getUSDExchangeRate: (tokenId: string) => Promise<USDExchangeRateResponse>;
+
+	getTokenDatatable: () => Promise<TokenDatatableResponse>;
 
 	getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
 
 	getSummaryHighestRewardTokens: () => Promise<SummaryHighestRewardListResponse>;
 
 	getSummaryRecentlyAddedTokens: () => Promise<SummaryRecentlyAddedListResponse>;
-
-	getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
 }

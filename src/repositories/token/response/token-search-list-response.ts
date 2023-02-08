@@ -1,15 +1,17 @@
 export interface TokenSearchListResponse {
-	hits: number;
-	total: number;
-	tokens: Array<TokenSearchInfoResponse>;
+	recentTokens: Array<TokenSearchItemResponse>;
+	popularTokens: Array<TokenSearchItemResponse>;
 }
 
-export interface TokenSearchInfoResponse {
-	token_id: string;
-	name: string;
-	symbol: string;
-	amount: {
-		value: number;
-		denom: string;
+export interface TokenSearchItemResponse {
+	change_rate: number;
+	token: {
+		token_id: string;
+		name: string;
+		symbol: string;
+		amount: {
+			value: number;
+			denom: string;
+		};
 	};
 }
