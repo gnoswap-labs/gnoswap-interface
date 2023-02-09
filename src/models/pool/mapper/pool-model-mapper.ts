@@ -6,6 +6,7 @@ import {
 	PoolListInfoResponse,
 	PoolListResponse,
 } from "@/repositories/pool";
+import BigNumber from "bignumber.js";
 import { PoolDetailModel } from "../pool-detail-model";
 import { PoolModel } from "../pool-model";
 
@@ -51,8 +52,8 @@ export class PoolModelMapper {
 			incentivizedType: incentivized_type as IncentivizedOptions,
 			rewards: rewards.map(TokenModelMapper.fromResponse),
 			apr,
-			fees24h: fees_24h,
-			volumn24h: volumn_24h,
+			fees24h: BigNumber(fees_24h),
+			volumn24h: BigNumber(volumn_24h),
 		};
 	}
 }

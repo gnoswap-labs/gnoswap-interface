@@ -3,7 +3,6 @@ import { TokenPairModel } from "../token-pair-model";
 import { TokenModelMapper } from "./token-model-mapper";
 
 interface TokenPairResponse {
-	total: number;
 	token0: TokenInfoResponse;
 	token1: TokenInfoResponse;
 }
