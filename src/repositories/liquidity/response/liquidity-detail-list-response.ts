@@ -22,7 +22,6 @@ interface LiquidityInfo {
 }
 
 interface TokenPair {
-	total: number;
 	token0: TokenBalance;
 	token1: TokenBalance;
 }

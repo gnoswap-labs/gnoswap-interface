@@ -97,7 +97,7 @@ export class LiquidityService {
 		poolId: string,
 	) => {
 		return this.liquidityRepository
-			.getLiquiditiesByAddress(address)
+			.getLiquiditiesByAddressAndPoolId(address, poolId)
 			.then(LiquidityModelMapper.fromDetailListResponse)
 			.catch(returnNullWithLog);
 	};

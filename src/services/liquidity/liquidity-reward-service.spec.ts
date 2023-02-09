@@ -18,8 +18,8 @@ describe("getLiquidityReward", () => {
 			"getLiquidityRewardByAddressAndPoolId",
 		);
 		// given
-		const address = "ADDRESS";
-		const poolId = "1";
+		const address = "G1";
+		const poolId = "P1";
 
 		// when
 		const response = await liquidityRewardService.getLiquidityReward(
@@ -30,7 +30,7 @@ describe("getLiquidityReward", () => {
 		// then
 		expect(spyFnGetLiquidityRewardByAddressAndPoolId).toBeCalledTimes(1);
 		expect(response).not.toBeNull();
-		expect(typeof response?.liquidityId).toBe("string");
+		expect(typeof response?.poolId).toBe("string");
 		expect(typeof response?.isClaim).toBe("boolean");
 		expect(typeof response?.totalBalance).toBe("object");
 		expect(typeof response?.dailyEarning).toBe("object");

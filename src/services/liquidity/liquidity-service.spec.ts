@@ -13,9 +13,9 @@ beforeEach(() => {
 describe("getLiquidity", () => {
 	const spyFnGetLiquidity = jest.spyOn(liquidityRepository, "getLiquidityById");
 
-	it("exists when liquidity id is 1", async () => {
+	it("success", async () => {
 		// given
-		const liquidityId = "1";
+		const liquidityId = "L1";
 
 		// when
 		const liquidity = await liquidityService.getLiquidity(liquidityId);
@@ -49,15 +49,15 @@ describe("getLiquidity", () => {
 });
 
 describe("getLiquiditiesByAddressAndPoolId", () => {
-	const spyFnGetLiquiditiesByAddress = jest.spyOn(
+	const getLiquiditiesByAddressAndPoolId = jest.spyOn(
 		liquidityRepository,
-		"getLiquiditiesByAddress",
+		"getLiquiditiesByAddressAndPoolId",
 	);
 
-	it("exists when liquidity address is 'abcd' and poolId is 1", async () => {
+	it("success", async () => {
 		// given
-		const address = "abcd";
-		const poolId = "1";
+		const address = "G1";
+		const poolId = "P1";
 
 		// when
 		const response = await liquidityService.getLiquiditiesByAddressAndPoolId(
@@ -66,7 +66,7 @@ describe("getLiquiditiesByAddressAndPoolId", () => {
 		);
 
 		// then
-		expect(spyFnGetLiquiditiesByAddress).toBeCalledTimes(1);
+		expect(getLiquiditiesByAddressAndPoolId).toBeCalledTimes(1);
 		expect(response).not.toBeNull();
 		expect(response?.hits).not.toBeNull();
 		expect(response?.total).not.toBeNull();
@@ -91,7 +91,10 @@ describe("getLiquiditiesByAddressAndPoolId", () => {
 		);
 
 		// then
-		expect(response).toBeNull();
+		expect(response).toBeTruthy();
+		expect(response?.hits).toBe(0);
+		expect(response?.total).toBe(0);
+		expect(response?.liquidities).toHaveLength(0);
 	});
 });
 

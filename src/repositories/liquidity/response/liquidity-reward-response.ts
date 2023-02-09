@@ -1,6 +1,5 @@
 export interface LiquidityRewardResponse {
-	liquidity_id: string;
-	liquidity_type: "NONE" | "PROVIDED";
+	pool_id: string;
 	is_claim: boolean;
 	total_balance: TokenPair;
 	daily_earning: TokenPair;
@@ -11,7 +10,6 @@ export interface LiquidityRewardResponse {
 }
 
 interface TokenPair {
-	total: number;
 	token0: TokenBalance;
 	token1: TokenBalance;
 }

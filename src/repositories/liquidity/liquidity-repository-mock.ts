@@ -1,15 +1,5 @@
 import { LiquidityError } from "@/common/errors/liquidity";
-import {
-	generateBoolean,
-	generateId,
-	generateIndex,
-	generateInteger,
-	generateNumberPlus,
-	generateToken0,
-	generateToken1,
-	generateTokenMetas,
-	generateTxHash,
-} from "@/common/utils/test-util";
+import { generateNumberPlus, generateTxHash } from "@/common/utils/test-util";
 import {
 	AddLiquidityResponse,
 	ClaimRewardResponse,
@@ -19,32 +9,59 @@ import {
 	LiquidityRewardResponse,
 	RemoveLiquidityResponse,
 } from ".";
-import {
-	AddLiquidityRequest,
-	RemoveLiquidityRequest,
-	ClaimRewardReqeust,
-} from "./request";
+import { AddLiquidityRequest, RemoveLiquidityRequest } from "./request";
+
+import LiquidityDatas from "./mock/liquidities.json";
+import { PoolInfoResponse, PoolRepository, PoolRepositoryMock } from "../pool";
+
+interface TokenResponse {
+	token_id: string;
+	name: string;
+	symbol: string;
+	amount: {
+		value: number;
+		denom: string;
+	};
+}
 
 export class LiquidityRepositoryMock implements LiquidityRepository {
+	private poolRepository: PoolRepository = new PoolRepositoryMock();
+
 	public getLiquidityById = async (
 		liquidityId: string,
 	): Promise<LiquidityDetailInfoResponse> => {
-		if (liquidityId === "0") {
+		const liquidities = await this.getLiquidityDetailInfos();
+		const liquidity = liquidities.find(l => l.liquidity_id === liquidityId);
+		if (!liquidity) {
 			throw new LiquidityError("NOT_FOUND_LIQUIDITY");
 		}
-		return LiquidityRepositoryMock.generateLiquidity();
+		return liquidity as LiquidityDetailInfoResponse;
 	};
 
 	public getLiquiditiesByAddress = async (
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
-		const liquidities = [...new Array(generateInteger(5, 40))].map(
-			LiquidityRepositoryMock.generateLiquidity,
+		const liquidityInfos = await this.getLiquidityDetailInfos();
+		const liquidities = liquidityInfos.filter(l => l.address === address);
+		return {
+			total: liquidities.length,
+			hits: liquidities.length,
+			liquidities: liquidities as Array<LiquidityDetailInfoResponse>,
+		};
+	};
+
+	public getLiquiditiesByAddressAndPoolId = async (
+		address: string,
+		poolId: string,
+	): Promise<LiquidityDetailListResponse> => {
+		const liquidityInfos = await this.getLiquidityDetailInfos();
+		const liquidities = liquidityInfos.filter(
+			l => l.address === address && l.pool_id === poolId,
 		);
 		return {
 			total: liquidities.length,
 			hits: liquidities.length,
-			liquidities,
+			liquidities: liquidities as Array<LiquidityDetailInfoResponse>,
 		};
 	};
 
@@ -53,16 +70,14 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		period: number,
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
-		if (address === "") {
-			throw new LiquidityError("NOT_FOUND_LIQUIDITY");
-		}
-		const liquidities = [...new Array(generateInteger(5, 40))].map(
-			LiquidityRepositoryMock.generateLiquidity,
+		const liquidityInfos = await this.getLiquidityDetailInfos();
+		const liquidities = liquidityInfos.filter(
+			l => l.address === address && l.pool_id === poolId,
 		);
 		return {
 			total: liquidities.length,
 			hits: liquidities.length,
-			liquidities,
+			liquidities: liquidities as Array<LiquidityDetailInfoResponse>,
 		};
 	};
 
@@ -71,13 +86,12 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		period: number,
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
-		const liquidities = [...new Array(generateInteger(5, 40))].map(
-			LiquidityRepositoryMock.generateLiquidity,
-		);
+		const liquidityInfos = await this.getLiquidityDetailInfos();
+		const liquidities = liquidityInfos.filter(l => l.address === address);
 		return {
 			total: liquidities.length,
 			hits: liquidities.length,
-			liquidities,
+			liquidities: liquidities as Array<LiquidityDetailInfoResponse>,
 		};
 	};
 
@@ -101,7 +115,11 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		address: string,
 		poolId: string,
 	): Promise<LiquidityRewardResponse> => {
-		return LiquidityRepositoryMock.generateLiquidity();
+		const poolDetail = await this.poolRepository.getPoolById(poolId);
+		return {
+			pool_id: poolId,
+			...LiquidityRepositoryMock.generatePoolReward(poolDetail.liquidity),
+		};
 	};
 
 	public claimRewardByPoolId = async (
@@ -112,41 +130,66 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 		};
 	};
 
-	private static generateLiquidity = () => {
-		const liquidityTypes = ["NONE", "PROVIDED"];
-		const stakeTypes = ["NONE", "STAKED", "UNSTAKING"];
+	private getLiquidityDetailInfos = async () => {
+		const infos = [...LiquidityDatas.liquidities];
+		const liquidities = [];
+		for (const info of infos) {
+			const poolDetail = await this.poolRepository.getPoolById(info.pool_id);
+			const poolDetailInfos =
+				LiquidityRepositoryMock.generateLiquidityAndReward(poolDetail);
+			liquidities.push({
+				...info,
+				...poolDetailInfos,
+			});
+		}
+		return liquidities;
+	};
+
+	private static generateLiquidityAndReward = (poolInfo: PoolInfoResponse) => {
+		const tokenPair = poolInfo.liquidity;
 		return {
-			pool_id: generateId(),
-			liquidity_id: generateId(),
-			liquidity_type: liquidityTypes[generateIndex(2)] as "NONE" | "PROVIDED",
-			stake_type: stakeTypes[generateIndex(3)] as
-				| "NONE"
-				| "STAKED"
-				| "UNSTAKING",
-			is_claim: generateBoolean(),
-			in_range: generateBoolean(),
-			max_rate: 2.4,
-			min_rate: 0.14,
-			fee_rate: 0.5,
-			liquidity: LiquidityRepositoryMock.generateTokenPair(),
-			apr: LiquidityRepositoryMock.generateTokenPair(),
-			total_balance: LiquidityRepositoryMock.generateTokenPair(),
-			daily_earning: LiquidityRepositoryMock.generateTokenPair(),
+			liquidity: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
+			apr: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
 			reward: {
-				staking: LiquidityRepositoryMock.generateTokenPair(),
-				swap: LiquidityRepositoryMock.generateTokenPair(),
+				staking: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
+				swap: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
 			},
 		};
 	};
 
-	private static generateTokenPair = () => {
-		const token0Amount = generateNumberPlus();
-		const token1Amount = generateNumberPlus();
-		const total = token0Amount + token1Amount;
+	private static generatePoolReward = (tokenPair: {
+		token0: TokenResponse;
+		token1: TokenResponse;
+	}) => {
 		return {
-			total,
-			token0: generateToken0(),
-			token1: generateToken1(),
+			is_claim: true,
+			total_balance: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
+			daily_earning: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
+			reward: {
+				staking: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
+				swap: LiquidityRepositoryMock.generateTokenPairByInfo(tokenPair),
+			},
+		};
+	};
+
+	private static generateTokenPairByInfo = (tokenPair: {
+		token0: TokenResponse;
+		token1: TokenResponse;
+	}) => {
+		const { token0, token1 } = tokenPair;
+		return {
+			token0: LiquidityRepositoryMock.randomToken(token0),
+			token1: LiquidityRepositoryMock.randomToken(token1),
+		};
+	};
+
+	private static randomToken = (token: TokenResponse) => {
+		return {
+			...token,
+			amount: {
+				...token.amount,
+				value: generateNumberPlus(),
+			},
 		};
 	};
 }
