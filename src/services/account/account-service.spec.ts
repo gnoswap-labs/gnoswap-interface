@@ -26,4 +26,10 @@ beforeEach(() => {
 
 describe("getAccountInfo", () => {
 	const spyFnGetAccountInfo = jest.spyOn(accountRepository, "getAccount");
+
+	describe("-", () => {
+		it("", () => {});
+	});
 });
+
+export {};
