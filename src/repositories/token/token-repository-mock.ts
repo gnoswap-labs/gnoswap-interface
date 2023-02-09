@@ -20,7 +20,10 @@ import mockSummaryPopularTokens from "./mock/summary-popular-tokens.json";
 import mockSummaryRecentAdded from "./mock/summary-recent-added.json";
 import mockSearchTokens from "./mock/search-tokens.json";
 import { StorageClient } from "@/common/clients/storage-client";
-import { TokenSearchItemType } from "@/models/token/token-search-list-model";
+import {
+	TokenSearchItemType,
+	TokenSearchListModel,
+} from "@/models/token/token-search-list-model";
 import { StorageKeyType } from "@/common/values";
 
 export class TokenRepositoryMock implements TokenRepository {
@@ -52,7 +55,11 @@ export class TokenRepositoryMock implements TokenRepository {
 	};
 
 	public createSearchLog = (searchToken: TokenSearchItemType) => {
-		const searchLogs = [searchToken, ...this.getSearchLogs()];
+		const LOG_LIMIT = 10;
+		const searchLogs = [searchToken, ...this.getSearchLogItems()].slice(
+			0,
+			LOG_LIMIT,
+		);
 		this.localStorageClient.set(
 			"search-token-logs",
 			JSON.stringify(searchLogs),
@@ -60,19 +67,9 @@ export class TokenRepositoryMock implements TokenRepository {
 		return true;
 	};
 
-	public getSearchLogs = (): Array<TokenSearchItemType> => {
-		const logValue = this.localStorageClient.get("search-token-logs");
-		if (!logValue) {
-			return [];
-		}
-
-		let logs: Array<TokenSearchItemType> = [];
-		try {
-			logs = JSON.parse(logValue);
-		} catch (e) {
-			throw new Error("Not found history");
-		}
-		return logs;
+	public getSearchLogs = (): TokenSearchListModel => {
+		const items = this.getSearchLogItems();
+		return { items };
 	};
 
 	public getAllExchangeRates = async (
@@ -119,5 +116,20 @@ export class TokenRepositoryMock implements TokenRepository {
 			throw new Error("Not found token");
 		}
 		return token;
+	};
+
+	public getSearchLogItems = (): Array<TokenSearchItemType> => {
+		const logValue = this.localStorageClient.get("search-token-logs");
+		if (!logValue) {
+			return [];
+		}
+
+		let logs: Array<TokenSearchItemType> = [];
+		try {
+			logs = JSON.parse(logValue);
+		} catch (e) {
+			throw new Error("Not found history");
+		}
+		return logs;
 	};
 }

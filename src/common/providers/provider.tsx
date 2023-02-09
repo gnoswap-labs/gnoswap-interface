@@ -21,6 +21,7 @@ import { LiquidityService } from "@/services/liquidity/liquidity-service";
 import { StakingService } from "@/services/staking/staking-service";
 import { TokenService } from "@/services/token/token-service";
 import { SwapService } from "@/services/swap/swap-service";
+import { MockStorageClient } from "../clients/storage-client/mock-storage-client";
 
 interface Props {
 	children: React.ReactNode;
@@ -33,6 +34,8 @@ export const GnoswapProvider = ({ children }: Props) => {
 		WebStorageClient.createLocalStorageClient();
 	const sessionStorageClient: StorageClient =
 		WebStorageClient.createSessionStorageClient();
+	const mockLocalStorageClient: StorageClient =
+		MockStorageClient.createLocalStorageClient();
 	const gnoClient: GnoClientApi = GnoClient.createNetworkByType(
 		{
 			chainId: "test3",
@@ -51,7 +54,7 @@ export const GnoswapProvider = ({ children }: Props) => {
 	const poolRepository = new PoolRepositoryMock();
 	const stakingRepository = new StakingRepositoryMock();
 	const swapRepository = new SwapRepositoryMock();
-	const tokenRepository = new TokenRepositoryMock(localStorageClient);
+	const tokenRepository = new TokenRepositoryMock(mockLocalStorageClient);
 
 	const accountService = new AccountService(accountRepository);
 	const tokenService = new TokenService(tokenRepository);
