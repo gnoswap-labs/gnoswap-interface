@@ -110,12 +110,9 @@ export class PoolService {
 		}
 
 		if (sortType === "LIQUIDITY") {
-			return (
-				(pool0.liquidity.token0.amount.value >
-				pool0.liquidity.token1.amount.value
-					? 1
-					: -1) * orderRate
-			);
+			const token0Amount = pool0.liquidity.token0.amount?.value ?? 0;
+			const token1Amount = pool0.liquidity.token1.amount?.value ?? 0;
+			return (token0Amount > token1Amount ? 1 : -1) * orderRate;
 		}
 		if (sortType === "VOLUME") {
 			return (pool0.volumn24h > pool1.volumn24h ? 1 : -1) * orderRate;

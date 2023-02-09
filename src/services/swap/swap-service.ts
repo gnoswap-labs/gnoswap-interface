@@ -1,13 +1,12 @@
-import { SwapMapper } from "../../models/swap/mapper/swap-mapper";
-import {
-	SwapRateRequestModel,
-	SwapRateResponseModel,
-} from "./../../models/swap/swap-rate-model";
-import { ExactTypeOption } from "./../../common/values/data-constant";
+import { SwapConfirmMapper } from "@/models/swap/mapper/swap-confirm-mapper";
+import { SwapConfirmModel } from "@/models/swap/swap-confirm-model";
+import { SwapExpectedMapper } from "@/models/swap/mapper/swap-expected-mapper";
+import { SwapRateModel } from "@/models/swap/swap-rate-model";
 import { returnNullWithLog } from "@/common/utils/error-util";
 import { SwapRepository } from "@/repositories/swap";
-import BigNumber from "bignumber.js";
-import { notEmptyStringType } from "@/common/utils/data-check-util";
+import { SwapInfoRequest } from "@/repositories/swap/request/swap-info-request";
+import { SwapRequest } from "@/repositories/swap/request";
+import { SwapRateMapper } from "@/models/swap/mapper/swap-rate-mapper";
 
 export class SwapService {
 	private swapRepository: SwapRepository;
@@ -22,8 +21,8 @@ export class SwapService {
 		token1Symbol,
 		token1Amount,
 		type,
-	}: SwapRateRequestModel) => {
-		const request: SwapRateResponseModel = SwapMapper.toRateRequest({
+	}: SwapRateModel) => {
+		const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
 			token0Symbol,
 			token0Amount,
 			token1Symbol,
@@ -41,15 +40,18 @@ export class SwapService {
 		token1Symbol,
 		token1Amount,
 		type,
-	}: SwapRateRequestModel) => {
-		const request: SwapRateResponseModel = SwapMapper.toRateRequest({
+	}: SwapRateModel) => {
+		const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
 			token0Symbol,
 			token0Amount,
 			token1Symbol,
 			token1Amount,
 			type,
 		});
-		return await this.swapRepository.getExpectedSwapResult(request);
+		return await this.swapRepository
+			.getExpectedSwapResult(request)
+			.then(SwapExpectedMapper.fromExpectedResponse)
+			.catch(returnNullWithLog);
 	};
 
 	public setSlippage = (slippage: number) => {
@@ -60,5 +62,11 @@ export class SwapService {
 		return this.swapRepository.getSlippage();
 	};
 
-	public confirmSwap = async () => {};
+	public confirmSwap = async (model: SwapConfirmModel) => {
+		const request: SwapRequest = SwapConfirmMapper.toConfirmRequest(model);
+		return await this.swapRepository
+			.swap(request)
+			.then(SwapConfirmMapper.fromConfirmResponse)
+			.catch(returnNullWithLog);
+	};
 }

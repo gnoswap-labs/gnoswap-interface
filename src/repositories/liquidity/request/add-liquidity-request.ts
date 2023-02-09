@@ -1,4 +1,5 @@
 export interface AddLiquidityRequest {
+	poolId: string;
 	liquidity: Liquidity;
 	options: LiquidityOption;
 }

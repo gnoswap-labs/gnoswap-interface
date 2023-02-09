@@ -21,6 +21,11 @@ export interface LiquidityRepository {
 		address: string,
 	) => Promise<LiquidityDetailListResponse>;
 
+	getLiquiditiesByAddressAndPoolId: (
+		address: string,
+		poolId: string,
+	) => Promise<LiquidityDetailListResponse>;
+
 	getAvailStakeLiquiditiesBy: (
 		poolId: string,
 		period: number,

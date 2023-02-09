@@ -6,10 +6,10 @@ export class LiquidityRewardModelMapper {
 	public static fromResponse(
 		response: LiquidityRewardResponse,
 	): LiquidityRewardSummaryModel {
-		const { liquidity_id, daily_earning, is_claim, reward, total_balance } =
+		const { pool_id, daily_earning, is_claim, reward, total_balance } =
 			response;
 		return {
-			liquidityId: liquidity_id,
+			poolId: pool_id,
 			isClaim: is_claim,
 			totalBalance: TokenPairModelMapper.fromResposne(total_balance),
 			dailyEarning: TokenPairModelMapper.fromResposne(daily_earning),

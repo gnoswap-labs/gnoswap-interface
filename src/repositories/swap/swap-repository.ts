@@ -1,4 +1,5 @@
 import { SwapRequest } from "./request";
+import { SwapInfoRequest } from "./request/swap-info-request";
 import {
 	SwapExpectedResultResponse,
 	SwapFeeReponse,
@@ -7,22 +8,12 @@ import {
 } from "./response";
 
 export interface SwapRepository {
-	getSwapRate: (
-		token0Symbol: string,
-		token0Amount: string,
-		token1Symbol: string,
-		token1Amount: string,
-		type: "EXACT_IN" | "EXACT_OUT",
-	) => Promise<SwapRateResponse>;
+	getSwapRate: (request: SwapInfoRequest) => Promise<SwapRateResponse>;
 
 	getSwapFee: () => Promise<SwapFeeReponse>;
 
 	getExpectedSwapResult: (
-		token0Symbol: string,
-		token0Amount: string,
-		token1Symbol: string,
-		token1Amount: string,
-		type: "EXACT_IN" | "EXACT_OUT",
+		request: SwapInfoRequest,
 	) => Promise<SwapExpectedResultResponse>;
 
 	getSlippage: () => number;
