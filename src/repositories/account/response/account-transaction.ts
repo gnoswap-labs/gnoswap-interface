@@ -1,8 +1,6 @@
 import { StatusOptions } from "@/common/values/data-constant";
 
 export interface AccountTransactionResponse {
-	total: number;
-	hits: number;
 	txs: Array<AccountTransaction>;
 }
 

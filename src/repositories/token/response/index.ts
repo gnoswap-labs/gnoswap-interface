@@ -5,4 +5,5 @@ export * from "./summary-highest-reward-list-response";
 export * from "./summary-popular-token-list-response";
 export * from "./summary-recent-added-list-response";
 export * from "./exchange-rate-response";
+export * from "./usd-exchange-rate-response";
 export * from "./token-meta-list-response";

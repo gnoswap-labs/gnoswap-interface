@@ -4,7 +4,8 @@ export interface SummaryRecentlyAddedListResponse {
 	pairs: Array<RecentlyAddedPairInfo>;
 }
 
-interface RecentlyAddedPairInfo {
+export interface RecentlyAddedPairInfo {
+	pool_id: string;
 	token0: {
 		token_id: string;
 		name: string;

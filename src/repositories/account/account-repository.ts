@@ -2,12 +2,15 @@ import {
 	InjectResponse,
 	InjectSendTransactionRequestParam,
 } from "@/common/clients/wallet-client/protocols";
+import { StatusOptions } from "@/common/values/data-constant";
+import {
+	AccountHistoryModel,
+	TransactionModel,
+} from "@/models/account/account-history-model";
 import { AccountInfoResponse, AccountTransactionResponse } from "./response";
 
 export interface AccountRepository {
 	getAccount: () => Promise<AccountInfoResponse>;
-
-	getTransactions: (address: string) => Promise<AccountTransactionResponse>;
 
 	existsWallet: () => boolean;
 
@@ -16,4 +19,19 @@ export interface AccountRepository {
 	sendTransaction: (
 		request: InjectSendTransactionRequestParam,
 	) => Promise<InjectResponse<any>>;
+
+	getNotificationsByAddress: (address: string) => Promise<AccountHistoryModel>;
+
+	createNotification: (
+		address: string,
+		transaction: TransactionModel,
+	) => Promise<boolean>;
+
+	updateNotificationStatus: (
+		address: string,
+		txHash: string,
+		status: StatusOptions,
+	) => Promise<boolean>;
+
+	deleteAllNotifications: (address: string) => Promise<boolean>;
 }

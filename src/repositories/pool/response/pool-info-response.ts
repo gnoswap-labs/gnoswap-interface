@@ -7,7 +7,6 @@ export interface PoolInfoResponse {
 }
 
 interface TokenPair {
-	total: number;
 	token0: TokenBalance;
 	token1: TokenBalance;
 }

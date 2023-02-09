@@ -1,13 +1,12 @@
 export interface PopularTokenModel {
 	hits: number;
 	total: number;
-	tokens: Array<SummaryTokenType>;
+	tokens: Array<SummaryPopularTokenType>;
 }
 
-interface SummaryTokenType {
+export interface SummaryPopularTokenType {
 	tokenId: string;
 	name: string;
 	symbol: string;
-	change_24h: string;
-	logoUrl: string; // token_id로 github에 매핑시킨 값으로 로고 이미지 url 값으로 사용 될 예정
+	change24h: number;
 }

@@ -1,3 +1,5 @@
+import { AmountType } from "@/common/types/data-prop-types";
+import { AmountNumberType } from "@/common/types/data-prop-types";
 import BigNumber from "bignumber.js";
 
 interface Amount {
@@ -66,4 +68,11 @@ const convertTextToAmount = (text: string) => {
 	const value = balance && balance?.length > 0 ? balance[0] : 0.0;
 	const denom = balance && balance?.length > 1 ? balance[1] : "";
 	return { value: BigNumber(value), denom };
+};
+
+export const amountFormatToBignum = (amount: AmountNumberType | AmountType) => {
+	return {
+		value: BigNumber(amount.value),
+		denom: amount.denom,
+	};
 };

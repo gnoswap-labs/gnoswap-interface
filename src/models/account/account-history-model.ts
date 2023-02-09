@@ -1,15 +1,14 @@
-import { StatusOptions } from "@/common/values/data-constant";
+import { TokenPairModel } from "./../token/token-pair-model";
+import { TokenDefaultModel } from "./../token/token-default-model";
+import { NotificationType, StatusOptions } from "@/common/values/data-constant";
 
 export interface AccountHistoryModel {
-	hits: number;
-	total: number;
 	txs: Array<TransactionModel>;
 }
-
-interface TransactionModel {
+export interface TransactionModel {
+	txType: NotificationType;
 	txHash: string;
-	txLogo: string[];
-	desc: string;
+	tokenInfo: TokenDefaultModel | TokenPairModel;
 	status: StatusOptions;
 	createdAt: string;
 }

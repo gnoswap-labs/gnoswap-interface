@@ -4,7 +4,7 @@ export interface SummaryPopularTokenListResponse {
 	tokens: Array<PopularTokenInfo>;
 }
 
-interface PopularTokenInfo {
+export interface PopularTokenInfo {
 	token_id: string;
 	name: string;
 	symbol: string;

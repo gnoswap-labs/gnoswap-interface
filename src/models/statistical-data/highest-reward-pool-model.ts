@@ -2,10 +2,10 @@ import { TokenPairModel } from "./../token/token-pair-model";
 export interface HighestRewardPoolModel {
 	hits: number;
 	total: number;
-	pools: Array<SummaryPoolType>;
+	pairs: Array<SummaryHighestPairType>;
 }
 
-interface SummaryPoolType {
+export interface SummaryHighestPairType {
 	poolId: string;
 	feeTier: number;
 	apr: number;

@@ -9,7 +9,10 @@ import {
 export interface SwapRepository {
 	getSwapRate: (
 		token0Symbol: string,
+		token0Amount: string,
 		token1Symbol: string,
+		token1Amount: string,
+		type: "EXACT_IN" | "EXANCT_OUT",
 	) => Promise<SwapRateResponse>;
 
 	getSwapFee: () => Promise<SwapFeeReponse>;
@@ -19,9 +22,12 @@ export interface SwapRepository {
 		token0Amount: string,
 		token1Symbol: string,
 		token1Amount: string,
+		type: "EXACT_IN" | "EXANCT_OUT",
 	) => Promise<SwapExpectedResultResponse>;
 
-	setSlippage: (slippage: number) => Promise<void>;
+	getSlippage: () => number;
+
+	setSlippage: (slippage: number) => boolean;
 
 	swap: (request: SwapRequest) => Promise<SwapResponse>;
 }

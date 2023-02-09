@@ -3,6 +3,7 @@
 	"hits": 3,
 	"pairs": [
 		{
+			"pool_id": "1",
 			"token0": {
 				"token_id": "2",
 				"name": "Gnoswap",
@@ -17,6 +18,7 @@
 			"apr": 70
 		},
 		{
+			"pool_id": "2",
 			"token0": {
 				"token_id": "2",
 				"name": "Gnoswap",
@@ -31,6 +33,7 @@
 			"apr": 65
 		},
 		{
+			"pool_id": "3",
 			"token0": {
 				"token_id": "1",
 				"name": "Gnoland",

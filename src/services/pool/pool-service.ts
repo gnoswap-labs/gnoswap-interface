@@ -1,8 +1,16 @@
+import { returnNullWithLog } from "@/common/utils/error-util";
 import { IncentivizedOptions } from "@/common/values/data-constant";
 import { PoolModelMapper } from "@/models/pool/mapper/pool-model-mapper";
 import { PoolDetailModel } from "@/models/pool/pool-detail-model";
 import { PoolModel } from "@/models/pool/pool-model";
 import { PoolRepository } from "@/repositories/pool";
+
+interface PoolSearchOption {
+	keyword?: string;
+	poolType?: IncentivizedOptions | "NONE";
+	sortType?: "NONE" | "LIQUIDITY" | "VOLUME" | "FEE" | "ARP";
+	order?: "NONE" | "ASC" | "DESC";
+}
 
 export class PoolService {
 	private poolRepository: PoolRepository;
@@ -21,14 +29,8 @@ export class PoolService {
 			});
 	};
 
-	public getPools = async () => {
-		return this.poolRepository
-			.getPools()
-			.then(PoolModelMapper.fromListResponse)
-			.catch<Array<PoolDetailModel>>(error => {
-				console.log(error);
-				return [];
-			});
+	public getPools = async (options?: PoolSearchOption) => {
+		return this.getPoolsDetailsBy({ ...options }).catch(returnNullWithLog);
 	};
 
 	public getPoolsByAddress = async (address: string) => {
@@ -39,22 +41,6 @@ export class PoolService {
 				console.log(error);
 				return [];
 			});
-	};
-
-	public getPoolsByIncentivizedType = async (
-		incentivizedType: IncentivizedOptions,
-	) => {
-		return this.getPools().then(pools =>
-			pools.filter(pool =>
-				PoolService.equalsIncentivizedType(pool, incentivizedType),
-			),
-		);
-	};
-
-	public getRewardPools = async () => {
-		return this.getPools().then(pools =>
-			pools.filter(PoolService.existsReward),
-		);
 	};
 
 	public getPoolSummary = async (poolId: string) => {
@@ -86,15 +72,85 @@ export class PoolService {
 			});
 	};
 
-	private static existsReward = (pool: PoolModel) => {
-		const reward = pool.rewards;
-		return reward.some(reward => reward.amount.value.isGreaterThan(0));
+	private getPoolsDetailsBy = async (options: PoolSearchOption) => {
+		const {
+			keyword = "",
+			poolType = "NONE",
+			sortType = "NONE",
+			order = "NONE",
+		} = options;
+		const { pools } = await this.poolRepository.getPools();
+		const resultPools = pools
+			.map(PoolModelMapper.fromDetailResponse)
+			.filter(pool => PoolService.equalsIncentivizedType(pool, poolType))
+			.filter(pool => PoolService.includeKeyword(pool, keyword))
+			.sort((pool0, pool1) =>
+				PoolService.sortPoolDetails(pool0, pool1, sortType, order),
+			);
+		return {
+			total: resultPools.length,
+			hits: resultPools.length,
+			pools: resultPools,
+		};
+	};
+
+	private static sortPoolDetails = (
+		pool0: PoolDetailModel,
+		pool1: PoolDetailModel,
+		sortType: "NONE" | "LIQUIDITY" | "VOLUME" | "FEE" | "ARP",
+		order: "NONE" | "ASC" | "DESC",
+	) => {
+		if (sortType === "NONE" || order === "NONE") {
+			return 0;
+		}
+
+		let orderRate = 1;
+		if (order === "DESC") {
+			orderRate = -1;
+		}
+
+		if (sortType === "LIQUIDITY") {
+			return (
+				(pool0.liquidity.token0.amount.value >
+				pool0.liquidity.token1.amount.value
+					? 1
+					: -1) * orderRate
+			);
+		}
+		if (sortType === "VOLUME") {
+			return (pool0.volumn24h > pool1.volumn24h ? 1 : -1) * orderRate;
+		}
+		if (sortType === "FEE") {
+			return (pool0.feeRate > pool1.feeRate ? 1 : -1) * orderRate;
+		}
+		if (sortType === "ARP") {
+			return (pool0.apr > pool1.apr ? 1 : -1) * orderRate;
+		}
+		return 0;
+	};
+
+	private static includeKeyword = (pool: PoolModel, keyword: string) => {
+		if (keyword === "") {
+			return true;
+		}
+		const searchKeyword = keyword.toLowerCase();
+		const { token0, token1 } = pool.liquidity;
+
+		return (
+			token0.name.toLowerCase().includes(searchKeyword) ||
+			token1.name.toLowerCase().includes(searchKeyword) ||
+			token0.symbol.toLowerCase().includes(searchKeyword) ||
+			token1.symbol.toLowerCase().includes(searchKeyword)
+		);
 	};
 
 	private static equalsIncentivizedType = (
 		pool: PoolModel,
-		incentivizedType: IncentivizedOptions,
+		incentivizedType: IncentivizedOptions | "NONE",
 	) => {
+		if (incentivizedType === "NONE") {
+			return true;
+		}
 		return pool.incentivizedType === incentivizedType;
 	};
 }

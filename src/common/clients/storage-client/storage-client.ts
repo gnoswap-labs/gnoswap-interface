@@ -1,9 +1,9 @@
-export interface StorageClient {
-	get: (key: string) => string | null;
+export interface StorageClient<T = string> {
+	get: (key: T) => string | null;
 
-	set: (key: string, value: string) => void;
+	set: (key: T, value: string) => void;
 
-	remove: (key: string) => void;
+	remove: (key: T) => void;
 
 	clear: () => void;
 }

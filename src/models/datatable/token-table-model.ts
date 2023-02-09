@@ -1,3 +1,5 @@
+import { BigNumber } from "bignumber.js";
+import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenPairModel } from "./../token/token-pair-model";
 export interface TokenTableModel {
 	hits: number;
@@ -5,23 +7,23 @@ export interface TokenTableModel {
 	tokens: Array<TokenDetailType>;
 }
 
-interface TokenDetailType {
+export interface TokenDetailType {
 	tokenId: string;
+	type: TokenTableSelectType;
 	name: string;
 	symbol: string;
-	type: string;
-	price: number;
-	priceOf1h: number;
-	priceOf24h: number;
-	priceOf7d: number;
-	mCap: number;
-	tvl: number;
-	volume: number;
+	price: BigNumber;
+	priceOf1h: BigNumber;
+	priceOf24h: BigNumber;
+	priceOf7d: BigNumber;
+	mCap: BigNumber;
+	tvl: BigNumber;
+	volume: BigNumber;
 	mostLiquidityPool: MostLiquidityPoolType;
 	graph: Array<number>;
 }
 
-interface MostLiquidityPoolType {
+export interface MostLiquidityPoolType {
 	feeTier: number;
 	apr: number;
 	tokenPair: TokenPairModel;
