@@ -32,11 +32,13 @@ export class TokenModelMapper {
 	}
 
 	public static toRequest(model: TokenDefaultModel) {
+		const { value, denom } = model.amount ?? {};
 		return {
 			tokenId: model.tokenId,
-			amount: model.amount
-				? amountFormatToBignum(model.amount)
-				: amountEmptyBigNumInit,
+			amount: {
+				denom: denom ?? "",
+				value: value?.toString() ?? "",
+			},
 		};
 	}
 }
