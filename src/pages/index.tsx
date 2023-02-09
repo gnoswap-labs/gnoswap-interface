@@ -100,6 +100,12 @@ export default function Home() {
 			.then(res => console.log("Token Metas : ", res));
 	};
 
+	const onClickExpectedSwapResult = () => {
+		// swapService
+		// 	.getExpectedSwapResult("1", "1", "1", "1")
+		// 	.then(res => console.log("Expected Swap : ", res));
+	};
+
 	return (
 		<div style={{ padding: "3rem" }}>
 			<button onClick={onClickGetAccountButton}>아데나 회원정보 조회</button>
@@ -123,6 +129,8 @@ export default function Home() {
 			<button onClick={onClickUSDExchangeRate}>USD Exchange Rate 조회</button>
 			<br /> <br /> <br />
 			<button onClick={onClickAllTokenMeta}>Token Meta 조회</button>
+			<br /> <br /> <br />
+			<button onClick={onClickExpectedSwapResult}>Swap 예상 결과 조회</button>
 		</div>
 	);
 }

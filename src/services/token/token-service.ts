@@ -53,7 +53,6 @@ export class TokenService {
 	public getUSDExchangeRate = async (tokenId: string) => {
 		return await this.tokenRepository
 			.getUSDExchangeRate(tokenId)
-			.then(res => ({ ...res, rate: BigNumber(res.rate) }))
 			.catch(returnNullWithLog);
 	};
 

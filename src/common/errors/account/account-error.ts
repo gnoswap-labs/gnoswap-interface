@@ -3,19 +3,19 @@ import { BaseError } from "../base";
 const ERROR_VALUE = {
 	COIN_TYPE_ERROR: {
 		status: 1000,
-		type: "COIN_TYPE_ERROR",
+		type: "Coin Type Error",
 	},
 	NOT_FOUND_ADDRESS: {
 		status: 1001,
-		type: "NOT_FOUND_ADDRESS",
+		type: "Not found Address",
 	},
 	WALLET_CONNECT_FAILED: {
 		status: 1002,
-		type: "WALLET_CONNECT_FAILED",
+		type: "Wallet Connect Failed",
 	},
 	NOT_FOUND_ACCOUNT: {
 		status: 1003,
-		type: "NOT_FOUND_ACCOUNT",
+		type: "Not found Account",
 	},
 };
 

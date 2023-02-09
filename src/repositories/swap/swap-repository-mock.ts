@@ -22,7 +22,7 @@ export class SwapRepositoryMock implements SwapRepository {
 		token0Amount: string,
 		token1Symbol: string,
 		token1Amount: string,
-		type: "EXACT_IN" | "EXANCT_OUT",
+		type: "EXACT_IN" | "EXACT_OUT",
 	): Promise<SwapRateResponse> => {
 		return {
 			rate: generateNumber(0, 100),
@@ -40,7 +40,7 @@ export class SwapRepositoryMock implements SwapRepository {
 		token0Amount: string,
 		token1Symbol: string,
 		token1Amount: string,
-		type: "EXACT_IN" | "EXANCT_OUT",
+		type: "EXACT_IN" | "EXACT_OUT",
 	): Promise<SwapExpectedResultResponse> => {
 		return {
 			price_impact: generateNumber(0, 10000),
