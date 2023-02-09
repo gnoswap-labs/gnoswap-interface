@@ -128,7 +128,7 @@ export class TokenRepositoryMock implements TokenRepository {
 		try {
 			logs = JSON.parse(logValue);
 		} catch (e) {
-			throw new Error("Not found history");
+			throw new Error("Invalid value");
 		}
 		return logs;
 	};
