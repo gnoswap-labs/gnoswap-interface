@@ -4,6 +4,7 @@ import {
 	TokenSearchItemResponse,
 	TokenSearchListResponse,
 } from "@/repositories/token";
+import BigNumber from "bignumber.js";
 import { TokenDefaultModel } from "../token-default-model";
 import {
 	TokenSearchItemType,
@@ -24,7 +25,7 @@ export class TokenSearchListMapper {
 	): TokenSearchItemType {
 		return {
 			searchType: item.search_type,
-			changeRate: item.change_rate,
+			changeRate: BigNumber(item.change_rate),
 			token: TokenSearchListMapper.mappedTokenModel(item.token),
 		};
 	}

@@ -1,5 +1,7 @@
-import { SearchOption } from "@/common/types/data-prop-types";
-import { TokenSearchItemType } from "@/models/token/token-search-list-model";
+import {
+	TokenSearchItemType,
+	TokenSearchListModel,
+} from "@/models/token/token-search-list-model";
 import {
 	TokenDatatableResponse,
 	TokenInfoResponse,
@@ -21,7 +23,7 @@ export interface TokenRepository {
 
 	createSearchLog: (searchToken: TokenSearchItemType) => boolean;
 
-	getSearchLogs: () => Array<TokenSearchItemType>;
+	getSearchLogs: () => TokenSearchListModel;
 
 	getAllExchangeRates: (tokenId: string) => Promise<ExchangeRateResponse>;
 

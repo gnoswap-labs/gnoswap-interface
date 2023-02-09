@@ -3,7 +3,7 @@ export interface ExchangeRateResponse {
 	rates: Array<ExchangeRate>;
 }
 
-interface ExchangeRate {
+export interface ExchangeRate {
 	token_id: string;
 	rate: number;
 }
