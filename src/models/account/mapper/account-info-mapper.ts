@@ -1,3 +1,5 @@
+import { amountEmptyBigNumInit } from "@/common/values/global-initial-value";
+import { AmountType } from "@/common/types/data-prop-types";
 import { AccountError } from "@/common/errors/account";
 import {
 	notEmptyStringType,
@@ -17,9 +19,8 @@ export class AccountInfoMapper {
 		if (!notEmptyStringType(response.address)) {
 			throw new AccountError("NOT_FOUND_ADDRESS");
 		}
-		const balances = textToBalances(response.coins);
-		const balance =
-			balances.length > 0 ? balances[0] : { value: BigNumber(0), denom: "" };
+		const balances: AmountType[] = textToBalances(response.coins);
+		const balance = balances.length > 0 ? balances[0] : amountEmptyBigNumInit;
 		return {
 			address: response.address,
 			amount: balance,

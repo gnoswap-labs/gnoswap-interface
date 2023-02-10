@@ -11,6 +11,8 @@ import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenTableModel } from "@/models/datatable/token-table-model";
 import { TokenSearchItemType } from "@/models/token/token-search-list-model";
 import BigNumber from "bignumber.js";
+import { ExchangeRateModel } from "@/models/token/exchange-rate-model";
+import { toNumberFormat } from "@/common/utils/number-util";
 
 export class TokenService {
 	private tokenRepository: TokenRepository;
@@ -40,13 +42,42 @@ export class TokenService {
 		 * 			value: 1.5
 		 * 		}
 		 * 		1.5(GNOT 달러가치) * 1.4(GNOT 대비 ETH 가치) => ETH Dollar
+		 *
+		 *
+		 *  화면번호 2 - 5번기능
+		 * 		-> 입력받아온 수량(quantity) * getUSDExchangeRate에서 받아온 value
+		 *
+		 *
+		 *
 		 */
 	};
+
+	// 진우님께 화면번호 2번에 9번 GNOT/GNOS 풀정보 구현 여부 물어보기
+	public getFrom = async (tokenId: string, quantity: string) => {
+		const formatNum = BigNumber(quantity);
+		const exchangeRate = await this.getAllExchangeRates(tokenId);
+		const usdRate = await this.getUSDExchangeRate(tokenId);
+		if (exchangeRate && usdRate) {
+			const usdToBigNum = BigNumber(usdRate.rate);
+			return {
+				tokenId,
+				exchangeRate: formatNum.multipliedBy(exchangeRate.rate),
+				usdRate: usdToBigNum.multipliedBy(exchangeRate.rate),
+			};
+		} else returnNullWithLog();
+	};
+
+	public getTo = async (
+		fromToken: any,
+		toTokenId: string,
+		quantity: string,
+	) => {};
 
 	public getAllExchangeRates = async (tokenId: string) => {
 		return await this.tokenRepository
 			.getAllExchangeRates(tokenId)
 			.then(ExchangeRateMapper.fromResponse)
+			.then(res => res.rates.filter(v => v.tokenId === res.tokenId)[0])
 			.catch(returnNullWithLog);
 	};
 

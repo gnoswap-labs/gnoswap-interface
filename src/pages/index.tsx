@@ -5,10 +5,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { AccountHistoryModel } from "@/models/account/account-history-model";
 import BigNumber from "bignumber.js";
 import { generateId } from "@/common/utils/test-util";
+import styled from "styled-components";
+import { toNumberFormat } from "@/common/utils/number-util";
 
 export default function Home() {
-	const [accountInfo, setAccountInfo] = useState<AccountInfoModel>();
-	const [history, setHistory] = useState<any>();
+	const [from, setFrom] = useState("");
+	const [from2, setFrom2] = useState("");
+	const [to, setTo] = useState("");
+	const [to2, setTo2] = useState("");
+	const [test, setTest] = useState<any>({
+		tokenId: "",
+		exchangeRate: "",
+		usdRate: "",
+	});
 
 	const {
 		accountService,
@@ -18,119 +27,78 @@ export default function Home() {
 		swapService,
 	} = useGnoswapContext();
 
-	const onClickGetAccountButton = () => {
-		accountService.getAccountInfo().then(res => console.log("account : ", res));
+	const onClickFromSwap = () => {
+		tokenService.getFrom(from, from2).then(res => {
+			setTest({
+				...res,
+				exchangeRate: res?.exchangeRate.toString(),
+				usdRate: res?.usdRate.toString(),
+			});
+		});
 	};
 
-	const onClickGetHistoryButton = () => {
-		accountRepository
-			.getNotificationsByAddress("address")
-			.then(res => console.log("connectAdenaWallet : ", res));
-		// accountRepository
-		// 	.getTransactions("123")
-		// 	.then(res => console.log("history : ", res));
-	};
-
-	const onClickCreateHistory = () => {
-		accountRepository
-			.createNotification("address", {
-				txHash: generateId(),
-				status: "SUCCESS",
-				tokenInfo: {
-					amount: {
-						value: BigNumber(0),
-						denom: "ugnot",
-					},
-					tokenId: "1",
-					name: "sfsfs",
-					symbol: "asdfasdf",
-				},
-				txType: 0,
-				createdAt: "",
-			})
-			.then(res => console.log("connectAdenaWallet : ", res));
-		// accountRepository
-		// 	.getTransactions("123")
-		// 	.then(res => console.log("history : ", res));
-	};
-
-	const onClickTokenDatatable = () => {
-		tokenService.getTokenDatatable().then(res => console.log("tegst : ", res));
-	};
-
-	const onClickPopularTokens = () => {
-		tokenService
-			.getPopularTokens()
-			.then(res => console.log("Popular Tokens : ", res));
-	};
-
-	const onClickHighestTokens = () => {
-		tokenService
-			.getHighestRewardTokens()
-			.then(res => console.log("Highest Tokens : ", res));
-	};
-
-	const onClickRecentlyTokens = () => {
-		tokenService
-			.getRecentlyAddedTokens()
-			.then(res => console.log("Recently Tokens : ", res));
-	};
-
-	const onClickSearchToken = () => {
-		tokenService
-			.getSearchTokenDatatable({ keyword: "Gno", type: "ALL" })
-			.then(res => console.log("Search Token : ", res));
-	};
-
-	const onClickExchangeRates = () => {
-		tokenService
-			.getAllExchangeRates("1")
-			.then(res => console.log("Exchange Rates : ", res));
-	};
-
-	const onClickUSDExchangeRate = () => {
-		tokenService
-			.getUSDExchangeRate("1")
-			.then(res => console.log("USD Exchange Rate : ", res));
-	};
-
-	const onClickAllTokenMeta = () => {
-		tokenRepository
-			.getAllTokenMetas()
-			.then(res => console.log("Token Metas : ", res));
-	};
-
-	const onClickExpectedSwapResult = () => {
-		// swapService
-		// 	.getExpectedSwapResult("1", "1", "1", "1")
-		// 	.then(res => console.log("Expected Swap : ", res));
+	const onClickToSwap = () => {
+		tokenService.getFrom(to, to2).then(res => {
+			setTest({
+				...res,
+				exchangeRate: res?.exchangeRate.toString(),
+				usdRate: res?.usdRate.toString(),
+			});
+		});
 	};
 
 	return (
 		<div style={{ padding: "3rem" }}>
-			<button onClick={onClickGetAccountButton}>아데나 회원정보 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickGetHistoryButton}>히스토리 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickCreateHistory}>히스토리 생성</button>
-			<br /> <br /> <br />
-			<button onClick={onClickTokenDatatable}>토큰 데이터테이블 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickPopularTokens}>Popular Tokens 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickHighestTokens}>Highest Tokens 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickRecentlyTokens}>Recently Tokens 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickSearchToken}>토큰 검색</button>
-			<br /> <br /> <br />
-			<button onClick={onClickExchangeRates}>Exchange Rates 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickUSDExchangeRate}>USD Exchange Rate 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickAllTokenMeta}>Token Meta 조회</button>
-			<br /> <br /> <br />
-			<button onClick={onClickExpectedSwapResult}>Swap 예상 결과 조회</button>
+			<SwapWapper>
+				<label htmlFor="tokenId">From Token 아이디</label>
+				<input
+					id="tokenId"
+					value={from}
+					onChange={e => setFrom(e.target.value)}
+				/>
+				<label htmlFor="amount">From Token 수량</label>
+				<input
+					id="amount"
+					value={from2}
+					onChange={e => setFrom2(e.target.value)}
+				/>
+				<h1>{`From Exchange Rate : ${test.exchangeRate}`}</h1>
+				<br />
+				<h1>{`From USD Rate : ${test.usdRate}`}</h1>
+				<button onClick={onClickFromSwap}>From Click</button>
+			</SwapWapper>
+			<SwapWapper>
+				<label htmlFor="tokenId">To Token 아이디</label>
+				<input id="tokenId" value={to} onChange={e => setTo(e.target.value)} />
+				<label htmlFor="amount">To Token 수량</label>
+				<input id="amount" value={to2} onChange={e => setTo2(e.target.value)} />
+				<h1>{`To Exchange Rate : ${test.exchangeRate}`}</h1>
+				<br />
+				<h1>{`To USD Rate : ${test.usdRate}`}</h1>
+				<button onClick={onClickToSwap}>To Click</button>
+			</SwapWapper>
 		</div>
 	);
 }
+
+const SwapWapper = styled.div`
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	width: 300px;
+	background-color: #e4e4e4;
+	padding: 10px;
+	label {
+		margin: 5px 0px;
+	}
+	input {
+		border: 1px solid blue;
+		padding: 5px;
+		margin-bottom: 10px;
+	}
+	button {
+		padding: 5px;
+		background-color: #ababab;
+		margin: 10px 0px 20px;
+	}
+`;
