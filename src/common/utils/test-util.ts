@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import BigNumber from "bignumber.js";
 
 export const generateAddress = () => {
 	return `g${generateRandomString(39)}`;
@@ -20,6 +21,18 @@ export const generateBoolean = () => {
 
 export const rand = () => {
 	return `${Math.round(generateNumberPlus())}`;
+};
+
+export const generateTokenModel = () => {
+	return {
+		tokenId: `${generateAddress()}`,
+		name: "GNOT",
+		symbol: "GNOLAND",
+		amount: {
+			value: BigNumber(generateNumberPlus()),
+			denom: "ugnot",
+		},
+	};
 };
 
 export const generateToken0 = () => {

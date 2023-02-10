@@ -38,3 +38,5 @@ describe("getAccountInfo", () => {
 		expect(typeof accountInfo?.status).toBe("string");
 	});
 });
+
+export {};

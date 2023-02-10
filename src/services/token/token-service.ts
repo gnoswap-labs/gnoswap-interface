@@ -11,45 +11,68 @@ import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenTableModel } from "@/models/datatable/token-table-model";
 import { TokenSearchItemType } from "@/models/token/token-search-list-model";
 import BigNumber from "bignumber.js";
-import { ExchangeRateModel } from "@/models/token/exchange-rate-model";
 import { toNumberFormat } from "@/common/utils/number-util";
+import {
+	ExchangeRateModel,
+	ExchangeRateToBigNumType,
+} from "@/models/token/exchange-rate-model";
+import { TokenDefaultModel } from "@/models/token/token-default-model";
+import { TokenPairModel } from "@/models/token/token-pair-model";
 
 export class TokenService {
 	private tokenRepository: TokenRepository;
 
+	private exchangeRates: Array<ExchangeRateToBigNumType> = [];
+
+	private usdRate: BigNumber = BigNumber(0);
+
 	constructor(tokenRepository: TokenRepository) {
 		this.tokenRepository = tokenRepository;
+		this.init();
 	}
 
-	public getExchangeRateByAllTokens = async () => {
-		/**
-		 * 1. 토큰 메타데이터 가져오기
-		 * 2. 토큰 별 환율정보 가져오기 (getAllExchangeRates) - 기준 'GNOT'
-		 *
-		 * 		rates: [
-		 * 			{
-		 * 				tokenId: 2, // ETH
-		 * 				rate: 1.4
-		 * 			},
-		 * 			{
-		 * 				tokenId: 3 // GNOS - 우리가 발생할 토큰
-		 * 				rate: 14.2
-		 * 			}
-		 * 		]
-		 *
-		 * 3. 달러 가치를 가져오기 (getUSDExchangeRate) - 기준 'GNOT'
-		 * 		{
-		 * 			value: 1.5
-		 * 		}
-		 * 		1.5(GNOT 달러가치) * 1.4(GNOT 대비 ETH 가치) => ETH Dollar
-		 *
-		 *
-		 *  화면번호 2 - 5번기능
-		 * 		-> 입력받아온 수량(quantity) * getUSDExchangeRate에서 받아온 value
-		 *
-		 *
-		 *
-		 */
+	private init = async () => {
+		const tokenId = "1";
+		this.exchangeRates = (await this.getAllExchangeRates(tokenId))?.rates ?? [];
+		this.usdRate = BigNumber(
+			(await this.getUSDExchangeRate(tokenId))?.rate ?? 1,
+		);
+	};
+
+	public getTokenRate = (
+		token0: TokenDefaultModel,
+		token1: TokenDefaultModel,
+	) => {
+		const token0Rate =
+			this.exchangeRates.find(rate => rate.tokenId === token0.tokenId)?.rate ??
+			1;
+		const token1Rate =
+			this.exchangeRates.find(rate => rate.tokenId === token1.tokenId)?.rate ??
+			1;
+
+		return BigNumber(token1Rate).dividedBy(token0Rate);
+	};
+
+	public getTokenUSDRate = async (token: TokenDefaultModel) => {
+		const gnotToken = await this.getTokenById("1");
+		if (!gnotToken) {
+			throw new Error("");
+		}
+		const toGnotRate = this.getTokenRate(token, gnotToken);
+
+		return BigNumber(token.amount?.value ?? 0)
+			.multipliedBy(toGnotRate)
+			.multipliedBy(this.usdRate);
+	};
+
+	public getTokenPairUSDRate = async (tokenPair: TokenPairModel) => {
+		const { token0, token1 } = tokenPair;
+		const token0Rate = await this.getTokenUSDRate(token0);
+		const token1Rate = await this.getTokenUSDRate(token1);
+
+		return token0Rate
+			.multipliedBy(token0.amount?.value ?? 0)
+			.plus(token1Rate.multipliedBy(token1.amount?.value ?? 0));
 	};
 
 	// 진우님께 화면번호 2번에 9번 GNOT/GNOS 풀정보 구현 여부 물어보기

@@ -7,6 +7,9 @@ import { SwapRepository } from "@/repositories/swap";
 import { SwapInfoRequest } from "@/repositories/swap/request/swap-info-request";
 import { SwapRequest } from "@/repositories/swap/request";
 import { SwapRateMapper } from "@/models/swap/mapper/swap-rate-mapper";
+import { TokenDefaultModel } from "@/models/token/token-default-model";
+import { ExactTypeOption } from "@/common/values/data-constant";
+import BigNumber from "bignumber.js";
 
 export class SwapService {
 	private swapRepository: SwapRepository;
@@ -15,23 +18,32 @@ export class SwapService {
 		this.swapRepository = swapRepository;
 	}
 
-	public getSwapRate = async ({
-		token0Symbol,
-		token0Amount,
-		token1Symbol,
-		token1Amount,
-		type,
-	}: SwapRateModel) => {
-		const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
-			token0Symbol,
-			token0Amount,
-			token1Symbol,
-			token1Amount,
+	public getSwapRate = async (
+		token0: TokenDefaultModel,
+		token1: TokenDefaultModel,
+		type: ExactTypeOption,
+	) => {
+		const { rate } = await this.swapRepository.getSwapRate({
+			token0Amount: BigNumber(token0.amount?.value ?? 0).toString(),
+			token0Symbol: token0.symbol,
+			token1Amount: BigNumber(token1.amount?.value ?? 0).toString(),
+			token1Symbol: token1.symbol,
 			type,
 		});
-		return await this.swapRepository
-			.getSwapRate(request)
-			.catch(returnNullWithLog);
+
+		if (type === "EXACT_IN") {
+			const expectedToken1Amount = BigNumber(
+				token0.amount?.value ?? 0,
+			).multipliedBy(rate);
+		}
+
+		if (type === "EXACT_OUT") {
+			const expectedToken0Amount = BigNumber(
+				token1.amount?.value ?? 0,
+			).multipliedBy(rate);
+		}
+
+		return;
 	};
 
 	public getExpectedSwapResult = async ({

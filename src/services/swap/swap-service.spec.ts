@@ -8,3 +8,9 @@ const swapService = new SwapService(swapRepository);
 beforeEach(() => {
 	jest.clearAllMocks();
 });
+
+describe("-", () => {
+	it("", () => {});
+});
+
+export {};
