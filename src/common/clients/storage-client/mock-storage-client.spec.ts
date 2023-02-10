@@ -1,7 +1,22 @@
 import { MockStorageClient } from "./mock-storage-client";
+import { StorageClient } from "./storage-client";
 
-const storageClient = new MockStorageClient("LOCAL");
+const storageClient: StorageClient = new MockStorageClient("LOCAL");
 const KEY_NAME = "KEY";
+
+describe("create instance", () => {
+	it("local type instance is success", () => {
+		const client = MockStorageClient.createLocalStorageClient();
+
+		expect(client).toBeInstanceOf(MockStorageClient);
+	});
+
+	it("session type instance is success", () => {
+		const client = MockStorageClient.createSessionStorageClient();
+
+		expect(client).toBeInstanceOf(MockStorageClient);
+	});
+});
 
 describe("get storage value", () => {
 	it("empty value is success", () => {
