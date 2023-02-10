@@ -8,6 +8,7 @@ import {
 } from "@/models/account/account-history-model";
 import { StorageKeyType } from "@/common/values";
 import { AccountRepository } from ".";
+import { AdenaError } from "@/common/errors/adena";
 
 export class AccountRepositoryInstance implements AccountRepository {
 	private walletClient: WalletClient;
@@ -20,7 +21,8 @@ export class AccountRepositoryInstance implements AccountRepository {
 
 	public getAccount = async () => {
 		const result = await this.walletClient.getAccount();
-		return result.data;
+		AdenaError.valdiate(result);
+		return result;
 	};
 
 	public existsWallet = () => {
@@ -123,7 +125,7 @@ export class AccountRepositoryInstance implements AccountRepository {
 	private getHistory = () => {
 		let historyValue = this.localStorageClient.get("transaction-history");
 		if (!historyValue || historyValue === "") {
-			historyValue = JSON.stringify(historyValue);
+			historyValue = JSON.stringify({ txs: [] });
 			this.localStorageClient.set("transaction-history", historyValue);
 		}
 
