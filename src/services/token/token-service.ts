@@ -1,4 +1,4 @@
-import { ExchangeRateMapper } from "./../../models/token/mapper/exchange-rate-mapper";
+import { ExchangeRateMapper } from "@/models/token/mapper/exchange-rate-mapper";
 import { TokenSearchListMapper } from "@/models/token/mapper/token-search-list-mapper";
 import { RecentlyAddedMapper } from "@/models/statistical-data/mapper/recently-added-mapper";
 import { HighestRewardMapper } from "@/models/statistical-data/mapper/highest-reward-mapper";
@@ -10,97 +10,22 @@ import { returnNullWithLog } from "@/common/utils/error-util";
 import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenTableModel } from "@/models/datatable/token-table-model";
 import { TokenSearchItemType } from "@/models/token/token-search-list-model";
-import BigNumber from "bignumber.js";
-import { toNumberFormat } from "@/common/utils/number-util";
-import {
-	ExchangeRateModel,
-	ExchangeRateToBigNumType,
-} from "@/models/token/exchange-rate-model";
-import { TokenDefaultModel } from "@/models/token/token-default-model";
-import { TokenPairModel } from "@/models/token/token-pair-model";
 
 export class TokenService {
 	private tokenRepository: TokenRepository;
 
-	private exchangeRates: Array<ExchangeRateToBigNumType> = [];
-
-	private usdRate: BigNumber = BigNumber(0);
-
 	constructor(tokenRepository: TokenRepository) {
 		this.tokenRepository = tokenRepository;
-		this.init();
 	}
-
-	private init = async () => {
-		const tokenId = "1";
-		this.exchangeRates = (await this.getAllExchangeRates(tokenId))?.rates ?? [];
-		this.usdRate = BigNumber(
-			(await this.getUSDExchangeRate(tokenId))?.rate ?? 1,
-		);
-	};
-
-	public getTokenRate = (
-		token0: TokenDefaultModel,
-		token1: TokenDefaultModel,
-	) => {
-		const token0Rate =
-			this.exchangeRates.find(rate => rate.tokenId === token0.tokenId)?.rate ??
-			1;
-		const token1Rate =
-			this.exchangeRates.find(rate => rate.tokenId === token1.tokenId)?.rate ??
-			1;
-
-		return BigNumber(token1Rate).dividedBy(token0Rate);
-	};
-
-	public getTokenUSDRate = async (token: TokenDefaultModel) => {
-		const gnotToken = await this.getTokenById("1");
-		if (!gnotToken) {
-			throw new Error("");
-		}
-		const toGnotRate = this.getTokenRate(token, gnotToken);
-
-		return BigNumber(token.amount?.value ?? 0)
-			.multipliedBy(toGnotRate)
-			.multipliedBy(this.usdRate);
-	};
-
-	public getTokenPairUSDRate = async (tokenPair: TokenPairModel) => {
-		const { token0, token1 } = tokenPair;
-		const token0Rate = await this.getTokenUSDRate(token0);
-		const token1Rate = await this.getTokenUSDRate(token1);
-
-		return token0Rate
-			.multipliedBy(token0.amount?.value ?? 0)
-			.plus(token1Rate.multipliedBy(token1.amount?.value ?? 0));
-	};
-
-	// 진우님께 화면번호 2번에 9번 GNOT/GNOS 풀정보 구현 여부 물어보기
-	public getFrom = async (tokenId: string, quantity: string) => {
-		const formatNum = BigNumber(quantity);
-		const exchangeRate = await this.getAllExchangeRates(tokenId);
-		const usdRate = await this.getUSDExchangeRate(tokenId);
-		if (exchangeRate && usdRate) {
-			const usdToBigNum = BigNumber(usdRate.rate);
-			return {
-				tokenId,
-				exchangeRate: formatNum.multipliedBy(exchangeRate.rate),
-				usdRate: usdToBigNum.multipliedBy(exchangeRate.rate),
-			};
-		} else returnNullWithLog();
-	};
-
-	public getTo = async (
-		fromToken: any,
-		toTokenId: string,
-		quantity: string,
-	) => {};
 
 	public getAllExchangeRates = async (tokenId: string) => {
 		return await this.tokenRepository
 			.getAllExchangeRates(tokenId)
 			.then(ExchangeRateMapper.fromResponse)
-			.then(res => res.rates.filter(v => v.tokenId === res.tokenId)[0])
+			.then(res => ({
+				...res,
+				rates: res.rates.filter(v => v.tokenId === res.tokenId)[0],
+			}))
 			.catch(returnNullWithLog);
 	};
 
@@ -128,13 +53,14 @@ export class TokenService {
 	private getAllTokenDatatable = async () => {
 		return await this.tokenRepository
 			.getTokenDatatable()
-			.then(TokenDatatableMapper.fromResponse);
+			.then(TokenDatatableMapper.fromResponse)
+			.catch(returnNullWithLog);
 	};
 
 	private getGRC20TokenDatatable = async () => {
 		return await this.getAllTokenDatatable().then(res => ({
 			...res,
-			tokens: res.tokens.filter(token => token.type === "GRC20"),
+			tokens: res?.tokens.filter(token => token.type === "GRC20"),
 		}));
 	};
 
@@ -152,7 +78,7 @@ export class TokenService {
 			.catch(returnNullWithLog);
 	};
 
-	private searchTokenKeywordFilter = async (
+	private searchTokenKeywordFilter = (
 		keyword: string,
 		data: TokenTableModel,
 	) => {
@@ -189,7 +115,7 @@ export class TokenService {
 			.catch(returnNullWithLog);
 	};
 
-	public createSearchLog = async (searchToken: TokenSearchItemType) => {
+	public createSearchLog = (searchToken: TokenSearchItemType) => {
 		return this.tokenRepository.createSearchLog(searchToken);
 	};
 
