@@ -1,3 +1,4 @@
+import { AmountType } from "@/common/types/data-prop-types";
 import { AccountRepositoryInstance } from "@/repositories/account/account-repository-instance";
 import { AccountService } from "./account-service";
 import { AccountRepositoryMock } from "@/repositories/account";
@@ -27,8 +28,14 @@ beforeEach(() => {
 describe("getAccountInfo", () => {
 	const spyFnGetAccountInfo = jest.spyOn(accountRepository, "getAccount");
 
-	describe("-", () => {
-		it("", () => {});
+	it("Successful connection to account", async () => {
+		const accountInfo = await accountService.getAccountInfo();
+
+		expect(spyFnGetAccountInfo).toBeCalledTimes(1);
+		expect(typeof accountInfo?.address).toBe("string");
+		expect(accountInfo?.address).not.toBeNull();
+		expect(accountInfo?.amount).not.toBeNull();
+		expect(typeof accountInfo?.status).toBe("string");
 	});
 });
 

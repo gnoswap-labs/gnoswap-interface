@@ -20,7 +20,7 @@ export class ExchangeRateMapper {
 	): ExchangeRateToBigNumType {
 		return {
 			tokenId: rate.token_id,
-			rate: BigNumber(rate.rate),
+			rate: BigNumber(rate.rate || 0),
 		};
 	}
 }
