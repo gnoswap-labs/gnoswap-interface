@@ -22,10 +22,6 @@ export class TokenService {
 		return await this.tokenRepository
 			.getAllExchangeRates(tokenId)
 			.then(ExchangeRateMapper.fromResponse)
-			.then(res => ({
-				...res,
-				rates: res.rates.filter(v => v.tokenId === res.tokenId)[0],
-			}))
 			.catch(returnNullWithLog);
 	};
 
