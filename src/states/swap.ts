@@ -8,7 +8,7 @@ export const token0 = atom<TokenDefaultModel | null>({
 });
 
 export const token1 = atom<TokenDefaultModel | null>({
-	key: "swap/token0",
+	key: "swap/token1",
 	default: null,
 });
 
