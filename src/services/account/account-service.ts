@@ -45,13 +45,11 @@ export class AccountService {
 			.catch(returnNullWithLog);
 	};
 
-	public updateNotificationStatus = async (
-		address: string,
-		txHash: string,
-		status: StatusOptions,
-	) => {
+	public updateNotificationStatus = async (address: string, txHash: string) => {
+		const changedStatus: StatusOptions = "SUCCESS";
+
 		return await this.accountRepository
-			.updateNotificationStatus(address, txHash, status)
+			.updateNotificationStatus(address, txHash, changedStatus)
 			.catch(returnNullWithLog);
 	};
 
