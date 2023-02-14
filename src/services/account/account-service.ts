@@ -14,7 +14,7 @@ export class AccountService {
 	}
 
 	public getAccountInfo = async () => {
-		return await this.accountRepository
+		return this.accountRepository
 			.getAccount()
 			.then(AccountInfoMapper.fromResopnse)
 			.catch(err => returnErrorResponse(new AccountError("CONNECT_TRY_AGAIN")));
@@ -22,9 +22,11 @@ export class AccountService {
 
 	public connectAdenaWallet = async () => {
 		const existsWalletCheck = this.accountRepository.existsWallet();
-		if (!existsWalletCheck)
-			returnErrorResponse(new AccountError("NOT_EXIST_ADENA_WALLET"));
-		return await this.accountRepository
+		if (!existsWalletCheck) {
+			return returnErrorResponse(new AccountError("NOT_EXIST_ADENA_WALLET"));
+		}
+
+		return this.accountRepository
 			.addEstablishedSite()
 			.then(AccountWalletMapper.fromResopnse)
 			.catch(err =>
@@ -33,7 +35,7 @@ export class AccountService {
 	};
 
 	public getNotifications = async (address: string) => {
-		return await this.accountRepository
+		return this.accountRepository
 			.getNotificationsByAddress(address)
 			.catch(err => returnErrorResponse(new AccountError("HAS_NOT_NOTI")));
 	};
@@ -42,7 +44,7 @@ export class AccountService {
 		address: string,
 		transaction: TransactionModel,
 	) => {
-		return await this.accountRepository
+		return this.accountRepository
 			.createNotification(address, transaction)
 			.catch(err =>
 				returnErrorResponse(new AccountError("FAILED_NOTI_CREATE")),
@@ -52,7 +54,7 @@ export class AccountService {
 	public updateNotificationStatus = async (address: string, txHash: string) => {
 		const changedStatus: StatusOptions = "SUCCESS";
 
-		return await this.accountRepository
+		return this.accountRepository
 			.updateNotificationStatus(address, txHash, changedStatus)
 			.catch(err =>
 				returnErrorResponse(new AccountError("FAILED_NOTI_STATUS_UPDATE")),
@@ -60,7 +62,7 @@ export class AccountService {
 	};
 
 	public deleteAllNotification = async (address: string) => {
-		return await this.accountRepository
+		return this.accountRepository
 			.deleteAllNotifications(address)
 			.catch(err =>
 				returnErrorResponse(new AccountError("FAILED_DILETE_ALL_NOTI")),
