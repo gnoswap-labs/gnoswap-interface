@@ -33,6 +33,7 @@ const createErrorResponse = <T = any>(
 	data?: T,
 ): ErrorResponse<T> => {
 	return {
+		isError: true,
 		status: error.getStatus(),
 		type: error.getType(),
 		message: error.message,

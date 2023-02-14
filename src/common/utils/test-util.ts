@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import BigNumber from "bignumber.js";
 
 export const generateAddress = () => {
-	return `g${generateRandomString(39)}`;
+	return `g1${generateRandomString(38)}`;
 };
 
 export const generateId = () => {
@@ -100,7 +100,7 @@ export const generateTokenMetas = () => {
 };
 
 const generateRandomString = (length: number) => {
-	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
 	let result = "";
 	const charactersLength = characters.length;
 	for (let i = 0; i < length; i++) {
