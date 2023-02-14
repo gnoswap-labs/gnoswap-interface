@@ -4,14 +4,18 @@ import { TokenState } from "@/states";
 import BigNumber from "bignumber.js";
 import { useRecoilState } from "recoil";
 import { metaInfoToConfig, toDefaultDenom } from "../utils/denom-util";
+import { useGnoswapContext } from "./use-gnoswap-context";
 import { useTokenResource } from "./use-token-resource";
 
 export const useExchange = () => {
+	const { tokenService } = useGnoswapContext();
 	const { getMetaInfo } = useTokenResource();
 
 	const [standard] = useRecoilState(TokenState.standard);
-	const [usdRate] = useRecoilState(TokenState.usdRate);
-	const [exchangeRates] = useRecoilState(TokenState.exchangeRates);
+	const [usdRate, setUSDRate] = useRecoilState(TokenState.usdRate);
+	const [exchangeRates, setExchangeRates] = useRecoilState(
+		TokenState.exchangeRates,
+	);
 
 	const exchangeToken = (from: TokenDefaultModel, to: TokenDefaultModel) => {
 		const exchangeRate = getExchangeRate(from, to);
@@ -88,6 +92,24 @@ export const useExchange = () => {
 		return fromRate.dividedBy(toRate);
 	};
 
+	const updateExchangeRates = () => {
+		if (!standard) {
+			return;
+		}
+		tokenService
+			.getAllExchangeRates(standard.token_id)
+			.then(response => response && setExchangeRates(response.rates));
+	};
+
+	const updateUSDRate = () => {
+		if (!standard) {
+			return;
+		}
+		tokenService
+			.getUSDExchangeRate(standard.token_id)
+			.then(response => response && setUSDRate(BigNumber(response.rate)));
+	};
+
 	return {
 		usdRate,
 		exchangeRates,
@@ -95,5 +117,7 @@ export const useExchange = () => {
 		exchangeToken,
 		tokenToUSD,
 		tokenPairToUSD,
+		updateExchangeRates,
+		updateUSDRate,
 	};
 };

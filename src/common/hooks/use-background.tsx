@@ -1,24 +1,20 @@
-import { TransactionModel } from "@/models/account/account-history-model";
-import { TokenMeta } from "@/repositories/token";
-import { AccountState, TokenState } from "@/states";
-import BigNumber from "bignumber.js";
+import { TokenState } from "@/states";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { useGnoswapContext } from "./use-gnoswap-context";
+import { useExchange } from "./use-exchange";
+import { useTokenResource } from "./use-token-resource";
 
 export const useBackground = () => {
-	const { tokenService, tokenRepository } = useGnoswapContext();
+	const { updateTokenMetas } = useTokenResource();
+	const { updateExchangeRates, updateUSDRate } = useExchange();
 
 	const [standard, setStandard] = useRecoilState(TokenState.standard);
-	const [, setTokenMetas] = useRecoilState(TokenState.tokenMetas);
-	const [, setExchangeRates] = useRecoilState(TokenState.exchangeRates);
-	const [, setUSDRate] = useRecoilState(TokenState.usdRate);
 
 	const [tick, setTick] = useState(0);
 
 	useEffect(() => {
 		initStandardToken();
-		initTokenMetas();
+		updateTokenMetas();
 	}, []);
 
 	useEffect(() => {
@@ -28,8 +24,8 @@ export const useBackground = () => {
 		// const intervalTick = setTimeout(() => setTick((tick + 1) % 100), 5 * 1000);
 
 		console.log("BACKGROUND FETCH");
-		initExchangeRates(standard);
-		initUSDRate(standard);
+		updateExchangeRates();
+		updateUSDRate();
 
 		// return () => clearTimeout(intervalTick);
 	}, [standard]);
@@ -43,24 +39,6 @@ export const useBackground = () => {
 			denom: "GNOT",
 			minimal_denom: "ugnot",
 		});
-	};
-
-	const initTokenMetas = () => {
-		tokenRepository
-			.getAllTokenMetas()
-			.then(resposne => setTokenMetas(resposne.tokens));
-	};
-
-	const initExchangeRates = (token: TokenMeta) => {
-		tokenService
-			.getAllExchangeRates(token.token_id)
-			.then(response => response && setExchangeRates(response.rates));
-	};
-
-	const initUSDRate = (token: TokenMeta) => {
-		tokenService
-			.getUSDExchangeRate(token.token_id)
-			.then(response => response && setUSDRate(BigNumber(response.rate)));
 	};
 
 	return;
