@@ -1,8 +1,10 @@
 import { returnNullWithLog } from "@/common/utils/error-util";
 import { IncentivizedOptions } from "@/common/values/data-constant";
+import { PoolChartModelMapper } from "@/models/pool/mapper/pool-chart-model-mapper";
 import { PoolModelMapper } from "@/models/pool/mapper/pool-model-mapper";
 import { PoolDetailModel } from "@/models/pool/pool-detail-model";
 import { PoolModel } from "@/models/pool/pool-model";
+import { TokenPairModel } from "@/models/token/token-pair-model";
 import { PoolRepository } from "@/repositories/pool";
 
 interface PoolSearchOption {
@@ -30,7 +32,7 @@ export class PoolService {
 	};
 
 	public getPools = async (options?: PoolSearchOption) => {
-		return this.getPoolsDetailsBy({ ...options }).catch(returnNullWithLog);
+		return this.getPoolDetailsBy({ ...options }).catch(returnNullWithLog);
 	};
 
 	public getPoolsByAddress = async (address: string) => {
@@ -62,17 +64,28 @@ export class PoolService {
 			});
 	};
 
-	public getChartTicksByPoolId = (poolId: string) => {
+	public getPoolChartByPoolId = (poolId: string) => {
 		return this.poolRepository
 			.getPoolChartTicks(poolId)
-			.then(response => response.ticks)
+			.then(PoolChartModelMapper.mappedChartTicks)
 			.catch(error => {
 				console.log(error);
 				return null;
 			});
 	};
 
-	private getPoolsDetailsBy = async (options: PoolSearchOption) => {
+	public getPoolChartByTokenPair = (tokenPair: TokenPairModel) => {
+		const { token0, token1 } = tokenPair;
+		return this.poolRepository
+			.getPoolChartTicksByTokenPair(token0.tokenId, token1.tokenId)
+			.then(PoolChartModelMapper.mappedChartTicks)
+			.catch(error => {
+				console.log(error);
+				return null;
+			});
+	};
+
+	private getPoolDetailsBy = async (options: PoolSearchOption) => {
 		const {
 			keyword = "",
 			poolType = "NONE",

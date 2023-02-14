@@ -100,9 +100,34 @@ describe("getLiquiditiesByAddressAndPoolId", () => {
 
 describe("addLiquidity", () => {
 	it("add liquidity resposne is success", async () => {
+		// given
+		const address = "G1";
+		const poolId = "P1";
+
+		const response = await liquidityService.getLiquiditiesByAddressAndPoolId(
+			address,
+			poolId,
+		);
+		const liquidities = response?.liquidities ?? [];
+		console.log(
+			liquidities.map(
+				liquidity => liquidity.liquidity.token0.amount?.value.toString() ?? "",
+			),
+		);
+
+		console.log(
+			liquidityService
+				.getSummaryPooledByLiquidities(liquidities)[0]
+				.amount?.value.toString(),
+		);
+		// console.log(liquidityService.getSummaryPooledByLiquidities(liquidities)[1].amount?.value.toString());
+	});
+});
+
+describe("addLiquidity", () => {
+	it("add liquidity resposne is success", async () => {
 		const spyFnAddLiquidity = jest.spyOn(liquidityRepository, "addLiquidityBy");
 		// given
-		const poolId = "1";
 		const liquidity = {
 			token0: {
 				tokenId: "1",
@@ -131,11 +156,7 @@ describe("addLiquidity", () => {
 		};
 
 		// when
-		const response = await liquidityService.addLiquidity(
-			poolId,
-			liquidity,
-			options,
-		);
+		const response = await liquidityService.addLiquidity(liquidity, options);
 
 		// then
 		expect(spyFnAddLiquidity).toBeCalledTimes(1);
@@ -148,7 +169,6 @@ describe("addLiquidity", () => {
 			.fn()
 			.mockRejectedValue(new Error("Adena timeout"));
 		// given
-		const poolId = "1";
 		const liquidity = {
 			token0: {
 				tokenId: "1",
@@ -177,11 +197,7 @@ describe("addLiquidity", () => {
 		};
 
 		// when
-		const response = await liquidityService.addLiquidity(
-			poolId,
-			liquidity,
-			options,
-		);
+		const response = await liquidityService.addLiquidity(liquidity, options);
 
 		// then
 		expect(response).toBeNull();

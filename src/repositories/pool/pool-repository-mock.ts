@@ -5,6 +5,7 @@ import {
 	generateToken0,
 	generateToken1,
 } from "@/common/utils/test-util";
+import { TokenPairModel } from "@/models/token/token-pair-model";
 import {
 	PoolListResponse,
 	PoolInfoResponse,
@@ -38,6 +39,18 @@ export class PoolRepositoryMock implements PoolRepository {
 	getPoolChartTicks = async (poolId: string): Promise<PoolChartResopnse> => {
 		return {
 			pool_id: poolId,
+			current: 1,
+			ticks: PoolRepositoryMock.generateTicks(),
+		};
+	};
+
+	getPoolChartTicksByTokenPair = async (
+		token0Id: string,
+		token1Id: string,
+	): Promise<PoolChartResopnse> => {
+		return {
+			pool_id: "1",
+			current: 1,
 			ticks: PoolRepositoryMock.generateTicks(),
 		};
 	};
