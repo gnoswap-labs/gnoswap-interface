@@ -127,24 +127,16 @@ export class LiquidityService {
 		return [rewardSwapFeeToken0, rewardSwapFeeToken1];
 	};
 
-	public getAvailStakeLiquidities = (
-		address: string,
-		poolId: string,
-		period: number,
-	) => {
+	public getAvailStakeLiquidities = (address: string, poolId: string) => {
 		return this.liquidityRepository
-			.getAvailStakeLiquiditiesBy(address, period, poolId)
+			.getAvailStakeLiquiditiesBy(address, poolId)
 			.then(LiquidityModelMapper.fromDetailListResponse)
 			.catch(returnNullWithLog);
 	};
 
-	public getAvailUnstakeLiquidities = (
-		address: string,
-		poolId: string,
-		period: number,
-	) => {
+	public getAvailUnstakeLiquidities = (address: string, poolId: string) => {
 		return this.liquidityRepository
-			.getAvailUnstakeLiquiditiesBy(address, period, poolId)
+			.getAvailUnstakeLiquiditiesBy(address, poolId)
 			.then(LiquidityModelMapper.fromDetailListResponse)
 			.catch(returnNullWithLog);
 	};

@@ -67,7 +67,6 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 
 	public getAvailStakeLiquiditiesBy = async (
 		poolId: string,
-		period: number,
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
 		const liquidityInfos = await this.getLiquidityDetailInfos();
@@ -83,11 +82,12 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 
 	public getAvailUnstakeLiquiditiesBy = async (
 		poolId: string,
-		period: number,
 		address: string,
 	): Promise<LiquidityDetailListResponse> => {
 		const liquidityInfos = await this.getLiquidityDetailInfos();
-		const liquidities = liquidityInfos.filter(l => l.address === address);
+		const liquidities = liquidityInfos.filter(
+			l => l.address === address && l.pool_id === poolId,
+		);
 		return {
 			total: liquidities.length,
 			hits: liquidities.length,

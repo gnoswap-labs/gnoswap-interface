@@ -16,7 +16,9 @@ import { StakeRequest } from "./request";
 import { UnstakeRequest } from "./request/unstake-request";
 
 export class StakingRepositoryMock implements StakingRepository {
-	public getStakingPeriods = async (): Promise<StakingPeriodListResponse> => {
+	public getStakingPeriods = async (
+		poolId: string,
+	): Promise<StakingPeriodListResponse> => {
 		return {
 			periods: [
 				{
