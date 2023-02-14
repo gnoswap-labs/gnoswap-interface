@@ -3,19 +3,39 @@ import { BaseError } from "../base";
 const ERROR_VALUE = {
 	COIN_TYPE_ERROR: {
 		status: 1000,
-		type: "Coin Type Error",
+		type: "Coin Type Error.",
 	},
-	NOT_FOUND_ADDRESS: {
+	HAS_NOT_NOTI: {
 		status: 1001,
-		type: "Not found Address",
+		type: "Has not notification.",
 	},
-	WALLET_CONNECT_FAILED: {
+	FAILED_NOTI_CREATE: {
 		status: 1002,
-		type: "Wallet Connect Failed",
+		type: "Failed to create notification.",
 	},
-	NOT_FOUND_ACCOUNT: {
+	FAILED_NOTI_STATUS_UPDATE: {
 		status: 1003,
-		type: "Not found Account",
+		type: "Failed to updated notification status.",
+	},
+	FAILED_DILETE_ALL_NOTI: {
+		status: 1004,
+		type: "Failed to delete all notification.",
+	},
+	NOT_FOUNT_ADDRESS: {
+		status: 3002,
+		type: "Not found Address.",
+	},
+	CONNECT_TRY_AGAIN: {
+		status: 3003,
+		type: "Connection attempt has failed. Click try again.",
+	},
+	CONNECTION_REJECTED: {
+		status: 4000,
+		type: "Connection Rejected.",
+	},
+	NOT_EXIST_ADENA_WALLET: {
+		status: 5000,
+		type: "Not exist adena wallet.",
 	},
 };
 

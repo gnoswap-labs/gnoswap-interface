@@ -9,16 +9,6 @@ import styled from "styled-components";
 import { toNumberFormat } from "@/common/utils/number-util";
 
 export default function Home() {
-	const [from, setFrom] = useState("");
-	const [from2, setFrom2] = useState("");
-	const [to, setTo] = useState("");
-	const [to2, setTo2] = useState("");
-	const [test, setTest] = useState<any>({
-		tokenId: "",
-		exchangeRate: "",
-		usdRate: "",
-	});
-
 	const {
 		accountService,
 		accountRepository,
@@ -27,78 +17,91 @@ export default function Home() {
 		swapService,
 	} = useGnoswapContext();
 
-	const onClickFromSwap = () => {
-		tokenService.getFrom(from, from2).then(res => {
-			setTest({
-				...res,
-				exchangeRate: res?.exchangeRate.toString(),
-				usdRate: res?.usdRate.toString(),
-			});
-		});
+	const [token0Value, setToken0Value] = useState("");
+	const [token1Value, setToken1Value] = useState("");
+	const [token0, setToken0] = useState<any>({
+		tokenId: "",
+		name: "",
+		symbol: "",
+		amount: { value: BigNumber(0), denum: "" },
+	});
+	const [token1, setToken1] = useState<any>({
+		tokenId: "",
+		name: "",
+		symbol: "",
+		amount: { value: BigNumber(0), denum: "" },
+	});
+
+	const onClickTokenMetas = () => {
+		tokenService
+			.getAllTokenMetas()
+			.then(res => console.log("Token Metas 조회 :: ", res));
 	};
 
-	const onClickToSwap = () => {
-		tokenService.getFrom(to, to2).then(res => {
-			setTest({
-				...res,
-				exchangeRate: res?.exchangeRate.toString(),
-				usdRate: res?.usdRate.toString(),
-			});
-		});
+	const onClickTokenId = async () => {
+		await tokenService.getTokenById(token0Value).then(res => setToken0(res));
+		await tokenService.getTokenById(token1Value).then(res => setToken1(res));
+	};
+
+	const onClickSwapRate = async () => {
+		if (token0 && token1) {
+			const type = "EXACT_IN";
+			swapService
+				.getSwapRate({
+					token0,
+					token1,
+					type,
+				})
+				.then(res => console.log("Swap Rate :: ", res.toString()));
+		}
+	};
+
+	const onClickSwapExpected = () => {
+		if (token0 && token1) {
+			const type = "EXACT_IN";
+			swapService
+				.getExpectedSwapResult(token0, token1, type)
+				.then(res => console.log("Swap Expected :: ", res));
+		}
+	};
+
+	const onClickSwap = () => {
+		// swapService.getSwapRate().then((res) => console.log('Swap :: ', res))
 	};
 
 	return (
 		<div style={{ padding: "3rem" }}>
-			<SwapWapper>
-				<label htmlFor="tokenId">From Token 아이디</label>
-				<input
-					id="tokenId"
-					value={from}
-					onChange={e => setFrom(e.target.value)}
-				/>
-				<label htmlFor="amount">From Token 수량</label>
-				<input
-					id="amount"
-					value={from2}
-					onChange={e => setFrom2(e.target.value)}
-				/>
-				<h1>{`From Exchange Rate : ${test.exchangeRate}`}</h1>
-				<br />
-				<h1>{`From USD Rate : ${test.usdRate}`}</h1>
-				<button onClick={onClickFromSwap}>From Click</button>
-			</SwapWapper>
-			<SwapWapper>
-				<label htmlFor="tokenId">To Token 아이디</label>
-				<input id="tokenId" value={to} onChange={e => setTo(e.target.value)} />
-				<label htmlFor="amount">To Token 수량</label>
-				<input id="amount" value={to2} onChange={e => setTo2(e.target.value)} />
-				<h1>{`To Exchange Rate : ${test.exchangeRate}`}</h1>
-				<br />
-				<h1>{`To USD Rate : ${test.usdRate}`}</h1>
-				<button onClick={onClickToSwap}>To Click</button>
-			</SwapWapper>
+			<button onClick={onClickTokenMetas}>Token Metas 조회</button>
+			<br />
+			<br />
+			<br />
+			<input
+				style={{ border: "1px solid blue", padding: "5px", margin: "5px" }}
+				value={token0Value}
+				onChange={e => setToken0Value(e.target.value)}
+			/>
+			<br />
+			<input
+				style={{ border: "1px solid blue", padding: "5px", margin: "5px" }}
+				value={token1Value}
+				onChange={e => setToken1Value(e.target.value)}
+			/>
+			<br />
+			<br />
+			<br />
+			<button onClick={onClickTokenId}>Token ID 조회</button>
+			<br />
+			<br />
+			<br />
+			<button onClick={onClickSwapRate}>Swap 비율 조회</button>
+			<br />
+			<br />
+			<br />
+			<button onClick={onClickSwapExpected}>Swap 예상 결과 조회</button>
+			<br />
+			<br />
+			<br />
+			<button onClick={onClickSwap}>Swap</button>
 		</div>
 	);
 }
-
-const SwapWapper = styled.div`
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	width: 300px;
-	background-color: #e4e4e4;
-	padding: 10px;
-	label {
-		margin: 5px 0px;
-	}
-	input {
-		border: 1px solid blue;
-		padding: 5px;
-		margin-bottom: 10px;
-	}
-	button {
-		padding: 5px;
-		background-color: #ababab;
-		margin: 10px 0px 20px;
-	}
-`;

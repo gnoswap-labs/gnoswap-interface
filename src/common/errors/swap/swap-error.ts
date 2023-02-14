@@ -9,6 +9,18 @@ const ERROR_VALUE = {
 		status: 1001,
 		type: "Amount Data check Error",
 	},
+	SWAP_RATE_LOOKUP_FAILED: {
+		status: 4000,
+		type: "Swap rate lookup failed",
+	},
+	EXPECTED_RESULT_LOOKUP_FAILED: {
+		status: 4001,
+		type: "Expected result lookup failed",
+	},
+	SWAP_FAILED: {
+		status: 4002,
+		type: "Swap failed",
+	},
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

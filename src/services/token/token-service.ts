@@ -1,3 +1,6 @@
+import { TokenError } from "@/common/errors/token/token-error";
+import { returnErrorResponse } from "@/common/utils/error-util";
+import { TokenMetaMapper } from "@/models/token/mapper/token-meta-mapper";
 import { ExchangeRateMapper } from "@/models/token/mapper/exchange-rate-mapper";
 import { TokenSearchListMapper } from "@/models/token/mapper/token-search-list-mapper";
 import { RecentlyAddedMapper } from "@/models/statistical-data/mapper/recently-added-mapper";
@@ -6,7 +9,6 @@ import { PopularTokenMapper } from "@/models/statistical-data/mapper/popular-tok
 import { TokenDatatableMapper } from "@/models/token/mapper/token-datatable-mapper";
 import { TokenRepository } from "@/repositories/token";
 import { TokenModelMapper } from "@/models/token/mapper/token-model-mapper";
-import { returnNullWithLog } from "@/common/utils/error-util";
 import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenTableModel } from "@/models/datatable/token-table-model";
 import { TokenSearchItemType } from "@/models/token/token-search-list-model";
@@ -18,6 +20,15 @@ export class TokenService {
 		this.tokenRepository = tokenRepository;
 	}
 
+	public getAllTokenMetas = async () => {
+		return await this.tokenRepository
+			.getAllTokenMetas()
+			.then(TokenMetaMapper.fromResponse)
+			.catch(() =>
+				returnErrorResponse(new TokenError("NOT_FOUNT_TOKEN_METAS")),
+			);
+	};
+
 	public getAllExchangeRates = async (tokenId: string) => {
 		return await this.tokenRepository
 			.getAllExchangeRates(tokenId)
@@ -26,42 +37,53 @@ export class TokenService {
 				...res,
 				rates: res.rates.filter(v => v.tokenId === res.tokenId)[0],
 			}))
-			.catch(returnNullWithLog);
+			.catch(() =>
+				returnErrorResponse(new TokenError("NO_MATCH_TOKENID_FOR_EX_RATE")),
+			);
 	};
 
 	public getUSDExchangeRate = async (tokenId: string) => {
 		return await this.tokenRepository
 			.getUSDExchangeRate(tokenId)
-			.catch(returnNullWithLog);
+			.catch(() =>
+				returnErrorResponse(new TokenError("NO_MATCH_TOKENID_FOR_USD_RATE")),
+			);
 	};
 
 	public getTokenById = async (tokenId: string) => {
 		return await this.tokenRepository
 			.getTokenById(tokenId)
 			.then(TokenModelMapper.fromResponse)
-			.catch(returnNullWithLog);
+			.catch(() => returnErrorResponse(new TokenError("NO_MATCH_TOKENID")));
 	};
 
 	public getTokenDatatable = async (type: TokenTableSelectType = "ALL") => {
 		if (type === "GRC20") {
-			return await this.getGRC20TokenDatatable().catch(returnNullWithLog);
+			return await this.getGRC20TokenDatatable().catch(() =>
+				returnErrorResponse(new TokenError("NO_TOKEN_DATATABLE_TYPE_GRC20")),
+			);
 		}
 
-		return await this.getAllTokenDatatable().catch(returnNullWithLog);
+		return await this.getAllTokenDatatable().catch(() =>
+			returnErrorResponse(new TokenError("NO_TOKEN_DATATABLE_TYPE_ALL")),
+		);
 	};
 
 	private getAllTokenDatatable = async () => {
 		return await this.tokenRepository
 			.getTokenDatatable()
-			.then(TokenDatatableMapper.fromResponse)
-			.catch(returnNullWithLog);
+			.then(TokenDatatableMapper.fromResponse);
 	};
 
 	private getGRC20TokenDatatable = async () => {
-		return await this.getAllTokenDatatable().then(res => ({
-			...res,
-			tokens: res?.tokens.filter(token => token.type === "GRC20"),
-		}));
+		return await this.getAllTokenDatatable()
+			.then(res => ({
+				...res,
+				tokens: res?.tokens.filter(token => token.type === "GRC20"),
+			}))
+			.catch(() =>
+				returnErrorResponse(new TokenError("NO_TOKEN_DATATABLE_TYPE_GRC20")),
+			);
 	};
 
 	public getSearchTokenDatatable = async ({
@@ -75,7 +97,9 @@ export class TokenService {
 			.then(res =>
 				this.searchTokenKeywordFilter(keyword, res as TokenTableModel),
 			)
-			.catch(returnNullWithLog);
+			.catch(() =>
+				returnErrorResponse(new TokenError("NO_SEARCH_TOKEN_DATATABLE")),
+			);
 	};
 
 	private searchTokenKeywordFilter = (
@@ -91,28 +115,34 @@ export class TokenService {
 		return await this.tokenRepository
 			.getSummaryPopularTokens()
 			.then(PopularTokenMapper.fromResponse)
-			.catch(returnNullWithLog);
+			.catch(() =>
+				returnErrorResponse(new TokenError("NOT_FOUND_POPULAR_TOKENS")),
+			);
 	};
 
 	public getHighestRewardTokens = async () => {
 		return await this.tokenRepository
 			.getSummaryHighestRewardTokens()
 			.then(HighestRewardMapper.fromResponse)
-			.catch(returnNullWithLog);
+			.catch(() =>
+				returnErrorResponse(new TokenError("NOT_FOUND_HIGHEST_TOKENS")),
+			);
 	};
 
 	public getRecentlyAddedTokens = async () => {
 		return await this.tokenRepository
 			.getSummaryRecentlyAddedTokens()
 			.then(RecentlyAddedMapper.fromResponse)
-			.catch(returnNullWithLog);
+			.catch(() =>
+				returnErrorResponse(new TokenError("NOT_FOUND_RECENTLY_TOKENS")),
+			);
 	};
 
 	public searchTokens = async (keyword: string) => {
 		return await this.tokenRepository
 			.searchTokens(keyword)
 			.then(TokenSearchListMapper.fromResponse)
-			.catch(returnNullWithLog);
+			.catch(() => returnErrorResponse(new TokenError("NO_SEARCH_TOKEN")));
 	};
 
 	public createSearchLog = (searchToken: TokenSearchItemType) => {

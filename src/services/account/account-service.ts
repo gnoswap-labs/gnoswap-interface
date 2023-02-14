@@ -1,9 +1,10 @@
-import { AccountWalletMapper } from "./../../models/account/mapper/account-wallet-mapper";
-import { TransactionModel } from "./../../models/account/account-history-model";
+import { AccountWalletMapper } from "@/models/account/mapper/account-wallet-mapper";
+import { TransactionModel } from "@/models/account/account-history-model";
 import { StatusOptions } from "@/common/values/data-constant";
 import { AccountInfoMapper } from "@/models/account/mapper/account-info-mapper";
 import { AccountRepository } from "@/repositories/account";
-import { returnNullWithLog } from "@/common/utils/error-util";
+import { returnErrorResponse } from "@/common/utils/error-util";
+import { AccountError } from "@/common/errors/account";
 
 export class AccountService {
 	private accountRepository: AccountRepository;
@@ -16,24 +17,25 @@ export class AccountService {
 		return await this.accountRepository
 			.getAccount()
 			.then(AccountInfoMapper.fromResopnse)
-			.catch(returnNullWithLog);
+			.catch(err => returnErrorResponse(new AccountError("CONNECT_TRY_AGAIN")));
 	};
 
 	public connectAdenaWallet = async () => {
 		const existsWalletCheck = this.accountRepository.existsWallet();
-		if (!existsWalletCheck) return false;
+		if (!existsWalletCheck)
+			returnErrorResponse(new AccountError("NOT_EXIST_ADENA_WALLET"));
 		return await this.accountRepository
 			.addEstablishedSite()
 			.then(AccountWalletMapper.fromResopnse)
-			.catch(returnNullWithLog);
+			.catch(err =>
+				returnErrorResponse(new AccountError("CONNECTION_REJECTED")),
+			);
 	};
-
-	public disconnectAdenaWallet = async () => {};
 
 	public getNotifications = async (address: string) => {
 		return await this.accountRepository
 			.getNotificationsByAddress(address)
-			.catch(returnNullWithLog);
+			.catch(err => returnErrorResponse(new AccountError("HAS_NOT_NOTI")));
 	};
 
 	public createNotification = async (
@@ -42,7 +44,9 @@ export class AccountService {
 	) => {
 		return await this.accountRepository
 			.createNotification(address, transaction)
-			.catch(returnNullWithLog);
+			.catch(err =>
+				returnErrorResponse(new AccountError("FAILED_NOTI_CREATE")),
+			);
 	};
 
 	public updateNotificationStatus = async (
@@ -52,12 +56,16 @@ export class AccountService {
 	) => {
 		return await this.accountRepository
 			.updateNotificationStatus(address, txHash, status)
-			.catch(returnNullWithLog);
+			.catch(err =>
+				returnErrorResponse(new AccountError("FAILED_NOTI_STATUS_UPDATE")),
+			);
 	};
 
 	public deleteAllNotification = async (address: string) => {
 		return await this.accountRepository
 			.deleteAllNotifications(address)
-			.catch(returnNullWithLog);
+			.catch(err =>
+				returnErrorResponse(new AccountError("FAILED_DILETE_ALL_NOTI")),
+			);
 	};
 }

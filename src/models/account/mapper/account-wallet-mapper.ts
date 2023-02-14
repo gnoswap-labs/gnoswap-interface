@@ -1,8 +1,11 @@
 import { InjectResponse } from "@/common/clients/wallet-client/protocols";
-
+import { WalletAdenaModel } from "../wallet-adena-model";
 export class AccountWalletMapper {
-	public static fromResopnse(response: InjectResponse<any>): boolean {
+	public static fromResopnse(response: InjectResponse<any>): WalletAdenaModel {
 		const isConnected = [0, 4001].includes(response.code);
-		return isConnected;
+		return {
+			code: response.code,
+			isConnected,
+		};
 	}
 }
