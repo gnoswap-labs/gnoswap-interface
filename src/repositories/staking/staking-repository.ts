@@ -8,7 +8,7 @@ import {
 } from "./response";
 
 export interface StakingRepository {
-	getStakingPeriods: () => Promise<StakingPeriodListResponse>;
+	getStakingPeriods: (poolId: string) => Promise<StakingPeriodListResponse>;
 
 	stakeBy: (request: StakeRequest) => Promise<StakeResponse>;
 

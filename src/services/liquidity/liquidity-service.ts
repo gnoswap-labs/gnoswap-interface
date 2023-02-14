@@ -3,6 +3,7 @@ import { TransactionHashModelMapper } from "@/models/common/mapper/transaction-h
 import { LiquidityDetailModel } from "@/models/liquidity/liquidity-detail-model";
 import { LiquidityModelMapper } from "@/models/liquidity/mapper/liquildity-model-mapper";
 import { TokenPairModelMapper } from "@/models/token/mapper/token-pair-model-mapper";
+import { TokenDefaultModel } from "@/models/token/token-default-model";
 import { TokenPairModel } from "@/models/token/token-pair-model";
 import { LiquidityRepository } from "@/repositories/liquidity";
 
@@ -36,7 +37,6 @@ export class LiquidityService {
 	 * @returns transaction hash
 	 */
 	public addLiquidity = (
-		poolId: string,
 		liquidity: TokenPairModel,
 		options: {
 			rangeType: "ACTIVE" | "PASSIVE" | "CUSTOM";
@@ -46,7 +46,6 @@ export class LiquidityService {
 		},
 	) => {
 		const request = {
-			poolId,
 			liquidity: TokenPairModelMapper.toRequest(liquidity),
 			options,
 		};
@@ -102,25 +101,57 @@ export class LiquidityService {
 			.catch(returnNullWithLog);
 	};
 
-	public getAvailStakeLiquidities = (
-		address: string,
-		period: number,
-		poolId: string,
+	public getSummaryPooledByLiquidities = (
+		liquidities: Array<LiquidityDetailModel>,
 	) => {
+		const token0 = liquidities
+			.map(liquidity => liquidity.liquidity.token0)
+			.reduce(LiquidityService.addAllTokenAmounts);
+		const token1 = liquidities
+			.map(liquidity => liquidity.liquidity.token1)
+			.reduce(LiquidityService.addAllTokenAmounts);
+
+		return [token0, token1];
+	};
+
+	public getSummaryUnclaimedByLiquidities = (
+		liquidities: Array<LiquidityDetailModel>,
+	) => {
+		const rewardSwapFeeToken0 = liquidities
+			.map(liquidity => liquidity.reward.swap.token0)
+			.reduce(LiquidityService.addAllTokenAmounts);
+		const rewardSwapFeeToken1 = liquidities
+			.map(liquidity => liquidity.reward.swap.token1)
+			.reduce(LiquidityService.addAllTokenAmounts);
+
+		return [rewardSwapFeeToken0, rewardSwapFeeToken1];
+	};
+
+	public getAvailStakeLiquidities = (address: string, poolId: string) => {
 		return this.liquidityRepository
-			.getAvailStakeLiquiditiesBy(address, period, poolId)
+			.getAvailStakeLiquiditiesBy(address, poolId)
 			.then(LiquidityModelMapper.fromDetailListResponse)
 			.catch(returnNullWithLog);
 	};
 
-	public getAvailUnstakeLiquidities = (
-		address: string,
-		period: number,
-		poolId: string,
-	) => {
+	public getAvailUnstakeLiquidities = (address: string, poolId: string) => {
 		return this.liquidityRepository
-			.getAvailUnstakeLiquiditiesBy(address, period, poolId)
+			.getAvailUnstakeLiquiditiesBy(address, poolId)
 			.then(LiquidityModelMapper.fromDetailListResponse)
 			.catch(returnNullWithLog);
+	};
+
+	private static addAllTokenAmounts = (
+		total: TokenDefaultModel,
+		current: TokenDefaultModel,
+	) => {
+		{
+			console.log("current", current.amount?.value.toString() ?? 0);
+			if (total.amount && current.amount) {
+				total.amount.value = total.amount.value.plus(current.amount.value);
+				return total;
+			}
+			return total;
+		}
 	};
 }

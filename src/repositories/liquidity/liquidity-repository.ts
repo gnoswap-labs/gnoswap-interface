@@ -28,13 +28,11 @@ export interface LiquidityRepository {
 
 	getAvailStakeLiquiditiesBy: (
 		poolId: string,
-		period: number,
 		address: string,
 	) => Promise<LiquidityDetailListResponse>;
 
 	getAvailUnstakeLiquiditiesBy: (
 		poolId: string,
-		period: number,
 		address: string,
 	) => Promise<LiquidityDetailListResponse>;
 

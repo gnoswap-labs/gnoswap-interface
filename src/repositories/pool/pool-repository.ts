@@ -1,3 +1,4 @@
+import { TokenPairModel } from "@/models/token/token-pair-model";
 import {
 	PoolListResponse,
 	PoolInfoResponse,
@@ -15,6 +16,11 @@ export interface PoolRepository {
 	getPoolById: (poolId: string) => Promise<PoolInfoResponse>;
 
 	getPoolChartTicks: (poolId: string) => Promise<PoolChartResopnse>;
+
+	getPoolChartTicksByTokenPair: (
+		token0Id: string,
+		token1Id: string,
+	) => Promise<PoolChartResopnse>;
 
 	getPoolSummaryLiquidityById: (
 		poolId: string,

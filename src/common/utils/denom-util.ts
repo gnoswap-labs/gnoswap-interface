@@ -1,5 +1,6 @@
 import { AmountType } from "@/common/types/data-prop-types";
 import { AmountNumberType } from "@/common/types/data-prop-types";
+import { TokenMeta } from "@/repositories/token";
 import BigNumber from "bignumber.js";
 
 interface Amount {
@@ -14,6 +15,16 @@ interface DenomConfig {
 	minimalRate: BigNumber;
 }
 
+export const metaInfoToConfig = (metaInfo: TokenMeta): DenomConfig => {
+	const { decimals, denom, minimal_denom } = metaInfo;
+	return {
+		defaultDenom: denom,
+		defaultRate: BigNumber(1),
+		minimalDenom: minimal_denom,
+		minimalRate: BigNumber(1).shiftedBy(decimals * -1),
+	};
+};
+
 export const toMinimalDenom = (amount: Amount, denomConfig: DenomConfig) => {
 	const { defaultRate, minimalDenom, minimalRate } = denomConfig;
 	if (isMinimalDenom(amount, denomConfig)) {
@@ -23,7 +34,7 @@ export const toMinimalDenom = (amount: Amount, denomConfig: DenomConfig) => {
 	const rate = defaultRate.dividedBy(minimalRate);
 	const minimalAmount = amountValue.multipliedBy(rate);
 	return {
-		amont: minimalAmount,
+		value: minimalAmount,
 		denom: minimalDenom,
 	};
 };
@@ -37,7 +48,7 @@ export const toDefaultDenom = (amount: Amount, denomConfig: DenomConfig) => {
 	const rate = minimalRate.dividedBy(defaultRate);
 	const defaultAmount = amountValue.multipliedBy(rate);
 	return {
-		amont: defaultAmount,
+		value: defaultAmount,
 		denom: defaultDenom,
 	};
 };

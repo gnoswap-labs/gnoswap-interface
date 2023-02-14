@@ -11,7 +11,7 @@ export const address = atom<string | null>({
 	default: "",
 });
 
-export const notifications = atom<Array<AccountHistoryModel>>({
+export const notifications = atom<AccountHistoryModel | null>({
 	key: "account/notifications",
-	default: [],
+	default: null,
 });

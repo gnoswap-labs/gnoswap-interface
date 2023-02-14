@@ -9,13 +9,13 @@ export class StakingService {
 		this.stakingRepository = stakingRepository;
 	}
 
-	public getPeriodInfos = () => {
+	public getPeriodInfos = (poolId: string) => {
 		return this.stakingRepository
-			.getStakingPeriods()
+			.getStakingPeriods(poolId)
 			.then(StakingPeriodInfoModelMapper.fromListResponse);
 	};
 
-	public stake = (period: number, liquidityIds: Array<string>) => {
+	public stake = (liquidityIds: Array<string>, period: number) => {
 		const request = {
 			period: `${period}`,
 			liquidityIds,

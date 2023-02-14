@@ -24,16 +24,16 @@ export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Hydrate state={pageProps.dehydratedState}>
-				<GnoswapProvider>
-					<RecoilRoot>
+				<RecoilRoot>
+					<GnoswapProvider>
 						<GlobalStyle />
 						<ErrorBoundary fallback={<div>ERROR</div>}>
 							<GlobalLayout>
 								<Component {...pageProps} />
 							</GlobalLayout>
 						</ErrorBoundary>
-					</RecoilRoot>
-				</GnoswapProvider>
+					</GnoswapProvider>
+				</RecoilRoot>
 			</Hydrate>
 		</QueryClientProvider>
 	);
