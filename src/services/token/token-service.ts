@@ -33,10 +33,6 @@ export class TokenService {
 		return await this.tokenRepository
 			.getAllExchangeRates(tokenId)
 			.then(ExchangeRateMapper.fromResponse)
-			.then(res => ({
-				...res,
-				rates: res.rates.filter(v => v.tokenId === res.tokenId)[0],
-			}))
 			.catch(() =>
 				returnErrorResponse(new TokenError("NO_MATCH_TOKENID_FOR_EX_RATE")),
 			);

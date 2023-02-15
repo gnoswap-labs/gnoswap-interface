@@ -2,8 +2,6 @@ import { returnErrorResponse } from "./../../common/utils/error-util";
 import { SwapConfirmMapper } from "@/models/swap/mapper/swap-confirm-mapper";
 import { SwapConfirmModel } from "@/models/swap/swap-confirm-model";
 import { SwapExpectedMapper } from "@/models/swap/mapper/swap-expected-mapper";
-import { SwapRateModel } from "@/models/swap/swap-rate-model";
-import { returnNullWithLog } from "@/common/utils/error-util";
 import { SwapRepository } from "@/repositories/swap";
 import { SwapInfoRequest } from "@/repositories/swap/request/swap-info-request";
 import { SwapRequest } from "@/repositories/swap/request";
@@ -20,15 +18,11 @@ export class SwapService {
 		this.swapRepository = swapRepository;
 	}
 
-	public getSwapRate = async ({
-		token0,
-		token1,
-		type,
-	}: {
-		token0: TokenDefaultModel;
-		token1: TokenDefaultModel;
-		type: ExactTypeOption;
-	}) => {
+	public getSwapRate = async (
+		token0: TokenDefaultModel,
+		token1: TokenDefaultModel,
+		type: ExactTypeOption,
+	) => {
 		const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
 			token0,
 			token1,

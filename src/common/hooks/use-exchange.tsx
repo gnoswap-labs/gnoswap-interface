@@ -4,6 +4,7 @@ import { TokenState } from "@/states";
 import BigNumber from "bignumber.js";
 import { useRecoilState } from "recoil";
 import { metaInfoToConfig, toDefaultDenom } from "../utils/denom-util";
+import { isErrorResponse } from "../utils/validation-util";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useTokenResource } from "./use-token-resource";
 
@@ -19,6 +20,14 @@ export const useExchange = () => {
 
 	const exchangeToken = (from: TokenDefaultModel, to: TokenDefaultModel) => {
 		const exchangeRate = getExchangeRate(from, to);
+		return exchangeTokenByRate(from, to, exchangeRate);
+	};
+
+	const exchangeTokenByRate = (
+		from: TokenDefaultModel,
+		to: TokenDefaultModel,
+		exchangeRate: BigNumber,
+	) => {
 		const fromToken = convertToDefaultDenom(from);
 		const toToken = convertToDefaultDenom(to);
 		if (!fromToken || !toToken) {
@@ -98,7 +107,10 @@ export const useExchange = () => {
 		}
 		tokenService
 			.getAllExchangeRates(standard.token_id)
-			.then(response => response && setExchangeRates(response.rates));
+			.then(
+				response =>
+					!isErrorResponse(response) && setExchangeRates(response.rates),
+			);
 	};
 
 	const updateUSDRate = () => {
@@ -107,7 +119,10 @@ export const useExchange = () => {
 		}
 		tokenService
 			.getUSDExchangeRate(standard.token_id)
-			.then(response => response && setUSDRate(BigNumber(response.rate)));
+			.then(
+				response =>
+					!isErrorResponse(response) && setUSDRate(BigNumber(response.rate)),
+			);
 	};
 
 	return {
@@ -115,6 +130,7 @@ export const useExchange = () => {
 		exchangeRates,
 		getExchangeRate,
 		exchangeToken,
+		exchangeTokenByRate,
 		tokenToUSD,
 		tokenPairToUSD,
 		updateExchangeRates,
