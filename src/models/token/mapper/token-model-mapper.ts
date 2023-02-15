@@ -1,5 +1,5 @@
-import { amountEmptyBigNumInit } from "./../../../common/values/global-initial-value";
-import { amountFormatToBignum } from "./../../../common/utils/denom-util";
+import { amountEmptyBigNumInit } from "@/common/values/global-initial-value";
+import { amountFormatToBignum } from "@/common/utils/denom-util";
 import { AmountNumberType, AmountType } from "@/common/types/data-prop-types";
 import BigNumber from "bignumber.js";
 import { TokenDefaultModel } from "../token-default-model";
@@ -19,7 +19,9 @@ export class TokenModelMapper {
 			tokenId: token_id,
 			name,
 			symbol,
-			amount: TokenModelMapper.mappedAmount(amount),
+			amount: amount
+				? TokenModelMapper.mappedAmount(amount)
+				: amountEmptyBigNumInit,
 		};
 	}
 

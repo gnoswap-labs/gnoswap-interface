@@ -8,9 +8,15 @@ import {
 } from "@/repositories/account";
 import { StorageClient } from "@/common/clients/storage-client";
 import { MockStorageClient } from "@/common/clients/storage-client/mock-storage-client";
-import { addressValidationCheck } from "@/common/utils/validation-util";
+import {
+	addressValidationCheck,
+	isErrorResponse,
+} from "@/common/utils/validation-util";
 import { WalletAdenaModel } from "@/models/account/wallet-adena-model";
-import { TransactionModel } from "@/models/account/account-history-model";
+import {
+	AccountHistoryModel,
+	TransactionModel,
+} from "@/models/account/account-history-model";
 import { ErrorResponse } from "@/common/errors/response";
 
 let localStorageClient: StorageClient;
@@ -44,39 +50,19 @@ describe("Get account info", () => {
 		expect(typeof accountInfo.amount.denom).toBe("string");
 	});
 
-	it("Check if the values of the coins and address are correct", async () => {
+	it("Failed connection to account", async () => {
 		// given
-		const defaultAccountInfo = {
-			status: "",
-			address: "",
-			coins: null,
-			publicKey: {
-				"@type": "----",
-				value: "----",
-			},
-			accountNumber: "1",
-			sequence: "1",
-			chainId: "test3",
-		};
-		const injectRes = {
-			code: 0,
-			status: "success",
-			type: "GET_ACCOUNT",
-			message: "Get account.",
-			data: defaultAccountInfo,
-		};
-
 		// occur error in repository
-		accountRepository.getAccount = jest.fn().mockResolvedValue(injectRes);
+		accountRepository.getAccount = jest
+			.fn()
+			.mockRejectedValue(new AccountError("CONNECT_TRY_AGAIN"));
 
-		//when
+		// when
 		const response = await accountService.getAccountInfo();
-		const accountInfo = response as AccountInfoModel;
 
 		// then
-		expect(accountInfo.amount.value.toString()).toBe("0");
-		expect(accountInfo.amount.denom).toBe("");
-		expect(accountInfo.address).toBe("");
+		expect(accountRepository.getAccount).toBeCalledTimes(1);
+		expect(isErrorResponse(response)).toBe(true);
 	});
 });
 
@@ -88,51 +74,62 @@ describe("Connect adena wallet", () => {
 
 		// when
 		const response = await accountService.connectAdenaWallet();
-		const walletAdena = response as ErrorResponse<any>;
+		const walletAdena = response as ErrorResponse;
 
 		// then
+		expect(accountRepository.existsWallet).toBeCalledTimes(1);
 		expect(walletAdena.isError).toBeTruthy();
 	});
 
 	it("There's an Adena wallet that exists.", async () => {
 		// given
-		const spyFnExistsWallet = jest.spyOn(accountRepository, "existsWallet");
 		const connected = true;
 
 		// occur error in repository
-		accountRepository.existsWallet = jest.fn().mockResolvedValue(connected);
+		accountRepository.existsWallet = jest.fn().mockReturnValue(connected);
 
 		// when
 		const response = await accountService.connectAdenaWallet();
 		const walletAdena = response as WalletAdenaModel;
 
 		// then
-		expect(spyFnExistsWallet).toBeCalledTimes(1);
+		expect(accountRepository.existsWallet).toBeCalledTimes(1);
 		expect(walletAdena).toBeTruthy();
 		expect(typeof walletAdena.isConnected).toBe("boolean");
 		expect(typeof walletAdena.code).toBe("number");
-		expect(walletAdena.code).toBe([0, 4001].includes(walletAdena.code));
+		expect(walletAdena.code).not.toBeNull();
+		expect([0, 4001]).toContain(walletAdena.code);
 		expect(walletAdena.isConnected).toBe(true);
 	});
 
 	it("An unknown error occurred in the connection of the Adena wallet.", async () => {
 		// given
-		const spyFnExistsWallet = jest.spyOn(accountRepository, "existsWallet");
 		const connected = false;
-
 		// occur error in repository
-		accountRepository.existsWallet = jest.fn().mockResolvedValue(connected);
+		accountRepository.existsWallet = jest.fn().mockReturnValue(connected);
 
 		// when
 		const response = await accountService.connectAdenaWallet();
-		const walletAdena = response as WalletAdenaModel;
+		const walletAdena = response as ErrorResponse;
 
 		// then
-		expect(spyFnExistsWallet).toBeCalledTimes(1);
-		expect(typeof walletAdena.isConnected).toBe("boolean");
-		expect(typeof walletAdena.code).toBe("number");
-		expect(walletAdena.code).toBe([9000].includes(walletAdena.code));
-		expect(walletAdena.isConnected).toBe(false);
+		expect(accountRepository.existsWallet).toBeCalledTimes(1);
+		expect(walletAdena.isError).toBeTruthy();
+	});
+
+	it("User rejected to log in from wallet.", async () => {
+		// given
+		// occur error in repository
+		accountRepository.addEstablishedSite = jest
+			.fn()
+			.mockRejectedValue(new AccountError("CONNECTION_REJECTED"));
+
+		// when
+		const response = await accountService.connectAdenaWallet();
+
+		// then
+		expect(accountRepository.addEstablishedSite).toBeCalledTimes(1);
+		expect(isErrorResponse(response)).toBe(true);
 	});
 });
 
@@ -146,19 +143,20 @@ describe("Get Notifications By Address", () => {
 		const address = "g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt";
 
 		// when
-		const response = await accountRepository.getNotificationsByAddress(address);
+		const response = await accountService.getNotifications(address);
+		const getNoti = response as AccountHistoryModel;
 
 		//then
 		expect(spyFnNotificationsByAddress).toBeCalledTimes(1);
 		expect(addressValidationCheck(address)).toBe(true);
-		expect(Array.isArray(response.txs)).toBe(true);
+		expect(Array.isArray(getNoti.txs)).toBe(true);
 	});
 
 	it("Success create notification", async () => {
 		// given
-		const spyFnNotificationsByAddress = jest.spyOn(
+		const spyFnCreateNotification = jest.spyOn(
 			accountRepository,
-			"getNotificationsByAddress",
+			"createNotification",
 		);
 		const address = "g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt";
 		const tokenDefault = {
@@ -173,15 +171,14 @@ describe("Get Notifications By Address", () => {
 			status: "SUCCESS",
 			createdAt: "2022/2/2",
 		};
-
 		// when
-		const response = await accountRepository.createNotification(
+		const response = await accountService.createNotification(
 			address,
 			transaction,
 		);
 
 		// then
-		expect(spyFnNotificationsByAddress).toBeCalledTimes(1);
+		expect(spyFnCreateNotification).toBeCalledTimes(1);
 		expect(addressValidationCheck(address)).toBe(true);
 		expect(typeof response).toBe("boolean");
 		expect(response).toBe(true);
@@ -189,11 +186,7 @@ describe("Get Notifications By Address", () => {
 
 	it("Failed create Notification", async () => {
 		// given
-		const spyFnNotificationsByAddress = jest.spyOn(
-			accountRepository,
-			"getNotificationsByAddress",
-		);
-		const address = "";
+		const address = "g54276fdsaga";
 		const tokenDefault = {
 			tokenId: "",
 			name: "",
@@ -203,42 +196,46 @@ describe("Get Notifications By Address", () => {
 			txType: 0,
 			txHash: "",
 			tokenInfo: tokenDefault,
-			status: "SUCCESS",
+			status: "FAILED",
 			createdAt: "",
 		};
 
-		// when
-		const response = await accountRepository.createNotification(
+		// occur error in repository
+		accountRepository.createNotification = jest
+			.fn()
+			.mockRejectedValue(new AccountError("FAILED_NOTI_CREATE"));
+
+		//when
+		const response = await accountService.createNotification(
 			address,
 			transaction,
 		);
 
 		// then
-		expect(spyFnNotificationsByAddress).toBeCalledTimes(1);
+		expect(accountRepository.createNotification).toBeCalledTimes(1);
+		expect(isErrorResponse(response)).toBe(true);
 		expect(addressValidationCheck(address)).toBe(false);
-		expect(typeof response).toBe("boolean");
-		expect(response).toBe(false);
 	});
 
 	it("Success update notification Status", async () => {
 		// given
-		const spyFnNotificationsByAddress = jest.spyOn(
+		const spyFnUpdateNotificationStatus = jest.spyOn(
 			accountRepository,
-			"getNotificationsByAddress",
+			"updateNotificationStatus",
 		);
 		const address = "g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt";
 		const txHash = "1";
 		const status = "SUCCESS";
 
 		// when
-		const response = await accountRepository.updateNotificationStatus(
+		const response = await accountService.updateNotificationStatus(
 			address,
 			txHash,
 			status,
 		);
 
 		// then
-		expect(spyFnNotificationsByAddress).toBeCalledTimes(1);
+		expect(spyFnUpdateNotificationStatus).toBeCalledTimes(1);
 		expect(addressValidationCheck(address)).toBe(true);
 		expect(typeof response).toBe("boolean");
 		expect(response).toBe(true);
@@ -246,41 +243,41 @@ describe("Get Notifications By Address", () => {
 
 	it("Failed update notification Status", async () => {
 		// given
-		const spyFnNotificationsByAddress = jest.spyOn(
-			accountRepository,
-			"getNotificationsByAddress",
-		);
 		const address = "g14qv";
 		const txHash = "";
-		const status = "SUCCESS";
+		const status = "FAILED";
+
+		// occur error in repository
+		accountRepository.updateNotificationStatus = jest
+			.fn()
+			.mockRejectedValue(new AccountError("FAILED_NOTI_STATUS_UPDATE"));
 
 		// when
-		const response = await accountRepository.updateNotificationStatus(
+		const response = await accountService.updateNotificationStatus(
 			address,
 			txHash,
 			status,
 		);
 
 		// then
-		expect(spyFnNotificationsByAddress).toBeCalledTimes(1);
+		expect(accountRepository.updateNotificationStatus).toBeCalledTimes(1);
+		expect(isErrorResponse(response)).toBe(true);
 		expect(addressValidationCheck(address)).toBe(false);
-		expect(typeof response).toBe("boolean");
-		expect(response).toBe(false);
 	});
 
 	it("Success delete All notificatioun", async () => {
 		// given
-		const spyFnNotificationsByAddress = jest.spyOn(
+		const spyFnDeleteAllNotifications = jest.spyOn(
 			accountRepository,
-			"getNotificationsByAddress",
+			"deleteAllNotifications",
 		);
 		const address = "g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt";
 
 		// when
-		const response = await accountRepository.deleteAllNotifications(address);
+		const response = await accountService.deleteAllNotification(address);
 
 		// then
-		expect(spyFnNotificationsByAddress).toBeCalledTimes(1);
+		expect(spyFnDeleteAllNotifications).toBeCalledTimes(1);
 		expect(addressValidationCheck(address)).toBe(true);
 		expect(typeof response).toBe("boolean");
 		expect(response).toBe(true);
@@ -288,20 +285,20 @@ describe("Get Notifications By Address", () => {
 
 	it("Failed delete All notificatioun", async () => {
 		// given
-		const spyFnNotificationsByAddress = jest.spyOn(
-			accountRepository,
-			"getNotificationsByAddress",
-		);
 		const address = "g14qv";
 
+		// occur error in repository
+		accountRepository.deleteAllNotifications = jest
+			.fn()
+			.mockRejectedValue(new AccountError("FAILED_DILETE_ALL_NOTI"));
+
 		// when
-		const response = await accountRepository.deleteAllNotifications(address);
+		const response = await accountService.deleteAllNotification(address);
 
 		// then
-		expect(spyFnNotificationsByAddress).toBeCalledTimes(1);
+		expect(accountRepository.deleteAllNotifications).toBeCalledTimes(1);
+		expect(isErrorResponse(response)).toBe(true);
 		expect(addressValidationCheck(address)).toBe(false);
-		expect(typeof response).toBe("boolean");
-		expect(response).toBe(false);
 	});
 });
 

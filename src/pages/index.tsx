@@ -45,14 +45,14 @@ export default function Home() {
 
 	const onClickSwapRate = async () => {
 		if (token0 && token1) {
-			const type = "EXACT_IN";
-			swapService
-				.getSwapRate({
-					token0,
-					token1,
-					type,
-				})
-				.then(res => console.log("Swap Rate :: ", res.toString()));
+			// const type = "EXACT_IN";
+			// swapService
+			// 	.getSwapRate({
+			// 		token0,
+			// 		token1,
+			// 		type,
+			// 	})
+			// 	.then(res => console.log("Swap Rate :: ", res.toString()));
 		}
 	};
 
@@ -66,6 +66,9 @@ export default function Home() {
 	};
 
 	const onClickSwap = () => {
+		accountService
+			.connectAdenaWallet()
+			.then(res => console.log("account test ", res));
 		// swapService.getSwapRate().then((res) => console.log('Swap :: ', res))
 	};
 
@@ -101,7 +104,7 @@ export default function Home() {
 			<br />
 			<br />
 			<br />
-			<button onClick={onClickSwap}>Swap</button>
+			<button onClick={onClickSwap}>Account TEst</button>
 		</div>
 	);
 }

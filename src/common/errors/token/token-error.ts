@@ -1,7 +1,7 @@
 import { BaseError } from "../base";
 
 const ERROR_VALUE = {
-	NOT_FOUNT_TOKEN_METAS: {
+	NOT_FOUND_TOKEN_METAS: {
 		status: 4000,
 		type: "Unable to get all token metas.",
 	},

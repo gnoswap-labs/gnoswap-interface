@@ -7,7 +7,7 @@ import { RecentlyAddedMapper } from "@/models/statistical-data/mapper/recently-a
 import { HighestRewardMapper } from "@/models/statistical-data/mapper/highest-reward-mapper";
 import { PopularTokenMapper } from "@/models/statistical-data/mapper/popular-token-mapper";
 import { TokenDatatableMapper } from "@/models/token/mapper/token-datatable-mapper";
-import { TokenRepository } from "@/repositories/token";
+import { TokenDatatableResponse, TokenRepository } from "@/repositories/token";
 import { TokenModelMapper } from "@/models/token/mapper/token-model-mapper";
 import { TokenTableSelectType } from "@/common/values/data-constant";
 import { TokenTableModel } from "@/models/datatable/token-table-model";
@@ -25,7 +25,7 @@ export class TokenService {
 			.getAllTokenMetas()
 			.then(TokenMetaMapper.fromResponse)
 			.catch(() =>
-				returnErrorResponse(new TokenError("NOT_FOUNT_TOKEN_METAS")),
+				returnErrorResponse(new TokenError("NOT_FOUND_TOKEN_METAS")),
 			);
 	};
 
@@ -54,32 +54,25 @@ export class TokenService {
 	};
 
 	public getTokenDatatable = async (type: TokenTableSelectType = "ALL") => {
-		if (type === "GRC20") {
-			return await this.getGRC20TokenDatatable().catch(() =>
-				returnErrorResponse(new TokenError("NO_TOKEN_DATATABLE_TYPE_GRC20")),
-			);
-		}
-
-		return await this.getAllTokenDatatable().catch(() =>
-			returnErrorResponse(new TokenError("NO_TOKEN_DATATABLE_TYPE_ALL")),
-		);
-	};
-
-	private getAllTokenDatatable = async () => {
+		const isGRC20 = type === "GRC20";
 		return await this.tokenRepository
 			.getTokenDatatable()
-			.then(TokenDatatableMapper.fromResponse);
+			.then(res => (isGRC20 ? this.filterGRC20TokenDatatable(res) : res))
+			.then(TokenDatatableMapper.fromResponse)
+			.catch(() =>
+				returnErrorResponse(
+					new TokenError(
+						`NO_TOKEN_DATATABLE_TYPE_${isGRC20 ? "GRC20" : "ALL"}`,
+					),
+				),
+			);
 	};
 
-	private getGRC20TokenDatatable = async () => {
-		return await this.getAllTokenDatatable()
-			.then(res => ({
-				...res,
-				tokens: res?.tokens.filter(token => token.type === "GRC20"),
-			}))
-			.catch(() =>
-				returnErrorResponse(new TokenError("NO_TOKEN_DATATABLE_TYPE_GRC20")),
-			);
+	private filterGRC20TokenDatatable = (res: TokenDatatableResponse) => {
+		return {
+			...res,
+			tokens: res?.tokens.filter(token => token.type === "GRC20"),
+		};
 	};
 
 	public getSearchTokenDatatable = async ({

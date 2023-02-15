@@ -25,13 +25,17 @@ const ERROR_VALUE = {
 		status: 3002,
 		type: "Not found Address.",
 	},
-	CONNECT_TRY_AGAIN: {
-		status: 3003,
-		type: "Connection attempt has failed. Click try again.",
-	},
 	CONNECTION_REJECTED: {
 		status: 4000,
 		type: "Connection Rejected.",
+	},
+	CONNECT_UNKNOWN_ERROR: {
+		status: 4001,
+		type: "Unknown error in wallet connection.",
+	},
+	CONNECT_TRY_AGAIN: {
+		status: 4002,
+		type: "Connection attempt has failed. Click try again.",
 	},
 	NOT_EXIST_ADENA_WALLET: {
 		status: 5000,
