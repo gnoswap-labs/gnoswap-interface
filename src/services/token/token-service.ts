@@ -77,13 +77,10 @@ export class TokenService {
 		};
 	};
 
-	public getSearchTokenDatatable = async ({
-		keyword,
-		type = "ALL",
-	}: {
-		keyword: string;
-		type: TokenTableSelectType;
-	}) => {
+	public getSearchTokenDatatable = async (
+		keyword: string,
+		type: TokenTableSelectType = "ALL",
+	) => {
 		return await this.getTokenDatatable(type)
 			.then(res =>
 				this.searchTokenKeywordFilter(keyword, res as TokenTableModel),
@@ -97,9 +94,15 @@ export class TokenService {
 		keyword: string,
 		data: TokenTableModel,
 	) => {
-		return data?.tokens.filter(
+		console.log("data : ", data);
+		const searchTokens = data?.tokens.filter(
 			token => token.name.includes(keyword) || token.symbol.includes(keyword),
 		);
+		return {
+			hits: searchTokens.length,
+			total: searchTokens.length,
+			tokens: searchTokens,
+		};
 	};
 
 	public getPopularTokens = async () => {

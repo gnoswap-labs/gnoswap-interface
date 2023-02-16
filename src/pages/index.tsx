@@ -19,7 +19,7 @@ export default function Home() {
 
 	const onClick = () => {
 		tokenService
-			.getTokenDatatable()
+			.getSearchTokenDatatable("Gno")
 			.then(res => console.log("token Table ", res));
 		// swapService.getSwapRate().then((res) => console.log('Swap :: ', res))
 	};
