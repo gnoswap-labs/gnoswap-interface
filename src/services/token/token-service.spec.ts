@@ -18,6 +18,7 @@ import {
 	PopularTokenModel,
 	RecentlyAddedPoolModel,
 } from "@/models/statistical-data";
+import { TokenSearchListModel } from "@/models/token/token-search-list-model";
 
 let localStorageClient: StorageClient;
 let tokenRepository: TokenRepository;
@@ -194,7 +195,7 @@ describe("Get token Datatable.", () => {
 		);
 		// when
 		const response = await tokenService.getTokenDatatable();
-		const tokenTable = response as TokenTableModel.TokenTableModel;
+		const tokenTable = response as TokenTableModel;
 
 		// then
 		expect(spyFnTokenDatatable).toBeCalledTimes(1);
@@ -231,7 +232,7 @@ describe("Get popular tokens.", () => {
 
 		// when
 		const response = await tokenService.getPopularTokens();
-		const popularTokens = response as PopularTokenModel.PopularTokenModel;
+		const popularTokens = response as PopularTokenModel;
 
 		// then
 		expect(response).toBeTruthy();
@@ -269,8 +270,7 @@ describe("Get highest reward tokens.", () => {
 
 		// when
 		const response = await tokenService.getHighestRewardTokens();
-		const highestTokens =
-			response as HighestRewardPoolModel.HighestRewardPoolModel;
+		const highestTokens = response as HighestRewardPoolModel;
 
 		// then
 		expect(response).toBeTruthy();
@@ -308,8 +308,7 @@ describe("Get recently added tokens.", () => {
 
 		// when
 		const response = await tokenService.getRecentlyAddedTokens();
-		const recentlyTokens =
-			response as RecentlyAddedPoolModel.RecentlyAddedPoolModel;
+		const recentlyTokens = response as RecentlyAddedPoolModel;
 
 		// then
 		expect(response).toBeTruthy();
@@ -338,10 +337,36 @@ describe("Get recently added tokens.", () => {
 });
 
 describe("Search Tokens.", () => {
-	it("Successful search keyword", async () => {
+	it("Successful search keyword.", async () => {
 		// given
+		const spyFnSearchTokens = jest.spyOn(tokenRepository, "searchTokens");
+		const keyword = "Gno";
+
 		// when
+		const response = await tokenService.searchTokens(keyword);
+		const searchTokens = response as TokenSearchListModel;
+
 		// then
+		expect(spyFnSearchTokens).toBeCalledTimes(1);
+		expect(searchTokens).not.toBeNull();
+		expect(searchTokens?.items).not.toBeNull();
+		expect(searchTokens?.items.length).toBeGreaterThan(0);
+	});
+
+	it("Failed search keyword.", async () => {
+		// given
+		// occur error in repository
+		tokenRepository.searchTokens = jest
+			.fn()
+			.mockRejectedValue(new TokenError("NO_SEARCH_TOKEN"));
+		const keyword = "!@#%";
+
+		// when
+		const response = await tokenService.searchTokens(keyword);
+
+		// then
+		expect(tokenRepository.searchTokens).toBeCalledTimes(1);
+		expect(isErrorResponse(response)).toBe(true);
 	});
 });
 

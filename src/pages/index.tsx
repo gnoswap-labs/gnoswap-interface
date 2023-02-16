@@ -7,6 +7,7 @@ import BigNumber from "bignumber.js";
 import { generateId } from "@/common/utils/test-util";
 import styled from "styled-components";
 import { toNumberFormat } from "@/common/utils/number-util";
+import { TokenDefaultModel } from "@/models/token/token-default-model";
 
 export default function Home() {
 	const {
@@ -19,14 +20,50 @@ export default function Home() {
 
 	const onClick = () => {
 		tokenService
-			.getSearchTokenDatatable("Gno")
+			.getTokenDatatable()
 			.then(res => console.log("token Table ", res));
-		// swapService.getSwapRate().then((res) => console.log('Swap :: ', res))
+	};
+
+	const onClickToken = () => {
+		tokenService.getTokenById("2").then(res => console.log("token Id ", res));
+	};
+
+	const onClickSwap = () => {
+		const token0: TokenDefaultModel = {
+			tokenId: "1",
+			name: "Gnoswap",
+			symbol: "GNOSWAP",
+			amount: {
+				value: BigNumber(2000),
+				denom: "gnosh",
+			},
+		};
+		const token1: TokenDefaultModel = {
+			tokenId: "2",
+			name: "Gnoland",
+			symbol: "GNO.LAND",
+			amount: {
+				value: BigNumber(1000),
+				denom: "ugnot",
+			},
+		};
+		const type = "EXACT_IN";
+		swapService
+			.getSwapRate(token0, token1, type)
+			.then(res => console.log("Swap : ", res));
 	};
 
 	return (
 		<div style={{ padding: "3rem" }}>
-			<button onClick={onClick}>Test</button>
+			<button onClick={onClick}>Token Table Test</button>
+			<br />
+			<br />
+			<br />
+			<button onClick={onClickToken}>Token ID</button>
+			<br />
+			<br />
+			<br />
+			<button onClick={onClickSwap}>Swap Test</button>
 		</div>
 	);
 }

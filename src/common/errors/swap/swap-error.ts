@@ -21,6 +21,14 @@ const ERROR_VALUE = {
 		status: 4002,
 		type: "Swap failed",
 	},
+	SET_SLIPPAGE_FAILED: {
+		status: 4003,
+		type: "Set slippage failed",
+	},
+	GET_SLIPPAGE_FAILED: {
+		status: 4004,
+		type: "Get slippage failed",
+	},
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

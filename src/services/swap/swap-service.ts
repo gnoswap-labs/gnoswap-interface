@@ -10,6 +10,7 @@ import { TokenDefaultModel } from "@/models/token/token-default-model";
 import { ExactTypeOption } from "@/common/values/data-constant";
 import BigNumber from "bignumber.js";
 import { SwapError } from "@/common/errors/swap";
+import { TokenPairModel } from "@/models/token/token-pair-model";
 
 export class SwapService {
 	private swapRepository: SwapRepository;
