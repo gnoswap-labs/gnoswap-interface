@@ -69,9 +69,11 @@ export class TokenService {
 	};
 
 	private filterGRC20TokenDatatable = (res: TokenDatatableResponse) => {
+		const GRC20Tokens = res?.tokens.filter(token => token.type === "GRC20");
 		return {
-			...res,
-			tokens: res?.tokens.filter(token => token.type === "GRC20"),
+			hits: GRC20Tokens.length,
+			total: GRC20Tokens.length,
+			tokens: GRC20Tokens,
 		};
 	};
 
