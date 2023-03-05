@@ -14,8 +14,8 @@ We use [yarn berry](https://yarnpkg.com) to manage our packages.
 And we use the [yarn workspaces](https://yarnpkg.com/features/workspaces).
 
 ```bash
-# If you don't have that version installed,
-# $ nvm install
+# If you don't have a yarn berry
+
 $ npm i yarn -g
 $ yarn set version berry
 ```
