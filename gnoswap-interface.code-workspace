@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name: gno-client",
+			"path": "packages/gno-client"
+		},
+		{
+			"name": "web",
+			"path": "packages/web"
+		},
+		{
+			"name": "monorepo",
+			"path": "."
+		}
+	]
+}
