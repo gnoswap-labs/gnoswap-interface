@@ -1,16 +1,34 @@
 {
-	"folders": [
-		{
-			"name: gno-client",
-			"path": "packages/gno-client"
-		},
-		{
-			"name": "web",
-			"path": "packages/web"
-		},
-		{
-			"name": "monorepo",
-			"path": "."
-		}
-	]
+  "folders": [
+    {
+      "name": "gno-client",
+      "path": "packages/gno-client"
+    },
+    {
+      "name": "web",
+      "path": "packages/web"
+    },
+    {
+      "name": "monorepo",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "search.exclude": {
+      "**/.yarn": true,
+      "**/.pnp.*": true
+    },
+    "prettier.prettierPath": "monorepo/.yarn/sdks/prettier/index.js",
+    "typescript.tsdk": "monorepo/.yarn/sdks/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true
+  },
+  "extensions": {
+    "recommendations": [
+      "arcanis.vscode-zipfs",
+      "esbenp.prettier-vscode",
+      "editorconfig.editorconfig"
+    ]
+  }
 }
