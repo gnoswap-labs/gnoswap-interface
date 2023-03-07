@@ -1,4 +1,7 @@
-import { css } from "@emotion/react";
+import { ThemeState } from "@/states";
+import { css, ThemeProvider, Global } from "@emotion/react";
+import { useRecoilValue } from "recoil";
+import theme, { darkTheme, lightTheme } from "./theme";
 
 const globalStyle = css`
   html {

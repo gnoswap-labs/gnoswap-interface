@@ -7,7 +7,6 @@ import BigNumber from "bignumber.js";
 import { generateId } from "@/common/utils/test-util";
 import { toNumberFormat } from "@/common/utils/number-util";
 import { TokenDefaultModel } from "@/models/token/token-default-model";
-import styled from "@emotion/styled";
 
 export default function Home() {
   const {
