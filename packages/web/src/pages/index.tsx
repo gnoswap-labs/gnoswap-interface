@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { generateId } from "@/common/utils/test-util";
 import { toNumberFormat } from "@/common/utils/number-util";
 import { TokenDefaultModel } from "@/models/token/token-default-model";
-import { Global } from "@emotion/react";
+import styled from "@emotion/styled";
 
 export default function Home() {
   const {
@@ -55,18 +55,6 @@ export default function Home() {
 
   return (
     <>
-      <Global
-        styles={{
-          body: {
-            padding: "2rem",
-            fontFamily: "sans-serif",
-            color: "red",
-          },
-          h1: {
-            marginTop: 0,
-          },
-        }}
-      />
       <h1>Red Test</h1>
       <div style={{ padding: "3rem" }}>
         <button onClick={onClick}>Token Table Test</button>
