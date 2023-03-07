@@ -1,5 +1,4 @@
 import { SerializedStyles } from "@emotion/react";
-import { darkTheme, lightTheme } from "./theme";
 
 export type FontsKeyType =
   | "h1"
@@ -52,5 +51,9 @@ export type PaletteKeyType =
   | "opacityDark05"
   | "opacityDark07";
 
+export type ColorObject = {
+  lightTheme: PaletteType;
+  darkTheme: PaletteType;
+};
 export type PaletteType = { [key in PaletteKeyType]: string };
 export type FontsType = { [key in FontsKeyType]: SerializedStyles };

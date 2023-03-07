@@ -1,55 +1,55 @@
-import { Theme, css } from '@emotion/react';
-import { PaletteType, FontsType } from './themeType';
+import { css } from "@emotion/react";
+import { PaletteType, FontsType } from "./ThemeType";
 
 export const darkTheme: PaletteType = {
-  colorBlack: '',
-  colorWhite: '#FFFFFF',
-  colorPoint: '#0059FF',
-  colorGreen: '#60E66A',
-  colorRed: '#FF503F',
-  gray10: '#E0E8F4',
-  gray20: '#C3D2EA',
-  gray30: '#90A2C0',
-  gray40: '#596782',
-  gray50: '#596782',
-  gray60: '#141A29',
-  brand10: '#D2DCFB',
-  brand20: '#A7B9F8',
-  brand30: '#788FEB',
-  brand40: '#536CD7',
-  brand50: '#233DBD',
-  brand60: '#192EA2',
-  brand70: '#112188',
-  brand80: '#0B166D',
-  brand90: '#060E5A',
-  opacityDark05: 'rgba(20, 26, 41, 0.5)',
-  opacityDark07: 'rgba(10, 14, 23, 0.7)'
-} as const;;
+  colorBlack: "#0A0E17",
+  colorWhite: "#FFFFFF",
+  colorPoint: "#0059FF",
+  colorGreen: "#60E66A",
+  colorRed: "#FF503F",
+  gray10: "#E0E8F4",
+  gray20: "#C3D2EA",
+  gray30: "#90A2C0",
+  gray40: "#596782",
+  gray50: "#596782",
+  gray60: "#141A29",
+  brand10: "#D2DCFB",
+  brand20: "#A7B9F8",
+  brand30: "#788FEB",
+  brand40: "#536CD7",
+  brand50: "#233DBD",
+  brand60: "#192EA2",
+  brand70: "#112188",
+  brand80: "#0B166D",
+  brand90: "#060E5A",
+  opacityDark05: "rgba(20, 26, 41, 0.5)",
+  opacityDark07: "rgba(10, 14, 23, 0.7)",
+} as const;
 
 export const lightTheme: PaletteType = {
-  colorBlack: '',
-  colorWhite: '',
-  colorPoint: '',
-  colorGreen: '',
-  colorRed: '',
-  gray10: '',
-  gray20: '',
-  gray30: '',
-  gray40: '',
-  gray50: '',
-  gray60: '',
-  brand10: '',
-  brand20: '',
-  brand30: '',
-  brand40: '',
-  brand50: '',
-  brand60: '',
-  brand70: '',
-  brand80: '',
-  brand90: '',
-  opacityDark05: '',
-  opacityDark07: ''
-} as const;;
+  colorBlack: "",
+  colorWhite: "",
+  colorPoint: "",
+  colorGreen: "",
+  colorRed: "",
+  gray10: "",
+  gray20: "",
+  gray30: "",
+  gray40: "",
+  gray50: "",
+  gray60: "",
+  brand10: "",
+  brand20: "",
+  brand30: "",
+  brand40: "",
+  brand50: "",
+  brand60: "",
+  brand70: "",
+  brand80: "",
+  brand90: "",
+  opacityDark05: "",
+  opacityDark07: "",
+} as const;
 
 const fonts: FontsType = {
   h1: css`
@@ -179,7 +179,7 @@ const fonts: FontsType = {
   `,
 } as const;
 
-const theme: Theme = {
+const theme = {
   fonts: fonts,
   colors: {
     darkTheme,
