@@ -6,12 +6,17 @@
   "scripts": {
     "dev": "ultra --recursive dev"
   },
+  "resolutions": {
+    "@storybook/react-docgen-typescript-plugin": "npm:react-docgen-typescript-plugin@1.0.5"
+  },
   "devDependencies": {
-    "@yarnpkg/pnpify": "^4.0.0-rc.39",
+    "@babel/core": "7.21.0",
+    "@babel/runtime": "7.21.0",
+    "@yarnpkg/sdks": "3.0.0-rc.40",
+    "babel-loader": "9.1.2",
     "prettier": "2.8.4",
     "typescript": "4.9.5",
-    "ultra-runner": "^3.10.5"
+    "ultra-runner": "3.10.5"
   },
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }
