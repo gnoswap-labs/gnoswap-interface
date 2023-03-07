@@ -90,7 +90,7 @@ export class NetworkTest3 implements GnoClientApi {
       return GnoClientResnpose.AccountNone;
     }
 
-    const plainData = atob(result.response.ResponseBase.Data);
+    const plainData = Buffer.from(result.response.ResponseBase.Data, 'base64').toString();
     const accountDataOfTest3: Test3Response.AbciQueryAuthAccount | null = JSON.parse(plainData);
     const accountData = Test3Mapper.AbciQueryAuthAccountMapper.toAccount(accountDataOfTest3);
     return accountData;
@@ -105,7 +105,7 @@ export class NetworkTest3 implements GnoClientApi {
       return GnoClientResnpose.BalancesDefault;
     }
 
-    const plainData = atob(result.response.ResponseBase.Data);
+    const plainData = Buffer.from(result.response.ResponseBase.Data, 'base64').toString();
     const balanceDataOfTest3: string = JSON.parse(plainData);
     const balanceData = Test3Mapper.AbciQueryBankBalancesMapper.toBalances(balanceDataOfTest3);
     return balanceData;
