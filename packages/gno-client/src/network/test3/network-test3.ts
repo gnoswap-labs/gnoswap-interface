@@ -1,7 +1,8 @@
-import { GnoClientApi, GnoClientResnpose } from '../../api';
 import { AxiosAdapter } from 'axios';
-import { NetworkConfig } from '../network-config';
-import { Test3ApiFetcher, Test3Mapper, Test3Response } from './api';
+import { Test3Mapper, Test3Response } from './api';
+import { Test3ApiFetcher } from './api/test3-api-fetcher';
+import { GnoClientApi, GnoClientResnpose } from './../../api';
+import { NetworkConfig } from './../network-config';
 
 export class NetworkTest3 implements GnoClientApi {
   private fetcher: Test3ApiFetcher;
