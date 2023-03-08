@@ -7,6 +7,7 @@ import BigNumber from "bignumber.js";
 import { generateId } from "@/common/utils/test-util";
 import { toNumberFormat } from "@/common/utils/number-util";
 import { TokenDefaultModel } from "@/models/token/token-default-model";
+
 import Link from "next/link";
 
 export default function Home() {
@@ -55,7 +56,8 @@ export default function Home() {
 
   const onClickGnoAccountInfo = () => {
     const accountAddress = "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5";
-    accountService.getAccountInfoByAddress(accountAddress)
+    accountService
+      .getAccountInfoByAddress(accountAddress)
       .then(accountInfo => console.log("accountInfo", accountInfo));
   };
 

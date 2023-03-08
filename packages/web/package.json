@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install",
     "test": "jest --watch",
     "test:ci": "jest --ci",
     "storybook": "start-storybook -p 6006",
@@ -71,12 +70,5 @@
     "prettier": "2.8.4",
     "react-docgen-typescript-loader": "3.7.2",
     "ts-jest": "29.0.5"
-  },
-  "lint-staged": {
-    "src/**/*.{ts,tsx}": [
-      "eslint --ext .tsx,ts src/ --fix",
-      "prettier --write",
-      "git add"
-    ]
   }
 }
