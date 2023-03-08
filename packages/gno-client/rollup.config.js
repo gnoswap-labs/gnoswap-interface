@@ -32,7 +32,7 @@ module.exports = merge({
   input: resolve('./index.ts'),
   output: jobs,
   plugins: [
-    rollupNodeResolve({ jsnext: true, preferBuiltins: true, browser: true }),
+    rollupNodeResolve({ preferBuiltins: true, browser: true }),
     typescript({
       tsconfig: 'tsconfig.json'
     }),
