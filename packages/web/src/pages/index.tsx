@@ -53,6 +53,12 @@ export default function Home() {
       .then(res => console.log("Swap : ", res));
   };
 
+  const onClickGnoAccountInfo = () => {
+    const accountAddress = "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5";
+    accountService.getAccountInfoByAddress(accountAddress)
+      .then(accountInfo => console.log("accountInfo", accountInfo));
+  };
+
   return (
     <>
       <Global
@@ -78,6 +84,10 @@ export default function Home() {
         <br />
         <br />
         <button onClick={onClickSwap}>Swap Test</button>
+        <br />
+        <br />
+        <br />
+        <button onClick={onClickGnoAccountInfo}>Get Gno Account Test</button>
       </div>
     </>
   );
