@@ -4,7 +4,7 @@ import { RecoilRoot } from "recoil";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { GnoswapProvider } from "@/common/providers";
 import { Global, ThemeProvider } from "@emotion/react";
-import globalStyle from "@/styles/global-style";
+import globalStyle from "@/styles/globalStyle";
 import theme from "@/styles/theme";
 
 export default function App({ Component, pageProps }: AppProps) {

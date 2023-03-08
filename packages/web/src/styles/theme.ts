@@ -1,7 +1,7 @@
 import { Theme, css } from '@emotion/react';
-import { Palette, FontsKeyType } from './theme-type';
+import { PaletteType, FontsType } from './themeType';
 
-export const darkTheme: Palette = {
+export const darkTheme: PaletteType = {
   colorBlack: '',
   colorWhite: '#FFFFFF',
   colorPoint: '#0059FF',
@@ -26,7 +26,7 @@ export const darkTheme: Palette = {
   opacityDark07: 'rgba(10, 14, 23, 0.7)'
 } as const;;
 
-export const lightTheme: Palette = {
+export const lightTheme: PaletteType = {
   colorBlack: '',
   colorWhite: '',
   colorPoint: '',
@@ -51,7 +51,7 @@ export const lightTheme: Palette = {
   opacityDark07: ''
 } as const;;
 
-const fonts: FontsKeyType = {
+const fonts: FontsType = {
   h1: css`
     font-size: 60px;
     font-weight: 700;

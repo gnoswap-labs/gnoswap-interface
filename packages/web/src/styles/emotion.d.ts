@@ -1,12 +1,12 @@
-import { FontsKeyType, PaletteLightType } from './theme-type';
+import { FontsKeyType } from './themeType';
 import '@emotion/react';
 
 declare module '@emotion/react' {
   export interface Theme {
-    fonts: FontsKeyType,
+    fonts: FontsType,
     colors: {
-      darkTheme: Palette,
-      lightTheme: Palette,
+      darkTheme: PaletteType,
+      lightTheme: PaletteType,
     },
   }
 }
