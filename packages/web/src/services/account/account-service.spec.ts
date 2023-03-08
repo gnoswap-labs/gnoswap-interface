@@ -302,4 +302,4 @@ describe("Get Notifications By Address", () => {
 	});
 });
 
-export {};
+export { };

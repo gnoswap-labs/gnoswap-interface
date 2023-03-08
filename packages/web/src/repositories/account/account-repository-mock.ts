@@ -15,6 +15,7 @@ import {
 	TransactionModel,
 } from "@/models/account/account-history-model";
 import { faker } from "@faker-js/faker";
+import { Account } from "@gnoswap-labs/gno-client/src/api/response";
 import {
 	AccountInfoResponse,
 	AccountRepository,
@@ -37,6 +38,20 @@ export class AccountRepositoryMock implements AccountRepository {
 			type: "0",
 			message: "0",
 			data: AccountRepositoryMock.generateAccount(),
+		};
+	};
+
+	public getAccountByAddress = async (): Promise<
+		Account
+	> => {
+		const accountInfo = AccountRepositoryMock.generateAccount();
+		return {
+			...accountInfo,
+			accountNumber: `${accountInfo.accountNumber}`,
+			sequence: `${accountInfo.sequence}`,
+			status: "IN_ACTIVE",
+			coins: "0ugnot",
+			publicKey: null
 		};
 	};
 

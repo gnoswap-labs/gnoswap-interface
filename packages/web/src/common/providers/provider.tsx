@@ -9,7 +9,7 @@ import { StakingRepositoryMock } from "@/repositories/staking";
 import { SwapRepositoryMock } from "@/repositories/swap";
 import { TokenRepositoryMock } from "@/repositories/token";
 import { AccountService } from "@/services/account/account-service";
-// import { GnoClient, GnoClientApi } from "@gnoswap-labs/gno-client";
+import { GnoClient, GnoClientApi } from "@gnoswap-labs/gno-client";
 import { NetworkClient } from "../clients/network-client";
 import { AxiosClient } from "../clients/network-client/axios-client";
 import { WalletClient } from "../clients/wallet-client";
@@ -35,18 +35,20 @@ export const GnoswapProvider = ({ children }: Props) => {
 	const sessionStorageClient: StorageClient =
 		WebStorageClient.createSessionStorageClient();
 	const mockLocalStorageClient: StorageClient =
-		MockStorageClient.createLocalStorageClient(); 
-	// const gnoClient: GnoClientApi = GnoClient.createNetworkByType(
-	// 	{
-	// 		chainId: "test3",
-	// 		chainName: "Testnet 3",
-	// 		rpcUrl: "https://rpc.test3.gno.land",
-	// 		apiUrl: "",
-	// 		linkUrl: "",
-	// 	},
-	// 	"TEST3",
-	// );
+		MockStorageClient.createLocalStorageClient();
+	const gnoClient: GnoClientApi = GnoClient.createNetworkByType(
+		{
+			chainId: "test3",
+			chainName: "Testnet 3",
+			rpcUrl: "https://rpc.test3.gno.land",
+			apiUrl: "",
+			linkUrl: "",
+		},
+		"TEST3",
+	);
+
 	const accountRepository = new AccountRepositoryInstance(
+		gnoClient,
 		walletClient,
 		localStorageClient,
 	);

@@ -21,6 +21,13 @@ export class AccountService {
 			.catch(() => returnErrorResponse(new AccountError("CONNECT_TRY_AGAIN")));
 	};
 
+	public getAccountInfoByAddress = async (address: string) => {
+		return await this.accountRepository
+			.getAccountByAddress(address)
+			.then(AccountInfoMapper.fromGnoResopnse)
+			.catch(() => returnErrorResponse(new AccountError("CONNECT_TRY_AGAIN")));
+	};
+
 	public existsAdenaWalletCheck = () => {
 		const existsCheck = this.accountRepository.existsWallet();
 		return existsCheck
