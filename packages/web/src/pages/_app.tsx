@@ -3,6 +3,9 @@ import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { GnoswapProvider } from "@/common/providers";
+import { Global, ThemeProvider } from "@emotion/react";
+import globalStyle from "@/styles/globalStyle";
+import GnoswapThemeProvider from "@/common/layout/Layout";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -23,7 +26,10 @@ export default function App({ Component, pageProps }: AppProps) {
       <Hydrate state={pageProps.dehydratedState}>
         <RecoilRoot>
           <GnoswapProvider>
-            <Component {...pageProps} />
+            <GnoswapThemeProvider>
+              <Global styles={globalStyle} />
+              <Component {...pageProps} />
+            </GnoswapThemeProvider>
           </GnoswapProvider>
         </RecoilRoot>
       </Hydrate>
