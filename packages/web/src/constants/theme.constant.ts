@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { PaletteType, FontsType } from "../styles/ThemeTypes";
 
-export const darkThemeColors: PaletteType = {
+const darkThemeColors: PaletteType = {
   colorBlack: "#0A0E17",
   colorWhite: "#FFFFFF",
   colorPoint: "#0059FF",
@@ -26,7 +26,7 @@ export const darkThemeColors: PaletteType = {
   opacityDark07: "rgba(10, 14, 23, 0.7)",
 } as const;
 
-export const lightThemeColors: PaletteType = {
+const lightThemeColors: PaletteType = {
   colorBlack: "",
   colorWhite: "",
   colorPoint: "",
