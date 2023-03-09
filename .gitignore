@@ -8,4 +8,4 @@
 !.yarn/versions
 
 node_modules
-.vscode/
+.vscode
