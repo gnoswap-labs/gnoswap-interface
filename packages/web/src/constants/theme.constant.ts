@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { PaletteType, FontsType } from "./ThemeType";
+import { PaletteType, FontsType } from "../styles/ThemeTypes";
 
 export const darkThemeColors: PaletteType = {
   colorBlack: "#0A0E17",
