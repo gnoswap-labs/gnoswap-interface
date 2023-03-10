@@ -1,3 +1,4 @@
+import { THEME_MAP } from "@constants/theme.constant";
 import { SerializedStyles } from "@emotion/react";
 
 export type FontsKeyType =
@@ -57,3 +58,4 @@ export type ColorObject = {
 };
 export type PaletteType = { [key in PaletteKeyType]: string };
 export type FontsType = { [key in FontsKeyType]: SerializedStyles };
+export type ThemeKeys = keyof typeof THEME_MAP;

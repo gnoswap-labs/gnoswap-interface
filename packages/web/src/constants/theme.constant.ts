@@ -27,7 +27,7 @@ const darkThemeColors: PaletteType = {
 } as const;
 
 const lightThemeColors: PaletteType = {
-  colorBlack: "",
+  colorBlack: "red",
   colorWhite: "",
   colorPoint: "",
   colorGreen: "",
