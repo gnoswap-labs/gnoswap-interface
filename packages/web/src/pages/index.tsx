@@ -55,7 +55,8 @@ export default function Home() {
 
   const onClickGnoAccountInfo = () => {
     const accountAddress = "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5";
-    accountService.getAccountInfoByAddress(accountAddress)
+    accountService
+      .getAccountInfoByAddress(accountAddress)
       .then(accountInfo => console.log("accountInfo", accountInfo));
   };
 
