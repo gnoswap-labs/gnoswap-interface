@@ -2,6 +2,8 @@ import { TransactionModel } from "@/models/account/account-history-model";
 import { AccountState } from "@/states";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
+import { isErrorResponse } from "../utils/validation-util";
+import { StatusOptions } from "../values/data-constant";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
 export const useNotifiaction = () => {
@@ -37,7 +39,12 @@ export const useNotifiaction = () => {
 		if (!address) {
 			return;
 		}
-		accountService.getNotifications(address).then(setNotifications);
+		accountService.getNotifications(address).then(response => {
+			if (isErrorResponse(response)) {
+				return;
+			}
+			setNotifications(response);
+		});
 	};
 
 	const createNotification = (notification: TransactionModel) => {
@@ -49,6 +56,9 @@ export const useNotifiaction = () => {
 			.then(initNotifiacions);
 	};
 
+	/**
+	 * TODO: Need to get the transaction results from Gnoland
+	 */
 	const updateNotifications = async () => {
 		if (!isUpdateNotifications()) {
 			return;
@@ -57,17 +67,17 @@ export const useNotifiaction = () => {
 			notifications?.txs.filter(tx => tx.status === "PENDING") ?? [];
 
 		for (const tx of pendingTrnasactions) {
-			await updateNotificationStatus(tx);
+			await updateNotificationStatus(tx, "SUCCESS");
 		}
 		initNotifiacions();
 	};
 
-	const updateNotificationStatus = (notification: TransactionModel) => {
+	const updateNotificationStatus = (notification: TransactionModel, status: StatusOptions) => {
 		if (!address) {
 			return;
 		}
 		const { txHash } = notification;
-		return accountService.updateNotificationStatus(address, txHash);
+		return accountService.updateNotificationStatus(address, txHash, status);
 	};
 
 	const clearNotifications = () => {

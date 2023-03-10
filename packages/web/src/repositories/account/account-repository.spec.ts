@@ -5,6 +5,7 @@ import { AdenaClient } from "@/common/clients/wallet-client/adena-client";
 import { AdenaError } from "@/common/errors/adena";
 import { AccountRepository } from "./account-repository";
 import { AccountRepositoryInstance } from "./account-repository-instance";
+import { GnoClient } from "@gnoswap-labs/gno-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -26,7 +27,17 @@ const defaultAccountInfo = {
 beforeEach(() => {
 	walletClient = new AdenaClient();
 	localStorageClient = new MockStorageClient("LOCAL");
+	const gnoClient = GnoClient.createNetworkByType({
+		chainId: "test3",
+		chainName: "Testnet 3",
+		rpcUrl: "https://rpc.test3.gno.land",
+		apiUrl: "https://api.adena.app",
+		linkUrl: "https://gnoscan.io",
+	},
+		"TEST3",
+	);
 	accountRepository = new AccountRepositoryInstance(
+		gnoClient,
 		walletClient,
 		localStorageClient,
 	);
@@ -138,5 +149,3 @@ describe("add establish site in wallet", () => {
 		expect(typeof response.data).toBe("object");
 	});
 });
-
-export {};

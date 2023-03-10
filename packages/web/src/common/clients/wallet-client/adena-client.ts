@@ -56,7 +56,7 @@ export class AdenaClient implements WalletClient {
 		milliseconds?: number,
 	): Promise<T> {
 		milliseconds = milliseconds ?? AdenaClient.TIMEOUT;
-		let timer: NodeJS.Timeout;
+		let timer: number;
 		const response = await Promise.race([
 			promise,
 			new Promise<"timeout">(resolve => {

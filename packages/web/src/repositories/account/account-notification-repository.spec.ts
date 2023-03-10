@@ -14,6 +14,7 @@ import {
 } from "@/models/account/account-history-model";
 import { AccountNotificationRepository } from "./account-norification-repository";
 import { AccountRepositoryInstance } from "./account-repository-instance";
+import { GnoClient } from "@gnoswap-labs/gno-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -22,7 +23,17 @@ let accountNotificationRepository: AccountNotificationRepository;
 beforeEach(() => {
 	walletClient = new AdenaClient();
 	localStorageClient = new MockStorageClient("LOCAL");
+	const gnoClient = GnoClient.createNetworkByType({
+		chainId: "test3",
+		chainName: "Testnet 3",
+		rpcUrl: "https://rpc.test3.gno.land",
+		apiUrl: "https://api.adena.app",
+		linkUrl: "https://gnoscan.io",
+	},
+		"TEST3",
+	);
 	accountNotificationRepository = new AccountRepositoryInstance(
+		gnoClient,
 		walletClient,
 		localStorageClient,
 	);
@@ -199,5 +210,3 @@ describe("delete all notifications", () => {
 		expect(afterNotification.txs.length).toBe(0);
 	});
 });
-
-export {};

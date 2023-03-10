@@ -62,5 +62,3 @@ describe("clear storage value", () => {
 		expect(afterValue).toBe(null);
 	});
 });
-
-export {};

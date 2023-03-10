@@ -236,5 +236,3 @@ describe("Confirm swap.", () => {
 		expect(isErrorResponse(response)).toBe(true);
 	});
 });
-
-export {};
