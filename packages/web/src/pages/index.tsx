@@ -8,6 +8,12 @@ import { generateId } from "@/common/utils/test-util";
 import { toNumberFormat } from "@/common/utils/number-util";
 import { TokenDefaultModel } from "@/models/token/token-default-model";
 import Link from "next/link";
+import GnoswapBrand from "@components/home/gnoswap-brand/GnoswapBrand";
+import HomeSwapContainer from "@containers/home-swap-container/HomeSwapContainer";
+import TokenListContainer from "@containers/token-list-container/TokenListContainer";
+import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
+import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
+import RecentlyAddedCardListContainer from "@containers/recently-added-card-list-container/RecentlyAddedCardListContainer";
 
 export default function Home() {
   const {
@@ -55,12 +61,24 @@ export default function Home() {
 
   const onClickGnoAccountInfo = () => {
     const accountAddress = "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5";
-    accountService.getAccountInfoByAddress(accountAddress)
+    accountService
+      .getAccountInfoByAddress(accountAddress)
       .then(accountInfo => console.log("accountInfo", accountInfo));
   };
 
   return (
     <div>
+      <GnoswapBrand />
+      <HomeSwapContainer />
+
+      <div>
+        <TrendingCardListContainer />
+        <HighestAprsCardListContainer />
+        <RecentlyAddedCardListContainer />
+      </div>
+
+      <TokenListContainer />
+
       <div>
         <h1>Pages</h1>
         <h2>Home</h2>
