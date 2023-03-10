@@ -8,6 +8,12 @@ import { generateId } from "@/common/utils/test-util";
 import { toNumberFormat } from "@/common/utils/number-util";
 import { TokenDefaultModel } from "@/models/token/token-default-model";
 import Link from "next/link";
+import GnoswapBrand from "@components/home/gnoswap-brand/GnoswapBrand";
+import SwapWidgetContainer from "@containers/swap-widget-container/SwapWidgetContainer";
+import TokenListContainer from "@containers/token-list-container/TokenListContainer";
+import TrendingTokenWidgetContainer from "@containers/trending-token-widget-container/TrendingTokenWidgetContainer";
+import HighestAprsTokenWidgetContainer from "@containers/highest-aprs-token-widget-container/HighestAprsTokenWidgetContainer";
+import RecentlyAddedTokenWidgetContainer from "@containers/recently-added-token-widget-container/RecentlyAddedTokenWidgetContainer";
 
 export default function Home() {
   const {
@@ -55,12 +61,24 @@ export default function Home() {
 
   const onClickGnoAccountInfo = () => {
     const accountAddress = "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5";
-    accountService.getAccountInfoByAddress(accountAddress)
+    accountService
+      .getAccountInfoByAddress(accountAddress)
       .then(accountInfo => console.log("accountInfo", accountInfo));
   };
 
   return (
     <div>
+      <GnoswapBrand />
+      <SwapWidgetContainer />
+
+      <div>
+        <TrendingTokenWidgetContainer />
+        <HighestAprsTokenWidgetContainer />
+        <RecentlyAddedTokenWidgetContainer />
+      </div>
+
+      <TokenListContainer />
+
       <div>
         <h1>Pages</h1>
         <h2>Home</h2>
