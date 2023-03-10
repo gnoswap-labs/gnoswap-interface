@@ -301,5 +301,3 @@ describe("Get Notifications By Address", () => {
 		expect(addressValidationCheck(address)).toBe(false);
 	});
 });
-
-export { };

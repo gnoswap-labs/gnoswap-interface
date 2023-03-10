@@ -369,5 +369,3 @@ describe("Search Tokens.", () => {
 		expect(isErrorResponse(response)).toBe(true);
 	});
 });
-
-export {};

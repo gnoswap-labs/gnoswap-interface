@@ -128,5 +128,3 @@ describe("claimReward", () => {
 		expect(response).toBeNull();
 	});
 });
-
-export {};

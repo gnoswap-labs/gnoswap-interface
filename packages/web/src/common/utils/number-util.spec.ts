@@ -14,5 +14,3 @@ describe("bignumber.js convert to format string", () => {
 		expect(toNumberFormat(bigNumber, 3)).toBe("123,123,123.123");
 	});
 });
-
-export {};

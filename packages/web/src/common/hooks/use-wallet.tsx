@@ -1,6 +1,7 @@
 import { AccountState } from "@/states";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
+import { isErrorResponse } from "../utils/validation-util";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
 export const useWallet = () => {
@@ -17,13 +18,25 @@ export const useWallet = () => {
 	const connectToEstablishedSite = () => {
 		return accountService
 			.connectAdenaWallet()
-			.then(response => setConnected(response === true));
+			.then(response => {
+				if (isErrorResponse(response)) {
+					setConnected(false);
+					return;
+				}
+				setConnected(response.isConnected);
+			});
 	};
 
 	const connectToGetAccountInfo = () => {
 		return accountService
 			.getAccountInfo()
-			.then(response => setAddress(response?.address ?? ""));
+			.then(response => {
+				if (isErrorResponse(response)) {
+					setAddress("");
+					return;
+				}
+				setAddress(response.address);
+			});
 	};
 
 	const disconnectWallet = () => {

@@ -257,5 +257,3 @@ describe("getTokenById", () => {
 		expect(error).toBeTruthy();
 	});
 });
-
-export {};

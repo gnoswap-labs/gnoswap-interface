@@ -250,5 +250,3 @@ describe("removeLiquidity", () => {
 		expect(response).toBeFalsy();
 	});
 });
-
-export {};

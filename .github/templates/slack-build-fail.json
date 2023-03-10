@@ -1,0 +1,46 @@
+{
+  "text": "[Gnoswap Front] Build Failed.. T_T",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "[Gnoswap Front] Build Failed.",
+        "emoji": true
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "color": "#ff527d",
+      "blocks": [
+        {
+          "type": "section",
+          "fields": [
+            {
+              "type": "mrkdwn",
+              "text": "*Project*: \"gnoswap-interface\""
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Branch*: {{ github.ref }}"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Commit*: {{ github.sha }}"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Author*: {{ github.actor }}"
+            }
+          ],
+          "accessory": {
+            "type": "image",
+            "image_url": "https://cdn-images-1.medium.com/fit/c/36/36/1*KsQUYlzEvCEKcPj0YmWOEQ.jpeg",
+            "alt_text": "logo"
+          }
+        }
+      ]
+    }
+  ]
+}

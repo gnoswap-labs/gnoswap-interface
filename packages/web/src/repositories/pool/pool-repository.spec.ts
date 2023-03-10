@@ -88,5 +88,3 @@ describe("getPoolsByAddress", () => {
 		expect(typeof pool.liquidity.token1.amount.value).toBe("number");
 	});
 });
-
-export {};
