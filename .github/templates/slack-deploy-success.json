@@ -1,0 +1,64 @@
+{
+  "text": "[Gnoswap Front] Deploy succeeded!",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "[Gnoswap Front] Deploy Succeeded.",
+        "emoji": true
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "color": "#3ae98a",
+      "blocks": [
+        {
+          "type": "section",
+          "fields": [
+            {
+              "type": "mrkdwn",
+              "text": "*Project*: \"gnoswap-interface\""
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Branch*: {{ github.ref }}"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Commit*: {{ github.sha }}"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Author*: {{ github.actor }}"
+            }
+          ],
+          "accessory": {
+            "type": "image",
+            "image_url": "https://cdn-images-1.medium.com/fit/c/36/36/1*KsQUYlzEvCEKcPj0YmWOEQ.jpeg",
+            "alt_text": "logo"
+          }
+        },
+        {
+          "type": "divider"
+        },
+        {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "button",
+              "text": {
+                "type": "plain_text",
+                "text": "Github 접속",
+                "emoji": true
+              },
+              "value": "repository",
+              "url": "https://github.com/gnoswap-labs/gnoswap-interface"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

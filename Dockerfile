@@ -3,20 +3,18 @@ LABEL maintainer="Onbloc Jinoo <jwchoi@onbloc.xyz>"
 LABEL description="gnoswap-interface server with nextjs"
 
 WORKDIR /usr/app
-
-COPY ./package*.json .
-COPY ./yarn* .
-COPY ./env* .
+COPY . .
 
 FROM base AS build
 COPY . .
-RUN npm install
-RUN npm run build
+RUN yarn workspace @gnoswap-labs/gno-client build
+RUN yarn workspace @gnoswap-labs/web build
 
 FROM base AS release
-COPY --from=build /usr/app/node_modules ./node_modules
-COPY --from=build /usr/app/.next ./.next
-COPY --from=build /usr/app/public ./public
+COPY --from=build /usr/app/packages/gno-client/dist ./packages/gnoclient/dist
+COPY --from=build /usr/app/packages/web/.next ./packages/web/.next
+COPY --from=build /usr/app/packages/web/public ./packages/web/public
+RUN rm -rf /usr/app/packages/web/.next/cache
 
 EXPOSE 3000
-CMD [ "npm" , "run" , "start"]
+CMD [ "yarn" , "workspace", "@gnoswap-labs/web", "start"]

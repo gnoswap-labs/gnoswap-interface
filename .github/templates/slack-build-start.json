@@ -1,0 +1,45 @@
+{
+  "text": "[Gnoswap Front] Start...",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "[Gnoswap Front] Start...",
+        "emoji": true
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "blocks": [
+        {
+          "type": "section",
+          "fields": [
+            {
+              "type": "mrkdwn",
+              "text": "*Project*: gnoswap-interface"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Branch*: {{ github.ref }}"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Commit*: {{ github.sha }}"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Author*: {{ github.actor }}"
+            }
+          ],
+          "accessory": {
+            "type": "image",
+            "image_url": "https://cdn-images-1.medium.com/fit/c/36/36/1*KsQUYlzEvCEKcPj0YmWOEQ.jpeg",
+            "alt_text": "logo"
+          }
+        }
+      ]
+    }
+  ]
+}
