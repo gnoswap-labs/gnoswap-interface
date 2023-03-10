@@ -6,7 +6,7 @@ import { ChildrenProps } from "../types/global-prop-types";
 import { getTheme } from "@utils/themeUtils";
 
 const GnoswapThemeProvider = ({ children }: ChildrenProps) => {
-  const themeKey = useRecoilValue(ThemeState.themeMode);
+  const themeKey = useRecoilValue(ThemeState.themeKey);
 
   const theme = useMemo(() => {
     return getTheme(themeKey);
