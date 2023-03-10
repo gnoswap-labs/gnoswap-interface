@@ -1,18 +1,18 @@
 import { css } from "@emotion/react";
 import React from "react";
 
-interface TokenWidgetListProps {}
+interface CardListProps {}
 
-const TokenWidgetList: React.FC<TokenWidgetListProps> = () => {
+const CardList: React.FC<CardListProps> = () => {
   return (
     <div
       css={css`
         border: 1px solid yellow;
       `}
     >
-      TokenWidgetList
+      CardList
     </div>
   );
 };
 
-export default TokenWidgetList;
+export default CardList;

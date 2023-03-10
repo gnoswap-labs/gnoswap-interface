@@ -9,11 +9,11 @@ import { toNumberFormat } from "@/common/utils/number-util";
 import { TokenDefaultModel } from "@/models/token/token-default-model";
 import Link from "next/link";
 import GnoswapBrand from "@components/home/gnoswap-brand/GnoswapBrand";
-import SwapWidgetContainer from "@containers/swap-widget-container/SwapWidgetContainer";
+import HomeSwapContainer from "@containers/home-swap-container/HomeSwapContainer";
 import TokenListContainer from "@containers/token-list-container/TokenListContainer";
-import TrendingTokenWidgetContainer from "@containers/trending-token-widget-container/TrendingTokenWidgetContainer";
-import HighestAprsTokenWidgetContainer from "@containers/highest-aprs-token-widget-container/HighestAprsTokenWidgetContainer";
-import RecentlyAddedTokenWidgetContainer from "@containers/recently-added-token-widget-container/RecentlyAddedTokenWidgetContainer";
+import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
+import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
+import RecentlyAddedCardListContainer from "@containers/recently-added-card-list-container/RecentlyAddedCardListContainer";
 
 export default function Home() {
   const {
@@ -69,12 +69,12 @@ export default function Home() {
   return (
     <div>
       <GnoswapBrand />
-      <SwapWidgetContainer />
+      <HomeSwapContainer />
 
       <div>
-        <TrendingTokenWidgetContainer />
-        <HighestAprsTokenWidgetContainer />
-        <RecentlyAddedTokenWidgetContainer />
+        <TrendingCardListContainer />
+        <HighestAprsCardListContainer />
+        <RecentlyAddedCardListContainer />
       </div>
 
       <TokenListContainer />
