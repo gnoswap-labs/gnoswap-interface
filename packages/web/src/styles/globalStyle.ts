@@ -1,14 +1,24 @@
 import { css } from "@emotion/react";
 
 const globalStyle = css`
-  html {
+  html,
+  body {
     -webkit-text-size-adjust: none;
     -ms-text-size-adjust: none;
     -moz-text-size-adjust: none;
     -o-text-size-adjust: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
   }
 
   body {
+  }
+
+  #__next {
+    width: 100%;
+    height: 100%;
   }
 
   * {
@@ -36,6 +46,39 @@ const globalStyle = css`
     &:disabled {
       cursor: default;
     }
+  }
+
+  div,
+  span,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  a,
+  em,
+  img,
+  b,
+  ul,
+  li,
+  dl,
+  dd,
+  dt,
+  form,
+  label,
+  footer,
+  header,
+  nav,
+  section,
+  input,
+  textarea {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    list-style: none;
   }
 `;
 
