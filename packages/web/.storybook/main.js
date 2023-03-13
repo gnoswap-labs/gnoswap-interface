@@ -1,3 +1,6 @@
+const { merge } = require("webpack-merge");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [
@@ -17,6 +20,10 @@ module.exports = {
         presets: [require.resolve("@emotion/babel-preset-css-prop")],
       },
     });
-    return config;
+    return merge(config, {
+      resolve: {
+        plugins: [new TsconfigPathsPlugin()],
+      },
+    });
   },
 };
