@@ -14,12 +14,12 @@ const IconLogoWhite = ({ className }: { className?: string }) => (
     <path
       d="M10.7441 23.6611L21.2092 16.8418L42 30.2164L31.744 37.1514L10.7441 23.6611Z"
       fill="white"
-      fill-opacity="0.4"
+      fillOpacity="0.4"
     />
     <path
       d="M0.0302734 33.4336L10.5265 26.6143L31.4877 40.2214L20.9915 46.9776L0.0302734 33.4336Z"
       fill="white"
-      fill-opacity="0.6"
+      fillOpacity="0.6"
     />
     <path
       d="M0 13.5819L10.526 6.80176V26.6167L0 33.4495V13.5819Z"
@@ -28,7 +28,7 @@ const IconLogoWhite = ({ className }: { className?: string }) => (
     <path
       d="M31.7446 37.1518L42.0014 30.2168V33.3963L31.5273 40.2028L31.7446 37.1518Z"
       fill="white"
-      fill-opacity="0.5"
+      fillOpacity="0.5"
     />
   </svg>
 );

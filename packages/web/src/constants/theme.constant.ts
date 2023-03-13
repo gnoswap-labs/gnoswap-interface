@@ -11,7 +11,7 @@ const darkThemeColors: PaletteType = {
   gray20: "#C3D2EA",
   gray30: "#90A2C0",
   gray40: "#596782",
-  gray50: "#596782",
+  gray50: "#1C2230",
   gray60: "#141A29",
   brand10: "#D2DCFB",
   brand20: "#A7B9F8",
