@@ -15,12 +15,13 @@
   ],
   "settings": {
     "editor.formatOnSave": true,
-    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
     "search.exclude": {
       "**/.yarn": true,
       "**/.pnp.*": true
     },
-    "eslint.nodePath": "monorepo/.yarn/sdks",
+    "eslint.nodePath": "../../.yarn/sdks",
     "eslint.enable": true,
     "eslint.run": "onType",
     "eslint.workingDirectories": ["packages/gno-client", "packages/web"],

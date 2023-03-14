@@ -1,7 +1,4 @@
 {
   "trailingComma": "all",
-  "printWidth": 80,
-  "arrowParens": "avoid",
-  "orderedImports": true,
-  "bracketSpacing": true
+  "arrowParens": "avoid"
 }
