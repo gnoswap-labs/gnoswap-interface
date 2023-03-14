@@ -8,8 +8,8 @@ const IconBothArrow = ({ className }: { className?: string }) => (
     className={className}
   >
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M17.01 5L21 9L17.01 13V10H10V8H17.01V5ZM3 15L6.99 11V14H14V16H6.99V19L3 15Z"
       fill="white"
     />

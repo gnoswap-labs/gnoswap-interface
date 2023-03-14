@@ -8,8 +8,8 @@ const IconUpload = ({ className }: { className?: string }) => (
     className={className}
   >
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M15 10V16H9V10H5L12 3L19 10H15ZM19 20V18H5V20H19Z"
       fill="white"
     />
