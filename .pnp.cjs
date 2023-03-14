@@ -4752,9 +4752,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-dom", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:18.2.0"],\
             ["recoil", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:0.7.7"],\
             ["ts-jest", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:29.0.5"],\
+            ["tsconfig-paths-webpack-plugin", "npm:4.0.1"],\
             ["typescript", "patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"],\
             ["url-loader", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:4.1.1"],\
-            ["utility-types", "npm:3.10.0"]\
+            ["utility-types", "npm:3.10.0"],\
+            ["webpack-merge", "npm:5.8.0"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -23706,6 +23708,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["strip-bom", "npm:3.0.0"]\
           ],\
           "linkType": "HARD"\
+        }],\
+        ["npm:4.1.2", {\
+          "packageLocation": "./.yarn/cache/tsconfig-paths-npm-4.1.2-7a84ac2b29-3d9151ecea.zip/node_modules/tsconfig-paths/",\
+          "packageDependencies": [\
+            ["tsconfig-paths", "npm:4.1.2"],\
+            ["json5", "npm:2.2.3"],\
+            ["minimist", "npm:1.2.8"],\
+            ["strip-bom", "npm:3.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["tsconfig-paths-webpack-plugin", [\
+        ["npm:4.0.1", {\
+          "packageLocation": "./.yarn/cache/tsconfig-paths-webpack-plugin-npm-4.0.1-80479f0973-a09e765c49.zip/node_modules/tsconfig-paths-webpack-plugin/",\
+          "packageDependencies": [\
+            ["tsconfig-paths-webpack-plugin", "npm:4.0.1"],\
+            ["chalk", "npm:4.1.2"],\
+            ["enhanced-resolve", "npm:5.12.0"],\
+            ["tsconfig-paths", "npm:4.1.2"]\
+          ],\
+          "linkType": "HARD"\
         }]\
       ]],\
       ["tslib", [\
@@ -24837,6 +24861,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["webpack-merge", [\
+        ["npm:5.8.0", {\
+          "packageLocation": "./.yarn/cache/webpack-merge-npm-5.8.0-e3c95fdc3c-88786ab910.zip/node_modules/webpack-merge/",\
+          "packageDependencies": [\
+            ["webpack-merge", "npm:5.8.0"],\
+            ["clone-deep", "npm:4.0.1"],\
+            ["wildcard", "npm:2.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["webpack-sources", [\
         ["npm:1.4.3", {\
           "packageLocation": "./.yarn/cache/webpack-sources-npm-1.4.3-2b3a9b1de0-37463dad8d.zip/node_modules/webpack-sources/",\
@@ -24987,6 +25022,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["widest-line", "npm:3.1.0"],\
             ["string-width", "npm:4.2.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["wildcard", [\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/wildcard-npm-2.0.0-baedca033a-1f4fe4c03d.zip/node_modules/wildcard/",\
+          "packageDependencies": [\
+            ["wildcard", "npm:2.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
