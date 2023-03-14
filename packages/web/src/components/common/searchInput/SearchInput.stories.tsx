@@ -15,5 +15,12 @@ export const Default = Template.bind({});
 Default.args = {
   width: 400,
   height: 48,
-  placeholder: "Search",
+  placeholder: "Search Input",
+};
+
+export const FullWidth = Template.bind({});
+FullWidth.args = {
+  fullWidth: true,
+  height: 48,
+  placeholder: "Full Width",
 };
