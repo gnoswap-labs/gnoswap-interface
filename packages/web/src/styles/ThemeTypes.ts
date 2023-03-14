@@ -34,6 +34,7 @@ export type PaletteKeyType =
   | "colorPoint"
   | "colorGreen"
   | "colorRed"
+  | "gray01"
   | "gray10"
   | "gray20"
   | "gray30"
@@ -52,10 +53,6 @@ export type PaletteKeyType =
   | "opacityDark05"
   | "opacityDark07";
 
-export type ColorObject = {
-  lightTheme: PaletteType;
-  darkTheme: PaletteType;
-};
 export type PaletteType = { [key in PaletteKeyType]: string };
 export type FontsType = { [key in FontsKeyType]: SerializedStyles };
 export type ThemeKeys = keyof typeof THEME_MAP;
