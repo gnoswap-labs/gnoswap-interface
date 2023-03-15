@@ -9,7 +9,7 @@ import {
 import { GnoswapProvider } from "@/common/providers";
 import { Global, ThemeProvider } from "@emotion/react";
 import globalStyle from "@/styles/globalStyle";
-import GnoswapThemeProvider from "@/common/layout/Layout";
+import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -31,7 +31,6 @@ export default function App({ Component, pageProps }: AppProps) {
         <RecoilRoot>
           <GnoswapProvider>
             <GnoswapThemeProvider>
-              <Global styles={globalStyle} />
               <Component {...pageProps} />
             </GnoswapThemeProvider>
           </GnoswapProvider>
