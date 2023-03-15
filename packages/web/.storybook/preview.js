@@ -1,6 +1,6 @@
 import React from "react";
 
-import GnoswapThemeProvider from "../src/common/layout/Layout";
+import GnoswapThemeProvider from "../src/providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { getTheme } from "@utils/themeUtils";
 import { RecoilRoot } from "recoil";
 

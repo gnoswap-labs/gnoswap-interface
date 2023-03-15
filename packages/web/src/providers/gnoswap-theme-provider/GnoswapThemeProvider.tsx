@@ -1,9 +1,9 @@
 import { ThemeState } from "@/states";
-import { ThemeProvider } from "@emotion/react";
+import { Global, ThemeProvider } from "@emotion/react";
 import { useMemo } from "react";
 import { useRecoilValue } from "recoil";
 import { getTheme } from "@utils/themeUtils";
-import Footer from "@components/common/footer/Footer";
+import globalStyle from "@/styles/globalStyle";
 
 const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
   children,
@@ -16,8 +16,8 @@ const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
 
   return (
     <ThemeProvider theme={theme}>
+      <Global styles={globalStyle} />
       {children}
-      <Footer />
     </ThemeProvider>
   );
 };
