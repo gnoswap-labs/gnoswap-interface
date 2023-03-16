@@ -19,7 +19,7 @@ async function fetchTokens(
   page: number,
   keyword: string,
 ): Promise<Token[]> {
-  console.debug(fetchTokens, type, page, keyword);
+  console.debug("fetchTokens", type, page, keyword);
   return Promise.resolve([{ id: "BTC" }, { id: "GNOS" }]);
 }
 
@@ -46,7 +46,7 @@ const TokenListContainer: React.FC = () => {
   }, []);
 
   const movePage = useCallback((newPage: number) => {
-    setPage(newPage - 1);
+    setPage(newPage);
   }, []);
 
   return (
@@ -57,7 +57,7 @@ const TokenListContainer: React.FC = () => {
       tokenType={tokenType}
       changeTokenType={changeTokenType}
       search={search}
-      currentPage={page + 1}
+      currentPage={page}
       totalPage={10}
       movePage={movePage}
     />

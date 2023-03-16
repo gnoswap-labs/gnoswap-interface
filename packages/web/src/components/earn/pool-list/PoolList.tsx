@@ -1,18 +1,18 @@
 import {
-  type TOKEN_TYPE,
-  type Token,
-} from "@containers/token-list-container/TokenListContainer";
+  type POOL_TYPE,
+  type Pool,
+} from "@containers/pool-list-container/PoolListContainer";
 import React from "react";
-import TokenListHeader from "@components/home/token-list-header/TokenListHeader";
-import TokenListTable from "@components/home/token-list-table/TokenListTable";
+import PoolListHeader from "@components/earn/pool-list-header/PoolListHeader";
+import PoolListTable from "@components/earn/pool-list-table/PoolListTable";
 import Pagination from "@components/common/pagination/Pagination";
 
 interface TokenListProps {
-  tokens: Token[] | undefined;
+  pools: Pool[] | undefined;
   isLoading: boolean;
   error: Error | null;
-  tokenType: TOKEN_TYPE;
-  changeTokenType: (newTokenType: TOKEN_TYPE) => void;
+  poolType: POOL_TYPE;
+  changePoolType: (newTokenType: POOL_TYPE) => void;
   search: (keyword: string) => void;
   currentPage: number;
   totalPage: number;
@@ -20,11 +20,11 @@ interface TokenListProps {
 }
 
 const TokenList: React.FC<TokenListProps> = ({
-  tokens,
+  pools,
   isLoading,
   error,
-  tokenType,
-  changeTokenType,
+  poolType,
+  changePoolType,
   search,
   currentPage,
   totalPage,
@@ -32,12 +32,12 @@ const TokenList: React.FC<TokenListProps> = ({
 }) => {
   return (
     <div>
-      <TokenListHeader
-        tokenType={tokenType}
-        changeTokenType={changeTokenType}
+      <PoolListHeader
+        poolType={poolType}
+        changePoolType={changePoolType}
         search={search}
       />
-      <TokenListTable tokens={tokens} />
+      <PoolListTable pools={pools} />
       <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
