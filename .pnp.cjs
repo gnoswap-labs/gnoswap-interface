@@ -4656,6 +4656,81 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@floating-ui/core", [\
+        ["npm:1.2.4", {\
+          "packageLocation": "./.yarn/cache/@floating-ui-core-npm-1.2.4-21f7249cea-1c163ea180.zip/node_modules/@floating-ui/core/",\
+          "packageDependencies": [\
+            ["@floating-ui/core", "npm:1.2.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@floating-ui/dom", [\
+        ["npm:1.2.4", {\
+          "packageLocation": "./.yarn/cache/@floating-ui-dom-npm-1.2.4-950afe60a4-5c24a2e8f0.zip/node_modules/@floating-ui/dom/",\
+          "packageDependencies": [\
+            ["@floating-ui/dom", "npm:1.2.4"],\
+            ["@floating-ui/core", "npm:1.2.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@floating-ui/react", [\
+        ["npm:0.21.1", {\
+          "packageLocation": "./.yarn/cache/@floating-ui-react-npm-0.21.1-8c1d4b1f09-b1d72aeb68.zip/node_modules/@floating-ui/react/",\
+          "packageDependencies": [\
+            ["@floating-ui/react", "npm:0.21.1"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:0.21.1", {\
+          "packageLocation": "./.yarn/__virtual__/@floating-ui-react-virtual-d3b95f05cd/0/cache/@floating-ui-react-npm-0.21.1-8c1d4b1f09-b1d72aeb68.zip/node_modules/@floating-ui/react/",\
+          "packageDependencies": [\
+            ["@floating-ui/react", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:0.21.1"],\
+            ["@floating-ui/react-dom", "virtual:d3b95f05cd459e3044b8de70b38c551565e8ba26399685a330ab2a70974c0f0f31430c34f72cd3d6787e5c277aa50e007f8ccc9b306d0747963fc460dd80fdc1#npm:1.3.0"],\
+            ["@types/react", "npm:18.0.28"],\
+            ["@types/react-dom", "npm:18.0.11"],\
+            ["aria-hidden", "npm:1.2.3"],\
+            ["react", "npm:18.2.0"],\
+            ["react-dom", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:18.2.0"],\
+            ["tabbable", "npm:6.1.1"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-dom",\
+            "@types/react",\
+            "react-dom",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@floating-ui/react-dom", [\
+        ["npm:1.3.0", {\
+          "packageLocation": "./.yarn/cache/@floating-ui-react-dom-npm-1.3.0-8cd21d5aa3-ce0ad3e3bb.zip/node_modules/@floating-ui/react-dom/",\
+          "packageDependencies": [\
+            ["@floating-ui/react-dom", "npm:1.3.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:d3b95f05cd459e3044b8de70b38c551565e8ba26399685a330ab2a70974c0f0f31430c34f72cd3d6787e5c277aa50e007f8ccc9b306d0747963fc460dd80fdc1#npm:1.3.0", {\
+          "packageLocation": "./.yarn/__virtual__/@floating-ui-react-dom-virtual-b32657c3c6/0/cache/@floating-ui-react-dom-npm-1.3.0-8cd21d5aa3-ce0ad3e3bb.zip/node_modules/@floating-ui/react-dom/",\
+          "packageDependencies": [\
+            ["@floating-ui/react-dom", "virtual:d3b95f05cd459e3044b8de70b38c551565e8ba26399685a330ab2a70974c0f0f31430c34f72cd3d6787e5c277aa50e007f8ccc9b306d0747963fc460dd80fdc1#npm:1.3.0"],\
+            ["@floating-ui/dom", "npm:1.2.4"],\
+            ["@types/react", "npm:18.0.28"],\
+            ["@types/react-dom", "npm:18.0.11"],\
+            ["react", "npm:18.2.0"],\
+            ["react-dom", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:18.2.0"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-dom",\
+            "@types/react",\
+            "react-dom",\
+            "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@gar/promisify", [\
         ["npm:1.1.3", {\
           "packageLocation": "./.yarn/cache/@gar-promisify-npm-1.1.3-ac1a325862-4059f790e2.zip/node_modules/@gar/promisify/",\
@@ -4713,6 +4788,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@emotion/react", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:11.10.6"],\
             ["@emotion/styled", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:11.10.6"],\
             ["@faker-js/faker", "npm:7.6.0"],\
+            ["@floating-ui/react", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:0.21.1"],\
             ["@gnoswap-labs/gno-client", "workspace:packages/gno-client"],\
             ["@jest/globals", "npm:29.4.3"],\
             ["@mdx-js/react", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:1.6.22"],\
@@ -10128,6 +10204,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/argparse-npm-2.0.1-faff7999e6-83644b5649.zip/node_modules/argparse/",\
           "packageDependencies": [\
             ["argparse", "npm:2.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["aria-hidden", [\
+        ["npm:1.2.3", {\
+          "packageLocation": "./.yarn/cache/aria-hidden-npm-1.2.3-02d72be80c-7d7d211629.zip/node_modules/aria-hidden/",\
+          "packageDependencies": [\
+            ["aria-hidden", "npm:1.2.3"],\
+            ["tslib", "npm:2.5.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -23259,6 +23345,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["synckit", "npm:0.8.5"],\
             ["@pkgr/utils", "npm:2.3.1"],\
             ["tslib", "npm:2.5.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["tabbable", [\
+        ["npm:6.1.1", {\
+          "packageLocation": "./.yarn/cache/tabbable-npm-6.1.1-483e0de3c7-3486394972.zip/node_modules/tabbable/",\
+          "packageDependencies": [\
+            ["tabbable", "npm:6.1.1"]\
           ],\
           "linkType": "HARD"\
         }]\
