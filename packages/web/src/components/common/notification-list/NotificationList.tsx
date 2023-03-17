@@ -1,31 +1,20 @@
-import React, { useMemo } from "react";
-import { TransactionModel } from "@/models/account/account-history-model";
+import React from "react";
 import {
   ClearButton,
   NoDataText,
   NotificationHeader,
   NotificationListWrapper,
 } from "./NotificationList.styles";
-import {
-  getTransactionGroups,
-  notificationDummyList,
-} from "@utils/notificationUtils";
 import TransactionItems from "./TransactionItems";
+import { TransactionGroupsType } from "../notification-button/NotificationButton";
 
-export interface TransactionGroupsType {
-  title: string;
-  txs: Array<TransactionModel>;
+interface NotificationListProps {
+  txsGroupsInformation: TransactionGroupsType[];
 }
 
-const NotificationList = () => {
-  // TODO : Moving data logic to HeaderContainer
-  const txsGroupsInformation: TransactionGroupsType[] = [];
-  const txsList = useMemo(
-    () => getTransactionGroups(notificationDummyList),
-    [notificationDummyList],
-  );
-  if (txsList.length) txsGroupsInformation.push(...txsList);
-
+const NotificationList: React.FC<NotificationListProps> = ({
+  txsGroupsInformation,
+}) => {
   return (
     <NotificationListWrapper>
       <NotificationHeader>

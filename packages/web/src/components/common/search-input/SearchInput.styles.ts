@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { css } from "@emotion/react";
 export interface SearchInputStyleProps {
   fullWidth?: boolean;

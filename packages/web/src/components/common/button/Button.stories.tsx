@@ -1,9 +1,9 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Button from "./Button";
-import { ButtonHierarchy } from "./Button.styles";
-import IconDownload from "../icons/IconDownload";
-import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
+import { ButtonHierarchy } from "./Button";
+import IconDownload from "@components/common/icons/IconDownload";
+import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 
 export default {
   title: "common/Button",

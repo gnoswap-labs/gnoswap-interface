@@ -1,3 +1,4 @@
+import WalletConnectorMenu from "@components/common/wallet-connector-menu/WalletConnectorMenu";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import { useRouter } from "next/router";
 

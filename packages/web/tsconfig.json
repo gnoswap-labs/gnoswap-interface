@@ -20,6 +20,8 @@
       "@utils/*": ["src/utils/*"],
       "@containers/*": ["src/containers/*"],
       "@components/*": ["src/components/*"],
+      "@providers/*": ["src/providers/*"],
+      "@styles/*": ["src/styles/*"],
       "@/*": ["src/*"]
     }
   },
