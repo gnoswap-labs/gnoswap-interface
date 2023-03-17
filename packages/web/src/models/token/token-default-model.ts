@@ -5,5 +5,5 @@ export interface TokenDefaultModel {
   name: string;
   symbol: string;
   amount?: AmountType;
-  tokenLogo?: string;
+  tokenLogo: string;
 }
