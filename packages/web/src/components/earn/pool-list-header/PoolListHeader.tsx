@@ -1,7 +1,7 @@
-import SearchInput from "@components/common/searchInput/SearchInput";
+import SearchInput from "@components/common/search-input/SearchInput";
 import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
 import { css } from "@emotion/react";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 interface PoolListHeaderProps {
   poolType: POOL_TYPE;
