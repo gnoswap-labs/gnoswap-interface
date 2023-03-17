@@ -7,8 +7,6 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { GnoswapProvider } from "@/common/providers";
-import { Global, ThemeProvider } from "@emotion/react";
-import globalStyle from "@/styles/globalStyle";
 import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 export default function App({ Component, pageProps }: AppProps) {

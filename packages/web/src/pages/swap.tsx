@@ -1,3 +1,4 @@
+import HeaderContainer from "@containers/header-container/HeaderContainer";
 import { useRouter } from "next/router";
 
 export default function Swap() {
@@ -6,6 +7,7 @@ export default function Swap() {
 
   return (
     <div>
+      <HeaderContainer />
       <h1>Swap</h1>
       {from && <div>from: {from}</div>}
       {to && <div>to: {to}</div>}

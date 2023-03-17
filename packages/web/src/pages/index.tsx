@@ -14,6 +14,7 @@ import TokenListContainer from "@containers/token-list-container/TokenListContai
 import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
 import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
 import RecentlyAddedCardListContainer from "@containers/recently-added-card-list-container/RecentlyAddedCardListContainer";
+import Footer from "@components/common/footer/Footer";
 
 export default function Home() {
   const {
@@ -78,6 +79,8 @@ export default function Home() {
       </div>
 
       <TokenListContainer />
+
+      <Footer />
 
       <div>
         <h1>Pages</h1>

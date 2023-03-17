@@ -4,7 +4,7 @@ import React from "react";
 
 type TokenInfoProps = Token;
 
-const TokenListTable: React.FC<TokenInfoProps> = ({ id }) => {
+const TokenInfo: React.FC<TokenInfoProps> = ({ id }) => {
   return (
     <div
       css={css`
@@ -16,4 +16,4 @@ const TokenListTable: React.FC<TokenInfoProps> = ({ id }) => {
   );
 };
 
-export default TokenListTable;
+export default TokenInfo;
