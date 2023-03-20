@@ -25,7 +25,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       fullWidth={fullWidth}
       width={width}
       height={height}
-      className={className}
+      className={value === "" ? "empty-status" : className}
     >
       <input
         css={inputStyle}
