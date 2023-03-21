@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import MyPositionCardList from "./MyPositionCardList";
 
 export default {
-  title: "earn/MyPositionCardList",
+  title: "common/MyPositionCardList",
   component: MyPositionCardList,
 } as ComponentMeta<typeof MyPositionCardList>;
 
