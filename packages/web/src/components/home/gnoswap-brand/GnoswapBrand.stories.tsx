@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import GnoswapBrand from "./GnoswapBrand";
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "home/GnoswapBrand",
@@ -13,4 +14,6 @@ const Template: ComponentStory<typeof GnoswapBrand> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  onClickSns: action("onClickSns"),
+};

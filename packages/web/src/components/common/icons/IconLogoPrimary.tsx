@@ -22,8 +22,8 @@ const IconLogoPrimary = ({ className }: { className?: string }) => (
         y2="47.9999"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#233DBD" />
-        <stop offset="1" stop-color="#0059FF" />
+        <stop stopColor="#233DBD" />
+        <stop offset="1" stopColor="#0059FF" />
       </linearGradient>
     </defs>
   </svg>
