@@ -1,13 +1,12 @@
-import { css } from "@emotion/react";
-
-import { BalanceSummaryInfo, BalacneDetailInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
+import { BalanceSummaryInfo, BalanceDetailInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
 import WalletBalanceSummary from "../wallet-balance-summary/WalletBalanceSummary";
 import WalletBalanceDetail from "../wallet-balance-detail/WalletBalanceDetail";
+import { WalletBalanceWrapper } from "./WalletBalance.styles";
 
 interface WalletBalanceProps {
   connected: boolean;
-  balanceSummaryInfo: BalanceSummaryInfo | undefined;
-  balanceDetailInfo: BalacneDetailInfo | undefined;
+  balanceSummaryInfo: BalanceSummaryInfo;
+  balanceDetailInfo: BalanceDetailInfo;
   deposit: () => void;
   withdraw: () => void;
   earn: () => void;
@@ -21,11 +20,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   withdraw,
   earn
 }) => (
-  <div
-    css={css`
-      border: 1px solid green;
-    `}
-  >
+  <WalletBalanceWrapper>
     <WalletBalanceSummary
       connected={connected}
       balanceSummaryInfo={balanceSummaryInfo}
@@ -34,10 +29,9 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
       earn={earn}
     />
     <WalletBalanceDetail
-      connected={connected}
       balanceDetailInfo={balanceDetailInfo}
     />
-  </div>
+  </WalletBalanceWrapper>
 );
 
 export default WalletBalance;
