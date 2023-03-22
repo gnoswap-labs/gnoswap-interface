@@ -10,10 +10,10 @@ export default {
     Story => (
       <div
         style={{
-          position: "absolute",
-          top: "50%",
+          position: "fixed",
+          top: "2rem",
           left: "50%",
-          transform: "translate(-50%, -50%)",
+          transform: "translateX(-50%)",
         }}
       >
         <Story />

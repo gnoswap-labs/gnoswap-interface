@@ -9,6 +9,11 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
+export enum ButtonHierarchy {
+  Primary = "Primary",
+  Dark = "Dark",
+}
+
 const Button = ({
   leftIcon,
   text,

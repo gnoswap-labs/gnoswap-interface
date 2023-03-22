@@ -1,7 +1,8 @@
 import { CSSProperties } from "react";
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
-import { FontsKeyType, PaletteKeyType } from "@/styles/ThemeTypes";
+import mixins from "@styles/mixins";
+import { FontsKeyType, PaletteKeyType } from "@styles/ThemeTypes";
+import { ButtonHierarchy } from "./Button";
 
 export interface ButtonStyleProps {
   hierarchy?: ButtonHierarchy;
@@ -14,11 +15,6 @@ export interface ButtonStyleProps {
   radius?: CSSProperties["borderRadius"];
   justify?: CSSProperties["justifyContent"];
   padding?: CSSProperties["padding"];
-}
-
-export enum ButtonHierarchy {
-  Primary = "Primary",
-  Dark = "Dark",
 }
 
 export const ButtonWrapper = styled.button<ButtonStyleProps>`

@@ -1,7 +1,7 @@
 import Button from "./Button";
 import { render } from "@testing-library/react";
-import { ButtonHierarchy } from "./Button.styles";
-import IconDownload from "../icons/IconDownload";
+import { ButtonHierarchy } from "./Button";
+import IconDownload from "@components/common/icons/IconDownload";
 import { RecoilRoot } from "recoil";
 import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
 

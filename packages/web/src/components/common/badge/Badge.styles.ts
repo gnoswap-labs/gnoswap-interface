@@ -25,9 +25,9 @@ export const BadgeWrapper = styled.div<BadgeStyleProps>`
     return "24px";
   }};
   background-color: ${({ hierarchy, bgColor, theme }) => {
-    if (hierarchy === BadgeHierarchy.Default) return theme.colors.gray60;
+    if (hierarchy === BadgeHierarchy.Default) return theme.colors.opacityDark05;
     if (hierarchy === BadgeHierarchy.Primary) return theme.colors.colorPoint;
-    if (hierarchy === BadgeHierarchy.Line) return theme.colors.gray60;
+    if (hierarchy === BadgeHierarchy.Line) return theme.colors.opacityDark05;
     return theme.colors[bgColor ?? "colorPoint"];
   }};
   border: 1px solid
