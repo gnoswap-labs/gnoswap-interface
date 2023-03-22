@@ -30,8 +30,13 @@ export const wrapper = (theme: Theme) => css`
       width: 36px;
       height: 36px;
     }
+
     .icon * {
       fill: ${theme.colors.gray40};
+    }
+
+    button:hover .icon * {
+      fill: ${theme.colors.gray10};
     }
   }
 
