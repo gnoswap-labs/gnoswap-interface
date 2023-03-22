@@ -1,36 +1,36 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import WalletConnector from "./WalletConnector";
+import WalletConnectorButton from "./WalletConnectorButton";
 
 export default {
   title: "common/WalletConnector",
-  component: WalletConnector,
+  component: WalletConnectorButton,
   decorators: [
     Story => (
       <div
         style={{
-          position: "absolute",
-          top: "50%",
+          position: "fixed",
+          top: "2rem",
           left: "50%",
-          transform: "translate(-50%, -50%)",
+          transform: "translateX(-50%)",
         }}
       >
         <Story />
       </div>
     ),
   ],
-} as ComponentMeta<typeof WalletConnector>;
+} as ComponentMeta<typeof WalletConnectorButton>;
 
-const Template: ComponentStory<typeof WalletConnector> = args => (
-  <WalletConnector {...args} />
+const Template: ComponentStory<typeof WalletConnectorButton> = args => (
+  <WalletConnectorButton {...args} />
 );
 
 export const Disconnected = Template.bind({});
 Disconnected.args = {
-  isConnected: true,
+  isConnected: false,
 };
 
 export const Connected = Template.bind({});
 Connected.args = {
-  isConnected: false,
+  isConnected: true,
 };

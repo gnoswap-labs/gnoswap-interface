@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 
 export const NotificationWrapper = styled.div`
-  /* ${mixins.posTopCenterRight("40px")}; */
+  position: relative;
 `;
 
 export const AlertButton = styled.button`

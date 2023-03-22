@@ -1,8 +1,8 @@
 import { TransactionModel } from "@/models/account/account-history-model";
-import IconCircleInCancel from "../icons/IconCircleInCancel";
-import IconCircleInCheck from "../icons/IconCircleInCheck";
-import IconCircleInMore from "../icons/IconCircleInMore";
-import { TransactionGroupsType } from "./NotificationList";
+import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
+import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
+import IconCircleInMore from "@components/common/icons/IconCircleInMore";
+import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 import {
   DoubleLogoWrapperTest,
   TxsDateAgoTitle,
@@ -15,8 +15,8 @@ const TransactionItems = ({ groups }: { groups: TransactionGroupsType }) => {
   return (
     <TxsListItem key={title}>
       <TxsDateAgoTitle>{title}</TxsDateAgoTitle>
-      {txs.map((item: TransactionModel) => (
-        <TxsSummaryItem>
+      {txs.map((item: TransactionModel, idx: number) => (
+        <TxsSummaryItem key={idx}>
           {/* TODO : Code cleanup coming after Double Logo Component PR is merged */}
           {item.txType === 1 ? (
             <DoubleLogoWrapperTest>

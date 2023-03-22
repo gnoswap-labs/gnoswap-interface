@@ -1,4 +1,4 @@
-import { ThemeKeys } from "@/styles/ThemeTypes";
+import { ThemeKeys } from "@styles/ThemeTypes";
 import { atom } from "recoil";
 
 const gnoswap_theme_key = "app_theme";
