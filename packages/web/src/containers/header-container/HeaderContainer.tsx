@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 const HeaderContainer: React.FC = () => {
   const { pathname } = useRouter();
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(true);
   return <Header pathname={pathname} isConnected={isConnected} />;
 };
 

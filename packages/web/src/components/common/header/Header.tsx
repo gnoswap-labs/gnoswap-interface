@@ -8,9 +8,9 @@ import {
   Navigation,
   RightSection,
 } from "./Header.styles";
-import NotificationButton from "../notificationButton/NotificationButton";
+import NotificationButton from "@components/common/notification-button/NotificationButton";
 import { HEADER_NAV } from "@constants/header.constant";
-import WalletConnector from "../walletConnector/WalletConnector";
+import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
 
 interface HeaderProps {
   pathname?: string;
@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ pathname = "/", isConnected }) => {
           </ul>
         </Navigation>
         <RightSection>
-          <WalletConnector isConnected={isConnected} />
+          <WalletConnectorButton isConnected={isConnected} />
           <NotificationButton />
         </RightSection>
       </HeaderInner>
