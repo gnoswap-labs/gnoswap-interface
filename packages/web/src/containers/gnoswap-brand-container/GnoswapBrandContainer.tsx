@@ -15,9 +15,7 @@ const SNS_URL: {
 
 const GnoswapBrandContainer: React.FC = () => {
   const onClickSns = useCallback((snsType: SNS_TYPE) => {
-    window.open(SNS_URL[snsType]);
-    // TODO: Check Spec
-    // window.location.href = SNS_URL[snsType];
+    window.open(SNS_URL[snsType], "_blank");
   }, []);
 
   return <GnoswapBrand onClickSns={onClickSns} />;
