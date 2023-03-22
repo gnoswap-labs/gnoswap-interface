@@ -1,6 +1,6 @@
-import { css } from "@emotion/react";
+import { css, type Theme } from "@emotion/react";
 
-const globalStyle = css`
+const globalStyle = (theme: Theme) => css`
   html,
   body {
     -webkit-text-size-adjust: none;
@@ -15,6 +15,7 @@ const globalStyle = css`
   }
 
   body {
+    background-color: ${theme.colors.colorBlack};
   }
 
   #__next {
