@@ -1,36 +1,47 @@
 import React, { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
 
 export interface BalanceSummaryInfo {
-  amount: number;
-  changeRate: number;
+  amount: string;
+  changeRate: string;
 }
 
-export interface BalacneDetailInfo {
-  availableBalance: number;
-  stakedLP: number;
-  unstakingLP: number;
-  claimableRewards: number;
+export interface BalanceDetailInfo {
+  availableBalance: string;
+  stakedLP: string;
+  unstakingLP: string;
+  claimableRewards: string;
 }
+
+const initialBalanceSummaryInfo: BalanceSummaryInfo = {
+  amount: "$0.00",
+  changeRate: "+0.0%"
+};
 
 async function fetchBalanceSummaryInfo(
   address: string
 ): Promise<BalanceSummaryInfo> {
   console.debug("fetchBalanceSummaryInfo", address);
-  return Promise.resolve({ amount: 1324.40, changeRate: 14.3 });
+  return Promise.resolve({ amount: "1324.40", changeRate: "+14.3%" });
 }
+
+const initialBalanceDetailInfo: BalanceDetailInfo = {
+  availableBalance: "$0.00",
+  stakedLP: "$0.00",
+  unstakingLP: "$0.00",
+  claimableRewards: "$0.00",
+};
 
 async function fetchBalanceDetailInfo(
   address: string
-): Promise<BalacneDetailInfo> {
+): Promise<BalanceDetailInfo> {
   console.debug("fetchBalanceDetailInfo", address);
   return Promise.resolve({
-    availableBalance: 1,
-    stakedLP: 1,
-    unstakingLP: 1,
-    claimableRewards: 1,
+    availableBalance: "$1.1",
+    stakedLP: "$1.2",
+    unstakingLP: "$1.3",
+    claimableRewards: "$1.4",
   });
 }
 
@@ -56,17 +67,25 @@ const WalletBalanceContainer: React.FC = () => {
     error: balanceSummaryInfoError,
     data: balanceSummaryInfo,
   } = useQuery<BalanceSummaryInfo, Error>({
-    queryKey: ["balacne", address],
-    queryFn: () => fetchBalanceSummaryInfo(address),
+    queryKey: ["balanceSummaryInfo", connected, address],
+    queryFn: () => {
+      if (!connected) return initialBalanceSummaryInfo;
+      return fetchBalanceSummaryInfo(address);
+    },
+    initialData: initialBalanceSummaryInfo
   });
 
   const {
     isLoading: isBalanceDetailInfoLoading,
     error: balanceDetailInfoError,
     data: balanceDetailInfo,
-  } = useQuery<BalacneDetailInfo, Error>({
-    queryKey: ["balacne", address],
-    queryFn: () => fetchBalanceDetailInfo(address),
+  } = useQuery<BalanceDetailInfo, Error>({
+    queryKey: ["balanceDetailInfo", connected, address],
+    queryFn: () => {
+      if (!connected) return initialBalanceDetailInfo;
+      return fetchBalanceDetailInfo(address);
+    },
+    initialData: initialBalanceDetailInfo
   });
 
   return (
