@@ -1,3 +1,4 @@
+import { PaletteKeyType } from "@/styles/ThemeTypes";
 import { CSSProperties } from "react";
 import styled from "@emotion/styled";
 import mixins from "@/styles/mixins";
@@ -23,9 +24,12 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   padding: 0px 16px;
   border-radius: 8px;
   color: ${({ theme }) => theme.colors.colorWhite};
-  background-color: ${({ theme }) => theme.colors.gray60};
+  background-color: ${({ theme }) => theme.colors.colorBlack};
   border: 1px solid ${({ theme }) => theme.colors.gray50};
-  &:focus {
+  &.empty-status {
+    background-color: ${({ theme }) => theme.colors.gray60};
+  }
+  &:focus-within {
     background-color: ${({ theme }) => theme.colors.colorBlack};
     border: 1px solid ${({ theme }) => theme.colors.gray40};
   }
