@@ -6,7 +6,7 @@ import {
   NotificationListWrapper,
 } from "./NotificationList.styles";
 import TransactionItems from "./TransactionItems";
-import { TransactionGroupsType } from "../notification-button/NotificationButton";
+import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 
 interface NotificationListProps {
   txsGroupsInformation: TransactionGroupsType[];

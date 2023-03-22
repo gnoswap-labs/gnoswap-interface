@@ -4,7 +4,6 @@ import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconCopy from "@components/common/icons/IconCopy";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconExit from "@components/common/icons/IconExit";
-import ThemeModeButton from "@components/common/theme-mode-button/ThemeModeButton";
 import {
   AmountInfoBox,
   IconButton,

@@ -4,10 +4,10 @@ import {
   getTransactionGroups,
   notificationDummyList,
 } from "@utils/notificationUtils";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useRecoilState } from "recoil";
-import IconAlert from "../icons/IconAlert";
-import NotificationList from "../notification-list/NotificationList";
+import IconAlert from "@components/common/icons/IconAlert";
+import NotificationList from "@components/common/notification-list/NotificationList";
 import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
 
 export interface TransactionGroupsType {
