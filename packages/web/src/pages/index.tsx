@@ -1,5 +1,5 @@
 import Footer from "@components/common/footer/Footer";
-import GnoswapBrand from "@components/home/gnoswap-brand/GnoswapBrand";
+import GnoswapBrandContainer from "@containers/gnoswap-brand-container/GnoswapBrandContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
 import HomeSwapContainer from "@containers/home-swap-container/HomeSwapContainer";
@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <HomeLayout
       header={<HeaderContainer />}
-      brand={<GnoswapBrand />}
+      brand={<GnoswapBrandContainer />}
       swap={<HomeSwapContainer />}
       trending={<TrendingCardListContainer />}
       highest={<HighestAprsCardListContainer />}
