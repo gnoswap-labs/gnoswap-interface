@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
 import Button from "@components/common/button/Button";
@@ -20,7 +20,45 @@ interface HomeSwapProps {
   swapNow: () => void;
 }
 
+function isAmount(str: string) {
+  const regex = /^\d+(\.\d*)?$/;
+  return regex.test(str);
+}
+
 const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
+  const [fromAmount, setFromAmount] = useState(from.amount);
+  const [toAmount, setToAmount] = useState(to.amount);
+
+  const onChangeFromAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      if (value !== "" && !isAmount(value)) return;
+
+      setFromAmount(value);
+      // TODO
+      // - mapT0AmountToT0Price
+      // - mapT0AmpuntT1Amount
+      // - mapT1AmpuntT1Price
+    },
+    [],
+  );
+
+  const onChangeToAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      if (value !== "" && !isAmount(value)) return;
+
+      setToAmount(value);
+      // TODO
+      // - mapT1AmountToT1Price
+      // - mapT1AmpuntT0Amount
+      // - mapT0AmpuntT0Price
+    },
+    [],
+  );
+
   const onClickSwapNow = useCallback(() => {
     swapNow();
   }, [swapNow]);
@@ -29,14 +67,19 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button>
+        <button disabled>
           <IconSettings className="icon" />
         </button>
       </div>
       <div className="inputs">
         <div className="from">
           <div className="amount">
-            <span className="amount-text">{from.amount}</span>
+            <input
+              className="amount-text"
+              value={fromAmount}
+              onChange={onChangeFromAmount}
+              placeholder={fromAmount === "" ? "0" : ""}
+            />
             <span className="token">{from.token}</span>
           </div>
           <div className="info">
@@ -46,7 +89,12 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
         </div>
         <div className="to">
           <div className="amount">
-            <span className="amount-text">{to.amount}</span>
+            <input
+              className="amount-text"
+              value={toAmount}
+              onChange={onChangeToAmount}
+              placeholder={toAmount === "" ? "0" : ""}
+            />
             <span className="token">{to.token}</span>
           </div>
           <div className="info">

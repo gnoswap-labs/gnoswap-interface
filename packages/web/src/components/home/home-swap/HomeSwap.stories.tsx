@@ -16,14 +16,14 @@ const Template: ComponentStory<typeof HomeSwap> = args => (
 export const Default = Template.bind({});
 Default.args = {
   from: {
-    token: "ETH",
+    token: "GNOT",
     amount: "121",
     price: "$0.00",
     balence: "0",
   },
   to: {
-    token: "BTC",
-    amount: "5,000",
+    token: "GNOS",
+    amount: "5000",
     price: "$0.00",
     balence: "0",
   },
