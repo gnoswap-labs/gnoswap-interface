@@ -1779,7 +1779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/css@npm:^11.10.6":
+"@emotion/css@npm:11.10.6":
   version: 11.10.6
   resolution: "@emotion/css@npm:11.10.6"
   dependencies:
@@ -2045,7 +2045,7 @@ __metadata:
     "@babel/runtime": 7.21.0
     "@emotion/babel-plugin": 11.10.6
     "@emotion/babel-preset-css-prop": 11.10.0
-    "@emotion/css": ^11.10.6
+    "@emotion/css": 11.10.6
     "@emotion/react": 11.10.6
     "@emotion/styled": 11.10.6
     "@faker-js/faker": 7.6.0
