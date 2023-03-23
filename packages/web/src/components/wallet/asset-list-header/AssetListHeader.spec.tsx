@@ -7,7 +7,7 @@ import { ASSET_FILTER_TYPE } from "@containers/asset-list-container/AssetListCon
 describe("AssetListHeader Component", () => {
   it("AssetListHeader render", () => {
     const mockProps = {
-      assetType: "All" as ASSET_FILTER_TYPE,
+      assetType: ASSET_FILTER_TYPE.ALL,
       invisibleZeroBalance: false,
       keyword: "",
       changeAssetType: () => null,

@@ -9,14 +9,7 @@ export default {
 } as ComponentMeta<typeof AssetListLoader>;
 
 const Template: ComponentStory<typeof AssetListLoader> = args => (
-  <div
-    style={{
-      color: "#FFF",
-      backgroundColor: "#0A0E17",
-    }}
-  >
-    <AssetListLoader {...args} />
-  </div>
+  <AssetListLoader {...args} />
 );
 
 export const Default = Template.bind({});

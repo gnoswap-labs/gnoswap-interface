@@ -9,14 +9,7 @@ export default {
 } as ComponentMeta<typeof AssetInfo>;
 
 const Template: ComponentStory<typeof AssetInfo> = args => (
-  <div
-    style={{
-      color: "#FFF",
-      backgroundColor: "#0A0E17",
-    }}
-  >
-    <AssetInfo {...args} />
-  </div>
+  <AssetInfo {...args} />
 );
 
 export const Default = Template.bind({});

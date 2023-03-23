@@ -49,21 +49,6 @@ const AssetListTableBody: React.FC<AssetListTableProps> = ({
   deposit,
   withdraw,
 }) => {
-  if (assets.length > 0) {
-    return (
-      <div className="body">
-        {assets.map((asset, index) => (
-          <AssetInfo
-            key={index}
-            asset={asset}
-            deposit={deposit}
-            withdraw={withdraw}
-          />
-        ))}
-      </div>
-    );
-  }
-
   if (isLoading) {
     return <div className="description">Loading...</div>;
   }
@@ -72,7 +57,22 @@ const AssetListTableBody: React.FC<AssetListTableProps> = ({
     return <div className="description">Errors</div>;
   }
 
-  return <div className="description">No data found</div>;
+  if (assets.length === 0) {
+    return <div className="description">No data found</div>;
+  }
+
+  return (
+    <div className="body">
+      {assets.map((asset, index) => (
+        <AssetInfo
+          key={index}
+          asset={asset}
+          deposit={deposit}
+          withdraw={withdraw}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default AssetListTable;

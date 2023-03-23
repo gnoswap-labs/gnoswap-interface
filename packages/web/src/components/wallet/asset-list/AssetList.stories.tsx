@@ -10,14 +10,7 @@ export default {
 } as ComponentMeta<typeof AssetList>;
 
 const Template: ComponentStory<typeof AssetList> = args => (
-  <div
-    style={{
-      color: "#FFF",
-      backgroundColor: "#0A0E17",
-    }}
-  >
-    <AssetList {...args} />
-  </div>
+  <AssetList {...args} />
 );
 
 const assets: Asset[] = [
