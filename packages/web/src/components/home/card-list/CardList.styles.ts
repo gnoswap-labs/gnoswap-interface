@@ -1,30 +1,13 @@
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-import { UpDownType } from "./CardList";
+import { UP_DOWN_TYPE } from "./CardList";
 
-export const CardListWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "center")};
+export const CardListWrapper = styled.ul`
+  ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
-  height: 100%;
-  background-color: ${({ theme }) => theme.colors.gray60};
-  border: 1px solid ${({ theme }) => theme.colors.gray50};
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  padding: 16px 0px;
-  ul {
-    ${mixins.flexbox("column", "center", "flex-start")};
-    width: 100%;
-  }
 `;
 
-export const Title = styled.strong`
-  ${({ theme }) => theme.fonts.body9};
-  color: ${({ theme }) => theme.colors.gray10};
-  margin-bottom: 16px;
-  padding-left: 24px;
-`;
-
-export const ListItem = styled.li`
+export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
   ${mixins.flexbox("row", "center", "flex-start")};
   ${({ theme }) => theme.fonts.body12};
   width: 100%;
@@ -32,16 +15,16 @@ export const ListItem = styled.li`
   padding: 0px 24px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  color: ${({ theme }) => theme.colors.colorWhite};
   &:hover {
     background-color: ${({ theme }) => theme.colors.colorBlack};
   }
-`;
 
-export const StyledA = styled.a<{ upDownType: UpDownType }>`
-  ${mixins.flexbox("row", "center", "flex-start")};
-  width: 100%;
-  height: 100%;
-  color: ${({ theme }) => theme.colors.colorWhite};
+  .list-logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
   i,
   .list-content {
     color: ${({ theme }) => theme.colors.gray40};
@@ -63,8 +46,8 @@ export const StyledA = styled.a<{ upDownType: UpDownType }>`
   }
   .notation-value {
     color: ${({ theme, upDownType }) => {
-      if (upDownType === UpDownType.UP) return theme.colors.colorGreen;
-      if (upDownType === UpDownType.DOWN) return theme.colors.colorRed;
+      if (upDownType === UP_DOWN_TYPE.UP) return theme.colors.colorGreen;
+      if (upDownType === UP_DOWN_TYPE.DOWN) return theme.colors.colorRed;
       return theme.colors.colorWhite;
     }};
   }

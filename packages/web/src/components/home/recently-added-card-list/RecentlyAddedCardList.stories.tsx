@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import RecentlyAddedCardList from "./RecentlyAddedCardList";
+import { recentlyList } from "../card-list/card-list-dummy";
 
 export default {
   title: "home/RecentlyAddedCardList",
@@ -13,4 +14,6 @@ const Template: ComponentStory<typeof RecentlyAddedCardList> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  list: recentlyList,
+};
