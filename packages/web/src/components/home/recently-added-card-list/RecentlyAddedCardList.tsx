@@ -1,18 +1,18 @@
-import { css } from "@emotion/react";
 import React from "react";
-import CardList from "@components/home/card-list/CardList";
+import CardList, { type ListProps } from "@components/home/card-list/CardList";
+import { wrapper } from "./RecentlyAddedCardList.styles";
 
-interface RecentlyAddedCardListProps {}
+interface RecentlyAddedCardListProps {
+  list: Array<ListProps>;
+}
 
-const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = () => {
+const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
+  list,
+}) => {
   return (
-    <div
-      css={css`
-        border: 1px solid orange;
-      `}
-    >
+    <div css={wrapper}>
       <h2>Recently Added</h2>
-      <CardList />
+      <CardList list={list} />
     </div>
   );
 };

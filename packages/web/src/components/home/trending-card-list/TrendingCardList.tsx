@@ -1,18 +1,15 @@
-import { css } from "@emotion/react";
 import React from "react";
-import CardList from "@components/home/card-list/CardList";
+import CardList, { type ListProps } from "@components/home/card-list/CardList";
+import { wrapper } from "./TrendingCardList.styles";
+interface TrendingCardListProps {
+  list: Array<ListProps>;
+}
 
-interface TrendingCardListProps {}
-
-const TrendingCardList: React.FC<TrendingCardListProps> = () => {
+const TrendingCardList: React.FC<TrendingCardListProps> = ({ list }) => {
   return (
-    <div
-      css={css`
-        border: 1px solid orange;
-      `}
-    >
+    <div css={wrapper}>
       <h2>Trending</h2>
-      <CardList />
+      <CardList list={list} />
     </div>
   );
 };

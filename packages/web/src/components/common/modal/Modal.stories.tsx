@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Modal from "./Modal";
-import Button from "../button/Button";
-import { ButtonHierarchy } from "../button/Button.styles";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 
 export default {
   title: "common/Modal",
