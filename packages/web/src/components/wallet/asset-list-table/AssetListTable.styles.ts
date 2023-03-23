@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 
 export const AssetListTableWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};

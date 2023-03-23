@@ -17,7 +17,7 @@ const AssetListLoader: React.FC<AssetListLoaderProps> = ({
       style={{
         bgColor: "colorBlack",
         textColor: "gray40",
-        fontType: "body12"
+        fontType: "body12",
       }}
       text={extended ? "Show less" : "Load more"}
       rightIcon={extended ? <IconStrokeArrowUp /> : <IconStrokeArrowDown />}

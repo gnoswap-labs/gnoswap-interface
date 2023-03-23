@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
-import { useInfiniteQuery, useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import AssetList from "@components/wallet/asset-list/AssetList";
 import BigNumber from "bignumber.js";
@@ -39,30 +39,30 @@ export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 const defaultAssets = [
   {
     id: "BTC",
-    logoUri: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    logoUri:
+      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
     type: ASSET_TYPE.NATIVE,
     name: "Bitcoin",
     symbol: "BTC",
     chain: "Gnoland",
-    balance: "0.1"
+    balance: "0.1",
   },
   {
     id: "GNOS",
-    logoUri: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
+    logoUri:
+      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
     type: ASSET_TYPE.GRC20,
     name: "Gnoswap",
     symbol: "GNOS",
     chain: "Gnoland",
-    balance: "0.000000"
-  }
+    balance: "0.000000",
+  },
 ];
 
-async function fetchAssets(
-  address: string
-): Promise<Asset[]> {
+async function fetchAssets(address: string): Promise<Asset[]> {
   console.debug("fetchAssets", address);
-  return new Promise(resolve => setTimeout(resolve, 1000))
-    .then(() => Promise.resolve([
+  return new Promise(resolve => setTimeout(resolve, 1000)).then(() =>
+    Promise.resolve([
       ...defaultAssets,
       ...defaultAssets,
       ...defaultAssets,
@@ -76,7 +76,8 @@ async function fetchAssets(
       ...defaultAssets,
       ...defaultAssets,
       ...defaultAssets,
-    ]));
+    ]),
+  );
 }
 
 function filterZeroBalance(asset: Asset) {
@@ -101,7 +102,9 @@ function filterKeyword(asset: Asset, keyword: string) {
 
 const AssetListContainer: React.FC = () => {
   const [address, setAddress] = useState("");
-  const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(ASSET_FILTER_TYPE.ALL);
+  const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
+    ASSET_FILTER_TYPE.ALL,
+  );
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [hasNext, setHasNext] = useState(false);
@@ -115,7 +118,7 @@ const AssetListContainer: React.FC = () => {
     data: assets,
   } = useQuery<Asset[], Error>({
     queryKey: ["assets", address],
-    queryFn: () => fetchAssets(address)
+    queryFn: () => fetchAssets(address),
   });
 
   useEffect(() => {
@@ -123,13 +126,18 @@ const AssetListContainer: React.FC = () => {
       const COLLAPSED_LENGTH = 10;
 
       const filteredAssets = assets
-        .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
+        .filter(
+          asset => invisibleZeroBalance === false || filterZeroBalance(asset),
+        )
         .filter(asset => filterType(asset, assetType))
         .filter(asset => filterKeyword(asset, keyword));
       const hasLoader = filteredAssets.length > COLLAPSED_LENGTH;
-      const resultFilteredAssets = extended ?
-        filteredAssets :
-        filteredAssets.slice(0, Math.min(filteredAssets.length, COLLAPSED_LENGTH));
+      const resultFilteredAssets = extended
+        ? filteredAssets
+        : filteredAssets.slice(
+            0,
+            Math.min(filteredAssets.length, COLLAPSED_LENGTH),
+          );
 
       setHasLoader(hasLoader);
       setFilteredAsset(resultFilteredAssets);
@@ -152,15 +160,21 @@ const AssetListContainer: React.FC = () => {
     setKeyword(searchKeyword);
   }, []);
 
-  const deposit = useCallback((assetId: string) => {
-    console.debug("deposit", `address: ${address}`, `assetId: ${assetId}`);
-    if (!address) return;
-  }, [address]);
+  const deposit = useCallback(
+    (assetId: string) => {
+      console.debug("deposit", `address: ${address}`, `assetId: ${assetId}`);
+      if (!address) return;
+    },
+    [address],
+  );
 
-  const withdraw = useCallback((assetId: string) => {
-    console.debug("withdraw", `address: ${address}`, `assetId: ${assetId}`);
-    if (!address) return;
-  }, [address]);
+  const withdraw = useCallback(
+    (assetId: string) => {
+      console.debug("withdraw", `address: ${address}`, `assetId: ${assetId}`);
+      if (!address) return;
+    },
+    [address],
+  );
 
   return (
     <AssetList

@@ -9,10 +9,12 @@ export default {
 } as ComponentMeta<typeof AssetListLoader>;
 
 const Template: ComponentStory<typeof AssetListLoader> = args => (
-  <div style={{
-    color: "#FFF",
-    backgroundColor: "#0A0E17",
-  }}>
+  <div
+    style={{
+      color: "#FFF",
+      backgroundColor: "#0A0E17",
+    }}
+  >
     <AssetListLoader {...args} />
   </div>
 );
@@ -20,11 +22,11 @@ const Template: ComponentStory<typeof AssetListLoader> = args => (
 export const Default = Template.bind({});
 Default.args = {
   extended: false,
-  toggleExtended: action("loadMoreAssets")
+  toggleExtended: action("loadMoreAssets"),
 };
 
 export const Extend = Template.bind({});
 Extend.args = {
   extended: true,
-  toggleExtended: action("loadMoreAssets")
+  toggleExtended: action("loadMoreAssets"),
 };

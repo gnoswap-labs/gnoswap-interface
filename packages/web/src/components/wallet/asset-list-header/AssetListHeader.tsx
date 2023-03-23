@@ -20,9 +20,12 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   toggleInvisibleZeroBalance,
   search,
 }) => {
-  const onSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    search(event.target.value);
-  }, [search]);
+  const onSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      search(event.target.value);
+    },
+    [search],
+  );
 
   const onClickAll = useCallback(() => {
     changeAssetType(ASSET_FILTER_TYPE.ALL);
@@ -47,9 +50,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
           disabled={assetType === ASSET_FILTER_TYPE.ALL}
           style={{
             border:
-              assetType === ASSET_FILTER_TYPE.ALL
-                ? "1px solid red"
-                : "none",
+              assetType === ASSET_FILTER_TYPE.ALL ? "1px solid red" : "none",
           }}
         >
           ALL
@@ -59,9 +60,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
           disabled={assetType === ASSET_FILTER_TYPE.NATIVE}
           style={{
             border:
-              assetType === ASSET_FILTER_TYPE.NATIVE
-                ? "1px solid red"
-                : "none",
+              assetType === ASSET_FILTER_TYPE.NATIVE ? "1px solid red" : "none",
           }}
         >
           Native
@@ -71,9 +70,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
           disabled={assetType === ASSET_FILTER_TYPE.GRC20}
           style={{
             border:
-              assetType === ASSET_FILTER_TYPE.GRC20
-                ? "1px solid red"
-                : "none",
+              assetType === ASSET_FILTER_TYPE.GRC20 ? "1px solid red" : "none",
           }}
         >
           GRC20
@@ -85,21 +82,14 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
         onClick={toggleInvisibleZeroBalance}
         disabled={assetType === ASSET_FILTER_TYPE.GRC20}
         style={{
-          border:
-            invisibleZeroBalance
-              ? "1px solid green"
-              : "1px solid red",
+          border: invisibleZeroBalance ? "1px solid green" : "1px solid red",
         }}
       >
         Hide zero balances {invisibleZeroBalance ? "ON" : "OFF"}
       </button>
 
       <div className="search-wrapper">
-        <SearchInput
-          width={300}
-          value={keyword}
-          onChange={onSearch}
-        />
+        <SearchInput width={300} value={keyword} onChange={onSearch} />
       </div>
     </AssetListHeaderWrapper>
   );

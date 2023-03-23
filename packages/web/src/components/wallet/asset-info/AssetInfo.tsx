@@ -10,19 +10,8 @@ interface AssetInfoProps {
   withdraw: (assetId: string) => void;
 }
 
-const AssetInfo: React.FC<AssetInfoProps> = ({
-  asset,
-  deposit,
-  withdraw
-}) => {
-  const {
-    id,
-    logoUri,
-    name,
-    symbol,
-    chain,
-    balance,
-  } = asset;
+const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw }) => {
+  const { id, logoUri, name, symbol, chain, balance } = asset;
 
   const onClickDeposit = useCallback(() => {
     deposit(id);

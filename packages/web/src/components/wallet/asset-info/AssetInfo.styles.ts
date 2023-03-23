@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { AssetListTableRowWrapper } from "@components/wallet/asset-list-table/AssetListTable.styles";
 
 export const AssetInfoWrapper = styled(AssetListTableRowWrapper)`

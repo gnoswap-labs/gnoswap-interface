@@ -9,10 +9,12 @@ export default {
 } as ComponentMeta<typeof AssetListHeader>;
 
 const Template: ComponentStory<typeof AssetListHeader> = args => (
-  <div style={{
-    color: "#FFF",
-    backgroundColor: "#0A0E17",
-  }}>
+  <div
+    style={{
+      color: "#FFF",
+      backgroundColor: "#0A0E17",
+    }}
+  >
     <AssetListHeader {...args} />
   </div>
 );

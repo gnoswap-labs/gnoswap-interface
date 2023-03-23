@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { RecoilRoot } from "recoil";
-import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import AssetList from "./AssetList";
 import { ASSET_FILTER_TYPE } from "@containers/asset-list-container/AssetListContainer";
 
@@ -28,7 +28,7 @@ describe("AssetList Component", () => {
         <GnoswapThemeProvider>
           <AssetList {...mockProps} />
         </GnoswapThemeProvider>
-      </RecoilRoot>
+      </RecoilRoot>,
     );
   });
 });
