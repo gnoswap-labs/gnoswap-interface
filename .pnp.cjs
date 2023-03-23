@@ -4442,6 +4442,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@emotion/css", [\
+        ["npm:11.10.6", {\
+          "packageLocation": "./.yarn/cache/@emotion-css-npm-11.10.6-9ef06b7649-010ca5e1d0.zip/node_modules/@emotion/css/",\
+          "packageDependencies": [\
+            ["@emotion/css", "npm:11.10.6"],\
+            ["@emotion/babel-plugin", "npm:11.10.6"],\
+            ["@emotion/cache", "npm:11.10.5"],\
+            ["@emotion/serialize", "npm:1.1.1"],\
+            ["@emotion/sheet", "npm:1.2.1"],\
+            ["@emotion/utils", "npm:1.2.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@emotion/hash", [\
         ["npm:0.9.0", {\
           "packageLocation": "./.yarn/cache/@emotion-hash-npm-0.9.0-efbc0b3f3f-b63428f7c8.zip/node_modules/@emotion/hash/",\
@@ -4785,6 +4799,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/runtime", "npm:7.21.0"],\
             ["@emotion/babel-plugin", "npm:11.10.6"],\
             ["@emotion/babel-preset-css-prop", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:11.10.0"],\
+            ["@emotion/css", "npm:11.10.6"],\
             ["@emotion/react", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:11.10.6"],\
             ["@emotion/styled", "virtual:9c590da5837dd2c8fb79589d644f60a8cd217f871c6494bf498885b1665ec912c98185ef2bb9b6bb502716fb85d934c9f17fe3eda722d84343e53bf91a949e36#npm:11.10.6"],\
             ["@faker-js/faker", "npm:7.6.0"],\
