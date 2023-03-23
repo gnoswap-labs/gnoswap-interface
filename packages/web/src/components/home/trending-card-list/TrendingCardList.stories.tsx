@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TrendingCardList from "./TrendingCardList";
+import { trendingList } from "../card-list/card-list-dummy";
 
 export default {
   title: "home/TrendingCardList",
@@ -14,5 +15,5 @@ const Template: ComponentStory<typeof TrendingCardList> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  tokens: [{ id: "token_id_1" }, { id: "token_id_2" }],
+  list: trendingList,
 };

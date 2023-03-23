@@ -1,18 +1,16 @@
-import { css } from "@emotion/react";
 import React from "react";
-import CardList from "@components/home/card-list/CardList";
+import CardList, { type ListProps } from "@components/home/card-list/CardList";
+import { wrapper } from "./HighestAprsCardList.styles";
 
-interface HighestAprsCardListProps {}
+interface HighestAprsCardListProps {
+  list: Array<ListProps>;
+}
 
-const HighestAprsCardList: React.FC<HighestAprsCardListProps> = () => {
+const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({ list }) => {
   return (
-    <div
-      css={css`
-        border: 1px solid orange;
-      `}
-    >
+    <div css={wrapper}>
       <h2>Highest APRs</h2>
-      <CardList />
+      <CardList list={list} />
     </div>
   );
 };

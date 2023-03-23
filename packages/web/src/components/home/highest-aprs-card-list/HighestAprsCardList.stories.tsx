@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import HighestAprsCardList from "./HighestAprsCardList";
+import { highestList } from "../card-list/card-list-dummy";
 
 export default {
   title: "home/HighestAprsCardList",
@@ -13,4 +14,6 @@ const Template: ComponentStory<typeof HighestAprsCardList> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  list: highestList,
+};
