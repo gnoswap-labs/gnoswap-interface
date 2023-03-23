@@ -7,7 +7,7 @@ const IconTriangleArrowUp = ({ className }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
-    <g clip-path="url(#clip0_3144_60734)">
+    <g clipPath="url(#clip0_3144_60734)">
       <path d="M12 10L16 14H8L12 10Z" fill="white" />
     </g>
     <defs>

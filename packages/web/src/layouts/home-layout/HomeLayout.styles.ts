@@ -21,9 +21,13 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .card-list {
-      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      grid-gap: 24px;
+      grid-template-columns: repeat(3, 1fr);
 
-      width: 1440px;
       margin-top: 120px;
     }
   }
