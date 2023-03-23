@@ -1,39 +1,65 @@
-import { css } from "@emotion/react";
+import {
+  Asset,
+  ASSET_FILTER_TYPE,
+} from "@containers/asset-list-container/AssetListContainer";
+import AssetListHeader from "@components/wallet/asset-list-header/AssetListHeader";
+import AssetListTable from "@components/wallet/asset-list-table/AssetListTable";
+import AssetListLoader from "@components/wallet/asset-list-loader/AssetListLoader";
+import { AssetListWrapper } from "./AssetList.styles";
 
-import { Asset, ASSET_FILTER_TYPE } from "@containers/asset-list-container/AssetListContainer";
-
-interface AssetListListProps {
-  assets: Asset[] | undefined;
+interface AssetListProps {
+  assets: Asset[];
   isLoading: boolean;
   error: Error | null;
-  assetFilterType: ASSET_FILTER_TYPE;
-  changeAssetFilterType: (AssetFilterType: ASSET_FILTER_TYPE) => void;
-  invisibleEmptyAsset: boolean;
-  toggleInvisibleEmptyAsset: () => void;
+  assetType: ASSET_FILTER_TYPE;
+  invisibleZeroBalance: boolean;
+  keyword: string;
+  extended: boolean;
+  hasLoader: boolean;
+  changeAssetType: (assetType: ASSET_FILTER_TYPE) => void;
   search: (keyword: string) => void;
-  currentPage: number;
-  totalPage: number;
-  movePage: (page: number) => void;
+  toggleInvisibleZeroBalance: () => void;
+  toggleExtended: () => void;
+  deposit: (assetId: string) => void;
+  withdraw: (assetId: string) => void;
 }
 
-const AssetList: React.FC<AssetListListProps> = ({
+const AssetList: React.FC<AssetListProps> = ({
   assets,
   isLoading,
   error,
-  assetFilterType,
-  changeAssetFilterType,
+  assetType,
+  invisibleZeroBalance,
+  keyword,
+  extended,
+  hasLoader,
+  changeAssetType,
   search,
-  currentPage,
-  totalPage,
-  movePage,
+  toggleInvisibleZeroBalance,
+  toggleExtended,
+  deposit,
+  withdraw,
 }) => (
-  <div
-    css={css`
-      border: 1px solid green;
-    `}
-  >
-    <h2>AssetList</h2>
-  </div>
+  <AssetListWrapper>
+    <AssetListHeader
+      assetType={assetType}
+      invisibleZeroBalance={invisibleZeroBalance}
+      keyword={keyword}
+      changeAssetType={changeAssetType}
+      toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
+      search={search}
+    />
+    <AssetListTable
+      isLoading={isLoading}
+      error={error}
+      assets={assets}
+      deposit={deposit}
+      withdraw={withdraw}
+    />
+    {hasLoader && (
+      <AssetListLoader extended={extended} toggleExtended={toggleExtended} />
+    )}
+  </AssetListWrapper>
 );
 
 export default AssetList;
