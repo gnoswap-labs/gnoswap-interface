@@ -1,5 +1,5 @@
 import { SelectButton, SelectTabWrapper } from "./SelectTab.styles";
-
+import { cx } from "@emotion/css";
 interface SelectTabProps {
   selectIdx: number;
   list: string[];
@@ -13,10 +13,10 @@ const SelectTab: React.FC<SelectTabProps> = ({
 }) => {
   return (
     <SelectTabWrapper>
-      {list?.map((item, idx) => (
+      {list.map((item, idx) => (
         <SelectButton
           key={idx}
-          className={idx === selectIdx ? "selected" : ""}
+          className={cx({ selected: idx === selectIdx })}
           onClick={() => onClick(idx)}
         >
           {item}
