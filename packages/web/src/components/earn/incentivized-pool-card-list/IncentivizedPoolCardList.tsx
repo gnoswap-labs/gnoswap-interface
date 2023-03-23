@@ -1,13 +1,18 @@
-import { css } from "@emotion/react";
 import React from "react";
+import { wrapper } from "./IncentivizedPoolCardList.styles";
+import { type PoolListProps } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
+import IncentivizedPoolCard from "@components/earn/incentivized-pool-card/IncentivizedPoolCard";
+interface IncentivizedPoolCardListProps {
+  list: Array<PoolListProps>;
+}
 
-const IncentivizedPoolCardList: React.FC = () => (
-  <div
-    css={css`
-      border: 1px solid green;
-    `}
-  >
-    <h2>IncentivizedPoolCardList</h2>
+const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
+  list,
+}) => (
+  <div css={wrapper}>
+    {list.map((item, idx) => (
+      <IncentivizedPoolCard item={item} key={idx} />
+    ))}
   </div>
 );
 
