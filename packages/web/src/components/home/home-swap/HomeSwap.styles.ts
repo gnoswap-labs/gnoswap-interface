@@ -1,4 +1,4 @@
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { css, Theme } from "@emotion/react";
 
 export const wrapper = (theme: Theme) => css`
@@ -20,7 +20,7 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .icon * {
-      fill: ${theme.colors.gray01};
+      fill: ${theme.colors.gray40};
     }
   }
 
