@@ -6,6 +6,7 @@ export const FooterWrapper = styled.footer`
   height: 308px;
   background-color: ${({ theme }) => theme.colors.colorBlack};
   margin-top: auto;
+  border-top: 1px solid ${({ theme }) => theme.colors.gray50};
 `;
 
 export const FooterInner = styled.div`
