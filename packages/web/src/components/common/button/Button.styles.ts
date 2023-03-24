@@ -30,6 +30,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   }};
   border-radius: ${({ radius }) => (radius ? radius : "8px")};
   padding: ${({ padding }) => padding};
+  transition: background-color 0.3s ease;
   background-color: ${({ hierarchy, bgColor, theme }) => {
     if (hierarchy === ButtonHierarchy.Primary) return theme.colors.brand50;
     if (hierarchy === ButtonHierarchy.Dark) return theme.colors.gray50;
