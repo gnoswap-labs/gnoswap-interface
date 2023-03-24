@@ -1,12 +1,19 @@
 import HomeSwap from "@components/home/home-swap/HomeSwap";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useCallback } from "react";
 
 const HomeSwapContainer: React.FC = () => {
+  const router = useRouter();
+
+  const swapNow = useCallback(() => {
+    router.push("/swap?from=GNOT&to=GNOS");
+  }, [router]);
+
   return (
     <HomeSwap
-      from={{ token: "ETH", amount: "121", price: "$0.00", balence: "0" }}
-      to={{ token: "BTC", amount: "5,000", price: "$0.00", balence: "0" }}
-      swapNow={() => {}}
+      from={{ token: "GNOT", amount: "121", price: "$0.00", balence: "0" }}
+      to={{ token: "GNOS", amount: "5000", price: "$0.00", balence: "0" }}
+      swapNow={swapNow}
     />
   );
 };
