@@ -8,7 +8,7 @@ describe("LoadMoreButton Component", () => {
     render(
       <RecoilRoot>
         <GnoswapThemeProvider>
-          <LoadMoreButton onClick={() => {}} />
+          <LoadMoreButton show={true} onClick={() => {}} />
         </GnoswapThemeProvider>
       </RecoilRoot>,
     );

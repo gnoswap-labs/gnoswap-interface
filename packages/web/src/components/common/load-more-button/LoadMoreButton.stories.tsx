@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import LoadMoreButton from "./LoadMoreButton";
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "common/LoadMoreButton",
@@ -13,4 +14,7 @@ const Template: ComponentStory<typeof LoadMoreButton> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  show: true,
+  onClick: action("onClick"),
+};
