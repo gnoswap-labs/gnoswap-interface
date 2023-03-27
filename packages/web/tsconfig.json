@@ -23,6 +23,7 @@
       "@providers/*": ["src/providers/*"],
       "@styles/*": ["src/styles/*"],
       "@layouts/*": ["src/layouts/*"],
+      "@models/*": ["src/models/*"],
       "@/*": ["src/*"]
     }
   },

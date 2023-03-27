@@ -7,7 +7,5 @@ export const wrapper = () => css`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
-  max-width: 1440px;
-  padding: 0 40px;
-  margin: 0 auto;
+  padding-bottom: 100px; ;
 `;
