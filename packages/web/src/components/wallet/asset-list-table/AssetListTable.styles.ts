@@ -6,7 +6,7 @@ export const AssetListTableWrapper = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.colors.gray50};
   border-radius: 8px;
-
+  margin-bottom: 24px;
   .header,
   .body {
     width: 100%;
