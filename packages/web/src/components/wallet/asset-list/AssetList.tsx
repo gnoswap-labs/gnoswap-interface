@@ -4,8 +4,8 @@ import {
 } from "@containers/asset-list-container/AssetListContainer";
 import AssetListHeader from "@components/wallet/asset-list-header/AssetListHeader";
 import AssetListTable from "@components/wallet/asset-list-table/AssetListTable";
-import AssetListLoader from "@components/wallet/asset-list-loader/AssetListLoader";
 import { AssetListWrapper } from "./AssetList.styles";
+import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 
 interface AssetListProps {
   assets: Asset[];
@@ -56,9 +56,7 @@ const AssetList: React.FC<AssetListProps> = ({
       deposit={deposit}
       withdraw={withdraw}
     />
-    {hasLoader && (
-      <AssetListLoader extended={extended} toggleExtended={toggleExtended} />
-    )}
+    {hasLoader && <LoadMoreButton show={extended} onClick={toggleExtended} />}
   </AssetListWrapper>
 );
 
