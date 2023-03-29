@@ -2,6 +2,8 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import PoolInfo from "./PoolInfo";
+import { dummyPoolList } from "@containers/pool-list-container/PoolListContainer";
+import { css, Theme } from "@emotion/react";
 
 export default {
   title: "earn/PoolList/PoolInfo",
@@ -9,10 +11,14 @@ export default {
 } as ComponentMeta<typeof PoolInfo>;
 
 const Template: ComponentStory<typeof PoolInfo> = args => (
-  <PoolInfo {...args} />
+  <div css={wrapper}>
+    <PoolInfo {...args} pool={dummyPoolList[0]} />
+  </div>
 );
 
 export const Default = Template.bind({});
-Default.args = {
-  id: "pool_id",
-};
+Default.args = {};
+
+const wrapper = (theme: Theme) => css`
+  color: ${theme.colors.gray10};
+`;
