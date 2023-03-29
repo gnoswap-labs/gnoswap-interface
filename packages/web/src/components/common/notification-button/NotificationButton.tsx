@@ -29,7 +29,7 @@ const NotificationButton = () => {
   const txsGroupsInformation: TransactionGroupsType[] = [];
   const txsList = useMemo(
     () => getTransactionGroups(notificationDummyList),
-    [notificationDummyList],
+    [],
   );
   if (txsList.length) txsGroupsInformation.push(...txsList);
 

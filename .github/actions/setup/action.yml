@@ -15,7 +15,7 @@ runs:
       id: install-cache
       with:
         path: .yarn/
-        key: ${{ runner.os }}-install-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-install-${{ hashFiles('**/install-state.gz') }}
 
     - if: steps.install-cache.outputs.cache-hit != 'true'
       run: |
