@@ -1,60 +1,57 @@
+import { useCallback, useState } from "react";
+import { useRecoilState } from "recoil";
 import { LiquidityDetailModel } from "@/models/liquidity/liquidity-detail-model";
 import { StakingPeriodInfo } from "@/repositories/staking";
 import { AccountState } from "@/states";
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
 export const useStake = (poolId: string) => {
-	const { liquidityService, stakingService } = useGnoswapContext();
+  const { liquidityService, stakingService } = useGnoswapContext();
 
-	const [address] = useRecoilState(AccountState.address);
+  const [address] = useRecoilState(AccountState.address);
 
-	const [periodInfos, setPeriodInfos] = useState<Array<StakingPeriodInfo>>([]);
-	const [availStakeLiquidities, setAvailStakeLiquidities] = useState<
-		Array<LiquidityDetailModel>
-	>([]);
+  const [periodInfos, setPeriodInfos] = useState<Array<StakingPeriodInfo>>([]);
+  const [availStakeLiquidities, setAvailStakeLiquidities] = useState<
+    Array<LiquidityDetailModel>
+  >([]);
 
-	useEffect(() => {
-		updatePeriodInfo();
-		updateAvailStakeLiquidities();
-	}, [poolId]);
+  const updatePeriodInfo = useCallback(() => {
+    stakingService
+      .getPeriodInfos(poolId)
+      .then(response => response && setPeriodInfos(response.periods));
+  }, [poolId, stakingService]);
 
-	const updatePeriodInfo = () => {
-		stakingService
-			.getPeriodInfos(poolId)
-			.then(response => response && setPeriodInfos(response.periods));
-	};
+  const updateAvailStakeLiquidities = useCallback(() => {
+    if (!address) {
+      return;
+    }
+    liquidityService
+      .getAvailStakeLiquidities(address, poolId)
+      .then(
+        response => response && setAvailStakeLiquidities(response.liquidities),
+      );
+  }, [address, poolId, liquidityService]);
 
-	const updateAvailStakeLiquidities = () => {
-		if (!address) {
-			return;
-		}
-		liquidityService
-			.getAvailStakeLiquidities(address, poolId)
-			.then(
-				response => response && setAvailStakeLiquidities(response.liquidities),
-			);
-	};
+  const getSummaryLiquiditiyTokens = useCallback((liquidityIds: Array<string>) => {
+    if (!address) {
+      return;
+    }
+    const selectedLiquidities = availStakeLiquidities.filter(liquidity =>
+      liquidityIds.includes(liquidity.liquidityId),
+    );
+    return liquidityService.getSummaryPooledByLiquidities(selectedLiquidities);
+  }, [address, availStakeLiquidities, liquidityService]);
 
-	const getSummaryLiquiditiyTokens = (liquidityIds: Array<string>) => {
-		if (!address) {
-			return;
-		}
-		const selectedLiquidities = availStakeLiquidities.filter(liquidity =>
-			liquidityIds.includes(liquidity.liquidityId),
-		);
-		return liquidityService.getSummaryPooledByLiquidities(selectedLiquidities);
-	};
+  const stake = useCallback((liquidityIds: Array<string>, period: number) => {
+    return stakingService.stake(liquidityIds, period);
+  }, [stakingService]);
 
-	const stake = (liquidityIds: Array<string>, period: number) => {
-		return stakingService.stake(liquidityIds, period);
-	};
-
-	return {
-		periodInfos,
-		availStakeLiquidities,
-		getSummaryLiquiditiyTokens,
-		stake,
-	};
+  return {
+    periodInfos,
+    availStakeLiquidities,
+    updatePeriodInfo,
+    updateAvailStakeLiquidities,
+    getSummaryLiquiditiyTokens,
+    stake,
+  };
 };

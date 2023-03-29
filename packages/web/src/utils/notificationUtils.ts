@@ -1,6 +1,6 @@
-import { TransactionModel } from "@/models/account/account-history-model";
-import { TransactionGroupsType } from "@components/common/NotificationList/NotificationList";
 import dayjs from "dayjs";
+import { TransactionModel } from "@/models/account/account-history-model";
+import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 
 export const notificationDummyList: Array<TransactionModel> = [
   {
