@@ -4,6 +4,7 @@ import {
   SearchInputStyleProps,
 } from "./SearchInput.styles";
 import IconSearch from "../icons/IconSearch";
+import { cx } from "@emotion/css";
 interface SearchInputProps extends SearchInputStyleProps {
   className?: string;
   placeholder?: string;
@@ -25,7 +26,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       fullWidth={fullWidth}
       width={width}
       height={height}
-      className={value === "" ? "empty-status" : className}
+      className={cx(className, { "empty-status": value === "" })}
     >
       <input
         css={inputStyle}

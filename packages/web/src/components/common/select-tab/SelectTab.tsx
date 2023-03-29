@@ -1,25 +1,22 @@
 import { SelectButton, SelectTabWrapper } from "./SelectTab.styles";
 import { cx } from "@emotion/css";
 interface SelectTabProps {
-  selectIdx: number;
+  selectType: string;
   list: string[];
-  onClick: (idx: number) => void;
+  onClick: (type: string) => void;
 }
 
-const SelectTab: React.FC<SelectTabProps> = ({
-  selectIdx = 0,
-  list,
-  onClick,
-}) => {
+const SelectTab: React.FC<SelectTabProps> = ({ selectType, list, onClick }) => {
   return (
     <SelectTabWrapper>
-      {list.map((item, idx) => (
+      {list.map((type, idx) => (
         <SelectButton
           key={idx}
-          className={cx({ selected: idx === selectIdx })}
-          onClick={() => onClick(idx)}
+          className={cx({ selected: type === selectType })}
+          onClick={() => onClick(type)}
+          disabled={type === selectType}
         >
-          {item}
+          {type}
         </SelectButton>
       ))}
     </SelectTabWrapper>
