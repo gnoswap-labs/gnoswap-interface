@@ -54,7 +54,7 @@ jobs:
             .
           docker push --all-tags $ECR_REGISTRY/$ECR_REPOSITORY
 
-      - name: Notify on build start
+      - name: Notify on build failed
         if: failure()
         uses: slackapi/slack-github-action@v1.23.0
         env:
@@ -68,6 +68,9 @@ jobs:
     needs: build-and-upload
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -77,6 +80,24 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           script: |
             ./deploy.sh ${{ env.SERVICE_NAME }} ${{ env.BRANCH_NAME }}
+
+      - name: Notify on deploy succeed
+        if: success()
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL }}
+          payload-file-path: "./.github/templates/slack-deploy-success.json"
+
+      - name: Notify on deploy failed
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL }}
+          payload-file-path: "./.github/templates/slack-deploy-fail.json"
 
   # TODO: Discuss and decide to adopt Chromatic UI
   # chromatic-deployment:
