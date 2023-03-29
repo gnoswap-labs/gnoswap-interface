@@ -15,7 +15,5 @@ const Template: ComponentStory<typeof SelectTab> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  selectIdx: 0,
   list: ["All", "Incentivized", "Non-Incentivized"],
-  onClick: action("onClick"),
 };
