@@ -1,83 +1,66 @@
-import { LiquidityDetailModel } from "@/models/liquidity/liquidity-detail-model";
-import { TokenPairModel } from "@/models/token/token-pair-model";
-import { AccountState } from "@/states";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRecoilState } from "recoil";
+import { LiquidityDetailModel } from "@/models/liquidity/liquidity-detail-model";
+import { AccountState } from "@/states";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
-interface Props {
-	liquidity: TokenPairModel;
-	options: {
-		rangeType: "ACTIVE" | "PASSIVE" | "CUSTOM";
-		feeRate: number;
-		minRate: number;
-		maxRate: number;
-	};
-}
-
 export const useRemoveLiquidity = (poolId: string) => {
-	const { liquidityService } = useGnoswapContext();
+  const { liquidityService } = useGnoswapContext();
 
-	const [address] = useRecoilState(AccountState.address);
+  const [address] = useRecoilState(AccountState.address);
 
-	const [liquidities, setLiquidities] = useState<Array<LiquidityDetailModel>>(
-		[],
-	);
-	const [removableLiquidities, setRemovableLiquidities] = useState<
-		Array<LiquidityDetailModel>
-	>([]);
+  const [liquidities, setLiquidities] = useState<Array<LiquidityDetailModel>>(
+    [],
+  );
+  const [removableLiquidities, setRemovableLiquidities] = useState<
+    Array<LiquidityDetailModel>
+  >([]);
 
-	useEffect(() => {
-		updateLiquidities();
-	}, [poolId]);
+  const getSummaryPooled = useCallback((selectedIds: Array<string>) => {
+    const selectedLiquidities = liquidities.filter(liquidity =>
+      selectedIds.includes(liquidity.liquidityId),
+    );
+    return liquidityService.getSummaryPooledByLiquidities(selectedLiquidities);
+  }, [liquidities, liquidityService]);
 
-	useEffect(() => {
-		updateRemovableLiquidities();
-	}, [liquidities]);
+  const getSummaryUnclaimed = useCallback((selectedIds: Array<string>) => {
+    const selectedLiquidities = liquidities.filter(liquidity =>
+      selectedIds.includes(liquidity.liquidityId),
+    );
+    return liquidityService.getSummaryUnclaimedByLiquidities(
+      selectedLiquidities,
+    );
+  }, [liquidities, liquidityService]);
 
-	const getSummaryPooled = (selectedIds: Array<string>) => {
-		const selectedLiquidities = liquidities.filter(liquidity =>
-			selectedIds.includes(liquidity.liquidityId),
-		);
-		return liquidityService.getSummaryPooledByLiquidities(selectedLiquidities);
-	};
+  const updateLiquidities = useCallback(() => {
+    if (!address) {
+      return;
+    }
+    liquidityService
+      .getLiquiditiesByAddressAndPoolId(address, poolId)
+      .then(response => response && setLiquidities(response.liquidities));
+  }, [address, poolId, liquidityService]);
 
-	const getSummaryUnclaimed = (selectedIds: Array<string>) => {
-		const selectedLiquidities = liquidities.filter(liquidity =>
-			selectedIds.includes(liquidity.liquidityId),
-		);
-		return liquidityService.getSummaryUnclaimedByLiquidities(
-			selectedLiquidities,
-		);
-	};
+  const updateRemovableLiquidities = useCallback(() => {
+    const removableLiquidities = liquidities.filter(
+      liquidity =>
+        liquidity.liquidityType === "PROVIDED" &&
+        ["NONE", "UNSTAKED"].includes(liquidity.stakeType),
+    );
+    setRemovableLiquidities(removableLiquidities);
+  }, [liquidities]);
 
-	const updateLiquidities = () => {
-		if (!address) {
-			return;
-		}
-		liquidityService
-			.getLiquiditiesByAddressAndPoolId(address, poolId)
-			.then(response => response && setLiquidities(response.liquidities));
-	};
+  const removeLiquidities = useCallback((removeLiquidityIds: Array<string>) => {
+    return liquidityService.removeLiquidities(removeLiquidityIds);
+  }, [liquidityService]);
 
-	const updateRemovableLiquidities = () => {
-		const removableLiquidities = liquidities.filter(
-			liquidity =>
-				liquidity.liquidityType === "PROVIDED" &&
-				["NONE", "UNSTAKED"].includes(liquidity.stakeType),
-		);
-		setRemovableLiquidities(removableLiquidities);
-	};
-
-	const removeLiquidities = (removeLiquidityIds: Array<string>) => {
-		return liquidityService.removeLiquidities(removeLiquidityIds);
-	};
-
-	return {
-		liquidities,
-		removableLiquidities,
-		removeLiquidities,
-		getSummaryPooled,
-		getSummaryUnclaimed,
-	};
+  return {
+    liquidities,
+    updateLiquidities,
+    updateRemovableLiquidities,
+    removableLiquidities,
+    removeLiquidities,
+    getSummaryPooled,
+    getSummaryUnclaimed,
+  };
 };

@@ -7,6 +7,7 @@ COPY . .
 
 FROM base AS build
 COPY . .
+RUN yarn
 RUN yarn workspace @gnoswap-labs/gno-client build
 RUN yarn workspace @gnoswap-labs/web build
 

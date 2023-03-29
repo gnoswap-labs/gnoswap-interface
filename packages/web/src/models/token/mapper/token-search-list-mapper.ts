@@ -1,41 +1,42 @@
 import { amountFormatToBignum } from "@/common/utils/denom-util";
 import {
-	TokenInfoResponse,
-	TokenSearchItemResponse,
-	TokenSearchListResponse,
+  TokenInfoResponse,
+  TokenSearchItemResponse,
+  TokenSearchListResponse,
 } from "@/repositories/token";
 import BigNumber from "bignumber.js";
 import { TokenDefaultModel } from "../token-default-model";
 import {
-	TokenSearchItemType,
-	TokenSearchListModel,
+  TokenSearchItemType,
+  TokenSearchListModel,
 } from "../token-search-list-model";
 
 export class TokenSearchListMapper {
-	public static fromResponse(
-		response: TokenSearchListResponse,
-	): TokenSearchListModel {
-		return {
-			items: response.items.map(TokenSearchListMapper.mappedSearchList),
-		};
-	}
+  public static fromResponse(
+    response: TokenSearchListResponse,
+  ): TokenSearchListModel {
+    return {
+      items: response.items.map(TokenSearchListMapper.mappedSearchList),
+    };
+  }
 
-	private static mappedSearchList(
-		item: TokenSearchItemResponse,
-	): TokenSearchItemType {
-		return {
-			searchType: item.search_type,
-			changeRate: BigNumber(item.change_rate),
-			token: TokenSearchListMapper.mappedTokenModel(item.token),
-		};
-	}
+  private static mappedSearchList(
+    item: TokenSearchItemResponse,
+  ): TokenSearchItemType {
+    return {
+      searchType: item.search_type,
+      changeRate: BigNumber(item.change_rate),
+      token: TokenSearchListMapper.mappedTokenModel(item.token),
+    };
+  }
 
-	private static mappedTokenModel(t: TokenInfoResponse): TokenDefaultModel {
-		return {
-			tokenId: t.token_id,
-			name: t.name,
-			symbol: t.symbol,
-			amount: amountFormatToBignum(t.amount),
-		};
-	}
+  private static mappedTokenModel(t: TokenInfoResponse): TokenDefaultModel {
+    return {
+      tokenId: t.token_id,
+      tokenLogo: "",
+      name: t.name,
+      symbol: t.symbol,
+      amount: amountFormatToBignum(t.amount),
+    };
+  }
 }
