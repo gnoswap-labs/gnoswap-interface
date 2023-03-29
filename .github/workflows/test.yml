@@ -14,6 +14,15 @@ jobs:
       - run: yarn workspace @gnoswap-labs/gno-client test
       - run: yarn workspace @gnoswap-labs/web test:ci
 
+  build-tests:
+    name: Run build tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: yarn workspace @gnoswap-labs/gno-client build
+      - run: yarn workspace @gnoswap-labs/web build
+
   # TODO: Apply when you're done setting up your storybook environment
   # storybook-tests:
   #   runs-on: ubuntu-latest
