@@ -1,18 +1,54 @@
-import { type Pool } from "@containers/pool-list-container/PoolListContainer";
-import { css } from "@emotion/react";
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import {
+  TD_WIDTH,
+  type Pool,
+} from "@containers/pool-list-container/PoolListContainer";
 import React from "react";
+import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
+interface PoolInfoProps {
+  pool: Pool;
+  tdWidth: string;
+}
 
-type PoolInfoProps = Pool;
-
-const PoolInfo: React.FC<PoolInfoProps> = ({ id }) => {
+const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {
+  const {
+    poolId,
+    tokenPair,
+    feeRate,
+    liquidity,
+    apr,
+    volumn24h,
+    fees24h,
+    rewards,
+    incentiveType,
+  } = pool;
   return (
-    <div
-      css={css`
-        border: 1px solid yellow;
-      `}
-    >
-      <div>{id}</div>
-    </div>
+    <PoolInfoWrapper>
+      <TableColumn className="left" tdWidth={TD_WIDTH[0]}>
+        <DoubleLogo
+          left={tokenPair.token0.tokenLogo}
+          right={tokenPair.token1.tokenLogo}
+          size={20}
+        />
+        <span className="symbol-pair">{`${tokenPair.token0.symbol}/${tokenPair.token1.symbol}`}</span>
+        <span className="feeRate">{feeRate}</span>
+      </TableColumn>
+      <TableColumn tdWidth={TD_WIDTH[1]}>
+        <span className="liquidity">{liquidity}</span>
+      </TableColumn>
+      <TableColumn tdWidth={TD_WIDTH[2]}>
+        <span className="volumn">{volumn24h}</span>
+      </TableColumn>
+      <TableColumn tdWidth={TD_WIDTH[3]}>
+        <span className="fees">{fees24h}</span>
+      </TableColumn>
+      <TableColumn tdWidth={TD_WIDTH[4]}>
+        <span className="apr">{apr}</span>
+      </TableColumn>
+      <TableColumn tdWidth={TD_WIDTH[5]}>
+        <DoubleLogo left={rewards[0]} right={rewards[1]} size={20} />
+      </TableColumn>
+    </PoolInfoWrapper>
   );
 };
 

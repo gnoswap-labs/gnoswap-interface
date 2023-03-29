@@ -3,7 +3,10 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
 import PoolList from "./PoolList";
-import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
+import {
+  dummyPoolList,
+  POOL_TYPE,
+} from "@containers/pool-list-container/PoolListContainer";
 
 export default {
   title: "earn/PoolList",
@@ -16,7 +19,7 @@ const Template: ComponentStory<typeof PoolList> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  pools: [{ id: "pool_id" }],
+  pools: dummyPoolList,
   poolType: POOL_TYPE.ALL,
   changePoolType: action("changePoolType"),
   search: action("search"),
