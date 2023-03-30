@@ -23,6 +23,7 @@ const darkThemeColors: PaletteType = {
   brand70: "#112188",
   brand80: "#0B166D",
   brand90: "#060E5A",
+  opacityDark04: "rgba(224, 232, 244, 0.4)",
   opacityDark05: "rgba(20, 26, 41, 0.5)",
   opacityDark07: "rgba(10, 14, 23, 0.7)",
 } as const;
@@ -49,6 +50,7 @@ const lightThemeColors: PaletteType = {
   brand70: "#112188",
   brand80: "#0B166D",
   brand90: "#060E5A",
+  opacityDark04: "rgba(224, 232, 244, 0.4)",
   opacityDark05: "rgba(20, 26, 41, 0.5)",
   opacityDark07: "rgba(10, 14, 23, 0.7)",
 } as const;

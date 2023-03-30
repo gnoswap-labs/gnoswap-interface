@@ -9,7 +9,7 @@ export const FEE_RATE_OPTION = {
 export type POSITION_CONTENT_LABEL = ValuesType<typeof FEE_RATE_OPTION>;
 
 export const STAKED_OPTION = {
-  NONE: "None",
+  NONE: "NONE",
   STAKED: "Staked",
   UNSTAKING: "Unstaking",
   UNSTAKED: "Unstaked",
