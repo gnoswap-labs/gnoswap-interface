@@ -1,3 +1,5 @@
+import { TokenPairModel } from "./../models/token/token-pair-model";
+import { TokenDefaultModel } from "./../models/token/token-default-model";
 import { addressValidationCheck } from "./validationUtils";
 
 /**
@@ -16,4 +18,12 @@ export function formatAddress(address: string, num?: number): string {
   return `${address.substring(0, fix)}...${address.substring(
     address.length - fix,
   )}`;
+}
+
+export function tokenPairSymbolToOneCharacter(
+  tokenPair: TokenPairModel,
+): string {
+  const symbol0 = tokenPair.token0.symbol;
+  const symbol1 = tokenPair.token1.symbol;
+  return `${symbol0}/${symbol1}`;
 }

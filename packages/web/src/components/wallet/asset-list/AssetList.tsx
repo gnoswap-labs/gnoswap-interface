@@ -9,15 +9,14 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 
 interface AssetListProps {
   assets: Asset[];
-  isLoading: boolean;
-  error: Error | null;
+  isFetched: boolean;
   assetType: ASSET_FILTER_TYPE;
   invisibleZeroBalance: boolean;
   keyword: string;
   extended: boolean;
   hasLoader: boolean;
-  changeAssetType: (assetType: ASSET_FILTER_TYPE) => void;
-  search: (keyword: string) => void;
+  changeAssetType: (assetType: string) => void;
+  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   toggleInvisibleZeroBalance: () => void;
   toggleExtended: () => void;
   deposit: (assetId: string) => void;
@@ -26,8 +25,7 @@ interface AssetListProps {
 
 const AssetList: React.FC<AssetListProps> = ({
   assets,
-  isLoading,
-  error,
+  isFetched,
   assetType,
   invisibleZeroBalance,
   keyword,
@@ -50,13 +48,12 @@ const AssetList: React.FC<AssetListProps> = ({
       search={search}
     />
     <AssetListTable
-      isLoading={isLoading}
-      error={error}
+      isFetched={isFetched}
       assets={assets}
       deposit={deposit}
       withdraw={withdraw}
     />
-    {hasLoader && <LoadMoreButton show={extended} onClick={toggleExtended} />}
+    {hasLoader && <LoadMoreButton show={!extended} onClick={toggleExtended} />}
   </AssetListWrapper>
 );
 

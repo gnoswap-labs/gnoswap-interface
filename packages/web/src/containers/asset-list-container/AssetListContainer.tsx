@@ -60,7 +60,6 @@ const defaultAssets = [
 ];
 
 async function fetchAssets(address: string): Promise<Asset[]> {
-  console.debug("fetchAssets", address);
   return new Promise(resolve => setTimeout(resolve, 1000)).then(() =>
     Promise.resolve([
       ...defaultAssets,
@@ -113,7 +112,7 @@ const AssetListContainer: React.FC = () => {
   const [hasLoader, setHasLoader] = useState(false);
 
   const {
-    isLoading,
+    isFetched,
     error,
     data: assets,
   } = useQuery<Asset[], Error>({
@@ -124,7 +123,6 @@ const AssetListContainer: React.FC = () => {
   useEffect(() => {
     if (assets && assets.length > 0) {
       const COLLAPSED_LENGTH = 10;
-
       const filteredAssets = assets
         .filter(
           asset => invisibleZeroBalance === false || filterZeroBalance(asset),
@@ -144,8 +142,20 @@ const AssetListContainer: React.FC = () => {
     }
   }, [assets, assetType, invisibleZeroBalance, extended, keyword]);
 
-  const changeAssetType = useCallback((newAssetType: ASSET_FILTER_TYPE) => {
-    setAssetType(newAssetType);
+  const changeAssetType = useCallback((newType: string) => {
+    switch (newType) {
+      case ASSET_FILTER_TYPE.ALL:
+        setAssetType(ASSET_FILTER_TYPE.ALL);
+        break;
+      case ASSET_FILTER_TYPE.NATIVE:
+        setAssetType(ASSET_FILTER_TYPE.NATIVE);
+        break;
+      case ASSET_FILTER_TYPE.GRC20:
+        setAssetType(ASSET_FILTER_TYPE.GRC20);
+        break;
+      default:
+        setAssetType(ASSET_FILTER_TYPE.ALL);
+    }
   }, []);
 
   const toggleInvisibleZeroBalance = useCallback(() => {
@@ -156,8 +166,8 @@ const AssetListContainer: React.FC = () => {
     setExtened(!extended);
   }, [extended]);
 
-  const search = useCallback((searchKeyword: string) => {
-    setKeyword(searchKeyword);
+  const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
   }, []);
 
   const deposit = useCallback(
@@ -175,12 +185,10 @@ const AssetListContainer: React.FC = () => {
     },
     [address],
   );
-
   return (
     <AssetList
       assets={filteredAssets}
-      isLoading={isLoading}
-      error={error}
+      isFetched={isFetched}
       assetType={assetType}
       invisibleZeroBalance={invisibleZeroBalance}
       keyword={keyword}
