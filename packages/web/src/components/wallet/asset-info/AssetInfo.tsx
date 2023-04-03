@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import IconDownload from "@components/common/icons/IconDownload";
 import IconUpload from "@components/common/icons/IconUpload";
 import { Asset } from "@containers/asset-list-container/AssetListContainer";
-import { AssetInfoWrapper } from "./AssetInfo.styles";
+import { AssetInfoWrapper, LoadButton } from "./AssetInfo.styles";
 
 interface AssetInfoProps {
   asset: Asset;
@@ -35,16 +35,16 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw }) => {
         <span className="balance">{balance}</span>
       </div>
       <div className="column right">
-        <button className="deposit" onClick={onClickDeposit}>
+        <LoadButton onClick={onClickDeposit}>
           <IconDownload />
-          Deposit
-        </button>
+          <span>Deposit</span>
+        </LoadButton>
       </div>
       <div className="column right">
-        <button className="withdraw" onClick={onClickWithdraw}>
-          <IconUpload />
-          Withdraw
-        </button>
+        <LoadButton onClick={onClickWithdraw}>
+          <IconUpload className="upload" />
+          <span>Withdraw</span>
+        </LoadButton>
       </div>
     </AssetInfoWrapper>
   );

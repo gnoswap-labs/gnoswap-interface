@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TokenListTable from "./TokenListTable";
+import { dummyTokenList } from "@containers/token-list-container/TokenListContainer";
 
 export default {
   title: "home/TokenList/TokenListTable",
@@ -13,4 +14,19 @@ const Template: ComponentStory<typeof TokenListTable> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  tokens: dummyTokenList,
+  isFetched: true,
+};
+
+export const Skeleton = Template.bind({});
+Skeleton.args = {
+  tokens: [],
+  isFetched: false,
+};
+
+export const NotFount = Template.bind({});
+NotFount.args = {
+  tokens: [],
+  isFetched: true,
+};

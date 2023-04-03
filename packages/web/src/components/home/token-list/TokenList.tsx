@@ -1,43 +1,56 @@
+import React from "react";
 import {
   type TOKEN_TYPE,
   type Token,
+  TABLE_HEAD,
 } from "@containers/token-list-container/TokenListContainer";
-import React from "react";
 import TokenListHeader from "@components/home/token-list-header/TokenListHeader";
-import TokenListTable from "@components/home/token-list-table/TokenListTable";
 import Pagination from "@components/common/pagination/Pagination";
+import { wrapper } from "./TokenList.styles";
+import TokenListTable from "@components/home/token-list-table/TokenListTable";
 
-interface TokenListProps {
-  tokens: Token[] | undefined;
-  isLoading: boolean;
+interface TokenItem {
+  tokens: Token[];
+  isFetched: boolean;
   error: Error | null;
   tokenType: TOKEN_TYPE;
-  changeTokenType: (newTokenType: TOKEN_TYPE) => void;
-  search: (keyword: string) => void;
+  changeTokenType: (newType: string) => void;
+  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  keyword: string;
   currentPage: number;
   totalPage: number;
   movePage: (page: number) => void;
 }
 
-const TokenList: React.FC<TokenListProps> = ({
+const TokenList: React.FC<TokenItem> = ({
   tokens,
-  isLoading,
+  isFetched,
   error,
   tokenType,
   changeTokenType,
   search,
+  keyword,
   currentPage,
   totalPage,
   movePage,
 }) => {
+  const onClickTableHead = (item: TABLE_HEAD) => {
+    // TODO: Sorting pools list
+  };
+
   return (
-    <div>
+    <div css={wrapper}>
       <TokenListHeader
         tokenType={tokenType}
         changeTokenType={changeTokenType}
         search={search}
+        keyword={keyword}
       />
-      <TokenListTable tokens={tokens} />
+      <TokenListTable
+        tokens={tokens}
+        isFetched={isFetched}
+        onClickTableHead={onClickTableHead}
+      />
       <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
