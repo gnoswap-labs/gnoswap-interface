@@ -47,85 +47,12 @@ const defaultAssets: Asset[] = [
 export const Default = Template.bind({});
 Default.args = {
   assets: defaultAssets,
-  isLoading: false,
-  error: null,
+  isFetched: true,
   assetType: "All",
   invisibleZeroBalance: false,
   keyword: "",
   extended: false,
   hasLoader: true,
-  changeAssetType: action("changeAssetType"),
-  search: action("search"),
-  toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),
-  toggleExtended: action("toggleExtended"),
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-};
-
-export const AllContents = Template.bind({});
-AllContents.args = {
-  assets: defaultAssets,
-  isLoading: false,
-  error: null,
-  assetType: "All",
-  invisibleZeroBalance: false,
-  keyword: "",
-  extended: false,
-  hasLoader: true,
-  changeAssetType: action("changeAssetType"),
-  search: action("search"),
-  toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),
-  toggleExtended: action("toggleExtended"),
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-};
-
-export const NoContents = Template.bind({});
-NoContents.args = {
-  assets: [],
-  isLoading: false,
-  error: null,
-  assetType: "All",
-  invisibleZeroBalance: false,
-  keyword: "",
-  extended: false,
-  hasLoader: false,
-  changeAssetType: action("changeAssetType"),
-  search: action("search"),
-  toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),
-  toggleExtended: action("toggleExtended"),
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-};
-
-export const InitialLoading = Template.bind({});
-InitialLoading.args = {
-  assets: [],
-  isLoading: true,
-  error: null,
-  assetType: "All",
-  invisibleZeroBalance: false,
-  keyword: "",
-  extended: false,
-  hasLoader: false,
-  changeAssetType: action("changeAssetType"),
-  search: action("search"),
-  toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),
-  toggleExtended: action("toggleExtended"),
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-};
-
-export const ErrorOccurred = Template.bind({});
-ErrorOccurred.args = {
-  assets: [],
-  isLoading: false,
-  error: Error("Error"),
-  assetType: "All",
-  invisibleZeroBalance: false,
-  keyword: "",
-  extended: false,
-  hasLoader: false,
   changeAssetType: action("changeAssetType"),
   search: action("search"),
   toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),

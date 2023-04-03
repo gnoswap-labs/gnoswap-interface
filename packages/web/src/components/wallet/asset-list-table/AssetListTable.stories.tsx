@@ -13,7 +13,7 @@ const Template: ComponentStory<typeof AssetListTable> = args => (
   <AssetListTable {...args} />
 );
 
-const defaultAssets: Asset[] = [
+const assets: Asset[] = [
   {
     id: "BTC",
     logoUri:
@@ -36,38 +36,34 @@ const defaultAssets: Asset[] = [
   },
 ];
 
+const defaultAssets: Asset[] = [
+  ...assets,
+  ...assets,
+  ...assets,
+  ...assets,
+  ...assets,
+];
+
 export const Default = Template.bind({});
 Default.args = {
   assets: defaultAssets,
-  error: null,
-  isLoading: false,
+  isFetched: true,
   deposit: action("deposit"),
   withdraw: action("withdraw"),
 };
 
-export const NoContents = Template.bind({});
-NoContents.args = {
+export const Skeleton = Template.bind({});
+Skeleton.args = {
   assets: [],
-  error: null,
-  isLoading: false,
+  isFetched: false,
   deposit: action("deposit"),
   withdraw: action("withdraw"),
 };
 
-export const InitialLoading = Template.bind({});
-InitialLoading.args = {
+export const NotFount = Template.bind({});
+NotFount.args = {
   assets: [],
-  error: null,
-  isLoading: true,
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-};
-
-export const ErrorOccurred = Template.bind({});
-ErrorOccurred.args = {
-  assets: [],
-  error: Error("Error"),
-  isLoading: false,
+  isFetched: true,
   deposit: action("deposit"),
   withdraw: action("withdraw"),
 };

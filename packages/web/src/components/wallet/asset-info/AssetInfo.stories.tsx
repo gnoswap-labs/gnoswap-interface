@@ -4,7 +4,7 @@ import { action } from "@storybook/addon-actions";
 import AssetInfo from "./AssetInfo";
 
 export default {
-  title: "wallet/AssetList/AssetListTable/AssetInfo",
+  title: "wallet/AssetList/AssetInfo",
   component: AssetInfo,
 } as ComponentMeta<typeof AssetInfo>;
 

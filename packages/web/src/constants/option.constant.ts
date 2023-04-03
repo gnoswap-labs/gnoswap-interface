@@ -36,3 +36,10 @@ export const RANGE_STATUS_OPTION = {
   OUT: "OUT",
 } as const;
 export type RANGE_STATUS_OPTION = ValuesType<typeof RANGE_STATUS_OPTION>;
+
+export const MATH_NEGATIVE_TYPE = {
+  NEGATIVE: "NEGATIVE",
+  POSITIVE: "POSITIVE",
+  NONE: "NONE",
+} as const;
+export type MATH_NEGATIVE_TYPE = ValuesType<typeof MATH_NEGATIVE_TYPE>;
