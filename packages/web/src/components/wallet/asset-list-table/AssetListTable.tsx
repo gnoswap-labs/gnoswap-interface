@@ -4,19 +4,19 @@ import {
   AssetListTableRowWrapper,
   AssetListTableWrapper,
 } from "./AssetListTable.styles";
+import { noDataText } from "@components/earn/pool-list-table/PoolListTable.styles";
+import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 
 interface AssetListTableProps {
   assets: Asset[];
-  isLoading: boolean;
-  error: Error | null;
+  isFetched: boolean;
   deposit: (assetId: string) => void;
   withdraw: (assetId: string) => void;
 }
 
 const AssetListTable: React.FC<AssetListTableProps> = ({
   assets,
-  isLoading,
-  error,
+  isFetched,
   deposit,
   withdraw,
 }) => (
@@ -24,8 +24,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
     <AssetListTableHead />
     <AssetListTableBody
       assets={assets}
-      isLoading={isLoading}
-      error={error}
+      isFetched={isFetched}
       deposit={deposit}
       withdraw={withdraw}
     />
@@ -44,35 +43,26 @@ const AssetListTableHead: React.FC = () => (
 
 const AssetListTableBody: React.FC<AssetListTableProps> = ({
   assets,
-  isLoading,
-  error,
+  isFetched,
   deposit,
   withdraw,
-}) => {
-  if (isLoading) {
-    return <div className="description">Loading...</div>;
-  }
-
-  if (error !== null) {
-    return <div className="description">Errors</div>;
-  }
-
-  if (assets.length === 0) {
-    return <div className="description">No data found</div>;
-  }
-
-  return (
-    <div className="body">
-      {assets.map((asset, index) => (
+}) => (
+  <div className="body">
+    {isFetched && !Boolean(assets.length) && (
+      <div css={noDataText}>No data found</div>
+    )}
+    {isFetched &&
+      Boolean(assets.length) &&
+      assets.map((item, idx) => (
         <AssetInfo
-          key={index}
-          asset={asset}
+          key={idx}
+          asset={item}
           deposit={deposit}
           withdraw={withdraw}
         />
       ))}
-    </div>
-  );
-};
+    {!isFetched && <TableSkeleton />}
+  </div>
+);
 
 export default AssetListTable;

@@ -6,20 +6,16 @@ export const AssetListHeaderWrapper = styled.div`
   width: 100%;
   margin-bottom: 24px;
 
-  .title {
+  h2 {
     ${({ theme }) => theme.fonts.h5};
-    color: ${({ theme }) => theme.colors.colorWhite};
-    margin-right: 35px;
+    color: ${({ theme }) => theme.colors.gray10};
+    margin-right: 36px;
   }
-
-  .filter-wrapper {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    width: 100%;
+  .right-section {
+    ${mixins.flexbox("row", "center", "center")};
+    margin-left: auto;
   }
-
-  .search-wrapper {
-    flex-shrink: 0;
-    width: 300px;
-    margin-left: 35px;
+  .assets-search {
+    margin-left: 36px;
   }
 `;

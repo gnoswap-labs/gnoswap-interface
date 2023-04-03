@@ -7,7 +7,6 @@ import React from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 interface PoolInfoProps {
   pool: Pool;
-  tdWidth: string;
 }
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {

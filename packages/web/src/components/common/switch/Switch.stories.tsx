@@ -6,6 +6,7 @@ import Switch from "./Switch";
 export default {
   title: "common/Switch",
   component: Switch,
+  argTypes: { disabled: { control: "boolean" } },
 } as ComponentMeta<typeof Switch>;
 
 const Template: ComponentStory<typeof Switch> = args => {
@@ -18,4 +19,5 @@ export const Default = Template.bind({});
 Default.args = {
   hasLabel: true,
   labelText: "Hide zero balances",
+  disabled: false,
 };

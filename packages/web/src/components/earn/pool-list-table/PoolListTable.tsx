@@ -34,14 +34,12 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         ))}
       </div>
       <div className="pool-list-body">
-        {isFetched && !Boolean(pools.length) && (
+        {isFetched && pools.length === 0 && (
           <div css={noDataText}>No pools found</div>
         )}
         {isFetched &&
-          Boolean(pools.length) &&
-          pools.map((pool, idx) => (
-            <PoolInfo pool={pool} key={idx} tdWidth={TD_WIDTH[idx]} />
-          ))}
+          pools.length > 0 &&
+          pools.map((pool, idx) => <PoolInfo pool={pool} key={idx} />)}
         {!isFetched && <TableSkeleton />}
       </div>
     </TableWrapper>
