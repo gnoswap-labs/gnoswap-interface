@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  type TOKEN_TYPE,
+  TOKEN_TYPE,
   type Token,
   TABLE_HEAD,
 } from "@containers/token-list-container/TokenListContainer";
@@ -13,7 +13,7 @@ interface TokenItem {
   tokens: Token[];
   isFetched: boolean;
   error: Error | null;
-  tokenType: TOKEN_TYPE;
+  tokenType?: TOKEN_TYPE;
   changeTokenType: (newType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
@@ -26,7 +26,7 @@ const TokenList: React.FC<TokenItem> = ({
   tokens,
   isFetched,
   error,
-  tokenType,
+  tokenType = TOKEN_TYPE.ALL,
   changeTokenType,
   search,
   keyword,

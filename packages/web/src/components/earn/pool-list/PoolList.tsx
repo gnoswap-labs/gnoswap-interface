@@ -1,7 +1,7 @@
 import {
   Pool,
+  POOL_TYPE,
   TABLE_HEAD,
-  type POOL_TYPE,
 } from "@containers/pool-list-container/PoolListContainer";
 import React from "react";
 import PoolListHeader from "@components/earn/pool-list-header/PoolListHeader";
@@ -13,7 +13,7 @@ interface TokenListProps {
   pools: Pool[];
   isFetched: boolean;
   error: Error | null;
-  poolType: POOL_TYPE;
+  poolType?: POOL_TYPE;
   changePoolType: (newType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
@@ -26,7 +26,7 @@ const PoolList: React.FC<TokenListProps> = ({
   pools,
   isFetched,
   error,
-  poolType,
+  poolType = POOL_TYPE.ALL,
   changePoolType,
   search,
   keyword,

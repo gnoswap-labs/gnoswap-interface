@@ -2,8 +2,8 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import PoolInfo from "./PoolInfo";
-import { dummyPoolList } from "@containers/pool-list-container/PoolListContainer";
 import { css, Theme } from "@emotion/react";
+import { dummyPoolList } from "@containers/pool-list-container/PoolListContainer";
 
 export default {
   title: "earn/PoolList/PoolInfo",

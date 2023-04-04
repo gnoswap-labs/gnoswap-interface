@@ -7,6 +7,7 @@ describe("AssetListTable Component", () => {
   it("AssetListTable render", () => {
     const mockProps = {
       assets: [],
+      isFetched: true,
       error: null,
       isLoading: false,
       deposit: () => null,

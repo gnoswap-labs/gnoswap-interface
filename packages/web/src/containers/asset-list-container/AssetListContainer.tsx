@@ -11,6 +11,15 @@ interface AssetListResponse {
   assets: Asset[];
 }
 
+export const ASSET_HEAD = {
+  ASSET: "Asset",
+  CHAIN: "Chain",
+  BALANCE: "Balance",
+  DEPOSIT: "Deposit",
+  WITHDRAW: "Withdraw",
+} as const;
+export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
+
 export interface Asset {
   id: string;
   logoUri: string;
@@ -36,7 +45,7 @@ export const ASSET_FILTER_TYPE = {
 
 export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 
-const defaultAssets = [
+export const dummyAssetList: Asset[] = [
   {
     id: "BTC",
     logoUri:
@@ -60,21 +69,21 @@ const defaultAssets = [
 ];
 
 async function fetchAssets(address: string): Promise<Asset[]> {
-  return new Promise(resolve => setTimeout(resolve, 1000)).then(() =>
+  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
-      ...defaultAssets,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
+      ...dummyAssetList,
     ]),
   );
 }
