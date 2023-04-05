@@ -1,6 +1,6 @@
 import {
-  Asset,
   ASSET_FILTER_TYPE,
+  type Asset,
 } from "@containers/asset-list-container/AssetListContainer";
 import AssetListHeader from "@components/wallet/asset-list-header/AssetListHeader";
 import AssetListTable from "@components/wallet/asset-list-table/AssetListTable";
@@ -10,7 +10,7 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 interface AssetListProps {
   assets: Asset[];
   isFetched: boolean;
-  assetType: ASSET_FILTER_TYPE;
+  assetType?: ASSET_FILTER_TYPE;
   invisibleZeroBalance: boolean;
   keyword: string;
   extended: boolean;
@@ -26,7 +26,7 @@ interface AssetListProps {
 const AssetList: React.FC<AssetListProps> = ({
   assets,
   isFetched,
-  assetType,
+  assetType = ASSET_FILTER_TYPE.ALL,
   invisibleZeroBalance,
   keyword,
   extended,

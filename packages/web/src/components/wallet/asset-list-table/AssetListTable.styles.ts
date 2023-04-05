@@ -2,46 +2,37 @@ import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
 export const AssetListTableWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  ${mixins.flexbox("column", "flex-start", "flex-start")}
   width: 100%;
-  border: 1px solid ${({ theme }) => theme.colors.gray50};
+  border: 1px solid ${({ theme }) => theme.colors.gray60};
   border-radius: 8px;
   margin-bottom: 24px;
-  .header,
-  .body {
-    width: 100%;
+  color: ${({ theme }) => theme.colors.gray10};
+  ${({ theme }) => theme.fonts.body11};
+  overflow-x: auto;
+  .asset-list-head {
+    min-width: 100%;
+    ${mixins.flexbox("row", "center", "flex-start")}
+    height: 50px;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.gray50};
+    ${({ theme }) => theme.fonts.body12};
   }
 
-  .description {
-    ${mixins.flexbox("column", "center", "center")};
+  .asset-list-body {
+    ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
-    height: 120px;
-    ${({ theme }) => theme.fonts.body12};
-    color: ${({ theme }) => theme.colors.gray40};
   }
 `;
 
-export const AssetListTableRowWrapper = styled.div`
-  ${mixins.flexbox("row", "flex-start", "flex-start")};
-  width: 100%;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray50};
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .column {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    width: 100%;
-    padding: 16px;
-
-    ${({ theme }) => theme.fonts.body12};
-    color: ${({ theme }) => theme.colors.gray10};
-  }
-
-  .column.right {
-    width: 140px;
+export const TableColumn = styled.div<{ tdWidth: number }>`
+  width: ${({ tdWidth }) => `${tdWidth}px`};
+  padding: 16px;
+  ${mixins.flexbox("row", "center", "flex-end")};
+  &.left {
     flex-shrink: 0;
-    justify-content: flex-end;
+    justify-content: flex-start;
+  }
+  span {
+    cursor: pointer;
   }
 `;

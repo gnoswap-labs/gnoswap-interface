@@ -2,12 +2,12 @@ import React from "react";
 import {
   Pool,
   TABLE_HEAD,
-  TD_WIDTH,
 } from "@containers/pool-list-container/PoolListContainer";
 import PoolInfo from "@components/earn/pool-info/PoolInfo";
 import { noDataText, TableColumn, TableWrapper } from "./PoolListTable.styles";
 import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
+import { POOL_INFO, POOL_TD_WIDTH } from "@constants/skeleton.constant";
 interface PoolListTableProps {
   pools: Pool[];
   isFetched: boolean;
@@ -27,7 +27,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
             key={idx}
             className={cx([0].includes(idx) && "left")}
             onClick={() => onClickTableHead(head)}
-            tdWidth={TD_WIDTH[idx]}
+            tdWidth={POOL_TD_WIDTH[idx]}
           >
             <span>{head}</span>
           </TableColumn>
@@ -40,7 +40,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         {isFetched &&
           pools.length > 0 &&
           pools.map((pool, idx) => <PoolInfo pool={pool} key={idx} />)}
-        {!isFetched && <TableSkeleton />}
+        {!isFetched && <TableSkeleton info={POOL_INFO} />}
       </div>
     </TableWrapper>
   );

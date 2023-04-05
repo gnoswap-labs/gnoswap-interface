@@ -4,8 +4,8 @@ import { action } from "@storybook/addon-actions";
 
 import PoolList from "./PoolList";
 import {
-  dummyPoolList,
   POOL_TYPE,
+  dummyPoolList,
 } from "@containers/pool-list-container/PoolListContainer";
 
 export default {

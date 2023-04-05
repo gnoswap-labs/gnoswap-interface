@@ -2,6 +2,11 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TableSkeleton from "./TableSkeleton";
+import {
+  POOL_TD_WIDTH,
+  SHAPE_TYPES,
+  TABLE_TITLE,
+} from "@constants/skeleton.constant";
 
 export default {
   title: "common/TableSkeleton",
@@ -9,8 +14,22 @@ export default {
 } as ComponentMeta<typeof TableSkeleton>;
 
 const Template: ComponentStory<typeof TableSkeleton> = args => (
-  <TableSkeleton />
+  <TableSkeleton {...args} />
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  info: {
+    title: TABLE_TITLE.POOL_TABLE,
+    total: 5,
+    tdWidth: POOL_TD_WIDTH,
+    list: [
+      { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+      { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+      { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
+    ],
+  },
+};
