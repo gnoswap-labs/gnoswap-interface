@@ -7,6 +7,9 @@ import EarnLayout from "@layouts/earn-layout/EarnLayout";
 import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
 import EarnMyPositionsHeader from "@components/earn/earn-my-positions-header/EarnMyPositionsHeader";
 import MyPositionCardListContainer from "@containers/my-position-card-list-container/MyPositionCardListContainer";
+import EarnMyPositonsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositonsUnconnected";
+import EarnMyPositionNoLiquidity from "@components/earn/earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
+import EarnMyPositionsContentContainer from "@containers/earn-my-positions-content-container/EarnMyPositionsContentContainer";
 
 export default function Earn() {
   return (
@@ -15,7 +18,13 @@ export default function Earn() {
       positions={
         <EarnMyPositions
           header={<EarnMyPositionsHeader />}
-          cardList={<MyPositionCardListContainer loadMore={true} />}
+          content={
+            <EarnMyPositionsContentContainer
+              unconnected={<EarnMyPositonsUnconnected />}
+              noLiquidity={<EarnMyPositionNoLiquidity />}
+              cardList={<MyPositionCardListContainer />}
+            />
+          }
         />
       }
       incentivizedPools={<IncentivizedPoolCardListContainer />}
