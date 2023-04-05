@@ -50,20 +50,6 @@ export const TOKEN_TYPE = {
 } as const;
 export type TOKEN_TYPE = ValuesType<typeof TOKEN_TYPE>;
 
-export const TD_WIDTH = [
-  "56px",
-  "203px",
-  "105px",
-  "85px",
-  "85px",
-  "85px",
-  "140px",
-  "140px",
-  "140px",
-  "195px",
-  "126px",
-];
-
 export const dummyTokenList: Token[] = [
   {
     tokenId: Math.floor(Math.random() * 50 + 1).toString(),

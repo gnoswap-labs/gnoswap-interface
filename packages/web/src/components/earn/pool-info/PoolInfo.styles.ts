@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
-export const TableColumn = styled.div<{ tdWidth: string }>`
-  width: ${({ tdWidth }) => tdWidth};
+export const TableColumn = styled.div<{ tdWidth: number }>`
+  width: ${({ tdWidth }) => `${tdWidth}px`};
+  min-width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
+  height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
@@ -14,8 +16,9 @@ export const TableColumn = styled.div<{ tdWidth: string }>`
 export const PoolInfoWrapper = styled.div`
   transition: background-color 0.3s ease;
   cursor: pointer;
+  min-width: 100%;
   height: 68px;
-  ${mixins.flexbox("row", "center", "center")};
+  ${mixins.flexbox("row", "center", "flex-start")};
   ${({ theme }) => theme.fonts.body11};
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.colors.gray50};

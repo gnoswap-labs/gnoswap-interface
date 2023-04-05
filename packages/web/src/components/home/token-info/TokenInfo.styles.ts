@@ -2,8 +2,9 @@ import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
 export const TokenInfoWrapper = styled.div`
-  ${mixins.flexbox("row", "center", "space-between")};
+  ${mixins.flexbox("row", "center", "flex-start")};
   height: 68px;
+  min-width: 100%;
   ${({ theme }) => theme.fonts.body11};
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.colors.gray50};
@@ -21,8 +22,11 @@ export const HoverSection = styled.div`
   }
 `;
 
-export const TableColumn = styled.div<{ tdWidth: string }>`
-  width: ${({ tdWidth }) => tdWidth};
+export const TableColumn = styled.div<{ tdWidth: number }>`
+  width: ${({ tdWidth }) => `${tdWidth}px`};
+  min-width: ${({ tdWidth }) => `${tdWidth}px`};
+  padding: 16px;
+  height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
@@ -42,19 +46,10 @@ export const TableColumn = styled.div<{ tdWidth: string }>`
     }
   }
 
-  .token-index {
-    padding-left: 16px;
-  }
-
-  .volumn,
-  .fee-rate {
-    padding-right: 12px;
-  }
   .liquid-symbol {
     margin: 0px 4px;
   }
   &.dummy-graph {
-    padding-right: 12px;
     span {
       width: 102px;
       height: 36px;

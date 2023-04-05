@@ -1,6 +1,5 @@
 import {
   TABLE_HEAD,
-  TD_WIDTH,
   type Token,
 } from "@containers/token-list-container/TokenListContainer";
 import React from "react";
@@ -8,6 +7,7 @@ import TokenInfo from "@components/home/token-info/TokenInfo";
 import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import { noDataText, TableHeader, TableWrapper } from "./TokenListTable.styles";
+import { TOKEN_INFO, TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 
 interface TokenListTableProps {
   tokens: Token[];
@@ -28,7 +28,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
             key={idx}
             className={cx({ left: [0, 1].includes(idx) })}
             onClick={() => onClickTableHead(head)}
-            tdWidth={TD_WIDTH[idx]}
+            tdWidth={TOKEN_TD_WIDTH[idx]}
           >
             <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}>
               {head}
@@ -37,15 +37,15 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
         ))}
       </div>
       <div className="token-list-body">
-        {isFetched && !Boolean(tokens.length) && (
+        {isFetched && tokens.length === 0 && (
           <div css={noDataText}>No tokens found</div>
         )}
         {isFetched &&
-          Boolean(tokens.length) &&
+          tokens.length > 0 &&
           tokens.map((item, idx) => (
             <TokenInfo item={item} idx={idx + 1} key={idx} />
           ))}
-        {!isFetched && <TableSkeleton />}
+        {!isFetched && <TableSkeleton info={TOKEN_INFO} />}
       </div>
     </TableWrapper>
   );

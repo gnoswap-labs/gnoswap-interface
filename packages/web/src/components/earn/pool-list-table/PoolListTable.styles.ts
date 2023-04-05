@@ -10,7 +10,9 @@ export const TableWrapper = styled.div`
   margin: 24px 0px;
   color: ${({ theme }) => theme.colors.gray10};
   ${({ theme }) => theme.fonts.body11};
+  overflow-x: auto;
   .pool-list-head {
+    min-width: 100%;
     ${mixins.flexbox("row", "center", "flex-start")}
     height: 50px;
     border-bottom: 1px solid ${({ theme }) => theme.colors.gray50};
@@ -23,8 +25,8 @@ export const TableWrapper = styled.div`
   }
 `;
 
-export const TableColumn = styled.div<{ tdWidth: string }>`
-  width: ${({ tdWidth }) => tdWidth};
+export const TableColumn = styled.div<{ tdWidth: number }>`
+  width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
