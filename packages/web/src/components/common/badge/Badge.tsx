@@ -1,14 +1,25 @@
-import { BadgeStyleProps, BadgeWrapper, BadgeText } from "./Badge.styles";
+import { ValuesType } from "utility-types";
+import { BadgeWrapper } from "./Badge.styles";
 
 interface BadgeProps {
+  type: BADGE_TYPE;
+  leftIcon?: React.ReactNode;
   text: string;
-  style: BadgeStyleProps;
 }
 
-const Badge: React.FC<BadgeProps> = ({ text, style }) => {
+export const BADGE_TYPE = {
+  PRIMARY: "primary",
+  LINE: "line",
+  LIGHT_DEFAULT: "lightDefault",
+  DARK_DEFAULT: "darkDefault",
+} as const;
+export type BADGE_TYPE = ValuesType<typeof BADGE_TYPE>;
+
+const Badge: React.FC<BadgeProps> = ({ type, leftIcon, text }) => {
   return (
-    <BadgeWrapper {...style}>
-      <BadgeText {...style}>{text}</BadgeText>
+    <BadgeWrapper type={type}>
+      {leftIcon && <div className="badge-icon">{leftIcon}</div>}
+      <span>{text}</span>
     </BadgeWrapper>
   );
 };
