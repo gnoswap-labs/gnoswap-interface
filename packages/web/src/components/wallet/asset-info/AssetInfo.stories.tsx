@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import AssetInfo from "./AssetInfo";
+import { css, Theme } from "@emotion/react";
 
 export default {
   title: "wallet/AssetList/AssetInfo",
@@ -9,7 +10,9 @@ export default {
 } as ComponentMeta<typeof AssetInfo>;
 
 const Template: ComponentStory<typeof AssetInfo> = args => (
-  <AssetInfo {...args} />
+  <div css={wrapper}>
+    <AssetInfo {...args} />
+  </div>
 );
 
 export const Default = Template.bind({});
@@ -27,3 +30,7 @@ Default.args = {
   deposit: action("deposit"),
   withdraw: action("withdraw"),
 };
+
+const wrapper = (theme: Theme) => css`
+  color: ${theme.colors.gray10};
+`;

@@ -1,8 +1,6 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import {
-  TD_WIDTH,
-  type Pool,
-} from "@containers/pool-list-container/PoolListContainer";
+import { POOL_TD_WIDTH } from "@constants/skeleton.constant";
+import { type Pool } from "@containers/pool-list-container/PoolListContainer";
 import React from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 interface PoolInfoProps {
@@ -23,7 +21,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {
   } = pool;
   return (
     <PoolInfoWrapper>
-      <TableColumn className="left" tdWidth={TD_WIDTH[0]}>
+      <TableColumn className="left" tdWidth={POOL_TD_WIDTH[0]}>
         <DoubleLogo
           left={tokenPair.token0.tokenLogo}
           right={tokenPair.token1.tokenLogo}
@@ -32,19 +30,19 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {
         <span className="symbol-pair">{`${tokenPair.token0.symbol}/${tokenPair.token1.symbol}`}</span>
         <span className="feeRate">{feeRate}</span>
       </TableColumn>
-      <TableColumn tdWidth={TD_WIDTH[1]}>
+      <TableColumn tdWidth={POOL_TD_WIDTH[1]}>
         <span className="liquidity">{liquidity}</span>
       </TableColumn>
-      <TableColumn tdWidth={TD_WIDTH[2]}>
+      <TableColumn tdWidth={POOL_TD_WIDTH[2]}>
         <span className="volumn">{volumn24h}</span>
       </TableColumn>
-      <TableColumn tdWidth={TD_WIDTH[3]}>
+      <TableColumn tdWidth={POOL_TD_WIDTH[3]}>
         <span className="fees">{fees24h}</span>
       </TableColumn>
-      <TableColumn tdWidth={TD_WIDTH[4]}>
+      <TableColumn tdWidth={POOL_TD_WIDTH[4]}>
         <span className="apr">{apr}</span>
       </TableColumn>
-      <TableColumn tdWidth={TD_WIDTH[5]}>
+      <TableColumn tdWidth={POOL_TD_WIDTH[5]}>
         <DoubleLogo left={rewards[0]} right={rewards[1]} size={20} />
       </TableColumn>
     </PoolInfoWrapper>

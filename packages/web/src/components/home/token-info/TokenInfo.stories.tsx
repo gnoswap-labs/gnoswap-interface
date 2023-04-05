@@ -2,8 +2,8 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TokenInfo from "./TokenInfo";
-import { dummyTokenList } from "@containers/token-list-container/TokenListContainer";
 import { css, Theme } from "@emotion/react";
+import { dummyTokenList } from "@containers/token-list-container/TokenListContainer";
 
 export default {
   title: "home/TokenList/TokenInfo",

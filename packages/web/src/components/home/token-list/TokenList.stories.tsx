@@ -3,10 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
 import TokenList from "./TokenList";
-import {
-  dummyTokenList,
-  TOKEN_TYPE,
-} from "@containers/token-list-container/TokenListContainer";
+import { dummyTokenList } from "@containers/token-list-container/TokenListContainer";
 
 export default {
   title: "home/TokenList",
@@ -21,7 +18,6 @@ export const Default = Template.bind({});
 Default.args = {
   tokens: dummyTokenList,
   isFetched: true,
-  tokenType: TOKEN_TYPE.ALL,
   changeTokenType: action("changeTokenType"),
   search: action("search"),
   currentPage: 0,

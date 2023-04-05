@@ -12,7 +12,9 @@ export const TableWrapper = styled.div`
   ${({ theme }) => theme.fonts.body11};
   overflow-x: auto;
   .token-list-head {
-    ${mixins.flexbox("row", "center", "center")}
+    min-width: 100%;
+    ${mixins.flexbox("row", "center", "flex-start")};
+    height: 50px;
     ${({ theme }) => theme.fonts.body12};
     border-bottom: 1px solid ${({ theme }) => theme.colors.gray50};
   }
@@ -23,26 +25,20 @@ export const TableWrapper = styled.div`
   }
 `;
 
-export const TableHeader = styled.div<{ tdWidth: string }>`
-  width: ${({ tdWidth }) => tdWidth};
-  height: 50px;
+export const TableHeader = styled.div<{ tdWidth: number }>`
+  width: ${({ tdWidth }) => `${tdWidth}px`};
+  height: 100%;
+  padding: 16px;
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
   }
-  .index {
-    padding-left: 16px;
-  }
+
   .index,
   .name {
     flex-shrink: 0;
     justify-content: flex-start;
-  }
-  .volumn,
-  .most_liquid_pool,
-  .last_7_days {
-    padding-right: 12px;
   }
   span {
     cursor: pointer;

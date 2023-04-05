@@ -25,6 +25,7 @@ export const TABLE_HEAD = {
   APR: "APR",
   REWARDS: "Rewards",
 } as const;
+
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 export const POOL_TYPE = {
@@ -34,8 +35,6 @@ export const POOL_TYPE = {
 } as const;
 
 export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
-
-export const TD_WIDTH = ["240px", "230px", "230px", "230px", "230px", "200px"];
 
 export const dummyPoolList: Pool[] = [
   {
@@ -166,7 +165,6 @@ const PoolListContainer: React.FC = () => {
   });
 
   const changePoolType = useCallback((newType: string) => {
-    console.log(newType);
     switch (newType) {
       case POOL_TYPE.ALL:
         setPoolType(POOL_TYPE.ALL);
@@ -200,7 +198,7 @@ const PoolListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={10}
+      totalPage={pools?.length ?? 0}
       movePage={movePage}
     />
   );
