@@ -50,6 +50,7 @@ export type PaletteKeyType =
   | "brand70"
   | "brand80"
   | "brand90"
+  | "opacityDark04"
   | "opacityDark05"
   | "opacityDark07";
 

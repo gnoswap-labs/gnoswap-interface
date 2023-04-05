@@ -1,13 +1,31 @@
-import { css } from "@emotion/react";
+import React from "react";
+import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
+import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
+import { wrapper } from "./MyPositionCardList.styles";
 
-const MyPositionCardList: React.FC = () => (
-  <div
-    css={css`
-      border: 1px solid green;
-    `}
-  >
-    <h2>MyPositionCardList</h2>
-  </div>
+interface MyPositionCardListProps {
+  loadMore?: boolean;
+  onClickLoadMore?: () => void;
+  list: any[];
+}
+
+const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
+  loadMore,
+  onClickLoadMore,
+  list,
+}) => (
+  <>
+    <div css={wrapper}>
+      {list.map((item, idx) => (
+        <MyPositionCard item={item} key={idx} />
+      ))}
+    </div>
+    {loadMore && onClickLoadMore && (
+      <div className="load-more">
+        <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+      </div>
+    )}
+  </>
 );
 
 export default MyPositionCardList;
