@@ -1,5 +1,4 @@
-import Badge from "@components/common/badge/Badge";
-import { BadgeHierarchy } from "@components/common/badge/Badge.styles";
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import {
   type PoolListProps,
@@ -21,12 +20,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
           <DoubleLogo left={item.logo[0]} right={item.logo[1]} />
           <span>{`${item.name[0]}/${item.name[1]}`}</span>
         </div>
-        <Badge
-          text={item.fee}
-          style={{
-            hierarchy: BadgeHierarchy.Default,
-          }}
-        />
+        <Badge type={BADGE_TYPE.DARK_DEFAULT} text={item.fee} />
       </div>
       <div className="pool-content">
         <div className="content-section">
