@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import mixins from "@styles/mixins";
 
 export const wrapper = () => css`
   width: 100%;
@@ -7,5 +8,10 @@ export const wrapper = () => css`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
-  padding-bottom: 100px; ;
+
+  .card-skeleton {
+    height: 278px;
+    border-radius: 10px;
+    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  }
 `;

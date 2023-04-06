@@ -17,4 +17,10 @@ export const wrapper = (theme: Theme) => css`
     ${theme.fonts.h3};
     color: ${theme.colors.gray10};
   }
+  .position-section {
+    margin-top: 36px;
+  }
+  .incentivized-section {
+    margin: 36px 0px 100px;
+  }
 `;

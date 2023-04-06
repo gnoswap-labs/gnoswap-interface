@@ -22,7 +22,12 @@ export const POOL_CONTENT_TITLE = {
 export type POOL_CONTENT_TITLE = ValuesType<typeof POOL_CONTENT_TITLE>;
 
 const IncentivizedPoolCardListContainer: React.FC = () => (
-  <IncentivizedPoolCardList list={poolDummy} />
+  <IncentivizedPoolCardList
+    list={poolDummy}
+    isFetched={true}
+    loadMore={true}
+    onClickLoadMore={() => {}}
+  />
 );
 
 export default IncentivizedPoolCardListContainer;

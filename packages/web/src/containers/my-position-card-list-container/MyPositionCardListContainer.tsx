@@ -120,6 +120,7 @@ const MyPositionCardListContainer: React.FC<
   return (
     <MyPositionCardList
       loadMore={loadMore}
+      isFetched={true}
       onClickLoadMore={onClickLoadMore}
       list={dummyPositionList}
     />
