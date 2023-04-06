@@ -7,6 +7,12 @@ import { poolDummy } from "@components/earn//incentivized-pool-card/incentivized
 export default {
   title: "earn/IncentivizedPoolCardList",
   component: IncentivizedPoolCardList,
+  argTypes: {
+    isFetched: {
+      options: [true, false],
+      control: { type: "boolean" },
+    },
+  },
 } as ComponentMeta<typeof IncentivizedPoolCardList>;
 
 const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
@@ -16,7 +22,9 @@ const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  isFetched: true,
+};
 
 const wrapper = css`
   padding: 1rem 0;
