@@ -7,6 +7,7 @@ import EarnLayout from "@layouts/earn-layout/EarnLayout";
 import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
 import EarnMyPositionsHeader from "@components/earn/earn-my-positions-header/EarnMyPositionsHeader";
 import MyPositionCardListContainer from "@containers/my-position-card-list-container/MyPositionCardListContainer";
+import EarnIncentivizedPools from "@components/earn/earn-incentivized-pools/EarnIncentivizedPools";
 
 export default function Earn() {
   return (
@@ -18,7 +19,11 @@ export default function Earn() {
           cardList={<MyPositionCardListContainer loadMore={true} />}
         />
       }
-      incentivizedPools={<IncentivizedPoolCardListContainer />}
+      incentivizedPools={
+        <EarnIncentivizedPools
+          cardList={<IncentivizedPoolCardListContainer />}
+        />
+      }
       poolList={<PoolListContainer />}
       footer={<Footer />}
     />

@@ -14,7 +14,9 @@ export const skeletonStyle =
   (theme: Theme) =>
     css`
       position: relative;
-      width: ${`${skeletonWidth}px`};
+      width: ${typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
       height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
       background: ${theme.colors.colorBlack};
       overflow: hidden;
