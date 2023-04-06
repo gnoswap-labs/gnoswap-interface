@@ -7,6 +7,12 @@ import { dummyPositionList } from "@containers/my-position-card-list-container/M
 export default {
   title: "common/MyPositionCardList",
   component: MyPositionCardList,
+  argTypes: {
+    isFetched: {
+      options: [true, false],
+      control: { type: "boolean" },
+    },
+  },
 } as ComponentMeta<typeof MyPositionCardList>;
 
 const Template: ComponentStory<typeof MyPositionCardList> = args => (
@@ -14,4 +20,6 @@ const Template: ComponentStory<typeof MyPositionCardList> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  isFetched: true,
+};

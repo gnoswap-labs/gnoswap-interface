@@ -8,8 +8,10 @@ export const wrapper = (theme: Theme) => css`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
-  .load-more {
-    ${mixins.flexbox("row", "center", "center")}
-    width: 100%
+
+  .card-skeleton {
+    height: 394px;
+    border-radius: 10px;
+    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   }
 `;

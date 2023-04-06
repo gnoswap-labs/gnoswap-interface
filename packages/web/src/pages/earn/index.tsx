@@ -10,6 +10,7 @@ import MyPositionCardListContainer from "@containers/my-position-card-list-conta
 import EarnMyPositonsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositonsUnconnected";
 import EarnMyPositionNoLiquidity from "@components/earn/earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsContentContainer from "@containers/earn-my-positions-content-container/EarnMyPositionsContentContainer";
+import EarnIncentivizedPools from "@components/earn/earn-incentivized-pools/EarnIncentivizedPools";
 
 export default function Earn() {
   return (
@@ -27,7 +28,11 @@ export default function Earn() {
           }
         />
       }
-      incentivizedPools={<IncentivizedPoolCardListContainer />}
+      incentivizedPools={
+        <EarnIncentivizedPools
+          cardList={<IncentivizedPoolCardListContainer />}
+        />
+      }
       poolList={<PoolListContainer />}
       footer={<Footer />}
     />
