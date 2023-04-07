@@ -6,7 +6,7 @@ export const FEE_RATE_OPTION = {
   FEE_3: "0.3%",
   FEE_1: "1%",
 } as const;
-export type POSITION_CONTENT_LABEL = ValuesType<typeof FEE_RATE_OPTION>;
+export type FEE_RATE_OPTION = ValuesType<typeof FEE_RATE_OPTION>;
 
 export const STAKED_OPTION = {
   NONE: "NONE",
