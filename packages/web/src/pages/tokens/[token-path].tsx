@@ -3,7 +3,7 @@ import TokenChartContainer from "@containers/token-chart-container/TokenChartCon
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import TokenLayout from "@layouts/token-layout/TokenLayout";
-import TokenInfoContainer from "@containers/token-info-container/TokenInfoContainer";
+import TokenInfoContentContainer from "@containers/token-info-content-container/TokenInfoContentContainer";
 import TokenDescriptionContainer from "@containers/token-description-container/TokenDescriptionContainer";
 import TokenSwapContainer from "@containers/token-swap-container/TokenSwapContainer";
 import BestPoolCardListContainer from "@containers/best-pool-card-list-container/BestPoolCardListContainer";
@@ -16,7 +16,7 @@ export default function Token() {
       header={<HeaderContainer />}
       breadcrumbs={<BreadcrumbsContainer />}
       chart={<TokenChartContainer />}
-      info={<TokenInfoContainer />}
+      info={<TokenInfoContentContainer />}
       description={<TokenDescriptionContainer />}
       swap={<TokenSwapContainer />}
       bestPools={<BestPoolCardListContainer />}

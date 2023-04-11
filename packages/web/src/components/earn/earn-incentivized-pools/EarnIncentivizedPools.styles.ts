@@ -8,7 +8,6 @@ export const wrapper = (theme: Theme) => css`
   ${theme.fonts.h5};
   gap: 24px;
   h2 {
-    width: 100%;
-    ${mixins.flexbox("row", "center", "flex-start")};
+    width: 100% ${mixins.flexbox("row", "center", "flex-start")};
   }
 `;
