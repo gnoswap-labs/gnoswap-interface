@@ -1,7 +1,7 @@
 import Footer from "@components/common/footer/Footer";
 import TokenChartContainer from "@containers/token-chart-container/TokenChartContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import TokenBreadcrumbsContainer from "@containers/token-breadcrumbs-container/TokenBreadcrumbsContainer";
+import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import TokenLayout from "@layouts/token-layout/TokenLayout";
 import TokenInfoContainer from "@containers/token-info-container/TokenInfoContainer";
 import TokenDescriptionContainer from "@containers/token-description-container/TokenDescriptionContainer";
@@ -14,7 +14,7 @@ export default function Token() {
   return (
     <TokenLayout
       header={<HeaderContainer />}
-      breadcrumbs={<TokenBreadcrumbsContainer />}
+      breadcrumbs={<BreadcrumbsContainer />}
       chart={<TokenChartContainer />}
       info={<TokenInfoContainer />}
       description={<TokenDescriptionContainer />}

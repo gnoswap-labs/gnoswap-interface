@@ -43,3 +43,15 @@ export const MATH_NEGATIVE_TYPE = {
   NONE: "NONE",
 } as const;
 export type MATH_NEGATIVE_TYPE = ValuesType<typeof MATH_NEGATIVE_TYPE>;
+
+export const INCENTIVIZED_TYPE = {
+  INCENTIVIZED: "Incentivized",
+  NON_INCENTIVIZED: "Non_Incentivized",
+  EXTERNAL_INCENTIVIZED: "External_Incentivized",
+} as const;
+export type INCENTIVIZED_TYPE = ValuesType<typeof INCENTIVIZED_TYPE>;
+
+export type IncentivizedOptions =
+  | "INCENTIVIZED"
+  | "NON_INCENTIVIZED"
+  | "EXTERNAL_INCENTIVIZED";
