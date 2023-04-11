@@ -5,7 +5,7 @@ import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import WalletMyPositions from "@components/wallet/wallet-my-positions/WalletMyPositions";
 import WalletMyPositionsHeader from "@components/wallet/wallet-my-positions-header/WalletMyPositionsHeader";
-import MyPositionCardListContainer from "@containers/my-position-card-list-container/MyPositionCardListContainer";
+import WalletPositionCardListContainer from "@containers/wallet-position-card-list-container/WalletPositionCardListContainer";
 
 export default function Wallet() {
   return (
@@ -16,7 +16,7 @@ export default function Wallet() {
       positions={
         <WalletMyPositions
           header={<WalletMyPositionsHeader />}
-          cardList={<MyPositionCardListContainer loadMore={false} />}
+          cardList={<WalletPositionCardListContainer />}
         />
       }
       footer={<Footer />}

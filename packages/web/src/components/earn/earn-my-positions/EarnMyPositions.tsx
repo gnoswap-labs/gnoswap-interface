@@ -2,16 +2,16 @@ import { wrapper } from "./EarnMyPositions.styles";
 
 interface EarnMyPositionsProps {
   header: React.ReactNode;
-  cardList: React.ReactNode;
+  content: React.ReactNode;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   header,
-  cardList,
+  content,
 }) => (
   <div css={wrapper}>
     {header}
-    {cardList}
+    {content}
   </div>
 );
 
