@@ -1,4 +1,4 @@
-import { MY_POSITIONS_STATUS } from "@containers/earn-my-positions-content-container/EarnMyPositionsContentContainer";
+import { ValuesType } from "utility-types";
 import { wrapper } from "./EarnMyPositionsContent.styles";
 
 interface EarnMyPositionContentrProps {
@@ -7,6 +7,14 @@ interface EarnMyPositionContentrProps {
   cardList: React.ReactNode;
   status: MY_POSITIONS_STATUS;
 }
+
+export const MY_POSITIONS_STATUS = {
+  UN_CONNECTED: "unconnected",
+  NO_LIQUIDITY: "noLiquidity",
+  CARD_LIST: "cardList",
+  NONE: "none",
+} as const;
+export type MY_POSITIONS_STATUS = ValuesType<typeof MY_POSITIONS_STATUS>;
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentrProps> = ({
   unconnected,

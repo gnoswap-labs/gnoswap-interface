@@ -1,7 +1,8 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import EarnMyPositionsContent from "./EarnMyPositionsContent";
-import { MY_POSITIONS_STATUS } from "@containers/earn-my-positions-content-container/EarnMyPositionsContentContainer";
+import EarnMyPositionsContent, {
+  MY_POSITIONS_STATUS,
+} from "./EarnMyPositionsContent";
 import EarnMyPositonsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositonsUnconnected";
 import EarnMyPositionNoLiquidity from "@components/earn/earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import MyPositionCardListContainer from "@containers/my-position-card-list-container/MyPositionCardListContainer";
@@ -9,16 +10,6 @@ import MyPositionCardListContainer from "@containers/my-position-card-list-conta
 export default {
   title: "earn/EarnMyPositionsContent",
   component: EarnMyPositionsContent,
-  argTypes: {
-    status: {
-      options: [
-        MY_POSITIONS_STATUS.UN_CONNECTED,
-        MY_POSITIONS_STATUS.NO_LIQUIDITY,
-        MY_POSITIONS_STATUS.CARD_LIST,
-      ],
-      control: { type: "radio" },
-    },
-  },
 } as ComponentMeta<typeof EarnMyPositionsContent>;
 
 const Template: ComponentStory<typeof EarnMyPositionsContent> = args => (
@@ -30,7 +21,17 @@ const Template: ComponentStory<typeof EarnMyPositionsContent> = args => (
   />
 );
 
-export const Default = Template.bind({});
-Default.args = {
+export const UnConnected = Template.bind({});
+UnConnected.args = {
   status: MY_POSITIONS_STATUS.UN_CONNECTED,
+};
+
+export const NoLiquidity = Template.bind({});
+NoLiquidity.args = {
+  status: MY_POSITIONS_STATUS.NO_LIQUIDITY,
+};
+
+export const CardList = Template.bind({});
+CardList.args = {
+  status: MY_POSITIONS_STATUS.CARD_LIST,
 };
