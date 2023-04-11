@@ -1,6 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PoolPairInfoHeader from "./PoolPairInfoHeader";
+import { poolPairInit } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 
 export default {
   title: "pool/PoolPairInfoHeader",
@@ -12,4 +13,6 @@ const Template: ComponentStory<typeof PoolPairInfoHeader> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  info: poolPairInit.poolInfo,
+};

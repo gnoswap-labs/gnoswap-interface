@@ -1,19 +1,17 @@
 import React from "react";
+import PoolPairInfoContent from "@components/pool/pool-pair-info-content/PoolPairInfoContent";
+import PoolPairInfoHeader from "@components/pool/pool-pair-info-header/PoolPairInfoHeader";
 import { wrapper } from "./PoolPairInformation.styles";
 
 interface PoolPairInformationProps {
-  header: React.ReactNode;
-  content: React.ReactNode;
+  info: any;
 }
 
-const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
-  header,
-  content,
-}) => {
+const PoolPairInformation: React.FC<PoolPairInformationProps> = ({ info }) => {
   return (
     <div css={wrapper}>
-      {header}
-      {content}
+      <PoolPairInfoHeader info={info.poolInfo} />
+      <PoolPairInfoContent content={info} />
     </div>
   );
 };
