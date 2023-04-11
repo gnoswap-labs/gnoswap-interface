@@ -112,14 +112,14 @@ interface MyPositionCardListContainerProps {
 
 const MyPositionCardListContainer: React.FC<
   MyPositionCardListContainerProps
-> = ({ loadMore }) => {
+> = () => {
   const onClickLoadMore = () => {
     // Todo
   };
 
   return (
     <MyPositionCardList
-      loadMore={loadMore}
+      loadMore={true}
       isFetched={true}
       onClickLoadMore={onClickLoadMore}
       list={dummyPositionList}
