@@ -8,8 +8,8 @@ import TokenDescriptionContainer from "@containers/token-description-container/T
 import TokenSwapContainer from "@containers/token-swap-container/TokenSwapContainer";
 import BestPoolsContainer from "@containers/best-pools-container/BestPoolsContainer";
 import TrendingCryptoCardListContainer from "@containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
-import GainerAndLoserCardListContainer from "@containers/gainer-and-loser-card-list-container/GainerAndLoserCardListContainer";
 import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos";
+import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
 
 export default function Token() {
   return (
@@ -24,7 +24,7 @@ export default function Token() {
       trending={
         <TrendingCryptos cardList={<TrendingCryptoCardListContainer />} />
       }
-      gainersAndLosers={<GainerAndLoserCardListContainer />}
+      gainersAndLosers={<GainerAndLoserContainer />}
       footer={<Footer />}
     />
   );
