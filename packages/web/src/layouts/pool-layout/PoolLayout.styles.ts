@@ -6,7 +6,6 @@ export const wrapper = (theme: Theme) => css`
   color: ${theme.colors.gray10};
   section {
     width: 100%;
-    border: 1px solid green;
   }
   .pool-content {
     ${mixins.flexbox("row", "center", "space-between")};
@@ -14,22 +13,16 @@ export const wrapper = (theme: Theme) => css`
     max-width: 1440px;
     margin: 100px auto;
     padding: 0 40px;
-    border: 1px solid green;
   }
   .title-container {
     ${mixins.flexbox("column", "flex-start", "center")};
     gap: 8px;
     width: 100%;
     margin-bottom: 36px;
-    border: 1px solid green;
   }
   .pool-title {
     ${theme.fonts.h3};
     color: ${theme.colors.gray10};
-    border: 1px solid green;
-  }
-  .breadcrumbs {
-    border: 1px solid green;
   }
 
   .liquidity-section {
