@@ -1,7 +1,5 @@
-import { css, type Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 
-export const wrapper = (theme: Theme) => css`
-  color: ${theme.colors.colorWhite};
-
-  height: 100px;
+export const wrapper = css`
+  width: 100%;
 `;
