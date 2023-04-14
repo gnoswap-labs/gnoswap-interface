@@ -6,7 +6,7 @@ import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsC
 import PoolPairInformationContainer from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
 import StakingContainer from "@containers/staking-container/StakingContainer";
-import AddIncentiveContainer from "@containers/add-incentive-container/AddIncentiveContainer";
+import AddIncentiveContainer from "@containers/add-incentive-banner-container/AddIncentiveBannerContainer";
 
 export default function Pool() {
   return (
