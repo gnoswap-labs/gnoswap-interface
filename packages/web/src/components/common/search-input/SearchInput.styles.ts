@@ -25,15 +25,22 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   padding: 0px 16px;
   border-radius: 8px;
   color: ${({ theme }) => theme.colors.colorWhite};
-  background-color: ${({ theme }) => theme.colors.colorBlack};
-  border: 1px solid ${({ theme }) => theme.colors.gray50};
-  &.empty-status {
-    background-color: ${({ theme }) => theme.colors.gray60};
-  }
+
   &:focus-within {
-    background-color: ${({ theme }) => theme.colors.colorBlack};
+    background-color: ${({ theme }) => theme.colors.gray50};
     border: 1px solid ${({ theme }) => theme.colors.gray40};
   }
+
+  &:not(:focus-within, .empty-status) {
+    background-color: ${({ theme }) => theme.colors.gray60};
+    border: 1px solid ${({ theme }) => theme.colors.gray50};
+  }
+
+  &:not(:focus-within).empty-status {
+    background-color: ${({ theme }) => theme.colors.colorBlack};
+    border: 1px solid ${({ theme }) => theme.colors.gray50};
+  }
+
   .search-icon * {
     fill: ${({ theme }) => theme.colors.gray01};
   }
