@@ -24,25 +24,29 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "flex-start")}
     flex-wrap: nowrap;
     gap: 24px;
-
+    height: 36px;
     margin-top: 54px;
-
-    .icon {
+    button {
       width: 36px;
       height: 36px;
-    }
-
-    .icon * {
-      fill: ${theme.colors.gray40};
-    }
-
-    button:hover .icon * {
-      fill: ${theme.colors.gray10};
+      &:hover {
+        .icon * {
+          fill: ${theme.colors.gray10};
+        }
+      }
+      .icon {
+        width: 36px;
+        height: 36px;
+        * {
+          transition: all 0.3s ease;
+          fill: ${theme.colors.gray40};
+        }
+      }
     }
   }
 
   .description {
-    ${fonts.body4};
+    ${fonts.body8};
     color: ${theme.colors.gray40};
     line-height: 1.4;
 
