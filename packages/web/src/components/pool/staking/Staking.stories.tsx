@@ -1,6 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Staking from "./Staking";
+import { stakingInit } from "@containers/staking-container/StakingContainer";
 
 export default {
   title: "pool/Staking",
@@ -10,4 +11,6 @@ export default {
 const Template: ComponentStory<typeof Staking> = args => <Staking {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  info: stakingInit,
+};
