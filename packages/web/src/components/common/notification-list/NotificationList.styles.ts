@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -19,13 +20,13 @@ export const NotificationHeader = styled.div`
   width: 100%;
   padding: 0px 24px 16px;
   .notification-title {
-    ${({ theme }) => theme.fonts.body9};
+    ${fonts.body9};
     color: ${({ theme }) => theme.colors.gray10};
   }
 `;
 
 export const ClearButton = styled.button`
-  ${({ theme }) => theme.fonts.body11};
+  ${fonts.body11};
   color: ${({ theme }) => theme.colors.gray40};
 `;
 
@@ -44,7 +45,7 @@ export const TxsListItem = styled.div`
 
 export const TxsDateAgoTitle = styled.span`
   ${mixins.flexbox("row", "center", "flex-start")};
-  ${({ theme }) => theme.fonts.body11};
+  ${fonts.body11};
   color: ${({ theme }) => theme.colors.gray40};
   width: 100%;
   height: 34px;
@@ -53,7 +54,7 @@ export const TxsDateAgoTitle = styled.span`
 
 export const TxsSummaryItem = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  ${({ theme }) => theme.fonts.body12};
+  ${fonts.body12};
   color: ${({ theme }) => theme.colors.gray10};
   position: relative;
   width: 100%;
@@ -96,7 +97,7 @@ export const DoubleLogoWrapperTest = styled.div`
 
 export const NoDataText = styled.span`
   ${mixins.flexbox("row", "center", "center")};
-  ${({ theme }) => theme.fonts.body9};
+  ${fonts.body9};
   color: ${({ theme }) => theme.colors.gray40};
   padding: 0px 24px;
   width: 100%;

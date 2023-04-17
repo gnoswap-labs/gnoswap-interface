@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -14,7 +15,7 @@ export const wrapper = (theme: Theme) => css`
 
     .page-name {
       width: 100px;
-      ${theme.fonts.h3};
+      ${fonts.h3};
       color: ${theme.colors.gray10};
     }
 

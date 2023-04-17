@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
@@ -9,13 +10,13 @@ export const TableWrapper = styled.div`
   border-radius: 8px;
   margin: 24px 0px;
   color: ${({ theme }) => theme.colors.gray10};
-  ${({ theme }) => theme.fonts.body11};
+  ${fonts.body11};
   overflow-x: auto;
   .token-list-head {
     min-width: 100%;
     ${mixins.flexbox("row", "center", "flex-start")};
     height: 50px;
-    ${({ theme }) => theme.fonts.body12};
+    ${fonts.body12};
     border-bottom: 1px solid ${({ theme }) => theme.colors.gray50};
   }
 
@@ -48,7 +49,7 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
 export const noDataText = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center")};
   color: ${theme.colors.gray40};
-  ${theme.fonts.body12};
+  ${fonts.body12};
   width: 100%;
   height: 300px;
 `;

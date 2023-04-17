@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -19,7 +20,7 @@ export const PoolInfoWrapper = styled.div`
   min-width: 100%;
   height: 68px;
   ${mixins.flexbox("row", "center", "flex-start")};
-  ${({ theme }) => theme.fonts.body11};
+  ${fonts.body11};
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.colors.gray50};
   }
@@ -31,7 +32,7 @@ export const PoolInfoWrapper = styled.div`
     margin: 0px 4px;
   }
   .feeRate {
-    ${({ theme }) => theme.fonts.body12};
+    ${fonts.body12};
     color: ${({ theme }) => theme.colors.gray40};
   }
 `;

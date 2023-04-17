@@ -1,5 +1,6 @@
 import mixins from "@styles/mixins";
 import { css, Theme } from "@emotion/react";
+import { fonts } from "@constants/font.constant";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -24,7 +25,7 @@ export const wrapper = (theme: Theme) => css`
       margin-bottom: 36px;
 
       .title {
-        ${theme.fonts.h3};
+        ${fonts.h3};
         color: ${theme.colors.gray10};
       }
     }
