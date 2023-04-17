@@ -7,8 +7,8 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "flex-start")}
   main {
     ${mixins.flexbox("row", "center", "center")}
+    width: 100%;
     max-width: 1440px;
-    /* min-height: 100%; */
     flex-grow: 1;
     padding: 0 40px;
     margin: 0 auto;

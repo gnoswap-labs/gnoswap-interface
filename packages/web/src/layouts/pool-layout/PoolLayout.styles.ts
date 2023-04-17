@@ -11,6 +11,7 @@ export const wrapper = (theme: Theme) => css`
   .pool-content {
     ${mixins.flexbox("row", "center", "space-between")};
     flex-wrap: wrap;
+    width: 100%;
     max-width: 1440px;
     margin: 100px auto;
     padding: 0 40px;

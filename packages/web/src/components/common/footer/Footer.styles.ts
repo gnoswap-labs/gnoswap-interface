@@ -12,6 +12,7 @@ export const FooterWrapper = styled.footer`
 
 export const FooterInner = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
+  width: 100%;
   max-width: 1440px;
   height: 100%;
   padding: 0 40px;
