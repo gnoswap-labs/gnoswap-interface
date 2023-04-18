@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { STAKED_OPTION } from "@constants/option.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
@@ -25,7 +26,7 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
     .token-pair {
       width: 100%;
       ${mixins.flexbox("row", "center", "space-between")};
-      ${theme.fonts.body5}
+      ${fonts.body5}
     }
     .badge-info {
       width: 100%;
@@ -60,7 +61,7 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
 
     .label-text {
       color: ${theme.colors.gray40};
-      ${theme.fonts.body12};
+      ${fonts.body12};
       height: 18px;
     }
 
@@ -80,7 +81,7 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
       ${mixins.flexbox("column", "flex-start", "center", false)};
       gap: 4px;
       color: ${theme.colors.gray30};
-      ${theme.fonts.p4};
+      ${fonts.p4};
     }
     .dummy-chart {
       width: 100%;

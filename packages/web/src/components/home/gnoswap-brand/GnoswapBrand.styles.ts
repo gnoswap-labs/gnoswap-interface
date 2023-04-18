@@ -1,9 +1,10 @@
 import mixins from "@/styles/mixins";
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 
 export const wrapper = (theme: Theme) => css`
   .title {
-    ${theme.fonts.h1};
+    ${fonts.h1};
     color: ${theme.colors.gray10};
     line-height: 1.2;
 
@@ -13,7 +14,7 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .subtitle {
-    ${theme.fonts.h4};
+    ${fonts.h4};
     color: ${theme.colors.gray10};
 
     margin-top: 8px;
@@ -41,7 +42,7 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .description {
-    ${theme.fonts.body4};
+    ${fonts.body4};
     color: ${theme.colors.gray40};
     line-height: 1.4;
 

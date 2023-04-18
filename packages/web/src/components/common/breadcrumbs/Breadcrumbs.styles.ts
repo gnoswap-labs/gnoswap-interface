@@ -1,9 +1,10 @@
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center", false)};
-  ${theme.fonts.body12};
+  ${fonts.p3};
   height: 26px;
   padding: 0px 8px;
   background-color: ${theme.colors.gray60};

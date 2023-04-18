@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -17,18 +18,18 @@ export const wrapper = (active: boolean) => (theme: Theme) =>
     border-radius: 8px;
 
     h5 {
-      ${theme.fonts.body12};
+      ${fonts.body12};
       color: ${theme.colors.gray40};
     }
 
     .total-value {
-      ${theme.fonts.body2};
+      ${fonts.body2};
       margin: 16px 0px;
     }
 
     .default-value {
       ${mixins.flexbox("row", "center", "center")};
-      ${theme.fonts.body8};
+      ${fonts.body8};
       height: 41px;
       &.has-tooltip {
         cursor: pointer;
@@ -40,7 +41,7 @@ export const wrapper = (active: boolean) => (theme: Theme) =>
     }
 
     .apr-value {
-      ${theme.fonts.body4};
+      ${fonts.body4};
       color: ${theme.colors.gray30};
     }
 

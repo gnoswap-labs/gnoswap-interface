@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -8,14 +9,14 @@ export const AssetListTableWrapper = styled.div`
   border-radius: 8px;
   margin-bottom: 24px;
   color: ${({ theme }) => theme.colors.gray10};
-  ${({ theme }) => theme.fonts.body11};
+  ${fonts.body11};
   overflow-x: auto;
   .asset-list-head {
     min-width: 100%;
     ${mixins.flexbox("row", "center", "flex-start")}
     height: 50px;
     border-bottom: 1px solid ${({ theme }) => theme.colors.gray50};
-    ${({ theme }) => theme.fonts.body12};
+    ${fonts.body12};
   }
 
   .asset-list-body {

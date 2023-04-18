@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import mixins from "@/styles/mixins";
 import { ButtonStyleProps } from "@components/common/button/Button.styles";
+import { fonts } from "@constants/font.constant";
 
 export const WalletBalanceSummaryWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
@@ -14,7 +15,7 @@ export const BalanceInfoWrapper = styled.div`
 
   .title {
     margin-bottom: 16px;
-    ${({ theme }) => theme.fonts.body4};
+    ${fonts.body4};
     color: ${({ theme }) => theme.colors.gray30};
   }
 
@@ -22,12 +23,12 @@ export const BalanceInfoWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
 
     .amount {
-      ${({ theme }) => theme.fonts.h3};
+      ${fonts.h3};
       color: ${({ theme }) => theme.colors.gray10};
     }
     .change-rate {
       margin-left: 16px;
-      ${({ theme }) => theme.fonts.body3};
+      ${fonts.body3};
       color: ${({ theme }) => theme.colors.gray40};
     }
   }

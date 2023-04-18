@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -23,7 +24,7 @@ export const wrapper = (isStaked: boolean) => (theme: Theme) =>
       ${mixins.flexbox("row", "center", "center")};
     }
     .pair-symbol {
-      ${theme.fonts.body5};
+      ${fonts.body5};
       margin: 0px 8px;
     }
 
@@ -31,7 +32,7 @@ export const wrapper = (isStaked: boolean) => (theme: Theme) =>
       ${mixins.flexbox("row", "center", "flex-start")};
       width: 100%;
       margin: 8px 0px 16px;
-      ${theme.fonts.body12};
+      ${fonts.body12};
       color: ${theme.colors.gray30};
       span {
         color: ${theme.colors.gray40};
@@ -53,11 +54,11 @@ export const wrapper = (isStaked: boolean) => (theme: Theme) =>
         }
       }
       h4 {
-        ${theme.fonts.body12}
+        ${fonts.body12}
         color: ${theme.colors.gray40};
       }
       .content-value {
-        ${theme.fonts.body2}
+        ${fonts.body2}
       }
     }
   `;

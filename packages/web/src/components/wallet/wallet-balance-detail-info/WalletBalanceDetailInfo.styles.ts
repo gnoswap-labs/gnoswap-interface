@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import mixins from "@/styles/mixins";
+import { fonts } from "@constants/font.constant";
 
 export const WalletBalanceDetailInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "space-between")};
@@ -15,7 +16,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     margin-bottom: 16px;
 
     .title {
-      ${({ theme }) => theme.fonts.body12}
+      ${fonts.body12}
       color: ${({ theme }) => theme.colors.gray40};
       margin-right: 5px;
     }
@@ -34,7 +35,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     ${mixins.flexbox("row", "flex-end", "center")};
 
     .value {
-      ${({ theme }) => theme.fonts.body2};
+      ${fonts.body2};
       color: ${({ theme }) => theme.colors.gray10};
     }
   }
@@ -43,7 +44,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
 export const WalletBalanceDetailInfoTooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: calc(300px - 32px);
-  ${({ theme }) => theme.fonts.body12};
+  ${fonts.body12};
   color: ${({ theme }) => theme.colors.brand10};
   background-color: ${({ theme }) => theme.colors.brand90};
 `;

@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
 import mixins from "@/styles/mixins";
 import { Z_INDEX } from "@/styles/zIndex";
-import { FontsKeyType, PaletteKeyType } from "@/styles/ThemeTypes";
+import { PaletteKeyType } from "@/styles/ThemeTypes";
 import { CSSProperties } from "react";
+import { fonts, type FontsKey } from "@constants/font.constant";
 
 export interface ModalStyleProps {
-  fontType?: FontsKeyType;
+  fontType?: FontsKey;
   textColor?: PaletteKeyType;
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
@@ -32,16 +33,12 @@ export const ModalWrapper = styled.div<ModalStyleProps>`
 
 export const ModalHeader = styled.div<ModalStyleProps>`
   ${mixins.flexbox("row", "center", "space-between")};
-  ${({ theme, fontType }) => theme.fonts[fontType ?? "h6"]};
+  ${({ fontType }) => fonts[fontType ?? "h6"]};
   color: ${({ theme, textColor }) => theme.colors[textColor ?? "gray10"]};
   width: 100%;
   svg * {
     fill: ${({ theme }) => theme.colors.gray10};
   }
-  /* .modal-title {
-    ${({ theme, fontType }) => theme.fonts[fontType ?? "h6"]};
-    color: ${({ theme, textColor }) => theme.colors[textColor ?? "gray10"]};
-  } */
 `;
 
 export const IconButton = styled.button`

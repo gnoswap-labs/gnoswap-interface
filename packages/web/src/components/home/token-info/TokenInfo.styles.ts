@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -5,7 +6,7 @@ export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   height: 68px;
   min-width: 100%;
-  ${({ theme }) => theme.fonts.body11};
+  ${fonts.body11};
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.colors.gray50};
   }
@@ -67,7 +68,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
   .token-symbol,
   .fee-rate {
-    ${({ theme }) => theme.fonts.body12};
+    ${fonts.body12};
     color: ${({ theme }) => theme.colors.gray40};
   }
 `;

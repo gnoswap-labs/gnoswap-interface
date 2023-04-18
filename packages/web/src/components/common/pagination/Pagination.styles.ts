@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -14,7 +15,7 @@ export const PaginationItem = styled.li`
 export const Button = styled.button<{
   selected?: boolean;
 }>`
-  ${({ theme }) => theme.fonts.body11};
+  ${fonts.body11};
   ${mixins.flexbox("row", "center", "center")};
   color: ${({ theme, selected }) =>
     selected ? theme.colors.colorWhite : theme.colors.gray40};
