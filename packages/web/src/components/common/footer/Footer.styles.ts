@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -25,7 +26,7 @@ export const LeftSection = styled.div`
     height: 35px;
   }
   .footer-content {
-    ${({ theme }) => theme.fonts.p2}
+    ${fonts.p2}
     color: ${({ theme }) => theme.colors.gray40};
     margin: 25px 0px 26px;
     white-space: pre-wrap;
@@ -38,7 +39,7 @@ export const SocialNav = styled.div`
 `;
 
 export const AnchorStyle = styled.a`
-  ${({ theme }) => theme.fonts.body12}
+  ${fonts.body12}
   color: ${({ theme }) => theme.colors.gray40};
   margin-top: 16px;
   svg * {
@@ -55,7 +56,7 @@ export const RightSection = styled.div`
 export const MenuSection = styled.section`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   strong {
-    ${({ theme }) => theme.fonts.body11};
+    ${fonts.body11};
     color: ${({ theme }) => theme.colors.gray30};
   }
 `;

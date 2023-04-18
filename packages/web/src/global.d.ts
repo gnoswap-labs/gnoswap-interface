@@ -1,11 +1,10 @@
 /// <reference types="@emotion/react/types/css-prop" />
 
-import { FontsType, PaletteType } from "@styles/ThemeTypes";
+import { PaletteType } from "@styles/ThemeTypes";
 import "@emotion/react";
 
 declare module "@emotion/react" {
   export interface Theme {
-    fonts: FontsType;
     colors: PaletteType;
   }
 }

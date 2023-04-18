@@ -1,9 +1,10 @@
+import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
-  ${theme.fonts.body10};
+  ${fonts.body10};
   width: 100%;
   color: ${theme.colors.gray30};
   background-color: ${theme.colors.gray60};

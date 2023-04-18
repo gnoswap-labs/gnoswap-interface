@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -17,13 +18,13 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "center", "center")}
     margin-left: 120px;
     strong {
-      ${theme.fonts.h1};
+      ${fonts.h1};
       font-size: 80px;
       line-height: 96px;
       color: ${theme.colors.gray10};
     }
     p {
-      ${theme.fonts.body3};
+      ${fonts.body3};
       color: ${theme.colors.gray30};
       margin: 4px 0px 48px;
     }

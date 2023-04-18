@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -36,7 +37,7 @@ export const Navigation = styled.nav`
   }
   li {
     ${mixins.flexbox("row", "center", "center")};
-    ${({ theme }) => theme.fonts.body9};
+    ${fonts.body9};
     color: ${({ theme }) => theme.colors.gray40};
     &.selected {
       color: ${({ theme }) => theme.colors.gray20};
