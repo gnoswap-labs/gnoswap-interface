@@ -7,8 +7,8 @@ export const wrapper = (theme: Theme) => css`
     flex-wrap: wrap;
 
     width: 1440px;
-    margin: 100px auto;
-    padding: 0 40px;
+    margin: 0 auto;
+    padding: 100px 0px 40px;
 
     .brand-container {
       width: 706px;
@@ -36,7 +36,7 @@ export const wrapper = (theme: Theme) => css`
 
     width: 1440px;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 40px 0px 100px;
 
     ${mixins.flexbox("row", "center", "space-between")};
   }
