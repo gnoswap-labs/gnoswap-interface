@@ -67,8 +67,8 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button disabled>
-          <IconSettings className="icon" />
+        <button className="setting-button">
+          <IconSettings className="setting-icon" />
         </button>
       </div>
       <div className="inputs">
@@ -104,20 +104,20 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
         </div>
         <div className="arrow">
           <div className="shape">
-            <IconSwapArrowDown className="icon" />
+            <IconSwapArrowDown className="shape-icon" />
           </div>
         </div>
       </div>
 
       <div className="footer">
         <Button
-          text="Skip now"
+          text="Swap now"
           style={{
             bgColor: "brand50",
             fullWidth: true,
             height: 57,
-            textColor: "colorWhite",
-            fontType: "body4",
+            textColor: "gray10",
+            fontType: "body7",
           }}
           onClick={onClickSwapNow}
         />

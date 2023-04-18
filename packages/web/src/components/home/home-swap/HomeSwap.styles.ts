@@ -3,8 +3,7 @@ import { css, Theme } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
 
 export const wrapper = (theme: Theme) => css`
-  padding: 24px;
-
+  padding: 23px;
   background-color: ${theme.colors.gray60};
   border: 1px solid ${theme.colors.gray50};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
@@ -20,30 +19,32 @@ export const wrapper = (theme: Theme) => css`
       color: ${theme.colors.gray10};
     }
 
-    .icon * {
+    .setting-button {
+      width: 24px;
+      height: 24px;
+    }
+    .setting-icon * {
       fill: ${theme.colors.gray40};
     }
   }
 
   .inputs {
-    ${mixins.flexbox("row", "center", "space-between")};
+    ${mixins.flexbox("column", "center", "space-between")};
     flex-wrap: wrap;
-
+    gap: 2px;
     width: 100%;
     height: 100%;
-
+    position: relative;
     .from {
       ${mixins.flexbox("row", "center", "space-between")};
       flex-wrap: wrap;
 
       width: 100%;
-      padding: 16px 24px;
+      padding: 15px 23px;
 
       background-color: ${theme.colors.colorBlack};
       border: 1px solid ${theme.colors.gray50};
       border-radius: 8px;
-
-      margin-bottom: 2px;
     }
 
     .to {
@@ -51,7 +52,7 @@ export const wrapper = (theme: Theme) => css`
       flex-wrap: wrap;
 
       width: 100%;
-      padding: 16px 24px;
+      padding: 15px 23px;
 
       background-color: ${theme.colors.colorBlack};
       border: 1px solid ${theme.colors.gray50};
@@ -76,41 +77,30 @@ export const wrapper = (theme: Theme) => css`
       color: ${theme.colors.colorWhite};
     }
 
-    .price-text {
-      ${fonts.body6};
-      color: ${theme.colors.gray30};
-    }
-
+    .price-text,
     .balence-text {
-      ${fonts.body6};
+      ${fonts.body12};
       color: ${theme.colors.gray30};
     }
 
     .arrow {
-      ${mixins.flexbox("row", "center", "space-between")};
-      justify-content: center;
-      flex-wrap: wrap;
-
+      ${mixins.flexbox("row", "center", "center")};
+      ${mixins.positionCenter()};
       width: 100%;
-      margin-top: -228px;
-
       .shape {
-        ${mixins.flexbox("row", "center", "space-between")};
-
+        ${mixins.flexbox("row", "center", "center")};
         width: 40px;
         height: 40px;
-
         background-color: ${theme.colors.colorBlack};
         border: 1px solid ${theme.colors.gray50};
-        border-radius: 99px;
+        border-radius: 50%;
 
-        .icon {
-          ${mixins.flexbox("row", "center", "space-between")};
-          margin: 7px;
-        }
-
-        .icon * {
-          fill: ${theme.colors.gray20};
+        .shape-icon {
+          width: 16px;
+          height: 16px;
+          * {
+            fill: ${theme.colors.gray20};
+          }
         }
       }
     }
