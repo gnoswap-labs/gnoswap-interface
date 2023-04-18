@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -17,7 +18,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .pool-info {
     ${mixins.flexbox("column", "flex-end", "center")};
-    ${theme.fonts.body5}
+    ${fonts.body5}
   }
   .token-pair {
     ${mixins.flexbox("row", "center", "space-between")};
@@ -26,7 +27,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .pool-content {
     ${mixins.flexbox("column", "center", "center")};
-    ${theme.fonts.body8};
+    ${fonts.body8};
     background-color: ${theme.colors.opacityDark07};
     border-radius: 8px;
     padding: 16px;
@@ -48,7 +49,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .label-text {
     color: ${theme.colors.gray40};
-    ${theme.fonts.body12};
+    ${fonts.body12};
     height: 18px;
   }
   .value-text {

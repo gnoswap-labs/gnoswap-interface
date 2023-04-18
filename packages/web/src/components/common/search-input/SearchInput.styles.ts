@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 import { css } from "@emotion/react";
+import { fonts } from "@constants/font.constant";
 export interface SearchInputStyleProps {
   fullWidth?: boolean;
   width?: CSSProperties["width"];
@@ -11,7 +12,7 @@ export interface SearchInputStyleProps {
 
 export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   ${mixins.flexbox("row", "center", "space-between")};
-  ${({ theme }) => theme.fonts.body9};
+  ${fonts.body9};
   width: ${({ width, fullWidth }) => {
     if (width) return typeof width === "number" ? width + "px" : width;
     if (fullWidth) return "100%";

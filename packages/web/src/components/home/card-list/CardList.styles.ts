@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 import { UP_DOWN_TYPE } from "./CardList";
@@ -9,7 +10,7 @@ export const CardListWrapper = styled.ul`
 
 export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
   ${mixins.flexbox("row", "center", "flex-start")};
-  ${({ theme }) => theme.fonts.body12};
+  ${fonts.body12};
   width: 100%;
   height: 40px;
   padding: 0px 24px;

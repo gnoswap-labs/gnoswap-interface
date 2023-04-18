@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -7,7 +8,7 @@ export const SwitchWrapper = styled.div`
 `;
 
 export const SwitchLabel = styled.label`
-  ${({ theme }) => theme.fonts.body12};
+  ${fonts.body12};
   color: ${({ theme }) => theme.colors.gray40};
 `;
 

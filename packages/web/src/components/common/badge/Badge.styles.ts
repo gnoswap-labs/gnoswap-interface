@@ -2,13 +2,14 @@ import styled from "@emotion/styled";
 import mixins from "@/styles/mixins";
 import { BADGE_TYPE } from "./Badge";
 import { css } from "@emotion/react";
+import { fonts } from "@constants/font.constant";
 interface BadgeStyle {
   type: BADGE_TYPE;
 }
 
 export const BadgeWrapper = styled.div<BadgeStyle>`
   ${mixins.flexbox("row", "center", "center", false)};
-  ${({ theme }) => theme.fonts.p3};
+  ${fonts.p3};
   height: 24px;
   border-radius: 4px;
   padding: 0px 6px;

@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -15,7 +16,7 @@ export const WalletConnectorMenuWrapper = styled.div`
 export const MenuHeader = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   .user-address {
-    ${({ theme }) => theme.fonts.p1};
+    ${fonts.p1};
     color: ${({ theme }) => theme.colors.gray10};
     margin: 0px auto 0px 8px;
   }
@@ -30,7 +31,7 @@ export const IconButton = styled.button`
 
 export const AmountInfoBox = styled.div`
   ${mixins.flexbox("row", "center", "center")};
-  ${({ theme }) => theme.fonts.body7};
+  ${fonts.body7};
   width: 100%;
   height: 57px;
   background-color: ${({ theme }) => theme.colors.opacityDark07};
@@ -41,7 +42,7 @@ export const AmountInfoBox = styled.div`
 
 export const ThemeSelector = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  ${({ theme }) => theme.fonts.p2};
+  ${fonts.p2};
   color: ${({ theme }) => theme.colors.gray30};
   width: 100%;
   height: 36px;

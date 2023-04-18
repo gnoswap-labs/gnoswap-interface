@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -7,7 +8,7 @@ export const AssetListHeaderWrapper = styled.div`
   margin-bottom: 24px;
 
   h2 {
-    ${({ theme }) => theme.fonts.h5};
+    ${fonts.h5};
     color: ${({ theme }) => theme.colors.gray10};
     margin-right: 36px;
   }

@@ -1,12 +1,13 @@
 import { CSSProperties } from "react";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-import { FontsKeyType, PaletteKeyType } from "@styles/ThemeTypes";
+import { PaletteKeyType } from "@styles/ThemeTypes";
 import { ButtonHierarchy } from "./Button";
+import { fonts, type FontsKey } from "@constants/font.constant";
 
 export interface ButtonStyleProps {
   hierarchy?: ButtonHierarchy;
-  fontType?: FontsKeyType;
+  fontType?: FontsKey;
   textColor?: PaletteKeyType;
   bgColor?: PaletteKeyType;
   fullWidth?: boolean;
@@ -52,6 +53,6 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
 `;
 
 export const StyledText = styled.span<ButtonStyleProps>`
-  ${({ theme, fontType }) => theme.fonts[fontType ?? "body9"]};
+  ${({ fontType }) => fonts[fontType ?? "body9"]};
   color: ${({ theme, textColor }) => theme.colors[textColor ?? "gray10"]};
 `;

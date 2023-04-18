@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
@@ -11,7 +12,7 @@ export const SelectTabWrapper = styled.div`
 
 export const SelectButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
-  ${({ theme }) => theme.fonts.body9};
+  ${fonts.body9};
   height: 41px;
   padding: 0px 24px;
   border-radius: 4px;

@@ -1,5 +1,6 @@
 import mixins from "@styles/mixins";
 import { css, Theme } from "@emotion/react";
+import { fonts } from "@constants/font.constant";
 
 export const wrapper = (theme: Theme) => css`
   padding: 24px;
@@ -15,7 +16,7 @@ export const wrapper = (theme: Theme) => css`
     padding-bottom: 16px;
 
     .title {
-      ${theme.fonts.h6};
+      ${fonts.h6};
       color: ${theme.colors.gray10};
     }
 
@@ -71,17 +72,17 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .amount-text {
-      ${theme.fonts.body1};
+      ${fonts.body1};
       color: ${theme.colors.colorWhite};
     }
 
     .price-text {
-      ${theme.fonts.body6};
+      ${fonts.body6};
       color: ${theme.colors.gray30};
     }
 
     .balence-text {
-      ${theme.fonts.body6};
+      ${fonts.body6};
       color: ${theme.colors.gray30};
     }
 

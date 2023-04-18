@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -10,7 +11,7 @@ export const wrapper = (theme: Theme) => css`
   padding: 24px 0px;
   gap: 24px;
   h2 {
-    ${theme.fonts.body9};
+    ${fonts.body9};
     color: ${theme.colors.colorWhite};
     padding: 0px 24px;
   }

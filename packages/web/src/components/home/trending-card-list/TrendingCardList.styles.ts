@@ -1,4 +1,5 @@
 import mixins from "@/styles/mixins";
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 
 export const wrapper = (theme: Theme) => css`
@@ -11,7 +12,7 @@ export const wrapper = (theme: Theme) => css`
   border-radius: 10px;
   padding: 16px 0px;
   h2 {
-    ${theme.fonts.body9};
+    ${fonts.body9};
     color: ${theme.colors.gray10};
     margin-bottom: 16px;
     padding-left: 24px;

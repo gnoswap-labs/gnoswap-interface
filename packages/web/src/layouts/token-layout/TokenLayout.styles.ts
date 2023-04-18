@@ -1,4 +1,5 @@
 import mixins from "@/styles/mixins";
+import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 
 export const wrapper = (theme: Theme) => css`
@@ -15,7 +16,7 @@ export const wrapper = (theme: Theme) => css`
     .title {
       border: 1px solid ${theme.colors.colorGreen};
 
-      ${theme.fonts.h3};
+      ${fonts.h3};
       color: ${theme.colors.gray10};
 
       width: 100%;

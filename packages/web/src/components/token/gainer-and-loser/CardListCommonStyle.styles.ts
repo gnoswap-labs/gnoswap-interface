@@ -1,9 +1,10 @@
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
 export const cardStyle = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "center")};
-  ${theme.fonts.body12};
+  ${fonts.body12};
   color: ${theme.colors.gray10};
   width: 100%;
   gap: 24px;
@@ -12,7 +13,7 @@ export const cardStyle = (theme: Theme) => css`
     border-bottom: 1px solid ${theme.colors.gray50};
   }
   .card-title {
-    ${theme.fonts.body9};
+    ${fonts.body9};
     color: ${theme.colors.colorWhite};
     width: 100%;
     padding: 0px 24px;
