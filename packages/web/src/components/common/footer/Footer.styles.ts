@@ -28,20 +28,22 @@ export const LeftSection = styled.div`
   .footer-content {
     ${fonts.p2}
     color: ${({ theme }) => theme.colors.gray40};
-    margin: 25px 0px 26px;
+    margin: 24px 0px;
     white-space: pre-wrap;
   }
 `;
 
 export const SocialNav = styled.div`
-  ${mixins.flexbox("row", "center", "space-between")};
+  ${mixins.flexbox("row", "center", "flex-start")};
   width: 100%;
+  gap: 24px;
 `;
 
 export const AnchorStyle = styled.a`
   ${fonts.body12}
   color: ${({ theme }) => theme.colors.gray40};
-  margin-top: 16px;
+  width: 24px;
+  height: 24px;
   svg * {
     fill: ${({ theme }) => theme.colors.gray40};
   }
