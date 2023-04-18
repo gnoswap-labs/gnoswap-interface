@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -40,7 +41,7 @@ export const wrapper = (theme: Theme) => css`
   }
 
   span {
-    ${theme.fonts.body12};
+    ${fonts.body12};
     &.amount {
       margin-left: auto;
     }
@@ -52,7 +53,7 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .claim-content {
-    ${theme.fonts.p4};
+    ${fonts.p4};
     color: ${theme.colors.brand40};
     border-top: 1px solid ${theme.colors.brand70};
     padding-top: 8px;
