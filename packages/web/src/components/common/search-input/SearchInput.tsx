@@ -3,7 +3,7 @@ import {
   inputStyle,
   SearchInputStyleProps,
 } from "./SearchInput.styles";
-import IconSearch from "../icons/IconSearch";
+import IconSearch from "@components/common/icons/IconSearch";
 import { cx } from "@emotion/css";
 interface SearchInputProps extends SearchInputStyleProps {
   className?: string;
