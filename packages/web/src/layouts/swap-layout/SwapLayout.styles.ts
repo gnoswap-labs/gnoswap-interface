@@ -9,6 +9,7 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "flex-start", "space-between")};
     flex-wrap: wrap;
 
+    width: 100%;
     max-width: 1440px;
     margin: 100px auto;
     padding: 0 40px;

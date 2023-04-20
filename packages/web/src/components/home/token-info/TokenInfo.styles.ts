@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   height: 68px;
-  min-width: 100%;
+  width: 100%;
   ${fonts.body11};
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.colors.gray50};
@@ -18,6 +18,7 @@ export const HoverSection = styled.div`
   transition: background-color 0.3s ease;
   cursor: pointer;
   height: 100%;
+  overflow: hidden;
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray60};
   }
