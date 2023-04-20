@@ -12,6 +12,7 @@ export const wrapper = (theme: Theme) => css`
 
     .container {
       width: 100%;
+      width: 100%;
       max-width: 1440px;
       padding: 0 40px;
     }

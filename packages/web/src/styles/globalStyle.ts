@@ -82,6 +82,15 @@ const globalStyle = (theme: Theme) => css`
     outline: none;
     list-style: none;
   }
+
+  ::-webkit-scrollbar {
+    width: 0px;
+    display: none;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 `;
 
 export default globalStyle;

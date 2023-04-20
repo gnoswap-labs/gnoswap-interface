@@ -6,9 +6,10 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     flex-wrap: wrap;
 
-    width: 1440px;
-    margin: 0 auto;
-    padding: 100px 0px 40px;
+    width: 100%;
+    max-width: 1440px;
+    margin: 100px auto;
+    padding: 0 40px;
 
     .brand-container {
       width: 706px;
@@ -33,8 +34,8 @@ export const wrapper = (theme: Theme) => css`
   .tokens-section {
     ${mixins.flexbox("row", "center", "space-between")};
     flex-wrap: wrap;
-
-    width: 1440px;
+    width: 100%;
+    max-width: 1440px;
     margin: 0 auto;
     padding: 40px 0px 100px;
 

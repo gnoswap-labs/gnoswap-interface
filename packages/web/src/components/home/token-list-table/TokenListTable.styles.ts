@@ -12,8 +12,13 @@ export const TableWrapper = styled.div`
   color: ${({ theme }) => theme.colors.gray10};
   ${fonts.body11};
   overflow-x: auto;
+  .scroll-wrapper {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    height: auto;
+    width: auto;
+  }
   .token-list-head {
-    min-width: 100%;
+    width: 100%;
     ${mixins.flexbox("row", "center", "flex-start")};
     height: 50px;
     ${fonts.body12};
