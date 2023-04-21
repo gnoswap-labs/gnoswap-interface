@@ -7,13 +7,13 @@ export interface Steps {
   path?: string;
 }
 
-const steps: Steps[] = [
+const stepsDummy: Steps[] = [
   {
     title: "Earn",
     path: "/earn",
   },
   {
-    title: "GNOS/GNOT (0.3%)",
+    title: "Add Liquidity",
   },
 ];
 
