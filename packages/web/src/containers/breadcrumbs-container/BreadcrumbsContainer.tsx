@@ -17,13 +17,27 @@ const steps: Steps[] = [
   },
 ];
 
+const removePoolSteps = [
+  {
+    title: "Earn",
+    path: "/earn",
+  },
+  {
+    title: "GNOS/GNOT (0.3%)",
+    path: "",
+  },
+  {
+    title: "Remove Liquidity",
+  },
+];
+
 const BreadcrumbsContainer: React.FC = () => {
   const router = useRouter();
 
   const onClickPath = (path: string) => {
     router.push(path);
   };
-  return <Breadcrumbs steps={steps} onClickPath={onClickPath} />;
+  return <Breadcrumbs steps={removePoolSteps} onClickPath={onClickPath} />;
 };
 
 export default BreadcrumbsContainer;
