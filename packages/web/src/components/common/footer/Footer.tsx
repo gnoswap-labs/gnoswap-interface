@@ -17,18 +17,24 @@ type AnchorProps = {
   title?: string;
   icon?: React.ReactNode;
   newTab?: boolean;
+  className?: string;
 };
 
-function Anchor({ path, title, icon, newTab = false }: AnchorProps) {
+function Anchor({ path, title, icon, newTab = false, className }: AnchorProps) {
   return (
     <>
       {newTab ? (
-        <AnchorStyle href={path} target="_blank" rel="noreferrer">
+        <AnchorStyle
+          href={path}
+          target="_blank"
+          rel="noreferrer"
+          className={className}
+        >
           {title ?? icon}
         </AnchorStyle>
       ) : (
         <Link href={path} passHref legacyBehavior>
-          <AnchorStyle>{title ?? icon}</AnchorStyle>
+          <AnchorStyle className={className}>{title ?? icon}</AnchorStyle>
         </Link>
       )}
     </>
@@ -63,6 +69,7 @@ const Footer: React.FC = () => {
                   title={menu.title}
                   newTab={menu.newTab}
                   key={menu.title}
+                  className="list-menu"
                 />
               ))}
             </MenuSection>
