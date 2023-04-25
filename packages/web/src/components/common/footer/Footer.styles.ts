@@ -6,7 +6,7 @@ export const FooterWrapper = styled.footer`
   width: 100%;
   height: 308px;
   background-color: ${({ theme }) => theme.colors.colorBlack};
-  margin-top: auto;
+  /* margin-top: auto; */
   border-top: 1px solid ${({ theme }) => theme.colors.gray50};
 `;
 
@@ -43,8 +43,13 @@ export const SocialNav = styled.div`
 export const AnchorStyle = styled.a`
   ${fonts.body12}
   color: ${({ theme }) => theme.colors.gray40};
-  width: 24px;
-  height: 24px;
+  &:not(.list-menu) {
+    width: 24px;
+    height: 24px;
+  }
+  &.list-menu {
+    margin-top: 16px;
+  }
   svg * {
     fill: ${({ theme }) => theme.colors.gray40};
   }
