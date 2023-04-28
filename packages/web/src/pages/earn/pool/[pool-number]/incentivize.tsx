@@ -1,13 +1,17 @@
-import { useRouter } from "next/router";
+import Footer from "@components/common/footer/Footer";
+import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
+import PoolIncentivizeContainer from "@containers/pool-incentivize-container/PoolIncentivizeContainer";
+import PoolIncentivizeLayout from "@layouts/pool-incentivize-layout/PoolIncentivizeLayout";
+import React from "react";
 
 export default function PoolIncentivize() {
-  const router = useRouter();
-  const poolNumber = router.query["pool-number"];
-
   return (
-    <div>
-      <h1>Pool Incentivize</h1>
-      <div>pool-number: {poolNumber}</div>
-    </div>
+    <PoolIncentivizeLayout
+      header={<HeaderContainer />}
+      breadcrumbs={<BreadcrumbsContainer />}
+      poolIncentivize={<PoolIncentivizeContainer />}
+      footer={<Footer />}
+    />
   );
 }
