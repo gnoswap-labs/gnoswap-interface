@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
+      - run: yarn
       - run: yarn workspace @gnoswap-labs/gno-client test
       - run: yarn workspace @gnoswap-labs/web test:ci
 
@@ -20,6 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
+      - run: yarn
       - run: yarn workspace @gnoswap-labs/gno-client build
       - run: yarn workspace @gnoswap-labs/web build
 

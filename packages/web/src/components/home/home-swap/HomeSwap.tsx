@@ -67,7 +67,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button className="setting-button">
+        <button className="setting-button" disabled>
           <IconSettings className="setting-icon" />
         </button>
       </div>
