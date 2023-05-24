@@ -36,12 +36,14 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   &.negative {
+    padding-left: 0;
     color: ${({ theme }) => theme.colors.colorGreen};
     svg * {
       fill: ${({ theme }) => theme.colors.colorGreen};
     }
   }
   &.positive {
+    padding-left: 0;
     color: ${({ theme }) => theme.colors.colorRed};
     svg * {
       fill: ${({ theme }) => theme.colors.colorRed};
