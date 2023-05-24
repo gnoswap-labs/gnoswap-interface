@@ -5,12 +5,11 @@ import mixins from "@styles/mixins";
 export const wrapper = (hasToken: boolean) => (theme: Theme) =>
   css`
     ${mixins.flexbox("row", "center", "space-between")}
-    height: 40px;
+    height: 100%;
     width: 100%;
     background-color: ${theme.colors.gray50};
     border-radius: 36px;
     padding: ${hasToken ? "0px 6px" : "0px 6px 0px 12px"};
-    cursor: pointer;
     span {
       ${fonts.body9};
       color: ${theme.colors.colorWhite};

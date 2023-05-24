@@ -2,20 +2,24 @@ import React, { useCallback, useState } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
 import Button from "@components/common/button/Button";
+import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-
 interface HomeSwapProps {
   from: {
     token: string;
+    symbol: string;
     amount: string;
     price: string;
     balence: string;
+    tokenLogo: string;
   };
   to: {
     token: string;
+    symbol: string;
     amount: string;
     price: string;
     balence: string;
+    tokenLogo: string;
   };
   swapNow: () => void;
 }
@@ -80,7 +84,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
               onChange={onChangeFromAmount}
               placeholder={fromAmount === "" ? "0" : ""}
             />
-            <span className="token">{from.token}</span>
+            <div className="token">
+              <SelectPairButton token={from} />
+            </div>
           </div>
           <div className="info">
             <span className="price-text">{from.price}</span>
@@ -95,7 +101,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
               onChange={onChangeToAmount}
               placeholder={toAmount === "" ? "0" : ""}
             />
-            <span className="token">{to.token}</span>
+            <div className="token">
+              <SelectPairButton token={to} />
+            </div>
           </div>
           <div className="info">
             <span className="price-text">{to.price}</span>
