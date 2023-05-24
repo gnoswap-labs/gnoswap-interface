@@ -9,7 +9,7 @@ export const TableWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.gray60};
   border-radius: 8px;
   margin: 24px 0px;
-  color: ${({ theme }) => theme.colors.gray10};
+  color: ${({ theme }) => theme.colors.gray40};
   ${fonts.body11};
   overflow-x: auto;
   .pool-list-head {
