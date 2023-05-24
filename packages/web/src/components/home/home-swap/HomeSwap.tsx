@@ -123,7 +123,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
           style={{
             bgColor: "brand50",
             fullWidth: true,
-            height: 57,
+            height: 50,
             textColor: "gray10",
             fontType: "body7",
           }}
