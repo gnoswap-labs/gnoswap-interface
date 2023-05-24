@@ -1,6 +1,6 @@
 import {
   SearchInputWrapper,
-  inputStyle,
+  InputStyle,
   SearchInputStyleProps,
 } from "./SearchInput.styles";
 import IconSearch from "@components/common/icons/IconSearch";
@@ -28,12 +28,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       height={height}
       className={cx(className, { "empty-status": value === "" })}
     >
-      <input
-        css={inputStyle}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-      />
+      <InputStyle placeholder={placeholder} value={value} onChange={onChange} />
       <IconSearch className="search-icon" />
     </SearchInputWrapper>
   );
