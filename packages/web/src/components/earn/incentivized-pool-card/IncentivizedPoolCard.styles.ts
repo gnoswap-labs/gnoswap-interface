@@ -8,7 +8,7 @@ export const wrapper = (theme: Theme) => css`
   border: 1px solid ${theme.colors.gray60};
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  padding: 16px;
+  padding: 15px;
   transition: all 0.3s ease;
   color: ${theme.colors.gray10};
   cursor: pointer;
@@ -39,7 +39,8 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
   }
   .content-item {
-    ${mixins.flexbox("column", "flex-start", "center")}
+    ${mixins.flexbox("column", "flex-start", "center")};
+    gap: 4px;
     &:nth-child(even) {
       align-items: flex-end;
     }
