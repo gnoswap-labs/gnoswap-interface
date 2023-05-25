@@ -32,7 +32,7 @@ export interface Token {
 export const TABLE_HEAD = {
   INDEX: "#",
   NAME: "Name",
-  PRICE: "LiquidiPricety",
+  PRICE: "Price",
   PRICE_OF_1D: "1d",
   PRICE_OF_7D: "7d",
   PRICE_OF_30D: "30d",
