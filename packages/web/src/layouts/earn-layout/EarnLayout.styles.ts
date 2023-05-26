@@ -23,6 +23,6 @@ export const wrapper = (theme: Theme) => css`
     margin-top: 36px;
   }
   .incentivized-section {
-    margin: 36px 0px 100px;
+    margin: 36px 0px 200px;
   }
 `;
