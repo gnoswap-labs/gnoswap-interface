@@ -14,29 +14,29 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .subtitle {
-    ${fonts.h4};
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 34px;
     color: ${theme.colors.gray10};
 
-    margin-top: 8px;
+    margin: 20px 0px 34px;
   }
 
   .sns {
     ${mixins.flexbox("row", "center", "flex-start")}
     flex-wrap: nowrap;
     gap: 24px;
-    height: 36px;
-    margin-top: 54px;
     button {
-      width: 36px;
-      height: 36px;
+      width: 28px;
+      height: 28px;
       &:hover {
         .icon * {
           fill: ${theme.colors.gray10};
         }
       }
       .icon {
-        width: 36px;
-        height: 36px;
+        width: 28px;
+        height: 28px;
         * {
           transition: all 0.3s ease;
           fill: ${theme.colors.gray40};
@@ -50,6 +50,6 @@ export const wrapper = (theme: Theme) => css`
     color: ${theme.colors.gray40};
     line-height: 1.4;
 
-    margin-top: 16px;
+    margin-top: 10px;
   }
 `;
