@@ -1,8 +1,6 @@
-import { PaletteKeyType } from "@/styles/ThemeTypes";
 import { CSSProperties } from "react";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-import { css } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
 export interface SearchInputStyleProps {
   fullWidth?: boolean;
@@ -42,12 +40,15 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   }
 
   .search-icon * {
-    fill: ${({ theme }) => theme.colors.gray01};
+    fill: ${({ theme }) => theme.colors.gray40};
   }
 `;
 
-export const inputStyle = css`
+export const InputStyle = styled.input`
   width: 100%;
   height: 100%;
   margin-right: 16px;
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.gray40};
+  }
 `;
