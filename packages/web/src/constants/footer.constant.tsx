@@ -6,7 +6,7 @@ import IconTwitter from "@/components/common/icons/social/IconTwitter";
 
 export const FOOTER_LEFT_NAV = {
   content:
-    "Gnoswap is an open-source &\naudited AMM Dex that provides\na simplified concentrated-LP\nexperience for increased capital\nefficiency.",
+    "Join Gnoswap - the fastest growing ecosystem aspiring to build the deepest source of liquidity on Gnoland.",
   menu: [
     {
       title: "github",
