@@ -12,9 +12,16 @@ export const wrapper = (theme: Theme) => css`
   border-radius: 10px;
   padding: 16px 0px;
   h2 {
+    ${mixins.flexbox("row", "center", "center")}
     ${fonts.body9};
+    gap: 10px;
     color: ${theme.colors.gray10};
     margin-bottom: 16px;
-    padding-left: 24px;
+    padding-left: 20px;
+  }
+
+  .icon-diamond {
+    width: 20px;
+    height: 20px;
   }
 `;
