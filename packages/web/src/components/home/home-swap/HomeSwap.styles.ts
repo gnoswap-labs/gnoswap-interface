@@ -84,6 +84,7 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .amount-text {
+      width: 100%;
       ${fonts.body1};
       color: ${theme.colors.colorWhite};
     }
