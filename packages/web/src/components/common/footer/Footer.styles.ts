@@ -6,16 +6,15 @@ export const FooterWrapper = styled.footer`
   width: 100%;
   height: 308px;
   background-color: ${({ theme }) => theme.colors.colorBlack};
-  /* margin-top: auto; */
   border-top: 1px solid ${({ theme }) => theme.colors.gray50};
 `;
 
 export const FooterInner = styled.div`
-  ${mixins.flexbox("row", "center", "flex-start")}
+  ${mixins.flexbox("row", "flex-start", "flex-start")}
   width: 100%;
   max-width: 1440px;
   height: 100%;
-  padding: 0 40px;
+  padding: 60px 40px 0px;
   margin: 0 auto;
 `;
 
