@@ -16,6 +16,7 @@ const globalStyle = (theme: Theme) => css`
 
   body {
     background-color: ${theme.colors.colorBlack};
+    padding-top: 70px;
   }
 
   #__next {
