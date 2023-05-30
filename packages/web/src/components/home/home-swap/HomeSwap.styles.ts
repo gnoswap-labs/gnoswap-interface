@@ -66,6 +66,17 @@ export const wrapper = (theme: Theme) => css`
       margin-bottom: 8px;
     }
 
+    .token {
+      width: 112px;
+      height: 30px;
+      cursor: default;
+      span {
+        font-size: 15px;
+        line-height: 19px;
+        margin: 0px 8px;
+      }
+    }
+
     .info {
       ${mixins.flexbox("row", "center", "space-between")};
 
