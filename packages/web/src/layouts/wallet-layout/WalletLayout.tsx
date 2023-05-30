@@ -19,7 +19,7 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({
   <main css={wrapper}>
     {header}
 
-    <section className="summary-section">
+    <section className="wallet-summary-section">
       <div className="container title-container">
         <h3 className="title">Wallet</h3>
       </div>
@@ -28,7 +28,7 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({
 
     <div className="background-wrapper">
       <div className="background"></div>
-      <section className="detail-section">
+      <section className="wallet-detail-section">
         <div className="container assets-container">{assets}</div>
         <div className="container positions-container">{positions}</div>
       </section>

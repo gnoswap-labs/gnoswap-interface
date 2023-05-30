@@ -6,19 +6,20 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   background-color: ${theme.colors.colorBlack};
 
-  section {
+  .wallet-detail-section,
+  .wallet-summary-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     width: 100%;
-
-    .container {
-      width: 100%;
-      width: 100%;
-      max-width: 1440px;
-      padding: 0 40px;
-    }
   }
 
-  .summary-section {
+  .container {
+    width: 100%;
+    width: 100%;
+    max-width: 1440px;
+    padding: 0 40px;
+  }
+
+  .wallet-summary-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     margin: 100px auto;
 
@@ -35,15 +36,9 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 
-  .detail-section {
+  .wallet-detail-section {
     position: relative;
     margin: 100px auto;
-
-    .assets-container {
-    }
-
-    .positions-container {
-    }
   }
 
   .background-wrapper {
