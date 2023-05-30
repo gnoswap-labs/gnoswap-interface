@@ -7,6 +7,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
   height: 100%;
+  color: ${({ theme }) => theme.colors.colorWhite};
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;

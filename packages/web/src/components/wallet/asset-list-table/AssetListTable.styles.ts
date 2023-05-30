@@ -8,7 +8,7 @@ export const AssetListTableWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.gray60};
   border-radius: 8px;
   margin-bottom: 24px;
-  color: ${({ theme }) => theme.colors.gray10};
+  color: ${({ theme }) => theme.colors.gray40};
   ${fonts.body11};
   overflow-x: auto;
   .asset-list-head {
