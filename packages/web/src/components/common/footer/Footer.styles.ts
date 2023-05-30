@@ -21,7 +21,7 @@ export const FooterInner = styled.div`
 
 export const LeftSection = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")}
-  width: 230px;
+  width: 254px;
   .footer-logo {
     width: 32px;
     height: 35px;
@@ -31,6 +31,8 @@ export const LeftSection = styled.div`
     color: ${({ theme }) => theme.colors.gray40};
     margin: 24px 0px;
     white-space: pre-wrap;
+    width: 100%;
+    height: 48px;
   }
 `;
 
