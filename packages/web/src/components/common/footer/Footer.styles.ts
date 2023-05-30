@@ -45,6 +45,10 @@ export const SocialNav = styled.div`
 export const AnchorStyle = styled.a`
   ${fonts.body12}
   color: ${({ theme }) => theme.colors.gray40};
+  &,
+  svg * {
+    transition: all 0.3s ease;
+  }
   &:not(.list-menu) {
     width: 24px;
     height: 24px;
@@ -53,10 +57,10 @@ export const AnchorStyle = styled.a`
     margin-top: 16px;
   }
   svg * {
-    transition: fill 0.3s ease;
     fill: ${({ theme }) => theme.colors.gray40};
   }
   :hover {
+    color: ${({ theme }) => theme.colors.gray20};
     svg * {
       fill: ${({ theme }) => theme.colors.gray10};
     }
