@@ -29,6 +29,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
   height: 100%;
+  color: ${({ theme }) => theme.colors.colorWhite};
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
@@ -70,7 +71,8 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-symbol,
-  .fee-rate {
+  .fee-rate,
+  .token-index {
     ${fonts.body12};
     color: ${({ theme }) => theme.colors.gray40};
   }
