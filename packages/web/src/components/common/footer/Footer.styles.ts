@@ -51,7 +51,13 @@ export const AnchorStyle = styled.a`
     margin-top: 16px;
   }
   svg * {
+    transition: fill 0.3s ease;
     fill: ${({ theme }) => theme.colors.gray40};
+  }
+  :hover {
+    svg * {
+      fill: ${({ theme }) => theme.colors.gray10};
+    }
   }
 `;
 
