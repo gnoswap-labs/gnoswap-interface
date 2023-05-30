@@ -10,6 +10,7 @@ export const SwitchWrapper = styled.div`
 export const SwitchLabel = styled.label`
   ${fonts.body12};
   color: ${({ theme }) => theme.colors.gray40};
+  pointer-events: none;
 `;
 
 export const SwitchInput = styled.input`
