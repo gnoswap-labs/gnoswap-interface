@@ -29,7 +29,7 @@ $ yarn set version berry
 
 ## Contributing & Support
 If you would like to contribute to the Gnoswap Interface or need support, please consider the following options:
-- Read our contributing guidelines: The [CONTRIBUTING.md](CONTRIBUTING) file provides detailed information on how to contribute to the project, including submitting pull requests, reporting issues, and suggesting improvements.
+- Read our contributing guidelines: The [CONTRIBUTING.md](https://github.com/gnoswap-labs/gnoswap-interface/blob/develop/CONTRIBUTING.md) file provides detailed information on how to contribute to the project, including submitting pull requests, reporting issues, and suggesting improvements.
 - Open an issue: If you encounter a bug, have a feature request, or want to suggest improvements, feel free to open an [issue](https://github.com/gnoswap-labs/gnoswap-interface/issues) in this repository.
 //TODO: Add the community channel, Blog, and Twitter link.
 
