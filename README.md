@@ -1,7 +1,7 @@
 # Gnoswap Interface
 Welcome to the open source interface for Gnoswap, the first decentralized exchange (DEX) powered by Gnoland, designed to simplify concentrated liquidity experience and increase capital efficiency for traders.
 
-_Note: Gnoswap is in active development and not yet in production, and we welcome your contributions! Please check our [contribution guidelines](#contributing) and the [latest release](https://github.com/gnoswap-labs/gnoswap-interface/releases) to see the current development status._
+_Note: Gnoswap is in active development and not yet in production, and we welcome your contributions! Please check our [contribution guidelines](https://github.com/gnoswap-labs/gnoswap-interface#contributing--support) and the [latest release](https://github.com/gnoswap-labs/gnoswap-interface/releases) to see the current development status._
 
 ## Project Overview
 This repository hosts the codebase for the Gnoswap interface, which enables users to interact with Gnoswap. The interface is built using TypeScript and is designed to be user-friendly, secure, and accessible, despite having complex mechanisms such as concentrated liquidity and staking as part of its core service.
