@@ -19,7 +19,7 @@ export const wrapper = (theme: Theme) => css`
     line-height: 34px;
     color: ${theme.colors.gray10};
 
-    margin: 20px 0px 34px;
+    margin: 20px 0px 54px;
   }
 
   .sns {
@@ -48,8 +48,8 @@ export const wrapper = (theme: Theme) => css`
   .description {
     ${fonts.body8};
     color: ${theme.colors.gray40};
-    line-height: 1.4;
+    line-height: 25px;
 
-    margin-top: 10px;
+    margin-top: 20px;
   }
 `;
