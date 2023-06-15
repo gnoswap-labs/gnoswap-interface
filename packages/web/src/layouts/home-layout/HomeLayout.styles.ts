@@ -4,7 +4,7 @@ import { css, Theme } from "@emotion/react";
 export const wrapper = (theme: Theme) => css`
   .hero-section,
   .tokens-section {
-    ${mixins.flexbox("row", "center", "space-between")};
+    ${mixins.flexbox("row", "flex-start", "space-between")};
     flex-wrap: wrap;
     width: 100%;
     max-width: 1440px;
