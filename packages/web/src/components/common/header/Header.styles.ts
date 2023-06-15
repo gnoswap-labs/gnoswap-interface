@@ -39,10 +39,12 @@ export const Navigation = styled.nav`
     gap: 48px;
   }
   li {
+    transition: color 0.3s ease;
     ${mixins.flexbox("row", "center", "center")};
     ${fonts.body9};
     color: ${({ theme }) => theme.colors.gray40};
-    &.selected {
+    &.selected,
+    &:hover {
       color: ${({ theme }) => theme.colors.gray20};
     }
   }
