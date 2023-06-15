@@ -5,7 +5,7 @@ import { fonts } from "@constants/font.constant";
 export const WalletBalanceDetailInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "space-between")};
   padding: 24px 36px;
-
+  width: 340px;
   & + & {
     border-left: 1px solid ${({ theme }) => theme.colors.gray50};
   }
