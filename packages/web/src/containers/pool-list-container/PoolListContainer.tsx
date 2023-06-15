@@ -198,7 +198,7 @@ const PoolListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={pools?.length ?? 0}
+      totalPage={100}
       movePage={movePage}
     />
   );
