@@ -167,7 +167,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={10}
+      totalPage={100}
       movePage={movePage}
     />
   );

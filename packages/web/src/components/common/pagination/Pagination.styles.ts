@@ -17,19 +17,18 @@ export const Button = styled.button<{
 }>`
   ${fonts.body11};
   ${mixins.flexbox("row", "center", "center")};
-  color: ${({ theme, selected }) =>
-    selected ? theme.colors.colorWhite : theme.colors.gray40};
-  background-color: ${({ theme, selected }) =>
-    selected ? theme.colors.gray50 : theme.colors.gray60};
-  border: 1px solid
-    ${({ theme, selected }) =>
-      selected ? theme.colors.gray40 : theme.colors.gray50};
+  color: ${({ theme }) => theme.colors.gray40};
+  background-color: ${({ theme }) => theme.colors.gray60};
+  border: 1px solid ${({ theme }) => theme.colors.gray50};
   border-radius: 8px;
   width: 36px;
   height: 36px;
   transition: all 0.3s ease;
+  &.selected,
   &:not(:disabled):hover {
-    transition: all 0.3s ease;
+    color: ${({ theme }) => theme.colors.colorWhite};
+    background-color: ${({ theme }) => theme.colors.gray50};
+    border: 1px solid ${({ theme }) => theme.colors.gray40};
   }
 
   & .icon-arrow-pagination {
