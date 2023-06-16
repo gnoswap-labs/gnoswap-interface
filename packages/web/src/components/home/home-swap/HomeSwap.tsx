@@ -85,7 +85,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
               placeholder={fromAmount === "" ? "0" : ""}
             />
             <div className="token">
-              <SelectPairButton token={from} />
+              <SelectPairButton disabled token={from} />
             </div>
           </div>
           <div className="info">
@@ -102,7 +102,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
               placeholder={toAmount === "" ? "0" : ""}
             />
             <div className="token">
-              <SelectPairButton token={to} />
+              <SelectPairButton disabled token={to} />
             </div>
           </div>
           <div className="info">
