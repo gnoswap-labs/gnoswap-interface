@@ -19,11 +19,17 @@ const EarnLayout: React.FC<WalletLayoutProps> = ({
   <div css={wrapper}>
     {header}
     <main className="earn-content">
-      <h3 className="earn-title">Earn</h3>
-      <section className="position-section">{positions}</section>
-      <section className="incentivized-section">{incentivizedPools}</section>
-      <section className="pools-section">{poolList}</section>
+      <div className="earn-wrap">
+        <h3 className="earn-title">Earn</h3>
+        <section className="position-section">{positions}</section>
+        <section className="incentivized-section">{incentivizedPools}</section>
+      </div>
+      <div className="pools-wrap">
+        <section className="pools-section">{poolList}</section>
+        <div className="gradient-bg" />
+      </div>
     </main>
+
     {footer}
   </div>
 );
