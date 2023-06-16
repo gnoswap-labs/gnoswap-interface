@@ -4,11 +4,12 @@ import { wrapper } from "./SelectPairButton.styles";
 
 interface SelectPairButtonProps {
   token?: any;
+  disabled?: boolean;
 }
 
-const SelectPairButton: React.FC<SelectPairButtonProps> = ({ token }) => {
+const SelectPairButton: React.FC<SelectPairButtonProps> = ({ token, disabled }) => {
   return (
-    <div css={wrapper(Boolean(token))}>
+    <div css={wrapper(Boolean(token), disabled)}>
       {token ? (
         <>
           <img src={token.tokenLogo} alt="token logo" className="token-logo" />
