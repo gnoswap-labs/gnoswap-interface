@@ -92,7 +92,6 @@ export const wrapper = (theme: Theme) => css`
       font-size: 15px;
       font-weight: 500;
       line-height: 19px;
-      border: 1px solid ${theme.colors.colorGreen};
       border-radius: 36px;
       color: ${theme.colors.colorWhite};
     }
