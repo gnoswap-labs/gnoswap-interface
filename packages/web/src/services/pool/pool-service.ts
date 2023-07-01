@@ -128,7 +128,7 @@ export class PoolService {
 			return (token0Amount > token1Amount ? 1 : -1) * orderRate;
 		}
 		if (sortType === "VOLUME") {
-			return (pool0.volumn24h > pool1.volumn24h ? 1 : -1) * orderRate;
+			return (pool0.volume24h > pool1.volume24h ? 1 : -1) * orderRate;
 		}
 		if (sortType === "FEE") {
 			return (pool0.feeRate > pool1.feeRate ? 1 : -1) * orderRate;

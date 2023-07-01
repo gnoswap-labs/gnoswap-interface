@@ -1,3 +1,3 @@
-export interface SwapFeeReponse {
+export interface SwapFeeResponse {
 	fee: number;
 }

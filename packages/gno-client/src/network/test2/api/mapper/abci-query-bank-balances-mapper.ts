@@ -1,7 +1,7 @@
-import { GnoClientResnpose } from '../../../../api';
+import { GnoClientResponse } from '../../../../api';
 
 export class AbciQueryBankBalancesMapper {
-  public static toBalances = (balances: string): GnoClientResnpose.Balances => {
+  public static toBalances = (balances: string): GnoClientResponse.Balances => {
     const balancesValue = balances
       .trim()
       .replace('"', '')

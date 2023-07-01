@@ -4,7 +4,7 @@ import { Test2Response } from '.';
 export interface Test2Api {
   getHealth: () => Promise<boolean>;
 
-  getNetwrokInfo: () => Promise<Test2Response.Status>;
+  getNetworkInfo: () => Promise<Test2Response.Status>;
 
   getGenesis: () => Promise<Test2Response.Genesis>;
 

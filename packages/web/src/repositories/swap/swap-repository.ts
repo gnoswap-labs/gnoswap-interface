@@ -2,7 +2,7 @@ import { SwapRequest } from "./request";
 import { SwapInfoRequest } from "./request/swap-info-request";
 import {
 	SwapExpectedResultResponse,
-	SwapFeeReponse,
+	SwapFeeResponse,
 	SwapRateResponse,
 	SwapResponse,
 } from "./response";
@@ -10,7 +10,7 @@ import {
 export interface SwapRepository {
 	getSwapRate: (request: SwapInfoRequest) => Promise<SwapRateResponse>;
 
-	getSwapFee: () => Promise<SwapFeeReponse>;
+	getSwapFee: () => Promise<SwapFeeResponse>;
 
 	getExpectedSwapResult: (
 		request: SwapInfoRequest,

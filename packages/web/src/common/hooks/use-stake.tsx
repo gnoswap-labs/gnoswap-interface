@@ -32,7 +32,7 @@ export const useStake = (poolId: string) => {
       );
   }, [address, poolId, liquidityService]);
 
-  const getSummaryLiquiditiyTokens = useCallback((liquidityIds: Array<string>) => {
+  const getSummaryLiquidityTokens = useCallback((liquidityIds: Array<string>) => {
     if (!address) {
       return;
     }
@@ -51,7 +51,7 @@ export const useStake = (poolId: string) => {
     availStakeLiquidities,
     updatePeriodInfo,
     updateAvailStakeLiquidities,
-    getSummaryLiquiditiyTokens,
+    getSummaryLiquidityTokens,
     stake,
   };
 };

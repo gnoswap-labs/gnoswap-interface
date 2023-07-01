@@ -1,6 +1,6 @@
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import {
-  RandgeDot,
+  RangeDot,
   RangeBadgeText,
   RangeBadgeWrapper,
 } from "./RangeBadge.styles";
@@ -11,7 +11,7 @@ export interface RangeBadgeProps {
 
 const RangeBadge: React.FC<RangeBadgeProps> = ({ status }) => (
   <RangeBadgeWrapper>
-    <RandgeDot status={status} />
+    <RangeDot status={status} />
     <RangeBadgeText status={status}>
       {status === RANGE_STATUS_OPTION.IN ? "In range" : "Out of range"}
     </RangeBadgeText>

@@ -1,7 +1,7 @@
 import { AxiosAdapter } from 'axios';
 import { Test3Mapper, Test3Response } from './api';
 import { Test3ApiFetcher } from './api/test3-api-fetcher';
-import { GnoClientApi, GnoClientResnpose } from './../../api';
+import { GnoClientApi, GnoClientResponse } from './../../api';
 import { NetworkConfig } from './../network-config';
 
 export class NetworkTest3 implements GnoClientApi {
@@ -15,8 +15,8 @@ export class NetworkTest3 implements GnoClientApi {
     return this.fetcher.getHealth();
   };
 
-  public getNetwrokInfo = async () => {
-    const networkInfoOfTest3 = await this.fetcher.getNetwrokInfo();
+  public getNetworkInfo = async () => {
+    const networkInfoOfTest3 = await this.fetcher.getNetworkInfo();
     const networkInfo = Test3Mapper.StatusMapper.toNetworkInfo(networkInfoOfTest3);
     return networkInfo;
   };
@@ -88,7 +88,7 @@ export class NetworkTest3 implements GnoClientApi {
     };
     const result = await this.fetcher.executeAbciQuery('GET_ACCOUNT_INFO', { query });
     if (!result.response?.ResponseBase?.Data || result.response?.ResponseBase?.Data === null) {
-      return GnoClientResnpose.AccountNone;
+      return GnoClientResponse.AccountNone;
     }
 
     const plainData = Buffer.from(result.response.ResponseBase.Data, 'base64').toString();
@@ -103,7 +103,7 @@ export class NetworkTest3 implements GnoClientApi {
     };
     const result = await this.fetcher.executeAbciQuery('GET_BALANCES', { query });
     if (!result.response?.ResponseBase?.Data || result.response?.ResponseBase?.Data === null) {
-      return GnoClientResnpose.BalancesDefault;
+      return GnoClientResponse.BalancesDefault;
     }
 
     const plainData = Buffer.from(result.response.ResponseBase.Data, 'base64').toString();

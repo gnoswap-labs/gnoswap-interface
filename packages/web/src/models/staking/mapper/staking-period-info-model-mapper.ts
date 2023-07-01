@@ -9,9 +9,9 @@ import {
 
 export class StakingPeriodInfoModelMapper {
 	public static fromResponse(
-		resopnse: StakingPeriodInfo,
+		response: StakingPeriodInfo,
 	): StakingPeriodInfoModel {
-		const { apr, period, benefits } = resopnse;
+		const { apr, period, benefits } = response;
 
 		return {
 			apr,
@@ -21,9 +21,9 @@ export class StakingPeriodInfoModelMapper {
 	}
 
 	public static fromListResponse(
-		resopnse: StakingPeriodListResponse,
+		response: StakingPeriodListResponse,
 	): StakingPeriodInfoListModel {
-		const periods = resopnse.periods;
+		const periods = response.periods;
 
 		return {
 			periods: periods.map(StakingPeriodInfoModelMapper.fromResponse),

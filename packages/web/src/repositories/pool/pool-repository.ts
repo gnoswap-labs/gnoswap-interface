@@ -5,7 +5,7 @@ import {
 	PoolSummaryAprResponse,
 	PoolSummaryLiquidityResponse,
 	PoolSummaryVolumeResponse,
-	PoolChartResopnse,
+	PoolChartResponse,
 } from "./response";
 
 export interface PoolRepository {
@@ -15,12 +15,12 @@ export interface PoolRepository {
 
 	getPoolById: (poolId: string) => Promise<PoolInfoResponse>;
 
-	getPoolChartTicks: (poolId: string) => Promise<PoolChartResopnse>;
+	getPoolChartTicks: (poolId: string) => Promise<PoolChartResponse>;
 
 	getPoolChartTicksByTokenPair: (
 		token0Id: string,
 		token1Id: string,
-	) => Promise<PoolChartResopnse>;
+	) => Promise<PoolChartResponse>;
 
 	getPoolSummaryLiquidityById: (
 		poolId: string,

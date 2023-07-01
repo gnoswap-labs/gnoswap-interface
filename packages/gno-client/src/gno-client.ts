@@ -75,8 +75,8 @@ export class GnoClient {
   public isHealth = async () =>
     this.network.isHealth();
 
-  public getNetwrokInfo = async () =>
-    this.network.getNetwrokInfo();
+  public getNetworkInfo = async () =>
+    this.network.getNetworkInfo();
 
   public getGenesis = async () =>
     this.network.getGenesis();

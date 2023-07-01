@@ -9,7 +9,7 @@ import { InjectResponse } from "@/common/clients/wallet-client/protocols";
 import { Account } from "@gnoswap-labs/gno-client/src/api/response";
 
 export class AccountInfoMapper {
-	public static fromResopnse(
+	public static fromResponse(
 		response: InjectResponse<AccountInfoResponse>,
 	): AccountInfoModel {
 		const { coins, address, status } = response.data;
@@ -23,7 +23,7 @@ export class AccountInfoMapper {
 		};
 	}
 
-	public static fromGnoResopnse(
+	public static fromGnoResponse(
 		response: Account,
 	): AccountInfoModel {
 		const { coins, address, status } = response;

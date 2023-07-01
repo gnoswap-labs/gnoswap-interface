@@ -1,8 +1,8 @@
-import { GnoClientResnpose } from '../../../../api';
+import { GnoClientResponse } from '../../../../api';
 import { Test3Response } from '..';
 
 export class HistoryMapper {
-  public static toHistory = (history: Test3Response.History): GnoClientResnpose.History => {
+  public static toHistory = (history: Test3Response.History): GnoClientResponse.History => {
     const hits = history.hits;
     const next = history.next;
     const txs = history.txs.map(HistoryMapper.toHistoryItem);
@@ -13,7 +13,7 @@ export class HistoryMapper {
     };
   };
 
-  private static toHistoryItem = (historyItem: Test3Response.HistoryItemType): GnoClientResnpose.HistoryItemType => {
+  private static toHistoryItem = (historyItem: Test3Response.HistoryItemType): GnoClientResponse.HistoryItemType => {
     if (historyItem.type === '/bank.MsgSend') {
       return this.toHistoryItemBankMsgSend(historyItem as Test3Response.HistoryItemBankMsgSend);
     }
@@ -23,7 +23,7 @@ export class HistoryMapper {
     return this.toHistoryItemVmMCall(historyItem as Test3Response.HistoryItemVmMCall);
   }
 
-  private static toHistoryItemBankMsgSend = (historyItem: Test3Response.HistoryItemBankMsgSend): GnoClientResnpose.HistoryItemBankMsgSend => {
+  private static toHistoryItemBankMsgSend = (historyItem: Test3Response.HistoryItemBankMsgSend): GnoClientResponse.HistoryItemBankMsgSend => {
     const transfer = {
       ...historyItem.transfer,
       amount: `${historyItem.transfer.amount || 0}`
@@ -40,7 +40,7 @@ export class HistoryMapper {
     };
   };
 
-  private static toHistoryItemVmMAddPkg = (historyItem: Test3Response.HistoryItemVmMAddPkg): GnoClientResnpose.HistoryItemVmMAddPkg => {
+  private static toHistoryItemVmMAddPkg = (historyItem: Test3Response.HistoryItemVmMAddPkg): GnoClientResponse.HistoryItemVmMAddPkg => {
     const transfer = {
       ...historyItem.transfer,
       amount: `${historyItem.transfer.amount || 0}`
@@ -61,7 +61,7 @@ export class HistoryMapper {
       }
     }
   }
-  private static toHistoryItemVmMCall = (historyItem: Test3Response.HistoryItemVmMCall): GnoClientResnpose.HistoryItemVmMCall => {
+  private static toHistoryItemVmMCall = (historyItem: Test3Response.HistoryItemVmMCall): GnoClientResponse.HistoryItemVmMCall => {
     const transfer = {
       ...historyItem.transfer,
       amount: `${historyItem.transfer.amount || 0}`

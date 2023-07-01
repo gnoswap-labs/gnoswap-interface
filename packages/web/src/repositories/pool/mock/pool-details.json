@@ -47,7 +47,7 @@
 			"incentivized_type": "INCENTIVIZED",
 			"fee_rate": 0.1,
 			"apr": 10,
-			"volumn_24h": 456123451,
+			"volume_24h": 456123451,
 			"fees_24h": 201
 		},
 		{
@@ -95,7 +95,7 @@
 			"incentivized_type": "INCENTIVIZED",
 			"fee_rate": 0.3,
 			"apr": 16,
-			"volumn_24h": 782123451,
+			"volume_24h": 782123451,
 			"fees_24h": -1.45
 		},
 		{
@@ -143,7 +143,7 @@
 			"incentivized_type": "NON_INCENTIVIZED",
 			"fee_rate": 40.1,
 			"apr": 10,
-			"volumn_24h": 456123451,
+			"volume_24h": 456123451,
 			"fees_24h": 201
 		},
 		{
@@ -191,7 +191,7 @@
 			"incentivized_type": "EXTERNAL_INCENTIVIZED",
 			"fee_rate": 40.1,
 			"apr": 10,
-			"volumn_24h": 456123451,
+			"volume_24h": 456123451,
 			"fees_24h": 201
 		},
 		{
@@ -239,7 +239,7 @@
 			"incentivized_type": "EXTERNAL_INCENTIVIZED",
 			"fee_rate": 40.1,
 			"apr": 10,
-			"volumn_24h": 456123451,
+			"volume_24h": 456123451,
 			"fees_24h": 201
 		}
 	]

@@ -17,14 +17,14 @@ export class AccountService {
   public getAccountInfo = async () => {
     return await this.accountRepository
       .getAccount()
-      .then(AccountInfoMapper.fromResopnse)
+      .then(AccountInfoMapper.fromResponse)
       .catch(() => returnErrorResponse(new AccountError("CONNECT_TRY_AGAIN")));
   };
 
   public getAccountInfoByAddress = async (address: string) => {
     return await this.accountRepository
       .getAccountByAddress(address)
-      .then(AccountInfoMapper.fromGnoResopnse)
+      .then(AccountInfoMapper.fromGnoResponse)
       .catch(() => returnErrorResponse(new AccountError("CONNECT_TRY_AGAIN")));
   };
 
@@ -42,7 +42,7 @@ export class AccountService {
     } else {
       return await this.accountRepository
         .addEstablishedSite()
-        .then(AccountWalletMapper.fromResopnse)
+        .then(AccountWalletMapper.fromResponse)
         .catch(() =>
           returnErrorResponse(new AccountError("CONNECTION_REJECTED")),
         );

@@ -19,20 +19,20 @@ export const useAddLiquidity = ({ liquidity, options }: Props) => {
   const [chartData, setChartData] = useState<PoolChartModel>();
   const [inRange, setInRange] = useState<boolean>(false);
 
-  const currnetTick = chartData?.current;
+  const currentTick = chartData?.current;
 
   const addLiquidity = () => {
     liquidityService.addLiquidity(liquidity, options);
   };
 
   const updateInRange = useCallback(() => {
-    if (!currnetTick) {
+    if (!currentTick) {
       return false;
     }
     const { minRate, maxRate } = options;
-    const inRange = currnetTick <= minRate && currnetTick >= maxRate;
+    const inRange = currentTick <= minRate && currentTick >= maxRate;
     setInRange(inRange);
-  }, [currnetTick, options]);
+  }, [currentTick, options]);
 
   const updateChartData = useCallback(() => {
     poolService
@@ -42,7 +42,7 @@ export const useAddLiquidity = ({ liquidity, options }: Props) => {
 
   return {
     inRange,
-    currnetTick,
+    currentTick,
     addLiquidity,
     updateInRange,
     updateChartData

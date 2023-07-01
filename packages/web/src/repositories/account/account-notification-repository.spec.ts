@@ -12,7 +12,7 @@ import {
 	AccountHistoryModel,
 	TransactionModel,
 } from "@/models/account/account-history-model";
-import { AccountNotificationRepository } from "./account-norification-repository";
+import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountRepositoryInstance } from "./account-repository-instance";
 import { GnoClient } from "@gnoswap-labs/gno-client";
 

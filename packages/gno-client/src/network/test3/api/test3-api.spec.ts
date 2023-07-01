@@ -20,7 +20,7 @@ describe('testnet3 api', () => {
   });
 
   test('network info is not undefiend', async () => {
-    const result = await fetcher.getNetwrokInfo();
+    const result = await fetcher.getNetworkInfo();
 
     expect(result).not.toBeUndefined();
   });

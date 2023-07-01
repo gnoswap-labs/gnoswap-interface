@@ -10,7 +10,7 @@ export interface PoolListInfoResponse {
 	fee_rate: number;
 	liquidity: TokenPair;
 	apr: number;
-	volumn_24h: number;
+	volume_24h: number;
 	fees_24h: number;
 	rewards: Array<TokenBalance>;
 }

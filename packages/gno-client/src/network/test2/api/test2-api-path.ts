@@ -4,7 +4,7 @@ export class Test2ApiPath {
 
   public static createPathOfHealth = () => `/health`;
 
-  public static createPathOfNetwrokInfo = () => `/status`;
+  public static createPathOfNetworkInfo = () => `/status`;
 
   public static createPathOfGenesis = () => `/genesis`;
 

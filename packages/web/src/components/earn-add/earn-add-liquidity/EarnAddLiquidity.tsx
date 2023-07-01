@@ -47,8 +47,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           onClickOpenPriceRange={onClickOpenPriceRange}
         />
         <EnterAmounts
-          from={{ token: "GNOT", amount: "121", price: "$0.00", balence: "0" }}
-          to={{ token: "GNOS", amount: "5000", price: "$0.00", balence: "0" }}
+          from={{ token: "GNOT", amount: "121", price: "$0.00", balance: "0" }}
+          to={{ token: "GNOS", amount: "5000", price: "$0.00", balance: "0" }}
         />
       </div>
       <Button

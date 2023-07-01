@@ -6,7 +6,7 @@ import { isErrorResponse } from "@utils/validationUtils";
 import { StatusOptions } from "@/common/values/data-constant";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
-export const useNotifiaction = () => {
+export const useNotification = () => {
   const { accountService } = useGnoswapContext();
 
   const [address] = useRecoilState(AccountState.address);
@@ -24,7 +24,7 @@ export const useNotifiaction = () => {
     return true;
   };
 
-  const initNotifiacions = useCallback(() => {
+  const initNotifications = useCallback(() => {
     if (!address) {
       return;
     }
@@ -42,7 +42,7 @@ export const useNotifiaction = () => {
     }
     return accountService
       .createNotification(address, notification)
-      .then(initNotifiacions);
+      .then(initNotifications);
   };
 
   /**
@@ -52,13 +52,13 @@ export const useNotifiaction = () => {
     if (!isUpdateNotifications()) {
       return;
     }
-    const pendingTrnasactions =
+    const pendingTransactions =
       notifications?.txs.filter(tx => tx.status === "PENDING") ?? [];
 
-    for (const tx of pendingTrnasactions) {
+    for (const tx of pendingTransactions) {
       await updateNotificationStatus(tx, "SUCCESS");
     }
-    initNotifiacions();
+    initNotifications();
   };
 
   const updateNotificationStatus = (notification: TransactionModel, status: StatusOptions) => {
@@ -73,12 +73,12 @@ export const useNotifiaction = () => {
     if (!address) {
       return;
     }
-    return accountService.deleteAllNotification(address).then(initNotifiacions);
+    return accountService.deleteAllNotification(address).then(initNotifications);
   };
 
   return {
     notifications,
-    initNotifiacions,
+    initNotifications,
     createNotification,
     updateNotificationStatus,
     clearNotifications,

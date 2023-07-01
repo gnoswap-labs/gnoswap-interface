@@ -24,7 +24,7 @@ export interface Token {
   priceOf30d: NegativeStatusType;
   marketCap: string;
   liquidity: string;
-  volumn24h: string;
+  volume24h: string;
   mostLiquidPool: MostLiquidPool;
   last7days: number[];
 }
@@ -74,7 +74,7 @@ export const dummyTokenList: Token[] = [
     },
     marketCap: "$311,421,241,255",
     liquidity: "$1,421,241,255",
-    volumn24h: "$311,421,241",
+    volume24h: "$311,421,241",
     mostLiquidPool: {
       poolId: Math.floor(Math.random() * 50 + 1).toString(),
       tokenPair: {

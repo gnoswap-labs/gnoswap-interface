@@ -56,7 +56,7 @@ describe("getPools", () => {
 		expect(typeof pool.fee_rate).toBe("number");
 		expect(typeof pool.fees_24h).toBe("number");
 		expect(typeof pool.incentivized_type).toBe("string");
-		expect(typeof pool.volumn_24h).toBe("number");
+		expect(typeof pool.volume_24h).toBe("number");
 		expect(typeof pool.rewards[0].amount.value).toBe("number");
 		expect(typeof pool.liquidity.token0.amount.value).toBe("number");
 		expect(typeof pool.liquidity.token1.amount.value).toBe("number");
@@ -82,7 +82,7 @@ describe("getPoolsByAddress", () => {
 		expect(typeof pool.fee_rate).toBe("number");
 		expect(typeof pool.fees_24h).toBe("number");
 		expect(typeof pool.incentivized_type).toBe("string");
-		expect(typeof pool.volumn_24h).toBe("number");
+		expect(typeof pool.volume_24h).toBe("number");
 		expect(typeof pool.rewards[0].amount.value).toBe("number");
 		expect(typeof pool.liquidity.token0.amount.value).toBe("number");
 		expect(typeof pool.liquidity.token1.amount.value).toBe("number");

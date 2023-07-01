@@ -29,8 +29,8 @@ export class Test3ApiFetcher implements Test3Api {
     return typeof result === 'object';
   };
 
-  public getNetwrokInfo = async () => {
-    return this.get<Test3Response.Status>(Test3ApiPath.createPathOfNetwrokInfo());
+  public getNetworkInfo = async () => {
+    return this.get<Test3Response.Status>(Test3ApiPath.createPathOfNetworkInfo());
   };
 
   public getGenesis = async () => {

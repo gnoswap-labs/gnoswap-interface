@@ -14,7 +14,7 @@ interface PoolDetailType {
 	feeRate: FeeOptions;
 	liquidity: BigNumber;
 	apr: BigNumber;
-	volumn24h: BigNumber;
+	volume24h: BigNumber;
 	fees24h: BigNumber;
 	rewards: Array<string>;
 	incentiveType: IncentivizedOptions;

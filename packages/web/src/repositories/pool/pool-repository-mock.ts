@@ -13,7 +13,7 @@ import {
 	PoolSummaryAprResponse,
 	PoolSummaryLiquidityResponse,
 	PoolSummaryVolumeResponse,
-	PoolChartResopnse,
+	PoolChartResponse,
 } from ".";
 
 import PoolDetailDatas from "./mock/pool-details.json";
@@ -36,7 +36,7 @@ export class PoolRepositoryMock implements PoolRepository {
 		return PoolDetailDatas as PoolListResponse;
 	};
 
-	getPoolChartTicks = async (poolId: string): Promise<PoolChartResopnse> => {
+	getPoolChartTicks = async (poolId: string): Promise<PoolChartResponse> => {
 		return {
 			pool_id: poolId,
 			current: 1,
@@ -47,7 +47,7 @@ export class PoolRepositoryMock implements PoolRepository {
 	getPoolChartTicksByTokenPair = async (
 		token0Id: string,
 		token1Id: string,
-	): Promise<PoolChartResopnse> => {
+	): Promise<PoolChartResponse> => {
 		return {
 			pool_id: "1",
 			current: 1,

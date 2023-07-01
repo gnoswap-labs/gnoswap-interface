@@ -3,7 +3,7 @@ import { MockStorageClient } from "@/common/clients/storage-client/mock-storage-
 import { generateNumber, generateTxHash } from "@/common/utils/test-util";
 import {
 	SwapExpectedResultResponse,
-	SwapFeeReponse,
+	SwapFeeResponse,
 	SwapRateResponse,
 	SwapRepository,
 	SwapResponse,
@@ -26,7 +26,7 @@ export class SwapRepositoryMock implements SwapRepository {
 		};
 	};
 
-	public getSwapFee = async (): Promise<SwapFeeReponse> => {
+	public getSwapFee = async (): Promise<SwapFeeResponse> => {
 		return {
 			fee: generateNumber(0, 1),
 		};

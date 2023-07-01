@@ -81,7 +81,7 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .price-text,
-    .balence-text {
+    .balance-text {
       ${fonts.body12};
       color: ${theme.colors.gray30};
     }

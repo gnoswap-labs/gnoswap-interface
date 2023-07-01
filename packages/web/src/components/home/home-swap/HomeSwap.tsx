@@ -10,7 +10,7 @@ interface HomeSwapProps {
     symbol: string;
     amount: string;
     price: string;
-    balence: string;
+    balance: string;
     tokenLogo: string;
   };
   to: {
@@ -18,7 +18,7 @@ interface HomeSwapProps {
     symbol: string;
     amount: string;
     price: string;
-    balence: string;
+    balance: string;
     tokenLogo: string;
   };
   swapNow: () => void;
@@ -90,7 +90,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
           </div>
           <div className="info">
             <span className="price-text">{from.price}</span>
-            <span className="balence-text">Balence : {from.balence}</span>
+            <span className="balance-text">Balance : {from.balance}</span>
           </div>
         </div>
         <div className="to">
@@ -107,7 +107,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
           </div>
           <div className="info">
             <span className="price-text">{to.price}</span>
-            <span className="balence-text">Balence : {to.balence}</span>
+            <span className="balance-text">Balance : {to.balance}</span>
           </div>
         </div>
         <div className="arrow">

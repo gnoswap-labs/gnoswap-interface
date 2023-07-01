@@ -42,7 +42,7 @@ export class PoolModelMapper {
 			rewards,
 			apr,
 			fees_24h,
-			volumn_24h,
+			volume_24h,
 		} = response;
 
 		return {
@@ -53,7 +53,7 @@ export class PoolModelMapper {
 			rewards: rewards.map(TokenModelMapper.fromResponse),
 			apr,
 			fees24h: BigNumber(fees_24h),
-			volumn24h: BigNumber(volumn_24h),
+			volume24h: BigNumber(volume_24h),
 		};
 	}
 }
