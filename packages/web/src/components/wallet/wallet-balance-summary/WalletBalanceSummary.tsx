@@ -4,7 +4,12 @@ import IconUpload from "@components/common/icons/IconUpload";
 import IconMoveToInbox from "@components/common/icons/IconMoveToInbox";
 import { BalanceSummaryInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
 import WalletBalanceSummaryInfo from "../wallet-balance-summary-info/WalletBalanceSummaryInfo";
-import { defaultWalletButtonStyle, BalanceInfoWrapper, WalletBalanceSummaryWrapper, WalletButtonGroup } from "./WalletBalanceSummary.styles";
+import {
+  defaultWalletButtonStyle,
+  BalanceInfoWrapper,
+  WalletBalanceSummaryWrapper,
+  WalletButtonGroup,
+} from "./WalletBalanceSummary.styles";
 
 interface WalletBalanceSummaryProps {
   connected: boolean;
@@ -19,14 +24,12 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
   balanceSummaryInfo,
   deposit,
   withdraw,
-  earn
+  earn,
 }) => (
   <WalletBalanceSummaryWrapper>
     <BalanceInfoWrapper>
       <span className="title">Total Balance</span>
-      <WalletBalanceSummaryInfo
-        balanceSummaryInfo={balanceSummaryInfo}
-      />
+      <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} />
     </BalanceInfoWrapper>
 
     <WalletButtonGroup>

@@ -1,7 +1,10 @@
 import React from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { WalletBalanceDetailInfoTooltipContent, WalletBalanceDetailInfoWrapper } from "./WalletBalanceDetailInfo.styles";
+import {
+  WalletBalanceDetailInfoTooltipContent,
+  WalletBalanceDetailInfoWrapper,
+} from "./WalletBalanceDetailInfo.styles";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
@@ -18,7 +21,9 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
     <WalletBalanceDetailInfoWrapper>
       <div className="title-wrapper">
         <span className="title">{title}</span>
-        {tooltip !== undefined && <WalletBalanceDetailInfoTooltip tooltip={tooltip} />}
+        {tooltip !== undefined && (
+          <WalletBalanceDetailInfoTooltip tooltip={tooltip} />
+        )}
       </div>
 
       <div className="value-wrapper">
@@ -29,7 +34,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
 };
 
 const WalletBalanceDetailInfoTooltip: React.FC<{ tooltip: string }> = ({
-  tooltip
+  tooltip,
 }) => {
   const TooltipFloatingContent = (
     <WalletBalanceDetailInfoTooltipContent>
@@ -38,9 +43,7 @@ const WalletBalanceDetailInfoTooltip: React.FC<{ tooltip: string }> = ({
   );
 
   return (
-    <Tooltip
-      placement="top"
-      FloatingContent={TooltipFloatingContent}>
+    <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
       <IconInfo />
     </Tooltip>
   );

@@ -45,6 +45,6 @@ export const useAddLiquidity = ({ liquidity, options }: Props) => {
     currentTick,
     addLiquidity,
     updateInRange,
-    updateChartData
+    updateChartData,
   };
 };

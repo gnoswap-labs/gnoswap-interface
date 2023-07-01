@@ -1,3 +1,3 @@
 export interface ClaimRewardRequest {
-	poolId: string;
+  poolId: string;
 }

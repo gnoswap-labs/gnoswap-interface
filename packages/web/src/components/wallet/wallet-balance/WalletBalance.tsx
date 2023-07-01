@@ -1,4 +1,7 @@
-import { BalanceSummaryInfo, BalanceDetailInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
+import {
+  BalanceSummaryInfo,
+  BalanceDetailInfo,
+} from "@containers/wallet-balance-container/WalletBalanceContainer";
 import WalletBalanceSummary from "../wallet-balance-summary/WalletBalanceSummary";
 import WalletBalanceDetail from "../wallet-balance-detail/WalletBalanceDetail";
 import { WalletBalanceWrapper } from "./WalletBalance.styles";
@@ -18,7 +21,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   balanceDetailInfo,
   deposit,
   withdraw,
-  earn
+  earn,
 }) => (
   <WalletBalanceWrapper>
     <WalletBalanceSummary
@@ -28,9 +31,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
       withdraw={withdraw}
       earn={earn}
     />
-    <WalletBalanceDetail
-      balanceDetailInfo={balanceDetailInfo}
-    />
+    <WalletBalanceDetail balanceDetailInfo={balanceDetailInfo} />
   </WalletBalanceWrapper>
 );
 

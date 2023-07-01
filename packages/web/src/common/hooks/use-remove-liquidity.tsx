@@ -16,21 +16,29 @@ export const useRemoveLiquidity = (poolId: string) => {
     Array<LiquidityDetailModel>
   >([]);
 
-  const getSummaryPooled = useCallback((selectedIds: Array<string>) => {
-    const selectedLiquidities = liquidities.filter(liquidity =>
-      selectedIds.includes(liquidity.liquidityId),
-    );
-    return liquidityService.getSummaryPooledByLiquidities(selectedLiquidities);
-  }, [liquidities, liquidityService]);
+  const getSummaryPooled = useCallback(
+    (selectedIds: Array<string>) => {
+      const selectedLiquidities = liquidities.filter(liquidity =>
+        selectedIds.includes(liquidity.liquidityId),
+      );
+      return liquidityService.getSummaryPooledByLiquidities(
+        selectedLiquidities,
+      );
+    },
+    [liquidities, liquidityService],
+  );
 
-  const getSummaryUnclaimed = useCallback((selectedIds: Array<string>) => {
-    const selectedLiquidities = liquidities.filter(liquidity =>
-      selectedIds.includes(liquidity.liquidityId),
-    );
-    return liquidityService.getSummaryUnclaimedByLiquidities(
-      selectedLiquidities,
-    );
-  }, [liquidities, liquidityService]);
+  const getSummaryUnclaimed = useCallback(
+    (selectedIds: Array<string>) => {
+      const selectedLiquidities = liquidities.filter(liquidity =>
+        selectedIds.includes(liquidity.liquidityId),
+      );
+      return liquidityService.getSummaryUnclaimedByLiquidities(
+        selectedLiquidities,
+      );
+    },
+    [liquidities, liquidityService],
+  );
 
   const updateLiquidities = useCallback(() => {
     if (!address) {
@@ -50,9 +58,12 @@ export const useRemoveLiquidity = (poolId: string) => {
     setRemovableLiquidities(removableLiquidities);
   }, [liquidities]);
 
-  const removeLiquidities = useCallback((removeLiquidityIds: Array<string>) => {
-    return liquidityService.removeLiquidities(removeLiquidityIds);
-  }, [liquidityService]);
+  const removeLiquidities = useCallback(
+    (removeLiquidityIds: Array<string>) => {
+      return liquidityService.removeLiquidities(removeLiquidityIds);
+    },
+    [liquidityService],
+  );
 
   return {
     liquidities,

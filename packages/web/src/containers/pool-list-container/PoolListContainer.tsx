@@ -128,7 +128,9 @@ export const dummyPoolList: Pool[] = [
 
 async function fetchPools(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  type: POOL_TYPE, page: number, keyword: string,
+  type: POOL_TYPE,
+  page: number,
+  keyword: string,
 ): Promise<Pool[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([

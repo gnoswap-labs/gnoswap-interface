@@ -101,7 +101,9 @@ export const dummyTokenList: Token[] = [
 
 async function fetchTokens(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  type: TOKEN_TYPE, page: number, keyword: string,
+  type: TOKEN_TYPE,
+  page: number,
+  keyword: string,
 ): Promise<Token[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([

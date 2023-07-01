@@ -5,9 +5,16 @@ export interface GnoClientApiAbciQuery {
 
   getBalances: (address: string) => Promise<GnoClientResponse.Balances>;
 
-  queryRender: (packagePath: string, datas?: Array<string>) => Promise<GnoClientResponse.AbciQuery | null>;
+  queryRender: (
+    packagePath: string,
+    datas?: Array<string>,
+  ) => Promise<GnoClientResponse.AbciQuery | null>;
 
-  queryEval: (packagePath: string, functionName: string, datas?: Array<string>) => Promise<GnoClientResponse.AbciQuery | null>;
+  queryEval: (
+    packagePath: string,
+    functionName: string,
+    datas?: Array<string>,
+  ) => Promise<GnoClientResponse.AbciQuery | null>;
 
   queryPackage: (packagePath: string) => Promise<GnoClientResponse.AbciQuery | null>;
 

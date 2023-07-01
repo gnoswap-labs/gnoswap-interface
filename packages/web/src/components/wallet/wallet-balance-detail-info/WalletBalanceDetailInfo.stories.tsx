@@ -15,12 +15,12 @@ export const Default = Template.bind({});
 Default.args = {
   title: "Default",
   value: "$1.10",
-  tooltip: undefined
+  tooltip: undefined,
 };
 
 export const DefaultTooltip = Template.bind({});
 DefaultTooltip.args = {
   title: "DefaultTooltip",
   value: "$1.10",
-  tooltip: "Hello world"
+  tooltip: "Hello world",
 };

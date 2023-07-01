@@ -1,24 +1,24 @@
 import { SwapRequest } from "./request";
 import { SwapInfoRequest } from "./request/swap-info-request";
 import {
-	SwapExpectedResultResponse,
-	SwapFeeResponse,
-	SwapRateResponse,
-	SwapResponse,
+  SwapExpectedResultResponse,
+  SwapFeeResponse,
+  SwapRateResponse,
+  SwapResponse,
 } from "./response";
 
 export interface SwapRepository {
-	getSwapRate: (request: SwapInfoRequest) => Promise<SwapRateResponse>;
+  getSwapRate: (request: SwapInfoRequest) => Promise<SwapRateResponse>;
 
-	getSwapFee: () => Promise<SwapFeeResponse>;
+  getSwapFee: () => Promise<SwapFeeResponse>;
 
-	getExpectedSwapResult: (
-		request: SwapInfoRequest,
-	) => Promise<SwapExpectedResultResponse>;
+  getExpectedSwapResult: (
+    request: SwapInfoRequest,
+  ) => Promise<SwapExpectedResultResponse>;
 
-	getSlippage: () => number;
+  getSlippage: () => number;
 
-	setSlippage: (slippage: number) => boolean;
+  setSlippage: (slippage: number) => boolean;
 
-	swap: (request: SwapRequest) => Promise<SwapResponse>;
+  swap: (request: SwapRequest) => Promise<SwapResponse>;
 }

@@ -5,7 +5,7 @@ interface WalletBalanceSummaryInfoProps {
   balanceSummaryInfo: BalanceSummaryInfo;
 }
 const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
-  balanceSummaryInfo
+  balanceSummaryInfo,
 }) => {
   return (
     <WalletBalanceSummaryInfoWrapper>

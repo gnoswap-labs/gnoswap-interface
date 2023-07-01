@@ -62,7 +62,10 @@ export const useNotification = () => {
     initNotifications();
   };
 
-  const updateNotificationStatus = (notification: TransactionModel, status: StatusOptions) => {
+  const updateNotificationStatus = (
+    notification: TransactionModel,
+    status: StatusOptions,
+  ) => {
     if (!address) {
       return;
     }
@@ -74,7 +77,9 @@ export const useNotification = () => {
     if (!address) {
       return;
     }
-    return accountService.deleteAllNotification(address).then(initNotifications);
+    return accountService
+      .deleteAllNotification(address)
+      .then(initNotifications);
   };
 
   return {

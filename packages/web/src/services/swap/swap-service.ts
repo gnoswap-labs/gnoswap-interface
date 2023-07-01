@@ -12,61 +12,61 @@ import BigNumber from "bignumber.js";
 import { SwapError } from "@/common/errors/swap";
 
 export class SwapService {
-	private swapRepository: SwapRepository;
+  private swapRepository: SwapRepository;
 
-	constructor(swapRepository: SwapRepository) {
-		this.swapRepository = swapRepository;
-	}
+  constructor(swapRepository: SwapRepository) {
+    this.swapRepository = swapRepository;
+  }
 
-	public getSwapRate = async (
-		token0: TokenDefaultModel,
-		token1: TokenDefaultModel,
-		type: ExactTypeOption,
-	) => {
-		const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
-			token0,
-			token1,
-			type,
-		});
-		return await this.swapRepository
-			.getSwapRate(request)
-			.then(res => BigNumber(res.rate))
-			.catch(() =>
-				returnErrorResponse(new SwapError("SWAP_RATE_LOOKUP_FAILED")),
-			);
-	};
+  public getSwapRate = async (
+    token0: TokenDefaultModel,
+    token1: TokenDefaultModel,
+    type: ExactTypeOption,
+  ) => {
+    const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
+      token0,
+      token1,
+      type,
+    });
+    return await this.swapRepository
+      .getSwapRate(request)
+      .then(res => BigNumber(res.rate))
+      .catch(() =>
+        returnErrorResponse(new SwapError("SWAP_RATE_LOOKUP_FAILED")),
+      );
+  };
 
-	public getExpectedSwapResult = async (
-		token0: TokenDefaultModel,
-		token1: TokenDefaultModel,
-		type: ExactTypeOption,
-	) => {
-		const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
-			token0,
-			token1,
-			type,
-		});
-		return await this.swapRepository
-			.getExpectedSwapResult(request)
-			.then(SwapExpectedMapper.fromExpectedResponse)
-			.catch(() =>
-				returnErrorResponse(new SwapError("EXPECTED_RESULT_LOOKUP_FAILED")),
-			);
-	};
+  public getExpectedSwapResult = async (
+    token0: TokenDefaultModel,
+    token1: TokenDefaultModel,
+    type: ExactTypeOption,
+  ) => {
+    const request: SwapInfoRequest = SwapRateMapper.toRateRequest({
+      token0,
+      token1,
+      type,
+    });
+    return await this.swapRepository
+      .getExpectedSwapResult(request)
+      .then(SwapExpectedMapper.fromExpectedResponse)
+      .catch(() =>
+        returnErrorResponse(new SwapError("EXPECTED_RESULT_LOOKUP_FAILED")),
+      );
+  };
 
-	public setSlippage = (slippage: number) => {
-		return this.swapRepository.setSlippage(slippage);
-	};
+  public setSlippage = (slippage: number) => {
+    return this.swapRepository.setSlippage(slippage);
+  };
 
-	public getSlippage = () => {
-		return this.swapRepository.getSlippage();
-	};
+  public getSlippage = () => {
+    return this.swapRepository.getSlippage();
+  };
 
-	public confirmSwap = async (model: SwapConfirmModel) => {
-		const request: SwapRequest = SwapConfirmMapper.toConfirmRequest(model);
-		return await this.swapRepository
-			.swap(request)
-			.then(SwapConfirmMapper.fromConfirmResponse)
-			.catch(() => returnErrorResponse(new SwapError("SWAP_FAILED")));
-	};
+  public confirmSwap = async (model: SwapConfirmModel) => {
+    const request: SwapRequest = SwapConfirmMapper.toConfirmRequest(model);
+    return await this.swapRepository
+      .swap(request)
+      .then(SwapConfirmMapper.fromConfirmResponse)
+      .catch(() => returnErrorResponse(new SwapError("SWAP_FAILED")));
+  };
 }

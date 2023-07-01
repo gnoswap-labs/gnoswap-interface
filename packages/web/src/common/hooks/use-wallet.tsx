@@ -16,27 +16,23 @@ export const useWallet = () => {
   };
 
   const connectToEstablishedSite = () => {
-    return accountService
-      .connectAdenaWallet()
-      .then(response => {
-        if (isErrorResponse(response)) {
-          setConnected(false);
-          return;
-        }
-        setConnected(response.isConnected);
-      });
+    return accountService.connectAdenaWallet().then(response => {
+      if (isErrorResponse(response)) {
+        setConnected(false);
+        return;
+      }
+      setConnected(response.isConnected);
+    });
   };
 
   const connectToGetAccountInfo = () => {
-    return accountService
-      .getAccountInfo()
-      .then(response => {
-        if (isErrorResponse(response)) {
-          setAddress("");
-          return;
-        }
-        setAddress(response.address);
-      });
+    return accountService.getAccountInfo().then(response => {
+      if (isErrorResponse(response)) {
+        setAddress("");
+        return;
+      }
+      setAddress(response.address);
+    });
   };
 
   const disconnectWallet = () => {

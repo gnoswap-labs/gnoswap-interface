@@ -13,18 +13,18 @@ import { TokenService } from "@/services/token/token-service";
 import { createContext } from "react";
 
 export interface GnoswapContextProps {
-	accountService: AccountService;
-	tokenService: TokenService;
-	poolService: PoolService;
-	liquidityService: LiquidityService;
-	stakingService: StakingService;
-	swapService: SwapService;
-	accountRepository: AccountRepository;
-	liquidityRepository: LiquidityRepository;
-	poolRepository: PoolRepository;
-	stakingRepository: StakingRepository;
-	swapRepository: SwapRepository;
-	tokenRepository: TokenRepository;
+  accountService: AccountService;
+  tokenService: TokenService;
+  poolService: PoolService;
+  liquidityService: LiquidityService;
+  stakingService: StakingService;
+  swapService: SwapService;
+  accountRepository: AccountRepository;
+  liquidityRepository: LiquidityRepository;
+  poolRepository: PoolRepository;
+  stakingRepository: StakingRepository;
+  swapRepository: SwapRepository;
+  tokenRepository: TokenRepository;
 }
 
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);

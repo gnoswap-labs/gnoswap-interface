@@ -1,32 +1,32 @@
 import {
-	StakingPeriodInfo,
-	StakingPeriodListResponse,
+  StakingPeriodInfo,
+  StakingPeriodListResponse,
 } from "@/repositories/staking";
 import {
-	StakingPeriodInfoListModel,
-	StakingPeriodInfoModel,
+  StakingPeriodInfoListModel,
+  StakingPeriodInfoModel,
 } from "../staking-period-info-model";
 
 export class StakingPeriodInfoModelMapper {
-	public static fromResponse(
-		response: StakingPeriodInfo,
-	): StakingPeriodInfoModel {
-		const { apr, period, benefits } = response;
+  public static fromResponse(
+    response: StakingPeriodInfo,
+  ): StakingPeriodInfoModel {
+    const { apr, period, benefits } = response;
 
-		return {
-			apr,
-			benefits,
-			period,
-		};
-	}
+    return {
+      apr,
+      benefits,
+      period,
+    };
+  }
 
-	public static fromListResponse(
-		response: StakingPeriodListResponse,
-	): StakingPeriodInfoListModel {
-		const periods = response.periods;
+  public static fromListResponse(
+    response: StakingPeriodListResponse,
+  ): StakingPeriodInfoListModel {
+    const periods = response.periods;
 
-		return {
-			periods: periods.map(StakingPeriodInfoModelMapper.fromResponse),
-		};
-	}
+    return {
+      periods: periods.map(StakingPeriodInfoModelMapper.fromResponse),
+    };
+  }
 }

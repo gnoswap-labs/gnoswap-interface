@@ -1,3 +1,3 @@
 export interface AddLiquidityResponse {
-	tx_hash: string;
+  tx_hash: string;
 }
