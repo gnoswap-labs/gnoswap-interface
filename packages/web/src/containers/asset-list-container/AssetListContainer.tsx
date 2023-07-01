@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import React, { useCallback, useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 import { useQuery } from "@tanstack/react-query";

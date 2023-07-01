@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { POOL_TD_WIDTH } from "@constants/skeleton.constant";
 import { type Pool } from "@containers/pool-list-container/PoolListContainer";

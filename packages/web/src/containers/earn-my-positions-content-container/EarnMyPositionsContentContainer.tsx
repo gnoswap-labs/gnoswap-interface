@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import EarnMyPositionsContent, {
   MY_POSITIONS_STATUS,
 } from "@components/earn/earn-my-positions-content/EarnMyPositionsContent";

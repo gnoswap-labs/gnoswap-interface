@@ -5,7 +5,6 @@ import {
 	generateToken0,
 	generateToken1,
 } from "@/common/utils/test-util";
-import { TokenPairModel } from "@/models/token/token-pair-model";
 import {
 	PoolListResponse,
 	PoolInfoResponse,
@@ -28,11 +27,11 @@ export class PoolRepositoryMock implements PoolRepository {
 		return pool as PoolInfoResponse;
 	};
 
-	getPools = async (option?: {} | undefined): Promise<PoolListResponse> => {
+	getPools = async (): Promise<PoolListResponse> => {
 		return PoolDetailDatas as PoolListResponse;
 	};
 
-	getPoolsByAddress = async (address: string): Promise<PoolListResponse> => {
+	getPoolsByAddress = async (): Promise<PoolListResponse> => {
 		return PoolDetailDatas as PoolListResponse;
 	};
 
@@ -45,8 +44,6 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	getPoolChartTicksByTokenPair = async (
-		token0Id: string,
-		token1Id: string,
 	): Promise<PoolChartResponse> => {
 		return {
 			pool_id: "1",
@@ -56,7 +53,6 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	getPoolSummaryLiquidityById = async (
-		poolId: string,
 	): Promise<PoolSummaryLiquidityResponse> => {
 		const token1Rate = generateNumber(0, 100);
 		return {
@@ -68,7 +64,6 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	getPoolSummaryVolumeById = async (
-		poolId: string,
 	): Promise<PoolSummaryVolumeResponse> => {
 		return {
 			changed_of_24h: generateNumber(1000000000, 90000000000),
@@ -77,7 +72,6 @@ export class PoolRepositoryMock implements PoolRepository {
 	};
 
 	getPoolSummaryAprById = async (
-		poolId: string,
 	): Promise<PoolSummaryAprResponse> => {
 		return {
 			apr: generateNumber(1000, 90000000),

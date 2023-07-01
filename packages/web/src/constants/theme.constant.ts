@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { PaletteType } from "@styles/ThemeTypes";
 
 const darkThemeColors: PaletteType = {

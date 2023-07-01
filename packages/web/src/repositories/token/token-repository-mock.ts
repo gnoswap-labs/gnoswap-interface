@@ -82,7 +82,6 @@ export class TokenRepositoryMock implements TokenRepository {
 	};
 
 	public getUSDExchangeRate = async (
-		tokenId: string,
 	): Promise<USDExchangeRateResponse> => {
 		return {
 			rate: 1.14,

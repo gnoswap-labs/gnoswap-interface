@@ -1,6 +1,4 @@
 import {
-  AmountAllType,
-  AmountNumberType,
   AmountType,
 } from "@/common/types/data-prop-types";
 

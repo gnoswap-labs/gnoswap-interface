@@ -1,7 +1,6 @@
 import { StorageClient } from "@/common/clients/storage-client";
 import {
 	InjectResponse,
-	InjectSendTransactionRequestParam,
 } from "@/common/clients/wallet-client/protocols";
 import {
 	generateAddress,
@@ -56,7 +55,6 @@ export class AccountRepositoryMock implements AccountRepository {
 	};
 
 	public getTransactions = async (
-		address: string,
 	): Promise<AccountTransactionResponse> => {
 		return AccountRepositoryMock.generateTransactions();
 	};
@@ -76,7 +74,6 @@ export class AccountRepositoryMock implements AccountRepository {
 	};
 
 	public sendTransaction = async (
-		request: InjectSendTransactionRequestParam,
 	) => {
 		return {
 			code: 0,
@@ -199,7 +196,7 @@ export class AccountRepositoryMock implements AccountRepository {
 
 	private static generateTransactions = () => {
 		const statusIndex = Math.round(generateNumber(7, 15));
-		let txs = [];
+		const txs = [];
 		for (let i = 0; i < statusIndex; i++) {
 			txs.push(AccountRepositoryMock.generateTransaction());
 		}

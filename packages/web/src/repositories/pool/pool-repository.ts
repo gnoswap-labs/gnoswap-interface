@@ -1,4 +1,3 @@
-import { TokenPairModel } from "@/models/token/token-pair-model";
 import {
 	PoolListResponse,
 	PoolInfoResponse,

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { type FeeOptions } from "@/common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairModel } from "@models/token/token-pair-model";
@@ -127,9 +127,8 @@ export const dummyPoolList: Pool[] = [
 ];
 
 async function fetchPools(
-  type: POOL_TYPE,
-  page: number,
-  keyword: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type: POOL_TYPE, page: number, keyword: string,
 ): Promise<Pool[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([

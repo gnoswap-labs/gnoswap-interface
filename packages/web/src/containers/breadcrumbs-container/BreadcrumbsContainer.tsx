@@ -1,3 +1,4 @@
+
 import React from "react";
 import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
 import { useRouter } from "next/router";
@@ -7,15 +8,15 @@ export interface Steps {
   path?: string;
 }
 
-const stepsDummy: Steps[] = [
-  {
-    title: "Earn",
-    path: "/earn",
-  },
-  {
-    title: "Add Liquidity",
-  },
-];
+// const stepsDummy: Steps[] = [
+//   {
+//     title: "Earn",
+//     path: "/earn",
+//   },
+//   {
+//     title: "Add Liquidity",
+//   },
+// ];
 
 const removePoolSteps = [
   {

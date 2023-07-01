@@ -1,4 +1,3 @@
-import { StatusOptions } from "@/common/values/data-constant";
 
 export interface AccountTransactionResponse {
 	txs: Array<AccountTransaction>;

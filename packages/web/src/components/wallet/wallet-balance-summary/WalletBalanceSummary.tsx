@@ -12,7 +12,7 @@ interface WalletBalanceSummaryProps {
   deposit: () => void;
   withdraw: () => void;
   earn: () => void;
-};
+}
 
 const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
   connected,

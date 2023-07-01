@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import Header from "@components/common/header/Header";
 import { useRouter } from "next/router";
 import React, { useState } from "react";

@@ -1,7 +1,5 @@
-import { LiquidityService } from "./liquidity-service";
 import { LiquidityRepositoryMock } from "@/repositories/liquidity";
 import { LiquidityError } from "@/common/errors/liquidity";
-import BigNumber from "bignumber.js";
 import { LiquidityRewardService } from "./liquidity-reward-service";
 
 const liquidityRepository = new LiquidityRepositoryMock();

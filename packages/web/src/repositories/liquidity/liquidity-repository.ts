@@ -1,6 +1,5 @@
 import {
 	AddLiquidityRequest,
-	ClaimRewardRequest,
 	RemoveLiquidityRequest,
 } from "./request";
 import {

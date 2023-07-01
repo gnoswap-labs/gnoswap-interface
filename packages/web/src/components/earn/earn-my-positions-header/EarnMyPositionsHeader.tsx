@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useState } from "react";
 import { wrapper } from "./EarnMyPositionsHeader.styles";

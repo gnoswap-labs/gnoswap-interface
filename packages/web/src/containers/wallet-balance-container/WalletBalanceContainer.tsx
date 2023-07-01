@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import React, { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";

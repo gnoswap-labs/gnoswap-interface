@@ -1,7 +1,6 @@
 import {
 	generateInteger,
 	generateNumber,
-	generateNumberPlus,
 	generateTokenMetas,
 	generateTxHash,
 } from "@/common/utils/test-util";
@@ -12,12 +11,9 @@ import {
 	UnstakeResponse,
 	StakingPeriodListResponse,
 } from ".";
-import { StakeRequest } from "./request";
-import { UnstakeRequest } from "./request/unstake-request";
 
 export class StakingRepositoryMock implements StakingRepository {
 	public getStakingPeriods = async (
-		poolId: string,
 	): Promise<StakingPeriodListResponse> => {
 		return {
 			periods: [
@@ -41,26 +37,22 @@ export class StakingRepositoryMock implements StakingRepository {
 	};
 
 	public getStakesByAddress = async (
-		address: string,
 	): Promise<StakingListResponse> => {
 		return StakingRepositoryMock.generateStakes();
 	};
 
 	public getStakesByAddressAndPoolId = async (
-		address: string,
-		poolId: string,
 	): Promise<StakingListResponse> => {
 		return StakingRepositoryMock.generateStakes();
 	};
 
-	public stakeBy = async (request: StakeRequest): Promise<StakeResponse> => {
+	public stakeBy = async (): Promise<StakeResponse> => {
 		return {
 			tx_hash: generateTxHash(),
 		};
 	};
 
 	public unstakeBy = async (
-		request: UnstakeRequest,
 	): Promise<UnstakeResponse> => {
 		return {
 			tx_hash: generateTxHash(),

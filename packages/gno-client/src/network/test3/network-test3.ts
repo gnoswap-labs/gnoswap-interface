@@ -125,7 +125,7 @@ export class NetworkTest3 implements GnoClientApi {
   }
 
   public queryEval = async (packagePath: string, functionName: string, data?: Array<string>) => {
-    const functionParams = data?.map(param => `\"${param}\"`).join(',') ?? [""];
+    const functionParams = data?.map(param => `"${param}"`).join(',') ?? [""];
     const functionData = `${functionName}(${functionParams})`
     const result = await this.fetcher.executeAbciQuery('QUERY_EVAL', { data: [packagePath, functionData] });
     const abciQueryResponse = Test3Mapper.AbciQueryMapper.toAbciQuery(result);

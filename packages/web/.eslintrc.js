@@ -6,7 +6,7 @@ module.exports = {
     node: true,
   },
   parser: "@typescript-eslint/parser",
-  extends: ["next"],
+  extends: ["next", "plugin:@typescript-eslint/recommended"],
   rules: {
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "double"],
@@ -18,6 +18,10 @@ module.exports = {
         ArrayPattern: { multiline: true },
       },
     ],
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-empty-function": "warn",
+    "@typescript-eslint/no-empty-interface": "warn",
   },
   settings: {
     "import/external-module-folders": [".yarn"],

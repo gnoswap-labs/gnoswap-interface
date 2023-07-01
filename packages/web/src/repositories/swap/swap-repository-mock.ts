@@ -8,8 +8,6 @@ import {
 	SwapRepository,
 	SwapResponse,
 } from ".";
-import { SwapRequest } from "./request";
-import { SwapInfoRequest } from "./request/swap-info-request";
 
 export class SwapRepositoryMock implements SwapRepository {
 	private localStorageClient: StorageClient;
@@ -19,7 +17,6 @@ export class SwapRepositoryMock implements SwapRepository {
 	}
 
 	public getSwapRate = async (
-		request: SwapInfoRequest,
 	): Promise<SwapRateResponse> => {
 		return {
 			rate: generateNumber(0, 100),
@@ -33,7 +30,6 @@ export class SwapRepositoryMock implements SwapRepository {
 	};
 
 	public getExpectedSwapResult = async (
-		request: SwapInfoRequest,
 	): Promise<SwapExpectedResultResponse> => {
 		return {
 			price_impact: generateNumber(0, 10000),
@@ -57,7 +53,7 @@ export class SwapRepositoryMock implements SwapRepository {
 		return true;
 	};
 
-	public swap = async (request: SwapRequest): Promise<SwapResponse> => {
+	public swap = async (): Promise<SwapResponse> => {
 		return {
 			tx_hash: generateTxHash(),
 		};

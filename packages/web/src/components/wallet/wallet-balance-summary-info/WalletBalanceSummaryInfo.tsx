@@ -3,7 +3,7 @@ import { WalletBalanceSummaryInfoWrapper } from "./WalletBalanceSummaryInfo.styl
 
 interface WalletBalanceSummaryInfoProps {
   balanceSummaryInfo: BalanceSummaryInfo;
-};
+}
 const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
   balanceSummaryInfo
 }) => {

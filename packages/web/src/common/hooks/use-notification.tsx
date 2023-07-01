@@ -48,6 +48,7 @@ export const useNotification = () => {
   /**
    * TODO: Need to get the transaction results from Gnoland
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const updateNotifications = async () => {
     if (!isUpdateNotifications()) {
       return;

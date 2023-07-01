@@ -27,6 +27,7 @@ export class MockStorageClient implements StorageClient {
 	};
 
 	public remove = (key: string) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { [key]: _, ...remains } = this.memories;
 		this.memories = {
 			...remains,

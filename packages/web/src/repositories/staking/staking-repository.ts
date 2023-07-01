@@ -2,7 +2,6 @@ import { StakeRequest } from "./request";
 import { UnstakeRequest } from "./request/unstake-request";
 import {
 	StakeResponse,
-	StakingListResponse,
 	UnstakeResponse,
 	StakingPeriodListResponse,
 } from "./response";

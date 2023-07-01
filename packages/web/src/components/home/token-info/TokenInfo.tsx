@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import React from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";

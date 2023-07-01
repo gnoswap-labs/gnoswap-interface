@@ -1,4 +1,3 @@
-import { TokenInfoResponse } from "./token-info-response";
 
 export interface TokenMetaListResponse {
 	tokens: Array<TokenMeta>;

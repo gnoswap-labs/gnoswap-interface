@@ -9,7 +9,6 @@ import {
 	LiquidityRewardResponse,
 	RemoveLiquidityResponse,
 } from ".";
-import { AddLiquidityRequest, RemoveLiquidityRequest } from "./request";
 
 import LiquidityDatas from "./mock/liquidities.json";
 import { PoolInfoResponse, PoolRepository, PoolRepositoryMock } from "../pool";
@@ -96,7 +95,6 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	};
 
 	public addLiquidityBy = async (
-		request: AddLiquidityRequest,
 	): Promise<AddLiquidityResponse> => {
 		return {
 			tx_hash: generateTxHash(),
@@ -104,7 +102,6 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	};
 
 	public removeLiquiditiesBy = async (
-		request: RemoveLiquidityRequest,
 	): Promise<RemoveLiquidityResponse> => {
 		return {
 			tx_hash: generateTxHash(),
@@ -123,7 +120,6 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
 	};
 
 	public claimRewardByPoolId = async (
-		poolId: string,
 	): Promise<ClaimRewardResponse> => {
 		return {
 			tx_hash: generateTxHash(),

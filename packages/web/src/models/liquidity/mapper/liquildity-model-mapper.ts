@@ -6,7 +6,6 @@ import { TokenPairModelMapper } from "@/models/token/mapper/token-pair-model-map
 import {
 	LiquidityDetailInfoResponse,
 	LiquidityDetailListResponse,
-	LiquidityRewardResponse,
 } from "@/repositories/liquidity";
 import { LiquidityDetailModel } from "../liquidity-detail-model";
 

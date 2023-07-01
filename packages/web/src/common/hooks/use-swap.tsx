@@ -69,7 +69,7 @@ export const useSwap = ({ token0, token1, swapType }: Props) => {
         return response;
       })
       .then(updateSwappedTokens)
-      .catch(_ => setSwapRate(null));
+      .catch(() => setSwapRate(null));
   }, [swapService, swapType, token0, token1, updateSwappedTokens]);
 
   const updateSwapResult = useCallback(() => {
