@@ -25,7 +25,8 @@
       "@layouts/*": ["src/layouts/*"],
       "@models/*": ["src/models/*"],
       "@/*": ["src/*"]
-    }
+    },
+    "jsxImportSource": "@emotion/react"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
   "exclude": ["node_modules"]
