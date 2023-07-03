@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { POOL_TD_WIDTH } from "@constants/skeleton.constant";
 import { type Pool } from "@containers/pool-list-container/PoolListContainer";
@@ -14,7 +16,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {
     feeRate,
     liquidity,
     apr,
-    volumn24h,
+    volume24h,
     fees24h,
     rewards,
     incentiveType,
@@ -34,7 +36,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {
         <span className="liquidity">{liquidity}</span>
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[2]}>
-        <span className="volumn">{volumn24h}</span>
+        <span className="volume">{volume24h}</span>
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[3]}>
         <span className="fees">{fees24h}</span>

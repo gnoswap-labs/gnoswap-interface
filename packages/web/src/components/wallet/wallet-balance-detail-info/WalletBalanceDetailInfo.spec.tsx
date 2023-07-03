@@ -8,7 +8,7 @@ describe("WalletBalanceDetailInfo Component", () => {
     const mockProps = {
       connected: true,
       title: "Available Balance",
-      value: "1.00%"
+      value: "1.00%",
     };
 
     render(
@@ -16,7 +16,7 @@ describe("WalletBalanceDetailInfo Component", () => {
         <GnoswapThemeProvider>
           <WalletBalanceDetailInfo {...mockProps} />
         </GnoswapThemeProvider>
-      </RecoilRoot>
+      </RecoilRoot>,
     );
   });
 });

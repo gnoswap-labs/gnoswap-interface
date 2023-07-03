@@ -1,19 +1,21 @@
-import { GnoClientResnpose } from '../../../../api';
+import { GnoClientResponse } from '../../../../api';
 import { Test3Response } from '..';
 
 export class HistoryMapper {
-  public static toHistory = (history: Test3Response.History): GnoClientResnpose.History => {
+  public static toHistory = (history: Test3Response.History): GnoClientResponse.History => {
     const hits = history.hits;
     const next = history.next;
     const txs = history.txs.map(HistoryMapper.toHistoryItem);
     return {
       hits,
       next,
-      txs
+      txs,
     };
   };
 
-  private static toHistoryItem = (historyItem: Test3Response.HistoryItemType): GnoClientResnpose.HistoryItemType => {
+  private static toHistoryItem = (
+    historyItem: Test3Response.HistoryItemType,
+  ): GnoClientResponse.HistoryItemType => {
     if (historyItem.type === '/bank.MsgSend') {
       return this.toHistoryItemBankMsgSend(historyItem as Test3Response.HistoryItemBankMsgSend);
     }
@@ -21,16 +23,18 @@ export class HistoryMapper {
       return this.toHistoryItemVmMAddPkg(historyItem as Test3Response.HistoryItemVmMAddPkg);
     }
     return this.toHistoryItemVmMCall(historyItem as Test3Response.HistoryItemVmMCall);
-  }
+  };
 
-  private static toHistoryItemBankMsgSend = (historyItem: Test3Response.HistoryItemBankMsgSend): GnoClientResnpose.HistoryItemBankMsgSend => {
+  private static toHistoryItemBankMsgSend = (
+    historyItem: Test3Response.HistoryItemBankMsgSend,
+  ): GnoClientResponse.HistoryItemBankMsgSend => {
     const transfer = {
       ...historyItem.transfer,
-      amount: `${historyItem.transfer.amount || 0}`
+      amount: `${historyItem.transfer.amount || 0}`,
     };
     const fee = {
       ...historyItem.fee,
-      amount: `${historyItem.fee.amount || 0}`
+      amount: `${historyItem.fee.amount || 0}`,
     };
     return {
       ...historyItem,
@@ -40,14 +44,16 @@ export class HistoryMapper {
     };
   };
 
-  private static toHistoryItemVmMAddPkg = (historyItem: Test3Response.HistoryItemVmMAddPkg): GnoClientResnpose.HistoryItemVmMAddPkg => {
+  private static toHistoryItemVmMAddPkg = (
+    historyItem: Test3Response.HistoryItemVmMAddPkg,
+  ): GnoClientResponse.HistoryItemVmMAddPkg => {
     const transfer = {
       ...historyItem.transfer,
-      amount: `${historyItem.transfer.amount || 0}`
+      amount: `${historyItem.transfer.amount || 0}`,
     };
     const fee = {
       ...historyItem.fee,
-      amount: `${historyItem.fee.amount || 0}`
+      amount: `${historyItem.fee.amount || 0}`,
     };
     return {
       ...historyItem,
@@ -57,25 +63,29 @@ export class HistoryMapper {
       package: {
         name: historyItem.package.Name,
         path: historyItem.package.Path,
-        files: historyItem.package.Files.map(file => { return { name: file.Name, body: file.Body } })
-      }
-    }
-  }
-  private static toHistoryItemVmMCall = (historyItem: Test3Response.HistoryItemVmMCall): GnoClientResnpose.HistoryItemVmMCall => {
+        files: historyItem.package.Files.map((file) => {
+          return { name: file.Name, body: file.Body };
+        }),
+      },
+    };
+  };
+  private static toHistoryItemVmMCall = (
+    historyItem: Test3Response.HistoryItemVmMCall,
+  ): GnoClientResponse.HistoryItemVmMCall => {
     const transfer = {
       ...historyItem.transfer,
-      amount: `${historyItem.transfer.amount || 0}`
+      amount: `${historyItem.transfer.amount || 0}`,
     };
     const fee = {
       ...historyItem.fee,
-      amount: `${historyItem.fee.amount || 0}`
+      amount: `${historyItem.fee.amount || 0}`,
     };
     return {
       ...historyItem,
       transfer,
       fee,
       msgNum: historyItem.msg_num,
-      pkgPath: historyItem.pkg_path
-    }
-  }
+      pkgPath: historyItem.pkg_path,
+    };
+  };
 }

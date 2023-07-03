@@ -1,11 +1,11 @@
 export interface ErrorResponse<T = any> {
-	isError: boolean;
+  isError: boolean;
 
-	status: number;
+  status: number;
 
-	type: string;
+  type: string;
 
-	message: string;
+  message: string;
 
-	data: T | null;
+  data: T | null;
 }

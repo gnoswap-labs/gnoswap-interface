@@ -9,13 +9,13 @@ interface EnterAmountsProps {
     token: string;
     amount: string;
     price: string;
-    balence: string;
+    balance: string;
   };
   to: {
     token: string;
     amount: string;
     price: string;
-    balence: string;
+    balance: string;
   };
 }
 
@@ -61,7 +61,7 @@ const EnterAmounts: React.FC<EnterAmountsProps> = ({ from, to }) => {
             </div>
             <div className="info">
               <span className="price-text">{from.price}</span>
-              <span className="balence-text">Balence : {from.balence}</span>
+              <span className="balance-text">Balance : {from.balance}</span>
             </div>
           </div>
           <div className="to">
@@ -76,7 +76,7 @@ const EnterAmounts: React.FC<EnterAmountsProps> = ({ from, to }) => {
             </div>
             <div className="info">
               <span className="price-text">{to.price}</span>
-              <span className="balence-text">Balence : {to.balence}</span>
+              <span className="balance-text">Balance : {to.balance}</span>
             </div>
           </div>
           <div className="arrow">

@@ -1,14 +1,14 @@
-import { GnoClientResnpose } from '.';
+import { GnoClientResponse } from '.';
 import { GnoClientApiAbciQuery } from './gno-client-api-abci-query';
 
 export interface GnoClientApi extends GnoClientApiAbciQuery {
   isHealth: () => Promise<boolean>;
 
-  getNetwrokInfo: () => Promise<GnoClientResnpose.NetworkInfo>;
+  getNetworkInfo: () => Promise<GnoClientResponse.NetworkInfo>;
 
-  getGenesis: () => Promise<GnoClientResnpose.Genesis>;
+  getGenesis: () => Promise<GnoClientResponse.Genesis>;
 
-  getBlocks: (minHeight: number, maxHeight: number) => Promise<GnoClientResnpose.Blocks>;
+  getBlocks: (minHeight: number, maxHeight: number) => Promise<GnoClientResponse.Blocks>;
 
   getBlock: (height: number) => Promise<any>;
 
@@ -28,11 +28,11 @@ export interface GnoClientApi extends GnoClientApiAbciQuery {
 
   getAbciInfo: () => Promise<any>;
 
-  broadcastTxCommit: (tx: string) => Promise<GnoClientResnpose.BroadcastTxCommit>;
+  broadcastTxCommit: (tx: string) => Promise<GnoClientResponse.BroadcastTxCommit>;
 
-  broadcastTxSync: (tx: string) => Promise<GnoClientResnpose.BroadcastTxSync>;
+  broadcastTxSync: (tx: string) => Promise<GnoClientResponse.BroadcastTxSync>;
 
-  broadcastTxAsync: (tx: string) => Promise<GnoClientResnpose.BroadcastTxAsync>;
+  broadcastTxAsync: (tx: string) => Promise<GnoClientResponse.BroadcastTxAsync>;
 
-  getTransactionHistory: (address: string, page?: number) => Promise<GnoClientResnpose.History>;
+  getTransactionHistory: (address: string, page?: number) => Promise<GnoClientResponse.History>;
 }

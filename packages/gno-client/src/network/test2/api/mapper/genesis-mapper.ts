@@ -1,8 +1,8 @@
-import { GnoClientResnpose } from '../../../../api';
+import { GnoClientResponse } from '../../../../api';
 import { Test2Response } from '..';
 
 export class GenesisMapper {
-  public static toGenesis = (genesis: Test2Response.Genesis): GnoClientResnpose.Genesis => {
+  public static toGenesis = (genesis: Test2Response.Genesis): GnoClientResponse.Genesis => {
     const genesisValue = genesis.genesis;
     return {
       genesisTime: genesisValue.genesis_time,

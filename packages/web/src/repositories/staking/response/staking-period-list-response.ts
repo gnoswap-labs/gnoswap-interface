@@ -1,11 +1,11 @@
 export interface StakingPeriodListResponse {
-	periods: Array<StakingPeriodInfo>;
+  periods: Array<StakingPeriodInfo>;
 }
 
 export interface StakingPeriodInfo {
-	period: number;
+  period: number;
 
-	apr: number;
+  apr: number;
 
-	benefits: Array<string>;
+  benefits: Array<string>;
 }

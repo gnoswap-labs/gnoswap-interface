@@ -44,7 +44,7 @@ export const poolPairInit = {
       value: "+3.52%",
     },
   },
-  volumn24h: {
+  volume24h: {
     value: "$100.24m",
     change24h: {
       status: MATH_NEGATIVE_TYPE.NEGATIVE,

@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import React, { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
@@ -16,11 +18,11 @@ export interface BalanceDetailInfo {
 
 const initialBalanceSummaryInfo: BalanceSummaryInfo = {
   amount: "$0.00",
-  changeRate: "+0.0%"
+  changeRate: "+0.0%",
 };
 
 async function fetchBalanceSummaryInfo(
-  address: string
+  address: string,
 ): Promise<BalanceSummaryInfo> {
   console.debug("fetchBalanceSummaryInfo", address);
   return Promise.resolve({ amount: "1324.40", changeRate: "+14.3%" });
@@ -34,7 +36,7 @@ const initialBalanceDetailInfo: BalanceDetailInfo = {
 };
 
 async function fetchBalanceDetailInfo(
-  address: string
+  address: string,
 ): Promise<BalanceDetailInfo> {
   console.debug("fetchBalanceDetailInfo", address);
   return Promise.resolve({
@@ -59,8 +61,7 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
 
-  const earn = useCallback(() => {
-  }, []);
+  const earn = useCallback(() => {}, []);
 
   const {
     isLoading: isBalanceSummaryInfoLoading,
@@ -72,7 +73,7 @@ const WalletBalanceContainer: React.FC = () => {
       if (!connected) return initialBalanceSummaryInfo;
       return fetchBalanceSummaryInfo(address);
     },
-    initialData: initialBalanceSummaryInfo
+    initialData: initialBalanceSummaryInfo,
   });
 
   const {
@@ -85,7 +86,7 @@ const WalletBalanceContainer: React.FC = () => {
       if (!connected) return initialBalanceDetailInfo;
       return fetchBalanceDetailInfo(address);
     },
-    initialData: initialBalanceDetailInfo
+    initialData: initialBalanceDetailInfo,
   });
 
   return (

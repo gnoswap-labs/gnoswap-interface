@@ -1,7 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
-import { Z_INDEX } from "@styles/zIndex";
 
 export const wrapper = (theme: Theme) => css`
   background-color: ${theme.colors.colorBlack};

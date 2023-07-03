@@ -9,31 +9,29 @@ import { InjectResponse } from "@/common/clients/wallet-client/protocols";
 import { Account } from "@gnoswap-labs/gno-client/src/api/response";
 
 export class AccountInfoMapper {
-	public static fromResopnse(
-		response: InjectResponse<AccountInfoResponse>,
-	): AccountInfoModel {
-		const { coins, address, status } = response.data;
-		const balance: AmountType = notNullStringType(coins)
-			? textToBalances(coins)[0]
-			: amountEmptyBigNumInit;
-		return {
-			address: address,
-			amount: balance,
-			status: status as ActiveStatusOptions,
-		};
-	}
+  public static fromResponse(
+    response: InjectResponse<AccountInfoResponse>,
+  ): AccountInfoModel {
+    const { coins, address, status } = response.data;
+    const balance: AmountType = notNullStringType(coins)
+      ? textToBalances(coins)[0]
+      : amountEmptyBigNumInit;
+    return {
+      address: address,
+      amount: balance,
+      status: status as ActiveStatusOptions,
+    };
+  }
 
-	public static fromGnoResopnse(
-		response: Account,
-	): AccountInfoModel {
-		const { coins, address, status } = response;
-		const balance: AmountType = notNullStringType(coins)
-			? textToBalances(coins)[0]
-			: amountEmptyBigNumInit;
-		return {
-			address: address,
-			amount: balance,
-			status: status as ActiveStatusOptions,
-		};
-	}
+  public static fromGnoResponse(response: Account): AccountInfoModel {
+    const { coins, address, status } = response;
+    const balance: AmountType = notNullStringType(coins)
+      ? textToBalances(coins)[0]
+      : amountEmptyBigNumInit;
+    return {
+      address: address,
+      amount: balance,
+      status: status as ActiveStatusOptions,
+    };
+  }
 }

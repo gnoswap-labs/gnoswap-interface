@@ -1,21 +1,21 @@
 import {
-	InjectResponse,
-	InjectSendTransactionRequestParam,
+  InjectResponse,
+  InjectSendTransactionRequestParam,
 } from "@/common/clients/wallet-client/protocols";
 import { Account } from "@gnoswap-labs/gno-client/src/api/response";
-import { AccountNotificationRepository } from "./account-norification-repository";
+import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountInfoResponse } from "./response";
 
 export interface AccountRepository extends AccountNotificationRepository {
-	getAccount: () => Promise<InjectResponse<AccountInfoResponse>>;
+  getAccount: () => Promise<InjectResponse<AccountInfoResponse>>;
 
-	getAccountByAddress: (address: string) => Promise<Account>;
+  getAccountByAddress: (address: string) => Promise<Account>;
 
-	existsWallet: () => boolean;
+  existsWallet: () => boolean;
 
-	addEstablishedSite: () => Promise<InjectResponse<any>>;
+  addEstablishedSite: () => Promise<InjectResponse<any>>;
 
-	sendTransaction: (
-		request: InjectSendTransactionRequestParam,
-	) => Promise<InjectResponse<any>>;
+  sendTransaction: (
+    request: InjectSendTransactionRequestParam,
+  ) => Promise<InjectResponse<any>>;
 }

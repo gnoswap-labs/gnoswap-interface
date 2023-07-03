@@ -1,24 +1,24 @@
 export interface AddLiquidityRequest {
-	liquidity: Liquidity;
-	options: LiquidityOption;
+  liquidity: Liquidity;
+  options: LiquidityOption;
 }
 
 interface Liquidity {
-	token0: LiquidityToken;
-	token1: LiquidityToken;
+  token0: LiquidityToken;
+  token1: LiquidityToken;
 }
 
 interface LiquidityToken {
-	tokenId: string;
-	amount: {
-		value: string;
-		denom: string;
-	};
+  tokenId: string;
+  amount: {
+    value: string;
+    denom: string;
+  };
 }
 
 interface LiquidityOption {
-	rangeType: "ACTIVE" | "PASSIVE" | "CUSTOM";
-	feeRate: number;
-	minRate: number;
-	maxRate: number;
+  rangeType: "ACTIVE" | "PASSIVE" | "CUSTOM";
+  feeRate: number;
+  minRate: number;
+  maxRate: number;
 }

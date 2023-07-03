@@ -1,5 +1,4 @@
 import { THEME_MAP } from "@constants/theme.constant";
-import { SerializedStyles } from "@emotion/react";
 
 export type PaletteKeyType =
   | "colorBlack"

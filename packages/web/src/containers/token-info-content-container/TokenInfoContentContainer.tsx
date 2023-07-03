@@ -71,7 +71,7 @@ export const priceInfomationInit = {
 export const marketInformationInit = {
   popularity: "#1",
   tvl: "$230.12M",
-  volumn24h: "$230.12M",
+  volume24h: "$230.12M",
   fees24h: "$230.12M",
 };
 

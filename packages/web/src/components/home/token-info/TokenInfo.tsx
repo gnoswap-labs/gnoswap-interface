@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import React from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
@@ -39,7 +41,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     priceOf30d,
     marketCap,
     liquidity,
-    volumn24h,
+    volume24h,
     mostLiquidPool,
     last7days,
   } = item;
@@ -83,7 +85,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         </TableColumn>
 
         <TableColumn tdWidth={TOKEN_TD_WIDTH[8]}>
-          <span className="volumn">{volumn24h}</span>
+          <span className="volume">{volume24h}</span>
         </TableColumn>
       </HoverSection>
 

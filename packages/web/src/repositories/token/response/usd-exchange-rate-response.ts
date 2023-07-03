@@ -1,3 +1,3 @@
 export interface USDExchangeRateResponse {
-	rate: number;
+  rate: number;
 }

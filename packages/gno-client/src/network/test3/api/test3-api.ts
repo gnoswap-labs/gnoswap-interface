@@ -4,7 +4,7 @@ import { Test3Response } from '.';
 export interface Test3Api {
   getHealth: () => Promise<boolean>;
 
-  getNetwrokInfo: () => Promise<Test3Response.Status>;
+  getNetworkInfo: () => Promise<Test3Response.Status>;
 
   getGenesis: () => Promise<Test3Response.Genesis>;
 
@@ -38,8 +38,8 @@ export interface Test3Api {
     queryType: QueryType,
     request: {
       query?: { [key in string]: string };
-      data?: Array<string>
-    }
+      data?: Array<string>;
+    },
   ) => Promise<Test3Response.AbciQuery>;
 
   getTransactionHistory: (address: string, page: number) => Promise<Test3Response.History>;

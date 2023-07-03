@@ -1,8 +1,6 @@
 import { ThemeState } from "@/states";
-import Header from "@components/common/header/Header";
 import ThemeModeButton from "@components/common/theme-mode-button/ThemeModeButton";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 
 const ThemeModeContainer: React.FC = () => {

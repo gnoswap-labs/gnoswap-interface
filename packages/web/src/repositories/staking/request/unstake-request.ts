@@ -1,3 +1,3 @@
 export interface UnstakeRequest {
-	liquidityIds: Array<string>;
+  liquidityIds: Array<string>;
 }

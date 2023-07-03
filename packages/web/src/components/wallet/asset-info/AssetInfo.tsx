@@ -36,7 +36,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw }) => {
         <span className="balance">{balance}</span>
       </TableColumn>
       <TableColumn tdWidth={ASSET_TD_WIDTH[3]}>
-        <DipositButton onClick={onClickDeposit} />
+        <DepositButton onClick={onClickDeposit} />
       </TableColumn>
       <TableColumn tdWidth={ASSET_TD_WIDTH[4]}>
         <WithdrawButton onClick={onClickWithdraw} />
@@ -45,7 +45,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw }) => {
   );
 };
 
-export const DipositButton = ({
+export const DepositButton = ({
   onClick,
   disabled = false,
 }: {

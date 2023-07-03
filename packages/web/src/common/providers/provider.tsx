@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+// TODO : remove eslint-disable after work
+/* eslint-disable */
+import React from "react";
 import {
-	AccountRepositoryInstance,
-	AccountRepositoryMock,
+  AccountRepositoryInstance,
+  AccountRepositoryMock,
 } from "@/repositories/account";
 import { LiquidityRepositoryMock } from "@/repositories/liquidity";
 import { PoolRepositoryMock } from "@/repositories/pool";
@@ -24,65 +26,65 @@ import { SwapService } from "@/services/swap/swap-service";
 import { MockStorageClient } from "../clients/storage-client/mock-storage-client";
 
 interface Props {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export const GnoswapProvider = ({ children }: Props) => {
-	const walletClient: WalletClient = AdenaClient.createAdenaClient();
-	const networkClient: NetworkClient = AxiosClient.createAxiosClient();
-	const localStorageClient: StorageClient =
-		WebStorageClient.createLocalStorageClient();
-	const sessionStorageClient: StorageClient =
-		WebStorageClient.createSessionStorageClient();
-	const mockLocalStorageClient: StorageClient =
-		MockStorageClient.createLocalStorageClient();
-	const gnoClient: GnoClientApi = GnoClient.createNetworkByType(
-		{
-			chainId: "test3",
-			chainName: "Testnet 3",
-			rpcUrl: "https://rpc.test3.gno.land",
-			apiUrl: "",
-			linkUrl: "",
-		},
-		"TEST3",
-	);
+  const walletClient: WalletClient = AdenaClient.createAdenaClient();
+  const networkClient: NetworkClient = AxiosClient.createAxiosClient();
+  const localStorageClient: StorageClient =
+    WebStorageClient.createLocalStorageClient();
+  const sessionStorageClient: StorageClient =
+    WebStorageClient.createSessionStorageClient();
+  const mockLocalStorageClient: StorageClient =
+    MockStorageClient.createLocalStorageClient();
+  const gnoClient: GnoClientApi = GnoClient.createNetworkByType(
+    {
+      chainId: "test3",
+      chainName: "Testnet 3",
+      rpcUrl: "https://rpc.test3.gno.land",
+      apiUrl: "",
+      linkUrl: "",
+    },
+    "TEST3",
+  );
 
-	const accountRepository = new AccountRepositoryInstance(
-		gnoClient,
-		walletClient,
-		localStorageClient,
-	);
-	const liquidityRepository = new LiquidityRepositoryMock();
-	const poolRepository = new PoolRepositoryMock();
-	const stakingRepository = new StakingRepositoryMock();
-	const swapRepository = new SwapRepositoryMock();
-	const tokenRepository = new TokenRepositoryMock(mockLocalStorageClient);
+  const accountRepository = new AccountRepositoryInstance(
+    gnoClient,
+    walletClient,
+    localStorageClient,
+  );
+  const liquidityRepository = new LiquidityRepositoryMock();
+  const poolRepository = new PoolRepositoryMock();
+  const stakingRepository = new StakingRepositoryMock();
+  const swapRepository = new SwapRepositoryMock();
+  const tokenRepository = new TokenRepositoryMock(mockLocalStorageClient);
 
-	const accountService = new AccountService(accountRepository);
-	const tokenService = new TokenService(tokenRepository);
-	const poolService = new PoolService(poolRepository);
-	const liquidityService = new LiquidityService(liquidityRepository);
-	const stakingService = new StakingService(stakingRepository);
-	const swapService = new SwapService(swapRepository);
+  const accountService = new AccountService(accountRepository);
+  const tokenService = new TokenService(tokenRepository);
+  const poolService = new PoolService(poolRepository);
+  const liquidityService = new LiquidityService(liquidityRepository);
+  const stakingService = new StakingService(stakingRepository);
+  const swapService = new SwapService(swapRepository);
 
-	return (
-		<GnoswapContext.Provider
-			value={{
-				accountService,
-				tokenService,
-				poolService,
-				liquidityService,
-				stakingService,
-				swapService,
-				accountRepository,
-				liquidityRepository,
-				poolRepository,
-				stakingRepository,
-				swapRepository,
-				tokenRepository,
-			}}
-		>
-			{children}
-		</GnoswapContext.Provider>
-	);
+  return (
+    <GnoswapContext.Provider
+      value={{
+        accountService,
+        tokenService,
+        poolService,
+        liquidityService,
+        stakingService,
+        swapService,
+        accountRepository,
+        liquidityRepository,
+        poolRepository,
+        stakingRepository,
+        swapRepository,
+        tokenRepository,
+      }}
+    >
+      {children}
+    </GnoswapContext.Provider>
+  );
 };

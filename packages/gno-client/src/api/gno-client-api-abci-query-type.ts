@@ -1,13 +1,12 @@
 export type QueryType =
-  'GET_ACCOUNT_INFO' |
-  'GET_BALANCES' |
-  'QUERY_RENDER' |
-  'QUERY_EVAL' |
-  'QUERY_PACKAGE' |
-  'QUERY_FILE' |
-  'QUERY_FUNCTIONS' |
-  'QUERY_STORE'
-  ;
+  | 'GET_ACCOUNT_INFO'
+  | 'GET_BALANCES'
+  | 'QUERY_RENDER'
+  | 'QUERY_EVAL'
+  | 'QUERY_PACKAGE'
+  | 'QUERY_FILE'
+  | 'QUERY_FUNCTIONS'
+  | 'QUERY_STORE';
 
 export const QUERY_PATH: { [key in QueryType]: string } = {
   GET_ACCOUNT_INFO: 'auth/accounts/:address',

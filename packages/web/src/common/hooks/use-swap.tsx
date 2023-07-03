@@ -33,26 +33,32 @@ export const useSwap = ({ token0, token1, swapType }: Props) => {
     setSlippage(slippage);
   }, [swapService]);
 
-  const updateSlippage = useCallback((slippage: number) => {
-    swapService.setSlippage(slippage);
-    setSlippage(slippage);
-  }, [swapService]);
+  const updateSlippage = useCallback(
+    (slippage: number) => {
+      swapService.setSlippage(slippage);
+      setSlippage(slippage);
+    },
+    [swapService],
+  );
 
-  const updateSwappedTokens = useCallback((swapRate: BigNumber | null) => {
-    if (!token0 || !token1 || !swapRate) {
-      return false;
-    }
-    if (swapType === "EXACT_IN") {
-      const swappedToken = exchangeTokenByRate(token0, token1, swapRate);
-      setSwappedToken0(token0);
-      setSwappedToken1(swappedToken);
-    } else if (swapType === "EXACT_OUT") {
-      const swappedToken = exchangeTokenByRate(token0, token1, swapRate);
-      setSwappedToken0(swappedToken);
-      setSwappedToken1(token1);
-    }
-    return true;
-  }, [exchangeTokenByRate, swapType, token0, token1]);
+  const updateSwappedTokens = useCallback(
+    (swapRate: BigNumber | null) => {
+      if (!token0 || !token1 || !swapRate) {
+        return false;
+      }
+      if (swapType === "EXACT_IN") {
+        const swappedToken = exchangeTokenByRate(token0, token1, swapRate);
+        setSwappedToken0(token0);
+        setSwappedToken1(swappedToken);
+      } else if (swapType === "EXACT_OUT") {
+        const swappedToken = exchangeTokenByRate(token0, token1, swapRate);
+        setSwappedToken0(swappedToken);
+        setSwappedToken1(token1);
+      }
+      return true;
+    },
+    [exchangeTokenByRate, swapType, token0, token1],
+  );
 
   const updateSwapRate = useCallback(() => {
     if (!token0 || !token1) {
@@ -69,7 +75,7 @@ export const useSwap = ({ token0, token1, swapType }: Props) => {
         return response;
       })
       .then(updateSwappedTokens)
-      .catch(_ => setSwapRate(null));
+      .catch(() => setSwapRate(null));
   }, [swapService, swapType, token0, token1, updateSwappedTokens]);
 
   const updateSwapResult = useCallback(() => {

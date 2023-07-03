@@ -1,3 +1,3 @@
 export interface InjectExistsRequest {
-	existsWallet: () => boolean;
+  existsWallet: () => boolean;
 }

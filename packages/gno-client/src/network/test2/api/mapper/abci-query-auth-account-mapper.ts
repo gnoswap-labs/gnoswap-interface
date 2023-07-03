@@ -1,12 +1,12 @@
-import { GnoClientResnpose } from '../../../../api';
+import { GnoClientResponse } from '../../../../api';
 import { AbciQueryAuthAccount } from '../response';
 
 export class AbciQueryAuthAccountMapper {
   public static toAccount = (
     abciQueryAuthAccount: AbciQueryAuthAccount | null,
-  ): GnoClientResnpose.Account => {
+  ): GnoClientResponse.Account => {
     if (abciQueryAuthAccount === null) {
-      return GnoClientResnpose.AccountInActive;
+      return GnoClientResponse.AccountInActive;
     }
 
     return {

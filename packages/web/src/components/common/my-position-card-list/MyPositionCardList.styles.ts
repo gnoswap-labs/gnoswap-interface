@@ -1,7 +1,6 @@
-import { css, Theme } from "@emotion/react";
-import mixins from "@styles/mixins";
+import { css } from "@emotion/react";
 
-export const wrapper = (theme: Theme) => css`
+export const wrapper = () => css`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;

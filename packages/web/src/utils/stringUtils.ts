@@ -1,5 +1,4 @@
 import { TokenPairModel } from "./../models/token/token-pair-model";
-import { TokenDefaultModel } from "./../models/token/token-default-model";
 import { addressValidationCheck } from "./validationUtils";
 
 /**
