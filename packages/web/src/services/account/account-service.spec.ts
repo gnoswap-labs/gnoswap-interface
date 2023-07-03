@@ -163,6 +163,7 @@ describe("Get Notifications By Address", () => {
       tokenId: "1",
       name: "test",
       symbol: "TEST",
+      tokenLogo: "",
     };
     const transaction: TransactionModel = {
       txType: 0,
@@ -191,6 +192,7 @@ describe("Get Notifications By Address", () => {
       tokenId: "",
       name: "",
       symbol: "",
+      tokenLogo: "",
     };
     const transaction: TransactionModel = {
       txType: 0,
