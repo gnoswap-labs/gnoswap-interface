@@ -1,7 +1,7 @@
 import mixins from "@/styles/mixins";
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 
-export const wrapper = (theme: Theme) => css`
+export const wrapper = () => css`
   .hero-section,
   .tokens-section {
     ${mixins.flexbox("row", "flex-start", "space-between")};

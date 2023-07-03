@@ -1,11 +1,11 @@
 export interface StakingPeriodInfoListModel {
-	periods: Array<StakingPeriodInfoModel>;
+  periods: Array<StakingPeriodInfoModel>;
 }
 
 export interface StakingPeriodInfoModel {
-	period: number;
+  period: number;
 
-	apr: number;
+  apr: number;
 
-	benefits: Array<string>;
+  benefits: Array<string>;
 }

@@ -8,7 +8,7 @@ beforeEach(() => {
     chainName: 'Testnet 3',
     rpcUrl: 'https://rpc.test3.gno.land',
     apiUrl: 'https://api.adena.app',
-    linkUrl: 'https://gnoscan.io'
+    linkUrl: 'https://gnoscan.io',
   });
 });
 
@@ -20,7 +20,7 @@ describe('testnet3 api', () => {
   });
 
   test('network info is not undefiend', async () => {
-    const result = await fetcher.getNetwrokInfo();
+    const result = await fetcher.getNetworkInfo();
 
     expect(result).not.toBeUndefined();
   });
@@ -89,7 +89,7 @@ describe('testnet3 api', () => {
     const result = await fetcher.executeAbciQuery('GET_ACCOUNT_INFO', {
       query: {
         address: 'g14vhcdsyf83ngsrrqc92kmw8q9xakqjm0v8448t',
-      }
+      },
     });
 
     expect(result).not.toBeUndefined();
@@ -97,7 +97,7 @@ describe('testnet3 api', () => {
 
   test('execute abci query by QUERY_RENDER and gno.land/r/demo/users is not undefined', async () => {
     const result = await fetcher.executeAbciQuery('QUERY_RENDER', {
-      data: ['gno.land/r/demo/users', '']
+      data: ['gno.land/r/demo/users', ''],
     });
 
     expect(result).not.toBeUndefined();

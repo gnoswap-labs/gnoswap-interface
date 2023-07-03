@@ -1,3 +1,3 @@
-export interface ClaimRewardReqeust {
-	poolId: string;
+export interface ClaimRewardRequest {
+  poolId: string;
 }

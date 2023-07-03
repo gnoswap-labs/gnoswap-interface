@@ -13,7 +13,9 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     <WalletBalanceDetailInfo
       title={"Available Balance"}
       value={balanceDetailInfo.availableBalance}
-      tooltip={"sum of assets not deposited in liquidity pools and unstaked lp tokens."}
+      tooltip={
+        "sum of assets not deposited in liquidity pools and unstaked lp tokens."
+      }
     />
 
     <WalletBalanceDetailInfo

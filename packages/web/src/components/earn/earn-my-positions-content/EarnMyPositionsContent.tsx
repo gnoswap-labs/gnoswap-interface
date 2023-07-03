@@ -1,7 +1,7 @@
 import { ValuesType } from "utility-types";
 import { wrapper } from "./EarnMyPositionsContent.styles";
 
-interface EarnMyPositionContentrProps {
+interface EarnMyPositionContentProps {
   unconnected: React.ReactNode;
   noLiquidity: React.ReactNode;
   cardList: React.ReactNode;
@@ -16,7 +16,7 @@ export const MY_POSITIONS_STATUS = {
 } as const;
 export type MY_POSITIONS_STATUS = ValuesType<typeof MY_POSITIONS_STATUS>;
 
-const EarnMyPositionsContent: React.FC<EarnMyPositionContentrProps> = ({
+const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   unconnected,
   noLiquidity,
   cardList,

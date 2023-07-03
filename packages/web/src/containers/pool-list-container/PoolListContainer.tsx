@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { type FeeOptions } from "@/common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairModel } from "@models/token/token-pair-model";
@@ -11,7 +11,7 @@ export interface Pool {
   feeRate: FeeOptions;
   liquidity: string;
   apr: string;
-  volumn24h: string;
+  volume24h: string;
   fees24h: string;
   rewards: Array<string>;
   incentiveType: POOL_TYPE;
@@ -58,7 +58,7 @@ export const dummyPoolList: Pool[] = [
     feeRate: "0.01%",
     liquidity: "$12,090.41M",
     apr: "$311,421.12M",
-    volumn24h: "$311,421.12M",
+    volume24h: "$311,421.12M",
     fees24h: "$311,421.12M",
     rewards: [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
@@ -87,7 +87,7 @@ export const dummyPoolList: Pool[] = [
     feeRate: "0.05%",
     liquidity: "$12,090.41M",
     apr: "$311,421.12M",
-    volumn24h: "$311,421.12M",
+    volume24h: "$311,421.12M",
     fees24h: "$311,421.12M",
     rewards: [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x4E15361FD6b4BB609Fa63C81A2be19d873717870/logo.png",
@@ -116,7 +116,7 @@ export const dummyPoolList: Pool[] = [
     feeRate: "0.3%",
     liquidity: "$12,090.41M",
     apr: "$311,421.12M",
-    volumn24h: "$311,421.12M",
+    volume24h: "$311,421.12M",
     fees24h: "$311,421.12M",
     rewards: [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x4E15361FD6b4BB609Fa63C81A2be19d873717870/logo.png",
@@ -127,6 +127,7 @@ export const dummyPoolList: Pool[] = [
 ];
 
 async function fetchPools(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type: POOL_TYPE,
   page: number,
   keyword: string,

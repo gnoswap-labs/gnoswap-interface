@@ -1,6 +1,5 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
-import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
 export const wrapper = (active: boolean) => (theme: Theme) =>

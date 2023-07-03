@@ -1,39 +1,39 @@
 import {
-	TokenSearchItemType,
-	TokenSearchListModel,
+  TokenSearchItemType,
+  TokenSearchListModel,
 } from "@/models/token/token-search-list-model";
 import {
-	TokenDatatableResponse,
-	TokenInfoResponse,
-	SummaryPopularTokenListResponse,
-	SummaryHighestRewardListResponse,
-	SummaryRecentlyAddedListResponse,
-	TokenSearchListResponse,
-	ExchangeRateResponse,
-	TokenMetaListResponse,
-	USDExchangeRateResponse,
+  TokenDatatableResponse,
+  TokenInfoResponse,
+  SummaryPopularTokenListResponse,
+  SummaryHighestRewardListResponse,
+  SummaryRecentlyAddedListResponse,
+  TokenSearchListResponse,
+  ExchangeRateResponse,
+  TokenMetaListResponse,
+  USDExchangeRateResponse,
 } from "./response";
 
 export interface TokenRepository {
-	getAllTokenMetas: () => Promise<TokenMetaListResponse>;
+  getAllTokenMetas: () => Promise<TokenMetaListResponse>;
 
-	getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
+  getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
 
-	searchTokens: (keyword: string) => Promise<TokenSearchListResponse>;
+  searchTokens: (keyword: string) => Promise<TokenSearchListResponse>;
 
-	createSearchLog: (searchToken: TokenSearchItemType) => boolean;
+  createSearchLog: (searchToken: TokenSearchItemType) => boolean;
 
-	getSearchLogs: () => TokenSearchListModel;
+  getSearchLogs: () => TokenSearchListModel;
 
-	getAllExchangeRates: (tokenId: string) => Promise<ExchangeRateResponse>;
+  getAllExchangeRates: (tokenId: string) => Promise<ExchangeRateResponse>;
 
-	getUSDExchangeRate: (tokenId: string) => Promise<USDExchangeRateResponse>;
+  getUSDExchangeRate: (tokenId: string) => Promise<USDExchangeRateResponse>;
 
-	getTokenDatatable: () => Promise<TokenDatatableResponse>;
+  getTokenDatatable: () => Promise<TokenDatatableResponse>;
 
-	getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
+  getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
 
-	getSummaryHighestRewardTokens: () => Promise<SummaryHighestRewardListResponse>;
+  getSummaryHighestRewardTokens: () => Promise<SummaryHighestRewardListResponse>;
 
-	getSummaryRecentlyAddedTokens: () => Promise<SummaryRecentlyAddedListResponse>;
+  getSummaryRecentlyAddedTokens: () => Promise<SummaryRecentlyAddedListResponse>;
 }

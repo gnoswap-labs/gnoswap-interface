@@ -26,8 +26,8 @@ export class Test2ApiFetcher implements Test2Api {
     return typeof result === 'object';
   };
 
-  public getNetwrokInfo = async () => {
-    return this.get<Test2Response.Status>(Test2ApiPath.createPathOfNetwrokInfo());
+  public getNetworkInfo = async () => {
+    return this.get<Test2Response.Status>(Test2ApiPath.createPathOfNetworkInfo());
   };
 
   public getGenesis = async () => {
@@ -92,8 +92,8 @@ export class Test2ApiFetcher implements Test2Api {
     queryType: QueryType,
     request: {
       query?: { [key in string]: string };
-      data?: Array<string>
-    }
+      data?: Array<string>;
+    },
   ) => {
     return this.get<Test2Response.AbciQuery>(
       Test2ApiPath.createPathOfAbciQuery(queryType, request),

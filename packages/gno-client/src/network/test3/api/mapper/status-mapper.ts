@@ -1,8 +1,8 @@
-import { GnoClientResnpose } from '../../../../api';
+import { GnoClientResponse } from '../../../../api';
 import { Test3Response } from '..';
 
 export class StatusMapper {
-  public static toNetworkInfo = (status: Test3Response.Status): GnoClientResnpose.NetworkInfo => {
+  public static toNetworkInfo = (status: Test3Response.Status): GnoClientResponse.NetworkInfo => {
     return {
       nodeInfo: {
         versionSet: status.node_info.version_set.map((versionSetItem) => {

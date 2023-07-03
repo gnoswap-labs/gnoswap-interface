@@ -1,31 +1,31 @@
 {
-	"tokens": [
-		{
-			"token_id": "1",
-			"logo": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-			"name": "Gnoland",
-			"symbol": "GNO.LAND",
-			"denom": "GNOT",
-			"minimal_denom": "ugnot",
-			"decimals": 6
-		},
-		{
-			"token_id": "2",
-			"logo": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
-			"name": "Gnoswap",
-			"symbol": "GNOSWAP",
-			"denom": "GNOS",
-			"minimal_denom": "gnosh",
-			"decimals": 6
-		},
-		{
-			"token_id": "3",
-			"logo": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
-			"name": "Cosmos",
-			"symbol": "Cosmos",
-			"denom": "ATOM",
-			"minimal_denom": "uatom",
-			"decimals": 6
-		}
-	]
+  "tokens": [
+    {
+      "token_id": "1",
+      "logo": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+      "name": "Gnoland",
+      "symbol": "GNO.LAND",
+      "denom": "GNOT",
+      "minimal_denom": "ugnot",
+      "decimals": 6
+    },
+    {
+      "token_id": "2",
+      "logo": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
+      "name": "Gnoswap",
+      "symbol": "GNOSWAP",
+      "denom": "GNOS",
+      "minimal_denom": "gnosh",
+      "decimals": 6
+    },
+    {
+      "token_id": "3",
+      "logo": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
+      "name": "Cosmos",
+      "symbol": "Cosmos",
+      "denom": "ATOM",
+      "minimal_denom": "uatom",
+      "decimals": 6
+    }
+  ]
 }

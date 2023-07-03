@@ -1,8 +1,8 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconLinkOff from "@components/common/icons/IconLinkOff";
-import { wrapper } from "./EarnMyPositonsUnconnected.styles";
+import { wrapper } from "./EarnMyPositionsUnconnected.styles";
 
-const EarnMyPositonsUnconnected = () => {
+const EarnMyPositionsUnconnected = () => {
   return (
     <div css={wrapper}>
       <IconLinkOff className="unconnected-icon" />
@@ -24,4 +24,4 @@ const EarnMyPositonsUnconnected = () => {
   );
 };
 
-export default EarnMyPositonsUnconnected;
+export default EarnMyPositionsUnconnected;

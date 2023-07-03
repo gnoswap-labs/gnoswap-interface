@@ -1,13 +1,13 @@
 export interface StakingListResponse {
-	stakes: Array<StakingInfo>;
+  stakes: Array<StakingInfo>;
 }
 
 interface StakingInfo {
-	stake_id: string;
+  stake_id: string;
 
-	logo: string;
+  logo: string;
 
-	period: string;
+  period: string;
 
-	liquidity: number;
+  liquidity: number;
 }

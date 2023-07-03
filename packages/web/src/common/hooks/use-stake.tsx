@@ -32,26 +32,34 @@ export const useStake = (poolId: string) => {
       );
   }, [address, poolId, liquidityService]);
 
-  const getSummaryLiquiditiyTokens = useCallback((liquidityIds: Array<string>) => {
-    if (!address) {
-      return;
-    }
-    const selectedLiquidities = availStakeLiquidities.filter(liquidity =>
-      liquidityIds.includes(liquidity.liquidityId),
-    );
-    return liquidityService.getSummaryPooledByLiquidities(selectedLiquidities);
-  }, [address, availStakeLiquidities, liquidityService]);
+  const getSummaryLiquidityTokens = useCallback(
+    (liquidityIds: Array<string>) => {
+      if (!address) {
+        return;
+      }
+      const selectedLiquidities = availStakeLiquidities.filter(liquidity =>
+        liquidityIds.includes(liquidity.liquidityId),
+      );
+      return liquidityService.getSummaryPooledByLiquidities(
+        selectedLiquidities,
+      );
+    },
+    [address, availStakeLiquidities, liquidityService],
+  );
 
-  const stake = useCallback((liquidityIds: Array<string>, period: number) => {
-    return stakingService.stake(liquidityIds, period);
-  }, [stakingService]);
+  const stake = useCallback(
+    (liquidityIds: Array<string>, period: number) => {
+      return stakingService.stake(liquidityIds, period);
+    },
+    [stakingService],
+  );
 
   return {
     periodInfos,
     availStakeLiquidities,
     updatePeriodInfo,
     updateAvailStakeLiquidities,
-    getSummaryLiquiditiyTokens,
+    getSummaryLiquidityTokens,
     stake,
   };
 };

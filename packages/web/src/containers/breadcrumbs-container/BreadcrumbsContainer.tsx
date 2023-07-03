@@ -7,15 +7,15 @@ export interface Steps {
   path?: string;
 }
 
-const stepsDummy: Steps[] = [
-  {
-    title: "Earn",
-    path: "/earn",
-  },
-  {
-    title: "Add Liquidity",
-  },
-];
+// const stepsDummy: Steps[] = [
+//   {
+//     title: "Earn",
+//     path: "/earn",
+//   },
+//   {
+//     title: "Add Liquidity",
+//   },
+// ];
 
 const removePoolSteps = [
   {

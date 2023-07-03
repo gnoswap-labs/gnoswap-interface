@@ -17,7 +17,7 @@ describe("WalletBalanceSummaryInfo Component", () => {
         <GnoswapThemeProvider>
           <WalletBalanceSummaryInfo {...mockProps} />
         </GnoswapThemeProvider>
-      </RecoilRoot>
+      </RecoilRoot>,
     );
   });
 });

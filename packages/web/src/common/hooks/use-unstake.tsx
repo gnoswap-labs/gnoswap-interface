@@ -25,7 +25,7 @@ export const useUnstake = (poolId: string) => {
       );
   };
 
-  const getSummaryLiquiditiyTokens = (liquidityIds: Array<string>) => {
+  const getSummaryLiquidityTokens = (liquidityIds: Array<string>) => {
     if (!address) {
       return;
     }
@@ -53,7 +53,7 @@ export const useUnstake = (poolId: string) => {
 
   return {
     availUnstakeLiquidities,
-    getSummaryLiquiditiyTokens,
+    getSummaryLiquidityTokens,
     getSummaryRewardTokens,
     updateAvailUnstakeLiquidities,
     unstake,

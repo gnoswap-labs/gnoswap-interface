@@ -1,4 +1,4 @@
 export interface WalletAdenaModel {
-	code: number;
-	isConnected: boolean;
+  code: number;
+  isConnected: boolean;
 }

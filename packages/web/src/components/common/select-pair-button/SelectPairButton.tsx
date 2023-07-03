@@ -7,7 +7,10 @@ interface SelectPairButtonProps {
   disabled?: boolean;
 }
 
-const SelectPairButton: React.FC<SelectPairButtonProps> = ({ token, disabled }) => {
+const SelectPairButton: React.FC<SelectPairButtonProps> = ({
+  token,
+  disabled,
+}) => {
   return (
     <div css={wrapper(Boolean(token), disabled)}>
       {token ? (

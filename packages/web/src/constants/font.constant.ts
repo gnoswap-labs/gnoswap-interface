@@ -1,4 +1,4 @@
-import { css, SerializedStyles } from "@emotion/react";
+import { css } from "@emotion/react";
 import { ValuesType } from "utility-types";
 
 export const fonts = {

@@ -1,20 +1,20 @@
 import {
-	LiquidityProvideOptions,
-	StakedOptions,
+  LiquidityProvideOptions,
+  StakedOptions,
 } from "@/common/values/data-constant";
 
 export interface LiquidityModel {
-	poolId: string;
+  poolId: string;
 
-	liquidityId: string;
+  liquidityId: string;
 
-	liquidityType: LiquidityProvideOptions;
+  liquidityType: LiquidityProvideOptions;
 
-	stakeType: StakedOptions;
+  stakeType: StakedOptions;
 
-	maxRate: number;
+  maxRate: number;
 
-	minRate: number;
+  minRate: number;
 
-	feeRate: number;
+  feeRate: number;
 }
