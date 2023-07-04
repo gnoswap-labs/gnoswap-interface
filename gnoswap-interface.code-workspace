@@ -1,10 +1,6 @@
 {
   "folders": [
     {
-      "name": "gno-client",
-      "path": "packages/gno-client"
-    },
-    {
       "name": "web",
       "path": "packages/web"
     },
@@ -24,7 +20,7 @@
     "eslint.nodePath": "../../.yarn/sdks",
     "eslint.enable": true,
     "eslint.run": "onType",
-    "eslint.workingDirectories": ["packages/gno-client", "packages/web"],
+    "eslint.workingDirectories": ["packages/web"],
     "prettier.prettierPath": "../../.yarn/sdks/prettier/index.js",
     "typescript.tsdk": "../../.yarn/sdks/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true

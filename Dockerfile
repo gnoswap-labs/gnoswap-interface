@@ -8,11 +8,9 @@ COPY . .
 FROM base AS build
 COPY . .
 RUN yarn
-RUN yarn workspace @gnoswap-labs/gno-client build
 RUN yarn workspace @gnoswap-labs/web build
 
 FROM base AS release
-COPY --from=build /usr/app/packages/gno-client/dist ./packages/gnoclient/dist
 COPY --from=build /usr/app/packages/web/.next ./packages/web/.next
 COPY --from=build /usr/app/packages/web/public ./packages/web/public
 RUN rm -rf /usr/app/packages/web/.next/cache

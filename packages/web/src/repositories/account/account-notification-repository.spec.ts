@@ -14,7 +14,6 @@ import {
 } from "@/models/account/account-history-model";
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountRepositoryInstance } from "./account-repository-instance";
-import { GnoClient } from "@gnoswap-labs/gno-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -23,18 +22,7 @@ let accountNotificationRepository: AccountNotificationRepository;
 beforeEach(() => {
   walletClient = new AdenaClient();
   localStorageClient = new MockStorageClient("LOCAL");
-  const gnoClient = GnoClient.createNetworkByType(
-    {
-      chainId: "test3",
-      chainName: "Testnet 3",
-      rpcUrl: "https://rpc.test3.gno.land",
-      apiUrl: "https://api.adena.app",
-      linkUrl: "https://gnoscan.io",
-    },
-    "TEST3",
-  );
   accountNotificationRepository = new AccountRepositoryInstance(
-    gnoClient,
     walletClient,
     localStorageClient,
   );
@@ -59,8 +47,9 @@ describe("get notifications by address", () => {
     };
     localStorageClient.get = jest.fn().mockReturnValue(JSON.stringify(data));
 
-    const notification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const notification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
 
     expect(notification).toBeTruthy();
     expect(notification.txs).toHaveLength(1);
@@ -88,8 +77,9 @@ describe("get notifications by address", () => {
     const stringValue = "";
     localStorageClient.get = jest.fn().mockReturnValue(stringValue);
 
-    const response =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const response = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
 
     expect(response).toBeTruthy();
     expect(response.txs).toHaveLength(0);
@@ -99,8 +89,9 @@ describe("get notifications by address", () => {
     const address = "ADDRESS";
     localStorageClient.get = jest.fn().mockReturnValue(null);
 
-    const response =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const response = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
 
     expect(response).toBeTruthy();
     expect(response.txs).toHaveLength(0);
@@ -118,14 +109,16 @@ describe("create notifications", () => {
       createdAt: "1900-01-01",
     };
 
-    const beforeNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const beforeNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
     const resposne = await accountNotificationRepository.createNotification(
       address,
       data,
     );
-    const afterNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const afterNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
 
     expect(resposne).toBe(true);
     expect(beforeNotification.txs.length).toBe(0);
@@ -145,15 +138,17 @@ describe("create notifications", () => {
     };
 
     await accountNotificationRepository.createNotification(address, data);
-    const beforeNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const beforeNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
     await accountNotificationRepository.updateNotificationStatus(
       address,
       data.txHash,
       "SUCCESS",
     );
-    const afterNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const afterNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
 
     expect(beforeNotification.txs.length).toBe(1);
     expect(afterNotification.txs.length).toBe(1);
@@ -172,15 +167,17 @@ describe("create notifications", () => {
     };
 
     await accountNotificationRepository.createNotification(address, data);
-    const beforeNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const beforeNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
     await accountNotificationRepository.updateNotificationStatus(
       address,
       "XXX",
       "SUCCESS",
     );
-    const afterNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const afterNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
 
     expect(beforeNotification.txs.length).toBe(1);
     expect(afterNotification.txs.length).toBe(1);
@@ -201,11 +198,13 @@ describe("delete all notifications", () => {
     };
 
     await accountNotificationRepository.createNotification(address, data);
-    const beforeNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const beforeNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
     await accountNotificationRepository.deleteAllNotifications(address);
-    const afterNotification =
-      await accountNotificationRepository.getNotificationsByAddress(address);
+    const afterNotification = await accountNotificationRepository.getNotificationsByAddress(
+      address,
+    );
 
     expect(beforeNotification.txs.length).toBe(1);
     expect(afterNotification.txs.length).toBe(0);

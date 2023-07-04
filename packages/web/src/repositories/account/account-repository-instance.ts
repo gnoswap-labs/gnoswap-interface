@@ -9,19 +9,12 @@ import {
 import { StorageKeyType } from "@/common/values";
 import { AccountRepository } from ".";
 import { AdenaError } from "@/common/errors/adena";
-import { GnoClientApi } from "@gnoswap-labs/gno-client";
 
 export class AccountRepositoryInstance implements AccountRepository {
-  private gnoClient: GnoClientApi;
   private walletClient: WalletClient;
   private localStorageClient: StorageClient<StorageKeyType>;
 
-  constructor(
-    gnoClient: GnoClientApi,
-    walletClient: WalletClient,
-    localStorageClient: StorageClient,
-  ) {
-    this.gnoClient = gnoClient;
+  constructor(walletClient: WalletClient, localStorageClient: StorageClient) {
     this.walletClient = walletClient;
     this.localStorageClient = localStorageClient;
   }
@@ -29,11 +22,6 @@ export class AccountRepositoryInstance implements AccountRepository {
   public getAccount = async () => {
     const result = await this.walletClient.getAccount();
     AdenaError.valdiate(result);
-    return result;
-  };
-
-  public getAccountByAddress = async (address: string) => {
-    const result = await this.gnoClient.getAccount(address);
     return result;
   };
 
