@@ -1,10 +1,14 @@
 {
-  "packageManager": "yarn@3.5.1",
+  "packageManager": "yarn@3.6.1",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "dev": "ultra --recursive dev"
+    "install:clean": "yarn cache clean && yarn install",
+    "dev": "ultra --recursive dev",
+    "storybook": "yarn workspace @gnoswap-labs/web storybook",
+    "test:ci": "ultra --recursive test:ci",
+    "build": "yarn workspace @gnoswap-labs/web build"
   },
   "resolutions": {
     "@storybook/react-docgen-typescript-plugin": "npm:react-docgen-typescript-plugin@1.0.5"
