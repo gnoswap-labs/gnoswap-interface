@@ -4,10 +4,11 @@ LABEL description="gnoswap-interface server with nextjs"
 
 WORKDIR /usr/app
 COPY . .
+RUN yarn set version berry
+RUN yarn
 
 FROM base AS build
 COPY . .
-RUN yarn
 RUN yarn workspace @gnoswap-labs/web build
 
 FROM base AS release
