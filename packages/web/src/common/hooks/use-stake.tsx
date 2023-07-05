@@ -1,14 +1,14 @@
 import { useCallback, useState } from "react";
-import { useRecoilState } from "recoil";
 import { LiquidityDetailModel } from "@/models/liquidity/liquidity-detail-model";
 import { StakingPeriodInfo } from "@/repositories/staking";
-import { AccountState } from "@/states";
 import { useGnoswapContext } from "./use-gnoswap-context";
+import { useAtom } from "jotai";
+import { AccountAtom } from "@atoms/index";
 
 export const useStake = (poolId: string) => {
   const { liquidityService, stakingService } = useGnoswapContext();
 
-  const [address] = useRecoilState(AccountState.address);
+  const [address] = useAtom(AccountAtom.address);
 
   const [periodInfos, setPeriodInfos] = useState<Array<StakingPeriodInfo>>([]);
   const [availStakeLiquidities, setAvailStakeLiquidities] = useState<

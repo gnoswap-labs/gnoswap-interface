@@ -1,6 +1,6 @@
+import { TokenAtom } from "@atoms/index";
+import { useAtom } from "jotai";
 import { useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { TokenState } from "@/states";
 import { useExchange } from "./use-exchange";
 import { useTokenResource } from "./use-token-resource";
 
@@ -8,7 +8,7 @@ export const useBackground = () => {
   const { updateTokenMetas } = useTokenResource();
   const { updateExchangeRates, updateUSDRate } = useExchange();
 
-  const [standard, setStandard] = useRecoilState(TokenState.standard);
+  const [standard, setStandard] = useAtom(TokenAtom.standardTokenMeta);
 
   useEffect(() => {
     initStandardToken();

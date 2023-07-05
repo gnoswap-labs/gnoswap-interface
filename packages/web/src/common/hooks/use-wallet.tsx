@@ -1,14 +1,14 @@
-import { AccountState } from "@/states";
+import { AccountAtom } from "@atoms/index";
 import { isErrorResponse } from "@utils/validationUtils";
+import { useAtom } from "jotai";
 import { useState } from "react";
-import { useRecoilState } from "recoil";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
 export const useWallet = () => {
   const { accountService } = useGnoswapContext();
 
-  const [connected, setConnected] = useRecoilState(AccountState.connected);
-  const [address, setAddress] = useRecoilState(AccountState.address);
+  const [connected, setConnected] = useAtom(AccountAtom.connected);
+  const [address, setAddress] = useAtom(AccountAtom.address);
   const [error, setError] = useState(null);
 
   const connectWallet = () => {

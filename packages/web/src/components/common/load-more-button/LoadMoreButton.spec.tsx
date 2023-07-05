@@ -1,16 +1,16 @@
 import LoadMoreButton from "./LoadMoreButton";
 import { render } from "@testing-library/react";
-import { RecoilRoot } from "recoil";
+import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("LoadMoreButton Component", () => {
   it("should render", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
-          <LoadMoreButton show={true} onClick={() => {}} />
+          <LoadMoreButton show={true} onClick={() => { }} />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

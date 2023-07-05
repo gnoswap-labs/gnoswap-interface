@@ -1,9 +1,9 @@
 import { TokenDefaultModel } from "@/models/token/token-default-model";
 import { TokenPairModel } from "@/models/token/token-pair-model";
-import { TokenState } from "@/states";
+import { TokenAtom } from "@atoms/index";
 import { isErrorResponse } from "@utils/validationUtils";
 import BigNumber from "bignumber.js";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { metaInfoToConfig, toDefaultDenom } from "../utils/denom-util";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useTokenResource } from "./use-token-resource";
@@ -12,11 +12,9 @@ export const useExchange = () => {
   const { tokenService } = useGnoswapContext();
   const { getMetaInfo } = useTokenResource();
 
-  const [standard] = useRecoilState(TokenState.standard);
-  const [usdRate, setUSDRate] = useRecoilState(TokenState.usdRate);
-  const [exchangeRates, setExchangeRates] = useRecoilState(
-    TokenState.exchangeRates,
-  );
+  const [standard] = useAtom(TokenAtom.standardTokenMeta);
+  const [usdRate, setUSDRate] = useAtom(TokenAtom.usdRate);
+  const [exchangeRates, setExchangeRates] = useAtom(TokenAtom.exchangeRates);
 
   const exchangeToken = (from: TokenDefaultModel, to: TokenDefaultModel) => {
     const exchangeRate = getExchangeRate(from, to);

@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 
 interface HeaderToggleProps {
   walletConnect: boolean;
@@ -6,9 +6,6 @@ interface HeaderToggleProps {
 }
 
 export const headerToggle = atom<HeaderToggleProps>({
-  key: "header/dropdown-toggle",
-  default: {
-    walletConnect: false,
-    notification: false,
-  },
+  walletConnect: false,
+  notification: false,
 });

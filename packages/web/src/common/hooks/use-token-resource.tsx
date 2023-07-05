@@ -1,5 +1,5 @@
-import { TokenState } from "@/states";
-import { useRecoilState } from "recoil";
+import { TokenAtom } from "@atoms/index";
+import { useAtom } from "jotai";
 import { useGnoswapContext } from "./use-gnoswap-context";
 
 const EXAMPLE_LOGO =
@@ -8,7 +8,7 @@ const EXAMPLE_LOGO =
 export const useTokenResource = () => {
   const { tokenRepository } = useGnoswapContext();
 
-  const [tokenMetas, setTokenMetas] = useRecoilState(TokenState.tokenMetas);
+  const [tokenMetas, setTokenMetas] = useAtom(TokenAtom.tokenMetas);
 
   const getMetaInfo = (tokenId: string) => {
     return tokenMetas.find(token => token.token_id === tokenId);

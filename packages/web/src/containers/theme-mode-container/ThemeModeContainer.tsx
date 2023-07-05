@@ -1,10 +1,10 @@
-import { ThemeState } from "@/states";
+import { ThemeAtom } from "@atoms/index";
 import ThemeModeButton from "@components/common/theme-mode-button/ThemeModeButton";
+import { useAtom } from "jotai";
 import React from "react";
-import { useRecoilState } from "recoil";
 
 const ThemeModeContainer: React.FC = () => {
-  const [themeKey, setThemeKey] = useRecoilState(ThemeState.themeKey);
+  const [themeKey, setThemeKey] = useAtom(ThemeAtom.themeKey);
 
   const toggleTheme = () => {
     setThemeKey((key: string) => (key === "dark" ? "light" : "dark"));

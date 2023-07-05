@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
-import { useRecoilState } from "recoil";
 import { LiquidityDetailModel } from "@/models/liquidity/liquidity-detail-model";
-import { AccountState } from "@/states";
 import { useGnoswapContext } from "./use-gnoswap-context";
+import { useAtom } from "jotai";
+import { AccountAtom } from "@atoms/index";
 
 export const useRemoveLiquidity = (poolId: string) => {
   const { liquidityService } = useGnoswapContext();
 
-  const [address] = useRecoilState(AccountState.address);
+  const [address] = useAtom(AccountAtom.address);
 
   const [liquidities, setLiquidities] = useState<Array<LiquidityDetailModel>>(
     [],

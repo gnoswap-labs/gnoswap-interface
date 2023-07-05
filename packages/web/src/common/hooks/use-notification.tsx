@@ -1,18 +1,16 @@
 import { useCallback } from "react";
-import { useRecoilState } from "recoil";
 import { TransactionModel } from "@/models/account/account-history-model";
-import { AccountState } from "@/states";
 import { isErrorResponse } from "@utils/validationUtils";
 import { StatusOptions } from "@/common/values/data-constant";
 import { useGnoswapContext } from "./use-gnoswap-context";
+import { AccountAtom } from "@atoms/index";
+import { useAtom } from "jotai";
 
 export const useNotification = () => {
   const { accountService } = useGnoswapContext();
 
-  const [address] = useRecoilState(AccountState.address);
-  const [notifications, setNotifications] = useRecoilState(
-    AccountState.notifications,
-  );
+  const [address] = useAtom(AccountAtom.address);
+  const [notifications, setNotifications] = useAtom(AccountAtom.notifications);
 
   const isUpdateNotifications = () => {
     if (!address || !notifications) {

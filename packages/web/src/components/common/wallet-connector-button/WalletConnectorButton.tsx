@@ -4,9 +4,9 @@ import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import { WalletConnectorButtonWrapper } from "./WalletConnectorButton.styles";
 import WalletConnectorMenu from "@components/common/wallet-connector-menu/WalletConnectorMenu";
-import { ToggleState } from "@/states";
-import { useRecoilState } from "recoil";
 import { formatAddress } from "@utils/stringUtils";
+import { useAtom } from "jotai";
+import { ToggleAtom } from "@atoms/index";
 
 const FAKE_USERINFO = {
   status: "IN_ACTIVE",
@@ -18,7 +18,7 @@ const FAKE_USERINFO = {
 };
 
 const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
-  const [toggle, setToggle] = useRecoilState(ToggleState.headerToggle);
+  const [toggle, setToggle] = useAtom(ToggleAtom.headerToggle);
 
   const menuOpenToggleHandler = () =>
     setToggle(prev => ({
