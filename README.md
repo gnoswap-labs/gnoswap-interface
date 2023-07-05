@@ -31,7 +31,13 @@ $ yarn set version berry
 If you would like to contribute to the Gnoswap Interface or need support, please consider the following options:
 - Read our contributing guidelines: The [CONTRIBUTING.md](https://github.com/gnoswap-labs/gnoswap-interface/blob/develop/CONTRIBUTING.md) file provides detailed information on how to contribute to the project, including submitting pull requests, reporting issues, and suggesting improvements.
 - Open an issue: If you encounter a bug, have a feature request, or want to suggest improvements, feel free to open an [issue](https://github.com/gnoswap-labs/gnoswap-interface/issues) in this repository.
-//TODO: Add the community channel, Blog, and Twitter link.
+
+## Links
+
+- [Onbloc GNOLand documentation](https://docs.onbloc.xyz/)
+- [Twitter](https://twitter.com/onblocxyz)
+- [GnoLand Discord](https://discord.com/invite/x76qK4ttHC)
+- [Blog](https://medium.com/onbloc)
 
 ## License
 This project is licensed under the [GNU General Public License, Version 3.0](https://github.com/gnoswap-labs/gnoswap-interface/blob/develop/LICENSE). See the [full text](https://www.gnu.org/licenses/gpl-3.0.en.html) for details.
