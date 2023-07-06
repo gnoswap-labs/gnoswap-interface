@@ -1,11 +1,11 @@
 import {
   PopularTokenModel,
   SummaryPopularTokenType,
-} from "./../popular-token-model";
+} from "@models/statistical-data";
 import {
   PopularTokenInfo,
   SummaryPopularTokenListResponse,
-} from "./../../../repositories/token/response/summary-popular-token-list-response";
+} from "@repositories/token";
 
 export class PopularTokenMapper {
   public static fromResponse(

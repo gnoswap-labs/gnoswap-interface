@@ -4,7 +4,7 @@ import {
   generateNumberPlus,
   generateToken0,
   generateToken1,
-} from "@/common/utils/test-util";
+} from "@common/utils/test-util";
 import {
   PoolListResponse,
   PoolInfoResponse,
@@ -51,16 +51,17 @@ export class PoolRepositoryMock implements PoolRepository {
     };
   };
 
-  getPoolSummaryLiquidityById =
-    async (): Promise<PoolSummaryLiquidityResponse> => {
-      const token1Rate = generateNumber(0, 100);
-      return {
-        changed_of_24h: generateNumber(1000000000, 90000000000),
-        liquidity: PoolRepositoryMock.generateTokenPair(),
-        pooled_rate_token0: 100 - token1Rate,
-        pooled_rate_token1: token1Rate,
-      };
+  getPoolSummaryLiquidityById = async (): Promise<
+    PoolSummaryLiquidityResponse
+  > => {
+    const token1Rate = generateNumber(0, 100);
+    return {
+      changed_of_24h: generateNumber(1000000000, 90000000000),
+      liquidity: PoolRepositoryMock.generateTokenPair(),
+      pooled_rate_token0: 100 - token1Rate,
+      pooled_rate_token1: token1Rate,
     };
+  };
 
   getPoolSummaryVolumeById = async (): Promise<PoolSummaryVolumeResponse> => {
     return {

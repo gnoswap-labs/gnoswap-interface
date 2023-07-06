@@ -1,14 +1,14 @@
 import React, { useMemo } from "react";
-import { TransactionModel } from "@/models/account/account-history-model";
+import { TransactionModel } from "@models/account/account-history-model";
 import {
   getTransactionGroups,
   notificationDummyList,
-} from "@utils/notificationUtils";
+} from "@utils/notification-utils";
 import IconAlert from "@components/common/icons/IconAlert";
 import NotificationList from "@components/common/notification-list/NotificationList";
 import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
 import { useAtom } from "jotai";
-import { ToggleAtom } from "@atoms/index";
+import { CommonState } from "@states/index";
 
 export interface TransactionGroupsType {
   title: string;
@@ -16,7 +16,7 @@ export interface TransactionGroupsType {
 }
 
 const NotificationButton = () => {
-  const [toggle, setToggle] = useAtom(ToggleAtom.headerToggle);
+  const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
   const menuOpenToggleHandler = () =>
     setToggle(prev => ({

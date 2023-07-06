@@ -1,4 +1,4 @@
-import { ExactTypeOption } from "@/common/values/data-constant";
+import { ExactTypeOption } from "@common/values/data-constant";
 import { TokenDefaultModel } from "./token-default-model";
 
 export interface TokenSwapModel {

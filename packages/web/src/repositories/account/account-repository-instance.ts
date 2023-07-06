@@ -1,14 +1,14 @@
-import { StorageClient } from "@/common/clients/storage-client";
-import { WalletClient } from "@/common/clients/wallet-client";
-import { InjectSendTransactionRequestParam } from "@/common/clients/wallet-client/protocols/inject-send-transaction-request";
-import { StatusOptions } from "@/common/values/data-constant";
+import { StorageClient } from "@common/clients/storage-client";
+import { WalletClient } from "@common/clients/wallet-client";
+import { InjectSendTransactionRequestParam } from "@common/clients/wallet-client/protocols/inject-send-transaction-request";
+import { StatusOptions } from "@common/values/data-constant";
 import {
   AccountHistoryModel,
   TransactionModel,
-} from "@/models/account/account-history-model";
-import { StorageKeyType } from "@/common/values";
+} from "@models/account/account-history-model";
+import { StorageKeyType } from "@common/values";
 import { AccountRepository } from ".";
-import { AdenaError } from "@/common/errors/adena";
+import { AdenaError } from "@common/errors/adena";
 
 export class AccountRepositoryInstance implements AccountRepository {
   private walletClient: WalletClient;

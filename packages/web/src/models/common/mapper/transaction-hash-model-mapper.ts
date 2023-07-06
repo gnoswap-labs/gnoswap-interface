@@ -1,4 +1,4 @@
-import { TransactionHashModel } from "../transaction-hash-model";
+import { TransactionHashModel } from "@models/common/transaction-hash-model";
 
 export class TransactionHashModelMapper {
   public static fromResponse(response: {

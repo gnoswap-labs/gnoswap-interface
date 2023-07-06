@@ -1,6 +1,6 @@
-import { LiquidityProvideOptions } from "./../../common/values/data-constant";
-import { TokenPairModel } from "./../token/token-pair-model";
-import { FeeOptions, StakedOptions } from "@/common/values/data-constant";
+import { LiquidityProvideOptions } from "@common/values/data-constant";
+import { TokenPairModel } from "@models/token/token-pair-model";
+import { FeeOptions, StakedOptions } from "@common/values";
 
 export interface PoolPositionModel {
   hits: number;

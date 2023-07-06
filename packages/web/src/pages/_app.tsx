@@ -5,8 +5,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { GnoswapProvider } from "@/common/providers";
-import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { Provider as JotaiProvider } from "jotai";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -27,11 +26,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
         <JotaiProvider>
-          <GnoswapProvider>
-            <GnoswapThemeProvider>
-              <Component {...pageProps} />
-            </GnoswapThemeProvider>
-          </GnoswapProvider>
+          <GnoswapThemeProvider>
+            <Component {...pageProps} />
+          </GnoswapThemeProvider>
         </JotaiProvider>
       </Hydrate>
     </QueryClientProvider>

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { ButtonStyleProps } from "@components/common/button/Button.styles";
 import { fonts } from "@constants/font.constant";
 

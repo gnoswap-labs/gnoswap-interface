@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import { ButtonHierarchy } from "./Button";
 import IconDownload from "@components/common/icons/IconDownload";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("Button Component", () => {
   it("Primary button", () => {

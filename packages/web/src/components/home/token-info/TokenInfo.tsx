@@ -7,7 +7,7 @@ import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type Token } from "@containers/token-list-container/TokenListContainer";
 import { cx } from "@emotion/css";
-import { tokenPairSymbolToOneCharacter } from "@utils/stringUtils";
+import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import {
   HoverSection,
   TableColumn,

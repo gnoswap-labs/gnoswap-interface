@@ -1,10 +1,10 @@
-import { ThemeAtom } from "@atoms/index";
+import { ThemeState } from "@states/index";
 import ThemeModeButton from "@components/common/theme-mode-button/ThemeModeButton";
 import { useAtom } from "jotai";
 import React from "react";
 
 const ThemeModeContainer: React.FC = () => {
-  const [themeKey, setThemeKey] = useAtom(ThemeAtom.themeKey);
+  const [themeKey, setThemeKey] = useAtom(ThemeState.themeKey);
 
   const toggleTheme = () => {
     setThemeKey((key: string) => (key === "dark" ? "light" : "dark"));

@@ -1,8 +1,8 @@
-import { StorageClient } from "@/common/clients/storage-client";
-import { MockStorageClient } from "@/common/clients/storage-client/mock-storage-client";
-import { WalletClient } from "@/common/clients/wallet-client";
-import { AdenaClient } from "@/common/clients/wallet-client/adena-client";
-import { AdenaError } from "@/common/errors/adena";
+import { StorageClient } from "@common/clients/storage-client";
+import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
+import { WalletClient } from "@common/clients/wallet-client";
+import { AdenaClient } from "@common/clients/wallet-client/adena-client";
+import { AdenaError } from "@common/errors/adena";
 import { AccountRepository } from "./account-repository";
 import { AccountRepositoryInstance } from "./account-repository-instance";
 

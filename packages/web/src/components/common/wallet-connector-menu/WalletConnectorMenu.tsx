@@ -11,8 +11,8 @@ import {
   ThemeSelector,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
-import { toGnot } from "@utils/numberUtils";
-import { formatAddress } from "@utils/stringUtils";
+import { toGnot } from "@utils/number-utils";
+import { formatAddress } from "@utils/string-utils";
 import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
 
 const FAKE_USERINFO = {
@@ -61,9 +61,9 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     FAKE_USERINFO.amount.value,
     FAKE_USERINFO.amount.denom,
   );
-  const copyClick = () => {};
-  const openLinkClick = () => {};
-  const exitClick = () => {};
+  const copyClick = () => { };
+  const openLinkClick = () => { };
+  const exitClick = () => { };
 
   return (
     <WalletConnectorMenuWrapper>
@@ -92,7 +92,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             height: 41,
             justify: "center",
           }}
-          onClick={() => {}}
+          onClick={() => { }}
         />
       )}
       <ThemeSelector>

@@ -1,4 +1,4 @@
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { css } from "@emotion/react";
 
 export const wrapper = () => css`

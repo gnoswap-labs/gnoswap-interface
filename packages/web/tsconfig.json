@@ -16,16 +16,18 @@
     "incremental": true,
     "baseUrl": "./",
     "paths": {
-      "@atoms/*": ["src/atoms/*"],
       "@constants/*": ["src/constants/*"],
-      "@utils/*": ["src/utils/*"],
       "@containers/*": ["src/containers/*"],
+      "@common/*": ["src/common/*"],
       "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@utils/*": ["src/utils/*"],
       "@providers/*": ["src/providers/*"],
+      "@states/*": ["src/states/*"],
       "@styles/*": ["src/styles/*"],
       "@layouts/*": ["src/layouts/*"],
-      "@models/*": ["src/models/*"],
-      "@/*": ["src/*"]
+      "@models/*": ["src/models/*"]
     },
     "jsxImportSource": "@emotion/react"
   },
