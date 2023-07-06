@@ -36,7 +36,7 @@ If you would like to contribute to the Gnoswap Interface or need support, please
 
 - [Onbloc GNOLand documentation](https://docs.onbloc.xyz/)
 - [Twitter](https://twitter.com/onblocxyz)
-- [GnoLand Discord](https://discord.com/invite/x76qK4ttHC)
+- [Onbloc Discord](https://discord.gg/qQFBHdkt)
 - [Blog](https://medium.com/onbloc)
 
 ## License
