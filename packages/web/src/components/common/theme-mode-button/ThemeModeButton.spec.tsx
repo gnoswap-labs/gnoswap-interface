@@ -1,16 +1,16 @@
 import ThemeModeButton from "./ThemeModeButton";
 import { render } from "@testing-library/react";
-import { RecoilRoot } from "recoil";
+import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("ThemeModeButton Component", () => {
   it("should render", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <ThemeModeButton />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

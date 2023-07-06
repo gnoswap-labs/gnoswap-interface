@@ -3,7 +3,7 @@ import IconDownload from "@components/common/icons/IconDownload";
 import IconUpload from "@components/common/icons/IconUpload";
 import IconMoveToInbox from "@components/common/icons/IconMoveToInbox";
 import { BalanceSummaryInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
-import WalletBalanceSummaryInfo from "../wallet-balance-summary-info/WalletBalanceSummaryInfo";
+import WalletBalanceSummaryInfo from "@components/wallet/wallet-balance-summary-info/WalletBalanceSummaryInfo";
 import {
   defaultWalletButtonStyle,
   BalanceInfoWrapper,

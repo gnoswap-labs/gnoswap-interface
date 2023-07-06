@@ -1,12 +1,12 @@
-import { amountEmptyBigNumInit } from "@/common/values/global-initial-value";
+import { amountEmptyBigNumInit } from "@common/values/global-initial-value";
 import {
   HighestRewardPoolModel,
   SummaryHighestPairType,
-} from "../highest-reward-pool-model";
+} from "@models/statistical-data";
 import {
   HighestRewardPairInfo,
   SummaryHighestRewardListResponse,
-} from "@/repositories/token";
+} from "@repositories/token";
 
 export class HighestRewardMapper {
   public static fromResponse(

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 
 export const WalletBalanceDetailInfoWrapper = styled.div`

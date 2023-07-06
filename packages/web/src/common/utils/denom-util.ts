@@ -1,6 +1,6 @@
-import { AmountType } from "@/common/types/data-prop-types";
-import { AmountNumberType } from "@/common/types/data-prop-types";
-import { TokenMeta } from "@/repositories/token";
+import { AmountType } from "@common/types/data-prop-types";
+import { AmountNumberType } from "@common/types/data-prop-types";
+import { TokenMeta } from "@repositories/token";
 import BigNumber from "bignumber.js";
 
 interface Amount {

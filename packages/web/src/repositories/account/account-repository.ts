@@ -1,7 +1,7 @@
 import {
   InjectResponse,
   InjectSendTransactionRequestParam,
-} from "@/common/clients/wallet-client/protocols";
+} from "@common/clients/wallet-client/protocols";
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountInfoResponse } from "./response";
 

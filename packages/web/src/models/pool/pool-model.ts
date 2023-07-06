@@ -1,6 +1,6 @@
-import { IncentivizedOptions } from "@/common/values/data-constant";
-import { TokenDefaultModel } from "../token/token-default-model";
-import { TokenPairModel } from "../token/token-pair-model";
+import { IncentivizedOptions } from "@common/values/data-constant";
+import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenPairModel } from "@models/token/token-pair-model";
 
 export interface PoolModel {
   poolId: string;

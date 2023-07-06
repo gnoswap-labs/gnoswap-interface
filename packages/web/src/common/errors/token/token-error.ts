@@ -1,4 +1,4 @@
-import { BaseError } from "../base";
+import { BaseError } from "@common/errors";
 
 const ERROR_VALUE = {
   NOT_FOUND_TOKEN_METAS: {

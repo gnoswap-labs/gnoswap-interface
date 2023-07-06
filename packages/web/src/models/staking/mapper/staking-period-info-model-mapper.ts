@@ -1,11 +1,11 @@
 import {
   StakingPeriodInfo,
   StakingPeriodListResponse,
-} from "@/repositories/staking";
+} from "@repositories/staking";
 import {
   StakingPeriodInfoListModel,
   StakingPeriodInfoModel,
-} from "../staking-period-info-model";
+} from "@models/staking/staking-period-info-model";
 
 export class StakingPeriodInfoModelMapper {
   public static fromResponse(

@@ -1,5 +1,5 @@
-import { StorageClient } from "@/common/clients/storage-client";
-import { MockStorageClient } from "@/common/clients/storage-client/mock-storage-client";
+import { StorageClient } from "@common/clients/storage-client";
+import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
 import BigNumber from "bignumber.js";
 import { TokenRepository } from "./token-repository";
 import { TokenRepositoryMock } from "./token-repository-mock";

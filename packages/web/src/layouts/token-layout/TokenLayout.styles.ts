@@ -1,4 +1,4 @@
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 

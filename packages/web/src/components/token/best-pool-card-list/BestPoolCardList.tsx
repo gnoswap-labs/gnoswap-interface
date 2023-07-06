@@ -1,7 +1,7 @@
 import React from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { type BestPool } from "@containers/best-pools-container/BestPoolsContainer";
-import { tokenPairSymbolToOneCharacter } from "@utils/stringUtils";
+import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import { wrapper } from "./BestPoolCardList.styles";
 
 interface BestPoolCardListProps {

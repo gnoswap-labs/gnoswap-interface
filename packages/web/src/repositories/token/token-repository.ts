@@ -1,7 +1,7 @@
 import {
   TokenSearchItemType,
   TokenSearchListModel,
-} from "@/models/token/token-search-list-model";
+} from "@models/token/token-search-list-model";
 import {
   TokenDatatableResponse,
   TokenInfoResponse,
@@ -33,7 +33,11 @@ export interface TokenRepository {
 
   getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
 
-  getSummaryHighestRewardTokens: () => Promise<SummaryHighestRewardListResponse>;
+  getSummaryHighestRewardTokens: () => Promise<
+    SummaryHighestRewardListResponse
+  >;
 
-  getSummaryRecentlyAddedTokens: () => Promise<SummaryRecentlyAddedListResponse>;
+  getSummaryRecentlyAddedTokens: () => Promise<
+    SummaryRecentlyAddedListResponse
+  >;
 }

@@ -1,7 +1,7 @@
-import { SwapError } from "@/common/errors/swap/swap-error";
-import { SwapRateModel } from "../swap-rate-model";
-import { notEmptyStringType } from "@/common/utils/data-check-util";
-import { SwapInfoRequest } from "@/repositories/swap/request/swap-info-request";
+import { SwapError } from "@common/errors/swap/swap-error";
+import { SwapRateModel } from "@models/swap/swap-rate-model";
+import { notEmptyStringType } from "@common/utils/data-check-util";
+import { SwapInfoRequest } from "@repositories/swap/request/swap-info-request";
 import BigNumber from "bignumber.js";
 
 export class SwapRateMapper {

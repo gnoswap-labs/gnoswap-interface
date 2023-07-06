@@ -1,17 +1,8 @@
-import { AccountHistoryModel } from "@/models/account/account-history-model";
-import { atom } from "recoil";
+import { atom } from "jotai";
+import { AccountHistoryModel } from "@models/account/account-history-model";
 
-export const connected = atom<boolean>({
-  key: "account/connected",
-  default: false,
-});
+export const connected = atom<boolean>(false);
 
-export const address = atom<string | null>({
-  key: "account/address",
-  default: "",
-});
+export const address = atom<string | null>(null);
 
-export const notifications = atom<AccountHistoryModel | null>({
-  key: "account/notifications",
-  default: null,
-});
+export const notifications = atom<AccountHistoryModel | null>(null);

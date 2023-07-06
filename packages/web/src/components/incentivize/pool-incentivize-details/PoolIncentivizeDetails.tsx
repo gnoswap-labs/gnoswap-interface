@@ -1,6 +1,6 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { tokenPairSymbolToOneCharacter } from "@utils/stringUtils";
+import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import React from "react";
 import { CONTENT_TITLE } from "@components/incentivize/pool-incentivize/PoolIncentivize";
 import { wrapper } from "./PoolIncentivizeDetails.styles";

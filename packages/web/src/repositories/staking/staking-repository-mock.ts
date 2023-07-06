@@ -3,7 +3,7 @@ import {
   generateNumber,
   generateTokenMetas,
   generateTxHash,
-} from "@/common/utils/test-util";
+} from "@common/utils/test-util";
 import {
   StakeResponse,
   StakingListResponse,
@@ -39,10 +39,11 @@ export class StakingRepositoryMock implements StakingRepository {
     return StakingRepositoryMock.generateStakes();
   };
 
-  public getStakesByAddressAndPoolId =
-    async (): Promise<StakingListResponse> => {
-      return StakingRepositoryMock.generateStakes();
-    };
+  public getStakesByAddressAndPoolId = async (): Promise<
+    StakingListResponse
+  > => {
+    return StakingRepositoryMock.generateStakes();
+  };
 
   public stakeBy = async (): Promise<StakeResponse> => {
     return {

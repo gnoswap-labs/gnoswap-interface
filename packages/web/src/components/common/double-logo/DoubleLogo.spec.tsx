@@ -1,12 +1,12 @@
 import DoubleLogo from "./DoubleLogo";
 import { render } from "@testing-library/react";
-import { RecoilRoot } from "recoil";
+import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("DoubleLogo Component", () => {
   it("DoubleLogo render", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <DoubleLogo
             left="https://picsum.photos/id/7/36/36"
@@ -15,7 +15,7 @@ describe("DoubleLogo Component", () => {
             overlap={8}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

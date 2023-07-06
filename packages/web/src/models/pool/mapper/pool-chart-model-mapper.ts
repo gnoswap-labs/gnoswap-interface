@@ -1,5 +1,5 @@
-import { PoolChartResponse } from "@/repositories/pool";
-import { PoolChartModel } from "../pool-chart-model";
+import { PoolChartResponse } from "@repositories/pool";
+import { PoolChartModel } from "@models/pool/pool-chart-model";
 
 export class PoolChartModelMapper {
   public static mappedChartTicks(response: PoolChartResponse): PoolChartModel {

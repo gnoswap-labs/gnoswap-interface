@@ -1,6 +1,6 @@
 import { BigNumber } from "bignumber.js";
-import { TokenTableSelectType } from "@/common/values/data-constant";
-import { TokenPairModel } from "./../token/token-pair-model";
+import { TokenTableSelectType } from "@common/values/data-constant";
+import { TokenPairModel } from "@models/token/token-pair-model";
 export interface TokenTableModel {
   hits: number;
   total: number;

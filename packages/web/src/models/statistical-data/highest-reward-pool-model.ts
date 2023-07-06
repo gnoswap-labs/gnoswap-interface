@@ -1,4 +1,4 @@
-import { TokenPairModel } from "./../token/token-pair-model";
+import { TokenPairModel } from "@models/token/token-pair-model";
 export interface HighestRewardPoolModel {
   hits: number;
   total: number;

@@ -1,8 +1,8 @@
-import { StatusOptions } from "@/common/values/data-constant";
+import { StatusOptions } from "@common/values/data-constant";
 import {
   AccountHistoryModel,
   TransactionModel,
-} from "@/models/account/account-history-model";
+} from "@models/account/account-history-model";
 
 export interface AccountNotificationRepository {
   getNotificationsByAddress: (address: string) => Promise<AccountHistoryModel>;

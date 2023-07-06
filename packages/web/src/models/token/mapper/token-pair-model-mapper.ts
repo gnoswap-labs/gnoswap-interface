@@ -1,5 +1,5 @@
-import { TokenInfoResponse } from "@/repositories/token";
-import { TokenPairModel } from "../token-pair-model";
+import { TokenInfoResponse } from "@repositories/token";
+import { TokenPairModel } from "@models/token/token-pair-model";
 import { TokenModelMapper } from "./token-model-mapper";
 
 interface TokenPairResponse {

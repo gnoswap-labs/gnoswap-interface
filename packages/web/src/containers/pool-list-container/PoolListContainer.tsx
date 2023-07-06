@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { type FeeOptions } from "@/common/values/data-constant";
+import { type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairModel } from "@models/token/token-pair-model";
 import { useQuery } from "@tanstack/react-query";

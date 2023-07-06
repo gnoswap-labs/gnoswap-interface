@@ -1,4 +1,4 @@
-import { BaseError } from "../base";
+import { BaseError } from "@common/errors";
 
 const ERROR_VALUE = {
   SYMBOL_TYPE_CHECK_ERROR: {

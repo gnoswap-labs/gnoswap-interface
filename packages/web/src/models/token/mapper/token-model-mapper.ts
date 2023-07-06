@@ -1,7 +1,7 @@
-import { amountEmptyBigNumInit } from "@/common/values/global-initial-value";
-import { AmountNumberType, AmountType } from "@/common/types/data-prop-types";
+import { amountEmptyBigNumInit } from "@common/values/global-initial-value";
+import { AmountNumberType, AmountType } from "@common/types/data-prop-types";
 import BigNumber from "bignumber.js";
-import { TokenDefaultModel } from "../token-default-model";
+import { TokenDefaultModel } from "@models/token/token-default-model";
 
 interface TokenResponse {
   token_id: string;

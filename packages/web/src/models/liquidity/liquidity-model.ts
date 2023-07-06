@@ -1,7 +1,7 @@
 import {
   LiquidityProvideOptions,
   StakedOptions,
-} from "@/common/values/data-constant";
+} from "@common/values/data-constant";
 
 export interface LiquidityModel {
   poolId: string;

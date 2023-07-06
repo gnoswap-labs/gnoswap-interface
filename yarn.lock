@@ -2068,13 +2068,13 @@ __metadata:
     husky: 8.0.3
     jest: 29.4.3
     jest-environment-jsdom: 29.5.0
+    jotai: ^2.2.1
     lint-staged: 13.1.2
     next: 13.2.3
     prettier: 2.8.4
     react: 18.2.0
     react-docgen-typescript-loader: 3.7.2
     react-dom: 18.2.0
-    recoil: 0.7.7
     ts-jest: 29.0.5
     tsconfig-paths-webpack-plugin: 4.0.1
     typescript: 4.9.5
@@ -10411,13 +10411,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hamt_plus@npm:1.0.2":
-  version: 1.0.2
-  resolution: "hamt_plus@npm:1.0.2"
-  checksum: af26ea32db03009019cc83dfa9411521a2fa16079443de1a502c9be46d8b3c975acda8ed93fc5750ef08d3186d35901e2d8cfe717dd54bea67b358601fa74e4c
-  languageName: node
-  linkType: hard
-
 "handlebars@npm:^4.7.7":
   version: 4.7.7
   resolution: "handlebars@npm:4.7.7"
@@ -12361,6 +12354,18 @@ __metadata:
   bin:
     jest: bin/jest.js
   checksum: 084d10d1ceaade3c40e6d3bbd71b9b71b8919ba6fbd6f1f6699bdc259a6ba2f7350c7ccbfa10c11f7e3e01662853650a6244210179542fe4ba87e77dc3f3109f
+  languageName: node
+  linkType: hard
+
+"jotai@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "jotai@npm:2.2.1"
+  peerDependencies:
+    react: ">=17.0.0"
+  peerDependenciesMeta:
+    react:
+      optional: true
+  checksum: 1400d0320516966e23ff4d134e7ff525e32987f3a63e75246a49fed21790b9ff567c480e69a86b74d1bbfa354015de1581ab622664fdfe8a38d0fb8de00e424c
   languageName: node
   linkType: hard
 
@@ -15470,22 +15475,6 @@ __metadata:
   dependencies:
     picomatch: ^2.2.1
   checksum: 1ced032e6e45670b6d7352d71d21ce7edf7b9b928494dcaba6f11fba63180d9da6cd7061ebc34175ffda6ff529f481818c962952004d273178acd70f7059b320
-  languageName: node
-  linkType: hard
-
-"recoil@npm:0.7.7":
-  version: 0.7.7
-  resolution: "recoil@npm:0.7.7"
-  dependencies:
-    hamt_plus: 1.0.2
-  peerDependencies:
-    react: ">=16.13.1"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 65edecbcb8d2cde89bfd61ec679c200483472a6cd343c33e4e9142b6ce524fb17d1fecc2bfd8c392926aaa8178c81457f165b32abce2a9662f51f98822c0a9cc
   languageName: node
   linkType: hard
 
