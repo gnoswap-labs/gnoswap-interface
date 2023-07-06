@@ -1,5 +1,5 @@
-import { TokenPairModel } from "./../token/token-pair-model";
-import { StakedOptions } from "@/common/values/data-constant";
+import { TokenPairModel } from "@models/token/token-pair-model";
+import { StakedOptions } from "@common/values/data-constant";
 
 export interface AprStakingDaysDetailModel {
   stakingDays: Array<AprStakingDaysDetailType>;

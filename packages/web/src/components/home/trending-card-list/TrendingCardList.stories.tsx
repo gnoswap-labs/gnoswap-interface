@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TrendingCardList from "./TrendingCardList";
-import { trendingList } from "../card-list/card-list-dummy";
+import { trendingList } from "@components/home/card-list/card-list-dummy";
 
 export default {
   title: "home/TrendingCardList",

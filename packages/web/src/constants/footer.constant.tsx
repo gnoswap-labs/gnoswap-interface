@@ -1,8 +1,8 @@
-import IconGithub from "@/components/common/icons/social/IconGithub";
-import IconGitbook from "@/components/common/icons/social/IconGitbook";
-import IconDiscode from "@/components/common/icons/social/IconDiscode";
-import IconMedium from "@/components/common/icons/social/IconMedium";
-import IconTwitter from "@/components/common/icons/social/IconTwitter";
+import IconGithub from "@components/common/icons/social/IconGithub";
+import IconGitbook from "@components/common/icons/social/IconGitbook";
+import IconDiscode from "@components/common/icons/social/IconDiscode";
+import IconMedium from "@components/common/icons/social/IconMedium";
+import IconTwitter from "@components/common/icons/social/IconTwitter";
 
 export const FOOTER_LEFT_NAV = {
   content:

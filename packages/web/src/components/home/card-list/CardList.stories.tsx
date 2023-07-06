@@ -4,8 +4,8 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import CardList from "./CardList";
 import TrendingCardList from "@components/home/trending-card-list/TrendingCardList";
 import { css } from "@emotion/react";
-import HighestAprsCardList from "../highest-aprs-card-list/HighestAprsCardList";
-import RecentlyAddedCardList from "../recently-added-card-list/RecentlyAddedCardList";
+import HighestAprsCardList from "@components/home/highest-aprs-card-list/HighestAprsCardList";
+import RecentlyAddedCardList from "@components/home/recently-added-card-list/RecentlyAddedCardList";
 import { highestList, recentlyList, trendingList } from "./card-list-dummy";
 
 export default {

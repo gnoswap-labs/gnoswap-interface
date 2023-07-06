@@ -2,13 +2,13 @@ import Button from "./Button";
 import { render } from "@testing-library/react";
 import { ButtonHierarchy } from "./Button";
 import IconDownload from "@components/common/icons/IconDownload";
-import { RecoilRoot } from "recoil";
-import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { Provider as JotaiProvider } from "jotai";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("Button Component", () => {
   it("Primary button", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <Button
             text="Primary"
@@ -19,13 +19,13 @@ describe("Button Component", () => {
             }}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 
   it("Icon button", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <Button
             leftIcon={<IconDownload />}
@@ -40,13 +40,13 @@ describe("Button Component", () => {
             }}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 
   it("Full width button", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <Button
             leftIcon={<IconDownload />}
@@ -59,7 +59,7 @@ describe("Button Component", () => {
             }}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

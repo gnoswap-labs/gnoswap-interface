@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { BADGE_TYPE } from "./Badge";
 import { css } from "@emotion/react";
 import { fonts } from "@constants/font.constant";

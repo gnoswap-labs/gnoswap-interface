@@ -1,16 +1,16 @@
-import { StorageClient } from "@/common/clients/storage-client";
-import { InjectResponse } from "@/common/clients/wallet-client/protocols";
+import { StorageClient } from "@common/clients/storage-client";
+import { InjectResponse } from "@common/clients/wallet-client/protocols";
 import {
   generateAddress,
   generateNumber,
   generateTime,
   generateNumberPlus,
-} from "@/common/utils/test-util";
-import { StatusOptions } from "@/common/values/data-constant";
+} from "@common/utils/test-util";
+import { StatusOptions } from "@common/values/data-constant";
 import {
   AccountHistoryModel,
   TransactionModel,
-} from "@/models/account/account-history-model";
+} from "@models/account/account-history-model";
 import { faker } from "@faker-js/faker";
 import {
   AccountInfoResponse,
@@ -21,7 +21,7 @@ import {
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
 
-  constructor(localStorageClient: StorageClient) {
+  constructor(localStorageClient: StorageClient<any>) {
     this.localStorageClient = localStorageClient;
   }
 

@@ -1,25 +1,6 @@
 import { ThemeKeys } from "@styles/ThemeTypes";
-import { atom } from "recoil";
+import { atomWithStorage } from "jotai/utils";
 
-const gnoswap_theme_key = "app_theme";
-const store = typeof window !== "undefined" ? window.localStorage : null;
+const GNOSWAP_THEME_KEY = "app_theme";
 
-export const themeKey = atom<ThemeKeys>({
-  key: "theme/themeKey",
-  default: "dark",
-  effects: [
-    ({ setSelf, onSet }) => {
-      if (store) {
-        const savedValue = store.getItem(gnoswap_theme_key);
-        if (savedValue != null) {
-          setSelf(JSON.parse(savedValue));
-        }
-        onSet((newValue, _, isReset) => {
-          isReset
-            ? store.removeItem(gnoswap_theme_key)
-            : store.setItem(gnoswap_theme_key, JSON.stringify(newValue));
-        });
-      }
-    },
-  ],
-});
+export const themeKey = atomWithStorage<ThemeKeys>(GNOSWAP_THEME_KEY, "dark");

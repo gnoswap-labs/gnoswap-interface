@@ -6,7 +6,7 @@ import {
   ModalWrapper,
   Overlay,
 } from "./Modal.styles";
-import GnoswapModalProvider from "@/providers/gnoswap-modal-provider/GnoswapModalProvider";
+import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModalProvider";
 import IconStrokeArrowLeft from "../icons/IconStrokeArrowLeft";
 
 interface ModalProps {

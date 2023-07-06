@@ -1,5 +1,5 @@
-import { LiquidityError } from "@/common/errors/liquidity";
-import { generateNumberPlus, generateTxHash } from "@/common/utils/test-util";
+import { LiquidityError } from "@common/errors/liquidity";
+import { generateNumberPlus, generateTxHash } from "@common/utils/test-util";
 import {
   AddLiquidityResponse,
   ClaimRewardResponse,
@@ -11,7 +11,11 @@ import {
 } from ".";
 
 import LiquidityDatas from "./mock/liquidities.json";
-import { PoolInfoResponse, PoolRepository, PoolRepositoryMock } from "../pool";
+import {
+  PoolInfoResponse,
+  PoolRepository,
+  PoolRepositoryMock,
+} from "@repositories/pool";
 
 interface TokenResponse {
   token_id: string;
@@ -128,8 +132,9 @@ export class LiquidityRepositoryMock implements LiquidityRepository {
     const liquidities = [];
     for (const info of infos) {
       const poolDetail = await this.poolRepository.getPoolById(info.pool_id);
-      const poolDetailInfos =
-        LiquidityRepositoryMock.generateLiquidityAndReward(poolDetail);
+      const poolDetailInfos = LiquidityRepositoryMock.generateLiquidityAndReward(
+        poolDetail,
+      );
       liquidities.push({
         ...info,
         ...poolDetailInfos,

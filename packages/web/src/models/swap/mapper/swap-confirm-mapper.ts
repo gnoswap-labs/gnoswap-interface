@@ -1,10 +1,10 @@
-import { amountEmptyNumberInit } from "./../../../common/values/global-initial-value";
+import { amountEmptyNumberInit } from "@common/values/global-initial-value";
 import {
   SwapConfirmModel,
   SwapConfirmSuccessModel,
-} from "./../swap-confirm-model";
-import { SwapRequest } from "@/repositories/swap/request";
-import { SwapResponse } from "@/repositories/swap";
+} from "@models/swap/swap-confirm-model";
+import { SwapRequest } from "@repositories/swap/request";
+import { SwapResponse } from "@repositories/swap";
 
 export class SwapConfirmMapper {
   public static toConfirmRequest(model: SwapConfirmModel): SwapRequest {

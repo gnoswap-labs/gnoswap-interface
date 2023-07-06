@@ -1,20 +1,20 @@
 import SelectTab from "./SelectTab";
 import { render } from "@testing-library/react";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { RecoilRoot } from "recoil";
+import { Provider as JotaiProvider } from "jotai";
 
 describe("SelectTab Component", () => {
   it("SelectTab render", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <SelectTab
             selectIdx={0}
             list={["All", "Incentivized", "Non-Incentivized"]}
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

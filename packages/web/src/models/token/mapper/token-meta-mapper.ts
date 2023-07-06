@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
-import { TokenMeta, TokenMetaListResponse } from "@/repositories/token";
-import { TokenMetaModel, TokenMetaType } from "../token-meta-medel";
+import { TokenMeta, TokenMetaListResponse } from "@repositories/token";
+import { TokenMetaModel, TokenMetaType } from "@models/token/token-meta-medel";
 
 export class TokenMetaMapper {
   public static fromResponse(response: TokenMetaListResponse): TokenMetaModel {

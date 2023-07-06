@@ -1,5 +1,5 @@
-import { BaseError } from "../errors";
-import { ErrorResponse } from "../errors/response";
+import { BaseError } from "@common/errors";
+import { ErrorResponse } from "@common/errors/response";
 
 export const returnNullWithLog = (error?: Error) => {
   if (error) {

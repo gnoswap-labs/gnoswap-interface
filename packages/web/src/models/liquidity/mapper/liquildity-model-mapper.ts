@@ -1,13 +1,13 @@
 import {
   LiquidityProvideOptions,
   StakedOptions,
-} from "@/common/values/data-constant";
-import { TokenPairModelMapper } from "@/models/token/mapper/token-pair-model-mapper";
+} from "@common/values/data-constant";
+import { TokenPairModelMapper } from "@models/token/mapper/token-pair-model-mapper";
 import {
   LiquidityDetailInfoResponse,
   LiquidityDetailListResponse,
-} from "@/repositories/liquidity";
-import { LiquidityDetailModel } from "../liquidity-detail-model";
+} from "@repositories/liquidity";
+import { LiquidityDetailModel } from "@models/liquidity/liquidity-detail-model";
 
 export class LiquidityModelMapper {
   public static fromDetailListResponse(details: LiquidityDetailListResponse) {

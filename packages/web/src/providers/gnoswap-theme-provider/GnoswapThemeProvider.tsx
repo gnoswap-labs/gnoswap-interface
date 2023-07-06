@@ -1,14 +1,14 @@
-import { ThemeState } from "@/states";
 import { Global, ThemeProvider } from "@emotion/react";
 import { useMemo } from "react";
-import { useRecoilValue } from "recoil";
-import { getTheme } from "@utils/themeUtils";
-import globalStyle from "@/styles/globalStyle";
+import { getTheme } from "@utils/theme-utils";
+import globalStyle from "@styles/globalStyle";
+import { useAtom } from "jotai";
+import { ThemeState } from "@states/index";
 
 const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const themeKey = useRecoilValue(ThemeState.themeKey);
+  const [themeKey] = useAtom(ThemeState.themeKey);
 
   const theme = useMemo(() => {
     return getTheme(themeKey);

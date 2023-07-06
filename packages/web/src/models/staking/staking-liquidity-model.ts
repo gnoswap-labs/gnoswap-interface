@@ -1,8 +1,8 @@
-import { TokenPairModel } from "./../token/token-pair-model";
+import { TokenPairModel } from "@models/token/token-pair-model";
 import {
   LiquidityProvideOptions,
   StakedOptions,
-} from "@/common/values/data-constant";
+} from "@common/values/data-constant";
 
 export interface StakingLiquidityModel {
   stakingLiquidities: Array<StakingLiquidityType>;

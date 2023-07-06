@@ -1,5 +1,5 @@
-import { TokenPairModel } from "./../token/token-pair-model";
-import { IncentivizedOptions, FeeOptions } from "@/common/values/data-constant";
+import { TokenPairModel } from "@models/token/token-pair-model";
+import { IncentivizedOptions, FeeOptions } from "@common/values/data-constant";
 import BigNumber from "bignumber.js";
 
 export interface PoolTableModel {

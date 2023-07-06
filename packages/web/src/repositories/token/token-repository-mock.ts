@@ -19,17 +19,17 @@ import mockSummaryHighestRewards from "./mock/summary-highest-rewards.json";
 import mockSummaryPopularTokens from "./mock/summary-popular-tokens.json";
 import mockSummaryRecentAdded from "./mock/summary-recent-added.json";
 import mockSearchTokens from "./mock/search-tokens.json";
-import { StorageClient } from "@/common/clients/storage-client";
+import { StorageClient } from "@common/clients/storage-client";
 import {
   TokenSearchItemType,
   TokenSearchListModel,
-} from "@/models/token/token-search-list-model";
-import { StorageKeyType } from "@/common/values";
+} from "@models/token/token-search-list-model";
+import { StorageKeyType } from "@common/values";
 
 export class TokenRepositoryMock implements TokenRepository {
   private localStorageClient: StorageClient<StorageKeyType>;
 
-  constructor(localStorageClient: StorageClient) {
+  constructor(localStorageClient: StorageClient<any>) {
     this.localStorageClient = localStorageClient;
   }
 
@@ -91,20 +91,23 @@ export class TokenRepositoryMock implements TokenRepository {
     return mockTokenDatatable as TokenDatatableResponse;
   };
 
-  public getSummaryPopularTokens =
-    async (): Promise<SummaryPopularTokenListResponse> => {
-      return mockSummaryPopularTokens;
-    };
+  public getSummaryPopularTokens = async (): Promise<
+    SummaryPopularTokenListResponse
+  > => {
+    return mockSummaryPopularTokens;
+  };
 
-  public getSummaryHighestRewardTokens =
-    async (): Promise<SummaryHighestRewardListResponse> => {
-      return mockSummaryHighestRewards;
-    };
+  public getSummaryHighestRewardTokens = async (): Promise<
+    SummaryHighestRewardListResponse
+  > => {
+    return mockSummaryHighestRewards;
+  };
 
-  public getSummaryRecentlyAddedTokens =
-    async (): Promise<SummaryRecentlyAddedListResponse> => {
-      return mockSummaryRecentAdded;
-    };
+  public getSummaryRecentlyAddedTokens = async (): Promise<
+    SummaryRecentlyAddedListResponse
+  > => {
+    return mockSummaryRecentAdded;
+  };
 
   public getTokenById = async (tokenId: string): Promise<TokenInfoResponse> => {
     const token = mockTokenInfos.tokens.find(

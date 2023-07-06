@@ -1,16 +1,16 @@
 import Switch from "./Switch";
 import { render } from "@testing-library/react";
-import { RecoilRoot } from "recoil";
+import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("Switch Component", () => {
   it("should render", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
-          <Switch checked={true} onChange={() => {}} />
+          <Switch checked={true} onChange={() => { }} />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

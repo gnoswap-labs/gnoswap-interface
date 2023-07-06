@@ -1,5 +1,5 @@
-import { SwapExpectedResultResponse } from "@/repositories/swap";
-import { SwapExpectedResultModel } from "../swap-expected-result-model";
+import { SwapExpectedResultResponse } from "@repositories/swap";
+import { SwapExpectedResultModel } from "@models/swap/swap-expected-result-model";
 import BigNumber from "bignumber.js";
 
 export class SwapExpectedMapper {

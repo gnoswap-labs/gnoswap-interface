@@ -2,8 +2,8 @@ import {
   BalanceSummaryInfo,
   BalanceDetailInfo,
 } from "@containers/wallet-balance-container/WalletBalanceContainer";
-import WalletBalanceSummary from "../wallet-balance-summary/WalletBalanceSummary";
-import WalletBalanceDetail from "../wallet-balance-detail/WalletBalanceDetail";
+import WalletBalanceSummary from "@components/wallet/wallet-balance-summary/WalletBalanceSummary";
+import WalletBalanceDetail from "@components/wallet/wallet-balance-detail/WalletBalanceDetail";
 import { WalletBalanceWrapper } from "./WalletBalance.styles";
 
 interface WalletBalanceProps {

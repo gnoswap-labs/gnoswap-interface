@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
-import { ExchangeRate, ExchangeRateResponse } from "@/repositories/token";
+import { ExchangeRate, ExchangeRateResponse } from "@repositories/token";
 import {
   ExchangeRateModel,
   ExchangeRateToBigNumType,
-} from "../exchange-rate-model";
+} from "@models/token/exchange-rate-model";
 
 export class ExchangeRateMapper {
   public static fromResponse(

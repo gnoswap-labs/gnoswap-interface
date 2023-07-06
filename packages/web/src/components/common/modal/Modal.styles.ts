@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
-import { Z_INDEX } from "@/styles/zIndex";
-import { PaletteKeyType } from "@/styles/ThemeTypes";
+import mixins from "@styles/mixins";
+import { Z_INDEX } from "@styles/zIndex";
+import { PaletteKeyType } from "@styles/ThemeTypes";
 import { CSSProperties } from "react";
 import { fonts, type FontsKey } from "@constants/font.constant";
 

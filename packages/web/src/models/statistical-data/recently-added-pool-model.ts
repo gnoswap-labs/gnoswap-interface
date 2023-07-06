@@ -1,4 +1,4 @@
-import { TokenPairModel } from "./../token/token-pair-model";
+import { TokenPairModel } from "@models/token/token-pair-model";
 export interface RecentlyAddedPoolModel {
   hits: number;
   total: number;

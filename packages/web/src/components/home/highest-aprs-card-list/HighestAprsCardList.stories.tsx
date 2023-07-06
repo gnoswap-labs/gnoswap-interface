@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import HighestAprsCardList from "./HighestAprsCardList";
-import { highestList } from "../card-list/card-list-dummy";
+import { highestList } from "@components/home/card-list/card-list-dummy";
 
 export default {
   title: "home/HighestAprsCardList",

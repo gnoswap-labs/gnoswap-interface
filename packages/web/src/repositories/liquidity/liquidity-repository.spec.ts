@@ -1,4 +1,4 @@
-import { LiquidityError } from "@/common/errors/liquidity";
+import { LiquidityError } from "@common/errors/liquidity";
 import { LiquidityRepository } from "./liquidity-repository";
 import { LiquidityRepositoryMock } from "./liquidity-repository-mock";
 

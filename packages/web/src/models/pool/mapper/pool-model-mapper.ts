@@ -1,19 +1,24 @@
-import { IncentivizedOptions } from "@/common/values/data-constant";
-import { TokenModelMapper } from "@/models/token/mapper/token-model-mapper";
-import { TokenPairModelMapper } from "@/models/token/mapper/token-pair-model-mapper";
+import { IncentivizedOptions } from "@common/values/data-constant";
+import { TokenModelMapper } from "@models/token/mapper/token-model-mapper";
+import { TokenPairModelMapper } from "@models/token/mapper/token-pair-model-mapper";
 import {
   PoolInfoResponse,
   PoolListInfoResponse,
   PoolListResponse,
-} from "@/repositories/pool";
+} from "@repositories/pool";
 import BigNumber from "bignumber.js";
-import { PoolDetailModel } from "../pool-detail-model";
-import { PoolModel } from "../pool-model";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolModel } from "@models/pool/pool-model";
 
 export class PoolModelMapper {
   public static fromResponse(response: PoolInfoResponse): PoolModel {
-    const { fee_rate, incentivized_type, liquidity, pool_id, rewards } =
-      response;
+    const {
+      fee_rate,
+      incentivized_type,
+      liquidity,
+      pool_id,
+      rewards,
+    } = response;
 
     return {
       poolId: pool_id,
