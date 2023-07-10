@@ -8,10 +8,10 @@ export const wrapper = (theme: Theme) => css`
   .inner-wrap {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     gap: 8px;
     &:not(:first-of-type) {
-      border-top: 1px solid ${theme.colors.brand70};
+      border-top: 1px solid ${theme.color.border04};
       padding-top: 8px;
     }
     &:not(:last-of-type) {
@@ -49,13 +49,13 @@ export const wrapper = (theme: Theme) => css`
 
   h3,
   .total-value {
-    color: ${theme.colors.brand30};
+    color: ${theme.color.text04};
   }
 
   .claim-content {
     ${fonts.p4};
-    color: ${theme.colors.brand40};
-    border-top: 1px solid ${theme.colors.brand70};
+    color: ${theme.color.text08};
+    border-top: 1px solid ${theme.color.border04};
     padding-top: 8px;
     margin-top: 8px;
   }

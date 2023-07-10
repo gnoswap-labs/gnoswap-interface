@@ -6,11 +6,11 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center")};
   width: 100%;
   height: 155px;
-  background-color: ${theme.colors.gray60};
-  border: 1px solid ${theme.colors.gray50};
+  background-color: ${theme.color.background06};
+  border: 1px solid ${theme.color.border02};
   border-radius: 8px;
   ${fonts.body12};
-  color: ${theme.colors.gray40};
+  color: ${theme.color.text04};
   section {
     ${mixins.flexbox("column", "flex-start", "center")};
     padding: 24px 36px;
@@ -18,7 +18,7 @@ export const wrapper = (theme: Theme) => css`
     flex: 1;
     gap: 16px;
     &:not(:first-of-type) {
-      border-left: 1px solid ${theme.colors.gray50};
+      border-left: 1px solid ${theme.color.border02};
     }
   }
 
@@ -26,23 +26,23 @@ export const wrapper = (theme: Theme) => css`
     cursor: pointer;
     transition: color 0.3s ease;
     &:hover {
-      color: ${theme.colors.brand40};
+      color: ${theme.color.text07};
     }
   }
 
   strong {
     ${fonts.body2};
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
   }
 
   span {
     &.apr-value {
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
     }
     &.status-type {
-      color: ${theme.colors.colorGreen};
+      color: ${theme.color.green01};
       &.negative {
-        color: ${theme.colors.colorRed};
+        color: ${theme.color.red01};
       }
     }
   }

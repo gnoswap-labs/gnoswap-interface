@@ -8,7 +8,7 @@ export const ThemeModeButtonWrapper = styled.div<{ darkMode: boolean }>`
   width: 70px;
   height: 28px;
   border-radius: 4px;
-  background: ${({ theme }) => theme.colors.colorBlack};
+  background: ${({ theme }) => theme.color.background09};
   cursor: pointer;
   svg {
     width: 16px;
@@ -17,12 +17,12 @@ export const ThemeModeButtonWrapper = styled.div<{ darkMode: boolean }>`
     &.dark-icon * {
       transition: all 0.3s ease;
       fill: ${({ darkMode, theme }) =>
-        darkMode ? theme.colors.gray20 : theme.colors.gray50};
+        darkMode ? theme.color.icon02 : theme.color.icon03};
     }
     &.light-icon * {
       transition: all 0.3s ease;
       fill: ${({ darkMode, theme }) =>
-        darkMode ? theme.colors.gray50 : theme.colors.gray20};
+        darkMode ? theme.color.icon03 : theme.color.icon02};
     }
   }
 `;
@@ -34,5 +34,5 @@ export const ToggleButton = styled.div<{ darkMode: boolean }>`
   transition: all 0.3s ease;
   position: absolute;
   left: ${({ darkMode }) => (darkMode ? "2px" : "36px")};
-  background-color: ${({ theme }) => theme.colors.gray50};
+  background-color: ${({ theme }) => theme.color.background02};
 `;

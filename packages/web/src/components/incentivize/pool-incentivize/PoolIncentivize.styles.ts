@@ -7,10 +7,10 @@ export const wrapper = (theme: Theme) => css`
   gap: 16px;
   width: 500px;
   height: 100%;
-  color: ${theme.colors.gray10};
-  background-color: ${theme.colors.gray60};
+  color: ${theme.color.text02};
+  background-color: ${theme.color.background06};
   border-radius: 8px;
-  border: 1px solid ${theme.colors.gray50};
+  border: 1px solid ${theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   padding: 23px;
   .title {

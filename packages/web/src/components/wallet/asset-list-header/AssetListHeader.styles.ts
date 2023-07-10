@@ -9,7 +9,7 @@ export const AssetListHeaderWrapper = styled.div`
 
   h2 {
     ${fonts.h5};
-    color: ${({ theme }) => theme.colors.gray10};
+    color: ${({ theme }) => theme.color.text02};
     margin-right: 36px;
   }
   .right-section {

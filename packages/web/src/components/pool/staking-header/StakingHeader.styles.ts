@@ -6,7 +6,7 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
   ${fonts.h5};
-  color: ${theme.colors.gray10};
+  color: ${theme.color.text02};
   .button-wrap {
     ${mixins.flexbox("row", "center", "center")};
     gap: 8px;

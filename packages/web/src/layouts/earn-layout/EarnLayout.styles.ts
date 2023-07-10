@@ -3,7 +3,7 @@ import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
-  background-color: ${theme.colors.colorBlack};
+  background-color: ${theme.color.background01};
   section,
   .earn-content {
     width: 100%;
@@ -23,7 +23,7 @@ export const wrapper = (theme: Theme) => css`
 
     .earn-title {
       ${fonts.h3};
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
     }
 
     .position-section,
@@ -55,8 +55,8 @@ export const wrapper = (theme: Theme) => css`
       height: 400px;
       background: linear-gradient(
         180deg,
-        ${theme.colors.gray60}80 0%,
-        ${theme.colors.gray60}00 100%
+        ${theme.color.backgroundGradient}80 0%,
+        ${theme.color.backgroundGradient}00 100%
       );
     }
   }

@@ -6,16 +6,16 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
   ${fonts.body10};
   width: 100%;
-  color: ${theme.colors.gray30};
-  background-color: ${theme.colors.gray60};
+  color: ${theme.color.text05};
+  background-color: ${theme.color.background11};
   border-radius: 8px;
-  border: 1px solid ${theme.colors.gray50};
+  border: 1px solid ${theme.color.border02};
   height: 267px;
   .unconnected-icon {
     width: 48px;
     height: 48px;
     * {
-      fill: ${theme.colors.gray40};
+      fill: ${theme.color.icon03};
     }
   }
   p {

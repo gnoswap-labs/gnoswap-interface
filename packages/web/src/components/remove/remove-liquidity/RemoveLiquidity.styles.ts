@@ -10,10 +10,10 @@ export const wrapper = (theme: Theme) => css`
   gap: 16px;
   width: 500px;
   height: 100%;
-  color: ${theme.colors.gray10};
-  background-color: ${theme.colors.gray60};
+  color: ${theme.color.text02};
+  background-color: ${theme.color.background06};
   border-radius: 8px;
-  border: 1px solid ${theme.colors.gray50};
+  border: 1px solid ${theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   padding: 23px;
   .title {
@@ -37,18 +37,18 @@ export const inputStyle = (theme: Theme) => css`
       mask-repeat: no-repeat;
       mask-position: center center;
       mask-size: contain;
-      background-color: ${theme.colors.gray40};
+      background-color: ${theme.color.text04};
       mask-image: url(${iconCheckboxBlank});
     }
   }
 
   input[type="checkbox"]:checked + label:before {
-    background-color: ${theme.colors.colorPoint};
+    background-color: ${theme.color.point};
     mask-image: url(${iconChecked});
   }
 
   input[type="checkbox"]:disabled + label:before {
-    background-color: ${theme.colors.gray40};
+    background-color: ${theme.color.text04};
     mask-image: url(${iconCheckboxUnsure});
     cursor: default;
   }

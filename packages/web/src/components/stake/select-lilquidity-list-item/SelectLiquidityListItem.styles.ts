@@ -11,20 +11,20 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     height: 56px;
     gap: 8px;
     background-color: ${checked
-      ? theme.colors.gray60
-      : theme.colors.opacityDark07};
-    border: 1px solid ${checked ? theme.colors.gray40 : theme.colors.gray50};
+      ? theme.color.background09
+      : theme.color.backgroundOpacity};
+    border: 1px solid ${checked ? theme.color.border03 : theme.color.border02};
     border-radius: 8px;
     padding: 15px;
     ${fonts.body12};
-    color: ${theme.colors.gray20};
+    color: ${theme.color.text03};
     transition: all 0.3s ease;
     input[type="checkbox"] + label:before {
-      background-color: ${theme.colors.gray50};
+      background-color: ${theme.color.background02};
     }
     .liquidity-value {
       margin-left: auto;
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
     }
     .hover-info {
       &,
@@ -35,7 +35,7 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
       cursor: pointer;
       .icon-info {
         * {
-          fill: ${theme.colors.gray40};
+          fill: ${theme.color.icon03};
         }
       }
     }

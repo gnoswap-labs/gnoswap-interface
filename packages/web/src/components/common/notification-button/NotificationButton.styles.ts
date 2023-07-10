@@ -12,12 +12,12 @@ export const AlertButton = styled.button`
   border-radius: 4px;
   transition: all 0.3s ease;
   .notification-icon * {
-    fill: ${({ theme }) => theme.colors.gray30};
+    fill: ${({ theme }) => theme.color.icon05};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray50};
+    background-color: ${({ theme }) => theme.color.background02};
     .notification-icon * {
-      fill: ${({ theme }) => theme.colors.gray20};
+      fill: ${({ theme }) => theme.color.icon02};
     }
   }
 `;

@@ -21,13 +21,13 @@ export const wrapper = (theme: Theme) => css`
 export const sectionBoxStyle = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "center")};
   width: 100%;
-  background-color: ${theme.colors.opacityDark07};
+  background-color: ${theme.color.backgroundOpacity};
   border-radius: 8px;
-  border: 1px solid ${theme.colors.gray50};
+  border: 1px solid ${theme.color.border02};
   padding: 15px;
   gap: 16px;
   .section-title {
-    color: ${theme.colors.gray30};
+    color: ${theme.color.text05};
     ${fonts.body12}
   }
 `;

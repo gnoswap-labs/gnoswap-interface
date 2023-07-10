@@ -7,21 +7,21 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
   css`
     width: 100%;
     background-color: ${stakeType === STAKED_OPTION.STAKED
-      ? theme.colors.opacityDark05
-      : theme.colors.gray60};
+      ? theme.color.background03
+      : theme.color.background09};
     border: 1px solid
       ${stakeType === STAKED_OPTION.STAKED
-        ? theme.colors.gray60
-        : theme.colors.gray50};
+        ? theme.color.border01
+        : theme.color.border02};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     padding: 16px;
     transition: all 0.3s ease;
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     cursor: pointer;
     &:hover {
-      background-color: ${theme.colors.gray50};
-      border: 1px solid ${theme.colors.gray40};
+      background-color: ${theme.color.background02};
+      border: 1px solid ${theme.color.border03};
     }
     .token-pair {
       width: 100%;
@@ -38,7 +38,7 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
         height: 16px;
         margin-right: 4px;
         & * {
-          fill: ${theme.colors.brand10};
+          fill: ${theme.color.text06};
         }
       }
     }
@@ -60,7 +60,7 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
     }
 
     .label-text {
-      color: ${theme.colors.gray40};
+      color: ${theme.color.text04};
       ${fonts.body12};
       height: 18px;
     }
@@ -68,7 +68,7 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
     .pool-price-graph {
       width: 100%;
       padding: 16px;
-      background-color: ${theme.colors.opacityDark07};
+      background-color: ${theme.color.backgroundOpacity};
       border-radius: 8px;
       margin-top: 16px;
     }
@@ -80,7 +80,7 @@ export const wrapper = (stakeType: STAKED_OPTION) => (theme: Theme) =>
     .current-price {
       ${mixins.flexbox("column", "flex-start", "center", false)};
       gap: 4px;
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
       ${fonts.p4};
     }
     .dummy-chart {

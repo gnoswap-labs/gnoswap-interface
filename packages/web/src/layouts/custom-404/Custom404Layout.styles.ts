@@ -21,11 +21,11 @@ export const wrapper = (theme: Theme) => css`
       ${fonts.h1};
       font-size: 80px;
       line-height: 96px;
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
     }
     p {
       ${fonts.body3};
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
       margin: 4px 0px 48px;
     }
   }

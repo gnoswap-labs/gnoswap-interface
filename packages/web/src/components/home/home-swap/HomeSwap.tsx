@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
-import Button from "@components/common/button/Button";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 interface HomeSwapProps {
@@ -121,11 +121,10 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
         <Button
           text="Swap now"
           style={{
-            bgColor: "brand50",
             fullWidth: true,
             height: 50,
-            textColor: "gray10",
             fontType: "body7",
+            hierarchy: ButtonHierarchy.Primary
           }}
           onClick={onClickSwapNow}
         />

@@ -1,6 +1,6 @@
 import React from "react";
 import GnoswapThemeProvider from "../src/providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { getTheme } from "@utils/themeUtils";
+import { getTheme } from "@utils/theme-utils";
 import { Provider as JotaiProvider } from "jotai";
 
 export const parameters = {
