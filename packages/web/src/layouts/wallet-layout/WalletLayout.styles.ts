@@ -4,7 +4,7 @@ import { fonts } from "@constants/font.constant";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  background-color: ${theme.colors.colorBlack};
+  background-color: ${theme.color.background01};
 
   .wallet-detail-section,
   .wallet-summary-section {
@@ -28,7 +28,7 @@ export const wrapper = (theme: Theme) => css`
 
       .title {
         ${fonts.h3};
-        color: ${theme.colors.gray10};
+        color: ${theme.color.text02};
       }
     }
 
@@ -55,8 +55,8 @@ export const wrapper = (theme: Theme) => css`
       height: 400px;
       background: linear-gradient(
         180deg,
-        ${theme.colors.gray60}80 0%,
-        ${theme.colors.gray60}00 100%
+        ${theme.color.backgroundGradient}80 0%,
+        ${theme.color.backgroundGradient}00 100%
       );
     }
   }

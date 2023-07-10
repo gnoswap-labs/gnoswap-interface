@@ -20,7 +20,6 @@ interface WalletBalanceSummaryProps {
 }
 
 const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
-  connected,
   balanceSummaryInfo,
   deposit,
   withdraw,
@@ -38,21 +37,18 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
         text={"Deposit"}
         leftIcon={<IconDownload />}
         onClick={deposit}
-        disabled={!connected}
       />
       <Button
         style={defaultWalletButtonStyle}
         text={"Withdraw"}
         leftIcon={<IconUpload />}
         onClick={withdraw}
-        disabled={!connected}
       />
       <Button
         style={defaultWalletButtonStyle}
         text={"Earn"}
         leftIcon={<IconMoveToInbox />}
         onClick={earn}
-        disabled={!connected}
       />
     </WalletButtonGroup>
   </WalletBalanceSummaryWrapper>

@@ -9,10 +9,10 @@ export const wrapper = (theme: Theme) => css`
   gap: 16px;
   width: 500px;
   height: 100%;
-  color: ${theme.colors.gray10};
-  background-color: ${theme.colors.gray60};
+  color: ${theme.color.text02};
+  background-color: ${theme.color.background06};
   border-radius: 8px;
-  border: 1px solid ${theme.colors.gray50};
+  border: 1px solid ${theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   padding: 23px;
   .title {
@@ -23,13 +23,13 @@ export const wrapper = (theme: Theme) => css`
 export const sectionBoxStyle = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "center")};
   width: 100%;
-  background-color: ${theme.colors.opacityDark07};
+  background-color: ${theme.color.backgroundOpacity};
   border-radius: 8px;
-  border: 1px solid ${theme.colors.gray50};
+  border: 1px solid ${theme.color.border02};
   padding: 15px;
   gap: 16px;
   .section-title {
-    color: ${theme.colors.gray30};
+    color: ${theme.color.text05};
     ${fonts.body12}
   }
 `;
@@ -52,12 +52,12 @@ export const inputStyle = (theme: Theme) => css`
       mask-repeat: no-repeat;
       mask-position: center center;
       mask-size: contain;
-      background-color: ${theme.colors.gray40};
+      background-color: ${theme.color.text04};
       mask-image: url(${iconCheckboxBlank});
     }
   }
   input[type="checkbox"]:checked + label:before {
-    background-color: ${theme.colors.colorPoint};
+    background-color: ${theme.color.point};
     mask-image: url(${iconChecked});
   }
 `;

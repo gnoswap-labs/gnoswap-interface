@@ -4,8 +4,8 @@ import { fonts } from "@constants/font.constant";
 
 export const wrapper = (theme: Theme) => css`
   padding: 15px 23px;
-  background-color: ${theme.colors.gray60};
-  border: 1px solid ${theme.colors.gray50};
+  background-color: ${theme.color.background06};
+  border: 1px solid ${theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
 
@@ -16,7 +16,7 @@ export const wrapper = (theme: Theme) => css`
 
     .title {
       ${fonts.h6};
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
     }
 
     .setting-button {
@@ -24,7 +24,7 @@ export const wrapper = (theme: Theme) => css`
       height: 24px;
     }
     .setting-icon * {
-      fill: ${theme.colors.gray40};
+      fill: ${theme.color.icon03};
     }
   }
 
@@ -43,8 +43,8 @@ export const wrapper = (theme: Theme) => css`
       width: 100%;
       padding: 9px 23px;
 
-      background-color: ${theme.colors.colorBlack};
-      border: 1px solid ${theme.colors.gray50};
+      background-color: ${theme.color.background01};
+      border: 1px solid ${theme.color.border02};
       border-radius: 8px;
     }
 
@@ -75,14 +75,14 @@ export const wrapper = (theme: Theme) => css`
       ${fonts.body1};
       font-size: 27px;
       line-height: 38px;
-      color: ${theme.colors.colorWhite};
+      color: ${theme.color.text01};
       margin-right: 30px;
     }
 
     .price-text,
     .balance-text {
       ${fonts.p2};
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
     }
 
     .token {
@@ -93,7 +93,7 @@ export const wrapper = (theme: Theme) => css`
       font-weight: 500;
       line-height: 19px;
       border-radius: 36px;
-      color: ${theme.colors.colorWhite};
+      color: ${theme.color.text01};
     }
 
     .arrow {
@@ -104,15 +104,15 @@ export const wrapper = (theme: Theme) => css`
         ${mixins.flexbox("row", "center", "center")};
         width: 40px;
         height: 40px;
-        background-color: ${theme.colors.colorBlack};
-        border: 1px solid ${theme.colors.gray50};
+        background-color: ${theme.color.background01};
+        border: 1px solid ${theme.color.border02};
         border-radius: 50%;
 
         .shape-icon {
           width: 16px;
           height: 16px;
           * {
-            fill: ${theme.colors.gray20};
+            fill: ${theme.color.icon02};
           }
         }
       }

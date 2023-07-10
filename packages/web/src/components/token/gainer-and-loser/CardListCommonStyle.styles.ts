@@ -5,16 +5,16 @@ import mixins from "@styles/mixins";
 export const cardStyle = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "center")};
   ${fonts.body12};
-  color: ${theme.colors.gray10};
+  color: ${theme.color.text02};
   width: 100%;
   gap: 24px;
   padding: 24px 0px;
   &:first-of-type {
-    border-bottom: 1px solid ${theme.colors.gray50};
+    border-bottom: 1px solid ${theme.color.border02};
   }
   .card-title {
     ${fonts.body9};
-    color: ${theme.colors.colorWhite};
+    color: ${theme.color.text01};
     width: 100%;
     padding: 0px 24px;
   }
@@ -26,7 +26,7 @@ export const cardStyle = (theme: Theme) => css`
     cursor: pointer;
     transition: background-color 0.3s ease;
     &:hover {
-      background-color: ${theme.colors.gray60};
+      background-color: ${theme.color.background06};
     }
   }
   img {
@@ -37,7 +37,7 @@ export const cardStyle = (theme: Theme) => css`
     margin: 0px 8px;
   }
   .symbol {
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
     margin-right: auto;
   }
   .price {
@@ -46,9 +46,9 @@ export const cardStyle = (theme: Theme) => css`
   .change {
     text-align: right;
     margin-left: 31px;
-    color: ${theme.colors.colorGreen};
+    color: ${theme.color.green01};
     &.negative {
-      color: ${theme.colors.colorRed};
+      color: ${theme.color.red01};
     }
   }
 `;

@@ -10,13 +10,13 @@ export const wrapper = (active: boolean) => (theme: Theme) =>
       active ? "center" : "space-between",
     )};
     width: 100%;
-    background-color: ${theme.colors.opacityDark07};
+    background-color: ${theme.color.backgroundOpacity};
     border-radius: 8px;
-    border: 1px solid ${theme.colors.gray50};
+    border: 1px solid ${theme.color.border02};
     padding: 15px;
     h5 {
       ${fonts.body12};
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
     }
     .select-pair {
       width: 100%;

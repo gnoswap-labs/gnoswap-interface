@@ -6,17 +6,17 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
   gap: 4px;
   width: 100%;
-  color: ${theme.colors.gray20};
+  color: ${theme.color.text03};
   ${fonts.body12};
-  border-top: 1px solid ${theme.colors.gray50};
+  border-top: 1px solid ${theme.color.border02};
   padding-top: 16px;
 
   ul {
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     padding: 15px;
-    background-color: ${theme.colors.opacityDark07};
-    border: 1px solid ${theme.colors.gray50};
+    background-color: ${theme.color.backgroundOpacity};
+    border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;
   }
@@ -57,7 +57,7 @@ export const wrapper = (theme: Theme) => css`
 
     .dallor {
       ${fonts.p4}
-      color: ${theme.colors.gray40}
+      color: ${theme.color.text04}
     }
   }
 `;

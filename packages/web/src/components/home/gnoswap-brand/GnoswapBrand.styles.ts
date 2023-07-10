@@ -5,11 +5,11 @@ import { css, type Theme } from "@emotion/react";
 export const wrapper = (theme: Theme) => css`
   .title {
     ${fonts.h1};
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     line-height: 1.2;
 
     span {
-      color: ${theme.colors.colorPoint};
+      color: ${theme.color.point};
     }
   }
 
@@ -17,7 +17,7 @@ export const wrapper = (theme: Theme) => css`
     font-size: 28px;
     font-weight: 600;
     line-height: 34px;
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
 
     margin: 20px 0px 34px;
   }
@@ -31,7 +31,7 @@ export const wrapper = (theme: Theme) => css`
       height: 28px;
       &:hover {
         .icon * {
-          fill: ${theme.colors.gray10};
+          fill: ${theme.color.icon01};
         }
       }
       .icon {
@@ -39,7 +39,7 @@ export const wrapper = (theme: Theme) => css`
         height: 28px;
         * {
           transition: all 0.3s ease;
-          fill: ${theme.colors.gray40};
+          fill: ${theme.color.icon03};
         }
       }
     }
@@ -47,7 +47,7 @@ export const wrapper = (theme: Theme) => css`
 
   .description {
     ${fonts.body8};
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
     line-height: 1.4;
 
     margin-top: 10px;

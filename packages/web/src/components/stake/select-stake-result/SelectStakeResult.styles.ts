@@ -6,9 +6,9 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
   gap: 4px;
   width: 100%;
-  color: ${theme.colors.gray20};
+  color: ${theme.color.text03};
   ${fonts.body12};
-  border-top: 1px solid ${theme.colors.gray50};
+  border-top: 1px solid ${theme.color.border02};
   padding-top: 16px;
 
   .pooled-section,
@@ -16,8 +16,8 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     padding: 15px;
-    background-color: ${theme.colors.opacityDark07};
-    border: 1px solid ${theme.colors.gray50};
+    background-color: ${theme.color.backgroundOpacity};
+    border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;
   }
@@ -46,14 +46,14 @@ export const wrapper = (theme: Theme) => css`
 
     .dallor {
       ${fonts.p4}
-      color: ${theme.colors.gray40}
+      color: ${theme.color.text04}
     }
   }
 
   .result-section {
     ${mixins.flexbox("column", "center", "center")};
     height: 90px;
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     ${fonts.body12}
     .result-value {
       margin-left: auto;
@@ -86,7 +86,7 @@ export const wrapper = (theme: Theme) => css`
     cursor: pointer;
     .icon-info {
       * {
-        fill: ${theme.colors.gray40};
+        fill: ${theme.color.icon03};
       }
     }
   }

@@ -6,13 +6,13 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center")}
   width: 100%;
   ${fonts.body11};
-  color: ${theme.colors.gray40};
+  color: ${theme.color.text04};
   p {
     ${mixins.flexbox("row", "center", "center")};
   }
   .link-text {
     ${mixins.flexbox("row", "center", "center")};
-    color: ${theme.colors.brand40};
+    color: ${theme.color.text07};
     cursor: pointer;
     gap: 4px;
   }
@@ -20,7 +20,7 @@ export const wrapper = (theme: Theme) => css`
     width: 16px;
     height: 16px;
     * {
-      fill: ${theme.colors.gray40};
+      fill: ${theme.color.icon03};
     }
   }
 `;

@@ -7,8 +7,8 @@ export const wrapper = (theme: Theme) =>
     ${mixins.flexbox("row", "center", "center")};
     width: 100%;
     height: 121px;
-    background-color: ${theme.colors.gray60};
-    border: 1px solid ${theme.colors.gray50};
+    background-color: ${theme.color.background06};
+    border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     section {
       ${mixins.flexbox("column", "flex-start", "center")};
@@ -17,26 +17,26 @@ export const wrapper = (theme: Theme) =>
       flex: 1;
       gap: 16px;
       &:not(:first-of-type) {
-        border-left: 1px solid ${theme.colors.gray50};
+        border-left: 1px solid ${theme.color.border02};
       }
     }
 
     h4 {
       ${fonts.body12};
-      color: ${theme.colors.gray40};
+      color: ${theme.color.text04};
     }
 
     .has-tooltip {
       cursor: pointer;
       transition: color 0.3s ease;
       &:hover {
-        color: ${theme.colors.brand40};
+        color: ${theme.color.text07};
       }
     }
 
     span.content-value {
       ${fonts.body2};
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
     }
 
     .claim-wrap {

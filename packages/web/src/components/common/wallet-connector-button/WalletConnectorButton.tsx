@@ -33,7 +33,7 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
         <Button
           leftIcon={<IconAdenaLogo />}
           text={formatAddress(FAKE_USERINFO.address)}
-          rightIcon={<IconStrokeArrowDown />}
+          rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Dark,
             fontType: "p1",
@@ -47,7 +47,7 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
       ) : (
         <Button
           text="Connect Wallet"
-          rightIcon={<IconStrokeArrowDown />}
+          rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",

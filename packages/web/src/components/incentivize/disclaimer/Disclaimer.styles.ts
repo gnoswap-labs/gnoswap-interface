@@ -6,14 +6,14 @@ export const wrapper = (theme: Theme) => css`
   ${sectionBoxStyle(theme)};
   ${mixins.flexbox("row", "flex-start", "center")};
   gap: 24px;
-  background-color: ${theme.colors.opacityDark05};
+  background-color: ${theme.color.background03};
   padding: 19px 15px;
   .section-title {
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
   }
   .desc {
     height: auto;
     word-break: break-all;
-    color: ${theme.colors.gray30};
+    color: ${theme.color.text05};
   }
 `;

@@ -8,8 +8,8 @@ export const wrapper = (theme: Theme) => css`
   .amount-input-wrap {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    background-color: ${theme.colors.opacityDark07};
-    border: 1px solid ${theme.colors.gray50};
+    background-color: ${theme.color.backgroundOpacity};
+    border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     padding: 15px;
     height: 100%;
@@ -28,7 +28,7 @@ export const wrapper = (theme: Theme) => css`
     text-align: right;
     width: 100%;
     height: 100%;
-    color: ${theme.colors.colorWhite};
+    color: ${theme.color.text01};
     ${fonts.body1};
   }
 `;

@@ -20,7 +20,7 @@ export const wrapper = (theme: Theme) => css`
     gap: 8px;
     .title {
       ${fonts.h3};
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
     }
   }
 

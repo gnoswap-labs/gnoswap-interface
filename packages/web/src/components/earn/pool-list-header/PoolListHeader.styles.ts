@@ -7,7 +7,7 @@ export const wrapper = (theme: Theme) => css`
   width: 100%;
   h2 {
     ${fonts.h5};
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     margin-right: 36px;
   }
   .pools-search {

@@ -4,7 +4,7 @@ import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   .container {
-    border: 1px solid ${theme.colors.colorGreen};
+    border: 1px solid ${theme.color.green01};
 
     ${mixins.flexbox("row", "flex-start", "space-between")};
     flex-wrap: wrap;
@@ -17,11 +17,11 @@ export const wrapper = (theme: Theme) => css`
     .page-name {
       width: 100px;
       ${fonts.h3};
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
     }
 
     .swap {
-      border: 1px solid ${theme.colors.colorGreen};
+      border: 1px solid ${theme.color.green01};
 
       width: 500px;
     }

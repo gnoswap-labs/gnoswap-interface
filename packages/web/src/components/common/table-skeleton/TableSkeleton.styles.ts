@@ -10,7 +10,7 @@ export const SkeletonWrapper = styled.div<SkeletonStyleProps>`
   min-width: 100%;
   height: 68px;
   &:not(:first-of-type) {
-    border-top: 1px solid ${({ theme }) => theme.colors.gray50};
+    border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
 `;
 

@@ -6,11 +6,11 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "space-between", "center")};
   ${fonts.body12};
   width: 100%;
-  color: ${theme.colors.gray10};
+  color: ${theme.color.text02};
   gap: 4px;
   .title-wrap {
     ${mixins.flexbox("row", "center", "space-between")};
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
     padding: 0px 24px;
   }
   .pair {
@@ -40,13 +40,13 @@ export const wrapper = (theme: Theme) => css`
       transition: background-color 0.3s ease;
       cursor: pointer;
       &:hover {
-        background-color: ${theme.colors.gray60};
+        background-color: ${theme.color.background06};
       }
       .symbol {
         margin: 0px 8px;
       }
       .fee-rate {
-        color: ${theme.colors.gray40};
+        color: ${theme.color.text04};
       }
     }
   }

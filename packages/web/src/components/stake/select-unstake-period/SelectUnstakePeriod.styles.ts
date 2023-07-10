@@ -20,16 +20,16 @@ export const wrapper = (theme: Theme) => css`
     cursor: pointer;
     &:hover,
     &.active {
-      border-color: ${theme.colors.gray40};
-      background-color: ${theme.colors.gray60};
+      border-color: ${theme.color.text04};
+      background-color: ${theme.color.background06};
     }
 
     .days {
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
       ${fonts.body12};
     }
     .apr-value {
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
       ${fonts.body5}
     }
   }

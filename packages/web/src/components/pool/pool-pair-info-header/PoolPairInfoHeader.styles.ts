@@ -8,7 +8,7 @@ export const wrapper = (theme: Theme) => css`
   height: 36px;
   h3 {
     ${fonts.h5};
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     margin: 0px 8px;
   }
   .badge-wrap {
