@@ -1,5 +1,4 @@
 import { css, keyframes, Theme } from "@emotion/react";
-import mixins from "@styles/mixins";
 import { CSSProperties } from "react";
 import { ValuesType } from "utility-types";
 
@@ -9,36 +8,50 @@ const skeletonAni = keyframes`
   }
 `;
 
-export const skeletonStyle =
-  (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
-  (theme: Theme) =>
-    css`
-      position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
-      height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
-      background: ${theme.colors.colorBlack};
-      overflow: hidden;
-      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-      &::after {
-        content: "";
-        ${mixins.posMoveToTopAndRight("0", "100%")}
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          rgba(20, 26, 41, 0.5) 0%,
-          rgba(20, 26, 41, 0) 100.93%
-        );
-        animation: ${skeletonAni} 2s ease infinite;
-      }
-    `;
+export const skeletonStyle = (
+  skeletonWidth: CSSProperties["width"],
+  type: SHAPE_TYPES,
+) => (theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
+    background: ${theme.color.background01};
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        0,
+        ${theme.color.backgroundGradient} 0%,
+        ${theme.color.backgroundGradient} 100%
+      );
+      animation: ${skeletonAni} 2s ease infinite;
+    }
+  `;
 
 export const POOL_TD_WIDTH = [240, 230, 230, 230, 230, 200];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 140];
 export const TOKEN_TD_WIDTH = [
-  56, 203, 105, 85, 85, 85, 140, 140, 140, 195, 126,
+  56,
+  203,
+  105,
+  85,
+  85,
+  85,
+  140,
+  140,
+  140,
+  195,
+  126,
 ];
 
 export const SHAPE_TYPES = {

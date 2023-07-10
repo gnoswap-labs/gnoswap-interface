@@ -13,7 +13,7 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 32px;
     padding: 0px 15px;
-    color: ${theme.colors.gray30};
+    color: ${theme.color.text05};
     ${fonts.body12};
     .period-label {
       width: 60px;

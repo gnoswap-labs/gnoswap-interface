@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
-import { PaletteKeyType } from "@styles/ThemeTypes";
+import { ThemeColorKeyTypes } from "@styles/ThemeTypes";
 import { CSSProperties } from "react";
 import { fonts, type FontsKey } from "@constants/font.constant";
 
 export interface ModalStyleProps {
   fontType?: FontsKey;
-  textColor?: PaletteKeyType;
+  textColor?: ThemeColorKeyTypes;
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
 }
@@ -25,8 +25,8 @@ export const ModalWrapper = styled.div<ModalStyleProps>`
   padding: 24px;
   ${mixins.positionCenter()};
   z-index: ${Z_INDEX.modal};
-  background-color: ${({ theme }) => theme.colors.gray60};
-  border: 1px solid ${({ theme }) => theme.colors.gray50};
+  background-color: ${({ theme }) => theme.color.background06};
+  border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
 `;
@@ -34,10 +34,10 @@ export const ModalWrapper = styled.div<ModalStyleProps>`
 export const ModalHeader = styled.div<ModalStyleProps>`
   ${mixins.flexbox("row", "center", "space-between")};
   ${({ fontType }) => fonts[fontType ?? "h6"]};
-  color: ${({ theme, textColor }) => theme.colors[textColor ?? "gray10"]};
+  color: ${({ theme, textColor }) => theme.color[textColor ?? "text02"]};
   width: 100%;
   svg * {
-    fill: ${({ theme }) => theme.colors.gray10};
+    fill: ${({ theme }) => theme.color.icon01};
   }
 `;
 
@@ -58,7 +58,7 @@ export const Overlay = styled.div`
   right: 0px;
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.colors.opacityDark07};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity};
   overflow: hidden;
   z-index: ${Z_INDEX.modalOverlay};
 `;

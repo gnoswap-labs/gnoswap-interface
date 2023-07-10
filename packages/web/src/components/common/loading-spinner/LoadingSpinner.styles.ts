@@ -25,7 +25,7 @@ export const wrapper = (theme: Theme) => css`
   &::before {
     ${mixins.positionCenter()};
     content: "";
-    background-color: ${theme.colors.gray60};
+    background-color: ${theme.color.background06};
     width: 60px;
     height: 60px;
     border-radius: 100%;

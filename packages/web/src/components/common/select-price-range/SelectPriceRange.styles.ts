@@ -5,9 +5,9 @@ import mixins from "@styles/mixins";
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
-  background-color: ${theme.colors.opacityDark07};
+  background-color: ${theme.color.backgroundOpacity};
   border-radius: 8px;
-  border: 1px solid ${theme.colors.gray50};
+  border: 1px solid ${theme.color.border02};
   padding: 15px;
   gap: 16px;
   cursor: pointer;
@@ -15,7 +15,7 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     .title {
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
       ${fonts.body12};
     }
   }
@@ -30,18 +30,18 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     height: 50px;
-    border: 1px solid ${theme.colors.gray50};
+    border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     padding: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
     &:hover {
-      background-color: ${theme.colors.gray60};
-      border: 1px solid ${theme.colors.gray40};
+      background-color: ${theme.color.background06};
+      border: 1px solid ${theme.color.border03};
     }
 
     .item-title {
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
       ${fonts.body11};
     }
     .tooltip-wrap {
@@ -55,14 +55,14 @@ export const wrapper = (theme: Theme) => css`
         width: 100%;
         height: 100%;
         * {
-          fill: ${theme.colors.gray01};
+          fill: ${theme.color.icon04};
         }
       }
     }
   }
 
   .apr {
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     ${fonts.body11};
     margin-left: auto;
   }

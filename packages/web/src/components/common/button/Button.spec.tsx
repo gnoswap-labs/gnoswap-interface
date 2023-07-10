@@ -31,12 +31,12 @@ describe("Button Component", () => {
             leftIcon={<IconDownload />}
             text="Icon Button"
             style={{
-              bgColor: "gray50",
+              bgColor: "background01",
               width: 180,
               height: 50,
               justify: "space-between",
               padding: "0px 10px",
-              textColor: "colorGreen",
+              textColor: "",
             }}
           />
         </GnoswapThemeProvider>
@@ -52,10 +52,10 @@ describe("Button Component", () => {
             leftIcon={<IconDownload />}
             text="Full width button"
             style={{
-              bgColor: "gray40",
+              bgColor: "background02",
               fullWidth: true,
               height: 50,
-              textColor: "colorWhite",
+              textColor: "text01",
             }}
           />
         </GnoswapThemeProvider>

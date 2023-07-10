@@ -20,5 +20,5 @@ export const Default = Template.bind({});
 Default.args = {};
 
 const wrapper = (theme: Theme) => css`
-  color: ${theme.colors.gray10};
+  color: ${theme.color.text02};
 `;

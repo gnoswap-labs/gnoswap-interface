@@ -16,9 +16,9 @@ export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
   padding: 0px 24px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  color: ${({ theme }) => theme.colors.colorWhite};
+  color: ${({ theme }) => theme.color.text01};
   &:hover {
-    background-color: ${({ theme }) => theme.colors.colorBlack};
+    background-color: ${({ theme }) => theme.color.hover02};
   }
 
   .list-logo {
@@ -28,7 +28,7 @@ export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
   }
   i,
   .list-content {
-    color: ${({ theme }) => theme.colors.gray40};
+    color: ${({ theme }) => theme.color.text04};
   }
   i {
     margin-right: 24px;
@@ -40,16 +40,16 @@ export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
     margin-right: auto;
   }
   .arrow-up * {
-    fill: ${({ theme }) => theme.colors.colorGreen};
+    fill: ${({ theme }) => theme.color.green01};
   }
   .arrow-down * {
-    fill: ${({ theme }) => theme.colors.colorRed};
+    fill: ${({ theme }) => theme.color.red01};
   }
   .notation-value {
     color: ${({ theme, upDownType }) => {
-      if (upDownType === UP_DOWN_TYPE.UP) return theme.colors.colorGreen;
-      if (upDownType === UP_DOWN_TYPE.DOWN) return theme.colors.colorRed;
-      return theme.colors.colorWhite;
+      if (upDownType === UP_DOWN_TYPE.UP) return theme.color.green01;
+      if (upDownType === UP_DOWN_TYPE.DOWN) return theme.color.red01;
+      return theme.color.text01;
     }};
   }
 `;

@@ -5,8 +5,8 @@ import mixins from "@styles/mixins";
 export const FooterWrapper = styled.footer`
   width: 100%;
   height: auto;
-  background-color: ${({ theme }) => theme.colors.colorBlack};
-  border-top: 1px solid ${({ theme }) => theme.colors.gray50};
+  background-color: ${({ theme }) => theme.color.background01};
+  border-top: 1px solid ${({ theme }) => theme.color.border02};
 `;
 
 export const FooterInner = styled.div`
@@ -31,7 +31,7 @@ export const LeftSection = styled.div`
   }
   .footer-content {
     ${fonts.p2}
-    color: ${({ theme }) => theme.colors.gray40};
+    color: ${({ theme }) => theme.color.text04};
     margin: 24px 0px;
     white-space: pre-wrap;
     width: 100%;
@@ -53,7 +53,7 @@ export const SocialNav = styled.div`
 
 export const AnchorStyle = styled.a`
   ${fonts.body12}
-  color: ${({ theme }) => theme.colors.gray40};
+  color: ${({ theme }) => theme.color.text04};
   &,
   svg * {
     transition: all 0.3s ease;
@@ -66,12 +66,12 @@ export const AnchorStyle = styled.a`
     margin-top: 16px;
   }
   svg * {
-    fill: ${({ theme }) => theme.colors.gray40};
+    fill: ${({ theme }) => theme.color.icon03};
   }
   :hover {
-    color: ${({ theme }) => theme.colors.gray20};
+    color: ${({ theme }) => theme.color.text03};
     svg * {
-      fill: ${({ theme }) => theme.colors.gray10};
+      fill: ${({ theme }) => theme.color.icon01};
     }
   }
 `;
@@ -91,7 +91,7 @@ export const MenuSection = styled.section`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   strong {
     ${fonts.body11};
-    color: ${({ theme }) => theme.colors.gray30};
+    color: ${({ theme }) => theme.color.text05};
   }
 
   @media (max-width: 767px) {

@@ -9,17 +9,17 @@ export const wrapper = (theme: Theme) => css`
   .marketInfo-wrap {
     ${mixins.flexbox("column", "flex-start", "center")};
     ${fonts.body8};
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     width: 100%;
     height: 91px;
-    background-color: ${theme.colors.opacityDark05};
-    border: 1px solid ${theme.colors.gray50};
+    background-color: ${theme.color.background03};
+    border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     padding: 16px;
     gap: 16px;
     .title {
       ${fonts.body12};
-      color: ${theme.colors.gray40};
+      color: ${theme.color.text04};
     }
   }
 `;

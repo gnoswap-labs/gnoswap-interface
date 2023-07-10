@@ -37,12 +37,12 @@ LeftIconButton.args = {
   leftIcon: <IconDownload />,
   text: "Left Icon Button",
   style: {
-    bgColor: "gray50",
+    bgColor: "background02",
     width: 180,
     height: 50,
     justify: "space-between",
     padding: "0px 10px",
-    textColor: "colorGreen",
+    textColor: "text01",
   },
 };
 
@@ -51,12 +51,12 @@ RightIconButton.args = {
   rightIcon: <IconStrokeArrowDown />,
   text: "Right Icon Button",
   style: {
-    bgColor: "gray50",
+    bgColor: "background01",
     width: 180,
     height: 50,
     justify: "space-between",
     padding: "0px 10px",
-    textColor: "colorGreen",
+    textColor: "text01",
   },
 };
 
@@ -64,9 +64,9 @@ export const FullWidthButton = Template.bind({});
 FullWidthButton.args = {
   text: "Full Width Button",
   style: {
-    bgColor: "gray40",
+    bgColor: "background03",
     fullWidth: true,
     height: 50,
-    textColor: "colorWhite",
+    textColor: "text01",
   },
 };

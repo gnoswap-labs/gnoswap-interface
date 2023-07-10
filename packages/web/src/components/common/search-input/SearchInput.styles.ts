@@ -22,25 +22,25 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   }};
   padding: 0px 16px;
   border-radius: 8px;
-  color: ${({ theme }) => theme.colors.colorWhite};
+  color: ${({ theme }) => theme.color.text01};
 
   &:focus-within {
-    background-color: ${({ theme }) => theme.colors.gray50};
-    border: 1px solid ${({ theme }) => theme.colors.gray40};
+    background-color: ${({ theme }) => theme.color.background02};
+    border: 1px solid ${({ theme }) => theme.color.border03};
   }
 
   &:not(:focus-within, .empty-status) {
-    background-color: ${({ theme }) => theme.colors.gray60};
-    border: 1px solid ${({ theme }) => theme.colors.gray50};
+    background-color: ${({ theme }) => theme.color.background06};
+    border: 1px solid ${({ theme }) => theme.color.border02};
   }
 
   &:not(:focus-within).empty-status {
-    background-color: ${({ theme }) => theme.colors.colorBlack};
-    border: 1px solid ${({ theme }) => theme.colors.gray50};
+    background-color: ${({ theme }) => theme.color.background01};
+    border: 1px solid ${({ theme }) => theme.color.border02};
   }
 
   .search-icon * {
-    fill: ${({ theme }) => theme.colors.gray40};
+    fill: ${({ theme }) => theme.color.icon03};
   }
 `;
 
@@ -49,6 +49,6 @@ export const InputStyle = styled.input`
   height: 100%;
   margin-right: 16px;
   &::placeholder {
-    color: ${({ theme }) => theme.colors.gray40};
+    color: ${({ theme }) => theme.color.text04};
   }
 `;

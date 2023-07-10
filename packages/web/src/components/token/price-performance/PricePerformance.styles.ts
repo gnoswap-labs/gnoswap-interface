@@ -6,7 +6,7 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "center")};
   ${fonts.body7};
   width: 100%;
-  color: ${theme.colors.colorWhite};
+  color: ${theme.color.text01};
   gap: 24px;
   padding: 24px;
 `;

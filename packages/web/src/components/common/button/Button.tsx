@@ -26,7 +26,7 @@ const Button = ({
     <ButtonWrapper {...style} onClick={onClick} disabled={disabled}>
       {leftIcon && leftIcon}
       {text && (
-        <StyledText fontType={style.fontType} textColor={style.textColor}>
+        <StyledText {...style} fontType={style.fontType} textColor={style.textColor}>
           {text}
         </StyledText>
       )}
