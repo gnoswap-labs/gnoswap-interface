@@ -25,7 +25,15 @@ const dummyData = {
 export const dummyDisclaimer =
   "Disclaimer1Disclaimer1 Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer3Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer";
 
+interface DistributionPeriodDate {
+  year: number;
+  month: number;
+  date: number;
+}
+
 const PoolIncentivizeContainer: React.FC = () => {
+  const [startDate, setStartDate] = useState<DistributionPeriodDate>();
+  const [endDate, setEndDate] = useState<DistributionPeriodDate>();
   const [amount, setAmount] = useState("");
 
   const onChangeAmount = useCallback(
@@ -38,6 +46,10 @@ const PoolIncentivizeContainer: React.FC = () => {
 
   return (
     <PoolIncentivize
+      startDate={startDate}
+      setStartDate={setStartDate}
+      endDate={endDate}
+      setEndDate={setEndDate}
       amount={amount}
       onChangeAmount={onChangeAmount}
       details={dummyData}
