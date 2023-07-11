@@ -38,7 +38,7 @@ export const TABLE_HEAD = {
   PRICE_OF_30D: "30d",
   MARKET_CAP: "Market Cap",
   LIQUIDITY: "Liquidity",
-  VOLUMN: "Volumn (24h)",
+  VOLUME: "Volume (24h)",
   MOST_LIQUID_POOL: "Most Liquid Pool",
   LAST_7_DAYS: "Last 7 days",
 } as const;
@@ -101,10 +101,9 @@ export const dummyTokenList: Token[] = [
 
 async function fetchTokens(
   type: TOKEN_TYPE, // eslint-disable-line
-  page: number,     // eslint-disable-line
-  keyword: string,  // eslint-disable-line
+  page: number, // eslint-disable-line
+  keyword: string, // eslint-disable-line
 ): Promise<Token[]> {
-
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
       ...dummyTokenList,
