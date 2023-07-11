@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-
 import SelectDistributionPeriod from "./SelectDistributionPeriod";
+import { action } from '@storybook/addon-actions';
 
 export default {
   title: "incentivize/SelectDistributionPeriod",
@@ -13,4 +13,12 @@ const Template: ComponentStory<typeof SelectDistributionPeriod> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  startDate: {
+    year: 2023,
+    month: 10,
+    date: 1
+  },
+  setStartDate: action("start date"),
+  setEndDate: action("end date"),
+};
