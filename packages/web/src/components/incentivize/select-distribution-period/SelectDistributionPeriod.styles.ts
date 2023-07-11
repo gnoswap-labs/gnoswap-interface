@@ -12,7 +12,6 @@ export const wrapper = (theme: Theme) => css`
   }
   .start-date,
   .end-date {
-    border: 1px solid green;
     height: 67px;
     width: 100%;
   }
