@@ -29,6 +29,11 @@ export interface Token {
   last7days: number[];
 }
 
+export interface SortOption {
+  key: TABLE_HEAD;
+  direction: "asc" | "desc";
+}
+
 export const TABLE_HEAD = {
   INDEX: "#",
   NAME: "Name",
@@ -49,6 +54,20 @@ export const TOKEN_TYPE = {
   GRC20: "GRC20",
 } as const;
 export type TOKEN_TYPE = ValuesType<typeof TOKEN_TYPE>;
+
+const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
+  "#": "index",
+  "Name": "name",
+  "Price": "price",
+  "1d": "1d",
+  "7d": "7d",
+  "30d": "30d",
+  "Market Cap": "market_cap",
+  "Liquidity": "liquidity",
+  "Volume (24h)": "volume",
+  "Most Liquid Pool": "most_liquidity_pool",
+  "Last 7 days": "last_7_days"
+};
 
 export const dummyTokenList: Token[] = [
   {
@@ -103,6 +122,8 @@ async function fetchTokens(
   type: TOKEN_TYPE, // eslint-disable-line
   page: number, // eslint-disable-line
   keyword: string, // eslint-disable-line
+  sortKey?: string, // eslint-disable-line
+  direction?: string, // eslint-disable-line
 ): Promise<Token[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
@@ -126,14 +147,15 @@ const TokenListContainer: React.FC = () => {
   const [tokenType, setTokenType] = useState<TOKEN_TYPE>(TOKEN_TYPE.ALL);
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
+  const [sortOption, setSortOption] = useState<SortOption>();
 
   const {
     isFetched,
     error,
     data: tokens,
   } = useQuery<Token[], Error>({
-    queryKey: ["tokens", tokenType, page, keyword],
-    queryFn: () => fetchTokens(tokenType, page, keyword),
+    queryKey: ["tokens", tokenType, page, keyword, sortOption?.key, sortOption?.direction],
+    queryFn: () => fetchTokens(tokenType, page, keyword, sortOption && SORT_PARAMS[sortOption.key], sortOption?.direction),
   });
 
   const changeTokenType = useCallback((newType: string) => {
@@ -157,18 +179,36 @@ const TokenListContainer: React.FC = () => {
     setPage(newPage);
   }, []);
 
+  const onClickTableHead = useCallback((item: TABLE_HEAD) => {
+    if (item === "#") {
+      setSortOption(undefined);
+      return;
+    }
+    const key = item;
+    const direction = sortOption?.key !== item ?
+      "desc" :
+      sortOption.direction === "asc" ? "desc" : "asc";
+
+    setSortOption({
+      key,
+      direction,
+    });
+  }, [sortOption]);
+
   return (
     <TokenList
       tokens={tokens ?? []}
       isFetched={isFetched}
       error={error}
       tokenType={tokenType}
+      sortOption={sortOption}
       changeTokenType={changeTokenType}
       search={search}
       keyword={keyword}
       currentPage={page}
       totalPage={100}
       movePage={movePage}
+      onClickTableHead={onClickTableHead}
     />
   );
 };

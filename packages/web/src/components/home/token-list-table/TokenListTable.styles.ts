@@ -47,7 +47,19 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
     justify-content: flex-start;
   }
   span {
+    display: inline-flex;
     cursor: pointer;
+    align-items: center;
+    white-space: pre;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    * {
+      fill: ${({ theme }) => theme.color.text04};
+    }
   }
 `;
 
