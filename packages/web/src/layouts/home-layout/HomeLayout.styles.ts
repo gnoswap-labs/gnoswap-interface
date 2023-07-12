@@ -24,7 +24,7 @@ export const wrapper = () => css`
   }
 
   .swap-container {
-    width: 520px;
+    width: 480px;
   }
 
   .card-list {
