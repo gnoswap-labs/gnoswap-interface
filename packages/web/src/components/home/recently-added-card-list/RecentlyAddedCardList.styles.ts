@@ -20,8 +20,8 @@ export const wrapper = (theme: Theme) => css`
     padding-left: 20px;
   }
 
-  .icon-diamond {
-    width: 20px;
-    height: 20px;
+  .icon-clock {
+    width: 25px;
+    height: 25px;
   }
 `;
