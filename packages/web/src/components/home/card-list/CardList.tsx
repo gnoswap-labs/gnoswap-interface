@@ -28,8 +28,9 @@ const CardList: React.FC<CardListProps> = ({ list }) => {
     <CardListWrapper>
       {list.map((item, idx) => (
         <ListItem key={idx} onClick={item.onClick} upDownType={item.upDownType}>
-          <i>{idx + 1}</i>
+          <span className="index">{idx + 1}</span>
           {typeof item.logo === "string" ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img src={item.logo} alt="logo" className="list-logo" />
           ) : (
             <DoubleLogo left={item.logo[0]} right={item.logo[1]} size={20} />

@@ -26,12 +26,18 @@ export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
     height: 20px;
     border-radius: 50%;
   }
-  i,
+  .index,
   .list-content {
     color: ${({ theme }) => theme.color.text04};
   }
-  i {
-    margin-right: 24px;
+  .index {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 10px;
+    height: 20px;
+    margin-right: 21px;
+    justify-content: flex-start;
+    align-items: center;
   }
   .token-name {
     margin: 0px 8px;
