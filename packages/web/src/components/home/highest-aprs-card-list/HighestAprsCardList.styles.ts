@@ -21,7 +21,7 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .icon-diamond {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
   }
 `;
