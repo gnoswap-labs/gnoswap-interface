@@ -13,7 +13,6 @@ describe("WalletBalanceSummary Component", () => {
       },
       deposit: () => null,
       withdraw: () => null,
-      earn: () => null,
     };
 
     render(

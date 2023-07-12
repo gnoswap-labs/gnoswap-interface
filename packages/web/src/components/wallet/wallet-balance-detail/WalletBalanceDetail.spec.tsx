@@ -12,6 +12,8 @@ describe("WalletBalanceDetail Component", () => {
         unstakingLP: "1.30%",
         claimableRewards: "1.40%",
       },
+      connected: true,
+      claimAll: () => { return; },
     };
 
     render(

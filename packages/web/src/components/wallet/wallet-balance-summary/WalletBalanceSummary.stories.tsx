@@ -24,7 +24,6 @@ ConnectionSucceeded.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  earn: action("earn"),
 };
 
 export const ConnectionFailed = Template.bind({});
@@ -36,5 +35,4 @@ ConnectionFailed.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  earn: action("earn"),
 };

@@ -10,12 +10,14 @@ interface WalletBalanceDetailInfoProps {
   title: string;
   value: string;
   tooltip?: string;
+  button?: React.ReactNode;
 }
 
 const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   title,
   value,
   tooltip,
+  button
 }) => {
   return (
     <WalletBalanceDetailInfoWrapper>
@@ -28,6 +30,11 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
 
       <div className="value-wrapper">
         <span className="value">{value}</span>
+        {button && (
+          <div className="button-wrapper">
+            {button}
+          </div>
+        )}
       </div>
     </WalletBalanceDetailInfoWrapper>
   );
