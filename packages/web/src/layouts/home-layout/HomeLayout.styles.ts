@@ -35,6 +35,6 @@ export const wrapper = () => css`
     grid-gap: 24px;
     grid-template-columns: repeat(3, 1fr);
 
-    margin-top: 120px;
+    margin-top: 80px;
   }
 `;
