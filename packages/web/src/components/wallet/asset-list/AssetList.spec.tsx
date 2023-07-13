@@ -8,6 +8,7 @@ describe("AssetList Component", () => {
   it("AssetList render", () => {
     const mockProps = {
       assets: [],
+      isFetched: true,
       isLoading: false,
       error: null,
       assetType: "All" as ASSET_FILTER_TYPE,
@@ -21,6 +22,9 @@ describe("AssetList Component", () => {
       toggleExtended: () => null,
       deposit: () => null,
       withdraw: () => null,
+      sortOption: undefined,
+      sort: () => { return; },
+      isSortOption: () => true,
     };
 
     render(

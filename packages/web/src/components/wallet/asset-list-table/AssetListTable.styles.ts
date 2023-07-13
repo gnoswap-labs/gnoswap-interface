@@ -27,13 +27,33 @@ export const AssetListTableWrapper = styled.div`
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
+  height: 100%;
   padding: 16px;
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
   }
+
   span {
+    display: inline-flex;
+    align-items: center;
+    white-space: pre;
+  }
+
+  &.left span {
+    flex-direction: row-reverse;
+  }
+  &.sort span {
     cursor: pointer;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    * {
+      fill: ${({ theme }) => theme.color.text04};
+    }
   }
 `;
