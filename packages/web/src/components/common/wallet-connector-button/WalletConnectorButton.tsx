@@ -20,12 +20,12 @@ const FAKE_USERINFO = {
 const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
-  const menuOpenToggleHandler = () =>
+  const onMenuToggle = () => {
     setToggle(prev => ({
       ...prev,
-      notification: false,
       walletConnect: !prev.walletConnect,
     }));
+  };
 
   return (
     <WalletConnectorButtonWrapper>
@@ -42,7 +42,7 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
             padding: "10px 16px",
             justify: "space-between",
           }}
-          onClick={menuOpenToggleHandler}
+          onClick={onMenuToggle}
         />
       ) : (
         <Button
@@ -56,11 +56,14 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
             padding: "10px 16px",
             justify: "space-between",
           }}
-          onClick={menuOpenToggleHandler}
+          onClick={onMenuToggle}
         />
       )}
       {toggle.walletConnect && (
-        <WalletConnectorMenu isConnected={isConnected} />
+        <WalletConnectorMenu
+          isConnected={isConnected}
+          onMenuToggle={onMenuToggle}
+        />
       )}
     </WalletConnectorButtonWrapper>
   );
