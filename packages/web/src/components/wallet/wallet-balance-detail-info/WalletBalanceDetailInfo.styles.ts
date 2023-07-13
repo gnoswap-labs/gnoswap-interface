@@ -33,10 +33,19 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
 
   .value-wrapper {
     ${mixins.flexbox("row", "flex-end", "center")};
+    width: 100%;
 
     .value {
+      display: inline-flex;
+      width: 100%;
       ${fonts.body2};
       color: ${({ theme }) => theme.color.text02};
+    }
+
+    .button-wrapper {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-self: flex-end;
     }
   }
 `;

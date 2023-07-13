@@ -27,7 +27,7 @@ ConnectionSucceeded.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  earn: action("earn"),
+  claimAll: action("claimAll"),
 };
 
 export const ConnectionFailed = Template.bind({});
@@ -45,7 +45,6 @@ ConnectionFailed.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  earn: action("earn"),
 };
 
 export const LoadingData = Template.bind({});
@@ -62,6 +61,5 @@ LoadingData.args = {
     claimableRewards: "$0.00",
   },
   deposit: action("deposit"),
-  withdraw: action("withdraw"),
-  earn: action("earn"),
+  withdraw: action("withdraw"), claimAll: action("claimAll"),
 };

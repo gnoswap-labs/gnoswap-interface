@@ -48,7 +48,7 @@ async function fetchBalanceDetailInfo(
 }
 
 const WalletBalanceContainer: React.FC = () => {
-  const [connected, setConnected] = useState(false);
+  const [connected, setConnected] = useState(true);
   const [address, setAddress] = useState("");
 
   const deposit = useCallback(() => {
@@ -61,7 +61,7 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
 
-  const earn = useCallback(() => {}, []);
+  const claimAll = useCallback(() => { }, []);
 
   const {
     isLoading: isBalanceSummaryInfoLoading,
@@ -96,7 +96,7 @@ const WalletBalanceContainer: React.FC = () => {
       balanceDetailInfo={balanceDetailInfo}
       deposit={deposit}
       withdraw={withdraw}
-      earn={earn}
+      claimAll={claimAll}
     />
   );
 };
