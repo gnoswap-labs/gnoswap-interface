@@ -179,11 +179,12 @@ const TokenListContainer: React.FC = () => {
     setPage(newPage);
   }, []);
 
-  const onClickTableHead = useCallback((item: TABLE_HEAD) => {
-    if (item === "#") {
-      setSortOption(undefined);
-      return;
-    }
+  const isSortOption = useCallback((head: TABLE_HEAD) => {
+    const disableItems = ["Most Liquid Pool", "Last 7 days"];
+    return !disableItems.includes(head);
+  }, []);
+
+  const sort = useCallback((item: TABLE_HEAD) => {
     const key = item;
     const direction = sortOption?.key !== item ?
       "desc" :
@@ -208,7 +209,8 @@ const TokenListContainer: React.FC = () => {
       currentPage={page}
       totalPage={100}
       movePage={movePage}
-      onClickTableHead={onClickTableHead}
+      isSortOption={isSortOption}
+      sort={sort}
     />
   );
 };

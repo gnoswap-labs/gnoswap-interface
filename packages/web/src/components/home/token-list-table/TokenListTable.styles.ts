@@ -48,9 +48,15 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
   }
   span {
     display: inline-flex;
-    cursor: pointer;
     align-items: center;
     white-space: pre;
+  }
+
+  &.left span {
+    flex-direction: row-reverse;
+  }
+  &.sort span {
+    cursor: pointer;
   }
 
   .icon {

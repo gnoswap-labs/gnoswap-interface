@@ -24,7 +24,8 @@ interface TokenItem {
   currentPage: number;
   totalPage: number;
   movePage: (page: number) => void;
-  onClickTableHead: (item: TABLE_HEAD) => void;
+  isSortOption: (item: TABLE_HEAD) => boolean;
+  sort: (item: TABLE_HEAD) => void;
 }
 
 const TokenList: React.FC<TokenItem> = ({
@@ -39,7 +40,8 @@ const TokenList: React.FC<TokenItem> = ({
   currentPage,
   totalPage,
   movePage,
-  onClickTableHead,
+  isSortOption,
+  sort,
 }) => {
 
   return (
@@ -54,7 +56,8 @@ const TokenList: React.FC<TokenItem> = ({
         tokens={tokens}
         isFetched={isFetched}
         sortOption={sortOption}
-        onClickTableHead={onClickTableHead}
+        isSortOption={isSortOption}
+        sort={sort}
       />
       <Pagination
         currentPage={currentPage}
