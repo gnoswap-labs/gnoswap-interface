@@ -12,7 +12,7 @@ interface WalletBalanceProps {
   balanceDetailInfo: BalanceDetailInfo;
   deposit: () => void;
   withdraw: () => void;
-  earn: () => void;
+  claimAll: () => void;
 }
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({
@@ -21,7 +21,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   balanceDetailInfo,
   deposit,
   withdraw,
-  earn,
+  claimAll,
 }) => (
   <WalletBalanceWrapper>
     <WalletBalanceSummary
@@ -29,9 +29,12 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
       balanceSummaryInfo={balanceSummaryInfo}
       deposit={deposit}
       withdraw={withdraw}
-      earn={earn}
     />
-    <WalletBalanceDetail balanceDetailInfo={balanceDetailInfo} />
+    <WalletBalanceDetail
+      connected={connected}
+      balanceDetailInfo={balanceDetailInfo}
+      claimAll={claimAll}
+    />
   </WalletBalanceWrapper>
 );
 

@@ -39,10 +39,15 @@ export const WalletButtonGroup = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   gap: 8px;
   align-self: flex-end;
+
+  .wallet-button-icon {
+    margin-right: 8px;
+  }
 `;
 
 export const defaultWalletButtonStyle: ButtonStyleProps = {
   width: 150,
   hierarchy: ButtonHierarchy.Primary,
+  fontType: "body9",
   padding: "10px 16px",
 };

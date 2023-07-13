@@ -1,7 +1,6 @@
 import Button from "@components/common/button/Button";
 import IconDownload from "@components/common/icons/IconDownload";
 import IconUpload from "@components/common/icons/IconUpload";
-import IconMoveToInbox from "@components/common/icons/IconMoveToInbox";
 import { BalanceSummaryInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
 import WalletBalanceSummaryInfo from "@components/wallet/wallet-balance-summary-info/WalletBalanceSummaryInfo";
 import {
@@ -16,14 +15,13 @@ interface WalletBalanceSummaryProps {
   balanceSummaryInfo: BalanceSummaryInfo;
   deposit: () => void;
   withdraw: () => void;
-  earn: () => void;
 }
 
 const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
+  connected,
   balanceSummaryInfo,
   deposit,
   withdraw,
-  earn,
 }) => (
   <WalletBalanceSummaryWrapper>
     <BalanceInfoWrapper>
@@ -35,20 +33,16 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
       <Button
         style={defaultWalletButtonStyle}
         text={"Deposit"}
-        leftIcon={<IconDownload />}
+        leftIcon={<IconDownload className="wallet-button-icon" />}
         onClick={deposit}
+        disabled={connected === false}
       />
       <Button
         style={defaultWalletButtonStyle}
         text={"Withdraw"}
-        leftIcon={<IconUpload />}
+        leftIcon={<IconUpload className="wallet-button-icon" />}
         onClick={withdraw}
-      />
-      <Button
-        style={defaultWalletButtonStyle}
-        text={"Earn"}
-        leftIcon={<IconMoveToInbox />}
-        onClick={earn}
+        disabled={connected === false}
       />
     </WalletButtonGroup>
   </WalletBalanceSummaryWrapper>
