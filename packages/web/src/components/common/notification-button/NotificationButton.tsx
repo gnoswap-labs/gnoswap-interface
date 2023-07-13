@@ -18,12 +18,12 @@ export interface TransactionGroupsType {
 const NotificationButton = () => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
-  const menuOpenToggleHandler = () =>
+  const onListToggle = () => {
     setToggle(prev => ({
       ...prev,
-      walletConnect: false,
       notification: !prev.notification,
     }));
+  };
 
   // TODO : Moving data logic to HeaderContainer
   const txsGroupsInformation: TransactionGroupsType[] = [];
@@ -35,11 +35,14 @@ const NotificationButton = () => {
 
   return (
     <NotificationWrapper>
-      <AlertButton onClick={menuOpenToggleHandler}>
+      <AlertButton onClick={onListToggle}>
         <IconAlert className="notification-icon" />
       </AlertButton>
       {toggle.notification && (
-        <NotificationList txsGroupsInformation={txsGroupsInformation} />
+        <NotificationList
+          txsGroupsInformation={txsGroupsInformation}
+          onListToggle={onListToggle}
+        />
       )}
     </NotificationWrapper>
   );

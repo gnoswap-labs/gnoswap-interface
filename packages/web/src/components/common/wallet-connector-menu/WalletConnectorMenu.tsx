@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconCopy from "@components/common/icons/IconCopy";
@@ -52,21 +52,39 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
 
 interface WalletConnectorMenuProps {
   isConnected: boolean;
+  onMenuToggle: () => void;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   isConnected,
+  onMenuToggle,
 }) => {
   const amountText = toGnot(
     FAKE_USERINFO.amount.value,
     FAKE_USERINFO.amount.denom,
   );
-  const copyClick = () => { };
-  const openLinkClick = () => { };
-  const exitClick = () => { };
+  const copyClick = () => {};
+  const openLinkClick = () => {};
+  const exitClick = () => {};
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const closeMenu = (e: MouseEvent) => {
+      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
+        return;
+      } else {
+        e.stopPropagation();
+        onMenuToggle();
+      }
+    };
+    window.addEventListener("click", closeMenu, true);
+    return () => {
+      window.removeEventListener("click", closeMenu, true);
+    };
+  }, [menuRef, onMenuToggle]);
 
   return (
-    <WalletConnectorMenuWrapper>
+    <WalletConnectorMenuWrapper ref={menuRef}>
       {isConnected ? (
         <>
           <MenuHeader>
@@ -92,7 +110,6 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             height: 41,
             justify: "center",
           }}
-          onClick={() => { }}
         />
       )}
       <ThemeSelector>
