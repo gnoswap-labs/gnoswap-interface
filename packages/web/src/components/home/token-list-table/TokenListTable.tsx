@@ -15,14 +15,16 @@ import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 interface TokenListTableProps {
   tokens: Token[];
   isFetched: boolean;
+  isSortOption: (head: TABLE_HEAD) => boolean;
   sortOption?: SortOption;
-  onClickTableHead: (head: TABLE_HEAD) => void;
+  sort: (head: TABLE_HEAD) => void;
 }
 
 const TokenListTable: React.FC<TokenListTableProps> = ({
   tokens,
   sortOption,
-  onClickTableHead,
+  isSortOption,
+  sort,
   isFetched,
 }) => {
 
@@ -34,6 +36,17 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
     return sortOption?.key === head && sortOption.direction === "desc";
   }, [sortOption]);
 
+  const onClickTableHead = (head: TABLE_HEAD) => {
+    if (!isSortOption(head)) {
+      return;
+    }
+    sort(head);
+  };
+
+  const isAlignLeft = (head: TABLE_HEAD) => {
+    return TABLE_HEAD.INDEX === head || TABLE_HEAD.NAME === head;
+  };
+
   return (
     <TableWrapper>
       <div className="scroll-wrapper">
@@ -41,7 +54,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
           {Object.values(TABLE_HEAD).map((head, idx) => (
             <TableHeader
               key={idx}
-              className={cx({ left: [0, 1].includes(idx) })}
+              className={cx({ left: isAlignLeft(head), sort: isSortOption(head) })}
               tdWidth={TOKEN_TD_WIDTH[idx]}
             >
               <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()} onClick={() => onClickTableHead(head)}>
