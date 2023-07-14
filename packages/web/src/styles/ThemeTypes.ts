@@ -12,6 +12,7 @@ export interface ThemeColorType {
   background09: string;
   background10: string;
   background11: string;
+  background12: string;
   backgroundOpacity: string;
   backgroundGradient: string;
   border01: string;
@@ -30,6 +31,7 @@ export interface ThemeColorType {
   text07: string;
   text08: string;
   text09: string;
+  text10: string;
   icon01: string;
   icon02: string;
   icon03: string;

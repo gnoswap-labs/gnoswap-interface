@@ -34,7 +34,7 @@ export const SwitchInput = styled.input`
     width: 17px;
     height: 17px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.color.background02};
+    background: ${({ theme }) => theme.color.background12};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
   }

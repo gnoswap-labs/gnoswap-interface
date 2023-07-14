@@ -91,7 +91,7 @@ export const MenuSection = styled.section`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   strong {
     ${fonts.body11};
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text10};
   }
 
   @media (max-width: 767px) {
