@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import AssetListTable from "./AssetListTable";
+import { ASSET_HEAD } from "@containers/asset-list-container/AssetListContainer";
 
 describe("AssetListTable Component", () => {
   it("AssetListTable render", () => {
@@ -12,6 +13,9 @@ describe("AssetListTable Component", () => {
       isLoading: false,
       deposit: () => null,
       withdraw: () => null,
+      sortOption: undefined,
+      sort: () => { return; },
+      isSortOption: () => true,
     };
 
     render(

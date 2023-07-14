@@ -1,6 +1,7 @@
 import {
   type Asset,
   ASSET_HEAD,
+  AssetSortOption,
 } from "@containers/asset-list-container/AssetListContainer";
 import AssetInfo from "@components/wallet/asset-info/AssetInfo";
 import { AssetListTableWrapper, TableColumn } from "./AssetListTable.styles";
@@ -8,12 +9,18 @@ import { noDataText } from "@components/earn/pool-list-table/PoolListTable.style
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import { ASSET_INFO, ASSET_TD_WIDTH } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
+import { useCallback } from "react";
+import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
+import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 
 interface AssetListTableProps {
   assets: Asset[];
   isFetched: boolean;
   deposit: (assetId: string) => void;
   withdraw: (assetId: string) => void;
+  sortOption: AssetSortOption | undefined;
+  sort: (head: ASSET_HEAD) => void;
+  isSortOption: (head: ASSET_HEAD) => boolean;
 }
 
 const AssetListTable: React.FC<AssetListTableProps> = ({
@@ -21,37 +28,67 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   isFetched,
   deposit,
   withdraw,
-}) => (
-  <AssetListTableWrapper>
-    <div className="asset-list-head">
-      {Object.values(ASSET_HEAD).map((head, idx) => (
-        <TableColumn
-          key={idx}
-          className={cx([0, 1, 2].includes(idx) && "left")}
-          tdWidth={ASSET_TD_WIDTH[idx]}
-        >
-          <span>{head}</span>
-        </TableColumn>
-      ))}
-    </div>
+  sortOption,
+  sort,
+  isSortOption,
+}) => {
 
-    <div className="asset-list-body">
-      {isFetched && assets.length === 0 && (
-        <div css={noDataText}>No data found</div>
-      )}
-      {isFetched &&
-        assets.length > 0 &&
-        assets.map((asset, idx) => (
-          <AssetInfo
+  const isAscendingOption = useCallback((head: ASSET_HEAD) => {
+    return sortOption?.key === head && sortOption.direction === "asc";
+  }, [sortOption]);
+
+  const isDescendingOption = useCallback((head: ASSET_HEAD) => {
+    return sortOption?.key === head && sortOption.direction === "desc";
+  }, [sortOption]);
+
+  const onClickTableHead = (head: ASSET_HEAD) => {
+    if (!isSortOption(head)) {
+      return;
+    }
+    sort(head);
+  };
+
+  const isAlignLeft = (head: ASSET_HEAD) => {
+    return ASSET_HEAD.ASSET === head ||
+      ASSET_HEAD.BALANCE === head ||
+      ASSET_HEAD.CHAIN === head;
+  };
+  return (
+    <AssetListTableWrapper>
+      <div className="asset-list-head">
+        {Object.values(ASSET_HEAD).map((head, idx) => (
+          <TableColumn
             key={idx}
-            asset={asset}
-            deposit={deposit}
-            withdraw={withdraw}
-          />
+            className={cx({ left: isAlignLeft(head), sort: isSortOption(head) })}
+            tdWidth={ASSET_TD_WIDTH[idx]}
+          >
+            <span className={Object.keys(ASSET_HEAD)[idx].toLowerCase()} onClick={() => onClickTableHead(head)}>
+              {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+              {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
+              {head}
+            </span>
+          </TableColumn>
         ))}
-      {!isFetched && <TableSkeleton info={ASSET_INFO} />}
-    </div>
-  </AssetListTableWrapper>
-);
+      </div>
+
+      <div className="asset-list-body">
+        {isFetched && assets.length === 0 && (
+          <div css={noDataText}>No data found</div>
+        )}
+        {isFetched &&
+          assets.length > 0 &&
+          assets.map((asset, idx) => (
+            <AssetInfo
+              key={idx}
+              asset={asset}
+              deposit={deposit}
+              withdraw={withdraw}
+            />
+          ))}
+        {!isFetched && <TableSkeleton info={ASSET_INFO} />}
+      </div>
+    </AssetListTableWrapper>
+  );
+};
 
 export default AssetListTable;
