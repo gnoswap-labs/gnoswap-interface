@@ -1,5 +1,5 @@
 export interface StakeRequest {
-	period: string;
+  period: string;
 
-	liquidityIds: Array<string>;
+  liquidityIds: Array<string>;
 }

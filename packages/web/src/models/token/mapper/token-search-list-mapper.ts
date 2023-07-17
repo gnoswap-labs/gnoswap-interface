@@ -1,15 +1,15 @@
-import { amountFormatToBignum } from "@/common/utils/denom-util";
+import { amountFormatToBignum } from "@common/utils/denom-util";
 import {
   TokenInfoResponse,
   TokenSearchItemResponse,
   TokenSearchListResponse,
-} from "@/repositories/token";
+} from "@repositories/token";
 import BigNumber from "bignumber.js";
-import { TokenDefaultModel } from "../token-default-model";
+import { TokenDefaultModel } from "@models/token/token-default-model";
 import {
   TokenSearchItemType,
   TokenSearchListModel,
-} from "../token-search-list-model";
+} from "@models/token/token-search-list-model";
 
 export class TokenSearchListMapper {
   public static fromResponse(

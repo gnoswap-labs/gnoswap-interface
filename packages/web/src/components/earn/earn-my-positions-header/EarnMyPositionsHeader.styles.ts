@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
-  color: ${theme.colors.gray10};
+  color: ${theme.color.text02};
   ${fonts.h5}
   height:36px;
 `;

@@ -2,14 +2,14 @@ import {
   MostLiquidityPoolType,
   TokenDetailType,
   TokenTableModel,
-} from "@/models/datatable/token-table-model";
+} from "@models/datatable/token-table-model";
 import {
   MostLiquidityPoolInfo,
   TokenDatatableResponse,
   TokenTableData,
-} from "@/repositories/token";
-import { amountEmptyBigNumInit } from "@/common/values/global-initial-value";
-import { amountFormatToBignum } from "@/common/utils/denom-util";
+} from "@repositories/token";
+import { amountEmptyBigNumInit } from "@common/values/global-initial-value";
+import { amountFormatToBignum } from "@common/utils/denom-util";
 import BigNumber from "bignumber.js";
 
 export class TokenDatatableMapper {

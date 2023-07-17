@@ -1,12 +1,12 @@
 import {
-	HttpDeleteRequest,
-	HttpGetRequest,
-	HttpPostRequest,
-	HttpPutRequest,
+  HttpDeleteRequest,
+  HttpGetRequest,
+  HttpPostRequest,
+  HttpPutRequest,
 } from "./protocols";
 
 export interface NetworkClient
-	extends HttpGetRequest,
-		HttpPostRequest,
-		HttpPutRequest,
-		HttpDeleteRequest {}
+  extends HttpGetRequest,
+    HttpPostRequest,
+    HttpPutRequest,
+    HttpDeleteRequest {}

@@ -1,8 +1,4 @@
-import {
-  AmountAllType,
-  AmountNumberType,
-  AmountType,
-} from "@/common/types/data-prop-types";
+import { AmountType } from "@common/types/data-prop-types";
 
 export interface TokenDefaultModel {
   tokenId: string;

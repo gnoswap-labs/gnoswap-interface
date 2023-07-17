@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
-      - run: yarn workspace @gnoswap-labs/gno-client test
+      - run: yarn
       - run: yarn workspace @gnoswap-labs/web test:ci
 
   build-tests:
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
-      - run: yarn workspace @gnoswap-labs/gno-client build
+      - run: yarn
       - run: yarn workspace @gnoswap-labs/web build
 
   # TODO: Apply when you're done setting up your storybook environment

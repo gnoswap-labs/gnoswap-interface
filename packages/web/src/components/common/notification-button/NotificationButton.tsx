@@ -1,14 +1,14 @@
-import { TransactionModel } from "@/models/account/account-history-model";
-import { ToggleState } from "@/states";
+import React, { useMemo } from "react";
+import { TransactionModel } from "@models/account/account-history-model";
 import {
   getTransactionGroups,
   notificationDummyList,
-} from "@utils/notificationUtils";
-import React, { useMemo } from "react";
-import { useRecoilState } from "recoil";
+} from "@utils/notification-utils";
 import IconAlert from "@components/common/icons/IconAlert";
 import NotificationList from "@components/common/notification-list/NotificationList";
 import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
+import { useAtom } from "jotai";
+import { CommonState } from "@states/index";
 
 export interface TransactionGroupsType {
   title: string;
@@ -16,14 +16,14 @@ export interface TransactionGroupsType {
 }
 
 const NotificationButton = () => {
-  const [toggle, setToggle] = useRecoilState(ToggleState.headerToggle);
+  const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
-  const menuOpenToggleHandler = () =>
+  const onListToggle = () => {
     setToggle(prev => ({
       ...prev,
-      walletConnect: false,
       notification: !prev.notification,
     }));
+  };
 
   // TODO : Moving data logic to HeaderContainer
   const txsGroupsInformation: TransactionGroupsType[] = [];
@@ -35,11 +35,14 @@ const NotificationButton = () => {
 
   return (
     <NotificationWrapper>
-      <AlertButton onClick={menuOpenToggleHandler}>
+      <AlertButton onClick={onListToggle}>
         <IconAlert className="notification-icon" />
       </AlertButton>
       {toggle.notification && (
-        <NotificationList txsGroupsInformation={txsGroupsInformation} />
+        <NotificationList
+          txsGroupsInformation={txsGroupsInformation}
+          onListToggle={onListToggle}
+        />
       )}
     </NotificationWrapper>
   );

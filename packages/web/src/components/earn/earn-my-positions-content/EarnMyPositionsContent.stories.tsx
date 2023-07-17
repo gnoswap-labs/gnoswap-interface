@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import EarnMyPositionsContent, {
   MY_POSITIONS_STATUS,
 } from "./EarnMyPositionsContent";
-import EarnMyPositonsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositonsUnconnected";
+import EarnMyPositionsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositionsUnconnected";
 import EarnMyPositionNoLiquidity from "@components/earn/earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import { dummyPositionList } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
@@ -16,7 +16,7 @@ export default {
 const Template: ComponentStory<typeof EarnMyPositionsContent> = args => (
   <EarnMyPositionsContent
     {...args}
-    unconnected={<EarnMyPositonsUnconnected />}
+    unconnected={<EarnMyPositionsUnconnected />}
     noLiquidity={<EarnMyPositionNoLiquidity />}
     cardList={<MyPositionCardList list={dummyPositionList} isFetched={true} />}
   />

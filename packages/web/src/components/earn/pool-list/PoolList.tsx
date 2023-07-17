@@ -1,6 +1,9 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import {
   Pool,
   POOL_TYPE,
+  PoolSortOption,
   TABLE_HEAD,
 } from "@containers/pool-list-container/PoolListContainer";
 import React from "react";
@@ -20,6 +23,9 @@ interface TokenListProps {
   currentPage: number;
   totalPage: number;
   movePage: (page: number) => void;
+  sort: (item: TABLE_HEAD) => void;
+  sortOption: PoolSortOption | undefined
+  isSortOption: (item: TABLE_HEAD) => boolean;
 }
 
 const PoolList: React.FC<TokenListProps> = ({
@@ -33,10 +39,10 @@ const PoolList: React.FC<TokenListProps> = ({
   currentPage,
   totalPage,
   movePage,
+  sort,
+  sortOption,
+  isSortOption,
 }) => {
-  const onClickTableHead = (item: TABLE_HEAD) => {
-    // TODO: Sorting pools list
-  };
   return (
     <div css={wrapper}>
       <PoolListHeader
@@ -48,7 +54,9 @@ const PoolList: React.FC<TokenListProps> = ({
       <PoolListTable
         pools={pools}
         isFetched={isFetched}
-        onClickTableHead={onClickTableHead}
+        sort={sort}
+        sortOption={sortOption}
+        isSortOption={isSortOption}
       />
       <Pagination
         currentPage={currentPage}

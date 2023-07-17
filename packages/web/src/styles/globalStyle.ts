@@ -15,7 +15,8 @@ const globalStyle = (theme: Theme) => css`
   }
 
   body {
-    background-color: ${theme.colors.colorBlack};
+    background-color: ${theme.color.background01};
+    padding-top: 70px;
   }
 
   #__next {
@@ -81,6 +82,15 @@ const globalStyle = (theme: Theme) => css`
     border: 0;
     outline: none;
     list-style: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0px;
+    display: none;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
   }
 `;
 

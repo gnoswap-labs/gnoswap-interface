@@ -1,14 +1,12 @@
-import { TokenInfoResponse } from "./token-info-response";
-
 export interface TokenMetaListResponse {
-	tokens: Array<TokenMeta>;
+  tokens: Array<TokenMeta>;
 }
 
 export interface TokenMeta {
-	token_id: string;
-	name: string;
-	symbol: string;
-	denom: string;
-	minimal_denom: string;
-	decimals: number;
+  token_id: string;
+  name: string;
+  symbol: string;
+  denom: string;
+  minimal_denom: string;
+  decimals: number;
 }

@@ -1,151 +1,140 @@
-import { StorageClient } from "@/common/clients/storage-client";
-import { MockStorageClient } from "@/common/clients/storage-client/mock-storage-client";
-import { WalletClient } from "@/common/clients/wallet-client";
-import { AdenaClient } from "@/common/clients/wallet-client/adena-client";
-import { AdenaError } from "@/common/errors/adena";
+import { StorageClient } from "@common/clients/storage-client";
+import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
+import { WalletClient } from "@common/clients/wallet-client";
+import { AdenaClient } from "@common/clients/wallet-client/adena-client";
+import { AdenaError } from "@common/errors/adena";
 import { AccountRepository } from "./account-repository";
 import { AccountRepositoryInstance } from "./account-repository-instance";
-import { GnoClient } from "@gnoswap-labs/gno-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
 let accountRepository: AccountRepository;
 
 const defaultAccountInfo = {
-	status: "ACTIVE",
-	address: "g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae",
-	coins: "1000000000ugnot",
-	publicKey: {
-		"@type": "----",
-		value: "----",
-	},
-	accountNumber: "1",
-	sequence: "1",
-	chainId: "test3",
+  status: "ACTIVE",
+  address: "g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae",
+  coins: "1000000000ugnot",
+  publicKey: {
+    "@type": "----",
+    value: "----",
+  },
+  accountNumber: "1",
+  sequence: "1",
+  chainId: "test3",
 };
 
 beforeEach(() => {
-	walletClient = new AdenaClient();
-	localStorageClient = new MockStorageClient("LOCAL");
-	const gnoClient = GnoClient.createNetworkByType({
-		chainId: "test3",
-		chainName: "Testnet 3",
-		rpcUrl: "https://rpc.test3.gno.land",
-		apiUrl: "https://api.adena.app",
-		linkUrl: "https://gnoscan.io",
-	},
-		"TEST3",
-	);
-	accountRepository = new AccountRepositoryInstance(
-		gnoClient,
-		walletClient,
-		localStorageClient,
-	);
-	jest.clearAllMocks();
+  walletClient = new AdenaClient();
+  localStorageClient = new MockStorageClient("LOCAL");
+  accountRepository = new AccountRepositoryInstance(
+    walletClient,
+    localStorageClient,
+  );
+  jest.clearAllMocks();
 });
 
 describe("get account", () => {
-	it("success", async () => {
-		walletClient.getAccount = jest.fn().mockResolvedValue({
-			code: 0,
-			status: "success",
-			type: "GET_ACCOUNT",
-			message: "Get account.",
-			data: defaultAccountInfo,
-		});
+  it("success", async () => {
+    walletClient.getAccount = jest.fn().mockResolvedValue({
+      code: 0,
+      status: "success",
+      type: "GET_ACCOUNT",
+      message: "Get account.",
+      data: defaultAccountInfo,
+    });
 
-		const response = await accountRepository.getAccount();
+    const response = await accountRepository.getAccount();
 
-		expect(response).toBeTruthy();
-		expect(typeof response.code).toBe("number");
-		expect(typeof response.status).toBe("string");
-		expect(typeof response.type).toBe("string");
-		expect(typeof response.message).toBe("string");
-		expect(typeof response.data).toBe("object");
-		expect(typeof response.data.address).toBe("string");
-	});
+    expect(response).toBeTruthy();
+    expect(typeof response.code).toBe("number");
+    expect(typeof response.status).toBe("string");
+    expect(typeof response.type).toBe("string");
+    expect(typeof response.message).toBe("string");
+    expect(typeof response.data).toBe("object");
+    expect(typeof response.data.address).toBe("string");
+  });
 
-	it("not connected wallet error", async () => {
-		walletClient.getAccount = jest.fn().mockResolvedValue({
-			code: 1000,
-			status: "failure",
-			type: "NOT_CONNECTED",
-			message: "Get account.",
-			data: null,
-		});
-		let error: any = null;
+  it("not connected wallet error", async () => {
+    walletClient.getAccount = jest.fn().mockResolvedValue({
+      code: 1000,
+      status: "failure",
+      type: "NOT_CONNECTED",
+      message: "Get account.",
+      data: null,
+    });
+    let error: any = null;
 
-		try {
-			expect(await accountRepository.getAccount()).toThrowError();
-		} catch (e) {
-			error = e;
-		}
+    try {
+      expect(await accountRepository.getAccount()).toThrowError();
+    } catch (e) {
+      error = e;
+    }
 
-		expect(error).toBeTruthy();
-		expect(error?.status).toBe(1000);
-	});
+    expect(error).toBeTruthy();
+    expect(error?.status).toBe(1000);
+  });
 });
 
 describe("exists wallet", () => {
-	it("exists is true", () => {
-		walletClient.existsWallet = jest.fn().mockReturnValue(true);
+  it("exists is true", () => {
+    walletClient.existsWallet = jest.fn().mockReturnValue(true);
 
-		const response = accountRepository.existsWallet();
+    const response = accountRepository.existsWallet();
 
-		expect(response).toBe(true);
-	});
+    expect(response).toBe(true);
+  });
 
-	it("non exists is false", () => {
-		walletClient.existsWallet = jest.fn().mockReturnValue(false);
+  it("non exists is false", () => {
+    walletClient.existsWallet = jest.fn().mockReturnValue(false);
 
-		const response = accountRepository.existsWallet();
+    const response = accountRepository.existsWallet();
 
-		expect(response).toBe(false);
-	});
+    expect(response).toBe(false);
+  });
 });
 
 describe("add establish site in wallet", () => {
-	it("success", async () => {
-		walletClient.addEstablishedSite = jest.fn().mockResolvedValue({
-			status: "success",
-			data: {},
-			code: 0,
-			message: "The connection has been successfully established.",
-			type: "CONNECTION_SUCCESS",
-		});
+  it("success", async () => {
+    walletClient.addEstablishedSite = jest.fn().mockResolvedValue({
+      status: "success",
+      data: {},
+      code: 0,
+      message: "The connection has been successfully established.",
+      type: "CONNECTION_SUCCESS",
+    });
 
-		const response = await accountRepository.addEstablishedSite();
+    const response = await accountRepository.addEstablishedSite();
 
-		expect(response).toBeTruthy();
-		expect(typeof response.code).toBe("number");
-		expect(typeof response.status).toBe("string");
-		expect(typeof response.type).toBe("string");
-		expect(typeof response.message).toBe("string");
-		expect(typeof response.data).toBe("object");
-	});
+    expect(response).toBeTruthy();
+    expect(typeof response.code).toBe("number");
+    expect(typeof response.status).toBe("string");
+    expect(typeof response.type).toBe("string");
+    expect(typeof response.message).toBe("string");
+    expect(typeof response.data).toBe("object");
+  });
 });
 
 describe("add establish site in wallet", () => {
-	it("success", async () => {
-		walletClient.sendTransaction = jest.fn().mockResolvedValue({
-			status: "success",
-			data: {},
-			code: 0,
-			message: "The connection has been successfully established.",
-			type: "CONNECTION_SUCCESS",
-		});
+  it("success", async () => {
+    walletClient.sendTransaction = jest.fn().mockResolvedValue({
+      status: "success",
+      data: {},
+      code: 0,
+      message: "The connection has been successfully established.",
+      type: "CONNECTION_SUCCESS",
+    });
 
-		const response = await accountRepository.sendTransaction({
-			gasFee: 1,
-			gasWanted: 1,
-			messages: [],
-		});
+    const response = await accountRepository.sendTransaction({
+      gasFee: 1,
+      gasWanted: 1,
+      messages: [],
+    });
 
-		expect(response).toBeTruthy();
-		expect(typeof response.code).toBe("number");
-		expect(typeof response.status).toBe("string");
-		expect(typeof response.type).toBe("string");
-		expect(typeof response.message).toBe("string");
-		expect(typeof response.data).toBe("object");
-	});
+    expect(response).toBeTruthy();
+    expect(typeof response.code).toBe("number");
+    expect(typeof response.status).toBe("string");
+    expect(typeof response.type).toBe("string");
+    expect(typeof response.message).toBe("string");
+    expect(typeof response.data).toBe("object");
+  });
 });

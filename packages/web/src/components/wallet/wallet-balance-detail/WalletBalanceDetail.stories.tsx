@@ -1,6 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import WalletBalanceDetail from "./WalletBalanceDetail";
+import { action } from '@storybook/addon-actions';
 
 export default {
   title: "wallet/WalletBalance/WalletBalanceDetail",
@@ -19,4 +20,6 @@ Default.args = {
     unstakingLP: "$1.30",
     claimableRewards: "$1.40",
   },
+  connected: true,
+  claimAll: action("claimAll"),
 };

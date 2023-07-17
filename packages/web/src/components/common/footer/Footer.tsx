@@ -1,5 +1,8 @@
 import React from "react";
 import IconLogoWhite from "../icons/IconLogoWhite";
+import IconLogoPrimary from "../icons/IconLogoPrimary";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 import Link from "next/link";
 import {
   AnchorStyle,
@@ -17,18 +20,24 @@ type AnchorProps = {
   title?: string;
   icon?: React.ReactNode;
   newTab?: boolean;
+  className?: string;
 };
 
-function Anchor({ path, title, icon, newTab = false }: AnchorProps) {
+function Anchor({ path, title, icon, newTab = false, className }: AnchorProps) {
   return (
     <>
       {newTab ? (
-        <AnchorStyle href={path} target="_blank" rel="noreferrer">
+        <AnchorStyle
+          href={path}
+          target="_blank"
+          rel="noreferrer"
+          className={className}
+        >
           {title ?? icon}
         </AnchorStyle>
       ) : (
         <Link href={path} passHref legacyBehavior>
-          <AnchorStyle>{title ?? icon}</AnchorStyle>
+          <AnchorStyle className={className}>{title ?? icon}</AnchorStyle>
         </Link>
       )}
     </>
@@ -36,11 +45,16 @@ function Anchor({ path, title, icon, newTab = false }: AnchorProps) {
 }
 
 const Footer: React.FC = () => {
+  const themeKey = useAtomValue(ThemeState.themeKey);
   return (
     <FooterWrapper>
       <FooterInner>
         <LeftSection>
-          <IconLogoWhite className="footer-logo" />
+          {themeKey === "dark" ? (
+            <IconLogoWhite className="footer-logo" />
+          ) : (
+            <IconLogoPrimary className="footer-logo" />
+          )}
           <p className="footer-content">{FOOTER_LEFT_NAV.content}</p>
           <SocialNav>
             {FOOTER_LEFT_NAV.menu.map(item => (
@@ -63,6 +77,7 @@ const Footer: React.FC = () => {
                   title={menu.title}
                   newTab={menu.newTab}
                   key={menu.title}
+                  className="list-menu"
                 />
               ))}
             </MenuSection>

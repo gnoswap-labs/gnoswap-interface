@@ -1,6 +1,5 @@
-import { TokenDefaultModel } from "./../token/token-default-model";
-import { AmountType } from "./../../common/types/data-prop-types";
+import { TokenDefaultModel } from "@models/token/token-default-model";
 
 export interface TokenSearchModel {
-	tokens: Array<TokenDefaultModel>;
+  tokens: Array<TokenDefaultModel>;
 }

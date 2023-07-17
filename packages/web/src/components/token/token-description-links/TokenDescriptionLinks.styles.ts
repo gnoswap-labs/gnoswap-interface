@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "flex-start")};
   h3 {
-    color: ${theme.colors.colorWhite};
+    color: ${theme.color.text01};
     ${fonts.body11};
     margin-right: 12px;
   }
@@ -14,24 +14,24 @@ export const wrapper = (theme: Theme) => css`
     ${fonts.p4};
     gap: 4px;
     height: 24px;
-    background-color: ${theme.colors.gray60};
+    background-color: ${theme.color.background06};
     border-radius: 4px;
     padding: 0px 8px;
-    color: ${theme.colors.gray30};
+    color: ${theme.color.text05};
     margin-left: 4px;
     .link-icon {
       width: 16px;
       height: 16px;
       * {
-        fill: ${theme.colors.gray40};
+        fill: ${theme.color.icon03};
       }
     }
   }
   button:hover {
-    color: ${theme.colors.gray20};
+    color: ${theme.color.text03};
     transition: all 0.3s ease;
     .link-icon * {
-      fill: ${theme.colors.gray20};
+      fill: ${theme.color.icon02};
     }
   }
 `;

@@ -8,10 +8,12 @@ export default {
   component: WalletBalanceSummary,
 } as ComponentMeta<typeof WalletBalanceSummary>;
 
-const Template: ComponentStory<typeof WalletBalanceSummary> = ({ balanceSummaryInfo, ...args }) => (
+const Template: ComponentStory<typeof WalletBalanceSummary> = ({
+  balanceSummaryInfo,
+  ...args
+}) => (
   <WalletBalanceSummary balanceSummaryInfo={balanceSummaryInfo} {...args} />
 );
-
 
 export const ConnectionSucceeded = Template.bind({});
 ConnectionSucceeded.args = {
@@ -22,7 +24,6 @@ ConnectionSucceeded.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  earn: action("earn"),
 };
 
 export const ConnectionFailed = Template.bind({});
@@ -34,5 +35,4 @@ ConnectionFailed.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  earn: action("earn"),
 };

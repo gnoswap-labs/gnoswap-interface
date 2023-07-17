@@ -1,11 +1,11 @@
-import { css, SerializedStyles } from "@emotion/react";
+import { css } from "@emotion/react";
 import { ValuesType } from "utility-types";
 
 export const fonts = {
   h1: css`
-    font-size: 60px;
+    font-size: 52px;
     font-weight: 700;
-    line-height: 72px;
+    line-height: 62px;
   `,
   h2: css`
     font-size: 48px;

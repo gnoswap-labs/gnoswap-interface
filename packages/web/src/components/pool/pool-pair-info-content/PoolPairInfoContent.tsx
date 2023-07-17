@@ -11,7 +11,7 @@ interface PoolPairInfoContentProps {
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   content,
 }) => {
-  const { liquidity, volumn24h, apr } = content;
+  const { liquidity, volume24h, apr } = content;
 
   return (
     <div css={wrapper}>
@@ -35,7 +35,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
       <section>
         <h4 className="label-info">Volume (24h)</h4>
-        <strong>{volumn24h.value}</strong>
+        <strong>{volume24h.value}</strong>
         <div className="sub-info-wrap">
           <span className="label-info">24h Change</span>
           <span
@@ -44,7 +44,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 liquidity.change24h.status === MATH_NEGATIVE_TYPE.NEGATIVE,
             })}
           >
-            {volumn24h.change24h.value}
+            {volume24h.change24h.value}
           </span>
         </div>
       </section>

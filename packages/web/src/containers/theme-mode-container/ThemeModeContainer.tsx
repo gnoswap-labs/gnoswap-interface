@@ -1,12 +1,10 @@
-import { ThemeState } from "@/states";
-import Header from "@components/common/header/Header";
+import { ThemeState } from "@states/index";
 import ThemeModeButton from "@components/common/theme-mode-button/ThemeModeButton";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
+import React from "react";
 
 const ThemeModeContainer: React.FC = () => {
-  const [themeKey, setThemeKey] = useRecoilState(ThemeState.themeKey);
+  const [themeKey, setThemeKey] = useAtom(ThemeState.themeKey);
 
   const toggleTheme = () => {
     setThemeKey((key: string) => (key === "dark" ? "light" : "dark"));

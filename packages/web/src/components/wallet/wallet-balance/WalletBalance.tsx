@@ -1,6 +1,9 @@
-import { BalanceSummaryInfo, BalanceDetailInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
-import WalletBalanceSummary from "../wallet-balance-summary/WalletBalanceSummary";
-import WalletBalanceDetail from "../wallet-balance-detail/WalletBalanceDetail";
+import {
+  BalanceSummaryInfo,
+  BalanceDetailInfo,
+} from "@containers/wallet-balance-container/WalletBalanceContainer";
+import WalletBalanceSummary from "@components/wallet/wallet-balance-summary/WalletBalanceSummary";
+import WalletBalanceDetail from "@components/wallet/wallet-balance-detail/WalletBalanceDetail";
 import { WalletBalanceWrapper } from "./WalletBalance.styles";
 
 interface WalletBalanceProps {
@@ -9,8 +12,8 @@ interface WalletBalanceProps {
   balanceDetailInfo: BalanceDetailInfo;
   deposit: () => void;
   withdraw: () => void;
-  earn: () => void;
-};
+  claimAll: () => void;
+}
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({
   connected,
@@ -18,7 +21,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   balanceDetailInfo,
   deposit,
   withdraw,
-  earn
+  claimAll,
 }) => (
   <WalletBalanceWrapper>
     <WalletBalanceSummary
@@ -26,10 +29,11 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
       balanceSummaryInfo={balanceSummaryInfo}
       deposit={deposit}
       withdraw={withdraw}
-      earn={earn}
     />
     <WalletBalanceDetail
+      connected={connected}
       balanceDetailInfo={balanceDetailInfo}
+      claimAll={claimAll}
     />
   </WalletBalanceWrapper>
 );

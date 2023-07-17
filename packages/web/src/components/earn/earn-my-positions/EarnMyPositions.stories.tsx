@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import EarnMyPositions from "./EarnMyPositions";
 import MyPositionCardListContainer from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import EarnMyPositionsHeader from "@components/earn/earn-my-positions-header/EarnMyPositionsHeader";
-import EarnMyPositonsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositonsUnconnected";
+import EarnMyPositionsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositionsUnconnected";
 import EarnMyPositionNoLiquidity from "@components/earn/earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsContent, {
   MY_POSITIONS_STATUS,
@@ -23,7 +23,7 @@ export const UnConnected = Template.bind({});
 UnConnected.args = {
   content: (
     <EarnMyPositionsContent
-      unconnected={<EarnMyPositonsUnconnected />}
+      unconnected={<EarnMyPositionsUnconnected />}
       noLiquidity={<EarnMyPositionNoLiquidity />}
       cardList={<MyPositionCardListContainer />}
       status={MY_POSITIONS_STATUS.UN_CONNECTED}
@@ -35,7 +35,7 @@ export const NoLiquidity = Template.bind({});
 NoLiquidity.args = {
   content: (
     <EarnMyPositionsContent
-      unconnected={<EarnMyPositonsUnconnected />}
+      unconnected={<EarnMyPositionsUnconnected />}
       noLiquidity={<EarnMyPositionNoLiquidity />}
       cardList={<MyPositionCardListContainer />}
       status={MY_POSITIONS_STATUS.NO_LIQUIDITY}
@@ -47,7 +47,7 @@ export const CardList = Template.bind({});
 CardList.args = {
   content: (
     <EarnMyPositionsContent
-      unconnected={<EarnMyPositonsUnconnected />}
+      unconnected={<EarnMyPositionsUnconnected />}
       noLiquidity={<EarnMyPositionNoLiquidity />}
       cardList={<MyPositionCardListContainer />}
       status={MY_POSITIONS_STATUS.CARD_LIST}

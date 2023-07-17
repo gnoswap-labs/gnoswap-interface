@@ -1,5 +1,7 @@
 import {
   ASSET_FILTER_TYPE,
+  ASSET_HEAD,
+  AssetSortOption,
   type Asset,
 } from "@containers/asset-list-container/AssetListContainer";
 import AssetListHeader from "@components/wallet/asset-list-header/AssetListHeader";
@@ -21,6 +23,9 @@ interface AssetListProps {
   toggleExtended: () => void;
   deposit: (assetId: string) => void;
   withdraw: (assetId: string) => void;
+  sortOption: AssetSortOption | undefined;
+  sort: (item: ASSET_HEAD) => void;
+  isSortOption: (item: ASSET_HEAD) => boolean;
 }
 
 const AssetList: React.FC<AssetListProps> = ({
@@ -37,6 +42,9 @@ const AssetList: React.FC<AssetListProps> = ({
   toggleExtended,
   deposit,
   withdraw,
+  sort,
+  sortOption,
+  isSortOption,
 }) => (
   <AssetListWrapper>
     <AssetListHeader
@@ -52,6 +60,9 @@ const AssetList: React.FC<AssetListProps> = ({
       assets={assets}
       deposit={deposit}
       withdraw={withdraw}
+      sort={sort}
+      sortOption={sortOption}
+      isSortOption={isSortOption}
     />
     {hasLoader && <LoadMoreButton show={!extended} onClick={toggleExtended} />}
   </AssetListWrapper>

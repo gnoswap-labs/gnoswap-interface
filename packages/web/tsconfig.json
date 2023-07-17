@@ -17,15 +17,19 @@
     "baseUrl": "./",
     "paths": {
       "@constants/*": ["src/constants/*"],
-      "@utils/*": ["src/utils/*"],
       "@containers/*": ["src/containers/*"],
+      "@common/*": ["src/common/*"],
       "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@utils/*": ["src/utils/*"],
       "@providers/*": ["src/providers/*"],
+      "@states/*": ["src/states/*"],
       "@styles/*": ["src/styles/*"],
       "@layouts/*": ["src/layouts/*"],
-      "@models/*": ["src/models/*"],
-      "@/*": ["src/*"]
-    }
+      "@models/*": ["src/models/*"]
+    },
+    "jsxImportSource": "@emotion/react"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
   "exclude": ["node_modules"]

@@ -31,7 +31,7 @@ const Template: ComponentStory<typeof Modal> = args => {
           {...args}
           exitClick={toggle}
           selector="storybook-portal"
-          style={{ textColor: "colorWhite", width: 500, height: 150 }}
+          style={{ textColor: "background01", width: 500, height: 150 }}
         >
           <Button
             text="Modal Content 1"

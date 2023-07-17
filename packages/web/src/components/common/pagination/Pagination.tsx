@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
-import IconStrokeArrowLeft from "../icons/IconStrokeArrowLeft";
-import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
+import { cx } from "@emotion/css";
+import IconStrokeArrowLeft from "@components/common/icons/IconStrokeArrowLeft";
+import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { Button, PaginationItem, PaginationWrapper } from "./Pagination.styles";
 
 interface PaginationProps {
@@ -64,7 +65,7 @@ const Pagination: React.FC<PaginationProps> = ({
     ...startPages,
     ...(siblingsStart > boundaryCount + 1 ? ["start-ellipsis"] : []),
     ...range(siblingsStart, siblingsEnd),
-    ...(siblingsEnd < totalPage - boundaryCount - 1 ? ["end-ellipsis"] : []),
+    ...(siblingsEnd < totalPage - boundaryCount ? ["end-ellipsis"] : []),
     ...endPages,
     "next",
   ];
@@ -98,7 +99,11 @@ const Pagination: React.FC<PaginationProps> = ({
       {paginationDetailsObject.map(
         ({ key, disabled, selected, onClick, item }) => (
           <PaginationItem key={key}>
-            <Button disabled={disabled} selected={selected} onClick={onClick}>
+            <Button
+              className={cx({ selected: selected })}
+              disabled={disabled}
+              onClick={onClick}
+            >
               {getLabel(item)}
             </Button>
           </PaginationItem>

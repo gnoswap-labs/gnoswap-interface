@@ -9,17 +9,17 @@ export const wrapper = (active: boolean) => (theme: Theme) =>
     height: 100%;
     flex: 1;
     padding: 24px;
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     background-color: ${active
-      ? theme.colors.gray60
-      : theme.colors.opacityDark05};
+      ? theme.color.background09
+      : theme.color.background03};
 
-    border: ${active ? theme.colors.gray50 : theme.colors.gray60};
+    border: ${active ? theme.color.border02 : theme.color.border01};
     border-radius: 8px;
 
     h5 {
       ${fonts.body12};
-      color: ${theme.colors.gray40};
+      color: ${theme.color.text04};
     }
 
     .total-value {
@@ -35,14 +35,14 @@ export const wrapper = (active: boolean) => (theme: Theme) =>
         cursor: pointer;
         transition: color 0.3s ease;
         &:hover {
-          color: ${theme.colors.brand40};
+          color: ${theme.color.text07};
         }
       }
     }
 
     .apr-value {
       ${fonts.body4};
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
     }
 
     section {
@@ -52,7 +52,7 @@ export const wrapper = (active: boolean) => (theme: Theme) =>
 
     .staking-info-wrap {
       ${mixins.flexbox("row", "center", "space-between")};
-      background-color: ${theme.colors.opacityDark07};
+      background-color: ${theme.color.backgroundOpacity};
       border-radius: 8px;
       padding: 16px;
       margin-bottom: 16px;

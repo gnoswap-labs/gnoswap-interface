@@ -1,4 +1,4 @@
-import { TransactionModel } from "@/models/account/account-history-model";
+import { TransactionModel } from "@models/account/account-history-model";
 import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
 import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import IconCircleInMore from "@components/common/icons/IconCircleInMore";

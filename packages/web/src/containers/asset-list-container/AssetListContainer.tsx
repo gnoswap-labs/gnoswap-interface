@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import React, { useCallback, useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +13,11 @@ interface AssetListResponse {
   assets: Asset[];
 }
 
+export interface AssetSortOption {
+  key: ASSET_HEAD;
+  direction: "asc" | "desc";
+}
+
 export const ASSET_HEAD = {
   ASSET: "Asset",
   CHAIN: "Chain",
@@ -19,6 +26,14 @@ export const ASSET_HEAD = {
   WITHDRAW: "Withdraw",
 } as const;
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
+
+const SORT_PARAMS: { [key in ASSET_HEAD]: string } = {
+  "Asset": "asset",
+  "Chain": "chain",
+  "Balance": "balance",
+  "Deposit": "deposit",
+  "Withdraw": "withdraw",
+};
 
 export interface Asset {
   id: string;
@@ -68,7 +83,11 @@ export const dummyAssetList: Asset[] = [
   },
 ];
 
-async function fetchAssets(address: string): Promise<Asset[]> {
+async function fetchAssets(
+  address: string,
+  sortKey?: string, // eslint-disable-line
+  direction?: string, // eslint-disable-line
+): Promise<Asset[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
       ...dummyAssetList,
@@ -119,14 +138,15 @@ const AssetListContainer: React.FC = () => {
   const [extended, setExtened] = useState(false);
   const [filteredAssets, setFilteredAsset] = useState<Asset[]>([]);
   const [hasLoader, setHasLoader] = useState(false);
+  const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
 
   const {
     isFetched,
     error,
     data: assets,
   } = useQuery<Asset[], Error>({
-    queryKey: ["assets", address],
-    queryFn: () => fetchAssets(address),
+    queryKey: ["assets", address, sortOption?.key, sortOption?.direction],
+    queryFn: () => fetchAssets(address, sortOption && SORT_PARAMS[sortOption.key], sortOption?.direction),
   });
 
   useEffect(() => {
@@ -142,9 +162,9 @@ const AssetListContainer: React.FC = () => {
       const resultFilteredAssets = extended
         ? filteredAssets
         : filteredAssets.slice(
-            0,
-            Math.min(filteredAssets.length, COLLAPSED_LENGTH),
-          );
+          0,
+          Math.min(filteredAssets.length, COLLAPSED_LENGTH),
+        );
 
       setHasLoader(hasLoader);
       setFilteredAsset(resultFilteredAssets);
@@ -194,6 +214,24 @@ const AssetListContainer: React.FC = () => {
     },
     [address],
   );
+
+  const sort = useCallback((item: ASSET_HEAD) => {
+    const key = item;
+    const direction = sortOption?.key !== item ?
+      "desc" :
+      sortOption.direction === "asc" ? "desc" : "asc";
+
+    setTokenSortOption({
+      key,
+      direction,
+    });
+  }, [sortOption]);
+
+  const isSortOption = useCallback((head: ASSET_HEAD) => {
+    const disableItems = ["Deposit", "Withdraw"];
+    return !disableItems.includes(head);
+  }, []);
+
   return (
     <AssetList
       assets={filteredAssets}
@@ -209,6 +247,9 @@ const AssetListContainer: React.FC = () => {
       toggleExtended={toggleExtended}
       deposit={deposit}
       withdraw={withdraw}
+      sortOption={sortOption}
+      sort={sort}
+      isSortOption={isSortOption}
     />
   );
 };

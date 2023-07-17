@@ -1,15 +1,15 @@
-import { IncentivizedOptions } from "@/common/values/data-constant";
-import { TokenDefaultModel } from "../token/token-default-model";
-import { TokenPairModel } from "../token/token-pair-model";
+import { IncentivizedOptions } from "@common/values/data-constant";
+import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenPairModel } from "@models/token/token-pair-model";
 
 export interface PoolModel {
-	poolId: string;
+  poolId: string;
 
-	feeRate: number;
+  feeRate: number;
 
-	liquidity: TokenPairModel;
+  liquidity: TokenPairModel;
 
-	rewards: Array<TokenDefaultModel>;
+  rewards: Array<TokenDefaultModel>;
 
-	incentivizedType: IncentivizedOptions;
+  incentivizedType: IncentivizedOptions;
 }

@@ -1,3 +1,5 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useState } from "react";
 import { wrapper } from "./EarnMyPositionsHeader.styles";
@@ -15,8 +17,10 @@ const EarnMyPositionsHeader: React.FC = () => {
         text="New Position"
         style={{
           hierarchy: ButtonHierarchy.Primary,
+          fontType: "p1",
           height: 36,
-          padding: "0px 16px",
+          width: 114,
+          padding: "10px 16px",
         }}
         onClick={onClickNewPosition}
         disabled={disabled}

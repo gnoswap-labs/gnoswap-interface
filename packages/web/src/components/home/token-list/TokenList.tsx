@@ -1,8 +1,11 @@
+// TODO : remove eslint-disable after work
+/* eslint-disable */
 import React from "react";
 import {
   TOKEN_TYPE,
   type Token,
   TABLE_HEAD,
+  SortOption,
 } from "@containers/token-list-container/TokenListContainer";
 import TokenListHeader from "@components/home/token-list-header/TokenListHeader";
 import Pagination from "@components/common/pagination/Pagination";
@@ -14,12 +17,15 @@ interface TokenItem {
   isFetched: boolean;
   error: Error | null;
   tokenType?: TOKEN_TYPE;
+  sortOption?: SortOption;
   changeTokenType: (newType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
   currentPage: number;
   totalPage: number;
   movePage: (page: number) => void;
+  isSortOption: (item: TABLE_HEAD) => boolean;
+  sort: (item: TABLE_HEAD) => void;
 }
 
 const TokenList: React.FC<TokenItem> = ({
@@ -27,16 +33,16 @@ const TokenList: React.FC<TokenItem> = ({
   isFetched,
   error,
   tokenType = TOKEN_TYPE.ALL,
+  sortOption,
   changeTokenType,
   search,
   keyword,
   currentPage,
   totalPage,
   movePage,
+  isSortOption,
+  sort,
 }) => {
-  const onClickTableHead = (item: TABLE_HEAD) => {
-    // TODO: Sorting pools list
-  };
 
   return (
     <div css={wrapper}>
@@ -49,7 +55,9 @@ const TokenList: React.FC<TokenItem> = ({
       <TokenListTable
         tokens={tokens}
         isFetched={isFetched}
-        onClickTableHead={onClickTableHead}
+        sortOption={sortOption}
+        isSortOption={isSortOption}
+        sort={sort}
       />
       <Pagination
         currentPage={currentPage}

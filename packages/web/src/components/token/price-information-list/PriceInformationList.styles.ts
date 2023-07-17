@@ -12,20 +12,20 @@ export const wrapper = (theme: Theme) => css`
   .information-wrap {
     ${mixins.flexbox("column", "flex-start", "center")};
     ${fonts.body8};
-    color: ${theme.colors.colorGreen};
+    color: ${theme.color.green01};
     width: 100%;
     height: 91px;
-    background-color: ${theme.colors.opacityDark05};
-    border: 1px solid ${theme.colors.gray50};
+    background-color: ${theme.color.background03};
+    border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     padding: 16px;
     gap: 16px;
     .title {
       ${fonts.body12};
-      color: ${theme.colors.gray40};
+      color: ${theme.color.text04};
     }
     .negative {
-      color: ${theme.colors.colorRed};
+      color: ${theme.color.red01};
     }
   }
 `;

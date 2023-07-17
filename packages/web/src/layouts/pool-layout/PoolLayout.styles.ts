@@ -3,14 +3,15 @@ import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
-  background-color: ${theme.colors.colorBlack};
-  color: ${theme.colors.gray10};
+  background-color: ${theme.color.background01};
+  color: ${theme.color.text02};
   section {
     width: 100%;
   }
   .pool-content {
     ${mixins.flexbox("row", "center", "space-between")};
     flex-wrap: wrap;
+    width: 100%;
     max-width: 1440px;
     margin: 100px auto;
     padding: 0 40px;
@@ -23,7 +24,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .pool-title {
     ${fonts.h3};
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
   }
 
   .liquidity-section {

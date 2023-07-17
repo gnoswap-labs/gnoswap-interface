@@ -8,13 +8,13 @@ export const wrapper = (isStaked: boolean) => (theme: Theme) =>
     width: 100%;
     height: 240px;
     background-color: ${isStaked
-      ? theme.colors.gray60
-      : theme.colors.opacityDark05};
-    border: 1px solid ${isStaked ? theme.colors.gray50 : theme.colors.gray60};
+      ? theme.color.background09
+      : theme.color.background03};
+    border: 1px solid ${isStaked ? theme.color.border02 : theme.color.border01};
     border-radius: 10px;
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
     padding: 24px 36px;
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     .pair-wrap {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
@@ -33,16 +33,16 @@ export const wrapper = (isStaked: boolean) => (theme: Theme) =>
       width: 100%;
       margin: 8px 0px 16px;
       ${fonts.body12};
-      color: ${theme.colors.gray30};
+      color: ${theme.color.text05};
       span {
-        color: ${theme.colors.gray40};
+        color: ${theme.color.text04};
       }
     }
 
     .content-section {
       ${mixins.flexbox("row", "center", "center")};
       width: 100%;
-      border: 1px solid ${theme.colors.gray50};
+      border: 1px solid ${theme.color.border02};
       border-radius: 8px;
       section {
         ${mixins.flexbox("column", "flex-start", "center")};
@@ -50,12 +50,12 @@ export const wrapper = (isStaked: boolean) => (theme: Theme) =>
         flex: 1;
         gap: 24px;
         &:not(:first-of-type) {
-          border-left: 1px solid ${theme.colors.gray50};
+          border-left: 1px solid ${theme.color.border02};
         }
       }
       h4 {
         ${fonts.body12}
-        color: ${theme.colors.gray40};
+        color: ${theme.color.text04};
       }
       .content-value {
         ${fonts.body2}

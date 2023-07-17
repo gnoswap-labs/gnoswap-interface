@@ -13,7 +13,7 @@ import {
   UnLoadingItem,
 } from "./TableSkeleton.styles";
 import {
-  DipositButton,
+  DepositButton,
   WithdrawButton,
 } from "@components/wallet/asset-info/AssetInfo";
 
@@ -51,7 +51,7 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info }) => {
               <UnLoadingItem
                 tdWidth={ASSET_TD_WIDTH[ASSET_TD_WIDTH.length - 2]}
               >
-                <DipositButton onClick={() => false} disabled />
+                <DepositButton onClick={() => false} disabled />
               </UnLoadingItem>
               <UnLoadingItem
                 tdWidth={ASSET_TD_WIDTH[ASSET_TD_WIDTH.length - 1]}

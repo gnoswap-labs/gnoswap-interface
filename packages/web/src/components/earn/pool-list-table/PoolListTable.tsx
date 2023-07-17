@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Pool,
+  PoolSortOption,
   TABLE_HEAD,
 } from "@containers/pool-list-container/PoolListContainer";
 import PoolInfo from "@components/earn/pool-info/PoolInfo";
@@ -8,28 +9,58 @@ import { noDataText, TableColumn, TableWrapper } from "./PoolListTable.styles";
 import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import { POOL_INFO, POOL_TD_WIDTH } from "@constants/skeleton.constant";
+import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
+import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
+
 interface PoolListTableProps {
   pools: Pool[];
   isFetched: boolean;
-  onClickTableHead: (head: TABLE_HEAD) => void;
+  sortOption: PoolSortOption | undefined
+  sort: (head: TABLE_HEAD) => void;
+  isSortOption: (head: TABLE_HEAD) => boolean;
 }
 
 const PoolListTable: React.FC<PoolListTableProps> = ({
   pools,
-  onClickTableHead,
   isFetched,
+  sortOption,
+  sort,
+  isSortOption,
 }) => {
+
+  const isAscendingOption = useCallback((head: TABLE_HEAD) => {
+    return sortOption?.key === head && sortOption.direction === "asc";
+  }, [sortOption]);
+
+  const isDescendingOption = useCallback((head: TABLE_HEAD) => {
+    return sortOption?.key === head && sortOption.direction === "desc";
+  }, [sortOption]);
+
+  const onClickTableHead = (head: TABLE_HEAD) => {
+    if (!isSortOption(head)) {
+      return;
+    }
+    sort(head);
+  };
+
+  const isAlignLeft = (head: TABLE_HEAD) => {
+    return TABLE_HEAD.POOL_NAME === head;
+  };
+
   return (
     <TableWrapper>
       <div className="pool-list-head">
         {Object.values(TABLE_HEAD).map((head, idx) => (
           <TableColumn
             key={idx}
-            className={cx([0].includes(idx) && "left")}
-            onClick={() => onClickTableHead(head)}
+            className={cx({ left: isAlignLeft(head), sort: isSortOption(head) })}
             tdWidth={POOL_TD_WIDTH[idx]}
           >
-            <span>{head}</span>
+            <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()} onClick={() => onClickTableHead(head)}>
+              {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
+              {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
+              {head}
+            </span>
           </TableColumn>
         ))}
       </div>

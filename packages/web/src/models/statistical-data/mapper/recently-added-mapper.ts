@@ -1,12 +1,12 @@
 import {
   RecentlyAddedPairInfo,
   SummaryRecentlyAddedListResponse,
-} from "@/repositories/token/response/summary-recent-added-list-response";
-import { amountEmptyBigNumInit } from "@/common/values/global-initial-value";
+} from "@repositories/token/response/summary-recent-added-list-response";
+import { amountEmptyBigNumInit } from "@common/values/global-initial-value";
 import {
   RecentlyAddedPoolModel,
   SummaryRecentlyPairType,
-} from "../recently-added-pool-model";
+} from "@models/statistical-data";
 
 export class RecentlyAddedMapper {
   public static fromResponse(

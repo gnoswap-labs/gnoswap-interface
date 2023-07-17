@@ -1,8 +1,6 @@
-import { PaletteKeyType } from "@/styles/ThemeTypes";
 import { CSSProperties } from "react";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-import { css } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
 export interface SearchInputStyleProps {
   fullWidth?: boolean;
@@ -24,23 +22,33 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   }};
   padding: 0px 16px;
   border-radius: 8px;
-  color: ${({ theme }) => theme.colors.colorWhite};
-  background-color: ${({ theme }) => theme.colors.colorBlack};
-  border: 1px solid ${({ theme }) => theme.colors.gray50};
-  &.empty-status {
-    background-color: ${({ theme }) => theme.colors.gray60};
-  }
+  color: ${({ theme }) => theme.color.text01};
+
   &:focus-within {
-    background-color: ${({ theme }) => theme.colors.colorBlack};
-    border: 1px solid ${({ theme }) => theme.colors.gray40};
+    background-color: ${({ theme }) => theme.color.background02};
+    border: 1px solid ${({ theme }) => theme.color.border03};
   }
+
+  &:not(:focus-within, .empty-status) {
+    background-color: ${({ theme }) => theme.color.background06};
+    border: 1px solid ${({ theme }) => theme.color.border02};
+  }
+
+  &:not(:focus-within).empty-status {
+    background-color: ${({ theme }) => theme.color.background01};
+    border: 1px solid ${({ theme }) => theme.color.border02};
+  }
+
   .search-icon * {
-    fill: ${({ theme }) => theme.colors.gray01};
+    fill: ${({ theme }) => theme.color.icon03};
   }
 `;
 
-export const inputStyle = css`
+export const InputStyle = styled.input`
   width: 100%;
   height: 100%;
   margin-right: 16px;
+  &::placeholder {
+    color: ${({ theme }) => theme.color.text04};
+  }
 `;

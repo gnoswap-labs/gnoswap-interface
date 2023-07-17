@@ -1,21 +1,25 @@
 import React, { useCallback, useState } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
-import Button from "@components/common/button/Button";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-
 interface HomeSwapProps {
   from: {
     token: string;
+    symbol: string;
     amount: string;
     price: string;
-    balence: string;
+    balance: string;
+    tokenLogo: string;
   };
   to: {
     token: string;
+    symbol: string;
     amount: string;
     price: string;
-    balence: string;
+    balance: string;
+    tokenLogo: string;
   };
   swapNow: () => void;
 }
@@ -67,7 +71,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button className="setting-button">
+        <button className="setting-button" disabled>
           <IconSettings className="setting-icon" />
         </button>
       </div>
@@ -80,11 +84,13 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
               onChange={onChangeFromAmount}
               placeholder={fromAmount === "" ? "0" : ""}
             />
-            <span className="token">{from.token}</span>
+            <div className="token">
+              <SelectPairButton disabled token={from} />
+            </div>
           </div>
           <div className="info">
             <span className="price-text">{from.price}</span>
-            <span className="balence-text">Balence : {from.balence}</span>
+            <span className="balance-text">Balance : {from.balance}</span>
           </div>
         </div>
         <div className="to">
@@ -95,11 +101,13 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
               onChange={onChangeToAmount}
               placeholder={toAmount === "" ? "0" : ""}
             />
-            <span className="token">{to.token}</span>
+            <div className="token">
+              <SelectPairButton disabled token={to} />
+            </div>
           </div>
           <div className="info">
             <span className="price-text">{to.price}</span>
-            <span className="balence-text">Balence : {to.balence}</span>
+            <span className="balance-text">Balance : {to.balance}</span>
           </div>
         </div>
         <div className="arrow">
@@ -113,11 +121,10 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
         <Button
           text="Swap now"
           style={{
-            bgColor: "brand50",
             fullWidth: true,
-            height: 57,
-            textColor: "gray10",
+            height: 50,
             fontType: "body7",
+            hierarchy: ButtonHierarchy.Primary
           }}
           onClick={onClickSwapNow}
         />

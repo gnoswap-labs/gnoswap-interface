@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
-import { RecoilRoot } from "recoil";
-import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { Provider as JotaiProvider } from "jotai";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import WalletBalance from "./WalletBalance";
 
 describe("WalletBalance Component", () => {
@@ -19,15 +19,15 @@ describe("WalletBalance Component", () => {
       },
       deposit: () => null,
       withdraw: () => null,
-      earn: () => null,
+      claimAll: () => null,
     };
 
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <WalletBalance {...mockProps} />
         </GnoswapThemeProvider>
-      </RecoilRoot>
+      </JotaiProvider>,
     );
   });
 });

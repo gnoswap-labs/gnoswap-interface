@@ -7,13 +7,14 @@ export const AssetInfoWrapper = styled.div`
   cursor: pointer;
   min-width: 100%;
   height: 68px;
+  color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
   &:not(:first-of-type) {
-    border-top: 1px solid ${({ theme }) => theme.colors.gray50};
+    border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray50};
+    background-color: ${({ theme }) => theme.color.hover01};
   }
 
   .logo {
@@ -27,7 +28,7 @@ export const AssetInfoWrapper = styled.div`
 
   .symbol {
     ${fonts.body12};
-    color: ${({ theme }) => theme.colors.gray40};
+    color: ${({ theme }) => theme.color.text04};
   }
 `;
 
@@ -45,13 +46,24 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
 export const LoadButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
-  color: ${({ theme }) => theme.colors.gray40};
+  color: ${({ theme }) => theme.color.text04};
   gap: 4px;
+  &,
+  svg * {
+    transition: all 0.3s ease;
+  }
   svg {
     width: 16px;
     height: 16px;
     * {
-      fill: ${({ theme }) => theme.colors.gray40};
+      fill: ${({ theme }) => theme.color.icon03};
+    }
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.color.text03};
+    svg * {
+      fill: ${({ theme }) => theme.color.icon02};
     }
   }
 `;

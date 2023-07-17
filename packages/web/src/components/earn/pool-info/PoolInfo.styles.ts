@@ -7,6 +7,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
   height: 100%;
+  color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
@@ -22,10 +23,10 @@ export const PoolInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
   &:not(:first-of-type) {
-    border-top: 1px solid ${({ theme }) => theme.colors.gray50};
+    border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray50};
+    background-color: ${({ theme }) => theme.color.background02};
   }
 
   .symbol-pair {
@@ -33,6 +34,6 @@ export const PoolInfoWrapper = styled.div`
   }
   .feeRate {
     ${fonts.body12};
-    color: ${({ theme }) => theme.colors.gray40};
+    color: ${({ theme }) => theme.color.text04};
   }
 `;

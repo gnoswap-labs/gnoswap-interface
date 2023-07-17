@@ -1,14 +1,17 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
+import { Z_INDEX } from "@styles/zIndex";
 
 export const HeaderWrapper = styled.header`
-  position: relative;
+  position: fixed;
+  top: 0;
+  z-index: ${Z_INDEX.fixed};
   width: 100%;
   height: 71px;
-  background-color: ${({ theme }) => theme.colors.colorBlack};
+  background-color: ${({ theme }) => theme.color.background01};
   margin-bottom: auto;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray50};
+  border-bottom: 1px solid ${({ theme }) => theme.color.border02};
 `;
 
 export const HeaderInner = styled.div`
@@ -36,11 +39,13 @@ export const Navigation = styled.nav`
     gap: 48px;
   }
   li {
+    transition: color 0.3s ease;
     ${mixins.flexbox("row", "center", "center")};
     ${fonts.body9};
-    color: ${({ theme }) => theme.colors.gray40};
-    &.selected {
-      color: ${({ theme }) => theme.colors.gray20};
+    color: ${({ theme }) => theme.color.text04};
+    &.selected,
+    &:hover {
+      color: ${({ theme }) => theme.color.text03};
     }
   }
 `;

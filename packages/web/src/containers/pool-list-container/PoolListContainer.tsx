@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { type FeeOptions } from "@/common/values/data-constant";
+import React, { useCallback, useState } from "react";
+import { type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairModel } from "@models/token/token-pair-model";
 import { useQuery } from "@tanstack/react-query";
@@ -11,10 +11,15 @@ export interface Pool {
   feeRate: FeeOptions;
   liquidity: string;
   apr: string;
-  volumn24h: string;
+  volume24h: string;
   fees24h: string;
   rewards: Array<string>;
   incentiveType: POOL_TYPE;
+}
+
+export interface PoolSortOption {
+  key: TABLE_HEAD;
+  direction: "asc" | "desc";
 }
 
 export const TABLE_HEAD = {
@@ -35,6 +40,15 @@ export const POOL_TYPE = {
 } as const;
 
 export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
+
+const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
+  "Pool Name": "name",
+  "Liquidity": "liquidity",
+  "Volume (24h)": "volume",
+  "Fees (24h)": "fees",
+  "APR": "apr",
+  "Rewards": "rewards",
+};
 
 export const dummyPoolList: Pool[] = [
   {
@@ -58,7 +72,7 @@ export const dummyPoolList: Pool[] = [
     feeRate: "0.01%",
     liquidity: "$12,090.41M",
     apr: "$311,421.12M",
-    volumn24h: "$311,421.12M",
+    volume24h: "$311,421.12M",
     fees24h: "$311,421.12M",
     rewards: [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
@@ -87,7 +101,7 @@ export const dummyPoolList: Pool[] = [
     feeRate: "0.05%",
     liquidity: "$12,090.41M",
     apr: "$311,421.12M",
-    volumn24h: "$311,421.12M",
+    volume24h: "$311,421.12M",
     fees24h: "$311,421.12M",
     rewards: [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x4E15361FD6b4BB609Fa63C81A2be19d873717870/logo.png",
@@ -116,7 +130,7 @@ export const dummyPoolList: Pool[] = [
     feeRate: "0.3%",
     liquidity: "$12,090.41M",
     apr: "$311,421.12M",
-    volumn24h: "$311,421.12M",
+    volume24h: "$311,421.12M",
     fees24h: "$311,421.12M",
     rewards: [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x4E15361FD6b4BB609Fa63C81A2be19d873717870/logo.png",
@@ -127,9 +141,11 @@ export const dummyPoolList: Pool[] = [
 ];
 
 async function fetchPools(
-  type: POOL_TYPE,
-  page: number,
-  keyword: string,
+  type: POOL_TYPE,  // eslint-disable-line
+  page: number,     // eslint-disable-line
+  keyword: string,  // eslint-disable-line
+  sortKey?: string, // eslint-disable-line
+  direction?: string, // eslint-disable-line
 ): Promise<Pool[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
@@ -154,14 +170,15 @@ const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
+  const [sortOption, setTokenSortOption] = useState<PoolSortOption>();
 
   const {
     isFetched,
     error,
     data: pools,
   } = useQuery<Pool[], Error>({
-    queryKey: ["pools", poolType, page, keyword],
-    queryFn: () => fetchPools(poolType, page, keyword),
+    queryKey: ["pools", poolType, page, keyword, sortOption?.key, sortOption?.direction],
+    queryFn: () => fetchPools(poolType, page, keyword, sortOption && SORT_PARAMS[sortOption.key], sortOption?.direction),
   });
 
   const changePoolType = useCallback((newType: string) => {
@@ -188,6 +205,23 @@ const PoolListContainer: React.FC = () => {
     setPage(newPage);
   }, []);
 
+  const sort = useCallback((item: TABLE_HEAD) => {
+    const key = item;
+    const direction = sortOption?.key !== item ?
+      "desc" :
+      sortOption.direction === "asc" ? "desc" : "asc";
+
+    setTokenSortOption({
+      key,
+      direction,
+    });
+  }, [sortOption]);
+
+  const isSortOption = useCallback((head: TABLE_HEAD) => {
+    const disableItems = ["Rewards"];
+    return !disableItems.includes(head);
+  }, []);
+
   return (
     <PoolList
       pools={pools ?? []}
@@ -198,8 +232,11 @@ const PoolListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={pools?.length ?? 0}
+      totalPage={100}
       movePage={movePage}
+      sortOption={sortOption}
+      sort={sort}
+      isSortOption={isSortOption}
     />
   );
 };

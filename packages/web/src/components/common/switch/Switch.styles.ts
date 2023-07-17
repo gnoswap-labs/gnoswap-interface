@@ -9,7 +9,8 @@ export const SwitchWrapper = styled.div`
 
 export const SwitchLabel = styled.label`
   ${fonts.body12};
-  color: ${({ theme }) => theme.colors.gray40};
+  color: ${({ theme }) => theme.color.text04};
+  pointer-events: none;
 `;
 
 export const SwitchInput = styled.input`
@@ -24,8 +25,8 @@ export const SwitchInput = styled.input`
   width: 44px;
   height: 24px;
   border-radius: 100px;
-  border: 1px solid ${({ theme }) => theme.colors.gray50};
-  background-color: ${({ theme }) => theme.colors.colorBlack};
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  background-color: ${({ theme }) => theme.color.background01};
   transition: all 0.2s ease;
   &:after {
     ${mixins.posTopCenterLeft("3px")};
@@ -33,15 +34,15 @@ export const SwitchInput = styled.input`
     width: 17px;
     height: 17px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.colors.gray50};
+    background: ${({ theme }) => theme.color.background12};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
   }
   &:checked {
-    border-color: ${({ theme }) => theme.colors.brand60};
-    background-color: ${({ theme }) => theme.colors.colorPoint};
+    border-color: ${({ theme }) => theme.color.border06};
+    background-color: ${({ theme }) => theme.color.point};
     &:after {
-      background: ${({ theme }) => theme.colors.colorWhite};
+      background: ${({ theme }) => theme.color.text09};
       left: 22px;
     }
   }

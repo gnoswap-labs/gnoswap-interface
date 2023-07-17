@@ -1,3 +1,3 @@
 export interface ClaimRewardResponse {
-	tx_hash: string;
+  tx_hash: string;
 }

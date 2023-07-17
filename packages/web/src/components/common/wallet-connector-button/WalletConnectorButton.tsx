@@ -4,9 +4,9 @@ import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import { WalletConnectorButtonWrapper } from "./WalletConnectorButton.styles";
 import WalletConnectorMenu from "@components/common/wallet-connector-menu/WalletConnectorMenu";
-import { ToggleState } from "@/states";
-import { useRecoilState } from "recoil";
-import { formatAddress } from "@utils/stringUtils";
+import { formatAddress } from "@utils/string-utils";
+import { useAtom } from "jotai";
+import { CommonState } from "@states/index";
 
 const FAKE_USERINFO = {
   status: "IN_ACTIVE",
@@ -18,14 +18,14 @@ const FAKE_USERINFO = {
 };
 
 const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
-  const [toggle, setToggle] = useRecoilState(ToggleState.headerToggle);
+  const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
-  const menuOpenToggleHandler = () =>
+  const onMenuToggle = () => {
     setToggle(prev => ({
       ...prev,
-      notification: false,
       walletConnect: !prev.walletConnect,
     }));
+  };
 
   return (
     <WalletConnectorButtonWrapper>
@@ -33,7 +33,7 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
         <Button
           leftIcon={<IconAdenaLogo />}
           text={formatAddress(FAKE_USERINFO.address)}
-          rightIcon={<IconStrokeArrowDown />}
+          rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Dark,
             fontType: "p1",
@@ -42,12 +42,12 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
             padding: "10px 16px",
             justify: "space-between",
           }}
-          onClick={menuOpenToggleHandler}
+          onClick={onMenuToggle}
         />
       ) : (
         <Button
           text="Connect Wallet"
-          rightIcon={<IconStrokeArrowDown />}
+          rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
@@ -56,11 +56,14 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
             padding: "10px 16px",
             justify: "space-between",
           }}
-          onClick={menuOpenToggleHandler}
+          onClick={onMenuToggle}
         />
       )}
       {toggle.walletConnect && (
-        <WalletConnectorMenu isConnected={isConnected} />
+        <WalletConnectorMenu
+          isConnected={isConnected}
+          onMenuToggle={onMenuToggle}
+        />
       )}
     </WalletConnectorButtonWrapper>
   );

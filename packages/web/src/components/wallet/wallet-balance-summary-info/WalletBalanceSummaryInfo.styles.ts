@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 
 export const WalletBalanceSummaryInfoWrapper = styled.div`
@@ -7,11 +7,11 @@ export const WalletBalanceSummaryInfoWrapper = styled.div`
 
   .amount {
     ${fonts.h3};
-    color: ${({ theme }) => theme.colors.gray10};
+    color: ${({ theme }) => theme.color.text02};
   }
   .change-rate {
     margin-left: 16px;
     ${fonts.body3};
-    color: ${({ theme }) => theme.colors.gray40};
+    color: ${({ theme }) => theme.color.text04};
   }
 `;

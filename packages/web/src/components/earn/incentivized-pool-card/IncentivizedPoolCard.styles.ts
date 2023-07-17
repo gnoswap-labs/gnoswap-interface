@@ -4,17 +4,17 @@ import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   width: 100%;
-  background-color: ${theme.colors.opacityDark05};
-  border: 1px solid ${theme.colors.gray60};
+  background-color: ${theme.color.background03};
+  border: 1px solid ${theme.color.border01};
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  padding: 16px;
+  padding: 15px;
   transition: all 0.3s ease;
-  color: ${theme.colors.gray10};
+  color: ${theme.color.text02};
   cursor: pointer;
   &:hover {
-    background-color: ${theme.colors.gray50};
-    border: 1px solid ${theme.colors.gray40};
+    background-color: ${theme.color.background02};
+    border: 1px solid ${theme.color.border03};
   }
   .pool-info {
     ${mixins.flexbox("column", "flex-end", "center")};
@@ -28,7 +28,7 @@ export const wrapper = (theme: Theme) => css`
   .pool-content {
     ${mixins.flexbox("column", "center", "center")};
     ${fonts.body8};
-    background-color: ${theme.colors.opacityDark07};
+    background-color: ${theme.color.backgroundOpacity};
     border-radius: 8px;
     padding: 16px;
     margin-top: 16px;
@@ -39,7 +39,8 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
   }
   .content-item {
-    ${mixins.flexbox("column", "flex-start", "center")}
+    ${mixins.flexbox("column", "flex-start", "center")};
+    gap: 4px;
     &:nth-child(even) {
       align-items: flex-end;
     }
@@ -48,7 +49,7 @@ export const wrapper = (theme: Theme) => css`
     }
   }
   .label-text {
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
     ${fonts.body12};
     height: 18px;
   }

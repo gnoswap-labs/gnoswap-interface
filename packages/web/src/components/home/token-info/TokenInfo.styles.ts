@@ -5,21 +5,22 @@ import mixins from "@styles/mixins";
 export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   height: 68px;
-  min-width: 100%;
+  width: 100%;
   ${fonts.body11};
   &:not(:first-of-type) {
-    border-top: 1px solid ${({ theme }) => theme.colors.gray50};
+    border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
 `;
 
 export const HoverSection = styled.div`
   ${mixins.flexbox("row", "center", "center", false)};
-  background-color: ${({ theme }) => theme.colors.colorBlack};
+  background-color: ${({ theme }) => theme.color.background01};
   transition: background-color 0.3s ease;
   cursor: pointer;
   height: 100%;
+  overflow: hidden;
   &:hover {
-    background-color: ${({ theme }) => theme.colors.gray60};
+    background-color: ${({ theme }) => theme.color.hover01};
   }
 `;
 
@@ -28,6 +29,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
   height: 100%;
+  color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;
@@ -35,15 +37,17 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   &.negative {
-    color: ${({ theme }) => theme.colors.colorGreen};
+    padding-left: 0;
+    color: ${({ theme }) => theme.color.green01};
     svg * {
-      fill: ${({ theme }) => theme.colors.colorGreen};
+      fill: ${({ theme }) => theme.color.green01};
     }
   }
   &.positive {
-    color: ${({ theme }) => theme.colors.colorRed};
+    padding-left: 0;
+    color: ${({ theme }) => theme.color.red01};
     svg * {
-      fill: ${({ theme }) => theme.colors.colorRed};
+      fill: ${({ theme }) => theme.color.red01};
     }
   }
 
@@ -67,8 +71,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-symbol,
-  .fee-rate {
+  .fee-rate,
+  .token-index {
     ${fonts.body12};
-    color: ${({ theme }) => theme.colors.gray40};
+    color: ${({ theme }) => theme.color.text04};
   }
 `;

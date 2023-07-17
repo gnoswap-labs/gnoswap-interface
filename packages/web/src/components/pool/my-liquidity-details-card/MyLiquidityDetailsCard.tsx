@@ -4,7 +4,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStaking from "@components/common/icons/IconStaking";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { STAKED_OPTION } from "@constants/option.constant";
-import { tokenPairSymbolToOneCharacter } from "@utils/stringUtils";
+import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import { wrapper } from "./MyLiquidityDetailsCard.styles";
 
 interface MyLiquidityDetailsCardProps {

@@ -1,45 +1,45 @@
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 
 export const wrapper = (theme: Theme) => css`
   .title-container {
-    border: 1px solid ${theme.colors.colorGreen};
+    border: 1px solid ${theme.color.green01};
 
     ${mixins.flexbox("row", "flex-start", "space-between")};
     flex-wrap: wrap;
 
-    width: 1440px;
+    width: 100%;
     margin: 100px auto 0;
     padding: 0 40px;
 
     .title {
-      border: 1px solid ${theme.colors.colorGreen};
+      border: 1px solid ${theme.color.green01};
 
       ${fonts.h3};
-      color: ${theme.colors.gray10};
+      color: ${theme.color.text02};
 
       width: 100%;
     }
 
     .breadcrumbs {
-      border: 1px solid ${theme.colors.colorGreen};
+      border: 1px solid ${theme.color.green01};
     }
   }
 
   .main-container {
-    border: 1px solid ${theme.colors.colorGreen};
+    border: 1px solid ${theme.color.green01};
 
     ${mixins.flexbox("row", "flex-start", "space-between")};
 
     gap: 24px;
 
-    width: 1440px;
+    max-width: 1440px;
     margin: 36px auto 100px;
     padding: 0 40px;
 
     .main-section {
-      border: 1px solid ${theme.colors.colorGreen};
+      border: 1px solid ${theme.color.green01};
 
       ${mixins.flexbox("column", "center", "space-between")};
       gap: 24px;
@@ -47,26 +47,26 @@ export const wrapper = (theme: Theme) => css`
       width: 100%;
 
       .chart {
-        border: 1px solid ${theme.colors.colorGreen};
+        border: 1px solid ${theme.color.green01};
 
         width: 100%;
       }
 
       .info {
-        border: 1px solid ${theme.colors.colorGreen};
+        border: 1px solid ${theme.color.green01};
 
         width: 100%;
       }
 
       .description {
-        border: 1px solid ${theme.colors.colorGreen};
+        border: 1px solid ${theme.color.green01};
 
         width: 100%;
       }
     }
 
     .right-section {
-      border: 1px solid ${theme.colors.colorGreen};
+      border: 1px solid ${theme.color.green01};
 
       ${mixins.flexbox("column", "center", "space-between")};
       gap: 24px;
@@ -74,25 +74,25 @@ export const wrapper = (theme: Theme) => css`
       width: 430px;
 
       .swap {
-        border: 1px solid ${theme.colors.colorGreen};
+        border: 1px solid ${theme.color.green01};
 
         width: 100%;
       }
 
       .best-pools {
-        border: 1px solid ${theme.colors.colorGreen};
+        border: 1px solid ${theme.color.green01};
 
         width: 100%;
       }
 
       .trending {
-        border: 1px solid ${theme.colors.colorGreen};
+        border: 1px solid ${theme.color.green01};
 
         width: 100%;
       }
 
       .gainers-losers {
-        border: 1px solid ${theme.colors.colorGreen};
+        border: 1px solid ${theme.color.green01};
 
         width: 100%;
       }

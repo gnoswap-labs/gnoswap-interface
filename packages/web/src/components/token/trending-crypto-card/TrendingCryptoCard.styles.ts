@@ -5,14 +5,14 @@ import mixins from "@styles/mixins";
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "space-between")};
   ${fonts.body12};
-  color: ${theme.colors.gray10};
+  color: ${theme.color.text02};
   width: 100%;
   height: 36px;
   padding: 0px 24px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   &:hover {
-    background-color: ${theme.colors.gray60};
+    background-color: ${theme.color.background06};
   }
   img {
     width: 20px;
@@ -22,7 +22,7 @@ export const wrapper = (theme: Theme) => css`
     margin: 0px 8px;
   }
   .symbol {
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
     margin-right: auto;
   }
   .price {
@@ -31,9 +31,9 @@ export const wrapper = (theme: Theme) => css`
   .change {
     text-align: right;
     margin-left: 31px;
-    color: ${theme.colors.colorGreen};
+    color: ${theme.color.green01};
     &.negative {
-      color: ${theme.colors.colorRed};
+      color: ${theme.color.red01};
     }
   }
 `;

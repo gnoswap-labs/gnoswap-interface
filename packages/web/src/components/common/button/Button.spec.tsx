@@ -2,13 +2,13 @@ import Button from "./Button";
 import { render } from "@testing-library/react";
 import { ButtonHierarchy } from "./Button";
 import IconDownload from "@components/common/icons/IconDownload";
-import { RecoilRoot } from "recoil";
-import GnoswapThemeProvider from "@/providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { Provider as JotaiProvider } from "jotai";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 describe("Button Component", () => {
   it("Primary button", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <Button
             text="Primary"
@@ -19,47 +19,47 @@ describe("Button Component", () => {
             }}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 
   it("Icon button", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <Button
             leftIcon={<IconDownload />}
             text="Icon Button"
             style={{
-              bgColor: "gray50",
+              bgColor: "background01",
               width: 180,
               height: 50,
               justify: "space-between",
               padding: "0px 10px",
-              textColor: "colorGreen",
+              textColor: "",
             }}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 
   it("Full width button", () => {
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <Button
             leftIcon={<IconDownload />}
             text="Full width button"
             style={{
-              bgColor: "gray40",
+              bgColor: "background02",
               fullWidth: true,
               height: 50,
-              textColor: "colorWhite",
+              textColor: "text01",
             }}
           />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

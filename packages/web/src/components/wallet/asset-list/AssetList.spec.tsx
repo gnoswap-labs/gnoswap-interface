@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { RecoilRoot } from "recoil";
+import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import AssetList from "./AssetList";
 import { ASSET_FILTER_TYPE } from "@containers/asset-list-container/AssetListContainer";
@@ -8,6 +8,7 @@ describe("AssetList Component", () => {
   it("AssetList render", () => {
     const mockProps = {
       assets: [],
+      isFetched: true,
       isLoading: false,
       error: null,
       assetType: "All" as ASSET_FILTER_TYPE,
@@ -21,14 +22,17 @@ describe("AssetList Component", () => {
       toggleExtended: () => null,
       deposit: () => null,
       withdraw: () => null,
+      sortOption: undefined,
+      sort: () => { return; },
+      isSortOption: () => true,
     };
 
     render(
-      <RecoilRoot>
+      <JotaiProvider>
         <GnoswapThemeProvider>
           <AssetList {...mockProps} />
         </GnoswapThemeProvider>
-      </RecoilRoot>,
+      </JotaiProvider>,
     );
   });
 });

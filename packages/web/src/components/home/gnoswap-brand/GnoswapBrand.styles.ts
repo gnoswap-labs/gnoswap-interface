@@ -1,45 +1,45 @@
-import mixins from "@/styles/mixins";
+import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 
 export const wrapper = (theme: Theme) => css`
   .title {
     ${fonts.h1};
-    color: ${theme.colors.gray10};
+    color: ${theme.color.text02};
     line-height: 1.2;
 
     span {
-      color: ${theme.colors.colorPoint};
+      color: ${theme.color.point};
     }
   }
 
   .subtitle {
-    ${fonts.h4};
-    color: ${theme.colors.gray10};
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 34px;
+    color: ${theme.color.text02};
 
-    margin-top: 8px;
+    margin: 20px 0px 34px;
   }
 
   .sns {
     ${mixins.flexbox("row", "center", "flex-start")}
     flex-wrap: nowrap;
     gap: 24px;
-    height: 36px;
-    margin-top: 54px;
     button {
-      width: 36px;
-      height: 36px;
+      width: 28px;
+      height: 28px;
       &:hover {
         .icon * {
-          fill: ${theme.colors.gray10};
+          fill: ${theme.color.icon01};
         }
       }
       .icon {
-        width: 36px;
-        height: 36px;
+        width: 28px;
+        height: 28px;
         * {
           transition: all 0.3s ease;
-          fill: ${theme.colors.gray40};
+          fill: ${theme.color.icon03};
         }
       }
     }
@@ -47,9 +47,9 @@ export const wrapper = (theme: Theme) => css`
 
   .description {
     ${fonts.body8};
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
     line-height: 1.4;
 
-    margin-top: 16px;
+    margin-top: 10px;
   }
 `;

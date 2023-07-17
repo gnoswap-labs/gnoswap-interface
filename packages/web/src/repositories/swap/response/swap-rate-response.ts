@@ -1,3 +1,3 @@
 export interface SwapRateResponse {
-	rate: number;
+  rate: number;
 }

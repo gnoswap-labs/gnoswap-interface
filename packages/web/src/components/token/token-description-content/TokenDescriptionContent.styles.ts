@@ -4,10 +4,10 @@ import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "center")};
-  color: ${theme.colors.colorWhite};
+  color: ${theme.color.text01};
   p {
     ${fonts.body12};
-    color: ${theme.colors.gray40};
+    color: ${theme.color.text04};
     width: 100%;
     max-height: 180px;
     overflow: hidden;
