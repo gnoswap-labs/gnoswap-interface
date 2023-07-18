@@ -55,8 +55,8 @@ export const wrapper = (theme: Theme) => css`
       height: 400px;
       background: linear-gradient(
         180deg,
-        ${theme.color.backgroundGradient}80 0%,
-        ${theme.color.backgroundGradient}00 100%
+        ${theme.color.backgroundGradient2} 0%,
+        ${theme.color.backgroundGradient3} 100%
       );
     }
   }

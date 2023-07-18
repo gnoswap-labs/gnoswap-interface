@@ -22,25 +22,32 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   }};
   padding: 0px 16px;
   border-radius: 8px;
-  color: ${({ theme }) => theme.color.text01};
 
   &:focus-within {
-    background-color: ${({ theme }) => theme.color.background02};
+    background-color: ${({ theme }) => theme.color.background13};
     border: 1px solid ${({ theme }) => theme.color.border03};
+    color: ${({ theme }) => theme.color.text01};
+    .search-icon * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
   }
 
   &:not(:focus-within, .empty-status) {
     background-color: ${({ theme }) => theme.color.background06};
     border: 1px solid ${({ theme }) => theme.color.border02};
+    color: ${({ theme }) => theme.color.text14};
+    .search-icon * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
   }
 
   &:not(:focus-within).empty-status {
     background-color: ${({ theme }) => theme.color.background01};
     border: 1px solid ${({ theme }) => theme.color.border02};
-  }
-
-  .search-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+    color: ${({ theme }) => theme.color.text13};
+    .search-icon * {
+      fill: ${({ theme }) => theme.color.icon08};
+    }
   }
 `;
 

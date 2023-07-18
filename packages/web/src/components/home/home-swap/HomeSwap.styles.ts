@@ -6,7 +6,7 @@ export const wrapper = (theme: Theme) => css`
   padding: 15px 23px;
   background-color: ${theme.color.background06};
   border: 1px solid ${theme.color.border02};
-  box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
 
   .header {

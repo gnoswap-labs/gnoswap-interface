@@ -63,7 +63,7 @@ export const LoadButton = styled.button`
   &:hover {
     color: ${({ theme }) => theme.color.text03};
     svg * {
-      fill: ${({ theme }) => theme.color.icon02};
+      fill: ${({ theme }) => theme.color.icon07};
     }
   }
 `;

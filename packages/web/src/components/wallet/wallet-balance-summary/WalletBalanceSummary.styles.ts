@@ -8,7 +8,8 @@ export const WalletBalanceSummaryWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   padding: 36px;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.color.background11};
+  background-color: ${({ theme }) => theme.color.background03};
+  border: 1px solid ${({ theme }) => theme.color.border02};
 `;
 
 export const BalanceInfoWrapper = styled.div`
