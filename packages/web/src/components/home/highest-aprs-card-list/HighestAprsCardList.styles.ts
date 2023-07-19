@@ -8,7 +8,7 @@ export const wrapper = (theme: Theme) => css`
   height: 100%;
   background-color: ${theme.color.background06};
   border: 1px solid ${theme.color.border02};
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   padding: 16px 0px;
   h2 {

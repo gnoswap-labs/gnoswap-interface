@@ -39,14 +39,17 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   }};
   &:hover {
     background-color: ${({ hierarchy, theme }) => {
-      if (hierarchy === ButtonHierarchy.Primary) return theme.color.background04Hover;
-      if (hierarchy === ButtonHierarchy.Dark) return theme.color.background05Hover;
+      if (hierarchy === ButtonHierarchy.Primary)
+        return theme.color.background04Hover;
+      if (hierarchy === ButtonHierarchy.Dark)
+        return theme.color.background05Hover;
       return;
     }};
   }
   &:disabled {
     background-color: ${({ hierarchy, theme }) => {
-      if (hierarchy === ButtonHierarchy.Primary) return theme.color.background07;
+      if (hierarchy === ButtonHierarchy.Primary)
+        return theme.color.background07;
       return;
     }};
   }
@@ -54,7 +57,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   & .arrow-icon path {
     fill: ${({ theme, textColor, hierarchy }) => {
       if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
-      return theme.color[textColor ?? "text03"];
+      return theme.color[textColor ?? "text12"];
     }};
   }
 `;

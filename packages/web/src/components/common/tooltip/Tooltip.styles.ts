@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 
 export const Content = styled.div`
-  background-color: ${({ theme }) => theme.color.background10};
-  color: ${({ theme }) => theme.color.text02};
+  color: ${({ theme }) => theme.color.text15};
+  background-color: ${({ theme }) => theme.color.background14};
   padding: 16px;
   border-radius: 8px;
   box-sizing: border-box;
