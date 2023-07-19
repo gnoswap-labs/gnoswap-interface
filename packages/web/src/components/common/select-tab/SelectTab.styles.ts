@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 export const SelectTabWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start", false)};
   background-color: ${({ theme }) => theme.color.selectBG};
-  border: 1px solid ${({ theme }) => theme.color.border01};
+  border: 1px solid ${({ theme }) => theme.color.border10};
   border-radius: 4px;
   padding: 2px;
 `;
@@ -20,6 +20,6 @@ export const SelectButton = styled.button`
   transition: all 0.3s ease;
   &.selected {
     background-color: ${({ theme }) => theme.color.select};
-    color: ${({ theme }) => theme.color.text02};
+    color: ${({ theme }) => theme.color.text11};
   }
 `;

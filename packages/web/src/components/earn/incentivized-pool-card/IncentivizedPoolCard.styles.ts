@@ -6,7 +6,6 @@ export const wrapper = (theme: Theme) => css`
   width: 100%;
   background-color: ${theme.color.background03};
   border: 1px solid ${theme.color.border01};
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
@@ -14,7 +13,7 @@ export const wrapper = (theme: Theme) => css`
   cursor: pointer;
   &:hover {
     background-color: ${theme.color.background02};
-    border: 1px solid ${theme.color.border03};
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
   }
   .pool-info {
     ${mixins.flexbox("column", "flex-end", "center")};

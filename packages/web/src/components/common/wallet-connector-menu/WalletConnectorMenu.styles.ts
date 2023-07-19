@@ -27,6 +27,14 @@ export const IconButton = styled.button`
   width: 16px;
   height: 16px;
   margin-left: 8px;
+  svg * {
+    fill: ${({ theme }) => theme.color.icon03};
+  }
+  :hover {
+    svg * {
+      fill: ${({ theme }) => theme.color.icon07};
+    }
+  }
 `;
 
 export const AmountInfoBox = styled.div`

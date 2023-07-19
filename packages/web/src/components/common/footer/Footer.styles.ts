@@ -71,7 +71,7 @@ export const AnchorStyle = styled.a`
   :hover {
     color: ${({ theme }) => theme.color.text03};
     svg * {
-      fill: ${({ theme }) => theme.color.icon01};
+      fill: ${({ theme }) => theme.color.icon07};
     }
   }
 `;

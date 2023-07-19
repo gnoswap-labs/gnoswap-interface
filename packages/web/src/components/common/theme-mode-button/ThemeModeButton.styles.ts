@@ -8,7 +8,7 @@ export const ThemeModeButtonWrapper = styled.div<{ darkMode: boolean }>`
   width: 70px;
   height: 28px;
   border-radius: 4px;
-  background: ${({ theme }) => theme.color.background09};
+  background: ${({ theme }) => theme.color.background01};
   cursor: pointer;
   svg {
     width: 16px;

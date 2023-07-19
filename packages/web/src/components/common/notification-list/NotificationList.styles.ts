@@ -63,7 +63,7 @@ export const TxsSummaryItem = styled.div`
   height: auto;
   cursor: pointer;
   &:hover {
-    background-color: ${({ theme }) => theme.color.background01};
+    background-color: ${({ theme }) => theme.color.hover02};
   }
   .summary-content {
     width: 100%;
