@@ -31,7 +31,7 @@ export const wrapper = (theme: Theme) => css`
       height: 28px;
       &:hover {
         .icon * {
-          fill: ${theme.color.icon01};
+          fill: ${theme.color.icon07};
         }
       }
       .icon {

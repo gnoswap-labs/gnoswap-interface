@@ -6,7 +6,7 @@ export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
   ${fonts.body10};
   width: 100%;
-  color: ${theme.color.text05};
+  color: ${theme.color.text10};
   background-color: ${theme.color.background11};
   border-radius: 8px;
   border: 1px solid ${theme.color.border02};
