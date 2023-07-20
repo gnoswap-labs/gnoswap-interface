@@ -20,7 +20,7 @@ export const HoverSection = styled.div`
   height: 100%;
   overflow: hidden;
   &:hover {
-    background-color: ${({ theme }) => theme.color.hover01};
+    background-color: ${({ theme }) => theme.color.hover04};
   }
 `;
 

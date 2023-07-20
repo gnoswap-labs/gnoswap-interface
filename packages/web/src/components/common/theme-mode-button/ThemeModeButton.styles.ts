@@ -8,7 +8,7 @@ export const ThemeModeButtonWrapper = styled.div<{ darkMode: boolean }>`
   width: 70px;
   height: 28px;
   border-radius: 4px;
-  background: ${({ theme }) => theme.color.background01};
+  background: ${({ theme }) => theme.color.background15};
   cursor: pointer;
   svg {
     width: 16px;
@@ -22,7 +22,7 @@ export const ThemeModeButtonWrapper = styled.div<{ darkMode: boolean }>`
     &.light-icon * {
       transition: all 0.3s ease;
       fill: ${({ darkMode, theme }) =>
-        darkMode ? theme.color.icon03 : theme.color.icon02};
+        darkMode ? theme.color.icon03 : theme.color.icon07};
     }
   }
 `;
