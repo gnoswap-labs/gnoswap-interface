@@ -11,4 +11,8 @@ export const HEADER_NAV = [
     title: "Wallet",
     path: "/wallet",
   },
+  {
+    title: "Dashboard",
+    path: "/dashboard",
+  },
 ];
