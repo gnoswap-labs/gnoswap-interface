@@ -27,5 +27,8 @@ export const wrapper =
       .arrow-icon {
         width: 16px;
         height: 16px;
+        * {
+          fill: ${theme.color.icon01};
+        }
       }
     `;

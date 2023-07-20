@@ -14,7 +14,7 @@ export const AssetInfoWrapper = styled.div`
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.color.hover01};
+    background-color: ${({ theme }) => theme.color.hover04};
   }
 
   .logo {
