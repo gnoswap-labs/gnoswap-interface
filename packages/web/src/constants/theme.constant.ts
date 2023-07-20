@@ -109,6 +109,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   background12: colors.dark.gray500BG,
   background13: colors.global.gray500,
   background14: colors.dark.brand900BG,
+  background15: colors.dark.blackBG,
   backgroundOpacity: colors.dark.blackOpacity07BG,
   backgroundGradient: colors.dark.gray600BG,
   backgroundGradient2: colors.dark.blackBG,
@@ -126,6 +127,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   hover01: colors.dark.gray600Hover1,
   hover02: colors.dark.blackOpacity07Hover2,
   hover03: colors.dark.gray500BG,
+  hover04: colors.dark.gray600Hover1,
   text01: colors.dark.whiteText1,
   text02: colors.dark.gray100Text2,
   text03: colors.dark.gray200Text3,
@@ -154,7 +156,6 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   green01: colors.global.green,
   red01: colors.global.red,
   select: colors.dark.gray600Hover1,
-  selectBG: colors.dark.blackBG,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -174,6 +175,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   background12: colors.white.gray200BG,
   background13: colors.white.gray100Opacity05BG,
   background14: colors.global.brand700,
+  background15: colors.white.gray100Opacity05BG,
   backgroundOpacity: colors.white.gray100Opacity05BG,
   backgroundGradient: colors.white.gray100BG,
   backgroundGradient2: colors.white.gradient1,
@@ -189,8 +191,9 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   border09: colors.white.whiteBorder1,
   border10: colors.white.whiteBorder1,
   hover01: colors.white.gray100Opacity04Hover1,
-  hover02: colors.white.gray100Opacity04Hover1,
+  hover02: colors.white.gray100Hover2,
   hover03: colors.white.gray100Opacity04Hover1,
+  hover04: colors.white.gray100Hover2,
   text01: colors.white.gray500Text3,
   text02: colors.white.gray500Text3,
   text03: colors.white.gray400Text2,
@@ -219,5 +222,4 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   green01: colors.global.green,
   red01: colors.global.red,
   select: colors.global.white,
-  selectBG: colors.white.gray100Opacity04Hover1,
 };
