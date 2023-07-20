@@ -26,7 +26,7 @@ export const PoolInfoWrapper = styled.div`
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.color.background13};
+    background-color: ${({ theme }) => theme.color.hover04};
   }
 
   .symbol-pair {

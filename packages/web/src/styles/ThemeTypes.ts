@@ -15,6 +15,7 @@ export interface ThemeColorType {
   background12: string;
   background13: string;
   background14: string;
+  background15: string;
   backgroundOpacity: string;
   backgroundGradient: string;
   backgroundGradient2: string;
@@ -55,12 +56,12 @@ export interface ThemeColorType {
   hover01: string;
   hover02: string;
   hover03: string;
+  hover04: string;
   tooltipBackground: string;
   point: string;
   green01: string;
   red01: string;
   select: string;
-  selectBG: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

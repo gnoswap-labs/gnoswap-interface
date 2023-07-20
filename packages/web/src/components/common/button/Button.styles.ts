@@ -37,6 +37,8 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
     if (hierarchy === ButtonHierarchy.Dark) return theme.color.background05;
     return theme.color[bgColor ?? "background04"];
   }};
+
+  &.selected,
   &:hover {
     background-color: ${({ hierarchy, theme }) => {
       if (hierarchy === ButtonHierarchy.Primary)
@@ -45,6 +47,12 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
         return theme.color.background05Hover;
       return;
     }};
+    & .arrow-icon path {
+      fill: ${({ theme, textColor, hierarchy }) => {
+        if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
+        return theme.color[textColor ?? "text10"];
+      }};
+    }
   }
   &:disabled {
     background-color: ${({ hierarchy, theme }) => {

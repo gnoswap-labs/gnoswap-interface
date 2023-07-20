@@ -34,6 +34,7 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
           leftIcon={<IconAdenaLogo />}
           text={formatAddress(FAKE_USERINFO.address)}
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
+          className={toggle.walletConnect ? "selected" : ""}
           style={{
             hierarchy: ButtonHierarchy.Dark,
             fontType: "p1",
@@ -41,6 +42,7 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
             height: 36,
             padding: "10px 16px",
             justify: "space-between",
+            // select: toggle.walletConnect,
           }}
           onClick={onMenuToggle}
         />
