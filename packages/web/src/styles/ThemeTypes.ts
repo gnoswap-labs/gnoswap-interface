@@ -53,6 +53,7 @@ export interface ThemeColorType {
   icon06: string;
   icon07: string;
   icon08: string;
+  icon09: string;
   hover01: string;
   hover02: string;
   hover03: string;
