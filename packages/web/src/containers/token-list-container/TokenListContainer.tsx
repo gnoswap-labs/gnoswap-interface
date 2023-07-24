@@ -57,16 +57,16 @@ export type TOKEN_TYPE = ValuesType<typeof TOKEN_TYPE>;
 
 const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
   "#": "index",
-  "Name": "name",
-  "Price": "price",
+  Name: "name",
+  Price: "price",
   "1d": "1d",
   "7d": "7d",
   "30d": "30d",
   "Market Cap": "market_cap",
-  "Liquidity": "liquidity",
+  Liquidity: "liquidity",
   "Volume (24h)": "volume",
   "Most Liquid Pool": "most_liquidity_pool",
-  "Last 7 days": "last_7_days"
+  "Last 7 days": "last_7_days",
 };
 
 export const dummyTokenList: Token[] = [
@@ -154,8 +154,22 @@ const TokenListContainer: React.FC = () => {
     error,
     data: tokens,
   } = useQuery<Token[], Error>({
-    queryKey: ["tokens", tokenType, page, keyword, sortOption?.key, sortOption?.direction],
-    queryFn: () => fetchTokens(tokenType, page, keyword, sortOption && SORT_PARAMS[sortOption.key], sortOption?.direction),
+    queryKey: [
+      "tokens",
+      tokenType,
+      page,
+      keyword,
+      sortOption?.key,
+      sortOption?.direction,
+    ],
+    queryFn: () =>
+      fetchTokens(
+        tokenType,
+        page,
+        keyword,
+        sortOption && SORT_PARAMS[sortOption.key],
+        sortOption?.direction,
+      ),
   });
 
   const changeTokenType = useCallback((newType: string) => {
@@ -184,17 +198,23 @@ const TokenListContainer: React.FC = () => {
     return !disableItems.includes(head);
   }, []);
 
-  const sort = useCallback((item: TABLE_HEAD) => {
-    const key = item;
-    const direction = sortOption?.key !== item ?
-      "desc" :
-      sortOption.direction === "asc" ? "desc" : "asc";
+  const sort = useCallback(
+    (item: TABLE_HEAD) => {
+      const key = item;
+      const direction =
+        sortOption?.key !== item
+          ? "desc"
+          : sortOption.direction === "asc"
+          ? "desc"
+          : "asc";
 
-    setSortOption({
-      key,
-      direction,
-    });
-  }, [sortOption]);
+      setSortOption({
+        key,
+        direction,
+      });
+    },
+    [sortOption],
+  );
 
   return (
     <TokenList
