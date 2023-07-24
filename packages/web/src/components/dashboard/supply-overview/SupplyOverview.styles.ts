@@ -15,13 +15,16 @@ export const SupplyOverviewWrapper = styled.div`
 `;
 
 export const SupplyInfoWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")}
+  ${mixins.flexbox("column", "center", "flex-start")}
   width: 100%;
   ${fonts.body7};
   gap: 16px;
   .total-supply,
   .circulating-supply,
-  .daily-block-emissions,
+  .daily-block-emissions {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+  }
   .total-staked {
     ${mixins.flexbox("row", "flex-start", "space-between")};
     width: 100%;
@@ -42,7 +45,7 @@ export const SupplyInfoWrapper = styled.div`
     }
   }
   .label-title {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     ${fonts.body10}
     color: ${({ theme }) => theme.color.text04};
     gap: 4px;
