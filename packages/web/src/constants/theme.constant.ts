@@ -8,6 +8,7 @@ export const THEME_WINDOW_SIZES: WindowSizeType = {
 
 const palette = {
   black: "#0A0E17",
+  black2: "#000000",
   white: "#FFFFFF",
   whiteOpacity07: "#FFFFFFB2",
   point: "#0059FF",
@@ -151,6 +152,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   icon06: colors.global.brand400,
   icon07: colors.dark.gray200Icon3,
   icon08: colors.dark.gray400Icon5,
+  icon09: colors.global.black2,
   tooltipBackground: colors.dark.brand900BG,
   point: colors.global.point,
   green01: colors.global.green,
@@ -217,6 +219,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   icon06: colors.global.brand400,
   icon07: colors.white.gray400Icon2,
   icon08: colors.white.gray200Icon1,
+  icon09: colors.global.black2,
   tooltipBackground: colors.white.brand700BG,
   point: colors.global.point,
   green01: colors.global.green,
