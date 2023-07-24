@@ -14,7 +14,7 @@ const DashboardInfoTitle = ({}) => (
         <div className="gnos-image-wrapper">
           <IconLogoWhite className="gnos-image" />
         </div>
-        <div>GNOS</div>
+        <div className="gnos-symbol">GNOS</div>
       </GnosLogoWrapper>
       <div>$0.7425</div>
     </TokenWrapper>
@@ -24,7 +24,7 @@ const DashboardInfoTitle = ({}) => (
         <div className="gnot-image-wrapper">
           <IconLogoWhite className="gnot-image" />
         </div>
-        <div>GNOT</div>
+        <div className="gnot-symbol">GNOT</div>
       </GnotLogoWrapper>
       <div>$1.8852</div>
     </TokenWrapper>
