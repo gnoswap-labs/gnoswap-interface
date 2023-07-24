@@ -5,19 +5,20 @@ import {
   GovernanceOverviewTitleWrapper,
   GovernanceWrapper,
   IconButton,
+  LabelIconButton,
 } from "./GovernanceOverview.styles";
 
 const GovernanceOverview = ({}) => (
   <GovernanceOverviewWrapper>
     <GovernanceOverviewTitleWrapper>
       <div>Governance Overview</div>
-      <IconButton
+      <LabelIconButton
         onClick={() => {
           alert("open Link");
         }}
       >
         <IconOpenLink className="action-icon" />
-      </IconButton>
+      </LabelIconButton>
     </GovernanceOverviewTitleWrapper>
     <GovernanceWrapper>
       <div className="total-issued">

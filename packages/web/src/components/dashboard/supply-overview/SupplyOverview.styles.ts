@@ -35,7 +35,7 @@ export const SupplyInfoWrapper = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     gap: 4px;
     svg {
-      margin-top: 1.5px;
+      margin-top: 3.5px;
       width: 18px;
       height: 18px;
     }
@@ -51,7 +51,7 @@ export const SupplyInfoWrapper = styled.div`
     gap: 4px;
     svg {
       cursor: pointer;
-      margin-top: 1.5px;
+      margin-top: 3.5px;
       width: 18px;
       height: 18px;
     }
