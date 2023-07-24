@@ -18,11 +18,26 @@ export const GovernanceOverviewTitleWrapper = styled.div`
   gap: 4px;
 `;
 
-export const IconButton = styled.button`
+export const LabelIconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   width: 16px;
   height: 16px;
   margin-top: 2.5px;
+  svg * {
+    fill: ${({ theme }) => theme.color.icon03};
+  }
+  :hover {
+    svg * {
+      fill: ${({ theme }) => theme.color.icon07};
+    }
+  }
+`;
+
+export const IconButton = styled.button`
+  ${mixins.flexbox("row", "center", "center")};
+  width: 16px;
+  height: 16px;
+  margin-top: 4.5px;
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
@@ -59,7 +74,7 @@ export const GovernanceWrapper = styled.div`
     gap: 4px;
     svg {
       cursor: pointer;
-      margin-top: 1.5px;
+      margin-top: 3.5px;
       width: 18px;
       height: 18px;
     }

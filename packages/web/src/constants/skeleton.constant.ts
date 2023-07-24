@@ -8,51 +8,41 @@ const skeletonAni = keyframes`
   }
 `;
 
-export const skeletonStyle = (
-  skeletonWidth: CSSProperties["width"],
-  type: SHAPE_TYPES,
-) => (theme: Theme) =>
-  css`
-    position: relative;
-    width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
-    background: ${theme.color.background01};
-    overflow: hidden;
-    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0%;
-      top: 0;
-      transform: translateX(-50%);
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        0,
-        ${theme.color.backgroundGradient} 0%,
-        ${theme.color.backgroundGradient} 100%
-      );
-      animation: ${skeletonAni} 2s ease infinite;
-    }
-  `;
+export const skeletonStyle =
+  (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
+  (theme: Theme) =>
+    css`
+      position: relative;
+      width: ${typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+      height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
+      background: ${theme.color.background01};
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          0,
+          ${theme.color.backgroundGradient} 0%,
+          ${theme.color.backgroundGradient} 100%
+        );
+        animation: ${skeletonAni} 2s ease infinite;
+      }
+    `;
 
 export const POOL_TD_WIDTH = [240, 230, 230, 230, 230, 200];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 140];
 export const TOKEN_TD_WIDTH = [
-  56,
-  203,
-  105,
-  85,
-  85,
-  85,
-  140,
-  140,
-  140,
-  195,
-  126,
+  56, 203, 105, 85, 85, 85, 140, 140, 140, 195, 126,
 ];
+export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 200];
 
 export const SHAPE_TYPES = {
   CIRCLE: "circle",
@@ -65,6 +55,7 @@ export const TABLE_TITLE = {
   POOL_TABLE: "pool-table",
   ASSET_TABLE: "asset-table",
   TOKEN_TABLE: "token-table",
+  ACTIVITY_TABLE: "activity-table",
 };
 export type TABLE_TITLE = ValuesType<typeof TABLE_TITLE>;
 
@@ -113,5 +104,19 @@ export const TOKEN_INFO = {
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+  ],
+};
+
+export const ACTIVITY_INFO = {
+  title: TABLE_TITLE.ACTIVITY_TABLE,
+  total: 15,
+  tdWidth: TOKEN_TD_WIDTH,
+  list: [
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 20, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
