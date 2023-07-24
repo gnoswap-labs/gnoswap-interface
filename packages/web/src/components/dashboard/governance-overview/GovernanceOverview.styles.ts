@@ -34,7 +34,7 @@ export const IconButton = styled.button`
 `;
 
 export const GovernanceWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
   ${fonts.body7};
   gap: 16px;
@@ -43,7 +43,7 @@ export const GovernanceWrapper = styled.div`
   .passed-proposals,
   .active-proposals,
   .community-pool {
-    ${mixins.flexbox("row", "flex-start", "space-between")};
+    ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
   }
 
@@ -53,7 +53,7 @@ export const GovernanceWrapper = styled.div`
   }
 
   .label-title {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     ${fonts.body10}
     color: ${({ theme }) => theme.color.text04};
     gap: 4px;
