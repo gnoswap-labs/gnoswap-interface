@@ -12,7 +12,7 @@ export const GovernanceOverviewWrapper = styled.div`
 `;
 
 export const GovernanceOverviewTitleWrapper = styled.div`
-  ${mixins.flexbox("row", "flex-start", "flex-start")};
+  ${mixins.flexbox("row", "center", "flex-start")};
   color: ${({ theme }) => theme.color.text02};
   ${fonts.body9};
   gap: 4px;
@@ -22,7 +22,6 @@ export const LabelIconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   width: 16px;
   height: 16px;
-  margin-top: 2.5px;
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
