@@ -25,7 +25,7 @@ export const GnosLogoWrapper = styled.div`
     border-radius: 100%;
   }
   .gnos-symbol {
-    ${fonts.body6};
+    ${fonts.body5};
   }
   .gnos-image {
     width: 17px;
@@ -43,7 +43,7 @@ export const GnotLogoWrapper = styled.div`
     border-radius: 100%;
   }
   .gnot-symbol {
-    ${fonts.body6};
+    ${fonts.body5};
   }
   .gnot-image {
     width: 21.37499618530306px;
