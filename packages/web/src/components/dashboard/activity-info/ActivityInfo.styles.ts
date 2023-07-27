@@ -46,7 +46,7 @@ export const IconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   width: 16px;
   height: 16px;
-  margin-top: 2px;
+  margin: 1px 0px;
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
