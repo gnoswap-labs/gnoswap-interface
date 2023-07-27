@@ -9,9 +9,9 @@ describe("SelectTab Component", () => {
       <JotaiProvider>
         <GnoswapThemeProvider>
           <SelectTab
-            selectIdx={0}
+            selectType={"7D"}
             list={["All", "Incentivized", "Non-Incentivized"]}
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </GnoswapThemeProvider>
       </JotaiProvider>,

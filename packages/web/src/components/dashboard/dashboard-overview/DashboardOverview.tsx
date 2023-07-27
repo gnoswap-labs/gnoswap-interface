@@ -1,3 +1,7 @@
+import {
+  GovernenceOverviewInfo,
+  SupplyOverviewInfo,
+} from "@containers/dashboard-info-container/DashboardInfoContainer";
 import GovernanceOverview from "../governance-overview/GovernanceOverview";
 import SupplyOverview from "../supply-overview/SupplyOverview";
 import {
@@ -5,11 +9,19 @@ import {
   OverviewDivider,
 } from "./DashboardOverview.styles";
 
-const DashboardOverview = ({}) => (
+interface DashboardOverviewProps {
+  supplyOverviewInfo: SupplyOverviewInfo;
+  governenceOverviewInfo: GovernenceOverviewInfo;
+}
+
+const DashboardOverview: React.FC<DashboardOverviewProps> = ({
+  supplyOverviewInfo,
+  governenceOverviewInfo,
+}) => (
   <DashboardOverviewWrapper>
-    <SupplyOverview />
+    <SupplyOverview supplyOverviewInfo={supplyOverviewInfo} />
     <OverviewDivider />
-    <GovernanceOverview />
+    <GovernanceOverview governenceOverviewInfo={governenceOverviewInfo} />
   </DashboardOverviewWrapper>
 );
 

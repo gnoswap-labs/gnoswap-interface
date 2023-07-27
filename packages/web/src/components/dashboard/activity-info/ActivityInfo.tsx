@@ -1,7 +1,6 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
 import React from "react";
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type Activity } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import {
@@ -14,7 +13,7 @@ import { ACTIVITY_TD_WIDTH } from "@constants/skeleton.constant";
 
 interface ActivityInfoProps {
   item: Activity;
-  idx: number;
+  idx?: number;
 }
 
 const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx }) => {
