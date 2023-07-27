@@ -4,7 +4,7 @@ import { fonts } from "@constants/font.constant";
 
 export const DashboardInfoTitleWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  ${fonts.body4};
+  ${fonts.body3};
   color: ${({ theme }) => theme.color.text02};
   gap: 16px;
 `;

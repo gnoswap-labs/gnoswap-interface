@@ -4,15 +4,24 @@ interface SelectTabProps {
   selectType: string;
   list: string[];
   onClick: (type: string) => void;
+  buttonClassName?: string;
 }
 
-const SelectTab: React.FC<SelectTabProps> = ({ selectType, list, onClick }) => {
+const SelectTab: React.FC<SelectTabProps> = ({
+  selectType,
+  list,
+  onClick,
+  buttonClassName,
+}) => {
   return (
     <SelectTabWrapper>
       {list.map((type, idx) => (
         <SelectButton
           key={idx}
-          className={cx({ selected: type === selectType })}
+          className={cx({
+            selected: type === selectType,
+            [`${buttonClassName}`]: buttonClassName !== undefined,
+          })}
           onClick={() => onClick(type)}
           disabled={type === selectType}
         >

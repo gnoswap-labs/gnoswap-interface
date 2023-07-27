@@ -6,8 +6,15 @@ import {
   TitleDivider,
 } from "./DashboardInfoTitle.styles";
 import IconLogoWhite from "../../common/icons/IconLogoWhite";
+import { DashboardTokenInfo } from "@containers/dashboard-info-container/DashboardInfoContainer";
 
-const DashboardInfoTitle = ({}) => (
+interface DashboardInfoTitleProps {
+  dashboardTokenInfo: DashboardTokenInfo;
+}
+
+const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
+  dashboardTokenInfo,
+}) => (
   <DashboardInfoTitleWrapper>
     <TokenWrapper>
       <GnosLogoWrapper>
@@ -16,7 +23,7 @@ const DashboardInfoTitle = ({}) => (
         </div>
         <div className="gnos-symbol">GNOS</div>
       </GnosLogoWrapper>
-      <div>$0.7425</div>
+      <div>{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>
     <TitleDivider />
     <TokenWrapper>
@@ -26,7 +33,7 @@ const DashboardInfoTitle = ({}) => (
         </div>
         <div className="gnot-symbol">GNOT</div>
       </GnotLogoWrapper>
-      <div>$1.8852</div>
+      <div>{dashboardTokenInfo.gnotAmount}</div>
     </TokenWrapper>
   </DashboardInfoTitleWrapper>
 );

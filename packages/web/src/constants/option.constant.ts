@@ -51,6 +51,14 @@ export const INCENTIVIZED_TYPE = {
 } as const;
 export type INCENTIVIZED_TYPE = ValuesType<typeof INCENTIVIZED_TYPE>;
 
+export const CHART_TYPE = {
+  "7D": "7D",
+  "1M": "1M",
+  "1Y": "1Y",
+  YTD: "YTD",
+} as const;
+export type CHART_TYPE = ValuesType<typeof CHART_TYPE>;
+
 export type IncentivizedOptions =
   | "INCENTIVIZED"
   | "NON_INCENTIVIZED"

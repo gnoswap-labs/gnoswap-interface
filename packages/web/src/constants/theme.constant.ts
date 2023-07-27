@@ -36,6 +36,8 @@ const palette = {
   gray100Opacity06: "#E0E8F466",
   blackOpacity07: "#0A0E17B2",
   gradient1: "#F3F6FB99",
+  gradient2: "#141A2980",
+  gradient3: "#141A2900",
 };
 
 const colors = {
@@ -113,8 +115,8 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   background15: colors.dark.blackBG,
   backgroundOpacity: colors.dark.blackOpacity07BG,
   backgroundGradient: colors.dark.gray600BG,
-  backgroundGradient2: colors.dark.blackBG,
-  backgroundGradient3: colors.dark.blackBG,
+  backgroundGradient2: colors.global.gradient2,
+  backgroundGradient3: colors.global.gradient3,
   border01: colors.dark.gray600Border1,
   border02: colors.dark.gray500Border2,
   border03: colors.dark.gray400Border3,
