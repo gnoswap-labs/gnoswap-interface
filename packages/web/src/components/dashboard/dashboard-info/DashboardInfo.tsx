@@ -1,11 +1,29 @@
 import { DashboardInfoWrapper } from "./DashboardInfo.styles";
 import DashboardInfoTitle from "@components/dashboard/dashboard-info-title/DashboardInfoTitle";
 import DashboardOverview from "../dashboard-overview/DashboardOverview";
+import {
+  DashboardTokenInfo,
+  GovernenceOverviewInfo,
+  SupplyOverviewInfo,
+} from "@containers/dashboard-info-container/DashboardInfoContainer";
 
-const DashboardInfo = ({}) => (
+interface DashboardInfoProps {
+  dashboardTokenInfo: DashboardTokenInfo;
+  supplyOverviewInfo: SupplyOverviewInfo;
+  governenceOverviewInfo: GovernenceOverviewInfo;
+}
+
+const DashboardInfo: React.FC<DashboardInfoProps> = ({
+  dashboardTokenInfo,
+  supplyOverviewInfo,
+  governenceOverviewInfo,
+}) => (
   <DashboardInfoWrapper>
-    <DashboardInfoTitle />
-    <DashboardOverview />
+    <DashboardInfoTitle dashboardTokenInfo={dashboardTokenInfo} />
+    <DashboardOverview
+      supplyOverviewInfo={supplyOverviewInfo}
+      governenceOverviewInfo={governenceOverviewInfo}
+    />
   </DashboardInfoWrapper>
 );
 

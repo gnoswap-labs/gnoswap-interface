@@ -110,28 +110,10 @@ const DashboardActivitiesContainer: React.FC = () => {
   });
 
   const changeActivityType = useCallback((newType: string) => {
-    switch (newType) {
-      case ACTIVITY_TYPE.ALL:
-        setActivityType(ACTIVITY_TYPE.ALL);
-        break;
-      case ACTIVITY_TYPE.SWAPS:
-        setActivityType(ACTIVITY_TYPE.SWAPS);
-        break;
-      case ACTIVITY_TYPE.ADDS:
-        setActivityType(ACTIVITY_TYPE.ADDS);
-        break;
-      case ACTIVITY_TYPE.REMOVES:
-        setActivityType(ACTIVITY_TYPE.REMOVES);
-        break;
-      case ACTIVITY_TYPE.STAKES:
-        setActivityType(ACTIVITY_TYPE.STAKES);
-        break;
-      case ACTIVITY_TYPE.UNSTAKE:
-        setActivityType(ACTIVITY_TYPE.UNSTAKE);
-        break;
-      default:
-        setActivityType(ACTIVITY_TYPE.ALL);
-    }
+    const activityType =
+      Object.values(ACTIVITY_TYPE).find(type => type === newType) ||
+      ACTIVITY_TYPE["ALL"];
+    setActivityType(activityType);
   }, []);
 
   const movePage = useCallback((newPage: number) => {

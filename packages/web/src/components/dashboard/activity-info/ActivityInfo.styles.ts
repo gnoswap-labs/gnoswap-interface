@@ -18,7 +18,6 @@ export const HoverSection = styled.div`
   transition: background-color 0.3s ease;
   cursor: pointer;
   height: 100%;
-  overflow: hidden;
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
   }
@@ -37,7 +36,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-index {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
     ${fonts.body11};
     color: ${({ theme }) => theme.color.text02};

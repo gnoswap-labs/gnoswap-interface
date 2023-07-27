@@ -61,7 +61,7 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
 
-  const claimAll = useCallback(() => { }, []);
+  const claimAll = useCallback(() => {}, []);
 
   const {
     isLoading: isBalanceSummaryInfoLoading,
