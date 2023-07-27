@@ -90,7 +90,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
         ref={childrenRef}
         data-state={open ? "open" : "closed"}
         style={{
-          display: "inline-block",
+          display: "flex",
         }}
       >
         {children}
