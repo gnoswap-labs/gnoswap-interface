@@ -14,6 +14,7 @@ import {
   TokenInfoWrapper,
 } from "./TokenInfo.styles";
 import { TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
+import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 
 interface TokenInfoProps {
   item: Token;
@@ -45,9 +46,14 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     mostLiquidPool,
     last7days,
   } = item;
+
+  const onClickItem = (symbol: string) => {
+    location.href = "/tokens/" + symbol;
+  };
+
   return (
     <TokenInfoWrapper>
-      <HoverSection>
+      <HoverSection onClick={() => onClickItem(token.symbol)}>
         <TableColumn className="left" tdWidth={TOKEN_TD_WIDTH[0]}>
           <span className="token-index">{idx}</span>
         </TableColumn>
@@ -102,8 +108,11 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="fee-rate">{mostLiquidPool.feeRate}</span>
         </TableColumn>
       </HoverSection>
-      <TableColumn tdWidth={TOKEN_TD_WIDTH[10]} className="dummy-graph">
-        <span />
+      <TableColumn tdWidth={TOKEN_TD_WIDTH[10]} className="last7days-graph">
+        <SimpleLineGraph
+          width={100}
+          height={33}
+          datas={last7days} />
       </TableColumn>
     </TokenInfoWrapper>
   );
