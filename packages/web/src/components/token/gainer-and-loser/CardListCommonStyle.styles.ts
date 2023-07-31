@@ -7,7 +7,7 @@ export const cardStyle = (theme: Theme) => css`
   ${fonts.body12};
   color: ${theme.color.text02};
   width: 100%;
-  gap: 24px;
+  gap: 4px;
   padding: 24px 0px;
   &:first-of-type {
     border-bottom: 1px solid ${theme.color.border02};
@@ -17,6 +17,7 @@ export const cardStyle = (theme: Theme) => css`
     color: ${theme.color.text01};
     width: 100%;
     padding: 0px 24px;
+    margin-bottom: 20px;
   }
   .card-wrap {
     ${mixins.flexbox("row", "center", "space-between")};
