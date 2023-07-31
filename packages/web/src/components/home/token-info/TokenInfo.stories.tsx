@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TokenInfo from "./TokenInfo";
 import { css, Theme } from "@emotion/react";
-import { dummyTokenList } from "@containers/token-list-container/TokenListContainer";
+import { createDummyTokenList } from "@containers/token-list-container/TokenListContainer";
 
 export default {
   title: "home/TokenList/TokenInfo",
@@ -12,7 +12,7 @@ export default {
 
 const Template: ComponentStory<typeof TokenInfo> = args => (
   <div css={wrapper}>
-    <TokenInfo {...args} item={dummyTokenList[0]} idx={1} />
+    <TokenInfo {...args} item={createDummyTokenList()[0]} idx={1} />
   </div>
 );
 

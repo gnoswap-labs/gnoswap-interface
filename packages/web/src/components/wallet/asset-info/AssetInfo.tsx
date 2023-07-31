@@ -14,6 +14,10 @@ interface AssetInfoProps {
 const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw }) => {
   const { id, logoUri, name, symbol, chain, balance } = asset;
 
+  const onClickItem = useCallback((symbol: string) => {
+    location.href = "/tokens/" + symbol;
+  }, []);
+
   const onClickDeposit = useCallback(() => {
     deposit(id);
   }, [deposit, id]);
@@ -24,7 +28,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw }) => {
 
   return (
     <AssetInfoWrapper>
-      <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[0]}>
+      <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[0]} onClick={() => onClickItem(symbol)}>
         <img className="logo" src={logoUri} alt="logo" />
         <span className="name">{name}</span>
         <span className="symbol">{symbol}</span>

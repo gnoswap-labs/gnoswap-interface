@@ -7,7 +7,9 @@ export const trendingList: ListProps[] = [
     content: "BTC",
     upDownType: UP_DOWN_TYPE.DOWN,
     notationValue: "17.43%",
-    onClick: () => {},
+    onClick: () => {
+      location.href = "/tokens/BTC";
+    },
   },
   {
     logo: "https://picsum.photos/id/1/20/20",
@@ -15,7 +17,9 @@ export const trendingList: ListProps[] = [
     content: "ETH",
     upDownType: UP_DOWN_TYPE.UP,
     notationValue: "7.43%",
-    onClick: () => {},
+    onClick: () => {
+      location.href = "/tokens/ETH";
+    },
   },
   {
     logo: "https://picsum.photos/id/100/20/20",
@@ -23,7 +27,9 @@ export const trendingList: ListProps[] = [
     content: "GNOT",
     upDownType: UP_DOWN_TYPE.UP,
     notationValue: "47.43%",
-    onClick: () => {},
+    onClick: () => {
+      location.href = "/tokens/GNOT";
+    },
   },
 ];
 
@@ -70,7 +76,9 @@ export const recentlyList: ListProps[] = [
     content: "BTC",
     upDownType: UP_DOWN_TYPE.NONE,
     notationValue: "$1,423.42",
-    onClick: () => {},
+    onClick: () => {
+      location.href = "/tokens/BTC";
+    },
   },
   {
     logo: "https://picsum.photos/id/29/20/20",
@@ -78,7 +86,9 @@ export const recentlyList: ListProps[] = [
     content: "ETH",
     upDownType: UP_DOWN_TYPE.NONE,
     notationValue: "$14.22",
-    onClick: () => {},
+    onClick: () => {
+      location.href = "/tokens/ETH";
+    },
   },
   {
     logo: "https://picsum.photos/id/74/20/20",
@@ -86,6 +96,8 @@ export const recentlyList: ListProps[] = [
     content: "GNOT",
     upDownType: UP_DOWN_TYPE.NONE,
     notationValue: "$102.43",
-    onClick: () => {},
+    onClick: () => {
+      location.href = "/tokens/GNOT";
+    },
   },
 ];

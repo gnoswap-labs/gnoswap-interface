@@ -54,12 +54,10 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   .liquid-symbol {
     margin: 0px 4px;
   }
-  &.dummy-graph {
-    span {
-      width: 102px;
-      height: 36px;
-      border: 1px solid green;
-    }
+
+  &.last7days-graph {
+    display: flex;
+    padding: 16px;
   }
 
   .token-logo {
