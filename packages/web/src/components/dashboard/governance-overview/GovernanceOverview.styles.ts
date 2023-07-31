@@ -22,6 +22,7 @@ export const LabelIconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   width: 16px;
   height: 16px;
+  margin: 2.5px 0px;
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
@@ -36,7 +37,7 @@ export const IconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   width: 16px;
   height: 16px;
-  margin-top: 4.5px;
+  margin: 4.5px 0px;
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
@@ -62,7 +63,7 @@ export const GovernanceWrapper = styled.div`
   }
 
   .active-proposals-emissions-tooltip {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
   }
 
@@ -73,7 +74,7 @@ export const GovernanceWrapper = styled.div`
     gap: 4px;
     svg {
       cursor: pointer;
-      margin-top: 3.5px;
+      margin: 1.5px 0px;
       width: 18px;
       height: 18px;
     }

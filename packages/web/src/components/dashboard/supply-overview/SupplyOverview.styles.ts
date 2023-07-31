@@ -31,11 +31,11 @@ export const SupplyInfoWrapper = styled.div`
   }
 
   .daily-block-emissions-tooltip {
-    cursor: pointer;
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
     svg {
-      margin-top: 3.5px;
+      cursor: pointer;
+      margin: 3.5px 0px;
       width: 18px;
       height: 18px;
     }
@@ -51,11 +51,10 @@ export const SupplyInfoWrapper = styled.div`
     gap: 4px;
     svg {
       cursor: pointer;
-      margin-top: 3.5px;
+      margin: 1.5px 0px;
       width: 18px;
       height: 18px;
     }
-
     path {
       fill: ${({ theme }) => theme.color.icon03};
     }
