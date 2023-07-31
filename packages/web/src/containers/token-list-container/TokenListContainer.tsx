@@ -69,7 +69,7 @@ const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
   "Last 7 days": "last_7_days",
 };
 
-export const dummyTokenList: Token[] = [
+export const createDummyTokenList = (): Token[] => [
   {
     tokenId: Math.floor(Math.random() * 50 + 1).toString(),
     token: {
@@ -114,7 +114,7 @@ export const dummyTokenList: Token[] = [
       },
       feeRate: "0.05%",
     },
-    last7days: [1, 2, 3],
+    last7days: Array.from({ length: 40 }, () => Math.round(Math.random() * 100)),
   },
 ];
 
@@ -127,18 +127,18 @@ async function fetchTokens(
 ): Promise<Token[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
     ]),
   );
 }
@@ -205,8 +205,8 @@ const TokenListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,
