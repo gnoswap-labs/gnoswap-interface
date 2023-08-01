@@ -38,6 +38,7 @@ export const skeletonStyle =
     `;
 
 export const POOL_TD_WIDTH = [240, 230, 230, 230, 230, 200];
+export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 140];
 export const TOKEN_TD_WIDTH = [
   56, 203, 105, 85, 85, 85, 140, 140, 140, 195, 126,
@@ -106,7 +107,12 @@ export const TOKEN_INFO = {
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
-
+export const TOKEN_SEARCH_INFO = {
+  title: TABLE_TITLE.TOKEN_TABLE,
+  total: 3,
+  tdWidth: TOKEN_SEARCH_WIDTH,
+  list: [{ width: 400, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false }],
+};
 export const ACTIVITY_INFO = {
   title: TABLE_TITLE.ACTIVITY_TABLE,
   total: 15,
