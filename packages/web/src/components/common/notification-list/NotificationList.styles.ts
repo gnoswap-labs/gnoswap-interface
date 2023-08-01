@@ -4,7 +4,7 @@ import mixins from "@styles/mixins";
 
 export const NotificationListWrapper = styled.div`
   ${mixins.posMoveToTopAndLeft("100%", "50%")};
-  transform: translate(-50%, 8px);
+  transform: translate(-50%, 17px);
   width: 320px;
   max-height: 442px;
   overflow-y: auto;

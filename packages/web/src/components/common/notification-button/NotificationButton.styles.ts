@@ -15,7 +15,6 @@ export const AlertButton = styled.button`
     fill: ${({ theme }) => theme.color.icon05};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.color.background02};
     .notification-icon * {
       fill: ${({ theme }) => theme.color.icon02};
     }

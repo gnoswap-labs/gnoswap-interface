@@ -3,33 +3,31 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 
-import Header from "./Header";
-import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
+import SearchMenuModal from "./SearchMenuModal";
+import {
+  RecentdummyToken,
+  PopulardummyToken,
+} from "@containers/header-container/HeaderContainer";
 
 export default {
-  title: "common/Header",
-  component: Header,
-} as ComponentMeta<typeof Header>;
+  title: "common/Header/SearchMenuModal",
+  component: SearchMenuModal,
+} as ComponentMeta<typeof SearchMenuModal>;
 
-const Template: ComponentStory<typeof Header> = args => (
+const Template: ComponentStory<typeof SearchMenuModal> = args => (
   <div css={wrapper}>
-    <Header {...args} />
+    <SearchMenuModal {...args} />
   </div>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  pathname: "/",
-  isConnected: true,
-  sideMenuToggle: true,
-  onSideMenuToggle: action("onSideMenuToggle"),
-  searchMenuToggle: true,
   onSearchMenuToggle: action("onSearchMenuToggle"),
-  tokens: RecentdummyToken,
-  isFetched: true,
-  error: null,
   search: action("search"),
   keyword: "",
+  isFetched: true,
+  placeholder: "Search",
+  tokens: [...RecentdummyToken, ...PopulardummyToken],
 };
 
 const wrapper = (theme: Theme) => css`
