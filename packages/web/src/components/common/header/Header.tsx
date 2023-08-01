@@ -77,10 +77,8 @@ const Header: React.FC<HeaderProps> = ({
         </LeftSection>
         <RightSection>
           <SearchContainer>
-            <SearchButton>
-              <div onClick={onSearchMenuToggle}>
-                <IconSearch className="search-icon" />
-              </div>
+            <SearchButton onClick={onSearchMenuToggle}>
+              <IconSearch className="search-icon" />
             </SearchButton>
             <WalletConnectorButton isConnected={isConnected} />
           </SearchContainer>
