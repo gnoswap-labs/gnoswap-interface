@@ -69,11 +69,14 @@ export const SearchContainer = styled.div`
 
 export const SearchButton = styled.button`
   ${mixins.flexbox("row", "center", "flex-end")};
-  width: 100%;
   border-radius: 4px;
   transition: all 0.3s ease;
-  .search-icon * {
-    fill: ${({ theme }) => theme.color.icon05};
+  .search-icon {
+    width: 34px;
+    height: 34px;
+    * {
+      fill: ${({ theme }) => theme.color.icon05};
+    }
   }
   &:hover {
     .search-icon * {

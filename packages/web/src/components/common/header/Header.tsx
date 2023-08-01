@@ -19,7 +19,6 @@ import WalletConnectorButton from "@components/common/wallet-connector-button/Wa
 import HeaderSideMenuModal from "../header-side-menu-modal/HeaderSideMenuModal";
 import { Token } from "@containers/header-container/HeaderContainer";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
-// import DotMenuButton from "../dot-menu-button/DotMenuButton";
 
 interface HeaderProps {
   pathname?: string;
