@@ -4,7 +4,7 @@ import mixins from "@styles/mixins";
 
 export const WalletConnectorMenuWrapper = styled.div`
   ${mixins.posMoveToTopAndLeft("100%", "0")};
-  transform: translateY(8px);
+  transform: translateY(17px);
   width: 280px;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};

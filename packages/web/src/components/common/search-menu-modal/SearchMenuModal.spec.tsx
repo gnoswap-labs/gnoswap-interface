@@ -1,28 +1,27 @@
-import Header from "./Header";
+import SearchMenuModal from "./SearchMenuModal";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
+import {
+  RecentdummyToken,
+  PopulardummyToken,
+} from "@containers/header-container/HeaderContainer";
 
-describe("Header Component", () => {
+describe("SearchMenuModal Component", () => {
   it("should render", () => {
     const mockProps = {
-      pathname: "/",
-      isConnected: true,
-      sideMenuToggle: true,
       onSideMenuToggle: () => null,
-      searchMenuToggle: true,
       onSearchMenuToggle: () => null,
-      tokens: RecentdummyToken,
-      isFetched: true,
-      error: null,
       search: () => null,
       keyword: "",
+      isFetched: true,
+      placeholder: "Search",
+      tokens: [...RecentdummyToken, ...PopulardummyToken],
     };
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <Header {...mockProps} />
+          <SearchMenuModal {...mockProps} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
