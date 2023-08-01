@@ -68,9 +68,8 @@ export const SearchContainer = styled.div`
 `;
 
 export const SearchButton = styled.button`
-  ${mixins.flexbox("row", "center", "center")};
-  width: 36px;
-  height: 36px;
+  ${mixins.flexbox("row", "center", "flex-end")};
+  width: 100%;
   border-radius: 4px;
   transition: all 0.3s ease;
   .search-icon * {
