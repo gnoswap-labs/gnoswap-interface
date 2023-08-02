@@ -1,21 +1,23 @@
 import React from "react";
 import { CHART_TYPE } from "@constants/option.constant";
-import { VolumePriceInfo } from "@containers/volume-chart-container/VolumeChartContainer";
-import VolumeChartInfo from "../volume-chart-info/VolumeChartInfo";
+import { VolumeChartInfo, VolumePriceInfo } from "@containers/volume-chart-container/VolumeChartContainer";
 import VolumeChartPriceInfo from "../volume-chart-price-info/VolumeChartPriceInfo";
 import VolumeChartSelectTab from "../volume-chart-select-tab/VolumeChartSelectTab";
 import { VolumeChartWrapper, ChartWrapper } from "./VolumeChart.styles";
+import VolumeChartGraph from "../volume-chart-graph/VolumeChartGraph";
 
 interface VolumeChartItemProps {
   volumeChartType: CHART_TYPE;
   changeVolumeChartType: (newType: string) => void;
   volumePriceInfo: VolumePriceInfo;
+  volumeChartInfo: VolumeChartInfo;
 }
 
 const VolumeChart: React.FC<VolumeChartItemProps> = ({
   volumeChartType,
   changeVolumeChartType,
   volumePriceInfo,
+  volumeChartInfo,
 }) => (
   <VolumeChartWrapper>
     <VolumeChartPriceInfo volumePriceInfo={volumePriceInfo} />
@@ -24,7 +26,10 @@ const VolumeChart: React.FC<VolumeChartItemProps> = ({
         volumeChartType={volumeChartType}
         changeVolumeChartType={changeVolumeChartType}
       />
-      <VolumeChartInfo />
+      <VolumeChartGraph
+        xAxisLabels={volumeChartInfo.xAxisLabels}
+        datas={volumeChartInfo.datas}
+      />
     </ChartWrapper>
   </VolumeChartWrapper>
 );
