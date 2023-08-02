@@ -18,4 +18,8 @@ Default.args = {
   volumeChartType: CHART_TYPE["7D"],
   changeVolumeChartType: action("changeVolumeChartType"),
   volumePriceInfo: { amount: "$100,450,000", fee: "$12,231" },
+  volumeChartInfo: {
+    datas: Array.from({ length: 24 }, (_, index) => `${index + 1}`),
+    xAxisLabels: ["09:00", "12:00", "15:00", "18:00", "21:00", "24:00"],
+  },
 };
