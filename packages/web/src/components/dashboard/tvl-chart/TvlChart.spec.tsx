@@ -8,8 +8,9 @@ describe("TvlChart Component", () => {
   it("TvlChart render", () => {
     const mockProps = {
       tvlChartType: CHART_TYPE["7D"],
-      changeTvlChartType: () => {},
+      changeTvlChartType: () => { },
       tvlPriceInfo: { amount: "$100,450,000" },
+      tvlChartInfo: { xAxisLabels: [], datas: [] },
     };
 
     render(

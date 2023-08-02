@@ -1,17 +1,19 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import TvlChartInfo from "./TvlChartInfo";
-import { CHART_TYPE } from "@constants/option.constant";
+import TvlChartGraph, { TvlChartGraphProps } from "./TvlChartGraph";
 
-describe("TvlChartInfo Component", () => {
-  it("TvlChartInfo render", () => {
-    const mockProps = {};
+describe('TvlChartGraph Component', () => {
+  it('TvlChartGraph render', () => {
+    const args: TvlChartGraphProps = {
+      datas: [],
+      xAxisLabels: [],
+    };
 
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <TvlChartInfo {...mockProps} />
+          <TvlChartGraph {...args} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
