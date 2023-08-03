@@ -42,7 +42,6 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
             height: 36,
             padding: "10px 16px",
             justify: "space-between",
-            // select: toggle.walletConnect,
           }}
           onClick={onMenuToggle}
         />

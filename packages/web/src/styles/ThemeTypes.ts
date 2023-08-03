@@ -18,6 +18,7 @@ export interface ThemeColorType {
   background15: string;
   background16: string;
   backgroundOpacity: string;
+  backgroundOpacity2: string;
   backgroundGradient: string;
   backgroundGradient2: string;
   backgroundGradient3: string;
