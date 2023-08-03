@@ -5,13 +5,13 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import Link from "next/link";
 import {
-  AnchorStyle,
-  FooterInner,
   FooterWrapper,
-  LeftSection,
+  FooterContainer,
+  FirstSection,
   MenuSection,
-  RightSection,
+  SecondSection,
   SocialNav,
+  AnchorStyle,
 } from "./Footer.styles";
 import { FOOTER_LEFT_NAV, FOOTER_RIGHT_NAV } from "@constants/footer.constant";
 
@@ -48,12 +48,12 @@ const Footer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   return (
     <FooterWrapper>
-      <FooterInner>
-        <LeftSection>
+      <FooterContainer>
+        <FirstSection>
           {themeKey === "dark" ? (
-            <IconLogoWhite className="footer-logo" />
+            <IconLogoWhite className="footer-main-logo" />
           ) : (
-            <IconLogoPrimary className="footer-logo" />
+            <IconLogoPrimary className="footer-main-logo" />
           )}
           <p className="footer-content">{FOOTER_LEFT_NAV.content}</p>
           <SocialNav>
@@ -66,8 +66,8 @@ const Footer: React.FC = () => {
               />
             ))}
           </SocialNav>
-        </LeftSection>
-        <RightSection>
+        </FirstSection>
+        <SecondSection>
           {FOOTER_RIGHT_NAV.map(list => (
             <MenuSection key={list.content}>
               <strong>{list.content}</strong>
@@ -82,8 +82,8 @@ const Footer: React.FC = () => {
               ))}
             </MenuSection>
           ))}
-        </RightSection>
-      </FooterInner>
+        </SecondSection>
+      </FooterContainer>
     </FooterWrapper>
   );
 };
