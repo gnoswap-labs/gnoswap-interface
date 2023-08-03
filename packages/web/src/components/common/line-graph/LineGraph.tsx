@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
@@ -88,47 +88,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
+  const [points, setPoints] = useState<Point[]>([]);
 
   const isFocus = useCallback(() => {
     return activated && cursor;
   }, [activated, cursor]);
 
-  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (!isFocus) {
-      setCurrentPointIndex(-1);
-      return;
-    }
+  useEffect(() => {
+    updatePoints(datas, width, height);
+  }, [datas, width, height]);
 
-    const { clientX, currentTarget } = event;
-    const { left } = currentTarget.getBoundingClientRect();
-    const positionX = clientX - left;
-    const clientWidth = currentTarget.clientWidth;
-    const xPosition = new BigNumber(positionX).multipliedBy(width).dividedBy(clientWidth).toNumber();
-    const points = getGraphPoints();
-    let currentPoint: Point | null = null;
-    let minDistance = -1;
-
-    let currentPointIndex = -1;
-    for (const point of points) {
-      const distance = Math.abs(point.x - xPosition);
-      currentPointIndex += 1;
-      if (minDistance < 0) {
-        minDistance = distance;
-      }
-      if (distance < minDistance + 10) {
-        currentPoint = point;
-        minDistance = distance;
-        setCurrentPointIndex(currentPointIndex);
-      }
-    }
-    if (currentPoint) {
-      setCurrentPoint(currentPoint);
-    }
-  };
-
-  const getGraphPoints = useCallback(() => {
+  const updatePoints = (datas: LineGraphData[], width: number, height: number) => {
     const mappedDatas = datas.map(data => ({
       value: new BigNumber(data.value).toNumber(),
       time: new Date(data.time).getTime()
@@ -150,11 +120,46 @@ const LineGraph: React.FC<LineGraphProps> = ({
       return new BigNumber(time - minTime).multipliedBy(width).dividedBy(maxTime - minTime).toNumber();
     };
 
-    return mappedDatas.map<Point>(data => ({
+    const points = mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.time, width),
       y: optimizeValue(data.value, height),
     }));
-  }, [datas, height, width]);
+    setPoints(points);
+  };
+
+  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!isFocus) {
+      setCurrentPointIndex(-1);
+      return;
+    }
+
+    const { clientX, currentTarget } = event;
+    const { left } = currentTarget.getBoundingClientRect();
+    const positionX = clientX - left;
+    const clientWidth = currentTarget.clientWidth;
+    const xPosition = new BigNumber(positionX).multipliedBy(width).dividedBy(clientWidth).toNumber();
+    let currentPoint: Point | null = null;
+    let minDistance = -1;
+
+    let currentPointIndex = -1;
+    for (const point of points) {
+      const distance = Math.abs(point.x - xPosition);
+      currentPointIndex += 1;
+      if (minDistance < 0) {
+        minDistance = distance;
+      }
+      if (distance < minDistance + 10) {
+        currentPoint = point;
+        minDistance = distance;
+        setCurrentPointIndex(currentPointIndex);
+      }
+    }
+    if (currentPoint) {
+      setCurrentPoint(currentPoint);
+    }
+  };
 
   const getGraphLine = useCallback((smooth?: boolean, fill?: boolean) => {
     function mappedPoint(point: Point, index: number, points: Point[]) {
@@ -165,11 +170,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
         bezierCommand(point, index, points) :
         `L ${point.x},${point.y}`;
     }
-    const points = getGraphPoints();
     return points
       .map((point, index) => mappedPoint(point, index, points))
       .join(" ");
-  }, [getGraphPoints]);
+  }, [points]);
 
   const getFillGraphLine = useCallback((smooth?: boolean) => {
     return `M 0,${height} ${getGraphLine(smooth, true)} L ${width},${height}Z`;
@@ -204,7 +208,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
           />
           {
             point &&
-            getGraphPoints().map((point, index) => (
+            points.map((point, index) => (
               <circle
                 key={index}
                 cx={point.x}
