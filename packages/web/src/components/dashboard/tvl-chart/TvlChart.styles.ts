@@ -3,8 +3,8 @@ import mixins from "@styles/mixins";
 
 export const TvlChartWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  background-color: ${({ theme }) => theme.color.background02};
-  border: 1px solid ${({ theme }) => theme.color.border01};
+  background-color: ${({ theme }) => theme.color.background06};
+  border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   padding: 24px;
 `;
