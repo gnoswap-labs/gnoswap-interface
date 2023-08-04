@@ -41,6 +41,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     ${fonts.body11};
     color: ${({ theme }) => theme.color.text02};
   }
+  .symbol-text {
+    font-weight: 700;
+  }
 `;
 export const IconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
