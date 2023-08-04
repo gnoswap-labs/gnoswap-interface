@@ -38,10 +38,11 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
           style={{
             hierarchy: ButtonHierarchy.Dark,
             fontType: "p1",
-            width: 165,
-            height: 36,
+            textColor: "text19",
+            // width: 165,
+            // height: 36,
             padding: "10px 16px",
-            justify: "space-between",
+            gap: "8px",
           }}
           onClick={onMenuToggle}
         />
