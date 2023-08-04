@@ -56,7 +56,6 @@ export const HeaderContainer = styled.div`
     padding: 12px 40px;
   }
   ${media.mobile} {
-    max-width: 360px;
     padding: 8px 16px;
   }
 `;
@@ -76,6 +75,16 @@ export const LeftSection = styled.div`
 `;
 
 export const LogoLink = styled.a`
+  width: 31.5px;
+  height: 36px;
+  ${media.tablet} {
+    width: 28px;
+    height: 32px;
+  }
+  ${media.mobile} {
+    width: 21px;
+    height: 24px;
+  }
   .header-main-logo {
     width: 31.501px;
     height: 36px;
