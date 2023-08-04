@@ -11,6 +11,7 @@ export interface ButtonStyleProps {
   textColor?: ThemeColorKeyTypes;
   bgColor?: ThemeColorKeyTypes;
   fullWidth?: boolean;
+  gap?: CSSProperties["gap"];
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
   radius?: CSSProperties["borderRadius"];
@@ -20,6 +21,10 @@ export interface ButtonStyleProps {
 
 export const ButtonWrapper = styled.button<ButtonStyleProps>`
   ${({ justify }) => mixins.flexbox("row", "center", justify ?? "center")};
+  gap: ${({ gap }) => {
+    if (gap) return typeof gap === "number" ? gap + "px" : gap;
+    return "";
+  }};
   width: ${({ width, fullWidth }) => {
     if (width) return typeof width === "number" ? width + "px" : width;
     if (fullWidth) return "100%";
@@ -65,7 +70,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   & .arrow-icon path {
     fill: ${({ theme, textColor, hierarchy }) => {
       if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
-      return theme.color[textColor ?? "text12"];
+      return theme.color[textColor ?? "text18"];
     }};
   }
 `;
