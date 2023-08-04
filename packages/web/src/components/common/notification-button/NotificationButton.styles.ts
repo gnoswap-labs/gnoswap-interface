@@ -8,20 +8,21 @@ export const NotificationWrapper = styled.div`
 
 export const AlertButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
+  padding: 4px;
   border-radius: 4px;
   transition: all 0.3s ease;
   ${media.tablet} {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
   }
   .notification-icon {
-    width: 21px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     ${media.tablet} {
-      width: 18px;
-      height: 21.5px;
+      width: 24px;
+      height: 24px;
     }
     * {
       fill: ${({ theme }) => theme.color.icon05};
