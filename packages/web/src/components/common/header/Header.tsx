@@ -1,5 +1,5 @@
 import React from "react";
-import IconLogoPrimary from "../icons/IconLogoPrimary";
+import IconHeaderLogo from "../icons/IconHeaderLogo";
 import Link from "next/link";
 import IconSearch from "@components/common/icons/IconSearch";
 import {
@@ -59,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({
           <LeftSection>
             <Link href="/" passHref legacyBehavior>
               <LogoLink>
-                <IconLogoPrimary className="header-main-logo" />
+                <IconHeaderLogo className="header-main-logo" />
               </LogoLink>
             </Link>
             <Navigation>
