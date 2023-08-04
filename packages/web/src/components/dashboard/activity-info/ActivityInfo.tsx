@@ -19,12 +19,28 @@ interface ActivityInfoProps {
 const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
+  const adjective = ["for", "and"];
   return (
     <TokenInfoWrapper>
       <HoverSection>
         <TableColumn className="left" tdWidth={ACTIVITY_TD_WIDTH[0]}>
           <span className="token-index">
-            {action}
+            {action.split(" ").some(i => adjective.includes(i))
+              ? action.split(" ").map((text, idx) => {
+                  return idx === action.split(" ").length - 1 ||
+                    idx === action.split(" ").length - 3 ? (
+                    <span className="symbol-text">{text}</span>
+                  ) : (
+                    text + " "
+                  );
+                })
+              : action.split(" ").map((text, idx) => {
+                  return idx === action.split(" ").length - 1 ? (
+                    <span className="symbol-text">{text}</span>
+                  ) : (
+                    text + " "
+                  );
+                })}
             <IconButton
               onClick={() => {
                 alert("open Link");
