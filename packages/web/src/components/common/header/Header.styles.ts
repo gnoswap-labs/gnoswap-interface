@@ -17,6 +17,7 @@ export const HeaderWrapper = styled.header`
 
 export const BottomNavWrapper = styled.nav`
   ${mixins.flexbox("column", "center", "center")};
+  ${fonts.p1};
   width: 100%;
   bottom: 0px;
   position: fixed;
@@ -37,10 +38,7 @@ export const BottomNavContainer = styled.div`
 export const BottomNavItem = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   padding: 16px 8px;
-
   transition: color 0.3s ease;
-  ${mixins.flexbox("row", "center", "center")};
-  ${fonts.body9};
   color: ${({ theme }) => theme.color.text04};
   &.selected,
   &:hover {
