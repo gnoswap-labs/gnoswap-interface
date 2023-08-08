@@ -4,6 +4,7 @@ import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
+import { DeviceSize } from "@styles/media";
 interface HomeSwapProps {
   from: {
     token: string;
@@ -22,6 +23,7 @@ interface HomeSwapProps {
     tokenLogo: string;
   };
   swapNow: () => void;
+  windowSize: number;
 }
 
 function isAmount(str: string) {
@@ -29,7 +31,12 @@ function isAmount(str: string) {
   return regex.test(str);
 }
 
-const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
+const HomeSwap: React.FC<HomeSwapProps> = ({
+  from,
+  to,
+  swapNow,
+  windowSize,
+}) => {
   const [fromAmount, setFromAmount] = useState(from.amount);
   const [toAmount, setToAmount] = useState(to.amount);
 
@@ -67,7 +74,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
     swapNow();
   }, [swapNow]);
 
-  return (
+  return windowSize > DeviceSize.mobile ? (
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
@@ -124,13 +131,13 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ from, to, swapNow }) => {
             fullWidth: true,
             height: 50,
             fontType: "body7",
-            hierarchy: ButtonHierarchy.Primary
+            hierarchy: ButtonHierarchy.Primary,
           }}
           onClick={onClickSwapNow}
         />
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default HomeSwap;

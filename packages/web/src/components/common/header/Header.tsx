@@ -36,7 +36,7 @@ interface HeaderProps {
   error: Error | null;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
-  windowSize: Number;
+  windowSize: number;
 }
 
 const Header: React.FC<HeaderProps> = ({

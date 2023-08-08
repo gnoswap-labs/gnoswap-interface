@@ -12,8 +12,8 @@ import {
   HoverSection,
   TableColumn,
   TokenInfoWrapper,
-} from "./TokenInfo.styles";
-import { TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
+} from "./MobileTokenInfo.styles";
+import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 
 interface TokenInfoProps {
@@ -32,7 +32,7 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
   </>
 );
 
-const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
+const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   const {
     tokenId,
     token,
@@ -54,48 +54,50 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   return (
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.symbol)}>
-        <TableColumn className="left" tdWidth={TOKEN_TD_WIDTH[0]}>
+        <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[0]}>
           <span className="token-index">{idx}</span>
         </TableColumn>
-        <TableColumn className="left" tdWidth={TOKEN_TD_WIDTH[1]}>
+        <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
           <img src={token.tokenLogo} alt="token logo" className="token-logo" />
-          <strong className="token-name">{token.name}</strong>
-          <span className="token-symbol">{token.symbol}</span>
+          <div className="symbol-col">
+            <strong className="token-name">{token.name}</strong>
+            <span className="token-symbol">{token.symbol}</span>
+          </div>
         </TableColumn>
-        <TableColumn tdWidth={TOKEN_TD_WIDTH[2]}>
+        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
           <span>{price}</span>
         </TableColumn>
         <TableColumn
-          tdWidth={TOKEN_TD_WIDTH[3]}
+          tdWidth={MOBILE_TOKEN_TD_WIDTH[3]}
           className={cx(priceOf1d.status.toLowerCase())}
         >
           {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
         </TableColumn>
         <TableColumn
-          tdWidth={TOKEN_TD_WIDTH[4]}
+          tdWidth={MOBILE_TOKEN_TD_WIDTH[4]}
           className={cx(priceOf7d.status.toLowerCase())}
         >
           {renderToNegativeType(priceOf7d.status, priceOf7d.value)}
         </TableColumn>
         <TableColumn
-          tdWidth={TOKEN_TD_WIDTH[5]}
+          tdWidth={MOBILE_TOKEN_TD_WIDTH[5]}
           className={cx(priceOf30d.status.toLowerCase())}
         >
           {renderToNegativeType(priceOf30d.status, priceOf30d.value)}
         </TableColumn>
-        <TableColumn tdWidth={TOKEN_TD_WIDTH[6]}>
+        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[6]}>
           <span>{marketCap}</span>
         </TableColumn>
-        <TableColumn tdWidth={TOKEN_TD_WIDTH[7]}>
+        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[7]}>
           <span>{liquidity}</span>
         </TableColumn>
 
-        <TableColumn tdWidth={TOKEN_TD_WIDTH[8]}>
+        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[8]}>
           <span className="volume">{volume24h}</span>
         </TableColumn>
       </HoverSection>
       <HoverSection>
-        <TableColumn tdWidth={TOKEN_TD_WIDTH[9]}>
+        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[9]}>
           <DoubleLogo
             left={mostLiquidPool.tokenPair.token0.tokenLogo}
             right={mostLiquidPool.tokenPair.token1.tokenLogo}
@@ -107,11 +109,14 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="fee-rate">{mostLiquidPool.feeRate}</span>
         </TableColumn>
       </HoverSection>
-      <TableColumn tdWidth={TOKEN_TD_WIDTH[10]} className="last7days-graph">
+      <TableColumn
+        tdWidth={MOBILE_TOKEN_TD_WIDTH[10]}
+        className="last7days-graph"
+      >
         <SimpleLineGraph width={100} height={33} datas={last7days} />
       </TableColumn>
     </TokenInfoWrapper>
   );
 };
 
-export default TokenInfo;
+export default MobileTokenInfo;

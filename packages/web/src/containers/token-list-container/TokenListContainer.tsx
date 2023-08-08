@@ -1,11 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import TokenList from "@components/home/token-list/TokenList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type TokenDefaultModel } from "@models/token/token-default-model";
 import { type TokenPairModel } from "@models/token/token-pair-model";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
-
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -114,7 +113,9 @@ export const createDummyTokenList = (): Token[] => [
       },
       feeRate: "0.05%",
     },
-    last7days: Array.from({ length: 40 }, () => Math.round(Math.random() * 100)),
+    last7days: Array.from({ length: 40 }, () =>
+      Math.round(Math.random() * 100),
+    ),
   },
 ];
 
@@ -148,6 +149,23 @@ const TokenListContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>();
+  const [width, setWidth] = useState(Number);
+  const [searchIcon, setSearchIcon] = useState(false);
+  const onTogleSearch = () => {
+    setSearchIcon(prev => !prev);
+  };
+
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const {
     isFetched,
@@ -205,8 +223,8 @@ const TokenListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setSortOption({
         key,
@@ -231,6 +249,9 @@ const TokenListContainer: React.FC = () => {
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}
+      windowSize={width}
+      searchIcon={searchIcon}
+      onTogleSearch={onTogleSearch}
     />
   );
 };

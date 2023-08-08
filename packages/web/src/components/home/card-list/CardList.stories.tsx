@@ -16,9 +16,9 @@ export default {
 const Template: ComponentStory<typeof CardList> = () => {
   return (
     <div css={wrapper}>
-      <TrendingCardList list={trendingList} />
-      <HighestAprsCardList list={highestList} />
-      <RecentlyAddedCardList list={recentlyList} />
+      <TrendingCardList list={trendingList} windowSize={500} />
+      <HighestAprsCardList list={highestList} windowSize={500} />
+      <RecentlyAddedCardList list={recentlyList} windowSize={500} />
     </div>
   );
 };

@@ -11,7 +11,7 @@ export const FooterWrapper = styled.footer`
   background-color: ${({ theme }) => theme.color.background01};
   border-top: 1px solid ${({ theme }) => theme.color.border02};
   ${media.mobile} {
-    padding: 36px 0px;
+    padding-top: 36px;
   }
 `;
 

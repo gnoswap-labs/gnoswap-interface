@@ -3,6 +3,7 @@ import { css, Theme } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
 
 export const wrapper = (theme: Theme) => css`
+  width: 480px;
   padding: 15px 23px;
   background-color: ${theme.color.background06};
   border: 1px solid ${theme.color.border02};

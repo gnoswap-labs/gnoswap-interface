@@ -11,6 +11,7 @@ import TokenListHeader from "@components/home/token-list-header/TokenListHeader"
 import Pagination from "@components/common/pagination/Pagination";
 import { wrapper } from "./TokenList.styles";
 import TokenListTable from "@components/home/token-list-table/TokenListTable";
+import { DeviceSize } from "@styles/media";
 
 interface TokenItem {
   tokens: Token[];
@@ -26,6 +27,9 @@ interface TokenItem {
   movePage: (page: number) => void;
   isSortOption: (item: TABLE_HEAD) => boolean;
   sort: (item: TABLE_HEAD) => void;
+  windowSize: number;
+  searchIcon: boolean;
+  onTogleSearch: () => void;
 }
 
 const TokenList: React.FC<TokenItem> = ({
@@ -42,8 +46,10 @@ const TokenList: React.FC<TokenItem> = ({
   movePage,
   isSortOption,
   sort,
+  windowSize,
+  searchIcon,
+  onTogleSearch,
 }) => {
-
   return (
     <div css={wrapper}>
       <TokenListHeader
@@ -51,6 +57,9 @@ const TokenList: React.FC<TokenItem> = ({
         changeTokenType={changeTokenType}
         search={search}
         keyword={keyword}
+        windowSize={windowSize}
+        searchIcon={searchIcon}
+        onTogleSearch={onTogleSearch}
       />
       <TokenListTable
         tokens={tokens}
@@ -58,11 +67,13 @@ const TokenList: React.FC<TokenItem> = ({
         sortOption={sortOption}
         isSortOption={isSortOption}
         sort={sort}
+        windowSize={windowSize}
       />
       <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
+        siblingCount={windowSize > DeviceSize.mobile ? 2 : 1}
       />
     </div>
   );
