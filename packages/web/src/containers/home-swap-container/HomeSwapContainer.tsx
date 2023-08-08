@@ -1,9 +1,21 @@
 import HomeSwap from "@components/home/home-swap/HomeSwap";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
+  const [width, setWidth] = useState(Number);
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const swapNow = useCallback(() => {
     router.push("/swap?from=GNOT&to=GNOS");
@@ -30,6 +42,7 @@ const HomeSwapContainer: React.FC = () => {
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
       }}
       swapNow={swapNow}
+      windowSize={width}
     />
   );
 };

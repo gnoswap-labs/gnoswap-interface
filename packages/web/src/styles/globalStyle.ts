@@ -1,4 +1,5 @@
 import { css, type Theme } from "@emotion/react";
+import { media } from "./media";
 
 const globalStyle = (theme: Theme) => css`
   html,
@@ -17,6 +18,12 @@ const globalStyle = (theme: Theme) => css`
   body {
     background-color: ${theme.color.background01};
     padding-top: 70px;
+    ${media.tablet} {
+      padding-top: 60px;
+    }
+    ${media.mobile} {
+      padding-top: 50px;
+    }
   }
 
   #__next {

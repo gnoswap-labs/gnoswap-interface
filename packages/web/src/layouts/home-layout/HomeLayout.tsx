@@ -1,5 +1,12 @@
 import React from "react";
-import { wrapper } from "./HomeLayout.styles";
+import {
+  BrandContainer,
+  CardContainer,
+  HeroSection,
+  HomeLayoutWrapper,
+  TokensSection,
+  TokensContainer,
+} from "./HomeLayout.styles";
 
 interface HomeLayoutProps {
   header: React.ReactNode;
@@ -22,23 +29,24 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
   tokenList,
   footer,
 }) => (
-  <div css={wrapper}>
+  <HomeLayoutWrapper>
     {header}
-
-    <div className="hero-section">
-      <div className="brand-container">{brand}</div>
-      <div className="swap-container">{swap}</div>
-
-      <div className="card-list">
+    <HeroSection>
+      <BrandContainer>
+        {brand}
+        {swap}
+      </BrandContainer>
+      <CardContainer>
         {trending}
         {highest}
         {recently}
-      </div>
-    </div>
-    <div className="tokens-section">{tokenList}</div>
-
+      </CardContainer>
+    </HeroSection>
+    <TokensSection>
+      <TokensContainer>{tokenList}</TokensContainer>
+    </TokensSection>
     {footer}
-  </div>
+  </HomeLayoutWrapper>
 );
 
 export default HomeLayout;

@@ -29,7 +29,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
       className={cx(className, { "empty-status": value === "" })}
     >
       <InputStyle placeholder={placeholder} value={value} onChange={onChange} />
-      <IconSearch className="search-icon" />
+      <div className="icon-wrapper">
+        <IconSearch className="search-icon" />
+      </div>
     </SearchInputWrapper>
   );
 };

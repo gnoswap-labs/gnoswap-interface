@@ -2,6 +2,7 @@ import { CSSProperties } from "react";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 export interface SearchInputStyleProps {
   fullWidth?: boolean;
   width?: CSSProperties["width"];
@@ -20,8 +21,21 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
     if (height) return typeof height === "number" ? height + "px" : height;
     return "auto";
   }};
-  padding: 0px 16px;
+  padding: 12px 16px;
   border-radius: 8px;
+
+  .icon-wrapper {
+    ${mixins.flexbox("row", "center", "center")};
+  }
+
+  ${media.mobile} {
+    padding: 8px 12px 8px 12px;
+    ${fonts.body11};
+    .search-icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
 
   &:focus-within {
     background-color: ${({ theme }) => theme.color.background13};

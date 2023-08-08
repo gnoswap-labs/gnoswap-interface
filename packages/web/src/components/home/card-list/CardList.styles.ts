@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { UP_DOWN_TYPE } from "./CardList";
 
@@ -13,7 +14,10 @@ export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
   ${fonts.body12};
   width: 100%;
   height: 40px;
-  padding: 0px 24px;
+  padding: 8px 24px;
+  ${media.tablet} {
+    padding: 8px 16px;
+  }
   cursor: pointer;
   transition: background-color 0.3s ease;
   color: ${({ theme }) => theme.color.text01};
