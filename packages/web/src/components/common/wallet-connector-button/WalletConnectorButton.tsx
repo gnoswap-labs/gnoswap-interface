@@ -39,8 +39,7 @@ const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
             hierarchy: ButtonHierarchy.Dark,
             fontType: "p1",
             textColor: "text19",
-            // width: 165,
-            // height: 36,
+            arrowColor: "text18",
             padding: "10px 16px",
             gap: "8px",
           }}
