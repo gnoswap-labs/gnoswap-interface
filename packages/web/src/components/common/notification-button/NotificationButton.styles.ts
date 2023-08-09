@@ -10,7 +10,7 @@ export const AlertButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   width: 36px;
   height: 36px;
-  padding: 4px;
+  padding: 3px 4px 5px 4px;
   border-radius: 4px;
   transition: all 0.3s ease;
   ${media.tablet} {
