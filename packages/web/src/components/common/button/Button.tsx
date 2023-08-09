@@ -37,6 +37,7 @@ const Button = ({
           {...style}
           fontType={style.fontType}
           textColor={style.textColor}
+          arrowColor={style.arrowColor}
         >
           {text}
         </StyledText>

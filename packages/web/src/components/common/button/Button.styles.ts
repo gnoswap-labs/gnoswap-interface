@@ -9,6 +9,7 @@ export interface ButtonStyleProps {
   hierarchy?: ButtonHierarchy;
   fontType?: FontsKey;
   textColor?: ThemeColorKeyTypes;
+  arrowColor?: ThemeColorKeyTypes;
   bgColor?: ThemeColorKeyTypes;
   fullWidth?: boolean;
   gap?: CSSProperties["gap"];
@@ -53,9 +54,9 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
       return;
     }};
     & .arrow-icon path {
-      fill: ${({ theme, textColor, hierarchy }) => {
+      fill: ${({ theme, arrowColor, hierarchy }) => {
         if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
-        return theme.color[textColor ?? "text10"];
+        return theme.color[arrowColor ?? "text10"];
       }};
     }
   }
@@ -68,9 +69,9 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   }
 
   & .arrow-icon path {
-    fill: ${({ theme, textColor, hierarchy }) => {
+    fill: ${({ theme, arrowColor, hierarchy }) => {
       if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
-      return theme.color[textColor ?? "text18"];
+      return theme.color[arrowColor ?? "text18"];
     }};
   }
 `;
