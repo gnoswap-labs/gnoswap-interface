@@ -1,7 +1,7 @@
 import React from "react";
 import SelectTab from "@components/common/select-tab/SelectTab";
 import { ACTIVITY_TYPE } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
-import { wrapper } from "./ActivityListHeader.styles";
+import { ActivityListHeaderwrapper } from "./ActivityListHeader.styles";
 
 interface ActivityListHeaderProps {
   activityType: ACTIVITY_TYPE;
@@ -12,14 +12,16 @@ const ActivityListHeader: React.FC<ActivityListHeaderProps> = ({
   activityType,
   changeActivityType,
 }) => (
-  <div css={wrapper}>
+  <ActivityListHeaderwrapper>
     <h2>Activities</h2>
-    <SelectTab
-      selectType={activityType}
-      list={Object.values(ACTIVITY_TYPE)}
-      onClick={changeActivityType}
-    />
-  </div>
+    <div className="overflow-tab">
+      <SelectTab
+        selectType={activityType}
+        list={Object.values(ACTIVITY_TYPE)}
+        onClick={changeActivityType}
+      />
+    </div>
+  </ActivityListHeaderwrapper>
 );
 
 export default ActivityListHeader;

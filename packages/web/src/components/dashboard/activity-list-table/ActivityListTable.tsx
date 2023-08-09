@@ -4,17 +4,26 @@ import {
   TABLE_HEAD,
   type Activity,
 } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
-import ActivityInfo from "@components/dashboard/activity-info/ActivityInfo";
+import ActivityInfo, {
+  MobileActivityInfo,
+} from "@components/dashboard/activity-info/ActivityInfo";
 import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
   noDataText,
   TableHeader,
   TableWrapper,
+  MobileTableHeader,
 } from "./ActivityListTable.styles";
-import { ACTIVITY_INFO, ACTIVITY_TD_WIDTH } from "@constants/skeleton.constant";
+import {
+  ACTIVITY_INFO,
+  ACTIVITY_TD_WIDTH,
+  MOBILE_ACTIVITY_INFO,
+  MOBILE_ACTIVITY_TD_WIDTH,
+} from "@constants/skeleton.constant";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
+import { DeviceSize } from "@styles/media";
 
 interface ActivityListTableProps {
   activities: Activity[];
@@ -22,6 +31,7 @@ interface ActivityListTableProps {
   isSortOption: (head: TABLE_HEAD) => boolean;
   sortOption?: SortOption;
   sort: (head: TABLE_HEAD) => void;
+  windowSize: number;
 }
 
 const ActivityListTable: React.FC<ActivityListTableProps> = ({
@@ -30,6 +40,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
   isSortOption,
   sort,
   isFetched,
+  windowSize,
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
@@ -56,7 +67,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
     return TABLE_HEAD.ACTION === head;
   };
 
-  return (
+  return windowSize > DeviceSize.mobile ? (
     <TableWrapper>
       <div className="scroll-wrapper">
         <div className="activity-list-head">
@@ -94,6 +105,47 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
               <ActivityInfo item={item} idx={idx + 1} key={idx} />
             ))}
           {!isFetched && <TableSkeleton info={ACTIVITY_INFO} />}
+        </div>
+      </div>
+    </TableWrapper>
+  ) : (
+    <TableWrapper>
+      <div className="scroll-wrapper">
+        <div className="activity-list-head">
+          {Object.values(TABLE_HEAD).map((head, idx) => (
+            <MobileTableHeader
+              key={idx}
+              className={cx({
+                left: isAlignLeft(head),
+                sort: isSortOption(head),
+              })}
+              tdWidth={MOBILE_ACTIVITY_TD_WIDTH[idx]}
+            >
+              <span
+                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+                onClick={() => onClickTableHead(head)}
+              >
+                {isAscendingOption(head) && (
+                  <IconTriangleArrowUp className="icon asc" />
+                )}
+                {isDescendingOption(head) && (
+                  <IconTriangleArrowDown className="icon desc" />
+                )}
+                {head}
+              </span>
+            </MobileTableHeader>
+          ))}
+        </div>
+        <div className="activity-list-body">
+          {isFetched && activities.length === 0 && (
+            <div css={noDataText}>No tokens found</div>
+          )}
+          {isFetched &&
+            activities.length > 0 &&
+            activities.map((item, idx) => (
+              <MobileActivityInfo item={item} idx={idx + 1} key={idx} />
+            ))}
+          {!isFetched && <TableSkeleton info={MOBILE_ACTIVITY_INFO} />}
         </div>
       </div>
     </TableWrapper>

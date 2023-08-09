@@ -1,5 +1,8 @@
 import { CHART_TYPE } from "@constants/option.constant";
-import { TvlChartInfo, TvlPriceInfo } from "@containers/tvl-chart-container/TvlChartContainer";
+import {
+  TvlChartInfo,
+  TvlPriceInfo,
+} from "@containers/tvl-chart-container/TvlChartContainer";
 import TvlChartGraph from "../tvl-chart-graph/TvlChartGraph";
 import TvlChartPriceInfo from "../tvl-chart-price-info/TvlChartPriceInfo";
 import TvlChartSelectTab from "../tvl-chart-select-tab/TvlChartSelectTab";
@@ -28,7 +31,8 @@ const TvlChart: React.FC<TvlChartItemProps> = ({
         />
         <TvlChartGraph
           xAxisLabels={tvlChartInfo.xAxisLabels}
-          datas={tvlChartInfo.datas} />
+          datas={tvlChartInfo.datas}
+        />
       </ChartWrapper>
     </TvlChartWrapper>
   );
