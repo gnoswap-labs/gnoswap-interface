@@ -1,5 +1,5 @@
 import React from "react";
-import { wrapper } from "./DashboardLayout.styles";
+import { DashboardLayoutWrapper } from "./DashboardLayout.styles";
 
 interface DashboradLayoutProps {
   header: React.ReactNode;
@@ -18,26 +18,26 @@ const DashboardLayout: React.FC<DashboradLayoutProps> = ({
   activities,
   footer,
 }) => (
-  <main css={wrapper}>
+  <DashboardLayoutWrapper>
     {header}
     <section className="dashboard-section">
-      <div className="container title-container">
+      <div className="title-container">
         <h3 className="title">Dashboard</h3>
       </div>
-      <div className="container charts-container">
+      <div className="charts-container">
         {tvl}
         {volume}
       </div>
-      <div className="container dashboard-info-container">{info}</div>
+      <div className="dashboard-info-container">{info}</div>
     </section>
     <div className="background-wrapper">
       <div className="background"></div>
       <section className="activities-section">
-        <div className="container activities-container">{activities}</div>
+        <div className="activities-container">{activities}</div>
       </section>
     </div>
     {footer}
-  </main>
+  </DashboardLayoutWrapper>
 );
 
 export default DashboardLayout;

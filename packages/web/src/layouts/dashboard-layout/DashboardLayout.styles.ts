@@ -1,48 +1,122 @@
 import mixins from "@styles/mixins";
-import { css, Theme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
-export const wrapper = (theme: Theme) => css`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  background-color: ${theme.color.background01};
-
-  .dashboard-section,
-  .activities-section {
-    ${mixins.flexbox("column", "center", "flex-start")};
-    width: 100%;
-    margin: 100px auto;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 1440px;
-    padding: 0 40px;
-  }
+export const DashboardLayoutWrapper = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  width: 100%;
+  background-color: ${({ theme }) => theme.color.background01};
 
   .dashboard-section {
-    .title-container {
-      .title {
-        ${fonts.h3};
-        color: ${theme.color.text02};
-      }
-      margin-bottom: 36px;
+    ${mixins.flexbox("column", "center", "flex-start")};
+    max-width: 1920px;
+    width: 100%;
+    padding: 100px 0px 100px 0px;
+    gap: 36px;
+    ${media.tablet} {
+      max-width: 1180px;
+      padding: 60px 0px 60px 0px;
+      gap: 24px;
     }
-    .charts-container {
-      margin-bottom: 36px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: auto;
-      grid-gap: 24px;
+    ${media.mobile} {
+      max-width: 360px;
+      padding: 24px 0px 48px 0px;
+      gap: 24px;
+    }
+  }
+
+  .title-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: 1440px;
+    width: 100%;
+    padding: 0px 40px 0px 40px;
+    gap: 16px;
+    ${media.tablet} {
+      max-width: 1180px;
+      gap: 16px;
+    }
+    ${media.mobile} {
+      max-width: 328px;
+      padding: 0px 0px 0px 0px;
+      gap: 24px;
+    }
+  }
+
+  .title {
+    ${mixins.flexbox("column", "flex-end", "center")};
+    ${fonts.h3};
+    color: ${({ theme }) => theme.color.text02};
+    ${media.mobile} {
+      ${fonts.h5};
+    }
+  }
+
+  .charts-container {
+    display: grid;
+    width: 100%;
+    max-width: 1440px;
+    column-gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0px 40px;
+    ${media.tablet} {
+      max-width: 1180px;
       grid-template-columns: repeat(2, 1fr);
     }
-    .dashboard-info-container {
+    ${media.mobile} {
+      grid-template-columns: repeat(1, auto);
+      max-width: 328px;
+      padding: 0px 0px 0px 0px;
+      row-gap: 8px;
+      column-gap: 24px;
+    }
+  }
+
+  .dashboard-info-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: 1440px;
+    width: 100%;
+    padding: 0px 40px;
+    ${media.tablet} {
+      max-width: 1180px;
+    }
+    ${media.mobile} {
+      max-width: 328px;
+      padding: 0px 0px 0px 0px;
+    }
+  }
+
+  .activities-section {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    max-width: 1920px;
+    width: 100%;
+    padding: 100px 0px 100px 0px;
+    ${media.tablet} {
+      max-width: 1180px;
+      padding: 60px 0px 60px 0px;
+    }
+    ${media.mobile} {
+      max-width: 360px;
+      padding: 48px 0px 48px 0px;
     }
   }
 
   .activities-section {
     position: relative;
     .activities-container {
+      ${mixins.flexbox("column", "center", "center")};
+      max-width: 1440px;
+      width: 100%;
+      padding: 0px 40px;
+      gap: 24px;
+      ${media.tablet} {
+        max-width: 1180px;
+      }
+      ${media.mobile} {
+        max-width: 360px;
+        padding: 0px 16px;
+        gap: 24px;
+      }
     }
   }
 
@@ -60,8 +134,8 @@ export const wrapper = (theme: Theme) => css`
       height: 400px;
       background: linear-gradient(
         180deg,
-        ${theme.color.backgroundGradient2} 0%,
-        ${theme.color.backgroundGradient3} 100%
+        ${({ theme }) => theme.color.backgroundGradient2} 0%,
+        ${({ theme }) => theme.color.backgroundGradient3} 100%
       );
     }
   }

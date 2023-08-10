@@ -11,18 +11,24 @@ interface DashboardInfoProps {
   dashboardTokenInfo: DashboardTokenInfo;
   supplyOverviewInfo: SupplyOverviewInfo;
   governenceOverviewInfo: GovernenceOverviewInfo;
+  windowSize: number;
 }
 
 const DashboardInfo: React.FC<DashboardInfoProps> = ({
   dashboardTokenInfo,
   supplyOverviewInfo,
   governenceOverviewInfo,
+  windowSize,
 }) => (
   <DashboardInfoWrapper>
-    <DashboardInfoTitle dashboardTokenInfo={dashboardTokenInfo} />
+    <DashboardInfoTitle
+      dashboardTokenInfo={dashboardTokenInfo}
+      windowSize={windowSize}
+    />
     <DashboardOverview
       supplyOverviewInfo={supplyOverviewInfo}
       governenceOverviewInfo={governenceOverviewInfo}
+      windowSize={windowSize}
     />
   </DashboardInfoWrapper>
 );

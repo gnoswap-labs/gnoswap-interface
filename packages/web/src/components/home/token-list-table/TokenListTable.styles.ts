@@ -98,10 +98,9 @@ export const MobileTableHeader = styled.div<{ tdWidth: number }>`
     flex-shrink: 0;
     justify-content: flex-start;
   }
-  &:nth-last-child(1) {
+  &:nth-last-of-type(1) {
     padding: 0px 16px 0px 0px;
   }
-  span {
 
   span {
     display: inline-flex;

@@ -1,6 +1,9 @@
 import React from "react";
 import { CHART_TYPE } from "@constants/option.constant";
-import { VolumeChartInfo, VolumePriceInfo } from "@containers/volume-chart-container/VolumeChartContainer";
+import {
+  VolumeChartInfo,
+  VolumePriceInfo,
+} from "@containers/volume-chart-container/VolumeChartContainer";
 import VolumeChartPriceInfo from "../volume-chart-price-info/VolumeChartPriceInfo";
 import VolumeChartSelectTab from "../volume-chart-select-tab/VolumeChartSelectTab";
 import { VolumeChartWrapper, ChartWrapper } from "./VolumeChart.styles";

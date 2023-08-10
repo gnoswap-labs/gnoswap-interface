@@ -3,7 +3,6 @@ import DashboardLabel from "../dashboard-label/DashboardLabel";
 import {
   SupplyOverviewWrapper,
   SupplyInfoWrapper,
-  TotalStakedRatioWrapper,
   ProgressBar,
 } from "./SupplyOverview.styles";
 interface SupplyOverviewInfoProps {
@@ -24,15 +23,17 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         <div>{supplyOverviewInfo.totalSupply}</div>
       </div>
       <div className="circulating-supply">
-        <div className="label-title">
-          <div>Circulating Supply</div>
-          <DashboardLabel tooltip="The sum of liquid GNOS tokens including released vesting allocations and cumulative block emissions." />
+        <div className="circulating-info">
+          <div className="label-title">
+            <div>Circulating Supply</div>
+            <DashboardLabel tooltip="The sum of liquid GNOS tokens including released vesting allocations and cumulative block emissions." />
+          </div>
+          <div>{supplyOverviewInfo.circulatingSupply}</div>
         </div>
-        <div>{supplyOverviewInfo.circulatingSupply}</div>
+        <ProgressBar>
+          <div className="progress-bar-rate" />
+        </ProgressBar>
       </div>
-      <ProgressBar>
-        <div className="progress-bar-rate" />
-      </ProgressBar>
       <div className="daily-block-emissions">
         <div className="label-title">
           <div>Daily Block Emissions</div>
@@ -48,12 +49,12 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           <div>Total Staked</div>
           <DashboardLabel tooltip="Amount of GNOS in LPs being staked." />
         </div>
-        <TotalStakedRatioWrapper>
+        <div className="staked-info">
           <div>{supplyOverviewInfo.totalStaked}</div>
           <div className="staked-ratio-title">
             Staking Ratio: {supplyOverviewInfo.stakingRatio}
           </div>
-        </TotalStakedRatioWrapper>
+        </div>
       </div>
     </SupplyInfoWrapper>
   </SupplyOverviewWrapper>
