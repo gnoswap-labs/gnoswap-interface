@@ -2,6 +2,7 @@ import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { Z_INDEX } from "@styles/zIndex";
+import { media } from "@styles/media";
 
 export const SearchModalBackground = styled.div`
   position: fixed;
@@ -21,6 +22,13 @@ export const SearchContainer = styled.div`
   top: 11.5px;
   left: calc(50vw - 230px);
   width: 460px;
+  ${media.tablet} {
+    top: 6px;
+  }
+  ${media.mobile} {
+    width: 328px;
+    left: calc(50vw - 164px);
+  }
 `;
 
 export const SearchWrapper = styled.div`
@@ -30,6 +38,11 @@ export const SearchWrapper = styled.div`
   padding: 12px 15px 12px 16px;
   border-radius: 8px;
   ${fonts.body9}
+  ${media.mobile} {
+    padding: 8px 12px 8px 12px;
+    height: 40px;
+    ${fonts.body11}
+  }
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
   color: ${({ theme }) => theme.color.text14};
@@ -66,6 +79,14 @@ export const ModalContainer = styled.div`
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
+  ${media.tablet} {
+    top: 62px;
+  }
+  ${media.mobile} {
+    width: 328px;
+    top: 54px;
+    left: calc(50vw - 164px);
+  }
 
   ul {
     width: 100%;
@@ -75,6 +96,10 @@ export const ModalContainer = styled.div`
       padding: 16px 24px 8px 24px;
       ${fonts.body12}
       color: ${({ theme }) => theme.color.text04};
+      ${media.mobile} {
+        padding: 12px 12px 8px 12px;
+        ${fonts.p2}
+      }
     }
   }
   li {
@@ -82,6 +107,10 @@ export const ModalContainer = styled.div`
     padding: 16px 24px;
     gap: 8px;
     cursor: pointer;
+    ${media.mobile} {
+      padding: 12px;
+      ${fonts.p2}
+    }
     &.selected,
     &:hover {
       background-color: ${({ theme }) => theme.color.backgroundOpacity};
@@ -98,22 +127,37 @@ export const ModalContainer = styled.div`
     .token-name {
       ${fonts.body8};
       color: ${({ theme }) => theme.color.text02};
+      ${media.mobile} {
+        ${fonts.body12}
+      }
     }
     .token-symbol {
       ${fonts.body8};
       color: ${({ theme }) => theme.color.text04};
+      ${media.mobile} {
+        ${fonts.body12}
+      }
     }
     .token-price {
       ${fonts.body7};
       color: ${({ theme }) => theme.color.text02};
+      ${media.mobile} {
+        ${fonts.body11}
+      }
     }
     .negative {
       ${fonts.body12};
       color: ${({ theme }) => theme.color.red01};
+      ${media.mobile} {
+        ${fonts.p2}
+      }
     }
     .positive {
       ${fonts.body12};
       color: ${({ theme }) => theme.color.green01};
+      ${media.mobile} {
+        ${fonts.p2}
+      }
     }
   }
 `;

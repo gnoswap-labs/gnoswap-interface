@@ -9,7 +9,6 @@ import {
   Navigation,
   RightSection,
   LogoLink,
-  ButtonWrapper,
   SearchContainer,
   SearchButton,
   BottomNavWrapper,
@@ -19,10 +18,10 @@ import {
 import NotificationButton from "@components/common/notification-button/NotificationButton";
 import { HEADER_NAV } from "@constants/header.constant";
 import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
-import HeaderSideMenuModal from "../header-side-menu-modal/HeaderSideMenuModal";
 import { Token } from "@containers/header-container/HeaderContainer";
-import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
 import { DeviceSize } from "@styles/media";
+import SubMenuButton from "../sub-menu-button/SubMenuButton";
+import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
 
 interface HeaderProps {
   pathname?: string;
@@ -75,12 +74,10 @@ const Header: React.FC<HeaderProps> = ({
                       </li>
                     ))}
                   </ul>
-                  <ButtonWrapper
-                    className={sideMenuToggle ? "selected" : ""}
-                    onClick={onSideMenuToggle}
-                  >
-                    ···
-                  </ButtonWrapper>
+                  <SubMenuButton
+                    sideMenuToggle={sideMenuToggle}
+                    onSideMenuToggle={onSideMenuToggle}
+                  />
                 </>
               )}
             </Navigation>
@@ -106,18 +103,12 @@ const Header: React.FC<HeaderProps> = ({
                   <Link href={item.path}>{item.title}</Link>
                 </BottomNavItem>
               ))}
-
-              <ButtonWrapper
-                className={sideMenuToggle ? "selected" : ""}
-                onClick={onSideMenuToggle}
-              >
-                ···
-              </ButtonWrapper>
+              <SubMenuButton
+                sideMenuToggle={sideMenuToggle}
+                onSideMenuToggle={onSideMenuToggle}
+              />
             </BottomNavContainer>
           </BottomNavWrapper>
-        )}
-        {sideMenuToggle && (
-          <HeaderSideMenuModal onSideMenuToggle={onSideMenuToggle} />
         )}
         {searchMenuToggle && (
           <SearchMenuModal

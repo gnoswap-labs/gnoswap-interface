@@ -86,7 +86,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   return (
     <WalletConnectorMenuWrapper ref={menuRef}>
       {isConnected ? (
-        <>
+        <div className="button-container">
           <MenuHeader>
             <IconAdenaLogo />
             <span className="user-address">
@@ -99,23 +99,27 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             />
           </MenuHeader>
           <AmountInfoBox>{`${amountText.value} ${amountText.denom}`}</AmountInfoBox>
-        </>
+        </div>
       ) : (
-        <Button
-          text="Connect Wallet"
-          style={{
-            hierarchy: ButtonHierarchy.Primary,
-            fontType: "body9",
-            fullWidth: true,
-            height: 41,
-            justify: "center",
-          }}
-        />
+        <div className="button-container">
+          <Button
+            text="Connect Wallet"
+            style={{
+              hierarchy: ButtonHierarchy.Primary,
+              fontType: "body9",
+              fullWidth: true,
+              height: 41,
+              justify: "center",
+            }}
+          />
+        </div>
       )}
-      <ThemeSelector>
-        <span>Theme</span>
-        <ThemeModeContainer />
-      </ThemeSelector>
+      <div className="theme-container">
+        <ThemeSelector>
+          <span>Theme</span>
+          <ThemeModeContainer />
+        </ThemeSelector>
+      </div>
     </WalletConnectorMenuWrapper>
   );
 };
