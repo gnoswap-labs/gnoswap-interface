@@ -17,14 +17,14 @@ export interface TvlChartGraphProps {
 
 const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
   datas,
-  xAxisLabels
+  xAxisLabels,
 }) => {
   const theme = useTheme();
 
   const getDatas = useCallback(() => {
     return datas.map(data => ({
       value: data.amount.value,
-      time: data.time
+      time: data.time,
     }));
   }, [datas]);
 
@@ -41,8 +41,11 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
           datas={getDatas()}
         />
         <div className="xaxis-wrapper">
-          {xAxisLabels.map((label, index) =>
-            <span key={index} className="label">{label}</span>)}
+          {xAxisLabels.map((label, index) => (
+            <span key={index} className="label">
+              {label}
+            </span>
+          ))}
         </div>
       </div>
     </TvlChartGraphWrapper>

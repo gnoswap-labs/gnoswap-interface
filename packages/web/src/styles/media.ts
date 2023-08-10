@@ -1,11 +1,17 @@
-interface DeviceProps {
+interface MediaProps {
   [key: string]: number;
 }
 
-export const DeviceSize: DeviceProps = {
+export const DeviceSize: MediaProps = {
   web: 2160,
-  tablet: 1024,
+  tablet: 1280,
   mobile: 768,
+};
+
+export const ContainerWidth: MediaProps = {
+  WEB_CONTAINER: 1440,
+  TABLET_CONTAINER: 1180,
+  MOBILE_CONTAINER: 360,
 };
 
 const customMediaQuery = (maxWidth: number) =>

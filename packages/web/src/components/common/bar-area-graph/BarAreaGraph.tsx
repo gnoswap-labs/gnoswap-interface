@@ -20,10 +20,16 @@ export interface BarAreaGraphProps {
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
 
-function getPositionByMouseEvent(event: React.MouseEvent<HTMLElement | SVGElement, MouseEvent>, width: number) {
+function getPositionByMouseEvent(
+  event: React.MouseEvent<HTMLElement | SVGElement, MouseEvent>,
+  width: number,
+) {
   const { clientX, currentTarget } = event;
   const { left, width: clientWidth } = currentTarget.getBoundingClientRect();
-  return BigNumber(clientX - left).multipliedBy(width).dividedBy(clientWidth).toNumber();
+  return BigNumber(clientX - left)
+    .multipliedBy(width)
+    .dividedBy(clientWidth)
+    .toNumber();
 }
 
 const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
@@ -41,23 +47,32 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   const [selectedEndPosition, setSelectedEndPosition] = useState(0);
 
   const getStartPosition = useCallback(() => {
-    return selectedStartPosition > selectedEndPosition ? selectedEndPosition : selectedStartPosition;
+    return selectedStartPosition > selectedEndPosition
+      ? selectedEndPosition
+      : selectedStartPosition;
   }, [selectedEndPosition, selectedStartPosition]);
 
   const getEndPosition = useCallback(() => {
-    return selectedStartPosition > selectedEndPosition ? selectedStartPosition : selectedEndPosition;
+    return selectedStartPosition > selectedEndPosition
+      ? selectedStartPosition
+      : selectedEndPosition;
   }, [selectedEndPosition, selectedStartPosition]);
 
   const getSelectorPoints = useCallback(() => {
     return `${getStartPosition()},0 ${getStartPosition()},${height} ${getEndPosition()},${height} ${getEndPosition()},0`;
   }, [height, getStartPosition, getEndPosition]);
 
-  const onMouseDownArea = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const onMouseDownArea = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+  ) => {
     event.preventDefault();
     const positionX = getPositionByMouseEvent(event, width);
 
     if (selectedStart) {
-      if (positionX < getStartPosition() - 10 || positionX > getEndPosition() + 10) {
+      if (
+        positionX < getStartPosition() - 10 ||
+        positionX > getEndPosition() + 10
+      ) {
         setSelectedStart(false);
         setSelectedEnd(false);
         setSelectedStartPosition(0);
@@ -87,7 +102,9 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
     }
   };
 
-  const onMouseMoveArea = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const onMouseMoveArea = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+  ) => {
     event.preventDefault();
     const isMouseDown = mouseDown || mouseDownStartLine || mouseDownEndLine;
     if (!isMouseDown) {
@@ -107,7 +124,10 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
     }
   };
 
-  const onMouseDownLine = (event: React.MouseEvent<SVGGElement, MouseEvent>, lineType: "start" | "end") => {
+  const onMouseDownLine = (
+    event: React.MouseEvent<SVGGElement, MouseEvent>,
+    lineType: "start" | "end",
+  ) => {
     event.preventDefault();
     if (lineType === "start") {
       setMouseDownStartLine(true);
@@ -141,58 +161,53 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         width={width}
         height={height}
       />
-      {
-        selectedStart && (
-          <svg
-            className="selector"
-            viewBox={`0 0 ${width} ${height}`}
-          >
-            <defs>
-              <linearGradient id={"gradient-area"} gradientTransform="rotate(0)">
-                <stop offset="0%" stop-color={"rgba(255, 2, 2, 0.2)"} />
-                <stop offset="100%" stop-color={"rgba(0, 205, 46, 0.2)"} />
-              </linearGradient>
-            </defs>
-            <g onMouseDown={event => onMouseDownLine(event, "start")}>
-              <line
-                className="start-line"
-                stroke="rgb(255, 2, 2)"
-                strokeWidth={2}
-                x1={getStartPosition()}
-                y1={0}
-                x2={getStartPosition()}
-                y2={height}
-              />
-              <svg x={getStartPosition() - 12}>
-                <rect width="11" height="32" rx="2" fill="#596782" />
-                <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
-                <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
-              </svg>
-            </g>
-            <polygon
-              className="area"
-              fill={"url(#gradient-area)"}
-              points={getSelectorPoints()}
+      {selectedStart && (
+        <svg className="selector" viewBox={`0 0 ${width} ${height}`}>
+          <defs>
+            <linearGradient id={"gradient-area"} gradientTransform="rotate(0)">
+              <stop offset="0%" stopColor={"rgba(255, 2, 2, 0.2)"} />
+              <stop offset="100%" stopColor={"rgba(0, 205, 46, 0.2)"} />
+            </linearGradient>
+          </defs>
+          <g onMouseDown={event => onMouseDownLine(event, "start")}>
+            <line
+              className="start-line"
+              stroke="rgb(255, 2, 2)"
+              strokeWidth={2}
+              x1={getStartPosition()}
+              y1={0}
+              x2={getStartPosition()}
+              y2={height}
             />
-            <g onMouseDown={event => onMouseDownLine(event, "end")}>
-              <line
-                className="end-line"
-                stroke="rgb(0, 205, 46)"
-                strokeWidth={2}
-                x1={getEndPosition()}
-                y1={0}
-                x2={getEndPosition()}
-                y2={height}
-              />
-              <svg x={getEndPosition() + 1}>
-                <rect width="11" height="32" rx="2" fill="#596782" />
-                <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
-                <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
-              </svg>
-            </g>
-          </svg>
-        )
-      }
+            <svg x={getStartPosition() - 12}>
+              <rect width="11" height="32" rx="2" fill="#596782" />
+              <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
+              <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
+            </svg>
+          </g>
+          <polygon
+            className="area"
+            fill={"url(#gradient-area)"}
+            points={getSelectorPoints()}
+          />
+          <g onMouseDown={event => onMouseDownLine(event, "end")}>
+            <line
+              className="end-line"
+              stroke="rgb(0, 205, 46)"
+              strokeWidth={2}
+              x1={getEndPosition()}
+              y1={0}
+              x2={getEndPosition()}
+              y2={height}
+            />
+            <svg x={getEndPosition() + 1}>
+              <rect width="11" height="32" rx="2" fill="#596782" />
+              <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
+              <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
+            </svg>
+          </g>
+        </svg>
+      )}
     </BarAreaGraphWrapper>
   );
 };

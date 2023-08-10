@@ -59,7 +59,9 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
               alert("open Link");
             }}
           >
-            <IconOpenLink className="action-icon" />
+            <div className="icon-wrapper">
+              <IconOpenLink className="action-icon" />
+            </div>
           </IconButton>
         </div>
       </div>

@@ -7,11 +7,16 @@ function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthY = pointB.y - pointA.y;
   return {
     length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
-    angle: Math.atan2(lengthY, lengthX)
+    angle: Math.atan2(lengthY, lengthX),
   };
 }
 
-function controlPoint(current: Point, previous?: Point, next?: Point, reverse?: boolean) {
+function controlPoint(
+  current: Point,
+  previous?: Point,
+  next?: Point,
+  reverse?: boolean,
+) {
   const smoothing = 0.15;
   const prePoint = previous || current;
   const nextPoint = next || current;
@@ -25,8 +30,17 @@ function controlPoint(current: Point, previous?: Point, next?: Point, reverse?: 
 }
 
 function bezierCommand(point: Point, index: number, points: Point[]) {
-  const [cpsX, cpsY] = controlPoint(points[index - 1], points[index - 2], point);
-  const [cpeX, cpeY] = controlPoint(point, points[index - 1], points[index + 1], true);
+  const [cpsX, cpsY] = controlPoint(
+    points[index - 1],
+    points[index - 2],
+    point,
+  );
+  const [cpeX, cpeY] = controlPoint(
+    point,
+    points[index - 1],
+    points[index + 1],
+    true,
+  );
   return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x},${point.y}`;
 }
 
@@ -82,7 +96,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   smooth,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
-  point
+  point,
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -98,10 +112,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
     updatePoints(datas, width, height);
   }, [datas, width, height]);
 
-  const updatePoints = (datas: LineGraphData[], width: number, height: number) => {
+  const updatePoints = (
+    datas: LineGraphData[],
+    width: number,
+    height: number,
+  ) => {
     const mappedDatas = datas.map(data => ({
       value: new BigNumber(data.value).toNumber(),
-      time: new Date(data.time).getTime()
+      time: new Date(data.time).getTime(),
     }));
 
     const values = mappedDatas.map(data => data.value);
@@ -113,11 +131,20 @@ const LineGraph: React.FC<LineGraphProps> = ({
     const maxTime = Math.max(...times);
 
     const optimizeValue = function (value: number, height: number) {
-      return height - new BigNumber(value - minValue).multipliedBy(height).dividedBy(maxValue - minValue).toNumber();
+      return (
+        height -
+        new BigNumber(value - minValue)
+          .multipliedBy(height)
+          .dividedBy(maxValue - minValue)
+          .toNumber()
+      );
     };
 
     const optimizeTime = function (time: number, width: number) {
-      return new BigNumber(time - minTime).multipliedBy(width).dividedBy(maxTime - minTime).toNumber();
+      return new BigNumber(time - minTime)
+        .multipliedBy(width)
+        .dividedBy(maxTime - minTime)
+        .toNumber();
     };
 
     const points = mappedDatas.map<Point>(data => ({
@@ -139,7 +166,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
     const { left } = currentTarget.getBoundingClientRect();
     const positionX = clientX - left;
     const clientWidth = currentTarget.clientWidth;
-    const xPosition = new BigNumber(positionX).multipliedBy(width).dividedBy(clientWidth).toNumber();
+    const xPosition = new BigNumber(positionX)
+      .multipliedBy(width)
+      .dividedBy(clientWidth)
+      .toNumber();
     let currentPoint: Point | null = null;
     let minDistance = -1;
 
@@ -161,23 +191,32 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
   };
 
-  const getGraphLine = useCallback((smooth?: boolean, fill?: boolean) => {
-    function mappedPoint(point: Point, index: number, points: Point[]) {
-      if (index === 0) {
-        return `${fill ? "L" : "M"} ${point.x},${point.y}`;
+  const getGraphLine = useCallback(
+    (smooth?: boolean, fill?: boolean) => {
+      function mappedPoint(point: Point, index: number, points: Point[]) {
+        if (index === 0) {
+          return `${fill ? "L" : "M"} ${point.x},${point.y}`;
+        }
+        return smooth
+          ? bezierCommand(point, index, points)
+          : `L ${point.x},${point.y}`;
       }
-      return smooth ?
-        bezierCommand(point, index, points) :
-        `L ${point.x},${point.y}`;
-    }
-    return points
-      .map((point, index) => mappedPoint(point, index, points))
-      .join(" ");
-  }, [points]);
+      return points
+        .map((point, index) => mappedPoint(point, index, points))
+        .join(" ");
+    },
+    [points],
+  );
 
-  const getFillGraphLine = useCallback((smooth?: boolean) => {
-    return `M 0,${height} ${getGraphLine(smooth, true)} L ${width},${height}Z`;
-  }, [getGraphLine, height, width]);
+  const getFillGraphLine = useCallback(
+    (smooth?: boolean) => {
+      return `M 0,${height} ${getGraphLine(
+        smooth,
+        true,
+      )} L ${width},${height}Z`;
+    },
+    [getGraphLine, height, width],
+  );
 
   return (
     <LineGraphWrapper
@@ -186,28 +225,30 @@ const LineGraph: React.FC<LineGraphProps> = ({
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
     >
-      <svg viewBox={`0 0 ${width} ${height}`} >
+      <svg viewBox={`0 0 ${width} ${height}`}>
         <defs>
-          <linearGradient id={"gradient" + COMPONENT_ID} gradientTransform="rotate(90)">
-            <stop offset="0%" stop-color={gradientStartColor} />
-            <stop offset="100%" stop-color={gradientEndColor} />
+          <linearGradient
+            id={"gradient" + COMPONENT_ID}
+            gradientTransform="rotate(90)"
+          >
+            <stop offset="0%" stopColor={gradientStartColor} />
+            <stop offset="100%" stopColor={gradientEndColor} />
           </linearGradient>
         </defs>
         <g>
           <path
             fill={`url(#gradient${COMPONENT_ID})`}
             stroke={color}
-            stroke-width={0}
+            strokeWidth={0}
             d={getFillGraphLine(smooth)}
           />
           <path
             fill="none"
             stroke={color}
-            stroke-width={strokeWidth}
+            strokeWidth={strokeWidth}
             d={getGraphLine(smooth)}
           />
-          {
-            point &&
+          {point &&
             points.map((point, index) => (
               <circle
                 key={index}
@@ -216,57 +257,58 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 r={1}
                 stroke={color}
               />
-            ))
-          }
+            ))}
         </g>
-        {
-          isFocus() && currentPoint && (
-            <g>
-              <line
-                stroke={color}
-                strokeWidth={1}
-                x1={0}
-                y1={currentPoint.y}
-                x2={width}
-                y2={currentPoint.y}
-                strokeDasharray={3}
-              />
-              <line
-                stroke={color}
-                strokeWidth={1}
-                x1={currentPoint.x}
-                y1={0}
-                x2={currentPoint.x}
-                y2={height}
-                strokeDasharray={3}
-              />
-              <circle
-                cx={currentPoint.x}
-                cy={currentPoint.y}
-                r={3}
-                stroke={color}
-                fill={color}
-              />
-            </g>
-          )
-        }
+        {isFocus() && currentPoint && (
+          <g>
+            <line
+              stroke={color}
+              strokeWidth={1}
+              x1={0}
+              y1={currentPoint.y}
+              x2={width}
+              y2={currentPoint.y}
+              strokeDasharray={3}
+            />
+            <line
+              stroke={color}
+              strokeWidth={1}
+              x1={currentPoint.x}
+              y1={0}
+              x2={currentPoint.x}
+              y2={height}
+              strokeDasharray={3}
+            />
+            <circle
+              cx={currentPoint.x}
+              cy={currentPoint.y}
+              r={3}
+              stroke={color}
+              fill={color}
+            />
+          </g>
+        )}
       </svg>
-      {
-        isFocus() && currentPointIndex > -1 && (
-          <LineGraphTooltipWrapper
-            x={currentPoint?.x || 0}
-            y={currentPoint?.y || 0}
-          >
-            <div className="tooltip-header">
-              <span className="date">{parseTime(datas[currentPointIndex].time).date}</span>
-              <span className="time">{parseTime(datas[currentPointIndex].time).time}</span>
-            </div>
-            <div className="tooltip-body">
-              <span className="value">{`$ ${BigNumber(datas[currentPointIndex].value).toString()}`}</span>
-            </div>
-          </LineGraphTooltipWrapper>
-        )
-      }
+      {isFocus() && currentPointIndex > -1 && (
+        <LineGraphTooltipWrapper
+          x={currentPoint?.x || 0}
+          y={currentPoint?.y || 0}
+        >
+          <div className="tooltip-header">
+            <span className="date">
+              {parseTime(datas[currentPointIndex].time).date}
+            </span>
+            <span className="time">
+              {parseTime(datas[currentPointIndex].time).time}
+            </span>
+          </div>
+          <div className="tooltip-body">
+            <span className="value">{`$ ${BigNumber(
+              datas[currentPointIndex].value,
+            ).toString()}`}</span>
+          </div>
+        </LineGraphTooltipWrapper>
+      )}
     </LineGraphWrapper>
   );
 };

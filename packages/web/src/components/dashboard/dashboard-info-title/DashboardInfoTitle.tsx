@@ -7,13 +7,16 @@ import {
 } from "./DashboardInfoTitle.styles";
 import IconLogoWhite from "../../common/icons/IconLogoWhite";
 import { DashboardTokenInfo } from "@containers/dashboard-info-container/DashboardInfoContainer";
+import { DeviceSize } from "@styles/media";
 
 interface DashboardInfoTitleProps {
   dashboardTokenInfo: DashboardTokenInfo;
+  windowSize: number;
 }
 
 const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
   dashboardTokenInfo,
+  windowSize,
 }) => (
   <DashboardInfoTitleWrapper>
     <TokenWrapper>
@@ -25,7 +28,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
       </GnosLogoWrapper>
       <div>{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>
-    <TitleDivider />
+    {windowSize > DeviceSize.mobile && <TitleDivider />}
     <TokenWrapper>
       <GnotLogoWrapper>
         <div className="gnot-image-wrapper">

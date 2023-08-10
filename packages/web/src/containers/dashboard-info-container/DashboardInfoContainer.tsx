@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardInfo from "@components/dashboard/dashboard-info/DashboardInfo";
 
 export interface DashboardTokenInfo {
@@ -46,11 +46,25 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
 };
 
 const DashboardInfoContainer: React.FC = () => {
+  const [width, setWidth] = useState(Number);
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <DashboardInfo
       dashboardTokenInfo={initialDashboardTokenInfo}
       supplyOverviewInfo={initialSupplyOverviewInfo}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
+      windowSize={width}
     />
   );
 };
