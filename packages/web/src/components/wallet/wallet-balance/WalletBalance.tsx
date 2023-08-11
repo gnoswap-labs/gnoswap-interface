@@ -13,6 +13,7 @@ interface WalletBalanceProps {
   deposit: () => void;
   withdraw: () => void;
   claimAll: () => void;
+  windowSize: number;
 }
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({
@@ -22,6 +23,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   deposit,
   withdraw,
   claimAll,
+  windowSize,
 }) => (
   <WalletBalanceWrapper>
     <WalletBalanceSummary
@@ -29,11 +31,13 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
       balanceSummaryInfo={balanceSummaryInfo}
       deposit={deposit}
       withdraw={withdraw}
+      windowSize={windowSize}
     />
     <WalletBalanceDetail
       connected={connected}
       balanceDetailInfo={balanceDetailInfo}
       claimAll={claimAll}
+      windowSize={windowSize}
     />
   </WalletBalanceWrapper>
 );

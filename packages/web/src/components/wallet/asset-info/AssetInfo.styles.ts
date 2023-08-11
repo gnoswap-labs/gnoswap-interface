@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const AssetInfoWrapper = styled.div`
@@ -35,9 +36,24 @@ export const AssetInfoWrapper = styled.div`
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
-  padding: 16px;
   height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
+  .logo {
+    margin-left: 16px;
+  }
+
+  .chain {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 0px 16px 12px;
+    }
+  }
+  .balance {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 0px;
+    }
+  }
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
