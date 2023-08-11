@@ -26,6 +26,7 @@ interface AssetListProps {
   sortOption: AssetSortOption | undefined;
   sort: (item: ASSET_HEAD) => void;
   isSortOption: (item: ASSET_HEAD) => boolean;
+  windowSize: number;
 }
 
 const AssetList: React.FC<AssetListProps> = ({
@@ -45,6 +46,7 @@ const AssetList: React.FC<AssetListProps> = ({
   sort,
   sortOption,
   isSortOption,
+  windowSize,
 }) => (
   <AssetListWrapper>
     <AssetListHeader
@@ -54,6 +56,7 @@ const AssetList: React.FC<AssetListProps> = ({
       changeAssetType={changeAssetType}
       toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
       search={search}
+      windowSize={windowSize}
     />
     <AssetListTable
       isFetched={isFetched}
@@ -63,6 +66,7 @@ const AssetList: React.FC<AssetListProps> = ({
       sort={sort}
       sortOption={sortOption}
       isSortOption={isSortOption}
+      windowSize={windowSize}
     />
     {hasLoader && <LoadMoreButton show={!extended} onClick={toggleExtended} />}
   </AssetListWrapper>

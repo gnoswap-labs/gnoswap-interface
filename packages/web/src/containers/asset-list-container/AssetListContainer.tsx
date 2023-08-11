@@ -28,11 +28,11 @@ export const ASSET_HEAD = {
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 
 const SORT_PARAMS: { [key in ASSET_HEAD]: string } = {
-  "Asset": "asset",
-  "Chain": "chain",
-  "Balance": "balance",
-  "Deposit": "deposit",
-  "Withdraw": "withdraw",
+  Asset: "asset",
+  Chain: "chain",
+  Balance: "balance",
+  Deposit: "deposit",
+  Withdraw: "withdraw",
 };
 
 export interface Asset {
@@ -139,6 +139,18 @@ const AssetListContainer: React.FC = () => {
   const [filteredAssets, setFilteredAsset] = useState<Asset[]>([]);
   const [hasLoader, setHasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
+  const [width, setWidth] = useState(Number);
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const {
     isFetched,
@@ -146,7 +158,12 @@ const AssetListContainer: React.FC = () => {
     data: assets,
   } = useQuery<Asset[], Error>({
     queryKey: ["assets", address, sortOption?.key, sortOption?.direction],
-    queryFn: () => fetchAssets(address, sortOption && SORT_PARAMS[sortOption.key], sortOption?.direction),
+    queryFn: () =>
+      fetchAssets(
+        address,
+        sortOption && SORT_PARAMS[sortOption.key],
+        sortOption?.direction,
+      ),
   });
 
   useEffect(() => {
@@ -162,9 +179,9 @@ const AssetListContainer: React.FC = () => {
       const resultFilteredAssets = extended
         ? filteredAssets
         : filteredAssets.slice(
-          0,
-          Math.min(filteredAssets.length, COLLAPSED_LENGTH),
-        );
+            0,
+            Math.min(filteredAssets.length, COLLAPSED_LENGTH),
+          );
 
       setHasLoader(hasLoader);
       setFilteredAsset(resultFilteredAssets);
@@ -215,17 +232,23 @@ const AssetListContainer: React.FC = () => {
     [address],
   );
 
-  const sort = useCallback((item: ASSET_HEAD) => {
-    const key = item;
-    const direction = sortOption?.key !== item ?
-      "desc" :
-      sortOption.direction === "asc" ? "desc" : "asc";
+  const sort = useCallback(
+    (item: ASSET_HEAD) => {
+      const key = item;
+      const direction =
+        sortOption?.key !== item
+          ? "desc"
+          : sortOption.direction === "asc"
+          ? "desc"
+          : "asc";
 
-    setTokenSortOption({
-      key,
-      direction,
-    });
-  }, [sortOption]);
+      setTokenSortOption({
+        key,
+        direction,
+      });
+    },
+    [sortOption],
+  );
 
   const isSortOption = useCallback((head: ASSET_HEAD) => {
     const disableItems = ["Deposit", "Withdraw"];
@@ -250,6 +273,7 @@ const AssetListContainer: React.FC = () => {
       sortOption={sortOption}
       sort={sort}
       isSortOption={isSortOption}
+      windowSize={width}
     />
   );
 };

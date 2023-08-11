@@ -14,6 +14,11 @@ export const ContainerWidth: MediaProps = {
   MOBILE_CONTAINER: 360,
 };
 
+export const compareSize = (type: string, size: number) => {
+  const width = Object.keys(DeviceSize).find(x => x === type.toLowerCase());
+  return size > DeviceSize[`${width}`] ? true : false;
+};
+
 const customMediaQuery = (maxWidth: number) =>
   `@media (max-width: ${maxWidth}px)`;
 

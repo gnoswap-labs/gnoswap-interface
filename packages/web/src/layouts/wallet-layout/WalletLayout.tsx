@@ -1,5 +1,5 @@
 import React from "react";
-import { wrapper } from "./WalletLayout.styles";
+import { WalletLayoutWrapper } from "./WalletLayout.styles";
 
 interface WalletLayoutProps {
   header: React.ReactNode;
@@ -16,26 +16,25 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({
   positions,
   footer,
 }) => (
-  <main css={wrapper}>
+  <WalletLayoutWrapper>
     {header}
-
     <section className="wallet-summary-section">
-      <div className="container title-container">
-        <h3 className="title">Wallet</h3>
+      <div className="summary-container">
+        <h3 className="title-wrapper">Wallet</h3>
+        <div className="balance-container">{balance}</div>
       </div>
-      <div className="container balance-container">{balance}</div>
     </section>
-
     <div className="background-wrapper">
       <div className="background"></div>
       <section className="wallet-detail-section">
-        <div className="container assets-container">{assets}</div>
-        <div className="container positions-container">{positions}</div>
+        <div className="detail-container">
+          <div className="assets">{assets}</div>
+          <div className="positions">{positions}</div>
+        </div>
       </section>
     </div>
-
     {footer}
-  </main>
+  </WalletLayoutWrapper>
 );
 
 export default WalletLayout;

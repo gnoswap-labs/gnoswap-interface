@@ -17,7 +17,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   title,
   value,
   tooltip,
-  button
+  button,
 }) => {
   return (
     <WalletBalanceDetailInfoWrapper>
@@ -27,14 +27,9 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
           <WalletBalanceDetailInfoTooltip tooltip={tooltip} />
         )}
       </div>
-
       <div className="value-wrapper">
         <span className="value">{value}</span>
-        {button && (
-          <div className="button-wrapper">
-            {button}
-          </div>
-        )}
+        {button && <div className="button-wrapper">{button}</div>}
       </div>
     </WalletBalanceDetailInfoWrapper>
   );

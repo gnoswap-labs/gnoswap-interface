@@ -7,11 +7,17 @@ import AssetInfo from "@components/wallet/asset-info/AssetInfo";
 import { AssetListTableWrapper, TableColumn } from "./AssetListTable.styles";
 import { noDataText } from "@components/earn/pool-list-table/PoolListTable.styles";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
-import { ASSET_INFO, ASSET_TD_WIDTH } from "@constants/skeleton.constant";
+import {
+  ASSET_INFO,
+  ASSET_TD_WIDTH,
+  MOBILE_ASSET_TD_WIDTH,
+  TABLET_ASSET_TD_WIDTH,
+} from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
 import { useCallback } from "react";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
+import { compareSize } from "@styles/media";
 
 interface AssetListTableProps {
   assets: Asset[];
@@ -21,6 +27,7 @@ interface AssetListTableProps {
   sortOption: AssetSortOption | undefined;
   sort: (head: ASSET_HEAD) => void;
   isSortOption: (head: ASSET_HEAD) => boolean;
+  windowSize: number;
 }
 
 const AssetListTable: React.FC<AssetListTableProps> = ({
@@ -31,15 +38,21 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   sortOption,
   sort,
   isSortOption,
+  windowSize,
 }) => {
+  const isAscendingOption = useCallback(
+    (head: ASSET_HEAD) => {
+      return sortOption?.key === head && sortOption.direction === "asc";
+    },
+    [sortOption],
+  );
 
-  const isAscendingOption = useCallback((head: ASSET_HEAD) => {
-    return sortOption?.key === head && sortOption.direction === "asc";
-  }, [sortOption]);
-
-  const isDescendingOption = useCallback((head: ASSET_HEAD) => {
-    return sortOption?.key === head && sortOption.direction === "desc";
-  }, [sortOption]);
+  const isDescendingOption = useCallback(
+    (head: ASSET_HEAD) => {
+      return sortOption?.key === head && sortOption.direction === "desc";
+    },
+    [sortOption],
+  );
 
   const onClickTableHead = (head: ASSET_HEAD) => {
     if (!isSortOption(head)) {
@@ -49,9 +62,11 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   };
 
   const isAlignLeft = (head: ASSET_HEAD) => {
-    return ASSET_HEAD.ASSET === head ||
+    return (
+      ASSET_HEAD.ASSET === head ||
       ASSET_HEAD.BALANCE === head ||
-      ASSET_HEAD.CHAIN === head;
+      ASSET_HEAD.CHAIN === head
+    );
   };
   return (
     <AssetListTableWrapper>
@@ -59,18 +74,33 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
         {Object.values(ASSET_HEAD).map((head, idx) => (
           <TableColumn
             key={idx}
-            className={cx({ left: isAlignLeft(head), sort: isSortOption(head) })}
-            tdWidth={ASSET_TD_WIDTH[idx]}
+            className={cx({
+              left: isAlignLeft(head),
+              sort: isSortOption(head),
+            })}
+            tdWidth={
+              compareSize("TABLET", windowSize)
+                ? ASSET_TD_WIDTH[idx]
+                : compareSize("MOBILE", windowSize)
+                ? TABLET_ASSET_TD_WIDTH[idx]
+                : MOBILE_ASSET_TD_WIDTH[idx]
+            }
           >
-            <span className={Object.keys(ASSET_HEAD)[idx].toLowerCase()} onClick={() => onClickTableHead(head)}>
-              {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
-              {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
+            <span
+              className={Object.keys(ASSET_HEAD)[idx].toLowerCase()}
+              onClick={() => onClickTableHead(head)}
+            >
+              {isAscendingOption(head) && (
+                <IconTriangleArrowUp className="icon asc" />
+              )}
+              {isDescendingOption(head) && (
+                <IconTriangleArrowDown className="icon desc" />
+              )}
               {head}
             </span>
           </TableColumn>
         ))}
       </div>
-
       <div className="asset-list-body">
         {isFetched && assets.length === 0 && (
           <div css={noDataText}>No data found</div>
@@ -83,6 +113,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               asset={asset}
               deposit={deposit}
               withdraw={withdraw}
+              windowSize={windowSize}
             />
           ))}
         {!isFetched && <TableSkeleton info={ASSET_INFO} />}

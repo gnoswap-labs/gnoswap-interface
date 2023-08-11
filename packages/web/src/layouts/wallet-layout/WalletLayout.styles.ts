@@ -1,44 +1,83 @@
 import mixins from "@styles/mixins";
-import { css, Theme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
-export const wrapper = (theme: Theme) => css`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  background-color: ${theme.color.background01};
+export const WalletLayoutWrapper = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  width: 100%;
+  background-color: ${({ theme }) => theme.color.background01};
 
-  .wallet-detail-section,
   .wallet-summary-section {
     ${mixins.flexbox("column", "center", "flex-start")};
+    max-width: 1920px;
     width: 100%;
+    padding: 100px 0px;
+    ${media.tablet} {
+      max-width: 1180px;
+      padding: 60px 0px;
+    }
+    ${media.mobile} {
+      max-width: 360px;
+      padding: 0px;
+    }
   }
 
-  .container {
-    width: 100%;
-    width: 100%;
+  .summary-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: 1440px;
-    padding: 0 40px;
+    width: 100%;
+    padding: 0px 40px;
+    gap: 36px;
+    ${media.tablet} {
+      gap: 24px;
+    }
+    ${media.mobile} {
+      padding: 24px 16px 48px 16px;
+    }
   }
-
-  .wallet-summary-section {
-    ${mixins.flexbox("column", "center", "flex-start")};
-    margin: 100px auto;
-
-    .title-container {
-      margin-bottom: 36px;
-
-      .title {
-        ${fonts.h3};
-        color: ${theme.color.text02};
-      }
-    }
-
-    .balance-container {
-    }
+  .assets,
+  .positions,
+  .balance-container {
+    width: 100%;
   }
 
   .wallet-detail-section {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    max-width: 1920px;
+    width: 100%;
     position: relative;
-    margin: 100px auto;
+    padding: 100px 0px;
+    ${media.tablet} {
+      max-width: 1180px;
+      padding: 60px 0px;
+    }
+    ${media.mobile} {
+      max-width: 360px;
+      padding: 48px 0px;
+    }
+  }
+
+  .detail-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: 1440px;
+    width: 100%;
+    padding: 0px 40px;
+    gap: 24px;
+    ${media.mobile} {
+      padding: 0px 16px;
+    }
+  }
+
+  .title-wrapper {
+    ${fonts.h3};
+    ${media.tablet} {
+      ${fonts.h4};
+    }
+    ${media.mobile} {
+      ${fonts.h5};
+    }
+    color: ${({ theme }) => theme.color.text02};
   }
 
   .background-wrapper {
@@ -55,8 +94,8 @@ export const wrapper = (theme: Theme) => css`
       height: 400px;
       background: linear-gradient(
         180deg,
-        ${theme.color.backgroundGradient2} 0%,
-        ${theme.color.backgroundGradient3} 100%
+        ${({ theme }) => theme.color.backgroundGradient2} 0%,
+        ${({ theme }) => theme.color.backgroundGradient3} 100%
       );
     }
   }
