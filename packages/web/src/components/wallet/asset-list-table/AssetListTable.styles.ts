@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const AssetListTableWrapper = styled.div`
@@ -7,7 +8,6 @@ export const AssetListTableWrapper = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.color.border01};
   border-radius: 8px;
-  margin-bottom: 24px;
   color: ${({ theme }) => theme.color.text04};
   ${fonts.body11};
   overflow-x: auto;
@@ -28,8 +28,38 @@ export const AssetListTableWrapper = styled.div`
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
-  padding: 16px;
   ${mixins.flexbox("row", "center", "flex-end")};
+
+  .asset {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 0px 16px 16px;
+    }
+  }
+  .chain {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 0px 16px 12px;
+    }
+  }
+  .balance {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 0px;
+    }
+  }
+  .deposit {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 16px 16px 12px;
+    }
+  }
+  .withdraw {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 16px 16px 12px;
+    }
+  }
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;

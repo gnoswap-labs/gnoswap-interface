@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const SwitchWrapper = styled.div`
@@ -9,6 +10,9 @@ export const SwitchWrapper = styled.div`
 
 export const SwitchLabel = styled.label`
   ${fonts.body12};
+  ${media.mobile} {
+    ${fonts.p2};
+  }
   color: ${({ theme }) => theme.color.text04};
   pointer-events: none;
 `;
