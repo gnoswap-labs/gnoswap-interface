@@ -1,10 +1,19 @@
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const HeaderSideMenuModalWrapper = styled.div`
-  ${mixins.posMoveToTopAndLeft("80%", "40%")};
-  transform: translate(-110%, 14px);
+  position: absolute;
+  top: 52px;
+  ${media.tablet} {
+    top: 47px;
+  }
+  ${media.mobile} {
+    top: -210px;
+    right: -10px;
+  }
+  right: 0px;
   width: 240px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background01};
@@ -13,15 +22,16 @@ export const HeaderSideMenuModalWrapper = styled.div`
 `;
 
 export const Navigation = styled.nav`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   padding: 4px 0px;
   ul {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
   }
   li {
-    ${mixins.flexbox("row", "center", "flex-start")};
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
     padding: 8px 16px;
     color: ${({ theme }) => theme.color.text04};
     &.selected,

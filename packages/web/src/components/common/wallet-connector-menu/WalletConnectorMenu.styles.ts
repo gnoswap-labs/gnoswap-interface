@@ -1,11 +1,42 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { Z_INDEX } from "@styles/zIndex";
 
 export const WalletConnectorMenuWrapper = styled.div`
-  ${mixins.posMoveToTopAndLeft("100%", "0")};
-  transform: translateY(17px);
+  position: absolute;
   width: 280px;
+  top: 54px;
+  ${media.tablet} {
+    top: 49px;
+    right: 0px;
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    position: fixed;
+    width: 100%;
+    height: 172px;
+    top: calc(100vh - 172px);
+    z-index: ${Z_INDEX.modal};
+  }
+
+  .button-container {
+    ${media.mobile} {
+      ${mixins.flexbox("column", "center", "center")};
+      max-width: 324px;
+      width: 100%;
+    }
+  }
+
+  .theme-container {
+    ${media.mobile} {
+      ${mixins.flexbox("column", "center", "center")};
+      max-width: 324px;
+      width: 100%;
+    }
+  }
+
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;

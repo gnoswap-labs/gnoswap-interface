@@ -169,10 +169,3 @@ export const SearchButton = styled.button`
     }
   }
 `;
-
-export const ButtonWrapper = styled.button`
-  ${mixins.flexbox("row", "center", "center")};
-  position: relative;
-  ${fonts.body3};
-  color: ${({ theme }) => theme.color.text16};
-`;

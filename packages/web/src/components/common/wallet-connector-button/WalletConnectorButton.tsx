@@ -17,7 +17,13 @@ const FAKE_USERINFO = {
   },
 };
 
-const WalletConnectorButton = ({ isConnected }: { isConnected: boolean }) => {
+interface WalletConnectProps {
+  isConnected: boolean;
+}
+
+const WalletConnectorButton: React.FC<WalletConnectProps> = ({
+  isConnected,
+}) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
   const onMenuToggle = () => {

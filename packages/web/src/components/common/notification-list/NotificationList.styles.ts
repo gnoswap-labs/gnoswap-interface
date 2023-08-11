@@ -1,10 +1,19 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const NotificationListWrapper = styled.div`
-  ${mixins.posMoveToTopAndLeft("100%", "50%")};
-  transform: translate(-50%, 17px);
+  position: absolute;
+  top: 53px;
+  right: -150px;
+  ${media.tablet} {
+    top: 46px;
+    right: 0px;
+  }
+  ${media.mobile} {
+    top: 42px;
+  }
   width: 320px;
   max-height: 442px;
   overflow-y: auto;
