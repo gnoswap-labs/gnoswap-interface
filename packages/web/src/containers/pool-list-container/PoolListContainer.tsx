@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairModel } from "@models/token/token-pair-model";
@@ -43,11 +43,11 @@ export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
 
 const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
   "Pool Name": "name",
-  "Liquidity": "liquidity",
+  Liquidity: "liquidity",
   "Volume (24h)": "volume",
   "Fees (24h)": "fees",
-  "APR": "apr",
-  "Rewards": "rewards",
+  APR: "apr",
+  Rewards: "rewards",
 };
 
 export const dummyPoolList: Pool[] = [
@@ -141,22 +141,14 @@ export const dummyPoolList: Pool[] = [
 ];
 
 async function fetchPools(
-  type: POOL_TYPE,  // eslint-disable-line
-  page: number,     // eslint-disable-line
-  keyword: string,  // eslint-disable-line
+  type: POOL_TYPE, // eslint-disable-line
+  page: number, // eslint-disable-line
+  keyword: string, // eslint-disable-line
   sortKey?: string, // eslint-disable-line
   direction?: string, // eslint-disable-line
 ): Promise<Pool[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
-      ...dummyPoolList,
       ...dummyPoolList,
       ...dummyPoolList,
       ...dummyPoolList,
@@ -171,14 +163,44 @@ const PoolListContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [sortOption, setTokenSortOption] = useState<PoolSortOption>();
+  const [width, setWidth] = useState(Number);
+  const [searchIcon, setSearchIcon] = useState(false);
+  const onTogleSearch = () => {
+    setSearchIcon(prev => !prev);
+  };
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const {
     isFetched,
     error,
     data: pools,
   } = useQuery<Pool[], Error>({
-    queryKey: ["pools", poolType, page, keyword, sortOption?.key, sortOption?.direction],
-    queryFn: () => fetchPools(poolType, page, keyword, sortOption && SORT_PARAMS[sortOption.key], sortOption?.direction),
+    queryKey: [
+      "pools",
+      poolType,
+      page,
+      keyword,
+      sortOption?.key,
+      sortOption?.direction,
+    ],
+    queryFn: () =>
+      fetchPools(
+        poolType,
+        page,
+        keyword,
+        sortOption && SORT_PARAMS[sortOption.key],
+        sortOption?.direction,
+      ),
   });
 
   const changePoolType = useCallback((newType: string) => {
@@ -205,17 +227,23 @@ const PoolListContainer: React.FC = () => {
     setPage(newPage);
   }, []);
 
-  const sort = useCallback((item: TABLE_HEAD) => {
-    const key = item;
-    const direction = sortOption?.key !== item ?
-      "desc" :
-      sortOption.direction === "asc" ? "desc" : "asc";
+  const sort = useCallback(
+    (item: TABLE_HEAD) => {
+      const key = item;
+      const direction =
+        sortOption?.key !== item
+          ? "desc"
+          : sortOption.direction === "asc"
+          ? "desc"
+          : "asc";
 
-    setTokenSortOption({
-      key,
-      direction,
-    });
-  }, [sortOption]);
+      setTokenSortOption({
+        key,
+        direction,
+      });
+    },
+    [sortOption],
+  );
 
   const isSortOption = useCallback((head: TABLE_HEAD) => {
     const disableItems = ["Rewards"];
@@ -237,6 +265,9 @@ const PoolListContainer: React.FC = () => {
       sortOption={sortOption}
       sort={sort}
       isSortOption={isSortOption}
+      windowSize={width}
+      searchIcon={searchIcon}
+      onTogleSearch={onTogleSearch}
     />
   );
 };

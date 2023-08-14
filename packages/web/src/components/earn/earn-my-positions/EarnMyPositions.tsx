@@ -1,4 +1,4 @@
-import { wrapper } from "./EarnMyPositions.styles";
+import { EarnMyPositionswrapper } from "./EarnMyPositions.styles";
 
 interface EarnMyPositionsProps {
   header: React.ReactNode;
@@ -9,10 +9,10 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   header,
   content,
 }) => (
-  <div css={wrapper}>
+  <EarnMyPositionswrapper>
     {header}
     {content}
-  </div>
+  </EarnMyPositionswrapper>
 );
 
 export default EarnMyPositions;

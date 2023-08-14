@@ -1,4 +1,4 @@
-import { wrapper } from "./EarnMyPositionNoLiquidity.styles";
+import { NoLiquidityWrapper } from "./EarnMyPositionNoLiquidity.styles";
 
 interface EarnMyPositionNoLiquidityProps {}
 
@@ -10,7 +10,7 @@ const EarnMyPositionNoLiquidity: React.FC<
   const apr = "999%";
 
   return (
-    <div css={wrapper}>
+    <NoLiquidityWrapper>
       <p>
         You have<span className="emphasis-text">&nbsp;{value}&nbsp;</span>in
         your wallet available to earn.
@@ -21,7 +21,7 @@ const EarnMyPositionNoLiquidity: React.FC<
         Add liquidity to Gnoswap’s pools to earn trading fees on every swap. You
         may also stake LP tokens to earn GNOS token rewards.
       </span>
-    </div>
+    </NoLiquidityWrapper>
   );
 };
 

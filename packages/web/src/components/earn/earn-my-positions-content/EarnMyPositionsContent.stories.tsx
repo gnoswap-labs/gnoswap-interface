@@ -18,7 +18,14 @@ const Template: ComponentStory<typeof EarnMyPositionsContent> = args => (
     {...args}
     unconnected={<EarnMyPositionsUnconnected />}
     noLiquidity={<EarnMyPositionNoLiquidity />}
-    cardList={<MyPositionCardList list={dummyPositionList} isFetched={true} />}
+    cardList={
+      <MyPositionCardList
+        list={dummyPositionList}
+        isFetched={true}
+        windowSize={500}
+        currentIndex={1}
+      />
+    }
   />
 );
 

@@ -15,9 +15,10 @@ import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDow
 interface PoolListTableProps {
   pools: Pool[];
   isFetched: boolean;
-  sortOption: PoolSortOption | undefined
+  sortOption: PoolSortOption | undefined;
   sort: (head: TABLE_HEAD) => void;
   isSortOption: (head: TABLE_HEAD) => boolean;
+  windowSize: number;
 }
 
 const PoolListTable: React.FC<PoolListTableProps> = ({
@@ -27,14 +28,19 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
   sort,
   isSortOption,
 }) => {
+  const isAscendingOption = useCallback(
+    (head: TABLE_HEAD) => {
+      return sortOption?.key === head && sortOption.direction === "asc";
+    },
+    [sortOption],
+  );
 
-  const isAscendingOption = useCallback((head: TABLE_HEAD) => {
-    return sortOption?.key === head && sortOption.direction === "asc";
-  }, [sortOption]);
-
-  const isDescendingOption = useCallback((head: TABLE_HEAD) => {
-    return sortOption?.key === head && sortOption.direction === "desc";
-  }, [sortOption]);
+  const isDescendingOption = useCallback(
+    (head: TABLE_HEAD) => {
+      return sortOption?.key === head && sortOption.direction === "desc";
+    },
+    [sortOption],
+  );
 
   const onClickTableHead = (head: TABLE_HEAD) => {
     if (!isSortOption(head)) {
@@ -53,12 +59,22 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         {Object.values(TABLE_HEAD).map((head, idx) => (
           <TableColumn
             key={idx}
-            className={cx({ left: isAlignLeft(head), sort: isSortOption(head) })}
+            className={cx({
+              left: isAlignLeft(head),
+              sort: isSortOption(head),
+            })}
             tdWidth={POOL_TD_WIDTH[idx]}
           >
-            <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()} onClick={() => onClickTableHead(head)}>
-              {isAscendingOption(head) && <IconTriangleArrowUp className="icon asc" />}
-              {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
+            <span
+              className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+              onClick={() => onClickTableHead(head)}
+            >
+              {isAscendingOption(head) && (
+                <IconTriangleArrowUp className="icon asc" />
+              )}
+              {isDescendingOption(head) && (
+                <IconTriangleArrowDown className="icon desc" />
+              )}
               {head}
             </span>
           </TableColumn>

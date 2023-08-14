@@ -1,5 +1,5 @@
 import React from "react";
-import { wrapper } from "./EarnLayout.styles";
+import { EarnLayoutWrapper } from "./EarnLayout.styles";
 
 interface WalletLayoutProps {
   header: React.ReactNode;
@@ -16,22 +16,25 @@ const EarnLayout: React.FC<WalletLayoutProps> = ({
   poolList,
   footer,
 }) => (
-  <div css={wrapper}>
+  <EarnLayoutWrapper>
     {header}
-    <main className="earn-content">
-      <div className="earn-wrap">
+    <section className="earn-section">
+      <div className="earn-container">
         <h3 className="earn-title">Earn</h3>
-        <section className="position-section">{positions}</section>
-        <section className="incentivized-section">{incentivizedPools}</section>
+        <div className="position">{positions}</div>
+        <div className="incentivized">{incentivizedPools}</div>
       </div>
-      <div className="pools-wrap">
-        <section className="pools-section">{poolList}</section>
-        <div className="gradient-bg" />
-      </div>
-    </main>
-
+    </section>
+    <div className="background-wrapper">
+      <div className="background"></div>
+      <section className="pools-section">
+        <div className="pools-container">
+          <div className="pool-list">{poolList}</div>
+        </div>
+      </section>
+    </div>
     {footer}
-  </div>
+  </EarnLayoutWrapper>
 );
 
 export default EarnLayout;

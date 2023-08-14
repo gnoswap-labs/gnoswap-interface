@@ -9,6 +9,7 @@ export const SelectTabWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border10};
   border-radius: 4px;
   padding: 2px;
+  flex-shrink: 0;
 `;
 
 export const SelectButton = styled.button`
@@ -18,13 +19,11 @@ export const SelectButton = styled.button`
   border-radius: 4px;
   color: ${({ theme }) => theme.color.text04};
   transition: all 0.3s ease;
+  flex-shrink: 0;
   ${media.tablet} {
-    width: 100px;
-    padding: 8px;
+    padding: 8px 16px;
   }
   ${media.mobile} {
-    width: 80px;
-    padding: 4px 8px;
     ${fonts.body12};
   }
   &.selected {

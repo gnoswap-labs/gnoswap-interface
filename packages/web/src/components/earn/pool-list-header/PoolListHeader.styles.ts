@@ -1,16 +1,50 @@
 import { fonts } from "@constants/font.constant";
-import { css, Theme } from "@emotion/react";
+import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
-  ${mixins.flexbox("row", "center", "flex-start")};
+export const PoolHeaderWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
+  align-self: stretch;
+  ${media.mobile} {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .title-container {
+    ${mixins.flexbox("row", "center", "space-between")};
+    gap: 36px;
+    ${media.mobile} {
+      width: 100%;
+      gap: 0px;
+      align-self: stretch;
+    }
+  }
+
   h2 {
     ${fonts.h5};
-    color: ${theme.color.text02};
-    margin-right: 36px;
+    ${media.mobile} {
+      ${fonts.h6}
+    }
+    color: ${({ theme }) => theme.color.text02};
   }
-  .pools-search {
-    margin-left: auto;
+
+  .icon-wrap {
+    ${mixins.flexbox("row", "center", "center")};
+    padding: 8px 13px;
+  }
+  .search-icon {
+    width: 24px;
+    height: 24px;
+    * {
+      fill: ${({ theme }) => theme.color.icon08};
+    }
+  }
+  .search-icon:hover {
+    * {
+      fill: ${({ theme }) => theme.color.icon02};
+    }
   }
 `;

@@ -1,13 +1,21 @@
 import { fonts } from "@constants/font.constant";
-import { css, Theme } from "@emotion/react";
+import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
+export const PoolsWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
-  color: ${theme.color.text02};
-  ${fonts.h5};
   gap: 24px;
+  ${fonts.h5};
+  ${media.tablet} {
+    align-items: flex-start;
+  }
+  ${media.mobile} {
+    gap: 16px;
+    ${fonts.h6};
+  }
+
   h2 {
     width: 100%;
     ${mixins.flexbox("row", "center", "flex-start")};
