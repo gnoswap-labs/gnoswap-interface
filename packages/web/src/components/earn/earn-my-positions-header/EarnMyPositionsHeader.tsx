@@ -2,7 +2,7 @@
 /* eslint-disable */
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useState } from "react";
-import { wrapper } from "./EarnMyPositionsHeader.styles";
+import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 
 const EarnMyPositionsHeader: React.FC = () => {
   const [disabled, setDisabled] = useState(false);
@@ -11,7 +11,7 @@ const EarnMyPositionsHeader: React.FC = () => {
   };
 
   return (
-    <div css={wrapper}>
+    <PositionsWrapper>
       <h2>My Positions</h2>
       <Button
         text="New Position"
@@ -25,7 +25,7 @@ const EarnMyPositionsHeader: React.FC = () => {
         onClick={onClickNewPosition}
         disabled={disabled}
       />
-    </div>
+    </PositionsWrapper>
   );
 };
 

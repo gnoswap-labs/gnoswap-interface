@@ -1,5 +1,5 @@
 import { ValuesType } from "utility-types";
-import { wrapper } from "./EarnMyPositionsContent.styles";
+import { ContentWrapper } from "./EarnMyPositionsContent.styles";
 
 interface EarnMyPositionContentProps {
   unconnected: React.ReactNode;
@@ -23,11 +23,11 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   status,
 }) => {
   return (
-    <div css={wrapper}>
+    <ContentWrapper>
       {status === MY_POSITIONS_STATUS.UN_CONNECTED && unconnected}
       {status === MY_POSITIONS_STATUS.NO_LIQUIDITY && noLiquidity}
       {status === MY_POSITIONS_STATUS.CARD_LIST && cardList}
-    </div>
+    </ContentWrapper>
   );
 };
 

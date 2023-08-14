@@ -28,7 +28,6 @@ export const TableWrapper = styled.div`
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
-  height: 100%;
   padding: 16px;
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {

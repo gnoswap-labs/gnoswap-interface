@@ -1,14 +1,20 @@
 import React from "react";
-import { wrapper } from "./IncentivizedPoolCardList.styles";
+import {
+  IncentivizedWrapper,
+  PoolListWrapper,
+} from "./IncentivizedPoolCardList.styles";
 import { type PoolListProps } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import IncentivizedPoolCard from "@components/earn/incentivized-pool-card/IncentivizedPoolCard";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
+import { DeviceSize } from "@styles/media";
 interface IncentivizedPoolCardListProps {
   list: Array<PoolListProps>;
   loadMore?: boolean;
   isFetched: boolean;
   onClickLoadMore?: () => void;
+  windowSize: number;
+  currentIndex: number;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -16,9 +22,11 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   loadMore,
   isFetched,
   onClickLoadMore,
+  windowSize,
+  currentIndex,
 }) => (
-  <>
-    <div css={wrapper}>
+  <IncentivizedWrapper>
+    <PoolListWrapper>
       {isFetched &&
         list.length > 0 &&
         list.map((item, idx) => <IncentivizedPoolCard item={item} key={idx} />)}
@@ -30,13 +38,20 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
             css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
           />
         ))}
-    </div>
-    {loadMore && onClickLoadMore && (
-      <div className="load-more">
+    </PoolListWrapper>
+    {windowSize > DeviceSize.mobile ? (
+      loadMore &&
+      onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+      )
+    ) : (
+      <div className="box-indicator">
+        <span className="current-page">{currentIndex}</span>
+        <span>/</span>
+        <span>{list.length}</span>
       </div>
     )}
-  </>
+  </IncentivizedWrapper>
 );
 
 export default IncentivizedPoolCardList;

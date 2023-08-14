@@ -1,62 +1,105 @@
 import { fonts } from "@constants/font.constant";
-import { css, Theme } from "@emotion/react";
+import styled from "@emotion/styled";
+import { ContainerWidth, media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
-  background-color: ${theme.color.background01};
-  section,
-  .earn-content {
-    width: 100%;
-  }
+export const EarnLayoutWrapper = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  width: 100%;
+  background-color: ${({ theme }) => theme.color.background01};
 
-  .earn-content {
+  .earn-section {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    max-width: 1920px;
+    width: 100%;
     padding: 100px 0px;
+    ${media.tablet} {
+      max-width: 1180px;
+      padding: 60px 0px;
+    }
+    ${media.mobile} {
+      max-width: 768px;
+      width: 90%;
+      padding: 0px;
+    }
   }
 
-  .earn-wrap {
-    ${mixins.flexbox("row", "center", "space-between")};
-    flex-wrap: wrap;
-    width: 100%;
+  .earn-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: 1440px;
-    margin: 0 auto 100px;
-    padding: 0 40px;
-
-    .earn-title {
-      ${fonts.h3};
-      color: ${theme.color.text02};
-    }
-
-    .position-section,
-    .incentivized-section {
-      margin-top: 36px;
+    width: 100%;
+    padding: 0px 40px;
+    gap: 36px;
+    ${media.mobile} {
+      padding: 24px 16px 48px 16px;
+      gap: 24px;
     }
   }
 
-  .pools-wrap {
+  .position,
+  .incentivized {
     width: 100%;
-    padding-top: 100px;
-    position: relative;
+  }
 
-    .pools-section {
-      ${mixins.flexbox("row", "center", "space-between")};
-      flex-wrap: wrap;
-      width: 100%;
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 40px;
-      position: relative;
-      z-index: 1;
+  .earn-title {
+    ${mixins.flexbox("row", "flex-end", "center")};
+    ${fonts.h3};
+    color: ${({ theme }) => theme.color.text02};
+    ${media.tablet} {
+      ${fonts.h4};
     }
+    ${media.mobile} {
+      ${fonts.h5};
+    }
+  }
 
-    .gradient-bg {
+  .pools-section {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    position: relative;
+    max-width: 1920px;
+    width: 100%;
+    padding: 100px 0px;
+    ${media.tablet} {
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
+      padding: 60px 0px;
+    }
+    ${media.mobile} {
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
+      padding: 48px 0px;
+    }
+  }
+
+  .pools-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: 1440px;
+    width: 100%;
+    padding: 0px 40px;
+    gap: 24px;
+    ${media.mobile} {
+      padding: 0px 16px;
+    }
+  }
+
+  .pool-list {
+    width: 100%;
+  }
+
+  .background-wrapper {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+
+    .background {
       position: absolute;
-      top: 0px;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 400px;
       background: linear-gradient(
         180deg,
-        ${theme.color.backgroundGradient2} 0%,
-        ${theme.color.backgroundGradient3} 100%
+        ${({ theme }) => theme.color.backgroundGradient2} 0%,
+        ${({ theme }) => theme.color.backgroundGradient3} 100%
       );
     }
   }

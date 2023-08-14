@@ -1,5 +1,6 @@
+/* eslint-disable */
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 
 export const POSITION_CONTENT_LABEL = {
@@ -113,6 +114,21 @@ interface MyPositionCardListContainerProps {
 const MyPositionCardListContainer: React.FC<
   MyPositionCardListContainerProps
 > = () => {
+  const [width, setWidth] = useState(Number);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const onClickLoadMore = () => {
     // Todo
   };
@@ -123,6 +139,8 @@ const MyPositionCardListContainer: React.FC<
       isFetched={true}
       onClickLoadMore={onClickLoadMore}
       list={dummyPositionList}
+      windowSize={width}
+      currentIndex={currentIndex}
     />
   );
 };

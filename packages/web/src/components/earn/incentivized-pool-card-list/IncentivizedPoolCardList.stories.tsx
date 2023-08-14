@@ -17,7 +17,7 @@ export default {
 
 const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
   <div css={wrapper}>
-    <IncentivizedPoolCardList {...args} list={poolDummy} />
+    <IncentivizedPoolCardList {...args} list={poolDummy} currentIndex={1} />
   </div>
 );
 

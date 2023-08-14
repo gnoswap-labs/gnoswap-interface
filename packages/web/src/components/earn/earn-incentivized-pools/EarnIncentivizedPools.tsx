@@ -1,4 +1,4 @@
-import { wrapper } from "./EarnIncentivizedPools.styles";
+import { PoolsWrapper } from "./EarnIncentivizedPools.styles";
 
 interface EarnIncentivizedPoolsProps {
   cardList: React.ReactNode;
@@ -7,10 +7,10 @@ interface EarnIncentivizedPoolsProps {
 const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({
   cardList,
 }) => (
-  <div css={wrapper}>
+  <PoolsWrapper>
     <h2>Incentivized Pools</h2>
     {cardList}
-  </div>
+  </PoolsWrapper>
 );
 
 export default EarnIncentivizedPools;

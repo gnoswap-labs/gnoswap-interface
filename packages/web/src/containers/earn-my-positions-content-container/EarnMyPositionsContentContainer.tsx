@@ -17,7 +17,6 @@ const EarnMyPositionsContentContainer: React.FC<
   const [status, setStatus] = useState<MY_POSITIONS_STATUS>(
     MY_POSITIONS_STATUS.UN_CONNECTED,
   );
-  // TODO : setStatus API
 
   return (
     <EarnMyPositionsContent
