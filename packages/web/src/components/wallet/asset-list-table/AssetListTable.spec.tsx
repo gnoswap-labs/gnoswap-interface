@@ -3,6 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import AssetListTable from "./AssetListTable";
 import { ASSET_HEAD } from "@containers/asset-list-container/AssetListContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("AssetListTable Component", () => {
   it("AssetListTable render", () => {
@@ -14,8 +15,11 @@ describe("AssetListTable Component", () => {
       deposit: () => null,
       withdraw: () => null,
       sortOption: undefined,
-      sort: () => { return; },
+      sort: () => {
+        return;
+      },
       isSortOption: () => true,
+      deviceType: DEVICE_TYPE.WEB,
     };
 
     render(

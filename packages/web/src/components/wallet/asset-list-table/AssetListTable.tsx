@@ -17,7 +17,7 @@ import { cx } from "@emotion/css";
 import { useCallback } from "react";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
-import { compareSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface AssetListTableProps {
   assets: Asset[];
@@ -27,7 +27,7 @@ interface AssetListTableProps {
   sortOption: AssetSortOption | undefined;
   sort: (head: ASSET_HEAD) => void;
   isSortOption: (head: ASSET_HEAD) => boolean;
-  windowSize: number;
+  deviceType: DEVICE_TYPE;
 }
 
 const AssetListTable: React.FC<AssetListTableProps> = ({
@@ -38,7 +38,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   sortOption,
   sort,
   isSortOption,
-  windowSize,
+  deviceType,
 }) => {
   const isAscendingOption = useCallback(
     (head: ASSET_HEAD) => {
@@ -79,9 +79,9 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               sort: isSortOption(head),
             })}
             tdWidth={
-              compareSize("TABLET", windowSize)
+              deviceType === DEVICE_TYPE.WEB
                 ? ASSET_TD_WIDTH[idx]
-                : compareSize("MOBILE", windowSize)
+                : deviceType === DEVICE_TYPE.TABLET
                 ? TABLET_ASSET_TD_WIDTH[idx]
                 : MOBILE_ASSET_TD_WIDTH[idx]
             }
@@ -113,7 +113,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               asset={asset}
               deposit={deposit}
               withdraw={withdraw}
-              windowSize={windowSize}
+              deviceType={deviceType}
             />
           ))}
         {!isFetched && <TableSkeleton info={ASSET_INFO} />}

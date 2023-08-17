@@ -8,20 +8,20 @@ import {
   MOBILE_ASSET_TD_WIDTH,
   TABLET_ASSET_TD_WIDTH,
 } from "@constants/skeleton.constant";
-import { compareSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface AssetInfoProps {
   asset: Asset;
   deposit: (assetId: string) => void;
   withdraw: (assetId: string) => void;
-  windowSize: number;
+  deviceType: DEVICE_TYPE;
 }
 
 const AssetInfo: React.FC<AssetInfoProps> = ({
   asset,
   deposit,
   withdraw,
-  windowSize,
+  deviceType,
 }) => {
   const { id, logoUri, name, symbol, chain, balance } = asset;
 
@@ -37,7 +37,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(id);
   }, [withdraw, id]);
 
-  return compareSize("TABLET", windowSize) ? (
+  return deviceType === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
         className="left"
@@ -61,7 +61,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
-  ) : compareSize("MOBILE", windowSize) ? (
+  ) : deviceType === DEVICE_TYPE.TABLET ? (
     <AssetInfoWrapper>
       <TableColumn
         className="left"

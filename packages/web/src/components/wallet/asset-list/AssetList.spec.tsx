@@ -3,6 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import AssetList from "./AssetList";
 import { ASSET_FILTER_TYPE } from "@containers/asset-list-container/AssetListContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("AssetList Component", () => {
   it("AssetList render", () => {
@@ -23,8 +24,11 @@ describe("AssetList Component", () => {
       deposit: () => null,
       withdraw: () => null,
       sortOption: undefined,
-      sort: () => { return; },
+      sort: () => {
+        return;
+      },
       isSortOption: () => true,
+      deviceType: DEVICE_TYPE.WEB,
     };
 
     render(

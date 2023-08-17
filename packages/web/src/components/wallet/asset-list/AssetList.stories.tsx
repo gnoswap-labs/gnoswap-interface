@@ -28,4 +28,5 @@ Default.args = {
   toggleExtended: action("toggleExtended"),
   deposit: action("deposit"),
   withdraw: action("withdraw"),
+  deviceType: "web",
 };

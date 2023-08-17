@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import AssetListHeader from "./AssetListHeader";
 import { ASSET_FILTER_TYPE } from "@containers/asset-list-container/AssetListContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/AssetList/AssetListHeader",
@@ -20,4 +21,5 @@ Default.args = {
   changeAssetType: action("changeAssetType"),
   toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),
   search: action("search"),
+  deviceType: DEVICE_TYPE.WEB,
 };

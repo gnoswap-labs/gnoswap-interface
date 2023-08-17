@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import AssetInfo from "./AssetInfo";
 import { css, Theme } from "@emotion/react";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/AssetList/AssetInfo",
@@ -29,6 +30,7 @@ Default.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
+  deviceType: DEVICE_TYPE.WEB,
 };
 
 const wrapper = (theme: Theme) => css`
