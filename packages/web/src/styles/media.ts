@@ -1,6 +1,15 @@
+import { ValuesType } from "utility-types";
+
 interface MediaProps {
   [key: string]: number;
 }
+
+export const DEVICE_TYPE = {
+  WEB: "web",
+  TABLET: "tablet",
+  MOBILE: "mobile",
+} as const;
+export type DEVICE_TYPE = ValuesType<typeof DEVICE_TYPE>;
 
 export const DeviceSize: MediaProps = {
   web: 2160,
@@ -8,15 +17,11 @@ export const DeviceSize: MediaProps = {
   mobile: 768,
 };
 
-export const ContainerWidth: MediaProps = {
-  WEB_CONTAINER: 1440,
-  TABLET_CONTAINER: 1180,
-  MOBILE_CONTAINER: 360,
-};
-
-export const compareSize = (type: string, size: number) => {
-  const width = Object.keys(DeviceSize).find(x => x === type.toLowerCase());
-  return size > DeviceSize[`${width}`] ? true : false;
+export const ContainerWidth = {
+  WEB_SECTION_CONTAINER: "1920px",
+  WEB_CONTAINER: "1440px",
+  TABLET_CONTAINER: "1180px",
+  MOBILE_CONTAINER: "768px",
 };
 
 const customMediaQuery = (maxWidth: number) =>

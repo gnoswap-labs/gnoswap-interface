@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { dummyAssetList } from "@containers/asset-list-container/AssetListContainer";
 import AssetListTable from "./AssetListTable";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/AssetList/AssetListTable",
@@ -19,6 +20,7 @@ Default.args = {
   isFetched: true,
   deposit: action("deposit"),
   withdraw: action("withdraw"),
+  deviceType: DEVICE_TYPE.WEB,
 };
 
 export const Skeleton = Template.bind({});

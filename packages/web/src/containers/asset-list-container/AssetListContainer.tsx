@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import AssetList from "@components/wallet/asset-list/AssetList";
 import BigNumber from "bignumber.js";
+import { CommonState } from "@states/index";
+import { useAtom } from "jotai";
 
 interface AssetListResponse {
   hasNext: boolean;
@@ -139,18 +141,7 @@ const AssetListContainer: React.FC = () => {
   const [filteredAssets, setFilteredAsset] = useState<Asset[]>([]);
   const [hasLoader, setHasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const [breakpoint] = useAtom(CommonState.breakpoint);
 
   const {
     isFetched,
@@ -273,7 +264,7 @@ const AssetListContainer: React.FC = () => {
       sortOption={sortOption}
       sort={sort}
       isSortOption={isSortOption}
-      windowSize={width}
+      deviceType={breakpoint}
     />
   );
 };
