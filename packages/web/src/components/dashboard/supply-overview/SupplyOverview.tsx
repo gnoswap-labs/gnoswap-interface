@@ -17,7 +17,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
     <SupplyInfoWrapper>
       <div className="total-supply">
         <div className="label-title">
-          <div>Total Supply</div>
+          Total Supply
           <DashboardLabel tooltip="The total supply of GNOS tokens is 1,000,000,000 GNOS." />
         </div>
         <div>{supplyOverviewInfo.totalSupply}</div>

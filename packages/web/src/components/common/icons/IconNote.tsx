@@ -1,17 +1,17 @@
-const Icon = ({ className }: { className?: string }) => (
+const IconNote = ({ className }: { className?: string }) => (
   <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
     className={className}
   >
     <path
-      d="M19 5V14H14V19H5V5H19ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H15L21 15V5C21 3.9 20.1 3 19 3ZM12 14H7V12H12V14ZM17 10H7V8H17V10Z"
-      fill="white"
+      d="M12.6667 3.33333V9.33333H9.33333V12.6667H3.33333V3.33333H12.6667ZM12.6667 2H3.33333C2.6 2 2 2.6 2 3.33333V12.6667C2 13.4 2.6 14 3.33333 14H10L14 10V3.33333C14 2.6 13.4 2 12.6667 2ZM8 9.33333H4.66667V8H8V9.33333ZM11.3333 6.66667H4.66667V5.33333H11.3333V6.66667Z"
+      fill="#90A2C0"
     />
   </svg>
 );
 
-export default Icon;
+export default IconNote;
