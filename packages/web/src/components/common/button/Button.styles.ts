@@ -40,6 +40,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   transition: background-color 0.3s ease;
   background-color: ${({ hierarchy, bgColor, theme }) => {
     if (hierarchy === ButtonHierarchy.Primary) return theme.color.background04;
+    if (hierarchy === ButtonHierarchy.Gray) return theme.color.background17;
     if (hierarchy === ButtonHierarchy.Dark) return theme.color.background05;
     return theme.color[bgColor ?? "background04"];
   }};
@@ -80,6 +81,7 @@ export const StyledText = styled.span<ButtonStyleProps>`
   ${({ fontType }) => fonts[fontType ?? "body9"]};
   color: ${({ theme, textColor, hierarchy }) => {
     if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;
+    if (hierarchy === ButtonHierarchy.Gray) return theme.color.text20;
     return theme.color[textColor ?? "text03"];
   }};
 `;

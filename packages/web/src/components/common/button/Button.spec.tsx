@@ -36,7 +36,7 @@ describe("Button Component", () => {
               height: 50,
               justify: "space-between",
               padding: "0px 10px",
-              textColor: "",
+              textColor: "text01",
             }}
           />
         </GnoswapThemeProvider>

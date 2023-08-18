@@ -36,6 +36,7 @@ export const SupplyInfoWrapper = styled.div`
     ${fonts.body10};
     color: ${({ theme }) => theme.color.text04};
     gap: 4px;
+
     ${media.mobile} {
       ${fonts.body12}
     }

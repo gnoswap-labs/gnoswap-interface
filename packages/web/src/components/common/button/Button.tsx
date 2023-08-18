@@ -12,6 +12,7 @@ interface ButtonProps {
 
 export enum ButtonHierarchy {
   Primary = "Primary",
+  Gray = "Gray",
   Dark = "Dark",
 }
 
