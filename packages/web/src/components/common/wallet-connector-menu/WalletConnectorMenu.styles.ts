@@ -4,10 +4,17 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
 
-export const WalletConnectorMenuWrapper = styled.div`
+export interface WalletMenuProps {
+  width?: number;
+}
+
+export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
   position: absolute;
   width: 280px;
   top: 54px;
+  right: ${({ width }) => {
+    return width && width < 1521 && "0px";
+  }};
   ${media.tablet} {
     top: 49px;
     right: 0px;

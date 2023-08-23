@@ -35,7 +35,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   }, [listRef, onListToggle]);
 
   return (
-    <NotificationListWrapper ref={listRef}>
+    <NotificationListWrapper ref={listRef} width={window?.innerWidth}>
       <NotificationHeader>
         <span className="notification-title">Notification</span>
         {txsGroupsInformation.length > 0 && (
