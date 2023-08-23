@@ -11,7 +11,7 @@ import ActivityListHeader from "@components/dashboard/activity-list-header/Activ
 import ActivityListTable from "@components/dashboard/activity-list-table/ActivityListTable";
 import Pagination from "@components/common/pagination/Pagination";
 import { ActivityListWrapper } from "./ActivityList.styles";
-import { DeviceSize } from "@styles/media";
+import { DeviceSize, DEVICE_TYPE } from "@styles/media";
 interface ActivityItem {
   activities: Activity[];
   isFetched: boolean;
@@ -24,7 +24,7 @@ interface ActivityItem {
   movePage: (page: number) => void;
   isSortOption: (item: TABLE_HEAD) => boolean;
   sort: (item: TABLE_HEAD) => void;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const ActivityList: React.FC<ActivityItem> = ({
@@ -39,7 +39,7 @@ const ActivityList: React.FC<ActivityItem> = ({
   movePage,
   isSortOption,
   sort,
-  windowSize,
+  breakpoint,
 }) => {
   return (
     <ActivityListWrapper>
@@ -53,13 +53,13 @@ const ActivityList: React.FC<ActivityItem> = ({
         sortOption={sortOption}
         isSortOption={isSortOption}
         sort={sort}
-        windowSize={windowSize}
+        breakpoint={breakpoint}
       />
       <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
-        siblingCount={windowSize > DeviceSize.mobile ? 2 : 1}
+        siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
       />
     </ActivityListWrapper>
   );

@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { dummyTokenList } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
 import ActivityListTable from "./ActivityListTable";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "dashboard/ActivityListTable",
@@ -19,6 +20,7 @@ Default.args = {
   isFetched: true,
   isSortOption: () => true,
   sort: action("sort"),
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 export const Skeleton = Template.bind({});
@@ -27,6 +29,7 @@ Skeleton.args = {
   isFetched: false,
   isSortOption: () => true,
   sort: action("sort"),
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 export const NotFount = Template.bind({});
@@ -35,4 +38,5 @@ NotFount.args = {
   isFetched: true,
   isSortOption: () => true,
   sort: action("sort"),
+  breakpoint: DEVICE_TYPE.WEB,
 };

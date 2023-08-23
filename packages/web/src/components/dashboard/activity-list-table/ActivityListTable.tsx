@@ -23,7 +23,7 @@ import {
 } from "@constants/skeleton.constant";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface ActivityListTableProps {
   activities: Activity[];
@@ -31,7 +31,7 @@ interface ActivityListTableProps {
   isSortOption: (head: TABLE_HEAD) => boolean;
   sortOption?: SortOption;
   sort: (head: TABLE_HEAD) => void;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const ActivityListTable: React.FC<ActivityListTableProps> = ({
@@ -40,7 +40,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
   isSortOption,
   sort,
   isFetched,
-  windowSize,
+  breakpoint,
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
@@ -67,7 +67,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
     return TABLE_HEAD.ACTION === head;
   };
 
-  return windowSize > DeviceSize.mobile ? (
+  return breakpoint !== DEVICE_TYPE.MOBILE ? (
     <TableWrapper>
       <div className="scroll-wrapper">
         <div className="activity-list-head">

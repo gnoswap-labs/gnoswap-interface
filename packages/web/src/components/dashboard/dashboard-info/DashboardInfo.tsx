@@ -6,29 +6,30 @@ import {
   GovernenceOverviewInfo,
   SupplyOverviewInfo,
 } from "@containers/dashboard-info-container/DashboardInfoContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface DashboardInfoProps {
   dashboardTokenInfo: DashboardTokenInfo;
   supplyOverviewInfo: SupplyOverviewInfo;
   governenceOverviewInfo: GovernenceOverviewInfo;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const DashboardInfo: React.FC<DashboardInfoProps> = ({
   dashboardTokenInfo,
   supplyOverviewInfo,
   governenceOverviewInfo,
-  windowSize,
+  breakpoint,
 }) => (
   <DashboardInfoWrapper>
     <DashboardInfoTitle
       dashboardTokenInfo={dashboardTokenInfo}
-      windowSize={windowSize}
+      breakpoint={breakpoint}
     />
     <DashboardOverview
       supplyOverviewInfo={supplyOverviewInfo}
       governenceOverviewInfo={governenceOverviewInfo}
-      windowSize={windowSize}
+      breakpoint={breakpoint}
     />
   </DashboardInfoWrapper>
 );

@@ -16,7 +16,6 @@ export const SupplyOverviewWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    max-width: 328px;
     padding: 12px;
     gap: 16px;
   }
@@ -36,6 +35,7 @@ export const SupplyInfoWrapper = styled.div`
     ${fonts.body10};
     color: ${({ theme }) => theme.color.text04};
     gap: 4px;
+    flex-shrink: 0;
 
     ${media.mobile} {
       ${fonts.body12}
@@ -54,7 +54,7 @@ export const SupplyInfoWrapper = styled.div`
   .total-supply {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
@@ -71,7 +71,7 @@ export const SupplyInfoWrapper = styled.div`
     .circulating-info {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
-      ${media.mobile} {
+      ${media.tabletMiddle} {
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
@@ -82,7 +82,7 @@ export const SupplyInfoWrapper = styled.div`
   .daily-block-emissions {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
@@ -92,7 +92,7 @@ export const SupplyInfoWrapper = styled.div`
   .total-staked {
     ${mixins.flexbox("row", "flex-start", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
@@ -101,11 +101,10 @@ export const SupplyInfoWrapper = styled.div`
       ${mixins.flexbox("column", "flex-end", "center")};
       width: 100%;
       gap: 4px;
-      ${media.mobile} {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        gap: 6px;
+      ${media.tabletMiddle} {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
       }
     }
     .staked-ratio-title {

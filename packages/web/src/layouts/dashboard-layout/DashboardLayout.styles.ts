@@ -1,7 +1,7 @@
 import mixins from "@styles/mixins";
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
-import { media } from "@styles/media";
+import { ContainerWidth, media } from "@styles/media";
 
 export const DashboardLayoutWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
@@ -10,17 +10,18 @@ export const DashboardLayoutWrapper = styled.div`
 
   .dashboard-section {
     ${mixins.flexbox("column", "center", "flex-start")};
-    max-width: 1920px;
+    max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     width: 100%;
     padding: 100px 0px 100px 0px;
     gap: 36px;
     ${media.tablet} {
-      max-width: 1180px;
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
       padding: 60px 0px 60px 0px;
       gap: 24px;
     }
     ${media.mobile} {
-      max-width: 360px;
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
+      width: 90%;
       padding: 24px 0px 48px 0px;
       gap: 24px;
     }
@@ -28,16 +29,14 @@ export const DashboardLayoutWrapper = styled.div`
 
   .title-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    max-width: 1440px;
+    max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px 0px 40px;
     gap: 16px;
     ${media.tablet} {
-      max-width: 1180px;
       gap: 16px;
     }
     ${media.mobile} {
-      max-width: 328px;
       padding: 0px 0px 0px 0px;
       gap: 24px;
     }
@@ -55,17 +54,17 @@ export const DashboardLayoutWrapper = styled.div`
   .charts-container {
     display: grid;
     width: 100%;
-    max-width: 1440px;
+    max-width: ${ContainerWidth.WEB_CONTAINER};
     column-gap: 24px;
     grid-template-columns: repeat(2, 1fr);
     padding: 0px 40px;
     ${media.tablet} {
-      max-width: 1180px;
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
       grid-template-columns: repeat(2, 1fr);
     }
     ${media.mobile} {
       grid-template-columns: repeat(1, auto);
-      max-width: 328px;
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
       padding: 0px 0px 0px 0px;
       row-gap: 8px;
       column-gap: 24px;
@@ -74,29 +73,31 @@ export const DashboardLayoutWrapper = styled.div`
 
   .dashboard-info-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    max-width: 1440px;
+    max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px;
     ${media.tablet} {
-      max-width: 1180px;
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
     }
     ${media.mobile} {
-      max-width: 328px;
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
+      align-items: center;
       padding: 0px 0px 0px 0px;
     }
   }
 
   .activities-section {
     ${mixins.flexbox("column", "center", "flex-start")};
-    max-width: 1920px;
+    max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     width: 100%;
     padding: 100px 0px 100px 0px;
     ${media.tablet} {
-      max-width: 1180px;
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
       padding: 60px 0px 60px 0px;
     }
     ${media.mobile} {
-      max-width: 360px;
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
+      width: 90%;
       padding: 48px 0px 48px 0px;
     }
   }
@@ -105,15 +106,15 @@ export const DashboardLayoutWrapper = styled.div`
     position: relative;
     .activities-container {
       ${mixins.flexbox("column", "center", "center")};
-      max-width: 1440px;
+      max-width: ${ContainerWidth.WEB_CONTAINER};
       width: 100%;
       padding: 0px 40px;
       gap: 24px;
       ${media.tablet} {
-        max-width: 1180px;
+        max-width: ${ContainerWidth.TABLET_CONTAINER};
       }
       ${media.mobile} {
-        max-width: 360px;
+        max-width: ${ContainerWidth.MOBILE_CONTAINER};
         padding: 0px 16px;
         gap: 24px;
       }

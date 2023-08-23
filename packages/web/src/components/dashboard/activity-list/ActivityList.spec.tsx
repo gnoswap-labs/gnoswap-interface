@@ -6,6 +6,7 @@ import {
   ACTIVITY_TYPE,
   dummyTokenList,
 } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("ActivityList Component", () => {
   it("ActivityList render", () => {
@@ -19,6 +20,7 @@ describe("ActivityList Component", () => {
       totalPage: 10,
       movePage: () => {},
       isSortOption: () => true,
+      breakpoint: DEVICE_TYPE.WEB,
       sort: () => {
         return;
       },

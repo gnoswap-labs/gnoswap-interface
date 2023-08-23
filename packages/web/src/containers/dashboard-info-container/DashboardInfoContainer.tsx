@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DashboardInfo from "@components/dashboard/dashboard-info/DashboardInfo";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -46,25 +47,14 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
 };
 
 const DashboardInfoContainer: React.FC = () => {
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const { breakpoint } = useWindowSize();
 
   return (
     <DashboardInfo
       dashboardTokenInfo={initialDashboardTokenInfo}
       supplyOverviewInfo={initialSupplyOverviewInfo}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
-      windowSize={width}
+      breakpoint={breakpoint}
     />
   );
 };

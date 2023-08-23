@@ -7,6 +7,7 @@ interface MediaProps {
 export const DEVICE_TYPE = {
   WEB: "web",
   TABLET: "tablet",
+  TABLET_M: "tabletMiddle",
   MOBILE: "mobile",
 } as const;
 export type DEVICE_TYPE = ValuesType<typeof DEVICE_TYPE>;
@@ -14,6 +15,7 @@ export type DEVICE_TYPE = ValuesType<typeof DEVICE_TYPE>;
 export const DeviceSize: MediaProps = {
   web: 2160,
   tablet: 1280,
+  tabletMiddle: 920,
   mobile: 768,
 };
 
@@ -30,5 +32,6 @@ const customMediaQuery = (maxWidth: number) =>
 export const media = {
   web: customMediaQuery(DeviceSize.web),
   tablet: customMediaQuery(DeviceSize.tablet),
+  tabletMiddle: customMediaQuery(DeviceSize.tabletMiddle),
   mobile: customMediaQuery(DeviceSize.mobile),
 };
