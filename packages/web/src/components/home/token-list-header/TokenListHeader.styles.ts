@@ -15,15 +15,9 @@ export const TokenListHeaderwrapper = styled.div`
 
 export const TokenTitleWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  max-width: 651px;
   width: 100%;
   gap: 36px;
-  .icon-wrap {
-    ${mixins.flexbox("row", "center", "center")};
-    padding: 8px 13px;
-  }
   ${media.mobile} {
-    max-width: 328px;
     justify-content: space-between;
     height: 24px;
   }

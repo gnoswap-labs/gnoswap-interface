@@ -4,6 +4,7 @@ import { action } from "@storybook/addon-actions";
 
 import TokenList from "./TokenList";
 import { createDummyTokenList } from "@containers/token-list-container/TokenListContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "home/TokenList",
@@ -23,4 +24,5 @@ Default.args = {
   currentPage: 0,
   totalPage: 10,
   movePage: action("movePage"),
+  breakpoint: DEVICE_TYPE.WEB,
 };
