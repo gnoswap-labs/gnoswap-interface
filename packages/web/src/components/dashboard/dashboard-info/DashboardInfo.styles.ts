@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
-import { media } from "@styles/media";
+import { ContainerWidth, media } from "@styles/media";
 
 import mixins from "@styles/mixins";
 
 export const DashboardInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  max-width: 1360px;
+  max-width: ${ContainerWidth.WEB_CONTAINER};
   width: 100%;
   padding: 24px;
   gap: 24px;
@@ -14,10 +14,10 @@ export const DashboardInfoWrapper = styled.div`
   border-radius: 10px;
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   ${media.tablet} {
-    max-width: 1100px;
+    max-width: ${ContainerWidth.TABLET_CONTAINER};
   }
   ${media.mobile} {
-    max-width: 328px;
+    max-width: ${ContainerWidth.MOBILE_CONTAINER};
     padding: 0px;
     gap: 0px;
   }

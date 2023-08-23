@@ -4,6 +4,7 @@ import ActivityList from "./ActivityList";
 import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 import { dummyTokenList } from "@containers/dashboard-activities-container/DashboardActivitiesContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "dashboard/ActivityList",
@@ -28,6 +29,7 @@ Default.args = {
   movePage: action("movePage"),
   isSortOption: () => true,
   sort: action("sort"),
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 const wrapper = (theme: Theme) => css`

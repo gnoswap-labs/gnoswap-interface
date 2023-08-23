@@ -1,7 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-import { media } from "@styles/media";
+import { ContainerWidth, media } from "@styles/media";
 
 export const ActivityListHeaderwrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
@@ -22,7 +22,7 @@ export const ActivityListHeaderwrapper = styled.div`
   }
   .overflow-tab {
     ${media.mobile} {
-      max-width: 324px;
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
       width: 100%;
       overflow-x: auto;
     }

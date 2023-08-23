@@ -10,7 +10,6 @@ export const GovernanceOverviewWrapper = styled.div`
   padding: 24px;
   gap: 24px;
   ${media.mobile} {
-    max-width: 328px;
     padding: 12px 12px 16px 12px;
     gap: 16px;
   }
@@ -87,7 +86,7 @@ export const GovernanceWrapper = styled.div`
   .total-issued {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
@@ -96,7 +95,7 @@ export const GovernanceWrapper = styled.div`
   .holders {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
@@ -105,7 +104,7 @@ export const GovernanceWrapper = styled.div`
   .passed-proposals {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
@@ -114,7 +113,7 @@ export const GovernanceWrapper = styled.div`
   .active-proposals {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
@@ -123,7 +122,7 @@ export const GovernanceWrapper = styled.div`
   .community-pool {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;

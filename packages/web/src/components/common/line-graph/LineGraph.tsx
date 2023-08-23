@@ -291,7 +291,11 @@ const LineGraph: React.FC<LineGraphProps> = ({
       </svg>
       {isFocus() && currentPointIndex > -1 && (
         <LineGraphTooltipWrapper
-          x={currentPoint?.x || 0}
+          x={
+            currentPoint?.x && currentPoint?.x > width / 2
+              ? currentPoint?.x - 157
+              : currentPoint?.x || 0
+          }
           y={currentPoint?.y || 0}
         >
           <div className="tooltip-header">

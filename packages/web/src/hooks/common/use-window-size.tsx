@@ -10,6 +10,8 @@ export const useWindowSize = () => {
       ? DEVICE_TYPE.WEB
       : width > DeviceSize.mobile
       ? DEVICE_TYPE.TABLET
+      : width > DeviceSize.mobile
+      ? DEVICE_TYPE.TABLET_M
       : DEVICE_TYPE.MOBILE;
   };
 

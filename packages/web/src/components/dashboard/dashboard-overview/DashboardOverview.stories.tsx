@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import DashboardOverview from "./DashboardOverview";
 import { css, Theme } from "@emotion/react";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "dashboard/DashboardOverview",
@@ -16,6 +17,7 @@ const Template: ComponentStory<typeof DashboardOverview> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
+  breakpoint: DEVICE_TYPE.WEB,
   supplyOverviewInfo: {
     totalSupply: "1,000,000,000 GNOS",
     circulatingSupply: "218,184,885 GNOS",

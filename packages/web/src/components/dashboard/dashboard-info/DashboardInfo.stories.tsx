@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import DashboardInfo from "./DashboardInfo";
 import { css, Theme } from "@emotion/react";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "dashboard/DashboardInfo",
@@ -35,6 +36,7 @@ Default.args = {
     activeProposals: "2",
     communityPool: "2,412,148 GNOS",
   },
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 const wrapper = (theme: Theme) => css`

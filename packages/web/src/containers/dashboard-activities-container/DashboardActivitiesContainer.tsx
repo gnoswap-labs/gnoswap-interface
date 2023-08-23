@@ -1,7 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
 import ActivityList from "@components/dashboard/activity-list/ActivityList";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface Activity {
   action: string;
@@ -87,18 +88,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   );
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const { breakpoint } = useWindowSize();
 
   const {
     isFetched,
@@ -175,7 +165,7 @@ const DashboardActivitiesContainer: React.FC = () => {
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}
-      windowSize={width}
+      breakpoint={breakpoint}
     />
   );
 };

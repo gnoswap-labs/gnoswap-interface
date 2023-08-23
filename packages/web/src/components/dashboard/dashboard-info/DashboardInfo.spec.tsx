@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import DashboardInfo from "./DashboardInfo";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("DashboardInfo Component", () => {
   it("DashboardInfo render", () => {
@@ -25,6 +26,7 @@ describe("DashboardInfo Component", () => {
         activeProposals: "2",
         communityPool: "2,412,148 GNOS",
       },
+      breakpoint: DEVICE_TYPE.WEB,
     };
 
     render(

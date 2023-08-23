@@ -9,7 +9,6 @@ export const DashboardOverviewWrapper = styled.div`
   border-radius: 8px;
   gap: 8px;
   ${media.mobile} {
-    max-width: 328px;
     border: 0px;
     flex-direction: column;
     justify-content: flex-start;
@@ -17,16 +16,17 @@ export const DashboardOverviewWrapper = styled.div`
 `;
 
 export const OverviewDivider = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 1px;
-  height: 290px;
+  height: auto;
+  align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
 `;
 
 export const MobileDivider = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  .divider {
-    width: 328px;
-    height: 1px;
-    background: ${({ theme }) => theme.color.border02};
-  }
+  width: 100%;
+  height: 1px;
+  align-self: stretch;
+  background: ${({ theme }) => theme.color.border02};
 `;

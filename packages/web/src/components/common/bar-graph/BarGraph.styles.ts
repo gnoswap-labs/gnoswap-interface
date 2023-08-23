@@ -11,14 +11,14 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: auto;
+  height: 180px;
   overflow: visible;
 
   & svg {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: auto;
+    height: 180px;
     overflow: visible;
 
     line {
