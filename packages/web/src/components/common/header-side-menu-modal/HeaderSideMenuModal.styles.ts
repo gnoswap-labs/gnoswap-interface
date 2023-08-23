@@ -75,3 +75,12 @@ export const LinkIconButton = styled.button`
     fill: ${({ theme }) => theme.color.icon03};
   }
 `;
+
+export const MenuDivider = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 100%;
+  height: 1px;
+  margin: 4px 0px;
+  align-self: stretch;
+  background: ${({ theme }) => theme.color.border02};
+`;
