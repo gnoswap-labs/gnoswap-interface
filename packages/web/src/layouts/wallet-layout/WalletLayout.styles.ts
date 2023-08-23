@@ -34,7 +34,7 @@ export const WalletLayoutWrapper = styled.div`
       gap: 24px;
     }
     ${media.mobile} {
-      padding: 24px 16px 48px 16px;
+      padding: 24px 0px 48px 0px;
     }
   }
   .assets,
@@ -67,7 +67,7 @@ export const WalletLayoutWrapper = styled.div`
     padding: 0px 40px;
     gap: 24px;
     ${media.mobile} {
-      padding: 0px 16px;
+      padding: 0px;
     }
   }
 

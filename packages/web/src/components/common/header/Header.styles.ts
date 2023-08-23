@@ -10,6 +10,7 @@ export const HeaderWrapper = styled.header`
   position: fixed;
   z-index: ${Z_INDEX.fixed};
   width: 100%;
+  min-width: 360px;
   gap: 10px;
   background-color: ${({ theme }) => theme.color.background01};
   border-bottom: 1px solid ${({ theme }) => theme.color.border02};
@@ -19,6 +20,7 @@ export const BottomNavWrapper = styled.nav`
   ${mixins.flexbox("column", "center", "center")};
   ${fonts.p1};
   width: 100%;
+  min-width: 360px;
   bottom: 0px;
   position: fixed;
   z-index: ${Z_INDEX.fixed};
@@ -49,6 +51,7 @@ export const BottomNavItem = styled.div`
 export const HeaderContainer = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   max-width: ${ContainerWidth.WEB_CONTAINER};
+  //   min-width: 360px;
   width: 100%;
   padding: 17px 40px;
   ${media.tablet} {
@@ -56,7 +59,8 @@ export const HeaderContainer = styled.div`
     padding: 12px 40px;
   }
   ${media.mobile} {
-    padding: 8px 16px;
+    padding: 8px 0px;
+    width: 90%;
   }
 `;
 
