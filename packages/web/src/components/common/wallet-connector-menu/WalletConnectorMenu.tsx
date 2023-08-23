@@ -84,7 +84,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   }, [menuRef, onMenuToggle]);
 
   return (
-    <WalletConnectorMenuWrapper ref={menuRef}>
+    <WalletConnectorMenuWrapper ref={menuRef} width={window?.innerWidth}>
       {isConnected ? (
         <div className="button-container">
           <MenuHeader>

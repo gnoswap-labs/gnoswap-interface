@@ -3,10 +3,16 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const NotificationListWrapper = styled.div`
+export interface NotificationProps {
+  width?: number;
+}
+
+export const NotificationListWrapper = styled.div<NotificationProps>`
   position: absolute;
   top: 53px;
-  right: -150px;
+  right: ${({ width }) => {
+    return width && width > 1680 ? "-150px" : "0px";
+  }};
   ${media.tablet} {
     top: 46px;
     right: 0px;
