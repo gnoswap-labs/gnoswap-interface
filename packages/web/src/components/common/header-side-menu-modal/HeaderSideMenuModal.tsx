@@ -8,6 +8,7 @@ import {
   LeftIconMenu,
   RightIconMenu,
   LeftIcon,
+  MenuDivider,
 } from "./HeaderSideMenuModal.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconAccountUser from "../icons/IconAccountUser";
@@ -61,6 +62,9 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
               </LeftIconMenu>
             </Link>
           </li>
+        </ul>
+        <MenuDivider />
+        <ul>
           <li>
             <Link href={SIDE_MENU_NAV.HELPCENTER.path}>
               <RightIconMenu>
