@@ -18,6 +18,7 @@ export const PoolsWrapper = styled.div`
 
   h2 {
     width: 100%;
+    color: ${({ theme }) => theme.color.text02};
     ${mixins.flexbox("row", "center", "flex-start")};
   }
 `;

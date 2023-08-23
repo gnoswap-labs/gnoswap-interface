@@ -3,7 +3,6 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
 import { GridWrapper, CardListWrapper } from "./MyPositionCardList.styles";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
-import { DeviceSize } from "@styles/media";
 
 interface MyPositionCardListProps {
   loadMore?: boolean;
@@ -36,7 +35,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {windowSize > DeviceSize.mobile ? (
+    {windowSize > 1000 ? (
       loadMore &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />

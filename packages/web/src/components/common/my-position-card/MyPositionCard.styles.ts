@@ -10,14 +10,8 @@ interface CardProps {
 
 export const MyPositionCardWrapper = styled.div<CardProps>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  max-width: 322px;
   width: 100%;
-  ${media.tablet} {
-    max-width: 350px;
-  }
-  ${media.mobile} {
-    max-width: 290px;
-  }
+  min-width: 290px;
   gap: 16px;
   padding: 16px;
   border-radius: 10px;
