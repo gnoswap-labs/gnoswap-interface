@@ -128,14 +128,20 @@ export const SupplyInfoWrapper = styled.div`
   }
 `;
 
-export const ProgressBar = styled.div`
+export interface progressBarProps {
+  width?: string;
+}
+
+export const ProgressBar = styled.div<progressBarProps>`
   ${mixins.flexbox("column", "flex-start", "center")};
   width: 100%;
   height: 12px;
   border-radius: 99px;
   background-color: ${({ theme }) => theme.color.background11};
   .progress-bar-rate {
-    width: 245px;
+    width: ${({ width }) => {
+      return width ? width : "0%";
+    }};
     height: 12px;
     border-radius: 8px;
     background-color: ${({ theme }) => theme.color.point};
