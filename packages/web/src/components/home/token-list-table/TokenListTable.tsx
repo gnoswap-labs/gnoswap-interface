@@ -21,7 +21,7 @@ import {
 } from "@constants/skeleton.constant";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 import MobileTokenInfo from "../mobile-token-info/MobileTokenInfo";
 
 interface TokenListTableProps {
@@ -30,7 +30,7 @@ interface TokenListTableProps {
   isSortOption: (head: TABLE_HEAD) => boolean;
   sortOption?: SortOption;
   sort: (head: TABLE_HEAD) => void;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const TokenListTable: React.FC<TokenListTableProps> = ({
@@ -39,7 +39,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
   isSortOption,
   sort,
   isFetched,
-  windowSize,
+  breakpoint,
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
@@ -66,7 +66,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
     return TABLE_HEAD.INDEX === head || TABLE_HEAD.NAME === head;
   };
 
-  return windowSize > DeviceSize.mobile ? (
+  return breakpoint !== DEVICE_TYPE.MOBILE ? (
     <TableWrapper>
       <div className="scroll-wrapper">
         <div className="token-list-head">

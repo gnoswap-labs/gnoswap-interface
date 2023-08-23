@@ -11,7 +11,7 @@ import TokenListHeader from "@components/home/token-list-header/TokenListHeader"
 import Pagination from "@components/common/pagination/Pagination";
 import { wrapper } from "./TokenList.styles";
 import TokenListTable from "@components/home/token-list-table/TokenListTable";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface TokenItem {
   tokens: Token[];
@@ -27,7 +27,7 @@ interface TokenItem {
   movePage: (page: number) => void;
   isSortOption: (item: TABLE_HEAD) => boolean;
   sort: (item: TABLE_HEAD) => void;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
 }
@@ -46,7 +46,7 @@ const TokenList: React.FC<TokenItem> = ({
   movePage,
   isSortOption,
   sort,
-  windowSize,
+  breakpoint,
   searchIcon,
   onTogleSearch,
 }) => {
@@ -57,7 +57,7 @@ const TokenList: React.FC<TokenItem> = ({
         changeTokenType={changeTokenType}
         search={search}
         keyword={keyword}
-        windowSize={windowSize}
+        breakpoint={breakpoint}
         searchIcon={searchIcon}
         onTogleSearch={onTogleSearch}
       />
@@ -67,13 +67,13 @@ const TokenList: React.FC<TokenItem> = ({
         sortOption={sortOption}
         isSortOption={isSortOption}
         sort={sort}
-        windowSize={windowSize}
+        breakpoint={breakpoint}
       />
       <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
-        siblingCount={windowSize > DeviceSize.mobile ? 2 : 1}
+        siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
       />
     </div>
   );

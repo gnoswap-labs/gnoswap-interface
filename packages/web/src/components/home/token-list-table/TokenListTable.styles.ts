@@ -1,7 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TableWrapper = styled.div`
@@ -10,16 +9,7 @@ export const TableWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border01};
   border-radius: 8px;
   margin: 24px 0px;
-  ${media.tablet} {
-    border-right: 1px solid ${({ theme }) => theme.color.border09};
-    border-left: 1px solid ${({ theme }) => theme.color.border09};
-    border-top: 1px solid ${({ theme }) => theme.color.border09};
-    border-radius: 0px;
-  }
-  ${media.mobile} {
-    border: 1px solid ${({ theme }) => theme.color.border01};
-    border-radius: 8px;
-  }
+
   color: ${({ theme }) => theme.color.text04};
   ${fonts.body11};
   overflow-x: auto;

@@ -7,14 +7,14 @@ import {
   TokenTitleWrapper,
 } from "./TokenListHeader.styles";
 import IconSearch from "@components/common/icons/IconSearch";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface TokenListHeaderProps {
   tokenType: TOKEN_TYPE;
   changeTokenType: (newType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
 }
@@ -24,14 +24,14 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
   changeTokenType,
   search,
   keyword,
-  windowSize,
+  breakpoint,
   searchIcon,
   onTogleSearch,
 }) => (
   <TokenListHeaderwrapper>
     <TokenTitleWrapper>
       <h2>Tokens</h2>
-      {windowSize > DeviceSize.mobile ? (
+      {breakpoint !== DEVICE_TYPE.MOBILE ? (
         <SelectTab
           selectType={tokenType}
           list={Object.values(TOKEN_TYPE)}
@@ -51,7 +51,7 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
         </div>
       )}
     </TokenTitleWrapper>
-    {windowSize > DeviceSize.mobile ? (
+    {breakpoint !== DEVICE_TYPE.MOBILE ? (
       <SearchInput
         width={300}
         value={keyword}

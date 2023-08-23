@@ -1,6 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
-import { media } from "@styles/media";
+import { ContainerWidth, media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
 
@@ -30,7 +30,7 @@ export const BottomNavWrapper = styled.nav`
 
 export const BottomNavContainer = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  max-width: 360px;
+  max-width: ${ContainerWidth.MOBILE_CONTAINER};
   width: 100%;
   padding: 0px 24px;
 `;
@@ -48,11 +48,11 @@ export const BottomNavItem = styled.div`
 
 export const HeaderContainer = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  max-width: 1440px;
+  max-width: ${ContainerWidth.WEB_CONTAINER};
   width: 100%;
   padding: 17px 40px;
   ${media.tablet} {
-    max-width: 1180px;
+    max-width: ${ContainerWidth.TABLET_CONTAINER};
     padding: 12px 40px;
   }
   ${media.mobile} {

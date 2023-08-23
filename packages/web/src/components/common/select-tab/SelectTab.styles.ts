@@ -21,7 +21,7 @@ export const SelectButton = styled.button`
   transition: all 0.3s ease;
   flex-shrink: 0;
   ${media.tablet} {
-    padding: 8px 16px;
+    padding: 8px 24px;
   }
   ${media.mobile} {
     ${fonts.body12};

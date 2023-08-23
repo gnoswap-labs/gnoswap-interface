@@ -1,10 +1,11 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import TokenList from "@components/home/token-list/TokenList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type TokenDefaultModel } from "@models/token/token-default-model";
 import { type TokenPairModel } from "@models/token/token-pair-model";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
+import { useWindowSize } from "@hooks/common/use-window-size";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -149,23 +150,11 @@ const TokenListContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>();
-  const [width, setWidth] = useState(Number);
+  const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
   };
-
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const {
     isFetched,
@@ -249,7 +238,7 @@ const TokenListContainer: React.FC = () => {
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}
-      windowSize={width}
+      breakpoint={breakpoint}
       searchIcon={searchIcon}
       onTogleSearch={onTogleSearch}
     />
