@@ -10,6 +10,7 @@ describe("SwapCardHeader Component", () => {
       onSettingMenu: () => null,
       tolerance: "",
       changeTolerance: () => null,
+      resetTolerance: () => null,
     };
 
     render(

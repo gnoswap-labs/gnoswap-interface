@@ -2,9 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
-
 import SettingMenuModal from "./SettingMenuModal";
-import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
 
 export default {
   title: "swap/SettingMenuModal",
@@ -23,10 +21,11 @@ export const Default = Template.bind({});
 Default.args = {
   onSettingMenu: action("onSettingMenu"),
   changeTolerance: action("changeTolerance"),
+  resetTolerance: action("resetTolerance"),
   tolerance: "",
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;
@@ -34,6 +33,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const contentWrap = (theme: Theme) => css`
+const contentWrap = () => css`
   width: 500px;
 `;

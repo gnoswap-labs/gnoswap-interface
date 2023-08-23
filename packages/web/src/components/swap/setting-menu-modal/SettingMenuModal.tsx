@@ -12,12 +12,14 @@ interface SettingMenuModalProps {
   onSettingMenu: () => void;
   tolerance: string;
   changeTolerance: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  resetTolerance: () => void;
 }
 
 const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   onSettingMenu,
   tolerance,
   changeTolerance,
+  resetTolerance,
 }) => {
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
   const TooltipFloatingContent = (
@@ -76,7 +78,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
               fontType: "p1",
               textColor: "text20",
             }}
-            onClick={() => {}}
+            onClick={resetTolerance}
           />
           <div className="input-button">
             <input

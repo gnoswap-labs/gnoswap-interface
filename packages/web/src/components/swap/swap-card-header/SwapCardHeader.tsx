@@ -11,12 +11,14 @@ interface SwapCardHeaderProps {
   onSettingMenu: () => void;
   tolerance: string;
   changeTolerance: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  resetTolerance: () => void;
 }
 const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
   settingMenuToggle,
   onSettingMenu,
   tolerance,
   changeTolerance,
+  resetTolerance,
 }) => {
   return (
     <SwapCardHeaderWrapper>
@@ -34,6 +36,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
               onSettingMenu={onSettingMenu}
               tolerance={tolerance}
               changeTolerance={changeTolerance}
+              resetTolerance={resetTolerance}
             />
           )}
         </SettingMenuButton>
