@@ -228,7 +228,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               </div>
               <div className="modal-button">
                 <Button
-                  text="Swap"
+                  text="Confrim Swap"
                   style={{
                     fullWidth: true,
                     height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,

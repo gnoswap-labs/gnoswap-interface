@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCard from "./SwapCard";
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 import {
   coinList,
   dummyAutoRouterInfo,
@@ -47,6 +47,7 @@ Default.args = {
   coinList: coinList(),
   changeToken: action("changeToken"),
   selectToken: action("selectToken"),
+  resetTolerance: action("resetTolerance"),
   breakpoint: DEVICE_TYPE.WEB,
   submit: false,
   isFetched: true,
@@ -75,7 +76,7 @@ Default.args = {
   },
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;
@@ -83,6 +84,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const contentWrap = (theme: Theme) => css`
+const contentWrap = () => css`
   width: 500px;
 `;

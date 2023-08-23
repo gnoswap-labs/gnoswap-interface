@@ -148,7 +148,10 @@ export const SearchModal = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
-    height: 228px;
+    height: 292px;
+    ${media.mobile} {
+      height: 248px;
+    }
     overflow-y: auto;
 
     .list {

@@ -53,6 +53,7 @@ interface SwapCardProps {
   submit: boolean;
   isFetched: boolean;
   swapResult?: SwapData;
+  resetTolerance: () => void;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -84,6 +85,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   submit,
   isFetched,
   swapResult,
+  resetTolerance,
 }) => {
   return (
     <>
@@ -93,6 +95,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           onSettingMenu={onSettingMenu}
           tolerance={tolerance}
           changeTolerance={changeTolerance}
+          resetTolerance={resetTolerance}
         />
         <SwapCardContent
           from={from}

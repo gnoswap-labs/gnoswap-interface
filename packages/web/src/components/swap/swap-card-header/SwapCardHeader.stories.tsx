@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCardHeader from "./SwapCardHeader";
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 
 export default {
@@ -23,9 +23,10 @@ Default.args = {
   onSettingMenu: action("onSettingMenu"),
   tolerance: "",
   changeTolerance: action("changeTolerance"),
+  resetTolerance: action("resetTolerance"),
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;
@@ -33,6 +34,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const headerWrap = (theme: Theme) => css`
+const headerWrap = () => css`
   width: 500px;
 `;

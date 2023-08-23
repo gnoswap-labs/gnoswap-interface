@@ -119,7 +119,7 @@ const SwapContainer: React.FC = () => {
   const [autoRouter, setAutoRouter] = useState(false);
   const [swapInfo, setSwapInfo] = useState(false);
   const [settingMenuToggle, setSettingMenuToggle] = useState(false);
-  const [tolerance, setTolerance] = useState("10");
+  const [tolerance, setTolerance] = useState("1");
   const [tokenModal, setMokenModal] = useState(false);
   const [swapOpen, setSwapOpen] = useState(false);
   const [division, setDivision] = useState("");
@@ -203,6 +203,10 @@ const SwapContainer: React.FC = () => {
     setTolerance(value);
   };
 
+  const resetTolerance = () => {
+    setTolerance("1");
+  };
+
   const selectToken = (e: string) => {
     setDivision(e);
   };
@@ -253,6 +257,7 @@ const SwapContainer: React.FC = () => {
       submit={submit}
       isFetched={isFetched}
       swapResult={swapResult}
+      resetTolerance={resetTolerance}
     />
   );
 };
