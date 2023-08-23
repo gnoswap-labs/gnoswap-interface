@@ -37,7 +37,7 @@ export const BrandContainer = styled.div`
   ${media.mobile} {
     max-width: ${ContainerWidth.MOBILE_CONTAINER};
     flex-direction: column;
-    padding: 0px 16px;
+    padding: 0px;
     gap: 24px;
   }
 `;
@@ -84,7 +84,7 @@ export const TokensContainer = styled.div`
   }
   ${media.mobile} {
     max-width: ${ContainerWidth.MOBILE_CONTAINER};
-    padding: 0px 16px;
+    padding: 0px;
     align-items: center;
   }
 `;

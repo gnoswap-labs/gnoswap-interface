@@ -10,28 +10,28 @@ export const EarnLayoutWrapper = styled.div`
 
   .earn-section {
     ${mixins.flexbox("column", "center", "flex-start")};
-    max-width: 1920px;
+    max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     width: 100%;
     padding: 100px 0px;
     ${media.tablet} {
-      max-width: 1180px;
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
       padding: 60px 0px;
     }
     ${media.mobile} {
-      max-width: 768px;
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
       width: 90%;
-      padding: 0px;
+      padding: 24px 0px 48px 0px;
     }
   }
 
   .earn-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    max-width: 1440px;
+    max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px;
     gap: 36px;
     ${media.mobile} {
-      padding: 24px 16px 48px 16px;
+      padding: 0px 0px 0px 0px;
       gap: 24px;
     }
   }
@@ -56,7 +56,7 @@ export const EarnLayoutWrapper = styled.div`
   .pools-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     position: relative;
-    max-width: 1920px;
+    max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     width: 100%;
     padding: 100px 0px;
     ${media.tablet} {
@@ -71,7 +71,7 @@ export const EarnLayoutWrapper = styled.div`
 
   .pools-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    max-width: 1440px;
+    max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px;
     gap: 24px;

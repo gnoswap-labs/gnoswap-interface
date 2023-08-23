@@ -115,7 +115,7 @@ export const DashboardLayoutWrapper = styled.div`
       }
       ${media.mobile} {
         max-width: ${ContainerWidth.MOBILE_CONTAINER};
-        padding: 0px 16px;
+        padding: 0px;
         gap: 24px;
       }
     }

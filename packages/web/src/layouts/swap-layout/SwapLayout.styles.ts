@@ -32,7 +32,7 @@ export const SwapLayoutWrapper = styled.div`
       align-self: stretch;
     }
     ${media.mobile} {
-      padding: 24px 16px 48px 16px;
+      padding: 24px 0px 48px 0px;
       gap: 24px;
     }
   }
