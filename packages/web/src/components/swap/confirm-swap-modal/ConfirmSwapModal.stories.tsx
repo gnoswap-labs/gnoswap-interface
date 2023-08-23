@@ -1,56 +1,33 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SwapCard from "./SwapCard";
-import { css, Theme } from "@emotion/react";
-import {
-  coinList,
-  dummyAutoRouterInfo,
-  dummySwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
+import { css } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
+
+import ConfirmSwapModal from "./ConfirmSwapModal";
+import { dummySwapGasInfo } from "@containers/swap-container/SwapContainer";
 import { DEVICE_TYPE } from "@styles/media";
 
 export default {
-  title: "swap/SwapCard",
-  component: SwapCard,
-} as ComponentMeta<typeof SwapCard>;
+  title: "swap/ConfirmSwapModal",
+  component: ConfirmSwapModal,
+} as ComponentMeta<typeof ConfirmSwapModal>;
 
-const Template: ComponentStory<typeof SwapCard> = args => (
+const Template: ComponentStory<typeof ConfirmSwapModal> = args => (
   <div css={wrapper}>
     <div css={contentWrap}>
-      <SwapCard {...args} />
+      <ConfirmSwapModal {...args} />
     </div>
   </div>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  search: action("search"),
-  keyword: "",
-  gnosAmount: "1500",
-  isConnected: true,
-  autoRouter: true,
-  showAutoRouter: action("onClick"),
+  onConfirmModal: action("onConfirmModal"),
+  submitSwap: action("submitSwap"),
   swapGasInfo: dummySwapGasInfo,
-  swapInfo: true,
-  showSwapInfo: action("onClick"),
-  autoRouterInfo: dummyAutoRouterInfo,
-  settingMenuToggle: true,
-  onSettingMenu: action("onSettingMenu"),
-  tolerance: "",
-  changeTolerance: action("changeTolerance"),
-  tokenModal: true,
-  onSelectTokenModal: action("onClick"),
-  swapOpen: true,
-  onConfirmModal: action("onClick"),
-  submitSwap: action("onClick"),
-  coinList: coinList(),
-  changeToken: action("changeToken"),
-  selectToken: action("selectToken"),
   breakpoint: DEVICE_TYPE.WEB,
+  tolerance: "5",
   submit: false,
-  isFetched: true,
-  swapResult: { success: true, transaction: "https//:naver.com" },
   from: {
     token: "USDCoin",
     symbol: "USDC",
@@ -75,7 +52,7 @@ Default.args = {
   },
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;
@@ -83,6 +60,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const contentWrap = (theme: Theme) => css`
+const contentWrap = () => css`
   width: 500px;
 `;

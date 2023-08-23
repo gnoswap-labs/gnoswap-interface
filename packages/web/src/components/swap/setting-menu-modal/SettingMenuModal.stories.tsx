@@ -1,28 +1,29 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SwapCardHeader from "./SwapCardHeader";
 import { css, Theme } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
 
-export default {
-  title: "swap/SwapCardHeader",
-  component: SwapCardHeader,
-} as ComponentMeta<typeof SwapCardHeader>;
+import SettingMenuModal from "./SettingMenuModal";
+import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
 
-const Template: ComponentStory<typeof SwapCardHeader> = args => (
+export default {
+  title: "swap/SettingMenuModal",
+  component: SettingMenuModal,
+} as ComponentMeta<typeof SettingMenuModal>;
+
+const Template: ComponentStory<typeof SettingMenuModal> = args => (
   <div css={wrapper}>
-    <div css={headerWrap}>
-      <SwapCardHeader {...args} />
+    <div css={contentWrap}>
+      <SettingMenuModal {...args} />
     </div>
   </div>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  settingMenuToggle: true,
   onSettingMenu: action("onSettingMenu"),
-  tolerance: "",
   changeTolerance: action("changeTolerance"),
+  tolerance: "",
 };
 
 const wrapper = (theme: Theme) => css`
@@ -33,6 +34,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const headerWrap = (theme: Theme) => css`
+const contentWrap = (theme: Theme) => css`
   width: 500px;
 `;

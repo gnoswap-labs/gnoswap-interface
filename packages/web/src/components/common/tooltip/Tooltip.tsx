@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { CSSProperties, useMemo, useRef, useState } from "react";
 import {
   type Placement,
   useHover,
@@ -18,6 +18,7 @@ import {
 } from "@floating-ui/react";
 import { Content } from "./Tooltip.styles";
 import { useTheme } from "@emotion/react";
+import { Z_INDEX } from "@styles/zIndex";
 
 function useTooltip({ placement }: { placement: Placement }) {
   const [open, setOpen] = useState(false);
@@ -65,16 +66,17 @@ function useTooltip({ placement }: { placement: Placement }) {
     [open, setOpen, interactions, data],
   );
 }
-
 interface TooltipProps {
   placement: Placement;
   FloatingContent: React.ReactNode;
+  width?: CSSProperties["width"];
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   children,
   placement,
   FloatingContent,
+  width,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -91,6 +93,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
         data-state={open ? "open" : "closed"}
         style={{
           display: "flex",
+          width: width && width,
         }}
       >
         {children}
@@ -104,6 +107,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
               top: y ?? 0,
               left: x ?? 0,
               visibility: x == null ? "hidden" : "visible",
+              zIndex: Z_INDEX.modalTooltip,
             }}
           >
             <FloatingArrow

@@ -1,15 +1,17 @@
 import React from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { SwapCardWrapper } from "./SwapCard.styles";
-import SearchInput from "@components/common/search-input/SearchInput";
 import SwapCardHeader from "../swap-card-header/SwapCardHeader";
 import SwapCardContent from "../swap-card-content/SwapCardContent";
-import { DEVICE_TYPE } from "@styles/media";
 import SwapButtonTooltip from "../swap-button-tooltip/SwapButtonTooltip";
 import {
   AutoRouterInfo,
+  tokenInfo,
+  SwapData,
   SwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
+import ConfirmSwapModal from "../confirm-swap-modal/ConfirmSwapModal";
+import { DEVICE_TYPE } from "@styles/media";
 
 export interface TokenInfo {
   token: string;
@@ -25,7 +27,6 @@ export interface TokenInfo {
 interface SwapCardProps {
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
-  deviceType: DEVICE_TYPE;
   isConnected: boolean;
   from: TokenInfo;
   to: TokenInfo;
@@ -36,12 +37,27 @@ interface SwapCardProps {
   showAutoRouter: () => void;
   swapGasInfo: SwapGasInfo;
   autoRouterInfo: AutoRouterInfo;
+  settingMenuToggle: boolean;
+  onSettingMenu: () => void;
+  tolerance: string;
+  changeTolerance: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  tokenModal: boolean;
+  onSelectTokenModal: () => void;
+  swapOpen: boolean;
+  onConfirmModal: () => void;
+  coinList: tokenInfo[];
+  changeToken: (token: tokenInfo, type: string) => void;
+  selectToken: (e: string) => void;
+  submitSwap: () => void;
+  breakpoint: DEVICE_TYPE;
+  submit: boolean;
+  isFetched: boolean;
+  swapResult?: SwapData;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
   search,
   keyword,
-  deviceType,
   from,
   to,
   gnosAmount,
@@ -52,20 +68,32 @@ const SwapCard: React.FC<SwapCardProps> = ({
   showAutoRouter,
   swapGasInfo,
   autoRouterInfo,
+  settingMenuToggle,
+  onSettingMenu,
+  tolerance,
+  changeTolerance,
+  tokenModal,
+  onSelectTokenModal,
+  swapOpen,
+  onConfirmModal,
+  coinList,
+  changeToken,
+  selectToken,
+  submitSwap,
+  breakpoint,
+  submit,
+  isFetched,
+  swapResult,
 }) => {
   return (
     <>
-      {deviceType === DEVICE_TYPE.MOBILE && (
-        <SearchInput
-          width={"100%"}
-          height={40}
-          value={keyword}
-          onChange={search}
-          className="tokens-search"
-        />
-      )}
       <SwapCardWrapper>
-        <SwapCardHeader />
+        <SwapCardHeader
+          settingMenuToggle={settingMenuToggle}
+          onSettingMenu={onSettingMenu}
+          tolerance={tolerance}
+          changeTolerance={changeTolerance}
+        />
         <SwapCardContent
           from={from}
           to={to}
@@ -75,6 +103,13 @@ const SwapCard: React.FC<SwapCardProps> = ({
           showAutoRouter={showAutoRouter}
           swapGasInfo={swapGasInfo}
           autoRouterInfo={autoRouterInfo}
+          tokenModal={tokenModal}
+          onSelectTokenModal={onSelectTokenModal}
+          search={search}
+          keyword={keyword}
+          coinList={coinList}
+          changeToken={changeToken}
+          selectToken={selectToken}
         />
         <div className="footer">
           <SwapButtonTooltip swapGasInfo={swapGasInfo}>
@@ -83,19 +118,19 @@ const SwapCard: React.FC<SwapCardProps> = ({
                 <Button
                   text="Swap"
                   style={{
-                    width: deviceType === DEVICE_TYPE.MOBILE ? 466 : 450,
-                    height: 57,
+                    fullWidth: true,
+                    height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
                     fontType: "body7",
                     hierarchy: ButtonHierarchy.Primary,
                   }}
-                  onClick={() => {}}
+                  onClick={onConfirmModal}
                 />
               ) : (
                 <Button
                   text="Insufficient Balance"
                   style={{
-                    width: deviceType === DEVICE_TYPE.MOBILE ? 466 : 450,
-                    height: 57,
+                    fullWidth: true,
+                    height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
                     fontType: "body7",
                     hierarchy: ButtonHierarchy.Gray,
                   }}
@@ -106,8 +141,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
               <Button
                 text="Connect Wallet"
                 style={{
-                  width: deviceType === DEVICE_TYPE.MOBILE ? 466 : 450,
-                  height: 57,
+                  fullWidth: true,
+                  height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
                   fontType: "body7",
                   hierarchy: ButtonHierarchy.Primary,
                 }}
@@ -117,6 +152,20 @@ const SwapCard: React.FC<SwapCardProps> = ({
           </SwapButtonTooltip>
         </div>
       </SwapCardWrapper>
+      {swapOpen && (
+        <ConfirmSwapModal
+          onConfirmModal={onConfirmModal}
+          submitSwap={submitSwap}
+          from={from}
+          to={to}
+          swapGasInfo={swapGasInfo}
+          tolerance={tolerance}
+          breakpoint={breakpoint}
+          submit={submit}
+          isFetched={isFetched}
+          swapResult={swapResult}
+        />
+      )}
     </>
   );
 };
