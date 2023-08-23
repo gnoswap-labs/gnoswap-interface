@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import WalletBalance from "./WalletBalance";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("WalletBalance Component", () => {
   it("WalletBalance render", () => {
@@ -20,6 +21,7 @@ describe("WalletBalance Component", () => {
       deposit: () => null,
       withdraw: () => null,
       claimAll: () => null,
+      breakpoint: DEVICE_TYPE.WEB,
     };
 
     render(

@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import WalletBalanceSummary from "./WalletBalanceSummary";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/WalletBalance/WalletBalanceSummary",
@@ -35,4 +36,5 @@ ConnectionFailed.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
+  breakpoint: DEVICE_TYPE.WEB,
 };

@@ -20,7 +20,7 @@ Default.args = {
   isFetched: true,
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  deviceType: DEVICE_TYPE.WEB,
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 export const Skeleton = Template.bind({});

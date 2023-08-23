@@ -19,7 +19,7 @@ describe("AssetListTable Component", () => {
         return;
       },
       isSortOption: () => true,
-      deviceType: DEVICE_TYPE.WEB,
+      breakpoint: DEVICE_TYPE.WEB,
     };
 
     render(

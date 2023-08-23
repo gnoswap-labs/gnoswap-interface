@@ -1,18 +1,16 @@
 import Button from "@components/common/button/Button";
-import IconDownload from "@components/common/icons/IconDownload";
-import IconUpload from "@components/common/icons/IconUpload";
 import { BalanceSummaryInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
 import WalletBalanceSummaryInfo from "@components/wallet/wallet-balance-summary-info/WalletBalanceSummaryInfo";
 import { ButtonHierarchy } from "@components/common/button/Button";
 import { WalletBalanceSummaryWrapper } from "./WalletBalanceSummary.styles";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface WalletBalanceSummaryProps {
   connected: boolean;
   balanceSummaryInfo: BalanceSummaryInfo;
   deposit: () => void;
   withdraw: () => void;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
@@ -20,7 +18,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
   balanceSummaryInfo,
   deposit,
   withdraw,
-  windowSize,
+  breakpoint,
 }) => (
   <WalletBalanceSummaryWrapper>
     <span className="total-balance-title">Total Balance</span>
@@ -29,25 +27,23 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
       <div className="button-group">
         <Button
           style={{
-            width: windowSize > DeviceSize.mobile ? 150 : 304,
+            width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : 304,
             hierarchy: ButtonHierarchy.Primary,
             fontType: "body9",
             padding: "10px 16px",
           }}
           text={"Deposit"}
-          leftIcon={<IconDownload className="wallet-button-icon" />}
           onClick={deposit}
           disabled={connected === false}
         />
         <Button
           style={{
-            width: windowSize > DeviceSize.mobile ? 150 : 304,
+            width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : 304,
             hierarchy: ButtonHierarchy.Primary,
             fontType: "body9",
             padding: "10px 16px",
           }}
           text={"Withdraw"}
-          leftIcon={<IconUpload className="wallet-button-icon" />}
           onClick={withdraw}
           disabled={connected === false}
         />

@@ -14,14 +14,14 @@ interface AssetInfoProps {
   asset: Asset;
   deposit: (assetId: string) => void;
   withdraw: (assetId: string) => void;
-  deviceType: DEVICE_TYPE;
+  breakpoint: DEVICE_TYPE;
 }
 
 const AssetInfo: React.FC<AssetInfoProps> = ({
   asset,
   deposit,
   withdraw,
-  deviceType,
+  breakpoint,
 }) => {
   const { id, logoUri, name, symbol, chain, balance } = asset;
 
@@ -37,7 +37,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(id);
   }, [withdraw, id]);
 
-  return deviceType === DEVICE_TYPE.WEB ? (
+  return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
         className="left"
@@ -61,7 +61,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
-  ) : deviceType === DEVICE_TYPE.TABLET ? (
+  ) : breakpoint === DEVICE_TYPE.TABLET ? (
     <AssetInfoWrapper>
       <TableColumn
         className="left"

@@ -15,10 +15,9 @@ export const AssetListHeaderWrapper = styled.div`
 
   .title-container {
     ${mixins.flexbox("row", "center", "flex-start")};
-    width: 651px;
     gap: 36px;
     ${media.mobile} {
-      width: 328px;
+      width: 100%;
       justify-content: space-between;
     }
   }

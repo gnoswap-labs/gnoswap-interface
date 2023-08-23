@@ -27,7 +27,7 @@ interface AssetListTableProps {
   sortOption: AssetSortOption | undefined;
   sort: (head: ASSET_HEAD) => void;
   isSortOption: (head: ASSET_HEAD) => boolean;
-  deviceType: DEVICE_TYPE;
+  breakpoint: DEVICE_TYPE;
 }
 
 const AssetListTable: React.FC<AssetListTableProps> = ({
@@ -38,7 +38,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
   sortOption,
   sort,
   isSortOption,
-  deviceType,
+  breakpoint,
 }) => {
   const isAscendingOption = useCallback(
     (head: ASSET_HEAD) => {
@@ -79,9 +79,9 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               sort: isSortOption(head),
             })}
             tdWidth={
-              deviceType === DEVICE_TYPE.WEB
+              breakpoint === DEVICE_TYPE.WEB
                 ? ASSET_TD_WIDTH[idx]
-                : deviceType === DEVICE_TYPE.TABLET
+                : breakpoint === DEVICE_TYPE.TABLET
                 ? TABLET_ASSET_TD_WIDTH[idx]
                 : MOBILE_ASSET_TD_WIDTH[idx]
             }
@@ -113,7 +113,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               asset={asset}
               deposit={deposit}
               withdraw={withdraw}
-              deviceType={deviceType}
+              breakpoint={breakpoint}
             />
           ))}
         {!isFetched && <TableSkeleton info={ASSET_INFO} />}

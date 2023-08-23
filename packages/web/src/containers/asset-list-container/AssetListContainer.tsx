@@ -3,11 +3,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 import { useQuery } from "@tanstack/react-query";
-
 import AssetList from "@components/wallet/asset-list/AssetList";
 import BigNumber from "bignumber.js";
-import { CommonState } from "@states/index";
-import { useAtom } from "jotai";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface AssetListResponse {
   hasNext: boolean;
@@ -141,7 +139,11 @@ const AssetListContainer: React.FC = () => {
   const [filteredAssets, setFilteredAsset] = useState<Asset[]>([]);
   const [hasLoader, setHasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
-  const [breakpoint] = useAtom(CommonState.breakpoint);
+  const { breakpoint } = useWindowSize();
+  const [searchIcon, setSearchIcon] = useState(false);
+  const onTogleSearch = () => {
+    setSearchIcon(prev => !prev);
+  };
 
   const {
     isFetched,
@@ -264,7 +266,9 @@ const AssetListContainer: React.FC = () => {
       sortOption={sortOption}
       sort={sort}
       isSortOption={isSortOption}
-      deviceType={breakpoint}
+      breakpoint={breakpoint}
+      searchIcon={searchIcon}
+      onTogleSearch={onTogleSearch}
     />
   );
 };

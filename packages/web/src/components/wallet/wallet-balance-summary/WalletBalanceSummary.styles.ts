@@ -41,7 +41,6 @@ export const WalletBalanceSummaryWrapper = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     ${media.mobile} {
       width: 100%;
-      flex-direction: column;
       align-items: center;
     }
     gap: 8px;

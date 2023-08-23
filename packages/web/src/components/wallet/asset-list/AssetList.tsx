@@ -27,7 +27,9 @@ interface AssetListProps {
   sortOption: AssetSortOption | undefined;
   sort: (item: ASSET_HEAD) => void;
   isSortOption: (item: ASSET_HEAD) => boolean;
-  deviceType: DEVICE_TYPE;
+  breakpoint: DEVICE_TYPE;
+  searchIcon: boolean;
+  onTogleSearch: () => void;
 }
 
 const AssetList: React.FC<AssetListProps> = ({
@@ -47,7 +49,9 @@ const AssetList: React.FC<AssetListProps> = ({
   sort,
   sortOption,
   isSortOption,
-  deviceType,
+  breakpoint,
+  searchIcon,
+  onTogleSearch,
 }) => (
   <AssetListWrapper>
     <AssetListHeader
@@ -57,7 +61,9 @@ const AssetList: React.FC<AssetListProps> = ({
       changeAssetType={changeAssetType}
       toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
       search={search}
-      deviceType={deviceType}
+      breakpoint={breakpoint}
+      searchIcon={searchIcon}
+      onTogleSearch={onTogleSearch}
     />
     <AssetListTable
       isFetched={isFetched}
@@ -67,7 +73,7 @@ const AssetList: React.FC<AssetListProps> = ({
       sort={sort}
       sortOption={sortOption}
       isSortOption={isSortOption}
-      deviceType={deviceType}
+      breakpoint={breakpoint}
     />
     {hasLoader && <LoadMoreButton show={!extended} onClick={toggleExtended} />}
   </AssetListWrapper>

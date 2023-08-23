@@ -1,6 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import WalletBalanceDetailInfo from "./WalletBalanceDetailInfo";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/WalletBalance/WalletBalanceDetail/WalletBalanceDetailInfo",

@@ -5,6 +5,7 @@ import {
 import WalletBalanceSummary from "@components/wallet/wallet-balance-summary/WalletBalanceSummary";
 import WalletBalanceDetail from "@components/wallet/wallet-balance-detail/WalletBalanceDetail";
 import { WalletBalanceWrapper } from "./WalletBalance.styles";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface WalletBalanceProps {
   connected: boolean;
@@ -13,7 +14,7 @@ interface WalletBalanceProps {
   deposit: () => void;
   withdraw: () => void;
   claimAll: () => void;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({
@@ -23,7 +24,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   deposit,
   withdraw,
   claimAll,
-  windowSize,
+  breakpoint,
 }) => (
   <WalletBalanceWrapper>
     <WalletBalanceSummary
@@ -31,13 +32,13 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
       balanceSummaryInfo={balanceSummaryInfo}
       deposit={deposit}
       withdraw={withdraw}
-      windowSize={windowSize}
+      breakpoint={breakpoint}
     />
     <WalletBalanceDetail
       connected={connected}
       balanceDetailInfo={balanceDetailInfo}
       claimAll={claimAll}
-      windowSize={windowSize}
+      breakpoint={breakpoint}
     />
   </WalletBalanceWrapper>
 );

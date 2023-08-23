@@ -1,21 +1,26 @@
 import { BalanceDetailInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
-import { WalletBalanceDetailWrapper } from "./WalletBalanceDetail.styles";
-import WalletBalanceDetailInfo from "@components/wallet/wallet-balance-detail-info/WalletBalanceDetailInfo";
+import {
+  InfoWrapper,
+  WalletBalanceDetailWrapper,
+} from "./WalletBalanceDetail.styles";
+import WalletBalanceDetailInfo, {
+  WalletBalanceDetailInfoTooltip,
+} from "@components/wallet/wallet-balance-detail-info/WalletBalanceDetailInfo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
   connected: boolean;
   claimAll: () => void;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   balanceDetailInfo,
   connected,
   claimAll,
-  windowSize,
+  breakpoint,
 }) => (
   <WalletBalanceDetailWrapper>
     <WalletBalanceDetailInfo
@@ -34,35 +39,48 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       value={balanceDetailInfo.unstakingLP}
       tooltip={"LP Tokens that are currently being unstaked."}
     />
-    <WalletBalanceDetailInfo
-      title={"Claimable Rewards"}
-      value={balanceDetailInfo.claimableRewards}
-      tooltip={"Total sum of unclaimed rewards."}
-      button={
-        <ClaimAllButton
-          onClick={claimAll}
-          disabled={connected === false}
-          windowSize={windowSize}
-        />
-      }
-    />
+    {breakpoint === DEVICE_TYPE.MOBILE ? (
+      <InfoWrapper>
+        <div className="column-batch">
+          <div className="title-wrapper">
+            <span className="title">Claimable Rewards</span>
+            <WalletBalanceDetailInfoTooltip
+              tooltip={"Total sum of unclaimed rewards."}
+            />
+          </div>
+          <div className="value-wrapper">
+            <span className="value">{balanceDetailInfo.claimableRewards}</span>
+          </div>
+        </div>
+        <div className="button-wrapper">
+          <ClaimAllButton onClick={claimAll} disabled={connected === false} />
+        </div>
+      </InfoWrapper>
+    ) : (
+      <WalletBalanceDetailInfo
+        title={"Claimable Rewards"}
+        value={balanceDetailInfo.claimableRewards}
+        tooltip={"Total sum of unclaimed rewards."}
+        button={
+          <ClaimAllButton onClick={claimAll} disabled={connected === false} />
+        }
+      />
+    )}
   </WalletBalanceDetailWrapper>
 );
 
 interface ClaimAllButtonProps {
   disabled: boolean;
   onClick: () => void;
-  windowSize: number;
 }
 
 const ClaimAllButton: React.FC<ClaimAllButtonProps> = ({
   disabled,
   onClick,
-  windowSize,
 }) => (
   <Button
     style={{
-      width: windowSize > DeviceSize.mobile ? 86 : 304,
+      width: 86,
       fontType: "p1",
       padding: "10px 16px",
       hierarchy: ButtonHierarchy.Primary,

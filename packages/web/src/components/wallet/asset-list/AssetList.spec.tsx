@@ -24,11 +24,13 @@ describe("AssetList Component", () => {
       deposit: () => null,
       withdraw: () => null,
       sortOption: undefined,
+      searchIcon: true,
+      onTogleSearch: () => null,
       sort: () => {
         return;
       },
       isSortOption: () => true,
-      deviceType: DEVICE_TYPE.WEB,
+      breakpoint: DEVICE_TYPE.WEB,
     };
 
     render(

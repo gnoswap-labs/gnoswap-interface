@@ -6,7 +6,7 @@ import { wrapper } from "./WalletMyPositionsHeader.styles";
 
 const WalletMyPositionsHeader: React.FC = () => {
   const [disabled, setDisabled] = useState(false);
-  const [positionNum, setPositionNum] = useState(2);
+  const [positionNum, setPositionNum] = useState(0);
   const onClickNewPosition = () => {
     // TODO
   };
@@ -14,16 +14,6 @@ const WalletMyPositionsHeader: React.FC = () => {
   return (
     <div css={wrapper}>
       <h2>{`My Positions (${positionNum})`}</h2>
-      <Button
-        text="New Position"
-        style={{
-          hierarchy: ButtonHierarchy.Primary,
-          height: 36,
-          padding: "0px 16px",
-        }}
-        onClick={onClickNewPosition}
-        disabled={disabled}
-      />
     </div>
   );
 };

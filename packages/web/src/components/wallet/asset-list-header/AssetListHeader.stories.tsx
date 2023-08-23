@@ -21,5 +21,7 @@ Default.args = {
   changeAssetType: action("changeAssetType"),
   toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),
   search: action("search"),
-  deviceType: DEVICE_TYPE.WEB,
+  breakpoint: DEVICE_TYPE.WEB,
+  searchIcon: true,
+  onTogleSearch: action("onTogleSearch"),
 };
