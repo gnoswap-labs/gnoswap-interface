@@ -11,6 +11,7 @@ const globalStyle = (theme: Theme) => css`
     padding: 0;
     margin: 0;
     width: 100%;
+    min-width: 360px;
     height: 100%;
     font-family: Inter, sans-serif;
   }
