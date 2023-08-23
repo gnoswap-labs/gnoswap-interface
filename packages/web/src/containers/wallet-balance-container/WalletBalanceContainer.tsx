@@ -1,8 +1,9 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -50,18 +51,7 @@ async function fetchBalanceDetailInfo(
 const WalletBalanceContainer: React.FC = () => {
   const [connected, setConnected] = useState(true);
   const [address, setAddress] = useState("");
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const { breakpoint } = useWindowSize();
 
   const deposit = useCallback(() => {
     if (!connected) return;
@@ -109,7 +99,7 @@ const WalletBalanceContainer: React.FC = () => {
       deposit={deposit}
       withdraw={withdraw}
       claimAll={claimAll}
-      windowSize={width}
+      breakpoint={breakpoint}
     />
   );
 };

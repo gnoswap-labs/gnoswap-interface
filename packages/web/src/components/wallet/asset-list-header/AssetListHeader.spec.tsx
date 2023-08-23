@@ -14,7 +14,9 @@ describe("AssetListHeader Component", () => {
       changeAssetType: () => null,
       toggleInvisibleZeroBalance: () => null,
       search: () => null,
-      deviceType: DEVICE_TYPE.WEB,
+      breakpoint: DEVICE_TYPE.WEB,
+      searchIcon: true,
+      onTogleSearch: () => null,
     };
 
     render(

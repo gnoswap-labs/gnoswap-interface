@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import AssetList from "./AssetList";
 import { dummyAssetList } from "@containers/asset-list-container/AssetListContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/AssetList",
@@ -28,5 +29,7 @@ Default.args = {
   toggleExtended: action("toggleExtended"),
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  deviceType: "web",
+  breakpoint: DEVICE_TYPE.WEB,
+  searchIcon: true,
+  onTogleSearch: action("onTogleSearch"),
 };

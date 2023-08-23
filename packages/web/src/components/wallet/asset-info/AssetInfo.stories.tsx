@@ -30,7 +30,7 @@ Default.args = {
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
-  deviceType: DEVICE_TYPE.WEB,
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 const wrapper = (theme: Theme) => css`

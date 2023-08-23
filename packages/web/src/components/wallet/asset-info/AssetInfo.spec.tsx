@@ -19,7 +19,7 @@ describe("AssetInfo Component", () => {
       },
       deposit: () => null,
       withdraw: () => null,
-      deviceType: DEVICE_TYPE.WEB,
+      breakpoint: DEVICE_TYPE.WEB,
     };
 
     render(

@@ -14,7 +14,9 @@ interface AssetListHeaderProps {
   changeAssetType: (newType: string) => void;
   toggleInvisibleZeroBalance: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  deviceType: DEVICE_TYPE;
+  breakpoint: DEVICE_TYPE;
+  searchIcon: boolean;
+  onTogleSearch: () => void;
 }
 
 const AssetListHeader: React.FC<AssetListHeaderProps> = ({
@@ -24,13 +26,15 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   changeAssetType,
   toggleInvisibleZeroBalance,
   search,
-  deviceType,
+  breakpoint,
+  searchIcon,
+  onTogleSearch,
 }) => {
   return (
     <AssetListHeaderWrapper>
       <div className="title-container">
         <h2>Assets</h2>
-        {deviceType !== DEVICE_TYPE.MOBILE ? (
+        {breakpoint !== DEVICE_TYPE.MOBILE ? (
           <SelectTab
             selectType={assetType}
             list={Object.values(ASSET_FILTER_TYPE)}
@@ -38,19 +42,39 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
           />
         ) : (
           <div className="mobile-title-container">
-            <Switch
-              checked={invisibleZeroBalance}
-              onChange={toggleInvisibleZeroBalance}
-              hasLabel={true}
-              disabled={assetType === ASSET_FILTER_TYPE.GRC20}
-            />
-            <div className="icon-wrap" onClick={() => {}}>
-              <IconSearch className="search-icon" />
-            </div>
+            {breakpoint !== DEVICE_TYPE.MOBILE && (
+              <Switch
+                checked={invisibleZeroBalance}
+                onChange={toggleInvisibleZeroBalance}
+                hasLabel={true}
+                disabled={assetType === ASSET_FILTER_TYPE.GRC20}
+              />
+            )}
+            {searchIcon ? (
+              <SearchInput
+                width={200}
+                height={40}
+                value={keyword}
+                onChange={search}
+                className="tokens-search"
+              />
+            ) : (
+              <>
+                <Switch
+                  checked={invisibleZeroBalance}
+                  onChange={toggleInvisibleZeroBalance}
+                  hasLabel={true}
+                  disabled={assetType === ASSET_FILTER_TYPE.GRC20}
+                />
+                <div className="icon-wrap" onClick={onTogleSearch}>
+                  <IconSearch className="search-icon" />
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
-      {deviceType !== DEVICE_TYPE.MOBILE ? (
+      {breakpoint !== DEVICE_TYPE.MOBILE ? (
         <div className="right-section">
           <Switch
             checked={invisibleZeroBalance}

@@ -23,11 +23,14 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
   .title-wrapper {
     ${mixins.flexbox("row", "center", "center")};
     gap: 4px;
+    flex-shrink: 0;
 
     .title {
+      flex-shrink: 0;
       ${fonts.body12}
       color: ${({ theme }) => theme.color.text04};
     }
+
     svg {
       width: 13px;
       height: 13px;
@@ -42,7 +45,6 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     width: 100%;
 
     ${media.mobile} {
-      flex-direction: column;
       gap: 8px;
     }
     .value {

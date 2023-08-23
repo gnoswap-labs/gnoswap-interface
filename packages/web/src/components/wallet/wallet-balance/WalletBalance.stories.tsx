@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import WalletBalance from "./WalletBalance";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/WalletBalance",
@@ -28,6 +29,7 @@ ConnectionSucceeded.args = {
   deposit: action("deposit"),
   withdraw: action("withdraw"),
   claimAll: action("claimAll"),
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 export const ConnectionFailed = Template.bind({});
@@ -61,5 +63,6 @@ LoadingData.args = {
     claimableRewards: "$0.00",
   },
   deposit: action("deposit"),
-  withdraw: action("withdraw"), claimAll: action("claimAll"),
+  withdraw: action("withdraw"),
+  claimAll: action("claimAll"),
 };

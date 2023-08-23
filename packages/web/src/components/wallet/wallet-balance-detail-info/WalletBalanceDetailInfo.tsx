@@ -35,7 +35,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   );
 };
 
-const WalletBalanceDetailInfoTooltip: React.FC<{ tooltip: string }> = ({
+export const WalletBalanceDetailInfoTooltip: React.FC<{ tooltip: string }> = ({
   tooltip,
 }) => {
   const TooltipFloatingContent = (

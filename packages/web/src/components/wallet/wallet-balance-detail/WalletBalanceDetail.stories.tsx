@@ -1,7 +1,8 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import WalletBalanceDetail from "./WalletBalanceDetail";
-import { action } from '@storybook/addon-actions';
+import { action } from "@storybook/addon-actions";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "wallet/WalletBalance/WalletBalanceDetail",
@@ -22,4 +23,5 @@ Default.args = {
   },
   connected: true,
   claimAll: action("claimAll"),
+  breakpoint: DEVICE_TYPE.WEB,
 };

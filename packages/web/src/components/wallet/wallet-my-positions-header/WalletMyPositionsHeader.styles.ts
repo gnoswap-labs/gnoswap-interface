@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -7,5 +8,7 @@ export const wrapper = (theme: Theme) => css`
   width: 100%;
   color: ${theme.color.text02};
   ${fonts.h5}
-  height:36px;
+  ${media.mobile} {
+    ${fonts.h6}
+  }
 `;
