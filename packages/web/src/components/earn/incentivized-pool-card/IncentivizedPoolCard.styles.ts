@@ -5,6 +5,7 @@ import mixins from "@styles/mixins";
 export const PoolCardWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
+  min-width: 290px;
   padding: 16px;
   gap: 8px;
   background-color: ${({ theme }) => theme.color.background03};
