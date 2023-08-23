@@ -44,6 +44,7 @@ export const ContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     padding: 4px 6px;
     gap: 8px;
+    cursor: pointer;
   }
   .amount-info {
     ${mixins.flexbox("row", "center", "space-between")};

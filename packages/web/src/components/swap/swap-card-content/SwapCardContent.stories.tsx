@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCardContent from "./SwapCardContent";
 import { css, Theme } from "@emotion/react";
 import {
+  coinList,
   dummyAutoRouterInfo,
   dummySwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
@@ -29,6 +30,13 @@ Default.args = {
   swapInfo: true,
   showSwapInfo: action("onClick"),
   autoRouterInfo: dummyAutoRouterInfo,
+  search: action("search"),
+  tokenModal: true,
+  onSelectTokenModal: action("onClick"),
+  keyword: "",
+  coinList: coinList(),
+  changeToken: action("changeToken"),
+  selectToken: action("selectToken"),
   from: {
     token: "USDCoin",
     symbol: "USDC",

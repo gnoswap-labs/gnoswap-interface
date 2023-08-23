@@ -1,21 +1,20 @@
+import SettingMenuModal from "./SettingMenuModal";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import SwapCardHeader from "./SwapCardHeader";
+import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
 
-describe("SwapCardHeader Component", () => {
-  it("SwapCardHeader render", () => {
+describe("SettingMenuModal Component", () => {
+  it("should render", () => {
     const mockProps = {
-      settingMenuToggle: true,
       onSettingMenu: () => null,
       tolerance: "",
       changeTolerance: () => null,
     };
-
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <SwapCardHeader {...mockProps} />
+          <SettingMenuModal {...mockProps} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

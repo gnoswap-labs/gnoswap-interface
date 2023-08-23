@@ -30,7 +30,11 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
   );
 
   return (
-    <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
+    <Tooltip
+      placement="top"
+      FloatingContent={TooltipFloatingContent}
+      width="100%"
+    >
       {children}
     </Tooltip>
   );

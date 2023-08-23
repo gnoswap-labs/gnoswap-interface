@@ -1,44 +1,18 @@
+import ConfirmSwapModal from "./ConfirmSwapModal";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import SwapCard from "./SwapCard";
-import {
-  coinList,
-  tokenInfo,
-  dummyAutoRouterInfo,
-  dummySwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
+import { dummySwapGasInfo } from "@containers/swap-container/SwapContainer";
 import { DEVICE_TYPE } from "@styles/media";
 
-describe("SwapCard Component", () => {
-  it("SwapCard render", () => {
+describe("ConfirmSwapModal Component", () => {
+  it("should render", () => {
     const mockProps = {
-      search: () => null,
-      keyword: "",
-      gnosAmount: "1",
-      isConnected: true,
-      autoRouter: false,
-      showAutoRouter: () => null,
-      swapGasInfo: dummySwapGasInfo,
-      swapInfo: true,
-      showSwapInfo: () => null,
-      autoRouterInfo: dummyAutoRouterInfo,
-      settingMenuToggle: true,
-      onSettingMenu: () => null,
-      tolerance: "",
-      changeTolerance: () => null,
-      tokenModal: true,
-      onSelectTokenModal: () => null,
-      swapOpen: true,
       onConfirmModal: () => null,
-      coinList: coinList(),
-      changeToken: (token: tokenInfo, type: string) => null,
-      selectToken: (e: string) => null,
       submitSwap: () => null,
-      breakpoint: DEVICE_TYPE.WEB,
+      tolerance: "",
       submit: false,
-      isFetched: true,
-      swapResult: { success: true, transaction: "https//:naver.com" },
+      isFetched: false,
       from: {
         token: "USDCoin",
         symbol: "USDC",
@@ -61,12 +35,13 @@ describe("SwapCard Component", () => {
         tokenLogo:
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
       },
+      swapGasInfo: dummySwapGasInfo,
+      breakpoint: DEVICE_TYPE.WEB,
     };
-
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <SwapCard {...mockProps} />
+          <ConfirmSwapModal {...mockProps} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

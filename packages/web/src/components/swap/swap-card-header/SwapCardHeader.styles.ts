@@ -17,11 +17,21 @@ export const SwapCardHeaderWrapper = styled.div`
 
   .button-wrap {
     ${mixins.flexbox("row", "center", "flex-start")};
-    cursor: pointer;
     gap: 12px;
   }
 
-  .setting-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+  .setting-wrap {
+    ${mixins.flexbox("row", "center", "center")};
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    .setting-icon * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
   }
+`;
+
+export const SettingMenuButton = styled.div`
+  ${mixins.flexbox("row", "center", "center")};
+  position: relative;
 `;

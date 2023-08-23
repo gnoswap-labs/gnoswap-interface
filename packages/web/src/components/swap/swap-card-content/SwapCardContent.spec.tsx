@@ -3,6 +3,8 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SwapCardContent from "./SwapCardContent";
 import {
+  coinList,
+  tokenInfo,
   dummyAutoRouterInfo,
   dummySwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
@@ -16,6 +18,13 @@ describe("SwapCardContent Component", () => {
       swapInfo: true,
       showSwapInfo: () => null,
       autoRouterInfo: dummyAutoRouterInfo,
+      tokenModal: true,
+      onSelectTokenModal: () => null,
+      search: () => null,
+      keyword: "",
+      coinList: coinList(),
+      changeToken: (token: tokenInfo, type: string) => null,
+      selectToken: (e: string) => null,
       from: {
         token: "USDCoin",
         symbol: "USDC",
