@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import NotificationButton from "./NotificationButton";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "common/NotificationButton",
@@ -22,9 +23,11 @@ export default {
   ],
 } as ComponentMeta<typeof NotificationButton>;
 
-const Template: ComponentStory<typeof NotificationButton> = () => (
-  <NotificationButton />
+const Template: ComponentStory<typeof NotificationButton> = args => (
+  <NotificationButton {...args} />
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  breakpoint: DEVICE_TYPE.WEB,
+};

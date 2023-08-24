@@ -3,6 +3,7 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("Header Component", () => {
   it("should render", () => {
@@ -18,6 +19,7 @@ describe("Header Component", () => {
       error: null,
       search: () => null,
       keyword: "",
+      breakpoint: DEVICE_TYPE.WEB,
     };
     render(
       <JotaiProvider>

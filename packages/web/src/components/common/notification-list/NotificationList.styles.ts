@@ -2,6 +2,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { Z_INDEX } from "@styles/zIndex";
 
 export interface NotificationProps {
   width?: number;
@@ -10,16 +11,6 @@ export interface NotificationProps {
 export const NotificationListWrapper = styled.div<NotificationProps>`
   position: absolute;
   top: 53px;
-  right: ${({ width }) => {
-    return width && width > 1680 ? "-150px" : "0px";
-  }};
-  ${media.tablet} {
-    top: 46px;
-    right: 0px;
-  }
-  ${media.mobile} {
-    top: 42px;
-  }
   width: 320px;
   max-height: 442px;
   overflow-y: auto;
@@ -28,12 +19,48 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
+  right: ${({ width }) => {
+    return width && width > 1680 ? "-150px" : "0px";
+  }};
+  left: ${({ width }) => {
+    return width && width < 768 && "0px";
+  }};
+  ${media.tablet} {
+    top: 46px;
+    right: 0px;
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    position: fixed;
+    width: 100%;
+    height: 426px;
+    top: calc(100vh - 426px);
+    z-index: ${Z_INDEX.modal};
+    padding: 24px 0px;
+    min-width: 360px;
+  }
+  .list-container {
+    ${media.mobile} {
+      ${mixins.flexbox("column", "center", "flex-start")};
+      width: 100%;
+    }
+    .list-content {
+      ${media.mobile} {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        width: 100%;
+      }
+    }
+  }
 `;
 
 export const NotificationHeader = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
   padding: 0px 24px 16px;
+  ${media.mobile} {
+    width: 100%;
+    padding: 0px 12px 16px 12px;
+  }
   .notification-title {
     ${fonts.body9};
     color: ${({ theme }) => theme.color.text02};
@@ -46,13 +73,14 @@ export const ClearButton = styled.button`
 `;
 
 export const TxsListItem = styled.div`
+  width: 100%;
   & + & {
     :before {
       content: "";
       display: block;
       width: 100%;
       height: 1px;
-      background-color: ${({ theme }) => theme.color.background02};
+      background-color: ${({ theme }) => theme.color.background05};
       margin: 4px 0px;
     }
   }
@@ -65,18 +93,21 @@ export const TxsDateAgoTitle = styled.span`
   width: 100%;
   height: 34px;
   padding: 0px 24px;
+  ${media.mobile} {
+    padding: 0px 12px;
+  }
 `;
 
 export const TxsSummaryItem = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  ${fonts.body12};
-  color: ${({ theme }) => theme.color.text02};
   position: relative;
   width: 100%;
   min-height: 40px;
   padding: 8px 24px;
   height: auto;
   cursor: pointer;
+  ${fonts.body12};
+  color: ${({ theme }) => theme.color.text02};
   &:hover {
     background-color: ${({ theme }) => theme.color.hover02};
   }
@@ -117,4 +148,50 @@ export const NoDataText = styled.span`
   padding: 0px 24px;
   width: 100%;
   height: 34px;
+`;
+
+export const TransactionItemsWrap = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  position: relative;
+
+  width: 100%;
+  cursor: pointer;
+  padding: 0px 12px;
+  &:hover {
+    background-color: ${({ theme }) => theme.color.hover02};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    padding: 8px 0px;
+    .coin-info {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      ${fonts.body12};
+      color: ${({ theme }) => theme.color.text02};
+      .content-wrap {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        margin-left: 44px;
+      }
+    }
+  }
+  .success-icon * {
+    fill: ${({ theme }) => theme.color.point};
+  }
+  .failed-icon * {
+    fill: ${({ theme }) => theme.color.icon03};
+  }
+  .pending-icon * {
+    fill: ${({ theme }) => theme.color.icon06};
+  }
+`;
+
+export const DoubleLogo = styled.div`
+  ${mixins.flexbox("row", "center", "center")};
+  ${mixins.posTopCenterLeft("12px")};
+  border-radius: 50%;
+  img {
+    border-radius: 50%;
+  }
+  .right-logo {
+    margin-left: -12px;
+  }
 `;

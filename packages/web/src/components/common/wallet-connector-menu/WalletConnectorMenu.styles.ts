@@ -12,9 +12,18 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
   position: absolute;
   width: 280px;
   top: 54px;
+  background-color: ${({ theme }) => theme.color.background06};
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  border-radius: 8px;
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 16px;
   right: ${({ width }) => {
     return width && width < 1521 && "0px";
   }};
+  left: ${({ width }) => {
+    return width && width < 768 && "0px";
+  }};
+
   ${media.tablet} {
     top: 49px;
     right: 0px;
@@ -26,12 +35,13 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
     height: 172px;
     top: calc(100vh - 172px);
     z-index: ${Z_INDEX.modal};
+    padding: 16px;
+    min-width: 360px;
   }
 
   .button-container {
     ${media.mobile} {
-      ${mixins.flexbox("column", "center", "center")};
-      max-width: 324px;
+      ${mixins.flexbox("column", "center", "flex-start")};
       width: 100%;
     }
   }
@@ -39,20 +49,16 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
   .theme-container {
     ${media.mobile} {
       ${mixins.flexbox("column", "center", "center")};
-      max-width: 324px;
       width: 100%;
     }
   }
-
-  background-color: ${({ theme }) => theme.color.background06};
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  border-radius: 8px;
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
-  padding: 16px;
 `;
 
 export const MenuHeader = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
+  ${media.mobile} {
+    width: 100%;
+  }
   .user-address {
     ${fonts.p1};
     color: ${({ theme }) => theme.color.text02};

@@ -9,13 +9,14 @@ import NotificationList from "@components/common/notification-list/NotificationL
 import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
+import { DEVICE_TYPE } from "@styles/media";
 
 export interface TransactionGroupsType {
   title: string;
   txs: Array<TransactionModel>;
 }
 
-const NotificationButton = () => {
+const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
   const onListToggle = () => {
@@ -42,6 +43,7 @@ const NotificationButton = () => {
         <NotificationList
           txsGroupsInformation={txsGroupsInformation}
           onListToggle={onListToggle}
+          breakpoint={breakpoint}
         />
       )}
     </NotificationWrapper>
