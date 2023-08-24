@@ -3,7 +3,6 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { SwapCardWrapper } from "./SwapCard.styles";
 import SwapCardHeader from "../swap-card-header/SwapCardHeader";
 import SwapCardContent from "../swap-card-content/SwapCardContent";
-import SwapButtonTooltip from "../swap-button-tooltip/SwapButtonTooltip";
 import {
   AutoRouterInfo,
   tokenInfo,
@@ -54,6 +53,8 @@ interface SwapCardProps {
   isFetched: boolean;
   swapResult?: SwapData;
   resetTolerance: () => void;
+  handleCopyClipBoard: (text: string) => void;
+  copied: boolean;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -86,6 +87,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
   isFetched,
   swapResult,
   resetTolerance,
+  handleCopyClipBoard,
+  copied,
 }) => {
   return (
     <>
@@ -96,6 +99,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
           tolerance={tolerance}
           changeTolerance={changeTolerance}
           resetTolerance={resetTolerance}
+          handleCopyClipBoard={handleCopyClipBoard}
+          copied={copied}
         />
         <SwapCardContent
           from={from}
@@ -113,46 +118,45 @@ const SwapCard: React.FC<SwapCardProps> = ({
           coinList={coinList}
           changeToken={changeToken}
           selectToken={selectToken}
+          breakpoint={breakpoint}
         />
         <div className="footer">
-          <SwapButtonTooltip swapGasInfo={swapGasInfo}>
-            {isConnected ? (
-              Number(gnosAmount) - Number(from.gnosExchangePrice) > 0 ? (
-                <Button
-                  text="Swap"
-                  style={{
-                    fullWidth: true,
-                    height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                    fontType: "body7",
-                    hierarchy: ButtonHierarchy.Primary,
-                  }}
-                  onClick={onConfirmModal}
-                />
-              ) : (
-                <Button
-                  text="Insufficient Balance"
-                  style={{
-                    fullWidth: true,
-                    height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                    fontType: "body7",
-                    hierarchy: ButtonHierarchy.Gray,
-                  }}
-                  onClick={showSwapInfo}
-                />
-              )
-            ) : (
+          {isConnected ? (
+            Number(gnosAmount) - Number(from.gnosExchangePrice) > 0 ? (
               <Button
-                text="Connect Wallet"
+                text="Swap"
                 style={{
                   fullWidth: true,
                   height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
                   fontType: "body7",
                   hierarchy: ButtonHierarchy.Primary,
                 }}
-                onClick={() => {}}
+                onClick={onConfirmModal}
               />
-            )}
-          </SwapButtonTooltip>
+            ) : (
+              <Button
+                text="Insufficient Balance"
+                style={{
+                  fullWidth: true,
+                  height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
+                  fontType: "body7",
+                  hierarchy: ButtonHierarchy.Gray,
+                }}
+                onClick={showSwapInfo}
+              />
+            )
+          ) : (
+            <Button
+              text="Connect Wallet"
+              style={{
+                fullWidth: true,
+                height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
+                fontType: "body7",
+                hierarchy: ButtonHierarchy.Primary,
+              }}
+              onClick={() => {}}
+            />
+          )}
         </div>
       </SwapCardWrapper>
       {swapOpen && (

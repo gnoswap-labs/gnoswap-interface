@@ -1,16 +1,15 @@
 import React from "react";
-import { SwapButtonTooltipWrap } from "./SwapButtonTooltip.styles";
+import { IconWrap, SwapButtonTooltipWrap } from "./SwapButtonTooltip.styles";
 import { SwapGasInfo } from "@containers/swap-container/SwapContainer";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import IconInfo from "@components/common/icons/IconInfo";
 
 interface WalletBalanceDetailInfoProps {
   swapGasInfo: SwapGasInfo;
-  children: React.ReactNode;
 }
 
 const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
   swapGasInfo,
-  children,
 }) => {
   const TooltipFloatingContent = (
     <SwapButtonTooltipWrap>
@@ -30,12 +29,10 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
   );
 
   return (
-    <Tooltip
-      placement="top"
-      FloatingContent={TooltipFloatingContent}
-      width="100%"
-    >
-      {children}
+    <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
+      <IconWrap>
+        <IconInfo className="icon-info" />
+      </IconWrap>
     </Tooltip>
   );
 };

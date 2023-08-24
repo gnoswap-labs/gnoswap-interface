@@ -41,12 +41,12 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
           <h1 className="gradient">Auto Router</h1>
         </div>
         {autoRouter ? (
+          <IconStrokeArrowUp className="router-icon" onClick={showAutoRouter} />
+        ) : (
           <IconStrokeArrowDown
             className="router-icon"
             onClick={showAutoRouter}
           />
-        ) : (
-          <IconStrokeArrowUp className="router-icon" onClick={showAutoRouter} />
         )}
       </div>
     </FeeWrapper>

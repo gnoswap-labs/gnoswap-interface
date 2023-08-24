@@ -4,7 +4,6 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import SwapCard from "./SwapCard";
 import {
   coinList,
-  tokenInfo,
   dummyAutoRouterInfo,
   dummySwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
@@ -37,8 +36,10 @@ describe("SwapCard Component", () => {
       submitSwap: () => null,
       resetTolerance: () => null,
       breakpoint: DEVICE_TYPE.WEB,
+      handleCopyClipBoard: () => null,
       submit: false,
       isFetched: true,
+      copied: true,
       swapResult: { success: true, transaction: "https//:naver.com" },
       from: {
         token: "USDCoin",

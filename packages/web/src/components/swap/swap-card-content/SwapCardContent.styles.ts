@@ -40,12 +40,6 @@ export const ContentWrapper = styled.div`
     color: ${({ theme }) => theme.color.text01};
   }
 
-  .button-wrapper {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    padding: 4px 6px;
-    gap: 8px;
-    cursor: pointer;
-  }
   .amount-info {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -53,6 +47,9 @@ export const ContentWrapper = styled.div`
     .price-text,
     .balance-text {
       ${fonts.body12};
+      ${media.mobile} {
+        ${fonts.p2};
+      }
       color: ${({ theme }) => theme.color.text10};
     }
   }
@@ -102,4 +99,32 @@ export const SwapDivider = styled.div`
   height: 1px;
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
+`;
+
+export const SelectPairButton = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")};
+  padding: 4px 6px;
+  gap: 8px;
+  border-radius: 36px;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.color.background05};
+  transition: 0.2s;
+  &:hover {
+    background-color: ${({ theme }) => theme.color.hover01};
+  }
+  span {
+    ${fonts.body9};
+    color: ${({ theme }) => theme.color.text01};
+  }
+  .token-logo {
+    width: 24px;
+    height: 24px;
+  }
+  .arrow-icon {
+    width: 16px;
+    height: 16px;
+    * {
+      fill: ${({ theme }) => theme.color.icon01};
+    }
+  }
 `;

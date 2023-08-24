@@ -24,7 +24,7 @@ export const SwapLayoutWrapper = styled.div`
     }
   }
   .swap-container {
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
     max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px;
@@ -33,6 +33,7 @@ export const SwapLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       padding: 24px 0px 48px 0px;
+      flex-direction: column;
       gap: 24px;
     }
   }
@@ -41,6 +42,7 @@ export const SwapLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-end")};
     width: 100%;
     gap: 16px;
+    margin-top: 8px;
     ${media.tablet} {
       flex-direction: column;
       align-items: center;
@@ -48,6 +50,7 @@ export const SwapLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       gap: 8px;
+      margin-top: 0px;
       align-items: center;
     }
   }
@@ -59,6 +62,10 @@ export const SwapLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       ${fonts.h5};
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      max-width: 500px;
+      width: 100%;
+      align-self: center;
     }
     color: ${({ theme }) => theme.color.text02};
   }
@@ -73,6 +80,7 @@ export const SwapLayoutWrapper = styled.div`
       align-items: center;
     }
   }
+
   .liquidity {
     max-width: 414px;
     width: 100%;

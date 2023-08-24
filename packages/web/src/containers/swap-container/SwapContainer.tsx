@@ -124,6 +124,7 @@ const SwapContainer: React.FC = () => {
   const [swapOpen, setSwapOpen] = useState(false);
   const [division, setDivision] = useState("");
   const [submit, setSubmit] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const { data: tokens } = useQuery<tokenInfo[], Error>({
     queryKey: [keyword],
@@ -184,6 +185,18 @@ const SwapContainer: React.FC = () => {
     }
   };
 
+  const handleCopyClipBoard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (e) {
+      throw new Error("Copy Error!");
+    }
+  };
+
   const onSettingMenu = () => {
     setSettingMenuToggle(prev => !prev);
   };
@@ -216,6 +229,7 @@ const SwapContainer: React.FC = () => {
   }, []);
 
   const showSwapInfo = () => {
+    autoRouter && setAutoRouter(prev => !prev);
     setSwapInfo(prev => !prev);
   };
 
@@ -258,6 +272,8 @@ const SwapContainer: React.FC = () => {
       isFetched={isFetched}
       swapResult={swapResult}
       resetTolerance={resetTolerance}
+      handleCopyClipBoard={handleCopyClipBoard}
+      copied={copied}
     />
   );
 };

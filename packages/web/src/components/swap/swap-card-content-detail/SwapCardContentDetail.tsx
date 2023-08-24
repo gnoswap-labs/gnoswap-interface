@@ -1,7 +1,6 @@
 import React from "react";
-import { DetailWrapper } from "./SwapCardContentDetail.styles";
+import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
 import { TokenInfo } from "../swap-card/SwapCard";
-import IconInfo from "@components/common/icons/IconInfo";
 import IconNote from "@components/common/icons/IconNote";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
@@ -11,6 +10,8 @@ import {
   AutoRouterInfo,
   SwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
+import SwapButtonTooltip from "../swap-button-tooltip/SwapButtonTooltip";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface ContentProps {
   to: TokenInfo;
@@ -21,6 +22,7 @@ interface ContentProps {
   showAutoRouter: () => void;
   swapGasInfo: SwapGasInfo;
   autoRouterInfo: AutoRouterInfo;
+  breakpoint: DEVICE_TYPE;
 }
 
 const SwapCardContentDetail: React.FC<ContentProps> = ({
@@ -32,50 +34,61 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   showAutoRouter,
   swapGasInfo,
   autoRouterInfo,
+  breakpoint,
 }) => {
   return (
-    <DetailWrapper>
-      <div className="exchange-section">
-        <div className="exchange-container">
-          <div className="ocin-info">
-            <IconInfo className="icon-info" />
-            <span>
-              {from.amount} {from.symbol} = {from.gnosExchangePrice} GNOS
-            </span>
-            <span className="exchange-price">{from.usdExchangePrice}</span>
+    <>
+      <DetailWrapper swapInfo={swapInfo}>
+        <div className="exchange-section">
+          <div className="exchange-container">
+            <div className="ocin-info">
+              <SwapButtonTooltip swapGasInfo={swapGasInfo} />
+              <span>
+                {from.amount} {from.symbol} = {from.gnosExchangePrice} GNOS
+              </span>
+              {breakpoint !== DEVICE_TYPE.MOBILE && (
+                <span className="exchange-price">{from.usdExchangePrice}</span>
+              )}
+            </div>
+            <div className="price-info">
+              <IconNote className="price-icon" />
+              <span>{swapGasInfo.usdExchangeGasFee}</span>
+              {swapInfo ? (
+                <IconStrokeArrowUp
+                  className="price-icon"
+                  onClick={showSwapInfo}
+                />
+              ) : (
+                <IconStrokeArrowDown
+                  className="price-icon"
+                  onClick={showSwapInfo}
+                />
+              )}
+            </div>
           </div>
-          <div className="price-info">
-            <IconNote className="price-icon" />
-            <span>{swapGasInfo.usdExchangeGasFee}</span>
-            {swapInfo ? (
-              <IconStrokeArrowDown
-                className="price-icon"
-                onClick={showSwapInfo}
+        </div>
+      </DetailWrapper>
+      {swapInfo && (
+        <FeelWrapper swapInfo={swapInfo}>
+          <div className="fee-section">
+            {swapInfo && (
+              <SwapCardFeeInfo
+                autoRouter={autoRouter}
+                showAutoRouter={showAutoRouter}
+                swapGasInfo={swapGasInfo}
               />
-            ) : (
-              <IconStrokeArrowUp
-                className="price-icon"
-                onClick={showSwapInfo}
+            )}
+            {autoRouter && (
+              <SwapCardAutoRouter
+                from={from}
+                to={to}
+                autoRouterInfo={autoRouterInfo}
               />
             )}
           </div>
-        </div>
-        {swapInfo && (
-          <SwapCardFeeInfo
-            autoRouter={autoRouter}
-            showAutoRouter={showAutoRouter}
-            swapGasInfo={swapGasInfo}
-          />
-        )}
-        {autoRouter && (
-          <SwapCardAutoRouter
-            from={from}
-            to={to}
-            autoRouterInfo={autoRouterInfo}
-          />
-        )}
-      </div>
-    </DetailWrapper>
+        </FeelWrapper>
+      )}
+    </>
   );
 };
 

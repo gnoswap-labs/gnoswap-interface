@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapLiquidity from "./SwapLiquidity";
 import { dummyLiquidityList } from "@containers/swap-liquidity-container/SwapLiquidityContainer";
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 
 export default {
   title: "swap/SwapLiquidity",
@@ -27,7 +27,7 @@ NoLiquidity.args = {
   liquiditys: [],
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;

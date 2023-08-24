@@ -24,6 +24,8 @@ Default.args = {
   tolerance: "",
   changeTolerance: action("changeTolerance"),
   resetTolerance: action("resetTolerance"),
+  handleCopyClipBoard: action("handleCopyClipBoard"),
+  copied: true,
 };
 
 const wrapper = () => css`
