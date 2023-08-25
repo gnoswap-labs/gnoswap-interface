@@ -5,17 +5,26 @@ import mixins from "@styles/mixins";
 
 export const AutoRouterWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 100%;
   padding: 12px;
-  margin: 0px 16px 16px 16px;
   gap: 12px;
+  ${media.mobile} {
+    margin-top: -4px;
+    overflow-x: auto;
+  }
   align-self: stretch;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   .row {
     ${mixins.flexbox("row", "center", "flex-start")};
+    width: 100%;
     gap: 4px;
     align-self: stretch;
     .token-logo {
+      width: 24px;
+      height: 24px;
+    }
+    .image-wrap {
       width: 24px;
       height: 24px;
     }
@@ -45,9 +54,6 @@ export const AutoRouterWrapper = styled.div`
       }
     }
 
-    .vector {
-      ${mixins.flexbox("row", "flex-start", "flex-start")};
-    }
     .pair-fee {
       ${mixins.flexbox("row", "center", "center")};
       height: 28px;
@@ -100,4 +106,11 @@ export const SwapDivider = styled.div`
   height: 1px;
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
+`;
+
+export const DotLine = styled.hr`
+  width: 100%;
+  min-width: 5px;
+  border: 0px;
+  border-top: 2px dotted ${({ theme }) => theme.color.border03};
 `;

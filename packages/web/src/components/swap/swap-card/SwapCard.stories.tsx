@@ -48,8 +48,10 @@ Default.args = {
   changeToken: action("changeToken"),
   selectToken: action("selectToken"),
   resetTolerance: action("resetTolerance"),
+  handleCopyClipBoard: action("handleCopyClipBoard"),
   breakpoint: DEVICE_TYPE.WEB,
   submit: false,
+  copied: true,
   isFetched: true,
   swapResult: { success: true, transaction: "https//:naver.com" },
   from: {

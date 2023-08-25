@@ -1,12 +1,13 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCardContentDetail from "./SwapCardContentDetail";
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 import {
   dummyAutoRouterInfo,
   dummySwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
 import { action } from "@storybook/addon-actions";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "swap/SwapCardContentDetail",
@@ -29,6 +30,7 @@ Default.args = {
   swapInfo: true,
   showSwapInfo: action("onClick"),
   autoRouterInfo: dummyAutoRouterInfo,
+  breakpoint: DEVICE_TYPE.WEB,
   from: {
     token: "USDCoin",
     symbol: "USDC",
@@ -53,7 +55,7 @@ Default.args = {
   },
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;
@@ -61,6 +63,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const contentWrap = (theme: Theme) => css`
+const contentWrap = () => css`
   width: 500px;
 `;

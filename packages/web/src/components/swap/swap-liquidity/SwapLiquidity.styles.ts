@@ -126,7 +126,7 @@ export const SwapLiquidityWrapper = styled.div`
           ${mixins.flexbox("row", "center", "flex-end")};
           padding: 4px 6px;
           gap: 4px;
-          color: ${({ theme }) => theme.color.text11};
+          color: ${({ theme }) => theme.color.text21};
           background-color: ${({ theme }) => theme.color.background13};
           border: 1px solid ${({ theme }) => theme.color.border02};
           border-radius: 4px;

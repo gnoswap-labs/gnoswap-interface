@@ -25,7 +25,7 @@ Default.args = {
   swapGasInfo: dummySwapGasInfo,
 };
 
-const wrapper = (theme: Theme) => css`
+const wrapper = () => css`
   display: flex;
   width: 100%;
   align-items: center;
@@ -33,6 +33,6 @@ const wrapper = (theme: Theme) => css`
   margin-top: 50px;
 `;
 
-const contentWrap = (theme: Theme) => css`
+const contentWrap = () => css`
   width: 500px;
 `;

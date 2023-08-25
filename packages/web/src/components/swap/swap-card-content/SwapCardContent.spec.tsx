@@ -8,6 +8,7 @@ import {
   dummyAutoRouterInfo,
   dummySwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("SwapCardContent Component", () => {
   it("SwapCardContent render", () => {
@@ -25,6 +26,7 @@ describe("SwapCardContent Component", () => {
       coinList: coinList(),
       changeToken: (token: tokenInfo, type: string) => null,
       selectToken: (e: string) => null,
+      breakpoint: DEVICE_TYPE.WEB,
       from: {
         token: "USDCoin",
         symbol: "USDC",

@@ -8,6 +8,7 @@ import {
   dummySwapGasInfo,
 } from "@containers/swap-container/SwapContainer";
 import { action } from "@storybook/addon-actions";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "swap/SwapCardContent",
@@ -37,6 +38,7 @@ Default.args = {
   coinList: coinList(),
   changeToken: action("changeToken"),
   selectToken: action("selectToken"),
+  breakpoint: DEVICE_TYPE.WEB,
   from: {
     token: "USDCoin",
     symbol: "USDC",

@@ -18,3 +18,15 @@ export const SwapButtonTooltipWrap = styled.div`
     padding: 4px 0px;
   }
 `;
+
+export const IconWrap = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")};
+  cursor: pointer;
+  .icon-info {
+    width: 16px;
+    height: 16px;
+    * {
+      fill: ${({ theme }) => theme.color.icon05};
+    }
+  }
+`;

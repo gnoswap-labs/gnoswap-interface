@@ -22,11 +22,15 @@ export const SwapCardHeaderWrapper = styled.div`
 
   .setting-wrap {
     ${mixins.flexbox("row", "center", "center")};
+    position: relative;
     width: 24px;
     height: 24px;
     cursor: pointer;
     .setting-icon * {
       fill: ${({ theme }) => theme.color.icon03};
+    }
+    .setting-icon:hover * {
+      fill: ${({ theme }) => theme.color.icon07};
     }
   }
 `;
@@ -34,4 +38,24 @@ export const SwapCardHeaderWrapper = styled.div`
 export const SettingMenuButton = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   position: relative;
+`;
+
+export const CopyTooltip = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  position: absolute;
+  top: -65px;
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 115px;
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text15};
+    background-color: ${({ theme }) => theme.color.background14};
+  }
+  .polygon-icon * {
+    fill: ${({ theme }) => theme.color.background14};
+  }
 `;

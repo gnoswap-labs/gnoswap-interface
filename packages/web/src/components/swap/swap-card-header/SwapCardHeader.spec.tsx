@@ -11,6 +11,8 @@ describe("SwapCardHeader Component", () => {
       tolerance: "",
       changeTolerance: () => null,
       resetTolerance: () => null,
+      handleCopyClipBoard: () => null,
+      copied: true,
     };
 
     render(
