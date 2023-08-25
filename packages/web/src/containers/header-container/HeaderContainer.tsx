@@ -2,10 +2,11 @@
 /* eslint-disable */
 import Header from "@components/common/header/Header";
 import { useRouter } from "next/router";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type TokenDefaultModel } from "@models/token/token-default-model";
 import { useQuery } from "@tanstack/react-query";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -75,19 +76,7 @@ const HeaderContainer: React.FC = () => {
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
+  const { breakpoint } = useWindowSize();
   const {
     isFetched,
     error,
@@ -122,7 +111,7 @@ const HeaderContainer: React.FC = () => {
       error={error}
       search={search}
       keyword={keyword}
-      windowSize={width}
+      breakpoint={breakpoint}
     />
   );
 };

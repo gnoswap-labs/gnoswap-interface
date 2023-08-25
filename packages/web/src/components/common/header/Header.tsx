@@ -19,7 +19,7 @@ import NotificationButton from "@components/common/notification-button/Notificat
 import { HEADER_NAV } from "@constants/header.constant";
 import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
 import { Token } from "@containers/header-container/HeaderContainer";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
 
@@ -35,7 +35,7 @@ interface HeaderProps {
   error: Error | null;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
   isFetched,
   search,
   keyword,
-  windowSize,
+  breakpoint,
 }) => {
   return (
     <>
@@ -62,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({
               </LogoLink>
             </Link>
             <Navigation>
-              {windowSize > DeviceSize.mobile && (
+              {breakpoint !== DEVICE_TYPE.MOBILE && (
                 <>
                   <ul>
                     {HEADER_NAV.map(item => (
@@ -89,10 +89,10 @@ const Header: React.FC<HeaderProps> = ({
               </SearchButton>
               <WalletConnectorButton isConnected={isConnected} />
             </SearchContainer>
-            <NotificationButton />
+            <NotificationButton breakpoint={breakpoint} />
           </RightSection>
         </HeaderContainer>
-        {windowSize <= DeviceSize.mobile && (
+        {breakpoint === DEVICE_TYPE.MOBILE && (
           <BottomNavWrapper>
             <BottomNavContainer>
               {HEADER_NAV.map(item => (

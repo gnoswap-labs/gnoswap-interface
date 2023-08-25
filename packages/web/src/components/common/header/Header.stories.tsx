@@ -5,6 +5,7 @@ import { action } from "@storybook/addon-actions";
 
 import Header from "./Header";
 import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "common/Header",
@@ -30,6 +31,7 @@ Default.args = {
   error: null,
   search: action("search"),
   keyword: "",
+  breakpoint: DEVICE_TYPE.WEB,
 };
 
 const wrapper = (theme: Theme) => css`

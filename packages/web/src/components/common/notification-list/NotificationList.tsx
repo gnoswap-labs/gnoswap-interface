@@ -7,15 +7,18 @@ import {
 } from "./NotificationList.styles";
 import TransactionItems from "./TransactionItems";
 import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface NotificationListProps {
   txsGroupsInformation: TransactionGroupsType[];
   onListToggle: () => void;
+  breakpoint: DEVICE_TYPE;
 }
 
 const NotificationList: React.FC<NotificationListProps> = ({
   txsGroupsInformation,
   onListToggle,
+  breakpoint,
 }) => {
   const listRef = useRef<HTMLDivElement | null>(null);
 
@@ -43,11 +46,17 @@ const NotificationList: React.FC<NotificationListProps> = ({
         )}
       </NotificationHeader>
       {txsGroupsInformation && txsGroupsInformation.length > 0 ? (
-        <>
-          {txsGroupsInformation.map(groups => (
-            <TransactionItems key={groups.title} groups={groups} />
-          ))}
-        </>
+        <div className="list-container">
+          <div className="list-content">
+            {txsGroupsInformation.map(groups => (
+              <TransactionItems
+                key={groups.title}
+                groups={groups}
+                breakpoint={breakpoint}
+              />
+            ))}
+          </div>
+        </div>
       ) : (
         <>
           <NoDataText>No notifications found</NoDataText>
