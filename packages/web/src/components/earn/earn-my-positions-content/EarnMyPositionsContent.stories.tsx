@@ -7,6 +7,7 @@ import EarnMyPositionsUnconnected from "@components/earn/earn-my-positions-uncon
 import EarnMyPositionNoLiquidity from "@components/earn/earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import { dummyPositionList } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "earn/EarnMyPositionsContent",
@@ -22,8 +23,9 @@ const Template: ComponentStory<typeof EarnMyPositionsContent> = args => (
       <MyPositionCardList
         list={dummyPositionList}
         isFetched={true}
-        windowSize={500}
         currentIndex={1}
+        routeItem={action("routeItem")}
+        mobile={false}
       />
     }
   />

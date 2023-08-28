@@ -7,6 +7,7 @@ import {
   POOL_TYPE,
   dummyPoolList,
 } from "@containers/pool-list-container/PoolListContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default {
   title: "earn/PoolList",
@@ -26,4 +27,8 @@ Default.args = {
   currentPage: 0,
   totalPage: 10,
   movePage: action("movePage"),
+  breakpoint: DEVICE_TYPE.WEB,
+  routeItem: action("routeItem"),
+  isSortOption: () => false,
+  isFetched: true,
 };

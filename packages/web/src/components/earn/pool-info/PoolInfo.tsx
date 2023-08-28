@@ -7,9 +7,10 @@ import React from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 interface PoolInfoProps {
   pool: Pool;
+  routeItem: (id: number) => void;
 }
 
-const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {
+const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
   const {
     poolId,
     tokenPair,
@@ -22,7 +23,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool }) => {
     incentiveType,
   } = pool;
   return (
-    <PoolInfoWrapper>
+    <PoolInfoWrapper
+      onClick={() => routeItem(Math.floor(Math.random() * 100 + 1))}
+    >
       <TableColumn className="left" tdWidth={POOL_TD_WIDTH[0]}>
         <DoubleLogo
           left={tokenPair.token0.tokenLogo}

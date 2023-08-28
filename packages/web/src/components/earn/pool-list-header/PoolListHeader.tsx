@@ -3,7 +3,7 @@ import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
 import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
 import { PoolHeaderWrapper } from "./PoolListHeader.styles";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
 import IconSearch from "@components/common/icons/IconSearch";
 
 interface PoolListHeaderProps {
@@ -11,7 +11,7 @@ interface PoolListHeaderProps {
   changePoolType: (newType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
-  windowSize: number;
+  breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
 }
@@ -21,14 +21,14 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
   changePoolType,
   search,
   keyword,
-  windowSize,
+  breakpoint,
   searchIcon,
   onTogleSearch,
 }) => (
   <PoolHeaderWrapper>
     <div className="title-container">
       <h2>Pools</h2>
-      {windowSize > DeviceSize.mobile ? (
+      {breakpoint !== DEVICE_TYPE.MOBILE ? (
         <SelectTab
           selectType={poolType}
           list={Object.values(POOL_TYPE)}
@@ -48,9 +48,9 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
         </div>
       )}
     </div>
-    {windowSize > DeviceSize.mobile ? (
+    {breakpoint !== DEVICE_TYPE.MOBILE ? (
       <SearchInput
-        width={windowSize > DeviceSize.tablet ? 300 : 250}
+        width={breakpoint === DEVICE_TYPE.WEB ? 300 : 250}
         value={keyword}
         onChange={search}
         className="pools-search"

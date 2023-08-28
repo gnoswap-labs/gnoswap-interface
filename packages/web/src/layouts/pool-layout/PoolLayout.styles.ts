@@ -1,37 +1,109 @@
 import { fonts } from "@constants/font.constant";
-import { css, Theme } from "@emotion/react";
+import styled from "@emotion/styled";
+import { media, ContainerWidth } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
-  background-color: ${theme.color.background01};
-  color: ${theme.color.text02};
-  section {
+export const PoolLayoutWrapper = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  width: 100%;
+  background-color: ${({ theme }) => theme.color.background01};
+
+  .pool-section {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     width: 100%;
-  }
-  .pool-content {
-    ${mixins.flexbox("row", "center", "space-between")};
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 1440px;
-    margin: 100px auto;
-    padding: 0 40px;
-  }
-  .title-container {
-    ${mixins.flexbox("column", "flex-start", "center")};
-    gap: 8px;
-    width: 100%;
-    margin-bottom: 36px;
-  }
-  .pool-title {
-    ${fonts.h3};
-    color: ${theme.color.text02};
+    padding: 100px 0px;
+    gap: 80px;
+
+    ${media.tablet} {
+      max-width: ${ContainerWidth.TABLET_CONTAINER};
+      padding: 60px 0px;
+      gap: 60px;
+    }
+    ${media.mobile} {
+      max-width: ${ContainerWidth.MOBILE_CONTAINER};
+      width: 90%;
+      padding: 24px 0px 48px 0px;
+      gap: 32px;
+    }
   }
 
-  .liquidity-section {
-    margin: 80px 0px;
+  .summury-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: ${ContainerWidth.WEB_CONTAINER};
+    width: 100%;
+    padding: 0px 40px;
+    gap: 36px;
+
+    ${media.tablet} {
+      align-self: stretch;
+    }
+    ${media.mobile} {
+      padding: 0px;
+      gap: 16px;
+    }
   }
 
-  .add-incentive-section {
-    margin-top: 36px;
+  .positions-container {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: ${ContainerWidth.WEB_CONTAINER};
+    width: 100%;
+    padding: 0px 40px;
+    gap: 16px;
+
+    ${media.tablet} {
+      gap: 24px;
+      align-self: stretch;
+    }
+    ${media.mobile} {
+      padding: 0px;
+      gap: 36px;
+    }
+  }
+
+  .staking-container {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    max-width: ${ContainerWidth.WEB_CONTAINER};
+    width: 100%;
+    padding: 0px 40px;
+    gap: 36px;
+
+    ${media.tablet} {
+      align-self: stretch;
+    }
+    ${media.mobile} {
+      padding: 0px;
+    }
+
+    .button {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      ${media.mobile} {
+        flex-direction: column;
+        align-self: stretch;
+      }
+
+      span {
+        ${fonts.body11}
+        color: ${({ theme }) => theme.color.text04};
+      }
+
+      .pointer-wrap {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 4px;
+        cursor: pointer;
+        span {
+          ${fonts.body11}
+          color: ${({ theme }) => theme.color.text07};
+        }
+        .arrow-icon {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          * {
+            fill: ${({ theme }) => theme.color.icon03};
+          }
+        }
+      }
+    }
   }
 `;

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-list/IncentivizedPoolCardList";
 import { ValuesType } from "utility-types";
 import { poolDummy } from "@components/earn/incentivized-pool-card/incentivized-pool-dummy";
+import { useRouter } from "next/router";
 export interface PoolListProps {
   logo: string[];
   name: string[];
@@ -23,10 +24,15 @@ export const POOL_CONTENT_TITLE = {
 export type POOL_CONTENT_TITLE = ValuesType<typeof POOL_CONTENT_TITLE>;
 
 const IncentivizedPoolCardListContainer: React.FC = () => {
-  const [width, setWidth] = useState(Number);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
+  const [width, setWidth] = useState(Number);
+  const [mobile, setMobile] = useState(false);
+
   const handleResize = () => {
-    setWidth(window.innerWidth);
+    if (typeof window !== "undefined") {
+      window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
+    }
   };
 
   useEffect(() => {
@@ -37,14 +43,19 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     };
   }, []);
 
+  const routeItem = (id: number) => {
+    router.push(`/earn/pool/${id}`);
+  };
+
   return (
     <IncentivizedPoolCardList
       list={poolDummy}
       isFetched={true}
       loadMore={true}
       onClickLoadMore={() => {}}
-      windowSize={width}
       currentIndex={currentIndex}
+      routeItem={routeItem}
+      mobile={mobile}
     />
   );
 };

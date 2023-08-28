@@ -28,6 +28,7 @@ Default.args = {
   breakpoint: DEVICE_TYPE.WEB,
   tolerance: "5",
   submit: false,
+  isFetching: true,
   from: {
     token: "USDCoin",
     symbol: "USDC",

@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
+import { useRouter } from "next/router";
 
 const WalletPositionCardListContainer: React.FC = () => {
-  const [width, setWidth] = useState(Number);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
+  const [mobile, setMobile] = useState(false);
   const handleResize = () => {
-    setWidth(window.innerWidth);
+    if (typeof window !== "undefined") {
+      window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
+    }
   };
 
   useEffect(() => {
@@ -16,13 +20,18 @@ const WalletPositionCardListContainer: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const routeItem = (id: number) => {
+    router.push(`/earn/pool/${id}`);
+  };
   return (
     <MyPositionCardList
       list={[]}
       loadMore={false}
       isFetched={true}
-      windowSize={width}
+      routeItem={routeItem}
       currentIndex={currentIndex}
+      mobile={mobile}
     />
   );
 };

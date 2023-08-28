@@ -38,7 +38,7 @@ describe("SwapCard Component", () => {
       breakpoint: DEVICE_TYPE.WEB,
       handleCopyClipBoard: () => null,
       submit: false,
-      isFetched: true,
+      isFetching: true,
       copied: true,
       swapResult: { success: true, transaction: "https//:naver.com" },
       from: {

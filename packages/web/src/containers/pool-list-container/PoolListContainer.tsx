@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairModel } from "@models/token/token-pair-model";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
+import { useAtom } from "jotai";
+import { CommonState } from "@states/index";
+import { useRouter } from "next/router";
 
 export interface Pool {
   poolId: string;
@@ -163,22 +166,16 @@ const PoolListContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [sortOption, setTokenSortOption] = useState<PoolSortOption>();
-  const [width, setWidth] = useState(Number);
   const [searchIcon, setSearchIcon] = useState(false);
+  const [breakpoint] = useAtom(CommonState.breakpoint);
+  const router = useRouter();
+
+  const routeItem = (id: number) => {
+    router.push(`/earn/pool/${id}`);
+  };
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
   };
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const {
     isFetched,
@@ -265,7 +262,8 @@ const PoolListContainer: React.FC = () => {
       sortOption={sortOption}
       sort={sort}
       isSortOption={isSortOption}
-      windowSize={width}
+      breakpoint={breakpoint}
+      routeItem={routeItem}
       searchIcon={searchIcon}
       onTogleSearch={onTogleSearch}
     />

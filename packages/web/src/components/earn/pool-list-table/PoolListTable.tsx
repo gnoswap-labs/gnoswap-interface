@@ -18,7 +18,7 @@ interface PoolListTableProps {
   sortOption: PoolSortOption | undefined;
   sort: (head: TABLE_HEAD) => void;
   isSortOption: (head: TABLE_HEAD) => boolean;
-  windowSize: number;
+  routeItem: (id: number) => void;
 }
 
 const PoolListTable: React.FC<PoolListTableProps> = ({
@@ -27,6 +27,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
   sortOption,
   sort,
   isSortOption,
+  routeItem,
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
@@ -86,7 +87,9 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         )}
         {isFetched &&
           pools.length > 0 &&
-          pools.map((pool, idx) => <PoolInfo pool={pool} key={idx} />)}
+          pools.map((pool, idx) => (
+            <PoolInfo pool={pool} key={idx} routeItem={routeItem} />
+          ))}
         {!isFetched && <TableSkeleton info={POOL_INFO} />}
       </div>
     </TableWrapper>

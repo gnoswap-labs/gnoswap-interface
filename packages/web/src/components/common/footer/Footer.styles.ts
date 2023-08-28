@@ -1,11 +1,12 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
-import { media } from "@styles/media";
+import { ContainerWidth, media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const FooterWrapper = styled.footer`
   ${mixins.flexbox("column", "center", "flex-start")}
   width: 100%;
+  min-width: 360px;
   padding: 60px 0px;
   gap: 10px;
   background-color: ${({ theme }) => theme.color.background01};
@@ -17,16 +18,17 @@ export const FooterWrapper = styled.footer`
 
 export const FooterContainer = styled.div`
   ${mixins.flexbox("row", "flex-start", "space-between")}
-  max-width: 1440px;
+  max-width: ${ContainerWidth.WEB_CONTAINER};
   width: 100%;
   padding: 0px 40px;
   ${media.tablet} {
-    max-width: 1180px;
+    max-width: ${ContainerWidth.TABLET_CONTAINER};
   }
   ${media.mobile} {
     flex-direction: column;
-    max-width: 360px;
-    padding: 0px 16px;
+    max-width: ${ContainerWidth.MOBILE_CONTAINER};
+    width: 90%;
+    padding: 0px;
     gap: 36px;
   }
 `;
@@ -53,7 +55,7 @@ export const FirstSection = styled.div`
   }
 
   ${media.mobile} {
-    max-width: 328px;
+    max-width: 736px;
     gap: 8px;
   }
 `;
@@ -67,6 +69,7 @@ export const SocialNav = styled.div`
 export const AnchorStyle = styled.a`
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text04};
+  white-space: nowrap;
   &,
   svg * {
     transition: all 0.3s ease;
@@ -101,13 +104,12 @@ export const SecondSection = styled.div`
   grid-template-columns: repeat(5, auto);
   ${media.tablet} {
     max-width: 682px;
-    grid-gap: 60px;
+    column-gap: 18px;
   }
   ${media.mobile} {
-    max-width: 248px;
     row-gap: 36px;
-    column-gap: 48px;
-    grid-template-columns: repeat(2, auto);
+    column-gap: 36px;
+    grid-template-columns: repeat(auto-fill, 100px);
   }
 `;
 

@@ -1,26 +1,29 @@
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
+import { poolInfoProps } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import React from "react";
-import { wrapper } from "./PoolPairInfoHeader.styles";
+import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 
 interface PoolPairInfoHeaderProps {
-  info: any;
+  info: poolInfoProps;
 }
 
 const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({ info }) => {
   return (
-    <div css={wrapper}>
-      <DoubleLogo
-        left={info.tokenPair.token0.tokenLogo}
-        right={info.tokenPair.token1.tokenLogo}
-      />
-      <h3>{tokenPairSymbolToOneCharacter(info.tokenPair)}</h3>
-      <div className="badge-wrap">
-        <Badge type={BADGE_TYPE.DARK_DEFAULT} text={info.feeRate} />
-        <Badge type={BADGE_TYPE.DARK_DEFAULT} text={info.incentivized} />
+    <PoolInfoHeaderWrapper>
+      <div className="left-wrap">
+        <DoubleLogo
+          left={info.tokenPair.token0.tokenLogo}
+          right={info.tokenPair.token1.tokenLogo}
+        />
+        <h3>
+          {info.tokenPair.token0.symbol}/{info.tokenPair.token1.symbol}
+        </h3>
       </div>
-    </div>
+      <div className="badge-wrap">
+        <div className="badge">{info.feeRate}</div>
+        <div className="badge">{info.incentivized}</div>
+      </div>
+    </PoolInfoHeaderWrapper>
   );
 };
 

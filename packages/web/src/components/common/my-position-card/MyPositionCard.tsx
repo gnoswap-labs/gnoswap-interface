@@ -8,12 +8,16 @@ import { MyPositionCardWrapper } from "./MyPositionCard.styles";
 
 interface MyPositionCardProps {
   item: any;
+  routeItem: (id: number) => void;
 }
 
-const MyPositionCard: React.FC<MyPositionCardProps> = ({ item }) => {
+const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, routeItem }) => {
   const { tokenPair } = item;
   return (
-    <MyPositionCardWrapper stakeType={item.stakeType}>
+    <MyPositionCardWrapper
+      stakeType={item.stakeType}
+      onClick={() => routeItem(Math.floor(Math.random() * 100 + 1))}
+    >
       <div className="title-wrapper">
         <div className="box-header">
           <DoubleLogo

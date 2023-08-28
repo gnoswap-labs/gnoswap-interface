@@ -4,6 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PoolInfo from "./PoolInfo";
 import { css, Theme } from "@emotion/react";
 import { dummyPoolList } from "@containers/pool-list-container/PoolListContainer";
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "earn/PoolList/PoolInfo",
@@ -17,7 +18,9 @@ const Template: ComponentStory<typeof PoolInfo> = args => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  routeItem: action("routeItem"),
+};
 
 const wrapper = (theme: Theme) => css`
   color: ${theme.color.text02};

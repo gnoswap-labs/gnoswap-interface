@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { css } from "@emotion/react";
 import IncentivizedPoolCardList from "./IncentivizedPoolCardList";
 import { poolDummy } from "@components/earn//incentivized-pool-card/incentivized-pool-dummy";
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "earn/IncentivizedPoolCardList",
@@ -24,6 +25,8 @@ const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
 export const Default = Template.bind({});
 Default.args = {
   isFetched: true,
+  routeItem: action("routeItem"),
+  mobile: false,
 };
 
 const wrapper = css`

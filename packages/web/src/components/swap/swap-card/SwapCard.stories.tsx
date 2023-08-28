@@ -43,7 +43,7 @@ Default.args = {
   onSelectTokenModal: action("onClick"),
   swapOpen: true,
   onConfirmModal: action("onClick"),
-  submitSwap: action("onClick"),
+  submitSwap: action("submitSwap"),
   coinList: coinList(),
   changeToken: action("changeToken"),
   selectToken: action("selectToken"),
@@ -52,7 +52,7 @@ Default.args = {
   breakpoint: DEVICE_TYPE.WEB,
   submit: false,
   copied: true,
-  isFetched: true,
+  isFetching: true,
   swapResult: { success: true, transaction: "https//:naver.com" },
   from: {
     token: "USDCoin",

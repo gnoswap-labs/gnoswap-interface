@@ -264,6 +264,11 @@ export const ConfirmModal = styled.div`
         align-self: stretch;
         ${fonts.body11};
         color: ${({ theme }) => theme.color.text04};
+        .open-link {
+          ${mixins.flexbox("row", "center", "center")};
+          width: 16px;
+          height: 16px;
+        }
         .open-logo {
           width: 16px;
           height: 16px;

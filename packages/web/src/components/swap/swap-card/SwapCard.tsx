@@ -47,10 +47,10 @@ interface SwapCardProps {
   coinList: tokenInfo[];
   changeToken: (token: tokenInfo, type: string) => void;
   selectToken: (e: string) => void;
-  submitSwap: () => void;
+  submitSwap: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   breakpoint: DEVICE_TYPE;
   submit: boolean;
-  isFetched: boolean;
+  isFetching: boolean;
   swapResult?: SwapData;
   resetTolerance: () => void;
   handleCopyClipBoard: (text: string) => void;
@@ -84,7 +84,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   submitSwap,
   breakpoint,
   submit,
-  isFetched,
+  isFetching,
   swapResult,
   resetTolerance,
   handleCopyClipBoard,
@@ -169,7 +169,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           tolerance={tolerance}
           breakpoint={breakpoint}
           submit={submit}
-          isFetched={isFetched}
+          isFetching={isFetching}
           swapResult={swapResult}
         />
       )}
