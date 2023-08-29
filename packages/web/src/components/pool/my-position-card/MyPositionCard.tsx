@@ -1,6 +1,7 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconStaking from "@components/common/icons/IconStaking";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { DEVICE_TYPE } from "@styles/media";
 import React from "react";
@@ -108,19 +109,25 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="info-wrap">
         <div className="info-box">
           <span className="symbol-text">Balance</span>
-          <span className="content-text">${content.tokenPair.balance}</span>
+          <Tooltip placement="top" FloatingContent={<div>TBD....</div>}>
+            <span className="content-text">${content.tokenPair.balance}</span>
+          </Tooltip>
         </div>
         <div className="info-box">
           <span className="symbol-text">Total Rewards</span>
-          <span className="content-text">
-            ${content.tokenPair.totalRewards}
-          </span>
+          <Tooltip placement="top" FloatingContent={<div>TBD....</div>}>
+            <span className="content-text">
+              ${content.tokenPair.totalRewards}
+            </span>
+          </Tooltip>
         </div>
         <div className="info-box">
           <span className="symbol-text">Estimated APR</span>
-          <span className="content-text">
-            ✨{content.tokenPair.estimatedAPR}%
-          </span>
+          <Tooltip placement="top" FloatingContent={<div>TBD....</div>}>
+            <span className="content-text">
+              ✨{content.tokenPair.estimatedAPR}%
+            </span>
+          </Tooltip>
         </div>
       </div>
     </MyPositionCardWrapper>

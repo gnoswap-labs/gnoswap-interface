@@ -1,80 +1,230 @@
 import { fonts } from "@constants/font.constant";
-import { css, type Theme } from "@emotion/react";
+import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (active: boolean) => (theme: Theme) =>
-  css`
-    ${mixins.flexbox("column", "center", "space-between")};
-    width: 100%;
-    height: 100%;
-    flex: 1;
-    padding: 24px;
-    color: ${theme.color.text02};
-    background-color: ${active
-      ? theme.color.background09
-      : theme.color.background03};
+export const StakingContentCardWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
+  ${media.mobile} {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    align-self: stretch;
+  }
+  .left {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    ${media.mobile} {
+      justify-content: space-between;
+      align-self: stretch;
+    }
+    .mobile-wrap {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      height: 50px;
+      gap: 24px;
+      ${media.mobile} {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 12px;
+        flex: 1 0 0;
+      }
+    }
+    .check-wrap {
+      ${mixins.flexbox("row", "center", "center")};
+      position: relative;
+      width: 20px;
+      height: 20px;
+      border-radius: 99px;
+      background: var(--global-color-point, #0059ff);
+      .check-line {
+        height: 49px;
+        position: absolute;
+        right: 10px;
+        bottom: -49px;
+        stroke-width: 1px;
+        stroke: var(--point-global-point, #0059ff);
+      }
+      .check-line-long {
+        height: 456px;
+        position: absolute;
+        left: 10px;
+        top: 20px;
+        stroke-width: 1px;
+        stroke: var(--point-global-point, #0059ff);
+      }
+    }
+    .name-wrap {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 8px;
+      ${media.mobile} {
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .symbol-text {
+        color: ${({ theme }) => theme.color.text02};
 
-    border: ${active ? theme.color.border02 : theme.color.border01};
+        ${fonts.body7}
+        ${media.tablet} {
+          ${fonts.body9}
+        }
+        ${media.mobile} {
+          ${fonts.p1}
+        }
+      }
+
+      .icon-wrap {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 4px;
+        .content-text {
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.body12}
+          ${media.tablet} {
+            ${fonts.p4}
+          }
+          ${media.mobile} {
+            ${fonts.p6}
+          }
+        }
+        .content-gd-text {
+          background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          ${fonts.body12}
+          ${media.tablet} {
+            ${fonts.p4}
+          }
+          ${media.mobile} {
+            ${fonts.p6}
+          }
+        }
+        .tooltip-icon {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          * {
+            fill: ${({ theme }) => theme.color.icon03};
+          }
+        }
+      }
+    }
+  }
+  .contents-wrap {
+    ${media.mobile} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      width: 100%;
+      padding-left: 32px;
+    }
+  }
+
+  .contents {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 800px;
+    padding: 12px 16px;
     border-radius: 8px;
-
-    h5 {
-      ${fonts.body12};
-      color: ${theme.color.text04};
+    border: 1px solid ${({ theme }) => theme.color.border12};
+    background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+    ${media.tablet} {
+      width: 600px;
     }
-
-    .total-value {
-      ${fonts.body2};
-      margin: 16px 0px;
-    }
-
-    .default-value {
-      ${mixins.flexbox("row", "center", "center")};
-      ${fonts.body8};
-      height: 41px;
-      &.has-tooltip {
-        cursor: pointer;
-        transition: color 0.3s ease;
-        &:hover {
-          color: ${theme.color.text07};
-        }
-      }
-    }
-
-    .apr-value {
-      ${fonts.body4};
-      color: ${theme.color.text05};
-    }
-
-    section {
-      ${mixins.flexbox("column", "flex-start", "center")};
-      gap: 4px;
-    }
-
-    .staking-info-wrap {
-      ${mixins.flexbox("row", "center", "space-between")};
-      background-color: ${theme.color.backgroundOpacity};
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
+    ${media.mobile} {
       width: 100%;
+      padding: 12px 16px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
     }
-
-    .staking-apr-wrap {
-      ${mixins.flexbox("row", "center", "center")};
-      width: 100%;
-      height: 34px;
+    .price {
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
       gap: 16px;
+      span {
+        color: ${({ theme }) => theme.color.text02};
+        ${fonts.body3}
+        ${media.tablet} {
+          ${fonts.body7}
+        }
+        ${media.mobile} {
+          ${fonts.body10}
+        }
+      }
+      ${media.tablet} {
+        align-items: center;
+      }
+      ${media.mobile} {
+        gap: 8px;
+      }
+      .price-gd-text {
+        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .badge {
+        ${mixins.flexbox("row", "center", "center")};
+        width: 58px;
+        height: 34px;
+        padding: 0px 6px;
+        gap: 4px;
+        border-radius: 4px;
+        border: 1px solid ${({ theme }) => theme.color.border08};
+        background-color: ${({ theme }) => theme.color.background08};
+        ${fonts.body7}
+        ${media.tablet} {
+          ${fonts.body9}
+        }
+        ${media.mobile} {
+          ${fonts.p4}
+          height: 24px;
+        }
+        color: ${({ theme }) => theme.color.text12};
+      }
     }
-
-    .logo-images-wrap {
-      ${mixins.flexbox("row", "center", "center", false)};
-      height: 100%;
-      img {
-        width: 24px;
-        height: 24px;
-        &:not(:first-of-type) {
-          margin-left: -6px;
+    .apr {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 16px;
+      ${media.mobile} {
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+      }
+      .apr-text {
+        color: ${({ theme }) => theme.color.text03};
+        ${fonts.body6}
+        ${media.tablet} {
+          ${fonts.body8}
+        }
+        ${media.mobile} {
+          ${fonts.body12}
+        }
+      }
+      .apr-gd-text {
+        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        ${fonts.body6}
+        ${media.tablet} {
+          ${fonts.body8}
+        }
+        ${media.mobile} {
+          ${fonts.body12}
+        }
+      }
+      .coin-info {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        .token-logo {
+          width: 36px;
+          height: 36px;
+          ${media.mobile} {
+            width: 20px;
+            height: 20px;
+          }
+          &:not(:first-of-type) {
+            margin-left: -6px;
+          }
         }
       }
     }
-  `;
+  }
+`;
