@@ -1,9 +1,8 @@
-import { css, type Theme } from "@emotion/react";
+import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const wrapper = (theme: Theme) => css`
-  ${mixins.flexbox("column", "center", "center")};
+export const StakingWrapper = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
   gap: 24px;
 `;

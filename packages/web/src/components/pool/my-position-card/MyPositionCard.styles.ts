@@ -140,6 +140,11 @@ export const MyPositionCardWrapper = styled.div`
         ${media.mobile} {
           ${fonts.body8};
         }
+        cursor: pointer;
+        transition: color 0.3s ease;
+        &:hover {
+          color: ${({ theme }) => theme.color.text07};
+        }
         color: ${({ theme }) => theme.color.text02};
       }
     }
