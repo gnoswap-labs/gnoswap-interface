@@ -2,7 +2,7 @@
 /* eslint-disable */
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import React from "react";
-import { wrapper } from "./MyLiquidityHeader.styles";
+import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 
 interface MyLiquidityHeaderProps {
   info: any;
@@ -10,7 +10,7 @@ interface MyLiquidityHeaderProps {
 
 const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info }) => {
   return (
-    <div css={wrapper}>
+    <HeaderWrapper>
       <h2>My Liquidity</h2>
       <div className="button-wrap">
         <Button
@@ -19,7 +19,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info }) => {
           style={{
             hierarchy: ButtonHierarchy.Primary,
             height: 36,
-            padding: "0px 16px",
+            padding: "10px 16px",
             fontType: "p1",
           }}
         />
@@ -29,12 +29,12 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info }) => {
           style={{
             hierarchy: ButtonHierarchy.Primary,
             height: 36,
-            padding: "0px 16px",
+            padding: "10px 16px",
             fontType: "p1",
           }}
         />
       </div>
-    </div>
+    </HeaderWrapper>
   );
 };
 

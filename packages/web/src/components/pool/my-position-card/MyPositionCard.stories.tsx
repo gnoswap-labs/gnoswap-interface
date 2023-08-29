@@ -1,26 +1,24 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import MyLiquidity from "./MyLiquidity";
+import MyPositionCard from "./MyPositionCard";
 import { liquidityInit } from "@containers/my-liquidity-container/MyLiquidityContainer";
 import { css } from "@emotion/react";
 import { DEVICE_TYPE } from "@styles/media";
 
 export default {
-  title: "pool/MyLiquidity",
-  component: MyLiquidity,
-} as ComponentMeta<typeof MyLiquidity>;
+  title: "pool/MyPositionCard",
+  component: MyPositionCard,
+} as ComponentMeta<typeof MyPositionCard>;
 
-const Template: ComponentStory<typeof MyLiquidity> = args => (
+const Template: ComponentStory<typeof MyPositionCard> = args => (
   <div css={wrapper}>
-    <div css={contentWrap}>
-      <MyLiquidity {...args} />
-    </div>
+    <MyPositionCard {...args} />
   </div>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  info: liquidityInit,
+  content: liquidityInit.positionList[0],
   breakpoint: DEVICE_TYPE.WEB,
 };
 
@@ -30,8 +28,4 @@ const wrapper = () => css`
   align-items: center;
   justify-content: center;
   margin-top: 50px;
-`;
-
-const contentWrap = () => css`
-  width: 1000px;
 `;

@@ -8,13 +8,17 @@ import { PoolCardWrapper } from "./IncentivizedPoolCard.styles";
 
 interface IncentivizedPoolCardProps {
   item: PoolListProps;
+  routeItem: (id: number) => void;
 }
 
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   item,
+  routeItem,
 }) => {
   return (
-    <PoolCardWrapper>
+    <PoolCardWrapper
+      onClick={() => routeItem(Math.floor(Math.random() * 100 + 1))}
+    >
       <div className="pool-container">
         <div className="title-container">
           <div className="box-header">

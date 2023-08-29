@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import MyPositionCard from "./MyPositionCard";
 import { dummyPositionList } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
+import { action } from "@storybook/addon-actions";
 
 export default {
   title: "common/MyPositionCard",
@@ -21,4 +22,5 @@ Staked.args = {
 export const Unstaked = Template.bind({});
 Unstaked.args = {
   item: dummyPositionList[0],
+  routeItem: action("routeItem"),
 };

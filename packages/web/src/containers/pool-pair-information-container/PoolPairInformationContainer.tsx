@@ -1,10 +1,21 @@
 import React from "react";
+import { useRouter } from "next/router";
 import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
 import {
   FEE_RATE_OPTION,
   INCENTIVIZED_TYPE,
   MATH_NEGATIVE_TYPE,
 } from "@constants/option.constant";
+
+export interface pathProps {
+  title: string;
+  path: string;
+}
+
+export const menuInit = {
+  title: "Earn",
+  path: "/earn",
+};
 
 export const poolPairInit = {
   poolInfo: {
@@ -13,6 +24,8 @@ export const poolPairInit = {
         tokenId: Math.floor(Math.random() * 50 + 1).toString(),
         name: "HEX",
         symbol: "HEX",
+        compositionPercent: "50",
+        composition: "50.05881",
         amount: {
           value: "18,500.18",
           denom: "gnot",
@@ -24,6 +37,8 @@ export const poolPairInit = {
         tokenId: Math.floor(Math.random() * 50 + 1).toString(),
         name: "USDCoin",
         symbol: "USDC",
+        compositionPercent: "50",
+        composition: "150.0255",
         amount: {
           value: "18,500.18",
           denom: "gnot",
@@ -40,14 +55,14 @@ export const poolPairInit = {
   liquidity: {
     value: "$524.24m",
     change24h: {
-      status: MATH_NEGATIVE_TYPE.POSITIVE,
+      status: MATH_NEGATIVE_TYPE.POSITIVE || MATH_NEGATIVE_TYPE.NEGATIVE,
       value: "+3.52%",
     },
   },
   volume24h: {
     value: "$100.24m",
     change24h: {
-      status: MATH_NEGATIVE_TYPE.NEGATIVE,
+      status: MATH_NEGATIVE_TYPE.NEGATIVE || MATH_NEGATIVE_TYPE.POSITIVE,
       value: "-3.52%",
     },
   },
@@ -56,10 +71,25 @@ export const poolPairInit = {
     fees: "-3.52%",
     rewards: "88.13%",
   },
-};
+} as const;
+export type poolPairProps = typeof poolPairInit;
+export type poolInfoProps = (typeof poolPairInit)["poolInfo"];
+export type liquidityProps = (typeof poolPairInit)["liquidity"];
 
 const PoolPairInformationContainer = () => {
-  return <PoolPairInformation info={poolPairInit} />;
+  const router = useRouter();
+
+  const onClickPath = (path: string) => {
+    router.push(path);
+  };
+
+  return (
+    <PoolPairInformation
+      info={poolPairInit}
+      menu={menuInit}
+      onClickPath={onClickPath}
+    />
+  );
 };
 
 export default PoolPairInformationContainer;

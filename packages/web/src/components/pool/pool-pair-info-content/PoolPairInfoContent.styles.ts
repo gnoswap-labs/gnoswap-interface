@@ -1,24 +1,61 @@
 import { fonts } from "@constants/font.constant";
-import { css, type Theme } from "@emotion/react";
+import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
-  ${mixins.flexbox("row", "center", "center")};
+export const PoolPairInfoContentWrapper = styled.div`
+  ${mixins.flexbox("row", "flex-start", "flex-start")};
   width: 100%;
-  height: 155px;
-  background-color: ${theme.color.background06};
-  border: 1px solid ${theme.color.border02};
-  border-radius: 8px;
   ${fonts.body12};
-  color: ${theme.color.text04};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.color.text04};
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  background-color: ${({ theme }) => theme.color.background06};
+  ${media.mobile} {
+    flex-direction: column;
+  }
+
   section {
-    ${mixins.flexbox("column", "flex-start", "center")};
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
     padding: 24px 36px;
-    height: 100%;
-    flex: 1;
     gap: 16px;
+    flex: 1 0 0;
     &:not(:first-of-type) {
-      border-left: 1px solid ${theme.color.border02};
+      border-left: 1px solid ${({ theme }) => theme.color.border02};
+    }
+    ${media.tablet} {
+      padding: 24px;
+    }
+    ${media.mobile} {
+      padding: 12px;
+      gap: 8px;
+      &:not(:first-of-type) {
+        border-top: 1px solid ${({ theme }) => theme.color.border02};
+      }
+    }
+  }
+
+  .section-info {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 16px;
+    .negative {
+      color: ${({ theme }) => theme.color.red01};
+    }
+    .positive {
+      color: ${({ theme }) => theme.color.green01};
+    }
+  }
+
+  .apr-info {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 24px;
+    .content-wrap {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 16px;
+      .apr-value {
+        color: ${({ theme }) => theme.color.text10};
+      }
     }
   }
 
@@ -26,35 +63,56 @@ export const wrapper = (theme: Theme) => css`
     cursor: pointer;
     transition: color 0.3s ease;
     &:hover {
-      color: ${theme.color.text07};
+      color: ${({ theme }) => theme.color.text07};
     }
   }
 
   strong {
     ${fonts.body2};
-    color: ${theme.color.text02};
-  }
-
-  span {
-    &.apr-value {
-      color: ${theme.color.text05};
+    ${media.tablet} {
+      ${fonts.body4};
     }
-    &.status-type {
-      color: ${theme.color.green01};
-      &.negative {
-        color: ${theme.color.red01};
+    ${media.tablet} {
+      ${fonts.body7};
+    }
+    color: ${({ theme }) => theme.color.text02};
+  }
+`;
+
+export const TooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  ${fonts.body12};
+  ${media.mobile} {
+    gap: 4px;
+    ${fonts.p2};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 4px 0px;
+    .coin-info {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      width: 170px;
+      gap: 8px;
+      flex-shrink: 0;
+      .token-logo {
+        width: 20px;
+        height: 20px;
       }
     }
   }
-  .sub-info-wrap {
-    ${mixins.flexbox("row", "center", "flexstart")};
-
-    .label-info {
-      margin-right: 16px;
-    }
+  .title {
+    color: ${({ theme }) => theme.color.text08};
   }
-
-  .apr-inner-box:first-of-type {
-    margin-right: 49px;
+  .content {
+    color: var(--global-gray-gray-100, #e0e8f4);
   }
+`;
+
+export const AprDivider = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  width: 1px;
+  height: 12px;
+  background: ${({ theme }) => theme.color.background12};
 `;

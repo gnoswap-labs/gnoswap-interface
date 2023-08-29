@@ -1,5 +1,5 @@
-/* eslint-disable */
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 
@@ -114,11 +114,14 @@ interface MyPositionCardListContainerProps {
 const MyPositionCardListContainer: React.FC<
   MyPositionCardListContainerProps
 > = () => {
-  const [width, setWidth] = useState(Number);
+  const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [mobile, setMobile] = useState(false);
   const handleResize = () => {
-    setWidth(window.innerWidth);
+    if (typeof window !== "undefined") {
+      window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
+    }
   };
 
   useEffect(() => {
@@ -128,6 +131,10 @@ const MyPositionCardListContainer: React.FC<
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const routeItem = (id: number) => {
+    router.push(`/earn/pool/${id}`);
+  };
 
   const onClickLoadMore = () => {
     // Todo
@@ -139,8 +146,9 @@ const MyPositionCardListContainer: React.FC<
       isFetched={true}
       onClickLoadMore={onClickLoadMore}
       list={dummyPositionList}
-      windowSize={width}
+      routeItem={routeItem}
       currentIndex={currentIndex}
+      mobile={mobile}
     />
   );
 };

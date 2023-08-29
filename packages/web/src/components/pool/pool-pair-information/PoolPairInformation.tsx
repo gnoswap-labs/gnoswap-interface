@@ -1,18 +1,45 @@
 import React from "react";
 import PoolPairInfoContent from "@components/pool/pool-pair-info-content/PoolPairInfoContent";
 import PoolPairInfoHeader from "@components/pool/pool-pair-info-header/PoolPairInfoHeader";
-import { wrapper } from "./PoolPairInformation.styles";
+import {
+  PoolPairInformationWrapper,
+  BreadcrumbsWrapper,
+} from "./PoolPairInformation.styles";
+import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import {
+  pathProps,
+  poolPairProps,
+} from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 
 interface PoolPairInformationProps {
-  info: any;
+  info: poolPairProps;
+  menu: pathProps;
+  onClickPath: (path: string) => void;
 }
 
-const PoolPairInformation: React.FC<PoolPairInformationProps> = ({ info }) => {
+const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
+  info,
+  menu,
+  onClickPath,
+}) => {
   return (
-    <div css={wrapper}>
-      <PoolPairInfoHeader info={info.poolInfo} />
-      <PoolPairInfoContent content={info} />
-    </div>
+    <PoolPairInformationWrapper>
+      <BreadcrumbsWrapper>
+        <div className="page-name">Earn</div>
+        <div className="location">
+          <span onClick={() => onClickPath(menu.path)}>{menu.title}</span>
+          <IconStrokeArrowRight className="step-icon" />
+          <span className="token">
+            {info.poolInfo.tokenPair.token0.symbol}/
+            {info.poolInfo.tokenPair.token1.symbol} ({info.poolInfo.feeRate})
+          </span>
+        </div>
+      </BreadcrumbsWrapper>
+      <div className="token-status">
+        <PoolPairInfoHeader info={info.poolInfo} />
+        <PoolPairInfoContent content={info} />
+      </div>
+    </PoolPairInformationWrapper>
   );
 };
 

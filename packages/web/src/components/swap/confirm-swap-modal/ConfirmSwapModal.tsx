@@ -21,14 +21,14 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface ConfirmSwapModalProps {
   onConfirmModal: () => void;
-  submitSwap: () => void;
+  submitSwap: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   from: TokenInfo;
   to: TokenInfo;
   swapGasInfo: SwapGasInfo;
   breakpoint: DEVICE_TYPE;
   tolerance: string;
   submit: boolean;
-  isFetched: boolean;
+  isFetching: boolean;
   swapResult?: SwapData;
 }
 
@@ -41,7 +41,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   breakpoint,
   tolerance,
   submit,
-  isFetched,
+  isFetching,
   swapResult,
 }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -73,7 +73,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           </div>
           {submit ? (
             <>
-              {!isFetched && (
+              {isFetching && (
                 <>
                   <div className="animation">
                     <LoadingSpinner />
@@ -89,7 +89,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </div>
                 </>
               )}
-              {isFetched && swapResult?.success && (
+              {!isFetching && swapResult?.success && (
                 <>
                   <div className="animation">
                     <IconSuccess className="animation-logo" />
@@ -98,7 +98,14 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     <span className="submitted">Transaction Submitted</span>
                     <div className="view-transaction">
                       <span>View Transaction</span>
-                      <IconOpenLink className="open-logo" />
+                      <div
+                        className="open-link"
+                        onClick={() => {
+                          window.open(swapResult?.transaction, "_blank");
+                        }}
+                      >
+                        <IconOpenLink className="open-logo" />
+                      </div>
                     </div>
                   </div>
                   <div className="close-button">
@@ -115,7 +122,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </div>
                 </>
               )}
-              {isFetched && !swapResult?.success && (
+              {!isFetching && !swapResult?.success && (
                 <>
                   <div className="animation">
                     <IconFailed className="animation-logo" />

@@ -1,39 +1,40 @@
+import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import React from "react";
-import { wrapper } from "./PoolLayout.styles";
+import { PoolLayoutWrapper } from "./PoolLayout.styles";
 
 interface PoolLayoutProps {
   header: React.ReactNode;
-  breadcrumbs: React.ReactNode;
   poolPairInformation: React.ReactNode;
   liquidity: React.ReactNode;
   staking: React.ReactNode;
-  addIncentive: React.ReactNode;
   footer: React.ReactNode;
 }
 
 const PoolLayout: React.FC<PoolLayoutProps> = ({
   header,
-  breadcrumbs,
   poolPairInformation,
   liquidity,
   staking,
-  addIncentive,
   footer,
 }) => (
-  <div css={wrapper}>
+  <PoolLayoutWrapper>
     {header}
-    <main className="pool-content">
-      <div className="title-container">
-        <h3 className="pool-title">Earn</h3>
-        <div className="breadcrumbs">{breadcrumbs}</div>
+    <div className="pool-section">
+      <div className="summury-container">{poolPairInformation}</div>
+      <div className="positions-container">{liquidity}</div>
+      <div className="staking-container">
+        {staking}
+        <div className="button">
+          <span>Want to boost up incentives for this pool?&nbsp;</span>
+          <div className="pointer-wrap">
+            <span> Click here to start the process</span>
+            <IconStrokeArrowRight className="arrow-icon" />
+          </div>
+        </div>
       </div>
-      <section className="pool-pair-section">{poolPairInformation}</section>
-      <section className="liquidity-section">{liquidity}</section>
-      <section className="staking-section">{staking}</section>
-      <section className="add-incentive-section">{addIncentive}</section>
-    </main>
+    </div>
     {footer}
-  </div>
+  </PoolLayoutWrapper>
 );
 
 export default PoolLayout;

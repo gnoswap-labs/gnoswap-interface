@@ -9,8 +9,9 @@ interface MyPositionCardListProps {
   isFetched: boolean;
   onClickLoadMore?: () => void;
   list: any[];
-  windowSize: number;
   currentIndex: number;
+  routeItem: (id: number) => void;
+  mobile: boolean;
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -18,14 +19,17 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   isFetched,
   onClickLoadMore,
   list,
-  windowSize,
   currentIndex,
+  routeItem,
+  mobile,
 }) => (
   <CardListWrapper>
     <GridWrapper>
       {isFetched &&
         list.length > 0 &&
-        list.map((item, idx) => <MyPositionCard item={item} key={idx} />)}
+        list.map((item, idx) => (
+          <MyPositionCard item={item} key={idx} routeItem={routeItem} />
+        ))}
       {!isFetched &&
         Array.from({ length: 4 }).map((_, idx) => (
           <span
@@ -35,7 +39,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {windowSize > 1000 ? (
+    {!mobile ? (
       loadMore &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />

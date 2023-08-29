@@ -1,26 +1,21 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import PoolListHeader from "./PoolListHeader";
-import { POOL_TYPE } from "@containers/pool-list-container/PoolListContainer";
+import MyPositionCard from "./MyPositionCard";
+import { poolPairInit } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { DEVICE_TYPE } from "@styles/media";
 
-describe("PoolListHeader Component", () => {
-  it("PoolListHeader render", () => {
+describe("MyPositionCard Component", () => {
+  it("MyPositionCard render", () => {
     const mockProps = {
-      poolType: POOL_TYPE.ALL,
-      changePoolType: () => {},
-      search: () => {},
-      keyword: "",
+      content: poolPairInit.poolInfo,
       breakpoint: DEVICE_TYPE.WEB,
-      searchIcon: true,
-      onTogleSearch: () => null,
     };
 
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <PoolListHeader {...mockProps} />
+          <MyPositionCard {...mockProps} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

@@ -12,7 +12,7 @@ describe("ConfirmSwapModal Component", () => {
       submitSwap: () => null,
       tolerance: "",
       submit: false,
-      isFetched: false,
+      isFetching: false,
       from: {
         token: "USDCoin",
         symbol: "USDC",

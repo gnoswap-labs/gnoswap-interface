@@ -101,9 +101,9 @@ export interface SwapData {
 }
 
 async function fetchSwap(): Promise<SwapData> {
-  return new Promise(resolve => setTimeout(resolve, 4000)).then(() =>
+  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve({
-      success: true,
+      success: Math.random() >= 0.5,
       transaction: "https://gnoscan.io/",
     }),
   );
@@ -131,9 +131,14 @@ const SwapContainer: React.FC = () => {
     queryFn: () => fetchTokens(keyword),
   });
 
-  const { isFetched, data: swapResult } = useQuery<SwapData, Error>({
-    queryKey: [],
+  const {
+    isFetching,
+    refetch,
+    data: swapResult,
+  } = useQuery<SwapData, Error>({
+    queryKey: ["swapResult"],
     queryFn: () => fetchSwap(),
+    enabled: false,
   });
 
   //   eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -191,7 +196,7 @@ const SwapContainer: React.FC = () => {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 2000);
+      }, 500);
     } catch (e) {
       throw new Error("Copy Error!");
     }
@@ -208,6 +213,10 @@ const SwapContainer: React.FC = () => {
 
   const onConfirmModal = () => {
     setSwapOpen(prev => !prev);
+    if (submit) {
+      setSubmit(false);
+      setTolerance("1");
+    }
   };
 
   const changeTolerance = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,8 +246,10 @@ const SwapContainer: React.FC = () => {
     setAutoRouter(prev => !prev);
   };
 
-  const submitSwap = () => {
+  const submitSwap = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    event.preventDefault();
     setSubmit(prev => !prev);
+    refetch();
   };
 
   return (
@@ -269,7 +280,7 @@ const SwapContainer: React.FC = () => {
       submitSwap={submitSwap}
       breakpoint={breakpoint}
       submit={submit}
-      isFetched={isFetched}
+      isFetching={isFetching}
       swapResult={swapResult}
       resetTolerance={resetTolerance}
       handleCopyClipBoard={handleCopyClipBoard}

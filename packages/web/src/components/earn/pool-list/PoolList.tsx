@@ -11,7 +11,7 @@ import PoolListHeader from "@components/earn/pool-list-header/PoolListHeader";
 import PoolListTable from "@components/earn/pool-list-table/PoolListTable";
 import Pagination from "@components/common/pagination/Pagination";
 import { PoolListWrapper } from "./PoolList.styles";
-import { DeviceSize } from "@styles/media";
+import { DeviceSize, DEVICE_TYPE } from "@styles/media";
 
 interface TokenListProps {
   pools: Pool[];
@@ -27,9 +27,10 @@ interface TokenListProps {
   sort: (item: TABLE_HEAD) => void;
   sortOption: PoolSortOption | undefined;
   isSortOption: (item: TABLE_HEAD) => boolean;
-  windowSize: number;
   searchIcon: boolean;
   onTogleSearch: () => void;
+  breakpoint: DEVICE_TYPE;
+  routeItem: (id: number) => void;
 }
 
 const PoolList: React.FC<TokenListProps> = ({
@@ -46,9 +47,10 @@ const PoolList: React.FC<TokenListProps> = ({
   sort,
   sortOption,
   isSortOption,
-  windowSize,
   searchIcon,
   onTogleSearch,
+  breakpoint,
+  routeItem,
 }) => {
   return (
     <PoolListWrapper>
@@ -57,7 +59,7 @@ const PoolList: React.FC<TokenListProps> = ({
         changePoolType={changePoolType}
         search={search}
         keyword={keyword}
-        windowSize={windowSize}
+        breakpoint={breakpoint}
         searchIcon={searchIcon}
         onTogleSearch={onTogleSearch}
       />
@@ -67,13 +69,13 @@ const PoolList: React.FC<TokenListProps> = ({
         sort={sort}
         sortOption={sortOption}
         isSortOption={isSortOption}
-        windowSize={windowSize}
+        routeItem={routeItem}
       />
       <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
-        siblingCount={windowSize > DeviceSize.mobile ? 2 : 1}
+        siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
       />
     </PoolListWrapper>
   );
