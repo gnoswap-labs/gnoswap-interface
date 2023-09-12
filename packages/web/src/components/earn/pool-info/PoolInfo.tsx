@@ -1,5 +1,6 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
+import BarGraph from "@components/common/bar-graph/BarGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { POOL_TD_WIDTH } from "@constants/skeleton.constant";
 import { type Pool } from "@containers/pool-list-container/PoolListContainer";
@@ -21,6 +22,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
     fees24h,
     rewards,
     incentiveType,
+    tickInfo
   } = pool;
   return (
     <PoolInfoWrapper
@@ -49,6 +51,16 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[5]}>
         <DoubleLogo left={rewards[0]} right={rewards[1]} size={20} />
+      </TableColumn>
+      <TableColumn tdWidth={POOL_TD_WIDTH[6]}>
+        <div className="chart-wrapper">
+          <BarGraph
+            width={100}
+            height={45}
+            currentTick={tickInfo.currentTick}
+            datas={tickInfo.ticks}
+          />
+        </div>
       </TableColumn>
     </PoolInfoWrapper>
   );

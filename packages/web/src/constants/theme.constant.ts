@@ -38,6 +38,8 @@ const palette = {
   gradient1: "#F3F6FB99",
   gradient2: "#141A2980",
   gradient3: "#141A2900",
+  redDark: "#ff2e2e66",
+  greenDark: "#2eff8266",
 };
 
 const colors = {
@@ -180,6 +182,8 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   green01: colors.global.green,
   red01: colors.global.red,
   select: colors.dark.gray600Hover1,
+  redDark: colors.global.redDark,
+  greenDark: colors.global.greenDark,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -262,4 +266,6 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   green01: colors.global.green,
   red01: colors.global.red,
   select: colors.global.white,
+  redDark: colors.global.redDark,
+  greenDark: colors.global.greenDark,
 };
