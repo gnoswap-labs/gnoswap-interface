@@ -1,4 +1,6 @@
+import { generateBarAreaDatas } from "@common/utils/test-util";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
+import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
@@ -14,7 +16,7 @@ export const POSITION_CONTENT_LABEL = {
 
 export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 
-export const dummyPosition = [
+export const dummyPosition: PoolPosition[] = [
   {
     tokenPair: {
       token0: {
@@ -49,6 +51,12 @@ export const dummyPosition = [
     currentPriceAmount: "1184.24 GNOS per ETH",
     minPriceAmount: "1.75 GNOT Per GNOS",
     maxPriceAmount: "2.25 GNOT Per GNOS",
+    currentTick: 18,
+    minTick: 10,
+    maxTick: 110,
+    minLabel: "-80%",
+    maxLabel: "-10%",
+    ticks: generateBarAreaDatas()
   },
   {
     tokenPair: {
@@ -102,6 +110,8 @@ export const dummyPosition = [
     currentPriceAmount: "1184.24 GNOS per ETH",
     minPriceAmount: "1.75 GNOT Per GNOS",
     maxPriceAmount: "2.25 GNOT Per GNOS",
+    currentTick: 18,
+    ticks: generateBarAreaDatas()
   },
 ];
 
@@ -132,7 +142,7 @@ const MyPositionCardListContainer: React.FC<
     };
   }, []);
 
-  const routeItem = (id: number) => {
+  const movePoolDetail = (id: string) => {
     router.push(`/earn/pool/${id}`);
   };
 
@@ -145,8 +155,8 @@ const MyPositionCardListContainer: React.FC<
       loadMore={true}
       isFetched={true}
       onClickLoadMore={onClickLoadMore}
-      list={dummyPositionList}
-      routeItem={routeItem}
+      positions={dummyPositionList}
+      movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}
     />
