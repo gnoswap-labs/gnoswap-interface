@@ -1,6 +1,16 @@
 import { faker } from "@faker-js/faker";
 import BigNumber from "bignumber.js";
 
+export const generateBarAreaDatas = () => {
+  return Array.from(
+    { length: 40 },
+    (_, index) =>
+      `${
+        100 - Math.trunc(Math.abs(20 - index) / 3) * (Math.random() * 10 + 10)
+      }`,
+  );
+};
+
 export const generateAddress = () => {
   return `g1${generateRandomString(38)}`;
 };

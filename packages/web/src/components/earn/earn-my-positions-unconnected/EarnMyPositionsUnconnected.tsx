@@ -1,8 +1,18 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconLinkOff from "@components/common/icons/IconLinkOff";
+import { useCallback } from "react";
 import { UnconnectedWrapper } from "./EarnMyPositionsUnconnected.styles";
 
-const EarnMyPositionsUnconnected = () => {
+export interface EarnMyPositionsUnconnectedProps {
+  connect: () => void;
+}
+
+const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({ connect }) => {
+
+  const onClickConnect = useCallback(() => {
+    connect();
+  }, [connect]);
+
   return (
     <UnconnectedWrapper>
       <IconLinkOff className="unconnected-icon" />
@@ -13,7 +23,7 @@ const EarnMyPositionsUnconnected = () => {
       </p>
       <Button
         text="Connect Wallet"
-        onClick={() => {}}
+        onClick={onClickConnect}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           width: 263,
