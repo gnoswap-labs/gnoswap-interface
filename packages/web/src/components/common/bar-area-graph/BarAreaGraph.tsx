@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useState } from "react";
 import BarGraph from "../bar-graph/BarGraph";
-import { BarAreaGraphWrapper } from "./BarAreaGraph.styles";
+import { BarAreaGraphLabel, BarAreaGraphWrapper } from "./BarAreaGraph.styles";
 
 export interface BarAreaGraphData {
   value: string;
@@ -12,9 +12,15 @@ export interface BarAreaGraphProps {
   className?: string;
   strokeWidth?: number;
   datas: string[];
+  currentTick?: number;
   minGap?: number;
   width?: number;
   height?: number;
+  minLabel?: string;
+  maxLabel?: string;
+  minTick?: number;
+  maxTick?: number;
+  editable?: boolean;
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
@@ -37,14 +43,21 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   datas,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
+  currentTick,
+  minLabel,
+  maxLabel,
+  minTick,
+  maxTick,
+  editable,
 }) => {
+  const existTickRage = (!minTick || !maxTick) === false;
   const [mouseDown, setMouseDown] = useState(false);
   const [mouseDownStartLine, setMouseDownStartLine] = useState(false);
   const [mouseDownEndLine, setMouseDownEndLine] = useState(false);
-  const [selectedStart, setSelectedStart] = useState(false);
-  const [selectedEnd, setSelectedEnd] = useState(false);
-  const [selectedStartPosition, setSelectedStartPosition] = useState(0);
-  const [selectedEndPosition, setSelectedEndPosition] = useState(0);
+  const [selectedStart, setSelectedStart] = useState(existTickRage);
+  const [selectedEnd, setSelectedEnd] = useState(existTickRage);
+  const [selectedStartPosition, setSelectedStartPosition] = useState(minTick || 0);
+  const [selectedEndPosition, setSelectedEndPosition] = useState(maxTick || 0);
 
   const getStartPosition = useCallback(() => {
     return selectedStartPosition > selectedEndPosition
@@ -65,6 +78,9 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   const onMouseDownArea = (
     event: React.MouseEvent<HTMLElement, MouseEvent>,
   ) => {
+    if (!editable) {
+      return;
+    }
     event.preventDefault();
     const positionX = getPositionByMouseEvent(event, width);
 
@@ -128,6 +144,9 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
     event: React.MouseEvent<SVGGElement, MouseEvent>,
     lineType: "start" | "end",
   ) => {
+    if (!editable) {
+      return;
+    }
     event.preventDefault();
     if (lineType === "start") {
       setMouseDownStartLine(true);
@@ -147,6 +166,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   return (
     <BarAreaGraphWrapper
       className={className}
+      width={width}
+      height={height}
       onMouseDown={onMouseDownArea}
       onMouseUp={onMouseUpArea}
       onMouseLeave={onMouseUpArea}
@@ -157,6 +178,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         strokeWidth={100}
         color="#596782"
         hoverColor="#90A2C0"
+        currentTick={currentTick}
         datas={datas}
         width={width}
         height={height}
@@ -179,18 +201,20 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
               x2={getStartPosition()}
               y2={height}
             />
-            <svg x={getStartPosition() - 12}>
-              <rect width="11" height="32" rx="2" fill="#596782" />
-              <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
-              <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
-            </svg>
+            {editable && (
+              <svg x={getStartPosition() - 12}>
+                <rect width="11" height="32" rx="2" fill="#596782" />
+                <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
+                <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
+              </svg>
+            )}
           </g>
           <polygon
             className="area"
             fill={"url(#gradient-area)"}
             points={getSelectorPoints()}
           />
-          <g onMouseDown={event => onMouseDownLine(event, "end")}>
+          <g className="endline-wrapper" onMouseDown={event => onMouseDownLine(event, "end")}>
             <line
               className="end-line"
               stroke="rgb(0, 205, 46)"
@@ -200,14 +224,36 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
               x2={getEndPosition()}
               y2={height}
             />
-            <svg x={getEndPosition() + 1}>
-              <rect width="11" height="32" rx="2" fill="#596782" />
-              <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
-              <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
-            </svg>
+            {editable && (
+              <svg x={getEndPosition() + 1}>
+                <rect width="11" height="32" rx="2" fill="#596782" />
+                <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
+                <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
+              </svg>
+            )}
           </g>
         </svg>
       )}
+
+      {minLabel && (
+        <BarAreaGraphLabel
+          className="min"
+          x={getStartPosition()}
+          y={20}
+        >
+          {minLabel}
+        </BarAreaGraphLabel>
+      )}
+      {maxLabel && (
+        <BarAreaGraphLabel
+          className="max"
+          x={getEndPosition()}
+          y={20}
+        >
+          {maxLabel}
+        </BarAreaGraphLabel>
+      )}
+
     </BarAreaGraphWrapper>
   );
 };
