@@ -95,10 +95,9 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     color: ${({ theme }) => theme.color.text05};
     ${fonts.p4};
   }
-  .dummy-chart {
+
+  .chart-wrapper {
     width: 100%;
-    height: 61px;
-    border: 1px solid green;
   }
 
   .min-max-price {

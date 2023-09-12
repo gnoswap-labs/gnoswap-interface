@@ -16,14 +16,15 @@ export default {
 } as ComponentMeta<typeof MyPositionCardList>;
 
 const Template: ComponentStory<typeof MyPositionCardList> = args => (
-  <MyPositionCardList {...args} list={dummyPositionList} />
+  <MyPositionCardList {...args} positions={dummyPositionList} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
   isFetched: true,
-  routeItem: action("routeItem"),
+  currentIndex: 1,
   mobile: false,
   loadMore: true,
+  movePoolDetail: action("movePoolDetail"),
   onClickLoadMore: action("onClickLoadMore"),
 };

@@ -1,16 +1,17 @@
 import React from "react";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
-import { GridWrapper, CardListWrapper } from "./MyPositionCardList.styles";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
+import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
+import { CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
 
 interface MyPositionCardListProps {
   loadMore?: boolean;
   isFetched: boolean;
   onClickLoadMore?: () => void;
-  list: any[];
+  positions: PoolPosition[];
   currentIndex: number;
-  routeItem: (id: number) => void;
+  movePoolDetail: (id: string) => void;
   mobile: boolean;
 }
 
@@ -18,17 +19,17 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   loadMore,
   isFetched,
   onClickLoadMore,
-  list,
+  positions,
   currentIndex,
-  routeItem,
+  movePoolDetail,
   mobile,
 }) => (
   <CardListWrapper>
     <GridWrapper>
       {isFetched &&
-        list.length > 0 &&
-        list.map((item, idx) => (
-          <MyPositionCard item={item} key={idx} routeItem={routeItem} />
+        positions.length > 0 &&
+        positions.map((item, idx) => (
+          <MyPositionCard item={item} key={idx} movePoolDetail={movePoolDetail} />
         ))}
       {!isFetched &&
         Array.from({ length: 4 }).map((_, idx) => (
@@ -48,7 +49,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
         <span>/</span>
-        <span>{list.length}</span>
+        <span>{positions.length}</span>
       </div>
     )}
   </CardListWrapper>
