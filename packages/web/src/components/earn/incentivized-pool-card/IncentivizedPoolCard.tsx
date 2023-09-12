@@ -1,12 +1,15 @@
+import { generateBarAreaDatas } from "@common/utils/test-util";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import BarAreaGraph from "@components/common/bar-area-graph/BarAreaGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import IconSwap from "@components/common/icons/IconSwap";
 import {
   type PoolListProps,
   POOL_CONTENT_TITLE,
 } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import { PoolCardWrapper } from "./IncentivizedPoolCard.styles";
 
-interface IncentivizedPoolCardProps {
+export interface IncentivizedPoolCardProps {
   item: PoolListProps;
   routeItem: (id: number) => void;
 }
@@ -51,7 +54,19 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
             <span className="value-text">{item.fees24h}</span>
           </div>
         </div>
-        <div className="pool-content"></div>
+        <div className="pool-content">
+          <div className="pool-rate-wrapper">
+            <span>{`1 ${item.name[0]}`}</span>
+            <IconSwap />
+            <span>{`${item.currentTick} ${item.name[1]}`}</span>
+          </div>
+          <BarAreaGraph
+            width={258}
+            height={60}
+            currentTick={20}
+            datas={generateBarAreaDatas()}
+          />
+        </div>
       </div>
     </PoolCardWrapper>
   );

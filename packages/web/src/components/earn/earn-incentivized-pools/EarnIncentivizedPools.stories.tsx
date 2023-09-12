@@ -1,8 +1,8 @@
-import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-
 import EarnIncentivizedPools from "./EarnIncentivizedPools";
-import IncentivizedPoolCardListContainer from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
+import IncentivizedPoolCardList from "../incentivized-pool-card-list/IncentivizedPoolCardList";
+import { poolDummy } from "../incentivized-pool-card-list/incentivized-pool-dummy";
+import { action } from '@storybook/addon-actions';
 
 export default {
   title: "earn/EarnIncentivizedPools",
@@ -12,9 +12,16 @@ export default {
 const Template: ComponentStory<typeof EarnIncentivizedPools> = args => (
   <EarnIncentivizedPools
     {...args}
-    cardList={<IncentivizedPoolCardListContainer />}
   />
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  cardList: <IncentivizedPoolCardList
+    currentIndex={1}
+    list={poolDummy}
+    isFetched={true}
+    routeItem={action("routeItem")}
+    mobile={false}
+  />
+};

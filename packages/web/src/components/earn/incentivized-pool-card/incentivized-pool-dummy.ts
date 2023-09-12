@@ -12,6 +12,7 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
   {
     logo: [
@@ -24,6 +25,7 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
   {
     logo: [
@@ -36,6 +38,7 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
   {
     logo: [
@@ -48,6 +51,7 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
   {
     logo: [
@@ -60,6 +64,7 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
   {
     logo: [
@@ -72,6 +77,7 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
   {
     logo: [
@@ -84,6 +90,7 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
   {
     logo: [
@@ -96,5 +103,6 @@ export const poolDummy: Array<PoolListProps> = [
     apr: "108.12%",
     volume24h: "$200.12M",
     fees24h: "$10.50k",
+    currentTick: "1.1",
   },
 ];

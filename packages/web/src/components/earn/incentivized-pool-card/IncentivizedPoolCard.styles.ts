@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 export const PoolCardWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  min-width: 290px;
+  min-width: 322px;
   padding: 16px;
   gap: 8px;
   background-color: ${({ theme }) => theme.color.background03};
@@ -79,12 +79,36 @@ export const PoolCardWrapper = styled.div`
 
   .pool-content {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
     ${fonts.body8};
     background-color: ${({ theme }) => theme.color.backgroundOpacity};
     border-radius: 8px;
     padding: 16px;
     gap: 24px;
-    align-self: stretch;
+    justify-content: center;
+    align-items: center;
+
+    .pool-rate-wrapper {
+      display: flex;
+      width: 100%;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 4px;
+
+      span {
+        color: ${({ theme }) => theme.color.text10};
+        ${fonts.p4};
+      }
+
+      svg {
+        width: 16px;
+        height: 16px;
+
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+    }
   }
 
   .label-text {

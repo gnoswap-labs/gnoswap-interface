@@ -12,6 +12,7 @@ export interface PoolListProps {
   apr: string;
   volume24h: string;
   fees24h: string;
+  currentTick: string;
 }
 
 export const POOL_CONTENT_TITLE = {
@@ -52,7 +53,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       list={poolDummy}
       isFetched={true}
       loadMore={true}
-      onClickLoadMore={() => {}}
+      onClickLoadMore={() => { }}
       currentIndex={currentIndex}
       routeItem={routeItem}
       mobile={mobile}
