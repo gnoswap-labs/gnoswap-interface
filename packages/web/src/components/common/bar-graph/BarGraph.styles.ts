@@ -11,24 +11,23 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 180px;
+  height: auto;
   overflow: visible;
 
   & svg {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 180px;
+    height: 100%;
     overflow: visible;
+  }
+`;
 
-    line {
-      stroke: ${({ theme, color }) => color || theme.color.background04Hover};
-      cursor: pointer;
+export const BarLineWrapper = styled.line`
+  cursor: pointer;
 
-      &:hover {
-        stroke: ${({ theme, hoverColor }) => hoverColor || theme.color.point};
-      }
-    }
+  &:hover {
+    opacity: 0.7;
   }
 `;
 

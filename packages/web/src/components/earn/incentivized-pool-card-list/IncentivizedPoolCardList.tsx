@@ -7,7 +7,7 @@ import { type PoolListProps } from "@containers/incentivized-pool-card-list-cont
 import IncentivizedPoolCard from "@components/earn/incentivized-pool-card/IncentivizedPoolCard";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
-interface IncentivizedPoolCardListProps {
+export interface IncentivizedPoolCardListProps {
   list: Array<PoolListProps>;
   loadMore?: boolean;
   isFetched: boolean;

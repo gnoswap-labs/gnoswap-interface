@@ -1,12 +1,15 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 
-export const BarAreaGraphWrapper = styled.div`
+export const BarAreaGraphWrapper = styled.div<{
+  width?: number;
+  height?: number;
+}>`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: auto;
+  width: ${({ width }) => (width ? `${width}px` : "100%")};
+  height: ${({ height }) => (height ? `${height}px` : "100%")};
   overflow: visible;
 
   svg.selector {
@@ -58,5 +61,33 @@ export const BarAreaGraphTooltipWrapper = styled.div<
 
   & .tooltip-body {
     color: ${({ theme }) => theme.color.point};
+  }
+`;
+
+export interface BarAreaGraphLabelProps {
+  x: number;
+  y: number;
+}
+
+export const BarAreaGraphLabel = styled.span<BarAreaGraphLabelProps>`
+  position: absolute;
+  display: flex;
+  top: ${({ y }) => `${y}px`};
+  width: 45px;
+  height: 23px;
+  justify-content: center;
+  align-items: center;
+  ${fonts.p3}
+  font-weight: 700;
+  border-radius: 4px;
+
+  &.min {
+    left: ${({ x }) => (x < 45 ? `${x}px` : `${x - 45}px`)};
+    background-color: #ff503f99;
+  }
+
+  &.max {
+    left: ${({ x }) => `${x}px`};
+    background-color: #60e66a99;
   }
 `;

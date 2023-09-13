@@ -1,14 +1,27 @@
-// TODO : remove eslint-disable after work
-/* eslint-disable */
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { useState } from "react";
+import { useCallback, useMemo } from "react";
 import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 
-const EarnMyPositionsHeader: React.FC = () => {
-  const [disabled, setDisabled] = useState(false);
-  const onClickNewPosition = () => {
-    // TODO
-  };
+export interface EarnMyPositionsHeaderProps {
+  connected: boolean;
+  moveEarnAdd: () => void;
+}
+
+const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
+  connected,
+  moveEarnAdd
+}) => {
+
+  const disabledNewPosition = useMemo(() => {
+    return !connected;
+  }, [connected]);
+
+  const onClickNewPosition = useCallback(() => {
+    if (disabledNewPosition) {
+      return;
+    }
+    moveEarnAdd();
+  }, [disabledNewPosition, moveEarnAdd]);
 
   return (
     <PositionsWrapper>
@@ -23,7 +36,7 @@ const EarnMyPositionsHeader: React.FC = () => {
           padding: "10px 16px",
         }}
         onClick={onClickNewPosition}
-        disabled={disabled}
+        disabled={disabledNewPosition}
       />
     </PositionsWrapper>
   );

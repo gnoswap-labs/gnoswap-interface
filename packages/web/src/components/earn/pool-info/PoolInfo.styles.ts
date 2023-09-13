@@ -36,4 +36,8 @@ export const PoolInfoWrapper = styled.div`
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
   }
+
+  .chart-wrapper {
+    width: 100px;
+  }
 `;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import { useRouter } from "next/router";
 
@@ -21,15 +21,16 @@ const WalletPositionCardListContainer: React.FC = () => {
     };
   }, []);
 
-  const routeItem = (id: number) => {
+  const movePoolDetail = useCallback((id: string) => {
     router.push(`/earn/pool/${id}`);
-  };
+  }, [router]);
+
   return (
     <MyPositionCardList
-      list={[]}
+      positions={[]}
       loadMore={false}
       isFetched={true}
-      routeItem={routeItem}
+      movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}
     />

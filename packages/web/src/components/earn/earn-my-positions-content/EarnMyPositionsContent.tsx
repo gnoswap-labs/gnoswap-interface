@@ -1,33 +1,39 @@
-import { ValuesType } from "utility-types";
-import { ContentWrapper } from "./EarnMyPositionsContent.styles";
+import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
+import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
+import EarnMyPositionNoLiquidity from "../earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
+import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyPositionsUnconnected";
 
-interface EarnMyPositionContentProps {
-  unconnected: React.ReactNode;
-  noLiquidity: React.ReactNode;
-  cardList: React.ReactNode;
-  status: MY_POSITIONS_STATUS;
+export interface EarnMyPositionContentProps {
+  connected: boolean;
+  fetched: boolean;
+  positions: PoolPosition[];
+  connect: () => void;
+  movePoolDetail: (poolId: string) => void;
 }
 
-export const MY_POSITIONS_STATUS = {
-  UN_CONNECTED: "unconnected",
-  NO_LIQUIDITY: "noLiquidity",
-  CARD_LIST: "cardList",
-  NONE: "none",
-} as const;
-export type MY_POSITIONS_STATUS = ValuesType<typeof MY_POSITIONS_STATUS>;
-
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
-  unconnected,
-  noLiquidity,
-  cardList,
-  status,
+  connected,
+  fetched,
+  positions,
+  connect,
+  movePoolDetail,
 }) => {
+  if (!connected) {
+    return <EarnMyPositionsUnconnected connect={connect} />;
+  }
+
+  if (positions.length === 0) {
+    return <EarnMyPositionNoLiquidity />;
+  }
+
   return (
-    <ContentWrapper>
-      {status === MY_POSITIONS_STATUS.UN_CONNECTED && unconnected}
-      {status === MY_POSITIONS_STATUS.NO_LIQUIDITY && noLiquidity}
-      {status === MY_POSITIONS_STATUS.CARD_LIST && cardList}
-    </ContentWrapper>
+    <MyPositionCardList
+      positions={positions}
+      isFetched={fetched}
+      currentIndex={1}
+      movePoolDetail={movePoolDetail}
+      mobile={false}
+    />
   );
 };
 

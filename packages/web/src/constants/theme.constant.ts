@@ -20,6 +20,7 @@ const palette = {
   gray100: "#E0E8F4",
   gray010: "#DADADA",
   green: "#60E66A",
+  green400: "#5CD865",
   brand900: "#060E5A",
   brand800: "#0B166D",
   brand700: "#112188",
@@ -31,6 +32,7 @@ const palette = {
   brand200: "#A7B9F8",
   brand100: "#D2DCFB",
   red: "#FF503F",
+  red400: "#EE4B3C",
   gray600Opacity: "#141A2980",
   gray100Opacity: "#E0E8F480",
   gray100Opacity06: "#E0E8F466",
@@ -38,6 +40,8 @@ const palette = {
   gradient1: "#F3F6FB99",
   gradient2: "#141A2980",
   gradient3: "#141A2900",
+  redDark: "#ff2e2e66",
+  greenDark: "#2eff8266",
 };
 
 const colors = {
@@ -178,8 +182,12 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   tooltipBackground: colors.dark.brand900BG,
   point: colors.global.point,
   green01: colors.global.green,
+  green02: colors.global.green400,
   red01: colors.global.red,
+  red02: colors.global.red400,
   select: colors.dark.gray600Hover1,
+  redDark: colors.global.redDark,
+  greenDark: colors.global.greenDark,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -260,6 +268,10 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   tooltipBackground: colors.white.brand700BG,
   point: colors.global.point,
   green01: colors.global.green,
+  green02: colors.global.green400,
   red01: colors.global.red,
+  red02: colors.global.red400,
   select: colors.global.white,
+  redDark: colors.global.redDark,
+  greenDark: colors.global.greenDark,
 };

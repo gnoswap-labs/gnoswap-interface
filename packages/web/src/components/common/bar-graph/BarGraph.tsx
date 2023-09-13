@@ -1,10 +1,11 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { BarGraphWrapper } from "./BarGraph.styles";
 
 export interface BarGraphProps {
   className?: string;
   color?: string;
+  currentTick?: number;
   hoverColor?: string;
   strokeWidth?: number;
   datas: string[];
@@ -25,6 +26,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   className = "",
   color,
   hoverColor,
+  currentTick,
   datas,
   strokeWidth = 12.5,
   minGap = 1,
@@ -61,25 +63,61 @@ const BarGraph: React.FC<BarGraphProps> = ({
     };
 
     return mappedDatas.map<Point>(data => ({
-      x: optimizeTime(data.x, width, strokeWidth) + strokeWidth / 2,
+      x: optimizeTime(data.x, width, strokeWidth),
       y: optimizeValue(data.value, height),
     }));
   }, [datas, getStrokeWidth, height, width]);
 
+  const getStorkeColor = useCallback((index: number) => {
+    if (!currentTick) {
+      return color;
+    }
+    return currentTick > index ? "url(#gradient-bar-green)" : "url(#gradient-bar-red)";
+  }, [currentTick, color]);
+
+  const currentPosition = useMemo(() => {
+    if (!currentTick || getGraphPoints().length < currentTick) {
+      return;
+    }
+    return getGraphPoints()[currentTick];
+  }, [currentTick, getGraphPoints]);
+
   return (
     <BarGraphWrapper className={className} color={color} hoverColor={hoverColor}>
       <svg viewBox={`0 0 ${width} ${height}`} >
+        <defs>
+          <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#2eff8266" />
+            <stop offset="100%" stopColor="rgba(75, 255, 46, 0.00)" />
+          </linearGradient>
+          <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#ff2e2e66" />
+            <stop offset="100%" stopColor="rgba(255, 46, 46, 0.00)" />
+          </linearGradient>
+        </defs>
         {getGraphPoints().map((point, index) => (
-          <line
+          <rect
             key={index}
-            x1={point.x}
-            x2={point.x}
-            y1={height}
-            y2={point.y}
-            stroke={color}
-            strokeWidth={getStrokeWidth()}
+            x={point.x}
+            width={getStrokeWidth()}
+            y={point.y}
+            height={height - point.y}
+            fill={getStorkeColor(index)}
           />
         ))}
+        {
+          currentPosition && (
+            <line
+              x1={currentPosition.x - 0.5}
+              x2={currentPosition.x}
+              y1={height}
+              y2={0}
+              strokeDasharray={4}
+              stroke={"#FFFFFF"}
+              strokeWidth={0.5}
+            />
+          )
+        }
       </svg>
     </BarGraphWrapper>
   );

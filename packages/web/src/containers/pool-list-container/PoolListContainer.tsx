@@ -7,6 +7,7 @@ import { ValuesType } from "utility-types";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { useRouter } from "next/router";
+import { generateBarAreaDatas } from "@common/utils/test-util";
 
 export interface Pool {
   poolId: string;
@@ -18,6 +19,10 @@ export interface Pool {
   fees24h: string;
   rewards: Array<string>;
   incentiveType: POOL_TYPE;
+  tickInfo: {
+    ticks: string[];
+    currentTick: number;
+  };
 }
 
 export interface PoolSortOption {
@@ -32,6 +37,7 @@ export const TABLE_HEAD = {
   FEES: "Fees (24h)",
   APR: "APR",
   REWARDS: "Rewards",
+  LIQUIDITY_PLOT: "Liquidity Plot",
 } as const;
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
@@ -51,6 +57,7 @@ const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
   "Fees (24h)": "fees",
   APR: "apr",
   Rewards: "rewards",
+  "Liquidity Plot": "liquidity_plot",
 };
 
 export const dummyPoolList: Pool[] = [
@@ -82,6 +89,10 @@ export const dummyPoolList: Pool[] = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png",
     ],
     incentiveType: POOL_TYPE.INCENTIVIZED,
+    tickInfo: {
+      currentTick: 22,
+      ticks: generateBarAreaDatas()
+    }
   },
   {
     poolId: "2",
@@ -111,6 +122,10 @@ export const dummyPoolList: Pool[] = [
       "https://assets.coingecko.com/coins/images/29223/large/Favicon_200x200px.png?1677480836",
     ],
     incentiveType: POOL_TYPE.ALL,
+    tickInfo: {
+      currentTick: 29,
+      ticks: generateBarAreaDatas()
+    }
   },
   {
     poolId: "3",
@@ -140,6 +155,10 @@ export const dummyPoolList: Pool[] = [
       "https://assets.coingecko.com/coins/images/29223/large/Favicon_200x200px.png?1677480836",
     ],
     incentiveType: POOL_TYPE.NON_INCENTIVIZED,
+    tickInfo: {
+      currentTick: 14,
+      ticks: generateBarAreaDatas()
+    }
   },
 ];
 
@@ -231,8 +250,8 @@ const PoolListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setTokenSortOption({
         key,
@@ -243,7 +262,7 @@ const PoolListContainer: React.FC = () => {
   );
 
   const isSortOption = useCallback((head: TABLE_HEAD) => {
-    const disableItems = ["Rewards"];
+    const disableItems = ["Rewards", "Liquidity Plot"];
     return !disableItems.includes(head);
   }, []);
 

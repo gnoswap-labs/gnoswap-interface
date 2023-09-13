@@ -1,8 +1,7 @@
 import { generateBarAreaDatas } from "@common/utils/test-util";
-import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
-import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
+import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 
 export const POSITION_CONTENT_LABEL = {
@@ -15,6 +14,45 @@ export const POSITION_CONTENT_LABEL = {
 } as const;
 
 export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
+
+interface PositionToken {
+  tokenId: string;
+  name: string;
+  symbol: string;
+  amount: {
+    value: string;
+    denom: string;
+  };
+  tokenLogo: string;
+}
+
+export interface PoolPosition {
+  tokenPair: {
+    token0: PositionToken,
+    token1: PositionToken,
+  };
+  feeRate: string;
+  stakeType: string;
+  value: string;
+  apr: string;
+  inRange: boolean;
+  currentPriceAmount: string;
+  minPriceAmount: string;
+  maxPriceAmount: string;
+  rewards: {
+    token: PositionToken;
+    amount: {
+      value: "18,500.18",
+      denom: "gnot",
+    };
+  }[];
+  currentTick?: number;
+  minTick?: number;
+  maxTick?: number;
+  minLabel?: string;
+  maxLabel?: string;
+  ticks: string[];
+}
 
 export const dummyPosition: PoolPosition[] = [
   {
@@ -110,57 +148,57 @@ export const dummyPosition: PoolPosition[] = [
     currentPriceAmount: "1184.24 GNOS per ETH",
     minPriceAmount: "1.75 GNOT Per GNOS",
     maxPriceAmount: "2.25 GNOT Per GNOS",
-    currentTick: 18,
+    currentTick: 24,
+    minTick: 120,
+    maxTick: 200,
+    minLabel: "-30%",
+    maxLabel: "50%",
     ticks: generateBarAreaDatas()
   },
 ];
 
-export const dummyPositionList = [...dummyPosition, ...dummyPosition];
+export const dummyPositionList = () => [...dummyPosition, ...dummyPosition];
 
-interface MyPositionCardListContainerProps {
+interface EarnMyPositionContainerProps {
   loadMore?: boolean;
 }
 
-const MyPositionCardListContainer: React.FC<
-  MyPositionCardListContainerProps
+const EarnMyPositionContainer: React.FC<
+  EarnMyPositionContainerProps
 > = () => {
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [mobile, setMobile] = useState(false);
-  const handleResize = () => {
-    if (typeof window !== "undefined") {
-      window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
-    }
-  };
+  const [connected, setConnected] = useState(true);
+  const [positions, setPositions] = useState<PoolPosition[]>([]);
 
   useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    const dummyPositions = dummyPositionList();
+    setPositions(dummyPositions);
   }, []);
 
-  const movePoolDetail = (id: string) => {
-    router.push(`/earn/pool/${id}`);
-  };
+  const connect = useCallback(() => {
+    setConnected(true);
+  }, []);
 
-  const onClickLoadMore = () => {
-    // Todo
-  };
+  const moveEarnAdd = useCallback(() => {
+    router.push("/earn/add");
+  }, [router]);
+
+  const movePoolDetail = useCallback((id: string) => {
+    router.push(`/earn/pool/${id}`);
+  }, [router]);
 
   return (
-    <MyPositionCardList
-      loadMore={true}
-      isFetched={true}
-      onClickLoadMore={onClickLoadMore}
-      positions={dummyPositionList}
+    <EarnMyPositions
+      connected={connected}
+      connect={connect}
+      fetched={true}
+      positions={positions}
+      moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
-      currentIndex={currentIndex}
-      mobile={mobile}
     />
   );
 };
 
-export default MyPositionCardListContainer;
+export default EarnMyPositionContainer;

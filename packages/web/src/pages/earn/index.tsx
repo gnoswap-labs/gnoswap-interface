@@ -4,30 +4,14 @@ import Footer from "@components/common/footer/Footer";
 import IncentivizedPoolCardListContainer from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import PoolListContainer from "@containers/pool-list-container/PoolListContainer";
 import EarnLayout from "@layouts/earn-layout/EarnLayout";
-import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
-import EarnMyPositionsHeader from "@components/earn/earn-my-positions-header/EarnMyPositionsHeader";
-import MyPositionCardListContainer from "@containers/my-position-card-list-container/MyPositionCardListContainer";
-import EarnMyPositionsUnconnected from "@components/earn/earn-my-positions-unconnected/EarnMyPositionsUnconnected";
-import EarnMyPositionNoLiquidity from "@components/earn/earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
-import EarnMyPositionsContentContainer from "@containers/earn-my-positions-content-container/EarnMyPositionsContentContainer";
 import EarnIncentivizedPools from "@components/earn/earn-incentivized-pools/EarnIncentivizedPools";
+import EarnMyPositionContainer from "@containers/earn-my-position-container/EarnMyPositionContainer";
 
 export default function Earn() {
   return (
     <EarnLayout
       header={<HeaderContainer />}
-      positions={
-        <EarnMyPositions
-          header={<EarnMyPositionsHeader />}
-          content={
-            <EarnMyPositionsContentContainer
-              unconnected={<EarnMyPositionsUnconnected />}
-              noLiquidity={<EarnMyPositionNoLiquidity />}
-              cardList={<MyPositionCardListContainer />}
-            />
-          }
-        />
-      }
+      positions={<EarnMyPositionContainer />}
       incentivizedPools={
         <EarnIncentivizedPools
           cardList={<IncentivizedPoolCardListContainer />}

@@ -76,8 +76,12 @@ export interface ThemeColorType {
   tooltipBackground: string;
   point: string;
   green01: string;
+  green02: string;
   red01: string;
+  red02: string;
   select: string;
+  redDark: string;
+  greenDark: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

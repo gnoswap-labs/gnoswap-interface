@@ -22,5 +22,5 @@ Staked.args = {
 export const Unstaked = Template.bind({});
 Unstaked.args = {
   item: dummyPositionList[0],
-  routeItem: action("routeItem"),
+  movePoolDetail: action("movePoolDetail"),
 };

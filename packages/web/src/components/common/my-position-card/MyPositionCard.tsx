@@ -5,18 +5,19 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStaking from "@components/common/icons/IconStaking";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { MyPositionCardWrapper } from "./MyPositionCard.styles";
+import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
 
 interface MyPositionCardProps {
   item: any;
-  routeItem: (id: number) => void;
+  movePoolDetail: (id: string) => void;
 }
 
-const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, routeItem }) => {
+const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, movePoolDetail }) => {
   const { tokenPair } = item;
   return (
     <MyPositionCardWrapper
       stakeType={item.stakeType}
-      onClick={() => routeItem(Math.floor(Math.random() * 100 + 1))}
+      onClick={() => movePoolDetail("1")}
     >
       <div className="title-wrapper">
         <div className="box-header">
@@ -60,7 +61,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, routeItem }) => {
             }
           />
         </div>
-        <div className="dummy-chart" />
+        <div className="chart-wrapper">
+          <BarAreaGraph
+            width={258}
+            height={60}
+            currentTick={item.currentTick}
+            minLabel={item.minLabel}
+            maxLabel={item.maxLabel}
+            minTick={item.minTick}
+            maxTick={item.maxTick}
+            datas={item.ticks}
+          />
+        </div>
         <div className="min-max-price">
           <div className="price-section">
             <span className="label-text">
@@ -76,7 +88,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, routeItem }) => {
           </div>
         </div>
       </div>
-    </MyPositionCardWrapper>
+    </MyPositionCardWrapper >
   );
 };
 

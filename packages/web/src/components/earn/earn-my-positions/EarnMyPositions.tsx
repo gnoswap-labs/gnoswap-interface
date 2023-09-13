@@ -1,17 +1,37 @@
+import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
+import EarnMyPositionsContent from "../earn-my-positions-content/EarnMyPositionsContent";
+import EarnMyPositionsHeader from "../earn-my-positions-header/EarnMyPositionsHeader";
 import { EarnMyPositionswrapper } from "./EarnMyPositions.styles";
 
-interface EarnMyPositionsProps {
-  header: React.ReactNode;
-  content: React.ReactNode;
+export interface EarnMyPositionsProps {
+  connected: boolean;
+  fetched: boolean;
+  positions: PoolPosition[];
+  connect: () => void;
+  moveEarnAdd: () => void;
+  movePoolDetail: (poolId: string) => void;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
-  header,
-  content,
+  connected,
+  connect,
+  fetched,
+  positions,
+  moveEarnAdd,
+  movePoolDetail,
 }) => (
   <EarnMyPositionswrapper>
-    {header}
-    {content}
+    <EarnMyPositionsHeader
+      connected={connected}
+      moveEarnAdd={moveEarnAdd}
+    />
+    <EarnMyPositionsContent
+      connected={connected}
+      connect={connect}
+      fetched={fetched}
+      positions={positions}
+      movePoolDetail={movePoolDetail}
+    />
   </EarnMyPositionswrapper>
 );
 
