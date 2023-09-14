@@ -1,18 +1,18 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import BarAreaGraph, { BarAreaGraphProps } from "./BarAreaGraph";
+import PoolGraph, { PoolGraphProps } from "./PoolGraph";
 
-describe("BarAreaGraph Component", () => {
-  it("BarAreaGraph render", () => {
-    const args: BarAreaGraphProps = {
-      datas: []
+describe("PoolGraph Component", () => {
+  it("PoolGraph render", () => {
+    const args: PoolGraphProps = {
+      ticks: []
     };
 
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <BarAreaGraph {...args} />
+          <PoolGraph {...args} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
