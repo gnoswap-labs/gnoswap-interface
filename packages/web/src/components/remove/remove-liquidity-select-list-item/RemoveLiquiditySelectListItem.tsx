@@ -1,37 +1,51 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { STAKED_OPTION } from "@constants/option.constant";
-import { cx } from "@emotion/css";
-import React from "react";
-import { wrapper } from "./RemoveLiquiditySelectListItem.styles";
+import React, { useCallback, useMemo } from "react";
+import { LiquidityInfoModel } from "@models/liquidity/liquidity-info-model";
+import { RemoveLiquiditySelectListItemWrapper } from "./RemoveLiquiditySelectListItem.styles";
 
 interface RemoveLiquiditySelectListItemProps {
-  item: any;
-  checkedList: string[];
-  onCheckedItem: (checked: boolean, tokenId: string) => void;
+  selected: boolean;
+  liquidity: LiquidityInfoModel;
+  select: (id: string) => void;
 }
 
-const RemoveLiquiditySelectListItem: React.FC<
-  RemoveLiquiditySelectListItemProps
-> = ({ item, checkedList, onCheckedItem }) => {
-  const isUnstakedType = item.staked === STAKED_OPTION.UNSTAKED;
+const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps> = ({
+  selected,
+  liquidity,
+  select,
+}) => {
+
+  const selectable = useMemo(() => {
+    return liquidity.stakeType === "UNSTAKED";
+  }, [liquidity.stakeType]);
+
+  const doubleLogo = useMemo(() => {
+    const { token0, token1 } = liquidity.tokenPair;
+    return {
+      left: token0.tokenLogo,
+      right: token1.tokenLogo,
+    };
+  }, [liquidity.tokenPair]);
+
+  const onChangeCheckbox = useCallback(() => {
+    select(liquidity.liquidityId);
+  }, [liquidity.liquidityId, select]);
+
   return (
-    <li
-      css={wrapper(checkedList.includes(item.tokenId))}
-      className={cx({ unsure: !isUnstakedType })}
-    >
+    <RemoveLiquiditySelectListItemWrapper selected={selected}>
       <input
-        id={`checkbox-item-${item.tokenId}`}
+        id={`checkbox-item-${liquidity.liquidityId}`}
         type="checkbox"
-        disabled={!isUnstakedType}
-        checked={checkedList.includes(item.tokenId)}
-        onChange={e => onCheckedItem(e.target.checked, item.tokenId)}
+        disabled={!selectable}
+        checked={selected}
+        onChange={onChangeCheckbox}
       />
-      <label htmlFor={`checkbox-item-${item.tokenId}`} />
-      <DoubleLogo left={item.pairLogo[0]} right={item.pairLogo[1]} size={24} />
-      <span className="token-id">{item.tokenId}</span>
-      {!isUnstakedType && (
+      <label htmlFor={`checkbox-item-${liquidity.liquidityId}`} />
+      <DoubleLogo {...doubleLogo} size={24} />
+      <span className="token-id">{liquidity.liquidityId}</span>
+      {!selectable && (
         <div className="hover-info">
           <Tooltip
             placement="top"
@@ -43,8 +57,8 @@ const RemoveLiquiditySelectListItem: React.FC<
           </Tooltip>
         </div>
       )}
-      <span className="liquidity-value">{item.liquidity}</span>
-    </li>
+      <span className="liquidity-value">{liquidity.amount}</span>
+    </RemoveLiquiditySelectListItemWrapper>
   );
 };
 

@@ -1,22 +1,23 @@
 import { fonts } from "@constants/font.constant";
-import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
-export const wrapper = (theme: Theme) => css`
+import styled from "@emotion/styled";
+
+export const RemoveLiquiditySelectResultWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   gap: 4px;
   width: 100%;
-  color: ${theme.color.text03};
+  color: ${({ theme }) => theme.color.text03};
   ${fonts.body12};
-  border-top: 1px solid ${theme.color.border02};
+  border-top: 1px solid ${({ theme }) => theme.color.border02};
   padding-top: 16px;
 
   ul,
   .total-section {
     width: 100%;
     padding: 15px;
-    background-color: ${theme.color.backgroundOpacity};
-    border: 1px solid ${theme.color.border02};
+    background-color: ${({ theme }) => theme.color.backgroundOpacity};
+    border: 1px solid ${({ theme }) => theme.color.border02};
     border-radius: 8px;
   }
 
@@ -49,7 +50,7 @@ export const wrapper = (theme: Theme) => css`
 
     .dallor {
       ${fonts.p4}
-      color: ${theme.color.text04}
+      color: ${({ theme }) => theme.color.text04}
     }
   }
 
@@ -61,7 +62,7 @@ export const wrapper = (theme: Theme) => css`
     }
     .total-value {
       ${fonts.body6}
-      color: ${theme.color.text02}
+      color: ${({ theme }) => theme.color.text02}
     }
   }
 `;

@@ -1,104 +1,121 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import RemoveLiquiditySelectList from "./RemoveLiquiditySelectList";
-import { STAKED_OPTION } from "@constants/option.constant";
+import { LiquidityInfoModel } from "@models/liquidity/liquidity-info-model";
+import BigNumber from "bignumber.js";
 
 export default {
   title: "remove liquidity/RemoveLiquiditySelectList",
   component: RemoveLiquiditySelectList,
 } as ComponentMeta<typeof RemoveLiquiditySelectList>;
 
-const init = [
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#11111",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKED,
+const tokenPair = {
+  token0: {
+    tokenId: "1",
+    name: "Gnoland",
+    symbol: "GNOT",
+    tokenLogo: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+    amount: {
+      value: BigNumber("1140.058845"),
+      denom: "GNOT",
+    }
   },
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#22222",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKED,
+  token1: {
+    tokenId: "2",
+    name: "Gnoswap",
+    symbol: "GNOS",
+    tokenLogo: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+    amount: {
+      value: BigNumber("942.55884"),
+      denom: "GNOS",
+    }
   },
+};
+
+const liquidities: LiquidityInfoModel[] = [
   {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#33333",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.STAKED,
-  },
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#44444",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKING,
-  },
+    liquidityId: "#14450",
+    tokenPair: tokenPair,
+    fee: tokenPair,
+    amount: "145541.10",
+    feeRate: 0,
+    maxRate: 0,
+    minRate: 0,
+    stakeType: "UNSTAKED",
+    liquidityType: "PROVIDED",
+  }, {
+    liquidityId: "#14451",
+    tokenPair,
+    fee: tokenPair,
+    amount: "145541.10",
+    feeRate: 0,
+    maxRate: 0,
+    minRate: 0,
+    stakeType: "UNSTAKED",
+    liquidityType: "PROVIDED",
+  }, {
+    liquidityId: "#14452",
+    tokenPair,
+    fee: tokenPair,
+    amount: "145541.10",
+    feeRate: 0,
+    maxRate: 0,
+    minRate: 0,
+    stakeType: "STAKED",
+    liquidityType: "PROVIDED",
+  }, {
+    liquidityId: "#14453",
+    tokenPair,
+    fee: tokenPair,
+    amount: "145541.10",
+    feeRate: 0,
+    maxRate: 0,
+    minRate: 0,
+    stakeType: "STAKED",
+    liquidityType: "PROVIDED",
+  }
 ];
 
 const Template: ComponentStory<typeof RemoveLiquiditySelectList> = args => {
-  const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [checkedAll, setCheckedAll] = useState(false);
-  const checkableList = init.filter(
-    item => item.staked === STAKED_OPTION.UNSTAKED,
-  );
-  const onCheckedItem = useCallback(
-    (isChecked: boolean, tokenId: string) => {
-      if (isChecked) {
-        return setCheckedList((prev: string[]) => [...prev, tokenId]);
-      }
-      if (!isChecked && checkedList.includes(tokenId)) {
-        return setCheckedList(checkedList.filter(el => el !== tokenId));
-      }
-    },
-    [checkedList],
-  );
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const onCheckedAll = useCallback(
-    (checked: boolean) => {
-      setCheckedAll((prev: boolean) => !prev);
-      if (checked) {
-        const filterCheckList: string[] = [];
-        init.forEach(
-          item =>
-            item.staked === STAKED_OPTION.UNSTAKED &&
-            filterCheckList.push(item.tokenId),
-        );
-        setCheckedList(filterCheckList);
-      } else {
-        setCheckedList([]);
-      }
-    },
-    [init],
-  );
+  const unstakedLiquidities = useMemo(() => {
+    return args.liquidities.filter(liquidity => liquidity.stakeType === "UNSTAKED");
+  }, [args.liquidities]);
 
-  useEffect(
-    () => setCheckedAll(checkableList.length === checkedList.length),
-    [checkedList],
-  );
+  const selectedAll = useMemo(() => {
+    return unstakedLiquidities.length === selectedIds.length;
+  }, [selectedIds.length, unstakedLiquidities.length]);
+
+  const selectAll = useCallback(() => {
+    if (selectedAll) {
+      setSelectedIds([]);
+      return;
+    }
+    const selectedIds = unstakedLiquidities.map(liquidity => liquidity.liquidityId);
+    setSelectedIds(selectedIds);
+  }, [selectedAll, unstakedLiquidities]);
+
+  const select = useCallback((id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter((selectedId => selectedId !== id)));
+      return;
+    }
+    setSelectedIds([...selectedIds, id]);
+  }, [selectedIds]);
+
   return (
     <RemoveLiquiditySelectList
       {...args}
-      checkedList={checkedList}
-      onCheckedItem={onCheckedItem}
-      onCheckedAll={onCheckedAll}
-      checkedAll={checkedAll}
+      selectedAll={selectedAll}
+      selectedIds={selectedIds}
+      select={select}
+      selectAll={selectAll}
     />
   );
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  list: init,
+  liquidities,
 };
