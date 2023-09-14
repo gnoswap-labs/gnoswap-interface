@@ -1,67 +1,74 @@
-import { CONTENT_TITLE } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
-import React from "react";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { wrapper } from "./SelectFeeTier.styles";
+import React, { useCallback, useMemo } from "react";
+import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
+import { AddLiquidityFeeTier } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { FEE_RATE_OPTION } from "@constants/option.constant";
 
 interface SelectFeeTierProps {
-  active: boolean;
-  data?: any;
-  openFeeTier: boolean;
-  onClickOpenFeeTier: () => void;
+  feeTiers: AddLiquidityFeeTier[];
+  feeRate: string | undefined;
+  selectFeeTier: (feeRate: FEE_RATE_OPTION) => void;
 }
 
-const feeRateInit = [
-  {
-    feeRate: FEE_RATE_OPTION.FEE_01,
-    desc: "Best for very stable pairs",
-    selectedFeeRate: "12% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_05,
-    desc: "Best for stable pairs",
-    selectedFeeRate: "67% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_3,
-    desc: "Best for most pairs",
-    selectedFeeRate: "21% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_1,
-    desc: "Best for exotic pairs",
-    selectedFeeRate: "Not created",
-  },
-];
-
 const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
-  active,
-  openFeeTier,
-  onClickOpenFeeTier,
-  data = feeRateInit,
+  feeTiers,
+  feeRate,
+  selectFeeTier,
 }) => {
+
+  const onClickFeeTierItem = useCallback((feeRate: string) => {
+    const feeRateOption = Object.values(FEE_RATE_OPTION).find(option => option === feeRate);
+    if (feeRateOption) {
+      selectFeeTier(feeRateOption);
+    }
+  }, [selectFeeTier]);
+
   return (
-    <div css={wrapper}>
-      <section className="title-content" onClick={onClickOpenFeeTier}>
-        <h5 className="title">{CONTENT_TITLE.FEE_TIER}</h5>
-        <Badge
-          text={data?.fee ?? FEE_RATE_OPTION.FEE_3}
-          type={BADGE_TYPE.LINE}
+    <SelectFeeTierWrapper>
+      {feeTiers.map((feeTier, index) => (
+        <SelectFeeTierItem
+          selected={feeTier.feeRate === feeRate}
+          key={index}
+          feeRate={feeTier.feeRate}
+          description={feeTier.description}
+          range={feeTier.range}
+          onClick={() => onClickFeeTierItem(feeTier.feeRate)}
         />
-      </section>
-      {active && openFeeTier && (
-        <section className="select-fee-wrap">
-          {data.map((item: any, idx: number) => (
-            <div className="fee-tier-box" key={idx}>
-              <strong className="fee-rate">{item.feeRate}</strong>
-              <p className="desc">{item.desc}</p>
-              <span className="selected-fee-rate">{item.selectedFeeRate}</span>
-            </div>
-          ))}
-        </section>
-      )}
-    </div>
+      ))}
+    </SelectFeeTierWrapper>
   );
 };
+
+interface SelectFeeTierItemProps extends AddLiquidityFeeTier {
+  selected: boolean;
+  onClick: () => void;
+}
+
+const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
+  selected,
+  feeRate,
+  description,
+  range,
+  onClick,
+}) => {
+  const feeRateStr = useMemo(() => {
+    return `${feeRate}%`;
+  }, [feeRate]);
+
+  const rangeStr = useMemo(() => {
+    if (range === "0") {
+      return "Not created";
+    }
+    return `${range}% select`;
+  }, [range]);
+
+  return (
+    <SelectFeeTierItemWrapper className={selected ? "selected" : ""} onClick={onClick}>
+      <strong className="fee-rate">{feeRateStr}</strong>
+      <p className="desc">{description}</p>
+      <span className="selected-fee-rate">{rangeStr}</span>
+    </SelectFeeTierItemWrapper>
+  );
+};
+
 
 export default SelectFeeTier;

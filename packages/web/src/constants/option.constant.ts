@@ -1,10 +1,10 @@
 import { ValuesType } from "utility-types";
 
 export const FEE_RATE_OPTION = {
-  FEE_01: "0.01%",
-  FEE_05: "0.05%",
-  FEE_3: "0.3%",
-  FEE_1: "1%",
+  FEE_01: "0.01",
+  FEE_05: "0.05",
+  FEE_3: "0.3",
+  FEE_1: "1",
 } as const;
 export type FEE_RATE_OPTION = ValuesType<typeof FEE_RATE_OPTION>;
 
@@ -63,3 +63,17 @@ export type IncentivizedOptions =
   | "INCENTIVIZED"
   | "NON_INCENTIVIZED"
   | "EXTERNAL_INCENTIVIZED";
+
+export type AddLiquidityType = "POOL" | "LIQUIDITY";
+
+export type PriceRangeType = "Active" | "Passive" | "Custom";
+
+export const PriceRangeTooltip: {
+  [key in PriceRangeType]: string | undefined;
+} = {
+  Active:
+    "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+  Passive:
+    "A passive price range of [-50% ~ +100%] for moderate risks & returns.",
+  Custom: undefined,
+};
