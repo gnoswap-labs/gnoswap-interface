@@ -1,32 +1,29 @@
-import { CONTENT_TITLE } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import React from "react";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
-import { wrapper } from "./SelectPair.styles";
+import { SelectPairWrapper } from "./SelectPair.styles";
+import { TokenDefaultModel } from "@models/token/token-default-model";
 
 interface SelectPairProps {
-  active: boolean;
-  data: any;
+  token0: TokenDefaultModel | undefined;
+  token1: TokenDefaultModel | undefined;
+  changeToken0: (token: TokenDefaultModel) => void;
+  changeToken1: (token: TokenDefaultModel) => void;
+  disabled?: boolean;
 }
 
-const SelectPair: React.FC<SelectPairProps> = ({ active, data }) => {
+const SelectPair: React.FC<SelectPairProps> = ({
+  token0,
+  token1,
+  changeToken0,
+  changeToken1,
+  disabled,
+}) => {
+
   return (
-    <div css={wrapper(active)}>
-      <h5>{CONTENT_TITLE.PAIR}</h5>
-      {!active && data && (
-        <DoubleLogo
-          left={data.token0.tokenLogo}
-          right={data.token1.tokenLogo}
-          size={24}
-        />
-      )}
-      {active && (
-        <div className="select-pair">
-          <SelectPairButton token={data?.token0 ?? null} />
-          <SelectPairButton token={data?.token1 ?? null} />
-        </div>
-      )}
-    </div>
+    <SelectPairWrapper>
+      <SelectPairButton disabled={disabled} token={token0} changeToken={changeToken0} />
+      <SelectPairButton disabled={disabled} token={token1} changeToken={changeToken1} />
+    </SelectPairWrapper>
   );
 };
 
