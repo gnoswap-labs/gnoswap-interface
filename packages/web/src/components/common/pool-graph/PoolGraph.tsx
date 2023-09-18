@@ -61,15 +61,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }, [ticks]);
 
   const startPosition = useMemo(() => {
-    return selectedStartPosition > selectedEndPosition
-      ? selectedEndPosition
-      : selectedStartPosition;
+    return Math.min(selectedStartPosition, selectedEndPosition);
   }, [selectedEndPosition, selectedStartPosition]);
 
   const endPosition = useMemo(() => {
-    return selectedStartPosition > selectedEndPosition
-      ? selectedStartPosition
-      : selectedEndPosition;
+    return Math.max(selectedStartPosition, selectedEndPosition);
   }, [selectedEndPosition, selectedStartPosition]);
 
   const areaPoints = useMemo(() => {
