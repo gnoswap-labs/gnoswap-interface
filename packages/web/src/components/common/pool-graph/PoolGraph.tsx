@@ -53,8 +53,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const [mouseDownEndLine, setMouseDownEndLine] = useState(false);
   const [selectedStart, setSelectedStart] = useState(existTickRage);
   const [selectedEnd, setSelectedEnd] = useState(existTickRage);
-  const [selectedStartPosition, setSelectedStartPosition] = useState(0);
-  const [selectedEndPosition, setSelectedEndPosition] = useState(0);
+  const [selectedStartPosition, setSelectedStartPosition] = useState(-1);
+  const [selectedEndPosition, setSelectedEndPosition] = useState(-1);
 
   const tickValues = useMemo(() => {
     return ticks.map(tick => tick.value);
@@ -81,8 +81,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }, [width, ticks]);
 
   const currentTickIndex = useMemo(() => {
-    if (!currentTick) {
-      return undefined;
+    if (!currentTick?.tick) {
+      return -1;
     }
     return ticks.findIndex(item => item.tick >= currentTick.tick);
   }, [ticks, currentTick]);
@@ -92,22 +92,22 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }, [ticks, barWidth]);
 
   const minLabel = useMemo(() => {
-    if (!currentTickIndex) {
-      return undefined;
+    if (currentTickIndex < 0 || !selectedStart) {
+      return null;
     }
     const currentTickPosition = currentTickIndex * barWidth;
     const range = BigNumber((startPosition - currentTickPosition) / (currentTickPosition) * 100).toFixed(0);
     return `${range}%`;
-  }, [barWidth, currentTickIndex, startPosition]);
+  }, [barWidth, currentTickIndex, selectedStart, startPosition]);
 
   const maxLabel = useMemo(() => {
-    if (!currentTickIndex) {
-      return undefined;
+    if (currentTickIndex < 0 || !selectedStart) {
+      return null;
     }
     const currentTickPosition = currentTickIndex * barWidth;
     const range = BigNumber((endPosition - currentTickPosition) / (width - currentTickPosition) * 100).toFixed(0);
     return `${range}%`;
-  }, [barWidth, currentTickIndex, endPosition, width]);
+  }, [barWidth, currentTickIndex, endPosition, selectedStart, width]);
 
   useEffect(() => {
     if (minTick && !startPosition) {
