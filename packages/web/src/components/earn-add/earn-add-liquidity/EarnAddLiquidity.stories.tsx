@@ -15,13 +15,13 @@ const Template: ComponentStory<typeof EarnAddLiquidity> = args => (
 );
 const token0 = {
   tokenId: "1",
-  tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+  tokenLogo: "",
   name: "Bitcoin",
   symbol: "BTC",
 };
 const token1 = {
   tokenId: "2",
-  tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+  tokenLogo: "",
   name: "Ethereum",
   symbol: "ETH",
 };
