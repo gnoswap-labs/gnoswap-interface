@@ -1,9 +1,9 @@
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
-import { sectionBoxStyle } from "@components/incentivize/select-distribution-period/SelectDistributionPeriod.styles";
+import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.styles";
 
 export const wrapper = (theme: Theme) => css`
-  ${sectionBoxStyle(theme)};
+  ${PoolIncentivizeBoxStyle(theme)};
   ${mixins.flexbox("row", "flex-start", "center")};
   gap: 24px;
   background-color: ${theme.color.background03};
