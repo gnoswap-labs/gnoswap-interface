@@ -7,6 +7,8 @@ import {
 } from "@tanstack/react-query";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { Provider as JotaiProvider } from "jotai";
+import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModalProvider";
+import ModalContainer from "@containers/modal-container/ModalContainer";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -28,6 +30,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <JotaiProvider>
           <GnoswapThemeProvider>
             <Component {...pageProps} />
+            <GnoswapModalProvider selector={"portal-root"} >
+              <ModalContainer />
+            </GnoswapModalProvider>
           </GnoswapThemeProvider>
         </JotaiProvider>
       </Hydrate>

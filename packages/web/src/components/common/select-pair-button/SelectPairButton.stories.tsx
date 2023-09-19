@@ -25,5 +25,5 @@ Selected.args = {
 
 export const UnSelected = Template.bind({});
 UnSelected.args = {
-  token: null,
+  token: undefined,
 };
