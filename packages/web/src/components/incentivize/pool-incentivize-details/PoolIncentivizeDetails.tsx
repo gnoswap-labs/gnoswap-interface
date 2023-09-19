@@ -2,7 +2,6 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import React from "react";
-import { CONTENT_TITLE } from "@components/incentivize/pool-incentivize/PoolIncentivize";
 import { wrapper } from "./PoolIncentivizeDetails.styles";
 
 interface PoolIncentivizeDetailsProps {
@@ -15,7 +14,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   return (
     <div css={wrapper}>
       <section>
-        <h5 className="section-title">{CONTENT_TITLE.POOL}</h5>
+        <h5 className="section-title">Pool</h5>
         <div className="section-info">
           <DoubleLogo
             left={details.tokenPair.token0.tokenLogo}
@@ -29,7 +28,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
         </div>
       </section>
       <section>
-        <h5 className="section-title">{CONTENT_TITLE.TOTAL_AMOUNT}</h5>
+        <h5 className="section-title">Total Amount</h5>
         <div className="section-info">
           <img
             src={details.tokenPair.token0.tokenLogo}
@@ -40,7 +39,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
         </div>
       </section>
       <section className="period-section">
-        <h5 className="section-title">{CONTENT_TITLE.PERIOD}</h5>
+        <h5 className="section-title">Period</h5>
         <div className="section-info">
           <span className="select-date">
             2022-12-06 00:00 (UTC)
