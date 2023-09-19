@@ -1,43 +1,47 @@
 import { fonts } from "@constants/font.constant";
-import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { inputStyle } from "@components/remove/remove-liquidity/RemoveLiquidity.styles";
 
-export const wrapper = (checked: boolean) => (theme: Theme) =>
-  css`
-    ${inputStyle(theme)};
-    ${mixins.flexbox("row", "center", "flex-start")};
-    width: 100%;
-    height: 56px;
-    gap: 8px;
-    background-color: ${theme.color.backgroundOpacity};
-    border: 1px solid ${checked ? theme.color.border03 : theme.color.border02};
-    border-radius: 8px;
-    padding: 15px;
-    ${fonts.body12};
-    color: ${theme.color.text03};
-    transition: all 0.3s ease;
+import styled from "@emotion/styled";
 
-    input[type="checkbox"] + label:before {
-      background-color: ${theme.color.background02};
+export const RemoveLiquiditySelectListItemWrapper = styled.li<{
+  selected: boolean;
+}>`
+  ${({ theme }) => inputStyle(theme)};
+  ${mixins.flexbox("row", "center", "flex-start")};
+  width: 100%;
+  height: 56px;
+  gap: 8px;
+  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  border: 1px solid
+    ${({ theme, selected }) =>
+      selected ? theme.color.border03 : theme.color.border02};
+  border-radius: 8px;
+  padding: 15px;
+  ${fonts.body12};
+  color: ${({ theme }) => theme.color.text03};
+  transition: all 0.3s ease;
+
+  input[type="checkbox"] + label:before {
+    background-color: ${({ theme }) => theme.color.background02};
+  }
+
+  .liquidity-value {
+    margin-left: auto;
+    color: ${({ theme }) => theme.color.text02};
+  }
+
+  .hover-info {
+    &,
+    & * {
+      width: 16px;
+      height: 16px;
     }
-
-    .liquidity-value {
-      margin-left: auto;
-      color: ${theme.color.text02};
-    }
-
-    .hover-info {
-      &,
-      & * {
-        width: 16px;
-        height: 16px;
+    cursor: pointer;
+    .icon-info {
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
       }
-      cursor: pointer;
-      .icon-info {
-        * {
-          fill: ${theme.color.icon03};
-        }
-      }
     }
-  `;
+  }
+`;
