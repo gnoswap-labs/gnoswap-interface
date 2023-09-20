@@ -1,5 +1,7 @@
 import PoolIncentivize from "@components/incentivize/pool-incentivize/PoolIncentivize";
 import { FEE_RATE_OPTION } from "@constants/option.constant";
+import { PoolModel } from "@models/pool/pool-model";
+import { TokenBalanceModel } from "@models/token/token-balance-model";
 import React, { useCallback, useState } from "react";
 
 const dummyData = {
@@ -31,10 +33,30 @@ interface DistributionPeriodDate {
   date: number;
 }
 
+const pools: PoolModel[] = [];
+const tokenBalances: TokenBalanceModel[] = [];
+const periods = [90, 120, 150, 180, 210, 240];
+
 const PoolIncentivizeContainer: React.FC = () => {
   const [startDate, setStartDate] = useState<DistributionPeriodDate>();
-  const [endDate, setEndDate] = useState<DistributionPeriodDate>();
+  const [period, setPeriod] = useState(90);
   const [amount, setAmount] = useState("");
+  const [currentPool, setCurrentPool] = useState<PoolModel | null>(null);
+  const [currentToken, setCurrentToken] = useState<TokenBalanceModel | null>(null);
+
+  const selectPool = useCallback((poolId: string) => {
+    const pool = pools.find(pool => pool.poolId === poolId);
+    if (pool) {
+      setCurrentPool(pool);
+    }
+  }, [setCurrentPool]);
+
+  const selectToken = useCallback((tokenId: string) => {
+    const token = tokenBalances.find(token => token.tokenId === tokenId);
+    if (token) {
+      setCurrentToken(token);
+    }
+  }, []);
 
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,14 +68,21 @@ const PoolIncentivizeContainer: React.FC = () => {
 
   return (
     <PoolIncentivize
+      pools={pools}
+      selectedPool={currentPool}
+      selectPool={selectPool}
       startDate={startDate}
       setStartDate={setStartDate}
-      endDate={endDate}
-      setEndDate={setEndDate}
+      periods={periods}
+      period={period}
+      setPeriod={setPeriod}
       amount={amount}
       onChangeAmount={onChangeAmount}
       details={dummyData}
       disclaimer={dummyDisclaimer}
+      token={currentToken}
+      tokens={tokenBalances}
+      selectToken={selectToken}
     />
   );
 };
