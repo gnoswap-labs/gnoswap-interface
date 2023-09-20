@@ -17,7 +17,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
 }) => {
   const selected = poolSelectItem !== null;
 
-  const doubloLogos = useMemo(() => {
+  const doubleLogos = useMemo(() => {
     if (!selected) {
       return {
         left: "",
@@ -73,7 +73,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
     <PoolIncentivizeSelectPoolItemWrapper onClick={onClickItem}>
       <div className="main-content-wrapper">
         <DoubleLogo
-          {...doubloLogos}
+          {...doubleLogos}
           size={24}
         />
         <span className="token-pair-name">{tokenPairName}</span>
