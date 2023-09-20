@@ -1,12 +1,12 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import SelectDistributionPeriodInput, { SelectDistributionPeriodInputProps } from "./SelectDistributionPeriodInput";
+import SelectDistributionDateInput, { SelectDistributionDateInputProps } from "./SelectDistributionDateInput";
 
-describe('SelectDistributionPeriodInput Component', () => {
-  it('SelectDistributionPeriodInput render', () => {
-    const args: SelectDistributionPeriodInputProps = {
-      title: 'Start Date',
+describe("SelectDistributionDateInput Component", () => {
+  it("SelectDistributionDateInput render", () => {
+    const args: SelectDistributionDateInputProps = {
+      title: "Start Date",
       date: {
         year: 2023,
         month: 10,
@@ -18,7 +18,7 @@ describe('SelectDistributionPeriodInput Component', () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <SelectDistributionPeriodInput {...args} />
+          <SelectDistributionDateInput {...args} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

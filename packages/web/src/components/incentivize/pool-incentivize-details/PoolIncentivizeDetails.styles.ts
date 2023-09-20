@@ -1,10 +1,10 @@
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
-import { sectionBoxStyle } from "@components/incentivize/select-distribution-period/SelectDistributionPeriod.styles";
 import { fonts } from "@constants/font.constant";
+import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.styles";
 
 export const wrapper = (theme: Theme) => css`
-  ${sectionBoxStyle(theme)};
+  ${PoolIncentivizeBoxStyle(theme)};
   width: 100%;
 
   section {
