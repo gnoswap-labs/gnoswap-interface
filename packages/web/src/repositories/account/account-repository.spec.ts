@@ -17,8 +17,8 @@ const defaultAccountInfo = {
     "@type": "----",
     value: "----",
   },
-  accountNumber: "1",
-  sequence: "1",
+  accountNumber: 1,
+  sequence: 1,
   chainId: "test3",
 };
 
@@ -50,7 +50,7 @@ describe("get account", () => {
     expect(typeof response.type).toBe("string");
     expect(typeof response.message).toBe("string");
     expect(typeof response.data).toBe("object");
-    expect(typeof response.data.address).toBe("string");
+    expect(typeof response.data?.address).toBe("string");
   });
 
   it("not connected wallet error", async () => {

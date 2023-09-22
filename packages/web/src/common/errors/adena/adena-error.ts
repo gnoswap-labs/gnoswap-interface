@@ -2,38 +2,6 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { BaseError } from "@common/errors";
 
 const ERROR_VALUE = {
-  COIN_TYPE_ERROR: {
-    status: 1000,
-    type: "COIN_TYPE_ERROR",
-  },
-  NOT_FOUND_ADDRESS: {
-    status: 1001,
-    type: "NOT_FOUND_ADDRESS",
-  },
-  ADD_ESTABLISH: {
-    status: 0,
-    type: "ADD_ESTABLISH",
-  },
-  DO_CONTRACT: {
-    status: 0,
-    type: "DO_CONTRACT",
-  },
-  GET_ACCOUNT: {
-    status: 0,
-    type: "GET_ACCOUNT",
-  },
-  SIGN_AMINO: {
-    status: 0,
-    type: "SIGN_AMINO",
-  },
-  ADD_NETWORK: {
-    status: 0,
-    type: "ADD_NETWORK",
-  },
-  SWITCH_NETWORK: {
-    status: 0,
-    type: "SWITCH_NETWORK",
-  },
   NOT_CONNECTED: {
     status: 1000,
     type: "NOT_CONNECTED",
