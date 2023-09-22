@@ -7,6 +7,7 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type TokenDefaultModel } from "@models/token/token-default-model";
 import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -77,6 +78,7 @@ const HeaderContainer: React.FC = () => {
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
+  const { account, connected, connectAdenaClient } = useWallet();
   const {
     isFetched,
     error,
@@ -100,8 +102,10 @@ const HeaderContainer: React.FC = () => {
 
   return (
     <Header
+      account={account}
+      connected={connected}
+      connectAdenaClient={connectAdenaClient}
       pathname={pathname}
-      isConnected={isConnected}
       sideMenuToggle={sideMenuToggle}
       onSideMenuToggle={onSideMenuToggle}
       searchMenuToggle={searchMenuToggle}

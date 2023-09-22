@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconCopy from "@components/common/icons/IconCopy";
@@ -11,18 +11,9 @@ import {
   ThemeSelector,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
-import { toGnot } from "@utils/number-utils";
 import { formatAddress } from "@utils/string-utils";
 import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
-
-const FAKE_USERINFO = {
-  status: "ACTIVE",
-  address: "g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt",
-  amount: {
-    value: 1005.878295,
-    denom: "gnot",
-  },
-};
+import { AccountInfo } from "@common/clients/wallet-client/protocols";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -51,21 +42,22 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
 };
 
 interface WalletConnectorMenuProps {
-  isConnected: boolean;
+  account: AccountInfo | null;
+  connected: boolean;
+  connectAdenaClient: () => void;
   onMenuToggle: () => void;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
-  isConnected,
+  account,
+  connected,
+  connectAdenaClient,
   onMenuToggle,
 }) => {
-  const amountText = toGnot(
-    FAKE_USERINFO.amount.value,
-    FAKE_USERINFO.amount.denom,
-  );
-  const copyClick = () => {};
-  const openLinkClick = () => {};
-  const exitClick = () => {};
+  const balanceText = useMemo(() => account?.coins || "0 GNOT", [account?.coins]);
+  const copyClick = () => { };
+  const openLinkClick = () => { };
+  const exitClick = () => { };
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -83,14 +75,18 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     };
   }, [menuRef, onMenuToggle]);
 
+  const connect = useCallback(() => {
+    connectAdenaClient();
+  }, [connectAdenaClient]);
+
   return (
     <WalletConnectorMenuWrapper ref={menuRef} width={window?.innerWidth}>
-      {isConnected ? (
+      {connected ? (
         <div className="button-container">
           <MenuHeader>
             <IconAdenaLogo />
             <span className="user-address">
-              {formatAddress(FAKE_USERINFO.address)}
+              {formatAddress(account?.address || "")}
             </span>
             <IconButtonMaker
               copyClick={copyClick}
@@ -98,12 +94,13 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
               exitClick={exitClick}
             />
           </MenuHeader>
-          <AmountInfoBox>{`${amountText.value} ${amountText.denom}`}</AmountInfoBox>
+          <AmountInfoBox>{balanceText}</AmountInfoBox>
         </div>
       ) : (
         <div className="button-container">
           <Button
             text="Connect Wallet"
+            onClick={connect}
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "body9",

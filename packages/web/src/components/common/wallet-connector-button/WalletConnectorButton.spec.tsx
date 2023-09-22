@@ -8,7 +8,11 @@ describe("WalletConnectorButton Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <WalletConnectorButton isConnected={false} />
+          <WalletConnectorButton
+            connected={false}
+            account={null}
+            connectAdenaClient={() => { }}
+          />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

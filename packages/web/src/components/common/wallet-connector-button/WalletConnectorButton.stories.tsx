@@ -1,6 +1,21 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import WalletConnectorButton from "./WalletConnectorButton";
+import { action } from "@storybook/addon-actions";
+import { AccountInfo } from "@common/clients/wallet-client/protocols";
+
+const defaultAccountInfo: AccountInfo = {
+  status: "ACTIVE",
+  address: "g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae",
+  coins: "1000000000ugnot",
+  publicKey: {
+    "@type": "----",
+    value: "----",
+  },
+  accountNumber: 1,
+  sequence: 1,
+  chainId: "test3",
+};
 
 export default {
   title: "common/WalletConnector",
@@ -27,10 +42,14 @@ const Template: ComponentStory<typeof WalletConnectorButton> = args => (
 
 export const Disconnected = Template.bind({});
 Disconnected.args = {
-  isConnected: false,
+  connected: false,
+  account: null,
+  connectAdenaClient: action("connectAdenaClient"),
 };
 
 export const Connected = Template.bind({});
 Connected.args = {
-  isConnected: true,
+  connected: true,
+  account: defaultAccountInfo,
+  connectAdenaClient: action("connectAdenaClient"),
 };

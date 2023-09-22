@@ -16,7 +16,7 @@ export class AdenaClient implements WalletClient {
     this.initAdena();
   }
 
-  private initAdena = () => {
+  public initAdena = () => {
     if (typeof window !== "undefined" && typeof window.adena !== "undefined") {
       this.adena = window.adena;
     }

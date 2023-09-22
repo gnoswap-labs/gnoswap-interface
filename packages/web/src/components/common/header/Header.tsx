@@ -22,10 +22,10 @@ import { Token } from "@containers/header-container/HeaderContainer";
 import { DEVICE_TYPE } from "@styles/media";
 import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
+import { AccountInfo } from "@common/clients/wallet-client/protocols";
 
 interface HeaderProps {
   pathname?: string;
-  isConnected: boolean;
   sideMenuToggle: boolean;
   onSideMenuToggle: () => void;
   searchMenuToggle: boolean;
@@ -36,11 +36,13 @@ interface HeaderProps {
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
   breakpoint: DEVICE_TYPE;
+  account: AccountInfo | null;
+  connected: boolean;
+  connectAdenaClient: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
   pathname = "/",
-  isConnected,
   sideMenuToggle,
   onSideMenuToggle,
   searchMenuToggle,
@@ -50,6 +52,9 @@ const Header: React.FC<HeaderProps> = ({
   search,
   keyword,
   breakpoint,
+  account,
+  connected,
+  connectAdenaClient,
 }) => {
   return (
     <>
@@ -87,7 +92,11 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
-              <WalletConnectorButton isConnected={isConnected} />
+              <WalletConnectorButton
+                account={account}
+                connected={connected}
+                connectAdenaClient={connectAdenaClient}
+              />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />
           </RightSection>
