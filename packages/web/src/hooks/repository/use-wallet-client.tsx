@@ -1,5 +1,5 @@
 import { WalletClient } from "@common/clients/wallet-client";
-import { AdenaClient } from "@common/clients/wallet-client/adena-client";
+import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
 import { RepositoryState } from "@states/index";
 import { useAtom } from "jotai";
 
