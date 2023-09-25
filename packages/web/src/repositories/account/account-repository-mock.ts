@@ -1,5 +1,4 @@
 import { StorageClient } from "@common/clients/storage-client";
-import { InjectResponse } from "@common/clients/wallet-client/protocols";
 import {
   generateAddress,
   generateNumber,
@@ -17,6 +16,7 @@ import {
   AccountRepository,
   AccountTransactionResponse,
 } from ".";
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
@@ -26,7 +26,7 @@ export class AccountRepositoryMock implements AccountRepository {
   }
 
   public getAccount = async (): Promise<
-    InjectResponse<AccountInfoResponse>
+    WalletResponse<AccountInfoResponse>
   > => {
     return {
       code: 0,

@@ -1,17 +1,10 @@
 import { StorageClient } from "@common/clients/storage-client";
 import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { AdenaClient } from "@common/clients/wallet-client/adena-client";
-import {
-  generateToken0,
-  generateToken1,
-  generateTokenModel,
-} from "@common/utils/test-util";
+import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
+import { generateTokenModel } from "@common/utils/test-util";
 import { NotificationType } from "@common/values/data-constant";
-import {
-  AccountHistoryModel,
-  TransactionModel,
-} from "@models/account/account-history-model";
+import { TransactionModel } from "@models/account/account-history-model";
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountRepositoryInstance } from "./account-repository-instance";
 

@@ -1,18 +1,19 @@
 import {
-  InjectResponse,
-  InjectSendTransactionRequestParam,
+  WalletResponse,
+  SendTransactionRequestParam,
+  SendTransactionResponse,
 } from "@common/clients/wallet-client/protocols";
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountInfoResponse } from "./response";
 
 export interface AccountRepository extends AccountNotificationRepository {
-  getAccount: () => Promise<InjectResponse<AccountInfoResponse>>;
+  getAccount: () => Promise<WalletResponse<AccountInfoResponse>>;
 
   existsWallet: () => boolean;
 
-  addEstablishedSite: () => Promise<InjectResponse<any>>;
+  addEstablishedSite: () => Promise<WalletResponse>;
 
   sendTransaction: (
-    request: InjectSendTransactionRequestParam,
-  ) => Promise<InjectResponse<any>>;
+    request: SendTransactionRequestParam,
+  ) => Promise<WalletResponse<SendTransactionResponse>>;
 }

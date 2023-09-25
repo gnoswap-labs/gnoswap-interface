@@ -23,6 +23,9 @@ export const useAccount = () => {
     setConnected(connected);
 
     const accountInfo = await accountRepository.getAccount();
+    if (accountInfo.data === null) {
+      return false;
+    }
     setAddress(accountInfo.data.address);
     return true;
   }, [accountRepository, setAddress, setConnected]);

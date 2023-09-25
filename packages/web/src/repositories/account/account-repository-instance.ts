@@ -1,6 +1,5 @@
 import { StorageClient } from "@common/clients/storage-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { InjectSendTransactionRequestParam } from "@common/clients/wallet-client/protocols/inject-send-transaction-request";
 import { StatusOptions } from "@common/values/data-constant";
 import {
   AccountHistoryModel,
@@ -9,6 +8,7 @@ import {
 import { StorageKeyType } from "@common/values";
 import { AccountRepository } from ".";
 import { AdenaError } from "@common/errors/adena";
+import { SendTransactionRequestParam } from "@common/clients/wallet-client/protocols";
 
 export class AccountRepositoryInstance implements AccountRepository {
   private walletClient: WalletClient;
@@ -36,9 +36,7 @@ export class AccountRepositoryInstance implements AccountRepository {
     return result;
   };
 
-  public sendTransaction = async (
-    request: InjectSendTransactionRequestParam,
-  ) => {
+  public sendTransaction = async (request: SendTransactionRequestParam) => {
     const result = await this.walletClient.sendTransaction(request);
     return result;
   };
