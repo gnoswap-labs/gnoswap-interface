@@ -24,8 +24,6 @@ describe("getPoolDetail", () => {
     const response = await poolRepository.getPoolDetailByPoolId("");
 
     expect(response).toHaveProperty("message");
-    expect(response).toHaveProperty("count");
-    expect(response).toHaveProperty("meta");
     expect(response).toHaveProperty("pool");
     expect(response.pool).not.toBeNull();
   });

@@ -6,7 +6,7 @@ import { generateTokenModel } from "@common/utils/test-util";
 import { NotificationType } from "@common/values/data-constant";
 import { TransactionModel } from "@models/account/account-history-model";
 import { AccountNotificationRepository } from "./account-notification-repository";
-import { AccountRepositoryInstance } from "./account-repository-impl";
+import { AccountRepositoryImpl } from "./account-repository-impl";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -15,7 +15,7 @@ let accountNotificationRepository: AccountNotificationRepository;
 beforeEach(() => {
   walletClient = new AdenaClient();
   localStorageClient = new MockStorageClient("LOCAL");
-  accountNotificationRepository = new AccountRepositoryInstance(
+  accountNotificationRepository = new AccountRepositoryImpl(
     walletClient,
     localStorageClient,
   );

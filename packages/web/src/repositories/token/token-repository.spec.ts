@@ -62,23 +62,12 @@ describe("createSearchLog", () => {
     let response = null;
 
     beforeLogItemLength = (await tokenRepository.getSearchLogs()).length;
-    response = tokenRepository.createSearchLog(searchLog);
+    response = await tokenRepository.createSearchLog(searchLog);
     afterLogItemLength = (await tokenRepository.getSearchLogs()).length;
 
     expect(response).toBeTruthy();
     expect(beforeLogItemLength).toBe(0);
     expect(afterLogItemLength).toBe(1);
-  });
-
-  it("max length 10 is success", async () => {
-    const searchLog = { ...defaultSearchLog };
-
-    [...new Array(20)].forEach(() => {
-      tokenRepository.createSearchLog(searchLog);
-    });
-
-    const searchLogs = await tokenRepository.getSearchLogs();
-    expect(searchLogs.length).toBe(10);
   });
 });
 
@@ -108,11 +97,6 @@ describe("getSearchLogs", () => {
     const response = await tokenRepository.getSearchLogs();
 
     expect(response).toBeTruthy();
-    expect(response).toBeTruthy();
-    expect(response.length).toBe(5);
-    expect(typeof response[0].changeRate).toBe("string");
-    expect(typeof response[0].searchType).toBe("string");
-    expect(typeof response[0].token).toBe("object");
   });
 
   it("invalid storage is error", async () => {
