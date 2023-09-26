@@ -1,47 +1,50 @@
 import React, { useMemo } from "react";
 import { RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResult.styles";
-import { LiquidityInfoModel } from "@models/liquidity/liquidity-info-model";
 import BigNumber from "bignumber.js";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenPairAmountInfo } from "@models/token/token-pair-amount-info";
+import { PositionMapper } from "@models/position/mapper/position-mapper";
+import { LPPositionModel } from "@models/position/lp-position-model";
 
 interface RemoveLiquiditySelectResultProps {
-  selectedLiquidities: LiquidityInfoModel[];
+  selectedLiquidities: LPPositionModel[];
 }
 
-function mappedTokenPairAmountMap(tokenPairs: { token0: TokenDefaultModel, token1: TokenDefaultModel }[]) {
+function mappedTokenPairAmountMap(tokenPairAmounts: TokenPairAmountInfo[]) {
   const initTokenMap: { [key in string]: {
     symbol: string;
     amount: string;
     price: string;
-    tokenLogo: string;
+    logoURI: string;
   } } = {};
-  const tokenPairMap = tokenPairs.reduce((acc, current) => {
-    const token0 = current.token0;
-    const token1 = current.token1;
-    if (!acc[token0.tokenId]) {
-      acc[token0.tokenId] = {
-        symbol: token0.symbol,
-        tokenLogo: token0.tokenLogo,
+  const tokenPairMap = tokenPairAmounts.reduce((acc, current) => {
+    const tokenA = current.tokenA;
+    const tokenB = current.tokenB;
+    const tokenAAmount = current.tokenAAmount;
+    const tokenBAmount = current.tokenBAmount;
+    if (!acc[tokenA.path]) {
+      acc[tokenA.path] = {
+        symbol: tokenA.symbol,
+        logoURI: tokenA.logoURI,
         amount: "0",
         price: "0",
       };
     }
-    if (!acc[token1.tokenId]) {
-      acc[token1.tokenId] = {
-        symbol: token1.symbol,
-        tokenLogo: token1.tokenLogo,
+    if (!acc[tokenB.path]) {
+      acc[tokenB.path] = {
+        symbol: tokenB.symbol,
+        logoURI: tokenB.logoURI,
         amount: "0",
         price: "0",
       };
     }
-    const token0Amount = BigNumber(acc[token0.tokenId].amount).plus(token0.amount?.value || "0");
-    acc[token0.tokenId] = {
-      ...acc[token0.tokenId],
+    const token0Amount = BigNumber(acc[tokenA.path].amount).plus(tokenAAmount.amount || "0");
+    acc[tokenA.path] = {
+      ...acc[tokenA.path],
       amount: token0Amount.toString(),
     };
-    const token1Amount = BigNumber(acc[token1.tokenId].amount).plus(token1.amount?.value || "0");
-    acc[token1.tokenId] = {
-      ...acc[token1.tokenId],
+    const token1Amount = BigNumber(acc[tokenB.path].amount).plus(tokenBAmount.amount || "0");
+    acc[tokenB.path] = {
+      ...acc[tokenB.path],
       amount: token1Amount.toString(),
     };
     return acc;
@@ -55,13 +58,13 @@ const RemoveLiquiditySelectResult: React.FC<
   selectedLiquidities
 }) => {
     const pooledTokenMap = useMemo(() => {
-      const tokenPairs = selectedLiquidities.map(liquidity => liquidity.tokenPair);
-      return mappedTokenPairAmountMap(tokenPairs);
+      const tokenPairAmounts = selectedLiquidities.map(lpPosition => PositionMapper.toTokenPairAmount(lpPosition.position));
+      return mappedTokenPairAmountMap(tokenPairAmounts);
     }, [selectedLiquidities]);
 
     const unclaimedTokenMap = useMemo(() => {
-      const tokenPairs = selectedLiquidities.map(liquidity => liquidity.fee);
-      return mappedTokenPairAmountMap(tokenPairs);
+      const tokenPairAmounts = selectedLiquidities.map(lpPosition => PositionMapper.toTokenPairAmount(lpPosition.position));
+      return mappedTokenPairAmountMap(tokenPairAmounts);
     }, [selectedLiquidities]);
 
     const totalAmount = useMemo(() => {
@@ -83,25 +86,25 @@ const RemoveLiquiditySelectResult: React.FC<
     return (
       <RemoveLiquiditySelectResultWrapper>
         <ul>
-          {Object.keys(pooledTokenMap).map((tokenId, index) => (
-            <li key={index} className="pooled-token0">
+          {Object.keys(pooledTokenMap).map((path, index) => (
+            <li key={index} className="pooled-tokenA">
               <div className="main-info">
-                <img src={pooledTokenMap[tokenId].tokenLogo} alt="pooled token0 logo" />
-                <p>{`Pooled ${pooledTokenMap[tokenId].symbol}`}</p>
-                <strong>{pooledTokenMap[tokenId].amount}</strong>
+                <img src={pooledTokenMap[path].logoURI} alt="pooled tokenA logo" />
+                <p>{`Pooled ${pooledTokenMap[path].symbol}`}</p>
+                <strong>{pooledTokenMap[path].amount}</strong>
               </div>
-              <span className="dallor">{`$${pooledTokenMap[tokenId].amount}`}</span>
+              <span className="dallor">{`$${pooledTokenMap[path].amount}`}</span>
             </li>
           ))}
 
-          {Object.keys(unclaimedTokenMap).map((tokenId, index) => (
-            <li key={index} className="pooled-token0">
+          {Object.keys(unclaimedTokenMap).map((path, index) => (
+            <li key={index} className="pooled-tokenA">
               <div className="main-info">
-                <img src={unclaimedTokenMap[tokenId].tokenLogo} alt="pooled token0 logo" />
-                <p>{`Unclaimed ${unclaimedTokenMap[tokenId].symbol} Fees`}</p>
-                <strong>{unclaimedTokenMap[tokenId].amount}</strong>
+                <img src={unclaimedTokenMap[path].logoURI} alt="pooled tokenA logo" />
+                <p>{`Unclaimed ${unclaimedTokenMap[path].symbol} Fees`}</p>
+                <strong>{unclaimedTokenMap[path].amount}</strong>
               </div>
-              <span className="dallor">{`$${unclaimedTokenMap[tokenId].amount}`}</span>
+              <span className="dallor">{`$${unclaimedTokenMap[path].amount}`}</span>
             </li>
           ))}
         </ul>

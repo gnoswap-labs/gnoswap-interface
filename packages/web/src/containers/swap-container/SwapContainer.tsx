@@ -17,7 +17,7 @@ interface TokenInfo {
   gnosExchangePrice: string;
   usdExchangePrice: string;
   balance: string;
-  tokenLogo: string;
+  logoURI: string;
 }
 
 export const dummySwapGasInfo: SwapGasInfo = {
@@ -150,7 +150,7 @@ const SwapContainer: React.FC = () => {
     gnosExchangePrice: "1250",
     usdExchangePrice: "($1541.55)",
     balance: "0",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
   });
 
@@ -163,7 +163,7 @@ const SwapContainer: React.FC = () => {
     gnosExchangePrice: "1250",
     usdExchangePrice: "($1541.55)",
     balance: "0",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
   });
 
@@ -172,7 +172,7 @@ const SwapContainer: React.FC = () => {
       case "from":
         setFrom(prev => ({
           ...prev,
-          tokenLogo: token.logo,
+          logoURI: token.logo,
           token: token.name,
           symbol: token.symbol,
           balance: token.balance,
@@ -181,7 +181,7 @@ const SwapContainer: React.FC = () => {
       case "to":
         setTo(prev => ({
           ...prev,
-          tokenLogo: token.logo,
+          logoURI: token.logo,
           token: token.name,
           symbol: token.symbol,
           balance: token.balance,

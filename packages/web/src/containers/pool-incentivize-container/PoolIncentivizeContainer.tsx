@@ -1,29 +1,9 @@
 import PoolIncentivize from "@components/incentivize/pool-incentivize/PoolIncentivize";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolModel } from "@models/pool/pool-model";
-import { TokenBalanceModel } from "@models/token/token-balance-model";
-import React, { useCallback, useState } from "react";
-
-const dummyData = {
-  tokenPair: {
-    token0: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "HEX",
-      symbol: "HEX",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-    },
-    token1: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "USDCoin",
-      symbol: "USDC",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    },
-  },
-  feeRate: FEE_RATE_OPTION.FEE_3,
-};
-
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
+import React, { useCallback, useEffect, useState } from "react";
+import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
 export const dummyDisclaimer =
   "Disclaimer1Disclaimer1 Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer3Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer";
 
@@ -34,7 +14,7 @@ interface DistributionPeriodDate {
 }
 
 const pools: PoolModel[] = [];
-const tokenBalances: TokenBalanceModel[] = [];
+const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 120, 150, 180, 210, 240];
 
 const PoolIncentivizeContainer: React.FC = () => {
@@ -42,17 +22,22 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [period, setPeriod] = useState(90);
   const [amount, setAmount] = useState("");
   const [currentPool, setCurrentPool] = useState<PoolModel | null>(null);
-  const [currentToken, setCurrentToken] = useState<TokenBalanceModel | null>(null);
+  const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
+  const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
+
+  useEffect(() => {
+    setPoolDetail(PoolDetailData.pool);
+  }, []);
 
   const selectPool = useCallback((poolId: string) => {
-    const pool = pools.find(pool => pool.poolId === poolId);
+    const pool = pools.find(pool => pool.id === poolId);
     if (pool) {
       setCurrentPool(pool);
     }
   }, [setCurrentPool]);
 
-  const selectToken = useCallback((tokenId: string) => {
-    const token = tokenBalances.find(token => token.tokenId === tokenId);
+  const selectToken = useCallback((path: string) => {
+    const token = tokenBalances.find(token => token.path === path);
     if (token) {
       setCurrentToken(token);
     }
@@ -78,7 +63,7 @@ const PoolIncentivizeContainer: React.FC = () => {
       setPeriod={setPeriod}
       amount={amount}
       onChangeAmount={onChangeAmount}
-      details={dummyData}
+      details={poolDetail}
       disclaimer={dummyDisclaimer}
       token={currentToken}
       tokens={tokenBalances}

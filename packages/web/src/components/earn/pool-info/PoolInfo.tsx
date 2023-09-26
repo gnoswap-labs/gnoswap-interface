@@ -30,11 +30,11 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
     >
       <TableColumn className="left" tdWidth={POOL_TD_WIDTH[0]}>
         <DoubleLogo
-          left={tokenPair.token0.tokenLogo}
-          right={tokenPair.token1.tokenLogo}
+          left={tokenPair.tokenA.logoURI}
+          right={tokenPair.tokenB.logoURI}
           size={20}
         />
-        <span className="symbol-pair">{`${tokenPair.token0.symbol}/${tokenPair.token1.symbol}`}</span>
+        <span className="symbol-pair">{`${tokenPair.tokenA.symbol}/${tokenPair.tokenB.symbol}`}</span>
         <span className="feeRate">{feeRate}</span>
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[1]}>

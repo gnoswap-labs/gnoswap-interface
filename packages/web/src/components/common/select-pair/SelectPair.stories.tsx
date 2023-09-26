@@ -12,35 +12,35 @@ const Template: ComponentStory<typeof SelectPair> = args => (
   <SelectPair {...args} />
 );
 
-const token0 = {
-  tokenId: "0",
+const tokenA = {
+  path: "0",
   name: "HEX",
   symbol: "HEX",
-  tokenLogo: "",
+  logoURI: "",
 };
 
-const token1 = {
-  tokenId: "1",
+const tokenB = {
+  path: "1",
   name: "USDCoin",
   symbol: "USDC",
-  tokenLogo: "",
+  logoURI: "",
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  token0: token0,
-  token1: token1,
+  tokenA: tokenA,
+  tokenB: tokenB,
 };
 
 export const SelectableStatus = Template.bind({});
 SelectableStatus.args = {
-  token0: token0,
-  token1: token1,
+  tokenA: tokenA,
+  tokenB: tokenB,
 };
 
 export const UnselectableStatus = Template.bind({});
 UnselectableStatus.args = {
-  token0: token0,
-  token1: token1,
+  tokenA: tokenA,
+  tokenB: tokenB,
   disabled: true,
 };

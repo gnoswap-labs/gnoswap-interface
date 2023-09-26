@@ -10,7 +10,7 @@ interface SelectTokenBadgeProps {
 }
 
 const dummyData = {
-  tokenLogo:
+  logoURI:
     "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
   symbol: "HEX",
 };
@@ -23,7 +23,7 @@ const SelectTokenBadge: React.FC<SelectTokenBadgeProps> = ({
 }) => {
   return (
     <div css={wrapper(isSelectable, hasArrow)} onClick={onClick}>
-      <img src={token.tokenLogo} alt="token-logo" />
+      <img src={token.logoURI} alt="token-logo" />
       <span className="symbol">{token.symbol}</span>
       {hasArrow && <IconStrokeArrowDown />}
     </div>

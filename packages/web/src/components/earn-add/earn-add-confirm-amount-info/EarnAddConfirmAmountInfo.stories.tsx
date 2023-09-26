@@ -4,10 +4,10 @@ import { Meta, StoryObj } from "@storybook/react";
 
 const token = {
   info: {
-    tokenId: "1",
+    path: "1",
     name: "Gnoland",
     symbol: "GNO.LAND",
-    tokenLogo: "",
+    logoURI: "",
   },
   amount: "12,211",
   usdPrice: "$12.3",
@@ -20,8 +20,8 @@ export default {
 
 export const Default: StoryObj<EarnAddConfirmAmountInfoProps> = {
   args: {
-    token0: token,
-    token1: token,
+    tokenA: token,
+    tokenB: token,
     feeRate: "0.30%"
   },
 };

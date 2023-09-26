@@ -1,23 +1,30 @@
-import React from "react";
-import CardList, { type ListProps } from "@components/home/card-list/CardList";
+import React, { useMemo } from "react";
+import CardList from "@components/home/card-list/CardList";
 import { RecentlyAddedCardListwrapper } from "./RecentlyAddedCardList.styles";
 import IconClock from "@components/common/icons/IconClock";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
+import { CardListTokenInfo } from "@models/common/card-list-item-info";
 interface RecentlyAddedCardListProps {
-  list: Array<ListProps>;
-  windowSize: number;
+  list: Array<CardListTokenInfo>;
+  device: DEVICE_TYPE;
+  onClickItem: (path: string) => void;
 }
 
 const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   list,
-  windowSize,
+  device,
+  onClickItem,
 }) => {
-  return windowSize > DeviceSize.mobile ? (
+  const visible = useMemo(() => {
+    return device !== DEVICE_TYPE.MOBILE;
+  }, [device]);
+
+  return visible ? (
     <RecentlyAddedCardListwrapper>
       <h2>
         <IconClock className="icon-clock" /> Recently Added
       </h2>
-      <CardList list={list} />
+      <CardList list={list} onClickItem={onClickItem} />
     </RecentlyAddedCardListwrapper>
   ) : null;
 };

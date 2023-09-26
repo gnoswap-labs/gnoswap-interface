@@ -3,13 +3,13 @@ import { SelectTokenBalanceItemWrapper, SelectTokenBalanceModalWrapper, SelectTo
 import IconArrowUp from "../icons/IconArrowUp";
 import IconArrowDown from "../icons/IconArrowDown";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
-import { TokenBalanceModel } from "@models/token/token-balance-model";
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import IconClose from "../icons/IconCancel";
 
 export interface SelectTokenBalanceProps {
-  current: TokenBalanceModel | null;
-  tokens: TokenBalanceModel[];
-  select: (tokenId: string) => void;
+  current: TokenBalanceInfo | null;
+  tokens: TokenBalanceInfo[];
+  select: (path: string) => void;
 }
 
 const SelectTokenBalance: React.FC<SelectTokenBalanceProps> = ({
@@ -27,8 +27,8 @@ const SelectTokenBalance: React.FC<SelectTokenBalanceProps> = ({
 
   const selected = current !== null;
 
-  const onClickItem = useCallback((tokenId: string) => {
-    select(tokenId);
+  const onClickItem = useCallback((path: string) => {
+    select(path);
     closeModal();
   }, [closeModal, select]);
 
@@ -37,7 +37,7 @@ const SelectTokenBalance: React.FC<SelectTokenBalanceProps> = ({
       <div className="selected-wrapper" onClick={toggleModal}>
         {selected ? (
           <div className="current">
-            <img className="logo" src={current.tokenLogo} alt="token logo" />
+            <img className="logo" src={current.logoURI} alt="token logo" />
             <span className="name">{current.name}</span>
           </div>
         ) :
@@ -63,7 +63,7 @@ const SelectTokenBalance: React.FC<SelectTokenBalanceProps> = ({
               <SelectTokenBalanceItem
                 key={index}
                 token={token}
-                onClick={() => onClickItem(token.tokenId)}
+                onClick={() => onClickItem(token.path)}
               />
             ))}
           </div>
@@ -76,7 +76,7 @@ const SelectTokenBalance: React.FC<SelectTokenBalanceProps> = ({
 export default SelectTokenBalance;
 
 interface SelectTokenBalanceItemProps {
-  token: TokenBalanceModel;
+  token: TokenBalanceInfo;
   onClick: () => void;
 }
 
@@ -84,12 +84,12 @@ const SelectTokenBalanceItem: React.FC<SelectTokenBalanceItemProps> = ({
   token,
   onClick
 }) => {
-  const { tokenLogo, name, symbol, balance } = token;
+  const { logoURI, name, symbol, balance } = token;
 
   return (
     <SelectTokenBalanceItemWrapper onClick={onClick}>
       <div className="info-wrapper">
-        <img className="logo" src={tokenLogo} alt="token logo" />
+        <img className="logo" src={logoURI} alt="token logo" />
         <span className="name">{name}</span>
         <span className="symbol">{symbol}</span>
       </div>

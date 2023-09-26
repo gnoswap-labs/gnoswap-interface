@@ -8,10 +8,10 @@ export default {
 
 const token = {
   info: {
-    tokenId: "1",
+    path: "1",
     name: "Gnoland",
     symbol: "GNO.LAND",
-    tokenLogo: "",
+    logoURI: "",
   },
   amount: "12,211",
   usdPrice: "$12.3",

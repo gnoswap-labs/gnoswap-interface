@@ -27,31 +27,31 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       <div className="list">
         <div className="coin-info">
           <img
-            src={content.poolInfo.tokenPair.token0.tokenLogo}
+            src={content.poolInfo.tokenPair.tokenA.logoURI}
             alt="token logo"
             className="token-logo"
           />
           <span className="content">
-            {content.poolInfo.tokenPair.token0.symbol}
+            {content.poolInfo.tokenPair.tokenA.symbol}
           </span>
         </div>
         <span className="content">
-          {content.poolInfo.tokenPair.token0.composition}
+          {content.poolInfo.tokenPair.tokenA.composition}
         </span>
       </div>
       <div className="list">
         <div className="coin-info">
           <img
-            src={content.poolInfo.tokenPair.token1.tokenLogo}
+            src={content.poolInfo.tokenPair.tokenB.logoURI}
             alt="token logo"
             className="token-logo"
           />
           <span className="content">
-            {content.poolInfo.tokenPair.token1.symbol}
+            {content.poolInfo.tokenPair.tokenB.symbol}
           </span>
         </div>
         <span className="content">
-          {content.poolInfo.tokenPair.token0.composition}
+          {content.poolInfo.tokenPair.tokenA.composition}
         </span>
       </div>
       <TooltipDivider />
@@ -62,16 +62,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       <div className="list">
         <div className="coin-info">
           <img
-            src={content.poolInfo.tokenPair.token0.tokenLogo}
+            src={content.poolInfo.tokenPair.tokenA.logoURI}
             alt="token logo"
             className="token-logo"
           />
           <span className="content">
-            {content.poolInfo.tokenPair.token0.symbol}
+            {content.poolInfo.tokenPair.tokenA.symbol}
           </span>
         </div>
         <span className="content">
-          {content.poolInfo.tokenPair.token0.composition}
+          {content.poolInfo.tokenPair.tokenA.composition}
         </span>
       </div>
       <TooltipDivider />
@@ -82,16 +82,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       <div className="list">
         <div className="coin-info">
           <img
-            src={content.poolInfo.tokenPair.token1.tokenLogo}
+            src={content.poolInfo.tokenPair.tokenB.logoURI}
             alt="token logo"
             className="token-logo"
           />
           <span className="content">
-            {content.poolInfo.tokenPair.token1.symbol}
+            {content.poolInfo.tokenPair.tokenB.symbol}
           </span>
         </div>
         <span className="content">
-          {content.poolInfo.tokenPair.token0.composition}
+          {content.poolInfo.tokenPair.tokenA.composition}
         </span>
       </div>
       <TooltipDivider />
@@ -102,31 +102,31 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       <div className="list">
         <div className="coin-info">
           <img
-            src={content.poolInfo.tokenPair.token0.tokenLogo}
+            src={content.poolInfo.tokenPair.tokenA.logoURI}
             alt="token logo"
             className="token-logo"
           />
           <span className="content">
-            {content.poolInfo.tokenPair.token0.symbol}
+            {content.poolInfo.tokenPair.tokenA.symbol}
           </span>
         </div>
         <span className="content">
-          {content.poolInfo.tokenPair.token0.composition}
+          {content.poolInfo.tokenPair.tokenA.composition}
         </span>
       </div>
       <div className="list">
         <div className="coin-info">
           <img
-            src={content.poolInfo.tokenPair.token1.tokenLogo}
+            src={content.poolInfo.tokenPair.tokenB.logoURI}
             alt="token logo"
             className="token-logo"
           />
           <span className="content">
-            {content.poolInfo.tokenPair.token1.symbol}
+            {content.poolInfo.tokenPair.tokenB.symbol}
           </span>
         </div>
         <span className="content">
-          {content.poolInfo.tokenPair.token0.composition}
+          {content.poolInfo.tokenPair.tokenA.composition}
         </span>
       </div>
       <TooltipDivider />

@@ -29,8 +29,8 @@ const MyLiquidityDetailsCard: React.FC<MyLiquidityDetailsCardProps> = ({
       <div className="pair-wrap">
         <div className="token-info">
           <DoubleLogo
-            left={tokenPair.token0.tokenLogo}
-            right={tokenPair.token1.tokenLogo}
+            left={tokenPair.tokenA.logoURI}
+            right={tokenPair.tokenB.logoURI}
           />
           <span className="pair-symbol">
             {tokenPairSymbolToOneCharacter(tokenPair)}

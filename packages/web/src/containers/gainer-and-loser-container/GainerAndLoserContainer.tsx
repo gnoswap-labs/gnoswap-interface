@@ -4,10 +4,10 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
 export const gainersInit = [
   {
-    tokenId: "1",
+    path: "1",
     name: "HEX",
     symbol: "HEX",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
     price: "$12,908.25",
     change: {
@@ -16,10 +16,10 @@ export const gainersInit = [
     },
   },
   {
-    tokenId: "2",
+    path: "2",
     name: "USDCoin",
     symbol: "USDC",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     price: "$12,908.25",
     change: {
@@ -28,10 +28,10 @@ export const gainersInit = [
     },
   },
   {
-    tokenId: "1",
+    path: "1",
     name: "Bitcoin",
     symbol: "BTC",
-    tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     price: "$12,908.25",
     change: {
       status: MATH_NEGATIVE_TYPE.POSITIVE,
@@ -42,10 +42,10 @@ export const gainersInit = [
 
 export const losersInit = [
   {
-    tokenId: "1",
+    path: "1",
     name: "Bitcoin",
     symbol: "BTC",
-    tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     price: "$12,908.25",
     change: {
       status: MATH_NEGATIVE_TYPE.NEGATIVE,
@@ -53,10 +53,10 @@ export const losersInit = [
     },
   },
   {
-    tokenId: "2",
+    path: "2",
     name: "USDCoin",
     symbol: "USDC",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     price: "$12,908.25",
     change: {
@@ -65,10 +65,10 @@ export const losersInit = [
     },
   },
   {
-    tokenId: "1",
+    path: "1",
     name: "HEX",
     symbol: "HEX",
-    tokenLogo:
+    logoURI:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
     price: "$12,908.25",
     change: {

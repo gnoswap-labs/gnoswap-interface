@@ -51,12 +51,12 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             <span className="apr-text">{item.apr} APR</span>
             <div className="coin-info">
               <img
-                src={item.tokenLogo[0]}
+                src={item.logoURI[0]}
                 alt="token logo"
                 className="token-logo"
               />
               <img
-                src={item.tokenLogo[1]}
+                src={item.logoURI[1]}
                 alt="token logo"
                 className="token-logo"
               />
@@ -102,12 +102,12 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ item }) => {
             <span className="apr-gd-text">{item.apr} APR</span>
             <div className="coin-info">
               <img
-                src={item.tokenLogo[0]}
+                src={item.logoURI[0]}
                 alt="token logo"
                 className="token-logo"
               />
               <img
-                src={item.tokenLogo[1]}
+                src={item.logoURI[1]}
                 alt="token logo"
                 className="token-logo"
               />

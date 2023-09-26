@@ -9,7 +9,7 @@ export default {
 } as ComponentMeta<typeof SelectTokenBadge>;
 
 const dummyData = {
-  tokenLogo:
+  logoURI:
     "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
   symbol: "HEX",
 };
@@ -23,7 +23,7 @@ Selectable.args = {
   token: dummyData,
   hasArrow: false,
   isSelectable: true,
-  onClick: () => {},
+  onClick: () => { },
 };
 
 export const Unselectable = Template.bind({});
@@ -31,7 +31,7 @@ Unselectable.args = {
   token: dummyData,
   hasArrow: false,
   isSelectable: false,
-  onClick: () => {},
+  onClick: () => { },
 };
 
 export const SelectableWithArrow = Template.bind({});
@@ -39,5 +39,5 @@ SelectableWithArrow.args = {
   token: dummyData,
   hasArrow: true,
   isSelectable: true,
-  onClick: () => {},
+  onClick: () => { },
 };

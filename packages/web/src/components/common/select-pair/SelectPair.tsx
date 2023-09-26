@@ -1,19 +1,19 @@
 import React from "react";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { SelectPairWrapper } from "./SelectPair.styles";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 
 interface SelectPairProps {
-  token0: TokenDefaultModel | undefined;
-  token1: TokenDefaultModel | undefined;
-  changeToken0: (token: TokenDefaultModel) => void;
-  changeToken1: (token: TokenDefaultModel) => void;
+  tokenA: TokenInfo | undefined;
+  tokenB: TokenInfo | undefined;
+  changeToken0: (token: TokenInfo) => void;
+  changeToken1: (token: TokenInfo) => void;
   disabled?: boolean;
 }
 
 const SelectPair: React.FC<SelectPairProps> = ({
-  token0,
-  token1,
+  tokenA,
+  tokenB,
   changeToken0,
   changeToken1,
   disabled,
@@ -21,8 +21,8 @@ const SelectPair: React.FC<SelectPairProps> = ({
 
   return (
     <SelectPairWrapper>
-      <SelectPairButton disabled={disabled} token={token0} changeToken={changeToken0} />
-      <SelectPairButton disabled={disabled} token={token1} changeToken={changeToken1} />
+      <SelectPairButton disabled={disabled} token={tokenA} changeToken={changeToken0} />
+      <SelectPairButton disabled={disabled} token={tokenB} changeToken={changeToken1} />
     </SelectPairWrapper>
   );
 };

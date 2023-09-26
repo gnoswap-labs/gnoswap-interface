@@ -16,20 +16,20 @@ export const POSITION_CONTENT_LABEL = {
 export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 
 interface PositionToken {
-  tokenId: string;
+  path: string;
   name: string;
   symbol: string;
   amount: {
     value: string;
     denom: string;
   };
-  tokenLogo: string;
+  logoURI: string;
 }
 
 export interface PoolPosition {
   tokenPair: {
-    token0: PositionToken,
-    token1: PositionToken,
+    tokenA: PositionToken,
+    tokenB: PositionToken,
   };
   feeRate: string;
   stakeType: string;
@@ -57,26 +57,26 @@ export interface PoolPosition {
 export const dummyPosition: PoolPosition[] = [
   {
     tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+      tokenA: {
+        path: Math.floor(Math.random() * 50 + 1).toString(),
         name: "HEX",
         symbol: "HEX",
         amount: {
           value: "18,500.18",
           denom: "gnot",
         },
-        tokenLogo:
+        logoURI:
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
       },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+      tokenB: {
+        path: Math.floor(Math.random() * 50 + 1).toString(),
         name: "USDCoin",
         symbol: "USDC",
         amount: {
           value: "18,500.18",
           denom: "gnot",
         },
-        tokenLogo:
+        logoURI:
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
       },
     },
@@ -98,40 +98,40 @@ export const dummyPosition: PoolPosition[] = [
   },
   {
     tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+      tokenA: {
+        path: Math.floor(Math.random() * 50 + 1).toString(),
         name: "HEX",
         symbol: "HEX",
         amount: {
           value: "18,500.18",
           denom: "gnot",
         },
-        tokenLogo:
+        logoURI:
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
       },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+      tokenB: {
+        path: Math.floor(Math.random() * 50 + 1).toString(),
         name: "USDCoin",
         symbol: "USDC",
         amount: {
           value: "18,500.18",
           denom: "gnot",
         },
-        tokenLogo:
+        logoURI:
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
       },
     },
     rewards: [
       {
         token: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+          path: Math.floor(Math.random() * 50 + 1).toString(),
           name: "HEX",
           symbol: "HEX",
           amount: {
             value: "18,500.18",
             denom: "gnot",
           },
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
         },
         amount: {

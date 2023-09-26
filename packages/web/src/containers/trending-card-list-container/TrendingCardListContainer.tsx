@@ -1,21 +1,29 @@
-import { trendingList } from "@components/home/card-list/card-list-dummy";
 import TrendingCardList from "@components/home/trending-card-list/TrendingCardList";
-import React, { useEffect, useState } from "react";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useRouter } from "next/router";
+import React, { useCallback } from "react";
 
 const TrendingCardListContainer: React.FC = () => {
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
+  const router = useRouter();
+  const { breakpoint } = useWindowSize();
+  const { trendingTokens } = useTokenData();
 
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  return <TrendingCardList list={trendingList} windowSize={width} />;
+  const moveTokenDetails = useCallback((path: string) => {
+    router.push("/tokens/" + path);
+  }, [router]);
+
+  const onClickItem = useCallback((path: string) => {
+    moveTokenDetails(path);
+  }, [moveTokenDetails]);
+
+  return (
+    <TrendingCardList
+      list={trendingTokens}
+      device={breakpoint}
+      onClickItem={onClickItem}
+    />
+  );
 };
 
 export default TrendingCardListContainer;

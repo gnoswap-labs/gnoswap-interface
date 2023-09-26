@@ -18,7 +18,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
   return (
     <AutoRouterWrapper>
       <div className="row">
-        <img src={from.tokenLogo} alt="token logo" className="token-logo" />
+        <img src={from.logoURI} alt="token logo" className="token-logo" />
         <div className="left-box">
           <div className="left-badge">V1</div>
           <span>{autoRouterInfo.v1fee[0]}</span>
@@ -27,10 +27,10 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
         <div className="pair-fee">
           <div className="coin-logo">
             <div className="from">
-              <img src={from.tokenLogo} alt="pair-logo" className="pair-logo" />
+              <img src={from.logoURI} alt="pair-logo" className="pair-logo" />
             </div>
             <div className="to">
-              <img src={to.tokenLogo} alt="pair-logo" className="pair-logo" />
+              <img src={to.logoURI} alt="pair-logo" className="pair-logo" />
             </div>
           </div>
           <h1>{autoRouterInfo.v1fee[1]}</h1>
@@ -39,7 +39,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
         <div className="pair-fee">
           <div className="coin-logo">
             <div className="from">
-              <img src={from.tokenLogo} alt="pair-logo" className="pair-logo" />
+              <img src={from.logoURI} alt="pair-logo" className="pair-logo" />
             </div>
             <div className="to">
               <IconLogoPrimary className="pair-logo" />
@@ -53,7 +53,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
         </div>
       </div>
       <div className="row">
-        <img src={from.tokenLogo} alt="token logo" className="token-logo" />
+        <img src={from.logoURI} alt="token logo" className="token-logo" />
         <div className="left-box">
           <div className="left-badge">V1</div>
           <span>{autoRouterInfo.v2fee[0]}</span>
@@ -62,7 +62,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
         <div className="pair-fee">
           <div className="coin-logo">
             <div className="from">
-              <img src={from.tokenLogo} alt="pair-logo" className="pair-logo" />
+              <img src={from.logoURI} alt="pair-logo" className="pair-logo" />
             </div>
             <div className="to">
               <IconLogoPrimary className="pair-logo" />
@@ -76,7 +76,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
         </div>
       </div>
       <div className="row">
-        <img src={from.tokenLogo} alt="token logo" className="token-logo" />
+        <img src={from.logoURI} alt="token logo" className="token-logo" />
         <div className="left-box">
           <div className="left-badge">V1</div>
           <span>{autoRouterInfo.v3fee[0]}</span>
@@ -85,7 +85,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
         <div className="pair-fee">
           <div className="coin-logo">
             <div className="from">
-              <img src={from.tokenLogo} alt="pair-logo" className="pair-logo" />
+              <img src={from.logoURI} alt="pair-logo" className="pair-logo" />
             </div>
             <div className="to">
               <IconLogoPrimary className="pair-logo" />

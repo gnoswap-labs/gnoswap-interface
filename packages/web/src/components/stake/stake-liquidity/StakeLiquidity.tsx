@@ -11,7 +11,7 @@ interface StakeLiquidityProps {
   activePeriod: number;
   checkedList: string[];
   onClickPeriod: (idx: number) => void;
-  onCheckedItem: (checked: boolean, tokenId: string) => void;
+  onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
 }

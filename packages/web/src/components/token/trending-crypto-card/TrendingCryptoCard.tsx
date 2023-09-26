@@ -10,7 +10,7 @@ interface TrendingCryptoCardProps {
 const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
   return (
     <div css={wrapper}>
-      <img src={item.tokenLogo} alt="logo" />
+      <img src={item.logoURI} alt="logo" />
       <span className="name">{item.name}</span>
       <span className="symbol">{item.symbol}</span>
       <span className="price">{item.price}</span>

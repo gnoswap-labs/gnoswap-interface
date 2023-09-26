@@ -1,87 +1,19 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import RemoveLiquidity from "./RemoveLiquidity";
-import BigNumber from "bignumber.js";
-import { LiquidityInfoModel } from "@models/liquidity/liquidity-info-model";
+import LPPositionData from "@repositories/position/mock/positions.json";
 
 export default {
-  title: "remove liquidity/RemoveLiquidity",
+  title: "remove position/RemoveLiquidity",
   component: RemoveLiquidity,
 } as ComponentMeta<typeof RemoveLiquidity>;
-
-const tokenPair = {
-  token0: {
-    tokenId: "1",
-    name: "Gnoland",
-    symbol: "GNOT",
-    tokenLogo: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-    amount: {
-      value: BigNumber("1140.058845"),
-      denom: "GNOT",
-    }
-  },
-  token1: {
-    tokenId: "2",
-    name: "Gnoswap",
-    symbol: "GNOS",
-    tokenLogo: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    amount: {
-      value: BigNumber("942.55884"),
-      denom: "GNOS",
-    }
-  },
-};
-
-const liquidities: LiquidityInfoModel[] = [
-  {
-    liquidityId: "#14450",
-    tokenPair: tokenPair,
-    fee: tokenPair,
-    amount: "145541.10",
-    feeRate: 0,
-    maxRate: 0,
-    minRate: 0,
-    stakeType: "UNSTAKED",
-    liquidityType: "PROVIDED",
-  }, {
-    liquidityId: "#14451",
-    tokenPair,
-    fee: tokenPair,
-    amount: "145541.10",
-    feeRate: 0,
-    maxRate: 0,
-    minRate: 0,
-    stakeType: "UNSTAKED",
-    liquidityType: "PROVIDED",
-  }, {
-    liquidityId: "#14452",
-    tokenPair,
-    fee: tokenPair,
-    amount: "145541.10",
-    feeRate: 0,
-    maxRate: 0,
-    minRate: 0,
-    stakeType: "STAKED",
-    liquidityType: "PROVIDED",
-  }, {
-    liquidityId: "#14453",
-    tokenPair,
-    fee: tokenPair,
-    amount: "145541.10",
-    feeRate: 0,
-    maxRate: 0,
-    minRate: 0,
-    stakeType: "STAKED",
-    liquidityType: "PROVIDED",
-  }
-];
 
 const Template: ComponentStory<typeof RemoveLiquidity> = (args) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const unstakedLiquidities = useMemo(() => {
-    return args.liquidities.filter(liquidity => liquidity.stakeType === "UNSTAKED");
-  }, [args.liquidities]);
+    return args.lpPositions;
+  }, [args.lpPositions]);
 
   const selectedAll = useMemo(() => {
     return unstakedLiquidities.length === selectedIds.length;
@@ -92,7 +24,7 @@ const Template: ComponentStory<typeof RemoveLiquidity> = (args) => {
       setSelectedIds([]);
       return;
     }
-    const selectedIds = unstakedLiquidities.map(liquidity => liquidity.liquidityId);
+    const selectedIds = unstakedLiquidities.map(position => position.lpRewardId);
     setSelectedIds(selectedIds);
   }, [selectedAll, unstakedLiquidities]);
 
@@ -116,5 +48,5 @@ const Template: ComponentStory<typeof RemoveLiquidity> = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  liquidities
+  lpPositions: LPPositionData.stakedPositions
 };

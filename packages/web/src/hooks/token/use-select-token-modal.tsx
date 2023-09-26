@@ -1,11 +1,11 @@
 import SelectTokenContainer from "@containers/select-token-container/SelectTokenContainer";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 export interface SelectTokenModalProps {
-  changeToken?: (token: TokenDefaultModel) => void;
+  changeToken?: (token: TokenInfo) => void;
 }
 export interface SelectTokenModalModel {
   openModal: () => void;

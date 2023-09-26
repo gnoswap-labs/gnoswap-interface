@@ -13,7 +13,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers }) => {
       <h2 className="card-title">Top 3 Gainers</h2>
       {gainers.map((gainer, idx) => (
         <div className="card-wrap" key={idx}>
-          <img src={gainer?.tokenLogo} alt="logo" />
+          <img src={gainer?.logoURI} alt="logo" />
           <span className="name">{gainer.name}</span>
           <span className="symbol">{gainer.symbol}</span>
           <span className="price">{gainer.price}</span>

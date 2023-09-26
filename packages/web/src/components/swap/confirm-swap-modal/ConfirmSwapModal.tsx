@@ -159,7 +159,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <span>{from.amount}</span>
                       <div className="button-wrapper">
                         <img
-                          src={from.tokenLogo}
+                          src={from.logoURI}
                           alt="logo"
                           className="coin-logo"
                         />
@@ -180,7 +180,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <span>{to.amount}</span>
                       <div className="button-wrapper">
                         <img
-                          src={to.tokenLogo}
+                          src={to.logoURI}
                           alt="logo"
                           className="coin-logo"
                         />

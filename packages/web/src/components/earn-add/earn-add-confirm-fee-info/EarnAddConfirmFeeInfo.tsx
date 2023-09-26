@@ -1,9 +1,9 @@
 import React from "react";
 import { EarnAddConfirmFeeInfoSection, EarnAddConfirmFeeInfoWrapper } from "./EarnAddConfirmFeeInfo.styles";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 
 export interface EarnAddConfirmFeeInfoProps {
-  token: TokenDefaultModel;
+  token: TokenInfo;
   fee: string;
 }
 
@@ -17,7 +17,7 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
 
       <EarnAddConfirmFeeInfoSection>
         <div className="token-info">
-          <img src={token.tokenLogo} alt="token logo" />
+          <img src={token.logoURI} alt="token logo" />
           <span>{token.symbol}</span>
         </div>
         <div className="fee-info">
