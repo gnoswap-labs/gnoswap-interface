@@ -7,10 +7,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 0,
     txHash: "0",
     tokenInfo: {
-      tokenId: "1",
+      path: "1",
       name: "test1",
       symbol: "TEST1",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "SUCCESS",
     createdAt: new Date(
@@ -22,10 +22,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 1,
     txHash: "1",
     tokenInfo: {
-      tokenId: "2",
+      path: "2",
       name: "test2",
       symbol: "TEST2",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "PENDING",
     createdAt: new Date(
@@ -37,10 +37,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 2,
     txHash: "2",
     tokenInfo: {
-      tokenId: "3",
+      path: "3",
       name: "test3",
       symbol: "TEST3",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "FAILED",
     createdAt: new Date(
@@ -52,10 +52,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 1,
     txHash: "3",
     tokenInfo: {
-      tokenId: "3",
+      path: "3",
       name: "test3",
       symbol: "TEST3",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "FAILED",
     createdAt: new Date(
@@ -67,10 +67,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 4,
     txHash: "4",
     tokenInfo: {
-      tokenId: "3",
+      path: "3",
       name: "test3",
       symbol: "TEST3",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "SUCCESS",
     createdAt: new Date(
@@ -82,10 +82,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 5,
     txHash: "5",
     tokenInfo: {
-      tokenId: "3",
+      path: "3",
       name: "test3",
       symbol: "TEST3",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "PENDING",
     createdAt: new Date(
@@ -97,10 +97,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 1,
     txHash: "6",
     tokenInfo: {
-      tokenId: "3",
+      path: "3",
       name: "test3",
       symbol: "TEST3",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "SUCCESS",
     createdAt: new Date(
@@ -112,10 +112,10 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 7,
     txHash: "7",
     tokenInfo: {
-      tokenId: "3",
+      path: "3",
       name: "test3",
       symbol: "TEST3",
-      tokenLogo: "",
+      logoURI: "",
     },
     status: "SUCCESS",
     createdAt: new Date().toString(),

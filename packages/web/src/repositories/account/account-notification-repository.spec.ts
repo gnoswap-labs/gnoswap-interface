@@ -6,7 +6,7 @@ import { generateTokenModel } from "@common/utils/test-util";
 import { NotificationType } from "@common/values/data-constant";
 import { TransactionModel } from "@models/account/account-history-model";
 import { AccountNotificationRepository } from "./account-notification-repository";
-import { AccountRepositoryInstance } from "./account-repository-instance";
+import { AccountRepositoryInstance } from "./account-repository-impl";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;

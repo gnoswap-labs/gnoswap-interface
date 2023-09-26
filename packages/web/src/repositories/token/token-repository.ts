@@ -1,43 +1,15 @@
-import {
-  TokenSearchItemType,
-  TokenSearchListModel,
-} from "@models/token/token-search-list-model";
-import {
-  TokenDatatableResponse,
-  TokenInfoResponse,
-  SummaryPopularTokenListResponse,
-  SummaryHighestRewardListResponse,
-  SummaryRecentlyAddedListResponse,
-  TokenSearchListResponse,
-  ExchangeRateResponse,
-  TokenMetaListResponse,
-  USDExchangeRateResponse,
-} from "./response";
+import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import { TokenListResponse, TokenSearchLogListResponse } from "./response";
+import { TokenPriceListResponse } from "./response/token-price-list-response";
 
 export interface TokenRepository {
-  getAllTokenMetas: () => Promise<TokenMetaListResponse>;
+  getTokens: () => Promise<TokenListResponse>;
 
-  getTokenById: (tokenId: string) => Promise<TokenInfoResponse>;
+  getTokenPrices: () => Promise<TokenPriceListResponse>;
 
-  searchTokens: (keyword: string) => Promise<TokenSearchListResponse>;
+  createSearchLog: (searchLog: TokenSearchLogModel) => Promise<boolean>;
 
-  createSearchLog: (searchToken: TokenSearchItemType) => boolean;
+  getSearchLogs: () => Promise<TokenSearchLogListResponse>;
 
-  getSearchLogs: () => TokenSearchListModel;
-
-  getAllExchangeRates: (tokenId: string) => Promise<ExchangeRateResponse>;
-
-  getUSDExchangeRate: (tokenId: string) => Promise<USDExchangeRateResponse>;
-
-  getTokenDatatable: () => Promise<TokenDatatableResponse>;
-
-  getSummaryPopularTokens: () => Promise<SummaryPopularTokenListResponse>;
-
-  getSummaryHighestRewardTokens: () => Promise<
-    SummaryHighestRewardListResponse
-  >;
-
-  getSummaryRecentlyAddedTokens: () => Promise<
-    SummaryRecentlyAddedListResponse
-  >;
+  clearSearchLogs: () => Promise<boolean>;
 }

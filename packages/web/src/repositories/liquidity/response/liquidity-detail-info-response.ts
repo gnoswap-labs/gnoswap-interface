@@ -16,8 +16,8 @@ export interface LiquidityDetailInfoResponse {
 }
 
 interface TokenPair {
-  token0: TokenBalance;
-  token1: TokenBalance;
+  tokenA: TokenBalance;
+  tokenB: TokenBalance;
 }
 
 interface TokenBalance {

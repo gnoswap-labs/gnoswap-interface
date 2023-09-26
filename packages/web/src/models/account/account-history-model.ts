@@ -1,5 +1,5 @@
-import { TokenPairModel } from "@models/token/token-pair-model";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenPairInfo } from "@models/token/token-pair-info";
+import { TokenInfo } from "@models/token/token-info";
 import { NotificationType, StatusOptions } from "@common/values/data-constant";
 
 export interface AccountHistoryModel {
@@ -8,7 +8,7 @@ export interface AccountHistoryModel {
 export interface TransactionModel {
   txType: NotificationType;
   txHash: string;
-  tokenInfo: TokenDefaultModel | TokenPairModel;
+  tokenInfo: TokenInfo | TokenPairInfo;
   status: StatusOptions;
   createdAt: string;
   content?: string;

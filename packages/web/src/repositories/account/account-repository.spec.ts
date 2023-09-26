@@ -3,7 +3,7 @@ import { MockStorageClient } from "@common/clients/storage-client/mock-storage-c
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
 import { AccountRepository } from "./account-repository";
-import { AccountRepositoryInstance } from "./account-repository-instance";
+import { AccountRepositoryImpl } from "./account-repository-impl";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -25,7 +25,7 @@ const defaultAccountInfo = {
 beforeEach(() => {
   walletClient = new AdenaClient();
   localStorageClient = new MockStorageClient("LOCAL");
-  accountRepository = new AccountRepositoryInstance(
+  accountRepository = new AccountRepositoryImpl(
     walletClient,
     localStorageClient,
   );
@@ -42,15 +42,11 @@ describe("get account", () => {
       data: defaultAccountInfo,
     });
 
-    const response = await accountRepository.getAccount();
+    const account = await accountRepository.getAccount();
 
-    expect(response).toBeTruthy();
-    expect(typeof response.code).toBe("number");
-    expect(typeof response.status).toBe("string");
-    expect(typeof response.type).toBe("string");
-    expect(typeof response.message).toBe("string");
-    expect(typeof response.data).toBe("object");
-    expect(typeof response.data?.address).toBe("string");
+    expect(account).toBeTruthy();
+    expect(typeof account).toBe("object");
+    expect(typeof account?.address).toBe("string");
   });
 
   it("not connected wallet error", async () => {

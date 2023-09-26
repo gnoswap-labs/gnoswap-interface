@@ -1,10 +1,10 @@
 export interface SwapRequest {
-  token0: {
-    tokenId: string;
+  tokenA: {
+    path: string;
     amount: number;
   };
-  token1: {
-    tokenId: string;
+  tokenB: {
+    path: string;
     amount: number;
   };
   type: "EXACT_IN" | "EXACT_OUT";

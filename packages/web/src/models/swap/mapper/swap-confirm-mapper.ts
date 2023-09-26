@@ -1,4 +1,3 @@
-import { amountEmptyNumberInit } from "@common/values/global-initial-value";
 import {
   SwapConfirmModel,
   SwapConfirmSuccessModel,
@@ -8,19 +7,23 @@ import { SwapResponse } from "@repositories/swap";
 
 export class SwapConfirmMapper {
   public static toConfirmRequest(model: SwapConfirmModel): SwapRequest {
-    const { tokenPair, type, slippage, gasFee } = model;
+    const {
+      tokenA,
+      tokenAAmount,
+      tokenB,
+      tokenBAmount,
+      type,
+      slippage,
+      gasFee,
+    } = model;
     return {
-      token0: {
-        tokenId: tokenPair.token0.tokenId,
-        amount: tokenPair.token0.amount
-          ? Number(tokenPair.token0.amount.value)
-          : amountEmptyNumberInit.value,
+      tokenA: {
+        path: tokenA.path,
+        amount: tokenAAmount.amount,
       },
-      token1: {
-        tokenId: tokenPair.token1.tokenId,
-        amount: tokenPair.token1.amount
-          ? Number(tokenPair.token1.amount.value)
-          : amountEmptyNumberInit.value,
+      tokenB: {
+        path: tokenB.path,
+        amount: tokenBAmount.amount,
       },
       type,
       slippage,

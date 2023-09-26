@@ -1,26 +1,49 @@
-import { IncentivizedOptions } from "@common/values/data-constant";
-import { TokenDefaultModel } from "@models/token/token-default-model";
-import { TokenPairModel } from "@models/token/token-pair-model";
-import { PoolSelectItemModel } from "./pool-select-item-model";
+import { TokenModel } from "@models/token/token-model";
+import { PoolBinModel } from "./pool-bin-model";
+import { AmountModel } from "@models/common/amount-model";
 
 export interface PoolModel {
-  poolId: string;
+  id: string;
 
-  feeRate: number;
+  name: string;
 
-  liquidity: TokenPairModel;
+  price: number;
 
-  rewards: Array<TokenDefaultModel>;
+  tokenA: TokenModel;
 
-  incentivizedType: IncentivizedOptions;
-}
+  tokenB: TokenModel;
 
-export function mapPoolModelToSelectItem(pool: PoolModel): PoolSelectItemModel {
-  const { poolId, liquidity, feeRate } = pool;
-  return {
-    poolId,
-    tokenPair: liquidity,
-    feeRate,
-    liquidityAmount: "0",
-  };
+  tokenABalance: number;
+
+  tokenBBalance: number;
+
+  tickSpacing: number;
+
+  currentTick: number;
+
+  bins: PoolBinModel[];
+
+  topBin: PoolBinModel;
+
+  tvl: AmountModel;
+
+  tvlChange: number;
+
+  volume: AmountModel;
+
+  volumeChange: number;
+
+  totalVolume: AmountModel;
+
+  fee: number;
+
+  feeVolume: number;
+
+  feeChange: number;
+
+  block: number;
+
+  dateUpdatedRaw: number;
+
+  apr: number;
 }

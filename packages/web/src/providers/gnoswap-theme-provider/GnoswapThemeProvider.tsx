@@ -14,9 +14,8 @@ const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
   const { breakpoint, handleBreakpoint } = useWindowSize();
 
   useEffect(() => {
-    handleWindowSize();
-
     if (typeof window !== "undefined") {
+      handleWindowSize();
       window.addEventListener("resize", handleWindowSize);
       return () => {
         window.removeEventListener("resize", handleWindowSize);
@@ -24,9 +23,9 @@ const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
     }
   }, [breakpoint]);
 
-  const handleWindowSize = () => {
+  function handleWindowSize() {
     handleBreakpoint(window?.innerWidth || DeviceSize.WEB);
-  };
+  }
 
   const theme = useMemo(() => {
     return getTheme(themeKey);

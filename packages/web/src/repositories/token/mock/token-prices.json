@@ -1,0 +1,73 @@
+{
+  "message": "Successful",
+  "count": 7,
+  "meta": {
+    "timestamp": 1695363312078,
+    "ageRaw": 56
+  },
+  "prices": {
+    "1inch": {
+      "usd": 0.03077532,
+      "changedBefore1D": 19.92,
+      "changedBefore7D": -12.09,
+      "changedBefore30D": 19.12,
+      "marketCap": 31142124125500000000,
+      "liquidity": 1421241255,
+      "volume": 311421241
+    },
+    "usd-coin": {
+      "usd": 0.999292,
+      "changedBefore1D": 19.92,
+      "changedBefore7D": -12.09,
+      "changedBefore30D": 19.12,
+      "marketCap": 31142124125500000000,
+      "liquidity": 1421241255,
+      "volume": 311421241
+    },
+    "weth": {
+      "usd": 1592.57,
+      "changedBefore1D": 19.92,
+      "changedBefore7D": -12.09,
+      "changedBefore30D": 19.12,
+      "marketCap": 31142124125500000000,
+      "liquidity": 1421241255,
+      "volume": 311421241
+    },
+    "uniswap": {
+      "usd": 4.23,
+      "changedBefore1D": 19.92,
+      "changedBefore7D": -12.09,
+      "changedBefore30D": 19.12,
+      "marketCap": 31142124125500000000,
+      "liquidity": 1421241255,
+      "volume": 311421241
+    },
+    "ethereum": {
+      "usd": 1618.72,
+      "changedBefore1D": 19.92,
+      "changedBefore7D": -12.09,
+      "changedBefore30D": 19.12,
+      "marketCap": 31142124125500000000,
+      "liquidity": 1421241255,
+      "volume": 311421241
+    },
+    "wrapped-bitcoin": {
+      "usd": 26598,
+      "changedBefore1D": 19.92,
+      "changedBefore7D": -12.09,
+      "changedBefore30D": 19.12,
+      "marketCap": 31142124125500000000,
+      "liquidity": 1421241255,
+      "volume": 311421241
+    },
+    "wrapped-steth": {
+      "usd": 1814.66,
+      "changedBefore1D": 19.92,
+      "changedBefore7D": -12.09,
+      "changedBefore30D": 19.12,
+      "marketCap": 31142124125500000000,
+      "liquidity": 1421241255,
+      "volume": 311421241
+    }
+  }
+}
