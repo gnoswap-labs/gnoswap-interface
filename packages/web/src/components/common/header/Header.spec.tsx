@@ -9,7 +9,9 @@ describe("Header Component", () => {
   it("should render", () => {
     const mockProps = {
       pathname: "/",
-      isConnected: true,
+      connected: false,
+      account: null,
+      connectAdenaClient: () => null,
       sideMenuToggle: true,
       onSideMenuToggle: () => null,
       searchMenuToggle: true,

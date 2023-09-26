@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
@@ -7,24 +7,22 @@ import WalletConnectorMenu from "@components/common/wallet-connector-menu/Wallet
 import { formatAddress } from "@utils/string-utils";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
-
-const FAKE_USERINFO = {
-  status: "IN_ACTIVE",
-  address: "g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt",
-  amount: {
-    value: "",
-    denom: "",
-  },
-};
+import { AccountInfo } from "@common/clients/wallet-client/protocols";
 
 interface WalletConnectProps {
-  isConnected: boolean;
+  account: AccountInfo | null;
+  connected: boolean;
+  connectAdenaClient: () => void;
 }
 
 const WalletConnectorButton: React.FC<WalletConnectProps> = ({
-  isConnected,
+  account,
+  connected,
+  connectAdenaClient,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
+
+  const address = useMemo(() => account?.address || "", [account?.address]);
 
   const onMenuToggle = () => {
     setToggle(prev => ({
@@ -35,10 +33,10 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
 
   return (
     <WalletConnectorButtonWrapper>
-      {isConnected ? (
+      {connected ? (
         <Button
           leftIcon={<IconAdenaLogo />}
-          text={formatAddress(FAKE_USERINFO.address)}
+          text={formatAddress(address)}
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           className={toggle.walletConnect ? "selected" : ""}
           style={{
@@ -68,7 +66,9 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       )}
       {toggle.walletConnect && (
         <WalletConnectorMenu
-          isConnected={isConnected}
+          account={account}
+          connected={connected}
+          connectAdenaClient={connectAdenaClient}
           onMenuToggle={onMenuToggle}
         />
       )}
