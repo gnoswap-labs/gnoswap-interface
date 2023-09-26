@@ -11,7 +11,7 @@ export interface PoolBinModel {
 
   lpTokenId: string;
 
-  timestamp: number;
+  timestamp: string;
 
   annualizedFeeGrowth: number;
 }

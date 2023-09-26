@@ -41,9 +41,5 @@ export interface PoolModel {
 
   feeChange: number;
 
-  block: number;
-
-  dateUpdatedRaw: number;
-
   apr: number;
 }

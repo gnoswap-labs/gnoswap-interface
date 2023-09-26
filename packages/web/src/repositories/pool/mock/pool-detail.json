@@ -11,7 +11,7 @@
       "decimals": 6,
       "logoURI": "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
       "priceId": "1inch",
-      "createdAt": "1999-01-01T00:00:01Z"
+      "createdAt": "2023-09-26T05:36:37+09:00"
     },
     "tokenB": {
       "name": "Wrapped Ether",
@@ -21,7 +21,7 @@
       "decimals": 6,
       "chainId": "test3",
       "priceId": "weth",
-      "createdAt": "1999-01-01T00:00:02Z",
+      "createdAt": "2023-09-26T05:36:37+09:00",
       "isWrappedGasToken": true,
       "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png"
     },
@@ -48,28 +48,6 @@
     "tokenABalance": 49.981458116220594,
     "tokenBBalance": 24049.763462426952,
     "tickSpacing": 40,
-    "bins": [
-      {
-        "binId": "1",
-        "poolId": "0x001903de96a72d11d27cd8c2bee003a730e032a8",
-        "currentTick": 15,
-        "reserveA": 49.981458116220594,
-        "reserveB": 1223.4471028043677,
-        "lpTokenId": "1",
-        "timestamp": 1695119471,
-        "annualizedFeeGrowth": 0
-      },
-      {
-        "binId": "2",
-        "poolId": "0x001903de96a72d11d27cd8c2bee003a730e032a8",
-        "currentTick": 16,
-        "reserveA": 0,
-        "reserveB": 1264.593283181672,
-        "lpTokenId": "2",
-        "timestamp": 1695117095,
-        "annualizedFeeGrowth": 0
-      }
-    ],
     "resolvedBins": [
       {
         "binId": "1",
@@ -78,7 +56,7 @@
         "reserveA": 49.981458116220594,
         "reserveB": 1223.4471028043677,
         "lpTokenId": "1",
-        "timestamp": 1695119471,
+        "timestamp": "2023-09-26T05:36:37+09:00",
         "annualizedFeeGrowth": 0
       },
       {
@@ -88,7 +66,29 @@
         "reserveA": 0,
         "reserveB": 1264.593283181672,
         "lpTokenId": "2",
-        "timestamp": 1695117095,
+        "timestamp": "2023-09-26T05:36:37+09:00",
+        "annualizedFeeGrowth": 0
+      }
+    ],
+    "bins": [
+      {
+        "binId": "1",
+        "poolId": "0x001903de96a72d11d27cd8c2bee003a730e032a8",
+        "currentTick": 15,
+        "reserveA": 49.981458116220594,
+        "reserveB": 1223.4471028043677,
+        "lpTokenId": "1",
+        "timestamp": "2023-09-26T05:36:37+09:00",
+        "annualizedFeeGrowth": 0
+      },
+      {
+        "binId": "2",
+        "poolId": "0x001903de96a72d11d27cd8c2bee003a730e032a8",
+        "currentTick": 16,
+        "reserveA": 0,
+        "reserveB": 1264.593283181672,
+        "lpTokenId": "2",
+        "timestamp": "2023-09-26T05:36:37+09:00",
         "annualizedFeeGrowth": 0
       }
     ],
@@ -99,11 +99,9 @@
       "reserveA": 49.981458116220594,
       "reserveB": 1223.4471028058367,
       "lpTokenId": "3",
-      "timestamp": 1695119471,
+      "timestamp": "2023-09-26T05:36:37+09:00",
       "annualizedFeeGrowth": 0
     },
-    "block": 18177740,
-    "dateUpdatedRaw": 169522065152,
     "apr": 148.07
   }
 }
