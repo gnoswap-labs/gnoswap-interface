@@ -43,10 +43,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [rpcProvider, setRPCProvider] = useState<Provider | null>(null);
 
   useEffect(() => {
-    try {
-      const provider = new WSProvider(network.wsUrl, 5 * 1000);
-      provider.waitForOpenConnection().then(() => setRPCProvider(provider));
-    } catch { }
+    const provider = new WSProvider(network.wsUrl, 5 * 1000);
+    provider.waitForOpenConnection().then(() => setRPCProvider(provider));
   }, [network]);
 
   const accountRepository = useMemo(() => {
