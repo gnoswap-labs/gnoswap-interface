@@ -1,5 +1,6 @@
-import { TokenPairModel } from "@models/token/token-pair-model";
+import { TokenPairInfo } from "@models/token/token-pair-info";
 import { addressValidationCheck } from "./validation-utils";
+import { TokenModel } from "@models/token/token-model";
 
 /**
  * Shortens an address by N characters.
@@ -20,9 +21,21 @@ export function formatAddress(address: string, num?: number): string {
 }
 
 export function tokenPairSymbolToOneCharacter(
-  tokenPair: TokenPairModel,
+  tokenPair: TokenPairInfo,
 ): string {
-  const symbol0 = tokenPair.token0.symbol;
-  const symbol1 = tokenPair.token1.symbol;
+  const symbol0 = tokenPair.tokenA.symbol;
+  const symbol1 = tokenPair.tokenB.symbol;
   return `${symbol0}/${symbol1}`;
+}
+
+export function makePairName({
+  tokenA,
+  tokenB,
+}: {
+  tokenA: TokenModel;
+  tokenB: TokenModel;
+}): string {
+  const symbolA = tokenA.symbol;
+  const symbolB = tokenB.symbol;
+  return `${symbolA}/${symbolB}`;
 }

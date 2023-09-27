@@ -1,37 +1,43 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
-import React from "react";
+import { makePairName } from "@utils/string-utils";
+import React, { useMemo } from "react";
 import { wrapper } from "./PoolIncentivizeDetails.styles";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import BigNumber from "bignumber.js";
 
 interface PoolIncentivizeDetailsProps {
-  details: any;
+  details: PoolDetailModel;
 }
 
 const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   details,
 }) => {
+  const feeStr = useMemo(() => {
+    return BigNumber(details.fee).toString();
+  }, [details]);
+
   return (
     <div css={wrapper}>
       <section>
         <h5 className="section-title">Pool</h5>
         <div className="section-info">
           <DoubleLogo
-            left={details.tokenPair.token0.tokenLogo}
-            right={details.tokenPair.token1.tokenLogo}
+            left={details.tokenA.logoURI}
+            right={details.tokenB.logoURI}
             size={24}
           />
           <span className="pair-symbol">
-            {tokenPairSymbolToOneCharacter(details.tokenPair)}
+            {makePairName(details)}
           </span>
-          <Badge text={details.feeRate} type={BADGE_TYPE.DARK_DEFAULT} />
+          <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
         </div>
       </section>
       <section>
         <h5 className="section-title">Total Amount</h5>
         <div className="section-info">
           <img
-            src={details.tokenPair.token0.tokenLogo}
+            src={details.tokenA.logoURI}
             alt="token-logo"
             className="token-logo"
           />

@@ -7,7 +7,7 @@ import { wrapper } from "./UnstakeLiquidity.styles";
 interface UnstakeLiquidityProps {
   data: any[];
   checkedList: string[];
-  onCheckedItem: (checked: boolean, tokenId: string) => void;
+  onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
 }

@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import { FEE_RATE_OPTION, PriceRangeType } from "@constants/option.constant";
 import { DUMMY_FEE_TIERS, DUMMY_POOL_TICKS, DUMMY_PRICE_RANGE_MAP } from "./earn-add-liquidity-dummy";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 
 export interface AddLiquidityFeeTier {
@@ -40,24 +40,24 @@ const priceRangeMap = DUMMY_PRICE_RANGE_MAP;
 const ticks = DUMMY_POOL_TICKS;
 
 const token0Data = {
-  tokenId: "1",
-  tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+  path: "1",
+  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
   name: "Bitcoin",
   symbol: "BTC",
 };
 
 const token1Data = {
-  tokenId: "2",
-  tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+  path: "2",
+  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
   name: "Ethereum",
   symbol: "ETH",
 };
 
 const EarnAddLiquidityContainer: React.FC = () => {
-  const [token0, setToken0] = useState<TokenDefaultModel>(token0Data);
-  const [token1, setToken1] = useState<TokenDefaultModel>(token1Data);
-  const token0AmountInput = useTokenAmountInput(token0);
-  const token1AmountInput = useTokenAmountInput(token1);
+  const [tokenA, setToken0] = useState<TokenInfo>(token0Data);
+  const [tokenB, setToken1] = useState<TokenInfo>(token1Data);
+  const token0AmountInput = useTokenAmountInput(tokenA);
+  const token1AmountInput = useTokenAmountInput(tokenB);
   const [feeRate, setFeeRate] = useState<FEE_RATE_OPTION>();
   const [priceRange, setPriceRange] = useState<PriceRangeType>();
 
@@ -84,19 +84,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
     setPriceRange(priceRange);
   }, []);
 
-  const changeToken0 = useCallback((token: TokenDefaultModel) => {
+  const changeToken0 = useCallback((token: TokenInfo) => {
     setToken0(token);
   }, []);
 
-  const changeToken1 = useCallback((token: TokenDefaultModel) => {
+  const changeToken1 = useCallback((token: TokenInfo) => {
     setToken1(token);
   }, []);
 
   return (
     <EarnAddLiquidity
       mode={"POOL"}
-      token0={token0}
-      token1={token1}
+      tokenA={tokenA}
+      tokenB={tokenB}
       token0Input={token0AmountInput}
       token1Input={token1AmountInput}
       changeToken0={changeToken0}

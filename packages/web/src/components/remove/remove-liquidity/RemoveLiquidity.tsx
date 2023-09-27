@@ -1,13 +1,13 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import React, { useCallback, useMemo } from "react";
-import RemoveLiquiditySelectList from "@components/remove/remove-liquidity-select-list/RemoveLiquiditySelectList";
-import RemoveLiquiditySelectResult from "@components/remove/remove-liquidity-select-result/RemoveLiquiditySelectResult";
 import { wrapper } from "./RemoveLiquidity.styles";
-import { LiquidityInfoModel } from "@models/liquidity/liquidity-info-model";
+import { LPPositionModel } from "@models/position/lp-position-model";
+import RemoveLiquiditySelectList from "../remove-liquidity-select-list/RemoveLiquiditySelectList";
+import RemoveLiquiditySelectResult from "../remove-liquidity-select-result/RemoveLiquiditySelectResult";
 
 interface RemoveLiquidityProps {
   selectedAll: boolean;
-  liquidities: LiquidityInfoModel[];
+  lpPositions: LPPositionModel[];
   selectedIds: string[];
   select: (id: string) => void;
   selectAll: () => void;
@@ -16,15 +16,15 @@ interface RemoveLiquidityProps {
 
 const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   selectedAll,
-  liquidities,
+  lpPositions,
   selectedIds,
   select,
   selectAll,
   removeLiquidity,
 }) => {
   const selectedLiquidites = useMemo(() => {
-    return liquidities.filter(liquidity => selectedIds.includes(liquidity.liquidityId));
-  }, [selectedIds, liquidities]);
+    return lpPositions.filter(lpPosition => selectedIds.includes(lpPosition.lpRewardId));
+  }, [selectedIds, lpPositions]);
 
   const disabledConfirm = useMemo(() => {
     return selectedLiquidites.length === 0;
@@ -38,7 +38,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
     <div css={wrapper}>
       <h3 className="title">Remove Liquidity</h3>
       <RemoveLiquiditySelectList
-        liquidities={liquidities}
+        lpPositions={lpPositions}
         selectedIds={selectedIds}
         selectedAll={selectedAll}
         select={select}

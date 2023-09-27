@@ -1,3 +1,3 @@
 export interface RemoveLiquidityRequest {
-  liquidityIds: Array<string>;
+  positionIds: Array<string>;
 }

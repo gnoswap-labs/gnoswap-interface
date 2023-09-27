@@ -7,31 +7,31 @@ export default {
   component: EarnAddConfirm,
 } as Meta<typeof EarnAddConfirm>;
 
-const token0 = {
+const tokenA = {
   info: {
-    tokenId: "1",
+    path: "1",
     name: "Gnoland",
     symbol: "GNOT",
-    tokenLogo: "",
+    logoURI: "",
   },
   amount: "12,211",
   usdPrice: "$12.3",
 };
 
-const token1 = {
+const tokenB = {
   info: {
-    tokenId: "2",
+    path: "2",
     name: "Ether",
     symbol: "ETH",
-    tokenLogo: "",
+    logoURI: "",
   },
   amount: "12,211",
   usdPrice: "$12.3",
 };
 
 const amountInfo = {
-  token0: token0,
-  token1: token1,
+  tokenA: tokenA,
+  tokenB: tokenB,
   feeRate: "0.30%"
 };
 
@@ -46,7 +46,7 @@ const priceRangeInfo = {
 };
 
 const feeInfo = {
-  token: token0.info,
+  token: tokenA.info,
   fee: "-500",
 };
 

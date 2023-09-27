@@ -43,7 +43,7 @@ const TooltipContent: React.FC<TooltipContentProps> = ({ info }) => {
                 {item.tokens.map((token: any, idx: number) => (
                   <li key={idx}>
                     <img
-                      src={token.tokenLogo}
+                      src={token.logoURI}
                       alt="token logo image"
                       className="token-logo"
                     />

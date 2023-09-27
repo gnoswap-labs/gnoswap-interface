@@ -9,15 +9,17 @@ export const useWindowSize = () => {
     return width > DeviceSize.tablet
       ? DEVICE_TYPE.WEB
       : width > DeviceSize.mobile
-      ? DEVICE_TYPE.TABLET
-      : width > DeviceSize.mobile
-      ? DEVICE_TYPE.TABLET_M
-      : DEVICE_TYPE.MOBILE;
+        ? DEVICE_TYPE.TABLET
+        : width > DeviceSize.mobile
+          ? DEVICE_TYPE.TABLET_M
+          : DEVICE_TYPE.MOBILE;
   };
 
   const handleBreakpoint = (width: number) => {
     const device = findDeviceType(width);
-    breakpoint !== device && setBreakpoint(device);
+    if (breakpoint !== device) {
+      setBreakpoint(device);
+    }
   };
 
   return { breakpoint, handleBreakpoint };

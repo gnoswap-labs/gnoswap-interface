@@ -2,62 +2,62 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useCallback, useMemo } from "react";
-import { LiquidityInfoModel } from "@models/liquidity/liquidity-info-model";
 import { RemoveLiquiditySelectListItemWrapper } from "./RemoveLiquiditySelectListItem.styles";
+import { LPPositionModel } from "@models/position/lp-position-model";
 
 interface RemoveLiquiditySelectListItemProps {
   selected: boolean;
-  liquidity: LiquidityInfoModel;
+  lpPosition: LPPositionModel;
   select: (id: string) => void;
 }
 
 const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps> = ({
   selected,
-  liquidity,
+  lpPosition,
   select,
 }) => {
 
   const selectable = useMemo(() => {
-    return liquidity.stakeType === "UNSTAKED";
-  }, [liquidity.stakeType]);
+    return lpPosition.position.balance > 0;
+  }, [lpPosition]);
 
   const doubleLogo = useMemo(() => {
-    const { token0, token1 } = liquidity.tokenPair;
+    const { tokenA, tokenB } = lpPosition.position.pool;
     return {
-      left: token0.tokenLogo,
-      right: token1.tokenLogo,
+      left: tokenA.logoURI,
+      right: tokenB.logoURI,
     };
-  }, [liquidity.tokenPair]);
+  }, [lpPosition]);
 
   const onChangeCheckbox = useCallback(() => {
-    select(liquidity.liquidityId);
-  }, [liquidity.liquidityId, select]);
+    select(lpPosition.lpRewardId);
+  }, [lpPosition.lpRewardId, select]);
 
   return (
     <RemoveLiquiditySelectListItemWrapper selected={selected}>
       <input
-        id={`checkbox-item-${liquidity.liquidityId}`}
+        id={`checkbox-item-${lpPosition.lpRewardId}`}
         type="checkbox"
         disabled={!selectable}
         checked={selected}
         onChange={onChangeCheckbox}
       />
-      <label htmlFor={`checkbox-item-${liquidity.liquidityId}`} />
+      <label htmlFor={`checkbox-item-${lpPosition.lpRewardId}`} />
       <DoubleLogo {...doubleLogo} size={24} />
-      <span className="token-id">{liquidity.liquidityId}</span>
+      <span className="token-id">{lpPosition.lpRewardId}</span>
       {!selectable && (
         <div className="hover-info">
           <Tooltip
             placement="top"
             FloatingContent={
-              <div>You need to unstake your liquidity first</div>
+              <div>You need to unstake your lpPosition first</div>
             }
           >
             <IconInfo className="icon-info" />
           </Tooltip>
         </div>
       )}
-      <span className="liquidity-value">{liquidity.amount}</span>
+      <span className="liquidity-value">{lpPosition.position.balance}</span>
     </RemoveLiquiditySelectListItemWrapper>
   );
 };

@@ -9,6 +9,7 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModalProvider";
 import ModalContainer from "@containers/modal-container/ModalContainer";
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -28,12 +29,14 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
         <JotaiProvider>
-          <GnoswapThemeProvider>
-            <Component {...pageProps} />
-            <GnoswapModalProvider selector={"portal-root"} >
-              <ModalContainer />
-            </GnoswapModalProvider>
-          </GnoswapThemeProvider>
+          <GnoswapServiceProvider>
+            <GnoswapThemeProvider>
+              <Component {...pageProps} />
+              <GnoswapModalProvider selector={"portal-root"} >
+                <ModalContainer />
+              </GnoswapModalProvider>
+            </GnoswapThemeProvider>
+          </GnoswapServiceProvider >
         </JotaiProvider>
       </Hydrate>
     </QueryClientProvider>

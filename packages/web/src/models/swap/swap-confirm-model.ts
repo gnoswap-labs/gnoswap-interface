@@ -1,9 +1,13 @@
-import { TokenPairModel } from "@models/token/token-pair-model";
 import { ExactTypeOption } from "@common/values/data-constant";
 import BigNumber from "bignumber.js";
+import { AmountModel } from "@models/common/amount-model";
+import { TokenInfo } from "@models/token/token-info";
 
 export interface SwapConfirmModel {
-  tokenPair: TokenPairModel;
+  tokenA: TokenInfo;
+  tokenB: TokenInfo;
+  tokenAAmount: AmountModel;
+  tokenBAmount: AmountModel;
   type: ExactTypeOption;
   slippage: number;
   gasFee: BigNumber;

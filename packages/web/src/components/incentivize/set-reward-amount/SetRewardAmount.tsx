@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
 import { SetRewardAmountWrapper } from "./SetRewardAmount.styles";
-import { TokenBalanceModel } from "@models/token/token-balance-model";
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import SelectTokenBalance from "@components/common/select-token-balance/SelectTokenBalance";
 
 interface SetRewardAmountProps {
-  token: TokenBalanceModel | null;
-  tokens: TokenBalanceModel[];
+  token: TokenBalanceInfo | null;
+  tokens: TokenBalanceInfo[];
   amount: string;
-  selectToken: (tokenId: string) => void;
+  selectToken: (path: string) => void;
   onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

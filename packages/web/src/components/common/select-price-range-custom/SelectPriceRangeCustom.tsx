@@ -4,21 +4,21 @@ import IconSwap from "../icons/IconSwap";
 import SelectPriceRangeCutomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
 import SelectTab from "../select-tab/SelectTab";
 import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 import { PoolTick } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import PoolGraph from "../pool-graph/PoolGraph";
 import BigNumber from "bignumber.js";
 
 export interface SelectPriceRangeCustomProps {
-  token0: TokenDefaultModel | undefined;
-  token1: TokenDefaultModel | undefined;
+  tokenA: TokenInfo | undefined;
+  tokenB: TokenInfo | undefined;
   currentTick?: PoolTick;
   ticks: PoolTick[];
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
-  token0,
-  token1,
+  tokenA,
+  tokenB,
   currentTick,
   ticks,
 }) => {
@@ -26,12 +26,12 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const [maxTick, setMaxTick] = useState<PoolTick>();
 
   const token0Symbol = useMemo(() => {
-    return token0?.symbol || "";
-  }, [token0]);
+    return tokenA?.symbol || "";
+  }, [tokenA]);
 
   const token1Symbol = useMemo(() => {
-    return token1?.symbol || "";
-  }, [token1]);
+    return tokenB?.symbol || "";
+  }, [tokenB]);
 
   const tabItems = useMemo(() => {
     return [token0Symbol, token1Symbol];

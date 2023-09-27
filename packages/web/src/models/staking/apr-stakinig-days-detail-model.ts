@@ -1,4 +1,4 @@
-import { TokenPairModel } from "@models/token/token-pair-model";
+import { TokenPairInfo } from "@models/token/token-pair-info";
 import { StakedOptions } from "@common/values/data-constant";
 
 export interface AprStakingDaysDetailModel {
@@ -10,5 +10,5 @@ interface AprStakingDaysDetailType {
   period: number;
   stakeType: StakedOptions;
   unstakedAt: string | null;
-  tokenPair: TokenPairModel;
+  tokenPair: TokenPairInfo;
 }

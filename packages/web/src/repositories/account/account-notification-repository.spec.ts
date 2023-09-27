@@ -6,7 +6,8 @@ import { generateTokenModel } from "@common/utils/test-util";
 import { NotificationType } from "@common/values/data-constant";
 import { TransactionModel } from "@models/account/account-history-model";
 import { AccountNotificationRepository } from "./account-notification-repository";
-import { AccountRepositoryInstance } from "./account-repository-instance";
+import { AccountRepositoryImpl } from "./account-repository-impl";
+import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -15,8 +16,9 @@ let accountNotificationRepository: AccountNotificationRepository;
 beforeEach(() => {
   walletClient = new AdenaClient();
   localStorageClient = new MockStorageClient("LOCAL");
-  accountNotificationRepository = new AccountRepositoryInstance(
+  accountNotificationRepository = new AccountRepositoryImpl(
     walletClient,
+    new AxiosClient(),
     localStorageClient,
   );
   jest.clearAllMocks();

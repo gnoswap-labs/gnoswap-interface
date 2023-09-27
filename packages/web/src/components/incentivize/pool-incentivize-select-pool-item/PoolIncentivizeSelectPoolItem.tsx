@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import { PoolIncentivizeSelectPoolItemWrapper, PoolIncentivizeSelectPoolItemDefaultWrapper } from "./PoolIncentivizeSelectPoolItem.styles";
-import { PoolSelectItemModel } from "@models/pool/pool-select-item-model";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Badge from "@components/common/badge/Badge";
+import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 
 export interface PoolIncentivizeSelectPoolItemProps {
-  poolSelectItem: PoolSelectItemModel | null;
+  poolSelectItem: PoolSelectItemInfo | null;
   visibleLiquidity: boolean;
   select: (poolId: string) => void;
 }
@@ -24,19 +24,17 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
         right: ""
       };
     }
-    const tokenPair = poolSelectItem?.tokenPair;
     return {
-      left: tokenPair.token0.tokenLogo,
-      right: tokenPair.token1.tokenLogo,
+      left: poolSelectItem.tokenA.logoURI,
+      right: poolSelectItem.tokenB.logoURI,
     };
-  }, [poolSelectItem?.tokenPair, selected]);
+  }, [poolSelectItem, selected]);
 
   const tokenPairName = useMemo(() => {
     if (!poolSelectItem) {
       return "-";
     }
-    const tokenPair = poolSelectItem.tokenPair;
-    return `${tokenPair.token0.symbol}/${tokenPair.token1.symbol}`;
+    return `${poolSelectItem.tokenA.symbol}/${poolSelectItem.tokenB.symbol}`;
   }, [poolSelectItem]);
 
   const feeTier = useMemo(() => {

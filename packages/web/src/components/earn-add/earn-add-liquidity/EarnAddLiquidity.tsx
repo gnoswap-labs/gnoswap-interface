@@ -6,7 +6,7 @@ import { EarnAddLiquidityWrapper } from "./EarnAddLiquidity.styles";
 import { AddLiquidityType, FEE_RATE_OPTION, PriceRangeType } from "@constants/option.constant";
 import { AddLiquidityFeeTier, AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 import SelectPair from "@components/common/select-pair/SelectPair";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -17,10 +17,10 @@ import SelectPriceRangeSummary from "@components/common/select-price-range-summa
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
-  token0: TokenDefaultModel | undefined;
-  token1: TokenDefaultModel | undefined;
-  changeToken0: (token: TokenDefaultModel) => void;
-  changeToken1: (token: TokenDefaultModel) => void;
+  tokenA: TokenInfo | undefined;
+  tokenB: TokenInfo | undefined;
+  changeToken0: (token: TokenInfo) => void;
+  changeToken1: (token: TokenInfo) => void;
   token0Input: TokenAmountInputModel;
   token1Input: TokenAmountInputModel;
   feeTiers: AddLiquidityFeeTier[];
@@ -35,8 +35,8 @@ interface EarnAddLiquidityProps {
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
-  token0,
-  token1,
+  tokenA,
+  tokenB,
   changeToken0,
   changeToken1,
   token0Input,
@@ -56,16 +56,16 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const [openedPriceRange, setOpenedPriceRange] = useState(true);
 
   const existTokenPair = useMemo(() => {
-    return token0 !== undefined && token1 !== undefined;
-  }, [token0, token1]);
+    return tokenA !== undefined && tokenB !== undefined;
+  }, [tokenA, tokenB]);
 
   const token0Logo = useMemo(() => {
-    return token0?.tokenLogo || "";
-  }, [token0]);
+    return tokenA?.logoURI || "";
+  }, [tokenA]);
 
   const token1Logo = useMemo(() => {
-    return token1?.tokenLogo || "";
-  }, [token1]);
+    return tokenB?.logoURI || "";
+  }, [tokenB]);
 
   const selectedFeeRate = useMemo(() => {
     if (!feeRate) {
@@ -85,11 +85,11 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     if (priceRange !== "Custom") {
       return false;
     }
-    if (!token0 || !token1) {
+    if (!tokenA || !tokenB) {
       return false;
     }
     return true;
-  }, [priceRange, token0, token1]);
+  }, [priceRange, tokenA, tokenB]);
 
   const toggleSelectPair = useCallback(() => {
     setOpenedSelectPair(!openedSelectPair);
@@ -120,8 +120,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           </div>
           {openedSelectPair && (
             <SelectPair
-              token0={token0}
-              token1={token1}
+              tokenA={tokenA}
+              tokenB={tokenB}
               changeToken0={changeToken0}
               changeToken1={changeToken1}
             />
@@ -170,8 +170,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           {selectableCustomPriceRange && (
             <SelectPriceRangeCustom
               currentTick={currentTick}
-              token0={token0}
-              token1={token1}
+              tokenA={tokenA}
+              tokenB={tokenB}
               ticks={ticks}
             />
           )}

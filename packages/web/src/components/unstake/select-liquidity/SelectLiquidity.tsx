@@ -5,7 +5,7 @@ import { wrapper } from "./SelectLiquidity.styles";
 interface SelectLiquidityProps {
   list: any[];
   checkedList: string[];
-  onCheckedItem: (checked: boolean, tokenId: string) => void;
+  onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
 }

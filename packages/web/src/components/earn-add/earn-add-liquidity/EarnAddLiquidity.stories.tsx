@@ -13,15 +13,15 @@ export default {
 const Template: ComponentStory<typeof EarnAddLiquidity> = args => (
   <EarnAddLiquidity {...args} />
 );
-const token0 = {
-  tokenId: "1",
-  tokenLogo: "",
+const tokenA = {
+  path: "1",
+  logoURI: "",
   name: "Bitcoin",
   symbol: "BTC",
 };
-const token1 = {
-  tokenId: "2",
-  tokenLogo: "",
+const tokenB = {
+  path: "2",
+  logoURI: "",
   name: "Ethereum",
   symbol: "ETH",
 };
@@ -29,8 +29,8 @@ const token1 = {
 export const Default = Template.bind({});
 Default.args = {
   mode: "POOL",
-  token0: token0,
-  token1: token1,
+  tokenA: tokenA,
+  tokenB: tokenB,
   feeTiers: DUMMY_FEE_TIERS,
   feeRate: "0.01",
   selectFeeTier: action("selectFeeTier"),

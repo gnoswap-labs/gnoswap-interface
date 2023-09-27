@@ -22,7 +22,7 @@ export const selectLiquidityInit = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     ],
-    tokenId: "#11111",
+    path: "#11111",
     liquidity: "$145,541.10",
     staked: STAKED_OPTION.UNSTAKED,
   },
@@ -31,7 +31,7 @@ export const selectLiquidityInit = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     ],
-    tokenId: "#22222",
+    path: "#22222",
     liquidity: "$145,541.10",
     staked: STAKED_OPTION.UNSTAKED,
   },
@@ -53,12 +53,12 @@ const StakeLiquidityContainer: React.FC = () => {
   const [checkedAll, setCheckedAll] = useState(false);
 
   const onCheckedItem = useCallback(
-    (isChecked: boolean, tokenId: string) => {
+    (isChecked: boolean, path: string) => {
       if (isChecked) {
-        return setCheckedList((prev: string[]) => [...prev, tokenId]);
+        return setCheckedList((prev: string[]) => [...prev, path]);
       }
-      if (!isChecked && checkedList.includes(tokenId)) {
-        return setCheckedList(checkedList.filter(el => el !== tokenId));
+      if (!isChecked && checkedList.includes(path)) {
+        return setCheckedList(checkedList.filter(el => el !== path));
       }
     },
     [checkedList],
@@ -69,7 +69,7 @@ const StakeLiquidityContainer: React.FC = () => {
       setCheckedAll((prev: boolean) => !prev);
       if (checked) {
         const filterCheckList: string[] = [];
-        selectLiquidityInit.forEach(item => filterCheckList.push(item.tokenId));
+        selectLiquidityInit.forEach(item => filterCheckList.push(item.path));
         setCheckedList(filterCheckList);
       } else {
         setCheckedList([]);

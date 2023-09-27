@@ -13,7 +13,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers }) => {
       <h2 className="card-title">Top 3 Losers</h2>
       {losers.map((loser, idx) => (
         <div className="card-wrap" key={idx}>
-          <img src={loser?.tokenLogo} alt="logo" />
+          <img src={loser?.logoURI} alt="logo" />
           <span className="name">{loser.name}</span>
           <span className="symbol">{loser.symbol}</span>
           <span className="price">{loser.price}</span>

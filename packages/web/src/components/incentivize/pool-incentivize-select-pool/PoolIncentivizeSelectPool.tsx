@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { PoolIncentivizeSelectPoolBox, PoolIncentivizeSelectPoolWrapper } from "./PoolIncentivizeSelectPool.styles";
-import { PoolSelectItemModel } from "@models/pool/pool-select-item-model";
 import PoolIncentivizeSelectPoolItem from "../pool-incentivize-select-pool-item/PoolIncentivizeSelectPoolItem";
 import SearchInput from "@components/common/search-input/SearchInput";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
+import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 
 export interface PoolIncentivizeSelectPoolProps {
-  selectedPool: PoolSelectItemModel | null;
-  pools: PoolSelectItemModel[];
+  selectedPool: PoolSelectItemInfo | null;
+  pools: PoolSelectItemInfo[];
   select: (poolId: string) => void;
 }
 
@@ -30,16 +30,16 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
       if (pool.poolId.includes(searchKeyword)) {
         return true;
       }
-      const token0 = pool.tokenPair.token0;
-      const token1 = pool.tokenPair.token1;
+      const tokenA = pool.tokenA;
+      const tokenB = pool.tokenB;
       if (
-        token0.name.toUpperCase().includes(upperSearchKeyword) ||
-        token0.symbol.toUpperCase().includes(upperSearchKeyword)) {
+        tokenA.name.toUpperCase().includes(upperSearchKeyword) ||
+        tokenA.symbol.toUpperCase().includes(upperSearchKeyword)) {
         return true;
       }
       if (
-        token1.name.toUpperCase().includes(upperSearchKeyword) ||
-        token1.symbol.toUpperCase().includes(upperSearchKeyword)) {
+        tokenB.name.toUpperCase().includes(upperSearchKeyword) ||
+        tokenB.symbol.toUpperCase().includes(upperSearchKeyword)) {
         return true;
       }
       return false;

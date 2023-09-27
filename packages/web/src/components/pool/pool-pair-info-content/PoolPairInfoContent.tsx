@@ -27,33 +27,33 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <div className="list">
                 <div className="coin-info">
                   <img
-                    src={poolInfo.tokenPair.token0.tokenLogo}
+                    src={poolInfo.tokenPair.tokenA.logoURI}
                     alt="token logo"
                     className="token-logo"
                   />
                   <span className="content">
-                    {poolInfo.tokenPair.token0.symbol} (
-                    {poolInfo.tokenPair.token0.compositionPercent}%)
+                    {poolInfo.tokenPair.tokenA.symbol} (
+                    {poolInfo.tokenPair.tokenA.compositionPercent}%)
                   </span>
                 </div>
                 <span className="content">
-                  {poolInfo.tokenPair.token0.composition}
+                  {poolInfo.tokenPair.tokenA.composition}
                 </span>
               </div>
               <div className="list">
                 <div className="coin-info">
                   <img
-                    src={poolInfo.tokenPair.token1.tokenLogo}
+                    src={poolInfo.tokenPair.tokenB.logoURI}
                     alt="token logo"
                     className="token-logo"
                   />
                   <span className="content">
-                    {poolInfo.tokenPair.token1.symbol} (
-                    {poolInfo.tokenPair.token1.compositionPercent}%)
+                    {poolInfo.tokenPair.tokenB.symbol} (
+                    {poolInfo.tokenPair.tokenB.compositionPercent}%)
                   </span>
                 </div>
                 <span className="content">
-                  {poolInfo.tokenPair.token1.composition}
+                  {poolInfo.tokenPair.tokenB.composition}
                 </span>
               </div>
             </TooltipContent>

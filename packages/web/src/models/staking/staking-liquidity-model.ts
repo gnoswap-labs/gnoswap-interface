@@ -1,4 +1,4 @@
-import { TokenPairModel } from "@models/token/token-pair-model";
+import { TokenPairInfo } from "@models/token/token-pair-info";
 import {
   LiquidityProvideOptions,
   StakedOptions,
@@ -13,13 +13,13 @@ interface StakingLiquidityType {
   liquidityId: string;
   liquidityType: LiquidityProvideOptions;
   stakeType: StakedOptions;
-  tokenPair: TokenPairModel;
+  tokenPair: TokenPairInfo;
   inRange: boolean;
   minPrice: number;
   maxPrice: number;
   rewards: {
-    swap: TokenPairModel;
-    staking: TokenPairModel;
+    swap: TokenPairInfo;
+    staking: TokenPairInfo;
   };
-  apr: TokenPairModel;
+  apr: TokenPairInfo;
 }

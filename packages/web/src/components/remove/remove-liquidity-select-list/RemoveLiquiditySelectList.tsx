@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
-import RemoveLiquiditySelectListItem from "@components/remove/remove-liquidity-select-list-item/RemoveLiquiditySelectListItem";
 import { RemoveLiquiditySelectListWrapper } from "./RemoveLiquiditySelectList.styles";
-import { LiquidityInfoModel } from "@models/liquidity/liquidity-info-model";
+import { LPPositionModel } from "@models/position/lp-position-model";
+import RemoveLiquiditySelectListItem from "../remove-liquidity-select-list-item/RemoveLiquiditySelectListItem";
 
 interface RemoveLiquiditySelectListProps {
   selectedAll: boolean;
-  liquidities: LiquidityInfoModel[];
+  lpPositions: LPPositionModel[];
   selectedIds: string[];
   select: (id: string) => void;
   selectAll: () => void;
@@ -13,14 +13,14 @@ interface RemoveLiquiditySelectListProps {
 
 const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   selectedAll,
-  liquidities,
+  lpPositions,
   selectedIds,
   select,
   selectAll,
 }) => {
 
-  const isSelectLiquidity = useCallback((liquidity: LiquidityInfoModel) => {
-    return selectedIds.findIndex(id => id === liquidity.liquidityId) > -1;
+  const isSelectLiquidity = useCallback((lpPosition: LPPositionModel) => {
+    return selectedIds.findIndex(id => id === lpPosition.lpRewardId) > -1;
   }, [selectedIds]);
 
   return (
@@ -36,11 +36,11 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
         <span>Liquidity</span>
       </div>
       <ul>
-        {liquidities.map((liquidity, index) => (
+        {lpPositions.map((lpPosition, index) => (
           <RemoveLiquiditySelectListItem
             key={index}
-            liquidity={liquidity}
-            selected={isSelectLiquidity(liquidity)}
+            lpPosition={lpPosition}
+            selected={isSelectLiquidity(lpPosition)}
             select={select}
           />
         ))}

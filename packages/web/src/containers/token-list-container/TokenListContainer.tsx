@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from "react";
 import TokenList from "@components/home/token-list/TokenList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { type TokenDefaultModel } from "@models/token/token-default-model";
-import { type TokenPairModel } from "@models/token/token-pair-model";
+import { type TokenInfo } from "@models/token/token-info";
+import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -12,12 +12,12 @@ interface NegativeStatusType {
 }
 export interface MostLiquidPool {
   poolId: string;
-  tokenPair: TokenPairModel;
+  tokenPair: TokenPairInfo;
   feeRate: string;
 }
 export interface Token {
-  tokenId: string;
-  token: TokenDefaultModel;
+  path: string;
+  token: TokenInfo;
   price: string;
   priceOf1d: NegativeStatusType;
   priceOf7d: NegativeStatusType;
@@ -71,12 +71,12 @@ const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
 
 export const createDummyTokenList = (): Token[] => [
   {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+    path: Math.floor(Math.random() * 50 + 1).toString(),
     token: {
-      tokenId: "1",
+      path: "1",
       name: "Bitcoin",
       symbol: "BTC",
-      tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     },
     price: "$12,090.09",
     priceOf1d: {
@@ -97,18 +97,18 @@ export const createDummyTokenList = (): Token[] => [
     mostLiquidPool: {
       poolId: Math.floor(Math.random() * 50 + 1).toString(),
       tokenPair: {
-        token0: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+        tokenA: {
+          path: Math.floor(Math.random() * 50 + 1).toString(),
           name: "HEX",
           symbol: "HEX",
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
         },
-        token1: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+        tokenB: {
+          path: Math.floor(Math.random() * 50 + 1).toString(),
           name: "USDCoin",
           symbol: "USDC",
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
         },
       },
@@ -212,8 +212,8 @@ const TokenListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,

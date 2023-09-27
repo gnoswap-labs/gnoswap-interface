@@ -4,7 +4,7 @@ import Header from "@components/common/header/Header";
 import { useRouter } from "next/router";
 import React, { useState, useCallback } from "react";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { type TokenDefaultModel } from "@models/token/token-default-model";
+import { type TokenInfo } from "@models/token/token-info";
 import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -14,22 +14,22 @@ interface NegativeStatusType {
   value: string;
 }
 export interface Token {
-  tokenId: string;
+  path: string;
   searchType: string;
-  token: TokenDefaultModel;
+  token: TokenInfo;
   price: string;
   priceOf1d: NegativeStatusType;
 }
 
 export const RecentdummyToken: Token[] = [
   {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+    path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      tokenId: "1",
+      path: "1",
       name: "Bitcoin",
       symbol: "BTC",
-      tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     },
     price: "$12,090.09",
     priceOf1d: {
@@ -41,13 +41,13 @@ export const RecentdummyToken: Token[] = [
 
 export const PopulardummyToken: Token[] = [
   {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+    path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "popular",
     token: {
-      tokenId: "2",
+      path: "2",
       name: "Gnoland",
       symbol: "GNOT",
-      tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
     },
     price: "$12,090.09",
     priceOf1d: {

@@ -24,8 +24,8 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list }) => {
         {list.map((info, idx) => (
           <li key={idx}>
             <DoubleLogo
-              left={info.tokenPair.token0.tokenLogo}
-              right={info.tokenPair.token1.tokenLogo}
+              left={info.tokenPair.tokenA.logoURI}
+              right={info.tokenPair.tokenB.logoURI}
               size={20}
             />
             <span className="symbol">

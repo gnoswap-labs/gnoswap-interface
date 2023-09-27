@@ -20,7 +20,7 @@ export interface TokenInfo {
   gnosExchangePrice: string;
   usdExchangePrice: string;
   balance: string;
-  tokenLogo: string;
+  logoURI: string;
 }
 
 interface SwapCardProps {
@@ -154,7 +154,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
                 fontType: "body7",
                 hierarchy: ButtonHierarchy.Primary,
               }}
-              onClick={() => {}}
+              onClick={() => { }}
             />
           )}
         </div>

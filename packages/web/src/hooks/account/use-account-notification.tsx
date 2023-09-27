@@ -5,11 +5,11 @@ import { StatusOptions } from "@common/values/data-constant";
 import { AccountState } from "@states/index";
 import { useAtom } from "jotai";
 import { useAccount } from "./use-account";
-import { useRepository } from "@hooks/repository/use-repository";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 export const useNotification = () => {
   const { address } = useAccount();
-  const { accountRepository } = useRepository();
+  const { accountRepository } = useGnoswapContext();
 
   const [notifications, setNotifications] = useAtom(AccountState.notifications);
 

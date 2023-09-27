@@ -102,7 +102,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
               }}
             >
               <img
-                src={from.tokenLogo}
+                src={from.logoURI}
                 alt="token logo"
                 className="token-logo"
               />
@@ -134,7 +134,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
                 onSelectTokenModal();
               }}
             >
-              <img src={to.tokenLogo} alt="token logo" className="token-logo" />
+              <img src={to.logoURI} alt="token logo" className="token-logo" />
               <span className="token-symbol">{to.symbol}</span>
               <IconStrokeArrowDown className="arrow-icon" />
             </SelectPairButton>

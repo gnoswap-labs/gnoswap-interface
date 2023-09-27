@@ -17,10 +17,10 @@ const Template: ComponentStory<typeof EnterAmounts> = args => (
 );
 
 const token = {
-  tokenId: "1",
+  path: "1",
   name: "HEX",
   symbol: "HEX",
-  tokenLogo:
+  logoURI:
     "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
 };
 

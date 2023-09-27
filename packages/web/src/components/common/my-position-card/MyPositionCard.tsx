@@ -22,10 +22,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, movePoolDetail })
       <div className="title-wrapper">
         <div className="box-header">
           <DoubleLogo
-            left={tokenPair.token0.tokenLogo}
-            right={tokenPair.token1.tokenLogo}
+            left={tokenPair.tokenA.logoURI}
+            right={tokenPair.tokenB.logoURI}
           />
-          <span>{`${tokenPair.token0.symbol}/${tokenPair.token1.symbol}`}</span>
+          <span>{`${tokenPair.tokenA.symbol}/${tokenPair.tokenB.symbol}`}</span>
         </div>
         <div className="badge-group">
           {item.stakeType === STAKED_OPTION.STAKED && (

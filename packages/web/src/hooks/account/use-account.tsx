@@ -1,4 +1,4 @@
-import { useRepository } from "@hooks/repository/use-repository";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { AccountState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback } from "react";
@@ -6,7 +6,7 @@ import { useCallback } from "react";
 export const useAccount = () => {
   const [connected, setConnected] = useAtom(AccountState.connected);
   const [address, setAddress] = useAtom(AccountState.address);
-  const { accountRepository } = useRepository();
+  const { accountRepository } = useGnoswapContext();
 
   const connectWallet = useCallback(async () => {
     const existWallet = accountRepository.existsWallet();
@@ -23,10 +23,10 @@ export const useAccount = () => {
     setConnected(connected);
 
     const accountInfo = await accountRepository.getAccount();
-    if (accountInfo.data === null) {
+    if (accountInfo === null) {
       return false;
     }
-    setAddress(accountInfo.data.address);
+    setAddress(accountInfo.address);
     return true;
   }, [accountRepository, setAddress, setConnected]);
 

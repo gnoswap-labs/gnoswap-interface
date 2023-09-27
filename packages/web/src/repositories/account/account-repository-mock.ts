@@ -11,12 +11,11 @@ import {
   TransactionModel,
 } from "@models/account/account-history-model";
 import { faker } from "@faker-js/faker";
-import {
-  AccountInfoResponse,
-  AccountRepository,
-  AccountTransactionResponse,
-} from ".";
-import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { AccountRepository, AccountTransactionResponse } from ".";
+import { AccountModel } from "@models/account/account-model";
+import { AccountBalanceModel } from "@models/account/account-balance-model";
+
+import AccountBalancesData from "./mock/account-balances.json";
 
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
@@ -25,16 +24,12 @@ export class AccountRepositoryMock implements AccountRepository {
     this.localStorageClient = localStorageClient;
   }
 
-  public getAccount = async (): Promise<
-    WalletResponse<AccountInfoResponse>
-  > => {
-    return {
-      code: 0,
-      status: "0",
-      type: "0",
-      message: "0",
-      data: AccountRepositoryMock.generateAccount(),
-    };
+  public getAccount = async (): Promise<AccountModel> => {
+    return AccountRepositoryMock.generateAccount();
+  };
+
+  public getBalances = async (): Promise<AccountBalanceModel[]> => {
+    return AccountBalancesData.balances as AccountBalanceModel[];
   };
 
   public getTransactions = async (): Promise<AccountTransactionResponse> => {
@@ -160,15 +155,13 @@ export class AccountRepositoryMock implements AccountRepository {
     return history;
   };
 
-  private static generateAccount = () => {
+  private static generateAccount = (): AccountModel => {
     return {
       status: "ACTIVE",
       address: generateAddress(),
-      coins: `${Math.round(generateNumberPlus())}ugnot`,
-      publicKey: {
-        "@type": generateAddress(),
-        value: generateAddress(),
-      },
+      balances: [],
+      publicKeyType: "",
+      publicKeyValue: "",
       accountNumber: Math.round(generateNumberPlus()),
       sequence: Math.round(generateNumberPlus()),
       chainId: "test3",

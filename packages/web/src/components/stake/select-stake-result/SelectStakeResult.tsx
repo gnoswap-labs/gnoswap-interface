@@ -26,7 +26,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       <ul className="pooled-section">
         <li>
           <div className="main-info">
-            <img src={dummyImg[0]} alt="pooled token0 logo" />
+            <img src={dummyImg[0]} alt="pooled tokenA logo" />
             <p>Pooled GNOS</p>
             <strong>1,140.058845</strong>
           </div>
@@ -34,7 +34,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
         </li>
         <li>
           <div className="main-info">
-            <img src={dummyImg[1]} alt="pooled token1 logo" />
+            <img src={dummyImg[1]} alt="pooled tokenB logo" />
             <p>Pooled GNOT</p>
             <strong>942.55884</strong>
           </div>

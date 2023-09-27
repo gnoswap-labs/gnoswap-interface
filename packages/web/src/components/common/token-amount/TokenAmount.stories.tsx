@@ -7,10 +7,10 @@ export default {
 } as Meta<typeof TokenAmount>;
 
 const token = {
-  tokenId: "1",
+  path: "1",
   name: "Gnoland",
   symbol: "GNO.LAND",
-  tokenLogo: "",
+  logoURI: "",
 };
 
 export const Default: StoryObj<TokenAmountProps> = {

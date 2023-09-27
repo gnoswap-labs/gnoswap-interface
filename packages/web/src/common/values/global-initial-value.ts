@@ -6,8 +6,8 @@ export const amountEmptyBigNumInit = {
 };
 
 export const amountEmptyNumberInit = {
-  value: 0,
-  denom: "",
+  amount: 0,
+  currency: "",
 };
 
 export const unitsUpperCase = {

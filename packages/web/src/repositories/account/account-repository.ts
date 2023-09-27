@@ -4,10 +4,13 @@ import {
   SendTransactionResponse,
 } from "@common/clients/wallet-client/protocols";
 import { AccountNotificationRepository } from "./account-notification-repository";
-import { AccountInfoResponse } from "./response";
+import { AccountModel } from "@models/account/account-model";
+import { AccountBalanceModel } from "@models/account/account-balance-model";
 
 export interface AccountRepository extends AccountNotificationRepository {
-  getAccount: () => Promise<WalletResponse<AccountInfoResponse>>;
+  getBalances: (address: string) => Promise<AccountBalanceModel[]>;
+
+  getAccount: () => Promise<AccountModel>;
 
   existsWallet: () => boolean;
 

@@ -1,19 +1,19 @@
 import React, { useCallback } from "react";
 import { SelectTokenWrapper } from "./SelectToken.styles";
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
 
 export interface SelectTokenProps {
   keyword: string;
-  defaultTokens: TokenDefaultModel[];
-  tokens: TokenDefaultModel[];
+  defaultTokens: TokenInfo[];
+  tokens: TokenInfo[];
   tokenPrices: {
-    tokenId: string;
+    path: string;
     price: string;
   }[];
   changeKeyword: (keyword: string) => void;
-  changeToken: (token: TokenDefaultModel) => void;
+  changeToken: (token: TokenInfo) => void;
   close: () => void;
 }
 
@@ -27,8 +27,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   close,
 }) => {
 
-  const getTokenPrice = useCallback((token: TokenDefaultModel) => {
-    const tokenPrice = tokenPrices.find(item => item.tokenId === token.tokenId);
+  const getTokenPrice = useCallback((token: TokenInfo) => {
+    const tokenPrice = tokenPrices.find(item => item.path === token.path);
     if (!tokenPrice) {
       return "-";
     }
@@ -39,7 +39,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     close();
   }, [close]);
 
-  const onClickToken = useCallback((token: TokenDefaultModel) => {
+  const onClickToken = useCallback((token: TokenInfo) => {
     changeToken(token);
     close();
   }, [changeToken, close]);
@@ -74,7 +74,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
               key={index}
               onClick={() => onClickToken(token)}
             >
-              <img src={token.tokenLogo} alt="logo" className="token-logo" />
+              <img src={token.logoURI} alt="logo" className="token-logo" />
               <span>{token.symbol}</span>
             </div>
           ))}
@@ -88,7 +88,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
             onClick={() => onClickToken(token)}
           >
             <div className="token-info">
-              <img src={token.tokenLogo} alt="logo" className="token-logo" />
+              <img src={token.logoURI} alt="logo" className="token-logo" />
               <span className="token-name">{token.name}</span>
               <span className="token-symbol">{token.symbol}</span>
             </div>

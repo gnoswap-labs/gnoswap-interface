@@ -6,19 +6,21 @@ import SelectDistributionPeriod from "@components/incentivize/select-distributio
 import SetRewardAmount from "@components/incentivize/set-reward-amount/SetRewardAmount";
 import { PoolIncentivizeWrapper } from "./PoolIncentivize.styles";
 import PoolIncentivizeSelectPool from "../pool-incentivize-select-pool/PoolIncentivizeSelectPool";
-import { PoolModel, mapPoolModelToSelectItem } from "@models/pool/pool-model";
-import { PoolSelectItemModel } from "@models/pool/pool-select-item-model";
-import { TokenBalanceModel } from "@models/token/token-balance-model";
+import { PoolModel } from "@models/pool/pool-model";
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
+import { PoolSelectItemInfo, toPoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 export interface DistributionPeriodDate {
   year: number;
   month: number;
   date: number;
 }
+
 interface PoolIncentivizeProps {
-  token: TokenBalanceModel | null;
-  tokens: TokenBalanceModel[];
-  selectToken: (tokenId: string) => void;
+  token: TokenBalanceInfo | null;
+  tokens: TokenBalanceInfo[];
+  selectToken: (path: string) => void;
   selectedPool: PoolModel | null;
   pools: PoolModel[];
   selectPool: (poolId: string) => void;
@@ -29,7 +31,7 @@ interface PoolIncentivizeProps {
   setPeriod: (period: number) => void;
   amount: string;
   onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  details: any;
+  details: PoolDetailModel | null;
   disclaimer: string;
 }
 
@@ -51,12 +53,12 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   disclaimer,
 }) => {
 
-  const selectedItem = useMemo((): PoolSelectItemModel | null => {
-    return selectedPool ? mapPoolModelToSelectItem(selectedPool) : null;
+  const selectedItem = useMemo((): PoolSelectItemInfo | null => {
+    return selectedPool ? toPoolSelectItemInfo(selectedPool) : null;
   }, [selectedPool]);
 
-  const poolSelectItems = useMemo((): PoolSelectItemModel[] => {
-    return pools.map(mapPoolModelToSelectItem);
+  const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
+    return pools.map(toPoolSelectItemInfo);
   }, [pools]);
 
   return (
@@ -89,7 +91,10 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
           onChangeAmount={onChangeAmount}
         />
       </article>
-      <PoolIncentivizeDetails details={details} />
+      {details &&
+        <PoolIncentivizeDetails details={details} />
+      }
+
       <Disclaimer disclaimer={disclaimer} />
       <Button
         text="Incentivize"

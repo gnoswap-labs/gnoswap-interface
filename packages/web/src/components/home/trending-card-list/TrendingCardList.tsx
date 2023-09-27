@@ -1,24 +1,31 @@
-import React from "react";
-import CardList, { type ListProps } from "@components/home/card-list/CardList";
+import React, { useMemo } from "react";
+import CardList from "@components/home/card-list/CardList";
 import { TrendingCardListwrapper } from "./TrendingCardList.styles";
 import IconFlame from "@components/common/icons/IconFlame";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
+import { CardListTokenInfo } from "@models/common/card-list-item-info";
 interface TrendingCardListProps {
-  list: Array<ListProps>;
-  windowSize: number;
+  list: Array<CardListTokenInfo>;
+  device: DEVICE_TYPE;
+  onClickItem: (path: string) => void;
 }
 
 const TrendingCardList: React.FC<TrendingCardListProps> = ({
   list,
-  windowSize,
+  device,
+  onClickItem,
 }) => {
-  return windowSize > DeviceSize.mobile ? (
+  const visible = useMemo(() => {
+    return device !== DEVICE_TYPE.MOBILE;
+  }, [device]);
+
+  return visible ? (
     <TrendingCardListwrapper>
       <h2>
         <IconFlame className="icon-flame" />
         Trending
       </h2>
-      <CardList list={list} />
+      <CardList list={list} onClickItem={onClickItem} />
     </TrendingCardListwrapper>
   ) : null;
 };
