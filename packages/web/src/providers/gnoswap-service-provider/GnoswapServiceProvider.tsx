@@ -23,14 +23,13 @@ interface GnoswapContextProps {
   tokenRepository: TokenRepository;
 }
 
-const API_URL = "https://dev-api.gnoswap.io/v3/testnet";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
 
 const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-
   const [networkClient] = useState(new AxiosClient(API_URL));
 
   const [localStorageClient] = useState(WebStorageClient.createLocalStorageClient());
