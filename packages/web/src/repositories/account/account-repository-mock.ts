@@ -24,6 +24,18 @@ export class AccountRepositoryMock implements AccountRepository {
     this.localStorageClient = localStorageClient;
   }
 
+  public isConnectedWalletBySession = () => {
+    const response = this.localStorageClient.get("connectedWallet");
+    return response === "connected";
+  };
+
+  public setConnectedWallet = (connected: boolean) => {
+    if (connected) {
+      this.localStorageClient.set("connectedWallet", "connected");
+    }
+    this.localStorageClient.remove("connectedWallet");
+  };
+
   public getAccount = async (): Promise<AccountModel> => {
     return AccountRepositoryMock.generateAccount();
   };

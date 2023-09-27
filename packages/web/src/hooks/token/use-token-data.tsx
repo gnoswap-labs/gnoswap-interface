@@ -1,6 +1,7 @@
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
 import { TokenState } from "@states/index";
+import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 
@@ -26,7 +27,7 @@ export const useTokenData = () => {
       tokenPrices[token.priceId] ? {
         token,
         upDown: tokenPrices[token.priceId].changedBefore1D > 0 ? "up" : "down",
-        content: `${tokenPrices[token.priceId].changedBefore1D}%`
+        content: `${BigNumber(tokenPrices[token.priceId].changedBefore1D).toFixed()}%`
       } : {
         token,
         upDown: "none",

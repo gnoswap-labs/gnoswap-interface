@@ -8,6 +8,10 @@ import { AccountModel } from "@models/account/account-model";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
 
 export interface AccountRepository extends AccountNotificationRepository {
+  isConnectedWalletBySession: () => boolean;
+
+  setConnectedWallet: (connected: boolean) => void;
+
   getBalances: (address: string) => Promise<AccountBalanceModel[]>;
 
   getAccount: () => Promise<AccountModel>;

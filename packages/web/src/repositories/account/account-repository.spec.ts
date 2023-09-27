@@ -8,6 +8,7 @@ import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
+let sessionStorageClient: StorageClient;
 let accountRepository: AccountRepository;
 
 const defaultAccountInfo = {
@@ -30,6 +31,7 @@ beforeEach(() => {
     walletClient,
     new AxiosClient(),
     localStorageClient,
+    sessionStorageClient,
   );
   jest.clearAllMocks();
 });

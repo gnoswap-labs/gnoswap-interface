@@ -7,10 +7,10 @@ import WalletConnectorMenu from "@components/common/wallet-connector-menu/Wallet
 import { formatAddress } from "@utils/string-utils";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
-import { AccountInfo } from "@common/clients/wallet-client/protocols";
+import { AccountModel } from "@models/account/account-model";
 
 interface WalletConnectProps {
-  account: AccountInfo | null;
+  account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
 }
@@ -22,7 +22,12 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
-  const address = useMemo(() => account?.address || "", [account?.address]);
+  const address = useMemo(() => {
+    if (account === null) {
+      return "";
+    }
+    return formatAddress(account.address);
+  }, [account]);
 
   const onMenuToggle = () => {
     setToggle(prev => ({
@@ -36,7 +41,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       {connected ? (
         <Button
           leftIcon={<IconAdenaLogo />}
-          text={formatAddress(address)}
+          text={address}
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           className={toggle.walletConnect ? "selected" : ""}
           style={{
