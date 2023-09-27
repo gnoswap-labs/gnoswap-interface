@@ -60,7 +60,7 @@
           "reserveA": 49.981458116220594,
           "reserveB": 1223.4471028043677,
           "lpTokenId": "1",
-          "timestamp": "2023-09-26T05:36:37+09:00",
+          "timestamp": "0001-01-01T00:00:00Z",
           "annualizedFeeGrowth": 0
         },
         {
@@ -70,7 +70,7 @@
           "reserveA": 0,
           "reserveB": 1264.593283181672,
           "lpTokenId": "2",
-          "timestamp": "2023-09-26T05:36:37+09:00",
+          "timestamp": "0001-01-01T00:00:00Z",
           "annualizedFeeGrowth": 0
         }
       ],
@@ -81,7 +81,7 @@
         "reserveA": 49.981458116220594,
         "reserveB": 1223.4471028058367,
         "lpTokenId": "3",
-        "timestamp": "2023-09-26T05:36:37+09:00",
+        "timestamp": "0001-01-01T00:00:00Z",
         "annualizedFeeGrowth": 0
       },
       "apr": 148.07
