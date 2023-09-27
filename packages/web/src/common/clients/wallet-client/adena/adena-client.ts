@@ -13,7 +13,6 @@ export class AdenaClient implements WalletClient {
 
   constructor() {
     this.adena = null;
-    this.initAdena();
   }
 
   public initAdena = () => {
@@ -23,6 +22,7 @@ export class AdenaClient implements WalletClient {
   };
 
   private getAdena() {
+    this.initAdena();
     if (this.adena === null) {
       throw new Error("Not found");
     }
@@ -30,6 +30,7 @@ export class AdenaClient implements WalletClient {
   }
 
   public existsWallet = (): boolean => {
+    this.initAdena();
     return this.adena !== null;
   };
 

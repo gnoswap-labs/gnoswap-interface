@@ -1,5 +1,4 @@
 import { TokenPairInfo } from "@models/token/token-pair-info";
-import { addressValidationCheck } from "./validation-utils";
 import { TokenModel } from "@models/token/token-model";
 
 /**
@@ -13,8 +12,7 @@ export function formatAddress(address: string, num?: number): string {
   const fix = num ?? 5;
   const already = address.length <= fix * 2 + 3 && address.includes("...");
   if (already) return address;
-  const parsed = addressValidationCheck(address);
-  if (!parsed) throw Error("Invalid address.");
+
   return `${address.substring(0, fix)}...${address.substring(
     address.length - fix,
   )}`;
