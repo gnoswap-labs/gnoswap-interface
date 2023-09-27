@@ -22,7 +22,7 @@ import { Token } from "@containers/header-container/HeaderContainer";
 import { DEVICE_TYPE } from "@styles/media";
 import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
-import { AccountInfo } from "@common/clients/wallet-client/protocols";
+import { AccountModel } from "@models/account/account-model";
 
 interface HeaderProps {
   pathname?: string;
@@ -36,7 +36,7 @@ interface HeaderProps {
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   keyword: string;
   breakpoint: DEVICE_TYPE;
-  account: AccountInfo | null;
+  account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
 }

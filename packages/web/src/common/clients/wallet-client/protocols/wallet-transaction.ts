@@ -31,7 +31,7 @@ export interface TransactionMessageOfContract {
   send: string;
   pkg_path: string;
   func: string;
-  args: string[];
+  args: (string | number | boolean)[];
 }
 
 /**
@@ -48,4 +48,10 @@ export interface SendTransactionSuccessResponse {
 export interface SendTransactionErrorResponse {
   type: string;
   message: string;
+}
+
+export function isContractMessage(
+  message: TransactionMessageOfBankMsgSend | TransactionMessageOfContract,
+): message is TransactionMessageOfContract {
+  return "func" in message;
 }

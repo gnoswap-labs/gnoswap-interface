@@ -5,7 +5,7 @@ import {
   AccountHistoryModel,
   TransactionModel,
 } from "@models/account/account-history-model";
-import { StorageKeyType } from "@common/values";
+import { SessionStorageKeyType, StorageKeyType } from "@common/values";
 import { AccountBalancesResponse, AccountRepository } from ".";
 import { AdenaError } from "@common/errors/adena";
 import { SendTransactionRequestParam } from "@common/clients/wallet-client/protocols";
@@ -17,16 +17,31 @@ export class AccountRepositoryImpl implements AccountRepository {
   private walletClient: WalletClient;
   private networkClient: NetworkClient;
   private localStorageClient: StorageClient<StorageKeyType>;
+  private sessionStorageClient: StorageClient<SessionStorageKeyType>;
 
   constructor(
     walletClient: WalletClient,
     networkClient: NetworkClient,
     localStorageClient: StorageClient,
+    sessionStorageClient: StorageClient,
   ) {
     this.walletClient = walletClient;
     this.networkClient = networkClient;
     this.localStorageClient = localStorageClient;
+    this.sessionStorageClient = sessionStorageClient;
   }
+
+  public isConnectedWalletBySession = () => {
+    const response = this.sessionStorageClient.get("connectedWallet");
+    return response === "connected";
+  };
+
+  public setConnectedWallet = (connected: boolean) => {
+    if (connected) {
+      this.sessionStorageClient.set("connectedWallet", "connected");
+    }
+    this.sessionStorageClient.remove("connectedWallet");
+  };
 
   public getAccount = async () => {
     const response = await this.walletClient.getAccount();

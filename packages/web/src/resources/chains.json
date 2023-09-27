@@ -1,0 +1,14 @@
+[
+  {
+    "name": "GNO.LAND",
+    "chainId": "test3",
+    "rpcUrl": "https://rpc.test3.gno.land",
+    "wsUrl": "wss://rpc.test3.gno.land/websocket"
+  },
+  {
+    "name": "GNO.LAND",
+    "chainId": "dev",
+    "rpcUrl": "http://127.0.0.1:26657",
+    "wsUrl": "ws://127.0.0.1:26657/websocket"
+  }
+]

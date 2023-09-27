@@ -1,17 +1,24 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { TransactionModel } from "@models/account/account-history-model";
 import { isErrorResponse } from "@utils/validation-utils";
 import { StatusOptions } from "@common/values/data-constant";
 import { AccountState } from "@states/index";
 import { useAtom } from "jotai";
-import { useAccount } from "./use-account";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 export const useNotification = () => {
-  const { address } = useAccount();
+  const { account } = useWallet();
   const { accountRepository } = useGnoswapContext();
 
   const [notifications, setNotifications] = useAtom(AccountState.notifications);
+
+  const address = useMemo(() => {
+    if (!account) {
+      return null;
+    }
+    return account.address;
+  }, [account]);
 
   const isUpdateNotifications = () => {
     if (!address || !notifications) {

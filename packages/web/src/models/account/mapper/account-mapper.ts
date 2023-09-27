@@ -39,8 +39,8 @@ export class AccountMapper {
     return {
       status: status === "ACTIVE" ? "ACTIVE" : "IN_ACTIVE",
       balances,
-      publicKeyType: publicKey["@type"],
-      publicKeyValue: publicKey.value,
+      publicKeyType: publicKey ? publicKey["@type"] : "",
+      publicKeyValue: publicKey ? publicKey.value : "",
       accountNumber,
       sequence,
       chainId,

@@ -34,7 +34,7 @@ interface AccountInfo {
 }
 
 interface SendTransactionRequestParam {
-  messages: Array<TransactionMessage>;
+  messages: TransactionMessageForm<TransactionMessage>[];
   gasFee: number;
   gasWanted: number;
   memo?: string;
@@ -47,6 +47,11 @@ type TransactionMessage =
   | TransactionMessageOfBankMsgSend
   | TransactionMessageOfContract;
 
+interface TransactionMessageForm<T> {
+  type: string;
+  value: T;
+}
+
 interface TransactionMessageOfBankMsgSend {
   from_address: string;
   to_address: string;
@@ -58,7 +63,7 @@ interface TransactionMessageOfContract {
   send: string;
   pkg_path: string;
   func: string;
-  args: string[];
+  args: (string | number | boolean)[];
 }
 
 /**

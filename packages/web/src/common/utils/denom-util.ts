@@ -1,5 +1,6 @@
 import { AmountType } from "@common/types/data-prop-types";
 import { AmountNumberType } from "@common/types/data-prop-types";
+import { amountEmptyNumberInit } from "@common/values";
 import BigNumber from "bignumber.js";
 
 interface Amount {
@@ -44,6 +45,9 @@ export const toDefaultDenom = (amount: Amount, denomConfig: DenomConfig) => {
 
 export const textToBalances = (balancesText: string) => {
   const balanceTexts = balancesText.split(",");
+  if (balanceTexts.length === 0) {
+    return [amountEmptyNumberInit];
+  }
   const balances = balanceTexts.map(convertTextToAmount);
   return balances;
 };

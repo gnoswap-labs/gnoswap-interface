@@ -13,7 +13,7 @@ import {
 } from "./WalletConnectorMenu.styles";
 import { formatAddress } from "@utils/string-utils";
 import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
-import { AccountInfo } from "@common/clients/wallet-client/protocols";
+import { AccountModel } from "@models/account/account-model";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -42,7 +42,7 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
 };
 
 interface WalletConnectorMenuProps {
-  account: AccountInfo | null;
+  account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
   onMenuToggle: () => void;
@@ -54,7 +54,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   connectAdenaClient,
   onMenuToggle,
 }) => {
-  const balanceText = useMemo(() => account?.coins || "0 GNOT", [account?.coins]);
+  const balanceText = useMemo(() => `${account?.balances[0].amount} ${account?.balances[0].currency}` || "0 GNOT", [account?.balances]);
   const copyClick = () => { };
   const openLinkClick = () => { };
   const exitClick = () => { };

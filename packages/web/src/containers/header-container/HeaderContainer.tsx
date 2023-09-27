@@ -73,7 +73,6 @@ async function fetchTokens(
 
 const HeaderContainer: React.FC = () => {
   const { pathname } = useRouter();
-  const [isConnected, setIsConnected] = useState(true);
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");

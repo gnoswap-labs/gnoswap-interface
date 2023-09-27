@@ -12,7 +12,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    return response.data;
+    return {
+      ...response.data,
+      pools: response.data.pools || [],
+    };
   };
 
   getPoolDetailByPoolId = async (

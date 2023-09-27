@@ -1,13 +1,15 @@
 export interface SwapRequest {
-  tokenA: {
-    path: string;
-    amount: number;
-  };
-  tokenB: {
-    path: string;
-    amount: number;
-  };
-  type: "EXACT_IN" | "EXACT_OUT";
-  slippage: number;
-  gasFee: number;
+  tokenA: string;
+
+  tokenB: string;
+
+  fee: number;
+
+  receiver: string; //address
+
+  zeroForOne: boolean; // direction
+
+  amountSpecified: number; // positive: token to spend, negative: token to receive
+
+  sqrtPriceLimitX96: number; // current sqrtPriceX96 with slippage percent calculate
 }

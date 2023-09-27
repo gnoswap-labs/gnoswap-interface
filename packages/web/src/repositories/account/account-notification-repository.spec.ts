@@ -11,6 +11,7 @@ import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
+let sessionStorageClient: StorageClient;
 let accountNotificationRepository: AccountNotificationRepository;
 
 beforeEach(() => {
@@ -20,6 +21,7 @@ beforeEach(() => {
     walletClient,
     new AxiosClient(),
     localStorageClient,
+    sessionStorageClient,
   );
   jest.clearAllMocks();
 });

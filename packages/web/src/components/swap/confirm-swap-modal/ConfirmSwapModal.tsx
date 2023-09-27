@@ -29,7 +29,7 @@ interface ConfirmSwapModalProps {
   tolerance: string;
   submit: boolean;
   isFetching: boolean;
-  swapResult?: SwapData;
+  swapResult: SwapData | null;
 }
 
 const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({

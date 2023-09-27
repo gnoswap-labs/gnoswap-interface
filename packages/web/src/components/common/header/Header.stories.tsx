@@ -6,16 +6,14 @@ import { action } from "@storybook/addon-actions";
 import Header from "./Header";
 import { RecentdummyToken } from "@containers/header-container/HeaderContainer";
 import { DEVICE_TYPE } from "@styles/media";
-import { AccountInfo } from "@common/clients/wallet-client/protocols";
+import { AccountModel } from "@models/account/account-model";
 
-const defaultAccountInfo: AccountInfo = {
+const defaultAccountInfo: AccountModel = {
   status: "ACTIVE",
   address: "g1ffzxha57dh0qgv9ma5v393ur0zexfvp6lsjpae",
-  coins: "1000000000ugnot",
-  publicKey: {
-    "@type": "----",
-    value: "----",
-  },
+  balances: [],
+  publicKeyType: "",
+  publicKeyValue: "",
   accountNumber: 1,
   sequence: 1,
   chainId: "test3",

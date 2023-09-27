@@ -3,3 +3,5 @@ export type StorageKeyType =
   | "theme-mode"
   | "language"
   | "search-token-logs";
+
+export type SessionStorageKeyType = "connectedWallet";

@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import SwapCard from "@components/swap/swap-card/SwapCard";
 import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useSwap } from "@hooks/swap/use-swap";
 
 export interface SwapGasInfo {
   priceImpact: string;
@@ -100,16 +101,8 @@ export interface SwapData {
   transaction?: string;
 }
 
-async function fetchSwap(): Promise<SwapData> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    Promise.resolve({
-      success: Math.random() >= 0.5,
-      transaction: "https://gnoscan.io/",
-    }),
-  );
-}
-
 const SwapContainer: React.FC = () => {
+  const { swap } = useSwap();
   const { breakpoint } = useWindowSize();
   const [keyword, setKeyword] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -125,20 +118,11 @@ const SwapContainer: React.FC = () => {
   const [division, setDivision] = useState("");
   const [submit, setSubmit] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [swapResult, setSwapResult] = useState<SwapData | null>(null);
 
   const { data: tokens } = useQuery<tokenInfo[], Error>({
     queryKey: [keyword],
     queryFn: () => fetchTokens(keyword),
-  });
-
-  const {
-    isFetching,
-    refetch,
-    data: swapResult,
-  } = useQuery<SwapData, Error>({
-    queryKey: ["swapResult"],
-    queryFn: () => fetchSwap(),
-    enabled: false,
   });
 
   //   eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -213,6 +197,7 @@ const SwapContainer: React.FC = () => {
 
   const onConfirmModal = () => {
     setSwapOpen(prev => !prev);
+    setSwapResult(null);
     if (submit) {
       setSubmit(false);
       setTolerance("1");
@@ -248,8 +233,16 @@ const SwapContainer: React.FC = () => {
 
   const submitSwap = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault();
-    setSubmit(prev => !prev);
-    refetch();
+    if (submit) {
+      return;
+    }
+    setSubmit(true);
+    swap().then(success => {
+      setSwapResult({
+        success: success,
+        transaction: "https://gnoscan.io"
+      });
+    });
   };
 
   return (
@@ -280,7 +273,7 @@ const SwapContainer: React.FC = () => {
       submitSwap={submitSwap}
       breakpoint={breakpoint}
       submit={submit}
-      isFetching={isFetching}
+      isFetching={swapResult === null}
       swapResult={swapResult}
       resetTolerance={resetTolerance}
       handleCopyClipBoard={handleCopyClipBoard}

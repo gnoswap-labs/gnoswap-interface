@@ -1,7 +1,8 @@
 import { WalletClient } from "@common/clients/wallet-client";
-import { AccountInfo } from "@common/clients/wallet-client/protocols";
+import { AdenaClient } from "@common/clients/wallet-client/adena";
+import { AccountModel } from "@models/account/account-model";
 import { atom } from "jotai";
 
-export const client = atom<WalletClient | null>(null);
+export const client = atom<WalletClient>(new AdenaClient());
 
-export const account = atom<AccountInfo | null>(null);
+export const account = atom<AccountModel | null>(null);
