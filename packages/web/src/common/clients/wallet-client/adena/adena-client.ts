@@ -4,6 +4,7 @@ import {
   SendTransactionRequestParam,
   AccountInfo,
   SendTransactionResponse,
+  isContractMessage,
 } from "../protocols";
 import { WalletClient } from "../wallet-client";
 import { Adena } from "./adena";
@@ -45,7 +46,22 @@ export class AdenaClient implements WalletClient {
   public sendTransaction = (
     transaction: SendTransactionRequestParam,
   ): Promise<WalletResponse<SendTransactionResponse>> => {
-    return createTimeout(this.getAdena().DoContract(transaction));
+    const request = {
+      ...transaction,
+      messages: transaction.messages.map(message => {
+        if (isContractMessage(message)) {
+          return {
+            type: "/vm.m_call",
+            value: message,
+          };
+        }
+        return {
+          type: "/bank.MsgSend",
+          value: message,
+        };
+      }),
+    };
+    return createTimeout(this.getAdena().DoContract(request));
   };
 
   public addEventChangedAccount = (callback: (accountId: string) => void) => {

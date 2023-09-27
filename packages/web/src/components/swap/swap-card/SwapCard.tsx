@@ -51,7 +51,7 @@ interface SwapCardProps {
   breakpoint: DEVICE_TYPE;
   submit: boolean;
   isFetching: boolean;
-  swapResult?: SwapData;
+  swapResult: SwapData | null;
   resetTolerance: () => void;
   handleCopyClipBoard: (text: string) => void;
   copied: boolean;
