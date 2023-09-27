@@ -4,6 +4,7 @@ import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
 import { AccountRepository } from "./account-repository";
 import { AccountRepositoryImpl } from "./account-repository-impl";
+import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -27,6 +28,7 @@ beforeEach(() => {
   localStorageClient = new MockStorageClient("LOCAL");
   accountRepository = new AccountRepositoryImpl(
     walletClient,
+    new AxiosClient(),
     localStorageClient,
   );
   jest.clearAllMocks();

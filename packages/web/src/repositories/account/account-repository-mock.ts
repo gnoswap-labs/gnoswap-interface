@@ -13,6 +13,9 @@ import {
 import { faker } from "@faker-js/faker";
 import { AccountRepository, AccountTransactionResponse } from ".";
 import { AccountModel } from "@models/account/account-model";
+import { AccountBalanceModel } from "@models/account/account-balance-model";
+
+import AccountBalancesData from "./mock/account-balances.json";
 
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
@@ -23,6 +26,10 @@ export class AccountRepositoryMock implements AccountRepository {
 
   public getAccount = async (): Promise<AccountModel> => {
     return AccountRepositoryMock.generateAccount();
+  };
+
+  public getBalances = async (): Promise<AccountBalanceModel[]> => {
+    return AccountBalancesData.balances as AccountBalanceModel[];
   };
 
   public getTransactions = async (): Promise<AccountTransactionResponse> => {

@@ -7,6 +7,7 @@ import { NotificationType } from "@common/values/data-constant";
 import { TransactionModel } from "@models/account/account-history-model";
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountRepositoryImpl } from "./account-repository-impl";
+import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -17,6 +18,7 @@ beforeEach(() => {
   localStorageClient = new MockStorageClient("LOCAL");
   accountNotificationRepository = new AccountRepositoryImpl(
     walletClient,
+    new AxiosClient(),
     localStorageClient,
   );
   jest.clearAllMocks();

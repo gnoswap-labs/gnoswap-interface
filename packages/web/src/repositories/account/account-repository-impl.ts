@@ -6,17 +6,25 @@ import {
   TransactionModel,
 } from "@models/account/account-history-model";
 import { StorageKeyType } from "@common/values";
-import { AccountRepository } from ".";
+import { AccountBalancesResponse, AccountRepository } from ".";
 import { AdenaError } from "@common/errors/adena";
 import { SendTransactionRequestParam } from "@common/clients/wallet-client/protocols";
 import { AccountMapper } from "@models/account/mapper/account-mapper";
+import { NetworkClient } from "@common/clients/network-client";
+import { AccountBalanceModel } from "@models/account/account-balance-model";
 
 export class AccountRepositoryImpl implements AccountRepository {
   private walletClient: WalletClient;
+  private networkClient: NetworkClient;
   private localStorageClient: StorageClient<StorageKeyType>;
 
-  constructor(walletClient: WalletClient, localStorageClient: StorageClient) {
+  constructor(
+    walletClient: WalletClient,
+    networkClient: NetworkClient,
+    localStorageClient: StorageClient,
+  ) {
     this.walletClient = walletClient;
+    this.networkClient = networkClient;
     this.localStorageClient = localStorageClient;
   }
 
@@ -24,6 +32,15 @@ export class AccountRepositoryImpl implements AccountRepository {
     const response = await this.walletClient.getAccount();
     AdenaError.valdiate(response);
     return AccountMapper.fromResponse(response);
+  };
+
+  public getBalances = async (
+    address: string,
+  ): Promise<AccountBalanceModel[]> => {
+    const response = await this.networkClient.get<AccountBalancesResponse>({
+      url: `/user/${address}/balance`,
+    });
+    return response.data.balances;
   };
 
   public existsWallet = () => {

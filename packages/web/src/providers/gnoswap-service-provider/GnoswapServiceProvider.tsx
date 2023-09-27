@@ -36,8 +36,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [localStorageClient] = useState(WebStorageClient.createLocalStorageClient());
 
   const accountRepository = useMemo(() => {
-    return new AccountRepositoryImpl(walletClient, localStorageClient);
-  }, [walletClient, localStorageClient]);
+    return new AccountRepositoryImpl(walletClient, networkClient, localStorageClient);
+  }, [walletClient, networkClient, localStorageClient]);
 
   const liquidityRepository = useMemo(() => {
     return new LiquidityRepositoryMock();

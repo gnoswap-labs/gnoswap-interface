@@ -5,8 +5,11 @@ import {
 } from "@common/clients/wallet-client/protocols";
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountModel } from "@models/account/account-model";
+import { AccountBalanceModel } from "@models/account/account-balance-model";
 
 export interface AccountRepository extends AccountNotificationRepository {
+  getBalances: (address: string) => Promise<AccountBalanceModel[]>;
+
   getAccount: () => Promise<AccountModel>;
 
   existsWallet: () => boolean;
