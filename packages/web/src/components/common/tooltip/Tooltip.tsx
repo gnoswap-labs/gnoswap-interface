@@ -15,6 +15,7 @@ import {
   FloatingArrow,
   arrow,
   flip,
+  useClientPoint,
 } from "@floating-ui/react";
 import { Content } from "./Tooltip.styles";
 import { useTheme } from "@emotion/react";
@@ -70,6 +71,7 @@ interface TooltipProps {
   placement: Placement;
   FloatingContent: React.ReactNode;
   width?: CSSProperties["width"];
+  floatClassName?: string;
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
@@ -77,6 +79,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   placement,
   FloatingContent,
   width,
+  floatClassName,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -85,6 +88,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   const floatingRef = useMergeRefs([refs.setFloating]);
 
   const theme = useTheme();
+  useClientPoint(context);
 
   return (
     <>
@@ -109,6 +113,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
               visibility: x == null ? "hidden" : "visible",
               zIndex: Z_INDEX.modalTooltip,
             }}
+            className={floatClassName}
           >
             <FloatingArrow
               ref={arrowRef}
