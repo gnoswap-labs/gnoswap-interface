@@ -1,7 +1,6 @@
 import EarnAddConfirmAmountInfo, { type EarnAddConfirmAmountInfoProps } from "./EarnAddConfirmAmountInfo";
 import { Meta, StoryObj } from "@storybook/react";
 
-
 const token = {
   info: {
     chainId: "test3",
@@ -25,8 +24,6 @@ export default {
 
 export const Default: StoryObj<EarnAddConfirmAmountInfoProps> = {
   args: {
-    tokenA: token,
-    tokenB: token,
-    feeRate: "0.30%"
+    ...data
   },
 };

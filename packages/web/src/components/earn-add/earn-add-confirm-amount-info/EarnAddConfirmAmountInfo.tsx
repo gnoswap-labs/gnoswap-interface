@@ -20,21 +20,25 @@ export interface EarnAddConfirmAmountInfoProps {
 
 const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
   tokenA,
+  tokenAAmount,
+  tokenAUSDPrice,
   tokenB,
+  tokenBAmount,
+  tokenBUSDPrice,
   feeRate,
 }) => {
   return (
     <EarnAddConfirmAmountInfoWrapper>
       <div className="pair-amount">
         <TokenAmount
-          token={tokenA.info}
-          amount={tokenA.amount}
-          usdPrice={tokenA.usdPrice}
+          token={tokenA}
+          amount={tokenAAmount}
+          usdPrice={tokenAUSDPrice}
         />
         <TokenAmount
-          token={tokenB.info}
-          amount={tokenB.amount}
-          usdPrice={tokenB.usdPrice}
+          token={tokenB}
+          amount={tokenBAmount}
+          usdPrice={tokenBUSDPrice}
         />
         <div className="icon-wrapper">
           <IconAdd className="icon-add" />
