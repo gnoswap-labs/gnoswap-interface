@@ -1,5 +1,6 @@
 import { TokenPairInfo } from "@models/token/token-pair-info";
 import { TokenModel } from "@models/token/token-model";
+import BigNumber from "bignumber.js";
 
 /**
  * Shortens an address by N characters.
@@ -36,4 +37,8 @@ export function makePairName({
   const symbolA = tokenA.symbol;
   const symbolB = tokenB.symbol;
   return `${symbolA}/${symbolB}`;
+}
+
+export function numberToFormat(num: string | number, decimals?: number) {
+  return BigNumber(num).toFormat(decimals || 0);
 }
