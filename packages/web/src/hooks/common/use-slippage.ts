@@ -15,7 +15,7 @@ export const useSlippage = () => {
       } else if (slippage > 100) {
         changedSlippage = 100;
       }
-      changedSlippage = toDecimalNumber(changedSlippage);
+      changedSlippage = toDecimalNumber(changedSlippage, 2);
       setSlippage(changedSlippage);
     },
     [setSlippage],
