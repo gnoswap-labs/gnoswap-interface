@@ -11,10 +11,10 @@ import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
-import { Provider, WSProvider } from "@gnolang/tm2-js-client";
+import { GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
 
 interface GnoswapContextProps {
-  rpcProvider: Provider | null;
+  rpcProvider: GnoProvider | null;
   accountRepository: AccountRepository;
   liquidityRepository: LiquidityRepository;
   poolRepository: PoolRepository;
@@ -40,10 +40,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 
   const [network] = useAtom(CommonState.network);
 
-  const [rpcProvider, setRPCProvider] = useState<Provider | null>(null);
+  const [rpcProvider, setRPCProvider] = useState<GnoProvider | null>(null);
 
   useEffect(() => {
-    const provider = new WSProvider(network.wsUrl, 5 * 1000);
+    const provider = new GnoWSProvider(network.wsUrl, 5 * 1000);
     provider.waitForOpenConnection().then(() => setRPCProvider(provider));
   }, [network]);
 
