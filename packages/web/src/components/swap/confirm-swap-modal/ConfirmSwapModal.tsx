@@ -1,65 +1,86 @@
-import React, { useEffect, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import {
   ConfirmSwapModalBackground,
   ConfirmModal,
   SwapDivider,
 } from "./ConfirmSwapModal.styles";
-import {
-  SwapData,
-  SwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
-import { TokenInfo } from "../swap-card/SwapCard";
 import IconClose from "@components/common/icons/IconCancel";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconInfo from "@components/common/icons/IconInfo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { DEVICE_TYPE } from "@styles/media";
 import IconSuccess from "@components/common/icons/IconSuccess";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconFailed from "@components/common/icons/IconFailed";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { SwapSummaryInfo, swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
+import { SwapResultInfo } from "@models/swap/swap-result-info";
+import useModalCloseEvent from "@hooks/common/use-modal-close-event";
+import { toNumberFormat } from "@utils/number-utils";
+import { numberToFormat } from "@utils/string-utils";
 
 interface ConfirmSwapModalProps {
-  onConfirmModal: () => void;
-  submitSwap: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  from: TokenInfo;
-  to: TokenInfo;
-  swapGasInfo: SwapGasInfo;
-  breakpoint: DEVICE_TYPE;
-  tolerance: string;
-  submit: boolean;
-  isFetching: boolean;
-  swapResult: SwapData | null;
+  submitted: boolean;
+  swapTokenInfo: SwapTokenInfo;
+  swapSummaryInfo: SwapSummaryInfo;
+  swapResult: SwapResultInfo | null;
+
+  swap: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  close: () => void;
 }
 
 const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
-  onConfirmModal,
-  submitSwap,
-  from,
-  to,
-  swapGasInfo,
-  breakpoint,
-  tolerance,
-  submit,
-  isFetching,
+  submitted,
+  swapTokenInfo,
+  swapSummaryInfo,
   swapResult,
+  swap,
+  close,
 }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const closeMenu = (e: MouseEvent) => {
-      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
-        return;
-      } else {
-        e.stopPropagation();
-        onConfirmModal();
-      }
-    };
-    window.addEventListener("click", closeMenu, true);
-    return () => {
-      window.removeEventListener("click", closeMenu, true);
-    };
-  }, [menuRef, onConfirmModal]);
+  useModalCloseEvent(menuRef, close);
+
+
+  const swapRateDescription = useMemo(() => {
+    const { tokenA, tokenB, swapRate } = swapSummaryInfo;
+    return `1 ${tokenA.symbol} = ${numberToFormat(swapRate)} ${tokenB.symbol}`;
+  }, [swapSummaryInfo]);
+
+  const swapRateUSD = useMemo(() => {
+    const swapRateUSD = swapSummaryInfo.swapRateUSD;
+    return numberToFormat(swapRateUSD);
+  }, [swapSummaryInfo.swapRateUSD]);
+
+  const priceImpactStr = useMemo(() => {
+    const priceImpact = swapSummaryInfo.priceImpact;
+    return `${priceImpact}%`;
+  }, [swapSummaryInfo.priceImpact]);
+
+  const slippageStr = useMemo(() => {
+    const slippage = swapTokenInfo.slippage;
+    return `${slippage}%`;
+  }, [swapTokenInfo.slippage]);
+
+  const guaranteedTypeStr = useMemo(() => {
+    const swapDirection = swapSummaryInfo.swapDirection;
+    return swapDirectionToGuaranteedType(swapDirection);
+  }, [swapSummaryInfo.swapDirection]);
+
+  const guaranteedStr = useMemo(() => {
+    const { amount, currency } = swapSummaryInfo.guaranteedAmount;
+    return `${toNumberFormat(amount)} ${currency}`;
+  }, [swapSummaryInfo.guaranteedAmount]);
+
+  const gasFeeStr = useMemo(() => {
+    const { amount, currency } = swapSummaryInfo.gasFee;
+    return `${toNumberFormat(amount)} ${currency}`;
+  }, [swapSummaryInfo.gasFee]);
+
+  const gasFeeUSDStr = useMemo(() => {
+    const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
+    return `$${toNumberFormat(gasFeeUSD)}`;
+  }, [swapSummaryInfo.gasFeeUSD]);
 
   return (
     <ConfirmSwapModalBackground>
@@ -67,107 +88,33 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
         <div className="modal-body">
           <div className="modal-header">
             <span>Confirm Swap</span>
-            <div className="close-wrap" onClick={onConfirmModal}>
+            <div className="close-wrap" onClick={close}>
               <IconClose className="close-icon" />
             </div>
           </div>
-          {submit ? (
-            <>
-              {isFetching && (
-                <>
-                  <div className="animation">
-                    <LoadingSpinner />
-                  </div>
-                  <div className="transaction-state">
-                    <span className="submitted">Waiting for Confirmation</span>
-                    <span className="swap-message">
-                      Swapping 0.1 GNOS for 0.12 GNOT
-                    </span>
-                    <div className="view-transaction">
-                      <span>Confirm this transaction in your wallet</span>
-                    </div>
-                  </div>
-                </>
-              )}
-              {!isFetching && swapResult?.success && (
-                <>
-                  <div className="animation">
-                    <IconSuccess className="animation-logo" />
-                  </div>
-                  <div className="transaction-state">
-                    <span className="submitted">Transaction Submitted</span>
-                    <div className="view-transaction">
-                      <span>View Transaction</span>
-                      <div
-                        className="open-link"
-                        onClick={() => {
-                          window.open(swapResult?.transaction, "_blank");
-                        }}
-                      >
-                        <IconOpenLink className="open-logo" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="close-button">
-                    <Button
-                      text="Close"
-                      style={{
-                        fullWidth: true,
-                        height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                        fontType: "body7",
-                        hierarchy: ButtonHierarchy.Primary,
-                      }}
-                      onClick={onConfirmModal}
-                    />
-                  </div>
-                </>
-              )}
-              {!isFetching && !swapResult?.success && (
-                <>
-                  <div className="animation">
-                    <IconFailed className="animation-logo" />
-                  </div>
-                  <div className="transaction-state">
-                    <span className="submitted">Transaction Rejected</span>
-                    <div className="view-transaction">
-                      <span>
-                        Your transaction has been rejected. Please try again.
-                      </span>
-                    </div>
-                  </div>
-                  <div className="close-button">
-                    <Button
-                      text="Close"
-                      style={{
-                        fullWidth: true,
-                        height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                        fontType: "body7",
-                        hierarchy: ButtonHierarchy.Primary,
-                      }}
-                      onClick={onConfirmModal}
-                    />
-                  </div>
-                </>
-              )}
-            </>
+          {submitted ? (
+            <ConfirmSwapResult
+              swapResult={swapResult}
+              close={close}
+            />
           ) : (
             <>
               <div className="modal-receipt">
                 <div className="input-group">
                   <div className="first-section">
                     <div className="amount-container">
-                      <span>{from.amount}</span>
+                      <span>{swapTokenInfo.tokenAAmount}</span>
                       <div className="button-wrapper">
                         <img
-                          src={from.logoURI}
+                          src={swapSummaryInfo.tokenA.logoURI}
                           alt="logo"
                           className="coin-logo"
                         />
-                        <span>{from.symbol}</span>
+                        <span>{swapSummaryInfo.tokenA.symbol}</span>
                       </div>
                     </div>
                     <div className="amount-info">
-                      <span className="price-text">{from.price}</span>
+                      <span className="price-text">{swapTokenInfo.tokenAUSD}</span>
                     </div>
                     <div className="arrow">
                       <div className="shape">
@@ -177,30 +124,29 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </div>
                   <div className="second-section">
                     <div className="amount-container">
-                      <span>{to.amount}</span>
+                      <span>{swapTokenInfo.tokenBAmount}</span>
                       <div className="button-wrapper">
                         <img
-                          src={to.logoURI}
+                          src={swapSummaryInfo.tokenB.logoURI}
                           alt="logo"
                           className="coin-logo"
                         />
-                        <span>{to.symbol}</span>
+                        <span>{swapSummaryInfo.tokenB.symbol}</span>
                       </div>
                     </div>
                     <div className="amount-info">
-                      <span className="price-text">{to.price}</span>
+                      <span className="price-text">{swapTokenInfo.tokenBUSD}</span>
                     </div>
                   </div>
                 </div>
                 <div className="swap-info">
-                  <div className="ocin-info">
+                  <div className="coin-info">
                     <IconInfo className="icon-info" />
                     <span className="gnos-price">
-                      {from.amount} {from.symbol} = {from.gnosExchangePrice}{" "}
-                      GNOS
+                      {swapRateDescription}
                     </span>
                     <span className="exchange-price">
-                      {from.usdExchangePrice}
+                      {swapRateUSD}
                     </span>
                   </div>
                 </div>
@@ -208,26 +154,26 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   <div className="price-impact">
                     <span className="gray-text">Price Impact</span>
                     <span className="white-text">
-                      {swapGasInfo.priceImpact}
+                      {priceImpactStr}
                     </span>
                   </div>
                   <div className="slippage">
                     <span className="gray-text">Max. Slippage</span>
-                    <span className="white-text">{tolerance}%</span>
+                    <span className="white-text">{slippageStr}</span>
                   </div>
                   <SwapDivider />
                   <div className="received">
-                    <span className="gray-text">Min. Received</span>
+                    <span className="gray-text">{guaranteedTypeStr}</span>
                     <span className="white-text">
-                      {swapGasInfo.minReceived}
+                      {guaranteedStr}
                     </span>
                   </div>
                   <div className="gas-fee">
                     <span className="gray-text">Gas Fee</span>
                     <span className="white-text">
-                      {swapGasInfo.gasFee} GNOT{" "}
+                      {gasFeeStr}
                       <span className="gray-text">
-                        ({swapGasInfo.usdExchangeGasFee})
+                        ({gasFeeUSDStr})
                       </span>
                     </span>
                   </div>
@@ -238,11 +184,11 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   text="Confrim Swap"
                   style={{
                     fullWidth: true,
-                    height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
+                    height: 57,
                     fontType: "body7",
                     hierarchy: ButtonHierarchy.Primary,
                   }}
-                  onClick={submitSwap}
+                  onClick={swap}
                 />
               </div>
             </>
@@ -250,6 +196,100 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
         </div>
       </ConfirmModal>
     </ConfirmSwapModalBackground>
+  );
+};
+
+interface ConfirmSwapResultProps {
+  swapResult: SwapResultInfo | null;
+  close: () => void;
+}
+
+const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
+  swapResult,
+  close,
+}) => {
+
+  if (swapResult === null) {
+    return (
+      <div>
+        <div className="animation">
+          <LoadingSpinner />
+        </div>
+        <div className="transaction-state">
+          <span className="submitted">Waiting for Confirmation</span>
+          <span className="swap-message">
+            Swapping 0.1 GNOS for 0.12 GNOT
+          </span>
+          <div className="view-transaction">
+            <span>Confirm this transaction in your wallet</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (swapResult.success) {
+    return (
+      <>
+        <div className="animation">
+          <IconSuccess className="animation-logo" />
+        </div>
+        <div className="transaction-state">
+          <span className="submitted">Transaction Submitted</span>
+          <div className="view-transaction">
+            <span>View Transaction</span>
+            <div
+              className="open-link"
+              onClick={() => {
+                window.open(swapResult?.hash, "_blank");
+              }}
+            >
+              <IconOpenLink className="open-logo" />
+            </div>
+          </div>
+        </div>
+        <div className="close-button">
+          <Button
+            text="Close"
+            style={{
+              fullWidth: true,
+              height: 57,
+              fontType: "body7",
+              hierarchy: ButtonHierarchy.Primary,
+            }}
+            onClick={close}
+          />
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="animation">
+        <IconFailed className="animation-logo" />
+      </div>
+      <div className="transaction-state">
+        <span className="submitted">Transaction Rejected</span>
+        <div className="view-transaction">
+          <span>
+            Your transaction has been rejected. Please try again.
+          </span>
+        </div>
+      </div>
+      <div className="close-button">
+        <Button
+          text="Close"
+          style={{
+            fullWidth: true,
+            height: 57,
+            fontType: "body7",
+            hierarchy: ButtonHierarchy.Primary,
+          }}
+          onClick={close}
+        />
+      </div>
+    </>
   );
 };
 

@@ -1,162 +1,106 @@
-import React, { useCallback, useState } from "react";
-import { ContentWrapper, SelectPairButton } from "./SwapCardContent.styles";
-import { TokenInfo } from "../swap-card/SwapCard";
+import React, { useCallback } from "react";
+import { ContentWrapper } from "./SwapCardContent.styles";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import SwapCardContentDetail from "../swap-card-content-detail/SwapCardContentDetail";
-import {
-  AutoRouterInfo,
-  tokenInfo,
-  SwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
-import SelectTokenModal from "../select-token-modal/SelectTokenModal";
-import { DEVICE_TYPE } from "@styles/media";
-import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { TokenModel } from "@models/token/token-model";
+import { isAmount } from "@common/utils/data-check-util";
+import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 
 interface ContentProps {
-  to: TokenInfo;
-  from: TokenInfo;
-  swapInfo: boolean;
-  showSwapInfo: () => void;
-  autoRouter: boolean;
-  showAutoRouter: () => void;
-  swapGasInfo: SwapGasInfo;
-  autoRouterInfo: AutoRouterInfo;
-  tokenModal: boolean;
-  onSelectTokenModal: () => void;
-  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  keyword: string;
-  coinList: tokenInfo[];
-  changeToken: (token: tokenInfo, type: string) => void;
-  selectToken: (e: string) => void;
-  breakpoint: DEVICE_TYPE;
-}
-
-function isAmount(str: string) {
-  const regex = /^\d+(\.\d*)?$/;
-  return regex.test(str);
+  swapTokenInfo: SwapTokenInfo;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  swapRouteInfos: SwapRouteInfo[];
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenAAmount: (value: string) => void;
+  changeTokenB: (token: TokenModel) => void;
+  changeTokenBAmount: (value: string) => void;
+  switchSwapDirection: () => void;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
-  to,
-  from,
-  swapInfo,
-  showSwapInfo,
-  autoRouter,
-  showAutoRouter,
-  swapGasInfo,
-  autoRouterInfo,
-  tokenModal,
-  onSelectTokenModal,
-  search,
-  keyword,
-  coinList,
-  changeToken,
-  selectToken,
-  breakpoint,
+  swapTokenInfo,
+  swapSummaryInfo,
+  swapRouteInfos,
+  changeTokenA,
+  changeTokenAAmount,
+  changeTokenB,
+  changeTokenBAmount,
+  switchSwapDirection,
 }) => {
-  const [fromAmount, setFromAmount] = useState(from.amount);
-  const [toAmount, setToAmount] = useState(to.amount);
 
-  const onChangeFromAmount = useCallback(
+  const tokenA = swapTokenInfo.tokenA;
+  const tokenB = swapTokenInfo.tokenB;
+
+  const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (value !== "" && !isAmount(value)) return;
-      setFromAmount(value);
+      changeTokenAAmount(value);
     },
-    [],
+    [changeTokenAAmount],
   );
 
-  const onChangeToAmount = useCallback(
+  const onChangeTokenBAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (value !== "" && !isAmount(value)) return;
-      setToAmount(value);
+      changeTokenBAmount(value);
     },
-    [],
+    [changeTokenBAmount],
   );
 
   return (
-    <>
-      {tokenModal && (
-        <SelectTokenModal
-          onSelectTokenModal={onSelectTokenModal}
-          search={search}
-          keyword={keyword}
-          coinList={coinList}
-          changeToken={changeToken}
+    <ContentWrapper>
+      <div className="first-section">
+        <div className="amount-container">
+          <input
+            className="amount-text"
+            value={swapTokenInfo.tokenAAmount}
+            onChange={onChangeTokenAAmount}
+            placeholder={swapTokenInfo.tokenAAmount === "" ? "0" : ""}
+          />
+          <div className="token-selector">
+            <SelectPairButton token={tokenA} changeToken={changeTokenA} />
+          </div>
+        </div>
+        <div className="amount-info">
+          <span className="price-text">{`$${swapTokenInfo.tokenAUSD}`}</span>
+          <span className="balance-text">Balance : {swapTokenInfo.tokenABalance}</span>
+        </div>
+        <div className="arrow">
+          <div className="shape" onClick={switchSwapDirection}>
+            <IconSwapArrowDown className="shape-icon" />
+          </div>
+        </div>
+      </div>
+      <div className="second-section">
+        <div className="amount-container">
+          <input
+            className="amount-text"
+            value={swapTokenInfo.tokenBAmount}
+            onChange={onChangeTokenBAmount}
+            placeholder={swapTokenInfo.tokenBAmount === "" ? "0" : ""}
+          />
+          <div className="token-selector">
+            <SelectPairButton token={tokenB} changeToken={changeTokenB} />
+          </div>
+        </div>
+        <div className="amount-info">
+          <span className="price-text">{`$${swapTokenInfo.tokenBUSD}`}</span>
+          <span className="balance-text">Balance : {swapTokenInfo.tokenBBalance}</span>
+        </div>
+      </div>
+
+      {swapSummaryInfo && (
+        <SwapCardContentDetail
+          swapSummaryInfo={swapSummaryInfo}
+          swapRouteInfos={swapRouteInfos}
         />
       )}
-      <ContentWrapper>
-        <div className="first-section">
-          <div className="amount-container">
-            <input
-              className="amount-text"
-              value={fromAmount}
-              onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
-            />
-            <SelectPairButton
-              onClick={() => {
-                selectToken("from");
-                onSelectTokenModal();
-              }}
-            >
-              <img
-                src={from.logoURI}
-                alt="token logo"
-                className="token-logo"
-              />
-              <span className="token-symbol">{from.symbol}</span>
-              <IconStrokeArrowDown className="arrow-icon" />
-            </SelectPairButton>
-          </div>
-          <div className="amount-info">
-            <span className="price-text">{from.price}</span>
-            <span className="balance-text">Balance : {from.balance}</span>
-          </div>
-          <div className="arrow">
-            <div className="shape">
-              <IconSwapArrowDown className="shape-icon" />
-            </div>
-          </div>
-        </div>
-        <div className="second-section">
-          <div className="amount-container">
-            <input
-              className="amount-text"
-              value={toAmount}
-              onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
-            />
-            <SelectPairButton
-              onClick={() => {
-                selectToken("to");
-                onSelectTokenModal();
-              }}
-            >
-              <img src={to.logoURI} alt="token logo" className="token-logo" />
-              <span className="token-symbol">{to.symbol}</span>
-              <IconStrokeArrowDown className="arrow-icon" />
-            </SelectPairButton>
-          </div>
-          <div className="amount-info">
-            <span className="price-text">{to.price}</span>
-            <span className="balance-text">Balance : {to.balance}</span>
-          </div>
-        </div>
-        <SwapCardContentDetail
-          to={to}
-          from={from}
-          swapInfo={swapInfo}
-          showSwapInfo={showSwapInfo}
-          autoRouter={autoRouter}
-          showAutoRouter={showAutoRouter}
-          swapGasInfo={swapGasInfo}
-          autoRouterInfo={autoRouterInfo}
-          breakpoint={breakpoint}
-        />
-      </ContentWrapper>
-    </>
+    </ContentWrapper>
   );
 };
 
