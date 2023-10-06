@@ -84,7 +84,7 @@ export const useTokenData = () => {
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
     const balances: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
-      if (index > -1 && index < tokens.length) {
+      if (index < tokens.length) {
         balances[tokens[index].priceId] = result;
       }
     });
