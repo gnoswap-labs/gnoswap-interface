@@ -2,8 +2,7 @@ import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { useCallback } from "react";
 import { toDecimalNumber } from "@utils/number-utils";
-
-const DEFAULT_SLIPPAGE = 0.5;
+import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
 export const useSlippage = () => {
   const [slippage, setSlippage] = useAtom(CommonState.slippage);

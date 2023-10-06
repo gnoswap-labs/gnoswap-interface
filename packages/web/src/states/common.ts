@@ -3,6 +3,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { atom } from "jotai";
 import NetworkData from "@resources/chains.json";
 import { atomWithStorage } from "jotai/utils";
+import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
 interface HeaderToggleProps {
   walletConnect: boolean;
@@ -22,4 +23,4 @@ export const breakpoint = atom<DEVICE_TYPE>(DEVICE_TYPE.WEB);
 
 export const network = atom<NetworkModel>(NetworkData[0]);
 
-export const slippage = atomWithStorage<number>("slippage", 0.5);
+export const slippage = atomWithStorage<number>("slippage", DEFAULT_SLIPPAGE);
