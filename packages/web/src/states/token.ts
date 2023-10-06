@@ -4,4 +4,6 @@ import { atom } from "jotai";
 
 export const tokens = atom<TokenModel[]>([]);
 
-export const tokenPrices = atom<{ [tokenId in string]: TokenPriceModel }>({});
+export const tokenPrices = atom<Record<string, TokenPriceModel>>({});
+
+export const balances = atom<Record<string, number | null>>({});

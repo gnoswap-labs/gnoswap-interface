@@ -1,14 +1,19 @@
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
+import { TokenModel } from "@models/token/token-model";
 import { TokenState } from "@states/index";
+import { evaluateExpressionToNumber } from "@utils/rpc-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 
 export const useTokenData = () => {
-  const { tokenRepository } = useGnoswapContext();
+  const { account } = useWallet();
+  const { rpcProvider, tokenRepository } = useGnoswapContext();
   const [tokens, setTokens] = useAtom(TokenState.tokens);
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
+  const [balances, setBalances] = useAtom(TokenState.balances);
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens.sort((t1, t2) => {
@@ -63,10 +68,37 @@ export const useTokenData = () => {
     setTokenPrices(response.prices);
   }
 
+  async function updateBalances() {
+    if (!rpcProvider) {
+      return;
+    }
+    async function fetchTokenBalance(token: TokenModel) {
+      if (!rpcProvider || !account) {
+        return null;
+      }
+      const param = `BalanceOf("${account.address}")`;
+      return rpcProvider.evaluateExpression(token.path, param)
+        .then(evaluateExpressionToNumber)
+        .catch(() => null);
+    }
+    const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
+    const balances: Record<string, number | null> = {};
+    fetchResults.forEach((result, index) => {
+      if (index > -1 && index < tokens.length) {
+        balances[tokens[index].priceId] = result;
+      }
+    });
+    setBalances(balances);
+  }
+
   return {
+    tokens,
+    tokenPrices,
+    balances,
     trendingTokens,
     recentlyAddedTokens,
     updateTokens,
     updateTokenPrices,
+    updateBalances,
   };
 };

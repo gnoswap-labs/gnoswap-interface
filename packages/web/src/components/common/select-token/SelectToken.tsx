@@ -1,19 +1,17 @@
 import React, { useCallback } from "react";
 import { SelectTokenWrapper } from "./SelectToken.styles";
-import { TokenInfo } from "@models/token/token-info";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
+import { TokenModel } from "@models/token/token-model";
+import BigNumber from "bignumber.js";
 
 export interface SelectTokenProps {
   keyword: string;
-  defaultTokens: TokenInfo[];
-  tokens: TokenInfo[];
-  tokenPrices: {
-    path: string;
-    price: string;
-  }[];
+  defaultTokens: TokenModel[];
+  tokens: TokenModel[];
+  tokenPrices: { [key in string]: number | null };
   changeKeyword: (keyword: string) => void;
-  changeToken: (token: TokenInfo) => void;
+  changeToken: (token: TokenModel) => void;
   close: () => void;
 }
 
@@ -27,19 +25,19 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   close,
 }) => {
 
-  const getTokenPrice = useCallback((token: TokenInfo) => {
-    const tokenPrice = tokenPrices.find(item => item.path === token.path);
+  const getTokenPrice = useCallback((token: TokenModel) => {
+    const tokenPrice = tokenPrices[token.priceId];
     if (!tokenPrice) {
       return "-";
     }
-    return tokenPrice.price;
+    return BigNumber(tokenPrice).toFormat();
   }, [tokenPrices]);
 
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
 
-  const onClickToken = useCallback((token: TokenInfo) => {
+  const onClickToken = useCallback((token: TokenModel) => {
     changeToken(token);
     close();
   }, [changeToken, close]);
