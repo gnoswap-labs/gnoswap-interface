@@ -17,31 +17,33 @@ const Template: ComponentStory<typeof EnterAmounts> = args => (
 );
 
 const token = {
-  path: "1",
-  name: "HEX",
-  symbol: "HEX",
-  logoURI:
-    "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+  "chainId": "test3",
+  "address": "0x111111111117dC0aa78b770fA6A738034120C302",
+  "path": "gno.land/r/demo/1inch",
+  "name": "1inch",
+  "symbol": "1INCH",
+  "decimals": 6,
+  "logoURI": "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
+  "priceId": "1inch",
+  "createdAt": "1999-01-01T00:00:01Z"
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  token0Input: {
+  tokenAInput: {
     token: token,
     amount: "121",
     usdValue: "$0.00",
     balance: "0",
     changeAmount: action("changeAmount"),
-    changeBalance: action("changeBalance"),
   },
-  token1Input: {
+  tokenBInput: {
     token: token,
     amount: "121",
     usdValue: "$0.00",
     balance: "0",
     changeAmount: action("changeAmount"),
-    changeBalance: action("changeBalance"),
   },
-  changeToken0: action("changeToken0"),
-  changeToken1: action("changeToken1"),
+  changeTokenA: action("changeTokenA"),
+  changeTokenB: action("changeTokenB"),
 };

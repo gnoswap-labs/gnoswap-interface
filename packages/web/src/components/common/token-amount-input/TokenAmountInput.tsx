@@ -3,11 +3,11 @@ import { TokenAmountInputWrapper } from "./TokenAmountInput.styles";
 import SelectPairButton from "../select-pair-button/SelectPairButton";
 import BigNumber from "bignumber.js";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
-import { TokenInfo } from "@models/token/token-info";
+import { TokenModel } from "@models/token/token-model";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
-  changeToken: (token: TokenInfo) => void;
+  changeToken: (token: TokenModel) => void;
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({

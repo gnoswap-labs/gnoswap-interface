@@ -1,10 +1,10 @@
 import React from "react";
 import { TokenAmountWrapper } from "./TokenAmount.styles";
 import SelectPairButton from "../select-pair-button/SelectPairButton";
-import { TokenInfo } from "@models/token/token-info";
+import { TokenModel } from "@models/token/token-model";
 
 export interface TokenAmountProps {
-  token: TokenInfo;
+  token: TokenModel;
   usdPrice: string;
   amount: string;
 }
