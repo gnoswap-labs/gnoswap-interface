@@ -56,8 +56,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, []);
 
   const poolRepository = useMemo(() => {
-    return new PoolRepositoryImpl(networkClient);
-  }, [networkClient]);
+    return new PoolRepositoryImpl(networkClient, walletClient);
+  }, [networkClient, walletClient]);
 
   const stakingRepository = useMemo(() => {
     return new StakingRepositoryMock();
@@ -65,7 +65,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 
   const swapRepository = useMemo(() => {
     return new SwapRepositoryMock(walletClient);
-  }, []);
+  }, [walletClient]);
 
   const tokenRepository = useMemo(() => {
     return new TokenRepositoryImpl(networkClient, localStorageClient);

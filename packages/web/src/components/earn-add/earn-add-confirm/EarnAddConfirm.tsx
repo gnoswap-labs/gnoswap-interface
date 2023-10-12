@@ -2,20 +2,20 @@ import React from "react";
 import { EarnAddConfirmWrapper } from "./EarnAddConfirm.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
-import { TokenInfo } from "@models/token/token-info";
 import EarnAddConfirmAmountInfo from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
 import EarnAddConfirmPriceRangeInfo from "../earn-add-confirm-price-range-info/EarnAddConfirmPriceRangeInfo";
 import EarnAddConfirmFeeInfo from "../earn-add-confirm-fee-info/EarnAddConfirmFeeInfo";
+import { TokenModel } from "@models/token/token-model";
 
 export interface EarnAddConfirmProps {
   amountInfo: {
     tokenA: {
-      info: TokenInfo;
+      info: TokenModel;
       amount: string;
       usdPrice: string;
     };
     tokenB: {
-      info: TokenInfo;
+      info: TokenModel;
       amount: string;
       usdPrice: string;
     };
@@ -31,7 +31,7 @@ export interface EarnAddConfirmProps {
     estimatedAPR: string;
   };
   feeInfo: {
-    token: TokenInfo;
+    token: TokenModel;
     fee: string;
   };
   confirm: () => void;

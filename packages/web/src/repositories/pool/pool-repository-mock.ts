@@ -11,4 +11,8 @@ export class PoolRepositoryMock implements PoolRepository {
   getPoolDetailByPoolId = async (): Promise<PoolDetailResponse> => {
     return PoolDetailData as PoolDetailResponse;
   };
+
+  createPool = async (): Promise<string> => {
+    return "hash";
+  };
 }

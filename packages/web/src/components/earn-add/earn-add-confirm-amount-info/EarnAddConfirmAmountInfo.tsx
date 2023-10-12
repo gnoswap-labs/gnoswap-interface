@@ -1,17 +1,17 @@
 import React from "react";
 import { EarnAddConfirmAmountInfoWrapper, EarnAddConfirmFeeInfoSection } from "./EarnAddConfirmAmountInfo.styles";
-import { TokenInfo } from "@models/token/token-info";
 import TokenAmount from "@components/common/token-amount/TokenAmount";
 import IconAdd from "@components/common/icons/IconAdd";
+import { TokenModel } from "@models/token/token-model";
 
 export interface EarnAddConfirmAmountInfoProps {
   tokenA: {
-    info: TokenInfo;
+    info: TokenModel;
     amount: string;
     usdPrice: string;
   };
   tokenB: {
-    info: TokenInfo;
+    info: TokenModel;
     amount: string;
     usdPrice: string;
   };
