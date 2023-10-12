@@ -66,7 +66,7 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
           <br />
           on Gnoswap
         </TitleWrapper>
-        <SubTitleWrapper>the One-stop Gnoland Defi Platform</SubTitleWrapper>
+        <SubTitleWrapper>the One-stop Gnoland DeFi Platform</SubTitleWrapper>
       </HeroTitleContainer>
       {windowSize > DeviceSize.mobile && (
         <DescriptionContainer>
