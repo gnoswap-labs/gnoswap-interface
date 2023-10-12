@@ -114,3 +114,12 @@ export const toUnitFormat = (
   // TODO : Else Return Type
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toString();
 };
+
+export function toDecimalNumber(
+  value: BigNumber | string | number,
+  decimals?: number,
+) {
+  const powers = 10 ** (decimals || 0);
+  const num = BigNumber(value).toNumber();
+  return Math.round(num * powers) / powers;
+}

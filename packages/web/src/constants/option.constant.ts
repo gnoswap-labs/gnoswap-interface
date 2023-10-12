@@ -77,3 +77,5 @@ export const PriceRangeTooltip: {
     "A passive price range of [-50% ~ +100%] for moderate risks & returns.",
   Custom: undefined,
 };
+
+export const DEFAULT_SLIPPAGE = 0.5;
