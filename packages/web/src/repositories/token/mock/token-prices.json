@@ -1,73 +1,41 @@
 {
-  "message": "Successful",
-  "count": 7,
   "meta": {
-    "timestamp": 1695363312078,
-    "ageRaw": 56
+    "height": "94",
+    "timestamp": "2023-10-10T17:51:46+09:00"
   },
-  "prices": {
-    "1inch": {
-      "usd": 0.03077532,
-      "changedBefore1D": 19.92,
-      "changedBefore7D": -12.09,
-      "changedBefore30D": 19.12,
-      "marketCap": 31142124125500000000,
-      "liquidity": 1421241255,
-      "volume": 311421241
+  "prices": [
+    {
+      "path": "gno.land/r/bar",
+      "usd": "1.000000",
+      "change1h": "0.000000",
+      "change1d": "0.000000",
+      "change7d": "0.000000",
+      "change30d": "0.000000",
+      "marketCap": "110200000000.000000",
+      "liquidity": "195871.000000",
+      "volume": "195886.000000"
     },
-    "usd-coin": {
-      "usd": 0.999292,
-      "changedBefore1D": 19.92,
-      "changedBefore7D": -12.09,
-      "changedBefore30D": 19.12,
-      "marketCap": 31142124125500000000,
-      "liquidity": 1421241255,
-      "volume": 311421241
+    {
+      "path": "gno.land/r/foo",
+      "usd": "0.074070",
+      "change1h": "0.000000",
+      "change1d": "0.000000",
+      "change7d": "0.000000",
+      "change30d": "0.000000",
+      "marketCap": "8162479867.948110",
+      "liquidity": "195871.000000",
+      "volume": "195871.000000"
     },
-    "weth": {
-      "usd": 1592.57,
-      "changedBefore1D": 19.92,
-      "changedBefore7D": -12.09,
-      "changedBefore30D": 19.12,
-      "marketCap": 31142124125500000000,
-      "liquidity": 1421241255,
-      "volume": 311421241
-    },
-    "uniswap": {
-      "usd": 4.23,
-      "changedBefore1D": 19.92,
-      "changedBefore7D": -12.09,
-      "changedBefore30D": 19.12,
-      "marketCap": 31142124125500000000,
-      "liquidity": 1421241255,
-      "volume": 311421241
-    },
-    "ethereum": {
-      "usd": 1618.72,
-      "changedBefore1D": 19.92,
-      "changedBefore7D": -12.09,
-      "changedBefore30D": 19.12,
-      "marketCap": 31142124125500000000,
-      "liquidity": 1421241255,
-      "volume": 311421241
-    },
-    "wrapped-bitcoin": {
-      "usd": 26598,
-      "changedBefore1D": 19.92,
-      "changedBefore7D": -12.09,
-      "changedBefore30D": 19.12,
-      "marketCap": 31142124125500000000,
-      "liquidity": 1421241255,
-      "volume": 311421241
-    },
-    "wrapped-steth": {
-      "usd": 1814.66,
-      "changedBefore1D": 19.92,
-      "changedBefore7D": -12.09,
-      "changedBefore30D": 19.12,
-      "marketCap": 31142124125500000000,
-      "liquidity": 1421241255,
-      "volume": 311421241
+    {
+      "path": "gno.land/r/bar",
+      "usd": "1.000000",
+      "change1h": "0.000000",
+      "change1d": "0.000000",
+      "change7d": "0.000000",
+      "change30d": "0.000000",
+      "marketCap": "110200000000.000000",
+      "liquidity": "195871.000000",
+      "volume": "195886.000000"
     }
-  }
+  ]
 }
