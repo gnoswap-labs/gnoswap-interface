@@ -54,6 +54,7 @@ export const GovernanceLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")};
     ${fonts.body11};
     gap: 4px;
+    cursor: pointer;
     color: ${({ theme }) => theme.color.text04};
     ${media.mobile} {
       ${fonts.p3};
