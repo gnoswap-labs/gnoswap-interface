@@ -24,5 +24,10 @@ Default.args = {
     yesOfQuorum: 50,
     currentValue: 20000000,
     maxValue: 40000000,
+    votingPower: 0,
+    icon: "",
+    currency: "",
+    description: "",
+    typeVote: "",
   },
 };

@@ -7,6 +7,7 @@ export const ProposalDetailWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   background-color: ${({ theme }) => theme.color.background03};
   border: 1px solid ${({ theme }) => theme.color.border01};
+  cursor: pointer;
   border-radius: 8px;
   padding: 24px 36px 32px 36px;
   gap: 8px;
@@ -92,25 +93,16 @@ export const ProgressWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")};
     flex-wrap: wrap;
     gap: 4px;
-    * {
-      ${fonts.body12};
-    }
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.body12};
     span {
-      color: ${({ theme }) => theme.color.text03};
-      ${fonts.body12};
+      color: ${({ theme }) => theme.color.text10};
     }
   }
   ${media.mobile} {
     gap: 8px;
     .progress-value {
       ${fonts.p6};
-      * {
-        ${fonts.p6};
-      }
-      span {
-        ${fonts.p6};
-      }
     }
   }
 `;

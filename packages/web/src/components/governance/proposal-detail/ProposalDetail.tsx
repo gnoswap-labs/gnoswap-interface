@@ -16,6 +16,7 @@ import { Global, css, type Theme } from "@emotion/react";
 
 interface Props {
   proposalDetail: ProposalDetailProps;
+  onClickProposalDetail: (id: string) => void;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -58,9 +59,14 @@ const MAPPING_STATUS: Record<string, JSX.Element> = {
   ),
 };
 
-const ProposalDetail: React.FC<Props> = ({ proposalDetail }) => {
+const ProposalDetail: React.FC<Props> = ({
+  proposalDetail,
+  onClickProposalDetail,
+}) => {
   return (
-    <ProposalDetailWrapper>
+    <ProposalDetailWrapper
+      onClick={() => onClickProposalDetail(proposalDetail.id)}
+    >
       <div className="header">
         <div className="title">{proposalDetail.title}</div>
         <Badge type={BADGE_TYPE.DARK_DEFAULT} text={proposalDetail.label} />

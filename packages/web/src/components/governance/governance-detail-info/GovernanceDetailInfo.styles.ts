@@ -47,7 +47,7 @@ export const GovernanceDetailInfoWrapper = styled.div`
     flex-wrap: wrap;
     .currency {
       ${fonts.body6};
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text04};
     }
     .value {
       display: inline-flex;
