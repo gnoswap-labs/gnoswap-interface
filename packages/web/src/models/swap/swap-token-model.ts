@@ -1,7 +1,7 @@
-import { TokenInfo } from "@models/token/token-info";
+import { TokenModel } from "@models/token/token-model";
 
 export interface SwapTokenModel {
-  token: TokenInfo;
+  token: TokenModel;
   amount: string;
   price: string;
   balance: string;

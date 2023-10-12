@@ -1,14 +1,16 @@
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { WalletState } from "@states/index";
+import { CommonState, WalletState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
+import NetworkData from "@resources/chains.json";
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
+  const [, setNetwork] = useAtom(CommonState.network);
 
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
@@ -27,6 +29,17 @@ export const useWallet = () => {
       updateWalletEvents(walletClient);
     }
   }, [walletClient]);
+
+  useEffect(() => {
+    if (walletAccount) {
+      const network = NetworkData.find(
+        network => network.chainId === walletAccount.chainId,
+      );
+      if (network) {
+        setNetwork(network);
+      }
+    }
+  }, [setNetwork, walletAccount]);
 
   function initSession() {
     const connectedBySession = accountRepository.isConnectedWalletBySession();
