@@ -3,26 +3,26 @@ import IconAdd from "../icons/IconAdd";
 import { LiquidityEnterAmountsWrapper } from "./LiquidityEnterAmounts.styles";
 import TokenAmountInput from "../token-amount-input/TokenAmountInput";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
-import { TokenInfo } from "@models/token/token-info";
+import { TokenModel } from "@models/token/token-model";
 
 interface LiquidityEnterAmountsProps {
-  token0Input: TokenAmountInputModel;
-  token1Input: TokenAmountInputModel;
-  changeToken0: (token: TokenInfo) => void;
-  changeToken1: (token: TokenInfo) => void;
+  tokenAInput: TokenAmountInputModel;
+  tokenBInput: TokenAmountInputModel;
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenB: (token: TokenModel) => void;
 }
 
 const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
-  token0Input,
-  token1Input,
-  changeToken0,
-  changeToken1,
+  tokenAInput,
+  tokenBInput,
+  changeTokenA,
+  changeTokenB,
 }) => {
 
   return (
     <LiquidityEnterAmountsWrapper>
-      <TokenAmountInput changeToken={changeToken0} {...token0Input} />
-      <TokenAmountInput changeToken={changeToken1} {...token1Input} />
+      <TokenAmountInput changeToken={changeTokenA} {...tokenAInput} />
+      <TokenAmountInput changeToken={changeTokenB} {...tokenBInput} />
       <div className="arrow">
         <div className="shape">
           <IconAdd className="add-icon" />
