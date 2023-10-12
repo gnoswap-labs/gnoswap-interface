@@ -1,7 +1,6 @@
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { useCallback } from "react";
-import { toDecimalNumber } from "@utils/number-utils";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
 export const useSlippage = () => {
@@ -9,13 +8,7 @@ export const useSlippage = () => {
 
   const changeSlippage = useCallback(
     (slippage: number) => {
-      let changedSlippage = slippage;
-      if (slippage < 0) {
-        changedSlippage = 0;
-      } else if (slippage > 100) {
-        changedSlippage = 100;
-      }
-      changedSlippage = toDecimalNumber(changedSlippage, 2);
+      const changedSlippage = Math.min(100, Math.max(0, slippage));
       setSlippage(changedSlippage);
     },
     [setSlippage],
