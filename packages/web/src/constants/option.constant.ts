@@ -1,8 +1,14 @@
 import { ValuesType } from "utility-types";
 
-export type SwapFeeTierType = "FEE_100" | "FEE_500" | "FEE_3000" | "FEE_10000";
+export type SwapFeeTierType =
+  | "FEE_100"
+  | "FEE_500"
+  | "FEE_3000"
+  | "FEE_10000"
+  | "NONE";
 
 export interface SwapFeeTierInfo {
+  type: SwapFeeTierType;
   fee: number;
   rateStr: string;
   description: string;
@@ -13,28 +19,39 @@ export const SwapFeeRateMap: Record<SwapFeeTierType, number> = {
   FEE_500: 500,
   FEE_3000: 3000,
   FEE_10000: 10000,
+  NONE: 0,
 } as const;
 
 export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   FEE_100: {
+    type: "FEE_100",
     fee: 100,
     rateStr: "0.01%",
     description: "Best for very stable pairs",
   },
   FEE_500: {
+    type: "FEE_500",
     fee: 500,
     rateStr: "0.05%",
     description: "Best for stable pairs",
   },
   FEE_3000: {
+    type: "FEE_3000",
     fee: 3000,
     rateStr: "0.3%",
     description: "Best for most pairs",
   },
   FEE_10000: {
+    type: "FEE_10000",
     fee: 10000,
     rateStr: "1%",
     description: "Best for exotic pairs",
+  },
+  NONE: {
+    type: "NONE",
+    fee: 0,
+    rateStr: "-",
+    description: "-",
   },
 } as const;
 

@@ -3,22 +3,22 @@ import {
   IncentivizedWrapper,
   PoolListWrapper,
 } from "./IncentivizedPoolCardList.styles";
-import { type PoolListProps } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import IncentivizedPoolCard from "@components/earn/incentivized-pool-card/IncentivizedPoolCard";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
+import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 export interface IncentivizedPoolCardListProps {
-  list: Array<PoolListProps>;
+  incentivizedPools: PoolCardInfo[];
   loadMore?: boolean;
   isFetched: boolean;
   onClickLoadMore?: () => void;
   currentIndex: number;
-  routeItem: (id: number) => void;
+  routeItem: (id: string) => void;
   mobile: boolean;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
-  list,
+  incentivizedPools,
   loadMore,
   isFetched,
   onClickLoadMore,
@@ -29,14 +29,14 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   <IncentivizedWrapper>
     <PoolListWrapper>
       {isFetched &&
-        list.length > 0 &&
-        list.map((item, idx) => (
-          <IncentivizedPoolCard item={item} key={idx} routeItem={routeItem} />
+        incentivizedPools.length > 0 &&
+        incentivizedPools.map((info, index) => (
+          <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} />
         ))}
       {!isFetched &&
-        Array.from({ length: 8 }).map((_, idx) => (
+        Array.from({ length: 8 }).map((_, index) => (
           <span
-            key={idx}
+            key={index}
             className="card-skeleton"
             css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
           />
@@ -51,7 +51,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
         <span>/</span>
-        <span>{list.length}</span>
+        <span>{incentivizedPools.length}</span>
       </div>
     )}
   </IncentivizedWrapper>

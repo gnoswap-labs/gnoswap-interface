@@ -55,8 +55,7 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   }, [feeTier]);
 
   const rangeStr = useMemo(() => {
-    const fee = SwapFeeTierInfoMap[feeTier].fee;
-    const pool = pools.find(pool => pool.fee === fee);
+    const pool = pools.find(pool => pool.fee === feeTier);
     if (!pool || pool.bins.length < 2) {
       return "Not created";
     }
