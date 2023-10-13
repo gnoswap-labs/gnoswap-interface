@@ -95,9 +95,9 @@ export const useEarnAddLiquidityConfirmModal = ({
     setModalContent(null);
   }, [setModalContent, setOpenedModal]);
 
-  const moveMain = useCallback(() => {
+  const moveEarn = useCallback(() => {
     close();
-    navigator.push("/");
+    navigator.push("/earn");
   }, [close, navigator]);
 
   const confirm = useCallback(() => {
@@ -113,8 +113,8 @@ export const useEarnAddLiquidityConfirmModal = ({
       slippage,
       startPrice: currentPrice,
       swapFeeTier,
-    }).then(result => result && moveMain());
-  }, [createPool, currentPrice, moveMain, priceRange, slippage, swapFeeTier, tokenA, tokenAAmountInput.amount, tokenB, tokenBAmountInput.amount]);
+    }).then(result => result && moveEarn());
+  }, [createPool, currentPrice, moveEarn, priceRange, slippage, swapFeeTier, tokenA, tokenAAmountInput.amount, tokenB, tokenBAmountInput.amount]);
 
   const openModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {

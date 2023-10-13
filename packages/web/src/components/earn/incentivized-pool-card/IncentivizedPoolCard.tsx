@@ -4,32 +4,39 @@ import BarAreaGraph from "@components/common/bar-area-graph/BarAreaGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconSwap from "@components/common/icons/IconSwap";
 import {
-  type PoolListProps,
   POOL_CONTENT_TITLE,
 } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import { PoolCardWrapper } from "./IncentivizedPoolCard.styles";
+import { PoolCardInfo } from "@models/pool/info/pool-card-info";
+import { useMemo } from "react";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 
 export interface IncentivizedPoolCardProps {
-  item: PoolListProps;
-  routeItem: (id: number) => void;
+  pool: PoolCardInfo;
+  routeItem: (id: string) => void;
 }
 
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
-  item,
+  pool,
   routeItem,
 }) => {
+
+  const pairName = useMemo(() => {
+    return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
+  }, [pool.tokenA.symbol, pool.tokenB.symbol]);
+
   return (
     <PoolCardWrapper
-      onClick={() => routeItem(Math.floor(Math.random() * 100 + 1))}
+      onClick={() => routeItem(pool.poolId)}
     >
       <div className="pool-container">
         <div className="title-container">
           <div className="box-header">
-            <DoubleLogo left={item.logo[0]} right={item.logo[1]} />
-            <span>{`${item.name[0]}/${item.name[1]}`}</span>
+            <DoubleLogo left={pool.tokenA.logoURI} right={pool.tokenB.logoURI} />
+            <span>{pairName}</span>
           </div>
           <div className="box-group">
-            <Badge type={BADGE_TYPE.DARK_DEFAULT} text={item.fee} />
+            <Badge type={BADGE_TYPE.DARK_DEFAULT} text={SwapFeeTierInfoMap[pool.feeTier].rateStr} />
           </div>
         </div>
         <div className="list-wrapper">
@@ -38,8 +45,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
             <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
           </div>
           <div className="list-content">
-            <span className="value-text">{item.liquidity}</span>
-            <span className="value-text">{item.apr}</span>
+            <span className="value-text">{pool.liquidity}</span>
+            <span className="value-text">{pool.apr}</span>
           </div>
         </div>
       </div>
@@ -50,15 +57,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
             <span className="label-text">{POOL_CONTENT_TITLE.FEE}</span>
           </div>
           <div className="volume-content">
-            <span className="value-text">{item.volume24h}</span>
-            <span className="value-text">{item.fees24h}</span>
+            <span className="value-text">{pool.volume24h}</span>
+            <span className="value-text">{pool.fees24h}</span>
           </div>
         </div>
         <div className="pool-content">
           <div className="pool-rate-wrapper">
-            <span>{`1 ${item.name[0]}`}</span>
+            <span>{`1 ${pool.tokenA.symbol}`}</span>
             <IconSwap />
-            <span>{`${item.currentTick} ${item.name[1]}`}</span>
+            <span>{`${pool.tickInfo.currentTick} ${pool.tokenB.symbol}`}</span>
           </div>
           <BarAreaGraph
             width={258}

@@ -41,8 +41,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
     if (!poolSelectItem) {
       return "-";
     }
-    const feeRate = poolSelectItem.feeRate;
-    return `${feeRate}%`;
+    return poolSelectItem.feeRate;
   }, [poolSelectItem]);
 
   const liquidity = useMemo(() => {
