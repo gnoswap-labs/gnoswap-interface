@@ -24,7 +24,7 @@ export const usePoolData = () => {
     return sortedTokens.map(pool => ({
       pool,
       upDown: "none",
-      content: `${pool.topBin.annualizedFeeGrowth}%`
+      content: `${pool.topBin.annualizedFeeGrowth || 0}%`
     }));
   }, [pools]);
 

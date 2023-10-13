@@ -4,6 +4,7 @@ import { PoolModel } from "../pool-model";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { PoolRewardInfo } from "../info/pool-reward-info";
 import { PoolCardInfo } from "../info/pool-card-info";
+import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -53,6 +54,20 @@ export class PoolMapper {
         currentTick: price,
         ticks: [],
       },
+    };
+  }
+
+  public static toPoolSelectItemInfo(pool: PoolModel): PoolSelectItemInfo {
+    const feeRate =
+      Object.values(SwapFeeTierInfoMap).find(info => `${info.fee}` === pool.fee)
+        ?.rateStr || "-";
+
+    return {
+      poolId: pool.id,
+      liquidityAmount: BigNumber(pool.price).toFixed(),
+      feeRate,
+      tokenA: pool.tokenA,
+      tokenB: pool.tokenB,
     };
   }
 
