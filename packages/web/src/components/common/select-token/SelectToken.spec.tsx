@@ -9,7 +9,7 @@ describe("SelectToken Component", () => {
       keyword: "",
       defaultTokens: [],
       tokens: [],
-      tokenPrices: [],
+      tokenPrices: {},
       changeKeyword: () => { return; },
       changeToken: () => { return; },
       close: () => { return; },

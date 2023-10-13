@@ -21,6 +21,9 @@ module.exports = {
       },
     });
     return merge(config, {
+      experiments: {
+        topLevelAwait: true,
+      },
       resolve: {
         plugins: [new TsconfigPathsPlugin()],
       },

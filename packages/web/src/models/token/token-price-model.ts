@@ -1,9 +1,11 @@
 export interface TokenPriceModel {
-  usd: number;
-  changedBefore1D: number;
-  changedBefore7D: number;
-  changedBefore30D: number;
-  marketCap: number;
-  liquidity: number;
-  volume: number;
+  path: string;
+  usd: string;
+  change1h: string;
+  change1d: string;
+  change7d: string;
+  change30d: string;
+  marketCap: string;
+  liquidity: string;
+  volume: string;
 }

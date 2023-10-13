@@ -4,16 +4,16 @@ import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import { TokenInfo } from "@models/token/token-info";
+import { TokenModel } from "@models/token/token-model";
 export interface TokenSwapProps {
   from: {
-    token: TokenInfo;
+    token: TokenModel;
     amount: string;
     price: string;
     balance: string;
   };
   to: {
-    token: TokenInfo;
+    token: TokenModel;
     amount: string;
     price: string;
     balance: string;

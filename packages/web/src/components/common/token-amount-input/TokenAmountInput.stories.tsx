@@ -8,10 +8,15 @@ export default {
 } as Meta<typeof TokenAmountInput>;
 
 const token = {
-  path: "1",
-  name: "Gnoland",
-  symbol: "GNO.LAND",
-  logoURI: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gnos",
+  decimals: 4,
+  symbol: "GNOS",
+  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+  priceId: "gno.land/r/gnos"
 };
 
 export const Default: StoryObj<TokenAmountInputProps> = {
@@ -21,7 +26,6 @@ export const Default: StoryObj<TokenAmountInputProps> = {
     balance: "12,211",
     usdValue: "12.3",
     changable: true,
-    changeBalance: action("changeBalance"),
     changeAmount: action("changeAmount"),
     changeToken: action("changeToken"),
   },
