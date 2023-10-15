@@ -5,6 +5,7 @@ import ProposalHeader from "../proposal-header/ProposalHeader";
 import ViewProposalModal from "../view-proposal-modal/ViewProposalModal";
 import { ProposalListWrapper } from "./ProposalList.styles";
 import { Dispatch, SetStateAction } from "react";
+import CreateProposalModal from "../create-proposal-modal/CreateProposalModal";
 interface ProposalListProps {
   proposalList: ProposalDetailProps[];
   isShowCancelled: boolean;
@@ -14,6 +15,8 @@ interface ProposalListProps {
   proposalDetail: ProposalDetailProps;
   setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
   onClickProposalDetail: (id: string) => void;
+  isShowCreateProposal: boolean;
+  setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -25,11 +28,14 @@ const ProposalList: React.FC<ProposalListProps> = ({
   proposalDetail,
   setIsShowProposalModal,
   onClickProposalDetail,
+  isShowCreateProposal,
+  setIsShowCreateProposal
 }) => (
   <ProposalListWrapper>
     <ProposalHeader
       toggleShowCancelled={toggleShowCancelled}
       isShowCancelled={isShowCancelled}
+      setIsShowCreateProposal={setIsShowCreateProposal}
     />
     {proposalList.map((proposalDetail: ProposalDetailProps) => (
       <ProposalDetail
@@ -45,6 +51,11 @@ const ProposalList: React.FC<ProposalListProps> = ({
         setIsShowProposalModal={setIsShowProposalModal}
       />
     )}
+    {isShowCreateProposal &&
+      <CreateProposalModal
+      breakpoint={breakpoint}
+      
+      setIsShowCreateProposal={setIsShowCreateProposal} />}
   </ProposalListWrapper>
 );
 

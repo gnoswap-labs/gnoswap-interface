@@ -71,6 +71,7 @@ async function fetchProposalDetail() {
 const ProposalListContainer: React.FC = () => {
   const [isShowCancelled, toggleShowCancelled] = useState(false);
   const [isShowProposalModal, setIsShowProposalModal] = useState(false);
+  const [isShowCreateProposal, setIsShowCreateProposal] = useState(false);
 
   const { breakpoint } = useWindowSize();
 
@@ -122,6 +123,10 @@ const ProposalListContainer: React.FC = () => {
       }
       breakpoint={breakpoint}
       onClickProposalDetail={handleClickProposalDetail}
+      isShowCreateProposal={isShowCreateProposal}
+      setIsShowCreateProposal={() =>
+        setIsShowCreateProposal(!isShowCreateProposal)
+      }
     />
   );
 };
