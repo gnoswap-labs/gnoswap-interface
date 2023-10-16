@@ -1,24 +1,31 @@
-import React from "react";
-import CardList, { type ListProps } from "@components/home/card-list/CardList";
+import React, { useMemo } from "react";
+import CardList from "@components/home/card-list/CardList";
 import { HighestAprsCardListwrapper } from "./HighestAprsCardList.styles";
 import IconDiamond from "@components/common/icons/IconDiamond";
-import { DeviceSize } from "@styles/media";
+import { DEVICE_TYPE } from "@styles/media";
+import { CardListPoolInfo } from "@models/common/card-list-item-info";
 
 interface HighestAprsCardListProps {
-  list: Array<ListProps>;
-  windowSize: number;
+  list: Array<CardListPoolInfo>;
+  device: DEVICE_TYPE;
+  onClickItem: (path: string) => void;
 }
 
 const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
   list,
-  windowSize,
+  device,
+  onClickItem,
 }) => {
-  return windowSize > DeviceSize.mobile ? (
+  const visible = useMemo(() => {
+    return device !== DEVICE_TYPE.MOBILE;
+  }, [device]);
+
+  return visible ? (
     <HighestAprsCardListwrapper>
       <h2>
         <IconDiamond className="icon-diamond" /> Highest APRs
       </h2>
-      <CardList list={list} />
+      <CardList list={list} onClickItem={onClickItem} />
     </HighestAprsCardListwrapper>
   ) : null;
 };

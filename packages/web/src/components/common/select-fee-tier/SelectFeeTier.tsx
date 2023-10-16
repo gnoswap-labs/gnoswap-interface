@@ -1,67 +1,85 @@
-import { CONTENT_TITLE } from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
-import React from "react";
-import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { wrapper } from "./SelectFeeTier.styles";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
+import React, { useCallback, useMemo } from "react";
+import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { PoolModel } from "@models/pool/pool-model";
+import BigNumber from "bignumber.js";
 
 interface SelectFeeTierProps {
-  active: boolean;
-  data?: any;
-  openFeeTier: boolean;
-  onClickOpenFeeTier: () => void;
+  feeTiers: SwapFeeTierType[];
+  feeTier: SwapFeeTierType | null;
+  pools: PoolModel[],
+  selectFeeTier: (feeTier: SwapFeeTierType) => void;
 }
 
-const feeRateInit = [
-  {
-    feeRate: FEE_RATE_OPTION.FEE_01,
-    desc: "Best for very stable pairs",
-    selectedFeeRate: "12% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_05,
-    desc: "Best for stable pairs",
-    selectedFeeRate: "67% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_3,
-    desc: "Best for most pairs",
-    selectedFeeRate: "21% select",
-  },
-  {
-    feeRate: FEE_RATE_OPTION.FEE_1,
-    desc: "Best for exotic pairs",
-    selectedFeeRate: "Not created",
-  },
-];
-
 const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
-  active,
-  openFeeTier,
-  onClickOpenFeeTier,
-  data = feeRateInit,
+  feeTiers,
+  feeTier,
+  pools,
+  selectFeeTier,
 }) => {
+
+  const onClickFeeTierItem = useCallback((feeTier: SwapFeeTierType) => {
+    selectFeeTier(feeTier);
+  }, [selectFeeTier]);
+
   return (
-    <div css={wrapper}>
-      <section className="title-content" onClick={onClickOpenFeeTier}>
-        <h5 className="title">{CONTENT_TITLE.FEE_TIER}</h5>
-        <Badge
-          text={data?.fee ?? FEE_RATE_OPTION.FEE_3}
-          type={BADGE_TYPE.LINE}
+    <SelectFeeTierWrapper>
+      {feeTiers.map((item, index) => (
+        <SelectFeeTierItem
+          key={index}
+          selected={feeTier === item}
+          feeTier={item}
+          pools={pools}
+          onClick={() => onClickFeeTierItem(item)}
         />
-      </section>
-      {active && openFeeTier && (
-        <section className="select-fee-wrap">
-          {data.map((item: any, idx: number) => (
-            <div className="fee-tier-box" key={idx}>
-              <strong className="fee-rate">{item.feeRate}</strong>
-              <p className="desc">{item.desc}</p>
-              <span className="selected-fee-rate">{item.selectedFeeRate}</span>
-            </div>
-          ))}
-        </section>
-      )}
-    </div>
+      ))}
+    </SelectFeeTierWrapper>
   );
 };
+
+interface SelectFeeTierItemProps {
+  selected: boolean;
+  feeTier: SwapFeeTierType;
+  pools: PoolModel[];
+  onClick: () => void;
+}
+
+const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
+  selected,
+  feeTier,
+  pools,
+  onClick,
+}) => {
+  const feeRateStr = useMemo(() => {
+    return SwapFeeTierInfoMap[feeTier].rateStr;
+  }, [feeTier]);
+
+  const rangeStr = useMemo(() => {
+    const pool = pools.find(pool => pool.fee === feeTier);
+    if (!pool || pool.bins.length < 2) {
+      return "Not created";
+    }
+    const sortedBins = pool.bins.sort((p1, p2) => p1.currentTick - p2.currentTick);
+    const fullTickRange = 1774545;
+    const currentTickGap = sortedBins[0].currentTick - sortedBins[sortedBins.length - 1].currentTick;
+    return BigNumber(currentTickGap)
+      .dividedBy(fullTickRange)
+      .multipliedBy(100)
+      .toFixed();
+  }, [feeTier, pools]);
+
+  const description = useMemo(() => {
+    return SwapFeeTierInfoMap[feeTier].description;
+  }, [feeTier]);
+
+  return (
+    <SelectFeeTierItemWrapper className={selected ? "selected" : ""} onClick={onClick}>
+      <strong className="fee-rate">{feeRateStr}</strong>
+      <p className="desc">{description}</p>
+      <span className="selected-fee-rate">{rangeStr}</span>
+    </SelectFeeTierItemWrapper>
+  );
+};
+
 
 export default SelectFeeTier;

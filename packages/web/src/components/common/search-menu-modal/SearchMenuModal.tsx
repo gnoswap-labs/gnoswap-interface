@@ -69,7 +69,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                 <li key={idx} onClick={() => onClickItem(item.token.symbol)}>
                   <div className="coin-info">
                     <img
-                      src={item.token.tokenLogo}
+                      src={item.token.logoURI}
                       alt="token logo"
                       className="token-logo"
                     />
@@ -91,7 +91,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                 <li key={idx} onClick={() => onClickItem(item.token.symbol)}>
                   <div className="coin-info">
                     <img
-                      src={item.token.tokenLogo}
+                      src={item.token.logoURI}
                       alt="token logo"
                       className="token-logo"
                     />

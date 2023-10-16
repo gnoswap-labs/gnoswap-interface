@@ -1,7 +1,8 @@
-import { generateBarAreaDatas } from "@common/utils/test-util";
 import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { ValuesType } from "utility-types";
 
 export const POSITION_CONTENT_LABEL = {
@@ -16,20 +17,20 @@ export const POSITION_CONTENT_LABEL = {
 export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 
 interface PositionToken {
-  tokenId: string;
+  path: string;
   name: string;
   symbol: string;
   amount: {
     value: string;
     denom: string;
   };
-  tokenLogo: string;
+  logoURI: string;
 }
 
 export interface PoolPosition {
   tokenPair: {
-    token0: PositionToken,
-    token1: PositionToken,
+    tokenA: PositionToken,
+    tokenB: PositionToken,
   };
   feeRate: string;
   stakeType: string;
@@ -54,111 +55,6 @@ export interface PoolPosition {
   ticks: string[];
 }
 
-export const dummyPosition: PoolPosition[] = [
-  {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    rewards: [],
-    feeRate: "0.05%",
-    stakeType: "Unstaked",
-    value: "$18,500.10",
-    apr: "108.21%",
-    inRange: false,
-    currentPriceAmount: "1184.24 GNOS per ETH",
-    minPriceAmount: "1.75 GNOT Per GNOS",
-    maxPriceAmount: "2.25 GNOT Per GNOS",
-    currentTick: 18,
-    minTick: 10,
-    maxTick: 110,
-    minLabel: "-80%",
-    maxLabel: "-10%",
-    ticks: generateBarAreaDatas()
-  },
-  {
-    tokenPair: {
-      token0: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "HEX",
-        symbol: "HEX",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      },
-      token1: {
-        tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-        name: "USDCoin",
-        symbol: "USDC",
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-        tokenLogo:
-          "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-      },
-    },
-    rewards: [
-      {
-        token: {
-          tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "HEX",
-          symbol: "HEX",
-          amount: {
-            value: "18,500.18",
-            denom: "gnot",
-          },
-          tokenLogo:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        amount: {
-          value: "18,500.18",
-          denom: "gnot",
-        },
-      },
-    ],
-    feeRate: "0.05%",
-    stakeType: "Staked",
-    value: "$18,500.10",
-    apr: "108.21%",
-    inRange: true,
-    currentPriceAmount: "1184.24 GNOS per ETH",
-    minPriceAmount: "1.75 GNOT Per GNOS",
-    maxPriceAmount: "2.25 GNOT Per GNOS",
-    currentTick: 24,
-    minTick: 120,
-    maxTick: 200,
-    minLabel: "-30%",
-    maxLabel: "50%",
-    ticks: generateBarAreaDatas()
-  },
-];
-
-export const dummyPositionList = () => [...dummyPosition, ...dummyPosition];
-
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
 }
@@ -167,19 +63,16 @@ const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
 > = () => {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [connected, setConnected] = useState(true);
-  const [positions, setPositions] = useState<PoolPosition[]>([]);
+  const { connected, connectAdenaClient } = useWallet();
+  const { isFetchedPositions, myPositions, updatePositions } = usePoolData();
 
   useEffect(() => {
-    const dummyPositions = dummyPositionList();
-    setPositions(dummyPositions);
+    updatePositions();
   }, []);
 
   const connect = useCallback(() => {
-    setConnected(true);
-  }, []);
+    connectAdenaClient();
+  }, [connectAdenaClient]);
 
   const moveEarnAdd = useCallback(() => {
     router.push("/earn/add");
@@ -193,8 +86,8 @@ const EarnMyPositionContainer: React.FC<
     <EarnMyPositions
       connected={connected}
       connect={connect}
-      fetched={true}
-      positions={positions}
+      fetched={isFetchedPositions}
+      positions={myPositions}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
     />

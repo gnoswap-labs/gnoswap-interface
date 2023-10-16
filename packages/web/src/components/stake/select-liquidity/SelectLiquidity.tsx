@@ -6,7 +6,7 @@ import SelectLiquidityList from "@components/stake/select-liquidity-list/SelectL
 interface SelectLiquidityProps {
   liquidity: any[];
   checkedList: string[];
-  onCheckedItem: (checked: boolean, tokenId: string) => void;
+  onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
 }

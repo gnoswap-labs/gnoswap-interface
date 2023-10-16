@@ -1,15 +1,16 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { UpDownType } from "@models/common/card-list-item-info";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { UP_DOWN_TYPE } from "./CardList";
 
 export const CardListWrapper = styled.ul`
   ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
+  min-height: 120px;
 `;
 
-export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
+export const ListItem = styled.li<{ upDown: UpDownType }>`
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body12};
   width: 100%;
@@ -56,9 +57,9 @@ export const ListItem = styled.li<{ upDownType: UP_DOWN_TYPE }>`
     fill: ${({ theme }) => theme.color.red01};
   }
   .notation-value {
-    color: ${({ theme, upDownType }) => {
-      if (upDownType === UP_DOWN_TYPE.UP) return theme.color.green01;
-      if (upDownType === UP_DOWN_TYPE.DOWN) return theme.color.red01;
+    color: ${({ theme, upDown }) => {
+      if (upDown === "up") return theme.color.green01;
+      if (upDown === "down") return theme.color.red01;
       return theme.color.text01;
     }};
   }

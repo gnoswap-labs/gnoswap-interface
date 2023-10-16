@@ -1,9 +1,9 @@
 /* eslint-disable */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-list/IncentivizedPoolCardList";
 import { ValuesType } from "utility-types";
-import { poolDummy } from "@components/earn/incentivized-pool-card/incentivized-pool-dummy";
 import { useRouter } from "next/router";
+import { usePoolData } from "@hooks/pool/use-pool-data";
 export interface PoolListProps {
   logo: string[];
   name: string[];
@@ -25,10 +25,11 @@ export const POOL_CONTENT_TITLE = {
 export type POOL_CONTENT_TITLE = ValuesType<typeof POOL_CONTENT_TITLE>;
 
 const IncentivizedPoolCardListContainer: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex] = useState(0);
+  const [page, setPage] = useState(1);
   const router = useRouter();
-  const [width, setWidth] = useState(Number);
   const [mobile, setMobile] = useState(false);
+  const { incentivizedPools, isFetchedPools } = usePoolData();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -44,15 +45,19 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     };
   }, []);
 
-  const routeItem = (id: number) => {
+  const loadMore = useMemo(() => {
+    return incentivizedPools.length > page * 8;
+  }, [incentivizedPools.length, page]);
+
+  const routeItem = (id: string) => {
     router.push(`/earn/pool/${id}`);
   };
 
   return (
     <IncentivizedPoolCardList
-      list={poolDummy}
-      isFetched={true}
-      loadMore={true}
+      incentivizedPools={incentivizedPools}
+      isFetched={isFetchedPools}
+      loadMore={loadMore}
       onClickLoadMore={() => { }}
       currentIndex={currentIndex}
       routeItem={routeItem}

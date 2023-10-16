@@ -1,10 +1,6 @@
-import BigNumber from "bignumber.js";
+import { PoolBinModel } from "./pool-bin-model";
 import { PoolModel } from "./pool-model";
 
 export interface PoolDetailModel extends PoolModel {
-  apr: number;
-
-  volume24h: BigNumber;
-
-  fees24h: BigNumber;
+  resolvedBins: PoolBinModel[];
 }

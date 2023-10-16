@@ -13,12 +13,12 @@ export interface SwapRepository {
   getSwapFee: () => Promise<SwapFeeResponse>;
 
   getExpectedSwapResult: (
-    request: SwapInfoRequest,
+    request: SwapRequest,
   ) => Promise<SwapExpectedResultResponse>;
 
   getSlippage: () => number;
 
   setSlippage: (slippage: number) => boolean;
 
-  swap: (request: SwapRequest) => Promise<SwapResponse>;
+  swap: (request: SwapRequest) => Promise<SwapResponse | null>;
 }

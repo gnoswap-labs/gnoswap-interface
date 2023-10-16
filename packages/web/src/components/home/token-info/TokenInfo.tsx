@@ -34,7 +34,7 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
 
 const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   const {
-    tokenId,
+    path,
     token,
     price,
     priceOf1d,
@@ -58,7 +58,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="left" tdWidth={TOKEN_TD_WIDTH[1]}>
-          <img src={token.tokenLogo} alt="token logo" className="token-logo" />
+          <img src={token.logoURI} alt="token logo" className="token-logo" />
           <strong className="token-name">{token.name}</strong>
           <span className="token-symbol">{token.symbol}</span>
         </TableColumn>
@@ -97,8 +97,8 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
       <HoverSection>
         <TableColumn tdWidth={TOKEN_TD_WIDTH[9]}>
           <DoubleLogo
-            left={mostLiquidPool.tokenPair.token0.tokenLogo}
-            right={mostLiquidPool.tokenPair.token1.tokenLogo}
+            left={mostLiquidPool.tokenPair.tokenA.logoURI}
+            right={mostLiquidPool.tokenPair.tokenB.logoURI}
             size={20}
           />
           <span className="liquid-symbol">

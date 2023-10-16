@@ -35,8 +35,8 @@ export const rand = () => {
 
 export const generateTokenModel = () => {
   return {
-    tokenId: `${generateAddress()}`,
-    tokenLogo: "",
+    path: `${generateAddress()}`,
+    logoURI: "",
     name: "GNOT",
     symbol: "GNOLAND",
     amount: {

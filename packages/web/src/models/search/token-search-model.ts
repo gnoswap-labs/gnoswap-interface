@@ -1,5 +1,5 @@
-import { TokenDefaultModel } from "@models/token/token-default-model";
+import { TokenInfo } from "@models/token/token-info";
 
 export interface TokenSearchModel {
-  tokens: Array<TokenDefaultModel>;
+  tokens: Array<TokenInfo>;
 }

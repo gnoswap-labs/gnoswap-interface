@@ -30,8 +30,8 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           <span onClick={() => onClickPath(menu.path)}>{menu.title}</span>
           <IconStrokeArrowRight className="step-icon" />
           <span className="token">
-            {info.poolInfo.tokenPair.token0.symbol}/
-            {info.poolInfo.tokenPair.token1.symbol} ({info.poolInfo.feeRate})
+            {info.poolInfo.tokenPair.tokenA.symbol}/
+            {info.poolInfo.tokenPair.tokenB.symbol} ({info.poolInfo.feeRate})
           </span>
         </div>
       </BreadcrumbsWrapper>

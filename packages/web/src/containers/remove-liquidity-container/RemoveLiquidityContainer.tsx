@@ -1,96 +1,48 @@
 import RemoveLiquidity from "@components/remove/remove-liquidity/RemoveLiquidity";
-import React, { useCallback, useEffect, useState } from "react";
-import { STAKED_OPTION } from "@constants/option.constant";
-
-// Check only when it's STAKED_OPTION.UNSTAKED type
-const removeLiquidityInit = [
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#11111",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKED,
-  },
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#22222",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKED,
-  },
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#33333",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.STAKED,
-  },
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    tokenId: "#44444",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKING,
-  },
-];
+import React, { useCallback, useMemo, useState } from "react";
+import { LPPositionModel } from "@models/position/lp-position-model";
 
 const RemoveLiquidityContainer: React.FC = () => {
-  const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [checkedAll, setCheckedAll] = useState(false);
-  const checkableList = removeLiquidityInit.filter(
-    item => item.staked === STAKED_OPTION.UNSTAKED,
-  );
+  const [lpPositions] = useState<LPPositionModel[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const onCheckedItem = useCallback(
-    (isChecked: boolean, tokenId: string) => {
-      if (isChecked) {
-        return setCheckedList((prev: string[]) => [...prev, tokenId]);
-      }
-      if (!isChecked && checkedList.includes(tokenId)) {
-        return setCheckedList(checkedList.filter(el => el !== tokenId));
-      }
-    },
-    [checkedList],
-  );
+  const unstakedLiquidities = useMemo(() => {
+    return lpPositions;
+  }, [lpPositions]);
 
-  const onCheckedAll = useCallback(
-    (checked: boolean) => {
-      setCheckedAll((prev: boolean) => !prev);
-      if (checked) {
-        const filterCheckList: string[] = [];
-        removeLiquidityInit.forEach(
-          item =>
-            item.staked === STAKED_OPTION.UNSTAKED &&
-            filterCheckList.push(item.tokenId),
-        );
-        setCheckedList(filterCheckList);
-      } else {
-        setCheckedList([]);
-      }
-    },
-    [removeLiquidityInit],
-  );
+  const selectedAll = useMemo(() => {
+    return unstakedLiquidities.length === selectedIds.length;
+  }, [selectedIds.length, unstakedLiquidities.length]);
 
-  useEffect(
-    () => setCheckedAll(checkableList.length === checkedList.length),
-    [checkedList],
-  );
+  const selectAll = useCallback(() => {
+    if (selectedAll) {
+      setSelectedIds([]);
+      return;
+    }
+    const selectedIds = unstakedLiquidities.map(liquidity => liquidity.lpRewardId);
+    setSelectedIds(selectedIds);
+  }, [selectedAll, unstakedLiquidities]);
+
+  const select = useCallback((id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter((selectedId => selectedId !== id)));
+      return;
+    }
+    setSelectedIds([...selectedIds, id]);
+  }, [selectedIds]);
+
+  const removeLiquidity = useCallback(() => {
+    console.log("removeLiquidity");
+  }, []);
 
   return (
     <RemoveLiquidity
-      data={removeLiquidityInit}
-      checkedList={checkedList}
-      onCheckedItem={onCheckedItem}
-      onCheckedAll={onCheckedAll}
-      checkedAll={checkedAll}
+      lpPositions={lpPositions}
+      selectedAll={selectedAll}
+      selectedIds={selectedIds}
+      select={select}
+      selectAll={selectAll}
+      removeLiquidity={removeLiquidity}
     />
   );
 };

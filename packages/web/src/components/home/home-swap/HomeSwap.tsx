@@ -5,23 +5,18 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { DeviceSize } from "@styles/media";
+import { TokenModel } from "@models/token/token-model";
+
+interface SwapTokenModel {
+  token: TokenModel;
+  amount: string;
+  price: string;
+  balance: string;
+}
+
 interface HomeSwapProps {
-  from: {
-    token: string;
-    symbol: string;
-    amount: string;
-    price: string;
-    balance: string;
-    tokenLogo: string;
-  };
-  to: {
-    token: string;
-    symbol: string;
-    amount: string;
-    price: string;
-    balance: string;
-    tokenLogo: string;
-  };
+  from: SwapTokenModel;
+  to: SwapTokenModel;
   swapNow: () => void;
   windowSize: number;
 }
@@ -92,7 +87,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               placeholder={fromAmount === "" ? "0" : ""}
             />
             <div className="token">
-              <SelectPairButton disabled token={from} />
+              <SelectPairButton disabled token={from.token} />
             </div>
           </div>
           <div className="info">
@@ -109,7 +104,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               placeholder={toAmount === "" ? "0" : ""}
             />
             <div className="token">
-              <SelectPairButton disabled token={to} />
+              <SelectPairButton disabled token={to.token} />
             </div>
           </div>
           <div className="info">

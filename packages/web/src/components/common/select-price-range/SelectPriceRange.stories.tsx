@@ -1,6 +1,5 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-
 import SelectPriceRange from "./SelectPriceRange";
 import { action } from "@storybook/addon-actions";
 
@@ -15,6 +14,7 @@ const Template: ComponentStory<typeof SelectPriceRange> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  openPriceRange: true,
-  onClickOpenPriceRange: action("onClickOpenPriceRange"),
+  priceRanges: [],
+  priceRange: undefined,
+  changePriceRange: action("changePriceRange"),
 };

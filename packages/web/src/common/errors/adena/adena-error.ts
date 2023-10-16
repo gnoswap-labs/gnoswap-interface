@@ -1,23 +1,7 @@
-import { InjectResponse } from "@common/clients/wallet-client/protocols";
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { BaseError } from "@common/errors";
 
 const ERROR_VALUE = {
-  COIN_TYPE_ERROR: {
-    status: 1000,
-    type: "COIN_TYPE_ERROR",
-  },
-  NOT_FOUND_ADDRESS: {
-    status: 1001,
-    type: "NOT_FOUND_ADDRESS",
-  },
-  WALLET_CONNECT_FAILED: {
-    status: 1002,
-    type: "WALLET_CONNECT_FAILED",
-  },
-  NOT_FOUND_ACCOUNT: {
-    status: 1003,
-    type: "NOT_FOUND_ACCOUNT",
-  },
   NOT_CONNECTED: {
     status: 1000,
     type: "NOT_CONNECTED",
@@ -34,10 +18,6 @@ const ERROR_VALUE = {
     status: 2000,
     type: "WALLET_LOCKED",
   },
-  UNUSED_ACCOUNT: {
-    status: 3000,
-    type: "UNUSED_ACCOUNT",
-  },
   ACCOUNT_MISMATCH: {
     status: 3001,
     type: "ACCOUNT_MISMATCH",
@@ -50,13 +30,21 @@ const ERROR_VALUE = {
     status: 4000,
     type: "TRANSACTION_REJECTED",
   },
+  SIGN_REJECTED: {
+    status: 4000,
+    type: "SIGN_REJECTED",
+  },
   CONNECTION_REJECTED: {
     status: 4000,
     type: "CONNECTION_REJECTED",
   },
-  SIGN_REJECTED: {
+  SWITCH_NETWORK_REJECTED: {
     status: 4000,
-    type: "SIGN_REJECTED",
+    type: "SWITCH_NETWORK_REJECTED",
+  },
+  ADD_NETWORK_REJECTED: {
+    status: 4000,
+    type: "ADD_NETWORK_REJECTED",
   },
   TRANSACTION_FAILED: {
     status: 4001,
@@ -69,6 +57,22 @@ const ERROR_VALUE = {
   ALREADY_CONNECTED: {
     status: 4001,
     type: "ALREADY_CONNECTED",
+  },
+  NETWORK_TIMEOUT: {
+    status: 4001,
+    type: "NETWORK_TIMEOUT",
+  },
+  REDUNDANT_CHANGE_REQUEST: {
+    status: 4001,
+    type: "REDUNDANT_CHANGE_REQUEST",
+  },
+  NETWORK_ALREADY_EXISTS: {
+    status: 4001,
+    type: "NETWORK_ALREADY_EXISTS",
+  },
+  UNADDED_NETWORK: {
+    status: 4001,
+    type: "UNADDED_NETWORK",
   },
   UNSUPPORTED_TYPE: {
     status: 4005,
@@ -88,11 +92,11 @@ export class AdenaError extends BaseError {
     Object.setPrototypeOf(this, AdenaError.prototype);
   }
 
-  public static valdiate(injectResponse: InjectResponse<any>) {
+  public static valdiate(response: WalletResponse) {
     const errorType = Object.keys(ERROR_VALUE).find(
       errorType =>
-        ERROR_VALUE[errorType as ErrorType].status === injectResponse.code &&
-        ERROR_VALUE[errorType as ErrorType].type === injectResponse.type,
+        ERROR_VALUE[errorType as ErrorType].status === response.code &&
+        ERROR_VALUE[errorType as ErrorType].type === response.type,
     );
 
     if (errorType) {

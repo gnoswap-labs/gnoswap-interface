@@ -32,7 +32,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
       <ul className="result-section">
         <li>
           <div className="main-info">
-            <img src={dummyImg[0]} alt="pooled token0 logo" />
+            <img src={dummyImg[0]} alt="pooled tokenA logo" />
             <p>Unclaimed GNOS Rewards</p>
             <strong>1,140.058845</strong>
           </div>
@@ -41,7 +41,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
 
         <li>
           <div className="main-info">
-            <img src={dummyImg[1]} alt="pooled token1 logo" />
+            <img src={dummyImg[1]} alt="pooled tokenB logo" />
             <p>Unclaimed GNOT Rewards</p>
             <strong>942.55884</strong>
           </div>

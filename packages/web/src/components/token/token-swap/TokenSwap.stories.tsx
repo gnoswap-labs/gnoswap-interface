@@ -16,22 +16,36 @@ const Template: ComponentStory<typeof TokenSwap> = args => (
 export const Default = Template.bind({});
 Default.args = {
   from: {
-    token: "USDCoin",
-    symbol: "USDC",
+    token: {
+      chainId: "dev",
+      createdAt: "2023-10-10T08:48:46+09:00",
+      name: "Gnoswap",
+      address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+      path: "gno.land/r/gnos",
+      decimals: 4,
+      symbol: "GNOS",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      priceId: "gno.land/r/gnos"
+    },
     amount: "121",
     price: "$0.00",
     balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
   },
   to: {
-    token: "HEX",
-    symbol: "HEX",
+    token: {
+      chainId: "dev",
+      createdAt: "2023-10-10T08:48:46+09:00",
+      name: "Gnoswap",
+      address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+      path: "gno.land/r/gnos",
+      decimals: 4,
+      symbol: "GNOS",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      priceId: "gno.land/r/gnos"
+    },
     amount: "5000",
     price: "$0.00",
     balance: "0",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
   },
   connected: true,
   connectWallet: action("connectWallet"),

@@ -9,12 +9,18 @@ import {
 } from "./protocols";
 
 export class AxiosClient implements NetworkClient {
-  public get = <T, R>(
-    params: HttpGetRequestParam<T>,
-  ): Promise<HttpResponse<R>> => {
+  private baseURL: string;
+
+  constructor(baseURL?: string) {
+    this.baseURL = baseURL || "";
+  }
+
+  public get = <R>(params: HttpGetRequestParam): Promise<HttpResponse<R>> => {
     const { url } = params;
     const headers = this.createHeaders();
-    return axios.get(url, { headers }).then(this.createResponse);
+    return axios
+      .get(url, { headers, baseURL: this.baseURL })
+      .then(this.createResponse);
   };
 
   public post = async <T, R>(
@@ -22,7 +28,9 @@ export class AxiosClient implements NetworkClient {
   ): Promise<HttpResponse<R>> => {
     const { url, body } = params;
     const headers = this.createHeaders();
-    return axios.post(url, body, { headers }).then(this.createResponse);
+    return axios
+      .post(url, body, { headers, baseURL: this.baseURL })
+      .then(this.createResponse);
   };
 
   public put = async <T, R>(
@@ -30,7 +38,9 @@ export class AxiosClient implements NetworkClient {
   ): Promise<HttpResponse<R>> => {
     const { url, body } = params;
     const headers = this.createHeaders();
-    return axios.put(url, body, { headers }).then(this.createResponse);
+    return axios
+      .put(url, body, { headers, baseURL: this.baseURL })
+      .then(this.createResponse);
   };
 
   public delete = async <T, R>(
@@ -38,7 +48,9 @@ export class AxiosClient implements NetworkClient {
   ): Promise<HttpResponse<R>> => {
     const { url } = params;
     const headers = this.createHeaders();
-    return axios.delete(url, { headers }).then(this.createResponse);
+    return axios
+      .delete(url, { headers, baseURL: this.baseURL })
+      .then(this.createResponse);
   };
 
   private createHeaders = () => {

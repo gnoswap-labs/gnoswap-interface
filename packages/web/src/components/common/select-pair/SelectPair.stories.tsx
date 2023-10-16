@@ -12,37 +12,46 @@ const Template: ComponentStory<typeof SelectPair> = args => (
   <SelectPair {...args} />
 );
 
-const selectPairInit = {
-  token0: {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-    name: "HEX",
-    symbol: "HEX",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-  },
-  token1: {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-    name: "USDCoin",
-    symbol: "USDC",
-    tokenLogo:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-  },
+const tokenA = {
+  chainId: "test3",
+  address: "0x111111111117dC0aa78b770fA6A738034120C302",
+  path: "gno.land/r/demo/1inch",
+  name: "1inch",
+  symbol: "1INCH",
+  decimals: 6,
+  logoURI: "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
+  priceId: "1inch",
+  createdAt: "1999-01-01T00:00:01Z"
+};
+
+const tokenB = {
+  name: "Wrapped Ether",
+  address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+  path: "gno.land/r/demo/weth",
+  symbol: "WETH",
+  decimals: 6,
+  chainId: "test3",
+  priceId: "weth",
+  createdAt: "1999-01-01T00:00:02Z",
+  isWrappedGasToken: true,
+  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png"
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  active: true,
-  data: null,
+  tokenA: tokenA,
+  tokenB: tokenB,
 };
 
 export const SelectableStatus = Template.bind({});
 SelectableStatus.args = {
-  active: true,
-  data: selectPairInit,
+  tokenA: tokenA,
+  tokenB: tokenB,
 };
 
 export const UnselectableStatus = Template.bind({});
 UnselectableStatus.args = {
-  active: false,
-  data: selectPairInit,
+  tokenA: tokenA,
+  tokenB: tokenB,
+  disabled: true,
 };

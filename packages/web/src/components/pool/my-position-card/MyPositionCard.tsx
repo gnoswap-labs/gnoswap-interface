@@ -25,12 +25,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <>
                 <div className="coin-info">
                   <img
-                    src={content.tokenPair.token0.tokenLogo}
+                    src={content.tokenPair.tokenA.logoURI}
                     alt="token logo"
                     className="token-logo"
                   />
                   <img
-                    src={content.tokenPair.token1.tokenLogo}
+                    src={content.tokenPair.tokenB.logoURI}
                     alt="token logo"
                     className="token-logo"
                   />
@@ -42,12 +42,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 <div className="mobile-container">
                   <div className="coin-info">
                     <img
-                      src={content.tokenPair.token0.tokenLogo}
+                      src={content.tokenPair.tokenA.logoURI}
                       alt="token logo"
                       className="token-logo"
                     />
                     <img
-                      src={content.tokenPair.token1.tokenLogo}
+                      src={content.tokenPair.tokenB.logoURI}
                       alt="token logo"
                       className="token-logo"
                     />

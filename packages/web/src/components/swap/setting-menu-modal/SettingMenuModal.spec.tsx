@@ -6,10 +6,9 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 describe("SettingMenuModal Component", () => {
   it("should render", () => {
     const mockProps = {
-      onSettingMenu: () => null,
-      tolerance: "",
-      changeTolerance: () => null,
-      resetTolerance: () => null,
+      slippage: 0,
+      changeSlippage: () => null,
+      close: () => null,
     };
     render(
       <JotaiProvider>

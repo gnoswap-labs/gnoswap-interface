@@ -8,7 +8,7 @@ describe("IncentivizedPoolCardList Component", () => {
     const args: IncentivizedPoolCardListProps = {
       currentIndex: 1,
       isFetched: true,
-      list: [],
+      incentivizedPools: [],
       mobile: false,
       routeItem: () => { return; }
     };

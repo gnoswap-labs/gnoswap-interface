@@ -1,61 +1,119 @@
-import React from "react";
-import { wrapper } from "./RemoveLiquiditySelectResult.styles";
+import React, { useMemo } from "react";
+import { RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResult.styles";
+import BigNumber from "bignumber.js";
+import { TokenPairAmountInfo } from "@models/token/token-pair-amount-info";
+import { PositionMapper } from "@models/position/mapper/position-mapper";
+import { LPPositionModel } from "@models/position/lp-position-model";
 
 interface RemoveLiquiditySelectResultProps {
-  checkedList: string[];
+  selectedLiquidities: LPPositionModel[];
 }
-const dummyImg = [
-  "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-  "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-];
+
+function mappedTokenPairAmountMap(tokenPairAmounts: TokenPairAmountInfo[]) {
+  const initTokenMap: { [key in string]: {
+    symbol: string;
+    amount: string;
+    price: string;
+    logoURI: string;
+  } } = {};
+  const tokenPairMap = tokenPairAmounts.reduce((acc, current) => {
+    const tokenA = current.tokenA;
+    const tokenB = current.tokenB;
+    const tokenAAmount = current.tokenAAmount;
+    const tokenBAmount = current.tokenBAmount;
+    if (!acc[tokenA.path]) {
+      acc[tokenA.path] = {
+        symbol: tokenA.symbol,
+        logoURI: tokenA.logoURI,
+        amount: "0",
+        price: "0",
+      };
+    }
+    if (!acc[tokenB.path]) {
+      acc[tokenB.path] = {
+        symbol: tokenB.symbol,
+        logoURI: tokenB.logoURI,
+        amount: "0",
+        price: "0",
+      };
+    }
+    const token0Amount = BigNumber(acc[tokenA.path].amount).plus(tokenAAmount.amount || "0");
+    acc[tokenA.path] = {
+      ...acc[tokenA.path],
+      amount: token0Amount.toString(),
+    };
+    const token1Amount = BigNumber(acc[tokenB.path].amount).plus(tokenBAmount.amount || "0");
+    acc[tokenB.path] = {
+      ...acc[tokenB.path],
+      amount: token1Amount.toString(),
+    };
+    return acc;
+  }, initTokenMap);
+  return tokenPairMap;
+}
 
 const RemoveLiquiditySelectResult: React.FC<
   RemoveLiquiditySelectResultProps
-> = ({ checkedList }) => {
-  if (checkedList.length === 0) return <></>;
-  return (
-    <div css={wrapper}>
-      <ul>
-        <li className="pooled-token0">
-          <div className="main-info">
-            <img src={dummyImg[0]} alt="pooled token0 logo" />
-            <p>Pooled GNOS</p>
-            <strong>1,140.058845</strong>
-          </div>
-          <span className="dallor">$5,564.48</span>
-        </li>
-        <li>
-          <div className="main-info">
-            <img src={dummyImg[1]} alt="pooled token1 logo" />
-            <p>Pooled GNOT</p>
-            <strong>942.55884</strong>
-          </div>
-          <span className="dallor">$10,008.58</span>
-        </li>
+> = ({
+  selectedLiquidities
+}) => {
+    const pooledTokenMap = useMemo(() => {
+      const tokenPairAmounts = selectedLiquidities.map(lpPosition => PositionMapper.toTokenPairAmount(lpPosition.position));
+      return mappedTokenPairAmountMap(tokenPairAmounts);
+    }, [selectedLiquidities]);
 
-        <li>
-          <div className="main-info">
-            <img src={dummyImg[0]} alt="pooled token0 logo" />
-            <p>Unclaimed GNOS Fees</p>
-            <strong>1,140.058845</strong>
-          </div>
-          <span className="dallor">$5,564.48</span>
-        </li>
-        <li>
-          <div className="main-info">
-            <img src={dummyImg[1]} alt="pooled token1 logo" />
-            <p>Unclaimed GNOT Fees</p>
-            <strong>942.55884</strong>
-          </div>
-          <span className="dallor">$10,008.58</span>
-        </li>
-      </ul>
-      <div className="total-section">
-        <h5>Total</h5>
-        <span className="total-value">$1,572,146.14</span>
-      </div>
-    </div>
-  );
-};
+    const unclaimedTokenMap = useMemo(() => {
+      const tokenPairAmounts = selectedLiquidities.map(lpPosition => PositionMapper.toTokenPairAmount(lpPosition.position));
+      return mappedTokenPairAmountMap(tokenPairAmounts);
+    }, [selectedLiquidities]);
+
+    const totalAmount = useMemo(() => {
+      const pooledAmount = Object.values(pooledTokenMap)
+        .map(token => token.amount)
+        .reduce((acc, current) =>
+          BigNumber(acc).plus(current).toNumber(), 0);
+      const unclaimedAmount = Object.values(unclaimedTokenMap)
+        .map(token => token.amount)
+        .reduce((acc, current) =>
+          BigNumber(acc).plus(current).toNumber(), 0);
+      return BigNumber(pooledAmount + unclaimedAmount).toFormat();
+    }, [pooledTokenMap, unclaimedTokenMap]);
+
+    if (selectedLiquidities.length === 0) {
+      return <></>;
+    }
+
+    return (
+      <RemoveLiquiditySelectResultWrapper>
+        <ul>
+          {Object.keys(pooledTokenMap).map((path, index) => (
+            <li key={index} className="pooled-tokenA">
+              <div className="main-info">
+                <img src={pooledTokenMap[path].logoURI} alt="pooled tokenA logo" />
+                <p>{`Pooled ${pooledTokenMap[path].symbol}`}</p>
+                <strong>{pooledTokenMap[path].amount}</strong>
+              </div>
+              <span className="dallor">{`$${pooledTokenMap[path].amount}`}</span>
+            </li>
+          ))}
+
+          {Object.keys(unclaimedTokenMap).map((path, index) => (
+            <li key={index} className="pooled-tokenA">
+              <div className="main-info">
+                <img src={unclaimedTokenMap[path].logoURI} alt="pooled tokenA logo" />
+                <p>{`Unclaimed ${unclaimedTokenMap[path].symbol} Fees`}</p>
+                <strong>{unclaimedTokenMap[path].amount}</strong>
+              </div>
+              <span className="dallor">{`$${unclaimedTokenMap[path].amount}`}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="total-section">
+          <h5>Total</h5>
+          <span className="total-value">{`$${totalAmount}`}</span>
+        </div>
+      </RemoveLiquiditySelectResultWrapper>
+    );
+  };
 
 export default RemoveLiquiditySelectResult;

@@ -12,11 +12,11 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({ info }) => {
     <PoolInfoHeaderWrapper>
       <div className="left-wrap">
         <DoubleLogo
-          left={info.tokenPair.token0.tokenLogo}
-          right={info.tokenPair.token1.tokenLogo}
+          left={info.tokenPair.tokenA.logoURI}
+          right={info.tokenPair.tokenB.logoURI}
         />
         <h3>
-          {info.tokenPair.token0.symbol}/{info.tokenPair.token1.symbol}
+          {info.tokenPair.tokenA.symbol}/{info.tokenPair.tokenB.symbol}
         </h3>
       </div>
       <div className="badge-wrap">

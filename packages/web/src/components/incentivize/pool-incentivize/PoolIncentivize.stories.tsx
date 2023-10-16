@@ -1,39 +1,63 @@
 import React, { useCallback, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
+import PoolIncentivize, { DistributionPeriodDate } from "./PoolIncentivize";
+import { TokenBalanceInfo } from "@models/token/token-balance-info";
+import { PoolModel } from "@models/pool/pool-model";
+import { PoolRepositoryMock } from "@repositories/pool";
 
-import PoolIncentivize from "./PoolIncentivize";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
+const poolRepository = new PoolRepositoryMock();
 
 export default {
   title: "incentivize/PoolIncentivize",
   component: PoolIncentivize,
 } as ComponentMeta<typeof PoolIncentivize>;
 
-const dummyDetails = {
-  tokenPair: {
-    token0: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "HEX",
-      symbol: "HEX",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-    },
-    token1: {
-      tokenId: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "USDCoin",
-      symbol: "USDC",
-      tokenLogo:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    },
-  },
-  feeRate: FEE_RATE_OPTION.FEE_3,
+const tokenA = {
+  path: "0",
+  name: "HEXss",
+  symbol: "HEX",
+  logoURI: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+  balance: "1,234",
 };
 
-const dummyDisclaimer =
-  "Disclaimer1Disclaimer1 Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer3Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer";
+const tokenB = {
+  path: "1",
+  name: "USDCoin",
+  symbol: "USDC",
+  logoURI: "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+  balance: "1,234",
+};
+
+const tokens = [tokenA, tokenB];
+
+
+const pools = (await poolRepository.getPools()).pools;
+
+const details = (await poolRepository.getPoolDetailByPoolId()).pool;
+
+const dummyDisclaimer = "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. By adding incentives to the pool, you may draw more liquidity providers, which could lead to better price rates and increased trading activities.As the incentivizer, you can choose the type of the token and the duration of the rewards. The rewards will be automatically distributed by the contract and you will not be able to withdraw the tokens once the you complete this step.";
+const periods = [90, 120, 210];
 
 const Template: ComponentStory<typeof PoolIncentivize> = args => {
   const [amount, setAmount] = useState("");
+  const [startDate, setStartDate] = useState<DistributionPeriodDate>();
+  const [period, setPeriod] = useState<number>(90);
+  const [token, setToken] = useState<TokenBalanceInfo | null>(tokenA);
+  const [pool, setPool] = useState<PoolModel | null>(null);
+
+  const selectPool = useCallback((poolId: string) => {
+    const pool = pools.find(p => p.id === poolId);
+    if (pool) {
+      setPool(pool);
+    }
+  }, []);
+
+  const selectToken = useCallback((path: string) => {
+    const token = tokens.find(token => token.path === path);
+    if (token) {
+      setToken(token);
+    }
+  }, []);
 
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,12 +71,23 @@ const Template: ComponentStory<typeof PoolIncentivize> = args => {
       {...args}
       amount={amount}
       onChangeAmount={onChangeAmount}
+      startDate={startDate}
+      period={period}
+      periods={periods}
+      setPeriod={setPeriod}
+      setStartDate={setStartDate}
+      token={token}
+      tokens={tokens}
+      selectToken={selectToken}
+      pools={pools}
+      selectedPool={pool}
+      selectPool={selectPool}
     />
   );
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  details: dummyDetails,
+  details,
   disclaimer: dummyDisclaimer,
-};
+}; 

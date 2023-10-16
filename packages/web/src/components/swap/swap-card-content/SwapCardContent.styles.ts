@@ -40,6 +40,11 @@ export const ContentWrapper = styled.div`
     color: ${({ theme }) => theme.color.text01};
   }
 
+  .token-selector {
+    display: block;
+    height: 32px;
+  }
+
   .amount-info {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;

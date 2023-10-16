@@ -1,12 +1,67 @@
 import { ValuesType } from "utility-types";
 
-export const FEE_RATE_OPTION = {
-  FEE_01: "0.01%",
-  FEE_05: "0.05%",
-  FEE_3: "0.3%",
-  FEE_1: "1%",
+export type SwapFeeTierType =
+  | "FEE_100"
+  | "FEE_500"
+  | "FEE_3000"
+  | "FEE_10000"
+  | "NONE";
+
+export interface SwapFeeTierInfo {
+  type: SwapFeeTierType;
+  fee: number;
+  rateStr: string;
+  description: string;
+}
+
+export const SwapFeeRateMap: Record<SwapFeeTierType, number> = {
+  FEE_100: 100,
+  FEE_500: 500,
+  FEE_3000: 3000,
+  FEE_10000: 10000,
+  NONE: 0,
 } as const;
-export type FEE_RATE_OPTION = ValuesType<typeof FEE_RATE_OPTION>;
+
+export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
+  FEE_100: {
+    type: "FEE_100",
+    fee: 100,
+    rateStr: "0.01%",
+    description: "Best for very stable pairs",
+  },
+  FEE_500: {
+    type: "FEE_500",
+    fee: 500,
+    rateStr: "0.05%",
+    description: "Best for stable pairs",
+  },
+  FEE_3000: {
+    type: "FEE_3000",
+    fee: 3000,
+    rateStr: "0.3%",
+    description: "Best for most pairs",
+  },
+  FEE_10000: {
+    type: "FEE_10000",
+    fee: 10000,
+    rateStr: "1%",
+    description: "Best for exotic pairs",
+  },
+  NONE: {
+    type: "NONE",
+    fee: 0,
+    rateStr: "-",
+    description: "-",
+  },
+} as const;
+
+export const FEE_RATE_OPTION = {
+  FEE_01: "0.01",
+  FEE_05: "0.05",
+  FEE_3: "0.3",
+  FEE_1: "1",
+} as const;
+export type FeeRateOption = ValuesType<typeof FEE_RATE_OPTION>;
 
 export const STAKED_OPTION = {
   NONE: "NONE",
@@ -63,3 +118,28 @@ export type IncentivizedOptions =
   | "INCENTIVIZED"
   | "NON_INCENTIVIZED"
   | "EXTERNAL_INCENTIVIZED";
+
+export type AddLiquidityType = "POOL" | "LIQUIDITY";
+
+export type PriceRangeType = "Active" | "Passive" | "Custom";
+
+export const PriceRangeTooltip: {
+  [key in PriceRangeType]: string | undefined;
+} = {
+  Active:
+    "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+  Passive:
+    "A passive price range of [-50% ~ +100%] for moderate risks & returns.",
+  Custom: undefined,
+};
+
+export const DEFAULT_SLIPPAGE = 0.5;
+
+export type AddLiquiditySubmitType =
+  | "CREATE_POOL"
+  | "ADD_LIQUIDITY"
+  | "CONNECT_WALLET"
+  | "INVALID_PAIR"
+  | "ENTER_AMOUNT"
+  | "INSUFFICIENT_BALANCE"
+  | "INVALID_RANGE";

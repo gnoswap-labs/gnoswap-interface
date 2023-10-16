@@ -108,7 +108,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
         {
           currentPosition && (
             <line
-              x1={currentPosition.x - 0.5}
+              x1={currentPosition.x}
               x2={currentPosition.x}
               y1={height}
               y2={0}

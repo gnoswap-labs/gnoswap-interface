@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "height": "94",
+    "timestamp": "2023-10-10T17:51:46+09:00"
+  },
+  "prices": [
+    {
+      "path": "gno.land/r/bar",
+      "usd": "1.000000",
+      "change1h": "0.000000",
+      "change1d": "0.000000",
+      "change7d": "0.000000",
+      "change30d": "0.000000",
+      "marketCap": "110200000000.000000",
+      "liquidity": "195871.000000",
+      "volume": "195886.000000"
+    },
+    {
+      "path": "gno.land/r/foo",
+      "usd": "0.074070",
+      "change1h": "0.000000",
+      "change1d": "0.000000",
+      "change7d": "0.000000",
+      "change30d": "0.000000",
+      "marketCap": "8162479867.948110",
+      "liquidity": "195871.000000",
+      "volume": "195871.000000"
+    },
+    {
+      "path": "gno.land/r/bar",
+      "usd": "1.000000",
+      "change1h": "0.000000",
+      "change1d": "0.000000",
+      "change7d": "0.000000",
+      "change30d": "0.000000",
+      "marketCap": "110200000000.000000",
+      "liquidity": "195871.000000",
+      "volume": "195886.000000"
+    }
+  ]
+}

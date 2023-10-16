@@ -4,22 +4,19 @@ import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
+import { TokenModel } from "@models/token/token-model";
 export interface TokenSwapProps {
   from: {
-    token: string;
-    symbol: string;
+    token: TokenModel;
     amount: string;
     price: string;
     balance: string;
-    tokenLogo: string;
   };
   to: {
-    token: string;
-    symbol: string;
+    token: TokenModel;
     amount: string;
     price: string;
     balance: string;
-    tokenLogo: string;
   };
   connected: boolean;
   connectWallet: () => void;
@@ -32,8 +29,8 @@ function isAmount(str: string) {
 }
 
 const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWallet, swapNow }) => {
-  const [fromAmount, setFromAmount] = useState(from.amount);
-  const [toAmount, setToAmount] = useState(to.amount);
+  const [fromAmount, setFromAmount] = useState(from.amount.toString());
+  const [toAmount, setToAmount] = useState(to.amount.toString());
 
   const onChangeFromAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +88,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               placeholder={fromAmount === "" ? "0" : ""}
             />
             <div className="token">
-              <SelectPairButton token={from} />
+              <SelectPairButton token={from.token} />
             </div>
           </div>
           <div className="info">
@@ -108,7 +105,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               placeholder={toAmount === "" ? "0" : ""}
             />
             <div className="token">
-              <SelectPairButton token={to} />
+              <SelectPairButton token={to.token} />
             </div>
           </div>
           <div className="info">

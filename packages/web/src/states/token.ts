@@ -1,12 +1,9 @@
-import { ExchangeRateToBigNumType } from "@models/token/exchange-rate-model";
-import { TokenMeta } from "@repositories/token";
-import BigNumber from "bignumber.js";
+import { TokenModel } from "@models/token/token-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
 import { atom } from "jotai";
 
-export const standardTokenMeta = atom<TokenMeta | null>(null);
+export const tokens = atom<TokenModel[]>([]);
 
-export const tokenMetas = atom<Array<TokenMeta>>([]);
+export const tokenPrices = atom<Record<string, TokenPriceModel>>({});
 
-export const exchangeRates = atom<Array<ExchangeRateToBigNumType>>([]);
-
-export const usdRate = atom<BigNumber | null>(null);
+export const balances = atom<Record<string, number | null>>({});

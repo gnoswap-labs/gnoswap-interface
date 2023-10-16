@@ -7,14 +7,14 @@ export const COMPOSITION = {
       title: "Composition",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           rate: "50%",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           rate: "50%",
@@ -33,13 +33,13 @@ export const CLAIM_REWARDS = {
       total: "$150.21",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -51,13 +51,13 @@ export const CLAIM_REWARDS = {
       total: "$150.21",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -69,13 +69,13 @@ export const CLAIM_REWARDS = {
       total: "$150.21",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -92,13 +92,13 @@ export const BALANCE = {
       title: "Balance",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -116,13 +116,13 @@ export const TOTAL_REWARDS = {
       total: "$150.21",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -134,13 +134,13 @@ export const TOTAL_REWARDS = {
       total: "$150.21",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -168,13 +168,13 @@ export const BEING_UNSTAKED = {
       title: "Available in 20 days",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -185,13 +185,13 @@ export const BEING_UNSTAKED = {
       title: "Available in 16 days",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -202,13 +202,13 @@ export const BEING_UNSTAKED = {
       title: "Available in 23 hours",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",
@@ -219,13 +219,13 @@ export const BEING_UNSTAKED = {
       title: "Available in 58 minutes",
       tokens: [
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
           symbol: "HEX",
           amount: "50.05881",
         },
         {
-          tokenLogo:
+          logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
           symbol: "USDC",
           amount: "150.0255",

@@ -1,20 +1,19 @@
-import SelectDistributionPeriodInput, { type SelectDistributionPeriodInputProps } from './SelectDistributionPeriodInput';
-import { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import SelectDistributionPeriodInput, { type SelectDistributionPeriodInputProps } from "./SelectDistributionPeriodInput";
+import { Meta, StoryObj } from "@storybook/react";
+import { action } from "@storybook/addon-actions";
 
 export default {
-  title: 'incentivize/SelectDistributionPeriodInput',
+  title: "incentivize/SelectDistributionPeriodInput",
   component: SelectDistributionPeriodInput,
 } as Meta<typeof SelectDistributionPeriodInput>;
 
+const periods = [90, 120, 150, 180, 210, 240];
+
 export const Default: StoryObj<SelectDistributionPeriodInputProps> = {
   args: {
-    title: 'Start Date',
-    date: {
-      year: 2023,
-      month: 10,
-      date: 1
-    },
-    setDate: action('date')
+    title: "Distribution Period",
+    period: 90,
+    periods,
+    changePeriod: action("changePeriod")
   },
 };

@@ -3,39 +3,51 @@
 import BarGraph from "@components/common/bar-graph/BarGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { POOL_TD_WIDTH } from "@constants/skeleton.constant";
-import { type Pool } from "@containers/pool-list-container/PoolListContainer";
-import React from "react";
+import React, { useMemo } from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 interface PoolInfoProps {
-  pool: Pool;
-  routeItem: (id: number) => void;
+  pool: PoolListInfo;
+  routeItem: (id: string) => void;
 }
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
   const {
     poolId,
-    tokenPair,
-    feeRate,
+    tokenA,
+    tokenB,
+    feeTier,
     liquidity,
     apr,
     volume24h,
     fees24h,
     rewards,
-    incentiveType,
     tickInfo
   } = pool;
+
+  const rewardImage = useMemo(() => {
+    if (rewards.length === 0) {
+      return <>-</>;
+    }
+    if (rewards.length === 1) {
+      return <img src={rewards[0].token.logoURI} className="icon-reward" alt="icon reward" />;
+    }
+    return <DoubleLogo left={rewards[0].token.logoURI} right={rewards[1].token.logoURI} size={20} />;
+  }, [rewards]);
+
   return (
     <PoolInfoWrapper
-      onClick={() => routeItem(Math.floor(Math.random() * 100 + 1))}
+      onClick={() => routeItem(poolId)}
     >
       <TableColumn className="left" tdWidth={POOL_TD_WIDTH[0]}>
         <DoubleLogo
-          left={tokenPair.token0.tokenLogo}
-          right={tokenPair.token1.tokenLogo}
+          left={tokenA.logoURI}
+          right={tokenB.logoURI}
           size={20}
         />
-        <span className="symbol-pair">{`${tokenPair.token0.symbol}/${tokenPair.token1.symbol}`}</span>
-        <span className="feeRate">{feeRate}</span>
+        <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
+        <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[1]}>
         <span className="liquidity">{liquidity}</span>
@@ -50,7 +62,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
         <span className="apr">{apr}</span>
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[5]}>
-        <DoubleLogo left={rewards[0]} right={rewards[1]} size={20} />
+        {rewardImage}
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[6]}>
         <div className="chart-wrapper">

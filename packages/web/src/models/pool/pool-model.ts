@@ -1,15 +1,45 @@
-import { IncentivizedOptions } from "@common/values/data-constant";
-import { TokenDefaultModel } from "@models/token/token-default-model";
-import { TokenPairModel } from "@models/token/token-pair-model";
+import { TokenModel } from "@models/token/token-model";
+import { PoolBinModel } from "./pool-bin-model";
+import { AmountModel } from "@models/common/amount-model";
 
 export interface PoolModel {
-  poolId: string;
+  id: string;
 
-  feeRate: number;
+  name: string;
 
-  liquidity: TokenPairModel;
+  price: number;
 
-  rewards: Array<TokenDefaultModel>;
+  tokenA: TokenModel;
 
-  incentivizedType: IncentivizedOptions;
+  tokenB: TokenModel;
+
+  tokenABalance: number;
+
+  tokenBBalance: number;
+
+  tickSpacing: number;
+
+  currentTick: number;
+
+  bins: PoolBinModel[];
+
+  topBin: PoolBinModel;
+
+  tvl: AmountModel;
+
+  tvlChange: number;
+
+  volume: AmountModel;
+
+  volumeChange: number;
+
+  totalVolume: AmountModel;
+
+  fee: string;
+
+  feeVolume: number;
+
+  feeChange: number;
+
+  apr: number;
 }

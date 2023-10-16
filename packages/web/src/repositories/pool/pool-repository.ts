@@ -1,33 +1,10 @@
-import {
-  PoolListResponse,
-  PoolInfoResponse,
-  PoolSummaryAprResponse,
-  PoolSummaryLiquidityResponse,
-  PoolSummaryVolumeResponse,
-  PoolChartResponse,
-} from "./response";
+import { CreatePoolRequest } from "./request/create-pool-request";
+import { PoolDetailResponse, PoolListResponse } from "./response";
 
 export interface PoolRepository {
-  getPools: (option?: {}) => Promise<PoolListResponse>;
+  getPools: () => Promise<PoolListResponse>;
 
-  getPoolsByAddress: (address: string) => Promise<PoolListResponse>;
+  getPoolDetailByPoolId: (poolId: string) => Promise<PoolDetailResponse>;
 
-  getPoolById: (poolId: string) => Promise<PoolInfoResponse>;
-
-  getPoolChartTicks: (poolId: string) => Promise<PoolChartResponse>;
-
-  getPoolChartTicksByTokenPair: (
-    token0Id: string,
-    token1Id: string,
-  ) => Promise<PoolChartResponse>;
-
-  getPoolSummaryLiquidityById: (
-    poolId: string,
-  ) => Promise<PoolSummaryLiquidityResponse>;
-
-  getPoolSummaryVolumeById: (
-    poolId: string,
-  ) => Promise<PoolSummaryVolumeResponse>;
-
-  getPoolSummaryAprById: (poolId: string) => Promise<PoolSummaryAprResponse>;
+  createPool: (request: CreatePoolRequest) => Promise<string | null>;
 }

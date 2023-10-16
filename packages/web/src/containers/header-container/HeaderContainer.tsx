@@ -2,33 +2,34 @@
 /* eslint-disable */
 import Header from "@components/common/header/Header";
 import { useRouter } from "next/router";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { type TokenDefaultModel } from "@models/token/token-default-model";
+import { type TokenInfo } from "@models/token/token-info";
 import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
 }
 export interface Token {
-  tokenId: string;
+  path: string;
   searchType: string;
-  token: TokenDefaultModel;
+  token: TokenInfo;
   price: string;
   priceOf1d: NegativeStatusType;
 }
 
 export const RecentdummyToken: Token[] = [
   {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+    path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      tokenId: "1",
+      path: "1",
       name: "Bitcoin",
       symbol: "BTC",
-      tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     },
     price: "$12,090.09",
     priceOf1d: {
@@ -40,13 +41,13 @@ export const RecentdummyToken: Token[] = [
 
 export const PopulardummyToken: Token[] = [
   {
-    tokenId: Math.floor(Math.random() * 50 + 1).toString(),
+    path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "popular",
     token: {
-      tokenId: "2",
+      path: "2",
       name: "Gnoland",
       symbol: "GNOT",
-      tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
     },
     price: "$12,090.09",
     priceOf1d: {
@@ -72,11 +73,11 @@ async function fetchTokens(
 
 const HeaderContainer: React.FC = () => {
   const { pathname } = useRouter();
-  const [isConnected, setIsConnected] = useState(true);
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
+  const { account, connected, initSession, connectAdenaClient } = useWallet();
   const {
     isFetched,
     error,
@@ -85,6 +86,12 @@ const HeaderContainer: React.FC = () => {
     queryKey: ["tokens", keyword],
     queryFn: () => fetchTokens(keyword),
   });
+
+  useEffect(() => {
+    if (window?.adena) {
+      initSession();
+    }
+  }, []);
 
   const onSideMenuToggle = () => {
     setSideMenuToggle(prev => !prev);
@@ -100,8 +107,10 @@ const HeaderContainer: React.FC = () => {
 
   return (
     <Header
+      account={account}
+      connected={connected}
+      connectAdenaClient={connectAdenaClient}
       pathname={pathname}
-      isConnected={isConnected}
       sideMenuToggle={sideMenuToggle}
       onSideMenuToggle={onSideMenuToggle}
       searchMenuToggle={searchMenuToggle}

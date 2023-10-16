@@ -23,7 +23,8 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
       ${fonts.body9};
       color: ${theme.color.text01};
       &.token-symbol {
-        margin: 0px auto 0px 8px;
+        height: 18px;
+        margin: ${disabled ? "0px 8px" : "0px auto 0px 8px"};
       }
     }
     .token-logo {

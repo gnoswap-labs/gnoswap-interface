@@ -27,12 +27,12 @@ const StakingContent: React.FC<StakingContentProps> = ({
           <span className="apr">{rewardInfo.apr}% APR </span>
           <div className="coin-info">
             <img
-              src={rewardInfo.tokenPair.token0.tokenLogo}
+              src={rewardInfo.tokenPair.tokenA.logoURI}
               alt="token logo"
               className="token-logo"
             />
             <img
-              src={rewardInfo.tokenPair.token1.tokenLogo}
+              src={rewardInfo.tokenPair.tokenB.logoURI}
               alt="token logo"
               className="token-logo"
             />
@@ -59,27 +59,25 @@ const StakingContent: React.FC<StakingContentProps> = ({
         <Button
           text={"Receiving Max Rewards ✨"}
           style={{
-            width: `${
-              breakpoint === DEVICE_TYPE.WEB
-                ? "800px"
-                : breakpoint === DEVICE_TYPE.MOBILE
+            width: `${breakpoint === DEVICE_TYPE.WEB
+              ? "800px"
+              : breakpoint === DEVICE_TYPE.MOBILE
                 ? "272px"
                 : "600px"
-            }`,
+              }`,
             height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
-            fontType: `${
-              breakpoint === DEVICE_TYPE.WEB
-                ? "body7"
-                : breakpoint === DEVICE_TYPE.MOBILE
+            fontType: `${breakpoint === DEVICE_TYPE.WEB
+              ? "body7"
+              : breakpoint === DEVICE_TYPE.MOBILE
                 ? "p2"
                 : "body9"
-            }`,
+              }`,
             textColor: "text19",
             bgColor: "background18",
             padding: "10px 16px",
             gap: "8px",
           }}
-          onClick={() => {}}
+          onClick={() => { }}
         />
       </div>
     </StakingContentWrapper>
