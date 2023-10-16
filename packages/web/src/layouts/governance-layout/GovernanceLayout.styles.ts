@@ -46,6 +46,9 @@ export const GovernanceLayoutWrapper = styled.div`
     ${mixins.flexbox("column", "flex-end", "center")};
     ${fonts.h3};
     color: ${({ theme }) => theme.color.text02};
+    @media (max-width: 968px) {
+      ${fonts.h4};
+    }
     ${media.mobile} {
       ${fonts.h5};
     }
@@ -75,8 +78,8 @@ export const GovernanceLayoutWrapper = styled.div`
     width: 100%;
     padding: 0px 40px;
     gap: 22px;
-    ${media.tablet} {
-      gap: 24px;
+    @media (max-width: 968px) {
+      gap: 16px;
     }
     ${media.mobile} {
       padding: 12px 0px 24px 0px;

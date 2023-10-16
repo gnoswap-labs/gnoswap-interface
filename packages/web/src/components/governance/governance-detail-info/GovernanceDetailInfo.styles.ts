@@ -8,10 +8,13 @@ export const GovernanceDetailInfoWrapper = styled.div`
   width: 100%;
   padding: 24px 36px;
   gap: 16px;
-  ${media.tablet} {
-    padding: 24px;
+  @media (max-width: 968px) {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 12px 18px;
   }
   ${media.mobile} {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
     padding: 12px;
     gap: 8px;
   }
@@ -42,6 +45,13 @@ export const GovernanceDetailInfoWrapper = styled.div`
 
   .value-wrapper {
     ${mixins.flexbox("row", "flex-end", "flex-start")};
+    @media (max-width: 968px) {
+      width: 100%;
+      ${mixins.flexbox("row", "flex-end", "flex-end")};
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+    }
     gap: 8px;
     width: 100%;
     flex-wrap: wrap;
@@ -58,6 +68,14 @@ export const GovernanceDetailInfoWrapper = styled.div`
       }
       ${media.mobile} {
         ${fonts.body6};
+      }
+    }
+    @media (max-width: 968px) {
+      .value {
+        ${fonts.body6};
+      }
+      .currency {
+        ${fonts.body8};
       }
     }
     .button-wrapper {

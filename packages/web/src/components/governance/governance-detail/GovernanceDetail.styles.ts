@@ -9,6 +9,9 @@ export const GovernanceDetailWrapper = styled.div`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
+  @media (max-width: 968px) {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+  }
   ${media.mobile} {
     flex-direction: column;
   }

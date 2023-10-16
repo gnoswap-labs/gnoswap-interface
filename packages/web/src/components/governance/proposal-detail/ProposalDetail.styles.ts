@@ -26,9 +26,10 @@ export const ProposalDetailWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 24px 24px 32px 24px;
-    gap: 16px;
+    padding: 12px 12px 24px 12px;
+    gap: 24px;
     .header {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
       .title {
         ${fonts.body11};
       }

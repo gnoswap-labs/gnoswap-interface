@@ -35,10 +35,14 @@ export const ProposalHeaderWrapper = styled.div`
       padding: 10px 16px;
     }
     ${media.mobile} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      flex-direction: column-reverse;
+      gap: 12px;
       width: 100%;
       justify-content: space-between;
       button {
         padding: 10px 8px;
+        width: 100%;
       }
     }
   }
