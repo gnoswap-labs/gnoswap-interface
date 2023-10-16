@@ -5,7 +5,7 @@ import { fonts } from "@constants/font.constant";
 export const SwapButtonTooltipWrap = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 300px;
-  height: 123px
+  height: 123px;
   padding: 16px;
   gap: 8px;
   ${fonts.body12};

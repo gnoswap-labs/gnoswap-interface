@@ -1,7 +1,9 @@
-export interface SwapRequest {
-  tokenA: string;
+import { TokenModel } from "@models/token/token-model";
 
-  tokenB: string;
+export interface SwapRequest {
+  tokenA: TokenModel;
+
+  tokenB: TokenModel;
 
   fee: number;
 
@@ -10,6 +12,4 @@ export interface SwapRequest {
   zeroForOne: boolean; // direction
 
   amountSpecified: number; // positive: token to spend, negative: token to receive
-
-  sqrtPriceLimitX96: number; // current sqrtPriceX96 with slippage percent calculate
 }

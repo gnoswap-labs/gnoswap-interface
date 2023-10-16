@@ -10,10 +10,10 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconSettings from "@components/common/icons/IconSettings";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { TokenModel } from "@models/token/token-model";
 import { PoolModel } from "@models/pool/pool-model";
 import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
 import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
+import { TokenModel } from "@models/token/token-model";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;

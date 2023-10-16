@@ -21,3 +21,8 @@ export const notNullNumberType = (v: any) => {
 export const notEmptyStringType = (v: string) => {
   return notNullStringType(v) && emptyStrCheckAfterTrim(v);
 };
+
+export function isAmount(str: string) {
+  const regex = /^\d+(\.\d*)?$/;
+  return regex.test(str);
+}

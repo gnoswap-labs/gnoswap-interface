@@ -36,9 +36,9 @@ export class SwapRepositoryMock implements SwapRepository {
     SwapExpectedResultResponse
   > => {
     return {
-      price_impact: generateNumber(0, 10000),
-      min_received: generateNumber(0, 10000),
-      gas_fee: generateNumber(0, 1),
+      tokenAAmount: 0,
+      tokenBAmount: 0,
+      priceImpact: generateNumber(0, 10000),
     };
   };
 
@@ -70,27 +70,26 @@ export class SwapRepositoryMock implements SwapRepository {
       receiver,
       zeroForOne,
       amountSpecified,
-      sqrtPriceLimitX96,
     } = swapRequest;
     const response = await this.walletClient.sendTransaction({
       messages: [
         {
           caller: address,
-          send: "0",
+          send: "",
           pkg_path: "gno.land/r/pool",
           func: "Swap",
           args: [
-            tokenA,
-            tokenB,
-            fee,
+            tokenA.symbol.toLowerCase(),
+            tokenB.symbol.toLowerCase(),
+            `${fee}`,
             receiver,
-            zeroForOne,
-            amountSpecified,
-            sqrtPriceLimitX96,
+            `${zeroForOne}`,
+            `${amountSpecified}`,
+            `${0}`,
           ],
         },
       ],
-      gasWanted: 100000,
+      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });

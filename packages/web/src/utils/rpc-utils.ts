@@ -15,3 +15,26 @@ export function evaluateExpressionToNumber(evaluateExpression: string) {
   }
   return 0;
 }
+
+export function evaluateExpressionToValues(
+  evaluateExpression: string,
+): string[] {
+  try {
+    const regexp = /\((.*)\)/g;
+    const result = evaluateExpression.match(regexp);
+    if (result === null || result.length < 1) {
+      return [];
+    }
+
+    const values: string[] = [];
+    for (const data of result) {
+      const value = data.split(" ")[0].slice(1);
+      values.push(value);
+    }
+
+    return values;
+  } catch {
+    console.log("Parse Error: " + evaluateExpression);
+  }
+  return [];
+}

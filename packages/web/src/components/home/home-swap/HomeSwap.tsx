@@ -5,7 +5,14 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { DeviceSize } from "@styles/media";
-import { SwapTokenModel } from "@models/swap/swap-token-model";
+import { TokenModel } from "@models/token/token-model";
+
+interface SwapTokenModel {
+  token: TokenModel;
+  amount: string;
+  price: string;
+  balance: string;
+}
 
 interface HomeSwapProps {
   from: SwapTokenModel;

@@ -7,6 +7,7 @@ export default {
   component: EarnAddConfirm,
 } as Meta<typeof EarnAddConfirm>;
 
+
 const tokenA = {
   info: {
     chainId: "test3",
@@ -41,7 +42,11 @@ const tokenB = {
 
 const amountInfo = {
   tokenA: tokenA,
+  tokenAAmount: "123",
+  tokenAUSDPrice: "1234",
   tokenB: tokenB,
+  tokenBAmount: "123",
+  tokenBUSDPrice: "1234",
   feeRate: "0.30%"
 };
 
