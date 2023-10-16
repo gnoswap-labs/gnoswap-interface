@@ -25,7 +25,6 @@ export const useWallet = () => {
 
   useEffect(() => {
     if (walletClient) {
-      initSession();
       updateWalletEvents(walletClient);
     }
   }, [walletClient]);

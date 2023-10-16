@@ -2,7 +2,7 @@
 /* eslint-disable */
 import Header from "@components/common/header/Header";
 import { useRouter } from "next/router";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type TokenInfo } from "@models/token/token-info";
 import { useQuery } from "@tanstack/react-query";
@@ -77,7 +77,7 @@ const HeaderContainer: React.FC = () => {
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
-  const { account, connected, connectAdenaClient } = useWallet();
+  const { account, connected, initSession, connectAdenaClient } = useWallet();
   const {
     isFetched,
     error,
@@ -86,6 +86,12 @@ const HeaderContainer: React.FC = () => {
     queryKey: ["tokens", keyword],
     queryFn: () => fetchTokens(keyword),
   });
+
+  useEffect(() => {
+    if (window?.adena) {
+      initSession();
+    }
+  }, []);
 
   const onSideMenuToggle = () => {
     setSideMenuToggle(prev => !prev);

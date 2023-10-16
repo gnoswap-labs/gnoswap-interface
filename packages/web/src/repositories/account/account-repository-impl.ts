@@ -32,15 +32,16 @@ export class AccountRepositoryImpl implements AccountRepository {
   }
 
   public isConnectedWalletBySession = () => {
-    const response = this.sessionStorageClient.get("connectedWallet");
+    const response = this.sessionStorageClient.get("connected-wallet");
     return response === "connected";
   };
 
   public setConnectedWallet = (connected: boolean) => {
     if (connected) {
-      this.sessionStorageClient.set("connectedWallet", "connected");
+      this.sessionStorageClient.set("connected-wallet", "connected");
+      return;
     }
-    this.sessionStorageClient.remove("connectedWallet");
+    this.sessionStorageClient.remove("connected-wallet");
   };
 
   public getAccount = async () => {

@@ -32,9 +32,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const [networkClient] = useState(new AxiosClient(API_URL));
 
-  const [localStorageClient] = useState(WebStorageClient.createLocalStorageClient());
+  const [localStorageClient, setLocalStorageClient] = useState(WebStorageClient.createLocalStorageClient());
 
-  const [sessionStorageClient] = useState(WebStorageClient.createSessionStorageClient());
+  const [sessionStorageClient, setSessionStorageClient] = useState(WebStorageClient.createSessionStorageClient());
 
   const [walletClient] = useAtom(WalletState.client);
 
@@ -43,8 +43,17 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [rpcProvider, setRPCProvider] = useState<GnoProvider | null>(null);
 
   useEffect(() => {
-    const provider = new GnoWSProvider(network.wsUrl, 5 * 1000);
-    provider.waitForOpenConnection().then(() => setRPCProvider(provider));
+    if (window) {
+      setLocalStorageClient(WebStorageClient.createLocalStorageClient());
+      setSessionStorageClient(WebStorageClient.createSessionStorageClient());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (network) {
+      const provider = new GnoWSProvider(network.wsUrl, 5 * 1000);
+      provider.waitForOpenConnection().then(() => setRPCProvider(provider));
+    }
   }, [network]);
 
   const accountRepository = useMemo(() => {

@@ -4,4 +4,4 @@ export type StorageKeyType =
   | "language"
   | "search-token-logs";
 
-export type SessionStorageKeyType = "connectedWallet";
+export type SessionStorageKeyType = "connected-wallet";
