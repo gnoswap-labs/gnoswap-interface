@@ -7,7 +7,7 @@ export const GovernanceLayoutWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
   background-color: ${({ theme }) => theme.color.background01};
-
+  color: ${({ theme }) => theme.color.text10};
   .governance-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
@@ -32,7 +32,6 @@ export const GovernanceLayoutWrapper = styled.div`
     max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px 0px 40px;
-    gap: 24px;
     ${media.tablet} {
       gap: 16px;
     }
@@ -57,8 +56,12 @@ export const GovernanceLayoutWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")};
     ${fonts.body11};
     gap: 4px;
+    margin-left: 20px;
     cursor: pointer;
-    color: ${({ theme }) => theme.color.text04};
+    color: ${({ theme }) => theme.color.icon05};
+    svg {
+      fill: ${({ theme }) => theme.color.icon05};
+    }
     ${media.mobile} {
       ${fonts.p3};
     }
@@ -99,6 +102,14 @@ export const LinkButton = styled.div`
   a {
     ${mixins.flexbox("row", "center", "center")};
     color: ${({ theme }) => theme.color.text07};
+    &:hover {
+      color: ${({ theme }) => theme.color.text08};
+      svg {
+        * {
+          fill: ${({ theme }) => theme.color.icon14}; 
+        }
+      }
+    }
   }
   svg {
     width: 16px;

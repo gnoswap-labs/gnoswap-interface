@@ -37,7 +37,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
           {summary}
           <LinkButton>
             <span>Stake GNOS/GNOT Positions to earn xGNOS</span>
-            <Link href="/">
+            <Link href="/earn/pool/1">
               Click here <IconStrokeArrowRight className="link-icon" />
             </Link>
           </LinkButton>

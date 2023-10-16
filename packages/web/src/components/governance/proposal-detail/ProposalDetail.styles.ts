@@ -14,12 +14,15 @@ export const ProposalDetailWrapper = styled.div`
   width: 100%;
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   &:hover {
-    background-color: ${({ theme }) => theme.color.background06};
+    background-color: ${({ theme }) => theme.color.hover01};
   }
   .header {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     gap: 8px;
+    span {
+      color: ${({ theme }) => theme.color.text12};
+    }
     .title {
       ${fonts.body5};
       color: ${({ theme }) => theme.color.text02};
