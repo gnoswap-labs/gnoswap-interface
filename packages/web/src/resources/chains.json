@@ -8,8 +8,8 @@
   {
     "name": "GNO.LAND",
     "chainId": "dev.gnoswap",
-    "rpcUrl": "http://dev.rpc.gnoswap.io:26657",
-    "wsUrl": "ws://dev.rpc.gnoswap.io:26657/websocket"
+    "rpcUrl": "https://dev.rpc.gnoswap.io",
+    "wsUrl": "wss://dev.rpc.gnoswap.io/websocket"
   },
   {
     "name": "GNO.LAND",
