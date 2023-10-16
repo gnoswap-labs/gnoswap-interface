@@ -70,7 +70,6 @@ export class SwapRepositoryMock implements SwapRepository {
       receiver,
       zeroForOne,
       amountSpecified,
-      sqrtPriceLimitX96,
     } = swapRequest;
     const response = await this.walletClient.sendTransaction({
       messages: [
@@ -80,13 +79,13 @@ export class SwapRepositoryMock implements SwapRepository {
           pkg_path: "gno.land/r/pool",
           func: "Swap",
           args: [
-            tokenA,
-            tokenB,
+            tokenA.symbol.toLowerCase(),
+            tokenB.symbol.toLowerCase(),
             `${fee}`,
             receiver,
             `${zeroForOne}`,
             `${amountSpecified}`,
-            `${sqrtPriceLimitX96}`,
+            `${0}`,
           ],
         },
       ],
