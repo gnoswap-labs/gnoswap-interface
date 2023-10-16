@@ -17,6 +17,7 @@ interface ProposalListProps {
   onClickProposalDetail: (id: string) => void;
   isShowCreateProposal: boolean;
   setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
+  isConnected: boolean;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -29,13 +30,15 @@ const ProposalList: React.FC<ProposalListProps> = ({
   setIsShowProposalModal,
   onClickProposalDetail,
   isShowCreateProposal,
-  setIsShowCreateProposal
+  setIsShowCreateProposal,
+  isConnected,
 }) => (
   <ProposalListWrapper>
     <ProposalHeader
       toggleShowCancelled={toggleShowCancelled}
       isShowCancelled={isShowCancelled}
       setIsShowCreateProposal={setIsShowCreateProposal}
+      isConnected={isConnected}
     />
     {proposalList.map((proposalDetail: ProposalDetailProps) => (
       <ProposalDetail
@@ -51,11 +54,12 @@ const ProposalList: React.FC<ProposalListProps> = ({
         setIsShowProposalModal={setIsShowProposalModal}
       />
     )}
-    {isShowCreateProposal &&
+    {isShowCreateProposal && (
       <CreateProposalModal
-      breakpoint={breakpoint}
-      
-      setIsShowCreateProposal={setIsShowCreateProposal} />}
+        breakpoint={breakpoint}
+        setIsShowCreateProposal={setIsShowCreateProposal}
+      />
+    )}
   </ProposalListWrapper>
 );
 

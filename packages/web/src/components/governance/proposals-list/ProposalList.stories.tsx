@@ -9,7 +9,7 @@ export default {
   component: ProposalList,
 } as ComponentMeta<typeof ProposalList>;
 
-const Template: ComponentStory<typeof ProposalList> = (args) => (
+const Template: ComponentStory<typeof ProposalList> = args => (
   <ProposalList {...args} />
 );
 
@@ -18,4 +18,5 @@ Default.args = {
   isShowCancelled: true,
   toggleShowCancelled: action("toggleShowCancelled"),
   proposalList: [createDummyProposalItem(), createDummyProposalItem()],
+  isConnected: false,
 };

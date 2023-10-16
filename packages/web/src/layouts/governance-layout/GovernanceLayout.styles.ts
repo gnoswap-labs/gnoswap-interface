@@ -28,7 +28,7 @@ export const GovernanceLayoutWrapper = styled.div`
   }
 
   .title-container {
-    ${mixins.flexbox("row", "baseline", "flex-start")};
+    position: relative;
     max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px 0px 40px;
@@ -42,7 +42,7 @@ export const GovernanceLayoutWrapper = styled.div`
   }
 
   .title {
-    ${mixins.flexbox("column", "flex-end", "center")};
+    display: inline-block;
     ${fonts.h3};
     color: ${({ theme }) => theme.color.text02};
     @media (max-width: 968px) {
@@ -52,18 +52,29 @@ export const GovernanceLayoutWrapper = styled.div`
       ${fonts.h5};
     }
   }
-  .sub-title {
-    ${mixins.flexbox("row", "center", "center")};
+  .sub-title-layout {
+    position: absolute;
+    ${mixins.flexbox("row", "center", "center", false)};
     ${fonts.body11};
     gap: 4px;
     margin-left: 20px;
+    bottom: 9px;
     cursor: pointer;
+    p {
+      display: inline-block;
+    }
     color: ${({ theme }) => theme.color.icon05};
     svg {
       fill: ${({ theme }) => theme.color.icon05};
     }
+    @media (max-width: 1181px) {
+      margin-left: 12px;
+      bottom: 7px;
+    }
     ${media.mobile} {
       ${fonts.p3};
+      margin-left: 10px;
+      bottom: 4px;
     }
   }
 
@@ -106,7 +117,7 @@ export const LinkButton = styled.div`
       color: ${({ theme }) => theme.color.text08};
       svg {
         * {
-          fill: ${({ theme }) => theme.color.icon14}; 
+          fill: ${({ theme }) => theme.color.icon14};
         }
       }
     }

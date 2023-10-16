@@ -72,6 +72,7 @@ const ProposalListContainer: React.FC = () => {
   const [isShowCancelled, toggleShowCancelled] = useState(false);
   const [isShowProposalModal, setIsShowProposalModal] = useState(false);
   const [isShowCreateProposal, setIsShowCreateProposal] = useState(false);
+  const [isConnected] = useState(false);
 
   const { breakpoint } = useWindowSize();
 
@@ -113,6 +114,7 @@ const ProposalListContainer: React.FC = () => {
 
   return (
     <ProposalList
+      isConnected={isConnected}
       proposalList={proposalList}
       isShowCancelled={isShowCancelled}
       toggleShowCancelled={() => toggleShowCancelled(!isShowCancelled)}

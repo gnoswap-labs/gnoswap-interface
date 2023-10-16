@@ -9,6 +9,7 @@ describe("ProposalList Component", () => {
       isShowCancelled: false,
       toggleShowCancelled: () => null,
       proposalList: [],
+      isConnected: false,
     };
 
     render(
@@ -16,7 +17,7 @@ describe("ProposalList Component", () => {
         <GnoswapThemeProvider>
           <ProposalList {...mockProps} />
         </GnoswapThemeProvider>
-      </JotaiProvider>
+      </JotaiProvider>,
     );
   });
 });

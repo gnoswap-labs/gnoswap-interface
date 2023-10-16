@@ -87,9 +87,12 @@ export const BoxItem = styled.div`
     width: 100%;
     gap: 12px;
     ${mixins.flexbox("row", "flex-start", "flex-start")};
-    div:first-child {
+    div:first-of-type {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
-      gap: 8px;
+      gap: 8px; 
+      > div {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+      }
       ${media.mobile} {
         width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -154,6 +157,7 @@ export const BoxItem = styled.div`
   }
   .suffix-wrapper {
     position: relative;
+    width: 100%;
     input {
       ${fonts.body1};
       padding: 16px 110px 16px 24px;
@@ -166,12 +170,12 @@ export const BoxItem = styled.div`
   .suffix-currency {
     position: absolute;
     right: 24px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 21px;
     background-color: ${({ theme }) => theme.color.background02};
     border-radius: 36px;
     padding: 4px 12px 4px 6px;
     ${media.mobile} {
+      top: 18px;
       right: 16px;
     }
   }

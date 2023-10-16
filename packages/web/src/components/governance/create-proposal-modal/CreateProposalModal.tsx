@@ -38,6 +38,20 @@ interface BoxContentProps {
   children?: React.ReactNode;
 }
 
+interface Variable {
+  subspace: string;
+  key: string;
+  value: string;
+}
+
+interface FormValues {
+  title: string;
+  description: string;
+  amount: string;
+  recipientAddress: string;
+  variable: Variable[];
+}
+
 const ProposalOption = [
   "Text Proposal",
   "Community Pool Spend",
@@ -86,7 +100,7 @@ const CreateProposalModal: React.FC<Props> = ({
     };
   }, [modalRef, setIsShowCreateProposal]);
 
-  const validationProps = useMemo(() => {
+  const validationProps: any = useMemo(() => {
     if (type === ProposalOption[1]) {
       return getCreateProposalCommunityPoolSpendValidation();
     }
@@ -96,7 +110,7 @@ const CreateProposalModal: React.FC<Props> = ({
     return getCreateProposalValidation();
   }, [type]);
 
-  const methods = useForm({
+  const methods = useForm<FormValues>({
     mode: "onChange",
     resolver: yupResolver(validationProps),
     defaultValues: {
@@ -199,18 +213,20 @@ const CreateProposalModal: React.FC<Props> = ({
                   {...register("recipientAddress")}
                   name="recipientAddress"
                 />
-                <FormInput
-                  placeholder="Enter a amount"
-                  errorText={errors?.amount ? errors.amount.message : undefined}
-                  {...register("amount")}
-                  name="amount"
-                  parentProps={{ className: "suffix-wrapper" }}
-                >
+                <div className="suffix-wrapper">
+                  <FormInput
+                    placeholder="Enter a amount"
+                    errorText={
+                      errors?.amount ? errors.amount.message : undefined
+                    }
+                    {...register("amount")}
+                    name="amount"
+                  />
                   <div className="deposit-currency suffix-currency">
                     <img src={TOKEN.urlIcon} alt="token logo" />
                     <span>{TOKEN.currency}</span>
                   </div>
-                </FormInput>
+                </div>
               </BoxContent>
             )}
             {type === ProposalOption[2] && (

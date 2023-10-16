@@ -15,7 +15,6 @@ import {
   FloatingArrow,
   arrow,
   flip,
-  useClientPoint,
 } from "@floating-ui/react";
 import { Content } from "./Tooltip.styles";
 import { useTheme } from "@emotion/react";
@@ -88,7 +87,6 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   const floatingRef = useMergeRefs([refs.setFloating]);
 
   const theme = useTheme();
-  useClientPoint(context);
 
   return (
     <>

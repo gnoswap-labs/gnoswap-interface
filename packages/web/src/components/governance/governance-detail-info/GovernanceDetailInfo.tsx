@@ -5,6 +5,7 @@ import {
   GovernanceDetailInfoTooltipContent,
   GovernanceDetailInfoWrapper,
 } from "./GovernanceDetailInfo.styles";
+import { Global, css, type Theme } from "@emotion/react";
 
 interface GovernanceDetailInfoProps {
   title: string;
@@ -12,6 +13,24 @@ interface GovernanceDetailInfoProps {
   tooltip?: string;
   currency?: string;
 }
+
+const ToolTipGlobalStyle = () => {
+  return (
+    <Global
+      styles={(theme: Theme) => css`
+        .governance-summary-tooltip {
+          svg {
+            fill: ${theme.color.background02};
+          }
+          div {
+            color: ${theme.color.text02};
+            background-color: ${theme.color.background02};
+          }
+        }
+      `}
+    />
+  );
+};
 
 const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
   title,
@@ -31,6 +50,7 @@ const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
         <span className="value">{value}</span>
         {currency && <span className="currency">{currency}</span>}
       </div>
+      <ToolTipGlobalStyle />
     </GovernanceDetailInfoWrapper>
   );
 };
@@ -45,7 +65,11 @@ export const GovernanceDetailInfoTooltip: React.FC<{ tooltip: string }> = ({
   );
 
   return (
-    <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
+    <Tooltip
+      placement="top"
+      FloatingContent={TooltipFloatingContent}
+      floatClassName="governance-summary-tooltip"
+    >
       <IconInfo />
     </Tooltip>
   );

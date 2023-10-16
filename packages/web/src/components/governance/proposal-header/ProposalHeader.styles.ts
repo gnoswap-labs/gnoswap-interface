@@ -14,11 +14,33 @@ export const ProposalHeaderWrapper = styled.div`
     gap: 8px;
   }
   .title-header {
+    position: relative;
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 24px;
-    ${media.mobile} {
+    .sub-title {
+      ${mixins.flexbox("row", "center", "center", false)};
+      gap: 4px;
+      ${fonts.body11};
+      position: absolute;
       width: 100%;
+      left: 130px;
+      bottom: 4px;
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+    ${media.tablet} {
+      .sub-title {
+        left: 122px;
+      }
+    }
+    ${media.mobile} {
       justify-content: space-between;
+      .sub-title {
+        left: 96px;
+        width: max-content;
+        bottom: 1px;
+      }
     }
   }
   h2 {

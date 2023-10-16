@@ -26,7 +26,7 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         <div className="title-container">
           <h3 className="title">Governance</h3>
           <div
-            className="sub-title"
+            className="sub-title-layout"
             onClick={() => setIsShowLearnMoreModal(true)}
           >
             <p>Learn More</p>

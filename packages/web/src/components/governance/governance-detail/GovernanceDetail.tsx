@@ -13,24 +13,28 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({
     <GovernanceDetailInfo
       title={"Total xGNOS Issued"}
       value={governanceDetailInfo.totalXGnosIssued}
-      tooltip={"Description of Total xGNOS Issued"}
+      tooltip={
+        "Total amount of xGNOS currently issued through GNOS-GNOT staking."
+      }
       currency="xGNOS"
     />
     <GovernanceDetailInfo
       title={"Community Pool"}
       value={governanceDetailInfo.communityPool}
-      tooltip={"Description of Community Pool"}
+      tooltip={
+        "Amount of GNOS accumulated in the Community Pool from Emissions."
+      }
       currency="GNOS"
     />
     <GovernanceDetailInfo
       title={"Passed Proposals"}
       value={governanceDetailInfo.passedProposals}
-      tooltip={"Description of Passed Proposals"}
+      tooltip={"Proposals that were successfully executed."}
     />
     <GovernanceDetailInfo
       title={"Active Proposals"}
       value={governanceDetailInfo.activeProposals}
-      tooltip={"Description of Active Proposals"}
+      tooltip={"Proposals that are currently available for voting."}
     />
   </GovernanceDetailWrapper>
 );
