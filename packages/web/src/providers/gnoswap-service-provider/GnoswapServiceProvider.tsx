@@ -5,13 +5,14 @@ import { LiquidityRepository, LiquidityRepositoryMock } from "@repositories/liqu
 import { PoolRepository } from "@repositories/pool";
 import { PoolRepositoryImpl } from "@repositories/pool/pool-repository-impl";
 import { StakingRepository, StakingRepositoryMock } from "@repositories/staking";
-import { SwapRepository, SwapRepositoryMock } from "@repositories/swap";
+import { SwapRepository } from "@repositories/swap";
 import { TokenRepository } from "@repositories/token";
 import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
 import { GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
+import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 
 interface GnoswapContextProps {
   rpcProvider: GnoProvider | null;
@@ -73,8 +74,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, []);
 
   const swapRepository = useMemo(() => {
-    return new SwapRepositoryMock(walletClient);
-  }, [walletClient]);
+    return new SwapRepositoryImpl(walletClient, rpcProvider, localStorageClient);
+  }, [localStorageClient, rpcProvider, walletClient]);
 
   const tokenRepository = useMemo(() => {
     return new TokenRepositoryImpl(networkClient, localStorageClient);

@@ -129,7 +129,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       send: "",
       pkg_path: token.path,
       func: "Approve",
-      args: [POOL_ADDRESS, "9999999"],
+      args: [POOL_ADDRESS, "999999999999"],
     };
   }
 

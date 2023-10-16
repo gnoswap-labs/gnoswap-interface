@@ -13,22 +13,22 @@ import { AmountModel } from "@models/common/amount-model";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 
 const SwapContainer: React.FC = () => {
-  const { swap } = useSwap();
   const { connected: connectedWallet } = useWallet();
-  const { balances } = useTokenData();
+  const { balances, updateBalances } = useTokenData();
   const [tokenA, setTokenA] = useState<TokenModel | null>(null);
   const [tokenAAmount, setTokenAAmount] = useState<string>("0");
   const [tokenB, setTokenB] = useState<TokenModel | null>(null);
   const [tokenBAmount, setTokenBAmount] = useState<string>("0");
   const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
-  const [submitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [swapResult] = useState<SwapResultInfo | null>(null);
+  const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
   const [swapRate] = useState<number>(1);
   const [slippage, setSlippage] = useState(10);
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
   const [swapRouteInfos] = useState<SwapRouteInfo[]>([]);
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
+  const { swap } = useSwap();
 
   const openConfirmModal = useCallback(() => {
     setOpenedConfirModal(true);
@@ -39,14 +39,19 @@ const SwapContainer: React.FC = () => {
   }, []);
 
   const closeModal = useCallback(() => {
+    setSubmitted(false);
+    setSwapResult(null);
     setOpenedConfirModal(false);
-  }, []);
+    updateBalances();
+  }, [updateBalances]);
 
   const changeTokenAAmount = useCallback((value: string) => {
+    setSwapDirection("EXACT_IN");
     setTokenAAmount(value);
   }, []);
 
   const changeTokenBAmount = useCallback((value: string) => {
+    setSwapDirection("EXACT_OUT");
     setTokenBAmount(value);
   }, []);
 
@@ -151,6 +156,26 @@ const SwapContainer: React.FC = () => {
     }
   };
 
+  function executeSwap() {
+    if (!tokenA || !tokenB) {
+      return;
+    }
+    setSubmitted(true);
+    swap(
+      tokenA,
+      tokenAAmount,
+      tokenB,
+      tokenBAmount,
+      10000,
+      swapDirection
+    ).then(result => {
+      setSwapResult({
+        success: result !== null,
+        hash: ""
+      });
+    });
+  }
+
   return (
     <SwapCard
       connectedWallet={connectedWallet}
@@ -173,7 +198,7 @@ const SwapContainer: React.FC = () => {
       openConnectWallet={openConnectWallet}
       closeModal={closeModal}
       copyURL={copyURL}
-      swap={swap}
+      swap={executeSwap}
     />
   );
 };
