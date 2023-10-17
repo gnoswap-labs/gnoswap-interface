@@ -14,7 +14,7 @@ export const GovernanceLayoutWrapper = styled.div`
     width: 100%;
     padding: 100px 0px;
     gap: 36px;
-    ${media.tablet} {
+    @media (max-width: 1180px) {
       max-width: ${ContainerWidth.TABLET_CONTAINER};
       padding: 60px 0px;
       gap: 24px;
@@ -45,7 +45,7 @@ export const GovernanceLayoutWrapper = styled.div`
     display: inline-block;
     ${fonts.h3};
     color: ${({ theme }) => theme.color.text02};
-    @media (max-width: 968px) {
+    @media (max-width: 1180px) {
       ${fonts.h4};
     }
     ${media.mobile} {
@@ -58,23 +58,25 @@ export const GovernanceLayoutWrapper = styled.div`
     ${fonts.body11};
     gap: 4px;
     margin-left: 20px;
-    bottom: 9px;
+    bottom: 7px;
+    top: 19px;
     cursor: pointer;
     p {
       display: inline-block;
     }
-    color: ${({ theme }) => theme.color.icon05};
-    svg {
-      fill: ${({ theme }) => theme.color.icon05};
+    color: ${({ theme }) => theme.color.text04};
+    svg * {
+      fill: ${({ theme }) => theme.color.icon03};
     }
-    @media (max-width: 1181px) {
+    @media (max-width: 1180px) {
       margin-left: 12px;
-      bottom: 7px;
+      bottom: 6px;
+      top: 15px;
     }
     ${media.mobile} {
-      ${fonts.p3};
       margin-left: 10px;
-      bottom: 4px;
+      bottom: 2px;
+      top: 9px;
     }
   }
 
@@ -92,7 +94,7 @@ export const GovernanceLayoutWrapper = styled.div`
     width: 100%;
     padding: 0px 40px;
     gap: 22px;
-    @media (max-width: 968px) {
+    @media (max-width: 1180px) {
       gap: 16px;
     }
     ${media.mobile} {
@@ -130,7 +132,7 @@ export const LinkButton = styled.div`
     }
   }
   ${media.mobile} {
-    display: block;
-    text-align: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
   }
 `;

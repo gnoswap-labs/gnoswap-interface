@@ -16,7 +16,7 @@ export const getCreateProposalCommunityPoolSpendValidation = () =>
       title: yup.string().trim().required("Title is required"),
       description: yup.string().trim().required("Description is required"),
       recipientAddress: yup.string().trim().required("Recipient is required"),
-      amount: yup.string().trim().required("Amount is required"),
+      amount: yup.number().typeError("Amount is required").required("Amount is required"),
     })
     .required();
 

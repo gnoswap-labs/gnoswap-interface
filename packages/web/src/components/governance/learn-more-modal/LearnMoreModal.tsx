@@ -78,6 +78,19 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
+  const handleResize = () => {
+    if (typeof window !== "undefined" && modalRef.current) {
+      const height = modalRef.current.getBoundingClientRect().height;
+      if (height >= window?.innerHeight) {
+        modalRef.current.style.top = "0";
+        modalRef.current.style.transform = "translateX(-50%)";
+      } else {
+        modalRef.current.style.top = "50%";
+        modalRef.current.style.transform = "translate(-50%, -50%)";
+      }
+    }
+  };
+
   useEffect(() => {
     const closeModal = (e: MouseEvent) => {
       if (modalRef.current && modalRef.current.contains(e.target as Node)) {
@@ -92,6 +105,15 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
       window.removeEventListener("click", closeModal, true);
     };
   }, [modalRef, setIsShowLearnMoreModal]);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [modalRef]);
+
   return (
     <LearnMoreModalBackground>
       <LearnMoreModalWrapper ref={modalRef}>
@@ -104,12 +126,15 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
           ))}
         </Progress>
         <Slider>
-          <Title>
+          <Title onMouseDown={e => e.preventDefault()}>
             <h3>{LEARN_MORE_DATA[index].title}</h3>
             <div>{LEARN_MORE_DATA[index].description}</div>
           </Title>
           <BoxImage>
             <img
+              onDragStart={e => e.preventDefault()}
+              onMouseDown={e => e.preventDefault()}
+              draggable="false"
               src={
                 themeKey === "dark"
                   ? LEARN_MORE_DATA[index].darkImageUrl
@@ -139,10 +164,11 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
         </Slider>
         <Button
           text="Close"
+          className="learn-more-btn"
           style={{
             fullWidth: true,
-            height: 57,
-            bgColor: "background12",
+            fontType: "body7",
+            textColor: "text01",
           }}
           onClick={() => setIsShowLearnMoreModal(false)}
         />

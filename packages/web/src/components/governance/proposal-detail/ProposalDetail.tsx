@@ -13,6 +13,10 @@ import IconInfo from "@components/common/icons/IconInfo";
 import { ProposalDetailProps } from "@containers/proposal-list-container/ProposalListContainer";
 import IconPass from "@components/common/icons/IconPass";
 import { Global, css, type Theme } from "@emotion/react";
+import dayjs from "dayjs";
+import relative from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relative);
 
 interface Props {
   proposalDetail: ProposalDetailProps;
@@ -25,10 +29,12 @@ const ToolTipGlobalStyle = () => {
       styles={(theme: Theme) => css`
         .float-progress {
           svg {
-            fill: ${theme.color.background12};
+            fill: ${theme.color.background02};
           }
           div {
-            background-color: ${theme.color.background12};
+            font-size: 14px;
+            font-weight: 700;
+            background-color: ${theme.color.background02};
           }
         }
       `}
@@ -74,7 +80,12 @@ const ProposalDetail: React.FC<Props> = ({
       <div className="active-wrapper">
         {MAPPING_STATUS[proposalDetail.status]}
         <div className="status time">
-          <IconOutlineClock /> {proposalDetail.timeEnd}
+          <IconOutlineClock />{" "}
+          {`Voting ${
+            proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended"
+          } ${dayjs(proposalDetail.timeEnd).fromNow()} ${
+            proposalDetail.timeEnd
+          }`}
         </div>
       </div>
       <ProgressWrapper>

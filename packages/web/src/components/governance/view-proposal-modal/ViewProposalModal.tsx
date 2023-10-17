@@ -30,6 +30,10 @@ import {
   ViewProposalModalWrapper,
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
+import dayjs from "dayjs";
+import relative from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relative);
 
 interface Props {
   breakpoint: DEVICE_TYPE;
@@ -90,7 +94,7 @@ const BoxQuorum = ({
       >
         <span>Yes</span>
         <div>{proposalDetail.currentValue.toLocaleString()}</div>
-        {(optionVote === "YES" || optionVote === "") && showBadge}
+        {optionVote === "YES" && showBadge}
       </div>
       <div
         className={`box-quorum ${optionVote === "NO" ? "active-quorum" : ""}`}
@@ -162,6 +166,19 @@ const ViewProposalModal: React.FC<Props> = ({
 
   const modalRef = useRef<HTMLDivElement | null>(null);
 
+  const handleResize = () => {
+    if (typeof window !== "undefined" && modalRef.current) {
+      const height = modalRef.current.getBoundingClientRect().height;
+      if (height >= window?.innerHeight) {
+        modalRef.current.style.top = "0";
+        modalRef.current.style.transform = "translateX(-50%)";
+      } else {
+        modalRef.current.style.top = "50%";
+        modalRef.current.style.transform = "translate(-50%, -50%)";
+      }
+    }
+  };
+
   useEffect(() => {
     const closeModal = (e: MouseEvent) => {
       if (modalRef.current && modalRef.current.contains(e.target as Node)) {
@@ -177,6 +194,14 @@ const ViewProposalModal: React.FC<Props> = ({
     };
   }, [modalRef, setIsShowProposalModal]);
 
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [modalRef]);
+
   const handleSelectVoting = useCallback(() => {}, [optionVote]);
 
   if (!proposalDetail) return null;
@@ -191,6 +216,7 @@ const ViewProposalModal: React.FC<Props> = ({
                 <span>{proposalDetail.title}</span>
                 {breakpoint !== DEVICE_TYPE.MOBILE && (
                   <Badge
+                    className="badge-label"
                     type={BADGE_TYPE.DARK_DEFAULT}
                     text={proposalDetail.label}
                   />
@@ -205,6 +231,7 @@ const ViewProposalModal: React.FC<Props> = ({
             </div>
             {breakpoint === DEVICE_TYPE.MOBILE && (
               <Badge
+                className="badge-label"
                 type={BADGE_TYPE.DARK_DEFAULT}
                 text={proposalDetail.label}
               />
@@ -212,7 +239,12 @@ const ViewProposalModal: React.FC<Props> = ({
             <div className="active-wrapper">
               {MAPPING_STATUS[proposalDetail.status]}
               <div className="status time">
-                <IconOutlineClock /> {proposalDetail.timeEnd}
+                <IconOutlineClock className="status-icon" />{" "}
+                {`Voting ${
+                  proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended1"
+                } ${dayjs(proposalDetail.timeEnd).fromNow()} `}
+                <br />
+                {proposalDetail.timeEnd}
               </div>
             </div>
           </ModalHeaderWrapper>
@@ -269,6 +301,7 @@ const ViewProposalModal: React.FC<Props> = ({
           <VotingPower proposalDetail={proposalDetail} />
           {proposalDetail.status === "ACTIVE" && (
             <Button
+              disabled={optionVote === ""}
               text={
                 proposalDetail.typeVote
                   ? "Already Vote"
@@ -278,10 +311,11 @@ const ViewProposalModal: React.FC<Props> = ({
               }
               style={{
                 fullWidth: true,
-                height: 57,
+                height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
                 fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
                 textColor: "text09",
                 bgColor: "background17",
+                width: breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
                 hierarchy:
                   optionVote === "" ? undefined : ButtonHierarchy.Primary,
               }}

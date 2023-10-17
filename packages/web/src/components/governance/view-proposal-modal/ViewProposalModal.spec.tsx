@@ -13,7 +13,7 @@ describe("ViewProposalModal Component", () => {
         title: "#7 Proposal Title",
         label: "Community Pool Spend",
         status: "ACTIVE",
-        timeEnd: "Voting Ends in 9 hours (2023-08-01, 12:00:00 UTC+9)",
+        timeEnd: "2023-08-01, 12:00:00 UTC+9",
         abstainOfQuorum: 30,
         noOfQuorum: 20,
         yesOfQuorum: 50,

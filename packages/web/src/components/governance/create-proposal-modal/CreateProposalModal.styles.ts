@@ -26,7 +26,6 @@ export const CreateProposalModalWrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
-  border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
   .btn-submit {
     border-top-left-radius: 0;
@@ -36,11 +35,13 @@ export const CreateProposalModalWrapper = styled.div`
   ${media.mobile} {
     width: 328px;
     .btn-submit {
+      height: 41px;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
   }
   .modal-body {
+    border: 1px solid ${({ theme }) => theme.color.border02};
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 24px 24px 5px 24px;
@@ -67,6 +68,11 @@ export const CreateProposalModalWrapper = styled.div`
           }
         }
       }
+      ${media.mobile} {
+        > h6 {
+          ${fonts.body9}
+        }
+      }
     }
     ${media.mobile} {
       padding: 12px;
@@ -80,7 +86,7 @@ export const BoxItem = styled.div`
   padding: 16px;
   gap: 16px;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity2};
   border: 1px solid ${({ theme }) => theme.color.border02};
   position: relative;
   .multiple-variable {
@@ -89,7 +95,7 @@ export const BoxItem = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     div:first-of-type {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
-      gap: 8px; 
+      gap: 8px;
       > div {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
       }
@@ -102,12 +108,13 @@ export const BoxItem = styled.div`
   }
   .box-label {
     ${fonts.body12};
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text03};
   }
   .type-tab {
     ${mixins.flexbox("row", "center", "center")};
     width: 100%;
     gap: 8px;
+    ${fonts.body11};
     > div {
       cursor: pointer;
       flex: 1;
@@ -116,6 +123,10 @@ export const BoxItem = styled.div`
       border-radius: 8px;
       text-align: center;
       color: ${({ theme }) => theme.color.text02};
+      &:hover {
+        background-color: ${({ theme }) => theme.color.background11};
+        border: 1px solid ${({ theme }) => theme.color.border03};
+      }
     }
     .active-type-tab {
       background-color: ${({ theme }) => theme.color.background11};
@@ -161,9 +172,16 @@ export const BoxItem = styled.div`
     input {
       ${fonts.body1};
       padding: 16px 110px 16px 24px;
+      &::placeholder {
+        ${fonts.body1};
+        color: ${({ theme }) => theme.color.text01};
+      }
       ${media.mobile} {
         padding: 16px 110px 16px 16px;
         ${fonts.body5};
+        &::placeholder {
+          ${fonts.body5};
+        }
       }
     }
   }

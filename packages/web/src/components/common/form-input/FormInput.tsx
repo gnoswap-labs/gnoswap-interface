@@ -6,8 +6,9 @@ interface ParentProps {
 }
 
 type Props = {
-  placeholder: string;
+  placeholder?: string;
   name: string;
+  type?: string;
   errorText?: any;
   parentProps?: ParentProps;
 };

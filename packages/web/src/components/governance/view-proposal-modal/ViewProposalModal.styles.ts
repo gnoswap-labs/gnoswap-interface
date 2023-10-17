@@ -6,7 +6,7 @@ import { media } from "@styles/media";
 
 export const ViewProposalModalBackground = styled.div`
   position: fixed;
-  overflow: hidden;
+  overflow: scroll;
   top: 0px;
   bottom: 0px;
   left: 0px;
@@ -32,6 +32,7 @@ export const ViewProposalModalWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
     width: 328px;
+    height: 610px;
     padding: 16px 12px 0px 12px;
     transform: translate(-50%, -50%);
   }
@@ -51,7 +52,7 @@ export const ModalHeaderWrapper = styled.div`
   gap: 8px;
   width: 100%;
   ${media.mobile} {
-    gap: 16px;
+    gap: 12px;
   }
   .header {
     width: 100%;
@@ -64,6 +65,9 @@ export const ModalHeaderWrapper = styled.div`
       ${media.mobile} {
         ${fonts.body9}
       }
+    }
+    .badge-label {
+      color: ${({ theme }) => theme.color.text12};
     }
     .close-wrap {
       ${mixins.flexbox("row", "center", "center")};
@@ -83,6 +87,7 @@ export const ModalHeaderWrapper = styled.div`
     gap: 12px;
     ${mixins.flexbox("row", "center", "center")};
     ${media.mobile} {
+      margin-top: 4px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 8px;
     }
@@ -124,7 +129,18 @@ export const ModalHeaderWrapper = styled.div`
       color: ${({ theme }) => theme.color.icon03};
     }
     .time {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text03};
+      br {
+        display: none;
+      }
+      ${media.mobile} {
+        br {
+          display: block;
+        }
+      }
+      * {
+        fill: ${({ theme }) => theme.color.text10};
+      }
     }
   }
 `;
@@ -233,14 +249,15 @@ export const BoxQuorumWrapper = styled.div`
   .box-quorum {
     ${mixins.flexbox("column", "center", "center")};
     gap: 8px;
+    cursor: pointer;
     position: relative;
     padding: 15px 8px;
     border-radius: 8px;
     flex: 1;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity};
+    background-color: ${({ theme }) => theme.color.backgroundOpacity2};
     border: 1px solid ${({ theme }) => theme.color.border02};
     span {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text10};
       ${fonts.body12}
     }
     > div {
@@ -248,6 +265,9 @@ export const BoxQuorumWrapper = styled.div`
       color: ${({ theme }) => theme.color.text02};
     }
     .badge {
+      > span {
+        color: ${({ theme }) => theme.color.text12};
+      }
       position: absolute;
       top: 8px;
       right: 12px;
@@ -259,23 +279,27 @@ export const BoxQuorumWrapper = styled.div`
         ${fonts.body11}
       }
     }
+    &:hover {
+      background-color: ${({ theme }) => theme.color.background05Hover};
+      border: 1px solid ${({ theme }) => theme.color.border03};
+    }
   }
   .active-quorum {
-    background-color: ${({ theme }) => theme.color.backgroundGradient};
+    background-color: ${({ theme }) => theme.color.background05Hover};
     border: 1px solid ${({ theme }) => theme.color.border03};
   }
 `;
 
 export const VotingPowerWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity2};
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 16px;
   width: 100%;
   border-radius: 8px;
   > span {
     ${fonts.body12}
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text10};
   }
   > div {
     ${mixins.flexbox("row", "center", "center")};
@@ -287,7 +311,7 @@ export const VotingPowerWrapper = styled.div`
   }
   .power-currency {
     ${mixins.flexbox("row", "center", "center")};
-    background-color: ${({ theme }) => theme.color.background02};
+    background-color: ${({ theme }) => theme.color.background11};
     border-radius: 36px;
     padding: 4px 12px 4px 6px;
     gap: 8px;
@@ -300,6 +324,7 @@ export const VotingPowerWrapper = styled.div`
     }
   }
   ${media.mobile} {
+    padding: 12px;
     > div {
       gap: 8px;
     }
@@ -357,5 +382,9 @@ export const ProposalContentWrapper = styled.div`
     ${media.mobile} {
       ${fonts.p2}
     }
+  }
+  ${media.mobile} {
+    padding: 12px 4px 12px 12px;
+    gap: 8px;
   }
 `;

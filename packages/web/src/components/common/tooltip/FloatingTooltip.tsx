@@ -8,7 +8,7 @@ import {
   FloatingPosition,
   useFloatingTooltip,
 } from "@hooks/common/use-floating-tooltip";
-import { Content } from "./Tooltip.styles";
+import { FloatContent } from "./Tooltip.styles";
 import { Z_INDEX } from "@styles/zIndex";
 import { useTheme } from "@emotion/react";
 
@@ -81,7 +81,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
               height={14}
               tipRadius={4}
             />
-            <Content>{content}</Content>
+            <FloatContent>{content}</FloatContent>
           </div>
         </FloatingPortal>
       </>

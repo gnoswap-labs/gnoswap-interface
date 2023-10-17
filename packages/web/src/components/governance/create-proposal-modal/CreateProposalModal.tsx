@@ -1,4 +1,4 @@
-import Button from "@components/common/button/Button";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
 import FormTextArea from "@components/common/form-textarea/FormTextArea";
 import FormProvider from "@components/common/form/FormProvider";
@@ -12,6 +12,7 @@ import {
   getCreateProposalCommunityPoolSpendValidation,
   getCreateProposalValidation,
 } from "@utils/create-proposal-validation";
+import { isEmptyObject } from "@utils/validation-utils";
 import React, {
   useMemo,
   useState,
@@ -47,7 +48,7 @@ interface Variable {
 interface FormValues {
   title: string;
   description: string;
-  amount: string;
+  amount: number;
   recipientAddress: string;
   variable: Variable[];
 }
@@ -85,6 +86,19 @@ const CreateProposalModal: React.FC<Props> = ({
 
   const modalRef = useRef<HTMLDivElement | null>(null);
 
+  const handleResize = () => {
+    if (typeof window !== "undefined" && modalRef.current) {
+      const height = modalRef.current.getBoundingClientRect().height;
+      if (height >= window?.innerHeight) {
+        modalRef.current.style.top = "0";
+        modalRef.current.style.transform = "translateX(-50%)";
+      } else {
+        modalRef.current.style.top = "50%";
+        modalRef.current.style.transform = "translate(-50%, -50%)";
+      }
+    }
+  };
+
   useEffect(() => {
     const closeModal = (e: MouseEvent) => {
       if (modalRef.current && modalRef.current.contains(e.target as Node)) {
@@ -99,6 +113,14 @@ const CreateProposalModal: React.FC<Props> = ({
       window.removeEventListener("click", closeModal, true);
     };
   }, [modalRef, setIsShowCreateProposal]);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [modalRef]);
 
   const validationProps: any = useMemo(() => {
     if (type === ProposalOption[1]) {
@@ -116,7 +138,6 @@ const CreateProposalModal: React.FC<Props> = ({
     defaultValues: {
       title: "",
       description: "",
-      amount: "",
       recipientAddress: "",
       variable: [
         {
@@ -134,7 +155,7 @@ const CreateProposalModal: React.FC<Props> = ({
   });
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
     control,
   } = methods;
 
@@ -154,6 +175,10 @@ const CreateProposalModal: React.FC<Props> = ({
       remove(index);
     }
   };
+
+  const isDisableSubmit = useMemo(() => {
+    return !isEmptyObject(errors) || !isDirty || !isValid;
+  }, [isDirty, isValid, errors]);
 
   return (
     <CreateProposalModalBackground>
@@ -215,7 +240,9 @@ const CreateProposalModal: React.FC<Props> = ({
                 />
                 <div className="suffix-wrapper">
                   <FormInput
-                    placeholder="Enter a amount"
+                    type="number"
+                    min={0}
+                    placeholder="0"
                     errorText={
                       errors?.amount ? errors.amount.message : undefined
                     }
@@ -285,14 +312,15 @@ const CreateProposalModal: React.FC<Props> = ({
             </BoxContent>
           </div>
           <Button
+            disabled={isDisableSubmit}
             text="Submit"
             className="btn-submit"
             style={{
               fullWidth: true,
-              height: 57,
-              fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
               textColor: "text09",
-              bgColor: "background17",
+              fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
+              hierarchy: isDisableSubmit ? undefined : ButtonHierarchy.Primary,
+              bgColor: isDisableSubmit ? "background17" : undefined,
             }}
           />
         </CreateProposalModalWrapper>

@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
 export const LearnMoreModalBackground = styled.div`
   position: fixed;
-  overflow: hidden;
+  overflow: scroll;
   top: 0px;
   bottom: 0px;
   left: 0px;
@@ -42,6 +42,17 @@ export const LearnMoreModalWrapper = styled.div`
     gap: 16px;
     ${media.mobile} {
       padding: 0px;
+    }
+  }
+  .learn-more-btn {
+    height: 57px;
+    background-color: ${({ theme }) => theme.color.background05};
+    &:hover {
+      background-color: ${({ theme }) => theme.color.backgroundOpacity};
+    }
+    ${media.mobile} {
+      width: 272px;
+      height: 41px;
     }
   }
 `;
@@ -101,6 +112,14 @@ export const BoxImage = styled.div`
   margin: 0px 77px;
   position: relative;
   img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     width: 100%;
     aspect-ratio: 3/2;
     object-fit: cover;

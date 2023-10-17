@@ -20,9 +20,10 @@ export const FormTextAreaStyle = styled.textarea`
   width: 100%;
   border-radius: 8px;
   padding: 16px;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity2};
   color: ${({ theme }) => theme.color.text01};
   border: 1px solid ${({ theme }) => theme.color.border02};
+  resize: none;
   &::placeholder {
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body9}

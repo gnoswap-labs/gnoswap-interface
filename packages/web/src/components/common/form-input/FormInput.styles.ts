@@ -20,7 +20,7 @@ export const FormInputStyle = styled.input`
   width: 100%;
   border-radius: 8px;
   padding: 16px;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity2};
   color: ${({ theme }) => theme.color.text01};
   border: 1px solid ${({ theme }) => theme.color.border02};
   ${fonts.body9}
