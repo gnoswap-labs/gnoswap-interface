@@ -14,14 +14,6 @@ export interface SwapFeeTierInfo {
   description: string;
 }
 
-export const SwapFeeRateMap: Record<SwapFeeTierType, number> = {
-  FEE_100: 100,
-  FEE_500: 500,
-  FEE_3000: 3000,
-  FEE_10000: 10000,
-  NONE: 0,
-} as const;
-
 export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   FEE_100: {
     type: "FEE_100",

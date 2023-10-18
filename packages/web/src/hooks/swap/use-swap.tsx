@@ -1,5 +1,5 @@
 import { SwapDirectionType } from "@common/values";
-import { SwapFeeRateMap } from "@constants/option.constant";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -59,7 +59,7 @@ export const useSwap = ({
     if (!swapPool) {
       return null;
     }
-    const fee = SwapFeeRateMap[swapPool.feeTier];
+    const fee = SwapFeeTierInfoMap[swapPool.feeTier].fee;
 
     const amountSpecified = direction === "EXACT_OUT" ?
       BigNumber(amount || 0).multipliedBy(-1).toNumber() :
@@ -92,7 +92,7 @@ export const useSwap = ({
     if (!swapPool) {
       return false;
     }
-    const fee = SwapFeeRateMap[swapPool.feeTier];
+    const fee = SwapFeeTierInfoMap[swapPool.feeTier].fee;
     const response = await swapRepository.swap({
       tokenA: zeroForOne ? tokenA : tokenB,
       tokenB: zeroForOne ? tokenB : tokenA,
