@@ -19,6 +19,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenAAmount: "",
   tokenABalance: "",
   tokenAUSD: 0,
+  tokenAUSDStr: "0",
   tokenB: {
     chainId: "test3",
     address: "0x111111111117dC0aa78b770fA6A738034120C302",
@@ -33,6 +34,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBAmount: "",
   tokenBBalance: "",
   tokenBUSD: 0,
+  tokenBUSDStr: "0",
   direction: "EXACT_IN",
   slippage: 10
 };
@@ -48,6 +50,7 @@ describe("SwapCardContent Component", () => {
       changeTokenB: () => null,
       changeTokenBAmount: () => null,
       changeSlippage: () => null,
+      switchSwapDirection: () => null
     };
 
     render(

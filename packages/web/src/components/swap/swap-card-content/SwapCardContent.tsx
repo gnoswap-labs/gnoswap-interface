@@ -67,7 +67,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
         <div className="amount-info">
-          <span className="price-text">{`$${swapTokenInfo.tokenAUSD}`}</span>
+          <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
           <span className="balance-text">Balance : {swapTokenInfo.tokenABalance}</span>
         </div>
         <div className="arrow">
@@ -89,7 +89,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
         <div className="amount-info">
-          <span className="price-text">{`$${swapTokenInfo.tokenBUSD}`}</span>
+          <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
           <span className="balance-text">Balance : {swapTokenInfo.tokenBBalance}</span>
         </div>
       </div>
