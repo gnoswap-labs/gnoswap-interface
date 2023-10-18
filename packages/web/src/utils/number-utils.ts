@@ -123,3 +123,7 @@ export function toDecimalNumber(
   const num = BigNumber(value).toNumber();
   return Math.round(num * powers) / powers;
 }
+
+export function numberToUSD(value: number) {
+  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat()}`;
+}

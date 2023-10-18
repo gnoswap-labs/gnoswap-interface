@@ -67,7 +67,7 @@ export const useTokenData = () => {
 
   async function updateTokens() {
     const response = await tokenRepository.getTokens();
-    setTokens(response.tokens);
+    setTokens(response?.tokens || []);
   }
 
   async function updateTokenPrices() {

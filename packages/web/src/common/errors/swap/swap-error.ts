@@ -13,6 +13,10 @@ const ERROR_VALUE = {
     status: 4000,
     type: "Swap rate lookup failed",
   },
+  NOT_FOUND_SWAP_POOL: {
+    status: 4000,
+    type: "Swap Pool not found",
+  },
   EXPECTED_RESULT_LOOKUP_FAILED: {
     status: 4001,
     type: "Expected result lookup failed",
@@ -28,6 +32,10 @@ const ERROR_VALUE = {
   GET_SLIPPAGE_FAILED: {
     status: 4004,
     type: "Get slippage failed",
+  },
+  INVALID_PARAMS: {
+    status: 4004,
+    type: "Invalid request parameters",
   },
 };
 
