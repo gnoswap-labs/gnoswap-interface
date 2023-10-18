@@ -14,22 +14,10 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResponse } from "@repositories/swap";
 import { numberToUSD } from "@utils/number-utils";
 
-const FooToken = {
-  "chainId": "dev",
-  "createdAt": "2023-10-17T05:58:00+09:00",
-  "name": "Foo",
-  "address": "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-  "path": "gno.land/r/foo",
-  "decimals": 4,
-  "symbol": "FOO",
-  "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
-  "priceId": "gno.land/r/foo"
-};
-
 const SwapContainer: React.FC = () => {
   const { connected: connectedWallet, connectAdenaClient } = useWallet();
   const { tokenPrices, balances, updateTokenPrices, updateBalances } = useTokenData();
-  const [tokenA, setTokenA] = useState<TokenModel | null>(FooToken);
+  const [tokenA, setTokenA] = useState<TokenModel | null>(null);
   const [tokenAAmount, setTokenAAmount] = useState<string>("0");
   const [tokenB, setTokenB] = useState<TokenModel | null>(null);
   const [tokenBAmount, setTokenBAmount] = useState<string>("0");

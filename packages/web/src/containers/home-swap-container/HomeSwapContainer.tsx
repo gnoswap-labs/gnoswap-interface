@@ -9,22 +9,10 @@ import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
 
-const FooToken = {
-  "chainId": "dev",
-  "createdAt": "2023-10-17T05:58:00+09:00",
-  "name": "Foo",
-  "address": "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-  "path": "gno.land/r/foo",
-  "decimals": 4,
-  "symbol": "FOO",
-  "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
-  "priceId": "gno.land/r/foo"
-};
-
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, balances } = useTokenData();
-  const [tokenA] = useState<TokenModel | null>(FooToken);
+  const [tokenA] = useState<TokenModel | null>(null);
   const [tokenAAmount] = useState<string>("1000");
   const [tokenB] = useState<TokenModel | null>(null);
   const [tokenBAmount] = useState<string>("0");

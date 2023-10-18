@@ -70,7 +70,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               className="amount-text"
               value={swapTokenInfo.tokenAAmount}
               onChange={onChangeFromAmount}
-              placeholder={"0"}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton disabled token={swapTokenInfo.tokenA} />
@@ -87,7 +87,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               className="amount-text"
               value={swapTokenInfo.tokenBAmount}
               onChange={onChangeToAmount}
-              placeholder={"0"}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton disabled token={swapTokenInfo.tokenB} />

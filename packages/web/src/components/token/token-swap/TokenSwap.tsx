@@ -85,7 +85,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               className="amount-text"
               value={fromAmount}
               onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton token={from.token} />
@@ -102,7 +102,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               className="amount-text"
               value={toAmount}
               onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton token={to.token} />

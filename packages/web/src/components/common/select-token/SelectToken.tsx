@@ -59,7 +59,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="search-wrap">
           <input
             className="search-input"
-            placeholder={"Search name or paste address"}
+            placeholder="Search name or paste address"
             value={keyword}
             onChange={onChangeSearchKeyword}
           />
