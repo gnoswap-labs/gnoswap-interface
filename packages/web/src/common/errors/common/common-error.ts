@@ -6,7 +6,7 @@ const ERROR_VALUE = {
     type: "Failed to initialize Provider",
   },
   FAILED_INITIALIZE_GNO_PROVIDER: {
-    status: 400,
+    status: 401,
     type: "Failed to initialize Gno Provider",
   },
 };
