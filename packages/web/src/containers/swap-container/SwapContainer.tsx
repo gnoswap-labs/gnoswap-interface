@@ -79,14 +79,14 @@ const SwapContainer: React.FC = () => {
   }, [setSlippage]);
 
   const tokenABalance = useMemo(() => {
-    if (tokenA && balances[tokenA.priceId]) {
+    if (tokenA && !Number.isNaN(balances[tokenA.priceId])) {
       return BigNumber(balances[tokenA.priceId] || 0).toFormat();
     }
     return "-";
   }, [balances, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (tokenB && balances[tokenB.priceId]) {
+    if (tokenB && !Number.isNaN(balances[tokenB.priceId])) {
       return BigNumber(balances[tokenB.priceId] || 0).toFormat();
     }
     return "-";
