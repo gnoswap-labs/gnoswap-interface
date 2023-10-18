@@ -13,6 +13,7 @@ import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
 import { GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
+import ChainNetworkInfos from "@resources/chains.json";
 
 interface GnoswapContextProps {
   rpcProvider: GnoProvider | null;
@@ -51,8 +52,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, []);
 
   useEffect(() => {
-    if (network) {
-      const provider = new GnoWSProvider(network.wsUrl, 5 * 1000);
+    const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
+    const currentNetwork = network || ChainNetworkInfos.find(info => info.chainId === defaultChainId);
+    if (currentNetwork) {
+      const provider = new GnoWSProvider(currentNetwork.wsUrl, 5 * 1000);
       provider.waitForOpenConnection().then(() => setRPCProvider(provider));
     }
   }, [network]);
