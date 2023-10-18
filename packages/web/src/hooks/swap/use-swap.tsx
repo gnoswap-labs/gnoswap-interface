@@ -37,6 +37,17 @@ export const useSwap = ({
     return tokenA?.symbol.toLowerCase() === "foo";
   }, [tokenA?.symbol]);
 
+  /**
+   * TODO: Once a contract can handle GRC20 tokens dynamically, it will need to be reconsidered.
+   */
+  const getAmountResult = useCallback((inputAmount: number, tokenAAmount: number, tokenBAmount: number) => {
+    const isExactIn = inputAmount >= 0;
+    if (isExactIn === zeroForOne) {
+      return BigNumber(tokenBAmount).abs().toString();
+    }
+    return BigNumber(tokenAAmount).abs().toString();
+  }, [zeroForOne]);
+
   const findSwapPool = useCallback(async (amount: string) => {
     if (!selectedTokenPair) {
       return null;
@@ -72,8 +83,8 @@ export const useSwap = ({
       receiver: "",
       zeroForOne,
       amountSpecified,
-    }).then((data) => BigNumber(
-      amountSpecified >= 0 ? data.tokenBAmount : data.tokenAAmount).abs().toString())
+    }).then((data) =>
+      getAmountResult(amountSpecified, data.tokenAAmount, data.tokenBAmount))
       .catch(() => null);
   }, [zeroForOne, direction, findSwapPool, selectedTokenPair, swapRepository, tokenA, tokenB]);
 
