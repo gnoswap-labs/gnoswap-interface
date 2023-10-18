@@ -11,9 +11,18 @@ import { SwapRequest } from "./request";
 import { WalletClient } from "@common/clients/wallet-client";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { MAX_PRICE_X96, MIN_PRICE_X96 } from "@constants/swap.constant";
-import { evaluateExpressionToValues } from "@utils/rpc-utils";
+import {
+  evaluateExpressionToObject,
+  evaluateExpressionToValues,
+  makeABCIParams,
+} from "@utils/rpc-utils";
 import BigNumber from "bignumber.js";
 import { TokenModel } from "@models/token/token-model";
+import { FindBestPoolReqeust } from "./request/find-best-pool-request";
+import { SwapPoolResponse } from "./response/swap-pool-response";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import { CommonError } from "@common/errors";
+import { SwapError } from "@common/errors/swap";
 
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 
@@ -44,6 +53,50 @@ export class SwapRepositoryImpl implements SwapRepository {
     };
   };
 
+  public findSwapPool = async (
+    request: FindBestPoolReqeust,
+  ): Promise<SwapPoolResponse> => {
+    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    if (!poolPackagePath || !this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+    const { tokenA, tokenB, amountSpecified, zeroForOne } = request;
+    if (Number.isNaN(amountSpecified)) {
+      throw new SwapError("INVALID_PARAMS");
+    }
+    const tokenAPath = tokenA.symbol.toLowerCase();
+    const tokenBPath = tokenB.symbol.toLowerCase();
+    const param = makeABCIParams("FindBestPool", [tokenAPath, tokenBPath, zeroForOne, amountSpecified]);
+    const result = await this.rpcProvider
+      .evaluateExpression(poolPackagePath, param)
+      .then(evaluateExpressionToObject<{
+        response: {
+          data: {
+            pool_path: string;
+            sqrt_price_x96: number;
+            tick_spacing: number;
+          }
+        }
+      }>);
+
+    if (result === null) {
+      throw new SwapError("NOT_FOUND_SWAP_POOL");
+    }
+    const poolPath = result.response.data.pool_path;
+    const poolPathSplit = poolPath.split("_");
+    const feeStr = poolPathSplit[poolPathSplit.length - 1];
+    const sqrtPriceX96 = BigNumber(result.response.data.sqrt_price_x96).toString();
+    const tickSpacing = result.response.data.tick_spacing;
+    const feeTier = makeSwapFeeTier(feeStr);
+
+    return {
+      feeTier,
+      poolPath,
+      sqrtPriceX96,
+      tickSpacing
+    };
+  };
+
   public getExpectedSwapResult = async (
     request: SwapRequest,
   ): Promise<SwapExpectedResultResponse> => {
@@ -63,10 +116,12 @@ export class SwapRepositoryImpl implements SwapRepository {
       zeroForOne,
       receiver,
     } = request;
+    const tokenAPath = tokenA.symbol.toLowerCase();
+    const tokenBPath = tokenB.symbol.toLowerCase();
     const priceLimit = zeroForOne ? MIN_PRICE_X96 : MAX_PRICE_X96;
-    const params = `DrySwap("${tokenA}", "${tokenB}", ${fee}, "${receiver}", ${zeroForOne}, ${amountSpecified}, ${priceLimit})`;
+    const param = makeABCIParams("DrySwap", [tokenAPath, tokenBPath, fee, receiver, zeroForOne, amountSpecified, priceLimit]);
     const result = await this.rpcProvider
-      .evaluateExpression(poolPackagePath, params)
+      .evaluateExpression(poolPackagePath, param)
       .then(evaluateExpressionToValues);
 
     if (result.length < 2) {
@@ -103,7 +158,7 @@ export class SwapRepositoryImpl implements SwapRepository {
     const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
     const account = await this.walletClient.getAccount();
     if (!account.data || !poolPackagePath) {
-      throw new Error("Swap failed.");
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const { address } = account.data;
     const {
@@ -142,7 +197,7 @@ export class SwapRepositoryImpl implements SwapRepository {
       memo: "",
     });
     if (response.code !== 0) {
-      throw new Error("Swap failed.");
+      throw new SwapError("SWAP_FAILED");
     }
     return {
       tx_hash: response.type,

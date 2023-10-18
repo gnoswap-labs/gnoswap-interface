@@ -15,37 +15,39 @@ const Template: ComponentStory<typeof HomeSwap> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  from: {
-    token: {
+  swapTokenInfo: {
+    tokenA: {
       chainId: "dev",
-      createdAt: "2023-10-10T08:48:46+09:00",
-      name: "Gnoswap",
-      address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-      path: "gno.land/r/gnos",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
       decimals: 4,
-      symbol: "GNOS",
+      symbol: "FOO",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
-      priceId: "gno.land/r/gnos"
+      priceId: "gno.land/r/foo"
     },
-    amount: "121",
-    price: "$0.00",
-    balance: "0",
-  },
-  to: {
-    token: {
+    tokenAAmount: "0",
+    tokenABalance: "0",
+    tokenAUSD: 0,
+    tokenAUSDStr: "0",
+    tokenB: {
       chainId: "dev",
-      createdAt: "2023-10-10T08:48:46+09:00",
-      name: "Gnoswap",
-      address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-      path: "gno.land/r/gnos",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
       decimals: 4,
-      symbol: "GNOS",
+      symbol: "FOO",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
-      priceId: "gno.land/r/gnos"
+      priceId: "gno.land/r/foo"
     },
-    amount: "5000",
-    price: "$0.00",
-    balance: "0",
+    tokenBAmount: "0",
+    tokenBBalance: "0",
+    tokenBUSD: 0,
+    tokenBUSDStr: "0",
+    direction: "EXACT_IN",
+    slippage: 0,
   },
   swapNow: action("swapNow"),
 };

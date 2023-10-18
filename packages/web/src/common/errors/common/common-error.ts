@@ -5,6 +5,10 @@ const ERROR_VALUE = {
     status: 400,
     type: "Failed to initialize Provider",
   },
+  FAILED_INITIALIZE_GNO_PROVIDER: {
+    status: 401,
+    type: "Failed to initialize Gno Provider",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

@@ -10,6 +10,8 @@ export interface SwapTokenInfo {
 
   tokenAUSD: number;
 
+  tokenAUSDStr: string;
+
   tokenB: TokenModel | null;
 
   tokenBAmount: string;
@@ -17,6 +19,8 @@ export interface SwapTokenInfo {
   tokenBBalance: string;
 
   tokenBUSD: number;
+
+  tokenBUSDStr: string;
 
   direction: SwapDirectionType;
 

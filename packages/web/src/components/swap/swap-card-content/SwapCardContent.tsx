@@ -60,14 +60,14 @@ const SwapCardContent: React.FC<ContentProps> = ({
             className="amount-text"
             value={swapTokenInfo.tokenAAmount}
             onChange={onChangeTokenAAmount}
-            placeholder={swapTokenInfo.tokenAAmount === "" ? "0" : ""}
+            placeholder="0"
           />
           <div className="token-selector">
             <SelectPairButton token={tokenA} changeToken={changeTokenA} />
           </div>
         </div>
         <div className="amount-info">
-          <span className="price-text">{`$${swapTokenInfo.tokenAUSD}`}</span>
+          <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
           <span className="balance-text">Balance : {swapTokenInfo.tokenABalance}</span>
         </div>
         <div className="arrow">
@@ -82,14 +82,14 @@ const SwapCardContent: React.FC<ContentProps> = ({
             className="amount-text"
             value={swapTokenInfo.tokenBAmount}
             onChange={onChangeTokenBAmount}
-            placeholder={swapTokenInfo.tokenBAmount === "" ? "0" : ""}
+            placeholder="0"
           />
           <div className="token-selector">
             <SelectPairButton token={tokenB} changeToken={changeTokenB} />
           </div>
         </div>
         <div className="amount-info">
-          <span className="price-text">{`$${swapTokenInfo.tokenBUSD}`}</span>
+          <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
           <span className="balance-text">Balance : {swapTokenInfo.tokenBBalance}</span>
         </div>
       </div>

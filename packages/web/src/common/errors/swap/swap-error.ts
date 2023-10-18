@@ -1,21 +1,13 @@
 import { BaseError } from "@common/errors";
 
 const ERROR_VALUE = {
-  SYMBOL_TYPE_CHECK_ERROR: {
-    status: 1000,
-    type: "Token Symbol Data check Error",
-  },
   AMOUNT_TYPE_CHECK_ERROR: {
-    status: 1001,
+    status: 4000,
     type: "Amount Data check Error",
   },
-  SWAP_RATE_LOOKUP_FAILED: {
-    status: 4000,
-    type: "Swap rate lookup failed",
-  },
-  EXPECTED_RESULT_LOOKUP_FAILED: {
+  NOT_FOUND_SWAP_POOL: {
     status: 4001,
-    type: "Expected result lookup failed",
+    type: "Swap Pool not found",
   },
   SWAP_FAILED: {
     status: 4002,
@@ -28,6 +20,10 @@ const ERROR_VALUE = {
   GET_SLIPPAGE_FAILED: {
     status: 4004,
     type: "Get slippage failed",
+  },
+  INVALID_PARAMS: {
+    status: 5000,
+    type: "Invalid request parameters",
   },
 };
 

@@ -39,7 +39,7 @@ const SetRewardAmount: React.FC<SetRewardAmountProps> = ({
             className="amount"
             value={amount}
             onChange={onChangeAmount}
-            placeholder={amount === "" ? "0" : ""}
+            placeholder="0"
           />
         </div>
 

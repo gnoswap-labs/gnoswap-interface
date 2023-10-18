@@ -77,7 +77,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
               className="amount-text"
               value={slippage}
               onChange={onChangeSlippage}
-              placeholder={`${slippage}`}
+              placeholder="0"
             />
             <span>%</span>
           </div>

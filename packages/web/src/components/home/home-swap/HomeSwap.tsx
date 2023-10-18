@@ -1,24 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import { DeviceSize } from "@styles/media";
-import { TokenModel } from "@models/token/token-model";
-
-interface SwapTokenModel {
-  token: TokenModel;
-  amount: string;
-  price: string;
-  balance: string;
-}
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface HomeSwapProps {
-  from: SwapTokenModel;
-  to: SwapTokenModel;
+  swapTokenInfo: SwapTokenInfo;
   swapNow: () => void;
-  windowSize: number;
 }
 
 function isAmount(str: string) {
@@ -27,13 +18,10 @@ function isAmount(str: string) {
 }
 
 const HomeSwap: React.FC<HomeSwapProps> = ({
-  from,
-  to,
+  swapTokenInfo,
   swapNow,
-  windowSize,
 }) => {
-  const [fromAmount, setFromAmount] = useState(from.amount);
-  const [toAmount, setToAmount] = useState(to.amount);
+  const { breakpoint } = useWindowSize();
 
   const onChangeFromAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +29,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
       if (value !== "" && !isAmount(value)) return;
 
-      setFromAmount(value);
       // TODO
       // - mapT0AmountToT0Price
       // - mapT0AmpuntT1Amount
@@ -56,7 +43,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
       if (value !== "" && !isAmount(value)) return;
 
-      setToAmount(value);
       // TODO
       // - mapT1AmountToT1Price
       // - mapT1AmpuntT0Amount
@@ -69,7 +55,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     swapNow();
   }, [swapNow]);
 
-  return windowSize > DeviceSize.mobile ? (
+  return breakpoint === "web" ? (
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
@@ -82,34 +68,34 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="amount">
             <input
               className="amount-text"
-              value={fromAmount}
+              value={swapTokenInfo.tokenAAmount}
               onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
-              <SelectPairButton disabled token={from.token} />
+              <SelectPairButton disabled token={swapTokenInfo.tokenA} />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{from.price}</span>
-            <span className="balance-text">Balance : {from.balance}</span>
+            <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
+            <span className="balance-text">Balance : {swapTokenInfo.tokenABalance}</span>
           </div>
         </div>
         <div className="to">
           <div className="amount">
             <input
               className="amount-text"
-              value={toAmount}
+              value={swapTokenInfo.tokenBAmount}
               onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
-              <SelectPairButton disabled token={to.token} />
+              <SelectPairButton disabled token={swapTokenInfo.tokenB} />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{to.price}</span>
-            <span className="balance-text">Balance : {to.balance}</span>
+            <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
+            <span className="balance-text">Balance : {swapTokenInfo.tokenBBalance}</span>
           </div>
         </div>
         <div className="arrow">
