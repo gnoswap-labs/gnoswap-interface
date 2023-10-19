@@ -27,7 +27,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
-    if (!tokenPrice) {
+    if (tokenPrice === null || Number.isNaN(tokenPrice)) {
       return "-";
     }
     return BigNumber(tokenPrice).toFormat();

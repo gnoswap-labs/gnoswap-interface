@@ -23,19 +23,20 @@ export const useSwap = ({
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
-  const amountDirection = useMemo(() => {
-    if (direction === "EXACT_IN") {
-      return 1;
-    }
-    return -1;
-  }, [direction]);
-
   /**
    * TODO: Once a contract can handle GRC20 tokens dynamically, it will need to be reconsidered.
    */
   const zeroForOne = useMemo(() => {
     return tokenA?.symbol.toLowerCase() === "foo";
   }, [tokenA?.symbol]);
+
+  const amountDirection = useMemo(() => {
+    const isDirection = direction === "EXACT_IN";
+    if (isDirection) {
+      return 1;
+    }
+    return -1;
+  }, [direction]);
 
   /**
    * TODO: Once a contract can handle GRC20 tokens dynamically, it will need to be reconsidered.
@@ -86,7 +87,7 @@ export const useSwap = ({
     }).then((data) =>
       getAmountResult(amountSpecified, data.tokenAAmount, data.tokenBAmount))
       .catch(() => null);
-  }, [zeroForOne, direction, findSwapPool, selectedTokenPair, swapRepository, tokenA, tokenB]);
+  }, [selectedTokenPair, findSwapPool, direction, swapRepository, zeroForOne, tokenA, tokenB, getAmountResult]);
 
   const swap = useCallback(async (tokenAAmount: string, tokenBAmount: string) => {
     if (!account) {

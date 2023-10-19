@@ -23,6 +23,10 @@ export const toNumberFormat = (
   return bigNumber.toFormat();
 };
 
+export function toNumberString(value: string) {
+  return BigNumber(value).toString();
+}
+
 export const toGnot = (value: number, denom: string) => {
   return {
     value: valueConvert(value, denom),
@@ -126,4 +130,10 @@ export function toDecimalNumber(
 
 export function numberToUSD(value: number) {
   return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat()}`;
+}
+
+export function matchInputNumber(value: string) {
+  const regexpOfNum = /^(\d*)[\.]?(\d*)?$/g;
+  const regexpOfStartWithZeroes = /^(?!00)/;
+  return regexpOfNum.test(value) && regexpOfStartWithZeroes.test(value);
 }
