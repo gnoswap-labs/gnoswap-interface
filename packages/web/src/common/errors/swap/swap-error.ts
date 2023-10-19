@@ -25,6 +25,10 @@ const ERROR_VALUE = {
     status: 5000,
     type: "Invalid request parameters",
   },
+  INSUFFICIENT_BALANCE: {
+    status: 5001,
+    type: "Insufficient Balance",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

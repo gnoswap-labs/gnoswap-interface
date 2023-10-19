@@ -12,11 +12,13 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { AmountModel } from "@models/common/amount-model";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResponse } from "@repositories/swap";
-import { numberToUSD } from "@utils/number-utils";
+import { matchInputNumber, numberToUSD } from "@utils/number-utils";
+import { SwapError } from "@common/errors/swap";
 
 const SwapContainer: React.FC = () => {
   const { connected: connectedWallet, connectAdenaClient } = useWallet();
   const { tokenPrices, balances, updateTokenPrices, updateBalances } = useTokenData();
+  const [swapError, setSwapError] = useState<SwapError | null>(null);
   const [tokenA, setTokenA] = useState<TokenModel | null>(null);
   const [tokenAAmount, setTokenAAmount] = useState<string>("0");
   const [tokenB, setTokenB] = useState<TokenModel | null>(null);
@@ -39,44 +41,42 @@ const SwapContainer: React.FC = () => {
 
   useEffect(() => {
     updateTokenPrices();
-  }, []);
+  });
 
-  const openConfirmModal = useCallback(() => {
-    setOpenedConfirModal(true);
-  }, []);
+  const checkBalance = useCallback((token: TokenModel, amount: string) => {
+    const tokenBalance = balances[token.priceId] || 0;
+    return BigNumber(tokenBalance).isGreaterThan(amount);
+  }, [balances]);
 
-  const openConnectWallet = useCallback(() => {
-    connectAdenaClient();
-  }, [connectAdenaClient]);
-
-  const closeModal = useCallback(() => {
-    setSubmitted(false);
-    setSwapResult(null);
-    setOpenedConfirModal(false);
-    updateBalances();
-  }, [updateBalances]);
-
-  const changeTokenAAmount = useCallback((value: string) => {
-    const numberValue = value.replace(/\D/, "");
-    setSwapDirection("EXACT_IN");
-    setTokenAAmount(numberValue);
-    if (tokenA && tokenB && BigNumber(numberValue).isGreaterThan(0)) {
-      getExpectedSwap(numberValue).then(amount => setTokenBAmount(amount || ""));
+  useEffect(() => {
+    if (!tokenA || !tokenB) {
+      return;
     }
-  }, [getExpectedSwap, tokenA, tokenB]);
-
-  const changeTokenBAmount = useCallback((value: string) => {
-    const numberValue = value.replace(/\D/, "");
-    setSwapDirection("EXACT_OUT");
-    setTokenBAmount(numberValue);
-    if (tokenA && tokenB && BigNumber(numberValue).isGreaterThan(0)) {
-      getExpectedSwap(numberValue).then(amount => setTokenAAmount(amount || ""));
+    const isExactIn = swapDirection === "EXACT_IN";
+    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    if (Number.isNaN(changedAmount) && BigNumber(changedAmount).isGreaterThan(0)) {
+      return;
     }
-  }, [getExpectedSwap, tokenA, tokenB]);
+    getExpectedSwap(changedAmount).then(result => {
+      const isError = result === null;
+      const expectedAmount = isError ? "" : result;
+      let swapError = null;
+      if (isError) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
+      if (!checkBalance(tokenA, tokenAAmount) ||
+        !checkBalance(tokenB, tokenBAmount)) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
 
-  const changeSlippage = useCallback((value: string) => {
-    setSlippage(BigNumber(value).toNumber());
-  }, [setSlippage]);
+      if (isExactIn) {
+        setTokenBAmount(expectedAmount);
+      } else {
+        setTokenAAmount(expectedAmount);
+      }
+      setSwapError(swapError);
+    });
+  }, [checkBalance, getExpectedSwap, swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const tokenABalance = useMemo(() => {
     if (tokenA && !Number.isNaN(balances[tokenA.priceId])) {
@@ -105,6 +105,54 @@ const SwapContainer: React.FC = () => {
     }
     return BigNumber(tokenBAmount).multipliedBy(tokenPrices[tokenB.priceId].usd).toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
+
+  const swapButtonText = useMemo(() => {
+    if (!connectedWallet) {
+      return "Connect Wallet";
+    }
+    if (!tokenA || !tokenB) {
+      return "Insufficient Balance";
+    }
+    if (swapError) {
+      return swapError.message;
+    }
+    return "Swap";
+  }, [connectedWallet, swapError, tokenA, tokenB]);
+
+  const openConfirmModal = useCallback(() => {
+    setOpenedConfirModal(true);
+  }, []);
+
+  const openConnectWallet = useCallback(() => {
+    connectAdenaClient();
+  }, [connectAdenaClient]);
+
+  const closeModal = useCallback(() => {
+    setSubmitted(false);
+    setSwapResult(null);
+    setOpenedConfirModal(false);
+    updateBalances();
+  }, [updateBalances]);
+
+  const changeTokenAAmount = useCallback((value: string) => {
+    if (!matchInputNumber(value)) {
+      return;
+    }
+    setSwapDirection("EXACT_IN");
+    setTokenAAmount(value);
+  }, []);
+
+  const changeTokenBAmount = useCallback((value: string) => {
+    if (!matchInputNumber(value)) {
+      return;
+    }
+    setSwapDirection("EXACT_OUT");
+    setTokenBAmount(value);
+  }, []);
+
+  const changeSlippage = useCallback((value: string) => {
+    setSlippage(BigNumber(value).toNumber());
+  }, [setSlippage]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
@@ -145,13 +193,12 @@ const SwapContainer: React.FC = () => {
     };
   }, [gasFeeAmount, swapDirection, swapRate, tokenA, tokenB, tokenBAmount]);
 
-  const swapError = useMemo(() => {
-    return null;
-  }, []);
-
   const isAvailSwap = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return false;
+    }
     return swapError === null;
-  }, [swapError]);
+  }, [swapError, tokenA, tokenB]);
 
   const changeTokenA = useCallback((token: TokenModel) => {
     setTokenA(token);
@@ -163,16 +210,17 @@ const SwapContainer: React.FC = () => {
 
   const switchSwapDirection = useCallback(() => {
     const preTokenA = tokenA ? { ...tokenA } : null;
-    const preTokenAAmount = tokenAAmount;
     const preTokenB = tokenB ? { ...tokenB } : null;
-    const preTokenBAmount = tokenBAmount;
-    const preSwapDirection = swapDirection;
+    const changedSwapDirection = swapDirection === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
 
     setTokenA(preTokenB);
-    setTokenAAmount(preTokenBAmount);
     setTokenB(preTokenA);
-    setTokenBAmount(preTokenAAmount);
-    setSwapDirection(preSwapDirection === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN");
+    setSwapDirection(changedSwapDirection);
+    if (changedSwapDirection === "EXACT_IN") {
+      setTokenAAmount(tokenBAmount);
+    } else {
+      setTokenBAmount(tokenAAmount);
+    }
 
   }, [swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
@@ -210,7 +258,7 @@ const SwapContainer: React.FC = () => {
       swapSummaryInfo={swapSummaryInfo}
       swapRouteInfos={swapRouteInfos}
       isAvailSwap={isAvailSwap}
-      swapError={swapError}
+      swapButtonText={swapButtonText}
       submitted={submitted}
       swapResult={swapResult}
       openedConfirmModal={openedConfirmModal}

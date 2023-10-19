@@ -18,7 +18,7 @@ interface SwapCardProps {
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
   isAvailSwap: boolean;
-  swapError?: string | null;
+  swapButtonText: string;
   submitted: boolean;
   swapResult: SwapResultInfo | null;
   openedConfirmModal: boolean;
@@ -44,7 +44,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   swapSummaryInfo,
   swapRouteInfos,
   isAvailSwap,
-  swapError,
+  swapButtonText,
   submitted,
   swapResult,
   openedConfirmModal,
@@ -86,7 +86,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
             isAvailSwap={isAvailSwap}
             openConfirmModal={openConfirmModal}
             openConnectWallet={openConnectWallet}
-            swapError={swapError}
+            text={swapButtonText}
           />
         </div>
       </SwapCardWrapper>
@@ -108,7 +108,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
 interface SwapButtonProps {
   connectedWallet: boolean;
   isAvailSwap: boolean;
-  swapError?: string | null;
+  text: string;
   openConfirmModal: () => void;
   openConnectWallet: () => void;
 }
@@ -116,7 +116,7 @@ interface SwapButtonProps {
 const SwapButton: React.FC<SwapButtonProps> = ({
   connectedWallet,
   isAvailSwap,
-  swapError,
+  text,
   openConfirmModal,
   openConnectWallet,
 }) => {
@@ -131,7 +131,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
   if (!connectedWallet) {
     return (
       <Button
-        text="ConnectWallet"
+        text={text}
         style={defaultStyle}
         onClick={openConnectWallet}
       />
@@ -141,7 +141,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
   if (!isAvailSwap) {
     return (
       <Button
-        text={swapError || "Insufficient Balance"}
+        text={text}
         style={{
           ...defaultStyle,
           hierarchy: ButtonHierarchy.Gray
@@ -152,7 +152,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
 
   return (
     <Button
-      text="Swap"
+      text={text}
       style={defaultStyle}
       onClick={openConfirmModal}
     />

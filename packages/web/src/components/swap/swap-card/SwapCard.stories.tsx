@@ -96,6 +96,7 @@ export const Default = Template.bind({});
 Default.args = {
   swapSummaryInfo,
   swapRouteInfos,
+  swapButtonText: "Swap"
 };
 
 const wrapper = () => css`
