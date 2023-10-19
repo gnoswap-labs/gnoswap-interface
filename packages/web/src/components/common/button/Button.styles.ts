@@ -18,6 +18,7 @@ export interface ButtonStyleProps {
   radius?: CSSProperties["borderRadius"];
   justify?: CSSProperties["justifyContent"];
   padding?: CSSProperties["padding"];
+  minWidth?: CSSProperties["minWidth"];
 }
 
 export const ButtonWrapper = styled.button<ButtonStyleProps>`
@@ -29,6 +30,11 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   width: ${({ width, fullWidth }) => {
     if (width) return typeof width === "number" ? width + "px" : width;
     if (fullWidth) return "100%";
+    return "auto";
+  }};
+  min-width: ${({ minWidth }) => {
+    if (minWidth)
+      return typeof minWidth === "number" ? minWidth + "px" : minWidth;
     return "auto";
   }};
   height: ${({ height }) => {
