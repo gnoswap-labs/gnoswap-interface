@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const cardStyle = (theme: Theme) => css`
@@ -17,7 +18,13 @@ export const cardStyle = (theme: Theme) => css`
     color: ${theme.color.text01};
     width: 100%;
     padding: 0px 24px;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
+    ${media.mobile} {
+      margin-bottom: 4px;
+    }
+  }
+  > a {
+    width: 100%;
   }
   .card-wrap {
     ${mixins.flexbox("row", "center", "space-between")};

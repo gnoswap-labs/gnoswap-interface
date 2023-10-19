@@ -30,4 +30,7 @@ export const wrapper = (theme: Theme) => css`
       fill: ${theme.color.icon03};
     }
   }
+  @media (max-width: 1180px) {
+    height: 24px;
+  }
 `;

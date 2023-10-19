@@ -19,15 +19,12 @@ export interface Steps {
 
 const removePoolSteps = [
   {
-    title: "Earn",
-    path: "/earn",
+    title: "Main",
+    path: "/swap",
   },
   {
-    title: "GNOS/GNOT (0.3%)",
+    title: "GNOS",
     path: "",
-  },
-  {
-    title: "Remove Liquidity",
   },
 ];
 

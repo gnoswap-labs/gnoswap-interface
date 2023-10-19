@@ -1,6 +1,7 @@
 import mixins from "@styles/mixins";
 import { css, Theme } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   padding: 24px;
@@ -18,7 +19,13 @@ export const wrapper = (theme: Theme) => css`
       ${fonts.h6};
       color: ${theme.color.text02};
     }
-
+    .header-button {
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 15px;
+      ${media.mobile} {
+        gap: 12px;
+      }
+    }
     .setting-button {
       width: 24px;
       height: 24px;

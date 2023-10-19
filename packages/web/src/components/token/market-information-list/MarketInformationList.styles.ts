@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center")};
@@ -20,6 +21,12 @@ export const wrapper = (theme: Theme) => css`
     .title {
       ${fonts.body12};
       color: ${theme.color.text04};
+    }
+    .market-info-value {
+      ${fonts.body10};
+      ${media.mobile} {
+        ${fonts.body12};
+      }
     }
   }
 `;

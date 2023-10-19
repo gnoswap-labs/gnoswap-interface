@@ -46,7 +46,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
             <IconTriangleArrowUp className="arrow-icon" /> :
             <IconTriangleArrowDown className="arrow-icon" />
         }
-        <span>{priceInfo.changedRate}</span>
+        <span>{priceInfo.changedRate}%</span>
       </div>
     </TokenChartInfoWrapper>
   );

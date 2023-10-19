@@ -40,8 +40,7 @@ export const TokenChartInfoWrapper = styled.div`
   .change-rate-wrapper {
     ${mixins.flexbox("row", "center", "flex-end")};
     width: 100%;
-    margin-bottom: 16px;
-    ${fonts.body12};
+    ${fonts.body10};
 
     &.up {
       & * {

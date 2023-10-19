@@ -40,7 +40,7 @@ export const wrapper = (theme: Theme) => css`
       transition: background-color 0.3s ease;
       cursor: pointer;
       &:hover {
-        background-color: ${theme.color.background06};
+        background-color: ${theme.color.hover04};
       }
       .symbol {
         margin: 0px 8px;
