@@ -22,7 +22,7 @@ const PriceInformationList: React.FC<PriceInformationListProps> = ({
         <div key={idx} className="information-wrap">
           <span className="title">{TITLE_LIST[idx]}</span>
           <span
-            className={cx({
+            className={cx("price-info-value", {
               negative: item.status === MATH_NEGATIVE_TYPE.NEGATIVE,
             })}
           >

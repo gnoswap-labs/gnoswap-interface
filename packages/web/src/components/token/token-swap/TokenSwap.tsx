@@ -5,6 +5,8 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { TokenInfo } from "@models/token/token-info";
+import IconLink from "@components/common/icons/IconLink";
+
 export interface TokenSwapProps {
   from: {
     token: TokenInfo;
@@ -74,9 +76,14 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button className="setting-button" disabled>
-          <IconSettings className="setting-icon" />
-        </button>
+        <div className="header-button">
+          <button className="setting-button" disabled>
+            <IconLink className="setting-icon" />
+          </button>
+          <button className="setting-button" disabled>
+            <IconSettings className="setting-icon" />
+          </button>
+        </div>
       </div>
       <div className="inputs">
         <div className="from">

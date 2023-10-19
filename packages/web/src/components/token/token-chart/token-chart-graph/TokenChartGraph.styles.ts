@@ -18,7 +18,8 @@ export const TokenChartGraphWrapper = styled.div`
     max-width: 755px;
 
     .graph {
-      border: 1px solid ${({ theme }) => theme.color.border02};
+      border-bottom: 1px solid ${({ theme }) => theme.color.border02};
+      border-right: 1px solid ${({ theme }) => theme.color.border02};
     }
 
     .xaxis-wrapper {

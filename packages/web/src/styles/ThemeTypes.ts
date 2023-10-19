@@ -21,6 +21,7 @@ export interface ThemeColorType {
   background18: string;
   backgroundOpacity: string;
   backgroundOpacity2: string;
+  backgroundOpacity3: string;
   backgroundGradient: string;
   backgroundGradient2: string;
   backgroundGradient3: string;
@@ -69,6 +70,7 @@ export interface ThemeColorType {
   icon09: string;
   icon10: string;
   icon11: string;
+  icon14: string;
   hover01: string;
   hover02: string;
   hover03: string;

@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "center")};
@@ -9,7 +10,10 @@ export const wrapper = (theme: Theme) => css`
   border: 1px solid ${theme.color.border02};
   border-radius: 8px;
   padding: 24px 0px;
-  gap: 24px;
+  gap: 12px;
+  ${media.mobile} {
+    gap: 8px;
+  }
   h2 {
     ${fonts.body9};
     color: ${theme.color.text01};
