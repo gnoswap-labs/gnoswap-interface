@@ -73,6 +73,9 @@ export class AdenaClient implements WalletClient {
   };
 
   public static createAdenaClient() {
+    if (typeof window !== "undefined" && typeof window.adena !== "undefined") {
+      return null;
+    }
     return new AdenaClient();
   }
 }

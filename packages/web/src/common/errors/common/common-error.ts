@@ -9,6 +9,10 @@ const ERROR_VALUE = {
     status: 401,
     type: "Failed to initialize Gno Provider",
   },
+  FAILED_INITIALIZE_WALLET: {
+    status: 402,
+    type: "Failed to initialize Wallet",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;
