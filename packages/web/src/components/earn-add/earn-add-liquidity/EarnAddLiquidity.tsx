@@ -1,95 +1,89 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
-import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
 import React, { useCallback, useMemo, useState } from "react";
 import { EarnAddLiquidityWrapper } from "./EarnAddLiquidity.styles";
-import { AddLiquidityType, FEE_RATE_OPTION, PriceRangeType } from "@constants/option.constant";
-import { AddLiquidityFeeTier, AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType } from "@constants/option.constant";
+import { AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
-import { TokenInfo } from "@models/token/token-info";
 import SelectPair from "@components/common/select-pair/SelectPair";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconSettings from "@components/common/icons/IconSettings";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import SelectPriceRangeCustom from "@components/common/select-price-range-custom/SelectPriceRangeCustom";
+import { PoolModel } from "@models/pool/pool-model";
+import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
 import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
+import { TokenModel } from "@models/token/token-model";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
-  tokenA: TokenInfo | undefined;
-  tokenB: TokenInfo | undefined;
-  changeToken0: (token: TokenInfo) => void;
-  changeToken1: (token: TokenInfo) => void;
-  token0Input: TokenAmountInputModel;
-  token1Input: TokenAmountInputModel;
-  feeTiers: AddLiquidityFeeTier[];
-  feeRate: FEE_RATE_OPTION | undefined;
-  selectFeeTier: (feeRate: FEE_RATE_OPTION) => void;
-  priceRangeMap: { [key in PriceRangeType]: AddLiquidityPriceRage | undefined };
-  priceRange: PriceRangeType | undefined;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenB: (token: TokenModel) => void;
+  tokenAInput: TokenAmountInputModel;
+  tokenBInput: TokenAmountInputModel;
+  feeTiers: SwapFeeTierType[];
+  feeTier: SwapFeeTierType | null;
+  pools: PoolModel[];
+  selectFeeTier: (feeRate: SwapFeeTierType) => void;
+  priceRanges: AddLiquidityPriceRage[];
+  priceRange: AddLiquidityPriceRage | null;
+  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
   priceRangeSummary: PriceRangeSummary;
-  selectPriceRange: (priceRange: PriceRangeType) => void;
   ticks: PoolTick[];
-  currentTick?: PoolTick;
+  currentTick: PoolTick | null;
+  submitType: AddLiquiditySubmitType;
+  submit: () => void;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   tokenA,
   tokenB,
-  changeToken0,
-  changeToken1,
-  token0Input,
-  token1Input,
+  changeTokenA,
+  changeTokenB,
+  tokenAInput,
+  tokenBInput,
   feeTiers,
-  feeRate,
+  feeTier,
+  pools,
   selectFeeTier,
-  priceRangeMap,
+  priceRanges,
   priceRange,
   priceRangeSummary,
-  selectPriceRange,
-  ticks,
-  currentTick,
+  changePriceRange,
+  submitType,
+  submit,
 }) => {
   const [openedSelectPair, setOpenedSelectPair] = useState(true);
   const [openedFeeTier, setOpenedFeeTier] = useState(true);
   const [openedPriceRange, setOpenedPriceRange] = useState(true);
 
   const existTokenPair = useMemo(() => {
-    return tokenA !== undefined && tokenB !== undefined;
+    return tokenA !== null && tokenB !== null;
   }, [tokenA, tokenB]);
 
-  const token0Logo = useMemo(() => {
+  const tokenALogo = useMemo(() => {
     return tokenA?.logoURI || "";
   }, [tokenA]);
 
-  const token1Logo = useMemo(() => {
+  const tokenBLogo = useMemo(() => {
     return tokenB?.logoURI || "";
   }, [tokenB]);
 
   const selectedFeeRate = useMemo(() => {
-    if (!feeRate) {
+    if (!feeTier) {
       return null;
     }
-    return `${feeRate}%`;
-  }, [feeRate]);
+    return SwapFeeTierInfoMap[feeTier].rateStr;
+  }, [feeTier]);
 
   const selectedPriceRange = useMemo(() => {
     if (!priceRange) {
       return null;
     }
-    return `${priceRange}`;
+    return `${priceRange.type}`;
   }, [priceRange]);
-
-  const selectableCustomPriceRange = useMemo(() => {
-    if (priceRange !== "Custom") {
-      return false;
-    }
-    if (!tokenA || !tokenB) {
-      return false;
-    }
-    return true;
-  }, [priceRange, tokenA, tokenB]);
 
   const toggleSelectPair = useCallback(() => {
     setOpenedSelectPair(!openedSelectPair);
@@ -103,6 +97,37 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     setOpenedPriceRange(!openedPriceRange);
   }, [openedPriceRange]);
 
+  const activatedSubmit = useMemo(() => {
+    switch (submitType) {
+      case "CREATE_POOL":
+      case "ADD_LIQUIDITY":
+      case "CONNECT_WALLET":
+        return true;
+      default:
+        return false;
+    }
+  }, [submitType]);
+
+  const submitButtonStr = useMemo(() => {
+    switch (submitType) {
+      case "CREATE_POOL":
+        return "Create Pool";
+      case "ADD_LIQUIDITY":
+        return "Add Liquidity";
+      case "CONNECT_WALLET":
+        return "Connect Wallet";
+      case "INVALID_PAIR":
+        return "Invalid Pair";
+      case "INSUFFICIENT_BALANCE":
+        return "Insufficient Balance";
+      case "INVALID_RANGE":
+        return "Invalid Range";
+      case "ENTER_AMOUNT":
+      default:
+        return "Enter Amount";
+    }
+  }, [submitType]);
+
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Liquidity</h3>
@@ -112,8 +137,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             <h5>1. Select Pair</h5>
             {existTokenPair && (
               <DoubleLogo
-                left={token0Logo}
-                right={token1Logo}
+                left={tokenALogo}
+                right={tokenBLogo}
                 size={24}
               />
             )}
@@ -122,8 +147,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             <SelectPair
               tokenA={tokenA}
               tokenB={tokenB}
-              changeToken0={changeToken0}
-              changeToken1={changeToken1}
+              changeTokenA={changeTokenA}
+              changeTokenB={changeTokenB}
             />
           )}
         </article>
@@ -142,7 +167,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           {openedFeeTier && (
             <SelectFeeTier
               feeTiers={feeTiers}
-              feeRate={feeRate}
+              feeTier={feeTier}
+              pools={pools}
               selectFeeTier={selectFeeTier}
             />
           )}
@@ -161,18 +187,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
           {openedPriceRange && (
             <SelectPriceRange
-              priceRangeMap={priceRangeMap}
+              priceRanges={priceRanges}
               priceRange={priceRange}
-              selectPriceRange={selectPriceRange}
-            />
-          )}
-
-          {selectableCustomPriceRange && (
-            <SelectPriceRangeCustom
-              currentTick={currentTick}
-              tokenA={tokenA}
-              tokenB={tokenB}
-              ticks={ticks}
+              changePriceRange={changePriceRange}
             />
           )}
 
@@ -187,18 +204,18 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             </button>
           </div>
           <LiquidityEnterAmounts
-            token0Input={token0Input}
-            token1Input={token1Input}
-            changeToken0={changeToken0}
-            changeToken1={changeToken1}
+            tokenAInput={tokenAInput}
+            tokenBInput={tokenBInput}
+            changeTokenA={changeTokenA}
+            changeTokenB={changeTokenB}
           />
         </article>
       </div>
       <Button
-        text="Connect Wallet"
-        onClick={() => { }}
+        text={submitButtonStr}
+        onClick={submit}
         style={{
-          hierarchy: ButtonHierarchy.Primary,
+          hierarchy: activatedSubmit ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
           fullWidth: true,
           height: 57,
           fontType: "body7",

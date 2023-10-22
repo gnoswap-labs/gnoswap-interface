@@ -12,15 +12,16 @@ import { SendTransactionRequestParam } from "@common/clients/wallet-client/proto
 import { AccountMapper } from "@models/account/mapper/account-mapper";
 import { NetworkClient } from "@common/clients/network-client";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
+import { CommonError } from "@common/errors";
 
 export class AccountRepositoryImpl implements AccountRepository {
-  private walletClient: WalletClient;
+  private walletClient: WalletClient | null;
   private networkClient: NetworkClient;
   private localStorageClient: StorageClient<StorageKeyType>;
   private sessionStorageClient: StorageClient<SessionStorageKeyType>;
 
   constructor(
-    walletClient: WalletClient,
+    walletClient: WalletClient | null,
     networkClient: NetworkClient,
     localStorageClient: StorageClient,
     sessionStorageClient: StorageClient,
@@ -32,18 +33,22 @@ export class AccountRepositoryImpl implements AccountRepository {
   }
 
   public isConnectedWalletBySession = () => {
-    const response = this.sessionStorageClient.get("connectedWallet");
+    const response = this.sessionStorageClient.get("connected-wallet");
     return response === "connected";
   };
 
   public setConnectedWallet = (connected: boolean) => {
     if (connected) {
-      this.sessionStorageClient.set("connectedWallet", "connected");
+      this.sessionStorageClient.set("connected-wallet", "connected");
+      return;
     }
-    this.sessionStorageClient.remove("connectedWallet");
+    this.sessionStorageClient.remove("connected-wallet");
   };
 
   public getAccount = async () => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
     const response = await this.walletClient.getAccount();
     AdenaError.valdiate(response);
     return AccountMapper.fromResponse(response);
@@ -59,17 +64,26 @@ export class AccountRepositoryImpl implements AccountRepository {
   };
 
   public existsWallet = () => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
     const response = this.walletClient.existsWallet();
     return response;
   };
 
   public addEstablishedSite = async () => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
     const SITE_NAME = "Gnoswap";
     const response = await this.walletClient.addEstablishedSite(SITE_NAME);
     return response;
   };
 
   public sendTransaction = async (request: SendTransactionRequestParam) => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
     const response = await this.walletClient.sendTransaction(request);
     return response;
   };

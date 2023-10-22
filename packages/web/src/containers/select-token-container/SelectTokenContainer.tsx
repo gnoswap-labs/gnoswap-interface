@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { TokenInfo } from "@models/token/token-info";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { TokenModel } from "@models/token/token-model";
 
 interface SelectTokenContainerProps {
-  changeToken?: (token: TokenInfo) => void;
+  changeToken?: (token: TokenModel) => void;
 }
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({

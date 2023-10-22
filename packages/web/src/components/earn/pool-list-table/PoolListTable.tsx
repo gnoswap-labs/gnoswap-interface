@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import {
-  Pool,
   PoolSortOption,
   TABLE_HEAD,
 } from "@containers/pool-list-container/PoolListContainer";
@@ -11,14 +10,15 @@ import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import { POOL_INFO, POOL_TD_WIDTH } from "@constants/skeleton.constant";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
 
 interface PoolListTableProps {
-  pools: Pool[];
+  pools: PoolListInfo[];
   isFetched: boolean;
   sortOption: PoolSortOption | undefined;
   sort: (head: TABLE_HEAD) => void;
   isSortOption: (head: TABLE_HEAD) => boolean;
-  routeItem: (id: number) => void;
+  routeItem: (id: string) => void;
 }
 
 const PoolListTable: React.FC<PoolListTableProps> = ({

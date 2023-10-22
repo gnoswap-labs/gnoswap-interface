@@ -35,7 +35,7 @@ export interface PoolModel {
 
   totalVolume: AmountModel;
 
-  fee: number;
+  fee: string;
 
   feeVolume: number;
 

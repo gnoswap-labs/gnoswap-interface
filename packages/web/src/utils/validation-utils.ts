@@ -9,3 +9,7 @@ export function addressValidationCheck(v: string): boolean {
 export function isErrorResponse(resposne: any): resposne is ErrorResponse {
   return resposne?.isError === true;
 }
+
+export function isEmptyObject(obj: object): boolean {
+  return Object.keys(obj).length === 0;
+}

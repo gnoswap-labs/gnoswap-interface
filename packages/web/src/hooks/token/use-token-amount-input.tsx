@@ -1,20 +1,30 @@
-import { TokenInfo } from "@models/token/token-info";
+import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTokenData } from "./use-token-data";
 
 export interface TokenAmountInputModel {
-  token: TokenInfo | undefined;
+  token: TokenModel | null;
   amount: string;
   balance: string;
   usdValue: string;
   changeAmount: (amount: string) => void;
-  changeBalance: (balance: number) => void;
 }
 
-export const useTokenAmountInput = (token: TokenInfo | undefined): TokenAmountInputModel => {
+export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputModel => {
   const [amount, setAmount] = useState<string>("0");
   const [balance, setBalance] = useState<string>("0");
   const [usd, setUSD] = useState<number>();
+  const { balances, tokenPrices } = useTokenData();
+
+  useEffect(() => {
+    if (token && balances[token.path]) {
+      const balance = balances[token.path];
+      setBalance(BigNumber(balance ?? 0).toFormat());
+    } else {
+      setBalance("0");
+    }
+  }, [balances, token]);
 
   const usdValue = useMemo(() => {
     if (!usd) {
@@ -24,21 +34,24 @@ export const useTokenAmountInput = (token: TokenInfo | undefined): TokenAmountIn
   }, [usd]);
 
   const changeAmount = useCallback((value: string) => {
-    const amount = value;
-    setAmount(amount);
-    setUSD(BigNumber(amount).toNumber());
-  }, []);
+    if (!token) {
+      return;
+    }
 
-  const changeBalance = useCallback((balance: number) => {
-    setBalance(BigNumber(balance).toFormat());
-  }, []);
+    const amount = BigNumber(value);
+    setAmount(amount.toString());
+
+    if (tokenPrices[token.priceId]) {
+      const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(amount).toNumber();
+      setUSD(usd);
+    }
+  }, [token, tokenPrices]);
 
   return {
     token,
     amount,
     balance,
     usdValue,
-    changeBalance,
     changeAmount,
   };
 };

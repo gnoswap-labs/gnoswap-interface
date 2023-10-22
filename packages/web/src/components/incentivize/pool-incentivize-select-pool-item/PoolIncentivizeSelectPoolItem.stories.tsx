@@ -1,8 +1,8 @@
-import { toPoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import PoolIncentivizeSelectPoolItem, { type PoolIncentivizeSelectPoolItemProps } from "./PoolIncentivizeSelectPoolItem";
 import { Meta, StoryObj } from "@storybook/react";
 import React from "react";
 import { PoolRepositoryMock } from "@repositories/pool";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 
 const poolRepository = new PoolRepositoryMock();
 const pools = (await poolRepository.getPools()).pools;
@@ -21,7 +21,7 @@ export default {
 
 } as Meta<typeof PoolIncentivizeSelectPoolItem>;
 
-const poolSelectItem = toPoolSelectItemInfo(pools[0]);
+const poolSelectItem = PoolMapper.toPoolSelectItemInfo(pools[0]);
 
 export const Default: StoryObj<PoolIncentivizeSelectPoolItemProps> = {
   args: {

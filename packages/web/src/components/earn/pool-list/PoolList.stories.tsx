@@ -5,7 +5,6 @@ import { action } from "@storybook/addon-actions";
 import PoolList from "./PoolList";
 import {
   POOL_TYPE,
-  dummyPoolList,
 } from "@containers/pool-list-container/PoolListContainer";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -20,7 +19,7 @@ const Template: ComponentStory<typeof PoolList> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  pools: dummyPoolList,
+  pools: [],
   poolType: POOL_TYPE.ALL,
   changePoolType: action("changePoolType"),
   search: action("search"),

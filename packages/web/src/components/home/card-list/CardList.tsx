@@ -4,6 +4,7 @@ import { CardListWrapper, ListItem } from "./CardList.styles";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { CardListPoolInfo, CardListTokenInfo } from "@models/common/card-list-item-info";
 import { useCallback, useMemo } from "react";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 
 interface CardListProps {
   list: Array<CardListTokenInfo | CardListPoolInfo>;
@@ -57,7 +58,10 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClic
 
   const poolFeeRate = useMemo(() => {
     const pool = item.pool;
-    return `${pool.fee}%`;
+    const feeRate =
+      Object.values(SwapFeeTierInfoMap).find(model => `${model.fee}` === pool.fee)
+        ?.rateStr || "-";
+    return feeRate;
   }, [item]);
 
   const pairLogo = useMemo(() => {

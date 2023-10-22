@@ -2,10 +2,11 @@ import PoolIncentivizeSelectPool from "./PoolIncentivizeSelectPool";
 import { ComponentStory, Meta } from "@storybook/react";
 import { useCallback, useState } from "react";
 import { PoolRepositoryMock } from "@repositories/pool";
-import { PoolSelectItemInfo, toPoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 
 const poolRepository = new PoolRepositoryMock();
-const pools = (await poolRepository.getPools()).pools.map(toPoolSelectItemInfo);
+const pools = (await poolRepository.getPools()).pools.map(PoolMapper.toPoolSelectItemInfo);
 
 export default {
   title: "incentivize/PoolIncentivizeSelectPool",

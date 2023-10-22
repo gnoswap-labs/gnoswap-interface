@@ -171,7 +171,7 @@ export const ConfirmModal = styled.div`
         border-radius: 8px;
         background: ${({ theme }) => theme.color.background01};
         border: 1px solid ${({ theme }) => theme.color.border02};
-        .ocin-info {
+        .coin-info {
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 4px;
           .gnos-price {

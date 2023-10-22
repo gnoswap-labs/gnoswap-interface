@@ -1,14 +1,16 @@
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { WalletState } from "@states/index";
+import { CommonState, WalletState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
+import NetworkData from "@resources/chains.json";
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
+  const [, setNetwork] = useAtom(CommonState.network);
 
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
@@ -23,10 +25,20 @@ export const useWallet = () => {
 
   useEffect(() => {
     if (walletClient) {
-      initSession();
       updateWalletEvents(walletClient);
     }
   }, [walletClient]);
+
+  useEffect(() => {
+    if (walletAccount) {
+      const network = NetworkData.find(
+        network => network.chainId === walletAccount.chainId,
+      );
+      if (network) {
+        setNetwork(network);
+      }
+    }
+  }, [setNetwork, walletAccount]);
 
   function initSession() {
     const connectedBySession = accountRepository.isConnectedWalletBySession();
@@ -36,14 +48,21 @@ export const useWallet = () => {
   }
 
   const connectAdenaClient = useCallback(() => {
-    const adena = new AdenaClient();
-    adena.initAdena();
+    const adena = AdenaClient.createAdenaClient();
+    if (adena !== null) {
+      adena.initAdena();
+    }
     setWalletClient(adena);
-    connectAccount();
   }, [setWalletClient]);
 
-  async function connectAccount() {
-    const established = await accountRepository.addEstablishedSite();
+  const connectAccount = useCallback(async () => {
+    const established = await accountRepository
+      .addEstablishedSite()
+      .catch(() => null);
+
+    if (established === null) {
+      return;
+    }
 
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
@@ -52,7 +71,7 @@ export const useWallet = () => {
     } else {
       accountRepository.setConnectedWallet(false);
     }
-  }
+  }, [accountRepository, setWalletAccount]);
 
   const disconnectWallet = useCallback(() => {
     setWalletAccount(null);
@@ -66,10 +85,12 @@ export const useWallet = () => {
     try {
       walletClient.addEventChangedAccount(connectAdenaClient);
       walletClient.addEventChangedNetwork(connectAdenaClient);
-    } catch {
-      setWalletClient(new AdenaClient());
-    }
+    } catch {}
   }
+
+  useEffect(() => {
+    if (walletClient) connectAccount();
+  }, [connectAccount, walletClient]);
 
   return {
     wallet,

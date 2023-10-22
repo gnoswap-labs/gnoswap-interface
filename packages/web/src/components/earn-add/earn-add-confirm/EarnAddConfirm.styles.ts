@@ -4,14 +4,10 @@ import styled from "@emotion/styled";
 export const EarnAddConfirmWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: auto;
+  width: 460px;
   padding: 24px;
+  height: auto;
   gap: 16px;
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ theme }) => theme.color.background06};
-  box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.40);
 
   .confirm-header {
     display: flex;
