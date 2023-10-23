@@ -13,12 +13,14 @@ interface SettingMenuModalProps {
   slippage: number;
   changeSlippage: (value: string) => void;
   close: () => void;
+  className?: string;
 }
 
 const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   slippage,
   changeSlippage,
   close,
+  className,
 }) => {
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
   useModalCloseEvent(settingMenuRef, close);
@@ -45,7 +47,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   }, [changeSlippage]);
 
   return (
-    <SettingMenuModalWrapper ref={settingMenuRef}>
+    <SettingMenuModalWrapper ref={settingMenuRef} className={className}>
       <div className="modal-body">
         <div className="modal-header">
           <span>Settings</span>

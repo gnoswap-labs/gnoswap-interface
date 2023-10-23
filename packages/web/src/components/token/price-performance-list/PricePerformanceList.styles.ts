@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -7,7 +8,7 @@ export const wrapper = (theme: Theme) => css`
   ${fonts.body8};
   width: 100%;
   height: 214px;
-  background-color: ${theme.color.background06};
+  background-color: ${theme.color.backgroundOpacity3};
   border: 1px solid ${theme.color.border02};
   border-radius: 8px;
   padding: 16px;
@@ -37,6 +38,7 @@ export const wrapper = (theme: Theme) => css`
   .performance-list {
     height: 25px;
     span {
+      ${fonts.body10};
       width: 200px;
       text-align: right;
       color: ${theme.color.green01};
@@ -46,6 +48,9 @@ export const wrapper = (theme: Theme) => css`
       }
       &.negative {
         color: ${theme.color.red01};
+      }
+      ${media.mobile} {
+        ${fonts.body12};
       }
     }
   }

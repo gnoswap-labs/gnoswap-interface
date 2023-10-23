@@ -37,13 +37,16 @@ const TokenLayout: React.FC<TokenLayoutProps> = ({
     {header}
 
     <div className="title-container">
-      <div className="title">Swap</div>
-      <div className="breadcrumbs">{breadcrumbs}</div>
+      <div>
+        <div className="title">Swap</div>
+        <div className="breadcrumbs">{breadcrumbs}</div>
+      </div>
     </div>
 
     <div className="main-container">
       <div className="main-section">
         <div className="chart">{chart}</div>
+        <div className="swap-tablet">{swap}</div>
         <div className="info">{info}</div>
         <div className="description">{description}</div>
       </div>

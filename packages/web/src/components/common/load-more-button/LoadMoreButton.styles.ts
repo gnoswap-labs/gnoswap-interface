@@ -14,4 +14,15 @@ export const wrapper = (theme: Theme) => css`
       fill: ${theme.color.icon03};
     }
   }
+  &:hover {
+    span {
+      color: ${theme.color.text03};
+    }
+    transition: all 0.3s ease;
+    svg {
+      * {
+        fill: ${theme.color.icon07};
+      }
+    }
+  }
 `;

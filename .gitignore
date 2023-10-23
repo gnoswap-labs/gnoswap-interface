@@ -9,3 +9,7 @@
 
 node_modules
 .vscode
+
+.pnp.cjs
+.pnp.loader.mjs
+

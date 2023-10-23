@@ -1,9 +1,17 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "space-between")};
+  > div {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    width: 170px;
+    ${media.mobile} {
+      width: 130px;
+    }
+  }
   ${fonts.body12};
   color: ${theme.color.text02};
   width: 100%;
@@ -12,7 +20,7 @@ export const wrapper = (theme: Theme) => css`
   cursor: pointer;
   transition: background-color 0.3s ease;
   &:hover {
-    background-color: ${theme.color.background06};
+    background-color: ${theme.color.hover04};
   }
   img {
     width: 20px;
@@ -23,17 +31,23 @@ export const wrapper = (theme: Theme) => css`
   }
   .symbol {
     color: ${theme.color.text04};
-    margin-right: auto;
   }
   .price {
+    min-width: 90px;
     text-align: right;
   }
   .change {
+    min-width: 60px;
     text-align: right;
-    margin-left: 31px;
     color: ${theme.color.green01};
     &.negative {
       color: ${theme.color.red01};
     }
+  }
+  @media (max-width: 1180px) {
+    padding: 0 16px;
+  }
+  ${media.mobile} {
+    gap: 8px;
   }
 `;
