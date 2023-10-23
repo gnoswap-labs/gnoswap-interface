@@ -11,12 +11,21 @@ export const wrapper = (theme: Theme) => css`
   border-radius: 8px;
   padding: 24px 0px;
   gap: 12px;
-  ${media.mobile} {
-    gap: 8px;
-  }
+
   h2 {
     ${fonts.body9};
     color: ${theme.color.text01};
     padding: 0px 24px;
+  }
+  @media (max-width: 1180px) {
+    gap: 12px;
+    padding: 16px 0;
+    h2 {
+      padding: 0 16px;
+    }
+  }
+  ${media.mobile} {
+    gap: 8px;
+    overflow: scroll;
   }
 `;

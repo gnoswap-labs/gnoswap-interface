@@ -11,9 +11,11 @@ const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
   return (
     <Link href={`/tokens/${item.symbol}`}>
       <div css={wrapper}>
-        <img src={item.logoURI} alt="logo" />
-        <span className="name">{item.name}</span>
-        <span className="symbol">{item.symbol}</span>
+        <div>
+          <img src={item.logoURI} alt="logo" />
+          <span className="name">{item.name}</span>
+          <span className="symbol">{item.symbol}</span>
+        </div>
         <span className="price">{item.price}</span>
         <span
           className={cx("change", {

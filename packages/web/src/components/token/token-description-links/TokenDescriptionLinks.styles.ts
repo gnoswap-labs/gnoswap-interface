@@ -39,7 +39,20 @@ export const wrapper = (theme: Theme) => css`
       }
     }
   }
+  .group-button {
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
+  }
   ${media.mobile} {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    gap: 8px;
+    .group-button {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      button {
+        &:first-of-type {
+          margin-left: 0;
+        }
+      }
+    }
     margin-top: 8px;
   }
 `;

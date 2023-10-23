@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -15,6 +16,9 @@ export const wrapper = (theme: Theme) => css`
     &.auto-height {
       max-height: fit-content;
       overflow-y: visible;
+    }
+    ${media.mobile} {
+      margin-bottom: 8px;
     }
   }
 `;

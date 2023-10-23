@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -12,17 +13,21 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     color: ${theme.color.text04};
     padding: 0px 24px;
+    gap: 8px;
+    min-width: max-content;
   }
   .pair {
-    width: 170px;
+    min-width: 170px;
+    @media (max-width: 768px) and (min-width: 400px) {
+      min-width: 130px;
+      max-width: 130px;
+    }
   }
   .tvl {
-    width: 90px;
-    margin-left: auto;
-    margin-right: 31px;
+    min-width: 90px;
   }
   .apr {
-    width: 60px;
+    min-width: 60px;
   }
   .tvl,
   .apr {
@@ -33,7 +38,17 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "space-between", "center")};
     gap: 4px;
     li {
-      ${mixins.flexbox("row", "center", "flex-start")};
+      ${mixins.flexbox("row", "center", "space-between")};
+      gap: 8px;
+      > div {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        min-width: 170px;
+        @media (max-width: 768px) and (min-width: 400px) {
+          min-width: 130px;
+          max-width: 130px;
+        }
+      }
+      gap: 4px;
       width: 100%;
       height: 36px;
       padding: 0px 24px;
@@ -47,6 +62,19 @@ export const wrapper = (theme: Theme) => css`
       }
       .fee-rate {
         color: ${theme.color.text04};
+      }
+      ${media.mobile} {
+        gap: 8px;
+      }
+    }
+  }
+  @media (max-width: 1180px) {
+    .title-wrap {
+      padding: 0 16px;
+    }
+    ul {
+      li {
+        padding: 0 16px;
       }
     }
   }

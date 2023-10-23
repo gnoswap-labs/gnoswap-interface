@@ -10,7 +10,12 @@ export const wrapper = (theme: Theme) => css`
   color: ${theme.color.text01};
   gap: 12px;
   padding: 24px;
+  @media (max-width: 1180px) {
+    padding: 16px;
+  }
   ${media.mobile} {
+    ${fonts.body9};
     gap: 8px;
+    padding: 0;
   }
 `;

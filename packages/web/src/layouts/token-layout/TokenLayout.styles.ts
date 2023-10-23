@@ -8,11 +8,14 @@ export const wrapper = (theme: Theme) => css`
   .title-container {
     flex-wrap: wrap;
     position: relative;
-    width: max-content;
+    width: 100%;
     max-width: 1440px;
-    margin: 100px auto 0 0;
-    padding-left: 40px;
-
+    margin: 100px auto 0;
+    padding: 0 40px;
+    > div {
+      width: max-content;
+      position: relative;
+    }
     .title {
       ${fonts.h3};
       color: ${theme.color.text02};
@@ -22,6 +25,13 @@ export const wrapper = (theme: Theme) => css`
       @media (max-width: 768px) {
         ${fonts.h5};
       }
+    }
+    @media (max-width: 1180px) {
+      margin-top: 60px;
+    }
+    ${media.mobile} {
+      margin-top: 24px;
+      padding-left: 16px;
     }
     .breadcrumbs {
       position: absolute;
@@ -54,9 +64,14 @@ export const wrapper = (theme: Theme) => css`
 
     @media (max-width: 1180px) {
       gap: 16px;
+      margin-top: 24px;
     }
     @media (max-width: 930px) {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
+    }
+    ${media.mobile} {
+      margin-top: 24px;
+      padding: 0 16px;
     }
     .main-section {
       ${mixins.flexbox("column", "center", "space-between")};
@@ -65,6 +80,7 @@ export const wrapper = (theme: Theme) => css`
       max-width: 836px;
       min-width: 644px;
       @media (max-width: 1180px) {
+        gap: 16px;
         max-width: 654px;
         min-width: 488px;
       }
@@ -83,6 +99,51 @@ export const wrapper = (theme: Theme) => css`
       .description {
         width: 100%;
       }
+      .swap-tablet {
+        display: none;
+      }
+      @media (max-width: 930px ) and (min-width: 769px){
+        .swap-tablet {
+          position: relative;
+          display: initial;
+          width: 100%;
+          .inputs {
+            .amount-text {
+              ${fonts.body1}
+            }
+            .price-text,
+            .balance-text {
+              ${fonts.body12}
+            }
+            .token-symbol {
+              ${fonts.body9}
+            }
+          }
+          .swap-setting-class {
+            top: 50px;
+          }
+        }
+      }
+      ${media.mobile} {
+        gap: 16px;
+        .swap-tablet {
+          position: relative;
+          display: initial;
+          width: 100%;
+          .inputs {
+            .amount-text {
+              ${fonts.body5}
+            }
+            .token-symbol {
+              ${fonts.body9}
+            }
+          }
+          .swap-setting-class {
+            top: 50px;
+          }
+        }
+      }
+      
     }
 
     .right-section {
@@ -92,7 +153,23 @@ export const wrapper = (theme: Theme) => css`
       max-width: 500px;
 
       .swap {
+        position: relative;
         width: 100%;
+        .inputs {
+          .amount-text {
+            ${fonts.body1}
+          }
+          .price-text,
+          .balance-text {
+            ${fonts.body12}
+          }
+          .token-symbol {
+            ${fonts.body9}
+          }
+        }
+        .swap-setting-class {
+          top: 50px;
+        }
       }
 
       .best-pools {
@@ -109,11 +186,15 @@ export const wrapper = (theme: Theme) => css`
       @media (max-width: 1180px) {
         max-width: 430px;
         min-width: 346px;
+        gap: 16px;
       }
       @media (max-width: 930px) {
         width: 100%;
         max-width: 100%;
         min-width: auto;
+        .swap {
+          display: none;
+        }
       }
     }
   }

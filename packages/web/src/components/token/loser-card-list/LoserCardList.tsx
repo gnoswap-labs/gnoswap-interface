@@ -15,9 +15,11 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers }) => {
       {losers.map((loser, idx) => (
         <Link href={`/tokens/${loser.symbol}`} key={idx}>
           <div className="card-wrap">
-            <img src={loser?.logoURI} alt="logo" />
-            <span className="name">{loser.name}</span>
-            <span className="symbol">{loser.symbol}</span>
+            <div>
+              <img src={loser?.logoURI} alt="logo" />
+              <span className="name">{loser.name}</span>
+              <span className="symbol">{loser.symbol}</span>
+            </div>
             <span className="price">{loser.price}</span>
             <span
               className={cx("change", {

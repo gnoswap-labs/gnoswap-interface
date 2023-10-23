@@ -27,8 +27,8 @@ export const bestPoolsInit: BestPool = {
         "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     },
   },
+  tvl: "$129.25M",
   feeRate: "FEE_100",
-  tvl: "$12,908.25M",
   apr: "120.52%",
 };
 

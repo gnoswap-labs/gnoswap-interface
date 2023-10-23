@@ -15,7 +15,17 @@ export const wrapper = (theme: Theme) => css`
   h2 {
     ${fonts.body7};
   }
+  @media (max-width: 1180px) {
+    padding: 16px;
+  }
   ${media.mobile} {
+    h2 {
+      ${fonts.body9};
+    }
+    margin-top: 16px;
+    ${fonts.body9};
+    border: none;
     gap: 8px;
+    padding: 0;
   }
 `;

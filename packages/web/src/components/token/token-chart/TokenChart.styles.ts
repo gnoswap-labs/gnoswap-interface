@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const TokenChartWrapper = styled.div`
   display: flex;
@@ -10,7 +11,12 @@ export const TokenChartWrapper = styled.div`
   height: auto;
   padding: 24px;
   border-radius: 8px;
-
+  ${media.mobile} {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    gap: 16px;
+  }
   .chart-tab-wrapper {
   }
 

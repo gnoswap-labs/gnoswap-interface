@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
 import { useRouter } from "next/router";
 
@@ -17,19 +17,21 @@ export interface Steps {
 //   },
 // ];
 
-const removePoolSteps = [
-  {
-    title: "Main",
-    path: "/swap",
-  },
-  {
-    title: "GNOS",
-    path: "",
-  },
-];
-
 const BreadcrumbsContainer: React.FC = () => {
   const router = useRouter();
+
+  const removePoolSteps = useMemo(() => {
+    return [
+      {
+        title: "Main",
+        path: "/",
+      },
+      {
+        title: `${router.query["token-path"] || "BTC"}`,
+        path: "",
+      },
+    ];
+  }, [router.query]);
 
   const onClickPath = (path: string) => {
     router.push(path);

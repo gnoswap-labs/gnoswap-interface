@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
@@ -61,6 +61,7 @@ export interface LineGraphProps {
   width?: number;
   height?: number;
   point?: boolean;
+  firstPointColor?: string;
 }
 
 interface Point {
@@ -97,6 +98,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
+  firstPointColor,
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -218,6 +220,13 @@ const LineGraph: React.FC<LineGraphProps> = ({
     [getGraphLine, height, width],
   );
 
+  const firstPoint = useMemo(() => {
+    if (points.length === 0) {
+      return { x: 0, y: 0};
+    }
+    return points[0];
+  }, [points]);
+  
   return (
     <LineGraphWrapper
       className={className}
@@ -235,7 +244,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
             <stop offset="100%" stopColor={gradientEndColor} />
           </linearGradient>
         </defs>
-        <g>
+        <g width={width}>
           <path
             fill={`url(#gradient${COMPONENT_ID})`}
             stroke={color}
@@ -259,57 +268,61 @@ const LineGraph: React.FC<LineGraphProps> = ({
               />
             ))}
         </g>
-        {isFocus() && currentPoint && (
+        {
           <g>
             <line
-              stroke={color}
+              stroke={firstPointColor ? firstPointColor : color}
               strokeWidth={1}
               x1={0}
-              y1={currentPoint.y}
+              y1={firstPoint.y}
               x2={width}
-              y2={currentPoint.y}
+              y2={firstPoint.y}
               strokeDasharray={3}
             />
-            <line
-              stroke={color}
-              strokeWidth={1}
-              x1={currentPoint.x}
-              y1={0}
-              x2={currentPoint.x}
-              y2={height}
-              strokeDasharray={3}
-            />
-            <circle
-              cx={currentPoint.x}
-              cy={currentPoint.y}
-              r={3}
-              stroke={color}
-              fill={color}
-            />
+            {isFocus() && currentPoint && (
+              <line
+                stroke={color}
+                strokeWidth={1}
+                x1={currentPoint.x}
+                y1={0}
+                x2={currentPoint.x}
+                y2={height}
+                strokeDasharray={3}
+              />
+            )}
+            {isFocus() && currentPoint && (
+              <circle
+                cx={currentPoint.x}
+                cy={currentPoint.y}
+                r={3}
+                stroke={color}
+                fill={color}
+              />
+            )}
           </g>
-        )}
+        }
       </svg>
       {isFocus() && currentPointIndex > -1 && (
         <LineGraphTooltipWrapper
           x={
             currentPoint?.x && currentPoint?.x > width / 2
-              ? currentPoint?.x - 157
+              ? currentPoint?.x - 150
               : currentPoint?.x || 0
           }
           y={currentPoint?.y || 0}
         >
           <div className="tooltip-header">
+            <span className="value">{`$${BigNumber(
+              datas[currentPointIndex].value,
+            ).toString()}`}</span>
+          </div>
+          <div className="tooltip-body">
             <span className="date">
               {parseTime(datas[currentPointIndex].time).date}
             </span>
             <span className="time">
               {parseTime(datas[currentPointIndex].time).time}
             </span>
-          </div>
-          <div className="tooltip-body">
-            <span className="value">{`$ ${BigNumber(
-              datas[currentPointIndex].value,
-            ).toString()}`}</span>
           </div>
         </LineGraphTooltipWrapper>
       )}
