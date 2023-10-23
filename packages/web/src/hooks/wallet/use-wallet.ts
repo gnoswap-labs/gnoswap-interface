@@ -88,16 +88,14 @@ export const useWallet = () => {
     } catch {}
   }
 
-  useEffect(() => {
-    if (walletClient) connectAccount();
-  }, [connectAccount, walletClient]);
-
   return {
     wallet,
     account: walletAccount,
     connected,
+    connectAccount,
     initSession,
     connectAdenaClient,
+    updateWalletEvents,
     disconnectWallet,
   };
 };

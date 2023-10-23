@@ -18,13 +18,13 @@ import { AccountModel } from "@models/account/account-model";
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   openLinkClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  exitClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickDisconnect: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const IconButtonMaker: React.FC<IconButtonClickProps> = ({
   copyClick,
   openLinkClick,
-  exitClick,
+  onClickDisconnect,
 }) => {
   return (
     <>
@@ -34,7 +34,7 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
       <IconButton onClick={openLinkClick}>
         <IconOpenLink className="action-icon" />
       </IconButton>
-      <IconButton onClick={exitClick}>
+      <IconButton onClick={onClickDisconnect}>
         <IconExit className="action-icon" />
       </IconButton>
     </>
@@ -45,6 +45,7 @@ interface WalletConnectorMenuProps {
   account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
+  disconnectWallet: () => void;
   onMenuToggle: () => void;
 }
 
@@ -52,13 +53,20 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   account,
   connected,
   connectAdenaClient,
+  disconnectWallet,
   onMenuToggle,
 }) => {
-  const balanceText = useMemo(() => `${account?.balances[0].amount} ${account?.balances[0].currency}` || "0 GNOT", [account?.balances]);
-  const copyClick = () => { };
-  const openLinkClick = () => { };
-  const exitClick = () => { };
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const balanceText = useMemo(() => `${account?.balances[0].amount} ${account?.balances[0].currency}` || "0 GNOT", [account?.balances]);
+
+  const copyClick = () => { };
+
+  const openLinkClick = () => { };
+
+  const onClickDisconnect = useCallback(() => {
+    disconnectWallet();
+  }, [disconnectWallet]);
 
   useEffect(() => {
     const closeMenu = (e: MouseEvent) => {
@@ -91,7 +99,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             <IconButtonMaker
               copyClick={copyClick}
               openLinkClick={openLinkClick}
-              exitClick={exitClick}
+              onClickDisconnect={onClickDisconnect}
             />
           </MenuHeader>
           <AmountInfoBox>{balanceText}</AmountInfoBox>

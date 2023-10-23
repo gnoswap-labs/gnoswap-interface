@@ -39,6 +39,7 @@ interface HeaderProps {
   account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
+  disconnectWallet: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -55,6 +56,7 @@ const Header: React.FC<HeaderProps> = ({
   account,
   connected,
   connectAdenaClient,
+  disconnectWallet,
 }) => {
   return (
     <>
@@ -75,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({
                         key={item.title}
                         className={
                           pathname === item.path ||
-                          (item.subPath || []).some(_ => pathname.includes(_))
+                            (item.subPath || []).some(_ => pathname.includes(_))
                             ? "selected"
                             : ""
                         }
@@ -101,6 +103,7 @@ const Header: React.FC<HeaderProps> = ({
                 account={account}
                 connected={connected}
                 connectAdenaClient={connectAdenaClient}
+                disconnectWallet={disconnectWallet}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />
