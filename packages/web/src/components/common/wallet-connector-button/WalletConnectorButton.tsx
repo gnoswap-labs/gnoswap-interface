@@ -8,17 +8,20 @@ import { formatAddress } from "@utils/string-utils";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { AccountModel } from "@models/account/account-model";
+import IconFailed from "../icons/IconFailed";
 
 interface WalletConnectProps {
   account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
+  themeKey: "dark" | "light";
 }
 
 const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   account,
   connected,
   connectAdenaClient,
+  themeKey,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
@@ -40,12 +43,21 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
     <WalletConnectorButtonWrapper>
       {connected ? (
         <Button
-          leftIcon={<IconAdenaLogo />}
+          leftIcon={
+            account && account.chainId !== "dev.gnoswap" ? (
+              <IconFailed className="fail-icon" />
+            ) : (
+              <IconAdenaLogo />
+            )
+          }
           text={address}
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
-          className={toggle.walletConnect ? "selected" : ""}
+          className={
+            toggle.walletConnect
+              ? "selected connected-button"
+              : "connected-button"
+          }
           style={{
-            hierarchy: ButtonHierarchy.Dark,
             fontType: "p1",
             textColor: "text19",
             arrowColor: "text18",
@@ -75,6 +87,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           connected={connected}
           connectAdenaClient={connectAdenaClient}
           onMenuToggle={onMenuToggle}
+          themeKey={themeKey}
         />
       )}
     </WalletConnectorButtonWrapper>

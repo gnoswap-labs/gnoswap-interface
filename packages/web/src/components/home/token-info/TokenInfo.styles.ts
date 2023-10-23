@@ -35,7 +35,15 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     flex-shrink: 0;
     justify-content: flex-start;
   }
-
+  &.left-padding {
+    padding: 16px 16px 16px 0;
+  }
+  &.right-padding-16 {
+    padding: 16px 0 16px 16px;
+  }
+  &.right-padding-12 {
+    padding: 16px 12px 16px 16px;
+  }
   &.negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.green01};
@@ -50,9 +58,11 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       fill: ${({ theme }) => theme.color.red01};
     }
   }
-
+  &.liquid-col {
+    gap: 8px;
+  }
   .liquid-symbol {
-    margin: 0px 4px;
+    margin: 0px;
   }
 
   &.last7days-graph {

@@ -6,6 +6,7 @@ import {
   HomeLayoutWrapper,
   TokensSection,
   TokensContainer,
+  BannerContainer,
 } from "./HomeLayout.styles";
 
 interface HomeLayoutProps {
@@ -17,6 +18,7 @@ interface HomeLayoutProps {
   recently: React.ReactNode;
   tokenList: React.ReactNode;
   footer: React.ReactNode;
+  banner: React.ReactNode;
 }
 
 const HomeLayout: React.FC<HomeLayoutProps> = ({
@@ -28,6 +30,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
   recently,
   tokenList,
   footer,
+  banner,
 }) => (
   <HomeLayoutWrapper>
     {header}
@@ -45,6 +48,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
     <TokensSection>
       <TokensContainer>{tokenList}</TokensContainer>
     </TokensSection>
+    <BannerContainer>{banner}</BannerContainer>
     {footer}
   </HomeLayoutWrapper>
 );

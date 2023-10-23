@@ -38,7 +38,7 @@ export const FOOTER_LEFT_NAV = {
 
 export const FOOTER_RIGHT_NAV = [
   {
-    content: "Services",
+    content: "Features",
     menu: [
       {
         title: "Swap",
@@ -46,18 +46,28 @@ export const FOOTER_RIGHT_NAV = [
         newTab: false,
       },
       {
-        title: "Earn",
-        path: "/earn",
+        title: "Add Liquidity",
+        path: "/earn/add",
         newTab: false,
       },
       {
-        title: "Wallet",
-        path: "/wallet",
+        title: "Stake Position",
+        path: "/earn/pool/bar_foo_500",
         newTab: false,
       },
       {
-        title: "Dashboard",
-        path: "/dashboard",
+        title: "Incentivize Pool",
+        path: "/earn/pool/1/incentivize",
+        newTab: false,
+      },
+      {
+        title: "Airdrop",
+        path: "/airdrop",
+        newTab: false,
+      },
+      {
+        title: "Governance",
+        path: "/governance",
         newTab: false,
       },
     ],
@@ -86,7 +96,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "Forum Support",
+        title: "Project Onboarding",
         path: "/",
         newTab: true,
       },
@@ -101,12 +111,12 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "GitBook",
+        title: "Docs",
         path: "docs.gnoswap.io",
         newTab: true,
       },
       {
-        title: "Development",
+        title: "Audit",
         path: "/",
         newTab: true,
       },

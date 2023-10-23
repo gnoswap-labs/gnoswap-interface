@@ -14,6 +14,7 @@ export const SearchModalBackground = styled.div`
   height: 100%;
   background: rgba(10, 14, 23, 0.7);
   z-index: ${Z_INDEX.modalOverlay};
+  backdrop-filter: blur(10px);
 `;
 
 export const SearchContainer = styled.div`
@@ -65,7 +66,7 @@ export const InputStyle = styled.input`
   height: 100%;
   margin-right: 16px;
   &::placeholder {
-    color: ${({ theme }) => theme.color.text04};
+    color: ${({ theme }) => theme.color.text17};
   }
 `;
 
@@ -90,6 +91,7 @@ export const ModalContainer = styled.div`
 
   ul {
     width: 100%;
+    .no-data-found,
     .recent-searches,
     .popular-tokens {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -100,6 +102,10 @@ export const ModalContainer = styled.div`
         padding: 12px 12px 8px 12px;
         ${fonts.p2}
       }
+    }
+    .no-data-found {
+      ${mixins.flexbox("row", "center", "center")};
+      padding: 16px 24px 16px 24px;
     }
   }
   li {

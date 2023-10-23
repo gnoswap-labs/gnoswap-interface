@@ -5,9 +5,9 @@ import { media } from "@styles/media";
 
 export const HeaderSideMenuModalWrapper = styled.div`
   position: absolute;
-  top: 52px;
+  top: 45px;
   ${media.tablet} {
-    top: 47px;
+    top: 44px;
   }
   ${media.mobile} {
     top: -210px;
@@ -23,28 +23,47 @@ export const HeaderSideMenuModalWrapper = styled.div`
 
 export const Navigation = styled.nav`
   width: 100%;
-  padding: 4px 0px;
+  padding: 0px;
   ul {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
+    &:last-of-type {
+      li {
+        padding: 10px 16px;
+      }
+    }
   }
   li {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
+    &.first-side-menu {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+    &.last-side-menu {
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
     padding: 8px 16px;
     color: ${({ theme }) => theme.color.text04};
     &.selected,
     &:hover {
+      background-color: ${({ theme }) => theme.color.hover04};
+      > a > div {
       color: ${({ theme }) => theme.color.text16};
-      background-color: ${({ theme }) => theme.color.hover01};
       .left-icon * {
-        stroke: ${({ theme }) => theme.color.icon10};
+        stroke: ${({ theme }) => theme.color.text16};
       }
-      .right-icon * {
-        fill: ${({ theme }) => theme.color.icon10};
+      .right-icon {
+        fill: ${({ theme }) => theme.color.text16};
       }
-    }
+      button {
+        svg * {
+          fill: ${({ theme }) => theme.color.text16};
+        }
+      }
+    },
   }
 `;
 

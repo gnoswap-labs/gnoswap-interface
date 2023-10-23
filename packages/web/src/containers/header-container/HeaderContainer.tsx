@@ -8,6 +8,8 @@ import { type TokenInfo } from "@models/token/token-info";
 import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -60,15 +62,17 @@ export const PopulardummyToken: Token[] = [
 async function fetchTokens(
   keyword: string, // eslint-disable-line
 ): Promise<Token[]> {
-  return new Promise(resolve => setTimeout(resolve, 1500)).then(() =>
-    Promise.resolve([
+  return new Promise(resolve => setTimeout(resolve, 1500)).then(() => {
+    const data = [
       ...RecentdummyToken,
       ...RecentdummyToken,
       ...RecentdummyToken,
       ...PopulardummyToken,
       ...PopulardummyToken,
-    ]),
-  );
+    ];
+    if (!keyword) return Promise.resolve(data);
+    return Promise.resolve(data.filter(item => item.token.name === keyword));
+  });
 }
 
 const HeaderContainer: React.FC = () => {
@@ -78,6 +82,8 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const { account, connected, initSession, connectAdenaClient } = useWallet();
+  const themeKey = useAtomValue(ThemeState.themeKey);
+
   const {
     isFetched,
     error,
@@ -105,6 +111,14 @@ const HeaderContainer: React.FC = () => {
     setKeyword(e.target.value);
   }, []);
 
+  useEffect(() => {
+    if (searchMenuToggle) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [searchMenuToggle]);
+
   return (
     <Header
       account={account}
@@ -121,6 +135,7 @@ const HeaderContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       breakpoint={breakpoint}
+      themeKey={themeKey}
     />
   );
 };

@@ -1,10 +1,11 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  height: 50px;
+  height: 52px;
   width: 100%;
   ${fonts.body11};
   &:not(:first-of-type) {
@@ -17,10 +18,18 @@ export const HoverSection = styled.div`
   background-color: ${({ theme }) => theme.color.background01};
   transition: background-color 0.3s ease;
   cursor: pointer;
+  width: 100%;
   height: 100%;
   overflow: hidden;
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("row", "center", "space-between")};
+    padding: 9px 0 9px 16px;
+    &:nth-last-of-type(1) {
+      padding: 9px 16px 9px 16px;
+    }
   }
 `;
 
@@ -53,6 +62,24 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
   }
 
+  &.price-col {
+    ${mixins.flexbox("column", "flex-end", "center")};
+    > div {
+      ${mixins.flexbox("row", "center", "center")};
+      ${fonts.p4}
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+      &.positive {
+        padding-left: 0;
+        color: ${({ theme }) => theme.color.red01};
+        svg * {
+          fill: ${({ theme }) => theme.color.red01};
+        }
+      }
+    }
+  }
   .liquid-symbol {
     margin: 0px 4px;
   }

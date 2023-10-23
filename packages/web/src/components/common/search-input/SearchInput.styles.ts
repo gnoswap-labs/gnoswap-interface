@@ -70,6 +70,6 @@ export const InputStyle = styled.input`
   height: 100%;
   margin-right: 16px;
   &::placeholder {
-    color: ${({ theme }) => theme.color.text04};
+    color: ${({ theme }) => theme.color.text17};
   }
 `;
