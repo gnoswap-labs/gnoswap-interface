@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import { wrapper } from "./SelectPairButton.styles";
-import { TokenInfo } from "@models/token/token-info";
 import { useSelectTokenModal } from "@hooks/token/use-select-token-modal";
+import { TokenModel } from "@models/token/token-model";
 
 interface SelectPairButtonProps {
-  token?: TokenInfo;
-  changeToken?: (token: TokenInfo) => void;
+  token: TokenModel | null;
+  changeToken?: (token: TokenModel) => void;
   disabled?: boolean;
 }
 

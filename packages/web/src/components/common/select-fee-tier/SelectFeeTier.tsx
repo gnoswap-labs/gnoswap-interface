@@ -1,65 +1,76 @@
 import React, { useCallback, useMemo } from "react";
 import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
-import { AddLiquidityFeeTier } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import { FEE_RATE_OPTION } from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { PoolModel } from "@models/pool/pool-model";
+import BigNumber from "bignumber.js";
 
 interface SelectFeeTierProps {
-  feeTiers: AddLiquidityFeeTier[];
-  feeRate: string | undefined;
-  selectFeeTier: (feeRate: FEE_RATE_OPTION) => void;
+  feeTiers: SwapFeeTierType[];
+  feeTier: SwapFeeTierType | null;
+  pools: PoolModel[],
+  selectFeeTier: (feeTier: SwapFeeTierType) => void;
 }
 
 const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   feeTiers,
-  feeRate,
+  feeTier,
+  pools,
   selectFeeTier,
 }) => {
 
-  const onClickFeeTierItem = useCallback((feeRate: string) => {
-    const feeRateOption = Object.values(FEE_RATE_OPTION).find(option => option === feeRate);
-    if (feeRateOption) {
-      selectFeeTier(feeRateOption);
-    }
+  const onClickFeeTierItem = useCallback((feeTier: SwapFeeTierType) => {
+    selectFeeTier(feeTier);
   }, [selectFeeTier]);
 
   return (
     <SelectFeeTierWrapper>
-      {feeTiers.map((feeTier, index) => (
+      {feeTiers.map((item, index) => (
         <SelectFeeTierItem
-          selected={feeTier.feeRate === feeRate}
           key={index}
-          feeRate={feeTier.feeRate}
-          description={feeTier.description}
-          range={feeTier.range}
-          onClick={() => onClickFeeTierItem(feeTier.feeRate)}
+          selected={feeTier === item}
+          feeTier={item}
+          pools={pools}
+          onClick={() => onClickFeeTierItem(item)}
         />
       ))}
     </SelectFeeTierWrapper>
   );
 };
 
-interface SelectFeeTierItemProps extends AddLiquidityFeeTier {
+interface SelectFeeTierItemProps {
   selected: boolean;
+  feeTier: SwapFeeTierType;
+  pools: PoolModel[];
   onClick: () => void;
 }
 
 const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   selected,
-  feeRate,
-  description,
-  range,
+  feeTier,
+  pools,
   onClick,
 }) => {
   const feeRateStr = useMemo(() => {
-    return `${feeRate}%`;
-  }, [feeRate]);
+    return SwapFeeTierInfoMap[feeTier].rateStr;
+  }, [feeTier]);
 
   const rangeStr = useMemo(() => {
-    if (range === "0") {
+    const pool = pools.find(pool => pool.fee === feeTier);
+    if (!pool || pool.bins.length < 2) {
       return "Not created";
     }
-    return `${range}% select`;
-  }, [range]);
+    const sortedBins = pool.bins.sort((p1, p2) => p1.currentTick - p2.currentTick);
+    const fullTickRange = 1774545;
+    const currentTickGap = sortedBins[0].currentTick - sortedBins[sortedBins.length - 1].currentTick;
+    return BigNumber(currentTickGap)
+      .dividedBy(fullTickRange)
+      .multipliedBy(100)
+      .toFixed();
+  }, [feeTier, pools]);
+
+  const description = useMemo(() => {
+    return SwapFeeTierInfoMap[feeTier].description;
+  }, [feeTier]);
 
   return (
     <SelectFeeTierItemWrapper className={selected ? "selected" : ""} onClick={onClick}>

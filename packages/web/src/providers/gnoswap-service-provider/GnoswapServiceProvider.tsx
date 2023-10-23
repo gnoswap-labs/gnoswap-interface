@@ -5,13 +5,15 @@ import { LiquidityRepository, LiquidityRepositoryMock } from "@repositories/liqu
 import { PoolRepository } from "@repositories/pool";
 import { PoolRepositoryImpl } from "@repositories/pool/pool-repository-impl";
 import { StakingRepository, StakingRepositoryMock } from "@repositories/staking";
-import { SwapRepository, SwapRepositoryMock } from "@repositories/swap";
+import { SwapRepository } from "@repositories/swap";
 import { TokenRepository } from "@repositories/token";
 import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
 import { GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
+import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
+import ChainNetworkInfos from "@resources/chains.json";
 
 interface GnoswapContextProps {
   rpcProvider: GnoProvider | null;
@@ -32,9 +34,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const [networkClient] = useState(new AxiosClient(API_URL));
 
-  const [localStorageClient] = useState(WebStorageClient.createLocalStorageClient());
+  const [localStorageClient, setLocalStorageClient] = useState(WebStorageClient.createLocalStorageClient());
 
-  const [sessionStorageClient] = useState(WebStorageClient.createSessionStorageClient());
+  const [sessionStorageClient, setSessionStorageClient] = useState(WebStorageClient.createSessionStorageClient());
 
   const [walletClient] = useAtom(WalletState.client);
 
@@ -43,8 +45,19 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [rpcProvider, setRPCProvider] = useState<GnoProvider | null>(null);
 
   useEffect(() => {
-    const provider = new GnoWSProvider(network.wsUrl, 5 * 1000);
-    provider.waitForOpenConnection().then(() => setRPCProvider(provider));
+    if (window) {
+      setLocalStorageClient(WebStorageClient.createLocalStorageClient());
+      setSessionStorageClient(WebStorageClient.createSessionStorageClient());
+    }
+  }, []);
+
+  useEffect(() => {
+    const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
+    const currentNetwork = network || ChainNetworkInfos.find(info => info.chainId === defaultChainId);
+    if (currentNetwork) {
+      const provider = new GnoWSProvider(currentNetwork.wsUrl, 5 * 1000);
+      provider.waitForOpenConnection().then(() => setRPCProvider(provider));
+    }
   }, [network]);
 
   const accountRepository = useMemo(() => {
@@ -56,16 +69,16 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, []);
 
   const poolRepository = useMemo(() => {
-    return new PoolRepositoryImpl(networkClient);
-  }, [networkClient]);
+    return new PoolRepositoryImpl(networkClient, walletClient);
+  }, [networkClient, walletClient]);
 
   const stakingRepository = useMemo(() => {
     return new StakingRepositoryMock();
   }, []);
 
   const swapRepository = useMemo(() => {
-    return new SwapRepositoryMock(walletClient);
-  }, []);
+    return new SwapRepositoryImpl(walletClient, rpcProvider, localStorageClient);
+  }, [localStorageClient, rpcProvider, walletClient]);
 
   const tokenRepository = useMemo(() => {
     return new TokenRepositoryImpl(networkClient, localStorageClient);

@@ -31,7 +31,7 @@ export class TokenRepositoryImpl implements TokenRepository {
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {
     const response = await this.networkClient.get<TokenPriceListResponse>({
-      url: "/tokenPrice",
+      url: "/tokenPrices",
     });
     return response.data;
   };

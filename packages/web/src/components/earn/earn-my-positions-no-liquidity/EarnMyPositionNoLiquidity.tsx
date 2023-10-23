@@ -1,12 +1,12 @@
 import { NoLiquidityWrapper } from "./EarnMyPositionNoLiquidity.styles";
 
-interface EarnMyPositionNoLiquidityProps {}
+interface EarnMyPositionNoLiquidityProps { }
 
 const EarnMyPositionNoLiquidity: React.FC<
   EarnMyPositionNoLiquidityProps
 > = () => {
   // TODO : Added Recoil OR Props
-  const value = "$1,120.15";
+  const value = "$0";
   const apr = "999%";
 
   return (

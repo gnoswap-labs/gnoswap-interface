@@ -1,21 +1,68 @@
+import { SwapDirectionType } from "@common/values";
 import HomeSwap from "@components/home/home-swap/HomeSwap";
+import { useSlippage } from "@hooks/common/use-slippage";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { TokenModel } from "@models/token/token-model";
+import { numberToUSD } from "@utils/number-utils";
+import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
-  const [width, setWidth] = useState(Number);
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
+  const { tokenPrices, balances } = useTokenData();
+  const [tokenA] = useState<TokenModel | null>(null);
+  const [tokenAAmount] = useState<string>("1000");
+  const [tokenB] = useState<TokenModel | null>(null);
+  const [tokenBAmount] = useState<string>("0");
+  const [swapDirection] = useState<SwapDirectionType>("EXACT_IN");
+  const { slippage } = useSlippage();
 
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
+  const tokenABalance = useMemo(() => {
+    if (tokenA && balances[tokenA.priceId]) {
+      return BigNumber(balances[tokenA.priceId] || 0).toFormat();
+    }
+    return "-";
+  }, [balances, tokenA]);
+
+  const tokenBBalance = useMemo(() => {
+    if (tokenB && balances[tokenB.priceId]) {
+      return BigNumber(balances[tokenB.priceId] || 0).toFormat();
+    }
+    return "-";
+  }, [balances, tokenB]);
+
+  const tokenAUSD = useMemo(() => {
+    if (!tokenA || !tokenPrices[tokenA.priceId]) {
+      return Number.NaN;
+    }
+    return BigNumber(tokenAAmount).multipliedBy(tokenPrices[tokenA.priceId].usd).toNumber();
+  }, [tokenA, tokenAAmount, tokenPrices]);
+
+  const tokenBUSD = useMemo(() => {
+    if (!tokenB || !tokenPrices[tokenB.priceId]) {
+      return Number.NaN;
+    }
+    return BigNumber(tokenBAmount).multipliedBy(tokenPrices[tokenB.priceId].usd).toNumber();
+  }, [tokenB, tokenBAmount, tokenPrices]);
+
+  const swapTokenInfo: SwapTokenInfo = useMemo(() => {
+    return {
+      tokenA,
+      tokenAAmount,
+      tokenABalance,
+      tokenAUSD,
+      tokenAUSDStr: numberToUSD(tokenAUSD),
+      tokenB,
+      tokenBAmount,
+      tokenBBalance,
+      tokenBUSD,
+      tokenBUSDStr: numberToUSD(tokenBUSD),
+      direction: swapDirection,
+      slippage
     };
-  }, []);
+  }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapNow = useCallback(() => {
     router.push("/swap?from=GNOT&to=GNOS");
@@ -23,32 +70,8 @@ const HomeSwapContainer: React.FC = () => {
 
   return (
     <HomeSwap
-      from={{
-        token: {
-          path: "USDCoin",
-          name: "USDC",
-          symbol: "USDC",
-          logoURI:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-        },
-        amount: "121",
-        price: "$0.00",
-        balance: "0",
-      }}
-      to={{
-        token: {
-          path: "HEX",
-          name: "HEX",
-          symbol: "HEX",
-          logoURI:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        amount: "5000",
-        price: "$0.00",
-        balance: "0",
-      }}
+      swapTokenInfo={swapTokenInfo}
       swapNow={swapNow}
-      windowSize={width}
     />
   );
 };

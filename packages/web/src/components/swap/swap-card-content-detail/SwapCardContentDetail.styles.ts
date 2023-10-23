@@ -3,15 +3,15 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-interface exchangeProps {
-  swapInfo: boolean;
+interface WrapperProps {
+  opened: boolean;
 }
 
-export const DetailWrapper = styled.div<exchangeProps>`
+export const DetailWrapper = styled.div<WrapperProps>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  border-radius: ${({ swapInfo }) => {
-    return swapInfo ? "8px 8px 0px 0px" : "8px";
+  border-radius: ${({ opened }) => {
+    return opened ? "8px 8px 0px 0px" : "8px";
   }};
   background: ${({ theme }) => theme.color.background01};
   border: 1px solid ${({ theme }) => theme.color.border02};
@@ -68,11 +68,11 @@ export const DetailWrapper = styled.div<exchangeProps>`
   }
 `;
 
-export const FeelWrapper = styled.div<exchangeProps>`
+export const FeelWrapper = styled.div<WrapperProps>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  border-radius: ${({ swapInfo }) => {
-    return swapInfo ? "0px 0px 8px 8px" : "8px";
+  border-radius: ${({ opened }) => {
+    return opened ? "0px 0px 8px 8px" : "8px";
   }};
   background: ${({ theme }) => theme.color.background01};
   border-left: 1px solid ${({ theme }) => theme.color.border02};

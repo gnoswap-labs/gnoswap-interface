@@ -3,7 +3,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import EarnAddLiquidity from "./EarnAddLiquidity";
 import { action } from "@storybook/addon-actions";
-import { DUMMY_FEE_TIERS, DUMMY_POOL_TICKS, DUMMY_PRICE_RANGE_MAP } from "@containers/earn-add-liquidity-container/earn-add-liquidity-dummy";
 
 export default {
   title: "earn-add/EarnAddLiquidity",
@@ -14,16 +13,26 @@ const Template: ComponentStory<typeof EarnAddLiquidity> = args => (
   <EarnAddLiquidity {...args} />
 );
 const tokenA = {
-  path: "1",
-  logoURI: "",
-  name: "Bitcoin",
-  symbol: "BTC",
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gnos",
+  decimals: 4,
+  symbol: "GNOS",
+  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+  priceId: "gno.land/r/gnos"
 };
 const tokenB = {
-  path: "2",
-  logoURI: "",
-  name: "Ethereum",
-  symbol: "ETH",
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gnos",
+  decimals: 4,
+  symbol: "GNOS",
+  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+  priceId: "gno.land/r/gnos"
 };
 
 export const Default = Template.bind({});
@@ -31,12 +40,9 @@ Default.args = {
   mode: "POOL",
   tokenA: tokenA,
   tokenB: tokenB,
-  feeTiers: DUMMY_FEE_TIERS,
-  feeRate: "0.01",
+  feeTiers: [],
   selectFeeTier: action("selectFeeTier"),
-  priceRangeMap: DUMMY_PRICE_RANGE_MAP,
-  priceRange: "Custom",
-  selectPriceRange: action("selectPriceRange"),
-  ticks: DUMMY_POOL_TICKS,
-  currentTick: DUMMY_POOL_TICKS[20],
+  priceRanges: [],
+  changePriceRange: action("selectPriceRange"),
+  ticks: [],
 };

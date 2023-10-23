@@ -15,29 +15,39 @@ const Template: ComponentStory<typeof HomeSwap> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  from: {
-    token: {
-      path: "USDCoin",
-      name: "USDCoin",
-      symbol: "USDC",
-      logoURI:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+  swapTokenInfo: {
+    tokenA: {
+      chainId: "dev",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      priceId: "gno.land/r/foo"
     },
-    amount: "121",
-    price: "$0.00",
-    balance: "0",
-  },
-  to: {
-    token: {
-      path: "HEX",
-      name: "HEX",
-      symbol: "HEX",
-      logoURI:
-        "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
+    tokenAAmount: "0",
+    tokenABalance: "0",
+    tokenAUSD: 0,
+    tokenAUSDStr: "0",
+    tokenB: {
+      chainId: "dev",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      priceId: "gno.land/r/foo"
     },
-    amount: "5000",
-    price: "$0.00",
-    balance: "0",
+    tokenBAmount: "0",
+    tokenBBalance: "0",
+    tokenBUSD: 0,
+    tokenBUSDStr: "0",
+    direction: "EXACT_IN",
+    slippage: 0,
   },
   swapNow: action("swapNow"),
 };

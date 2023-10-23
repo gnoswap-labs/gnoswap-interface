@@ -2,26 +2,27 @@ import Button from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import {
   ModalTooltipWrap,
   SettingMenuModalWrapper,
 } from "./SettingMenuModal.styles";
+import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 
 interface SettingMenuModalProps {
-  onSettingMenu: () => void;
-  tolerance: string;
-  changeTolerance: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  resetTolerance: () => void;
+  slippage: number;
+  changeSlippage: (value: string) => void;
+  close: () => void;
 }
 
 const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
-  onSettingMenu,
-  tolerance,
-  changeTolerance,
-  resetTolerance,
+  slippage,
+  changeSlippage,
+  close,
 }) => {
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
+  useModalCloseEvent(settingMenuRef, close);
+
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
       <div className="tooltip-wrap">
@@ -34,30 +35,21 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
     </ModalTooltipWrap>
   );
 
-  useEffect(() => {
-    const closeMenu = (e: MouseEvent) => {
-      if (
-        settingMenuRef.current &&
-        settingMenuRef.current.contains(e.target as Node)
-      ) {
-        return;
-      } else {
-        e.stopPropagation();
-        onSettingMenu();
-      }
-    };
-    window.addEventListener("click", closeMenu, true);
-    return () => {
-      window.removeEventListener("click", closeMenu, true);
-    };
-  }, [settingMenuRef, onSettingMenu]);
+  const onChangeSlippage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    changeSlippage(value);
+  }, [changeSlippage]);
+
+  const onClickReset = useCallback(() => {
+    changeSlippage("10");
+  }, [changeSlippage]);
 
   return (
     <SettingMenuModalWrapper ref={settingMenuRef}>
       <div className="modal-body">
         <div className="modal-header">
           <span>Settings</span>
-          <div className="close-wrap" onClick={onSettingMenu}>
+          <div className="close-wrap" onClick={close}>
             <IconClose className="close-icon" />
           </div>
         </div>
@@ -78,14 +70,14 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
               fontType: "p1",
               textColor: "text20",
             }}
-            onClick={resetTolerance}
+            onClick={onClickReset}
           />
           <div className="input-button">
             <input
               className="amount-text"
-              value={tolerance}
-              onChange={changeTolerance}
-              placeholder={tolerance === "" ? "0" : ""}
+              value={slippage}
+              onChange={onChangeSlippage}
+              placeholder="0"
             />
             <span>%</span>
           </div>

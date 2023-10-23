@@ -8,8 +8,9 @@ import { PoolIncentivizeWrapper } from "./PoolIncentivize.styles";
 import PoolIncentivizeSelectPool from "../pool-incentivize-select-pool/PoolIncentivizeSelectPool";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenBalanceInfo } from "@models/token/token-balance-info";
-import { PoolSelectItemInfo, toPoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 
 export interface DistributionPeriodDate {
   year: number;
@@ -54,11 +55,11 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
 }) => {
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
-    return selectedPool ? toPoolSelectItemInfo(selectedPool) : null;
+    return selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
   }, [selectedPool]);
 
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
-    return pools.map(toPoolSelectItemInfo);
+    return pools.map(PoolMapper.toPoolSelectItemInfo);
   }, [pools]);
 
   return (

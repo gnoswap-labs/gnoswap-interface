@@ -1,4 +1,4 @@
-import { PriceRangeTooltip, PriceRangeType } from "@constants/option.constant";
+import { PriceRangeTooltip } from "@constants/option.constant";
 import React, { useCallback, useMemo } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -7,30 +7,27 @@ import { SelectPriceRangeItemWrapper, SelectPriceRangeWrapper } from "./SelectPr
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 
 interface SelectPriceRangeProps {
-  priceRangeMap: { [key in PriceRangeType]: AddLiquidityPriceRage | undefined };
-  priceRange: PriceRangeType | undefined;
-  selectPriceRange: (priceRange: PriceRangeType) => void;
+  priceRanges: AddLiquidityPriceRage[];
+  priceRange: AddLiquidityPriceRage | null;
+  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
 }
 
-const PRICE_RANGE_ORDERS: PriceRangeType[] = ["Active", "Passive", "Custom"];
-
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
-  priceRangeMap,
+  priceRanges,
   priceRange,
-  selectPriceRange,
+  changePriceRange,
 }) => {
 
   return (
     <SelectPriceRangeWrapper>
       <div className="type-selector-wrapper">
-        {PRICE_RANGE_ORDERS.map((priceRangeType, index: number) => (
+        {priceRanges.map((item, index) => (
           <SelectPriceRangeItem
             key={index}
-            selected={priceRangeType === priceRange}
-            tooltip={PriceRangeTooltip[priceRangeType]}
-            priceRage={priceRangeType}
-            selectPriceRange={selectPriceRange}
-            apr={priceRangeMap[priceRangeType]?.apr}
+            selected={item.type === priceRange?.type}
+            tooltip={PriceRangeTooltip[item.type]}
+            priceRange={item}
+            changePriceRange={changePriceRange}
           />
         ))}
       </div>
@@ -40,37 +37,36 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
 
 interface SelectPriceRangeItemProps {
   selected: boolean;
-  priceRage: PriceRangeType;
+  priceRange: AddLiquidityPriceRage;
   tooltip: string | undefined;
-  apr: string | undefined;
-  selectPriceRange: (priceRange: PriceRangeType) => void;
+  changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
 }
 
 export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   selected,
-  priceRage,
+  priceRange,
   tooltip,
-  apr,
-  selectPriceRange,
+  changePriceRange,
 }) => {
 
   const aprStr = useMemo(() => {
+    const apr = priceRange.apr;
     if (apr) {
       return `${apr}%`;
     }
-    if (priceRage === "Custom") {
+    if (priceRange.type === "Custom") {
       return null;
     }
     return "-";
-  }, [apr, priceRage]);
+  }, [priceRange]);
 
   const onClickItem = useCallback(() => {
-    selectPriceRange(priceRage);
-  }, [priceRage, selectPriceRange]);
+    changePriceRange(priceRange);
+  }, [priceRange, changePriceRange]);
 
   return (
     <SelectPriceRangeItemWrapper className={selected ? "selected" : ""} onClick={onClickItem}>
-      <strong className="item-title">{priceRage}</strong>
+      <strong className="item-title">{priceRange.type}</strong>
       {tooltip && (
         <div className="tooltip-wrap">
           <Tooltip

@@ -4,18 +4,18 @@ import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import { TokenInfo } from "@models/token/token-info";
 import IconLink from "@components/common/icons/IconLink";
+import { TokenModel } from "@models/token/token-model";
 
 export interface TokenSwapProps {
   from: {
-    token: TokenInfo;
+    token: TokenModel;
     amount: string;
     price: string;
     balance: string;
   };
   to: {
-    token: TokenInfo;
+    token: TokenModel;
     amount: string;
     price: string;
     balance: string;
@@ -92,7 +92,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               className="amount-text"
               value={fromAmount}
               onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton token={from.token} />
@@ -109,7 +109,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               className="amount-text"
               value={toAmount}
               onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton token={to.token} />

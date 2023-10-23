@@ -22,8 +22,8 @@ export const ModalWrapper = styled.div<ModalStyleProps>`
     if (height) return typeof height === "number" ? height + "px" : height;
     return "auto";
   }};
-  padding: 24px;
   ${mixins.positionCenter()};
+  position: fixed;
   z-index: ${Z_INDEX.modal};
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};

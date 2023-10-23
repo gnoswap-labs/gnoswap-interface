@@ -6,13 +6,10 @@ import SwapCardHeader from "./SwapCardHeader";
 describe("SwapCardHeader Component", () => {
   it("SwapCardHeader render", () => {
     const mockProps = {
-      settingMenuToggle: true,
-      onSettingMenu: () => null,
-      tolerance: "",
-      changeTolerance: () => null,
-      resetTolerance: () => null,
-      handleCopyClipBoard: () => null,
-      copied: true,
+      copied: false,
+      copyURL: () => null,
+      slippage: 0,
+      changeSlippage: () => null,
     };
 
     render(

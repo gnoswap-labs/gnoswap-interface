@@ -3,177 +3,159 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { SwapCardWrapper } from "./SwapCard.styles";
 import SwapCardHeader from "../swap-card-header/SwapCardHeader";
 import SwapCardContent from "../swap-card-content/SwapCardContent";
-import {
-  AutoRouterInfo,
-  tokenInfo,
-  SwapData,
-  SwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
 import ConfirmSwapModal from "../confirm-swap-modal/ConfirmSwapModal";
-import { DEVICE_TYPE } from "@styles/media";
-
-export interface TokenInfo {
-  token: string;
-  symbol: string;
-  amount: string;
-  price: string;
-  gnosExchangePrice: string;
-  usdExchangePrice: string;
-  balance: string;
-  logoURI: string;
-}
+import { TokenModel } from "@models/token/token-model";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { SwapResultInfo } from "@models/swap/swap-result-info";
+import { FontsKey } from "@constants/font.constant";
 
 interface SwapCardProps {
-  search: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  keyword: string;
-  isConnected: boolean;
-  from: TokenInfo;
-  to: TokenInfo;
-  gnosAmount: string;
-  swapInfo: boolean;
-  showSwapInfo: () => void;
-  autoRouter: boolean;
-  showAutoRouter: () => void;
-  swapGasInfo: SwapGasInfo;
-  autoRouterInfo: AutoRouterInfo;
-  settingMenuToggle: boolean;
-  onSettingMenu: () => void;
-  tolerance: string;
-  changeTolerance: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  tokenModal: boolean;
-  onSelectTokenModal: () => void;
-  swapOpen: boolean;
-  onConfirmModal: () => void;
-  coinList: tokenInfo[];
-  changeToken: (token: tokenInfo, type: string) => void;
-  selectToken: (e: string) => void;
-  submitSwap: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  breakpoint: DEVICE_TYPE;
-  submit: boolean;
-  isFetching: boolean;
-  swapResult: SwapData | null;
-  resetTolerance: () => void;
-  handleCopyClipBoard: (text: string) => void;
+  connectedWallet: boolean;
   copied: boolean;
+  swapTokenInfo: SwapTokenInfo;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  swapRouteInfos: SwapRouteInfo[];
+  isAvailSwap: boolean;
+  swapButtonText: string;
+  submitted: boolean;
+  swapResult: SwapResultInfo | null;
+  openedConfirmModal: boolean;
+
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenAAmount: (value: string) => void;
+  changeTokenB: (token: TokenModel) => void;
+  changeTokenBAmount: (value: string) => void;
+  changeSlippage: (value: string) => void;
+
+  switchSwapDirection: () => void;
+  openConfirmModal: () => void;
+  openConnectWallet: () => void;
+  closeModal: () => void;
+  copyURL: () => void;
+  swap: () => void;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
-  search,
-  keyword,
-  from,
-  to,
-  gnosAmount,
-  isConnected,
-  swapInfo,
-  showSwapInfo,
-  autoRouter,
-  showAutoRouter,
-  swapGasInfo,
-  autoRouterInfo,
-  settingMenuToggle,
-  onSettingMenu,
-  tolerance,
-  changeTolerance,
-  tokenModal,
-  onSelectTokenModal,
-  swapOpen,
-  onConfirmModal,
-  coinList,
-  changeToken,
-  selectToken,
-  submitSwap,
-  breakpoint,
-  submit,
-  isFetching,
-  swapResult,
-  resetTolerance,
-  handleCopyClipBoard,
+  connectedWallet,
   copied,
+  swapTokenInfo,
+  swapSummaryInfo,
+  swapRouteInfos,
+  isAvailSwap,
+  swapButtonText,
+  submitted,
+  swapResult,
+  openedConfirmModal,
+  changeTokenA,
+  changeTokenAAmount,
+  changeTokenB,
+  changeTokenBAmount,
+  changeSlippage,
+  switchSwapDirection,
+  openConfirmModal,
+  openConnectWallet,
+  closeModal,
+  copyURL,
+  swap,
 }) => {
+
   return (
     <>
       <SwapCardWrapper>
         <SwapCardHeader
-          settingMenuToggle={settingMenuToggle}
-          onSettingMenu={onSettingMenu}
-          tolerance={tolerance}
-          changeTolerance={changeTolerance}
-          resetTolerance={resetTolerance}
-          handleCopyClipBoard={handleCopyClipBoard}
           copied={copied}
+          copyURL={copyURL}
+          slippage={swapTokenInfo.slippage}
+          changeSlippage={changeSlippage}
         />
         <SwapCardContent
-          from={from}
-          to={to}
-          swapInfo={swapInfo}
-          showSwapInfo={showSwapInfo}
-          autoRouter={autoRouter}
-          showAutoRouter={showAutoRouter}
-          swapGasInfo={swapGasInfo}
-          autoRouterInfo={autoRouterInfo}
-          tokenModal={tokenModal}
-          onSelectTokenModal={onSelectTokenModal}
-          search={search}
-          keyword={keyword}
-          coinList={coinList}
-          changeToken={changeToken}
-          selectToken={selectToken}
-          breakpoint={breakpoint}
+          swapTokenInfo={swapTokenInfo}
+          swapSummaryInfo={swapSummaryInfo}
+          swapRouteInfos={swapRouteInfos}
+          changeTokenA={changeTokenA}
+          changeTokenAAmount={changeTokenAAmount}
+          changeTokenB={changeTokenB}
+          changeTokenBAmount={changeTokenBAmount}
+          switchSwapDirection={switchSwapDirection}
         />
         <div className="footer">
-          {isConnected ? (
-            Number(gnosAmount) - Number(from.gnosExchangePrice) > 0 ? (
-              <Button
-                text="Swap"
-                style={{
-                  fullWidth: true,
-                  height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                  fontType: "body7",
-                  hierarchy: ButtonHierarchy.Primary,
-                }}
-                onClick={onConfirmModal}
-              />
-            ) : (
-              <Button
-                text="Insufficient Balance"
-                style={{
-                  fullWidth: true,
-                  height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                  fontType: "body7",
-                  hierarchy: ButtonHierarchy.Gray,
-                }}
-                onClick={showSwapInfo}
-              />
-            )
-          ) : (
-            <Button
-              text="Connect Wallet"
-              style={{
-                fullWidth: true,
-                height: breakpoint === DEVICE_TYPE.MOBILE ? 41 : 57,
-                fontType: "body7",
-                hierarchy: ButtonHierarchy.Primary,
-              }}
-              onClick={() => { }}
-            />
-          )}
+          <SwapButton
+            connectedWallet={connectedWallet}
+            isAvailSwap={isAvailSwap}
+            openConfirmModal={openConfirmModal}
+            openConnectWallet={openConnectWallet}
+            text={swapButtonText}
+          />
         </div>
       </SwapCardWrapper>
-      {swapOpen && (
+
+      {openedConfirmModal && swapSummaryInfo && (
         <ConfirmSwapModal
-          onConfirmModal={onConfirmModal}
-          submitSwap={submitSwap}
-          from={from}
-          to={to}
-          swapGasInfo={swapGasInfo}
-          tolerance={tolerance}
-          breakpoint={breakpoint}
-          submit={submit}
-          isFetching={isFetching}
+          submitted={submitted}
+          swapTokenInfo={swapTokenInfo}
+          swapSummaryInfo={swapSummaryInfo}
           swapResult={swapResult}
+          swap={swap}
+          close={closeModal}
         />
       )}
     </>
+  );
+};
+
+interface SwapButtonProps {
+  connectedWallet: boolean;
+  isAvailSwap: boolean;
+  text: string;
+  openConfirmModal: () => void;
+  openConnectWallet: () => void;
+}
+
+const SwapButton: React.FC<SwapButtonProps> = ({
+  connectedWallet,
+  isAvailSwap,
+  text,
+  openConfirmModal,
+  openConnectWallet,
+}) => {
+
+  const defaultStyle = {
+    fullWidth: true,
+    fontType: "body7" as FontsKey,
+    hierarchy: ButtonHierarchy.Primary,
+    height: 56,
+  };
+
+  if (!connectedWallet) {
+    return (
+      <Button
+        text={text}
+        style={defaultStyle}
+        onClick={openConnectWallet}
+      />
+    );
+  }
+
+  if (!isAvailSwap) {
+    return (
+      <Button
+        text={text}
+        style={{
+          ...defaultStyle,
+          hierarchy: ButtonHierarchy.Gray
+        }}
+      />
+    );
+  }
+
+  return (
+    <Button
+      text={text}
+      style={defaultStyle}
+      onClick={openConfirmModal}
+    />
   );
 };
 
