@@ -77,7 +77,7 @@ const HeaderContainer: React.FC = () => {
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
-  const { account, connected, initSession, connectAdenaClient } = useWallet();
+  const { account, connected, connectAdenaClient, disconnectWallet } = useWallet();
   const {
     isFetched,
     error,
@@ -86,12 +86,6 @@ const HeaderContainer: React.FC = () => {
     queryKey: ["tokens", keyword],
     queryFn: () => fetchTokens(keyword),
   });
-
-  useEffect(() => {
-    if (window?.adena) {
-      initSession();
-    }
-  }, []);
 
   const onSideMenuToggle = () => {
     setSideMenuToggle(prev => !prev);
@@ -110,6 +104,7 @@ const HeaderContainer: React.FC = () => {
       account={account}
       connected={connected}
       connectAdenaClient={connectAdenaClient}
+      disconnectWallet={disconnectWallet}
       pathname={pathname}
       sideMenuToggle={sideMenuToggle}
       onSideMenuToggle={onSideMenuToggle}

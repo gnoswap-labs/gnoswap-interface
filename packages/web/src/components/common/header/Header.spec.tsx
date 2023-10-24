@@ -12,6 +12,7 @@ describe("Header Component", () => {
       connected: false,
       account: null,
       connectAdenaClient: () => null,
+      disconnectWallet: () => null,
       sideMenuToggle: true,
       onSideMenuToggle: () => null,
       searchMenuToggle: true,

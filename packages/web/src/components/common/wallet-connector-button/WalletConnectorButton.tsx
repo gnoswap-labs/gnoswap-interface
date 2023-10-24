@@ -13,12 +13,14 @@ interface WalletConnectProps {
   account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
+  disconnectWallet: () => void;
 }
 
 const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   account,
   connected,
   connectAdenaClient,
+  disconnectWallet,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
@@ -74,6 +76,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           account={account}
           connected={connected}
           connectAdenaClient={connectAdenaClient}
+          disconnectWallet={disconnectWallet}
           onMenuToggle={onMenuToggle}
         />
       )}

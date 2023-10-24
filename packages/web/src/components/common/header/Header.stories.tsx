@@ -37,6 +37,7 @@ Default.args = {
   connected: false,
   account: defaultAccountInfo,
   connectAdenaClient: action("connectAdenaClient"),
+  disconnectWallet: action("disconnectWallet"),
   sideMenuToggle: true,
   onSideMenuToggle: action("onSideMenuToggle"),
   searchMenuToggle: true,
