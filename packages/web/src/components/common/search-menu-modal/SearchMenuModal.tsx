@@ -32,7 +32,6 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const onClickItem = (symbol: string) => {
     location.href = "/tokens/" + symbol;
   };
-  console.log(isFetched, "isFetched");
 
   useEffect(() => {
     const closeMenu = (e: MouseEvent) => {

@@ -26,21 +26,22 @@ import IconFailed from "../icons/IconFailed";
 
 const URL_REDIRECT =
   "https://gnoscan.io/accounts/g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt";
+const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   openLinkClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  exitClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   themeKey: "dark" | "light";
   copied: boolean;
+  onClickDisconnect: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const IconButtonMaker: React.FC<IconButtonClickProps> = ({
   copyClick,
   openLinkClick,
-  exitClick,
   themeKey,
   copied,
+  onClickDisconnect,
 }) => {
   return (
     <>
@@ -58,7 +59,7 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
       <IconButton onClick={openLinkClick}>
         <IconOpenLink className="action-icon" />
       </IconButton>
-      <IconButton onClick={exitClick}>
+      <IconButton onClick={onClickDisconnect}>
         <IconExit className="action-icon" />
       </IconButton>
     </>
@@ -69,6 +70,7 @@ interface WalletConnectorMenuProps {
   account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
+  disconnectWallet: () => void;
   onMenuToggle: () => void;
   themeKey: "dark" | "light";
 }
@@ -77,15 +79,10 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   account,
   connected,
   connectAdenaClient,
+  disconnectWallet,
   onMenuToggle,
   themeKey,
 }) => {
-  const balanceText = useMemo(
-    () =>
-      `${account?.balances[0].amount} ${account?.balances[0].currency}` ||
-      "0 GNOT",
-    [account?.balances],
-  );
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
@@ -101,8 +98,14 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const openLinkClick = () => {
     window.open(URL_REDIRECT, "_blank");
   };
-  const exitClick = () => {};
+
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const balanceText = useMemo(() => `${account?.balances[0].amount} ${account?.balances[0].currency}` || "0 GNOT", [account?.balances]);
+
+  const onClickDisconnect = useCallback(() => {
+    disconnectWallet();
+  }, [disconnectWallet]);
 
   useEffect(() => {
     const closeMenu = (e: MouseEvent) => {
@@ -128,7 +131,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
       {connected ? (
         <div className="button-container">
           <MenuHeader>
-            {account && account.chainId !== "dev.gnoswap" ? (
+            {account && account.chainId !== CHAIN_ID ? (
               <IconFailed className="fail-icon" />
             ) : (
               <IconAdenaLogo />
@@ -139,12 +142,12 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             <IconButtonMaker
               copyClick={copyClick}
               openLinkClick={openLinkClick}
-              exitClick={exitClick}
               themeKey={themeKey}
               copied={copied}
+              onClickDisconnect={onClickDisconnect}
             />
           </MenuHeader>
-          {account && account.chainId !== "dev.gnoswap" ? (
+          {account && account.chainId !== CHAIN_ID ? (
             <Button
               text="Switch Network"
               onClick={connect}

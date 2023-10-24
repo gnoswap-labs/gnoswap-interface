@@ -7,7 +7,7 @@ export const wrapper = (theme: Theme) => css`
   ${fonts.p3};
   height: 26px;
   padding: 0px 8px;
-  background-color: ${theme.color.background06};
+  background-color: ${theme.color.backgroundOpacity3};
   color: ${theme.color.text04};
   border-radius: 2px;
 
@@ -18,7 +18,7 @@ export const wrapper = (theme: Theme) => css`
       color: ${theme.color.text02};
     }
     &:last-of-type {
-      color: ${theme.color.text05};
+      color: ${theme.color.text10};
     }
   }
 
@@ -29,5 +29,8 @@ export const wrapper = (theme: Theme) => css`
     * {
       fill: ${theme.color.icon03};
     }
+  }
+  @media (max-width: 1180px) {
+    height: 24px;
   }
 `;

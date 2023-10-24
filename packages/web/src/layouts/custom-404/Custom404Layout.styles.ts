@@ -22,8 +22,12 @@ export const wrapper = (theme: Theme) => css`
     }
   }
   .icon-404 {
-    width: 300px;
-    height: 252px;
+    width: 380px;
+    height: 320px;
+    ${media.tablet} {
+      width: 300px;
+      height: 252px;
+    }
     ${media.mobile} {
       width: 237.5px;
       height: 200px;

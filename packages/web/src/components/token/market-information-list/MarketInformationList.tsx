@@ -14,7 +14,7 @@ const MarketInformationList: React.FC<MarketInformationListProps> = ({
       {Object.values(list).map((item: any, idx: number) => (
         <div key={idx} className="marketInfo-wrap">
           <span className="title">{TITLE_LIST[idx]}</span>
-          <span>{item}</span>
+          <span className="market-info-value">{item}</span>
         </div>
       ))}
     </div>
