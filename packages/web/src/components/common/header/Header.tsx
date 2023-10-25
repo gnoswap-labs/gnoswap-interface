@@ -39,6 +39,7 @@ interface HeaderProps {
   account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
+  themeKey: "dark" | "light";
   disconnectWallet: () => void;
 }
 
@@ -56,6 +57,7 @@ const Header: React.FC<HeaderProps> = ({
   account,
   connected,
   connectAdenaClient,
+  themeKey,
   disconnectWallet,
 }) => {
   return (
@@ -103,6 +105,7 @@ const Header: React.FC<HeaderProps> = ({
                 account={account}
                 connected={connected}
                 connectAdenaClient={connectAdenaClient}
+                themeKey={themeKey}
                 disconnectWallet={disconnectWallet}
               />
             </SearchContainer>

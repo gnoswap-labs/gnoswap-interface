@@ -8,24 +8,29 @@ interface SelectPairButtonProps {
   token: TokenModel | null;
   changeToken?: (token: TokenModel) => void;
   disabled?: boolean;
+  hiddenModal?: boolean;
 }
 
 const SelectPairButton: React.FC<SelectPairButtonProps> = ({
   token,
   changeToken,
   disabled,
+  hiddenModal,
 }) => {
   const { openModal } = useSelectTokenModal({ changeToken });
 
   const onClickButton = useCallback(() => {
-    if (disabled) {
+    if (disabled || hiddenModal) {
       return;
     }
     openModal();
-  }, [disabled, openModal]);
+  }, [disabled, openModal, hiddenModal]);
 
   return (
-    <div css={wrapper(Boolean(token), disabled)} onClick={onClickButton}>
+    <div
+      css={wrapper(Boolean(token), disabled || hiddenModal)}
+      onClick={onClickButton}
+    >
       {token ? (
         <>
           <img src={token.logoURI} alt="token logo" className="token-logo" />
@@ -35,7 +40,6 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
         <span>Select</span>
       )}
       {!disabled && <IconStrokeArrowDown className="arrow-icon" />}
-
     </div>
   );
 };

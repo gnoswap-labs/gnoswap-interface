@@ -10,6 +10,7 @@ import {
   ModalContainer,
 } from "./SearchMenuModal.styles";
 import IconSearch from "@components/common/icons/IconSearch";
+import Badge, { BADGE_TYPE } from "../badge/Badge";
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -62,50 +63,113 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
         </SearchContainer>
         <ModalContainer>
           <ul>
-            <div className="recent-searches">Recent Searches</div>
-            {tokens
-              .filter(item => item.searchType === "recent")
-              .map((item, idx) => (
-                <li key={idx} onClick={() => onClickItem(item.token.symbol)}>
-                  <div className="coin-info">
-                    <img
-                      src={item.token.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    />
-                    <span className="token-name">{item.token.name}</span>
-                    <span className="token-symbol">{item.token.symbol}</span>
-                  </div>
-                  <span className="token-price">{item.price}</span>
-                  {item.priceOf1d.status === "POSITIVE" ? (
-                    <span className="positive">+{item.priceOf1d.value}</span>
-                  ) : (
-                    <span className="negative">-{item.priceOf1d.value}</span>
-                  )}
-                </li>
-              ))}
-            <div className="popular-tokens">Popular Tokens</div>
-            {tokens
-              .filter(item => item.searchType === "popular")
-              .map((item, idx) => (
-                <li key={idx} onClick={() => onClickItem(item.token.symbol)}>
-                  <div className="coin-info">
-                    <img
-                      src={item.token.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    />
-                    <span className="token-name">{item.token.name}</span>
-                    <span className="token-symbol">{item.token.symbol}</span>
-                  </div>
-                  <span className="token-price">{item.price}</span>
-                  {item.priceOf1d.status === "POSITIVE" ? (
-                    <span className="positive">+{item.priceOf1d.value}</span>
-                  ) : (
-                    <span className="negative">-{item.priceOf1d.value}</span>
-                  )}
-                </li>
-              ))}
+            {tokens.length === 0 && isFetched && (
+              <div className="no-data-found">No data found</div>
+            )}
+            {(tokens.length !== 0 || !isFetched) && (
+              <>
+                <div className="recent-searches">
+                  {!keyword ? "Recent Searches" : "Tokens"}
+                </div>
+                {tokens
+                  .filter(item => item.searchType === "recent")
+                  .map((item, idx) => (
+                    <li
+                      key={idx}
+                      onClick={() => onClickItem(item.token.symbol)}
+                    >
+                      <div className="coin-info">
+                        <img
+                          src={item.token.logoURI}
+                          alt="token logo"
+                          className="token-logo"
+                        />
+                        <span className="token-name">{item.token.name}</span>
+                        <span className="token-symbol">
+                          {item.token.symbol}
+                        </span>
+                      </div>
+                      <span className="token-price">{item.price}</span>
+                      {item.priceOf1d.status === "POSITIVE" ? (
+                        <span className="positive">
+                          +{item.priceOf1d.value}
+                        </span>
+                      ) : (
+                        <span className="negative">
+                          -{item.priceOf1d.value}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                <div className="popular-tokens">
+                  {!keyword ? "Popular Tokens" : "Pools"}
+                </div>
+                {tokens
+                  .filter(item => item.searchType === "popular")
+                  .map((item, idx) => (
+                    <li
+                      key={idx}
+                      onClick={() => onClickItem(item.token.symbol)}
+                    >
+                      <div className="coin-info">
+                        <img
+                          src={item.token.logoURI}
+                          alt="token logo"
+                          className="token-logo"
+                        />
+                        <span className="token-name">{item.token.name}</span>
+                        <span className="token-symbol">
+                          {item.token.symbol}
+                        </span>
+                      </div>
+                      <span className="token-price">{item.price}</span>
+                      {item.priceOf1d.status === "POSITIVE" ? (
+                        <span className="positive">
+                          +{item.priceOf1d.value}
+                        </span>
+                      ) : (
+                        <span className="negative">
+                          -{item.priceOf1d.value}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                {!keyword && (
+                  <>
+                    <div className="popular-tokens">Most Liquid Pools</div>
+                    {tokens
+                      .filter(item => item.searchType === "recent")
+                      .map((item, idx) => (
+                        <li
+                          key={idx}
+                          onClick={() => onClickItem(item.token.symbol)}
+                        >
+                          <div className="coin-info">
+                            <img
+                              src={item.token.logoURI}
+                              alt="token logo"
+                              className="token-logo"
+                            />
+                            <span className="token-name">
+                              {item.token.name}
+                            </span>
+                            <span className="token-symbol">
+                              {item.token.symbol}
+                            </span>
+                            <Badge
+                              text={"0.3%"}
+                              type={BADGE_TYPE.DARK_DEFAULT}
+                            />
+                          </div>
+                          <span className="token-price">
+                            {item.priceOf1d.value} {item.token.symbol}
+                          </span>
+                        </li>
+                      ))}
+                  </>
+                )}
+              </>
+            )}
           </ul>
         </ModalContainer>
       </div>

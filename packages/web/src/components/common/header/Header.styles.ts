@@ -124,7 +124,7 @@ export const Navigation = styled.nav`
     color: ${({ theme }) => theme.color.text04};
     &.selected,
     &:hover {
-      color: ${({ theme }) => theme.color.text03};
+      color: ${({ theme }) => theme.color.text16};
     }
     ${media.tablet} {
       padding: 8px 12px;
@@ -157,19 +157,19 @@ export const SearchButton = styled.button`
   border-radius: 4px;
   transition: all 0.3s ease;
   .search-icon {
-    width: 34px;
-    height: 34px;
+    width: 32.5px;
+    height: 32.5px;
     * {
       fill: ${({ theme }) => theme.color.icon05};
     }
     ${media.tablet} {
-      width: 30px;
-      height: 30px;
+      width: 29px;
+      height: 29px;
     }
   }
   &:hover {
     .search-icon * {
-      fill: ${({ theme }) => theme.color.icon02};
+      fill: ${({ theme }) => theme.color.icon07};
     }
   }
 `;

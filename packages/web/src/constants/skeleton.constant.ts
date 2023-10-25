@@ -43,7 +43,7 @@ export const ASSET_TD_WIDTH = [360, 360, 360, 140, 140];
 export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];
 export const MOBILE_ASSET_TD_WIDTH = [150, 160, 90, 80, 120];
 export const TOKEN_TD_WIDTH = [
-  56, 203, 105, 85, 85, 85, 140, 140, 140, 195, 126,
+  56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124,
 ];
 export const MOBILE_TOKEN_TD_WIDTH = [
   42, 90, 90, 85, 85, 85, 140, 140, 140, 190, 126,

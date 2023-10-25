@@ -47,6 +47,12 @@ export const TABLE_HEAD = {
   MOST_LIQUID_POOL: "Most Liquid Pool",
   LAST_7_DAYS: "Last 7 days",
 } as const;
+
+export const TABLE_HEAD_MOBILE = {
+  NAME: "Name",
+  PRICE: "Price",
+} as const;
+
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 export const TOKEN_TYPE = {
@@ -129,6 +135,9 @@ async function fetchTokens(
 ): Promise<Token[]> {
   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
     Promise.resolve([
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
+      ...createDummyTokenList(),
       ...createDummyTokenList(),
       ...createDummyTokenList(),
       ...createDummyTokenList(),
