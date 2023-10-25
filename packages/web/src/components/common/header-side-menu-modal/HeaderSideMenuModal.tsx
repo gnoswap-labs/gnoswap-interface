@@ -42,6 +42,16 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
     <HeaderSideMenuModalWrapper ref={menuRef}>
       <Navigation>
         <ul>
+          <li className="first-side-menu">
+            <Link href={SIDE_MENU_NAV.AIRDROP.path}>
+              <LeftIconMenu>
+                <LeftIcon onClick={() => {}}>
+                  <IconShoppingBag className="left-icon" />
+                </LeftIcon>
+                {SIDE_MENU_NAV.AIRDROP.title}
+              </LeftIconMenu>
+            </Link>
+          </li>
           <li>
             <Link href={SIDE_MENU_NAV.GOVERNENCE.path}>
               <LeftIconMenu>
@@ -49,16 +59,6 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
                   <IconAccountUser className="left-icon" />
                 </LeftIcon>
                 {SIDE_MENU_NAV.GOVERNENCE.title}
-              </LeftIconMenu>
-            </Link>
-          </li>
-          <li>
-            <Link href={SIDE_MENU_NAV.AIRDROP.path}>
-              <LeftIconMenu>
-                <LeftIcon onClick={() => {}}>
-                  <IconShoppingBag className="left-icon" />
-                </LeftIcon>
-                {SIDE_MENU_NAV.AIRDROP.title}
               </LeftIconMenu>
             </Link>
           </li>
@@ -85,7 +85,7 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
               </RightIconMenu>
             </Link>
           </li>
-          <li>
+          <li className="last-side-menu">
             <Link href={SIDE_MENU_NAV.LEGALPRIVACY.path}>
               <RightIconMenu>
                 {SIDE_MENU_NAV.LEGALPRIVACY.title}

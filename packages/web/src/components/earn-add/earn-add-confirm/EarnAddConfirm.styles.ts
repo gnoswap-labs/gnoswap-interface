@@ -5,6 +5,7 @@ export const EarnAddConfirmWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 460px;
+  padding: 24px;
   height: auto;
   gap: 16px;
 

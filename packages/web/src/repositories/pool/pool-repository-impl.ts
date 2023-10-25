@@ -8,6 +8,7 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
+import { CommonError } from "@common/errors";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
@@ -15,9 +16,9 @@ const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 
 export class PoolRepositoryImpl implements PoolRepository {
   private networkClient: NetworkClient;
-  private walletClient: WalletClient;
+  private walletClient: WalletClient | null;
 
-  constructor(networkClient: NetworkClient, walletClient: WalletClient) {
+  constructor(networkClient: NetworkClient, walletClient: WalletClient | null) {
     this.networkClient = networkClient;
     this.walletClient = walletClient;
   }
@@ -42,6 +43,9 @@ export class PoolRepositoryImpl implements PoolRepository {
   };
 
   createPool = async (request: CreatePoolRequest): Promise<string | null> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
     const {
       tokenA,
       tokenB,
@@ -129,7 +133,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       send: "",
       pkg_path: token.path,
       func: "Approve",
-      args: [POOL_ADDRESS, "9999999"],
+      args: [POOL_ADDRESS, "999999999999"],
     };
   }
 

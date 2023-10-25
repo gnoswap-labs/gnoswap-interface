@@ -8,9 +8,6 @@ export const SelectTokenWrapper = styled.div`
   width: 460px;
   padding: 24px 0px 16px 0px;
   gap: 24px;
-  border-radius: 8px;
-  box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
-  border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
     width: 328px;

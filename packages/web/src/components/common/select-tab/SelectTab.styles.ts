@@ -28,6 +28,6 @@ export const SelectButton = styled.button`
   }
   &.selected {
     background-color: ${({ theme }) => theme.color.select};
-    color: ${({ theme }) => theme.color.text11};
+    color: ${({ theme }) => theme.color.text02};
   }
 `;

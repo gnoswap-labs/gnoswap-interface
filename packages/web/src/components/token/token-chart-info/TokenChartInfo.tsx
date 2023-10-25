@@ -33,20 +33,22 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
       <div className="token-info-wrapper">
         <div className="token-info">
           <img src={token.image} className="token-image" alt="token image" />
-          <span className="token-name">{token.name}</span>
-          <span className="token-symbol">{token.symbol}</span>
+          <div>
+            <span className="token-name">{token.name}</span>
+            <span className="token-symbol">{token.symbol}</span>
+          </div>
         </div>
         <div className="price-info">
           <span className="price">{`$ ${priceInfo.amount.value}`}</span>
+          <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
+            {
+              isIncreasePrice() ?
+                <IconTriangleArrowUp className="arrow-icon" /> :
+                <IconTriangleArrowDown className="arrow-icon" />
+            }
+            <span>{priceInfo.changedRate}%</span>
+          </div>
         </div>
-      </div>
-      <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
-        {
-          isIncreasePrice() ?
-            <IconTriangleArrowUp className="arrow-icon" /> :
-            <IconTriangleArrowDown className="arrow-icon" />
-        }
-        <span>{priceInfo.changedRate}</span>
       </div>
     </TokenChartInfoWrapper>
   );

@@ -1,7 +1,7 @@
 export interface SwapExpectedResultResponse {
-  price_impact: number;
+  tokenAAmount: number;
 
-  min_received: number;
+  tokenBAmount: number;
 
-  gas_fee: number;
+  priceImpact: number;
 }

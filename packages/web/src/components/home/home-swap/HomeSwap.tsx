@@ -4,14 +4,13 @@ import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import { DeviceSize } from "@styles/media";
-import { SwapTokenModel } from "@models/swap/swap-token-model";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface HomeSwapProps {
-  from: SwapTokenModel;
-  to: SwapTokenModel;
+  swapTokenInfo: SwapTokenInfo;
   swapNow: () => void;
-  windowSize: number;
+  onSubmitSwapValue: () => void;
 }
 
 function isAmount(str: string) {
@@ -19,21 +18,16 @@ function isAmount(str: string) {
   return regex.test(str);
 }
 
-const HomeSwap: React.FC<HomeSwapProps> = ({
-  from,
-  to,
-  swapNow,
-  windowSize,
-}) => {
-  const [fromAmount, setFromAmount] = useState(from.amount);
-  const [toAmount, setToAmount] = useState(to.amount);
+const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwapValue }) => {
+  const { breakpoint } = useWindowSize();
+  const [fromAmount, setFromAmount] = useState("0");
+  const [toAmount, setToAmount] = useState("0");
 
   const onChangeFromAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
 
       if (value !== "" && !isAmount(value)) return;
-
       setFromAmount(value);
       // TODO
       // - mapT0AmountToT0Price
@@ -48,7 +42,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
       const value = e.target.value;
 
       if (value !== "" && !isAmount(value)) return;
-
       setToAmount(value);
       // TODO
       // - mapT1AmountToT1Price
@@ -62,7 +55,13 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     swapNow();
   }, [swapNow]);
 
-  return windowSize > DeviceSize.mobile ? (
+  const handleSwap = () => {
+    setFromAmount(toAmount);
+    setToAmount(fromAmount);
+    onSubmitSwapValue();
+  };
+
+  return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
@@ -77,15 +76,17 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               className="amount-text"
               value={fromAmount}
               onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
-              <SelectPairButton disabled token={from.token} />
+              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{from.price}</span>
-            <span className="balance-text">Balance : {from.balance}</span>
+            <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
+            <span className="balance-text">
+              Balance: {swapTokenInfo.tokenABalance}
+            </span>
           </div>
         </div>
         <div className="to">
@@ -94,19 +95,21 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               className="amount-text"
               value={toAmount}
               onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
-              <SelectPairButton disabled token={to.token} />
+              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{to.price}</span>
-            <span className="balance-text">Balance : {to.balance}</span>
+            <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
+            <span className="balance-text">
+              Balance: {swapTokenInfo.tokenBBalance}
+            </span>
           </div>
         </div>
         <div className="arrow">
-          <div className="shape">
+          <div className="shape" onClick={handleSwap}>
             <IconSwapArrowDown className="shape-icon" />
           </div>
         </div>
@@ -114,7 +117,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
       <div className="footer">
         <Button
-          text="Swap now"
+          text="Swap Now"
           style={{
             fullWidth: true,
             height: 50,

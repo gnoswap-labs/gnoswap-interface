@@ -1,88 +1,97 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
-import { TokenInfo } from "../swap-card/SwapCard";
 import IconNote from "@components/common/icons/IconNote";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import SwapCardFeeInfo from "../swap-card-fee-info/SwapCardFeeInfo";
 import SwapCardAutoRouter from "../swap-card-auto-router/SwapCardAutoRouter";
-import {
-  AutoRouterInfo,
-  SwapGasInfo,
-} from "@containers/swap-container/SwapContainer";
 import SwapButtonTooltip from "../swap-button-tooltip/SwapButtonTooltip";
 import { DEVICE_TYPE } from "@styles/media";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { numberToFormat } from "@utils/string-utils";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface ContentProps {
-  to: TokenInfo;
-  from: TokenInfo;
-  swapInfo: boolean;
-  showSwapInfo: () => void;
-  autoRouter: boolean;
-  showAutoRouter: () => void;
-  swapGasInfo: SwapGasInfo;
-  autoRouterInfo: AutoRouterInfo;
-  breakpoint: DEVICE_TYPE;
+  swapSummaryInfo: SwapSummaryInfo;
+  swapRouteInfos: SwapRouteInfo[];
 }
 
 const SwapCardContentDetail: React.FC<ContentProps> = ({
-  to,
-  from,
-  swapInfo,
-  showSwapInfo,
-  autoRouter,
-  showAutoRouter,
-  swapGasInfo,
-  autoRouterInfo,
-  breakpoint,
+  swapSummaryInfo,
+  swapRouteInfos,
 }) => {
+  const { breakpoint } = useWindowSize();
+  const [openedDetailInfo, setOpenedDetailInfo] = useState(false);
+  const [openedRouteInfo, setOpenedRouteInfo] = useState(false);
+
+  const swapRateDescription = useMemo(() => {
+    const { tokenA, tokenB, swapRate } = swapSummaryInfo;
+    return `1 ${tokenA.symbol} = ${numberToFormat(swapRate)} ${tokenB.symbol}`;
+  }, [swapSummaryInfo]);
+
+  const swapRateUSD = useMemo(() => {
+    const swapRateUSD = swapSummaryInfo.swapRateUSD;
+    return numberToFormat(swapRateUSD);
+  }, [swapSummaryInfo.swapRateUSD]);
+
+  const gasFeeUSDStr = useMemo(() => {
+    const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
+    return `$${gasFeeUSD}`;
+  }, [swapSummaryInfo.gasFeeUSD]);
+
+  const toggleDetailInfo = useCallback(() => {
+    setOpenedDetailInfo(!openedDetailInfo);
+  }, [openedDetailInfo]);
+
+  const toggleRouteInfo = useCallback(() => {
+    setOpenedRouteInfo(!openedRouteInfo);
+  }, [openedRouteInfo]);
+
   return (
     <>
-      <DetailWrapper swapInfo={swapInfo}>
+      <DetailWrapper opened={openedDetailInfo}>
         <div className="exchange-section">
           <div className="exchange-container">
             <div className="ocin-info">
-              <SwapButtonTooltip swapGasInfo={swapGasInfo} />
-              <span>
-                {from.amount} {from.symbol} = {from.gnosExchangePrice} GNOS
-              </span>
+              <SwapButtonTooltip swapSummaryInfo={swapSummaryInfo} />
+              <span>{swapRateDescription}</span>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <span className="exchange-price">{from.usdExchangePrice}</span>
+                <span className="exchange-price">{`($${swapRateUSD})`}</span>
               )}
             </div>
             <div className="price-info">
               <IconNote className="price-icon" />
-              <span>{swapGasInfo.usdExchangeGasFee}</span>
-              {swapInfo ? (
+              <span>{gasFeeUSDStr}</span>
+              {openedDetailInfo ? (
                 <IconStrokeArrowUp
                   className="price-icon"
-                  onClick={showSwapInfo}
+                  onClick={toggleDetailInfo}
                 />
               ) : (
                 <IconStrokeArrowDown
                   className="price-icon"
-                  onClick={showSwapInfo}
+                  onClick={toggleDetailInfo}
                 />
               )}
             </div>
           </div>
         </div>
       </DetailWrapper>
-      {swapInfo && (
-        <FeelWrapper swapInfo={swapInfo}>
+
+      {openedDetailInfo && (
+        <FeelWrapper opened={openedDetailInfo}>
           <div className="fee-section">
-            {swapInfo && (
+            {openedDetailInfo && (
               <SwapCardFeeInfo
-                autoRouter={autoRouter}
-                showAutoRouter={showAutoRouter}
-                swapGasInfo={swapGasInfo}
+                openedRouteInfo={openedRouteInfo}
+                toggleRouteInfo={toggleRouteInfo}
+                swapSummaryInfo={swapSummaryInfo}
               />
             )}
-            {autoRouter && (
+            {openedRouteInfo && (
               <SwapCardAutoRouter
-                from={from}
-                to={to}
-                autoRouterInfo={autoRouterInfo}
+                swapRouteInfos={swapRouteInfos}
               />
             )}
           </div>

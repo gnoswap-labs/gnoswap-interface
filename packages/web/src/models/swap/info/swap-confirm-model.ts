@@ -1,4 +1,4 @@
-import { ExactTypeOption } from "@common/values/data-constant";
+import { SwapDirectionType } from "@common/values/data-constant";
 import BigNumber from "bignumber.js";
 import { AmountModel } from "@models/common/amount-model";
 import { TokenInfo } from "@models/token/token-info";
@@ -8,7 +8,7 @@ export interface SwapConfirmModel {
   tokenB: TokenInfo;
   tokenAAmount: AmountModel;
   tokenBAmount: AmountModel;
-  type: ExactTypeOption;
+  type: SwapDirectionType;
   slippage: number;
   gasFee: BigNumber;
 }

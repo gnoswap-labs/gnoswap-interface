@@ -8,6 +8,7 @@ import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { TokenAmountInputModel } from "./use-token-amount-input";
+import { getCurrentPriceByRaw } from "@utils/swap-utils";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -63,7 +64,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       return null;
     }
     return {
-      currentPrice: currentPrice,
+      currentPrice: getCurrentPriceByRaw(currentPrice).toFixed(),
       minPrice: `${priceRange.range.minTick}`,
       minPriceLable: priceRange.range.minPrice,
       maxPrice: `${priceRange.range.maxTick}`,

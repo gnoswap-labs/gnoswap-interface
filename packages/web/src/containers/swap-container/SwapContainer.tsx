@@ -1,182 +1,233 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SwapCard from "@components/swap/swap-card/SwapCard";
-import { useQuery } from "@tanstack/react-query";
-import { useWindowSize } from "@hooks/common/use-window-size";
 import { useSwap } from "@hooks/swap/use-swap";
-
-export interface SwapGasInfo {
-  priceImpact: string;
-  minReceived: string;
-  gasFee: string;
-  usdExchangeGasFee: string;
-}
-interface TokenInfo {
-  token: string;
-  symbol: string;
-  amount: string;
-  price: string;
-  gnosExchangePrice: string;
-  usdExchangePrice: string;
-  balance: string;
-  logoURI: string;
-}
-
-export const dummySwapGasInfo: SwapGasInfo = {
-  priceImpact: "-0.3%",
-  minReceived: "1.8445 ETH",
-  gasFee: "0.002451 GNOT",
-  usdExchangeGasFee: "$0.12",
-};
-
-export interface AutoRouterInfo {
-  v1fee: string[];
-  v2fee: string[];
-  v3fee: string[];
-}
-
-export const dummyAutoRouterInfo: AutoRouterInfo = {
-  v1fee: ["60%", "0.05%", "0.01%"],
-  v2fee: ["35%", "0.01%"],
-  v3fee: ["5%", "0.3%"],
-};
-
-export interface tokenInfo {
-  [key: string]: string;
-}
-
-export const coinList = (): tokenInfo[] => [
-  {
-    logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
-    name: "Bitcoin",
-    symbol: "BTC",
-    balance: "0.112",
-  },
-  {
-    logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
-    name: "Ethereum",
-    symbol: "ETH",
-    balance: "7.21",
-  },
-  {
-    logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3.png",
-    name: "Gnoland",
-    symbol: "GNOT",
-    balance: "109.1",
-  },
-  {
-    logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3.png",
-    name: "Gnoland2",
-    symbol: "GNOS",
-    balance: "1019.1",
-  },
-  {
-    logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3.png",
-    name: "Gnoland3",
-    symbol: "GNOQ",
-    balance: "109444.1",
-  },
-  {
-    logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3.png",
-    name: "Gnoland4",
-    symbol: "GNOV",
-    balance: "1094244.1",
-  },
-];
-
-async function fetchTokens(
-  keyword: string, // eslint-disable-line
-): Promise<tokenInfo[]> {
-  return new Promise(resolve => setTimeout(resolve, 500)).then(() =>
-    Promise.resolve([...coinList()]),
-  );
-}
-
-function isAmount(str: string) {
-  const regex = /^\d+(\.\d*)?$/;
-  return regex.test(str);
-}
-
-export interface SwapData {
-  success: boolean;
-  transaction?: string;
-}
+import { TokenModel } from "@models/token/token-model";
+import { useTokenData } from "@hooks/token/use-token-data";
+import BigNumber from "bignumber.js";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { SwapDirectionType, amountEmptyNumberInit } from "@common/values";
+import { SwapResultInfo } from "@models/swap/swap-result-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { AmountModel } from "@models/common/amount-model";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { SwapResponse } from "@repositories/swap";
+import { matchInputNumber, numberToUSD } from "@utils/number-utils";
+import { SwapError } from "@common/errors/swap";
 
 const SwapContainer: React.FC = () => {
-  const { swap } = useSwap();
-  const { breakpoint } = useWindowSize();
-  const [keyword, setKeyword] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [gnosAmount, setGnosAmount] = useState("1500");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isConnected, setIsConnected] = useState(true);
-  const [autoRouter, setAutoRouter] = useState(false);
-  const [swapInfo, setSwapInfo] = useState(false);
-  const [settingMenuToggle, setSettingMenuToggle] = useState(false);
-  const [tolerance, setTolerance] = useState("1");
-  const [tokenModal, setMokenModal] = useState(false);
-  const [swapOpen, setSwapOpen] = useState(false);
-  const [division, setDivision] = useState("");
-  const [submit, setSubmit] = useState(false);
+  const { connected: connectedWallet, connectAdenaClient } = useWallet();
+  const { tokenPrices, balances, updateTokenPrices, updateBalances } = useTokenData();
+  const [swapError, setSwapError] = useState<SwapError | null>(null);
+  const [tokenA, setTokenA] = useState<TokenModel | null>(null);
+  const [tokenAAmount, setTokenAAmount] = useState<string>("0");
+  const [tokenB, setTokenB] = useState<TokenModel | null>(null);
+  const [tokenBAmount, setTokenBAmount] = useState<string>("0");
+  const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
+  const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [swapResult, setSwapResult] = useState<SwapData | null>(null);
-
-  const { data: tokens } = useQuery<tokenInfo[], Error>({
-    queryKey: [keyword],
-    queryFn: () => fetchTokens(keyword),
+  const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
+  const [swapRate] = useState<number>(1);
+  const [slippage, setSlippage] = useState(10);
+  const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
+  const [swapRouteInfos] = useState<SwapRouteInfo[]>([]);
+  const [openedConfirmModal, setOpenedConfirModal] = useState(false);
+  const { swap, getExpectedSwap } = useSwap({
+    tokenA,
+    tokenB,
+    direction: swapDirection,
+    slippage
   });
 
-  //   eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [from, setFrom] = useState<TokenInfo>({
-    token: "USDCoin",
-    symbol: "USDC",
-    amount: "121",
-    price: "$0.00",
-    gnosExchangePrice: "1250",
-    usdExchangePrice: "($1541.55)",
-    balance: "0",
-    logoURI:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+  useEffect(() => {
+    updateTokenPrices();
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [to, setTo] = useState<TokenInfo>({
-    token: "HEX",
-    symbol: "HEX",
-    amount: "5000",
-    price: "$0.00",
-    gnosExchangePrice: "1250",
-    usdExchangePrice: "($1541.55)",
-    balance: "0",
-    logoURI:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-  });
+  const checkBalance = useCallback((token: TokenModel, amount: string) => {
+    const tokenBalance = balances[token.priceId] || 0;
+    return BigNumber(tokenBalance).isGreaterThan(amount);
+  }, [balances]);
 
-  const changeToken = (token: tokenInfo) => {
-    switch (division) {
-      case "from":
-        setFrom(prev => ({
-          ...prev,
-          logoURI: token.logo,
-          token: token.name,
-          symbol: token.symbol,
-          balance: token.balance,
-        }));
-        break;
-      case "to":
-        setTo(prev => ({
-          ...prev,
-          logoURI: token.logo,
-          token: token.name,
-          symbol: token.symbol,
-          balance: token.balance,
-        }));
-        break;
+  useEffect(() => {
+    if (!tokenA || !tokenB) {
+      return;
     }
-  };
+    const isExactIn = swapDirection === "EXACT_IN";
+    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    if (Number.isNaN(changedAmount) && BigNumber(changedAmount).isGreaterThan(0)) {
+      return;
+    }
+    getExpectedSwap(changedAmount).then(result => {
+      const isError = result === null;
+      const expectedAmount = isError ? "" : result;
+      let swapError = null;
+      if (isError) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
+      if (!checkBalance(tokenA, tokenAAmount) ||
+        !checkBalance(tokenB, tokenBAmount)) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
 
-  const handleCopyClipBoard = async (text: string) => {
+      if (isExactIn) {
+        setTokenBAmount(expectedAmount);
+      } else {
+        setTokenAAmount(expectedAmount);
+      }
+      setSwapError(swapError);
+    });
+  }, [checkBalance, getExpectedSwap, swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+
+  const tokenABalance = useMemo(() => {
+    if (tokenA && !Number.isNaN(balances[tokenA.priceId])) {
+      return BigNumber(balances[tokenA.priceId] || 0).toFormat();
+    }
+    return "-";
+  }, [balances, tokenA]);
+
+  const tokenBBalance = useMemo(() => {
+    if (tokenB && !Number.isNaN(balances[tokenB.priceId])) {
+      return BigNumber(balances[tokenB.priceId] || 0).toFormat();
+    }
+    return "-";
+  }, [balances, tokenB]);
+
+  const tokenAUSD = useMemo(() => {
+    if (!tokenA || !tokenPrices[tokenA.priceId]) {
+      return Number.NaN;
+    }
+    return BigNumber(tokenAAmount).multipliedBy(tokenPrices[tokenA.priceId].usd).toNumber();
+  }, [tokenA, tokenAAmount, tokenPrices]);
+
+  const tokenBUSD = useMemo(() => {
+    if (!tokenB || !tokenPrices[tokenB.priceId]) {
+      return Number.NaN;
+    }
+    return BigNumber(tokenBAmount).multipliedBy(tokenPrices[tokenB.priceId].usd).toNumber();
+  }, [tokenB, tokenBAmount, tokenPrices]);
+
+  const swapButtonText = useMemo(() => {
+    if (!connectedWallet) {
+      return "Connect Wallet";
+    }
+    if (!tokenA || !tokenB) {
+      return "Insufficient Balance";
+    }
+    if (swapError) {
+      return swapError.message;
+    }
+    return "Swap";
+  }, [connectedWallet, swapError, tokenA, tokenB]);
+
+  const openConfirmModal = useCallback(() => {
+    setOpenedConfirModal(true);
+  }, []);
+
+  const openConnectWallet = useCallback(() => {
+    connectAdenaClient();
+  }, [connectAdenaClient]);
+
+  const closeModal = useCallback(() => {
+    setSubmitted(false);
+    setSwapResult(null);
+    setOpenedConfirModal(false);
+    updateBalances();
+  }, [updateBalances]);
+
+  const changeTokenAAmount = useCallback((value: string) => {
+    if (!matchInputNumber(value)) {
+      return;
+    }
+    setSwapDirection("EXACT_IN");
+    setTokenAAmount(value);
+  }, []);
+
+  const changeTokenBAmount = useCallback((value: string) => {
+    if (!matchInputNumber(value)) {
+      return;
+    }
+    setSwapDirection("EXACT_OUT");
+    setTokenBAmount(value);
+  }, []);
+
+  const changeSlippage = useCallback((value: string) => {
+    setSlippage(BigNumber(value).toNumber());
+  }, [setSlippage]);
+
+  const swapTokenInfo: SwapTokenInfo = useMemo(() => {
+    return {
+      tokenA,
+      tokenAAmount,
+      tokenABalance,
+      tokenAUSD,
+      tokenAUSDStr: numberToUSD(tokenAUSD),
+      tokenB,
+      tokenBAmount,
+      tokenBBalance,
+      tokenBUSD,
+      tokenBUSDStr: numberToUSD(tokenBUSD),
+      direction: swapDirection,
+      slippage
+    };
+  }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+
+  const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return null;
+    }
+    const swapRateUSD = BigNumber(swapRate).multipliedBy(1).toNumber();
+    const gasFeeUSD = BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber();
+    return {
+      tokenA,
+      tokenB,
+      swapDirection,
+      swapRate,
+      swapRateUSD,
+      priceImpact: 0.1,
+      guaranteedAmount: {
+        amount: BigNumber(tokenBAmount).toNumber(),
+        currency: tokenB.symbol,
+      },
+      gasFee: gasFeeAmount,
+      gasFeeUSD,
+    };
+  }, [gasFeeAmount, swapDirection, swapRate, tokenA, tokenB, tokenBAmount]);
+
+  const isAvailSwap = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return false;
+    }
+    return swapError === null;
+  }, [swapError, tokenA, tokenB]);
+
+  const changeTokenA = useCallback((token: TokenModel) => {
+    setTokenA(token);
+  }, []);
+
+  const changeTokenB = useCallback((token: TokenModel) => {
+    setTokenB(token);
+  }, []);
+
+  const switchSwapDirection = useCallback(() => {
+    const preTokenA = tokenA ? { ...tokenA } : null;
+    const preTokenB = tokenB ? { ...tokenB } : null;
+    const changedSwapDirection = swapDirection === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+
+    setTokenA(preTokenB);
+    setTokenB(preTokenA);
+    setSwapDirection(changedSwapDirection);
+    if (changedSwapDirection === "EXACT_IN") {
+      setTokenAAmount(tokenBAmount);
+    } else {
+      setTokenBAmount(tokenAAmount);
+    }
+
+  }, [swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+
+  const copyURL = async () => {
     try {
-      await navigator.clipboard.writeText(text);
+      const url = `https://gnoswap.io/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}`;
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -186,98 +237,42 @@ const SwapContainer: React.FC = () => {
     }
   };
 
-  const onSettingMenu = () => {
-    setSettingMenuToggle(prev => !prev);
-  };
-
-  const onSelectTokenModal = () => {
-    document.body.style.overflowY = tokenModal ? "auto" : "hidden";
-    setMokenModal(prev => !prev);
-  };
-
-  const onConfirmModal = () => {
-    setSwapOpen(prev => !prev);
-    setSwapResult(null);
-    if (submit) {
-      setSubmit(false);
-      setTolerance("1");
-    }
-  };
-
-  const changeTolerance = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value !== "" && !isAmount(value)) return;
-    setTolerance(value);
-  };
-
-  const resetTolerance = () => {
-    setTolerance("1");
-  };
-
-  const selectToken = (e: string) => {
-    setDivision(e);
-  };
-
-  const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value);
-  }, []);
-
-  const showSwapInfo = () => {
-    autoRouter && setAutoRouter(prev => !prev);
-    setSwapInfo(prev => !prev);
-  };
-
-  const showAutoRouter = () => {
-    setAutoRouter(prev => !prev);
-  };
-
-  const submitSwap = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    event.preventDefault();
-    if (submit) {
+  function executeSwap() {
+    if (!tokenA || !tokenB) {
       return;
     }
-    setSubmit(true);
-    swap().then(success => {
+    setSubmitted(true);
+    swap(tokenAAmount, tokenBAmount).then(result => {
       setSwapResult({
-        success: success,
-        transaction: "https://gnoscan.io"
+        success: result !== null,
+        hash: (result as SwapResponse)?.tx_hash || "",
       });
     });
-  };
+  }
 
   return (
     <SwapCard
-      search={search}
-      keyword={keyword}
-      isConnected={isConnected}
-      swapInfo={swapInfo}
-      showSwapInfo={showSwapInfo}
-      gnosAmount={gnosAmount}
-      autoRouter={autoRouter}
-      showAutoRouter={showAutoRouter}
-      swapGasInfo={dummySwapGasInfo}
-      autoRouterInfo={dummyAutoRouterInfo}
-      settingMenuToggle={settingMenuToggle}
-      onSettingMenu={onSettingMenu}
-      tolerance={tolerance}
-      changeTolerance={changeTolerance}
-      tokenModal={tokenModal}
-      onSelectTokenModal={onSelectTokenModal}
-      swapOpen={swapOpen}
-      onConfirmModal={onConfirmModal}
-      coinList={tokens ?? []}
-      from={from}
-      to={to}
-      changeToken={changeToken}
-      selectToken={selectToken}
-      submitSwap={submitSwap}
-      breakpoint={breakpoint}
-      submit={submit}
-      isFetching={swapResult === null}
-      swapResult={swapResult}
-      resetTolerance={resetTolerance}
-      handleCopyClipBoard={handleCopyClipBoard}
+      connectedWallet={connectedWallet}
       copied={copied}
+      swapTokenInfo={swapTokenInfo}
+      swapSummaryInfo={swapSummaryInfo}
+      swapRouteInfos={swapRouteInfos}
+      isAvailSwap={isAvailSwap}
+      swapButtonText={swapButtonText}
+      submitted={submitted}
+      swapResult={swapResult}
+      openedConfirmModal={openedConfirmModal}
+      changeTokenA={changeTokenA}
+      changeTokenAAmount={changeTokenAAmount}
+      changeTokenB={changeTokenB}
+      changeTokenBAmount={changeTokenBAmount}
+      changeSlippage={changeSlippage}
+      switchSwapDirection={switchSwapDirection}
+      openConfirmModal={openConfirmModal}
+      openConnectWallet={openConnectWallet}
+      closeModal={closeModal}
+      copyURL={copyURL}
+      swap={executeSwap}
     />
   );
 };

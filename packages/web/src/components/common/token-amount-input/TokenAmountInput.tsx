@@ -37,7 +37,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
           type="number"
           value={amount}
           onChange={onChangeAmountInput}
-          placeholder={amount}
+          placeholder="0"
         />
         <div className="token">
           <SelectPairButton

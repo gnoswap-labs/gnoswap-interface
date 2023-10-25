@@ -10,6 +10,7 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModalProvider";
 import ModalContainer from "@containers/modal-container/ModalContainer";
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
+import BackgroundContainer from "@containers/background-container/BackgroundContainer";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -31,10 +32,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <JotaiProvider>
           <GnoswapServiceProvider>
             <GnoswapThemeProvider>
-              <Component {...pageProps} />
-              <GnoswapModalProvider selector={"portal-root"} >
-                <ModalContainer />
-              </GnoswapModalProvider>
+              <BackgroundContainer>
+                <Component {...pageProps} />
+                <GnoswapModalProvider selector={"portal-root"} >
+                  <ModalContainer />
+                </GnoswapModalProvider>
+              </BackgroundContainer>
             </GnoswapThemeProvider>
           </GnoswapServiceProvider >
         </JotaiProvider>

@@ -32,7 +32,7 @@ const trendingCryptoInit = [
 export const trendingCryptoListInit = [
   ...trendingCryptoInit,
   ...trendingCryptoInit,
-  ...trendingCryptoInit,
+  trendingCryptoInit[0],
 ];
 
 const TrendingCryptoCardListContainer: React.FC = () => {

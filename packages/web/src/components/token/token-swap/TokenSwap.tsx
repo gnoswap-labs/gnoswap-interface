@@ -1,9 +1,11 @@
-import React, { useCallback, useState } from "react";
-import { wrapper } from "./TokenSwap.styles";
+import React, { useCallback, useState, useEffect } from "react";
+import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
+import IconLink from "@components/common/icons/IconLink";
+import IconPolygon from "@components/common/icons/IconPolygon";
 import { TokenModel } from "@models/token/token-model";
 export interface TokenSwapProps {
   from: {
@@ -21,6 +23,11 @@ export interface TokenSwapProps {
   connected: boolean;
   connectWallet: () => void;
   swapNow: () => void;
+  handleSwap: () => void;
+  copied: boolean;
+  handleCopied: () => void;
+  themeKey: "dark" | "light";
+  handleSetting: () => void;
 }
 
 function isAmount(str: string) {
@@ -28,7 +35,18 @@ function isAmount(str: string) {
   return regex.test(str);
 }
 
-const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWallet, swapNow }) => {
+const TokenSwap: React.FC<TokenSwapProps> = ({
+  from,
+  to,
+  connected,
+  connectWallet,
+  swapNow,
+  handleSwap,
+  copied,
+  handleCopied,
+  themeKey,
+  handleSetting,
+}) => {
   const [fromAmount, setFromAmount] = useState(from.amount.toString());
   const [toAmount, setToAmount] = useState(to.amount.toString());
 
@@ -62,6 +80,11 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
     [],
   );
 
+  useEffect(() => {
+    setFromAmount(toAmount);
+    setToAmount(fromAmount);
+  }, [from, to]);
+
   const onClickConfirm = useCallback(() => {
     if (!connected) {
       connectWallet();
@@ -74,9 +97,22 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button className="setting-button" disabled>
-          <IconSettings className="setting-icon" />
-        </button>
+        <div className="header-button">
+          <button className="setting-button link-button" onClick={handleCopied}>
+            <IconLink className="setting-icon" />
+            {copied && (
+              <CopyTooltip>
+                <div className={`box ${themeKey}-shadow`}>
+                  <span>URL Copied!</span>
+                </div>
+                <IconPolygon className="polygon-icon" />
+              </CopyTooltip>
+            )}
+          </button>
+          <button className="setting-button" onClick={handleSetting}>
+            <IconSettings className="setting-icon" />
+          </button>
+        </div>
       </div>
       <div className="inputs">
         <div className="from">
@@ -85,7 +121,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               className="amount-text"
               value={fromAmount}
               onChange={onChangeFromAmount}
-              placeholder={fromAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton token={from.token} />
@@ -93,7 +129,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
           </div>
           <div className="info">
             <span className="price-text">{from.price}</span>
-            <span className="balance-text">Balance : {from.balance}</span>
+            <span className="balance-text">Balance: {from.balance}</span>
           </div>
         </div>
         <div className="to">
@@ -102,7 +138,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
               className="amount-text"
               value={toAmount}
               onChange={onChangeToAmount}
-              placeholder={toAmount === "" ? "0" : ""}
+              placeholder="0"
             />
             <div className="token">
               <SelectPairButton token={to.token} />
@@ -110,10 +146,10 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
           </div>
           <div className="info">
             <span className="price-text">{to.price}</span>
-            <span className="balance-text">Balance : {to.balance}</span>
+            <span className="balance-text">Balance: {to.balance}</span>
           </div>
         </div>
-        <div className="arrow">
+        <div className="arrow" onClick={handleSwap}>
           <div className="shape">
             <IconSwapArrowDown className="shape-icon" />
           </div>
@@ -122,12 +158,12 @@ const TokenSwap: React.FC<TokenSwapProps> = ({ from, to, connected, connectWalle
 
       <div className="footer">
         <Button
-          text={connected ? "Swap now" : "Connect Wallet"}
+          text={connected ? "Swap" : "Connect Wallet"}
           style={{
             fullWidth: true,
             height: 57,
             fontType: "body7",
-            hierarchy: ButtonHierarchy.Primary
+            hierarchy: ButtonHierarchy.Primary,
           }}
           onClick={onClickConfirm}
         />

@@ -7,10 +7,22 @@ interface PriceInformationListProps {
 }
 
 const TITLE_LIST = [
-  "Price Chage(1h)",
-  "Price Chage(24h)",
-  "Price Chage(7d)",
-  "Price Chage(30d)",
+  <div key={1}>
+    Price Change <br />
+    (1h)
+  </div>,
+  <div key={2}>
+    Price Change <br />
+    (24h)
+  </div>,
+  <div key={3}>
+    Price Change <br />
+    (7d)
+  </div>,
+  <div key={4}>
+    Price Change <br />
+    (30d)
+  </div>,
 ];
 
 const PriceInformationList: React.FC<PriceInformationListProps> = ({
@@ -20,9 +32,9 @@ const PriceInformationList: React.FC<PriceInformationListProps> = ({
     <div css={wrapper}>
       {Object.values(list).map((item: any, idx: number) => (
         <div key={idx} className="information-wrap">
-          <span className="title">{TITLE_LIST[idx]}</span>
+          <div className="title">{TITLE_LIST[idx]}</div>
           <span
-            className={cx({
+            className={cx("price-info-value", {
               negative: item.status === MATH_NEGATIVE_TYPE.NEGATIVE,
             })}
           >
