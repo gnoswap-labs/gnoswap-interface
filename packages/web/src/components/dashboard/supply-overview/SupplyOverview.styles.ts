@@ -57,7 +57,7 @@ export const SupplyInfoWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
   }
 
@@ -65,6 +65,9 @@ export const SupplyInfoWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 16px;
+    ${media.tabletMiddle} {
+      gap: 8px;
+    }
     ${media.mobile} {
       gap: 6px;
     }
@@ -74,7 +77,7 @@ export const SupplyInfoWrapper = styled.div`
       ${media.tabletMiddle} {
         flex-direction: column;
         align-items: flex-start;
-        gap: 6px;
+        gap: 4px;
       }
     }
   }
@@ -85,7 +88,7 @@ export const SupplyInfoWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
   }
 
@@ -95,7 +98,7 @@ export const SupplyInfoWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
     .staked-info {
       ${mixins.flexbox("column", "flex-end", "center")};

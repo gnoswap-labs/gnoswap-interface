@@ -28,7 +28,7 @@ export const VolumeChartPriceInfoWrapper = styled.div`
 export const FeeInfoWrapper = styled.span`
   ${mixins.flexbox("row", "center", "flex-end")};
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   ${fonts.body10};
   ${media.mobile} {
     ${fonts.body12};

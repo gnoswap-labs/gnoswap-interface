@@ -49,7 +49,7 @@ export const MOBILE_TOKEN_TD_WIDTH = [
   42, 90, 90, 85, 85, 85, 140, 140, 140, 190, 126,
 ];
 export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
-export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 200];
+export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
 
 export const SHAPE_TYPES = {
   CIRCLE: "circle",
@@ -141,14 +141,14 @@ export const TOKEN_SEARCH_INFO = {
 export const ACTIVITY_INFO = {
   title: TABLE_TITLE.ACTIVITY_TABLE,
   total: 15,
-  tdWidth: TOKEN_TD_WIDTH,
+  tdWidth: ACTIVITY_TD_WIDTH,
   list: [
     { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
 
