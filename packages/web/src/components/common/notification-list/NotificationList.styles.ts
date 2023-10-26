@@ -10,9 +10,9 @@ export interface NotificationProps {
 
 export const NotificationListWrapper = styled.div<NotificationProps>`
   position: absolute;
-  top: 53px;
+  top: 44px;
   width: 320px;
-  max-height: 442px;
+  height: calc(100vh - 124px);
   overflow-y: auto;
   padding: 20px 0px;
   background-color: ${({ theme }) => theme.color.background06};
@@ -20,14 +20,15 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   right: ${({ width }) => {
-    return width && width > 1680 ? "-150px" : "0px";
+    return width && width > 1920 ? "-250px" : width && width > 1440 ? `-${(width-1440)/2 + 10}px` : "-10px";
   }};
   left: ${({ width }) => {
     return width && width < 768 && "0px";
   }};
   ${media.tablet} {
-    top: 46px;
-    right: 0px;
+    top: 42px;
+    right: -10px;
+    height: calc(100vh - 112px);
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "flex-start")};
@@ -181,6 +182,9 @@ export const TransactionItemsWrap = styled.div`
   }
   .pending-icon * {
     fill: ${({ theme }) => theme.color.icon06};
+  }
+  ${media.mobile} {
+    margin-top: 4px;
   }
 `;
 

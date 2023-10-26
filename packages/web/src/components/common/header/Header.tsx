@@ -39,6 +39,8 @@ interface HeaderProps {
   account: AccountModel | null;
   connected: boolean;
   connectAdenaClient: () => void;
+  themeKey: "dark" | "light";
+  disconnectWallet: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -55,6 +57,8 @@ const Header: React.FC<HeaderProps> = ({
   account,
   connected,
   connectAdenaClient,
+  themeKey,
+  disconnectWallet,
 }) => {
   return (
     <>
@@ -73,7 +77,12 @@ const Header: React.FC<HeaderProps> = ({
                     {HEADER_NAV.map(item => (
                       <li
                         key={item.title}
-                        className={pathname === item.path ? "selected" : ""}
+                        className={
+                          pathname === item.path ||
+                            (item.subPath || []).some(_ => pathname.includes(_))
+                            ? "selected"
+                            : ""
+                        }
                       >
                         <Link href={item.path}>{item.title}</Link>
                       </li>
@@ -96,6 +105,8 @@ const Header: React.FC<HeaderProps> = ({
                 account={account}
                 connected={connected}
                 connectAdenaClient={connectAdenaClient}
+                themeKey={themeKey}
+                disconnectWallet={disconnectWallet}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />

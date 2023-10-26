@@ -30,6 +30,9 @@ export const TableWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
   }
+  ${media.mobile} {
+    margin-top: 8px;
+  }
 `;
 
 export const TableHeader = styled.div<{ tdWidth: number }>`

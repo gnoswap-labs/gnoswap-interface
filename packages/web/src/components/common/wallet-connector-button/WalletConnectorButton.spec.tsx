@@ -12,6 +12,7 @@ describe("WalletConnectorButton Component", () => {
             connected={false}
             account={null}
             connectAdenaClient={() => { }}
+            disconnectWallet={() => { }}
           />
         </GnoswapThemeProvider>
       </JotaiProvider>,

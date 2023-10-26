@@ -11,7 +11,7 @@ export interface WalletMenuProps {
 export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
   position: absolute;
   width: 280px;
-  top: 54px;
+  top: 45px;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
@@ -23,10 +23,13 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
   left: ${({ width }) => {
     return width && width < 768 && "0px";
   }};
+  @media (min-width: 1521px) {
+    left: 0;
+  }
 
   ${media.tablet} {
-    top: 49px;
-    right: 0px;
+    top: 46px;
+    right: -50px;
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "flex-start")};
@@ -71,11 +74,12 @@ export const IconButton = styled.button`
   width: 16px;
   height: 16px;
   margin-left: 8px;
+  position: relative;
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
-  :hover {
-    svg * {
+  .action-icon {
+    &:hover * {
       fill: ${({ theme }) => theme.color.icon07};
     }
   }
@@ -99,4 +103,32 @@ export const ThemeSelector = styled.div`
   width: 100%;
   height: 36px;
   margin-top: 16px;
+`;
+
+export const CopyTooltip = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  position: absolute;
+  top: -65px;
+  left: -35px;
+  z-index: ${Z_INDEX.modalTooltip};
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 84px;
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.background02};
+  }
+  .dark-shadow {
+    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
+  .polygon-icon * {
+    fill: ${({ theme }) => theme.color.background02};
+  }
 `;

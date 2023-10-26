@@ -27,8 +27,8 @@ export const FooterContainer = styled.div`
   ${media.mobile} {
     flex-direction: column;
     max-width: ${ContainerWidth.MOBILE_CONTAINER};
-    width: 90%;
-    padding: 0px;
+    width: 100%;
+    padding: 0px 16px;
     gap: 36px;
   }
 `;
@@ -38,7 +38,9 @@ export const FirstSection = styled.div`
   max-width: 254px;
   width: 100%;
   gap: 24px;
-
+  ${media.tablet} {
+    gap: 16px;
+  }
   .footer-main-logo {
     width: 31.501px;
     height: 36px;
@@ -56,7 +58,7 @@ export const FirstSection = styled.div`
 
   ${media.mobile} {
     max-width: 736px;
-    gap: 8px;
+    gap: 16px;
   }
 `;
 
@@ -89,7 +91,7 @@ export const AnchorStyle = styled.a`
     fill: ${({ theme }) => theme.color.icon03};
   }
   :hover {
-    color: ${({ theme }) => theme.color.text03};
+    color: ${({ theme }) => theme.color.text16};
     svg * {
       fill: ${({ theme }) => theme.color.icon07};
     }
@@ -100,15 +102,27 @@ export const SecondSection = styled.div`
   display: grid;
   max-width: 802px;
   width: 100%;
-  column-gap: 90px;
+  column-gap: 80px;
   grid-template-columns: repeat(5, auto);
   ${media.tablet} {
     max-width: 682px;
     column-gap: 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    
+  }
+  @media (max-width: 820px) {
+    justify-content: flex-start;
+    gap: 32px;
+    > section {
+      width: 28%;
+    }
   }
   ${media.mobile} {
     row-gap: 36px;
-    column-gap: 36px;
+    column-gap: 48px;
     grid-template-columns: repeat(auto-fill, 100px);
   }
 `;

@@ -9,7 +9,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
     ${mixins.flexbox("row", "center", "space-between")}
     height: 100%;
     width: 100%;
-    background-color: ${theme.color.background05};
+    background-color: ${theme.color.background13};
     border-radius: 36px;
     padding: ${hasToken ? "0px 6px" : "0px 6px 0px 12px"};
     ${!disabled && "cursor: pointer;"};

@@ -29,10 +29,10 @@ const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 export class SwapRepositoryImpl implements SwapRepository {
   private localStorageClient: StorageClient;
   private rpcProvider: GnoProvider | null;
-  private walletClient: WalletClient;
+  private walletClient: WalletClient | null;
 
   constructor(
-    walletClient: WalletClient,
+    walletClient: WalletClient | null,
     rpcProvider: GnoProvider | null,
     localStorageClient: StorageClient,
   ) {
@@ -155,6 +155,9 @@ export class SwapRepositoryImpl implements SwapRepository {
   };
 
   public swap = async (swapRequest: SwapRequest): Promise<SwapResponse> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
     const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
     const account = await this.walletClient.getAccount();
     if (!account.data || !poolPackagePath) {

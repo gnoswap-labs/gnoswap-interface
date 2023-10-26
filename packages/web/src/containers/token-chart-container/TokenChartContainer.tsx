@@ -73,13 +73,20 @@ function createXAxisDummyDatas(currentTab: TokenChartGraphPeriodType) {
         return `${yearStr}-${monthStr}`;
       }).reverse();
     case "1Y":
-    case "YTD":
-    default:
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setFullYear(date.getFullYear() - 1 * index);
         const yearStr = date.getFullYear();
         return `${yearStr}`;
+      }).reverse();
+    case "YTD":
+    default:
+      return Array.from({ length: 10 }, (_, index) => {
+        const date = new Date(now);
+        date.setMonth(date.getMonth() - 1 * index);
+        const yearStr = date.getFullYear();
+        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
+        return `${yearStr}-${monthStr}`;
       }).reverse();
   }
 }

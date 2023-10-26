@@ -12,7 +12,10 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
   onSideMenuToggle,
 }) => {
   return (
-    <SubMenuButtonWrapper onClick={onSideMenuToggle}>
+    <SubMenuButtonWrapper
+      onClick={onSideMenuToggle}
+      className={`${sideMenuToggle ? "selected" : ""}`}
+    >
       ···
       {sideMenuToggle && (
         <HeaderSideMenuModal onSideMenuToggle={onSideMenuToggle} />

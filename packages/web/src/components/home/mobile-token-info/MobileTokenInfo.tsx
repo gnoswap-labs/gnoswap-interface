@@ -34,17 +34,9 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
 
 const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   const {
-    path,
     token,
     price,
-    priceOf1d,
-    priceOf7d,
-    priceOf30d,
-    marketCap,
-    liquidity,
-    volume24h,
-    mostLiquidPool,
-    last7days,
+    priceOf1d
   } = item;
 
   const onClickItem = (symbol: string) => {
@@ -54,9 +46,6 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   return (
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.symbol)}>
-        <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[0]}>
-          <span className="token-index">{idx}</span>
-        </TableColumn>
         <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
           <img src={token.logoURI} alt="token logo" className="token-logo" />
           <div className="symbol-col">
@@ -64,57 +53,11 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
             <span className="token-symbol">{token.symbol}</span>
           </div>
         </TableColumn>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
+        <TableColumn className="price-col" tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
           <span>{price}</span>
-        </TableColumn>
-        <TableColumn
-          tdWidth={MOBILE_TOKEN_TD_WIDTH[3]}
-          className={cx(priceOf1d.status.toLowerCase())}
-        >
-          {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
-        </TableColumn>
-        <TableColumn
-          tdWidth={MOBILE_TOKEN_TD_WIDTH[4]}
-          className={cx(priceOf7d.status.toLowerCase())}
-        >
-          {renderToNegativeType(priceOf7d.status, priceOf7d.value)}
-        </TableColumn>
-        <TableColumn
-          tdWidth={MOBILE_TOKEN_TD_WIDTH[5]}
-          className={cx(priceOf30d.status.toLowerCase())}
-        >
-          {renderToNegativeType(priceOf30d.status, priceOf30d.value)}
-        </TableColumn>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[6]}>
-          <span>{marketCap}</span>
-        </TableColumn>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[7]}>
-          <span>{liquidity}</span>
-        </TableColumn>
-
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[8]}>
-          <span className="volume">{volume24h}</span>
+          <div className={cx(priceOf1d.status.toLowerCase())}>{renderToNegativeType(priceOf1d.status, priceOf1d.value)}</div>
         </TableColumn>
       </HoverSection>
-      <HoverSection>
-        <TableColumn tdWidth={MOBILE_TOKEN_TD_WIDTH[9]}>
-          <DoubleLogo
-            left={mostLiquidPool.tokenPair.tokenA.logoURI}
-            right={mostLiquidPool.tokenPair.tokenB.logoURI}
-            size={20}
-          />
-          <span className="liquid-symbol">
-            {tokenPairSymbolToOneCharacter(mostLiquidPool.tokenPair)}
-          </span>
-          <span className="fee-rate">{mostLiquidPool.feeRate}</span>
-        </TableColumn>
-      </HoverSection>
-      <TableColumn
-        tdWidth={MOBILE_TOKEN_TD_WIDTH[10]}
-        className="last7days-graph"
-      >
-        <SimpleLineGraph width={100} height={33} datas={last7days} />
-      </TableColumn>
     </TokenInfoWrapper>
   );
 };

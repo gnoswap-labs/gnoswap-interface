@@ -1,6 +1,7 @@
 import {
   SortOption,
   TABLE_HEAD,
+  TABLE_HEAD_MOBILE,
   type Token,
 } from "@containers/token-list-container/TokenListContainer";
 import React, { useCallback } from "react";
@@ -73,10 +74,19 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
           {Object.values(TABLE_HEAD).map((head, idx) => (
             <TableHeader
               key={idx}
-              className={cx({
-                left: isAlignLeft(head),
-                sort: isSortOption(head),
-              })}
+              className={cx(
+                idx >= 7
+                  ? "right-padding-12"
+                  : idx >= 2
+                  ? "right-padding-16"
+                  : idx === 1
+                  ? "left-padding"
+                  : "",
+                {
+                  left: isAlignLeft(head),
+                  sort: isSortOption(head),
+                },
+              )}
               tdWidth={TOKEN_TD_WIDTH[idx]}
             >
               <span
@@ -111,7 +121,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
     <TableWrapper>
       <div className="scroll-wrapper">
         <div className="token-list-head">
-          {Object.values(TABLE_HEAD).map((head, idx) => (
+          {Object.values(TABLE_HEAD_MOBILE).map((head, idx) => (
             <MobileTableHeader
               key={idx}
               className={cx({
@@ -121,7 +131,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
               tdWidth={MOBILE_TOKEN_TD_WIDTH[idx]}
             >
               <span
-                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+                className={Object.keys(TABLE_HEAD_MOBILE)[idx].toLowerCase()}
                 onClick={() => onClickTableHead(head)}
               >
                 {isAscendingOption(head) && (

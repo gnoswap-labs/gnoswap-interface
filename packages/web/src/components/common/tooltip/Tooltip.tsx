@@ -70,6 +70,7 @@ interface TooltipProps {
   placement: Placement;
   FloatingContent: React.ReactNode;
   width?: CSSProperties["width"];
+  floatClassName?: string;
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
@@ -77,6 +78,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   placement,
   FloatingContent,
   width,
+  floatClassName,
 }) => {
   const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
     placement,
@@ -109,11 +111,12 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
               visibility: x == null ? "hidden" : "visible",
               zIndex: Z_INDEX.modalTooltip,
             }}
+            className={floatClassName}
           >
             <FloatingArrow
               ref={arrowRef}
               context={context}
-              fill={theme.color.background14}
+              fill={theme.color.background02}
               width={20}
               height={14}
               tipRadius={4}

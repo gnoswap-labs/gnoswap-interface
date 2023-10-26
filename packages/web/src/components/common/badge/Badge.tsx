@@ -5,6 +5,7 @@ interface BadgeProps {
   type: BADGE_TYPE;
   leftIcon?: React.ReactNode;
   text: string;
+  className?: string;
 }
 
 export const BADGE_TYPE = {
@@ -15,9 +16,9 @@ export const BADGE_TYPE = {
 } as const;
 export type BADGE_TYPE = ValuesType<typeof BADGE_TYPE>;
 
-const Badge: React.FC<BadgeProps> = ({ type, leftIcon, text }) => {
+const Badge: React.FC<BadgeProps> = ({ type, leftIcon, text, className }) => {
   return (
-    <BadgeWrapper type={type}>
+    <BadgeWrapper className={className} type={type}>
       {leftIcon && <div className="badge-icon">{leftIcon}</div>}
       <span>{text}</span>
     </BadgeWrapper>

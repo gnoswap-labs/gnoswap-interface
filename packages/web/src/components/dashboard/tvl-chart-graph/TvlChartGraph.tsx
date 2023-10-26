@@ -42,6 +42,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
             color={theme.color.point}
             strokeWidth={1}
             datas={getDatas()}
+            typeOfChart="tvl"
           />
         </div>
         <div className="xaxis-wrapper">

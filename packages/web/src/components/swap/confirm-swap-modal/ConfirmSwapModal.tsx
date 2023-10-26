@@ -16,8 +16,9 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo, swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
-import { toNumberFormat } from "@utils/number-utils";
+import { numberToUSD, toNumberFormat } from "@utils/number-utils";
 import { numberToFormat } from "@utils/string-utils";
+import BigNumber from "bignumber.js";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -41,15 +42,22 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   useModalCloseEvent(menuRef, close);
 
+  const tokenAAmountStr = useMemo(() => {
+    return BigNumber(swapTokenInfo.tokenAAmount).toFormat();
+  }, [swapTokenInfo.tokenAAmount]);
+
+  const tokenBAmountStr = useMemo(() => {
+    return BigNumber(swapTokenInfo.tokenBAmount).toFormat();
+  }, [swapTokenInfo.tokenBAmount]);
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
     return `1 ${tokenA.symbol} = ${numberToFormat(swapRate)} ${tokenB.symbol}`;
   }, [swapSummaryInfo]);
 
-  const swapRateUSD = useMemo(() => {
-    const swapRateUSD = swapSummaryInfo.swapRateUSD;
-    return numberToFormat(swapRateUSD);
+  const swapRateUSDStr = useMemo(() => {
+    const swapRateStr = numberToUSD(swapSummaryInfo.swapRateUSD);
+    return `(${swapRateStr})`;
   }, [swapSummaryInfo.swapRateUSD]);
 
   const priceImpactStr = useMemo(() => {
@@ -103,7 +111,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 <div className="input-group">
                   <div className="first-section">
                     <div className="amount-container">
-                      <span>{swapTokenInfo.tokenAAmount}</span>
+                      <span>{tokenAAmountStr}</span>
                       <div className="button-wrapper">
                         <img
                           src={swapSummaryInfo.tokenA.logoURI}
@@ -114,7 +122,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       </div>
                     </div>
                     <div className="amount-info">
-                      <span className="price-text">{swapTokenInfo.tokenAUSD}</span>
+                      <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
                     </div>
                     <div className="arrow">
                       <div className="shape">
@@ -124,7 +132,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </div>
                   <div className="second-section">
                     <div className="amount-container">
-                      <span>{swapTokenInfo.tokenBAmount}</span>
+                      <span>{tokenBAmountStr}</span>
                       <div className="button-wrapper">
                         <img
                           src={swapSummaryInfo.tokenB.logoURI}
@@ -135,7 +143,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       </div>
                     </div>
                     <div className="amount-info">
-                      <span className="price-text">{swapTokenInfo.tokenBUSD}</span>
+                      <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
                     </div>
                   </div>
                 </div>
@@ -146,7 +154,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       {swapRateDescription}
                     </span>
                     <span className="exchange-price">
-                      {swapRateUSD}
+                      {swapRateUSDStr}
                     </span>
                   </div>
                 </div>
@@ -211,7 +219,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
 
   if (swapResult === null) {
     return (
-      <div>
+      <>
         <div className="animation">
           <LoadingSpinner />
         </div>
@@ -224,7 +232,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
             <span>Confirm this transaction in your wallet</span>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 

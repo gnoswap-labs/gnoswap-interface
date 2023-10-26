@@ -48,14 +48,21 @@ export const useWallet = () => {
   }
 
   const connectAdenaClient = useCallback(() => {
-    const adena = new AdenaClient();
-    adena.initAdena();
+    const adena = AdenaClient.createAdenaClient();
+    if (adena !== null) {
+      adena.initAdena();
+    }
     setWalletClient(adena);
-    connectAccount();
   }, [setWalletClient]);
 
-  async function connectAccount() {
-    const established = await accountRepository.addEstablishedSite();
+  const connectAccount = useCallback(async () => {
+    const established = await accountRepository
+      .addEstablishedSite()
+      .catch(() => null);
+
+    if (established === null) {
+      return;
+    }
 
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
@@ -64,7 +71,7 @@ export const useWallet = () => {
     } else {
       accountRepository.setConnectedWallet(false);
     }
-  }
+  }, [accountRepository, setWalletAccount]);
 
   const disconnectWallet = useCallback(() => {
     setWalletAccount(null);
@@ -78,17 +85,17 @@ export const useWallet = () => {
     try {
       walletClient.addEventChangedAccount(connectAdenaClient);
       walletClient.addEventChangedNetwork(connectAdenaClient);
-    } catch {
-      setWalletClient(new AdenaClient());
-    }
+    } catch {}
   }
 
   return {
     wallet,
     account: walletAccount,
     connected,
+    connectAccount,
     initSession,
     connectAdenaClient,
+    updateWalletEvents,
     disconnectWallet,
   };
 };

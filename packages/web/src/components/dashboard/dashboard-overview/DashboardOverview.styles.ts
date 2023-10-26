@@ -9,6 +9,7 @@ export const DashboardOverviewWrapper = styled.div`
   border-radius: 8px;
   gap: 8px;
   ${media.mobile} {
+    gap: 0px;
     border: 0px;
     flex-direction: column;
     justify-content: flex-start;
