@@ -1,11 +1,17 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { ValuesType } from "utility-types";
 import { useQuery } from "@tanstack/react-query";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import BigNumber from "bignumber.js";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import useClickOutside from "@hooks/common/use-click-outside";
+import DepositModal from "@components/wallet/deposit-modal/DepositModal";
+import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import { TokenModel } from "@models/token/token-model";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 
 interface AssetListResponse {
   hasNext: boolean;
@@ -55,7 +61,6 @@ export type ASSET_TYPE = ValuesType<typeof ASSET_TYPE>;
 export const ASSET_FILTER_TYPE = {
   ALL: "All",
   GRC20: "GRC20",
-  NATIVE: "Native",
 } as const;
 
 export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
@@ -127,7 +132,48 @@ function filterKeyword(asset: Asset, keyword: string) {
   );
 }
 
+const DEPOSIT_TO = {
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gnos",
+  decimals: 4,
+  symbol: "Cosmos",
+  logoURI:
+    "/cosmos.svg",
+  priceId: "gno.land/r/gnos",
+};
+
+const DEPOSIT_FROM = {
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gnos",
+  decimals: 4,
+  symbol: "Gnoland",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  priceId: "gno.land/r/gnos",
+};
+const DEPOSIT_INFO = {
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gnos",
+  decimals: 4,
+  symbol: "GNOT",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  priceId: "gno.land/r/gnos",
+};
+
+
 const AssetListContainer: React.FC = () => {
+  const { connected } = useWallet();
+
   const [address, setAddress] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
     ASSET_FILTER_TYPE.ALL,
@@ -141,9 +187,34 @@ const AssetListContainer: React.FC = () => {
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
+  const [componentRef, isClickOutside, setIsInside] = useClickOutside();
+  const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+  const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
+  const [depositInfo, setDepositInfo] = useState(DEPOSIT_INFO);
+  const [withdrawInfo, setWithDrawInfo] = useState(DEPOSIT_INFO);
+
+  const changeTokenDeposit = useCallback((token: TokenModel) => {
+    setDepositInfo(token);
+    setIsShowDepositModal(true);
+  }, []);
+
+  const changeTokenWithdraw = useCallback((token: TokenModel) => {
+    setWithDrawInfo(token);
+    setIsShowWithDrawModal(true);
+  }, []);
+
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
+    setIsInside(true);
   };
+
+  useEffect(() => {
+    if (!keyword) {
+      if (isClickOutside) {
+        setSearchIcon(false);
+      }
+    }
+  }, [isClickOutside, keyword]);
 
   const {
     isFetched,
@@ -161,7 +232,7 @@ const AssetListContainer: React.FC = () => {
 
   useEffect(() => {
     if (assets && assets.length > 0) {
-      const COLLAPSED_LENGTH = 10;
+      const COLLAPSED_LENGTH = 15;
       const filteredAssets = assets
         .filter(
           asset => invisibleZeroBalance === false || filterZeroBalance(asset),
@@ -186,9 +257,6 @@ const AssetListContainer: React.FC = () => {
       case ASSET_FILTER_TYPE.ALL:
         setAssetType(ASSET_FILTER_TYPE.ALL);
         break;
-      case ASSET_FILTER_TYPE.NATIVE:
-        setAssetType(ASSET_FILTER_TYPE.NATIVE);
-        break;
       case ASSET_FILTER_TYPE.GRC20:
         setAssetType(ASSET_FILTER_TYPE.GRC20);
         break;
@@ -210,19 +278,45 @@ const AssetListContainer: React.FC = () => {
   }, []);
 
   const deposit = useCallback(
-    (assetId: string) => {
-      console.debug("deposit", `address: ${address}`, `assetId: ${assetId}`);
+    (asset: Asset) => {
+      if (!connected) return;
+      setIsShowDepositModal(true);
+      setDepositInfo({
+        chainId: "dev",
+        createdAt: "2023-10-10T08:48:46+09:00",
+        name: "Gnoswap",
+        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+        path: "gno.land/r/gnos",
+        decimals: 4,
+        symbol: asset.symbol,
+        logoURI: asset.logoUri,
+        priceId: "gno.land/r/gnos",
+      });
+      // console.debug("deposit", `address: ${address}`, `assetId: ${assetId}`);
       if (!address) return;
     },
-    [address],
+    [address, connected],
   );
 
   const withdraw = useCallback(
-    (assetId: string) => {
-      console.debug("withdraw", `address: ${address}`, `assetId: ${assetId}`);
+    (asset: Asset) => {
+      if (!connected) return;
+      setIsShowWithDrawModal(true);
+      setWithDrawInfo({
+        chainId: "dev",
+        createdAt: "2023-10-10T08:48:46+09:00",
+        name: "Gnoswap",
+        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+        path: "gno.land/r/gnos",
+        decimals: 4,
+        symbol: asset.symbol,
+        logoURI: asset.logoUri,
+        priceId: "gno.land/r/gnos",
+      });
+      // console.debug("withdraw", `address: ${address}`, `assetId: ${assetId}`);
       if (!address) return;
     },
-    [address],
+    [address, connected],
   );
 
   const sort = useCallback(
@@ -248,28 +342,75 @@ const AssetListContainer: React.FC = () => {
     return !disableItems.includes(head);
   }, []);
 
+
+  const closeDeposit = () => {
+    setIsShowDepositModal(false)
+  }
+
+  const closeWithdraw = () => {
+    setIsShowWithDrawModal(false)
+  }
+
+  const callbackDeposit = (value: boolean) => {
+    setIsShowDepositModal(value);
+  }
+
+  const callbackWithdraw = (value: boolean) => {
+    setIsShowWithDrawModal(value);
+  }
+
+  usePreventScroll(isShowDepositModal || isShowWithdrawModal);
+
+
   return (
-    <AssetList
-      assets={filteredAssets}
-      isFetched={isFetched}
-      assetType={assetType}
-      invisibleZeroBalance={invisibleZeroBalance}
-      keyword={keyword}
-      extended={extended}
-      hasLoader={hasLoader}
-      changeAssetType={changeAssetType}
-      search={search}
-      toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
-      toggleExtended={toggleExtended}
-      deposit={deposit}
-      withdraw={withdraw}
-      sortOption={sortOption}
-      sort={sort}
-      isSortOption={isSortOption}
-      breakpoint={breakpoint}
-      searchIcon={searchIcon}
-      onTogleSearch={onTogleSearch}
-    />
+    <>
+      <AssetList
+        assets={filteredAssets}
+        isFetched={isFetched}
+        assetType={assetType}
+        invisibleZeroBalance={invisibleZeroBalance}
+        keyword={keyword}
+        extended={extended}
+        hasLoader={hasLoader}
+        changeAssetType={changeAssetType}
+        search={search}
+        toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
+        toggleExtended={toggleExtended}
+        deposit={deposit}
+        withdraw={withdraw}
+        sortOption={sortOption}
+        sort={sort}
+        isSortOption={isSortOption}
+        breakpoint={breakpoint}
+        searchIcon={searchIcon}
+        onTogleSearch={onTogleSearch}
+        searchRef={componentRef}
+      />
+      {isShowDepositModal && (
+        <DepositModal
+          breakpoint={breakpoint}
+          close={closeDeposit}
+          depositInfo={depositInfo}
+          fromToken={DEPOSIT_TO}
+          toToken={DEPOSIT_FROM}
+          connected={connected}
+          changeToken={changeTokenDeposit}
+          callback={callbackDeposit}
+        />
+      )}
+      {isShowWithdrawModal && (
+        <WithDrawModal
+          breakpoint={breakpoint}
+          close={closeWithdraw}
+          withdrawInfo={withdrawInfo}
+          fromToken={DEPOSIT_FROM}
+          toToken={DEPOSIT_TO}
+          connected={connected}
+          changeToken={changeTokenWithdraw}
+          callback={callbackWithdraw}
+        />
+      )}
+    </>
   );
 };
 

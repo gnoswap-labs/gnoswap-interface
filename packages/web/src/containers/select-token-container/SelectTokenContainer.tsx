@@ -3,17 +3,23 @@ import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { TokenModel } from "@models/token/token-model";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
+  callback?: (value: boolean) => void;
 }
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   changeToken,
+  callback,
 }) => {
   const { tokens, balances, updateTokens, updateBalances } = useTokenData();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
+  const themeKey = useAtomValue(ThemeState.themeKey);
 
   useEffect(() => {
     updateTokens();
@@ -49,7 +55,10 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
 
   const close = useCallback(() => {
     clearModal();
-  }, [clearModal]);
+    callback?.(true);
+  }, [clearModal, callback]);
+
+  useEscCloseModal(close);
 
   return (
     <SelectToken
@@ -60,6 +69,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       changeKeyword={changeKeyword}
       changeToken={selectToken}
       close={close}
+      themeKey={themeKey}
     />
   );
 };

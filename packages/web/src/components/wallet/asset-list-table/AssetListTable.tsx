@@ -22,8 +22,8 @@ import { DEVICE_TYPE } from "@styles/media";
 interface AssetListTableProps {
   assets: Asset[];
   isFetched: boolean;
-  deposit: (assetId: string) => void;
-  withdraw: (assetId: string) => void;
+  deposit: (asset: Asset) => void;
+  withdraw: (asset: Asset) => void;
   sortOption: AssetSortOption | undefined;
   sort: (head: ASSET_HEAD) => void;
   isSortOption: (head: ASSET_HEAD) => boolean;

@@ -63,5 +63,5 @@ export const noDataText = (theme: Theme) => css`
   color: ${theme.color.text04};
   ${fonts.body12};
   width: 100%;
-  height: 300px;
+  height: 120px;
 `;

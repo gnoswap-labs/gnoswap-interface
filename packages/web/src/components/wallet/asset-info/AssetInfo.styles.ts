@@ -24,7 +24,7 @@ export const AssetInfoWrapper = styled.div`
   }
 
   .name {
-    margin: 0px 4px;
+    margin: 0px 8px;
   }
 
   .symbol {
@@ -41,7 +41,11 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   .logo {
     margin-left: 16px;
   }
-
+  .name,
+  .chain,
+  .balance {
+    color: ${({ theme }) => theme.color.text02};
+  }
   .chain {
     padding: 16px;
     ${media.tablet} {
@@ -64,6 +68,9 @@ export const LoadButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   color: ${({ theme }) => theme.color.text04};
   gap: 4px;
+  &.withdraw-pd {
+    padding-right: 16px;
+  }
   &,
   svg * {
     transition: all 0.3s ease;

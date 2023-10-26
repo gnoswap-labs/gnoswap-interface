@@ -4,7 +4,6 @@ import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-
 export interface SelectTokenProps {
   keyword: string;
   defaultTokens: TokenModel[];
@@ -13,6 +12,7 @@ export interface SelectTokenProps {
   changeKeyword: (keyword: string) => void;
   changeToken: (token: TokenModel) => void;
   close: () => void;
+  themeKey: "dark" | "light";
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -23,8 +23,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   changeKeyword,
   changeToken,
   close,
+  themeKey,
 }) => {
-
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
     if (tokenPrice === null || Number.isNaN(tokenPrice)) {
@@ -68,7 +68,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="token-select">
           {defaultTokens.map((token, index) => (
             <div
-              className="token-button"
+              className={`token-button ${
+                themeKey === "dark" && "border-button-none"
+              }`}
               key={index}
               onClick={() => onClickToken(token)}
             >
@@ -78,21 +80,29 @@ const SelectToken: React.FC<SelectTokenProps> = ({
           ))}
         </div>
       </div>
-      <div className="token-list-wrapper">
-        {tokens.map((token, index) => (
-          <div
-            className="list"
-            key={index}
-            onClick={() => onClickToken(token)}
-          >
-            <div className="token-info">
-              <img src={token.logoURI} alt="logo" className="token-logo" />
-              <span className="token-name">{token.name}</span>
-              <span className="token-symbol">{token.symbol}</span>
+      <div
+        className={`token-list-wrapper ${
+          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+        }`}
+      >
+        {tokens.length > 0 &&
+          tokens.map((token, index) => (
+            <div
+              className="list"
+              key={index}
+              onClick={() => onClickToken(token)}
+            >
+              <div className="token-info">
+                <img src={token.logoURI} alt="logo" className="token-logo" />
+                <span className="token-name">{token.name}</span>
+                <span className="token-symbol">{token.symbol}</span>
+              </div>
+              <span className="token-balance">{getTokenPrice(token)}</span>
             </div>
-            <span className="token-balance">{getTokenPrice(token)}</span>
-          </div>
-        ))}
+          ))}
+        {tokens.length === 0 && (
+          <div className="no-data-found">No data found</div>
+        )}
       </div>
     </SelectTokenWrapper>
   );

@@ -17,6 +17,7 @@ interface AssetListHeaderProps {
   breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
+  searchRef: React.RefObject<HTMLDivElement>;
 }
 
 const AssetListHeader: React.FC<AssetListHeaderProps> = ({
@@ -29,6 +30,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   breakpoint,
   searchIcon,
   onTogleSearch,
+  searchRef,
 }) => {
   return (
     <AssetListHeaderWrapper>
@@ -51,13 +53,15 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               />
             )}
             {searchIcon ? (
-              <SearchInput
-                width={200}
-                height={40}
-                value={keyword}
-                onChange={search}
-                className="tokens-search"
-              />
+              <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+                <SearchInput
+                  width={200}
+                  height={40}
+                  value={keyword}
+                  onChange={search}
+                  className="tokens-search"
+                />
+              </div>
             ) : (
               <>
                 <Switch

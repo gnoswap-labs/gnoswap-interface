@@ -19,6 +19,8 @@ export interface ButtonStyleProps {
   justify?: CSSProperties["justifyContent"];
   padding?: CSSProperties["padding"];
   minWidth?: CSSProperties["minWidth"];
+  hoverColor?: ThemeColorKeyTypes;
+  disabledColor?: ThemeColorKeyTypes;
 }
 
 export const ButtonWrapper = styled.button<ButtonStyleProps>`
@@ -53,7 +55,10 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
 
   &.selected,
   &:hover {
-    background-color: ${({ hierarchy, theme }) => {
+    background-color: ${({ hierarchy, theme, hoverColor }) => {
+      if (hoverColor) {
+        return hoverColor;
+      }
       if (hierarchy === ButtonHierarchy.Primary)
         return theme.color.background04Hover;
       if (hierarchy === ButtonHierarchy.Dark)
@@ -68,9 +73,12 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
     }
   }
   &:disabled {
-    background-color: ${({ hierarchy, theme }) => {
+    background-color: ${({ hierarchy, theme, disabledColor }) => {
+      if (disabledColor) {
+        return disabledColor;
+      }
       if (hierarchy === ButtonHierarchy.Primary)
-        return theme.color.background07;
+        return theme.color.background17;
       return;
     }};
   }

@@ -9,6 +9,7 @@ interface SelectPairButtonProps {
   changeToken?: (token: TokenModel) => void;
   disabled?: boolean;
   hiddenModal?: boolean;
+  callback?: (value: boolean) => void; 
 }
 
 const SelectPairButton: React.FC<SelectPairButtonProps> = ({
@@ -16,15 +17,17 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
   changeToken,
   disabled,
   hiddenModal,
+  callback,
 }) => {
-  const { openModal } = useSelectTokenModal({ changeToken });
+  const { openModal } = useSelectTokenModal({ changeToken, callback });
 
   const onClickButton = useCallback(() => {
     if (disabled || hiddenModal) {
       return;
     }
     openModal();
-  }, [disabled, openModal, hiddenModal]);
+    callback?.(false);
+  }, [disabled, openModal, hiddenModal, callback]);
 
   return (
     <div

@@ -9,7 +9,7 @@ const WalletPositionCardListContainer: React.FC = () => {
   const [mobile, setMobile] = useState(false);
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
+      window.innerWidth <= 1180 ? setMobile(true) : setMobile(false);
     }
   };
 

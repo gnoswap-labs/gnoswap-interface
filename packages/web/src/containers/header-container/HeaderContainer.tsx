@@ -10,6 +10,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -105,13 +106,7 @@ const HeaderContainer: React.FC = () => {
     setKeyword(e.target.value);
   }, []);
 
-  useEffect(() => {
-    if (searchMenuToggle) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [searchMenuToggle]);
+  usePreventScroll(searchMenuToggle);
 
   return (
     <Header
