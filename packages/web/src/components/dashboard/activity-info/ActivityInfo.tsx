@@ -8,11 +8,13 @@ import {
   TableColumn,
   TokenInfoWrapper,
   IconButton,
+  TableColumnTooltipContent,
 } from "./ActivityInfo.styles";
 import {
   ACTIVITY_TD_WIDTH,
   MOBILE_ACTIVITY_TD_WIDTH,
 } from "@constants/skeleton.constant";
+import Tooltip from "@components/common/tooltip/Tooltip";
 
 interface ActivityInfoProps {
   item: Activity;
@@ -64,10 +66,28 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
           <span className="token-index">{tokenAmountTwo}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[4]}>
-          <span className="token-index">{account}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                g1c4f5pn9zatmyxrndncv3zsq8qmk33vf4g9gm7h
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index">{account}</span>
+          </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[5]}>
-          <span className="token-index">{time}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                2023-06-13 18:05:11 (UTC+9)
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index">{time}</span>
+          </Tooltip>
         </TableColumn>
       </HoverSection>
     </TokenInfoWrapper>
@@ -122,10 +142,28 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
           <span className="token-index">{tokenAmountTwo}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[4]}>
-          <span className="token-index">{account}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                g1c4f5pn9zatmyxrndncv3zsq8qmk33vf4g9gm7h
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index">{account}</span>
+          </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[5]}>
-          <span className="token-index">{time}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                2023-06-13 18:05:11 (UTC+9)
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index">{time}</span>
+          </Tooltip>
         </TableColumn>
       </HoverSection>
     </TokenInfoWrapper>

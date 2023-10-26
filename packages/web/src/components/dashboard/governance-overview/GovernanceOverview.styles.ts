@@ -19,17 +19,31 @@ export const GovernanceOverviewTitleWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   color: ${({ theme }) => theme.color.text02};
   ${fonts.body9};
-  gap: 4px;
+  gap: 6px;
+
   ${media.mobile} {
+    gap: 4px;
     ${fonts.body7};
   }
 `;
 
 export const LabelIconButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
-  width: 16px;
-  height: 16px;
-  margin: 2.5px 0px;
+  width: 20px;
+  height: 20px;
+  margin: 0px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+  ${media.mobile} {
+    width: 16px;
+    height: 16px;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
@@ -89,7 +103,7 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
   }
   .holders {
@@ -98,7 +112,7 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
   }
   .passed-proposals {
@@ -107,7 +121,7 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
   }
   .active-proposals {
@@ -116,7 +130,7 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
   }
   .community-pool {
@@ -125,19 +139,27 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
+      gap: 4px;
     }
   }
   .icon-wrapper {
     ${mixins.flexbox("row", "center", "center")};
   }
   .action-icon {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
+
+    ${media.mobile} {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .active-proposals-emissions-tooltip {
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 4px;
+    gap: 6px;
+    ${media.mobile} {
+      gap: 4px;
+    }
   }
 `;

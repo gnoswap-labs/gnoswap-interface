@@ -41,7 +41,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         </div>
         <div className="daily-block-emissions-tooltip">
           <div>{supplyOverviewInfo.dailyBlockEmissions}</div>
-          <DashboardLabel tooltip="TBD" />
+          <DashboardLabel tooltip="Number of newly minted GNOS tokens per block." />
         </div>
       </div>
       <div className="total-staked">

@@ -20,6 +20,11 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
     width: 100%;
     height: 100%;
     overflow: visible;
+    rect {
+      &:hover {
+        fill: ${({ theme }) => theme.color.point};
+      }
+    }
   }
 `;
 
@@ -38,17 +43,19 @@ interface BarGraphTooltipWrapperProps {
 
 export const BarGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperProps>`
   position: absolute;
-  top: ${props => `${props.y}px`};
+  top: ${props => `${props.y - 51}px`};
   left: ${props => `${props.x}px`};
   display: flex;
   flex-direction: column;
-  width: 157px;
+  min-width: 220px;
   height: auto;
   padding: 6px 8px;
-  background: ${({ theme }) => theme.color.background05};
+  background: ${({ theme }) => theme.color.background02};
   border-radius: 4px;
   box-shadow: 2px 2px 12px 0px rgba(0, 0, 0, 0.15);
   overflow: visible;
+  gap: 5px;
+  transform: translateX(-48%);
   ${fonts.p4};
 
   & .tooltip-header {
@@ -57,9 +64,17 @@ export const BarGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperProps>`
     width: 100%;
     height: auto;
     justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 19px;
+    color: ${({ theme }) => theme.color.point};
   }
 
   & .tooltip-body {
-    color: ${({ theme }) => theme.color.point};
+    ${fonts.p4};
+    color: ${({ theme }) => theme.color.text04};
+    .date {
+      margin-right: 3px;
+    }
   }
 `;

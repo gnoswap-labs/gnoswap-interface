@@ -2,8 +2,8 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
 export const Content = styled.div`
-  color: ${({ theme }) => theme.color.text15};
-  background-color: ${({ theme }) => theme.color.background14};
+  color: ${({ theme }) => theme.color.text02};
+  background-color: ${({ theme }) => theme.color.background02};
   padding: 16px;
   border-radius: 8px;
   box-sizing: border-box;

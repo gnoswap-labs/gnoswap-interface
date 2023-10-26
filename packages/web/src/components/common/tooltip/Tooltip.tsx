@@ -116,7 +116,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
             <FloatingArrow
               ref={arrowRef}
               context={context}
-              fill={theme.color.background14}
+              fill={theme.color.background02}
               width={20}
               height={14}
               tipRadius={4}
