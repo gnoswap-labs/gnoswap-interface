@@ -1,4 +1,5 @@
 import Footer from "@components/common/footer/Footer";
+import Banner from "@components/home/banner/Banner";
 import GnoswapBrandContainer from "@containers/gnoswap-brand-container/GnoswapBrandContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import HighestAprsCardListContainer from "@containers/highest-aprs-card-list-container/HighestAprsCardListContainer";
@@ -12,7 +13,6 @@ import HomeLayout from "@layouts/home-layout/HomeLayout";
 import { useEffect } from "react";
 
 export default function Home() {
-
   const { updateTokens, updateTokenPrices } = useTokenData();
   const { updatePools } = usePoolData();
 
@@ -31,6 +31,7 @@ export default function Home() {
       highest={<HighestAprsCardListContainer />}
       recently={<RecentlyAddedCardListContainer />}
       tokenList={<TokenListContainer />}
+      banner={<Banner />}
       footer={<Footer />}
     />
   );

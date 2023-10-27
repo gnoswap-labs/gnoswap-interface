@@ -2,6 +2,7 @@ export const HEADER_NAV = [
   {
     title: "Swap",
     path: "/swap",
+    subPath: ["/tokens/"]
   },
   {
     title: "Earn",

@@ -9,14 +9,14 @@ export const VolumeChartWrapper = styled.div`
   border-radius: 8px;
   padding: 24px;
   ${media.mobile} {
-    padding: 12px 24px 12px 12px;
+    padding: 12px 12px 12px 12px;
   }
 `;
 
 export const ChartWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  gap: 16px;
+  gap: 12px;
   ${media.mobile} {
     gap: 12px;
   }

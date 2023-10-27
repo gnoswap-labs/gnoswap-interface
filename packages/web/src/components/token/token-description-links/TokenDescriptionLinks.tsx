@@ -15,12 +15,14 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
   return (
     <div css={wrapper}>
       <h3>Links</h3>
-      {Object.keys(links)?.map((link, idx) => (
-        <button key={idx} onClick={() => onClickLink(links[link])}>
-          <span>{link}</span>
-          <IconOpenLink className="link-icon" />
-        </button>
-      ))}
+      <div className="group-button">
+        {Object.keys(links)?.map((link, idx) => (
+          <button key={idx} onClick={() => onClickLink(links[link])}>
+            <span>{link}</span>
+            <IconOpenLink className="link-icon" />
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

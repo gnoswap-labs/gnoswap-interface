@@ -14,7 +14,7 @@ const SelectTab: React.FC<SelectTabProps> = ({
   buttonClassName,
 }) => {
   return (
-    <SelectTabWrapper>
+    <SelectTabWrapper className="select-tab-wrapper">
       {list.map((type, idx) => (
         <SelectButton
           key={idx}

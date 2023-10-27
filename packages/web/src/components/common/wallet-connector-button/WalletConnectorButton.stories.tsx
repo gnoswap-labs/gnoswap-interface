@@ -44,6 +44,7 @@ Disconnected.args = {
   connected: false,
   account: null,
   connectAdenaClient: action("connectAdenaClient"),
+  disconnectWallet: action("disconnectWallet"),
 };
 
 export const Connected = Template.bind({});
@@ -51,4 +52,5 @@ Connected.args = {
   connected: true,
   account: defaultAccountInfo,
   connectAdenaClient: action("connectAdenaClient"),
+  disconnectWallet: action("disconnectWallet"),
 };

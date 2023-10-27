@@ -30,7 +30,7 @@ export const AlertButton = styled.button`
   }
   &:hover {
     .notification-icon * {
-      fill: ${({ theme }) => theme.color.icon02};
+      fill: ${({ theme }) => theme.color.icon07};
     }
   }
 `;

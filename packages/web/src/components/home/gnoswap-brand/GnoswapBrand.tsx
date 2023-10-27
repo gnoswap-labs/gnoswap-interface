@@ -66,7 +66,7 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
           <br />
           on Gnoswap
         </TitleWrapper>
-        <SubTitleWrapper>the One-stop Gnoland Defi Platform</SubTitleWrapper>
+        <SubTitleWrapper>the One-stop Gnoland DeFi Platform</SubTitleWrapper>
       </HeroTitleContainer>
       {windowSize > DeviceSize.mobile && (
         <DescriptionContainer>
@@ -88,9 +88,8 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
             </button>
           </div>
           <DescriptionTitle>
-            Gnoswap is an open-source & audited AMM Dex that provides
-            <br />a simplified concentrated-LP experience for increased capital
-            efficiency.
+          The first Concentrated Liquidity AMM DEX built using Gnolang <br />
+          to offer the most simplified and user-friendly DeFi experience for traders.
           </DescriptionTitle>
         </DescriptionContainer>
       )}

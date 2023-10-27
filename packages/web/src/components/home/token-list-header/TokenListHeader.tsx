@@ -63,6 +63,7 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
         selectType={tokenType}
         list={Object.values(TOKEN_TYPE)}
         onClick={changeTokenType}
+        buttonClassName="select-tab-token"
       />
     )}
   </TokenListHeaderwrapper>

@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useMemo } from "react";
-import { BarGraphWrapper } from "./BarGraph.styles";
+import React, { useCallback, useMemo, useState } from "react";
+import { BarGraphTooltipWrapper, BarGraphWrapper } from "./BarGraph.styles";
 
 export interface BarGraphProps {
   className?: string;
@@ -33,17 +33,24 @@ const BarGraph: React.FC<BarGraphProps> = ({
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
 }) => {
+  const [activated, setActivated] = useState(false);
+  const [currentPoint, setCurrentPoint] = useState<Point>();
+  const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
 
   const getStrokeWidth = useCallback(() => {
-    const maxStorkeWidth = BigNumber(width - (datas.length - 1) * minGap).dividedBy(datas.length);
-    return maxStorkeWidth.isLessThan(strokeWidth) ? maxStorkeWidth.toNumber() : strokeWidth;
+    const maxStorkeWidth = BigNumber(
+      width - (datas.length - 1) * minGap,
+    ).dividedBy(datas.length);
+    return maxStorkeWidth.isLessThan(strokeWidth)
+      ? maxStorkeWidth.toNumber()
+      : strokeWidth;
   }, [width, datas.length, minGap, strokeWidth]);
 
   const getGraphPoints = useCallback(() => {
     const strokeWidth = getStrokeWidth();
     const mappedDatas = datas.map((data, index) => ({
       value: new BigNumber(data).toNumber(),
-      x: index + 1
+      x: index + 1,
     }));
 
     const values = mappedDatas.map(data => data.value);
@@ -55,11 +62,24 @@ const BarGraph: React.FC<BarGraphProps> = ({
     const maxXValue = Math.max(...xValues);
 
     const optimizeValue = function (value: number, height: number) {
-      return height - new BigNumber(value - minValue).multipliedBy(height).dividedBy(maxValue - minValue).toNumber();
+      return (
+        height -
+        new BigNumber(value - minValue)
+          .multipliedBy(height)
+          .dividedBy(maxValue - minValue)
+          .toNumber()
+      );
     };
 
-    const optimizeTime = function (x: number, width: number, strokeWidth: number) {
-      return new BigNumber(x - minXValue).multipliedBy(width - strokeWidth).dividedBy(maxXValue - minXValue).toNumber();
+    const optimizeTime = function (
+      x: number,
+      width: number,
+      strokeWidth: number,
+    ) {
+      return new BigNumber(x - minXValue)
+        .multipliedBy(width - strokeWidth)
+        .dividedBy(maxXValue - minXValue)
+        .toNumber();
     };
 
     return mappedDatas.map<Point>(data => ({
@@ -68,12 +88,17 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }));
   }, [datas, getStrokeWidth, height, width]);
 
-  const getStorkeColor = useCallback((index: number) => {
-    if (!currentTick) {
-      return color;
-    }
-    return currentTick > index ? "url(#gradient-bar-green)" : "url(#gradient-bar-red)";
-  }, [currentTick, color]);
+  const getStorkeColor = useCallback(
+    (index: number) => {
+      if (!currentTick) {
+        return color;
+      }
+      return currentTick > index
+        ? "url(#gradient-bar-green)"
+        : "url(#gradient-bar-red)";
+    },
+    [currentTick, color],
+  );
 
   const currentPosition = useMemo(() => {
     if (!currentTick || getGraphPoints().length < currentTick) {
@@ -82,9 +107,54 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return getGraphPoints()[currentTick];
   }, [currentTick, getGraphPoints]);
 
+  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!activated) {
+      setCurrentPointIndex(-1);
+      return;
+    }
+
+    const { clientX, currentTarget } = event;
+    const { left } = currentTarget.getBoundingClientRect();
+    const positionX = clientX - left;
+    const clientWidth = currentTarget.clientWidth;
+    const xPosition = new BigNumber(positionX)
+      .multipliedBy(width)
+      .dividedBy(clientWidth)
+      .toNumber();
+    let currentPoint: Point | null = null;
+    let minDistance = -1;
+
+    let currentPointIndex = -1;
+    for (const point of getGraphPoints()) {
+      const distance = Math.abs(point.x - xPosition);
+      currentPointIndex += 1;
+      if (minDistance < 0) {
+        minDistance = distance;
+      }
+      if (distance < minDistance + 1) {
+        currentPoint = point;
+        minDistance = distance;
+        setCurrentPointIndex(currentPointIndex);
+      }
+    }
+
+    if (currentPoint) {
+      setCurrentPoint(currentPoint);
+    }
+  };
+
   return (
-    <BarGraphWrapper className={className} color={color} hoverColor={hoverColor}>
-      <svg viewBox={`0 0 ${width} ${height}`} >
+    <BarGraphWrapper
+      className={className}
+      color={color}
+      hoverColor={hoverColor}
+      onMouseMove={onMouseMove}
+      onMouseEnter={() => setActivated(true)}
+      onMouseLeave={() => setActivated(false)}
+    >
+      <svg viewBox={`0 0 ${width} ${height}`}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="#2eff8266" />
@@ -105,20 +175,35 @@ const BarGraph: React.FC<BarGraphProps> = ({
             fill={getStorkeColor(index)}
           />
         ))}
-        {
-          currentPosition && (
-            <line
-              x1={currentPosition.x}
-              x2={currentPosition.x}
-              y1={height}
-              y2={0}
-              strokeDasharray={4}
-              stroke={"#FFFFFF"}
-              strokeWidth={0.5}
-            />
-          )
-        }
+        {currentPosition && (
+          <line
+            x1={currentPosition.x}
+            x2={currentPosition.x}
+            y1={height}
+            y2={0}
+            strokeDasharray={4}
+            stroke={"#FFFFFF"}
+            strokeWidth={0.5}
+          />
+        )}
       </svg>
+      {currentPointIndex > -1 && activated && (
+        <BarGraphTooltipWrapper
+          x={
+            currentPoint?.x && currentPoint?.x > width - 40
+              ? currentPoint?.x - 40
+              : currentPoint?.x || 0
+          }
+          y={currentPoint?.y || 0}
+        >
+          <div className="tooltip-header">
+            <span className="value">$98,412,880</span>
+          </div>
+          <div className="tooltip-body">
+            <span className="date">Aug 03, 2023 09:00 PM - 10:00 PM</span>
+          </div>
+        </BarGraphTooltipWrapper>
+      )}
     </BarGraphWrapper>
   );
 };

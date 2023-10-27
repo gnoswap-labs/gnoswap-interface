@@ -7,5 +7,9 @@ export const SubMenuButtonWrapper = styled.div`
   position: relative;
   ${fonts.body3};
   cursor: pointer;
-  color: ${({ theme }) => theme.color.text16};
+  color: ${({ theme }) => theme.color.text04};
+  &.selected,
+  &:hover {
+    color: ${({ theme }) => theme.color.text16};
+  }
 `;
