@@ -6,7 +6,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import BigNumber from "bignumber.js";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { SwapDirectionType, amountEmptyNumberInit } from "@common/values";
+import { amountEmptyNumberInit } from "@common/values";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { AmountModel } from "@models/common/amount-model";
@@ -14,28 +14,33 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResponse } from "@repositories/swap";
 import { matchInputNumber, numberToUSD } from "@utils/number-utils";
 import { SwapError } from "@common/errors/swap";
+import { useAtom } from "jotai";
+import { SwapState } from "@states/index";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 
 const SwapContainer: React.FC = () => {
+  const themeKey = useAtomValue(ThemeState.themeKey);
+  const [swapValue , setSwapValue] = useAtom(SwapState.swap);
+  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+
   const { connected: connectedWallet, connectAdenaClient } = useWallet();
   const { tokenPrices, balances, updateTokenPrices, updateBalances } = useTokenData();
   const [swapError, setSwapError] = useState<SwapError | null>(null);
-  const [tokenA, setTokenA] = useState<TokenModel | null>(null);
   const [tokenAAmount, setTokenAAmount] = useState<string>("0");
-  const [tokenB, setTokenB] = useState<TokenModel | null>(null);
   const [tokenBAmount, setTokenBAmount] = useState<string>("0");
-  const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
   const [swapRate] = useState<number>(1);
-  const [slippage, setSlippage] = useState(10);
+  const [slippage, setSlippage] = useState(1);
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
   const [swapRouteInfos] = useState<SwapRouteInfo[]>([]);
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
   const { swap, getExpectedSwap } = useSwap({
     tokenA,
     tokenB,
-    direction: swapDirection,
+    direction: type,
     slippage
   });
 
@@ -52,7 +57,7 @@ const SwapContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return;
     }
-    const isExactIn = swapDirection === "EXACT_IN";
+    const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
     if (Number.isNaN(changedAmount) && BigNumber(changedAmount).isGreaterThan(0)) {
       return;
@@ -76,7 +81,7 @@ const SwapContainer: React.FC = () => {
       }
       setSwapError(swapError);
     });
-  }, [checkBalance, getExpectedSwap, swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+  }, [checkBalance, getExpectedSwap, type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const tokenABalance = useMemo(() => {
     if (tokenA && !Number.isNaN(balances[tokenA.priceId])) {
@@ -138,7 +143,10 @@ const SwapContainer: React.FC = () => {
     if (!matchInputNumber(value)) {
       return;
     }
-    setSwapDirection("EXACT_IN");
+    setSwapValue((prev) => ({
+      ...prev,
+      type: "EXACT_IN",
+    }));
     setTokenAAmount(value);
   }, []);
 
@@ -146,7 +154,10 @@ const SwapContainer: React.FC = () => {
     if (!matchInputNumber(value)) {
       return;
     }
-    setSwapDirection("EXACT_OUT");
+    setSwapValue((prev) => ({
+      ...prev,
+      type: "EXACT_OUT",
+    }));
     setTokenBAmount(value);
   }, []);
 
@@ -166,10 +177,10 @@ const SwapContainer: React.FC = () => {
       tokenBBalance,
       tokenBUSD,
       tokenBUSDStr: numberToUSD(tokenBUSD),
-      direction: swapDirection,
+      direction: type,
       slippage
     };
-  }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -180,7 +191,7 @@ const SwapContainer: React.FC = () => {
     return {
       tokenA,
       tokenB,
-      swapDirection,
+      swapDirection: type,
       swapRate,
       swapRateUSD,
       priceImpact: 0.1,
@@ -191,7 +202,7 @@ const SwapContainer: React.FC = () => {
       gasFee: gasFeeAmount,
       gasFeeUSD,
     };
-  }, [gasFeeAmount, swapDirection, swapRate, tokenA, tokenB, tokenBAmount]);
+  }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenBAmount]);
 
   const isAvailSwap = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -201,28 +212,56 @@ const SwapContainer: React.FC = () => {
   }, [swapError, tokenA, tokenB]);
 
   const changeTokenA = useCallback((token: TokenModel) => {
-    setTokenA(token);
-  }, []);
+    let changedSwapDirection = type;
+    if (tokenB?.symbol === token.symbol) {
+      changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+      setTokenAAmount(tokenBAmount);
+      setTokenBAmount(tokenAAmount);
+    }
+    setSwapValue((prev) => ({
+      tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+      tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+      type: changedSwapDirection,
+    }));
+  }, [tokenA, tokenB, type, tokenBAmount, tokenAAmount]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
-    setTokenB(token);
-  }, []);
+    let changedSwapDirection = type;
+    if (tokenA?.symbol === token.symbol) {
+      changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+      setTokenAAmount(tokenBAmount);
+      setTokenBAmount(tokenAAmount);
+    }
+    setSwapValue((prev) => ({
+      tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
+      tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+      type: changedSwapDirection,
+    }));
+  }, [tokenA, type, tokenBAmount, tokenAAmount]);
 
   const switchSwapDirection = useCallback(() => {
     const preTokenA = tokenA ? { ...tokenA } : null;
     const preTokenB = tokenB ? { ...tokenB } : null;
-    const changedSwapDirection = swapDirection === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+    const changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
 
-    setTokenA(preTokenB);
-    setTokenB(preTokenA);
-    setSwapDirection(changedSwapDirection);
+    setSwapValue(() => ({
+      tokenA: preTokenB,
+      tokenB: preTokenA,
+      type: changedSwapDirection,
+    }));
     if (changedSwapDirection === "EXACT_IN") {
       setTokenAAmount(tokenBAmount);
+      if (!preTokenA || !preTokenB) {
+        setTokenBAmount(tokenAAmount);
+      }
     } else {
       setTokenBAmount(tokenAAmount);
+      if (!preTokenA || !preTokenB) {
+        setTokenAAmount(tokenBAmount);
+      }
     }
 
-  }, [swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+  }, [type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const copyURL = async () => {
     try {
@@ -231,7 +270,7 @@ const SwapContainer: React.FC = () => {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 500);
+      }, 2000);
     } catch (e) {
       throw new Error("Copy Error!");
     }
@@ -273,6 +312,7 @@ const SwapContainer: React.FC = () => {
       closeModal={closeModal}
       copyURL={copyURL}
       swap={executeSwap}
+      themeKey={themeKey}
     />
   );
 };

@@ -14,7 +14,7 @@ export const SettingMenuModalWrapper = styled.div`
   background: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
-  top: 100px;
+  top: calc(100% + 4px);
   right: 0px;
 
   .modal-body {
@@ -36,10 +36,15 @@ export const SettingMenuModalWrapper = styled.div`
         width: 24px;
         height: 24px;
         .close-icon {
-          width: 16px;
-          height: 16px;
+          width: 18px;
+          height: 18px;
           * {
-            fill: ${({ theme }) => theme.color.icon07};
+            fill: ${({ theme }) => theme.color.icon01};
+          }
+          &:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
           }
         }
       }

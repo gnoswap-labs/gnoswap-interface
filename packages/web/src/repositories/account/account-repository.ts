@@ -2,6 +2,7 @@ import {
   WalletResponse,
   SendTransactionRequestParam,
   SendTransactionResponse,
+  SwitchNetworkResponse,
 } from "@common/clients/wallet-client/protocols";
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountModel } from "@models/account/account-model";
@@ -23,4 +24,8 @@ export interface AccountRepository extends AccountNotificationRepository {
   sendTransaction: (
     request: SendTransactionRequestParam,
   ) => Promise<WalletResponse<SendTransactionResponse>>;
+
+  switchNetwork: (
+    chainId: string,
+  ) => Promise<WalletResponse<SwitchNetworkResponse>>;
 }

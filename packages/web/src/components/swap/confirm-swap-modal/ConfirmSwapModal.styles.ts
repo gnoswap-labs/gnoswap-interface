@@ -6,7 +6,7 @@ import { media } from "@styles/media";
 
 export const ConfirmSwapModalBackground = styled.div`
   position: fixed;
-  overflow: hidden;
+  overflow: scroll;
   top: 0px;
   bottom: 0px;
   left: 0px;
@@ -19,13 +19,11 @@ export const ConfirmSwapModalBackground = styled.div`
 
 export const ConfirmModal = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  position: absolute;
   overflow: hidden;
   width: 460px;
   padding: 24px 0px;
   gap: 16px;
-  top: calc(45vh - 230px);
-  left: calc(50vw - 230px);
+  ${mixins.positionCenter}
   border-radius: 8px;
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   border: 1px solid ${({ theme }) => theme.color.border02};
@@ -42,7 +40,7 @@ export const ConfirmModal = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 0px 24px;
-    gap: 16px;
+    gap: 24px;
 
     ${media.mobile} {
       padding: 0px 12px;
@@ -72,6 +70,9 @@ export const ConfirmModal = styled.div`
             fill: ${({ theme }) => theme.color.icon01};
           }
         }
+      }
+      &.model-header-submitted {
+        ${mixins.flexbox("row", "center", "flex-end")};
       }
     }
 
@@ -255,7 +256,7 @@ export const ConfirmModal = styled.div`
         color: ${({ theme }) => theme.color.text02};
       }
       .swap-message {
-        ${fonts.body11};
+        ${fonts.body12};
         color: ${({ theme }) => theme.color.text02};
       }
       .view-transaction {

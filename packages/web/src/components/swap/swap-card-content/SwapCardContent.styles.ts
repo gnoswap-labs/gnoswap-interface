@@ -57,6 +57,9 @@ export const ContentWrapper = styled.div`
       }
       color: ${({ theme }) => theme.color.text10};
     }
+    .balance-text-disabled {
+      cursor: pointer;
+    }
   }
 
   .second-section {
@@ -86,7 +89,10 @@ export const ContentWrapper = styled.div`
       background-color: ${({ theme }) => theme.color.background01};
       border: 1px solid ${({ theme }) => theme.color.border02};
       border-radius: 50%;
-
+      cursor: pointer;
+      :hover {
+        background-color: ${({ theme }) => theme.color.backgroundGradient};
+      }
       .shape-icon {
         width: 16px;
         height: 16px;

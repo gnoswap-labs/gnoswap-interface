@@ -1,8 +1,8 @@
 import { SwapDirectionType } from "@common/values/data-constant";
-import { TokenInfo } from "./token-info";
+import { TokenModel } from "./token-model";
 
 export interface TokenSwapModel {
-  tokenA: TokenInfo | null;
-  tokenB: TokenInfo | null;
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
   type: SwapDirectionType;
 }

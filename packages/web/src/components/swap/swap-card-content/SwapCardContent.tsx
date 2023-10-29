@@ -18,6 +18,7 @@ interface ContentProps {
   changeTokenB: (token: TokenModel) => void;
   changeTokenBAmount: (value: string) => void;
   switchSwapDirection: () => void;
+  connectedWallet: boolean;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -29,6 +30,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   changeTokenB,
   changeTokenBAmount,
   switchSwapDirection,
+  connectedWallet,
 }) => {
 
   const tokenA = swapTokenInfo.tokenA;
@@ -52,6 +54,20 @@ const SwapCardContent: React.FC<ContentProps> = ({
     [changeTokenBAmount],
   );
 
+  const handleAutoFillTokenA = useCallback(() => {
+    if (connectedWallet) {
+      const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      changeTokenAAmount(formatValue);
+    }
+  }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
+
+  const handleAutoFillTokenB = useCallback(() => {
+    if (connectedWallet) {
+      const formatValue = parseFloat(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
+      changeTokenBAmount(formatValue);
+    }
+  }, [changeTokenBAmount, connectedWallet, swapTokenInfo]);
+  
   return (
     <ContentWrapper>
       <div className="first-section">
@@ -68,7 +84,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
         </div>
         <div className="amount-info">
           <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
-          <span className="balance-text">Balance : {swapTokenInfo.tokenABalance}</span>
+          <span className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
+            Balance: {connectedWallet ? swapTokenInfo.tokenABalance : "-"}
+          </span>
         </div>
         <div className="arrow">
           <div className="shape" onClick={switchSwapDirection}>
@@ -90,7 +108,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
         </div>
         <div className="amount-info">
           <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
-          <span className="balance-text">Balance : {swapTokenInfo.tokenBBalance}</span>
+          <span className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
+            Balance: {connectedWallet ? swapTokenInfo.tokenBBalance : "-"}
+          </span>
         </div>
       </div>
 

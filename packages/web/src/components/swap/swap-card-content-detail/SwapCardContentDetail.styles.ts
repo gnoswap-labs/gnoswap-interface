@@ -63,6 +63,9 @@ export const DetailWrapper = styled.div<WrapperProps>`
             fill: ${({ theme }) => theme.color.icon03};
           }
         }
+        .note-icon {
+          cursor: default;
+        }
       }
     }
   }

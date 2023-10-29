@@ -19,6 +19,7 @@ import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 import { numberToUSD, toNumberFormat } from "@utils/number-utils";
 import { numberToFormat } from "@utils/string-utils";
 import BigNumber from "bignumber.js";
+import { usePositionModal } from "@hooks/common/use-position-modal";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -41,6 +42,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useModalCloseEvent(menuRef, close);
+  usePositionModal(menuRef);
 
   const tokenAAmountStr = useMemo(() => {
     return BigNumber(swapTokenInfo.tokenAAmount).toFormat();
@@ -94,8 +96,8 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     <ConfirmSwapModalBackground>
       <ConfirmModal ref={menuRef}>
         <div className="modal-body">
-          <div className="modal-header">
-            <span>Confirm Swap</span>
+          <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
+            {!submitted && <span>Confirm Swap</span>}
             <div className="close-wrap" onClick={close}>
               <IconClose className="close-icon" />
             </div>
@@ -189,7 +191,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               </div>
               <div className="modal-button">
                 <Button
-                  text="Confrim Swap"
+                  text="Confirm Swap"
                   style={{
                     fullWidth: true,
                     height: 57,

@@ -18,6 +18,7 @@ interface WalletConnectProps {
   connectAdenaClient: () => void;
   themeKey: "dark" | "light";
   disconnectWallet: () => void;
+  switchNetwork: () => void;
 }
 
 const WalletConnectorButton: React.FC<WalletConnectProps> = ({
@@ -26,6 +27,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   connectAdenaClient,
   themeKey,
   disconnectWallet,
+  switchNetwork,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
@@ -93,6 +95,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           disconnectWallet={disconnectWallet}
           onMenuToggle={onMenuToggle}
           themeKey={themeKey}
+          switchNetwork={switchNetwork}
         />
       )}
     </WalletConnectorButtonWrapper>

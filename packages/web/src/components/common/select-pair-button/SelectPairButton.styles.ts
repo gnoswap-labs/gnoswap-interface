@@ -7,6 +7,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
 ) =>
   css`
     ${mixins.flexbox("row", "center", "space-between")}
+    gap: 8px;
     height: 100%;
     width: 100%;
     background-color: ${theme.color.background13};
@@ -16,7 +17,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
     ${!disabled &&
     `
     transition: 0.2s;
-    &:hover { background-color: ${theme.color.hover01}; }
+    &:hover { background-color: ${theme.color.backgroundGradient}; }
     `};
 
     span {
@@ -24,12 +25,12 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
       color: ${theme.color.text01};
       &.token-symbol {
         height: 18px;
-        margin: ${disabled ? "0px 8px" : "0px auto 0px 8px"};
       }
     }
     .token-logo {
       width: 24px;
       height: 24px;
+      border-radius: 50%;
     }
     .arrow-icon {
       width: 16px;

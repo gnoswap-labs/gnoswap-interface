@@ -14,6 +14,8 @@ export const headerToggle = atom<HeaderToggleProps>({
   notification: false,
 });
 
+export const wrongNetworkModal = atom<boolean>(false);
+
 export const openedModal = atom<boolean>(false);
 
 export const modalContent = atom<React.ReactNode | null>(null);

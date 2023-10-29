@@ -73,6 +73,7 @@ interface WalletConnectorMenuProps {
   disconnectWallet: () => void;
   onMenuToggle: () => void;
   themeKey: "dark" | "light";
+  switchNetwork: () => void;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -82,6 +83,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   disconnectWallet,
   onMenuToggle,
   themeKey,
+  switchNetwork,
 }) => {
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -150,7 +152,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
           {account && account.chainId !== CHAIN_ID ? (
             <Button
               text="Switch Network"
-              onClick={connect}
+              onClick={switchNetwork}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fontType: "body9",

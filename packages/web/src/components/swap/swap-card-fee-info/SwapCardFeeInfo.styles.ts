@@ -39,8 +39,13 @@ export const FeeWrapper = styled.div`
     .auto-wrapper {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
+      svg * {
+        fill: ${({ theme }) => theme.color.point};
+      }
       h1 {
-        color: ${({ theme }) => theme.color.text07};
+        background: linear-gradient(90deg, #0059FF -27.22%, #8C8DFC 137.97%);
+        -webkit-background-clip: text;
+        color: transparent;
       }
     }
     .router-icon {

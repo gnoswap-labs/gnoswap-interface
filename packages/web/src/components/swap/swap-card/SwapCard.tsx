@@ -22,6 +22,7 @@ interface SwapCardProps {
   submitted: boolean;
   swapResult: SwapResultInfo | null;
   openedConfirmModal: boolean;
+  themeKey: "dark" | "light";
 
   changeTokenA: (token: TokenModel) => void;
   changeTokenAAmount: (value: string) => void;
@@ -59,6 +60,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   closeModal,
   copyURL,
   swap,
+  themeKey,
 }) => {
 
   return (
@@ -69,6 +71,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           copyURL={copyURL}
           slippage={swapTokenInfo.slippage}
           changeSlippage={changeSlippage}
+          themeKey={themeKey}
         />
         <SwapCardContent
           swapTokenInfo={swapTokenInfo}
@@ -79,6 +82,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           changeTokenB={changeTokenB}
           changeTokenBAmount={changeTokenBAmount}
           switchSwapDirection={switchSwapDirection}
+          connectedWallet={connectedWallet}
         />
         <div className="footer">
           <SwapButton

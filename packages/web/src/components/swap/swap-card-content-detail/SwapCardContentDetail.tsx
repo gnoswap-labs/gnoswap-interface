@@ -61,7 +61,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
               )}
             </div>
             <div className="price-info">
-              <IconNote className="price-icon" />
+              <IconNote className="price-icon note-icon" />
               <span>{gasFeeUSDStr}</span>
               {openedDetailInfo ? (
                 <IconStrokeArrowUp

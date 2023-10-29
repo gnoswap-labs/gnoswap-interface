@@ -70,7 +70,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
   &:disabled {
     background-color: ${({ hierarchy, theme }) => {
       if (hierarchy === ButtonHierarchy.Primary)
-        return theme.color.background07;
+        return theme.color.background17;
       return;
     }};
   }
