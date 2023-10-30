@@ -98,8 +98,8 @@ export const SettingMenuModalWrapper = styled.div`
 export const ModalTooltipWrap = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   ${fonts.body12};
-  color: ${({ theme }) => theme.color.text15};
-  background-color: ${({ theme }) => theme.color.background14};
+  color: ${({ theme }) => theme.color.text02};
+  background-color: ${({ theme }) => theme.color.background02};
   .tooltip-wrap {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
   }

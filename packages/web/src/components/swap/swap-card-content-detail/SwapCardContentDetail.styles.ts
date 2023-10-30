@@ -39,6 +39,9 @@ export const DetailWrapper = styled.div<WrapperProps>`
         ${media.mobile} {
           ${fonts.p2};
         }
+        .swap-rate {
+          cursor: pointer;
+        }
         .exchange-price {
           color: ${({ theme }) => theme.color.text04};
         }

@@ -19,7 +19,10 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
     transition: 0.2s;
     &:hover { background-color: ${theme.color.backgroundGradient}; }
     `};
-
+    > div {
+      ${mixins.flexbox("row", "center", "center")}
+      gap: 8px;
+    }
     span {
       ${fonts.body9};
       color: ${theme.color.text01};

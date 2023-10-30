@@ -11,6 +11,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtomValue } from "jotai";
 import { CommonState, ThemeState } from "@states/index";
 import { useAtom } from "jotai";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -107,13 +108,7 @@ const HeaderContainer: React.FC = () => {
     setKeyword(e.target.value);
   }, []);
 
-  useEffect(() => {
-    if (searchMenuToggle) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [searchMenuToggle]);
+  usePreventScroll(searchMenuToggle);
 
   const closeWrongNetworkModal = () => {
     setOpenWrongNetworkModal(false);

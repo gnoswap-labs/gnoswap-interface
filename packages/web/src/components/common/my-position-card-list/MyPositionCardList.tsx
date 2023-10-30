@@ -40,12 +40,13 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {!mobile ? (
+    {!mobile && (
       loadMore &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )
-    ) : (
+    )} 
+    {(positions.length !== 0 && mobile &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
         <span>/</span>

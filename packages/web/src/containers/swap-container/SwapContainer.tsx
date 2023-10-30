@@ -6,7 +6,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import BigNumber from "bignumber.js";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { amountEmptyNumberInit } from "@common/values";
+import { amountEmptyNumberInit, SwapDirectionType } from "@common/values";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { AmountModel } from "@models/common/amount-model";
@@ -14,28 +14,33 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResponse } from "@repositories/swap";
 import { matchInputNumber, numberToUSD } from "@utils/number-utils";
 import { SwapError } from "@common/errors/swap";
-import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useAtom } from "jotai";
 import { ThemeState } from "@states/index";
+import { useRouter } from "next/router";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
 
 const SwapContainer: React.FC = () => {
-  const themeKey = useAtomValue(ThemeState.themeKey);
   const [swapValue , setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const themeKey = useAtomValue(ThemeState.themeKey);
+  const router = useRouter();
 
+  const [query, setQuery] = useState<{ [key in string]: string | null }>({});
+  const [initialized, setInitialized] = useState(false);
   const { connected: connectedWallet, connectAdenaClient } = useWallet();
-  const { tokenPrices, balances, updateTokenPrices, updateBalances } = useTokenData();
+  const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances } = useTokenData();
   const [swapError, setSwapError] = useState<SwapError | null>(null);
-  const [tokenAAmount, setTokenAAmount] = useState<string>("0");
-  const [tokenBAmount, setTokenBAmount] = useState<string>("0");
+  const [tokenAAmount, setTokenAAmount] = useState<string>("");
+  const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
-  const [swapRate] = useState<number>(1);
+  const [swapRate] = useState<number>(100);
   const [slippage, setSlippage] = useState(1);
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
-  const [swapRouteInfos] = useState<SwapRouteInfo[]>([]);
+  const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
   const { swap, getExpectedSwap } = useSwap({
     tokenA,
@@ -44,44 +49,12 @@ const SwapContainer: React.FC = () => {
     slippage
   });
 
-  useEffect(() => {
-    updateTokenPrices();
-  });
+  usePreventScroll(openedConfirmModal || submitted);
 
   const checkBalance = useCallback((token: TokenModel, amount: string) => {
     const tokenBalance = balances[token.priceId] || 0;
     return BigNumber(tokenBalance).isGreaterThan(amount);
   }, [balances]);
-
-  useEffect(() => {
-    if (!tokenA || !tokenB) {
-      return;
-    }
-    const isExactIn = type === "EXACT_IN";
-    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
-    if (Number.isNaN(changedAmount) && BigNumber(changedAmount).isGreaterThan(0)) {
-      return;
-    }
-    getExpectedSwap(changedAmount).then(result => {
-      const isError = result === null;
-      const expectedAmount = isError ? "" : result;
-      let swapError = null;
-      if (isError) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-      if (!checkBalance(tokenA, tokenAAmount) ||
-        !checkBalance(tokenB, tokenBAmount)) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-
-      if (isExactIn) {
-        setTokenBAmount(expectedAmount);
-      } else {
-        setTokenAAmount(expectedAmount);
-      }
-      setSwapError(swapError);
-    });
-  }, [checkBalance, getExpectedSwap, type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const tokenABalance = useMemo(() => {
     if (tokenA && !Number.isNaN(balances[tokenA.priceId])) {
@@ -148,7 +121,8 @@ const SwapContainer: React.FC = () => {
       type: "EXACT_IN",
     }));
     setTokenAAmount(value);
-  }, []);
+    setQuery({ ...query, direction: "EXACT_IN" });
+  }, [query]);
 
   const changeTokenBAmount = useCallback((value: string) => {
     if (!matchInputNumber(value)) {
@@ -159,7 +133,8 @@ const SwapContainer: React.FC = () => {
       type: "EXACT_OUT",
     }));
     setTokenBAmount(value);
-  }, []);
+    setQuery({ ...query, direction: "EXACT_OUT" });
+  }, [query]);
 
   const changeSlippage = useCallback((value: string) => {
     setSlippage(BigNumber(value).toNumber());
@@ -197,7 +172,7 @@ const SwapContainer: React.FC = () => {
       priceImpact: 0.1,
       guaranteedAmount: {
         amount: BigNumber(tokenBAmount).toNumber(),
-        currency: tokenB.symbol,
+        currency: type === "EXACT_IN" ? tokenB.symbol : tokenA.symbol,
       },
       gasFee: gasFeeAmount,
       gasFeeUSD,
@@ -223,7 +198,8 @@ const SwapContainer: React.FC = () => {
       tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
       type: changedSwapDirection,
     }));
-  }, [tokenA, tokenB, type, tokenBAmount, tokenAAmount]);
+    setQuery({ ...query, tokenA: token.path });
+  }, [tokenA, tokenB, type, tokenBAmount, tokenAAmount, query]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
     let changedSwapDirection = type;
@@ -237,7 +213,8 @@ const SwapContainer: React.FC = () => {
       tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
       type: changedSwapDirection,
     }));
-  }, [tokenA, type, tokenBAmount, tokenAAmount]);
+    setQuery({ ...query, tokenB: token.path });
+  }, [tokenA, type, tokenBAmount, tokenAAmount, query]);
 
   const switchSwapDirection = useCallback(() => {
     const preTokenA = tokenA ? { ...tokenA } : null;
@@ -260,7 +237,11 @@ const SwapContainer: React.FC = () => {
         setTokenAAmount(tokenBAmount);
       }
     }
-
+    setQuery({
+      tokenA: preTokenB?.path || null,
+      tokenB: preTokenA?.path || null,
+      direction: changedSwapDirection
+    });
   }, [type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const copyURL = async () => {
@@ -283,11 +264,84 @@ const SwapContainer: React.FC = () => {
     setSubmitted(true);
     swap(tokenAAmount, tokenBAmount).then(result => {
       setSwapResult({
-        success: result !== null,
+        // success: [result !== null],
+        success: [true, false][Math.floor(Math.random() * 2)],
         hash: (result as SwapResponse)?.tx_hash || "",
       });
     });
   }
+
+  useEffect(() => {
+    updateTokens();
+    updateTokenPrices();
+  }, []);
+
+  useEffect(() => {
+    if (!tokenA || !tokenB) {
+      return;
+    }
+    const isExactIn = type === "EXACT_IN";
+    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    if (Number.isNaN(changedAmount) || BigNumber(changedAmount).isLessThanOrEqualTo(0)) {
+      return;
+    }
+    getExpectedSwap(changedAmount).then(result => {
+      const isError = result === null;
+      const expectedAmount = isError ? "" : result;
+      let swapError = null;
+      if (isError) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
+      if (!checkBalance(tokenA, tokenAAmount) ||
+        !checkBalance(tokenB, tokenBAmount)) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
+
+      if (isExactIn) {
+        setTokenBAmount(expectedAmount);
+      } else {
+        setTokenAAmount(expectedAmount);
+      }
+      setSwapError(swapError);
+    });
+  }, [checkBalance, getExpectedSwap, type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+
+  useEffect(() => {
+    const queryValues = [];
+    for (const [key, value] of Object.entries(query)) {
+      if (value) {
+        queryValues.push(`${key}=${value}`);
+      }
+    }
+    if (queryValues.length > 0) {
+      const path = `${router.pathname}?${queryValues.join("&")}`;
+      router.replace(path);
+    }
+  }, [query]);
+
+  useEffect(() => {
+    if (tokens.length === 0 || Object.keys(router.query).length === 0) {
+      return;
+    }
+    if (!initialized) {
+      setInitialized(true);
+      const query = router.query;
+      const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
+      const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
+      const direction: SwapDirectionType = query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
+      setSwapValue({
+        tokenA: currentTokenA,
+        tokenB: currentTokenB,
+        type: direction,
+      });
+      setQuery({
+        tokenA: currentTokenA?.path || null,
+        tokenB: currentTokenB?.path || null,
+        direction,
+      });
+      return;
+    }
+  }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
 
   return (
     <SwapCard

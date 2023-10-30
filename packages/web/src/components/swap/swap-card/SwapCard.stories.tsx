@@ -46,7 +46,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   gasFeeUSD: 0.1
 };
 
-const swapRouteInfos: SwapRouteInfo[] = [{
+export const swapRouteInfos: SwapRouteInfo[] = [{
   from: {
     chainId: "test3",
     address: "0x111111111117dC0aa78b770fA6A738034120C302",

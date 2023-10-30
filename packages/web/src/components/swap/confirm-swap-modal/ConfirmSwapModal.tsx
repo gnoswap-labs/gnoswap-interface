@@ -181,7 +181,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   <div className="gas-fee">
                     <span className="gray-text">Gas Fee</span>
                     <span className="white-text">
-                      {gasFeeStr}
+                      {gasFeeStr} GNOT
                       <span className="gray-text">
                         ({gasFeeUSDStr})
                       </span>

@@ -40,7 +40,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (value !== "" && !isAmount(value)) return;
-      changeTokenAAmount(value);
+      changeTokenAAmount(Number(value).toString());
     },
     [changeTokenAAmount],
   );
@@ -49,7 +49,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (value !== "" && !isAmount(value)) return;
-      changeTokenBAmount(value);
+      changeTokenBAmount(Number(value).toString());
     },
     [changeTokenBAmount],
   );

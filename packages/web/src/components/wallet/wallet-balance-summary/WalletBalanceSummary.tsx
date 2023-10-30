@@ -4,6 +4,8 @@ import WalletBalanceSummaryInfo from "@components/wallet/wallet-balance-summary-
 import { ButtonHierarchy } from "@components/common/button/Button";
 import { WalletBalanceSummaryWrapper } from "./WalletBalanceSummary.styles";
 import { DEVICE_TYPE } from "@styles/media";
+import IconDownload from "@components/common/icons/IconDownload";
+import IconUpload from "@components/common/icons/IconUpload";
 
 interface WalletBalanceSummaryProps {
   connected: boolean;
@@ -26,22 +28,26 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
       <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} />
       <div className="button-group">
         <Button
+          leftIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconDownload />}
           style={{
-            width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : 304,
+            width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : "50%",
             hierarchy: ButtonHierarchy.Primary,
             fontType: "body9",
             padding: "10px 16px",
+            gap: "8px",
           }}
           text={"Deposit"}
           onClick={deposit}
           disabled={connected === false}
         />
         <Button
+          leftIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconUpload />}
           style={{
-            width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : 304,
+            width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : "50%",
             hierarchy: ButtonHierarchy.Primary,
             fontType: "body9",
             padding: "10px 16px",
+            gap: "8px",
           }}
           text={"Withdraw"}
           onClick={withdraw}

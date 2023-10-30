@@ -6,6 +6,9 @@ import mixins from "@styles/mixins";
 export const SwitchWrapper = styled.div`
   ${mixins.flexbox("row", "center", "center", false)};
   gap: 16px;
+  ${media.mobile} {
+    gap: 8px;
+  }
 `;
 
 export const SwitchLabel = styled.label`

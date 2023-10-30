@@ -51,6 +51,25 @@ export const useWallet = () => {
     }
   }
 
+  const switchNetwork = useCallback(
+    async () => {
+      const res = await accountRepository.switchNetwork("dev.gnoswap");
+      if (
+        res.code === ERROR_VALUE["SWITCH_NETWORK_REJECTED"].status &&
+        res.type === ERROR_VALUE["SWITCH_NETWORK_REJECTED"].type &&
+        !wrongNetworkModal
+      ) {
+        setWrongNetworkModal(true);
+      } else {
+        const account = await accountRepository.getAccount();
+        setWalletAccount(account);
+        accountRepository.setConnectedWallet(true);
+        setWrongNetworkModal(false);
+      }
+    },
+    [accountRepository, wrongNetworkModal]
+  );
+
   const connectAdenaClient = useCallback(() => {
     const adena = AdenaClient.createAdenaClient();
     if (adena !== null) {
@@ -72,6 +91,7 @@ export const useWallet = () => {
       const account = await accountRepository.getAccount();
       if (account.chainId !== CHAIN_ID) {
         setWrongNetworkModal(true);
+        switchNetwork();
       }      
       setWalletAccount(account);
       accountRepository.setConnectedWallet(true);
@@ -94,25 +114,6 @@ export const useWallet = () => {
       walletClient.addEventChangedNetwork(connectAdenaClient);
     } catch {}
   }
-
-  const switchNetwork = useCallback(
-    async () => {
-      const res = await accountRepository.switchNetwork("dev.gnoswap");
-      if (
-        res.code === ERROR_VALUE["SWITCH_NETWORK_REJECTED"].status &&
-        res.type === ERROR_VALUE["SWITCH_NETWORK_REJECTED"].type &&
-        !wrongNetworkModal
-      ) {
-        setWrongNetworkModal(true);
-      } else {
-        const account = await accountRepository.getAccount();
-        setWalletAccount(account);
-        accountRepository.setConnectedWallet(true);
-        setWrongNetworkModal(false);
-      }
-    },
-    [accountRepository]
-  );
 
   return {
     wallet,

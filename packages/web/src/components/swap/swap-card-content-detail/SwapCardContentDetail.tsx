@@ -24,16 +24,25 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const { breakpoint } = useWindowSize();
   const [openedDetailInfo, setOpenedDetailInfo] = useState(false);
   const [openedRouteInfo, setOpenedRouteInfo] = useState(false);
+  const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("ATOB");
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
-    return `1 ${tokenA.symbol} = ${numberToFormat(swapRate)} ${tokenB.symbol}`;
-  }, [swapSummaryInfo]);
+    if (swapRateAction === "ATOB") {
+      return `1 ${tokenA.symbol} = ${numberToFormat(swapRate)} ${tokenB.symbol}`;
+    } else {
+      return `1 ${tokenB.symbol} = ${numberToFormat(1 / swapRate, 2)} ${tokenA.symbol}`;
+    }
+  }, [swapSummaryInfo, swapRateAction]);
 
   const swapRateUSD = useMemo(() => {
     const swapRateUSD = swapSummaryInfo.swapRateUSD;
-    return numberToFormat(swapRateUSD);
-  }, [swapSummaryInfo.swapRateUSD]);
+    if (swapRateAction === "ATOB") {
+      return numberToFormat(swapRateUSD);
+    } else {
+      return numberToFormat(swapRateUSD / 100);
+    }
+  }, [swapSummaryInfo.swapRateUSD, swapRateAction]);
 
   const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
@@ -48,6 +57,10 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
     setOpenedRouteInfo(!openedRouteInfo);
   }, [openedRouteInfo]);
 
+  const handleSwapRate = useCallback(() => {
+    setSwapRateAction(prev => prev === "ATOB" ? "BTOA" : "ATOB");
+  }, [swapRateAction]);
+
   return (
     <>
       <DetailWrapper opened={openedDetailInfo}>
@@ -55,7 +68,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
           <div className="exchange-container">
             <div className="ocin-info">
               <SwapButtonTooltip swapSummaryInfo={swapSummaryInfo} />
-              <span>{swapRateDescription}</span>
+              <span className="swap-rate" onClick={handleSwapRate}>{swapRateDescription}</span>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
                 <span className="exchange-price">{`($${swapRateUSD})`}</span>
               )}
@@ -92,6 +105,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
             {openedRouteInfo && (
               <SwapCardAutoRouter
                 swapRouteInfos={swapRouteInfos}
+                swapSummaryInfo={swapSummaryInfo}
               />
             )}
           </div>

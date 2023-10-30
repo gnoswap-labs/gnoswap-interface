@@ -45,7 +45,7 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
         </div>
         <div className="tooltip-list">
           <span>Gas Fee</span>
-          <span>{gasFeeStr}</span>
+          <span>{gasFeeStr} GNOT</span>
         </div>
       </SwapButtonTooltipWrap>
     );

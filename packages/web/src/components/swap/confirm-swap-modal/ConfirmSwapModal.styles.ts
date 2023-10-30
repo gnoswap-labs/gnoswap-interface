@@ -69,6 +69,11 @@ export const ConfirmModal = styled.div`
           * {
             fill: ${({ theme }) => theme.color.icon01};
           }
+          &:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
+          }
         }
       }
       &.model-header-submitted {

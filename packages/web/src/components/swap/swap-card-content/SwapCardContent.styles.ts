@@ -38,6 +38,9 @@ export const ContentWrapper = styled.div`
       ${fonts.body5};
     }
     color: ${({ theme }) => theme.color.text01};
+    &::placeholder {
+      color: ${({ theme }) => theme.color.text01};
+    }
   }
 
   .token-selector {
