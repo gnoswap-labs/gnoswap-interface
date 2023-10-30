@@ -16,7 +16,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
     ${!disabled &&
     `
     transition: 0.2s;
-    &:hover { background-color: ${theme.color.hover01}; }
+    &:hover { background-color: ${theme.color.backgroundGradient}; }
     `};
 
     span {
@@ -30,6 +30,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
     .token-logo {
       width: 24px;
       height: 24px;
+      border-radius: 50%;
     }
     .arrow-icon {
       width: 16px;

@@ -11,6 +11,10 @@ const WalletMyPositionsHeader: React.FC = () => {
     // TODO
   };
 
+  if(positionNum === 0) {
+    return null;
+  }
+
   return (
     <div css={wrapper}>
       <h2>{`My Positions (${positionNum})`}</h2>

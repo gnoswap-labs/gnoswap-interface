@@ -58,7 +58,7 @@ export const Overlay = styled.div`
   right: 0px;
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: rgba(10, 14, 23, 0.7);
   overflow: hidden;
   z-index: ${Z_INDEX.modalOverlay};
 `;

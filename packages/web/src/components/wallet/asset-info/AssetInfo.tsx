@@ -12,8 +12,8 @@ import { DEVICE_TYPE } from "@styles/media";
 
 interface AssetInfoProps {
   asset: Asset;
-  deposit: (assetId: string) => void;
-  withdraw: (assetId: string) => void;
+  deposit: (asset: Asset) => void;
+  withdraw: (asset: Asset) => void;
   breakpoint: DEVICE_TYPE;
 }
 
@@ -23,19 +23,19 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   withdraw,
   breakpoint,
 }) => {
-  const { id, logoUri, name, symbol, chain, balance } = asset;
+  const { logoUri, name, symbol, chain, balance } = asset;
 
   const onClickItem = useCallback((symbol: string) => {
     location.href = "/tokens/" + symbol;
   }, []);
 
   const onClickDeposit = useCallback(() => {
-    deposit(id);
-  }, [deposit, id]);
+    deposit(asset);
+  }, [deposit, asset]);
 
   const onClickWithdraw = useCallback(() => {
-    withdraw(id);
-  }, [withdraw, id]);
+    withdraw(asset);
+  }, [withdraw, asset]);
 
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
@@ -132,7 +132,7 @@ export const WithdrawButton = ({
   onClick: () => void;
   disabled?: boolean;
 }) => (
-  <LoadButton onClick={onClick} disabled={disabled}>
+  <LoadButton className="withdraw-pd" onClick={onClick} disabled={disabled}>
     <IconUpload className="upload" />
     <span>Withdraw</span>
   </LoadButton>

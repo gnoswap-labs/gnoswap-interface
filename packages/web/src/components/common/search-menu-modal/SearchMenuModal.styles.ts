@@ -14,7 +14,6 @@ export const SearchModalBackground = styled.div`
   height: 100%;
   background: rgba(10, 14, 23, 0.7);
   z-index: ${Z_INDEX.modalOverlay};
-  backdrop-filter: blur(10px);
 `;
 
 export const SearchContainer = styled.div`
