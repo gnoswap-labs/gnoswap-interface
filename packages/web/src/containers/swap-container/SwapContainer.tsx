@@ -20,16 +20,18 @@ import { ThemeState } from "@states/index";
 import { useRouter } from "next/router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
+import { useNotice } from "@hooks/common/use-notice";
 
 const SwapContainer: React.FC = () => {
   const [swapValue , setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
+  const { setNotice } = useNotice();
 
   const [query, setQuery] = useState<{ [key in string]: string | null }>({});
   const [initialized, setInitialized] = useState(false);
-  const { connected: connectedWallet, connectAdenaClient } = useWallet();
+  const { connected: connectedWallet, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances } = useTokenData();
   const [swapError, setSwapError] = useState<SwapError | null>(null);
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
@@ -42,12 +44,15 @@ const SwapContainer: React.FC = () => {
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
   const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { swap, getExpectedSwap } = useSwap({
     tokenA,
     tokenB,
     direction: type,
     slippage
   });
+
 
   usePreventScroll(openedConfirmModal || submitted);
 
@@ -88,15 +93,49 @@ const SwapContainer: React.FC = () => {
     if (!connectedWallet) {
       return "Connect Wallet";
     }
-    if (!tokenA || !tokenB) {
-      return "Insufficient Balance";
+    if (isSwitchNetwork) {
+      return "Switch to Gnoland";
     }
-    if (swapError) {
-      return swapError.message;
+    if (!tokenA || !tokenB) {
+      return "Select a Token";
+    }
+    if (!Number(tokenAAmount) && !Number(tokenAAmount)) {
+      return "Enter Amount";
+    }
+    if (
+      (Number(tokenAAmount) < 0.000001 && type === "EXACT_IN") ||
+      (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT")
+    ) {
+      return "Amount Too Low";
+    }
+  
+    if (type === "EXACT_IN") {
+      if (
+        Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+      ) {
+        return "Insufficient Balance";
+      }
+    } else {
+      if (
+        Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
+      ) {
+        return "Insufficient Balance";
+      }
     }
     return "Swap";
-  }, [connectedWallet, swapError, tokenA, tokenB]);
-
+  }, [
+    connectedWallet,
+    swapError,
+    tokenA,
+    tokenB,
+    isSwitchNetwork,
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenBBalance,
+    tokenABalance,
+  ]);
+  
   const openConfirmModal = useCallback(() => {
     setOpenedConfirModal(true);
   }, []);
@@ -110,11 +149,19 @@ const SwapContainer: React.FC = () => {
     setSwapResult(null);
     setOpenedConfirModal(false);
     updateBalances();
-  }, [updateBalances]);
+    if (swapResult?.success) {
+      setNotice(null, {timeout: 2000});
+    }
+  }, [updateBalances, swapResult]);
 
   const changeTokenAAmount = useCallback((value: string) => {
     if (!matchInputNumber(value)) {
       return;
+    }
+    if (!!Number(value)) {
+      setIsLoading(true);
+    } else {
+      setTokenBAmount("0");
     }
     setSwapValue((prev) => ({
       ...prev,
@@ -122,11 +169,16 @@ const SwapContainer: React.FC = () => {
     }));
     setTokenAAmount(value);
     setQuery({ ...query, direction: "EXACT_IN" });
-  }, [query]);
+  }, [query, setTokenBAmount]);
 
   const changeTokenBAmount = useCallback((value: string) => {
     if (!matchInputNumber(value)) {
       return;
+    }
+    if (!!Number(value)) {
+      setIsLoading(true);
+    } else {
+      setTokenAAmount("0");
     }
     setSwapValue((prev) => ({
       ...prev,
@@ -134,7 +186,7 @@ const SwapContainer: React.FC = () => {
     }));
     setTokenBAmount(value);
     setQuery({ ...query, direction: "EXACT_OUT" });
-  }, [query]);
+  }, [query, setTokenAAmount]);
 
   const changeSlippage = useCallback((value: string) => {
     setSlippage(BigNumber(value).toNumber());
@@ -180,12 +232,46 @@ const SwapContainer: React.FC = () => {
   }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenBAmount]);
 
   const isAvailSwap = useMemo(() => {
+    if (isLoading) return false;
+    if (!connectedWallet) {
+      return false;
+    }
+    if (isSwitchNetwork) {
+      return false;
+    }
     if (!tokenA || !tokenB) {
       return false;
     }
-    return swapError === null;
-  }, [swapError, tokenA, tokenB]);
-
+    if (!tokenAAmount && !tokenAAmount) {
+      return false;
+    }
+    if (Number(tokenAAmount) !== 0 && Number(tokenAAmount) < 0.000001 || Number(tokenBAmount) < 0.000001) {
+      return false;
+    }
+    if (type === "EXACT_IN") {
+      if (Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))) {
+        return false;
+      }
+    } else {
+      if (Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))) {
+        return false;
+      }
+    }
+    return true;
+  }, [
+    connectedWallet,
+    swapError,
+    tokenA,
+    tokenB,
+    isSwitchNetwork,
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenBBalance,
+    tokenABalance,
+    isLoading,
+  ]);
+  
   const changeTokenA = useCallback((token: TokenModel) => {
     let changedSwapDirection = type;
     if (tokenB?.symbol === token.symbol) {
@@ -220,7 +306,10 @@ const SwapContainer: React.FC = () => {
     const preTokenA = tokenA ? { ...tokenA } : null;
     const preTokenB = tokenB ? { ...tokenB } : null;
     const changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
-
+    
+    if (!!Number(tokenAAmount || 0) && !!Number(tokenBAmount || 0)) {
+      setIsLoading(true);
+    }
     setSwapValue(() => ({
       tokenA: preTokenB,
       tokenB: preTokenA,
@@ -264,8 +353,7 @@ const SwapContainer: React.FC = () => {
     setSubmitted(true);
     swap(tokenAAmount, tokenBAmount).then(result => {
       setSwapResult({
-        // success: [result !== null],
-        success: [true, false][Math.floor(Math.random() * 2)],
+        success: result !== null,
         hash: (result as SwapResponse)?.tx_hash || "",
       });
     });
@@ -282,29 +370,36 @@ const SwapContainer: React.FC = () => {
     }
     const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    console.log(Number.isNaN(changedAmount), BigNumber(changedAmount).isLessThanOrEqualTo(0), "changedAmount");
+    
     if (Number.isNaN(changedAmount) || BigNumber(changedAmount).isLessThanOrEqualTo(0)) {
       return;
     }
-    getExpectedSwap(changedAmount).then(result => {
-      const isError = result === null;
-      const expectedAmount = isError ? "" : result;
-      let swapError = null;
-      if (isError) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-      if (!checkBalance(tokenA, tokenAAmount) ||
-        !checkBalance(tokenB, tokenBAmount)) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-
-      if (isExactIn) {
-        setTokenBAmount(expectedAmount);
-      } else {
-        setTokenAAmount(expectedAmount);
-      }
-      setSwapError(swapError);
-    });
-  }, [checkBalance, getExpectedSwap, type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+    
+    const timeout = setTimeout(() => {
+      getExpectedSwap(changedAmount).then(result => {
+        const isError = result === null;
+        const expectedAmount = isError ? "" : result;
+        let swapError = null;
+        if (isError) {
+          swapError = new SwapError("INSUFFICIENT_BALANCE");
+        }
+        if (!checkBalance(tokenA, tokenAAmount) ||
+          !checkBalance(tokenB, tokenBAmount)) {
+          swapError = new SwapError("INSUFFICIENT_BALANCE");
+        }
+  
+        if (isExactIn) {
+          setTokenBAmount(expectedAmount);
+        } else {
+          setTokenAAmount(expectedAmount);
+        }
+        setSwapError(swapError);
+        setIsLoading(() => false);
+      });
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, [checkBalance, getExpectedSwap, type, tokenA, tokenAAmount, tokenB, tokenBAmount, isLoading]);
 
   useEffect(() => {
     const queryValues = [];
@@ -367,6 +462,9 @@ const SwapContainer: React.FC = () => {
       copyURL={copyURL}
       swap={executeSwap}
       themeKey={themeKey}
+      isSwitchNetwork={isSwitchNetwork}
+      switchNetwork={switchNetwork}
+      isLoading={isLoading}
     />
   );
 };

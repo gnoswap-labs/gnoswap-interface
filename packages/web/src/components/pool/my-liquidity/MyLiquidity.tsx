@@ -8,14 +8,16 @@ import MyPositionCard from "../my-position-card/MyPositionCard";
 interface MyLiquidityProps {
   info: any;
   breakpoint: DEVICE_TYPE;
+  connected: boolean;
+  isSwitchNetwork: boolean;
 }
 
-const MyLiquidity: React.FC<MyLiquidityProps> = ({ info, breakpoint }) => {
+const MyLiquidity: React.FC<MyLiquidityProps> = ({ info, breakpoint, connected, isSwitchNetwork }) => {
   return (
     <MyLiquidityWrapper>
       <div className="liquidity-wrap">
-        <MyLiquidityHeader info={info.poolInfo} />
-        <MyLiquidityContent content={info} breakpoint={breakpoint} />
+        <MyLiquidityHeader info={info.poolInfo} connected={connected} isSwitchNetwork={isSwitchNetwork} />
+        <MyLiquidityContent content={info} breakpoint={breakpoint} isDisabledButton={isSwitchNetwork || !connected} />
       </div>
       <PoolDivider />
       {breakpoint !== DEVICE_TYPE.MOBILE ? (

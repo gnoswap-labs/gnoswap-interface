@@ -31,8 +31,7 @@ export const ConfirmModal = styled.div`
 
   ${media.mobile} {
     width: 328px;
-    top: calc(40vh - 164px);
-    left: calc(50vw - 164px);
+    ${mixins.positionCenter}
     padding: 16px 0px;
   }
 
@@ -244,13 +243,18 @@ export const ConfirmModal = styled.div`
       ${mixins.flexbox("row", "center", "center")};
       width: 100%;
       align-self: stretch;
-      animation-logo {
+      .animation-logo {
         width: 72px;
         height: 72px;
         * {
           fill: ${({ theme }) => theme.color.point};
         }
+        ${media.mobile} {
+          width: 60px;
+          height: 54px;
+        }
       }
+
     }
     .transaction-state {
       ${mixins.flexbox("column", "center", "flex-start")};
@@ -270,6 +274,15 @@ export const ConfirmModal = styled.div`
         align-self: stretch;
         ${fonts.body11};
         color: ${({ theme }) => theme.color.text04};
+        span {
+          text-align: center;
+          br {
+            display: none;
+            ${media.mobile} {
+              display: initial;
+            }
+          }
+        }
         .open-link {
           ${mixins.flexbox("row", "center", "center")};
           width: 16px;
@@ -280,7 +293,12 @@ export const ConfirmModal = styled.div`
           height: 16px;
           cursor: pointer;
           * {
-            fill: ${({ theme }) => theme.color.icon05};
+            fill: ${({ theme }) => theme.color.icon03};
+          }
+          &:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
           }
         }
       }
@@ -288,7 +306,28 @@ export const ConfirmModal = styled.div`
     .close-button {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
+      ${media.mobile} {
+        height: 41px;
+        width: 304px;
+      }
     }
+  }
+  .modal-body-loading {
+    gap: 24px;
+    .view-transaction {
+      padding-bottom: 36px;
+    }
+    ${media.mobile} {
+      gap: 16px;
+      .view-transaction {
+        padding-bottom: 12px;
+      }
+      .animation {
+        .animation-logo {
+          width: 60px;
+          height: 60px;
+        }
+      }
   }
 `;
 

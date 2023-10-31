@@ -44,7 +44,7 @@
       },
       "id": "bar_foo_500",
       "apr": 0.12345,
-      "fee": "0.05",
+      "fee": "0.05%",
       "feeVolume": 131.937491,
       "feeChange": 13193.749143,
       "currentTick": 8090,

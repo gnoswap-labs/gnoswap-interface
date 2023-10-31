@@ -19,6 +19,7 @@ interface ContentProps {
   changeTokenBAmount: (value: string) => void;
   switchSwapDirection: () => void;
   connectedWallet: boolean;
+  isLoading: boolean;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -31,6 +32,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   changeTokenBAmount,
   switchSwapDirection,
   connectedWallet,
+  isLoading,
 }) => {
 
   const tokenA = swapTokenInfo.tokenA;
@@ -40,7 +42,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (value !== "" && !isAmount(value)) return;
-      changeTokenAAmount(Number(value).toString());
+      changeTokenAAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
     [changeTokenAAmount],
   );
@@ -49,7 +51,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (value !== "" && !isAmount(value)) return;
-      changeTokenBAmount(Number(value).toString());
+      changeTokenBAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
     [changeTokenBAmount],
   );
@@ -118,6 +120,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <SwapCardContentDetail
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}
+          isLoading={isLoading}
         />
       )}
     </ContentWrapper>

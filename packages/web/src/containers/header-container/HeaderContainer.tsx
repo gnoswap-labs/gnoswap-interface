@@ -85,7 +85,6 @@ const HeaderContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { account, connected, connectAdenaClient, disconnectWallet, switchNetwork } = useWallet();
-  const [openWrongNetworkModal, setOpenWrongNetworkModal] = useAtom(CommonState.wrongNetworkModal);
 
   const {
     isFetched,
@@ -110,10 +109,6 @@ const HeaderContainer: React.FC = () => {
 
   usePreventScroll(searchMenuToggle);
 
-  const closeWrongNetworkModal = () => {
-    setOpenWrongNetworkModal(false);
-  }
-
   return (
     <Header
       account={account}
@@ -132,8 +127,6 @@ const HeaderContainer: React.FC = () => {
       keyword={keyword}
       breakpoint={breakpoint}
       themeKey={themeKey}
-      openWrongNetworkModal={openWrongNetworkModal}
-      closeWrongNetworkModal={closeWrongNetworkModal}
       switchNetwork={switchNetwork}
     />
   );

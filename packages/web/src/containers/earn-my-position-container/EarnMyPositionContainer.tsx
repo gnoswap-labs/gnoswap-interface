@@ -63,7 +63,7 @@ const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
 > = () => {
   const router = useRouter();
-  const { connected, connectAdenaClient } = useWallet();
+  const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { isFetchedPositions, myPositions, updatePositions } = usePoolData();
 
   useEffect(() => {
@@ -71,8 +71,12 @@ const EarnMyPositionContainer: React.FC<
   }, []);
 
   const connect = useCallback(() => {
-    connectAdenaClient();
-  }, [connectAdenaClient]);
+    if (isSwitchNetwork) {
+      switchNetwork();
+    } else {
+      connectAdenaClient();
+    }
+  }, [connectAdenaClient, isSwitchNetwork, switchNetwork]);
 
   const moveEarnAdd = useCallback(() => {
     router.push("/earn/add");
@@ -90,6 +94,7 @@ const EarnMyPositionContainer: React.FC<
       positions={myPositions}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
+      isSwitchNetwork={isSwitchNetwork}
     />
   );
 };

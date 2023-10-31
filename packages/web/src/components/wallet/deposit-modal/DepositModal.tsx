@@ -68,7 +68,7 @@ const DepositModal: React.FC<Props> = ({
       <DepositModalWrapper ref={modalRef}>
         <div className="modal-body">
           <div className="header">
-            <h6>Deposit</h6>
+            <h6>IBC Deposit</h6>
             <div className="close-wrap" onClick={close}>
               <IconClose className="close-icon" />
             </div>
@@ -87,12 +87,14 @@ const DepositModal: React.FC<Props> = ({
                     token={depositInfo}
                     changeToken={changeToken}
                     callback={callback}
+                    isHiddenArrow
+                    disabled
                   />
                 </div>
               </div>
               <div className="info">
                 <span className="price-text">{!Number(amount) ? "-" : `$${amount}`}</span>
-                <span className="balance-text">Available: 0</span>
+                <span className="balance-text">Available: -</span>
               </div>
             </div>
           </DepositContent>

@@ -6,3 +6,15 @@ export interface TokenSwapModel {
   tokenB: TokenModel | null;
   type: SwapDirectionType;
 }
+
+export interface DataTokenInfo {
+  tokenA: TokenModel | null;
+  tokenAAmount: string;
+  tokenABalance: string;
+  tokenB: TokenModel | null;
+  tokenBAmount: string;
+  tokenBBalance: string;
+  direction: SwapDirectionType;
+  tokenAUSDStr: string;
+  tokenBUSDStr: string;
+}

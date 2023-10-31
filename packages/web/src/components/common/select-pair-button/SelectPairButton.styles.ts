@@ -2,7 +2,7 @@ import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
-export const wrapper = (hasToken: boolean, disabled?: boolean) => (
+export const wrapper = (hasToken: boolean, disabled?: boolean, isHiddenArrow?: boolean) => (
   theme: Theme,
 ) =>
   css`
@@ -26,6 +26,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean) => (
     span {
       ${fonts.body9};
       color: ${theme.color.text01};
+      ${isHiddenArrow && "margin-right: 8px;"}
       &.token-symbol {
         height: 18px;
       }

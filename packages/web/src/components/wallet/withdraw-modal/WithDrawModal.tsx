@@ -69,7 +69,7 @@ const WithDrawModal: React.FC<Props> = ({
       <WithDrawModalWrapper ref={modalRef}>
         <div className="modal-body">
           <div className="header">
-            <h6>Withdraw</h6>
+            <h6>IBC Withdraw</h6>
             <div className="close-wrap" onClick={close}>
               <IconClose className="close-icon" />
             </div>
@@ -88,12 +88,14 @@ const WithDrawModal: React.FC<Props> = ({
                     token={withdrawInfo}
                     changeToken={changeToken}
                     callback={callback}
+                    isHiddenArrow
+                    disabled
                   />
                 </div>
               </div>
               <div className="info">
                 <span className="price-text">{!Number(amount) ? "-" : `$${amount}`}</span>
-                <span className="balance-text">Available: 0</span>
+                <span className="balance-text">Available: -</span>
               </div>
             </div>
           </WithdrawContent>

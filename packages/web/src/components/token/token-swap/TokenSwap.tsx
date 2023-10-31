@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback } from "react";
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -7,27 +7,27 @@ import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconLink from "@components/common/icons/IconLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import { TokenModel } from "@models/token/token-model";
+import { DataTokenInfo } from "@models/token/token-swap-model";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 export interface TokenSwapProps {
-  from: {
-    token: TokenModel;
-    amount: string;
-    price: string;
-    balance: string;
-  };
-  to: {
-    token: TokenModel;
-    amount: string;
-    price: string;
-    balance: string;
-  };
+  isSwitchNetwork: boolean;
   connected: boolean;
-  connectWallet: () => void;
-  swapNow: () => void;
-  handleSwap: () => void;
   copied: boolean;
-  handleCopied: () => void;
   themeKey: "dark" | "light";
+  dataTokenInfo: DataTokenInfo;
+  isLoading: boolean;
+  swapButtonText: string;
+  isAvailSwap: boolean;
+
+  swapNow: () => void;
   handleSetting: () => void;
+  handleCopied: () => void;
+  connectWallet: () => void;
+  changeTokenA: (token: TokenModel) => void;
+  changeTokenAAmount: (value: string) => void;
+  changeTokenB: (token: TokenModel) => void;
+  changeTokenBAmount: (value: string) => void;
+  switchSwapDirection: () => void;
 }
 
 function isAmount(str: string) {
@@ -36,62 +36,67 @@ function isAmount(str: string) {
 }
 
 const TokenSwap: React.FC<TokenSwapProps> = ({
-  from,
-  to,
   connected,
   connectWallet,
   swapNow,
-  handleSwap,
   copied,
   handleCopied,
   themeKey,
   handleSetting,
+  isSwitchNetwork,
+  dataTokenInfo,
+  changeTokenA,
+  changeTokenAAmount,
+  changeTokenB,
+  changeTokenBAmount,
+  switchSwapDirection,
+  isLoading,
+  swapButtonText,
+  isAvailSwap,
+  
 }) => {
-  const [fromAmount, setFromAmount] = useState(from.amount.toString());
-  const [toAmount, setToAmount] = useState(to.amount.toString());
+  const tokenA = dataTokenInfo.tokenA;
+  const tokenB = dataTokenInfo.tokenB;
 
-  const onChangeFromAmount = useCallback(
+  const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-
       if (value !== "" && !isAmount(value)) return;
-
-      setFromAmount(value);
-      // TODO
-      // - mapT0AmountToT0Price
-      // - mapT0AmpuntT1Amount
-      // - mapT1AmpuntT1Price
+      changeTokenAAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [changeTokenAAmount],
   );
 
-  const onChangeToAmount = useCallback(
+  const onChangeTokenBAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-
       if (value !== "" && !isAmount(value)) return;
-
-      setToAmount(value);
-      // TODO
-      // - mapT1AmountToT1Price
-      // - mapT1AmpuntT0Amount
-      // - mapT0AmpuntT0Price
+      changeTokenBAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [],
+    [changeTokenBAmount],
   );
 
-  useEffect(() => {
-    setFromAmount(toAmount);
-    setToAmount(fromAmount);
-  }, [from, to]);
+  const handleAutoFillTokenA = useCallback(() => {
+    if (connected) {
+      const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      changeTokenAAmount(formatValue);
+    }
+  }, [changeTokenAAmount, connected, dataTokenInfo]);
+
+  const handleAutoFillTokenB = useCallback(() => {
+    if (connected) {
+      const formatValue = parseFloat(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
+      changeTokenBAmount(formatValue);
+    }
+  }, [changeTokenBAmount, connected, dataTokenInfo]);
 
   const onClickConfirm = useCallback(() => {
-    if (!connected) {
+    if (!connected || isSwitchNetwork) {
       connectWallet();
       return;
     }
     swapNow();
-  }, [connected, connectWallet, swapNow]);
+  }, [connected, connectWallet, swapNow, isSwitchNetwork]);
 
   return (
     <div css={wrapper}>
@@ -119,52 +124,61 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           <div className="amount">
             <input
               className="amount-text"
-              value={fromAmount}
-              onChange={onChangeFromAmount}
+              value={dataTokenInfo.tokenAAmount}
+              onChange={onChangeTokenAAmount}
               placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={from.token} />
+              <SelectPairButton token={tokenA} changeToken={changeTokenA}/>
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{from.price}</span>
-            <span className="balance-text">Balance: {from.balance}</span>
+            <span className="price-text">{dataTokenInfo.tokenAUSDStr}</span>
+            <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
+              Balance: {connected ? dataTokenInfo.tokenABalance : "-"}
+            </span>
           </div>
         </div>
         <div className="to">
           <div className="amount">
             <input
               className="amount-text"
-              value={toAmount}
-              onChange={onChangeToAmount}
+              value={dataTokenInfo.tokenBAmount}
+              onChange={onChangeTokenBAmount}
               placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={to.token} />
+              <SelectPairButton token={tokenB} changeToken={changeTokenB}/>
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{to.price}</span>
-            <span className="balance-text">Balance: {to.balance}</span>
+            <span className="price-text">{dataTokenInfo.tokenBUSDStr}</span>
+            <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
+              Balance: {connected ? dataTokenInfo.tokenBBalance : "-"}
+            </span>
           </div>
         </div>
-        <div className="arrow" onClick={handleSwap}>
+        <div className="arrow" onClick={switchSwapDirection}>
           <div className="shape">
             <IconSwapArrowDown className="shape-icon" />
           </div>
         </div>
       </div>
-
+      {isLoading && (
+        <div className="loading-change">
+          <LoadingSpinner /> Fetching Best Price..
+        </div>
+      )}
       <div className="footer">
         <Button
-          text={connected ? "Swap" : "Connect Wallet"}
+          text={swapButtonText}
           style={{
             fullWidth: true,
             height: 57,
             fontType: "body7",
             hierarchy: ButtonHierarchy.Primary,
           }}
+          disabled={!isAvailSwap}
           onClick={onClickConfirm}
         />
       </div>

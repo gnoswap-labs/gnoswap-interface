@@ -1,3 +1,4 @@
+import { media } from "@styles/media";
 import { css, keyframes, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 
@@ -30,5 +31,13 @@ export const wrapper = (theme: Theme) => css`
     height: 60px;
     border-radius: 100%;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  }
+  ${media.mobile} {
+    width: 60px;
+    height: 60px;
+    &::before {
+      width: 48px;
+      height: 48px;
+    }
   }
 `;

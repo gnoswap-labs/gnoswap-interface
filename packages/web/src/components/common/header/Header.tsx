@@ -23,7 +23,6 @@ import { DEVICE_TYPE } from "@styles/media";
 import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
 import { AccountModel } from "@models/account/account-model";
-import WrongNetworkModal from "../wrong-network/WrongNetworkModal";
 
 interface HeaderProps {
   pathname?: string;
@@ -42,8 +41,6 @@ interface HeaderProps {
   connectAdenaClient: () => void;
   themeKey: "dark" | "light";
   disconnectWallet: () => void;
-  openWrongNetworkModal: boolean;
-  closeWrongNetworkModal: () => void;
   switchNetwork: () => void;
 }
 
@@ -63,8 +60,6 @@ const Header: React.FC<HeaderProps> = ({
   connectAdenaClient,
   themeKey,
   disconnectWallet,
-  openWrongNetworkModal,
-  closeWrongNetworkModal,
   switchNetwork,
 }) => {
   return (
@@ -145,13 +140,6 @@ const Header: React.FC<HeaderProps> = ({
             keyword={keyword}
             tokens={tokens}
             isFetched={isFetched}
-          />
-        )}
-        {openWrongNetworkModal && (
-          <WrongNetworkModal
-            close={closeWrongNetworkModal}
-            breakpoint={breakpoint}
-            switchNetwork={switchNetwork}
           />
         )}
       </HeaderWrapper>

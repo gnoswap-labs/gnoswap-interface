@@ -1,7 +1,7 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { BaseError } from "@common/errors";
 
-export const ERROR_VALUE = {
+const ERROR_VALUE = {
   NOT_CONNECTED: {
     status: 1000,
     type: "NOT_CONNECTED",

@@ -95,7 +95,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   return (
     <ConfirmSwapModalBackground>
       <ConfirmModal ref={menuRef}>
-        <div className="modal-body">
+        <div className={`modal-body ${swapResult === null && "modal-body-loading"}`}>
           <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
             {!submitted && <span>Confirm Swap</span>}
             <div className="close-wrap" onClick={close}>
@@ -283,7 +283,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         <span className="submitted">Transaction Rejected</span>
         <div className="view-transaction">
           <span>
-            Your transaction has been rejected. Please try again.
+            Your transaction has been rejected.<br /> Please try again.
           </span>
         </div>
       </div>

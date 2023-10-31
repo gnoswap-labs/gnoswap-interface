@@ -11,15 +11,18 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { numberToFormat } from "@utils/string-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
   swapRouteInfos: SwapRouteInfo[];
+  isLoading: boolean;
 }
 
 const SwapCardContentDetail: React.FC<ContentProps> = ({
   swapSummaryInfo,
   swapRouteInfos,
+  isLoading,
 }) => {
   const { breakpoint } = useWindowSize();
   const [openedDetailInfo, setOpenedDetailInfo] = useState(false);
@@ -58,7 +61,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   }, [openedRouteInfo]);
 
   const handleSwapRate = useCallback(() => {
-    setSwapRateAction(prev => prev === "ATOB" ? "BTOA" : "ATOB");
+    setSwapRateAction((prev) => (prev === "ATOB" ? "BTOA" : "ATOB"));
   }, [swapRateAction]);
 
   return (
@@ -66,13 +69,22 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
       <DetailWrapper opened={openedDetailInfo}>
         <div className="exchange-section">
           <div className="exchange-container">
-            <div className="ocin-info">
-              <SwapButtonTooltip swapSummaryInfo={swapSummaryInfo} />
-              <span className="swap-rate" onClick={handleSwapRate}>{swapRateDescription}</span>
-              {breakpoint !== DEVICE_TYPE.MOBILE && (
-                <span className="exchange-price">{`($${swapRateUSD})`}</span>
-              )}
-            </div>
+            {!isLoading && (
+              <div className="ocin-info">
+                <SwapButtonTooltip swapSummaryInfo={swapSummaryInfo} />
+                <span className="swap-rate" onClick={handleSwapRate}>
+                  {swapRateDescription}
+                </span>
+                {breakpoint !== DEVICE_TYPE.MOBILE && (
+                  <span className="exchange-price">{`($${swapRateUSD})`}</span>
+                )}
+              </div>
+            )}
+            {isLoading && (
+              <div className="loading-change">
+                <LoadingSpinner /> Fetching Best Price..
+              </div>
+            )}
             <div className="price-info">
               <IconNote className="price-icon note-icon" />
               <span>{gasFeeUSDStr}</span>

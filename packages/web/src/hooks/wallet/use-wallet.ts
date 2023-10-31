@@ -5,7 +5,6 @@ import { CommonState, WalletState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import NetworkData from "@resources/chains.json";
-import { ERROR_VALUE } from "@common/errors/adena";
 
 const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
 
@@ -14,7 +13,6 @@ export const useWallet = () => {
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [, setNetwork] = useAtom(CommonState.network);
-  const [wrongNetworkModal, setWrongNetworkModal] = useAtom(CommonState.wrongNetworkModal);
 
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
@@ -53,21 +51,14 @@ export const useWallet = () => {
 
   const switchNetwork = useCallback(
     async () => {
-      const res = await accountRepository.switchNetwork("dev.gnoswap");
-      if (
-        res.code === ERROR_VALUE["SWITCH_NETWORK_REJECTED"].status &&
-        res.type === ERROR_VALUE["SWITCH_NETWORK_REJECTED"].type &&
-        !wrongNetworkModal
-      ) {
-        setWrongNetworkModal(true);
-      } else {
+      const res = await accountRepository.switchNetwork(CHAIN_ID);
+      if (res.code === 0) {
         const account = await accountRepository.getAccount();
         setWalletAccount(account);
         accountRepository.setConnectedWallet(true);
-        setWrongNetworkModal(false);
       }
     },
-    [accountRepository, wrongNetworkModal]
+    [accountRepository, setWalletAccount]
   );
 
   const connectAdenaClient = useCallback(() => {
@@ -90,9 +81,8 @@ export const useWallet = () => {
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
       if (account.chainId !== CHAIN_ID) {
-        setWrongNetworkModal(true);
         switchNetwork();
-      }      
+      }
       setWalletAccount(account);
       accountRepository.setConnectedWallet(true);
     } else {
@@ -115,6 +105,10 @@ export const useWallet = () => {
     } catch {}
   }
 
+  const isSwitchNetwork = useMemo(() => {
+    return !!(walletAccount && walletAccount.chainId !== CHAIN_ID);
+  }, [walletAccount]);
+
   return {
     wallet,
     account: walletAccount,
@@ -125,5 +119,6 @@ export const useWallet = () => {
     updateWalletEvents,
     disconnectWallet,
     switchNetwork,
+    isSwitchNetwork: isSwitchNetwork,
   };
 };

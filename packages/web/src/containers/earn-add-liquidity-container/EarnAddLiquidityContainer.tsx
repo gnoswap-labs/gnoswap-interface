@@ -58,9 +58,11 @@ const TEMP_CUSTOM_PRICE_RANGE: AddLiquidityPriceRage = {
   apr: "0",
 };
 
+const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
+
 const EarnAddLiquidityContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
   const { query } = useRouter();
 
   const [startPrice] = useState<string>("130621891405341611593710811006");
@@ -78,6 +80,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     connected: connectedWallet,
     account,
     connectAdenaClient,
+    switchNetwork,
   } = useWallet();
   const { slippage } = useSlippage();
   const { updateTokenPrices } = useTokenData();
@@ -109,6 +112,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const submitType: AddLiquiditySubmitType = useMemo(() => {
     if (!connectedWallet) {
       return "CONNECT_WALLET";
+    }
+    if (account && account.chainId !== CHAIN_ID) {
+      return "SWITCH_NETWORK";
     }
     if (!swapFeeTier) {
       return "ENTER_AMOUNT";
@@ -152,21 +158,27 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changeTokenA = useCallback((token: TokenModel) => {
     setSwapValue((prev) => ({
-      ...prev,
-      tokenA: token,
+      tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+      tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+      type: type,
     }));
-  }, []);
+  }, [type]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
     setSwapValue((prev) => ({
-      ...prev,
-      tokenB: token,
+      tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
+      tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+      type: type,
     }));
-  }, []);
+  }, [type]);
 
   const submit = useCallback(() => {
     if (submitType === "CONNECT_WALLET") {
       connectAdenaClient();
+      return;
+    }
+    if (submitType === "SWITCH_NETWORK") {
+      switchNetwork();
       return;
     }
     if (submitType !== "CREATE_POOL") {
@@ -184,6 +196,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     swapFeeTier,
     openConfirmModal,
     connectAdenaClient,
+    switchNetwork,
   ]);
 
   return (

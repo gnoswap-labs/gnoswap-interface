@@ -82,18 +82,18 @@ const DEPOSIT_FROM = {
 const DEPOSIT_INFO = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
+  name: "ATOM",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
   path: "gno.land/r/gnos",
   decimals: 4,
-  symbol: "GNOT",
+  symbol: "ATOM",
   logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+    "/atom.svg",
   priceId: "gno.land/r/gnos",
 };
 
 const WalletBalanceContainer: React.FC = () => {
-  const { connected } = useWallet();
+  const { connected, isSwitchNetwork } = useWallet();
   const [address, setAddress] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -179,6 +179,7 @@ const WalletBalanceContainer: React.FC = () => {
         withdraw={withdraw}
         claimAll={claimAll}
         breakpoint={breakpoint}
+        isSwitchNetwork={isSwitchNetwork}
       />
       {isShowDepositModal && (
         <DepositModal
