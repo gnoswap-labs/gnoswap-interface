@@ -84,7 +84,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       </section>
       <section>
         <h4>APR</h4>
-        <strong>{apr.value}</strong>
+        <strong>{Number(apr.value.slice(1, -1) >= 100) ? apr.value : apr.value.slice(1)}</strong>
         <div className="apr-info">
           <div className="content-wrap">
             <span>Fees</span>

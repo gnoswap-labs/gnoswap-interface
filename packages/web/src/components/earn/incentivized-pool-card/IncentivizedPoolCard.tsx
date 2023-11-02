@@ -8,8 +8,9 @@ import {
 } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import { PoolCardWrapper } from "./IncentivizedPoolCard.styles";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { numberToFormat } from "@utils/string-utils";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -20,10 +21,21 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   pool,
   routeItem,
 }) => {
+  const [isSwap, setIsSwap] = useState(false);
 
   const pairName = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
+
+  const handleClickSwap = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setIsSwap(!isSwap);
+  };
+  const swapValue = useMemo(() => {
+    return isSwap
+      ? numberToFormat(1 / pool.tickInfo.currentTick, 6)
+      : pool.tickInfo.currentTick;
+  }, [pool, isSwap]);
 
   return (
     <PoolCardWrapper
@@ -36,7 +48,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
             <span>{pairName}</span>
           </div>
           <div className="box-group">
-            <Badge type={BADGE_TYPE.DARK_DEFAULT} text={SwapFeeTierInfoMap[pool.feeTier].rateStr} />
+            <Badge type={BADGE_TYPE.DARK_DEFAULT} text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr} Fee`} />
           </div>
         </div>
         <div className="list-wrapper">
@@ -62,10 +74,14 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
           </div>
         </div>
         <div className="pool-content">
-          <div className="pool-rate-wrapper">
-            <span>{`1 ${pool.tokenA.symbol}`}</span>
+          <div className="pool-rate-wrapper" onClick={handleClickSwap}>
+            <span>{`1 ${
+              !isSwap ? pool.tokenA.symbol : pool.tokenB.symbol
+            }`}</span>
             <IconSwap />
-            <span>{`${pool.tickInfo.currentTick} ${pool.tokenB.symbol}`}</span>
+            <span>{`${swapValue} ${
+              isSwap ? pool.tokenA.symbol : pool.tokenB.symbol
+            }`}</span>
           </div>
           <BarAreaGraph
             width={258}

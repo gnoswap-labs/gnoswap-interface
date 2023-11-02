@@ -16,6 +16,12 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   padding: 16px;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.color.background03};
+  ${media.tablet} {
+    min-width: 322px;
+  }
+  ${media.mobile} {
+    min-width: 290px;
+  }
   border: 1px solid
     ${({ stakeType }) =>
       stakeType === STAKED_OPTION.STAKED
@@ -42,11 +48,10 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     }
     .badge-group {
       ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 2px;
+      gap: 3px;
       .staking-icon {
         width: 16px;
         height: 16px;
-        margin-right: 4px;
         & * {
           fill: ${({ theme }) => theme.color.text06};
         }
@@ -82,7 +87,6 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     padding: 16px;
     background-color: ${({ theme }) => theme.color.backgroundOpacity};
     border-radius: 8px;
-    margin-top: 16px;
   }
   .price-range-info {
     ${mixins.flexbox("row", "flex-start", "space-between")};

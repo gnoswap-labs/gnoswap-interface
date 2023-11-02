@@ -86,7 +86,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       gap: 16px;
     }
     span {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text04};
       ${fonts.body8}
       ${media.tablet} {
         ${fonts.body10}

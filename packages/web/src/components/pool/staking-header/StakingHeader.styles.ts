@@ -22,6 +22,7 @@ export const StakingHeaderWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
       margin-top: 6px;
+      cursor: pointer;
       .lean-more {
         ${fonts.body11};
         color: ${({ theme }) => theme.color.text04};
@@ -30,6 +31,19 @@ export const StakingHeaderWrapper = styled.div`
         width: 16px;
         height: 16px;
         cursor: pointer;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+      &:hover {
+        .lean-more {
+          color: ${({ theme }) => theme.color.text03};
+        }
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.icon07};
+          }
+        }
       }
     }
   }

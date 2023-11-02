@@ -70,7 +70,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
             width={100}
             height={45}
             currentTick={tickInfo.currentTick}
-            datas={tickInfo.ticks}
+            datas={["1", "1", "2", "2", "3", "3", "2", "2", "1", "1"]}
           />
         </div>
       </TableColumn>

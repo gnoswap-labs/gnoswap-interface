@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-list/IncentivizedPoolCardList";
 import { ValuesType } from "utility-types";
 import { useRouter } from "next/router";
@@ -53,15 +53,24 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     router.push(`/earn/pool/${id}`);
   };
 
+  const handleClickLoadMore = useCallback(() => {
+    if (loadMore) {
+      setPage(prev => prev + 1);
+    } else {
+      setPage(1);
+    }
+  }, [loadMore]);
+
   return (
     <IncentivizedPoolCardList
       incentivizedPools={incentivizedPools}
       isFetched={isFetchedPools}
-      loadMore={loadMore}
-      onClickLoadMore={() => { }}
-      currentIndex={currentIndex}
+      loadMore={!!loadMore}
+      onClickLoadMore={handleClickLoadMore}
+      currentIndex={page - 1}
       routeItem={routeItem}
       mobile={mobile}
+      page={page}
     />
   );
 };

@@ -130,7 +130,7 @@ export const MyPositionCardWrapper = styled.div`
       }
       .symbol-text {
         ${fonts.body12};
-        color: ${({ theme }) => theme.color.text10};
+        color: ${({ theme }) => theme.color.text04};
       }
       .content-text {
         ${fonts.body2};

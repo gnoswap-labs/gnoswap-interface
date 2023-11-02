@@ -37,7 +37,7 @@ export const skeletonStyle =
       }
     `;
 
-export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 200];
+export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];
 export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];

@@ -1,3 +1,4 @@
+import { position } from "@components/earn/earn-my-positions/EarnMyPositions.stories";
 import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
@@ -29,7 +30,7 @@ export const usePoolData = () => {
   }, [pools]);
 
   const myPositions: PoolPosition[] = useMemo(() => {
-    return [];
+    return [position, position];
   }, []);
   async function updatePositions() {
     setIsFetchedPositions(true);

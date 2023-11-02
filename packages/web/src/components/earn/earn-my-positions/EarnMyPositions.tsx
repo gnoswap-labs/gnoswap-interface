@@ -10,6 +10,7 @@ export interface EarnMyPositionsProps {
   connect: () => void;
   moveEarnAdd: () => void;
   movePoolDetail: (poolId: string) => void;
+  moveEarnStake: () => void;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -19,11 +20,13 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   positions,
   moveEarnAdd,
   movePoolDetail,
+  moveEarnStake,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
       connected={connected}
       moveEarnAdd={moveEarnAdd}
+      moveEarnStake={moveEarnStake}
     />
     <EarnMyPositionsContent
       connected={connected}

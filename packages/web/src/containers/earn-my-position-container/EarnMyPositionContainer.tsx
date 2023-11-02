@@ -82,6 +82,10 @@ const EarnMyPositionContainer: React.FC<
     router.push(`/earn/pool/${id}`);
   }, [router]);
 
+  const moveEarnStake = useCallback(() => {
+    router.push("/earn/stake");
+  }, [router]);
+
   return (
     <EarnMyPositions
       connected={connected}
@@ -90,6 +94,7 @@ const EarnMyPositionContainer: React.FC<
       positions={myPositions}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
+      moveEarnStake={moveEarnStake}
     />
   );
 };

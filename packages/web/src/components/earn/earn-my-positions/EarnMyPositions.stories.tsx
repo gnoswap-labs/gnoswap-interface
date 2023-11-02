@@ -14,7 +14,7 @@ const Template: ComponentStory<typeof EarnMyPositions> = args => (
   <EarnMyPositions {...args} />
 );
 
-const position: PoolPosition = {
+export const position: PoolPosition = {
   tokenPair: {
     tokenA: {
       path: Math.floor(Math.random() * 50 + 1).toString(),

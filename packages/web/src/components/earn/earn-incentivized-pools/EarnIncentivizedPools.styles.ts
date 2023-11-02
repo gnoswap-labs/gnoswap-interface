@@ -15,10 +15,11 @@ export const PoolsWrapper = styled.div`
     gap: 16px;
     ${fonts.h6};
   }
-
-  h2 {
+  .pool-header {
     width: 100%;
-    color: ${({ theme }) => theme.color.text02};
-    ${mixins.flexbox("row", "center", "flex-start")};
+    ${mixins.flexbox("row", "center", "space-between")};
+    h2 {
+      color: ${({ theme }) => theme.color.text02};
+    }
   }
 `;

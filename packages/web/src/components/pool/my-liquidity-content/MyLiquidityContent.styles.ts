@@ -32,6 +32,11 @@ export const MyLiquidityContentWrapper = styled.div`
         border-top: 1px solid ${({ theme }) => theme.color.border02};
       }
     }
+    @media (max-width: 1180px) and (min-width: 769px) {
+      &:nth-of-type(3) {
+        min-width: 300px;
+      }
+    }
   }
 
   h4 {

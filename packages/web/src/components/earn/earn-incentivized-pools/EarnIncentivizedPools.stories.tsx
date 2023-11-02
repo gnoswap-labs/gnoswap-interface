@@ -76,5 +76,7 @@ Default.args = {
     isFetched={true}
     routeItem={action("routeItem")}
     mobile={false}
+    loadMore={false}
+    page={1}
   />
 };

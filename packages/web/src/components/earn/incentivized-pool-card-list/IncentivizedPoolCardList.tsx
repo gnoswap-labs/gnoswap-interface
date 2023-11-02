@@ -9,12 +9,13 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 export interface IncentivizedPoolCardListProps {
   incentivizedPools: PoolCardInfo[];
-  loadMore?: boolean;
+  loadMore: boolean;
   isFetched: boolean;
   onClickLoadMore?: () => void;
   currentIndex: number;
   routeItem: (id: string) => void;
   mobile: boolean;
+  page: number;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -25,12 +26,13 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   currentIndex,
   routeItem,
   mobile,
+  page,
 }) => (
   <IncentivizedWrapper>
     <PoolListWrapper>
       {isFetched &&
         incentivizedPools.length > 0 &&
-        incentivizedPools.map((info, index) => (
+        incentivizedPools.slice(0, page * 8).map((info, index) => (
           <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} />
         ))}
       {!isFetched &&
@@ -43,7 +45,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
         ))}
     </PoolListWrapper>
     {!mobile ? (
-      loadMore &&
+      incentivizedPools.length > 8 &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )

@@ -21,11 +21,14 @@ export const NoLiquidityWrapper = styled.div`
   }
   ${media.mobile} {
     padding: 16px 12px;
-    ${fonts.body10};
+    ${fonts.body12};
+    br {
+      display: none;
+    }
   }
   .emphasis-text {
     ${fonts.h5}
-    color: ${({ theme }) => theme.color.point};
+    color: ${({ theme }) => theme.color.text07};
     ${media.tablet} {
       ${fonts.h6};
     }
@@ -40,7 +43,7 @@ export const NoLiquidityWrapper = styled.div`
       ${fonts.body12};
     }
     ${media.mobile} {
-      ${fonts.p2};
+      ${fonts.p4};
     }
   }
 `;

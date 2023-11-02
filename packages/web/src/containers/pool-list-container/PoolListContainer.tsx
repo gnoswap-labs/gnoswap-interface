@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { useRouter } from "next/router";
 import { usePoolData } from "@hooks/pool/use-pool-data";
+import useClickOutside from "@hooks/common/use-click-outside";
 
 export interface Pool {
   poolId: string;
@@ -86,10 +87,19 @@ const PoolListContainer: React.FC = () => {
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
   const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
+  const [componentRef, isClickOutside, setIsInside] = useClickOutside();
 
   useEffect(() => {
     updatePools();
   }, []);
+
+  useEffect(() => {
+    if (!keyword) {
+      if (isClickOutside) {
+        setSearchIcon(false);
+      }
+    }
+  }, [isClickOutside, keyword]);
 
   const sortedPoolListInfos = useMemo(() => {
     return poolListInfos.filter(info => {
@@ -104,7 +114,7 @@ const PoolListContainer: React.FC = () => {
       }
       return true;
     });
-  }, [keyword, poolListInfos, poolType]);
+  }, [keyword, poolListInfos, poolType, sortOption]);
 
   const totalPage = useMemo(() => {
     return sortedPoolListInfos.length / 20 + 1;
@@ -115,6 +125,7 @@ const PoolListContainer: React.FC = () => {
   };
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
+    setIsInside(true);
   };
 
   const changePoolType = useCallback((newType: string) => {
@@ -182,6 +193,7 @@ const PoolListContainer: React.FC = () => {
       routeItem={routeItem}
       searchIcon={searchIcon}
       onTogleSearch={onTogleSearch}
+      searchRef={componentRef}
     />
   );
 };

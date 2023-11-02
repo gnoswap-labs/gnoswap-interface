@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const PoolCardWrapper = styled.div`
@@ -17,8 +18,11 @@ export const PoolCardWrapper = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.color.background02};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid ${({ theme }) => theme.color.border03};
   }
-
+  ${media.mobile} {
+    min-width: 290px;
+  }
   .pool-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     ${fonts.body5}

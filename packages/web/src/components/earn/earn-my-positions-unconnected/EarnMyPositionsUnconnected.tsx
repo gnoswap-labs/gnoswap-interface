@@ -17,18 +17,15 @@ const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
     <UnconnectedWrapper>
       <IconLinkOff className="unconnected-icon" />
       <p>
-        Please connect your wallet to view
+        Please connect your wallet to view&nbsp;
         <br />
         your liquidity positions.
       </p>
       <Button
         text="Connect Wallet"
         onClick={onClickConnect}
-        style={{
-          hierarchy: ButtonHierarchy.Primary,
-          width: 263,
-          height: 41,
-        }}
+        style={{ hierarchy: ButtonHierarchy.Primary }}
+        className="button-connect-wallet"
       />
     </UnconnectedWrapper>
   );

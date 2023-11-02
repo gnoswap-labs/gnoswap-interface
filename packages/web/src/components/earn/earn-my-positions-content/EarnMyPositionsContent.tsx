@@ -2,7 +2,7 @@ import MyPositionCardList from "@components/common/my-position-card-list/MyPosit
 import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import EarnMyPositionNoLiquidity from "../earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyPositionsUnconnected";
-
+import { useMemo } from "react";
 export interface EarnMyPositionContentProps {
   connected: boolean;
   fetched: boolean;
@@ -18,11 +18,14 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   connect,
   movePoolDetail,
 }) => {
+  const randomForTest = useMemo(() => {
+    return Math.floor(Math.random() * 2 + 1);
+  }, [positions]);
   if (!connected) {
     return <EarnMyPositionsUnconnected connect={connect} />;
   }
 
-  if (positions.length === 0) {
+  if (randomForTest === 0) {
     return <EarnMyPositionNoLiquidity />;
   }
 

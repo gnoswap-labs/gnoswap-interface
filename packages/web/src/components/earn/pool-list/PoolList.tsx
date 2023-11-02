@@ -31,6 +31,7 @@ interface TokenListProps {
   onTogleSearch: () => void;
   breakpoint: DEVICE_TYPE;
   routeItem: (id: string) => void;
+  searchRef: React.RefObject<HTMLDivElement>;
 }
 
 const PoolList: React.FC<TokenListProps> = ({
@@ -50,6 +51,7 @@ const PoolList: React.FC<TokenListProps> = ({
   onTogleSearch,
   breakpoint,
   routeItem,
+  searchRef,
 }) => {
   return (
     <PoolListWrapper>
@@ -61,6 +63,7 @@ const PoolList: React.FC<TokenListProps> = ({
         breakpoint={breakpoint}
         searchIcon={searchIcon}
         onTogleSearch={onTogleSearch}
+        searchRef={searchRef}
       />
       <PoolListTable
         pools={pools}
