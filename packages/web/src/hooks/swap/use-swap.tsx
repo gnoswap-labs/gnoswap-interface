@@ -31,12 +31,15 @@ export const useSwap = ({
   }, [tokenA?.symbol]);
 
   const amountDirection = useMemo(() => {
-    const isDirection = direction === "EXACT_IN";
-    if (isDirection) {
-      return 1;
-    }
-    return -1;
+    return direction === "EXACT_IN" ? 1 : -1;
   }, [direction]);
+
+  const tempAmountDirection = useMemo(() => {
+    if (!zeroForOne) {
+      return -1 * amountDirection;
+    }
+    return amountDirection;
+  }, [amountDirection, zeroForOne]);
 
   /**
    * TODO: Once a contract can handle GRC20 tokens dynamically, it will need to be reconsidered.
@@ -53,7 +56,7 @@ export const useSwap = ({
     if (!selectedTokenPair) {
       return null;
     }
-    const amountSpecified = BigNumber(amount).multipliedBy(amountDirection).toNumber();
+    const amountSpecified = BigNumber(amount).multipliedBy(tempAmountDirection).toNumber();
 
     return swapRepository.findSwapPool({
       tokenA: zeroForOne ? tokenA : tokenB,
@@ -61,7 +64,7 @@ export const useSwap = ({
       zeroForOne,
       amountSpecified,
     }).catch(() => null);
-  }, [selectedTokenPair, amountDirection, swapRepository, zeroForOne, tokenA, tokenB]);
+  }, [selectedTokenPair, tempAmountDirection, swapRepository, zeroForOne, tokenA, tokenB]);
 
   const getExpectedSwap = useCallback(async (amount: string) => {
     if (!selectedTokenPair) {
@@ -73,9 +76,7 @@ export const useSwap = ({
     }
     const fee = SwapFeeTierInfoMap[swapPool.feeTier].fee;
 
-    const amountSpecified = direction === "EXACT_OUT" ?
-      BigNumber(amount || 0).multipliedBy(-1).toNumber() :
-      BigNumber(amount || 0).toNumber();
+    const amountSpecified = BigNumber(amount || 0).multipliedBy(tempAmountDirection).toNumber();
 
     return swapRepository.getExpectedSwapResult({
       tokenA: zeroForOne ? tokenA : tokenB,
@@ -87,7 +88,7 @@ export const useSwap = ({
     }).then((data) =>
       getAmountResult(amountSpecified, data.tokenAAmount, data.tokenBAmount))
       .catch(() => null);
-  }, [selectedTokenPair, findSwapPool, direction, swapRepository, zeroForOne, tokenA, tokenB, getAmountResult]);
+  }, [selectedTokenPair, findSwapPool, tempAmountDirection, swapRepository, zeroForOne, tokenA, tokenB, getAmountResult]);
 
   const swap = useCallback(async (tokenAAmount: string, tokenBAmount: string) => {
     if (!account) {
