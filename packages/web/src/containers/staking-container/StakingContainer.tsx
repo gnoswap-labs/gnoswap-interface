@@ -3,8 +3,6 @@ import Staking from "@components/pool/staking/Staking";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 
-const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
-
 export const rewardInfoInit = {
   apr: "89",
   tokenPair: {
@@ -87,7 +85,7 @@ export const stakingInit = [
 const StakingContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
-  const { connected: connectedWallet, account } = useWallet();
+  const { connected: connectedWallet, isSwitchNetwork } = useWallet();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -107,8 +105,8 @@ const StakingContainer: React.FC = () => {
 
 
   const isDisabledButton = useMemo(() => {
-    return (account && account.chainId !== CHAIN_ID) || !connectedWallet;
-  }, [account, connectedWallet]);
+    return isSwitchNetwork || !connectedWallet;
+  }, [isSwitchNetwork, connectedWallet]);
 
   return (
     <Staking

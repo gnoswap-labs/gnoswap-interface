@@ -53,7 +53,6 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 8px;
     color: ${theme.color.text03};
-    margin-top: 8px;
     ${fonts.body12}
     > div {
       width: 16px;

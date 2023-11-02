@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -8,7 +8,10 @@ import IconLink from "@components/common/icons/IconLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import { TokenModel } from "@models/token/token-model";
 import { DataTokenInfo } from "@models/token/token-swap-model";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
+
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
   connected: boolean;
@@ -18,6 +21,8 @@ export interface TokenSwapProps {
   isLoading: boolean;
   swapButtonText: string;
   isAvailSwap: boolean;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  swapRouteInfos: SwapRouteInfo[];
 
   swapNow: () => void;
   handleSetting: () => void;
@@ -53,7 +58,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   isLoading,
   swapButtonText,
   isAvailSwap,
-  
+  swapSummaryInfo,
+  swapRouteInfos,
 }) => {
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
@@ -97,6 +103,10 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     }
     swapNow();
   }, [connected, connectWallet, swapNow, isSwitchNetwork]);
+  
+  const isShowInfoSection = useMemo(() => {
+    return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
+  }, [dataTokenInfo, isLoading]);
 
   return (
     <div css={wrapper}>
@@ -164,10 +174,12 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           </div>
         </div>
       </div>
-      {isLoading && (
-        <div className="loading-change">
-          <LoadingSpinner /> Fetching Best Price..
-        </div>
+      {swapSummaryInfo && isShowInfoSection && (
+        <SwapCardContentDetail
+          swapSummaryInfo={swapSummaryInfo}
+          swapRouteInfos={swapRouteInfos}
+          isLoading={isLoading}
+        />
       )}
       <div className="footer">
         <Button

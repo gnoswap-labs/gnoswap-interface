@@ -14,8 +14,12 @@ import { SwapError } from "@common/errors/swap";
 import { TokenModel } from "@models/token/token-model";
 import { DataTokenInfo } from "@models/token/token-swap-model";
 import { matchInputNumber, numberToUSD } from "@utils/number-utils";
+import { AmountModel } from "@models/common/amount-model";
+import { amountEmptyNumberInit } from "@common/values";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
 
-const swapSummaryInfo: SwapSummaryInfo = {
+const swapSummaryInfoTemp: SwapSummaryInfo = {
   tokenA: {
     chainId: "test3",
     address: "0x111111111117dC0aa78b770fA6A738034120C302",
@@ -103,6 +107,10 @@ const TokenSwapContainer: React.FC = () => {
   const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [swapError, setSwapError] = useState<SwapError | null>(null);
+  const [swapRate] = useState<number>(100);
+  const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
+  const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
+  const [slippage, setSlippage] = useState(1);
 
   const {
     tokenPrices,
@@ -472,6 +480,32 @@ const TokenSwapContainer: React.FC = () => {
     isLoading,
   ]);
 
+  const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return null;
+    }
+    const swapRateUSD = BigNumber(swapRate).multipliedBy(1).toNumber();
+    const gasFeeUSD = BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber();
+    return {
+      tokenA,
+      tokenB,
+      swapDirection: type,
+      swapRate,
+      swapRateUSD,
+      priceImpact: 0.1,
+      guaranteedAmount: {
+        amount: BigNumber(tokenBAmount).toNumber(),
+        currency: type === "EXACT_IN" ? tokenB.symbol : tokenA.symbol,
+      },
+      gasFee: gasFeeAmount,
+      gasFeeUSD,
+    };
+  }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenBAmount]);
+
+  const changeSlippage = useCallback((value: string) => {
+    setSlippage(BigNumber(value || 0).toNumber());
+  }, [setSlippage]);
+
   return (
     <>
       <TokenSwap
@@ -492,12 +526,14 @@ const TokenSwapContainer: React.FC = () => {
         isLoading={isLoading}
         isAvailSwap={isAvailSwap}
         swapButtonText={swapButtonText}
+        swapSummaryInfo={swapSummaryInfo}
+        swapRouteInfos={swapRouteInfos}
       />
       {openedConfirmModal && (
         <ConfirmSwapModal
           submitted={false}
           swapTokenInfo={swapTokenInfo}
-          swapSummaryInfo={swapSummaryInfo}
+          swapSummaryInfo={swapSummaryInfoTemp}
           swapResult={null}
           swap={swapNow}
           close={() => setOpenedConfirmModal(false)}
@@ -505,8 +541,8 @@ const TokenSwapContainer: React.FC = () => {
       )}
       {openedSetting && (
         <SettingMenuModal
-          slippage={0}
-          changeSlippage={() => {}}
+          slippage={slippage}
+          changeSlippage={changeSlippage}
           close={handleCloseSetting}
           className="swap-setting-class"
         />

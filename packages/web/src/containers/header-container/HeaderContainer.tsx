@@ -84,7 +84,7 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, connectAdenaClient, disconnectWallet, switchNetwork } = useWallet();
+  const { account, connected, connectAdenaClient, disconnectWallet, switchNetwork, isSwitchNetwork } = useWallet();
 
   const {
     isFetched,
@@ -128,6 +128,7 @@ const HeaderContainer: React.FC = () => {
       breakpoint={breakpoint}
       themeKey={themeKey}
       switchNetwork={switchNetwork}
+      isSwitchNetwork={isSwitchNetwork}
     />
   );
 };

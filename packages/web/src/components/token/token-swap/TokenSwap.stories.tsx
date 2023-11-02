@@ -45,6 +45,8 @@ Default.args = {
     tokenAUSDStr: "123",
     tokenBUSDStr: "123",
   },
+  swapSummaryInfo: null,
+  swapRouteInfos: [],
   connectWallet: action("connectWallet"),
   swapNow: action("swapNow"),
   handleSetting: action("handleSetting"),

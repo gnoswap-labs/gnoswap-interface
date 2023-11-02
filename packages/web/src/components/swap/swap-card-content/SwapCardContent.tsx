@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { ContentWrapper } from "./SwapCardContent.styles";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import SwapCardContentDetail from "../swap-card-content-detail/SwapCardContentDetail";
@@ -70,6 +70,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
     }
   }, [changeTokenBAmount, connectedWallet, swapTokenInfo]);
   
+  const isShowInfoSection = useMemo(() => {
+    return !!(swapSummaryInfo && !!Number(swapTokenInfo.tokenAAmount) && !!Number(swapTokenInfo.tokenBAmount)) || isLoading;
+  }, [swapSummaryInfo, swapTokenInfo, isLoading]);
+
   return (
     <ContentWrapper>
       <div className="first-section">
@@ -116,7 +120,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         </div>
       </div>
 
-      {swapSummaryInfo && (
+      {swapSummaryInfo && isShowInfoSection && (
         <SwapCardContentDetail
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}

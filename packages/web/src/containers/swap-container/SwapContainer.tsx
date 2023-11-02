@@ -189,7 +189,7 @@ const SwapContainer: React.FC = () => {
   }, [query, setTokenAAmount]);
 
   const changeSlippage = useCallback((value: string) => {
-    setSlippage(BigNumber(value).toNumber());
+    setSlippage(BigNumber(value || 0).toNumber());
   }, [setSlippage]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
@@ -370,7 +370,6 @@ const SwapContainer: React.FC = () => {
     }
     const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
-    console.log(Number.isNaN(changedAmount), BigNumber(changedAmount).isLessThanOrEqualTo(0), "changedAmount");
     
     if (Number.isNaN(changedAmount) || BigNumber(changedAmount).isLessThanOrEqualTo(0)) {
       return;

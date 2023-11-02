@@ -58,8 +58,6 @@ const TEMP_CUSTOM_PRICE_RANGE: AddLiquidityPriceRage = {
   apr: "0",
 };
 
-const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
-
 const EarnAddLiquidityContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
@@ -81,6 +79,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     account,
     connectAdenaClient,
     switchNetwork,
+    isSwitchNetwork,
   } = useWallet();
   const { slippage } = useSlippage();
   const { updateTokenPrices } = useTokenData();
@@ -113,7 +112,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!connectedWallet) {
       return "CONNECT_WALLET";
     }
-    if (account && account.chainId !== CHAIN_ID) {
+    if (isSwitchNetwork) {
       return "SWITCH_NETWORK";
     }
     if (!swapFeeTier) {
@@ -142,6 +141,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     swapFeeTier,
     tokenAAmountInput.amount,
     tokenBAmountInput.amount,
+    isSwitchNetwork,
   ]);
 
   useEffect(() => {

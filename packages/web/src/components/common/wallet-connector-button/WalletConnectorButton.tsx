@@ -15,8 +15,6 @@ import IconFailed from "../icons/IconFailed";
 import Tooltip from "../tooltip/Tooltip";
 import { Global, css } from "@emotion/react";
 
-const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
-
 interface WalletConnectProps {
   account: AccountModel | null;
   connected: boolean;
@@ -24,6 +22,7 @@ interface WalletConnectProps {
   themeKey: "dark" | "light";
   disconnectWallet: () => void;
   switchNetwork: () => void;
+  isSwitchNetwork: boolean;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -58,6 +57,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   themeKey,
   disconnectWallet,
   switchNetwork,
+  isSwitchNetwork,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
@@ -80,7 +80,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       {connected ? (
         <Button
           leftIcon={
-            account && account.chainId !== CHAIN_ID ? (
+            isSwitchNetwork ? (
               <Tooltip
                 floatClassName="float-class-name"
                 placement="left"
@@ -132,6 +132,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           onMenuToggle={onMenuToggle}
           themeKey={themeKey}
           switchNetwork={switchNetwork}
+          isSwitchNetwork={isSwitchNetwork}
         />
       )}
       <ToolTipGlobalStyle />

@@ -80,7 +80,10 @@ export const useWallet = () => {
 
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
-      if (account.chainId !== CHAIN_ID) {
+      const network = NetworkData.find(
+        network => network.chainId === account.chainId,
+      );
+      if (!network) {
         switchNetwork();
       }
       setWalletAccount(account);
@@ -106,7 +109,13 @@ export const useWallet = () => {
   }
 
   const isSwitchNetwork = useMemo(() => {
-    return !!(walletAccount && walletAccount.chainId !== CHAIN_ID);
+    
+    if (!walletAccount) return true;
+    const network = NetworkData.find(
+      network => network.chainId === walletAccount.chainId,
+    );
+    
+    return network ? false : true;
   }, [walletAccount]);
 
   return {

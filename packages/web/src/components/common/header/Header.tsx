@@ -42,6 +42,7 @@ interface HeaderProps {
   themeKey: "dark" | "light";
   disconnectWallet: () => void;
   switchNetwork: () => void;
+  isSwitchNetwork: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -61,6 +62,7 @@ const Header: React.FC<HeaderProps> = ({
   themeKey,
   disconnectWallet,
   switchNetwork,
+  isSwitchNetwork,
 }) => {
   return (
     <>
@@ -110,6 +112,7 @@ const Header: React.FC<HeaderProps> = ({
                 themeKey={themeKey}
                 disconnectWallet={disconnectWallet}
                 switchNetwork={switchNetwork}
+                isSwitchNetwork={isSwitchNetwork}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />
