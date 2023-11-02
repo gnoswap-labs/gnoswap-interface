@@ -1,6 +1,4 @@
-import { generateBarAreaDatas } from "@common/utils/test-util";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import BarAreaGraph from "@components/common/bar-area-graph/BarAreaGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconSwap from "@components/common/icons/IconSwap";
 import {
@@ -10,6 +8,7 @@ import { PoolCardWrapper } from "./IncentivizedPoolCard.styles";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import PoolGraph from "@components/common/pool-graph/PoolGraph";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -65,13 +64,16 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
           <div className="pool-rate-wrapper">
             <span>{`1 ${pool.tokenA.symbol}`}</span>
             <IconSwap />
-            <span>{`${pool.tickInfo.currentTick} ${pool.tokenB.symbol}`}</span>
+            <span>{`${pool.currentTick} ${pool.tokenB.symbol}`}</span>
           </div>
-          <BarAreaGraph
+          <PoolGraph
+            tokenA={pool.tokenA}
+            tokenB={pool.tokenB}
+            bins={pool.bins}
+            currentTick={pool.currentTick}
             width={258}
             height={60}
-            currentTick={20}
-            datas={generateBarAreaDatas()}
+            mouseover
           />
         </div>
       </div>

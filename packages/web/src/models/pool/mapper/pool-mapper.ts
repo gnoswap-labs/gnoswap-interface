@@ -10,6 +10,7 @@ export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
     const {
       id,
+      topBin,
       price,
       tokenA,
       tokenB,
@@ -18,8 +19,8 @@ export class PoolMapper {
       fee,
       feeVolume,
       apr,
+      bins,
     } = poolModel;
-
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
@@ -50,10 +51,9 @@ export class PoolMapper {
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
       incentiveType: "Incentivized",
-      tickInfo: {
-        currentTick: price,
-        ticks: [],
-      },
+      currentTick: topBin.currentTick,
+      price,
+      bins,
     };
   }
 
@@ -74,6 +74,7 @@ export class PoolMapper {
   public static toCardInfo(poolModel: PoolModel): PoolCardInfo {
     const {
       id,
+      topBin,
       price,
       tokenA,
       tokenB,
@@ -82,8 +83,8 @@ export class PoolMapper {
       fee,
       feeVolume,
       apr,
+      bins,
     } = poolModel;
-
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
@@ -114,10 +115,9 @@ export class PoolMapper {
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
       incentiveType: "Incentivized",
-      tickInfo: {
-        currentTick: price,
-        ticks: [],
-      },
+      currentTick: topBin.currentTick,
+      price,
+      bins,
     };
   }
 }

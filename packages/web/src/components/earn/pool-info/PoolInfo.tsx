@@ -7,6 +7,7 @@ import React, { useMemo } from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import PoolGraph from "@components/common/pool-graph/PoolGraph";
 interface PoolInfoProps {
   pool: PoolListInfo;
   routeItem: (id: string) => void;
@@ -23,7 +24,8 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
     volume24h,
     fees24h,
     rewards,
-    tickInfo
+    currentTick,
+    bins
   } = pool;
 
   const rewardImage = useMemo(() => {
@@ -66,11 +68,13 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[6]}>
         <div className="chart-wrapper">
-          <BarGraph
+          <PoolGraph
             width={100}
             height={45}
-            currentTick={tickInfo.currentTick}
-            datas={tickInfo.ticks}
+            tokenA={tokenA}
+            tokenB={tokenB}
+            currentTick={currentTick}
+            bins={bins}
           />
         </div>
       </TableColumn>
