@@ -6,7 +6,6 @@ import SelectTab from "../select-tab/SelectTab";
 import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 import { TokenInfo } from "@models/token/token-info";
 import { PoolTick } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import PoolGraph from "../pool-graph/PoolGraph";
 import BigNumber from "bignumber.js";
 
 export interface SelectPriceRangeCustomProps {
@@ -125,16 +124,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
         <span>{currentPriceInfo}</span>
       </div>
       <div className="range-graph-wrapper">
-        <PoolGraph
-          width={388}
-          height={140}
-          ticks={ticks}
-          currentTick={currentTick}
-          minTick={minTick}
-          maxTick={maxTick}
-          onChangeMinTick={setMinTick}
-          onChangeMaxTick={setMaxTick}
-        />
+        {/* TBD: SelectLiquidityGraph */}
       </div>
 
       <div className="range-controller-wrapper">

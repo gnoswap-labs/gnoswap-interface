@@ -9,6 +9,8 @@ export interface PoolBinModel {
 
   reserveB: number;
 
+  totalSupply: number;
+
   lpTokenId: string;
 
   timestamp: string;
