@@ -9,6 +9,9 @@ export const WalletBalanceDetailWrapper = styled.div`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background03};
   border: 1px solid ${({ theme }) => theme.color.border02};
+  @media (max-width: 968px) {
+    flex-direction: column;
+  }
   ${media.mobile} {
     flex-direction: column;
   }
@@ -30,6 +33,7 @@ export const InfoWrapper = styled.div`
     align-items: center;
     padding: 12px;
     height: auto;
+    border-left: none;
   }
   .column-batch {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -48,8 +52,8 @@ export const InfoWrapper = styled.div`
     }
 
     svg {
-      width: 13px;
-      height: 13px;
+      width: 16px;
+      height: 16px;
     }
     path {
       fill: ${({ theme }) => theme.color.icon03};

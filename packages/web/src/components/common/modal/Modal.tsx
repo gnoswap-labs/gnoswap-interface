@@ -1,8 +1,10 @@
+import { usePositionModal } from "@hooks/common/use-postion-modal";
 import {
   ModalStyleProps,
   ModalWrapper,
   Overlay,
 } from "./Modal.styles";
+import { useRef } from "react";
 
 interface ModalProps {
   hasLeftArrow?: boolean;
@@ -20,9 +22,12 @@ const Modal: React.FC<ModalProps> = ({
   style,
   children,
 }) => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  usePositionModal(modalRef);
+
   return (
     <>
-      <ModalWrapper {...style}>
+      <ModalWrapper ref={modalRef} {...style}>
         {children}
       </ModalWrapper>
       <Overlay onClick={exitClick} />

@@ -14,10 +14,14 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResponse } from "@repositories/swap";
 import { matchInputNumber, numberToUSD } from "@utils/number-utils";
 import { SwapError } from "@common/errors/swap";
+import { useRouter } from "next/router";
 
 const SwapContainer: React.FC = () => {
+  const router = useRouter();
+  const [query, setQuery] = useState<{ [key in string]: string | null }>({});
+  const [initialized, setInitialized] = useState(false);
   const { connected: connectedWallet, connectAdenaClient } = useWallet();
-  const { tokenPrices, balances, updateTokenPrices, updateBalances } = useTokenData();
+  const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances } = useTokenData();
   const [swapError, setSwapError] = useState<SwapError | null>(null);
   const [tokenA, setTokenA] = useState<TokenModel | null>(null);
   const [tokenAAmount, setTokenAAmount] = useState<string>("0");
@@ -39,44 +43,10 @@ const SwapContainer: React.FC = () => {
     slippage
   });
 
-  useEffect(() => {
-    updateTokenPrices();
-  });
-
   const checkBalance = useCallback((token: TokenModel, amount: string) => {
     const tokenBalance = balances[token.priceId] || 0;
     return BigNumber(tokenBalance).isGreaterThan(amount);
   }, [balances]);
-
-  useEffect(() => {
-    if (!tokenA || !tokenB) {
-      return;
-    }
-    const isExactIn = swapDirection === "EXACT_IN";
-    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
-    if (Number.isNaN(changedAmount) && BigNumber(changedAmount).isGreaterThan(0)) {
-      return;
-    }
-    getExpectedSwap(changedAmount).then(result => {
-      const isError = result === null;
-      const expectedAmount = isError ? "" : result;
-      let swapError = null;
-      if (isError) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-      if (!checkBalance(tokenA, tokenAAmount) ||
-        !checkBalance(tokenB, tokenBAmount)) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-
-      if (isExactIn) {
-        setTokenBAmount(expectedAmount);
-      } else {
-        setTokenAAmount(expectedAmount);
-      }
-      setSwapError(swapError);
-    });
-  }, [checkBalance, getExpectedSwap, swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const tokenABalance = useMemo(() => {
     if (tokenA && !Number.isNaN(balances[tokenA.priceId])) {
@@ -140,7 +110,8 @@ const SwapContainer: React.FC = () => {
     }
     setSwapDirection("EXACT_IN");
     setTokenAAmount(value);
-  }, []);
+    setQuery({ ...query, direction: "EXACT_IN" });
+  }, [query]);
 
   const changeTokenBAmount = useCallback((value: string) => {
     if (!matchInputNumber(value)) {
@@ -148,7 +119,8 @@ const SwapContainer: React.FC = () => {
     }
     setSwapDirection("EXACT_OUT");
     setTokenBAmount(value);
-  }, []);
+    setQuery({ ...query, direction: "EXACT_OUT" });
+  }, [query]);
 
   const changeSlippage = useCallback((value: string) => {
     setSlippage(BigNumber(value).toNumber());
@@ -202,11 +174,13 @@ const SwapContainer: React.FC = () => {
 
   const changeTokenA = useCallback((token: TokenModel) => {
     setTokenA(token);
-  }, []);
+    setQuery({ ...query, tokenA: token.path });
+  }, [query]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
     setTokenB(token);
-  }, []);
+    setQuery({ ...query, tokenB: token.path });
+  }, [query]);
 
   const switchSwapDirection = useCallback(() => {
     const preTokenA = tokenA ? { ...tokenA } : null;
@@ -221,7 +195,11 @@ const SwapContainer: React.FC = () => {
     } else {
       setTokenBAmount(tokenAAmount);
     }
-
+    setQuery({
+      tokenA: preTokenB?.path || null,
+      tokenB: preTokenA?.path || null,
+      direction: changedSwapDirection
+    });
   }, [swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const copyURL = async () => {
@@ -249,6 +227,77 @@ const SwapContainer: React.FC = () => {
       });
     });
   }
+
+  useEffect(() => {
+    updateTokens();
+    updateTokenPrices();
+  }, []);
+
+  useEffect(() => {
+    if (!tokenA || !tokenB) {
+      return;
+    }
+    const isExactIn = swapDirection === "EXACT_IN";
+    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    if (Number.isNaN(changedAmount) || BigNumber(changedAmount).isLessThanOrEqualTo(0)) {
+      return;
+    }
+    getExpectedSwap(changedAmount).then(result => {
+      const isError = result === null;
+      const expectedAmount = isError ? "" : result;
+      let swapError = null;
+      if (isError) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
+      if (!checkBalance(tokenA, tokenAAmount) ||
+        !checkBalance(tokenB, tokenBAmount)) {
+        swapError = new SwapError("INSUFFICIENT_BALANCE");
+      }
+
+      if (isExactIn) {
+        setTokenBAmount(expectedAmount);
+      } else {
+        setTokenAAmount(expectedAmount);
+      }
+      setSwapError(swapError);
+    });
+  }, [checkBalance, getExpectedSwap, swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+
+  useEffect(() => {
+    const queryValues = [];
+    for (const [key, value] of Object.entries(query)) {
+      if (value) {
+        queryValues.push(`${key}=${value}`);
+      }
+    }
+    if (queryValues.length > 0) {
+      const path = `${router.pathname}?${queryValues.join("&")}`;
+      router.replace(path);
+    }
+  }, [query]);
+
+  useEffect(() => {
+    if (tokens.length === 0 || Object.keys(router.query).length === 0) {
+      return;
+    }
+    if (!initialized) {
+      setInitialized(true);
+      const query = router.query;
+      const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
+      const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
+      const direction: SwapDirectionType = query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
+
+      setTokenA(currentTokenA);
+      setTokenB(currentTokenB);
+      setSwapDirection(direction);
+      setQuery({
+        tokenA: currentTokenA?.path || null,
+        tokenB: currentTokenB?.path || null,
+        direction
+      });
+      return;
+    }
+  }, [initialized, router, swapDirection, tokenA?.path, tokenB?.path, tokens]);
 
   return (
     <SwapCard

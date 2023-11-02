@@ -44,7 +44,7 @@ export const BottomNavItem = styled.div`
   color: ${({ theme }) => theme.color.text04};
   &.selected,
   &:hover {
-    color: ${({ theme }) => theme.color.text03};
+    color: ${({ theme }) => theme.color.text16};
   }
 `;
 

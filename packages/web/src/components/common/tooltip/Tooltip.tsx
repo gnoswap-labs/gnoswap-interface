@@ -19,6 +19,8 @@ import {
 import { Content } from "./Tooltip.styles";
 import { useTheme } from "@emotion/react";
 import { Z_INDEX } from "@styles/zIndex";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 
 function useTooltip({ placement }: { placement: Placement }) {
   const [open, setOpen] = useState(false);
@@ -85,7 +87,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   });
   const childrenRef = useMergeRefs([refs.setReference]);
   const floatingRef = useMergeRefs([refs.setFloating]);
-
+  const themeKey = useAtomValue(ThemeState.themeKey);
   const theme = useTheme();
 
   return (
@@ -116,12 +118,12 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
             <FloatingArrow
               ref={arrowRef}
               context={context}
-              fill={theme.color.background14}
+              fill={theme.color.background02}
               width={20}
               height={14}
               tipRadius={4}
             />
-            <Content>{FloatingContent}</Content>
+            <Content themeKey={themeKey}>{FloatingContent}</Content>
           </div>
         )}
       </FloatingPortal>

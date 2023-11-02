@@ -27,17 +27,18 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       title={"Available Balance"}
       value={balanceDetailInfo.availableBalance}
       tooltip={
-        "sum of assets not deposited in liquidity pools and unstaked lp tokens."
+        "Total sum of assets not deposited in liquidity pools."
       }
     />
     <WalletBalanceDetailInfo
-      title={"Staked LP"}
+      title={"Staked Positions"}
       value={balanceDetailInfo.stakedLP}
+      tooltip={"Total sum of staked positions."}
     />
     <WalletBalanceDetailInfo
-      title={"Unstaking LP"}
+      title={"Total Claimed Rewards"}
       value={balanceDetailInfo.unstakingLP}
-      tooltip={"LP Tokens that are currently being unstaked."}
+      tooltip={"The cumulative sum of claimed rewards."}
     />
     {breakpoint === DEVICE_TYPE.MOBILE ? (
       <InfoWrapper>

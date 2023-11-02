@@ -6,12 +6,13 @@ import { useCallback } from "react";
 
 export interface SelectTokenModalProps {
   changeToken?: (token: TokenModel) => void;
+  callback?: (value: boolean) => void;
 }
 export interface SelectTokenModalModel {
   openModal: () => void;
 }
 
-export const useSelectTokenModal = ({ changeToken }: SelectTokenModalProps): SelectTokenModalModel => {
+export const useSelectTokenModal = ({ changeToken, callback }: SelectTokenModalProps): SelectTokenModalModel => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -20,9 +21,10 @@ export const useSelectTokenModal = ({ changeToken }: SelectTokenModalProps): Sel
     setModalContent(
       <SelectTokenContainer
         changeToken={changeToken}
+        callback={callback}
       />
     );
-  }, [changeToken, setModalContent, setOpenedModal]);
+  }, [changeToken, setModalContent, setOpenedModal, callback]);
 
   return {
     openModal

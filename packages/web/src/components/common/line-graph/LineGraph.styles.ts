@@ -35,7 +35,7 @@ export const LineGraphTooltipWrapper = styled.div<LineGraphTooltipWrapperProps>`
   left: ${props => `${props.x}px`};
   display: flex;
   flex-direction: column;
-  width: 148px;
+  min-width: 148px;
   height: auto;
   padding: 6px 8px;
   background: ${({ theme }) => theme.color.background02};
@@ -61,7 +61,7 @@ export const LineGraphTooltipWrapper = styled.div<LineGraphTooltipWrapperProps>`
     ${fonts.p4};
     color: ${({ theme }) => theme.color.text04};
     .date {
-      margin-right: 4px;
+      margin-right: 3px;
     }
   }
 `;

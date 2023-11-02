@@ -119,6 +119,18 @@ export const toUnitFormat = (
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toString();
 };
 
+export function toMillionFormat(value: number | string) {
+  const num = BigNumber(value);
+  if (num.isNaN()) {
+    return null;
+  }
+  const MILLION = 1000000;
+  if (num.isLessThan(MILLION)) {
+    return BigNumber(num).toFormat();
+  }
+  return `${BigNumber(num).dividedBy(MILLION).toFormat(2)}m`;
+}
+
 export function toDecimalNumber(
   value: BigNumber | string | number,
   decimals?: number,

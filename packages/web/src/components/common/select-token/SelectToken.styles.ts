@@ -8,6 +8,7 @@ export const SelectTokenWrapper = styled.div`
   width: 460px;
   padding: 24px 0px 16px 0px;
   gap: 24px;
+  border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
     width: 328px;
@@ -46,6 +47,11 @@ export const SelectTokenWrapper = styled.div`
           * {
             fill: ${({ theme }) => theme.color.icon01};
           }
+          &:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
+          }
         }
       }
     }
@@ -65,15 +71,15 @@ export const SelectTokenWrapper = styled.div`
         border: 1px solid ${({ theme }) => theme.color.border03};
         color: ${({ theme }) => theme.color.text01};
         .search-icon * {
-          fill: ${({ theme }) => theme.color.icon03};
+          fill: ${({ theme }) => theme.color.icon05};
         }
       }
 
       &:not(:focus-within, .empty-status) {
-        border: 1px solid ${({ theme }) => theme.color.border11};
+        border: 1px solid ${({ theme }) => theme.color.border02};
         color: ${({ theme }) => theme.color.text01};
         .search-icon * {
-          fill: ${({ theme }) => theme.color.icon05};
+          fill: ${({ theme }) => theme.color.icon08};
         }
       }
 
@@ -91,31 +97,27 @@ export const SelectTokenWrapper = styled.div`
       height: 100%;
       margin-right: 16px;
       &::placeholder {
-        color: ${({ theme }) => theme.color.text04};
+        color: ${({ theme }) => theme.color.text17};
       }
     }
 
     .token-select {
-      display: grid;
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      gap: 8px;
       width: 100%;
-      grid-template-rows: auto;
-      col-gap: 8px;
-      row-gap: 8px;
-      grid-template-columns: repeat(4, 1fr);
-
+      flex-wrap: wrap;
       ${media.mobile} {
-        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
       }
       .token-button {
         ${mixins.flexbox("row", "center", "flex-start")};
-        margin: 0 auto;
-        padding: 6px 12px 6px 6px;
+        padding: 5px 12px 5px 6px;
         gap: 8px;
         border-radius: 36px;
-        border: 1px solid ${({ theme }) => theme.color.border02};
+        border: 1px solid ${({ theme }) => theme.color.border12};
         background-color: ${({ theme }) => theme.color.background02};
         &:hover {
-          background-color: ${({ theme }) => theme.color.background09};
+          background-color: ${({ theme }) => theme.color.hover02};
         }
         cursor: pointer;
         span {
@@ -129,6 +131,9 @@ export const SelectTokenWrapper = styled.div`
           width: 24px;
           height: 24px;
         }
+        &.border-button-none {
+          border-color: transparent;
+        }
       }
     }
   }
@@ -137,12 +142,21 @@ export const SelectTokenWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
-    height: 292px;
+    max-height: 292px;
+    &.token-list-wrapper-auto-height {
+      height: auto;
+    }
     ${media.mobile} {
       height: 248px;
     }
     overflow-y: auto;
-
+    .no-data-found {
+      ${mixins.flexbox("row", "center", "center")};
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12};
+      width: 100%;
+      height: 120px;
+    }
     .list {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
@@ -152,7 +166,7 @@ export const SelectTokenWrapper = styled.div`
         padding: 12px;
       }
       &:hover {
-        background-color: ${({ theme }) => theme.color.background09};
+        background-color: ${({ theme }) => theme.color.hover02};
       }
       cursor: pointer;
       .token-logo {

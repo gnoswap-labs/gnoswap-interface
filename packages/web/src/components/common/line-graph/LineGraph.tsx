@@ -62,6 +62,7 @@ export interface LineGraphProps {
   height?: number;
   point?: boolean;
   firstPointColor?: string;
+  typeOfChart?: string;
 }
 
 interface Point {
@@ -83,6 +84,22 @@ function parseTime(time: string) {
   };
 }
 
+function parseTimeTVL(time: string) {
+  const dateObject = new Date(time);
+  const month = dateObject.toLocaleString("en-US", { month: "short" });
+  const day = dateObject.getDate();
+  const year = dateObject.getFullYear();
+  const hours = dateObject.getHours();
+  const minutes = dateObject.getMinutes();
+  const isPM = hours >= 12;
+  const formattedHours = hours % 12 || 12;
+  return {
+    date: `${month} ${day}, ${year}`,
+    time: `${formattedHours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")} ${isPM ? "PM" : "AM"}`,
+  };
+}
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
 
@@ -99,6 +116,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
   firstPointColor,
+  typeOfChart,
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -270,7 +288,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
         </g>
         {
           <g>
-            <line
+            {firstPointColor && <line
               stroke={firstPointColor ? firstPointColor : color}
               strokeWidth={1}
               x1={0}
@@ -278,7 +296,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
               x2={width}
               y2={firstPoint.y}
               strokeDasharray={3}
-            />
+            />}
             {isFocus() && currentPoint && (
               <line
                 stroke={color}
@@ -318,10 +336,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
           </div>
           <div className="tooltip-body">
             <span className="date">
-              {parseTime(datas[currentPointIndex].time).date}
+              {typeOfChart === "tvl"
+                ? parseTimeTVL(datas[currentPointIndex].time).date
+                : parseTime(datas[currentPointIndex].time).date}
             </span>
             <span className="time">
-              {parseTime(datas[currentPointIndex].time).time}
+              {typeOfChart === "tvl"
+                ? parseTimeTVL(datas[currentPointIndex].time).time
+                : parseTime(datas[currentPointIndex].time).time}
             </span>
           </div>
         </LineGraphTooltipWrapper>

@@ -9,6 +9,9 @@ export const AssetListTableWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border01};
   border-radius: 8px;
   color: ${({ theme }) => theme.color.text04};
+  ${media.tabletMiddle} {
+    margin-bottom: 16px;
+  }
   ${fonts.body11};
   overflow-x: auto;
   .asset-list-head {
@@ -49,13 +52,13 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .deposit {
-    padding: 16px;
+    padding: 16px 0 16px 16px;
     ${media.tablet} {
-      padding: 16px 16px 16px 12px;
+      padding: 16px 0 16px 12px;
     }
   }
   .withdraw {
-    padding: 16px;
+    padding: 16px 16px 16px 12px;
     ${media.tablet} {
       padding: 16px 16px 16px 12px;
     }
