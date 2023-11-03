@@ -12,6 +12,7 @@ import { DEVICE_TYPE } from "@styles/media";
 interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
   connected: boolean;
+  isSwitchNetwork: boolean;
   claimAll: () => void;
   breakpoint: DEVICE_TYPE;
 }
@@ -21,14 +22,13 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   connected,
   claimAll,
   breakpoint,
+  isSwitchNetwork,
 }) => (
   <WalletBalanceDetailWrapper>
     <WalletBalanceDetailInfo
       title={"Available Balance"}
       value={balanceDetailInfo.availableBalance}
-      tooltip={
-        "Total sum of assets not deposited in liquidity pools."
-      }
+      tooltip={"Total sum of assets not deposited in liquidity pools."}
     />
     <WalletBalanceDetailInfo
       title={"Staked Positions"}
@@ -54,7 +54,10 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
           </div>
         </div>
         <div className="button-wrapper">
-          <ClaimAllButton onClick={claimAll} disabled={connected === false} />
+          <ClaimAllButton
+            onClick={claimAll}
+            disabled={connected === false || isSwitchNetwork}
+          />
         </div>
       </InfoWrapper>
     ) : (
@@ -63,7 +66,14 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         value={balanceDetailInfo.claimableRewards}
         tooltip={"Total sum of unclaimed rewards."}
         button={
-          <ClaimAllButton onClick={claimAll} disabled={connected === false} />
+          <ClaimAllButton
+            onClick={claimAll}
+            disabled={
+              connected === false ||
+              isSwitchNetwork ||
+              Number(balanceDetailInfo.claimableRewards.slice(1)) === 0
+            }
+          />
         }
       />
     )}

@@ -1,4 +1,4 @@
-import Button from "@components/common/button/Button";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -43,7 +43,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   }, [changeSlippage]);
 
   const onClickReset = useCallback(() => {
-    changeSlippage("10");
+    changeSlippage("1");
   }, [changeSlippage]);
 
   return (
@@ -71,6 +71,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
               height: 36,
               fontType: "p1",
               textColor: "text20",
+              hierarchy: ButtonHierarchy.Primary,
             }}
             onClick={onClickReset}
           />

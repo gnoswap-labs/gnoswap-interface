@@ -6,6 +6,11 @@ import {
   SendTransactionResponse,
   isContractMessage,
 } from "../protocols";
+import {
+  AddNetworkRequestParam,
+  AddNetworkResponse,
+  SwitchNetworkResponse,
+} from "../protocols/wallet-network";
 import { WalletClient } from "../wallet-client";
 import { Adena } from "./adena";
 
@@ -44,11 +49,11 @@ export class AdenaClient implements WalletClient {
   };
 
   public sendTransaction = (
-    transaction: SendTransactionRequestParam,
+    transaction: SendTransactionRequestParam
   ): Promise<WalletResponse<SendTransactionResponse>> => {
     const request = {
       ...transaction,
-      messages: transaction.messages.map(message => {
+      messages: transaction.messages.map((message) => {
         if (isContractMessage(message)) {
           return {
             type: "/vm.m_call",
@@ -78,4 +83,16 @@ export class AdenaClient implements WalletClient {
     }
     return new AdenaClient();
   }
+
+  public switchNetwork = (
+    chainId: string
+  ): Promise<WalletResponse<SwitchNetworkResponse>> => {
+    return createTimeout(this.getAdena().SwitchNetwork(chainId));
+  };
+
+  public addNetwork = (
+    network: AddNetworkRequestParam
+  ): Promise<WalletResponse<AddNetworkResponse>> => {
+    return createTimeout(this.getAdena().AddNetwork(network));
+  };
 }

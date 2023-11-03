@@ -9,6 +9,7 @@ export interface EarnMyPositionContentProps {
   positions: PoolPosition[];
   connect: () => void;
   movePoolDetail: (poolId: string) => void;
+  isSwitchNetwork: boolean;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -17,9 +18,15 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   positions,
   connect,
   movePoolDetail,
+  isSwitchNetwork,
 }) => {
-  if (!connected) {
-    return <EarnMyPositionsUnconnected connect={connect} />;
+  if (!connected || isSwitchNetwork) {
+    return (
+      <EarnMyPositionsUnconnected
+        connect={connect}
+        isSwitchNetwork={isSwitchNetwork}
+      />
+    );
   }
 
   if (positions.length === 0) {

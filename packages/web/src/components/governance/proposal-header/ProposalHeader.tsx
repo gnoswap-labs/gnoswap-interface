@@ -9,6 +9,7 @@ interface ProposalHeaderProps {
   toggleShowCancelled: () => void;
   setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
   isConnected: boolean;
+  isSwitchNetwork: boolean;
 }
 
 const ProposalHeader: React.FC<ProposalHeaderProps> = ({
@@ -16,6 +17,7 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({
   toggleShowCancelled,
   setIsShowCreateProposal,
   isConnected,
+  isSwitchNetwork,
 }) => (
   <ProposalHeaderWrapper>
     <div className="title-header">
@@ -33,7 +35,7 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({
         labelText="Show Cancelled"
       />
       <Button
-        disabled={isConnected}
+        disabled={!isConnected || isSwitchNetwork}
         text="Create Proposal"
         style={{
           hierarchy: ButtonHierarchy.Primary,

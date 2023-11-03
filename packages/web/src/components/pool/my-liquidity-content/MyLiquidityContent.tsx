@@ -11,11 +11,13 @@ import { DEVICE_TYPE } from "@styles/media";
 interface MyLiquidityContentProps {
   content: any;
   breakpoint: DEVICE_TYPE;
+  isDisabledButton: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   content,
   breakpoint,
+  isDisabledButton,
 }) => {
   const { totalBalance, dailyEarn, claimRewards } = content;
   const RewardsTooltip = (
@@ -163,6 +165,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               </div>
             </div>
             <Button
+              disabled={isDisabledButton}
               text="Claim All"
               style={{
                 hierarchy: ButtonHierarchy.Primary,
@@ -183,6 +186,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 </span>
               </Tooltip>
               <Button
+                disabled={isDisabledButton}
                 text="Claim All"
                 style={{
                   hierarchy: ButtonHierarchy.Primary,

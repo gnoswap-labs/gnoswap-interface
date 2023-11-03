@@ -44,6 +44,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
             token={token}
             disabled={disabledSelectPair}
             changeToken={changeToken}
+            isHiddenArrow={disabledSelectPair}
           />
         </div>
       </div>

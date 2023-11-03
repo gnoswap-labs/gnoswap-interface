@@ -134,4 +134,5 @@ export type AddLiquiditySubmitType =
   | "INVALID_PAIR"
   | "ENTER_AMOUNT"
   | "INSUFFICIENT_BALANCE"
-  | "INVALID_RANGE";
+  | "INVALID_RANGE"
+  | "SWITCH_NETWORK";

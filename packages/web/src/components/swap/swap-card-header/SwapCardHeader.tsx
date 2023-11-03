@@ -13,12 +13,14 @@ interface SwapCardHeaderProps {
   copyURL: () => void;
   slippage: number;
   changeSlippage: (value: string) => void;
+  themeKey: "dark" | "light";
 }
 const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
   copied,
   copyURL,
   slippage,
   changeSlippage,
+  themeKey,
 }) => {
   const [openedSetting, setOpenedSetting] = useState(false);
 
@@ -42,7 +44,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
             <IconLink className="setting-icon" />
             {copied && (
               <CopyTooltip>
-                <div className="box">
+                <div className={`box ${themeKey}-shadow`}>
                   <span>URL Copied!</span>
                 </div>
                 <IconPolygon className="polygon-icon" />

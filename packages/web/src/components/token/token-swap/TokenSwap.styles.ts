@@ -49,6 +49,20 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 
+  .loading-change {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
+    color: ${theme.color.text03};
+    ${fonts.body12}
+    > div {
+      width: 16px;
+      height: 16px;
+      &::before {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
   .inputs {
     ${mixins.flexbox("column", "center", "space-between")};
     flex-wrap: wrap;
@@ -76,13 +90,13 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .token {
-      width: 112px;
+      width: auto;
       height: 30px;
       cursor: default;
       span {
         font-size: 15px;
         line-height: 19px;
-        margin: 0px 8px;
+        margin: 0px;
       }
     }
 
@@ -105,10 +119,13 @@ export const wrapper = (theme: Theme) => css`
       ${fonts.p2};
       color: ${theme.color.text10};
     }
+    .balance-text-disabled {
+      cursor: pointer;
+    }
 
     .token {
       ${mixins.flexbox("row", "center", "center")}
-      width: 112px;
+      width: auto;
       height: 30px;
       font-size: 15px;
       font-weight: 500;

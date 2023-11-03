@@ -6,9 +6,10 @@ import { StakingHeaderWrapper } from "./StakingHeader.styles";
 
 interface StakingHeaderProps {
   breakpoint: DEVICE_TYPE;
+  isDisabledButton: boolean;
 }
 
-const StakingHeader: React.FC<StakingHeaderProps> = ({ breakpoint }) => {
+const StakingHeader: React.FC<StakingHeaderProps> = ({ breakpoint, isDisabledButton }) => {
   return (
     <StakingHeaderWrapper>
       <div className="left-wrap">
@@ -22,6 +23,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ breakpoint }) => {
       </div>
       <div className="button-wrap">
         <Button
+          disabled={isDisabledButton}
           text="Unstake"
           onClick={() => {}}
           style={{
@@ -33,6 +35,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ breakpoint }) => {
           }}
         />
         <Button
+          disabled={isDisabledButton}
           text="Stake"
           onClick={() => {}}
           style={{

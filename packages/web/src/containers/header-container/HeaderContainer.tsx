@@ -9,7 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtomValue } from "jotai";
-import { ThemeState } from "@states/index";
+import { CommonState, ThemeState } from "@states/index";
+import { useAtom } from "jotai";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 
 interface NegativeStatusType {
@@ -83,7 +84,7 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, connectAdenaClient, disconnectWallet } = useWallet();
+  const { account, connected, connectAdenaClient, disconnectWallet, switchNetwork, isSwitchNetwork } = useWallet();
 
   const {
     isFetched,
@@ -126,6 +127,8 @@ const HeaderContainer: React.FC = () => {
       keyword={keyword}
       breakpoint={breakpoint}
       themeKey={themeKey}
+      switchNetwork={switchNetwork}
+      isSwitchNetwork={isSwitchNetwork}
     />
   );
 };

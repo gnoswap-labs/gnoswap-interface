@@ -182,4 +182,13 @@ export class AccountRepositoryImpl implements AccountRepository {
     }
     return history;
   };
+
+  public switchNetwork = async (chainId: string) => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    
+    const response = await this.walletClient.switchNetwork(chainId);
+    return response;
+  };
 }

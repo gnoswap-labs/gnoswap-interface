@@ -22,6 +22,9 @@ interface SwapCardProps {
   submitted: boolean;
   swapResult: SwapResultInfo | null;
   openedConfirmModal: boolean;
+  themeKey: "dark" | "light";
+  isSwitchNetwork: boolean,
+  isLoading: boolean;
 
   changeTokenA: (token: TokenModel) => void;
   changeTokenAAmount: (value: string) => void;
@@ -35,6 +38,7 @@ interface SwapCardProps {
   closeModal: () => void;
   copyURL: () => void;
   swap: () => void;
+  switchNetwork: () => void;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -59,6 +63,10 @@ const SwapCard: React.FC<SwapCardProps> = ({
   closeModal,
   copyURL,
   swap,
+  themeKey,
+  isSwitchNetwork,
+  switchNetwork,
+  isLoading,
 }) => {
 
   return (
@@ -69,6 +77,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           copyURL={copyURL}
           slippage={swapTokenInfo.slippage}
           changeSlippage={changeSlippage}
+          themeKey={themeKey}
         />
         <SwapCardContent
           swapTokenInfo={swapTokenInfo}
@@ -79,14 +88,18 @@ const SwapCard: React.FC<SwapCardProps> = ({
           changeTokenB={changeTokenB}
           changeTokenBAmount={changeTokenBAmount}
           switchSwapDirection={switchSwapDirection}
+          connectedWallet={connectedWallet}
+          isLoading={isLoading}
         />
         <div className="footer">
           <SwapButton
+            isSwitchNetwork={isSwitchNetwork}
             connectedWallet={connectedWallet}
             isAvailSwap={isAvailSwap}
             openConfirmModal={openConfirmModal}
             openConnectWallet={openConnectWallet}
             text={swapButtonText}
+            switchNetwork={switchNetwork}
           />
         </div>
       </SwapCardWrapper>
@@ -109,8 +122,11 @@ interface SwapButtonProps {
   connectedWallet: boolean;
   isAvailSwap: boolean;
   text: string;
+  isSwitchNetwork: boolean;
+
   openConfirmModal: () => void;
   openConnectWallet: () => void;
+  switchNetwork: () => void;
 }
 
 const SwapButton: React.FC<SwapButtonProps> = ({
@@ -119,6 +135,8 @@ const SwapButton: React.FC<SwapButtonProps> = ({
   text,
   openConfirmModal,
   openConnectWallet,
+  isSwitchNetwork,
+  switchNetwork,
 }) => {
 
   const defaultStyle = {
@@ -134,6 +152,16 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         text={text}
         style={defaultStyle}
         onClick={openConnectWallet}
+      />
+    );
+  }
+
+  if (isSwitchNetwork) {
+    return (
+      <Button
+        text={text}
+        style={defaultStyle}
+        onClick={switchNetwork}
       />
     );
   }

@@ -38,6 +38,9 @@ export const ContentWrapper = styled.div`
       ${fonts.body5};
     }
     color: ${({ theme }) => theme.color.text01};
+    &::placeholder {
+      color: ${({ theme }) => theme.color.text01};
+    }
   }
 
   .token-selector {
@@ -56,6 +59,9 @@ export const ContentWrapper = styled.div`
         ${fonts.p2};
       }
       color: ${({ theme }) => theme.color.text10};
+    }
+    .balance-text-disabled {
+      cursor: pointer;
     }
   }
 
@@ -86,7 +92,10 @@ export const ContentWrapper = styled.div`
       background-color: ${({ theme }) => theme.color.background01};
       border: 1px solid ${({ theme }) => theme.color.border02};
       border-radius: 50%;
-
+      cursor: pointer;
+      :hover {
+        background-color: ${({ theme }) => theme.color.backgroundGradient};
+      }
       .shape-icon {
         width: 16px;
         height: 16px;
