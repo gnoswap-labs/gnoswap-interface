@@ -2,6 +2,7 @@ import React from "react";
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { FEE_RATE_OPTION } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 export const liquidityInit = {
   poolInfo: {
@@ -125,8 +126,16 @@ export const liquidityInit = {
 
 const MyLiquidityContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
+  const { connected: connectedWallet, isSwitchNetwork } = useWallet();
 
-  return <MyLiquidity info={liquidityInit} breakpoint={breakpoint} />;
+  return (
+    <MyLiquidity
+      info={liquidityInit}
+      breakpoint={breakpoint}
+      connected={connectedWallet}
+      isSwitchNetwork={isSwitchNetwork}
+    />
+  );
 };
 
 export default MyLiquidityContainer;

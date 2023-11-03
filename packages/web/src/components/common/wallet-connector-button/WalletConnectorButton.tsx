@@ -2,15 +2,18 @@ import React, { useMemo } from "react";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
-import { WalletConnectorButtonWrapper } from "./WalletConnectorButton.styles";
+import {
+  FailNetworkTooltipContentWrap,
+  WalletConnectorButtonWrapper,
+} from "./WalletConnectorButton.styles";
 import WalletConnectorMenu from "@components/common/wallet-connector-menu/WalletConnectorMenu";
 import { formatAddress } from "@utils/string-utils";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { AccountModel } from "@models/account/account-model";
 import IconFailed from "../icons/IconFailed";
-
-const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
+import Tooltip from "../tooltip/Tooltip";
+import { Global, css } from "@emotion/react";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -18,7 +21,34 @@ interface WalletConnectProps {
   connectAdenaClient: () => void;
   themeKey: "dark" | "light";
   disconnectWallet: () => void;
+  switchNetwork: () => void;
+  isSwitchNetwork: boolean;
 }
+
+const ToolTipGlobalStyle = () => {
+  return (
+    <Global
+      styles={() => css`
+        .float-class-name {
+          @media (min-width: 1180px) {
+            top: 10px !important;
+            svg {
+              top: 15px !important;
+            }
+          }
+        }
+      `}
+    />
+  );
+};
+
+const FailNetworkTooltipContent: React.FC = () => {
+  return (
+    <FailNetworkTooltipContentWrap>
+      Unsupported network. <br /> Switch your network to Gnoland.
+    </FailNetworkTooltipContentWrap>
+  );
+};
 
 const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   account,
@@ -26,6 +56,8 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   connectAdenaClient,
   themeKey,
   disconnectWallet,
+  switchNetwork,
+  isSwitchNetwork,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
@@ -37,7 +69,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   }, [account]);
 
   const onMenuToggle = () => {
-    setToggle(prev => ({
+    setToggle((prev) => ({
       ...prev,
       walletConnect: !prev.walletConnect,
     }));
@@ -48,8 +80,14 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       {connected ? (
         <Button
           leftIcon={
-            account && account.chainId !== CHAIN_ID ? (
-              <IconFailed className="fail-icon" />
+            isSwitchNetwork ? (
+              <Tooltip
+                floatClassName="float-class-name"
+                placement="left"
+                FloatingContent={<FailNetworkTooltipContent />}
+              >
+                <IconFailed className="fail-icon" />
+              </Tooltip>
             ) : (
               <IconAdenaLogo />
             )
@@ -77,9 +115,9 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
-            width: 151,
+            width: 155,
             height: 36,
-            padding: "10px 16px",
+            padding: "10px 16px 10px 20px",
             justify: "space-between",
           }}
           onClick={onMenuToggle}
@@ -93,8 +131,11 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           disconnectWallet={disconnectWallet}
           onMenuToggle={onMenuToggle}
           themeKey={themeKey}
+          switchNetwork={switchNetwork}
+          isSwitchNetwork={isSwitchNetwork}
         />
       )}
+      <ToolTipGlobalStyle />
     </WalletConnectorButtonWrapper>
   );
 };

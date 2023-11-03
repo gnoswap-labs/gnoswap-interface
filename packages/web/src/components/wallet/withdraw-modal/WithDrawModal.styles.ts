@@ -107,10 +107,9 @@ export const WithdrawContent = styled.div`
 
   .token {
     height: 32px;
-    cursor: pointer;
+    cursor: default;
     span {
       ${fonts.body9}
-      margin: 0px 8px;
     }
   }
 

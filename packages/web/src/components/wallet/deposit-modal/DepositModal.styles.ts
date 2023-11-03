@@ -107,12 +107,11 @@ export const DepositContent = styled.div`
 
   .token {
     height: 32px;
-    cursor: pointer;
+    cursor: default;
     span {
       ${fonts.body9}
       height: auto !important;
       line-height: 19px;
-      margin: 0px 8px !important;
     }
   }
 

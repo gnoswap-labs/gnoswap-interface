@@ -26,7 +26,6 @@ import IconFailed from "../icons/IconFailed";
 
 const URL_REDIRECT =
   "https://gnoscan.io/accounts/g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt";
-const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -73,6 +72,8 @@ interface WalletConnectorMenuProps {
   disconnectWallet: () => void;
   onMenuToggle: () => void;
   themeKey: "dark" | "light";
+  switchNetwork: () => void;
+  isSwitchNetwork: boolean;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -82,6 +83,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   disconnectWallet,
   onMenuToggle,
   themeKey,
+  switchNetwork,
+  isSwitchNetwork,
 }) => {
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -131,7 +134,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
       {connected ? (
         <div className="button-container">
           <MenuHeader>
-            {account && account.chainId !== CHAIN_ID ? (
+            {isSwitchNetwork ? (
               <IconFailed className="fail-icon" />
             ) : (
               <IconAdenaLogo />
@@ -147,10 +150,10 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
               onClickDisconnect={onClickDisconnect}
             />
           </MenuHeader>
-          {account && account.chainId !== CHAIN_ID ? (
+          {isSwitchNetwork ? (
             <Button
               text="Switch Network"
-              onClick={connect}
+              onClick={switchNetwork}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fontType: "body9",

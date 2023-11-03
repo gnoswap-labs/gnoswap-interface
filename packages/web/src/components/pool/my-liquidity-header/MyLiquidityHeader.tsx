@@ -6,14 +6,17 @@ import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 
 interface MyLiquidityHeaderProps {
   info: any;
+  connected: boolean;
+  isSwitchNetwork: boolean;
 }
 
-const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info }) => {
+const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, isSwitchNetwork }) => {
   return (
     <HeaderWrapper>
       <h2>My Liquidity</h2>
       <div className="button-wrap">
         <Button
+          disabled={!connected || isSwitchNetwork}
           text="Remove Liquidity"
           onClick={() => {}}
           style={{
@@ -24,6 +27,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info }) => {
           }}
         />
         <Button
+          disabled={!connected}
           text="Add Liquidity"
           onClick={() => {}}
           style={{

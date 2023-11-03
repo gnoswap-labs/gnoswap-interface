@@ -10,6 +10,7 @@ import IconUpload from "@components/common/icons/IconUpload";
 interface WalletBalanceSummaryProps {
   connected: boolean;
   balanceSummaryInfo: BalanceSummaryInfo;
+  isSwitchNetwork: boolean;
   deposit: () => void;
   withdraw: () => void;
   breakpoint: DEVICE_TYPE;
@@ -21,6 +22,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
   deposit,
   withdraw,
   breakpoint,
+  isSwitchNetwork,
 }) => (
   <WalletBalanceSummaryWrapper>
     <span className="total-balance-title">Total Balance</span>
@@ -38,7 +40,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
           }}
           text={"Deposit"}
           onClick={deposit}
-          disabled={connected === false}
+          disabled={connected === false || isSwitchNetwork}
         />
         <Button
           leftIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconUpload />}
@@ -51,7 +53,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
           }}
           text={"Withdraw"}
           onClick={withdraw}
-          disabled={connected === false}
+          disabled={connected === false || isSwitchNetwork}
         />
       </div>
     </div>

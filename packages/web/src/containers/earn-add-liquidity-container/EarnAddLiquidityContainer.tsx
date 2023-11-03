@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
-import { AddLiquiditySubmitType, PriceRangeType, SwapFeeTierType } from "@constants/option.constant";
+import {
+  AddLiquiditySubmitType,
+  PriceRangeType,
+  SwapFeeTierType,
+} from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { PoolModel } from "@models/pool/pool-model";
@@ -9,6 +13,9 @@ import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
+import { useAtom } from "jotai";
+import { SwapState } from "@states/index";
+import { useRouter } from "next/router";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -17,7 +24,7 @@ export interface AddLiquidityPriceRage {
     minPrice: string;
     maxTick: number;
     maxPrice: string;
-  }
+  };
   apr?: string;
 }
 
@@ -52,16 +59,28 @@ const TEMP_CUSTOM_PRICE_RANGE: AddLiquidityPriceRage = {
 };
 
 const EarnAddLiquidityContainer: React.FC = () => {
-  const [tokenA, setTokenA] = useState<TokenModel | null>(null);
-  const [tokenB, setTokenB] = useState<TokenModel | null>(null);
+  const [swapValue, setSwapValue] = useAtom(SwapState.swap);
+  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const { query } = useRouter();
+
   const [startPrice] = useState<string>("130621891405341611593710811006");
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
-  const [priceRanges] = useState<AddLiquidityPriceRage[]>([TEMP_CUSTOM_PRICE_RANGE]);
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(null);
+  const [priceRanges] = useState<AddLiquidityPriceRage[]>([
+    TEMP_CUSTOM_PRICE_RANGE,
+  ]);
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
+    null
+  );
   const [pools] = useState<PoolModel[]>([]);
-  const { connected: connectedWallet, account, connectAdenaClient } = useWallet();
+  const {
+    connected: connectedWallet,
+    account,
+    connectAdenaClient,
+    switchNetwork,
+    isSwitchNetwork,
+  } = useWallet();
   const { slippage } = useSlippage();
   const { updateTokenPrices } = useTokenData();
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
@@ -75,6 +94,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
     swapFeeTier,
   });
 
+  useEffect(() => {
+    if (query?.feeTier) {
+      setSwapFeeTier(query?.feeTier as SwapFeeTierType);
+    }
+  }, [query]);
+
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     return {
       depositRatio: "-",
@@ -86,6 +111,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const submitType: AddLiquiditySubmitType = useMemo(() => {
     if (!connectedWallet) {
       return "CONNECT_WALLET";
+    }
+    if (isSwitchNetwork) {
+      return "SWITCH_NETWORK";
     }
     if (!swapFeeTier) {
       return "ENTER_AMOUNT";
@@ -106,7 +134,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return "ENTER_AMOUNT";
     }
     return "CREATE_POOL";
-  }, [account?.balances, connectedWallet, priceRange, swapFeeTier, tokenAAmountInput.amount, tokenBAmountInput.amount]);
+  }, [
+    account?.balances,
+    connectedWallet,
+    priceRange,
+    swapFeeTier,
+    tokenAAmountInput.amount,
+    tokenBAmountInput.amount,
+    isSwitchNetwork,
+  ]);
 
   useEffect(() => {
     updateTokenPrices();
@@ -121,16 +157,28 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, []);
 
   const changeTokenA = useCallback((token: TokenModel) => {
-    setTokenA(token);
-  }, []);
+    setSwapValue((prev) => ({
+      tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+      tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+      type: type,
+    }));
+  }, [type]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
-    setTokenB(token);
-  }, []);
+    setSwapValue((prev) => ({
+      tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
+      tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+      type: type,
+    }));
+  }, [type]);
 
   const submit = useCallback(() => {
     if (submitType === "CONNECT_WALLET") {
       connectAdenaClient();
+      return;
+    }
+    if (submitType === "SWITCH_NETWORK") {
+      switchNetwork();
       return;
     }
     if (submitType !== "CREATE_POOL") {
@@ -140,7 +188,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
     openConfirmModal();
-  }, [submitType, tokenA, tokenB, priceRange, swapFeeTier, openConfirmModal, connectAdenaClient]);
+  }, [
+    submitType,
+    tokenA,
+    tokenB,
+    priceRange,
+    swapFeeTier,
+    openConfirmModal,
+    connectAdenaClient,
+    switchNetwork,
+  ]);
 
   return (
     <EarnAddLiquidity

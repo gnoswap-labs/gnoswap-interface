@@ -6,7 +6,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import BigNumber from "bignumber.js";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { SwapDirectionType, amountEmptyNumberInit } from "@common/values";
+import { amountEmptyNumberInit, SwapDirectionType } from "@common/values";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { AmountModel } from "@models/common/amount-model";
@@ -14,34 +14,47 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResponse } from "@repositories/swap";
 import { matchInputNumber, numberToUSD } from "@utils/number-utils";
 import { SwapError } from "@common/errors/swap";
+import { SwapState } from "@states/index";
+import { useAtomValue, useAtom } from "jotai";
+import { ThemeState } from "@states/index";
 import { useRouter } from "next/router";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
+import { useNotice } from "@hooks/common/use-notice";
 
 const SwapContainer: React.FC = () => {
+  const [swapValue , setSwapValue] = useAtom(SwapState.swap);
+  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
+  const { setNotice } = useNotice();
+
   const [query, setQuery] = useState<{ [key in string]: string | null }>({});
   const [initialized, setInitialized] = useState(false);
-  const { connected: connectedWallet, connectAdenaClient } = useWallet();
+  const { connected: connectedWallet, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances } = useTokenData();
   const [swapError, setSwapError] = useState<SwapError | null>(null);
-  const [tokenA, setTokenA] = useState<TokenModel | null>(null);
-  const [tokenAAmount, setTokenAAmount] = useState<string>("0");
-  const [tokenB, setTokenB] = useState<TokenModel | null>(null);
-  const [tokenBAmount, setTokenBAmount] = useState<string>("0");
-  const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
+  const [tokenAAmount, setTokenAAmount] = useState<string>("");
+  const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
-  const [swapRate] = useState<number>(1);
-  const [slippage, setSlippage] = useState(10);
+  const [swapRate] = useState<number>(100);
+  const [slippage, setSlippage] = useState(1);
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
-  const [swapRouteInfos] = useState<SwapRouteInfo[]>([]);
+  const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { swap, getExpectedSwap } = useSwap({
     tokenA,
     tokenB,
-    direction: swapDirection,
+    direction: type,
     slippage
   });
+
+
+  usePreventScroll(openedConfirmModal || submitted);
 
   const checkBalance = useCallback((token: TokenModel, amount: string) => {
     const tokenBalance = balances[token.priceId] || 0;
@@ -80,15 +93,49 @@ const SwapContainer: React.FC = () => {
     if (!connectedWallet) {
       return "Connect Wallet";
     }
-    if (!tokenA || !tokenB) {
-      return "Insufficient Balance";
+    if (isSwitchNetwork) {
+      return "Switch to Gnoland";
     }
-    if (swapError) {
-      return swapError.message;
+    if (!tokenA || !tokenB) {
+      return "Select a Token";
+    }
+    if (!Number(tokenAAmount) && !Number(tokenAAmount)) {
+      return "Enter Amount";
+    }
+    if (
+      (Number(tokenAAmount) < 0.000001 && type === "EXACT_IN") ||
+      (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT")
+    ) {
+      return "Amount Too Low";
+    }
+  
+    if (type === "EXACT_IN") {
+      if (
+        Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+      ) {
+        return "Insufficient Balance";
+      }
+    } else {
+      if (
+        Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
+      ) {
+        return "Insufficient Balance";
+      }
     }
     return "Swap";
-  }, [connectedWallet, swapError, tokenA, tokenB]);
-
+  }, [
+    connectedWallet,
+    swapError,
+    tokenA,
+    tokenB,
+    isSwitchNetwork,
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenBBalance,
+    tokenABalance,
+  ]);
+  
   const openConfirmModal = useCallback(() => {
     setOpenedConfirModal(true);
   }, []);
@@ -102,28 +149,47 @@ const SwapContainer: React.FC = () => {
     setSwapResult(null);
     setOpenedConfirModal(false);
     updateBalances();
-  }, [updateBalances]);
+    if (swapResult?.success) {
+      setNotice(null, {timeout: 2000});
+    }
+  }, [updateBalances, swapResult]);
 
   const changeTokenAAmount = useCallback((value: string) => {
     if (!matchInputNumber(value)) {
       return;
     }
-    setSwapDirection("EXACT_IN");
+    if (!!Number(value)) {
+      setIsLoading(true);
+    } else {
+      setTokenBAmount("0");
+    }
+    setSwapValue((prev) => ({
+      ...prev,
+      type: "EXACT_IN",
+    }));
     setTokenAAmount(value);
     setQuery({ ...query, direction: "EXACT_IN" });
-  }, [query]);
+  }, [query, setTokenBAmount]);
 
   const changeTokenBAmount = useCallback((value: string) => {
     if (!matchInputNumber(value)) {
       return;
     }
-    setSwapDirection("EXACT_OUT");
+    if (!!Number(value)) {
+      setIsLoading(true);
+    } else {
+      setTokenAAmount("0");
+    }
+    setSwapValue((prev) => ({
+      ...prev,
+      type: "EXACT_OUT",
+    }));
     setTokenBAmount(value);
     setQuery({ ...query, direction: "EXACT_OUT" });
-  }, [query]);
+  }, [query, setTokenAAmount]);
 
   const changeSlippage = useCallback((value: string) => {
-    setSlippage(BigNumber(value).toNumber());
+    setSlippage(BigNumber(value || 0).toNumber());
   }, [setSlippage]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
@@ -138,10 +204,10 @@ const SwapContainer: React.FC = () => {
       tokenBBalance,
       tokenBUSD,
       tokenBUSDStr: numberToUSD(tokenBUSD),
-      direction: swapDirection,
+      direction: type,
       slippage
     };
-  }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -152,55 +218,120 @@ const SwapContainer: React.FC = () => {
     return {
       tokenA,
       tokenB,
-      swapDirection,
+      swapDirection: type,
       swapRate,
       swapRateUSD,
       priceImpact: 0.1,
       guaranteedAmount: {
         amount: BigNumber(tokenBAmount).toNumber(),
-        currency: tokenB.symbol,
+        currency: type === "EXACT_IN" ? tokenB.symbol : tokenA.symbol,
       },
       gasFee: gasFeeAmount,
       gasFeeUSD,
     };
-  }, [gasFeeAmount, swapDirection, swapRate, tokenA, tokenB, tokenBAmount]);
+  }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenBAmount]);
 
   const isAvailSwap = useMemo(() => {
+    if (isLoading) return false;
+    if (!connectedWallet) {
+      return false;
+    }
+    if (isSwitchNetwork) {
+      return false;
+    }
     if (!tokenA || !tokenB) {
       return false;
     }
-    return swapError === null;
-  }, [swapError, tokenA, tokenB]);
-
+    if (!tokenAAmount && !tokenAAmount) {
+      return false;
+    }
+    if (Number(tokenAAmount) !== 0 && Number(tokenAAmount) < 0.000001 || Number(tokenBAmount) < 0.000001) {
+      return false;
+    }
+    if (type === "EXACT_IN") {
+      if (Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))) {
+        return false;
+      }
+    } else {
+      if (Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))) {
+        return false;
+      }
+    }
+    return true;
+  }, [
+    connectedWallet,
+    swapError,
+    tokenA,
+    tokenB,
+    isSwitchNetwork,
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenBBalance,
+    tokenABalance,
+    isLoading,
+  ]);
+  
   const changeTokenA = useCallback((token: TokenModel) => {
-    setTokenA(token);
+    let changedSwapDirection = type;
+    if (tokenB?.symbol === token.symbol) {
+      changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+      setTokenAAmount(tokenBAmount);
+      setTokenBAmount(tokenAAmount);
+    }
+    setSwapValue((prev) => ({
+      tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+      tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+      type: changedSwapDirection,
+    }));
     setQuery({ ...query, tokenA: token.path });
-  }, [query]);
+  }, [tokenA, tokenB, type, tokenBAmount, tokenAAmount, query]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
-    setTokenB(token);
+    let changedSwapDirection = type;
+    if (tokenA?.symbol === token.symbol) {
+      changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+      setTokenAAmount(tokenBAmount);
+      setTokenBAmount(tokenAAmount);
+    }
+    setSwapValue((prev) => ({
+      tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
+      tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+      type: changedSwapDirection,
+    }));
     setQuery({ ...query, tokenB: token.path });
-  }, [query]);
+  }, [tokenA, type, tokenBAmount, tokenAAmount, query]);
 
   const switchSwapDirection = useCallback(() => {
     const preTokenA = tokenA ? { ...tokenA } : null;
     const preTokenB = tokenB ? { ...tokenB } : null;
-    const changedSwapDirection = swapDirection === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
-
-    setTokenA(preTokenB);
-    setTokenB(preTokenA);
-    setSwapDirection(changedSwapDirection);
+    const changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+    
+    if (!!Number(tokenAAmount || 0) && !!Number(tokenBAmount || 0)) {
+      setIsLoading(true);
+    }
+    setSwapValue(() => ({
+      tokenA: preTokenB,
+      tokenB: preTokenA,
+      type: changedSwapDirection,
+    }));
     if (changedSwapDirection === "EXACT_IN") {
       setTokenAAmount(tokenBAmount);
+      if (!preTokenA || !preTokenB) {
+        setTokenBAmount(tokenAAmount);
+      }
     } else {
       setTokenBAmount(tokenAAmount);
+      if (!preTokenA || !preTokenB) {
+        setTokenAAmount(tokenBAmount);
+      }
     }
     setQuery({
       tokenA: preTokenB?.path || null,
       tokenB: preTokenA?.path || null,
       direction: changedSwapDirection
     });
-  }, [swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+  }, [type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const copyURL = async () => {
     try {
@@ -209,7 +340,7 @@ const SwapContainer: React.FC = () => {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 500);
+      }, 2000);
     } catch (e) {
       throw new Error("Copy Error!");
     }
@@ -237,31 +368,37 @@ const SwapContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return;
     }
-    const isExactIn = swapDirection === "EXACT_IN";
+    const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    
     if (Number.isNaN(changedAmount) || BigNumber(changedAmount).isLessThanOrEqualTo(0)) {
       return;
     }
-    getExpectedSwap(changedAmount).then(result => {
-      const isError = result === null;
-      const expectedAmount = isError ? "" : result;
-      let swapError = null;
-      if (isError) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-      if (!checkBalance(tokenA, tokenAAmount) ||
-        !checkBalance(tokenB, tokenBAmount)) {
-        swapError = new SwapError("INSUFFICIENT_BALANCE");
-      }
-
-      if (isExactIn) {
-        setTokenBAmount(expectedAmount);
-      } else {
-        setTokenAAmount(expectedAmount);
-      }
-      setSwapError(swapError);
-    });
-  }, [checkBalance, getExpectedSwap, swapDirection, tokenA, tokenAAmount, tokenB, tokenBAmount]);
+    
+    const timeout = setTimeout(() => {
+      getExpectedSwap(changedAmount).then(result => {
+        const isError = result === null;
+        const expectedAmount = isError ? "" : result;
+        let swapError = null;
+        if (isError) {
+          swapError = new SwapError("INSUFFICIENT_BALANCE");
+        }
+        if (!checkBalance(tokenA, tokenAAmount) ||
+          !checkBalance(tokenB, tokenBAmount)) {
+          swapError = new SwapError("INSUFFICIENT_BALANCE");
+        }
+  
+        if (isExactIn) {
+          setTokenBAmount(expectedAmount);
+        } else {
+          setTokenAAmount(expectedAmount);
+        }
+        setSwapError(swapError);
+        setIsLoading(() => false);
+      });
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, [checkBalance, getExpectedSwap, type, tokenA, tokenAAmount, tokenB, tokenBAmount, isLoading]);
 
   useEffect(() => {
     const queryValues = [];
@@ -286,18 +423,19 @@ const SwapContainer: React.FC = () => {
       const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
       const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
       const direction: SwapDirectionType = query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
-
-      setTokenA(currentTokenA);
-      setTokenB(currentTokenB);
-      setSwapDirection(direction);
+      setSwapValue({
+        tokenA: currentTokenA,
+        tokenB: currentTokenB,
+        type: direction,
+      });
       setQuery({
         tokenA: currentTokenA?.path || null,
         tokenB: currentTokenB?.path || null,
-        direction
+        direction,
       });
       return;
     }
-  }, [initialized, router, swapDirection, tokenA?.path, tokenB?.path, tokens]);
+  }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
 
   return (
     <SwapCard
@@ -322,6 +460,10 @@ const SwapContainer: React.FC = () => {
       closeModal={closeModal}
       copyURL={copyURL}
       swap={executeSwap}
+      themeKey={themeKey}
+      isSwitchNetwork={isSwitchNetwork}
+      switchNetwork={switchNetwork}
+      isLoading={isLoading}
     />
   );
 };

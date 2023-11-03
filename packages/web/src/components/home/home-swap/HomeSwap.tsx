@@ -79,7 +79,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
               placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal />
+              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal isHiddenArrow />
             </div>
           </div>
           <div className="info">
@@ -98,7 +98,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
               placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal />
+              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isHiddenArrow />
             </div>
           </div>
           <div className="info">

@@ -19,6 +19,7 @@ import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 import { numberToUSD, toNumberFormat } from "@utils/number-utils";
 import { numberToFormat } from "@utils/string-utils";
 import BigNumber from "bignumber.js";
+import { usePositionModal } from "@hooks/common/use-position-modal";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -41,6 +42,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useModalCloseEvent(menuRef, close);
+  usePositionModal(menuRef);
 
   const tokenAAmountStr = useMemo(() => {
     return BigNumber(swapTokenInfo.tokenAAmount).toFormat();
@@ -93,9 +95,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   return (
     <ConfirmSwapModalBackground>
       <ConfirmModal ref={menuRef}>
-        <div className="modal-body">
-          <div className="modal-header">
-            <span>Confirm Swap</span>
+        <div className={`modal-body ${swapResult === null && "modal-body-loading"}`}>
+          <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
+            {!submitted && <span>Confirm Swap</span>}
             <div className="close-wrap" onClick={close}>
               <IconClose className="close-icon" />
             </div>
@@ -179,7 +181,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   <div className="gas-fee">
                     <span className="gray-text">Gas Fee</span>
                     <span className="white-text">
-                      {gasFeeStr}
+                      {gasFeeStr} GNOT
                       <span className="gray-text">
                         ({gasFeeUSDStr})
                       </span>
@@ -189,7 +191,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               </div>
               <div className="modal-button">
                 <Button
-                  text="Confrim Swap"
+                  text="Confirm Swap"
                   style={{
                     fullWidth: true,
                     height: 57,
@@ -281,7 +283,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         <span className="submitted">Transaction Rejected</span>
         <div className="view-transaction">
           <span>
-            Your transaction has been rejected. Please try again.
+            Your transaction has been rejected.<br /> Please try again.
           </span>
         </div>
       </div>

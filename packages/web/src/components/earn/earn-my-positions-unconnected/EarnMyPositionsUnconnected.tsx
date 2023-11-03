@@ -5,10 +5,13 @@ import { UnconnectedWrapper } from "./EarnMyPositionsUnconnected.styles";
 
 export interface EarnMyPositionsUnconnectedProps {
   connect: () => void;
+  isSwitchNetwork: boolean;
 }
 
-const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({ connect }) => {
-
+const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
+  connect,
+  isSwitchNetwork,
+}) => {
   const onClickConnect = useCallback(() => {
     connect();
   }, [connect]);
@@ -16,13 +19,18 @@ const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
   return (
     <UnconnectedWrapper>
       <IconLinkOff className="unconnected-icon" />
-      <p>
-        Please connect your wallet to view
-        <br />
-        your liquidity positions.
-      </p>
+      {isSwitchNetwork ? (
+        <p>Unsupported network. Switch your network to Gnoland.</p>
+      ) : (
+        <p>
+          Please connect your wallet to view
+          <br />
+          your liquidity positions.
+        </p>
+      )}
+
       <Button
-        text="Connect Wallet"
+        text={isSwitchNetwork ? "Switch to Gnoland" : "Connect Wallet"}
         onClick={onClickConnect}
         style={{
           hierarchy: ButtonHierarchy.Primary,

@@ -9,6 +9,7 @@ interface StakingProps {
   rewardInfo: any;
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
+  isDisabledButton: boolean;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -16,10 +17,11 @@ const Staking: React.FC<StakingProps> = ({
   breakpoint,
   rewardInfo,
   mobile,
+  isDisabledButton,
 }) => {
   return (
     <StakingWrapper>
-      <StakingHeader breakpoint={breakpoint} />
+      <StakingHeader breakpoint={breakpoint} isDisabledButton={isDisabledButton} />
       <StakingContent
         content={info}
         rewardInfo={rewardInfo}

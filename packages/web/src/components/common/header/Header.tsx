@@ -41,6 +41,8 @@ interface HeaderProps {
   connectAdenaClient: () => void;
   themeKey: "dark" | "light";
   disconnectWallet: () => void;
+  switchNetwork: () => void;
+  isSwitchNetwork: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -59,6 +61,8 @@ const Header: React.FC<HeaderProps> = ({
   connectAdenaClient,
   themeKey,
   disconnectWallet,
+  switchNetwork,
+  isSwitchNetwork,
 }) => {
   return (
     <>
@@ -107,6 +111,8 @@ const Header: React.FC<HeaderProps> = ({
                 connectAdenaClient={connectAdenaClient}
                 themeKey={themeKey}
                 disconnectWallet={disconnectWallet}
+                switchNetwork={switchNetwork}
+                isSwitchNetwork={isSwitchNetwork}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />

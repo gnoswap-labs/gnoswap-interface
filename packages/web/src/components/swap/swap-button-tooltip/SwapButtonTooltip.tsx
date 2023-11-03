@@ -24,7 +24,7 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
 
   const guaranteedStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    return `${toNumberFormat(amount)} ${currency}`;
+    return `${toNumberFormat(amount || 0)} ${currency}`;
   }, [swapSummaryInfo.guaranteedAmount]);
 
   const gasFeeStr = useMemo(() => {
@@ -45,7 +45,7 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({
         </div>
         <div className="tooltip-list">
           <span>Gas Fee</span>
-          <span>{gasFeeStr}</span>
+          <span>{gasFeeStr} GNOT</span>
         </div>
       </SwapButtonTooltipWrap>
     );

@@ -65,11 +65,6 @@ export const FOOTER_RIGHT_NAV = [
         path: "/airdrop",
         newTab: false,
       },
-      {
-        title: "Governance",
-        path: "/governance",
-        newTab: false,
-      },
     ],
   },
   {

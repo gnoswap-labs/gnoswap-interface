@@ -31,7 +31,7 @@ export const AutoRouterWrapper = styled.div`
     .left-box {
       ${mixins.flexbox("row", "center", "flex-start")};
       height: 28px;
-      padding: 0px 4px 0px 2px;
+      padding: 0px 4px 0px 4px;
       gap: 2px;
       border-radius: 4px;
       border: 1px solid ${({ theme }) => theme.color.border02};
@@ -57,7 +57,7 @@ export const AutoRouterWrapper = styled.div`
     .pair-fee {
       ${mixins.flexbox("row", "center", "center")};
       height: 28px;
-      padding: 0px 8px;
+      padding: 0px 6px;
       gap: 2px;
       border-radius: 4px;
       border: 1px solid ${({ theme }) => theme.color.border02};

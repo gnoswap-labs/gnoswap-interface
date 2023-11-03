@@ -35,14 +35,12 @@ export const SwapLiquidityWrapper = styled.div`
 
       .gnos-image-wrapper {
         ${mixins.flexbox("row", "center", "center")};
-        background-color: ${({ theme }) => theme.color.point};
         width: 24px;
         height: 24px;
         border-radius: 100%;
       }
       .gnot-image-wrapper {
         ${mixins.flexbox("row", "center", "center")};
-        background-color: ${({ theme }) => theme.color.icon09};
         width: 24px;
         height: 24px;
         border-radius: 100%;
@@ -50,8 +48,8 @@ export const SwapLiquidityWrapper = styled.div`
       }
       .coin-logo {
         ${mixins.flexbox("row", "center", "flex-start")};
-        width: 14.25px;
-        height: 14.25px;
+        width: 24px;
+        height: 24px;
         flex-shrink: 0;
       }
     }
@@ -79,7 +77,9 @@ export const SwapLiquidityWrapper = styled.div`
     ${media.mobile} {
       ${fonts.p2}
     }
-
+    > a {
+      width: 100%;
+    }
     .th {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
       width: 100%;

@@ -58,7 +58,7 @@ export const useSwap = ({
     }
     const amountSpecified = BigNumber(amount).multipliedBy(tempAmountDirection).toNumber();
 
-    return swapRepository.findSwapPool({
+    return await swapRepository.findSwapPool({
       tokenA: zeroForOne ? tokenA : tokenB,
       tokenB: zeroForOne ? tokenB : tokenA,
       zeroForOne,
