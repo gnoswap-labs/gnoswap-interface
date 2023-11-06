@@ -20,5 +20,11 @@ export const HeaderWrapper = styled.div`
   .button-wrap {
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     gap: 8px;
+    ${media.mobile} {
+      width: 100%;
+      button {
+        width: 50%;
+      }
+    }
   }
 `;

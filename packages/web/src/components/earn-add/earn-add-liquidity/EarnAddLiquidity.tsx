@@ -102,6 +102,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       case "CREATE_POOL":
       case "ADD_LIQUIDITY":
       case "CONNECT_WALLET":
+      case "SWITCH_NETWORK":
         return true;
       default:
         return false;
@@ -116,6 +117,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         return "Add Liquidity";
       case "CONNECT_WALLET":
         return "Connect Wallet";
+      case "SWITCH_NETWORK":
+        return "Switch to Gnoland";
       case "INVALID_PAIR":
         return "Invalid Pair";
       case "INSUFFICIENT_BALANCE":

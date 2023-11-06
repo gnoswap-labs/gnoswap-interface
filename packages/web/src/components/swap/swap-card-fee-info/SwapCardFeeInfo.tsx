@@ -30,7 +30,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
 
   const guaranteedStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    return `${toNumberFormat(amount)} ${currency}`;
+    return `${toNumberFormat(amount || 0)} ${currency}`;
   }, [swapSummaryInfo.guaranteedAmount]);
 
   const gasFeeStr = useMemo(() => {
@@ -57,7 +57,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       <div className="gas-fee">
         <span className="gray-text">Gas Fee</span>
         <span className="white-text">
-          {gasFeeStr}
+          {gasFeeStr} GNOT
           <span className="gray-text">{`(${gasFeeUSDStr})`}</span>
         </span>
       </div>

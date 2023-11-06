@@ -26,7 +26,6 @@ export const TokenAmountInputWrapper = styled.div`
     span {
       font-size: 15px;
       line-height: 19px;
-      margin: 0px 8px;
     }
   }
 

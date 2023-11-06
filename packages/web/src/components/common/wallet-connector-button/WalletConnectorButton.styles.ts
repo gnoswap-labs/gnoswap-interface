@@ -1,4 +1,6 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const WalletConnectorButtonWrapper = styled.div`
   position: relative;
@@ -18,5 +20,12 @@ export const WalletConnectorButtonWrapper = styled.div`
   }
   .switch-network {
     margin: 16px 0;
+  }
+`;
+
+export const FailNetworkTooltipContentWrap = styled.div`
+  ${fonts.body12}
+  ${media.mobile} {
+    ${fonts.p2}
   }
 `;

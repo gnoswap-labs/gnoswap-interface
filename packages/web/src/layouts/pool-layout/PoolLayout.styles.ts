@@ -22,8 +22,8 @@ export const PoolLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
-      width: 90%;
-      padding: 24px 0px 48px 0px;
+      width: 100%;
+      padding: 24px 16px 48px 16px;
       gap: 32px;
     }
   }
@@ -77,7 +77,7 @@ export const PoolLayoutWrapper = styled.div`
 
     .button {
       ${mixins.flexbox("row", "center", "flex-start")};
-      ${media.mobile} {
+      @media (max-width: 400px) {
         flex-direction: column;
         align-self: stretch;
       }
@@ -95,12 +95,22 @@ export const PoolLayoutWrapper = styled.div`
           ${fonts.body11}
           color: ${({ theme }) => theme.color.text07};
         }
+        &:hover {
+          span {
+            color: ${({ theme }) => theme.color.text08};
+          }
+          svg {
+            * {
+              fill: ${({ theme }) => theme.color.icon14};
+            }
+          }
+        }
         .arrow-icon {
           width: 16px;
           height: 16px;
           cursor: pointer;
           * {
-            fill: ${({ theme }) => theme.color.icon03};
+            fill: ${({ theme }) => theme.color.icon06};
           }
         }
       }

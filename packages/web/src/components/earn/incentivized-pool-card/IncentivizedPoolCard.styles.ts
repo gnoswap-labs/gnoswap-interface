@@ -100,7 +100,7 @@ export const PoolCardWrapper = styled.div`
       gap: 4px;
 
       span {
-        color: ${({ theme }) => theme.color.text10};
+        color: ${({ theme }) => theme.color.text03};
         ${fonts.p4};
       }
 
@@ -109,7 +109,7 @@ export const PoolCardWrapper = styled.div`
         height: 16px;
 
         * {
-          fill: ${({ theme }) => theme.color.icon03};
+          fill: ${({ theme }) => theme.color.icon07};
         }
       }
     }

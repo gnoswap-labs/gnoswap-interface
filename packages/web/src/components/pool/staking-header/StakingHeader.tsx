@@ -7,25 +7,25 @@ import { StakingHeaderWrapper } from "./StakingHeader.styles";
 import { useState } from "react";
 interface StakingHeaderProps {
   breakpoint: DEVICE_TYPE;
+  isDisabledButton: boolean;
 }
 
-const StakingHeader: React.FC<StakingHeaderProps> = ({ breakpoint }) => {
+const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton }) => {
   const [isShowLearnModal, setIsShowLearnModal] = useState(false);
   return (
     <StakingHeaderWrapper>
       <div className="left-wrap">
         <h2>Staking</h2>
-        {breakpoint !== DEVICE_TYPE.MOBILE && (
           <div className="logo-wrap">
             <span className="lean-more" onClick={() => setIsShowLearnModal(true)}>
               Learn More
             </span>
             <IconNote className="icon-logo" />
           </div>
-        )}
       </div>
       <div className="button-wrap">
         <Button
+          disabled={isDisabledButton}
           text="Unstake"
           onClick={() => {}}
           style={{
@@ -37,6 +37,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ breakpoint }) => {
           }}
         />
         <Button
+          disabled={isDisabledButton}
           text="Stake"
           onClick={() => {}}
           style={{

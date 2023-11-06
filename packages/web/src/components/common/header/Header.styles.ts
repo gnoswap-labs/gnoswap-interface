@@ -59,8 +59,8 @@ export const HeaderContainer = styled.div`
     padding: 12px 40px;
   }
   ${media.mobile} {
-    padding: 8px 0px;
-    width: 90%;
+    padding: 8px 16px;
+    width: 100%;
   }
 `;
 

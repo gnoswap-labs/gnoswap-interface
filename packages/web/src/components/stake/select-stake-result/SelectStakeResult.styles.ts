@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
+import styled from "@emotion/styled";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
@@ -16,7 +17,7 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     padding: 15px;
-    background-color: ${theme.color.backgroundOpacity};
+    background-color: ${theme.color.background20};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;
@@ -90,4 +91,10 @@ export const wrapper = (theme: Theme) => css`
       }
     }
   }
+`;
+
+export const HoverTextWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

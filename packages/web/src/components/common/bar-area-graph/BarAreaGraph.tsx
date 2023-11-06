@@ -182,6 +182,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         datas={datas}
         width={width}
         height={height}
+        tooltipOption="incentivized"
+        svgColor="incentivized"
       />
       {selectedStart && (
         <svg className="selector" viewBox={`0 0 ${width} ${height}`}>

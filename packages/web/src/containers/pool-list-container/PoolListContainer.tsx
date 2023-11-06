@@ -117,7 +117,7 @@ const PoolListContainer: React.FC = () => {
   }, [keyword, poolListInfos, poolType, sortOption]);
 
   const totalPage = useMemo(() => {
-    return sortedPoolListInfos.length / 20 + 1;
+    return Math.floor(sortedPoolListInfos.length / 20) + 1;
   }, [sortedPoolListInfos.length]);
 
   const routeItem = (id: string) => {
@@ -174,7 +174,7 @@ const PoolListContainer: React.FC = () => {
     const disableItems = ["Rewards", "Liquidity Plot"];
     return !disableItems.includes(head);
   }, []);
-
+  
   return (
     <PoolList
       pools={sortedPoolListInfos}

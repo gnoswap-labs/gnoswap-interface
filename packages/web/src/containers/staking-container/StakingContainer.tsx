@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Staking from "@components/pool/staking/Staking";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 export const rewardInfoInit = {
   apr: "89",
@@ -84,6 +85,8 @@ export const stakingInit = [
 const StakingContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
+  const { connected: connectedWallet, isSwitchNetwork } = useWallet();
+
   const handleResize = () => {
     if (typeof window !== "undefined") {
       window.innerWidth < 768 && window.innerWidth > 375
@@ -100,12 +103,18 @@ const StakingContainer: React.FC = () => {
     };
   }, []);
 
+
+  const isDisabledButton = useMemo(() => {
+    return isSwitchNetwork || !connectedWallet;
+  }, [isSwitchNetwork, connectedWallet]);
+
   return (
     <Staking
       info={stakingInit}
       rewardInfo={rewardInfoInit}
       breakpoint={breakpoint}
       mobile={mobile}
+      isDisabledButton={isDisabledButton}
     />
   );
 };

@@ -94,10 +94,25 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     margin-bottom: 24px;
   }
   .current-price {
-    ${mixins.flexbox("column", "flex-start", "center", false)};
+    display: flex;
+    width: fit-content;
+    justify-content: flex-start;
+    align-items: center;
     gap: 4px;
-    color: ${({ theme }) => theme.color.text05};
-    ${fonts.p4};
+
+    span {
+      color: ${({ theme }) => theme.color.text10};
+      ${fonts.p4};
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
   }
 
   .chart-wrapper {

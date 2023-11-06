@@ -22,9 +22,9 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   return visible ? (
     <RecentlyAddedCardListwrapper>
       <h2>
-        <IconClock className="icon-clock" /> Recently Added
+        <IconClock className="icon-clock" /> New Listings
       </h2>
-      <CardList list={list} onClickItem={onClickItem} />
+      <CardList list={list} onClickItem={onClickItem} isHiddenIndex/>
     </RecentlyAddedCardListwrapper>
   ) : null;
 };

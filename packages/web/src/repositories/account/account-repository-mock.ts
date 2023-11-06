@@ -16,6 +16,7 @@ import { AccountModel } from "@models/account/account-model";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
 
 import AccountBalancesData from "./mock/account-balances.json";
+import { WalletResponse, SwitchNetworkResponse } from "@common/clients/wallet-client/protocols";
 
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
@@ -202,6 +203,16 @@ export class AccountRepositoryMock implements AccountRepository {
       description: faker.word.interjection(),
       status: statuses[statusIndex % 3] as "SUCCESS" | "PENDING" | "FAILED",
       created_at: generateTime().toUTCString(),
+    };
+  };
+
+  public switchNetwork: (chainId: string) => Promise<WalletResponse<SwitchNetworkResponse>> = async () => {
+    return {
+      code: 0,
+      status: "0",
+      type: "0",
+      message: "0",
+      data: null,
     };
   };
 }

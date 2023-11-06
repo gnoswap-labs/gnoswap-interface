@@ -71,6 +71,8 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
             height={45}
             currentTick={tickInfo.currentTick}
             datas={["1", "1", "2", "2", "3", "3", "2", "2", "1", "1"]}
+            tooltipOption="incentivized"
+            svgColor="incentivized"
           />
         </div>
       </TableColumn>

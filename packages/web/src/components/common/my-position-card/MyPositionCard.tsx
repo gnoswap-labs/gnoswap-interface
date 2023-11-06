@@ -6,6 +6,9 @@ import IconStaking from "@components/common/icons/IconStaking";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { MyPositionCardWrapper } from "./MyPositionCard.styles";
 import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
+import IconSwap from "../icons/IconSwap";
+import { numberToFormat } from "@utils/string-utils";
+import { useMemo, useState } from "react";
 
 interface MyPositionCardProps {
   item: any;
@@ -14,6 +17,19 @@ interface MyPositionCardProps {
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, movePoolDetail }) => {
   const { tokenPair } = item;
+  const [isSwap, setIsSwap] = useState(false);
+
+  const swapValue = useMemo(() => {
+    return isSwap
+      ? numberToFormat(1 / 5, 2)
+      : numberToFormat(5);
+  }, [isSwap]);
+
+  const handleClickSwap = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setIsSwap(!isSwap);
+  };
+
   return (
     <MyPositionCardWrapper
       stakeType={item.stakeType}
@@ -52,8 +68,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({ item, movePoolDetail })
       </div>
       <div className="pool-price-graph">
         <div className="price-range-info">
-          <div className="current-price">
-            <span>{item.currentPriceAmount}</span>
+          <div className="current-price" onClick={handleClickSwap}>
+            <span>{`1 ${
+              !isSwap ? tokenPair.tokenA.symbol : tokenPair.tokenB.symbol
+            }`}</span>
+            <IconSwap />
+            <span>{`${swapValue} ${
+              isSwap ? tokenPair.tokenA.symbol : tokenPair.tokenB.symbol
+            }`}</span>
           </div>
           <RangeBadge
             status={

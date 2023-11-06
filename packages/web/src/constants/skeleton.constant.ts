@@ -75,12 +75,13 @@ export const POOL_INFO = {
   total: 15,
   tdWidth: POOL_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
+    { width: 240, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 170, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
 

@@ -28,6 +28,7 @@ export const BreadcrumbsWrapper = styled.div`
   width: 100%;
   gap: 20px;
   align-self: stretch;
+  position: relative;
   ${media.mobile} {
     gap: 10px;
   }
@@ -44,6 +45,10 @@ export const BreadcrumbsWrapper = styled.div`
   }
 
   .location {
+    position: absolute;
+    left: 98.8px;
+    top: 12px;
+    bottom: 6px;
     ${mixins.flexbox("row", "center", "flex-start")};
     padding: 4px 8px;
     gap: 4px;
@@ -52,10 +57,19 @@ export const BreadcrumbsWrapper = styled.div`
     ${fonts.body12};
     ${media.tablet} {
       ${fonts.p2};
+      left: 82px;
+      top: 10px;
+      bottom: 5px;
     }
-    color: ${({ theme }) => theme.color.text05};
+    ${media.mobile} {
+      ${fonts.p2};
+      left: 62.5px;
+      top: 3px;
+      bottom: 2px;
+    }
+    color: ${({ theme }) => theme.color.text22};
     .token {
-      color: ${({ theme }) => theme.color.text22};
+      color: ${({ theme }) => theme.color.text05};
     }
   }
 

@@ -22,7 +22,18 @@ export const DetailWrapper = styled.div<WrapperProps>`
     padding: 16px;
     gap: 16px;
     align-self: stretch;
-
+    .loading-change {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 8px;
+      > div {
+        width: 16px;
+        height: 16px;
+        &::before {
+          width: 12px;
+          height: 12px;
+        }
+      }
+    }
     ${media.mobile} {
       padding: 12px;
       gap: 12px;
@@ -38,6 +49,9 @@ export const DetailWrapper = styled.div<WrapperProps>`
         gap: 4px;
         ${media.mobile} {
           ${fonts.p2};
+        }
+        .swap-rate {
+          cursor: pointer;
         }
         .exchange-price {
           color: ${({ theme }) => theme.color.text04};
@@ -62,6 +76,9 @@ export const DetailWrapper = styled.div<WrapperProps>`
           * {
             fill: ${({ theme }) => theme.color.icon03};
           }
+        }
+        .note-icon {
+          cursor: default;
         }
       }
     }

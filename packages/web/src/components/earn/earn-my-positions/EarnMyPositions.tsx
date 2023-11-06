@@ -7,6 +7,7 @@ export interface EarnMyPositionsProps {
   connected: boolean;
   fetched: boolean;
   positions: PoolPosition[];
+  isSwitchNetwork: boolean;
   connect: () => void;
   moveEarnAdd: () => void;
   movePoolDetail: (poolId: string) => void;
@@ -21,6 +22,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   moveEarnAdd,
   movePoolDetail,
   moveEarnStake,
+  isSwitchNetwork,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -34,6 +36,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       fetched={fetched}
       positions={positions}
       movePoolDetail={movePoolDetail}
+      isSwitchNetwork={isSwitchNetwork}
     />
   </EarnMyPositionswrapper>
 );

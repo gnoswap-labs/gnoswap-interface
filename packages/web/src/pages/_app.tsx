@@ -11,6 +11,7 @@ import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModal
 import ModalContainer from "@containers/modal-container/ModalContainer";
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import BackgroundContainer from "@containers/background-container/BackgroundContainer";
+import Notice from "@components/common/notice/NoticeToast";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -33,10 +34,12 @@ export default function App({ Component, pageProps }: AppProps) {
           <GnoswapServiceProvider>
             <GnoswapThemeProvider>
               <BackgroundContainer>
-                <Component {...pageProps} />
-                <GnoswapModalProvider selector={"portal-root"} >
-                  <ModalContainer />
-                </GnoswapModalProvider>
+                <Notice>
+                  <Component {...pageProps} />
+                  <GnoswapModalProvider selector={"portal-root"} >
+                    <ModalContainer />
+                  </GnoswapModalProvider>
+                </Notice>
               </BackgroundContainer>
             </GnoswapThemeProvider>
           </GnoswapServiceProvider >

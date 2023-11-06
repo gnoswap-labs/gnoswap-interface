@@ -23,6 +23,7 @@ const TokenAmount: React.FC<TokenAmountProps> = ({
           <SelectPairButton
             token={token}
             disabled={true}
+            isHiddenArrow
           />
         </div>
       </div>

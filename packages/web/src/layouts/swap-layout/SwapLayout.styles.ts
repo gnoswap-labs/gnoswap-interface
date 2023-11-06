@@ -19,8 +19,8 @@ export const SwapLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
-      width: 90%;
-      padding: 0px;
+      width: 100%;
+      padding: 0px 16px;
     }
   }
   .swap-container {

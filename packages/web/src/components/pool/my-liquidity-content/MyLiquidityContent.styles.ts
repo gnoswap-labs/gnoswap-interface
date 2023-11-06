@@ -80,6 +80,7 @@ export const MyLiquidityContentWrapper = styled.div`
 export const RewardsContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 8px;
+  width: 300px;
   ${fonts.body12};
   ${media.mobile} {
     gap: 4px;
@@ -101,14 +102,14 @@ export const RewardsContent = styled.div`
     }
   }
   .title {
-    color: ${({ theme }) => theme.color.text08};
+    color: ${({ theme }) => theme.color.text04};
   }
   .content {
-    color: var(--global-gray-gray-100, #e0e8f4);
+    color: ${({ theme }) => theme.color.text02};
   }
   p {
     ${fonts.p4};
-    color: var(--global-brand-brand-400, #536cd7);
+    color: ${({ theme }) => theme.color.text04};
   }
 `;
 
@@ -116,5 +117,5 @@ export const TooltipDivider = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   height: 1px;
   width: 100%;
-  background: ${({ theme }) => theme.color.border04};
+  background: ${({ theme }) => theme.color.border01};
 `;

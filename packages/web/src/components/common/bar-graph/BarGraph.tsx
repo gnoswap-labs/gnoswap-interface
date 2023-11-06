@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useState } from "react";
-import { BarGraphTooltipWrapper, BarGraphWrapper } from "./BarGraph.styles";
+import IconPolygon from "../icons/IconPolygon";
+import { BarGraphTooltipWrapper, BarGraphWrapper, IncentivizeGraphTooltipWrapper } from "./BarGraph.styles";
 
 export interface BarGraphProps {
   className?: string;
@@ -12,6 +13,8 @@ export interface BarGraphProps {
   minGap?: number;
   width?: number;
   height?: number;
+  tooltipOption?: string;
+  svgColor?: string;
 }
 
 interface Point {
@@ -32,6 +35,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
   minGap = 1,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
+  tooltipOption = "default",
+  svgColor = "default",
 }) => {
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
@@ -153,16 +158,17 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onMouseMove={onMouseMove}
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
+      svgColor={svgColor}
     >
       <svg viewBox={`0 0 ${width} ${height}`}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#2eff8266" />
-            <stop offset="100%" stopColor="rgba(75, 255, 46, 0.00)" />
+            <stop offset="0%" stopColor="#16C78A" />
+            <stop offset="100%" stopColor="#16C78A00" />
           </linearGradient>
           <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#ff2e2e66" />
-            <stop offset="100%" stopColor="rgba(255, 46, 46, 0.00)" />
+            <stop offset="0%" stopColor="#EA3943" />
+            <stop offset="100%" stopColor="#EA394300" />
           </linearGradient>
         </defs>
         {getGraphPoints().map((point, index) => (
@@ -182,12 +188,12 @@ const BarGraph: React.FC<BarGraphProps> = ({
             y1={height}
             y2={0}
             strokeDasharray={4}
-            stroke={"#FFFFFF"}
+            stroke={"#E0E8F4"}
             strokeWidth={0.5}
           />
         )}
       </svg>
-      {currentPointIndex > -1 && activated && (
+      {tooltipOption === "default" && currentPointIndex > -1 && activated && (
         <BarGraphTooltipWrapper
           x={
             currentPoint?.x && currentPoint?.x > width - 40
@@ -203,6 +209,35 @@ const BarGraph: React.FC<BarGraphProps> = ({
             <span className="date">Aug 03, 2023 09:00 PM - 10:00 PM</span>
           </div>
         </BarGraphTooltipWrapper>
+      )}
+      {tooltipOption === "incentivized" && currentPointIndex > -1 && activated && (
+        <IncentivizeGraphTooltipWrapper
+          x={currentPoint?.x || 0}
+          y={currentPoint?.y || 0}
+        >
+          <div className="row">
+            <div className="token">Token</div>
+            <div className="amount">Amount</div>
+            <div className="price">Price Range</div>
+          </div>
+          <div className="body">
+            <div className="token">
+              <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="token logo" className="token-logo" />
+              BTC
+            </div>
+            <div className="amount">-</div>
+            <div className="price">19.30K - 21.45K ADN</div>
+          </div>
+          <div className="body">
+            <div className="token">
+              <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="token logo" className="token-logo" />
+              BTC
+            </div>
+            <div className="amount">Amount</div>
+            <div className="price">0.000046 - 0.000051 BTC</div>
+          </div>
+          <IconPolygon className="polygon-icon" />
+        </IncentivizeGraphTooltipWrapper>
       )}
     </BarGraphWrapper>
   );

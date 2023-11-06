@@ -9,6 +9,7 @@ export interface EarnMyPositionContentProps {
   positions: PoolPosition[];
   connect: () => void;
   movePoolDetail: (poolId: string) => void;
+  isSwitchNetwork: boolean;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -17,12 +18,19 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   positions,
   connect,
   movePoolDetail,
+  isSwitchNetwork,
 }) => {
   const randomForTest = useMemo(() => {
     return Math.floor(Math.random() * 2 + 1);
   }, [positions]);
-  if (!connected) {
-    return <EarnMyPositionsUnconnected connect={connect} />;
+
+  if (!connected || isSwitchNetwork) {
+    return (
+      <EarnMyPositionsUnconnected
+        connect={connect}
+        connected={connected}
+      />
+    );
   }
 
   if (randomForTest === 0) {

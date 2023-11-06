@@ -39,6 +39,9 @@ export const PoolPairInfoContentWrapper = styled.div`
   .section-info {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 16px;
+    @media (min-width: 769px) and (max-width: 800px) {
+      gap: 8px;
+    }
     .negative {
       color: ${({ theme }) => theme.color.red01};
     }
@@ -103,10 +106,10 @@ export const TooltipContent = styled.div`
     }
   }
   .title {
-    color: ${({ theme }) => theme.color.text08};
+    color: ${({ theme }) => theme.color.text04};
   }
   .content {
-    color: var(--global-gray-gray-100, #e0e8f4);
+    color: ${({ theme }) => theme.color.text02};
   }
 `;
 

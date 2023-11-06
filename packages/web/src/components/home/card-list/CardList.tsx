@@ -9,6 +9,7 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 interface CardListProps {
   list: Array<CardListTokenInfo | CardListPoolInfo>;
   onClickItem: (id: string) => void;
+  isHiddenIndex?: boolean;
 }
 
 function isTokenInfo(info: CardListTokenInfo | CardListPoolInfo): info is CardListTokenInfo {
@@ -18,7 +19,7 @@ function isTokenInfo(info: CardListTokenInfo | CardListPoolInfo): info is CardLi
   return false;
 }
 
-const CardList: React.FC<CardListProps> = ({ list, onClickItem }) => {
+const CardList: React.FC<CardListProps> = ({ list, onClickItem, isHiddenIndex= false }) => {
 
   return (
     <CardListWrapper>
@@ -29,6 +30,7 @@ const CardList: React.FC<CardListProps> = ({ list, onClickItem }) => {
             index={index + 1}
             item={item}
             onClickItem={onClickItem}
+            isHiddenIndex={isHiddenIndex}
           />
         ) : (
           <CardListPoolItem
@@ -105,9 +107,10 @@ interface CardListTokenItemProps {
   index: number;
   item: CardListTokenInfo;
   onClickItem: (tokenPath: string) => void;
+  isHiddenIndex?: boolean;
 }
 
-const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onClickItem }) => {
+const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onClickItem, isHiddenIndex = false }) => {
 
   const visibleUp = useMemo(() => {
     return item.upDown === "up";
@@ -123,7 +126,7 @@ const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onCl
 
   return (
     <ListItem onClick={onClick} upDown={item.upDown}>
-      <span className="index">{index}</span>
+      {!isHiddenIndex && <span className="index">{index}</span>}
       <img src={item.token.logoURI} alt="logo" className="list-logo" />
       <strong className="token-name">{item.token.name}</strong>
       <span className="list-content">{item.token.symbol}</span>

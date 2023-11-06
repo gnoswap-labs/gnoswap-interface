@@ -2,13 +2,16 @@ import React, { useMemo } from "react";
 import { AutoRouterWrapper, DotLine } from "./SwapCardAutoRouter.styles";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 
 interface ContentProps {
   swapRouteInfos: SwapRouteInfo[];
+  swapSummaryInfo: SwapSummaryInfo;
 }
 
 const SwapCardAutoRouter: React.FC<ContentProps> = ({
   swapRouteInfos,
+  swapSummaryInfo,
 }) => {
   const bestGasFee = useMemo(() => {
     const totalGasFee = swapRouteInfos.reduce((prev, current) => prev + current.gasFeeUSD, 0);
@@ -18,7 +21,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
   return (
     <AutoRouterWrapper>
       {swapRouteInfos.map((swapRouteInfo, index) => (
-        <SwapCardAutoRouterItem key={index} swapRouteInfo={swapRouteInfo} />
+        <SwapCardAutoRouterItem key={index} swapRouteInfo={swapRouteInfo} swapSummaryInfo={swapSummaryInfo} />
       ))}
       <p className="gas-description">
         {`Best price route costs ~${bestGasFee} in gas. This route optimizes your total output by considering split routes, multiple hops, and the gas cost of each step.`}
@@ -29,10 +32,12 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
 
 interface SwapCardAutoRouterItemProps {
   swapRouteInfo: SwapRouteInfo;
+  swapSummaryInfo: SwapSummaryInfo;
 }
 
 const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
   swapRouteInfo,
+  swapSummaryInfo,
 }) => {
   const weightStr = useMemo(() => {
     return `${swapRouteInfo.weight}%`;
@@ -40,7 +45,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
 
   return (
     <div className="row">
-      <img src={swapRouteInfo.from.logoURI} alt="token logo" className="token-logo" />
+      <img src={swapSummaryInfo.tokenA.logoURI} alt="token logo" className="token-logo" />
       <div className="left-box">
         <div className="left-badge">{swapRouteInfo.version}</div>
         <span>{weightStr}</span>
@@ -55,7 +60,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
           <DotLine key={`line-${index}`} />
         </>
       ))}
-      <img src={swapRouteInfo.to.logoURI} alt="token logo" className="token-logo" />
+      <img src={swapSummaryInfo.tokenB.logoURI} alt="token logo" className="token-logo" />
     </div>
   );
 };

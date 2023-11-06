@@ -27,7 +27,7 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
         <div className="button">
           <span>Want to boost up incentives for this pool?&nbsp;</span>
           <div className="pointer-wrap">
-            <span> Click here to start the process</span>
+            <span> Click here</span>
             <IconStrokeArrowRight className="arrow-icon" />
           </div>
         </div>

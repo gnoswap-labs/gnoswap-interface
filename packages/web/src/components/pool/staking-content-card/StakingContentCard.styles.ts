@@ -53,8 +53,8 @@ export const StakingContentCardWrapper = styled.div`
       }
     }
     .name-wrap {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 8px;
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 4px;
       ${media.mobile} {
         flex-direction: column;
         justify-content: center;
@@ -75,6 +75,9 @@ export const StakingContentCardWrapper = styled.div`
       .icon-wrap {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 4px;
+        ${media.mobile} {
+          gap: 5.33px;
+        }
         .content-text {
           color: ${({ theme }) => theme.color.text04};
           ${fonts.body12}
@@ -203,6 +206,7 @@ export const StakingContentCardWrapper = styled.div`
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        cursor: pointer;
         ${fonts.body6}
         ${media.tablet} {
           ${fonts.body8}
@@ -227,4 +231,47 @@ export const StakingContentCardWrapper = styled.div`
       }
     }
   }
+`;
+
+export const RewardsContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  width: 300px;
+  ${fonts.body12};
+  ${media.mobile} {
+    gap: 4px;
+    ${fonts.p2};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 4px 0px;
+    .coin-info {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      width: 170px;
+      gap: 8px;
+      flex-shrink: 0;
+      .token-logo {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .title {
+    color: ${({ theme }) => theme.color.text04};
+  }
+  .content {
+    color: ${({ theme }) => theme.color.text02};
+  }
+  p {
+    ${fonts.p4};
+    color: ${({ theme }) => theme.color.text04};
+  }
+`;
+
+export const TooltipDivider = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  height: 1px;
+  width: 100%;
+  background: ${({ theme }) => theme.color.border01};
 `;

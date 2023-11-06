@@ -27,16 +27,6 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
       <h2>My Positions</h2>
       <div className="button-wrapper">
         <Button
-          text="New Position"
-          style={{
-            hierarchy: ButtonHierarchy.Primary,
-            fontType: "p1",
-            height: 36,
-            padding: "10px 16px",
-          }}
-          onClick={onClickNewPosition}
-        />
-        <Button
           text="Stake Position"
           style={{
             hierarchy: ButtonHierarchy.Primary,
@@ -46,6 +36,16 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
           }}
           disabled={disabledNewPosition}
           onClick={moveEarnStake}
+        />
+        <Button
+          text="New Position"
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fontType: "p1",
+            height: 36,
+            padding: "10px 16px",
+          }}
+          onClick={onClickNewPosition}
         />
       </div>
     </PositionsWrapper>

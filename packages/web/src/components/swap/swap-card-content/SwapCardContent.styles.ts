@@ -18,7 +18,7 @@ export const ContentWrapper = styled.div`
     align-self: stretch;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
-    background: ${({ theme }) => theme.color.background01};
+    background: ${({ theme }) => theme.color.background20};
     ${media.mobile} {
       padding: 12px;
     }
@@ -38,6 +38,9 @@ export const ContentWrapper = styled.div`
       ${fonts.body5};
     }
     color: ${({ theme }) => theme.color.text01};
+    &::placeholder {
+      color: ${({ theme }) => theme.color.text01};
+    }
   }
 
   .token-selector {
@@ -57,6 +60,9 @@ export const ContentWrapper = styled.div`
       }
       color: ${({ theme }) => theme.color.text10};
     }
+    .balance-text-disabled {
+      cursor: pointer;
+    }
   }
 
   .second-section {
@@ -65,7 +71,7 @@ export const ContentWrapper = styled.div`
     gap: 8px;
     align-self: stretch;
     border-radius: 8px;
-    background: ${({ theme }) => theme.color.background01};
+    background: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
     ${media.mobile} {
       padding: 12px;
@@ -86,7 +92,10 @@ export const ContentWrapper = styled.div`
       background-color: ${({ theme }) => theme.color.background01};
       border: 1px solid ${({ theme }) => theme.color.border02};
       border-radius: 50%;
-
+      cursor: pointer;
+      :hover {
+        background-color: ${({ theme }) => theme.color.backgroundGradient};
+      }
       .shape-icon {
         width: 16px;
         height: 16px;

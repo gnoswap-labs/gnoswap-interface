@@ -6,6 +6,8 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import NetworkData from "@resources/chains.json";
 
+const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
+
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
@@ -47,6 +49,18 @@ export const useWallet = () => {
     }
   }
 
+  const switchNetwork = useCallback(
+    async () => {
+      const res = await accountRepository.switchNetwork(CHAIN_ID);
+      if (res.code === 0) {
+        const account = await accountRepository.getAccount();
+        setWalletAccount(account);
+        accountRepository.setConnectedWallet(true);
+      }
+    },
+    [accountRepository, setWalletAccount]
+  );
+
   const connectAdenaClient = useCallback(() => {
     const adena = AdenaClient.createAdenaClient();
     if (adena !== null) {
@@ -66,6 +80,12 @@ export const useWallet = () => {
 
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
+      const network = NetworkData.find(
+        network => network.chainId === account.chainId,
+      );
+      if (!network) {
+        switchNetwork();
+      }
       setWalletAccount(account);
       accountRepository.setConnectedWallet(true);
     } else {
@@ -88,6 +108,16 @@ export const useWallet = () => {
     } catch {}
   }
 
+  const isSwitchNetwork = useMemo(() => {
+    
+    if (!walletAccount) return true;
+    const network = NetworkData.find(
+      network => network.chainId === walletAccount.chainId,
+    );
+    
+    return network ? false : true;
+  }, [walletAccount]);
+
   return {
     wallet,
     account: walletAccount,
@@ -97,5 +127,7 @@ export const useWallet = () => {
     connectAdenaClient,
     updateWalletEvents,
     disconnectWallet,
+    switchNetwork,
+    isSwitchNetwork: isSwitchNetwork,
   };
 };

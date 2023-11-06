@@ -38,7 +38,8 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     const lowerKeyword = keyword.toLowerCase();
     return tokens.filter(token =>
       token.name.toLowerCase().includes(lowerKeyword) ||
-      token.symbol.toLowerCase().includes(lowerKeyword)
+      token.symbol.toLowerCase().includes(lowerKeyword) ||
+      token.path.toLowerCase().includes(lowerKeyword)
     );
   }, [keyword, tokens]);
 
