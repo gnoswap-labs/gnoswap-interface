@@ -52,10 +52,9 @@ const pool: PoolCardInfo = {
     }
   ],
   incentiveType: "Incentivized",
-  tickInfo: {
-    currentTick: 1.498590,
-    ticks: []
-  }
+  currentTick: 0,
+  price: 0,
+  bins: []
 };
 
 export default {

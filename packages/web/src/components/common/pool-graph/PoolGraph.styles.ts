@@ -1,91 +1,83 @@
-import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { fonts } from "@constants/font.constant";
 
-export const PoolGraphWrapper = styled.div<{
-  width?: number;
-  height?: number;
-}>`
+export const PoolGraphWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: ${({ width }) => (width ? `${width}px` : "100%")};
-  height: ${({ height }) => (height ? `${height}px` : "100%")};
-  overflow: visible;
-
-  svg.selector {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    .area {
-      background: linear-gradient(
-        270deg,
-        rgba(0, 205, 46, 0.2) 0%,
-        rgba(255, 2, 2, 0.2) 100%
-      );
-    }
-  }
-`;
-
-interface PoolGraphTooltipWrapperProps {
-  x: number;
-  y: number;
-}
-
-export const PoolGraphTooltipWrapper = styled.div<PoolGraphTooltipWrapperProps>`
-  position: absolute;
-  top: ${props => `${props.y}px`};
-  left: ${props => `${props.x}px`};
-  display: flex;
-  flex-direction: column;
-  width: 157px;
+  width: 100%;
   height: auto;
-  padding: 6px 8px;
-  background: ${({ theme }) => theme.color.background05};
-  border-radius: 4px;
-  box-shadow: 2px 2px 12px 0px rgba(0, 0, 0, 0.15);
-  overflow: visible;
-  ${fonts.p4};
 
-  & .tooltip-header {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: auto;
-    justify-content: space-between;
-  }
+  .tooltip-container {
+    position: absolute;
+    pointer-events: none;
 
-  & .tooltip-body {
-    color: ${({ theme }) => theme.color.point};
-  }
-`;
+    .tooltip-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 390px;
+      background-color: ${({ theme }) => theme.color.background02};
+      padding: 16px;
+      align-items: flex-start;
+      border-radius: 8px;
+      gap: 8px;
+      ${fonts.body12};
+      line-height: 1em;
 
-export interface PoolGraphLabelProps {
-  x: number;
-  y: number;
-}
+      .row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 16px;
 
-export const PoolGraphLabel = styled.span<PoolGraphLabelProps>`
-  position: absolute;
-  display: flex;
-  top: ${({ y }) => `${y}px`};
-  width: 45px;
-  height: 23px;
-  justify-content: center;
-  align-items: center;
-  ${fonts.p3}
-  font-weight: 700;
-  border-radius: 4px;
+        & > span {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+      }
 
-  &.min {
-    left: ${({ x }) => (x < 45 ? `${x}px` : `${x - 45}px`)};
-    background-color: #ff503f99;
-  }
+      .header {
+        display: flex;
+        flex-direction: column;
+        color: ${({ theme }) => theme.color.text04};
+        margin-bottom: 5px;
+      }
 
-  &.max {
-    left: ${({ x }) => `${x}px`};
-    background-color: #60e66a99;
+      .content {
+        display: flex;
+        flex-direction: column;
+        color: ${({ theme }) => theme.color.text02};
+        gap: 8px;
+      }
+
+      .token {
+        flex-shrink: 0;
+        width: 80px;
+        gap: 8px;
+
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .amount {
+        flex-shrink: 0;
+        width: 80px;
+
+        & .hidden {
+          display: inline;
+          overflow: hidden;
+          text-overflow: clip;
+          white-space: nowrap;
+          word-break: break-all;
+        }
+      }
+
+      .price-range {
+        width: 100%;
+      }
+    }
   }
 `;
