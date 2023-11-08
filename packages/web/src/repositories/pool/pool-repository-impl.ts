@@ -1,6 +1,5 @@
 import { NetworkClient } from "@common/clients/network-client";
 import {
-  MOCK_BINS,
   PoolDetailResponse,
   PoolListResponse,
   PoolRepository,
@@ -14,6 +13,15 @@ import {
 } from "@constants/option.constant";
 import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
+import { GnoProvider } from "@gnolang/gno-js-client";
+import {
+  evaluateExpressionToObject,
+  makeABCIParams,
+} from "@utils/rpc-utils";
+import { PoolInfoResponse } from "./response/pool-info-response";
+import { PoolInfoModel } from "@models/pool/pool-info-model";
+import { PoolInfoMapper } from "@models/pool/mapper/pool-info-mapper";
+import { PoolError } from "@common/errors/pool";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
@@ -21,10 +29,16 @@ const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 
 export class PoolRepositoryImpl implements PoolRepository {
   private networkClient: NetworkClient;
+  private rpcProvider: GnoProvider | null;
   private walletClient: WalletClient | null;
 
-  constructor(networkClient: NetworkClient, walletClient: WalletClient | null) {
+  constructor(
+    networkClient: NetworkClient,
+    rpcProvider: GnoProvider | null,
+    walletClient: WalletClient | null,
+  ) {
     this.networkClient = networkClient;
+    this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
 
@@ -32,16 +46,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    // TODO: This will change after the API is finished.
-    const pools = response.data.pools.map(pool => ({
-      ...pool,
-      currentTick: MOCK_BINS[3].currentTick,
-      topBin: MOCK_BINS[3],
-      bins: MOCK_BINS,
-    }));
     return {
       ...response.data,
-      pools,
     };
   };
 
@@ -52,6 +58,30 @@ export class PoolRepositoryImpl implements PoolRepository {
       url: "/pools/" + poolId,
     });
     return response.data;
+  };
+
+  getPoolInfoByPoolPath = async (
+    poolPath: string,
+  ): Promise<PoolInfoModel> => {
+    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    if (!poolPackagePath || !this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+    }
+    const param = makeABCIParams("ApiGetPool", [poolPath]);
+
+    const response = await this.rpcProvider.evaluateExpression(
+      poolPackagePath,
+      param,
+    ).then(evaluateExpressionToObject<PoolInfoResponse>)
+    .then(PoolInfoMapper.fromResponse)
+    .catch(e => {
+      console.error(e);
+      return null;
+    });
+    if (response === null) {
+      throw new PoolError("NOT_FOUND_POOL");
+    }
+    return response;
   };
 
   createPool = async (request: CreatePoolRequest): Promise<string | null> => {
