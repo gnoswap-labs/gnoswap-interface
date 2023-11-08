@@ -10,6 +10,7 @@ export type SwapFeeTierType =
 export interface SwapFeeTierInfo {
   type: SwapFeeTierType;
   fee: number;
+  tickSpacing: number;
   rateStr: string;
   description: string;
 }
@@ -18,30 +19,35 @@ export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   FEE_100: {
     type: "FEE_100",
     fee: 100,
+    tickSpacing: 2,
     rateStr: "0.01%",
     description: "Best for very stable pairs",
   },
   FEE_500: {
     type: "FEE_500",
     fee: 500,
+    tickSpacing: 10,
     rateStr: "0.05%",
     description: "Best for stable pairs",
   },
   FEE_3000: {
     type: "FEE_3000",
     fee: 3000,
+    tickSpacing: 60,
     rateStr: "0.3%",
     description: "Best for most pairs",
   },
   FEE_10000: {
     type: "FEE_10000",
     fee: 10000,
+    tickSpacing: 200,
     rateStr: "1%",
     description: "Best for exotic pairs",
   },
   NONE: {
     type: "NONE",
     fee: 0,
+    tickSpacing: 1,
     rateStr: "-",
     description: "-",
   },

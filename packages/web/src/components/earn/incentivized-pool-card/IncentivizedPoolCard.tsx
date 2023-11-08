@@ -1,6 +1,4 @@
-import { generateBarAreaDatas } from "@common/utils/test-util";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import BarAreaGraph from "@components/common/bar-area-graph/BarAreaGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconSwap from "@components/common/icons/IconSwap";
 import {
@@ -11,15 +9,18 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo, useState } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { numberToFormat } from "@utils/string-utils";
+import PoolGraph from "@components/common/pool-graph/PoolGraph";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
   routeItem: (id: string) => void;
+  themeKey: "dark" | "light";
 }
 
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   pool,
   routeItem,
+  themeKey,
 }) => {
   const [isSwap, setIsSwap] = useState(false);
 
@@ -33,8 +34,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   };
   const swapValue = useMemo(() => {
     return isSwap
-      ? numberToFormat(1 / pool.tickInfo.currentTick, 6)
-      : pool.tickInfo.currentTick;
+      ? numberToFormat(1 / pool.currentTick, 6)
+      : pool.currentTick;
   }, [pool, isSwap]);
 
   return (
@@ -83,11 +84,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               isSwap ? pool.tokenA.symbol : pool.tokenB.symbol
             }`}</span>
           </div>
-          <BarAreaGraph
+          <PoolGraph
+            tokenA={pool.tokenA}
+            tokenB={pool.tokenB}
+            bins={pool.bins}
+            currentTick={pool.currentTick}
             width={258}
             height={60}
-            currentTick={20}
-            datas={generateBarAreaDatas()}
+            mouseover
+            themeKey={themeKey}
           />
         </div>
       </div>

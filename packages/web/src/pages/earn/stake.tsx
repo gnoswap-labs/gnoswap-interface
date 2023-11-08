@@ -6,10 +6,14 @@ import StakePositionLayout from "@layouts/stake-position-layout/StakePositionLay
 import React from "react";
 
 export default function Earn() {
+  const listBreadcrumb = [
+    { title: "Earn", path: "/earn" },
+    { title: "Stake Position", path: "" },
+  ];
   return (
     <StakePositionLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer />}
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} />}
       stakeLiquidity={<StakePositionContainer />}
       footer={<Footer />}
     />

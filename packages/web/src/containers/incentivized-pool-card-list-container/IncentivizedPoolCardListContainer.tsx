@@ -4,6 +4,8 @@ import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-li
 import { ValuesType } from "utility-types";
 import { useRouter } from "next/router";
 import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 export interface PoolListProps {
   logo: string[];
   name: string[];
@@ -30,6 +32,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { incentivizedPools, isFetchedPools } = usePoolData();
+  const themeKey = useAtomValue(ThemeState.themeKey);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -71,6 +74,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       routeItem={routeItem}
       mobile={mobile}
       page={page}
+      themeKey={themeKey}
     />
   );
 };

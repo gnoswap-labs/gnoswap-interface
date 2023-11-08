@@ -1,6 +1,8 @@
 import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
 import { Meta, StoryObj } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import POOLS from "@repositories/pool/mock/pools.json";
+
+const pool = POOLS.pools[0];
 
 export default {
   title: "common/PoolGraph",
@@ -9,10 +11,13 @@ export default {
 
 export const Default: StoryObj<PoolGraphProps> = {
   args: {
-    ticks: [],
-    width: 400,
-    height: 200,
-    onChangeMinTick: action("onChangeMinTick"),
-    onChangeMaxTick: action("onChangeMaxTick"),
+    tokenA: pool.tokenA,
+    tokenB: pool.tokenB,
+    bins: pool.bins,
+    mouseover: true,
+    currentTick: 18,
+    width: 600,
+    height: 400,
+    zoomable: false,
   },
 };

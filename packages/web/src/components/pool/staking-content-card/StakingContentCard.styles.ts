@@ -140,6 +140,7 @@ export const StakingContentCardWrapper = styled.div`
     }
     .price {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
+      cursor: pointer;
       gap: 16px;
       span {
         color: ${({ theme }) => theme.color.text02};
@@ -274,4 +275,29 @@ export const TooltipDivider = styled.div`
   height: 1px;
   width: 100%;
   background: ${({ theme }) => theme.color.border01};
+`;
+
+export const PriceTooltipContentWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  width: 300px;
+  ${fonts.body12};
+  ${media.mobile} {
+    gap: 4px;
+    ${fonts.p2};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 4px 0px;
+  }
+  .title {
+    color: ${({ theme }) => theme.color.text02};
+  }
+  .content {
+    color: ${({ theme }) => theme.color.text02};
+  }
+  .label {
+    color: ${({ theme }) => theme.color.text04};
+  }
 `;

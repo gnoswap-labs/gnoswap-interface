@@ -1,5 +1,10 @@
 import { NetworkClient } from "@common/clients/network-client";
-import { PoolDetailResponse, PoolListResponse, PoolRepository } from ".";
+import {
+  MOCK_BINS,
+  PoolDetailResponse,
+  PoolListResponse,
+  PoolRepository,
+} from ".";
 import { WalletClient } from "@common/clients/wallet-client";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { TokenModel } from "@models/token/token-model";
@@ -27,9 +32,16 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
+    // TODO: This will change after the API is finished.
+    const pools = response.data.pools.map(pool => ({
+      ...pool,
+      currentTick: MOCK_BINS[3].currentTick,
+      topBin: MOCK_BINS[3],
+      bins: MOCK_BINS,
+    }));
     return {
       ...response.data,
-      pools: response.data.pools || [],
+      pools,
     };
   };
 

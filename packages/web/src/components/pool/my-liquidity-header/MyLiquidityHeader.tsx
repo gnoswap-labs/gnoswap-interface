@@ -13,7 +13,7 @@ interface MyLiquidityHeaderProps {
 const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, isSwitchNetwork }) => {
   return (
     <HeaderWrapper>
-      <h2>My Liquidity</h2>
+      <h2>My Positions</h2>
       <div className="button-wrap">
         <Button
           disabled={!connected || isSwitchNetwork}

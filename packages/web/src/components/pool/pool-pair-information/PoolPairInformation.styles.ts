@@ -77,7 +77,7 @@ export const BreadcrumbsWrapper = styled.div`
     cursor: pointer;
     transition: color 0.3s ease;
     &:hover {
-      color: ${({ theme }) => theme.color.text02};
+      color: ${({ theme }) => theme.color.text16};
     }
     &:last-of-type {
       color: ${({ theme }) => theme.color.text05};

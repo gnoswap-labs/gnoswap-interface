@@ -16,6 +16,7 @@ export interface IncentivizedPoolCardListProps {
   routeItem: (id: string) => void;
   mobile: boolean;
   page: number;
+  themeKey: "dark" | "light";
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -27,13 +28,14 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   routeItem,
   mobile,
   page,
+  themeKey,
 }) => (
   <IncentivizedWrapper>
     <PoolListWrapper>
       {isFetched &&
         incentivizedPools.length > 0 &&
         incentivizedPools.slice(0, page * 8).map((info, index) => (
-          <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} />
+          <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
         ))}
       {!isFetched &&
         Array.from({ length: 8 }).map((_, index) => (

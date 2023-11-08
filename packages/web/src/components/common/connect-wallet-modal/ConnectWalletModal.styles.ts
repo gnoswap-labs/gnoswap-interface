@@ -83,7 +83,7 @@ export const ConnectWalletModalWrapper = styled.div`
     width: 328px;
     .modal-body {
         .content {
-            gap: 16px;
+            gap: 8px;
             > div {
               .button-connect {
                 height: 44px;

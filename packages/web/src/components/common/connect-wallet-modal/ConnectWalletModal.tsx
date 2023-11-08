@@ -52,11 +52,11 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect }) => {
           </div>
         </div>
         <div className="footer">
-          By connecting a wallet, you agree to Gnoswap Labs’{" "}
+          By connecting a wallet, you agree to our{" "}
           <a href="/" target="_blank">
             Terms of Service
           </a>{" "}
-          and consent to its{" "}
+          and consent to our{" "}
           <a href="/" target="_blank">
             Privacy Policy
           </a>

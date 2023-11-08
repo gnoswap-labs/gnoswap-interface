@@ -25,11 +25,18 @@ const getMapping: any = (router: any) => {
   };
 };
 
-const BreadcrumbsContainer: React.FC = () => {
+interface Props {
+  listBreadcrumb?: { title: string, path: string } [];
+}
+
+const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb }) => {
   const router = useRouter();
   console.log(router.pathname);
 
   const removePoolSteps = useMemo(() => {
+    if (listBreadcrumb) {
+      return listBreadcrumb;
+    }
     return [
       {
         title: "Main",
@@ -42,7 +49,7 @@ const BreadcrumbsContainer: React.FC = () => {
         path: "",
       },
     ];
-  }, [router, getMapping]);
+  }, [router, getMapping, listBreadcrumb]);
 
   const onClickPath = (path: string) => {
     router.push(path);

@@ -11,7 +11,7 @@ interface CardProps {
 export const MyPositionCardWrapper = styled.div<CardProps>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  min-width: 290px;
+  min-width: 322px;
   gap: 16px;
   padding: 16px;
   border-radius: 10px;

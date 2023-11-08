@@ -31,7 +31,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           <IconStrokeArrowRight className="step-icon" />
           <span className="token">
             {info.poolInfo.tokenPair.tokenA.symbol}/
-            {info.poolInfo.tokenPair.tokenB.symbol} ({info.poolInfo.feeRate})%
+            {info.poolInfo.tokenPair.tokenB.symbol} ({info.poolInfo.feeRate}%)
           </span>
         </div>
       </BreadcrumbsWrapper>

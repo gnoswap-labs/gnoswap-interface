@@ -55,6 +55,12 @@ export const LearnMoreModalWrapper = styled.div`
       height: 41px;
     }
   }
+  .active-btn {
+    background-color: ${({ theme }) => theme.color.background04};
+    &:hover {
+      background-color: ${({ theme }) => theme.color.background04Hover};
+    }
+  }
 `;
 
 export const Progress = styled.div`

@@ -55,6 +55,7 @@
       "currentTick": 0,
       "reserveA": 0,
       "reserveB": 0,
+      "totalSupply": 0,
       "lpTokenId": "",
       "timestamp": "0001-01-01T00:00:00Z",
       "annualizedFeeGrowth": 0

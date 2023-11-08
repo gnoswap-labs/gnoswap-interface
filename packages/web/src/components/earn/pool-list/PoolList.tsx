@@ -32,6 +32,7 @@ interface TokenListProps {
   breakpoint: DEVICE_TYPE;
   routeItem: (id: string) => void;
   searchRef: React.RefObject<HTMLDivElement>;
+  themeKey: "dark" | "light";
 }
 
 const PoolList: React.FC<TokenListProps> = ({
@@ -52,6 +53,7 @@ const PoolList: React.FC<TokenListProps> = ({
   breakpoint,
   routeItem,
   searchRef,
+  themeKey,
 }) => {
   return (
     <PoolListWrapper>
@@ -72,6 +74,7 @@ const PoolList: React.FC<TokenListProps> = ({
         sortOption={sortOption}
         isSortOption={isSortOption}
         routeItem={routeItem}
+        themeKey={themeKey}
       />
       <Pagination
         currentPage={currentPage}
