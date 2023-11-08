@@ -23,6 +23,7 @@ interface EarnAddLiquidityProps {
   changeTokenB: (token: TokenModel) => void;
   tokenAInput: TokenAmountInputModel;
   tokenBInput: TokenAmountInputModel;
+  feetierOfLiquidityMap: { [key in string]: number };
   feeTiers: SwapFeeTierType[];
   feeTier: SwapFeeTierType | null;
   pools: PoolModel[];
@@ -44,6 +45,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   changeTokenB,
   tokenAInput,
   tokenBInput,
+  feetierOfLiquidityMap,
   feeTiers,
   feeTier,
   pools,
@@ -169,6 +171,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
           {openedFeeTier && (
             <SelectFeeTier
+              feetierOfLiquidityMap={feetierOfLiquidityMap}
               feeTiers={feeTiers}
               feeTier={feeTier}
               pools={pools}

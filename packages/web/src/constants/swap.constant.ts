@@ -4,3 +4,5 @@ export const MAX_PRICE_X96 =
 
 export const MIN_TICK = -887272 as const;
 export const MAX_TICK = 887272 as const;
+
+export const X96 = 7.9228163e28 as const;

@@ -13,6 +13,10 @@ const ERROR_VALUE = {
     status: 402,
     type: "Failed to initialize Wallet",
   },
+  FAILED_INITIALIZE_ENVIRONMENT: {
+    status: 403,
+    type: "Failed to initialize environment value",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;
