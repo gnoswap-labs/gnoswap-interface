@@ -2,7 +2,7 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
+import { MAX_TICK, MIN_TICK, X96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
 
 export function getCurrentPriceByRaw(raw: string) {
@@ -38,6 +38,15 @@ export function priceToNearTick(price: number, tickSpacing: number) {
     return tickRaw - (tickSpacing - mod);
   }
   return tickRaw - mod;
+}
+
+export function rawByX96(value: number) {
+  return BigNumber(value).dividedBy(X96).toNumber();
+}
+
+export function priceX96ToNearTick(priceX96: number, tickSpacing: number) {
+  const price = rawByX96(priceX96);
+  return priceToNearTick(price, tickSpacing);
 }
 
 export function tickToPriceStr(tick: number, decimals?: number) {
