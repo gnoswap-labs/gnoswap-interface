@@ -47,7 +47,7 @@ describe("The toUnitFormat function returns a value represented in numeric units
 describe("toMillionFormat returns Million or FormatNumber", () => {
   test("1000 to 1,000", () => {
     const num = 1000;
-    expect(toMillionFormat(num)).toBe("1,000");
+    expect(toMillionFormat(num)).toBe("1,000.00");
   });
 
   test("1000000 to 1.00m", () => {
