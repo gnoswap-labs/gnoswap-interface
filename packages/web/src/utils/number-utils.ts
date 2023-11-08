@@ -126,7 +126,7 @@ export function toMillionFormat(value: number | string) {
   }
   const MILLION = 1000000;
   if (num.isLessThan(MILLION)) {
-    return BigNumber(num).toFormat();
+    return BigNumber(num).toFormat(2);
   }
   return `${BigNumber(num).dividedBy(MILLION).toFormat(2)}m`;
 }
