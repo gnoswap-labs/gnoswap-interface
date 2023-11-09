@@ -61,7 +61,6 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
       stakeType === STAKED_OPTION.STAKED
         ? ({ theme }) => theme.color.border01
         : ({ theme }) => theme.color.border02};
-  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
 
   transition: all 0.3s ease;
   color: ${({ theme }) => theme.color.text02};
@@ -69,6 +68,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   &:hover {
     background-color: ${({ theme }) => theme.color.background02};
     border: 1px solid ${({ theme }) => theme.color.border08};
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
   }
   .title-wrapper {
     ${mixins.flexbox("column", "flex-end", "space-between")};

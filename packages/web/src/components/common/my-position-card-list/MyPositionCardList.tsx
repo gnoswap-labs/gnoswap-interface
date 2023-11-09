@@ -13,6 +13,8 @@ interface MyPositionCardListProps {
   currentIndex: number;
   movePoolDetail: (id: string) => void;
   mobile: boolean;
+  divRef?: React.RefObject<HTMLDivElement>;
+  onScroll?: () => void;
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -23,13 +25,15 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   currentIndex,
   movePoolDetail,
   mobile,
+  divRef,
+  onScroll,
 }) => (
   <CardListWrapper>
-    <GridWrapper>
+    <GridWrapper ref={divRef} onScroll={onScroll}>
       {isFetched &&
         positions.length > 0 &&
         positions.map((item, idx) => (
-          <MyPositionCard item={item} key={idx} movePoolDetail={movePoolDetail} />
+          <MyPositionCard item={item} key={idx} movePoolDetail={movePoolDetail} mobile={mobile}/>
         ))}
       {!isFetched &&
         Array.from({ length: 4 }).map((_, idx) => (

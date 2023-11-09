@@ -2,7 +2,7 @@ import MyPositionCardList from "@components/common/my-position-card-list/MyPosit
 import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import EarnMyPositionNoLiquidity from "../earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyPositionsUnconnected";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 export interface EarnMyPositionContentProps {
   connected: boolean;
   fetched: boolean;
@@ -10,6 +10,10 @@ export interface EarnMyPositionContentProps {
   connect: () => void;
   movePoolDetail: (poolId: string) => void;
   isSwitchNetwork: boolean;
+  mobile: boolean;
+  divRef: React.RefObject<HTMLDivElement>;
+  onScroll: () => void;
+  currentIndex: number;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -19,6 +23,10 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   connect,
   movePoolDetail,
   isSwitchNetwork,
+  mobile,
+  divRef,
+  onScroll,
+  currentIndex,
 }) => {
   const randomForTest = useMemo(() => {
     return Math.floor(Math.random() * 2 + 1);
@@ -41,9 +49,11 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     <MyPositionCardList
       positions={positions}
       isFetched={fetched}
-      currentIndex={1}
+      currentIndex={currentIndex}
       movePoolDetail={movePoolDetail}
-      mobile={false}
+      mobile={mobile}
+      divRef={divRef}
+      onScroll={onScroll}
     />
   );
 };

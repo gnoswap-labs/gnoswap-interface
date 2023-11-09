@@ -2,6 +2,7 @@ import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPosit
 import EarnMyPositionsContent from "../earn-my-positions-content/EarnMyPositionsContent";
 import EarnMyPositionsHeader from "../earn-my-positions-header/EarnMyPositionsHeader";
 import { EarnMyPositionswrapper } from "./EarnMyPositions.styles";
+import React from "react";
 
 export interface EarnMyPositionsProps {
   connected: boolean;
@@ -12,6 +13,10 @@ export interface EarnMyPositionsProps {
   moveEarnAdd: () => void;
   movePoolDetail: (poolId: string) => void;
   moveEarnStake: () => void;
+  mobile: boolean;
+  divRef: React.RefObject<HTMLDivElement>;
+  onScroll: () => void;
+  currentIndex: number;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -23,6 +28,10 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   movePoolDetail,
   moveEarnStake,
   isSwitchNetwork,
+  mobile,
+  onScroll,
+  divRef,
+  currentIndex,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -37,6 +46,10 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       positions={positions}
       movePoolDetail={movePoolDetail}
       isSwitchNetwork={isSwitchNetwork}
+      mobile={mobile}
+      divRef={divRef}
+      onScroll={onScroll}
+      currentIndex={currentIndex}
     />
   </EarnMyPositionswrapper>
 );

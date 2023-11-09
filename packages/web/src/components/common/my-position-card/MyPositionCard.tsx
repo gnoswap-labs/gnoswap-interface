@@ -16,11 +16,13 @@ import { useMemo, useState } from "react";
 interface MyPositionCardProps {
   item: any;
   movePoolDetail: (id: string) => void;
+  mobile: boolean;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
   item,
   movePoolDetail,
+  mobile,
 }) => {
   const { tokenPair } = item;
   const [isSwap, setIsSwap] = useState(false);
@@ -98,7 +100,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="chart-wrapper">
               <BarAreaGraph
-                width={258}
+                width={mobile ? 226 : 258}
                 height={60}
                 currentTick={item.currentTick}
                 minLabel={item.minLabel}

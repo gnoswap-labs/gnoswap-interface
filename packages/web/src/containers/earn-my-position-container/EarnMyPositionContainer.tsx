@@ -1,9 +1,11 @@
 import EarnMyPositions from "@components/earn/earn-my-positions/EarnMyPositions";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { DEVICE_TYPE } from "@styles/media";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ValuesType } from "utility-types";
 
 export const POSITION_CONTENT_LABEL = {
@@ -63,9 +65,13 @@ interface EarnMyPositionContainerProps {
 const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
 > = () => {
+  const [currentIndex, setCurrentIndex] = useState(1);
+
   const router = useRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { isFetchedPositions, myPositions, updatePositions } = usePoolData();
+  const { breakpoint } = useWindowSize();
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   const { openModal } = useConnectWalletModal();
 
@@ -93,6 +99,14 @@ const EarnMyPositionContainer: React.FC<
     router.push("/earn/stake");
   }, [router]);
 
+
+  const handleScroll = () => {
+    if (divRef.current) {
+      const currentScrollX = divRef.current.scrollLeft;
+      setCurrentIndex(Math.floor(currentScrollX / 220) + 1);
+    }
+  };
+
   return (
     <EarnMyPositions
       connected={connected}
@@ -103,6 +117,10 @@ const EarnMyPositionContainer: React.FC<
       movePoolDetail={movePoolDetail}
       moveEarnStake={moveEarnStake}
       isSwitchNetwork={isSwitchNetwork}
+      mobile={breakpoint === DEVICE_TYPE.MOBILE}
+      onScroll={handleScroll}
+      divRef={divRef}
+      currentIndex={currentIndex}
     />
   );
 };
