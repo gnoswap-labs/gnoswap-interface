@@ -88,8 +88,7 @@ export const PoolLayoutWrapper = styled.div`
       }
 
       .pointer-wrap {
-        ${mixins.flexbox("row", "center", "flex-start")};
-        gap: 4px;
+        ${mixins.flexbox("row", "center", "center")};
         cursor: pointer;
         span {
           ${fonts.body11}

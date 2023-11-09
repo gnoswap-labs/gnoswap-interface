@@ -68,7 +68,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.floor(currentScrollX / 290) + 1);
+      setCurrentIndex(Math.floor(currentScrollX / 230) + 1);
     }
   };
 

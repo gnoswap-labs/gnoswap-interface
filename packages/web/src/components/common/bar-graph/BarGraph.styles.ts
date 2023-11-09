@@ -88,8 +88,8 @@ export const BarGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperProps>`
 export const IncentivizeGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperProps>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   position: absolute;
-  top: ${(props) => `${props.y - 132}px`};
-  left: 50%;
+  top: ${(props) => `${props.y - 140}px`};
+  left: ${(props) => `${props.x}px`};
   padding: 16px;
   background: ${({ theme }) => theme.color.background02};
   border-radius: 8px;
@@ -136,11 +136,6 @@ export const IncentivizeGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperP
         height: 20px;
       }
     }
-  }
-  svg {
-    position: absolute;
-    top: 100%;
-    left: ${(props) => `${props.x + 54}px`};
   }
   .polygon-icon * {
     fill: ${({ theme }) => theme.color.background02};

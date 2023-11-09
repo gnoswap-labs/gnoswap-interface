@@ -13,21 +13,17 @@ export const MyPositionCardWrapper = styled.div<Props>`
   padding: 24px 36px;
   gap: 16px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ type }) => {
-    return type ? ({ theme }) => theme.color.background06 : ({ theme }) => theme.color.backgroundOpacity3;
-  }};
+  border: 1px solid ${({ theme }) => theme.color.border01};
+  background-color: ${({ theme }) => theme.color.background03};
   ${media.tablet} {
     padding: 24px;
     border-radius: 10px;
-    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 290px;
-    height: 434px;
     padding: 12px;
-    gap: 16px;
+    gap: 12px;
   }
   .box-title {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -49,6 +45,9 @@ export const MyPositionCardWrapper = styled.div<Props>`
           flex-direction: column;
           justify-content: center;
           align-items: flex-start;
+        }
+        .visible-badge {
+          visibility: hidden; 
         }
       }
       .mobile-container {
@@ -115,6 +114,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
+      gap: 12px;
     }
     .info-box {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -128,10 +128,14 @@ export const MyPositionCardWrapper = styled.div<Props>`
         gap: 16px;
       }
       ${media.mobile} {
-        padding: 12px;
+        padding: 12px 12px 0 12px;
         gap: 8px;
         &:not(:first-of-type) {
           border-top: 1px solid ${({ theme }) => theme.color.border02};
+        }
+        border-left: none !important;
+        &:last-of-type {
+          padding: 12px;
         }
       }
       .symbol-text {

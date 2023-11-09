@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useState } from "react";
-import IconPolygon from "../icons/IconPolygon";
 import { BarGraphTooltipWrapper, BarGraphWrapper, IncentivizeGraphTooltipWrapper } from "./BarGraph.styles";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 export interface BarGraphProps {
@@ -237,7 +236,6 @@ const BarGraph: React.FC<BarGraphProps> = ({
             <div className="amount">Amount</div>
             <div className="price">0.000046 - 0.000051 BTC</div>
           </div>
-          <IconPolygon className="polygon-icon" />
         </IncentivizeGraphTooltipWrapper>
       )}
     </BarGraphWrapper>

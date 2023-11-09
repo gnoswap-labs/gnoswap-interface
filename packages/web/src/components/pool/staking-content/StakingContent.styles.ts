@@ -14,7 +14,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
   gap: 24px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.background11};
   ${media.mobile} {
     padding: 24px 12px;
   }
@@ -31,7 +31,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     ${media.mobile} {
       ${fonts.body10}
       align-items: flex-start;
-      flex-direction: column;
+      flex-wrap: wrap;
     }
     margin-bottom: ${({ isMobile }) => {
       return isMobile ? "24px" : "0px";
@@ -40,6 +40,9 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 10px;
       ${media.mobile} {
+        gap: 5px;
+      }
+      @media (max-width: 376px) {
         position: absolute;
         left: ${({ isMobile }) => {
           return isMobile ? "0px" : "21px";
@@ -47,7 +50,6 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
         bottom: ${({ isMobile }) => {
           return isMobile ? "-21px" : "0px";
         }};
-        gap: 5px;
       }
     }
     .coin-info {

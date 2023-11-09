@@ -7,7 +7,7 @@ export const MyLiquidityContentWrapper = styled.div`
   ${mixins.flexbox("row", "flex-start", "flex-start")};
   width: 100%;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.background11};
   border: 1px solid ${({ theme }) => theme.color.border02};
   ${media.mobile} {
     flex-direction: column;
@@ -31,6 +31,7 @@ export const MyLiquidityContentWrapper = styled.div`
       &:not(:first-of-type) {
         border-top: 1px solid ${({ theme }) => theme.color.border02};
       }
+      border-left: none !important;
     }
     @media (max-width: 1180px) and (min-width: 769px) {
       &:nth-of-type(3) {
@@ -53,6 +54,7 @@ export const MyLiquidityContentWrapper = styled.div`
   }
 
   span.content-value {
+    cursor: pointer;
     ${fonts.body2};
     ${media.tablet} {
       ${fonts.body4}
@@ -61,6 +63,9 @@ export const MyLiquidityContentWrapper = styled.div`
       ${fonts.body8}
     }
     color: ${({ theme }) => theme.color.text02};
+    &:hover {
+      color: ${({ theme }) => theme.color.text07};
+    }
   }
 
   .claim-wrap {

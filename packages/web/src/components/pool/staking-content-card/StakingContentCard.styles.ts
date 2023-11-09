@@ -34,11 +34,11 @@ export const StakingContentCardWrapper = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 99px;
-      background: var(--global-color-point, #0059ff);
+      background: ${({ theme }) => theme.color.background04};
       .check-line {
         height: 49px;
         position: absolute;
-        right: 10px;
+        right: 9px;
         bottom: -49px;
         stroke-width: 1px;
         stroke: var(--point-global-point, #0059ff);
@@ -46,10 +46,19 @@ export const StakingContentCardWrapper = styled.div`
       .check-line-long {
         height: 456px;
         position: absolute;
-        left: 10px;
+        left: 9px;
         top: 20px;
         stroke-width: 1px;
         stroke: var(--point-global-point, #0059ff);
+      }
+      .border-not-active {
+        width: 1px;
+        height: 55px;
+        border: 1px solid ${({ theme }) => theme.color.border08};
+      }
+      &-not-active {
+        border: 1px solid ${({ theme }) => theme.color.border08};
+        background: ${({ theme }) => theme.color.background02};
       }
     }
     .name-wrap {
@@ -300,4 +309,9 @@ export const PriceTooltipContentWrapper = styled.div`
   .label {
     color: ${({ theme }) => theme.color.text04};
   }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
 `;

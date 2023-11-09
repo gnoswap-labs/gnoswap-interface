@@ -12,7 +12,7 @@ interface MyPositionCardProps {
   breakpoint: DEVICE_TYPE;
 }
 
-const BalanceTooltipContent = ({ content } : { content : any }) => {
+export const BalanceTooltipContent = ({ content } : { content : any }) => {
   return (
     <TooltipContent>
       <span className="title">Balance</span>
@@ -46,7 +46,7 @@ const BalanceTooltipContent = ({ content } : { content : any }) => {
   );
 };
 
-const TotalRewardsContent = ({ content, isReward } : { content : any, isReward?: boolean }) => {
+export const TotalRewardsContent = ({ content, isReward } : { content : any, isReward?: boolean }) => {
   return (
     <RewardsContent>
       <div className="list">
@@ -171,13 +171,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 </div>
               </>
             )}
-            {content.tokenPair.isStaked && (
-              <Badge
-                type={BADGE_TYPE.PRIMARY}
-                leftIcon={<IconStaking />}
-                text={"Staked"}
-              />
-            )}
+            <Badge
+              type={BADGE_TYPE.PRIMARY}
+              leftIcon={<IconStaking />}
+              text={"Staked"}
+              className={!content.tokenPair.isStaked ? "visible-badge" : ""}
+            />
           </div>
           <div className="mobile-wrap">
             <RangeBadge
@@ -239,7 +238,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <span className="symbol-text">Estimated APR</span>
           <Tooltip placement="top" FloatingContent={<div><TotalRewardsContent content={content} /></div>}>
             <span className="content-text">
-              ✨{content.tokenPair.estimatedAPR}%
+              {Number(content.tokenPair.estimatedAPR) >= 100 && "✨"}{content.tokenPair.estimatedAPR}%
             </span>
           </Tooltip>
         </div>

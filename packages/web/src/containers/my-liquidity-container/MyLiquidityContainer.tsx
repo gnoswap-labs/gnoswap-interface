@@ -90,7 +90,7 @@ export const liquidityInit = {
         range: true,
         balance: "18,092.45",
         totalRewards: "1,015.24",
-        estimatedAPR: "90.5",
+        estimatedAPR: "100.5",
         minAmount: "1,105.1",
         maxAmount: "1,268.2",
       },

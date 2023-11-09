@@ -7,6 +7,7 @@ import {
   TooltipDivider,
 } from "./MyLiquidityContent.styles";
 import { DEVICE_TYPE } from "@styles/media";
+import { BalanceTooltipContent, TotalRewardsContent } from "../my-position-card/MyPositionCard";
 
 interface MyLiquidityContentProps {
   content: any;
@@ -145,11 +146,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     <MyLiquidityContentWrapper>
       <section>
         <h4>Total Balance</h4>
-        <span className="content-value">{totalBalance}</span>
+        <Tooltip placement="top" FloatingContent={<div><BalanceTooltipContent content={content.positionList[0]} /></div>}>
+          <span className="content-value">{totalBalance}</span>
+        </Tooltip>
       </section>
       <section>
         <h4>Daily Earnings</h4>
-        <span className="content-value">{dailyEarn}</span>
+        <Tooltip placement="top" FloatingContent={<div><TotalRewardsContent content={content.positionList[0]} isReward/></div>}>
+          <span className="content-value">{dailyEarn}</span>
+        </Tooltip>
       </section>
       <section>
         {breakpoint === DEVICE_TYPE.MOBILE ? (

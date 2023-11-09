@@ -10,7 +10,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   border-radius: 8px;
   color: ${({ theme }) => theme.color.text04};
   border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.background11};
   ${media.mobile} {
     flex-direction: column;
   }
@@ -33,6 +33,7 @@ export const PoolPairInfoContentWrapper = styled.div`
       &:not(:first-of-type) {
         border-top: 1px solid ${({ theme }) => theme.color.border02};
       }
+      border-left: none !important;
     }
   }
 

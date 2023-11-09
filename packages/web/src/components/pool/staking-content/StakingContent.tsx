@@ -13,6 +13,13 @@ interface StakingContentProps {
   mobile: boolean;
 }
 
+const TEXT_BTN = [
+  "Stake your positions to get started ⛵",
+  "Create your first position to get started ⛵",
+  "Keep your position staked to get higher rewards ⌛",
+  "Receiving Max Rewards ✨",
+];
+
 const StakingContent: React.FC<StakingContentProps> = ({
   content,
   rewardInfo,
@@ -44,12 +51,13 @@ const StakingContent: React.FC<StakingContentProps> = ({
           <span>My Staking</span>
           {content.map((item, idx) => {
             return idx + 1 === content.length ? (
-              <SummuryApr key={idx} item={content[content.length - 1]} />
+              <SummuryApr index={idx} key={idx + 1} item={content[content.length - 1]} />
             ) : (
               <StakingContentCard
                 item={item}
                 key={idx}
                 breakpoint={breakpoint}
+                index={idx + 1}
               />
             );
           })}
@@ -57,7 +65,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       </div>
       <div className="button-wrap">
         <Button
-          text={"Receiving Max Rewards ✨"}
+          text={TEXT_BTN[1]}
           style={{
             width: `${breakpoint === DEVICE_TYPE.WEB
               ? "800px"
@@ -72,8 +80,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 ? "p2"
                 : "body9"
               }`,
-            textColor: "text19",
-            bgColor: "background18",
+            textColor: "text01",
+            bgColor: "background01",
             padding: "10px 16px",
             gap: "8px",
           }}
