@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useState } from "react";
 import IconPolygon from "../icons/IconPolygon";
 import { BarGraphTooltipWrapper, BarGraphWrapper, IncentivizeGraphTooltipWrapper } from "./BarGraph.styles";
-
+import { useColorGraph } from "@hooks/common/use-color-graph";
 export interface BarGraphProps {
   className?: string;
   color?: string;
@@ -41,6 +41,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
+  const { redColor, greenColor } = useColorGraph();
 
   const getStrokeWidth = useCallback(() => {
     const maxStorkeWidth = BigNumber(
@@ -163,12 +164,12 @@ const BarGraph: React.FC<BarGraphProps> = ({
       <svg viewBox={`0 0 ${width} ${height}`}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#16C78A" />
-            <stop offset="100%" stopColor="#16C78A00" />
+            <stop offset="0%" stopColor={greenColor.start} />
+            <stop offset="100%" stopColor={greenColor.end} />
           </linearGradient>
           <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#EA3943" />
-            <stop offset="100%" stopColor="#EA394300" />
+            <stop offset="0%" stopColor={redColor.start} />
+            <stop offset="100%" stopColor={redColor.end} />
           </linearGradient>
         </defs>
         {getGraphPoints().map((point, index) => (

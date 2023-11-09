@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import IncentivizedPoolCardList from "@components/earn/incentivized-pool-card-list/IncentivizedPoolCardList";
 import { ValuesType } from "utility-types";
 import { useRouter } from "next/router";
@@ -27,12 +27,13 @@ export const POOL_CONTENT_TITLE = {
 export type POOL_CONTENT_TITLE = ValuesType<typeof POOL_CONTENT_TITLE>;
 
 const IncentivizedPoolCardListContainer: React.FC = () => {
-  const [currentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { incentivizedPools, isFetchedPools } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -64,17 +65,26 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     }
   }, [loadMore]);
 
+  const handleScroll = () => {
+    if (divRef.current) {
+      const currentScrollX = divRef.current.scrollLeft;
+      setCurrentIndex(Math.floor(currentScrollX / 290) + 1);
+    }
+  };
+
   return (
     <IncentivizedPoolCardList
       incentivizedPools={incentivizedPools}
       isFetched={isFetchedPools}
       loadMore={!!loadMore}
       onClickLoadMore={handleClickLoadMore}
-      currentIndex={page - 1}
+      currentIndex={currentIndex}
       routeItem={routeItem}
       mobile={mobile}
       page={page}
       themeKey={themeKey}
+      divRef={divRef}
+      onScroll={handleScroll}
     />
   );
 };

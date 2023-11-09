@@ -31,5 +31,7 @@ Default.args = {
     loadMore={false}
     page={1}
     themeKey="dark"
+    divRef={null as any}
+    onScroll={action("onScroll")}
   />
 };

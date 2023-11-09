@@ -7,6 +7,7 @@ import BigNumber from "bignumber.js";
 import { renderToStaticMarkup } from "react-dom/server";
 import { TokenModel } from "@models/token/token-model";
 import { toMillionFormat } from "@utils/number-utils";
+import { useColorGraph } from "@hooks/common/use-color-graph";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -48,6 +49,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const svgRef = useRef(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const { redColor, greenColor } = useColorGraph();
 
   const tickFullRange = MAX_TICK - MIN_TICK;
   const boundsWidth = width - margin.right - margin.left;
@@ -244,12 +247,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       <svg ref={svgRef}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#16C78A" />
-            <stop offset="100%" stopColor="#16C78A00" />
+            <stop offset="0%" stopColor={greenColor.start} />
+            <stop offset="100%" stopColor={greenColor.end} />
           </linearGradient>
           <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#EA3943" />
-            <stop offset="100%" stopColor="#EA394300" />
+            <stop offset="0%" stopColor={redColor.start} />
+            <stop offset="100%" stopColor={redColor.end} />
           </linearGradient>
         </defs>
         <g

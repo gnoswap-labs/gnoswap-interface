@@ -8,6 +8,40 @@ interface CardProps {
   stakeType: STAKED_OPTION;
 }
 
+export const MyPositionCardWrapperBorder = styled.div`
+  &.special-card {
+    min-width: 322px;
+    background: ${({ theme }) => theme.color.backgroundGradient4};
+    border-radius: 10px;
+    padding: 1px;
+    ${media.tablet} {
+      min-width: 322px;
+    }
+    ${media.mobile} {
+      min-width: 290px;
+    }
+    .base-border {
+      border-radius: 10px;
+      background: ${({ theme }) => theme.color.background01};
+      > div {
+        min-width: auto;
+        border: 0;
+        ${media.mobile} {
+          min-width: auto;
+        }
+      }
+    }
+    &:hover {
+      box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
+      .base-border {
+        > div {
+          background-color: ${({ theme }) => theme.color.background02};
+        }
+      }
+    }
+  }
+`;
+
 export const MyPositionCardWrapper = styled.div<CardProps>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
@@ -34,7 +68,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   cursor: pointer;
   &:hover {
     background-color: ${({ theme }) => theme.color.background02};
-    border: 1px solid ${({ theme }) => theme.color.border03};
+    border: 1px solid ${({ theme }) => theme.color.border08};
   }
   .title-wrapper {
     ${mixins.flexbox("column", "flex-end", "space-between")};

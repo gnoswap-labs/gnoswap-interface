@@ -15,7 +15,13 @@ export const PoolGraphWrapper = styled.div`
   .light-shadow {
     box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   }
-
+  svg {
+    rect {
+      &:hover {
+        opacity: 0.4;
+      }
+    }
+  }
   .tooltip-container {
     position: absolute;
     pointer-events: none;

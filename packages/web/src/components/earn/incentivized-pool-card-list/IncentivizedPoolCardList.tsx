@@ -17,6 +17,8 @@ export interface IncentivizedPoolCardListProps {
   mobile: boolean;
   page: number;
   themeKey: "dark" | "light";
+  divRef: React.RefObject<HTMLDivElement>;
+  onScroll: () => void;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -29,36 +31,40 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   mobile,
   page,
   themeKey,
-}) => (
-  <IncentivizedWrapper>
-    <PoolListWrapper>
-      {isFetched &&
-        incentivizedPools.length > 0 &&
-        incentivizedPools.slice(0, page * 8).map((info, index) => (
-          <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
-        ))}
-      {!isFetched &&
-        Array.from({ length: 8 }).map((_, index) => (
-          <span
-            key={index}
-            className="card-skeleton"
-            css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-          />
-        ))}
-    </PoolListWrapper>
-    {!mobile ? (
-      incentivizedPools.length > 8 &&
-      onClickLoadMore && (
-        <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
-      )
-    ) : (
-      <div className="box-indicator">
-        <span className="current-page">{currentIndex}</span>
-        <span>/</span>
-        <span>{incentivizedPools.length}</span>
-      </div>
-    )}
-  </IncentivizedWrapper>
-);
+  divRef,
+  onScroll,
+}) => {
+  return (
+    <IncentivizedWrapper>
+      <PoolListWrapper ref={divRef} onScroll={onScroll}>
+        {isFetched &&
+          incentivizedPools.length > 0 &&
+          incentivizedPools.slice(0, page * 8).map((info, index) => (
+            <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
+          ))}
+        {!isFetched &&
+          Array.from({ length: 8 }).map((_, index) => (
+            <span
+              key={index}
+              className="card-skeleton"
+              css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          ))}
+      </PoolListWrapper>
+      {!mobile ? (
+        incentivizedPools.length > 8 &&
+        onClickLoadMore && (
+          <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+        )
+      ) : (
+        <div className="box-indicator">
+          <span className="current-page">{currentIndex}</span>
+          <span>/</span>
+          <span>{incentivizedPools.length}</span>
+        </div>
+      )}
+    </IncentivizedWrapper>
+  );
+};
 
 export default IncentivizedPoolCardList;

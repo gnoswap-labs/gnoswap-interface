@@ -3,6 +3,40 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
+export const PoolCardWrapperWrapperBorder = styled.div`
+  &.special-card {
+    min-width: 322px;
+    background: ${({ theme }) => theme.color.backgroundGradient4};
+    border-radius: 10px;
+    padding: 1px;
+    ${media.tablet} {
+      min-width: 322px;
+    }
+    ${media.mobile} {
+      min-width: 290px;
+    }
+    .base-border {
+      border-radius: 10px;
+      background: ${({ theme }) => theme.color.background01};
+      > div {
+        min-width: auto;
+        border: 0;
+        ${media.mobile} {
+          min-width: auto;
+        }
+      }
+    }
+    &:hover {
+      box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
+      .base-border {
+        > div {
+          background-color: ${({ theme }) => theme.color.background02};
+        }
+      }
+    }
+  }
+`;
+
 export const PoolCardWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
@@ -18,7 +52,7 @@ export const PoolCardWrapper = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.color.background02};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid ${({ theme }) => theme.color.border03};
+    border: 1px solid ${({ theme }) => theme.color.border08};
   }
   ${media.mobile} {
     min-width: 290px;

@@ -16,6 +16,7 @@ import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liqui
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { useRouter } from "next/router";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -73,11 +74,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
     null
   );
+
+  const { openModal: openConnectWalletModal } = useConnectWalletModal();
+
   const [pools] = useState<PoolModel[]>([]);
   const {
     connected: connectedWallet,
     account,
-    connectAdenaClient,
     switchNetwork,
     isSwitchNetwork,
   } = useWallet();
@@ -174,7 +177,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const submit = useCallback(() => {
     if (submitType === "CONNECT_WALLET") {
-      connectAdenaClient();
+      openConnectWalletModal();
       return;
     }
     if (submitType === "SWITCH_NETWORK") {
@@ -195,7 +198,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     priceRange,
     swapFeeTier,
     openConfirmModal,
-    connectAdenaClient,
+    openConnectWalletModal,
     switchNetwork,
   ]);
 

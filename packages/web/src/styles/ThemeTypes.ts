@@ -27,6 +27,7 @@ export interface ThemeColorType {
   backgroundGradient: string;
   backgroundGradient2: string;
   backgroundGradient3: string;
+  backgroundGradient4: string;
   border01: string;
   border02: string;
   border03: string;
