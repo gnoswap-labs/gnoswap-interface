@@ -44,7 +44,7 @@ export const PoolCardWrapper = styled.div`
   padding: 16px;
   gap: 8px;
   background-color: ${({ theme }) => theme.color.background03};
-  border: 1px solid ${({ theme }) => theme.color.border01};
+  border: 1px solid ${({ theme }) => theme.color.border14};
   border-radius: 10px;
   transition: all 0.3s ease;
   color: ${({ theme }) => theme.color.text02};

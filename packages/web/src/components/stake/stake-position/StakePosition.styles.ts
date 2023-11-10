@@ -26,8 +26,10 @@ export const wrapper = (theme: Theme) => css`
     }
   }
   ${media.mobile} {
-    width: 328px;
+    max-width: 500px;
+    width: 100%;
     padding: 12px;
+    margin: auto;
   }
 `;
 

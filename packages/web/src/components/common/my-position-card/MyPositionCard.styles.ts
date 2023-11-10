@@ -56,11 +56,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   ${media.mobile} {
     min-width: 290px;
   }
-  border: 1px solid
-    ${({ stakeType }) =>
-      stakeType === STAKED_OPTION.STAKED
-        ? ({ theme }) => theme.color.border01
-        : ({ theme }) => theme.color.border02};
+  border: 1px solid ${({ theme }) => theme.color.border14};
 
   transition: all 0.3s ease;
   color: ${({ theme }) => theme.color.text02};

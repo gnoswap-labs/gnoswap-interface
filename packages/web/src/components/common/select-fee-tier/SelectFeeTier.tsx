@@ -74,8 +74,10 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
 
   return (
     <SelectFeeTierItemWrapper className={selected ? "selected" : ""} onClick={onClick}>
-      <strong className="fee-rate">{feeRateStr}</strong>
-      <p className="desc">{description}</p>
+      <div>
+        <strong className="fee-rate">{feeRateStr}</strong>
+        <p className="desc">{description}</p>
+      </div>
       <span className="selected-fee-rate">{rangeStr}</span>
     </SelectFeeTierItemWrapper>
   );

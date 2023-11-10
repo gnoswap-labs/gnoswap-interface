@@ -24,9 +24,11 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 
-  .stake-liquidity-section {
-    margin: 0 auto;
-    height: 100%;
+  @media (min-width: 769px) {
+    .stake-liquidity-section {
+      margin: 0 auto;
+      height: 100%;
+    }
   }
   ${media.tablet} {
     main {

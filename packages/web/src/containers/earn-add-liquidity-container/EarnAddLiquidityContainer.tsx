@@ -17,6 +17,7 @@ import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { useRouter } from "next/router";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { isEmptyObject } from "@utils/validation-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -48,16 +49,38 @@ export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
   "FEE_10000",
 ];
 
-const TEMP_CUSTOM_PRICE_RANGE: AddLiquidityPriceRage = {
-  type: "Custom",
-  range: {
-    minTick: 6600,
-    maxTick: 10200,
-    minPrice: "1.2840093675402746",
-    maxPrice: "2.1169206358924533",
+const TEMP_CUSTOM_PRICE_RANGE: AddLiquidityPriceRage[] = [
+  {
+    type: "Active",
+    range: {
+      minTick: 6600,
+      maxTick: 10200,
+      minPrice: "1.2840093675402746",
+      maxPrice: "2.1169206358924533",
+    },
+    apr: "APR 99",
   },
-  apr: "0",
-};
+  {
+    type: "Passive",
+    range: {
+      minTick: 6600,
+      maxTick: 10200,
+      minPrice: "1.2840093675402746",
+      maxPrice: "2.1169206358924533",
+    },
+    apr: "APR 100",
+  },
+  {
+    type: "Custom",
+    range: {
+      minTick: 6600,
+      maxTick: 10200,
+      minPrice: "1.2840093675402746",
+      maxPrice: "2.1169206358924533",
+    },
+    apr: "0",
+  },
+];
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -68,14 +91,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
-  const [priceRanges] = useState<AddLiquidityPriceRage[]>([
-    TEMP_CUSTOM_PRICE_RANGE,
-  ]);
+  const [priceRanges] = useState<AddLiquidityPriceRage[]>(TEMP_CUSTOM_PRICE_RANGE);
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
     null
   );
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
+
+  const isEmptyQuery = useMemo(() => {
+    return isEmptyObject(query);
+  }, [query]);
 
   const [pools] = useState<PoolModel[]>([]);
   const {
@@ -102,6 +127,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
       setSwapFeeTier(query?.feeTier as SwapFeeTierType);
     }
   }, [query]);
+
+  useEffect(() => {
+    if (isEmptyQuery) {
+      setSwapFeeTier("FEE_3000");
+      setPriceRange(TEMP_CUSTOM_PRICE_RANGE[1]);
+    }
+  }, [isEmptyQuery]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     return {
@@ -223,6 +255,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       currentTick={null}
       submitType={submitType}
       submit={submit}
+      isEmptyQuery={isEmptyQuery}
     />
   );
 };

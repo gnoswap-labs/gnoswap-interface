@@ -1,7 +1,7 @@
 import React from "react";
 import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
-import { SelectPriceRangeSummaryWrapper } from "./SelectPriceRangeSummary.styles";
+import { SelectPriceRangeSummaryWrapper, ToolTipContentWrapper } from "./SelectPriceRangeSummary.styles";
 
 export interface SelectPriceRangeSummaryProps {
   depositRatio: string;
@@ -9,9 +9,9 @@ export interface SelectPriceRangeSummaryProps {
   estimatedApr: string;
 }
 
-const ModalContent = <>
-  An indication of how much more swap<br />fees you can get for your selected price<br />range compared to a full-range position.
-</>;
+const ModalContent = <ToolTipContentWrapper>
+  An indication of how much more swap fees you can get for your selected price range compared to a full-range position.
+</ToolTipContentWrapper>;
 
 const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
   depositRatio,
@@ -28,7 +28,7 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
       <div className="row">
         <div className="title-wrapper">
           <span className="title">Fee Boost</span>
-          <Tooltip placement="top" FloatingContent={<div>{ModalContent}</div>}>
+          <Tooltip placement="top" FloatingContent={ModalContent}>
             <IconInfo />
           </Tooltip>
         </div>

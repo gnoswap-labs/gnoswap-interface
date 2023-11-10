@@ -3,7 +3,7 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
 import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
-import { CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
+import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
 
 interface MyPositionCardListProps {
   loadMore?: boolean;
@@ -35,6 +35,12 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
         positions.map((item, idx) => (
           <MyPositionCard item={item} key={idx} movePoolDetail={movePoolDetail} mobile={mobile}/>
         ))}
+      {isFetched &&
+        positions.length > 0 && positions.length < 4 &&
+        (Array(4 - positions.length).fill(1)).map((_, index) => (
+          <BlankPositionCard key={index} />
+        ))
+      }
       {!isFetched &&
         Array.from({ length: 4 }).map((_, idx) => (
           <span

@@ -19,7 +19,7 @@ export const LiquidityEnterAmountsWrapper = styled.div`
       ${mixins.flexbox("row", "center", "center")};
       width: 40px;
       height: 40px;
-      background-color: ${({ theme }) => theme.color.background01};
+      background-color: ${({ theme }) => theme.color.background20};
       border: 1px solid ${({ theme }) => theme.color.border02};
       border-radius: 50%;
 

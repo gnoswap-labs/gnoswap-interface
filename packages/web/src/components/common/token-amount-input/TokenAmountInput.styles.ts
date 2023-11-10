@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TokenAmountInputWrapper = styled.div`
@@ -9,10 +10,12 @@ export const TokenAmountInputWrapper = styled.div`
   width: 100%;
   padding: 16px 24px;
 
-  background-color: ${({ theme }) => theme.color.background01};
+  background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
-
+  &:focus-within {
+    border: 1px solid ${({ theme }) => theme.color.border03};
+  }
   .amount {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -47,5 +50,15 @@ export const TokenAmountInputWrapper = styled.div`
   .balance-text {
     ${fonts.p2};
     color: ${({ theme }) => theme.color.text10};
+  }
+  ${media.mobile} {
+    padding: 12px;
+    gap: 8px;
+    .amount {
+      margin-bottom: 0;
+    }
+    .amount-text {
+      line-height: 34px;
+    }
   }
 `;

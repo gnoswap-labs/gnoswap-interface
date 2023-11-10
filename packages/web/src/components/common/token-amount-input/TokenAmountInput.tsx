@@ -50,7 +50,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       </div>
       <div className="info">
         <span className="price-text">{usdValue}</span>
-        <span className="balance-text">Balance : {balance}</span>
+        <span className="balance-text">Balance: {balance}</span>
       </div>
     </TokenAmountInputWrapper>
   );

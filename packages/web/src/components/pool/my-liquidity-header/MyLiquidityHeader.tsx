@@ -27,7 +27,6 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, 
           }}
         />
         <Button
-          disabled={!connected}
           text="Create Position"
           onClick={() => {}}
           style={{

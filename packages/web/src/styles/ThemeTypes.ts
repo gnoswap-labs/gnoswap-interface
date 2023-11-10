@@ -41,6 +41,7 @@ export interface ThemeColorType {
   border11: string;
   border12: string;
   border13: string;
+  border14: string;
   text01: string;
   text02: string;
   text03: string;
@@ -92,6 +93,7 @@ export interface ThemeColorType {
   select: string;
   redDark: string;
   greenDark: string;
+  shadow: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

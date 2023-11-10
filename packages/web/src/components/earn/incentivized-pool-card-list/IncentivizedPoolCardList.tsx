@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  BlankIncentivizedCard,
   IncentivizedWrapper,
   PoolListWrapper,
 } from "./IncentivizedPoolCardList.styles";
@@ -41,6 +42,11 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
           incentivizedPools.length > 0 &&
           incentivizedPools.slice(0, page * 8).map((info, index) => (
             <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
+          ))}
+        {isFetched &&
+          incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
+          (Array((incentivizedPools.length < 4 ? 4 : 8) - incentivizedPools.length).fill(1)).map((_, index) => (
+            <BlankIncentivizedCard key={index}/>
           ))}
         {!isFetched &&
           Array.from({ length: 8 }).map((_, index) => (

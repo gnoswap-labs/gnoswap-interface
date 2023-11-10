@@ -1,11 +1,11 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const SelectFeeTierWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
-  height: 103px;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
@@ -13,6 +13,9 @@ export const SelectFeeTierWrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
 
   .fee-tier-box {
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
   }
 `;
 
@@ -25,7 +28,9 @@ export const SelectFeeTierItemWrapper = styled.div`
   padding: 11px 7px;
   cursor: pointer;
   transition: all 0.3s ease;
-
+  > div {
+    ${mixins.flexbox("column", "center", "space-between")};
+  }
   &.selected,
   &:hover {
     background-color: ${({ theme }) => theme.color.background06};
@@ -41,6 +46,7 @@ export const SelectFeeTierItemWrapper = styled.div`
     color: ${({ theme }) => theme.color.text05};
     text-align: center;
     margin: 8px 0px;
+    padding: 0 15px;
   }
   .selected-fee-rate {
     ${mixins.flexbox("row", "center", "center")};
@@ -51,4 +57,17 @@ export const SelectFeeTierItemWrapper = styled.div`
     height: 20px;
     padding: 0px 8px;
   }
+  ${media.mobile} {
+    ${mixins.flexbox("row", "flex-start", "space-between")};
+    > div {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 4px;
+    }
+    .desc {
+      margin: 4px 0 0 0;
+      padding: 0;
+
+    }
+  }
+
 `;

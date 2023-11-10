@@ -45,6 +45,8 @@ const palette = {
   redDark: "#ff2e2e66",
   greenDark: "#2eff8266",
   transparent: "transparent",
+  shadowDark: "8px 8px 20px rgba(0, 0, 0, 0.2)",
+  shadowLight: "8px 8px 20px rgba(0, 0, 0, 0.08)",
 };
 
 const colors = {
@@ -150,6 +152,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   border11: colors.dark.gray500Border2,
   border12: colors.dark.blackOpacity07BG,
   border13: colors.dark.gray600Border1,
+  border14: colors.global.transparent,
   hover01: colors.dark.gray600Hover1,
   hover02: colors.dark.blackOpacity07Hover2,
   hover03: colors.dark.gray500BG,
@@ -201,6 +204,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   select: colors.dark.gray600Hover1,
   redDark: colors.global.redDark,
   greenDark: colors.global.greenDark,
+  shadow: colors.global.shadowDark,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -246,6 +250,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   border11: colors.white.gray200Border2,
   border12: colors.white.gray100Border1,
   border13: colors.global.transparent,
+  border14: colors.white.gray100Border1,
   hover01: colors.white.gray100Opacity04Hover1,
   hover02: colors.white.gray100Hover2,
   hover03: colors.white.gray100Opacity04Hover1,
@@ -297,4 +302,5 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   select: colors.global.white,
   redDark: colors.global.redDark,
   greenDark: colors.global.greenDark,
+  shadow: colors.global.shadowLight,
 };
