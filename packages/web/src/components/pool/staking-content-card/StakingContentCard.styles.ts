@@ -55,6 +55,9 @@ export const StakingContentCardWrapper = styled.div`
         width: 1px;
         height: 55px;
         border: 1px solid ${({ theme }) => theme.color.border08};
+        ${media.mobile} {
+          height: 150px;
+        }
       }
       &-not-active {
         border: 1px solid ${({ theme }) => theme.color.border08};
@@ -90,6 +93,7 @@ export const StakingContentCardWrapper = styled.div`
         .content-text {
           color: ${({ theme }) => theme.color.text04};
           ${fonts.body12}
+          font-size: 11px;
           ${media.tablet} {
             ${fonts.p4}
           }
@@ -98,11 +102,12 @@ export const StakingContentCardWrapper = styled.div`
           }
         }
         .content-gd-text {
-          background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+          background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
           background-clip: text;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           ${fonts.body12}
+          font-size: 11px;
           ${media.tablet} {
             ${fonts.p4}
           }
@@ -152,7 +157,17 @@ export const StakingContentCardWrapper = styled.div`
       cursor: pointer;
       gap: 16px;
       span {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 6px;
+        ${media.mobile} {
+          gap: 8px;
+        }
         color: ${({ theme }) => theme.color.text02};
+        span {
+          &:hover {
+            color: ${({ theme }) => theme.color.text07};
+          }
+        }
         ${fonts.body3}
         ${media.tablet} {
           ${fonts.body7}
@@ -168,7 +183,7 @@ export const StakingContentCardWrapper = styled.div`
         gap: 8px;
       }
       .price-gd-text {
-        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -210,9 +225,12 @@ export const StakingContentCardWrapper = styled.div`
         ${media.mobile} {
           ${fonts.body12}
         }
+        &:hover {
+          cursor: pointer;
+        }
       }
       .apr-gd-text {
-        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -299,6 +317,10 @@ export const PriceTooltipContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     padding: 4px 0px;
+    &.list-logo {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
+    }
   }
   .title {
     color: ${({ theme }) => theme.color.text02};

@@ -63,7 +63,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   cursor: pointer;
   &:hover {
     background-color: ${({ theme }) => theme.color.background02};
-    border: 1px solid ${({ theme }) => theme.color.border08};
+    border: 1px solid ${({ theme }) => theme.color.border14};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
   }
   .title-wrapper {

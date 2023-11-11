@@ -19,7 +19,7 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
     <SubmitPositionModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Confirm Position Staking</h6>
+          <h6>Confirm Stake Position</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -76,7 +76,7 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
           </div>
           <div>
             <Button
-              text="Confirm Position Staking"
+              text="Confirm Stake Position"
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,

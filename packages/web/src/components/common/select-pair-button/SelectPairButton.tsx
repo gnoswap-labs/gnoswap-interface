@@ -11,6 +11,7 @@ interface SelectPairButtonProps {
   hiddenModal?: boolean;
   callback?: (value: boolean) => void;
   isHiddenArrow?: boolean;
+  className?: string;
 }
 
 const SelectPairButton: React.FC<SelectPairButtonProps> = ({
@@ -20,6 +21,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
   hiddenModal,
   callback,
   isHiddenArrow,
+  className,
 }) => {
   const { openModal } = useSelectTokenModal({ changeToken, callback });
 
@@ -35,6 +37,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
     <div
       css={wrapper(Boolean(token), disabled || hiddenModal, isHiddenArrow)}
       onClick={onClickButton}
+      className={className}
     >
       {token ? (
         <div>

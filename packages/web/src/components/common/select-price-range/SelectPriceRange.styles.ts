@@ -64,7 +64,7 @@ export const SelectPriceRangeItemWrapper = styled.div`
 `;
 
 export const TooltipContentWrapper = styled.div`
-  width: 268px;
+  width: 296px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;

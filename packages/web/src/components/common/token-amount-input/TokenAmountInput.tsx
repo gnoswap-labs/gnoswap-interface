@@ -29,6 +29,11 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     changeAmount(value);
   }, [changeAmount]);
 
+  const handleFillBalance = useCallback(() => {
+    const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
+    changeAmount(formatValue);
+  }, [changeAmount]);
+
   return (
     <TokenAmountInputWrapper>
       <div className="amount">
@@ -50,7 +55,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       </div>
       <div className="info">
         <span className="price-text">{usdValue}</span>
-        <span className="balance-text">Balance: {balance}</span>
+        <span className="balance-text" onClick={handleFillBalance}>Balance: {balance}</span>
       </div>
     </TokenAmountInputWrapper>
   );

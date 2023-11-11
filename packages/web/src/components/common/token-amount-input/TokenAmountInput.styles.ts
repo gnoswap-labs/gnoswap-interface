@@ -6,7 +6,7 @@ import mixins from "@styles/mixins";
 export const TokenAmountInputWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   flex-wrap: wrap;
-
+  cursor: pointer;
   width: 100%;
   padding: 16px 24px;
 
@@ -14,7 +14,7 @@ export const TokenAmountInputWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   &:focus-within {
-    border: 1px solid ${({ theme }) => theme.color.border03};
+    border: 1px solid ${({ theme }) => theme.color.border15};
   }
   .amount {
     ${mixins.flexbox("row", "center", "space-between")};

@@ -53,6 +53,11 @@ export const EarnAddLiquidityWrapper = styled.section`
 
       }
     }
+    .fee-tier-bad {
+      border: 1px solid #233DBD;
+      color: ${({ theme }) => theme.color.text26};
+      background: ${({ theme }) => theme.color.background22};
+    }
   }
 
   .setting-button {

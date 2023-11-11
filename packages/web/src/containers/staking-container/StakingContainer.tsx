@@ -94,6 +94,7 @@ const StakingContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
+  const [type, setType] = useState(0);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -102,6 +103,9 @@ const StakingContainer: React.FC = () => {
         : setMobile(false);
     }
   };
+  useEffect(() => {
+    setType(Math.floor(Math.random() * 4));
+  }, []);
 
   useEffect(() => {
     handleResize();
@@ -123,6 +127,7 @@ const StakingContainer: React.FC = () => {
       breakpoint={breakpoint}
       mobile={mobile}
       isDisabledButton={isDisabledButton}
+      type={type}
     />
   );
 };

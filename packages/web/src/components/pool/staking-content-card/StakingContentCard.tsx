@@ -1,9 +1,8 @@
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconCheck from "@components/common/icons/IconCheck";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLine from "@components/common/icons/IconLine";
-import IconLineGradient from "@components/common/icons/IconLineGradient";
 import IconLineLong from "@components/common/icons/IconLineLong";
-import IconLineLongGradient from "@components/common/icons/IconLineLongGradient";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { DEVICE_TYPE } from "@styles/media";
 import React from "react";
@@ -84,10 +83,15 @@ const TotalRewardsContent = () => {
   );
 };
 
-const PriceTooltipContent = () => {
+const PriceTooltipContent = ({ item } : { item: any }) => {
   return (
     <PriceTooltipContentWrapper>
-      <div className="list">
+      <div className="list list-logo">
+        <DoubleLogo
+          size={18}
+          left={item.logoURI[0]}
+          right={item.logoURI[1]}
+        />
         <span className="title">ID 982932</span>
       </div>
       <div className="list">
@@ -103,7 +107,12 @@ const PriceTooltipContent = () => {
         <span className="content">in 3d 12h 5s</span>
       </div>
       <TooltipDivider />
-      <div className="list">
+      <div className="list list-logo">
+        <DoubleLogo
+          size={18}
+          left={item.logoURI[0]}
+          right={item.logoURI[1]}
+        />
         <span className="title">ID 982932</span>
       </div>
       <div className="list">
@@ -136,11 +145,11 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 
             {breakpoint === DEVICE_TYPE.MOBILE ? (
               <div className="check-line-long">
-                {index < item.currentIndex ? <IconLineLong /> : index === item.currentIndex ? <IconLineLongGradient /> : <div className="border-not-active" />}
+                {index <= item.currentIndex ? <IconLineLong /> : <div className="border-not-active" />}
               </div>
             ) : (
               <div className="check-line">
-                {index < item.currentIndex ? <IconLine /> : index === item.currentIndex ? <IconLineGradient /> : <div className="border-not-active" />}
+                {index <= item.currentIndex ? <IconLine /> : <div className="border-not-active" />}
               </div>
             )}
           </div>
@@ -162,13 +171,32 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="contents">
           <div className="price">
             <span>
-              {item.total} {index <= item.currentIndex &&  "+ "}
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <div>
+                    <PriceTooltipContent item={item} />
+                  </div>
+                }
+              >
+                <span>{item.total}</span>
+              </Tooltip>
+              {index <= item.currentIndex && "+ "}
               {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
             </span>
             <div className="badge">{item.lp} LP</div>
           </div>
           <div className="apr">
-            <span className="apr-text">{item.apr} APR</span>
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <div>
+                  <TotalRewardsContent />
+                </div>
+              }
+            >
+              <span className="apr-text">{item.apr} APR</span>
+            </Tooltip>
             <div className="coin-info">
               <img
                 src={item.logoURI[0]}
@@ -217,22 +245,23 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index }) => {
       </div>
       <div className="contents-wrap">
         <div className="contents">
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <div>
-                <PriceTooltipContent />
-              </div>
-            }
-          >
             <div className="price">
               <span>
-                {item.total} {index <= item.currentIndex &&  "+ "}
+                <Tooltip
+                  placement="top"
+                  FloatingContent={
+                    <div>
+                      <PriceTooltipContent item={item} />
+                    </div>
+                  }
+                >
+                  <span>{item.total}</span>
+                </Tooltip>
+                {index <= item.currentIndex &&  "+ "}
                 {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
               </span>
               <div className="badge">{item.lp} LP</div>
             </div>
-          </Tooltip>
           <div className="apr">
             <Tooltip
               placement="top"

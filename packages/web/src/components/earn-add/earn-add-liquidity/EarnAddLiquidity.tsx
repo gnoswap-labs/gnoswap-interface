@@ -57,6 +57,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   submit,
   currentTick,
   ticks,
+  isEmptyQuery,
 }) => {
   const [openedSelectPair, setOpenedSelectPair] = useState(true);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -173,7 +174,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         <article className="selector-wrapper">
           <div className="header-wrapper" onClick={toggleSelectPair}>
             <h5>1. Select Pair</h5>
-            {existTokenPair && (
+            {!isEmptyQuery && existTokenPair && (
               <DoubleLogo
                 left={tokenALogo}
                 right={tokenBLogo}
@@ -198,6 +199,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               <Badge
                 text={selectedFeeRate}
                 type={BADGE_TYPE.LINE}
+                className="fee-tier-bad"
               />
             )}
           </div>
@@ -219,6 +221,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               <Badge
                 text={selectedPriceRange}
                 type={BADGE_TYPE.LINE}
+                className="fee-tier-bad"
               />
             )}
           </div>
@@ -242,7 +245,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
         <article className="selector-wrapper">
           <div className="header-wrapper default-cursor">
-            <h5>4. Enter Amounts title layout</h5>
+            <h5>4. Enter Amounts</h5>
           </div>
           <LiquidityEnterAmounts
             tokenAInput={tokenAInput}

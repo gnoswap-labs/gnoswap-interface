@@ -74,7 +74,11 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       ${media.mobile} {
         ${fonts.body9}
       }
-      background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+      background: linear-gradient(
+        308deg,
+        #536cd7 0%,
+        ${({ theme }) => theme.color.text25} 100%
+      );
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -101,5 +105,42 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
   .button-wrap {
     ${mixins.flexbox("row", "center", "flex-end")};
     width: 100%;
+    .change-weight {
+      span {
+        font-weight: 400;
+      }
+    }
+    .wrapper-staking-btn {
+      width: 100%;
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 20px;
+    }
+    .receive-button {
+      background: ${({ theme }) => theme.color.background21};
+      span {
+        color: #e0e8f4;
+      }
+    }
+  }
+`;
+
+export const CustomButtonStaking = styled.div`
+  width: 140px;
+  padding: 10px 16px;
+  background: ${({ theme }) => theme.color.background04};
+  ${mixins.flexbox("row", "center", "flex-start")};
+  gap: 8px;
+  color: ${({ theme }) => theme.color.text20};
+  ${fonts.p1}
+  border-radius: 8px;
+  svg {
+    width: 16px;
+    height: 16px;
+    * {
+      fill: ${({ theme }) => theme.color.icon13};
+    }
+  }
+  ${media.mobile} {
+    display: none;
   }
 `;
