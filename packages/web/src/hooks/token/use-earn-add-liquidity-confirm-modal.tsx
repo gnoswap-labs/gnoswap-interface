@@ -2,7 +2,6 @@ import EarnAddConfirm from "@components/earn-add/earn-add-confirm/EarnAddConfirm
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import useNavigate from "@hooks/common/use-navigate";
-import { usePool } from "@hooks/pool/use-pool";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
@@ -19,6 +18,16 @@ export interface EarnAddLiquidityConfirmModalProps {
   priceRange: AddLiquidityPriceRage | null;
   slippage: number;
   swapFeeTier: SwapFeeTierType | null;
+  createPool: (
+    params: {
+      tokenAAmount: string;
+      tokenBAmount: string;
+      swapFeeTier: SwapFeeTierType;
+      startPrice: string;
+      priceRange: AddLiquidityPriceRage;
+      slippage: number;
+    }
+  ) => Promise<string | null>;
 }
 export interface SelectTokenModalModel {
   openModal: () => void;
@@ -33,10 +42,10 @@ export const useEarnAddLiquidityConfirmModal = ({
   currentPrice,
   slippage,
   swapFeeTier,
+  createPool,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
-  const { createPool } = usePool();
   const navigator = useNavigate();
 
   const amountInfo = useMemo(() => {
@@ -106,8 +115,6 @@ export const useEarnAddLiquidityConfirmModal = ({
       return;
     }
     createPool({
-      tokenA,
-      tokenB,
       tokenAAmount: tokenAAmountInput.amount,
       tokenBAmount: tokenBAmountInput.amount,
       priceRange,

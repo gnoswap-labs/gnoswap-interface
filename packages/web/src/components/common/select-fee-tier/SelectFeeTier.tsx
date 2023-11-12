@@ -2,9 +2,9 @@ import React, { useCallback, useMemo } from "react";
 import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { PoolModel } from "@models/pool/pool-model";
-import BigNumber from "bignumber.js";
 
 interface SelectFeeTierProps {
+  feetierOfLiquidityMap: { [key in string]: number };
   feeTiers: SwapFeeTierType[];
   feeTier: SwapFeeTierType | null;
   pools: PoolModel[],
@@ -12,6 +12,7 @@ interface SelectFeeTierProps {
 }
 
 const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
+  feetierOfLiquidityMap,
   feeTiers,
   feeTier,
   pools,
@@ -30,6 +31,7 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
           selected={feeTier === item}
           feeTier={item}
           pools={pools}
+          liquidityRange={feetierOfLiquidityMap[SwapFeeTierInfoMap[item].fee] || null}
           onClick={() => onClickFeeTierItem(item)}
         />
       ))}
@@ -41,13 +43,14 @@ interface SelectFeeTierItemProps {
   selected: boolean;
   feeTier: SwapFeeTierType;
   pools: PoolModel[];
+  liquidityRange: number | null;
   onClick: () => void;
 }
 
 const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   selected,
   feeTier,
-  pools,
+  liquidityRange,
   onClick,
 }) => {
   const feeRateStr = useMemo(() => {
@@ -55,18 +58,11 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   }, [feeTier]);
 
   const rangeStr = useMemo(() => {
-    const pool = pools.find(pool => pool.fee === feeTier);
-    if (!pool || pool.bins.length < 2) {
+    if (liquidityRange === null) {
       return "Not created";
     }
-    const sortedBins = pool.bins.sort((p1, p2) => p1.currentTick - p2.currentTick);
-    const fullTickRange = 1774545;
-    const currentTickGap = sortedBins[0].currentTick - sortedBins[sortedBins.length - 1].currentTick;
-    return BigNumber(currentTickGap)
-      .dividedBy(fullTickRange)
-      .multipliedBy(100)
-      .toFixed();
-  }, [feeTier, pools]);
+    return `${liquidityRange}% Select`;
+  }, [liquidityRange]);
 
   const description = useMemo(() => {
     return SwapFeeTierInfoMap[feeTier].description;

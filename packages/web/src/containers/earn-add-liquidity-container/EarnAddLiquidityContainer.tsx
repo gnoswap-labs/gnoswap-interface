@@ -7,7 +7,6 @@ import {
 } from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
-import { PoolModel } from "@models/pool/pool-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
@@ -17,6 +16,7 @@ import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { useRouter } from "next/router";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { usePool } from "@hooks/pool/use-pool";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -106,6 +106,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   } = useWallet();
   const { slippage } = useSlippage();
   const { updateTokenPrices } = useTokenData();
+  const { pools, feetierOfLiquidityMap, createPool } = usePool({ tokenA, tokenB });
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
     tokenA,
     tokenB,
@@ -115,7 +116,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
     priceRange,
     slippage,
     swapFeeTier,
+    createPool
   });
+
+  useEffect(() => {
+    console.log(feetierOfLiquidityMap);
+  }, [feetierOfLiquidityMap]);
 
   useEffect(() => {
     if (query?.feeTier) {
@@ -237,6 +243,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       changeTokenA={changeTokenA}
       changeTokenB={changeTokenB}
       feeTiers={SWAP_FEE_TIERS}
+      feetierOfLiquidityMap={feetierOfLiquidityMap}
       feeTier={swapFeeTier}
       selectFeeTier={selectSwapFeeTier}
       priceRanges={priceRanges}
