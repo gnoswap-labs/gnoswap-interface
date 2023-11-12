@@ -16,6 +16,7 @@ interface StakingContentProps {
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   type: number;
+  handleClickStaking: () => void;
 }
 
 const TEXT_BTN = [
@@ -31,6 +32,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   breakpoint,
   mobile,
   type,
+  handleClickStaking,
 }) => {
   return (
     <StakingContentWrapper isMobile={mobile}>
@@ -81,7 +83,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             ) : (
               <div className="wrapper-staking-btn">
                 {TEXT_BTN[type]}
-                <CustomButtonStaking>
+                <CustomButtonStaking onClick={handleClickStaking}>
                   Go to Staking
                   <IconStrokeArrowRight />
                 </CustomButtonStaking>
@@ -92,9 +94,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
             width: `${
               breakpoint === DEVICE_TYPE.WEB
                 ? "800px"
-                : breakpoint === DEVICE_TYPE.MOBILE
-                ? "272px"
-                : "600px"
+                : breakpoint === DEVICE_TYPE.TABLET
+                ? "600px"
+                : "calc(100% - 32px)"
             }`,
             height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
             fontType: `${
@@ -105,7 +107,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 : "body9"
             }`,
             textColor: "text01",
-            bgColor: "background15",
+            bgColor: "background01",
             padding: "10px 16px",
             gap: "8px",
           }}

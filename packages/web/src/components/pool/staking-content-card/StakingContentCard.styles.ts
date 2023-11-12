@@ -6,7 +6,7 @@ import mixins from "@styles/mixins";
 export const StakingContentCardWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
-  ${media.mobile} {
+  ${media.tabletMiddle} {
     flex-direction: column;
     align-items: flex-end;
     gap: 5px;
@@ -14,7 +14,7 @@ export const StakingContentCardWrapper = styled.div`
   }
   .left {
     ${mixins.flexbox("row", "center", "flex-start")};
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       justify-content: space-between;
       align-self: stretch;
     }
@@ -22,7 +22,7 @@ export const StakingContentCardWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       height: 50px;
       gap: 24px;
-      ${media.mobile} {
+      ${media.tabletMiddle} {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 12px;
         flex: 1 0 0;
@@ -54,8 +54,8 @@ export const StakingContentCardWrapper = styled.div`
       .border-not-active {
         width: 1px;
         height: 55px;
-        border: 1px solid ${({ theme }) => theme.color.border08};
-        ${media.mobile} {
+        border-left: 1px solid ${({ theme }) => theme.color.border08};
+        ${media.tabletMiddle} {
           height: 150px;
         }
       }
@@ -67,7 +67,7 @@ export const StakingContentCardWrapper = styled.div`
     .name-wrap {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 4px;
-      ${media.mobile} {
+      ${media.tabletMiddle} {
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
@@ -93,12 +93,9 @@ export const StakingContentCardWrapper = styled.div`
         .content-text {
           color: ${({ theme }) => theme.color.text04};
           ${fonts.body12}
-          font-size: 11px;
-          ${media.tablet} {
-            ${fonts.p4}
-          }
           ${media.mobile} {
             ${fonts.p6}
+            font-size: 11px;
           }
         }
         .content-gd-text {
@@ -107,12 +104,9 @@ export const StakingContentCardWrapper = styled.div`
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           ${fonts.body12}
-          font-size: 11px;
-          ${media.tablet} {
-            ${fonts.p4}
-          }
           ${media.mobile} {
             ${fonts.p6}
+            font-size: 11px;
           }
         }
         .tooltip-icon {
@@ -127,7 +121,7 @@ export const StakingContentCardWrapper = styled.div`
     }
   }
   .contents-wrap {
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
       padding-left: 32px;
@@ -144,7 +138,7 @@ export const StakingContentCardWrapper = styled.div`
     ${media.tablet} {
       width: 600px;
     }
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       width: 100%;
       padding: 12px 16px;
       flex-direction: column;
@@ -157,15 +151,18 @@ export const StakingContentCardWrapper = styled.div`
       cursor: pointer;
       gap: 16px;
       span {
-        ${mixins.flexbox("row", "center", "flex-start")};
-        gap: 6px;
-        ${media.mobile} {
-          gap: 8px;
-        }
-        color: ${({ theme }) => theme.color.text02};
-        span {
-          &:hover {
-            color: ${({ theme }) => theme.color.text07};
+        div {
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 6px;
+          ${media.mobile} {
+            gap: 8px;
+          }
+          color: ${({ theme }) => theme.color.text02};
+          span {
+            color: ${({ theme }) => theme.color.text02};
+            &:hover {
+              color: ${({ theme }) => theme.color.text07};
+            }
           }
         }
         ${fonts.body3}
@@ -221,12 +218,14 @@ export const StakingContentCardWrapper = styled.div`
         ${fonts.body6}
         ${media.tablet} {
           ${fonts.body8}
+          font-size: 17px;
         }
         ${media.mobile} {
           ${fonts.body12}
         }
         &:hover {
           cursor: pointer;
+          color: ${({ theme }) => theme.color.text07};
         }
       }
       .apr-gd-text {
@@ -238,6 +237,7 @@ export const StakingContentCardWrapper = styled.div`
         ${fonts.body6}
         ${media.tablet} {
           ${fonts.body8}
+          font-size: 17px;
         }
         ${media.mobile} {
           ${fonts.body12}
@@ -248,6 +248,10 @@ export const StakingContentCardWrapper = styled.div`
         .token-logo {
           width: 36px;
           height: 36px;
+          ${media.tablet} {
+            width: 24px;
+            height: 24px;
+          }
           ${media.mobile} {
             width: 20px;
             height: 20px;

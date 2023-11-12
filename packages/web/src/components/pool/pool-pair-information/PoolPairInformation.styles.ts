@@ -67,7 +67,7 @@ export const BreadcrumbsWrapper = styled.div`
       top: 3px;
       bottom: 2px;
     }
-    color: ${({ theme }) => theme.color.text12};
+    color: ${({ theme }) => theme.color.text04};
     .token {
       color: ${({ theme }) => theme.color.text10};
     }
@@ -80,7 +80,7 @@ export const BreadcrumbsWrapper = styled.div`
       color: ${({ theme }) => theme.color.text16};
     }
     &:last-of-type {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text10};
     }
   }
 

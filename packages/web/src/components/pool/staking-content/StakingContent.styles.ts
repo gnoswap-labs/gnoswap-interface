@@ -15,7 +15,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background11};
-  ${media.mobile} {
+  ${media.tabletMiddle} {
     padding: 24px 12px;
   }
   .content-header {
@@ -33,9 +33,6 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       align-items: flex-start;
       flex-wrap: wrap;
     }
-    margin-bottom: ${({ isMobile }) => {
-      return isMobile ? "24px" : "0px";
-    }};
     .header-wrap {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 10px;
@@ -106,6 +103,8 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     ${mixins.flexbox("row", "center", "flex-end")};
     width: 100%;
     .change-weight {
+      cursor: default;
+      border: 1px solid ${({ theme }) => theme.color.border14};;
       span {
         font-weight: 400;
       }
@@ -116,7 +115,9 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       gap: 20px;
     }
     .receive-button {
+      cursor: default;
       background: ${({ theme }) => theme.color.background21};
+      border: 1px solid ${({ theme }) => theme.color.border16};
       span {
         color: #e0e8f4;
       }
@@ -127,6 +128,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
 export const CustomButtonStaking = styled.div`
   width: 140px;
   padding: 10px 16px;
+  cursor: pointer;
   background: ${({ theme }) => theme.color.background04};
   ${mixins.flexbox("row", "center", "flex-start")};
   gap: 8px;

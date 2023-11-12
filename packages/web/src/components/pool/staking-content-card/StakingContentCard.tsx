@@ -24,7 +24,7 @@ const TotalRewardsContent = () => {
   return (
     <RewardsContent>
       <div className="list">
-        <span className="title">Swap Fees</span>
+        <span className="title">Staking Rewards</span>
         <span className="title">*Based on 7d avg</span>
       </div>
       <div className="list">
@@ -37,32 +37,6 @@ const TotalRewardsContent = () => {
           <span className="content">5.02K / day</span>
         </div>
         <span className="content">+12.55%</span>
-      </div>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png"
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">973 / day</span>
-        </div>
-        <span className="content">+15.51%</span>
-      </div>
-      <TooltipDivider />
-      <div className="list">
-        <span className="title">Staking Rewards</span>
-      </div>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png"
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">84.8K / day</span>
-        </div>
-        <span className="content">+183.94%</span>
       </div>
       <TooltipDivider />
       <div className="list">
@@ -143,7 +117,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           <div className={`check-wrap ${index > item.currentIndex ? "check-wrap-not-active" : ""}`}>
             {index <= item.currentIndex && <IconCheck />}
 
-            {breakpoint === DEVICE_TYPE.MOBILE ? (
+            {(breakpoint === DEVICE_TYPE.MOBILE || breakpoint === DEVICE_TYPE.TABLET_M) ? (
               <div className="check-line-long">
                 {index <= item.currentIndex ? <IconLineLong /> : <div className="border-not-active" />}
               </div>
@@ -180,9 +154,9 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 }
               >
                 <span>{item.total}</span>
+                {index <= item.currentIndex && "+ "}
+                {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
               </Tooltip>
-              {index <= item.currentIndex && "+ "}
-              {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
             </span>
             <div className="badge">{item.lp} LP</div>
           </div>

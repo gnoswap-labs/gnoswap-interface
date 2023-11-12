@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Staking from "@components/pool/staking/Staking";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useRouter } from "next/router";
 
 export const rewardInfoInit = {
   apr: "89",
@@ -94,11 +95,12 @@ const StakingContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
-  const [type, setType] = useState(0);
+  const [type, setType] = useState(3);
+  const router = useRouter();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 768 && window.innerWidth > 375
+      window.innerWidth < 931 && window.innerWidth > 375
         ? setMobile(true)
         : setMobile(false);
     }
@@ -120,6 +122,10 @@ const StakingContainer: React.FC = () => {
     return isSwitchNetwork || !connectedWallet;
   }, [isSwitchNetwork, connectedWallet]);
 
+  const handleClickStaking = useCallback(() => {
+    router.push("/earn/add");
+  }, []);
+
   return (
     <Staking
       info={stakingInit}
@@ -128,6 +134,7 @@ const StakingContainer: React.FC = () => {
       mobile={mobile}
       isDisabledButton={isDisabledButton}
       type={type}
+      handleClickStaking={handleClickStaking}
     />
   );
 };

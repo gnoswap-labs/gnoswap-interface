@@ -11,6 +11,7 @@ interface StakingProps {
   mobile: boolean;
   isDisabledButton: boolean;
   type: number;
+  handleClickStaking: () => void;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -20,6 +21,7 @@ const Staking: React.FC<StakingProps> = ({
   mobile,
   isDisabledButton,
   type,
+  handleClickStaking,
 }) => {
   return (
     <StakingWrapper>
@@ -30,6 +32,7 @@ const Staking: React.FC<StakingProps> = ({
         breakpoint={breakpoint}
         mobile={mobile}
         type={type}
+        handleClickStaking={handleClickStaking}
       />
     </StakingWrapper>
   );

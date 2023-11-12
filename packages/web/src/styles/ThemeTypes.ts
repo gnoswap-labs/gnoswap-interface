@@ -45,6 +45,7 @@ export interface ThemeColorType {
   border13: string;
   border14: string;
   border15: string;
+  border16: string;
   text01: string;
   text02: string;
   text03: string;

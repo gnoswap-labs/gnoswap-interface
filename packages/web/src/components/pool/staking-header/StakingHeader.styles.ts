@@ -4,7 +4,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const StakingHeaderWrapper = styled.div`
-  ${mixins.flexbox("row", "center", "space-between")};
+  ${mixins.flexbox("row", "flex-end", "space-between")};
   width: 100%;
   color: ${({ theme }) => theme.color.text02};
   ${fonts.h5};

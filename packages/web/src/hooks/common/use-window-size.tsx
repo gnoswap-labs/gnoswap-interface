@@ -8,7 +8,7 @@ export const useWindowSize = () => {
   const findDeviceType = (width: number) => {
     return width > DeviceSize.tablet
       ? DEVICE_TYPE.WEB
-      : width > DeviceSize.mobile
+      : width > DeviceSize.tabletMiddle
         ? DEVICE_TYPE.TABLET
         : width > DeviceSize.mobile
           ? DEVICE_TYPE.TABLET_M
