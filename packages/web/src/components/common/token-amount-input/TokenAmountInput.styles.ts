@@ -6,7 +6,6 @@ import mixins from "@styles/mixins";
 export const TokenAmountInputWrapper = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   flex-wrap: wrap;
-  cursor: pointer;
   width: 100%;
   padding: 16px 24px;
 

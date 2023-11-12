@@ -71,7 +71,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
         <div className="tooltip-wrap">
           <Tooltip
             placement="top"
-            FloatingContent={<TooltipContentWrapper>{tooltip}</TooltipContentWrapper>}
+            FloatingContent={<TooltipContentWrapper dangerouslySetInnerHTML={{ __html: tooltip }}></TooltipContentWrapper>}
           >
             <IconInfo className="tooltip-icon" />
           </Tooltip>

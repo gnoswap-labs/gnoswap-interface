@@ -61,7 +61,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   isEarnAdd,
   connected,
 }) => {
-  const [openedSelectPair, setOpenedSelectPair] = useState(isEarnAdd ? true : false);
+  const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openCustomPriceRange, setOpenCustomPriceRange] = useState(false);
@@ -92,15 +92,11 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     return `${priceRange.type}`;
   }, [priceRange]);
 
-  const toggleSelectPair = useCallback(() => {
-    if (!isEarnAdd) {
-      setOpenedSelectPair(!openedSelectPair);
-    }
-  }, [openedSelectPair, isEarnAdd]);
-
   const toggleFeeTier = useCallback(() => {
-    tokenA && tokenB && setOpenedFeeTier(!openedFeeTier);
-  }, [tokenA, tokenB, openedFeeTier]);
+    if (isEarnAdd) {
+      tokenA && tokenB && setOpenedFeeTier(!openedFeeTier);
+    }
+  }, [tokenA, tokenB, openedFeeTier, isEarnAdd]);
 
   const togglePriceRange = useCallback(() => {
     tokenA && tokenB && setOpenedPriceRange(!openedPriceRange);
@@ -176,7 +172,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       <h3>Create Position</h3>
       <div className="select-content">
         <article className="selector-wrapper">
-          <div className={`header-wrapper ${isEarnAdd ? "default-cursor" : ""}`} onClick={toggleSelectPair}>
+          <div className="header-wrapper default-cursor">
             <h5>1. Select Pair</h5>
             {!isEarnAdd && existTokenPair && (
               <DoubleLogo
@@ -197,7 +193,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         </article>
 
         <article className="selector-wrapper">
-          <div className="header-wrapper" onClick={toggleFeeTier}>
+          <div className={`header-wrapper ${!isEarnAdd ? "default-cursor" : ""}`} onClick={toggleFeeTier}>
             <h5>2. Select Fee Tier</h5>
             {selectedFeeRate && (
               <Badge

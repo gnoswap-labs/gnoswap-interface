@@ -72,6 +72,7 @@ export const ConnectWalletModalWrapper = styled.div`
           color: ${({ theme }) => theme.color.background04};
           display: contents;
           ${fonts.body12};
+          font-weight: 600;
           &:hover {
             color: ${({ theme }) => theme.color.background04Hover};
           }

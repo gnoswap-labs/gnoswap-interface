@@ -48,9 +48,7 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
       ${fonts.p4}
     }
     span {
-      &:first-of-type {
-        color: ${({ theme }) => theme.color.text04};
-      }
+      color: ${({ theme }) => theme.color.text04};
     }
   }
   

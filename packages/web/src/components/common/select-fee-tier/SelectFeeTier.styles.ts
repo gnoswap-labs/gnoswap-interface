@@ -33,7 +33,7 @@ export const SelectFeeTierItemWrapper = styled.div`
   }
   &.selected,
   &:hover {
-    background-color: ${({ theme }) => theme.color.background06};
+    background-color: ${({ theme }) => theme.color.background11};
     border: 1px solid ${({ theme }) => theme.color.border03};
   }
 
@@ -52,7 +52,7 @@ export const SelectFeeTierItemWrapper = styled.div`
     ${mixins.flexbox("row", "center", "center")};
     ${fonts.p6};
     color: ${({ theme }) => theme.color.text03};
-    background-color: ${({ theme }) => theme.color.background02};
+    background-color: ${({ theme }) => theme.color.background13};
     border-radius: 25px;
     height: 20px;
     padding: 0px 8px;
