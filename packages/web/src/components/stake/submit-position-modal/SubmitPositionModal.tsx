@@ -2,8 +2,9 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useCallback } from "react";
-import { Divider, SubmitPositionModalWrapper } from "./SubmitPositionModal.styles";
+import { Divider, SubmitPositionModalWrapper, ToolTipContentWrapper } from "./SubmitPositionModal.styles";
 
 interface Props {
   close: () => void;
@@ -30,7 +31,15 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
             <div className="item-content">
               <div>
                 <div className="label">
-                  Estimated APR <IconInfo />
+                  Estimated APR
+                  <Tooltip
+                    placement="top"
+                    FloatingContent={<ToolTipContentWrapper>
+                      The range of the estimated APR is calculated with the dynamic multiplier applied to your position based on the duration staked. on the duration staked.
+                    </ToolTipContentWrapper>}
+                  >
+                    <IconInfo />
+                  </Tooltip>
                 </div>
                 <div className="value">100.23% ~ 300.69%</div>
               </div>

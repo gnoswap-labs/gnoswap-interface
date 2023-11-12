@@ -13,7 +13,7 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 32px;
     padding: 0px 15px;
-    color: ${theme.color.text05};
+    color: ${theme.color.text10};
     ${fonts.body12};
   }
   ul {

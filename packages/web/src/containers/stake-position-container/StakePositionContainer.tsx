@@ -1,7 +1,7 @@
 import StakePosition from "@components/stake/stake-position/StakePosition";
 import { STAKED_OPTION } from "@constants/option.constant";
 import { useSubmitPositionModal } from "@hooks/earn/use-submit-position-modal";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 
 export const unstakingPeriodInit = [
   {
@@ -59,6 +59,12 @@ const StakePositionContainer: React.FC = () => {
     },
     [checkedList],
   );
+
+  useEffect(() => {
+    if (checkedList.length === data.liquidity.length) {
+      setCheckedAll(true);
+    }
+  }, [checkedList]);
 
   const onCheckedAll = useCallback(
     (checked: boolean) => {
