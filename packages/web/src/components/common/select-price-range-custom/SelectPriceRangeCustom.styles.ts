@@ -27,8 +27,8 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       .graph-option-item {
         display: flex;
         padding: 2px;
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         border-radius: 4px;
         justify-content: center;
         align-items: flex-start;
@@ -75,14 +75,27 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         width: 16px;
         height: 16px;
 
-        path {
-          fill: ${({ theme }) => theme.color.icon05};
+        * {
+          fill: ${({ theme }) => theme.color.text10};
+        }
+        
+      }
+      &:hover {
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.text10};
+          } 
+        }
+        span {
+          &:hover {
+            color: ${({ theme }) => theme.color.text16};
+          }
         }
       }
-
       span {
-        color: ${({ theme }) => theme.color.text05};
+        color: ${({ theme }) => theme.color.text10};
         ${fonts.body11};
+        
       }
     }
   }

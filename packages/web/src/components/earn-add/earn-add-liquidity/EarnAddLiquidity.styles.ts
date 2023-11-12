@@ -46,6 +46,11 @@ export const EarnAddLiquidityWrapper = styled.section`
       cursor: pointer;
       &.default-cursor {
         cursor: default;
+        &.disable-text {
+          h5 {
+            color: ${({ theme }) => theme.color.text04};
+          }
+        }
       }
       h5 {
         ${fonts.body12};

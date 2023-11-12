@@ -44,7 +44,7 @@ export const wrapper = (theme: Theme) => css`
   ${media.tabletMiddle} {
     main {
       margin: 24px 0;
-      padding: 0 16px;
+      padding: 0 40px;
     }
     .title-container {
       position: initial;

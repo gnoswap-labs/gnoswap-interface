@@ -7,16 +7,16 @@ import {
 } from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
-import { PoolModel } from "@models/pool/pool-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { useRouter } from "next/router";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { usePool } from "@hooks/pool/use-pool";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -106,7 +106,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
-  const [pools] = useState<PoolModel[]>([]);
   const {
     connected: connectedWallet,
     account,
@@ -115,6 +114,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   } = useWallet();
   const { slippage } = useSlippage();
 
+  const { pools, feetierOfLiquidityMap, createPool } = usePool({ tokenA, tokenB });
   const { tokens, updateTokens, updateTokenPrices } = useTokenData();
 
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
@@ -126,6 +126,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     priceRange,
     slippage,
     swapFeeTier,
+    createPool,
   });
 
   useEffect(() => {
@@ -267,6 +268,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       changeTokenB={changeTokenB}
       feeTiers={SWAP_FEE_TIERS}
       feeTier={swapFeeTier}
+      feetierOfLiquidityMap={feetierOfLiquidityMap}
       selectFeeTier={selectSwapFeeTier}
       priceRanges={priceRanges}
       priceRange={priceRange}

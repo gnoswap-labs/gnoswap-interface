@@ -97,7 +97,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
-  const [pools] = useState<PoolModel[]>([]);
   const {
     connected: connectedWallet,
     account,
@@ -118,10 +117,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     swapFeeTier,
     createPool
   });
-
-  useEffect(() => {
-    console.log(feetierOfLiquidityMap);
-  }, [feetierOfLiquidityMap]);
 
   useEffect(() => {
     if (query?.feeTier) {

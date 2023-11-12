@@ -59,6 +59,9 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     justify-content: space-between;
     align-items: center;
   }
+  .key {
+    color: ${({ theme }) => theme.color.text04};
+  }
   .value {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
