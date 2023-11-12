@@ -9,7 +9,7 @@ export const TokenAmountWrapper = styled.div`
   width: 100%;
   padding: 16px 24px;
 
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
 

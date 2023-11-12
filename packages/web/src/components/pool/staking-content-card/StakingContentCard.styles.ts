@@ -147,9 +147,7 @@ export const StakingContentCardWrapper = styled.div`
       gap: 12px;
     }
     .price {
-      ${mixins.flexbox("row", "flex-start", "flex-start")};
       cursor: pointer;
-      gap: 16px;
       span {
         div {
           ${mixins.flexbox("row", "center", "flex-start")};
@@ -160,7 +158,10 @@ export const StakingContentCardWrapper = styled.div`
           color: ${({ theme }) => theme.color.text02};
           span {
             color: ${({ theme }) => theme.color.text02};
-            &:hover {
+            
+          }
+          &:hover {
+            span {
               color: ${({ theme }) => theme.color.text07};
             }
           }
@@ -179,7 +180,7 @@ export const StakingContentCardWrapper = styled.div`
       ${media.mobile} {
         gap: 8px;
       }
-      .price-gd-text {
+      .price-gd-text:not(:hover) {
         background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
@@ -187,6 +188,7 @@ export const StakingContentCardWrapper = styled.div`
       }
       .badge {
         ${mixins.flexbox("row", "center", "center")};
+        margin-left: 10px;
         width: 58px;
         height: 34px;
         padding: 0px 6px;

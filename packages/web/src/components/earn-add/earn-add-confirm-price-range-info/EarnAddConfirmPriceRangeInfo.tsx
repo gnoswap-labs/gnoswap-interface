@@ -1,5 +1,9 @@
+import IconSwap from "@components/common/icons/IconSwap";
 import React from "react";
-import { EarnAddConfirmPriceRangeInfoSection, EarnAddConfirmPriceRangeInfoWrapper } from "./EarnAddConfirmPriceRangeInfo.styles";
+import {
+  EarnAddConfirmPriceRangeInfoSection,
+  EarnAddConfirmPriceRangeInfoWrapper,
+} from "./EarnAddConfirmPriceRangeInfo.styles";
 
 export interface EarnAddConfirmPriceRangeInfoProps {
   currentPrice: string;
@@ -9,16 +13,20 @@ export interface EarnAddConfirmPriceRangeInfoProps {
   maxPriceLable: string;
   feeBoost: string;
   estimatedAPR: string;
+  symbolTokenA: string;
+  symbolTokenB: string;
 }
 
-const EarnAddConfirmPriceRangeInfo: React.FC<EarnAddConfirmPriceRangeInfoProps> = ({
+const EarnAddConfirmPriceRangeInfo: React.FC<
+  EarnAddConfirmPriceRangeInfoProps
+> = ({
   currentPrice,
   minPrice,
-  minPriceLable,
   maxPrice,
-  maxPriceLable,
   feeBoost,
   estimatedAPR,
+  symbolTokenA,
+  symbolTokenB,
 }) => {
   return (
     <EarnAddConfirmPriceRangeInfoWrapper>
@@ -28,19 +36,26 @@ const EarnAddConfirmPriceRangeInfo: React.FC<EarnAddConfirmPriceRangeInfoProps> 
         <EarnAddConfirmPriceRangeInfoSection className="range-section">
           <span>Min Price</span>
           <span className="amount">{minPrice}</span>
-          <span className="label">{minPriceLable}</span>
+          <span className="label">
+            {symbolTokenA} per {symbolTokenB}
+          </span>
         </EarnAddConfirmPriceRangeInfoSection>
         <EarnAddConfirmPriceRangeInfoSection className="range-section">
           <span>Max Price</span>
           <span className="amount">{maxPrice}</span>
-          <span className="label">{maxPriceLable}</span>
+          <span className="label">
+            {symbolTokenA} per {symbolTokenB}
+          </span>
         </EarnAddConfirmPriceRangeInfoSection>
       </div>
 
       <EarnAddConfirmPriceRangeInfoSection>
         <div className="row">
           <span className="key">Current Price:</span>
-          <span className="value">{currentPrice}</span>
+          <div className="value">
+            {Number(currentPrice).toFixed(2)} {symbolTokenA} per {symbolTokenB}{" "}
+            <IconSwap />
+          </div>
         </div>
         <div className="row">
           <span className="key">Fee Boost:</span>

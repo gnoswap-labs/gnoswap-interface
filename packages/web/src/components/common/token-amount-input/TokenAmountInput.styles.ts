@@ -51,6 +51,9 @@ export const TokenAmountInputWrapper = styled.div`
     ${fonts.p2};
     color: ${({ theme }) => theme.color.text10};
   }
+  .disable-pointer {
+    cursor: default;
+  }
   ${media.mobile} {
     padding: 12px;
     gap: 8px;

@@ -8,6 +8,7 @@ import { TokenModel } from "@models/token/token-model";
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
   changeToken: (token: TokenModel) => void;
+  connected: boolean;
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
@@ -18,6 +19,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   usdValue,
   changeAmount,
   changeToken,
+  connected,
 }) => {
 
   const disabledSelectPair = useMemo(() => {
@@ -30,9 +32,11 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   }, [changeAmount]);
 
   const handleFillBalance = useCallback(() => {
-    const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
-    changeAmount(formatValue);
-  }, [changeAmount]);
+    if (connected) {
+      const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
+      changeAmount(formatValue);
+    }
+  }, [changeAmount, connected]);
 
   return (
     <TokenAmountInputWrapper>
@@ -55,7 +59,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       </div>
       <div className="info">
         <span className="price-text">{usdValue}</span>
-        <span className="balance-text" onClick={handleFillBalance}>Balance: {balance}</span>
+        <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>Balance: {balance}</span>
       </div>
     </TokenAmountInputWrapper>
   );

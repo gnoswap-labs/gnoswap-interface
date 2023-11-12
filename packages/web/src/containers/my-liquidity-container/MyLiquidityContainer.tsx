@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useCallback } from "react";
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { FEE_RATE_OPTION } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useRouter } from "next/router";
 
 export const liquidityInit = {
   poolInfo: {
@@ -127,6 +128,12 @@ export const liquidityInit = {
 const MyLiquidityContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
+  const router = useRouter();
+  
+  const handleClickAddPosition = useCallback(() => {
+    router.push(`${router.asPath}/add?tokenA=gno.land/r/foo&tokenB=gno.land/r/bar&direction=EXACT_IN`);
+  }, [router]);
+
 
   return (
     <MyLiquidity
@@ -134,6 +141,7 @@ const MyLiquidityContainer: React.FC = () => {
       breakpoint={breakpoint}
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}
+      handleClickAddPosition={handleClickAddPosition}
     />
   );
 };

@@ -293,7 +293,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   text23: colors.global.point,
   text24: colors.global.brand500,
   text25: colors.global.brand500,
-  text26: colors.global.gray100,
+  text26: colors.global.brand100,
   icon01: colors.white.gray300Icon1,
   icon02: colors.white.gray300Icon1,
   icon03: colors.white.gray300Icon1,

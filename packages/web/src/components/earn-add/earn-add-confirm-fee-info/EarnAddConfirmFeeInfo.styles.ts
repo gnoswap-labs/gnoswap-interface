@@ -9,7 +9,7 @@ export const EarnAddConfirmFeeInfoWrapper = styled.div`
   gap: 8px;
 
   p {
-    ${fonts.body8}
+    ${fonts.body12}
     color: ${({ theme }) => theme.color.text10};
   }
 `;
@@ -21,6 +21,7 @@ export const EarnAddConfirmFeeInfoSection = styled(
   justify-content: space-between;
   align-items: center;
   color: ${({ theme }) => theme.color.text01};
+  background: ${({ theme }) => theme.color.background20};
   ${fonts.body9}
 
   .token-info {

@@ -156,9 +156,9 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 <span>{item.total}</span>
                 {index <= item.currentIndex && "+ "}
                 {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
+                <div className="badge">{item.lp} LP</div>
               </Tooltip>
             </span>
-            <div className="badge">{item.lp} LP</div>
           </div>
           <div className="apr">
             <Tooltip
@@ -230,11 +230,11 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index }) => {
                   }
                 >
                   <span>{item.total}</span>
+                  {index <= item.currentIndex &&  "+ "}
+                  {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
+                  <div className="badge">{item.lp} LP</div>
                 </Tooltip>
-                {index <= item.currentIndex &&  "+ "}
-                {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
               </span>
-              <div className="badge">{item.lp} LP</div>
             </div>
           <div className="apr">
             <Tooltip

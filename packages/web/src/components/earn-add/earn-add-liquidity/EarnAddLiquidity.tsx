@@ -35,7 +35,8 @@ interface EarnAddLiquidityProps {
   currentTick: PoolTick | null;
   submitType: AddLiquiditySubmitType;
   submit: () => void;
-  isEmptyQuery: boolean;
+  isEarnAdd: boolean;
+  connected: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -57,11 +58,12 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   submit,
   currentTick,
   ticks,
-  isEmptyQuery,
+  isEarnAdd,
+  connected,
 }) => {
-  const [openedSelectPair, setOpenedSelectPair] = useState(true);
+  const [openedSelectPair, setOpenedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
-  const [openedPriceRange, setOpenedPriceRange] = useState(false);
+  const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openCustomPriceRange, setOpenCustomPriceRange] = useState(false);
 
   const existTokenPair = useMemo(() => {
@@ -91,8 +93,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   }, [priceRange]);
 
   const toggleSelectPair = useCallback(() => {
-    setOpenedSelectPair(!openedSelectPair);
-  }, [openedSelectPair]);
+    if (!isEarnAdd) {
+      setOpenedSelectPair(!openedSelectPair);
+    }
+  }, [openedSelectPair, isEarnAdd]);
 
   const toggleFeeTier = useCallback(() => {
     tokenA && tokenB && setOpenedFeeTier(!openedFeeTier);
@@ -166,15 +170,15 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     }
     changePriceRange(priceRange);
   }, [changePriceRange]);
-
+  
   return (
     <EarnAddLiquidityWrapper>
       <h3>Create Position</h3>
       <div className="select-content">
         <article className="selector-wrapper">
-          <div className="header-wrapper" onClick={toggleSelectPair}>
+          <div className={`header-wrapper ${isEarnAdd ? "default-cursor" : ""}`} onClick={toggleSelectPair}>
             <h5>1. Select Pair</h5>
-            {!isEmptyQuery && existTokenPair && (
+            {!isEarnAdd && existTokenPair && (
               <DoubleLogo
                 left={tokenALogo}
                 right={tokenBLogo}
@@ -252,6 +256,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             tokenBInput={tokenBInput}
             changeTokenA={changeTokenA}
             changeTokenB={changeTokenB}
+            connected={connected}
           />
         </article>
       </div>

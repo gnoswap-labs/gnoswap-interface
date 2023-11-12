@@ -56,7 +56,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <EarnAddConfirmAmountInfo {...amountInfo} />
 
-      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} />
+      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} symbolTokenA={amountInfo.tokenA.info.symbol} symbolTokenB={amountInfo.tokenB.info.symbol} />
 
       <EarnAddConfirmFeeInfo {...feeInfo} />
 

@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { EarnAddConfirmContentSection } from "../earn-add-confirm/EarnAddConfirm.styles";
 
@@ -15,7 +16,19 @@ export const EarnAddConfirmAmountInfoWrapper = styled.div`
     width: 100%;
     height: auto;
     gap: 2px;
-
+    .token {
+      > div {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: auto;
+      }
+      .token-symbol {
+        ${fonts.body9}
+        margin-right: 6px;
+        height: 100%;
+        margin-left: 0;
+      }
+    }
     .icon-wrapper {
       position: absolute;
       display: flex;
@@ -26,12 +39,15 @@ export const EarnAddConfirmAmountInfoWrapper = styled.div`
       justify-content: center;
       align-items: center;
       border-radius: 40px;
-      background-color: ${({ theme }) => theme.color.background01};
+      background-color: ${({ theme }) => theme.color.background20};
       border: 1px solid ${({ theme }) => theme.color.border02};
 
       svg {
         width: 16px;
         height: 16px;
+        * {
+          fill: ${({ theme }) => theme.color.text01};
+        }
       }
     }
   }
@@ -43,4 +59,7 @@ export const EarnAddConfirmFeeInfoSection = styled(
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  .value {
+    color: ${({ theme }) => theme.color.text03};
+  }
 `;

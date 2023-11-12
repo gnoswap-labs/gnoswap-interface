@@ -63,6 +63,8 @@ const StakePositionContainer: React.FC = () => {
   useEffect(() => {
     if (checkedList.length === data.liquidity.length) {
       setCheckedAll(true);
+    } else if (checkedList.length === 0) {
+      setCheckedAll(false);
     }
   }, [checkedList]);
 

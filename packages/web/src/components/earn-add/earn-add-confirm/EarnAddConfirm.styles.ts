@@ -30,6 +30,11 @@ export const EarnAddConfirmWrapper = styled.div`
       svg * {
         fill: ${({ theme }) => theme.color.icon01};
       }
+      &:hover {
+        * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
     }
   }
 `;
@@ -40,7 +45,7 @@ export const EarnAddConfirmContentSection = styled.div`
   width: 100%;
   height: auto;
   padding: 16px;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   ${fonts.body12}

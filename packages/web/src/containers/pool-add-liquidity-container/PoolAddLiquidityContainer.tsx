@@ -81,10 +81,19 @@ const TEMP_CUSTOM_PRICE_RANGE: AddLiquidityPriceRage[] = [
   },
 ];
 
+const poolTick = {
+  value: "1",
+  price: "10",
+  tick: 1,
+};
+
 const EarnAddLiquidityContainer: React.FC = () => {
+  const [initialized, setInitialized] = useState(false);
+
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
-  const { query } = useRouter();
+  const router = useRouter();
+  const { query } = router;
 
   const [startPrice] = useState<string>("130621891405341611593710811006");
   const tokenAAmountInput = useTokenAmountInput(tokenA);
@@ -105,7 +114,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isSwitchNetwork,
   } = useWallet();
   const { slippage } = useSlippage();
-  const { updateTokenPrices } = useTokenData();
+
+  const { tokens, updateTokens, updateTokenPrices } = useTokenData();
+
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
     tokenA,
     tokenB,
@@ -173,6 +184,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   ]);
 
   useEffect(() => {
+    updateTokens();
     updateTokenPrices();
   }, []);
 
@@ -227,6 +239,23 @@ const EarnAddLiquidityContainer: React.FC = () => {
     switchNetwork,
   ]);
 
+  useEffect(() => {
+    if (tokens.length === 0 || Object.keys(router.query).length === 0) {
+      return;
+    }
+    if (!initialized) {
+      const currentTokenA = tokens.find(token => token.path === router.query.tokenA) || null;
+      const currentTokenB = tokens.find(token => token.path === router.query.tokenB) || null;
+      setSwapValue(prev => ({
+        ...prev,
+        tokenA: currentTokenA,
+        tokenB: currentTokenB,
+      }));
+      setInitialized(true);
+      return;
+    }
+  }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
+  
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -243,12 +272,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
       priceRange={priceRange}
       priceRangeSummary={priceRangeSummary}
       changePriceRange={changePriceRange}
-      ticks={[]}
+      ticks={[poolTick, poolTick, poolTick]}
       pools={pools}
-      currentTick={null}
+      currentTick={poolTick}
       submitType={submitType}
       submit={submit}
-      isEarnAdd={true}
+      isEarnAdd={false}
       connected={connectedWallet}
     />
   );

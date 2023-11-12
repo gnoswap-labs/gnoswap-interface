@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { EarnAddConfirmContentSection } from "../earn-add-confirm/EarnAddConfirm.styles";
 import { fonts } from "@constants/font.constant";
+import mixins from "@styles/mixins";
 
 export const EarnAddConfirmPriceRangeInfoWrapper = styled.div`
   display: flex;
@@ -10,7 +11,7 @@ export const EarnAddConfirmPriceRangeInfoWrapper = styled.div`
   gap: 2px;
 
   p {
-    ${fonts.body8}
+    ${fonts.body12}
     color: ${({ theme }) => theme.color.text10};
     margin-bottom: 6px;
   }
@@ -37,7 +38,7 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     gap: 8px;
     justify-content: space-between;
     align-items: center;
-
+    background: ${({ theme }) => theme.color.background20};
     .amount {
       ${fonts.body4}
       color: ${({ theme }) => theme.color.text01};
@@ -45,6 +46,11 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
 
     .label {
       ${fonts.p4}
+    }
+    span {
+      &:first-of-type {
+        color: ${({ theme }) => theme.color.text04};
+      }
     }
   }
   
@@ -54,5 +60,13 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     width: 100%;
     justify-content: space-between;
     align-items: center;
+  }
+  .value {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text10};
+    svg * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
   }
 `;
