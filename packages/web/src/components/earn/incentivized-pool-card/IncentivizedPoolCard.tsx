@@ -1,15 +1,13 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import IconSwap from "@components/common/icons/IconSwap";
 import { POOL_CONTENT_TITLE } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import {
   PoolCardWrapper,
   PoolCardWrapperWrapperBorder,
 } from "./IncentivizedPoolCard.styles";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { numberToFormat } from "@utils/string-utils";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 
 export interface IncentivizedPoolCardProps {
@@ -23,19 +21,9 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   routeItem,
   themeKey,
 }) => {
-  const [isSwap, setIsSwap] = useState(false);
-
   const pairName = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
-
-  const handleClickSwap = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    setIsSwap(!isSwap);
-  };
-  const swapValue = useMemo(() => {
-    return isSwap ? numberToFormat(1 / pool.currentTick, 6) : pool.currentTick;
-  }, [pool, isSwap]);
 
   return (
     <PoolCardWrapperWrapperBorder
@@ -53,6 +41,17 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span>{pairName}</span>
               </div>
               <div className="box-group">
+                <Badge
+                  type={BADGE_TYPE.DARK_DEFAULT}
+                  text={<>
+                  Incentivized
+                  <DoubleLogo
+                    size={16}
+                    left={pool.tokenA.logoURI}
+                    right={pool.tokenB.logoURI}
+                  />
+                  </>}
+                />
                 <Badge
                   type={BADGE_TYPE.DARK_DEFAULT}
                   text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr} Fee`}
@@ -84,22 +83,13 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               </div>
             </div>
             <div className="pool-content">
-              <div className="pool-rate-wrapper" onClick={handleClickSwap}>
-                <span>{`1 ${
-                  !isSwap ? pool.tokenA.symbol : pool.tokenB.symbol
-                }`}</span>
-                <IconSwap />
-                <span>{`${swapValue} ${
-                  isSwap ? pool.tokenA.symbol : pool.tokenB.symbol
-                }`}</span>
-              </div>
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
                 bins={pool.bins}
                 currentTick={pool.currentTick}
                 width={258}
-                height={60}
+                height={80.62}
                 mouseover
                 themeKey={themeKey}
               />

@@ -21,6 +21,8 @@ export interface BarAreaGraphProps {
   minTick?: number;
   maxTick?: number;
   editable?: boolean;
+  isHiddenStart?: boolean;
+  currentIndex?: number;
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
@@ -49,6 +51,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   minTick,
   maxTick,
   editable,
+  isHiddenStart,
+  currentIndex,
 }) => {
   const existTickRage = (!minTick || !maxTick) === false;
   const [mouseDown, setMouseDown] = useState(false);
@@ -184,8 +188,9 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         height={height}
         tooltipOption="incentivized"
         svgColor="incentivized"
+        currentIndex={currentIndex}
       />
-      {selectedStart && (
+      {selectedStart && !isHiddenStart && (
         <svg className="selector" viewBox={`0 0 ${width} ${height}`}>
           <defs>
             <linearGradient id={"gradient-area"} gradientTransform="rotate(0)">
@@ -237,7 +242,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         </svg>
       )}
 
-      {minLabel && (
+      {minLabel && !isHiddenStart && (
         <BarAreaGraphLabel
           className="min"
           x={getStartPosition()}
@@ -246,7 +251,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
           {minLabel}
         </BarAreaGraphLabel>
       )}
-      {maxLabel && (
+      {maxLabel && !isHiddenStart && (
         <BarAreaGraphLabel
           className="max"
           x={getEndPosition()}

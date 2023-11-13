@@ -14,6 +14,7 @@ export interface BarGraphProps {
   height?: number;
   tooltipOption?: string;
   svgColor?: string;
+  currentIndex?: number;
 }
 
 interface Point {
@@ -36,6 +37,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   tooltipOption = "default",
   svgColor = "default",
+  currentIndex,
 }) => {
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
@@ -119,8 +121,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       setCurrentPointIndex(-1);
       return;
     }
-
-    const { clientX, currentTarget } = event;
+  const { clientX, currentTarget } = event;
     const { left } = currentTarget.getBoundingClientRect();
     const positionX = clientX - left;
     const clientWidth = currentTarget.clientWidth;
@@ -150,6 +151,19 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }
   };
 
+  const locationHovertooltip = useMemo(() => {
+    const temp = currentPoint?.x || 0;
+    if (typeof window !== "undefined" && window?.innerWidth <= 1440) {
+      if (currentIndex !== undefined && currentIndex === 0 && temp < 120) {
+        return 120;
+      }
+      if (currentIndex === 3 && temp > 120) {
+        return 130;
+      }
+    } 
+    return temp;
+  }, [currentIndex, currentPoint]);
+  
   return (
     <BarGraphWrapper
       className={className}
@@ -212,7 +226,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       )}
       {tooltipOption === "incentivized" && currentPointIndex > -1 && activated && (
         <IncentivizeGraphTooltipWrapper
-          x={currentPoint?.x || 0}
+          x={locationHovertooltip}
           y={currentPoint?.y || 0}
         >
           <div className="row">

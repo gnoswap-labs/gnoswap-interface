@@ -1,39 +1,34 @@
-import { RANGE_STATUS_OPTION, STAKED_OPTION } from "@constants/option.constant";
+import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { POSITION_CONTENT_LABEL } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import IconStaking from "@components/common/icons/IconStaking";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import {
   MyPositionCardWrapper,
   MyPositionCardWrapperBorder,
 } from "./MyPositionCard.styles";
 import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
-import IconSwap from "../icons/IconSwap";
-import { numberToFormat } from "@utils/string-utils";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 interface MyPositionCardProps {
   item: any;
   movePoolDetail: (id: string) => void;
   mobile: boolean;
+  currentIndex?: number;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
   item,
   movePoolDetail,
   mobile,
+  currentIndex,
 }) => {
   const { tokenPair } = item;
-  const [isSwap, setIsSwap] = useState(false);
+  const [isHiddenStart, setIsHiddenStart] = useState(true);
 
-  const swapValue = useMemo(() => {
-    return isSwap ? numberToFormat(1 / 5, 2) : numberToFormat(5);
-  }, [isSwap]);
-
-  const handleClickSwap = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    setIsSwap(!isSwap);
+    setIsHiddenStart(!isHiddenStart);
   };
 
   return (
@@ -54,13 +49,17 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span>{`${tokenPair.tokenA.symbol}/${tokenPair.tokenB.symbol}`}</span>
             </div>
             <div className="badge-group">
-              {item.stakeType === STAKED_OPTION.STAKED && (
-                <Badge
-                  type={BADGE_TYPE.PRIMARY}
-                  leftIcon={<IconStaking className="staking-icon" />}
-                  text="Staked"
+              <Badge
+                type={BADGE_TYPE.DARK_DEFAULT}
+                text={<>
+                Incentivized
+                <DoubleLogo
+                  size={16}
+                  left={tokenPair.tokenA.logoURI}
+                  right={tokenPair.tokenB.logoURI}
                 />
-              )}
+                </>}
+              />
               <Badge
                 type={BADGE_TYPE.DARK_DEFAULT}
                 text={`${item.feeRate} Fee`}
@@ -81,14 +80,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <div className="pool-price-graph">
             <div className="price-range-info">
-              <div className="current-price" onClick={handleClickSwap}>
-                <span>{`1 ${
-                  !isSwap ? tokenPair.tokenA.symbol : tokenPair.tokenB.symbol
-                }`}</span>
-                <IconSwap />
-                <span>{`${swapValue} ${
-                  isSwap ? tokenPair.tokenA.symbol : tokenPair.tokenB.symbol
-                }`}</span>
+              <div className="current-price" onClick={handleClickShowRange}>
+                <span>Show Range</span>
               </div>
               <RangeBadge
                 status={
@@ -101,13 +94,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <div className="chart-wrapper">
               <BarAreaGraph
                 width={mobile ? 226 : 258}
-                height={60}
+                height={80}
                 currentTick={item.currentTick}
                 minLabel={item.minLabel}
                 maxLabel={item.maxLabel}
                 minTick={item.minTick}
                 maxTick={item.maxTick}
                 datas={item.ticks}
+                isHiddenStart={isHiddenStart}
+                currentIndex={currentIndex}
               />
             </div>
             <div className="min-max-price">

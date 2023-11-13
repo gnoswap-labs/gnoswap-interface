@@ -13,6 +13,10 @@ export const BadgeWrapper = styled.div<BadgeStyle>`
   height: 24px;
   border-radius: 4px;
   padding: 0px 6px;
+  .content {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 5px;
+  }
   ${({ type, theme }) => {
     if (type === BADGE_TYPE.LINE)
       return css`

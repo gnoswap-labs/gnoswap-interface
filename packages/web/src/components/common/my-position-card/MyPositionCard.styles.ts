@@ -47,7 +47,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   width: 100%;
   min-width: 322px;
   gap: 16px;
-  padding: 16px;
+  padding: 15px;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.color.background03};
   ${media.tablet} {
@@ -102,7 +102,11 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     }
     .list-content {
       ${mixins.flexbox("row", "center", "space-between")};
+      ${fonts.body9};
       width: 100%;
+      spam {
+        ${fonts.body9};
+      }
     }
   }
 
@@ -121,7 +125,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   .price-range-info {
     ${mixins.flexbox("row", "flex-start", "space-between")};
     width: 100%;
-    margin-bottom: 24px;
+    margin-bottom: 4px;
   }
   .current-price {
     display: flex;
@@ -152,11 +156,15 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   .min-max-price {
     ${mixins.flexbox("column", "center", "space-between")};
     width: 100%;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 4px;
+    margin-top: 12px;
   }
   .price-section {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
+    .label-text {
+      ${fonts.p4};
+      height: auto;
+    }
   }
 `;

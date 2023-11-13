@@ -4,7 +4,7 @@ import { BadgeWrapper } from "./Badge.styles";
 interface BadgeProps {
   type: BADGE_TYPE;
   leftIcon?: React.ReactNode;
-  text: string;
+  text: string | React.ReactNode;
   className?: string;
 }
 
@@ -20,7 +20,7 @@ const Badge: React.FC<BadgeProps> = ({ type, leftIcon, text, className }) => {
   return (
     <BadgeWrapper className={className} type={type}>
       {leftIcon && <div className="badge-icon">{leftIcon}</div>}
-      <span>{text}</span>
+      <div className="content">{text}</div>
     </BadgeWrapper>
   );
 };
