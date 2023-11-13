@@ -126,6 +126,10 @@ const StakingContainer: React.FC = () => {
     router.push("/earn/pool/bar_foo_100/add?tokenA=gno.land%2Fr%2Fbar&tokenB=gno.land%2Fr%2Fgnos&direction=EXACT_IN");
   }, []);
 
+  const handleClickStakeRedirect = useCallback(() => {
+    router.push("/earn/pool/stake");
+  }, []);
+
   return (
     <Staking
       info={stakingInit}
@@ -135,6 +139,7 @@ const StakingContainer: React.FC = () => {
       isDisabledButton={isDisabledButton}
       type={type}
       handleClickStaking={handleClickStaking}
+      handleClickStakeRedirect={handleClickStakeRedirect}
     />
   );
 };

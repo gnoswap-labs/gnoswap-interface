@@ -6,6 +6,9 @@ import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.sty
 export const wrapper = (theme: Theme) => css`
   ${PoolIncentivizeBoxStyle(theme)};
   width: 100%;
+  border: 1px solid ${theme.color.border02};
+  border-radius: 8px;
+  padding: 15px;
 
   section {
     ${mixins.flexbox("row", "center", "space-between")};

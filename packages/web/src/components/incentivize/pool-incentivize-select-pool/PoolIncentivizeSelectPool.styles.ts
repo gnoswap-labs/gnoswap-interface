@@ -24,8 +24,8 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div`
     padding: 0 16px;
     background-color: #fff;
     border-radius: 8px;
-    border: 1px solid var(--global-gray-gray-500, #1c2230);
-    background: var(--global-opacity-black-opacity-07, rgba(10, 14, 23, 0.7));
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    background: ${({ theme }) => theme.color.background20};
     color: var(--text-02-dark-gray-100-text-2, #e0e8f4);
     ${fonts.body9}
     justify-content: space-between;
@@ -43,7 +43,7 @@ export const PoolIncentivizeSelectPoolBox = styled.div`
   top: 53px;
   left: 0;
   width: 100%;
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);

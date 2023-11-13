@@ -8,9 +8,10 @@ import { useState } from "react";
 interface StakingHeaderProps {
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
+  handleClickStakeRedirect: () => void;
 }
 
-const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton }) => {
+const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleClickStakeRedirect }) => {
   const [isShowLearnModal, setIsShowLearnModal] = useState(false);
   return (
     <StakingHeaderWrapper>
@@ -39,7 +40,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton }) => {
         <Button
           disabled={isDisabledButton}
           text="Stake"
-          onClick={() => {}}
+          onClick={handleClickStakeRedirect}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fullWidth: true,

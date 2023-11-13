@@ -11,7 +11,7 @@ export const PoolIncentivizeWrapper = styled.div`
   width: 500px;
   height: 100%;
   color: ${({ theme }) => theme.color.text02};
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.background20};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
@@ -24,7 +24,7 @@ export const PoolIncentivizeWrapper = styled.div`
   article {
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity};
+    background-color: ${({ theme }) => theme.color.background20};
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
     padding: 15px;

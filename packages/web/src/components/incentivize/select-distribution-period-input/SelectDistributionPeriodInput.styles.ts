@@ -26,7 +26,7 @@ export const SelectDistributionPeriodInputWrapper = styled.div`
     align-items: center;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
-    background: ${({ theme }) => theme.color.backgroundOpacity};
+    background: ${({ theme }) => theme.color.background20};
 
     & .icon-arrow {
       width: 16px;

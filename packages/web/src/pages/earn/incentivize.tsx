@@ -6,10 +6,15 @@ import PoolIncentivizeLayout from "@layouts/pool-incentivize-layout/PoolIncentiv
 import React from "react";
 
 export default function PoolIncentivize() {
+  const listBreadcrumb = [
+    { title: "Earn", path: "/earn" },
+    { title: "Incentivize Pool", path: "" },
+  ];
+
   return (
     <PoolIncentivizeLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer />}
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb}/>}
       poolIncentivize={<PoolIncentivizeContainer />}
       footer={<Footer />}
     />
