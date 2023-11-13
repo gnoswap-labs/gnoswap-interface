@@ -34,12 +34,15 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         height: 32px;
         border-radius: 4px;
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;
         background: ${({ theme }) => theme.color.background02};
         color: ${({ theme }) => theme.color.icon05};
         ${fonts.body6}
         line-height: 22px;
         cursor: pointer;
+        &:hover {
+          background: ${({ theme }) => theme.color.backgroundOpacity};
+        }
       }
     }
   }
@@ -80,28 +83,22 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       svg {
         width: 16px;
         height: 16px;
-
         * {
           fill: ${({ theme }) => theme.color.text10};
         }
         
       }
-      &:hover {
-        svg {
-          * {
-            fill: ${({ theme }) => theme.color.text10};
-          } 
-        }
-        span {
-          &:hover {
-            color: ${({ theme }) => theme.color.text16};
-          }
-        }
-      }
       span {
         color: ${({ theme }) => theme.color.text10};
         ${fonts.body11};
-        
+      }
+    }
+    .icon-button:hover {
+      svg * {
+        fill: ${({ theme }) => theme.color.text16};
+      }
+      span {
+        color: ${({ theme }) => theme.color.text16};
       }
     }
   }

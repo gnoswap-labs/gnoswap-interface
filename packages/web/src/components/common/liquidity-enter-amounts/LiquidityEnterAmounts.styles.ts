@@ -20,7 +20,7 @@ export const LiquidityEnterAmountsWrapper = styled.div`
       ${mixins.flexbox("row", "center", "center")};
       width: 40px;
       height: 40px;
-      background-color: ${({ theme }) => theme.color.background20};
+      background-color: ${({ theme }) => theme.color.background01};
       border: 1px solid ${({ theme }) => theme.color.border02};
       border-radius: 50%;
 
@@ -28,7 +28,7 @@ export const LiquidityEnterAmountsWrapper = styled.div`
         width: 16px;
         height: 16px;
         * {
-          fill: ${({ theme }) => theme.color.text01};
+          fill: ${({ theme }) => theme.color.icon03};
         }
       }
     }
@@ -39,6 +39,9 @@ export const LiquidityEnterAmountsWrapper = styled.div`
         padding-top: 5px;
         padding-bottom: 5px;
         height: auto;
+        > span {
+          margin-right: 6px;
+        }
       }
       .token-symbol {
         ${fonts.body9}

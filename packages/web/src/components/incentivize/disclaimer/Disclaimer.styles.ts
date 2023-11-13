@@ -12,13 +12,13 @@ export const wrapper = (theme: Theme) => css`
   border-radius: 8px;
   padding: 15px;
   .section-title {
-    color: ${theme.color.text05};
+    color: ${theme.color.text04};
     ${fonts.body12}
   }
   .desc {
     height: auto;
     word-break: break-all;
-    color: ${theme.color.text22};
+    color: ${theme.color.text10};
     ${fonts.body12}
   }
 `;

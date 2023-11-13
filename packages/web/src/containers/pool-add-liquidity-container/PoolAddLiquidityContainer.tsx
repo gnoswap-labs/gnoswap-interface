@@ -112,7 +112,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     switchNetwork,
     isSwitchNetwork,
   } = useWallet();
-  const { slippage } = useSlippage();
+  const { slippage, changeSlippage } = useSlippage();
 
   const { pools, feetierOfLiquidityMap, createPool } = usePool({ tokenA, tokenB });
   const { tokens, updateTokens, updateTokenPrices } = useTokenData();
@@ -257,6 +257,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
   
+  const handleChangeSlippage = useCallback((vl: string) => {
+    changeSlippage(Number(vl));
+  }, []);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -281,6 +285,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       submit={submit}
       isEarnAdd={false}
       connected={connectedWallet}
+      slippage={slippage}
+      changeSlippage={handleChangeSlippage}
     />
   );
 };

@@ -98,7 +98,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
 
       <Disclaimer disclaimer={disclaimer} />
       <Button
-        text="Incentivize"
+        text="Incentivize Pool"
         style={{
           hierarchy: ButtonHierarchy.Primary,
           height: 57,

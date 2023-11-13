@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import { EarnAddConfirmContentSection } from "../earn-add-confirm/EarnAddConfirm.styles";
 
 export const EarnAddConfirmAmountInfoWrapper = styled.div`
@@ -56,10 +57,14 @@ export const EarnAddConfirmAmountInfoWrapper = styled.div`
 export const EarnAddConfirmFeeInfoSection = styled(
   EarnAddConfirmContentSection,
 )`
+  height: 50px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   .value {
     color: ${({ theme }) => theme.color.text03};
+  }
+  ${media.mobile} {
+    height: 42px;
   }
 `;

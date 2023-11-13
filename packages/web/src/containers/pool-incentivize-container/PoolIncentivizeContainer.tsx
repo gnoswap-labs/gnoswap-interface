@@ -4,21 +4,27 @@ import { PoolModel } from "@models/pool/pool-model";
 import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import React, { useCallback, useEffect, useState } from "react";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
+import POOLS from "@repositories/pool/mock/pools.json";
 export const dummyDisclaimer =
-  "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.";
+  "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. By adding incentives to the pool, you may draw more liquidity providers, which could lead to better price rates and increased trading On-chain Activities.<br /><br />As the incentivizer, you can choose the type of the token and the duration of the rewards. The rewards will be automatically distributed by the contract and you will not be able to withdraw the tokens once the you complete this step.";
 
+const DefaultDate = {
+  year: new Date().getFullYear(),
+  month: new Date().getMonth() + 1,
+  date: new Date().getDate(),
+};
 interface DistributionPeriodDate {
   year: number;
   month: number;
   date: number;
 }
 
-const pools: PoolModel[] = [];
+const pools: PoolModel[] = POOLS.pools;
 const tokenBalances: TokenBalanceInfo[] = [];
-const periods = [90, 120, 150, 180, 210, 240];
+const periods = [90, 180, 365];
 
 const PoolIncentivizeContainer: React.FC = () => {
-  const [startDate, setStartDate] = useState<DistributionPeriodDate>();
+  const [startDate, setStartDate] = useState<DistributionPeriodDate>(DefaultDate);
   const [period, setPeriod] = useState(90);
   const [amount, setAmount] = useState("");
   const [currentPool, setCurrentPool] = useState<PoolModel | null>(null);

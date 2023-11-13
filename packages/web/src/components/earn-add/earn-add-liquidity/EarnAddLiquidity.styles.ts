@@ -58,6 +58,7 @@ export const EarnAddLiquidityWrapper = styled.section`
       width: 100%;
       height: 24px;
       cursor: pointer;
+      position: relative;
       &.default-cursor {
         cursor: default;
         &.disable-text {
@@ -71,6 +72,9 @@ export const EarnAddLiquidityWrapper = styled.section`
         color: ${({ theme }) => theme.color.text10};
 
       }
+      .setting-modal {
+        top: 100%;
+      }
     }
     .fee-tier-bad {
       border: 1px solid #233DBD;
@@ -82,9 +86,11 @@ export const EarnAddLiquidityWrapper = styled.section`
   .setting-button {
     width: 24px;
     height: 24px;
-
     .setting-icon * {
       fill: ${({ theme }) => theme.color.icon03};
+    }
+    .setting-icon:hover * {
+      fill: ${({ theme }) => theme.color.icon07};
     }
   }
   ${media.mobile} {

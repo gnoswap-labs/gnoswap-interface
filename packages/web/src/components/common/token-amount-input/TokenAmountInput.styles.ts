@@ -22,7 +22,6 @@ export const TokenAmountInputWrapper = styled.div`
   }
 
   .token {
-    width: 112px;
     height: 30px;
     cursor: default;
     span {

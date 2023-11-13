@@ -46,10 +46,6 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
     });
   }, [searchKeyword, pools]);
 
-  const totalInfo = useMemo(() => {
-    return `Total ${filteredPools.length} Pools`;
-  }, [filteredPools.length]);
-
   const toggleSelector = useCallback(() => {
     setOpenedSelector(!openedSelector);
   }, [openedSelector]);
@@ -88,7 +84,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
             </div>
             <div className="pool-list-wrapper">
               <div className="pool-list-headrer">
-                <span className="total-info">{totalInfo}</span>
+                <span className="total-info">Pools</span>
                 <span className="liquidity-info">Liquidity</span>
               </div>
               <div className="pool-list-content">

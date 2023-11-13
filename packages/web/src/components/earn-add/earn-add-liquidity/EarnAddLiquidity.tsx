@@ -14,6 +14,8 @@ import SelectPriceRange from "@components/common/select-price-range/SelectPriceR
 import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
 import { TokenModel } from "@models/token/token-model";
 import SelectPriceRangeCustom from "@components/common/select-price-range-custom/SelectPriceRangeCustom";
+import IconSettings from "@components/common/icons/IconSettings";
+import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -38,6 +40,8 @@ interface EarnAddLiquidityProps {
   submit: () => void;
   isEarnAdd: boolean;
   connected: boolean;
+  slippage: number;
+  changeSlippage: (value: string) => void;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -62,11 +66,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   ticks,
   isEarnAdd,
   connected,
+  slippage,
+  changeSlippage,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openCustomPriceRange, setOpenCustomPriceRange] = useState(false);
+  const [openedSetting, setOpenedSetting] = useState(false);
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
@@ -169,6 +176,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     changePriceRange(priceRange);
   }, [changePriceRange]);
   
+  const openSetting = useCallback(() => {
+    setOpenedSetting(true);
+  }, []);
+
+  const closeSetting = useCallback(() => {
+    setOpenedSetting(() => false);
+  }, []);
+  
   return (
     <EarnAddLiquidityWrapper>
       <h3>Create Position</h3>
@@ -243,12 +258,23 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             ticks={ticks}
           />
           }
-          {openedPriceRange && <SelectPriceRangeSummary {...priceRangeSummary} />}
+          <SelectPriceRangeSummary {...priceRangeSummary} />
         </article>
 
         <article className="selector-wrapper">
           <div className="header-wrapper default-cursor">
             <h5>4. Enter Amounts</h5>
+            <button className="setting-button" onClick={openSetting}>
+              <IconSettings className="setting-icon"/>
+            </button>
+            {openedSetting && (
+              <SettingMenuModal
+                slippage={slippage}
+                changeSlippage={changeSlippage}
+                close={closeSetting}
+                className="setting-modal"
+              />
+            )}
           </div>
           <LiquidityEnterAmounts
             tokenAInput={tokenAInput}
@@ -258,7 +284,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             connected={connected}
           />
         </article>
-        {isEarnAdd && !existTokenPair && <div className="dim-content" />}
+        {/* {isEarnAdd && !existTokenPair && <div className="dim-content" />} */}
       </div>
       <Button
         text={submitButtonStr}
