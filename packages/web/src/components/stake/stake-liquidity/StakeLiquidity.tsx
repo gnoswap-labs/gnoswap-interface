@@ -21,6 +21,8 @@ export const CONTENT_TITLE = {
   LIQUIDITY: "2. Select Liquidity",
   TOTAL_STAKING: "Total Staking Amount",
   APR: "Estimated APR",
+  UNCLAIM_GNS: "Unclaimed GNS Rewards",
+  UNCLAIM_GNOT: "Unclaimed GNOT Rewards",
 };
 export type CONTENT_TITLE = ValuesType<typeof CONTENT_TITLE>;
 

@@ -8,6 +8,7 @@ import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 interface SelectStakeResultProps {
   checkedList: string[];
   isHiddenBadge?: boolean;
+  isUnstake?: boolean;
 }
 
 const dummyImg = [
@@ -21,7 +22,7 @@ const HOVER_TEXT =
 const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   checkedList,
   isHiddenBadge = false,
-
+  isUnstake = false,
 }) => {
   if (checkedList.length === 0) return <></>;
   return (
@@ -30,7 +31,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
         <li>
           <div className="main-info">
             <img src={dummyImg[0]} alt="pooled tokenA logo" />
-            <p>Pooled GNOS</p>
+            <p>{!isUnstake ? "Pooled GNOS" : "ID 14450"}</p>
             <strong>1,140.058845</strong>
           </div>
           <span className="dallor">$5,564.48</span>
@@ -38,7 +39,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
         <li>
           <div className="main-info">
             <img src={dummyImg[1]} alt="pooled tokenB logo" />
-            <p>Pooled GNOT</p>
+            <p>{!isUnstake ? "Pooled GNOT" : "ID 14450"}</p>
             <strong>942.55884</strong>
           </div>
           <span className="dallor">$10,008.58</span>
@@ -46,17 +47,17 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">{CONTENT_TITLE.TOTAL_STAKING}</h5>
+          <h5 className="total-amount-title">{!isUnstake ? CONTENT_TITLE.TOTAL_STAKING : CONTENT_TITLE.UNCLAIM_GNS}</h5>
           {!isHiddenBadge && <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />}
           <span className="result-value">$1,572,146.14</span>
         </div>
         <div className="apr-box">
-          <h5 className="apr-title">{CONTENT_TITLE.APR}</h5>
-          <div className="hover-info">
+          <h5 className="apr-title">{!isUnstake ? CONTENT_TITLE.APR : CONTENT_TITLE.UNCLAIM_GNOT}</h5>
+          {!isUnstake && <div className="hover-info">
             <Tooltip placement="top" FloatingContent={<HoverTextWrapper>{HOVER_TEXT}</HoverTextWrapper>}>
               <IconInfo className="icon-info" />
             </Tooltip>
-          </div>
+          </div>}
           <span className="result-value">$1,572,146.14</span>
         </div>
       </div>

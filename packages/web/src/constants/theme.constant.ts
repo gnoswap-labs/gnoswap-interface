@@ -107,6 +107,7 @@ const colors = {
     brand700BG: palette.brand700,
     brand600TooltipBorder: palette.brand600,
     gradient1: palette.gradient1,
+    brand300Opacity03BG: palette.brand300Opacity03,
   },
 };
 
@@ -138,6 +139,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   backgroundOpacity: colors.dark.blackOpacity07BG,
   backgroundOpacity2: colors.dark.blackOpacity07BG,
   backgroundOpacity3: colors.global.gray600Opacity,
+  backgroundOpacity4: colors.dark.brand300Opacity03BG,
   backgroundGradient: colors.dark.gray600BG,
   backgroundGradient2: colors.global.gradient2,
   backgroundGradient3: colors.global.gradient3,
@@ -243,6 +245,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   backgroundOpacity: colors.white.gray100Opacity05BG,
   backgroundOpacity2: colors.white.whiteOpacity07BG,
   backgroundOpacity3: colors.white.gray100Opacity05BG,
+  backgroundOpacity4: colors.white.brand300Opacity03BG,
   backgroundGradient: colors.white.gray100BG,
   backgroundGradient2: colors.white.gradient1,
   backgroundGradient3: colors.white.whiteBG,

@@ -9,9 +9,10 @@ interface StakingHeaderProps {
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
   handleClickStakeRedirect: () => void;
+  handleClickUnStakeRedirect: () => void;
 }
 
-const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleClickStakeRedirect }) => {
+const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleClickStakeRedirect, handleClickUnStakeRedirect }) => {
   const [isShowLearnModal, setIsShowLearnModal] = useState(false);
   return (
     <StakingHeaderWrapper>
@@ -28,7 +29,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
         <Button
           disabled={isDisabledButton}
           text="Unstake"
-          onClick={() => {}}
+          onClick={handleClickUnStakeRedirect}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fullWidth: true,

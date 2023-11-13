@@ -130,6 +130,10 @@ const StakingContainer: React.FC = () => {
     router.push("/earn/pool/stake");
   }, []);
 
+  const handleClickUnStakeRedirect = useCallback(() => {
+    router.push("/earn/pool/unstake");
+  }, []);
+
   return (
     <Staking
       info={stakingInit}
@@ -140,6 +144,7 @@ const StakingContainer: React.FC = () => {
       type={type}
       handleClickStaking={handleClickStaking}
       handleClickStakeRedirect={handleClickStakeRedirect}
+      handleClickUnStakeRedirect={handleClickUnStakeRedirect}
     />
   );
 };
