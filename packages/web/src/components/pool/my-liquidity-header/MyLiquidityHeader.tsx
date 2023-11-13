@@ -9,9 +9,10 @@ interface MyLiquidityHeaderProps {
   connected: boolean;
   isSwitchNetwork: boolean;
   handleClickAddPosition: () => void;
+  handleClickRemovePosition: () => void;
 }
 
-const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, isSwitchNetwork, handleClickAddPosition }) => {
+const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, isSwitchNetwork, handleClickAddPosition, handleClickRemovePosition }) => {
   return (
     <HeaderWrapper>
       <h2>My Positions</h2>
@@ -19,7 +20,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, 
         <Button
           disabled={!connected || isSwitchNetwork}
           text="Remove Position"
-          onClick={() => {}}
+          onClick={handleClickRemovePosition}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             height: 36,

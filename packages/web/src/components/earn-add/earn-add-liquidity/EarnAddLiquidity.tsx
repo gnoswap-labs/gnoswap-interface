@@ -195,7 +195,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         </article>
 
         <article className="selector-wrapper">
-          <div className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor disable-text" : ""}`} onClick={toggleFeeTier}>
+          <div className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""} ${!isEarnAdd && "disable-text"}`} onClick={toggleFeeTier}>
             <h5>2. Select Fee Tier</h5>
             {selectedFeeRate && (
               <Badge
@@ -218,7 +218,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         </article>
 
         <article className="selector-wrapper">
-          <div className={`header-wrapper ${!existTokenPair ? "default-cursor disable-text" : ""}`} onClick={togglePriceRange}>
+          <div className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""}`} onClick={togglePriceRange}>
             <h5>3. Select Price Range</h5>
             {selectedPriceRange && (
               <Badge
@@ -258,6 +258,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             connected={connected}
           />
         </article>
+        {isEarnAdd && !existTokenPair && <div className="dim-content" />}
       </div>
       <Button
         text={submitButtonStr}

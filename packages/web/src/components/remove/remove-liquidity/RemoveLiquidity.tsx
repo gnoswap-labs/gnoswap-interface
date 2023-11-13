@@ -36,7 +36,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
 
   return (
     <div css={wrapper}>
-      <h3 className="title">Remove Liquidity</h3>
+      <h3 className="title">Remove Position</h3>
       <RemoveLiquiditySelectList
         lpPositions={lpPositions}
         selectedIds={selectedIds}

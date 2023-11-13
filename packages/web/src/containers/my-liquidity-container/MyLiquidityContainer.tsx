@@ -134,6 +134,9 @@ const MyLiquidityContainer: React.FC = () => {
     router.push(`${router.asPath}/add?tokenA=gno.land/r/foo&tokenB=gno.land/r/bar&direction=EXACT_IN`);
   }, [router]);
 
+  const handleClickRemovePosition = useCallback(() => {
+    router.push("/earn/pool/remove");
+  }, [router]);
 
   return (
     <MyLiquidity
@@ -142,6 +145,7 @@ const MyLiquidityContainer: React.FC = () => {
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}
       handleClickAddPosition={handleClickAddPosition}
+      handleClickRemovePosition={handleClickRemovePosition}
     />
   );
 };

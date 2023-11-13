@@ -16,7 +16,7 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
   .total-section {
     width: 100%;
     padding: 15px;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity};
+    background-color: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
     border-radius: 8px;
   }

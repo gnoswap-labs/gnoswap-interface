@@ -3,6 +3,7 @@ import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import iconChecked from "@components/common/icons/svg/icon-checked.svg";
 import iconCheckboxBlank from "@components/common/icons/svg/icon-checkbox-blank.svg";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -17,6 +18,35 @@ export const wrapper = (theme: Theme) => css`
   padding: 23px;
   .title {
     ${fonts.h6};
+  }
+  ${media.tabletMiddle} {
+    margin: 0 auto;
+  }
+  .unstake-des {
+    background-color: ${theme.color.backgroundOpacity4};
+    border-radius: 8px;
+    padding: 12px 16px;
+    p, h5, a {
+      ${fonts.body12}
+      color: ${theme.color.text08};
+    }
+    .icon-link {
+      width: 16px;
+      height: 16px;
+      * {
+        fill: ${theme.color.icon14};
+      }
+    }
+    h5 {
+      fontWeight: 600;
+    }
+    p {
+      margin: 16px 0 24px;
+    }
+    a {
+      ${mixins.flexbox("rpw", "center", "flex-start")};
+      gap: 4px;
+    }
   }
 `;
 

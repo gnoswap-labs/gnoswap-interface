@@ -24,7 +24,6 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
       <label htmlFor={`checkbox-item-${item.path}`} />
       <DoubleLogo left={item.pairLogo[0]} right={item.pairLogo[1]} size={24} />
       <span className="token-id">{item.path}</span>
-      <span className="period-value">21 days</span>
       <span className="liquidity-value">{item.liquidity}</span>
     </li>
   );

@@ -121,6 +121,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     padding: 16px;
     background-color: ${({ theme }) => theme.color.backgroundOpacity};
     border-radius: 8px;
+    cursor: default;
   }
   .price-range-info {
     ${mixins.flexbox("row", "flex-start", "space-between")};
@@ -136,7 +137,11 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
 
     span {
       color: ${({ theme }) => theme.color.text10};
+      cursor: pointer;
       ${fonts.p4};
+      &:hover {
+        color: ${({ theme }) => theme.color.text16};
+      }
     }
 
     svg {
@@ -151,6 +156,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
 
   .chart-wrapper {
     width: 100%;
+    cursor: pointer;
   }
 
   .min-max-price {

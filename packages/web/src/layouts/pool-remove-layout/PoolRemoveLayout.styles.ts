@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -18,6 +19,9 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     ${mixins.posMoveToTopAndLeft(0, "40px")};
     gap: 8px;
+    ${media.mobile} {
+      gap: 10px;
+    }
     .title {
       ${fonts.h3};
       color: ${theme.color.text02};
@@ -27,5 +31,37 @@ export const wrapper = (theme: Theme) => css`
   .remove-liquidity-section {
     margin: 0 auto;
     height: 100%;
+  }
+
+  ${media.tablet} {
+    main {
+      margin: 60px 0;
+    }
+    .title-container {
+      .title {
+        ${fonts.h4};
+      }
+    }
+  }
+  ${media.tabletMiddle} {
+    main {
+      margin: 24px 0;
+      padding: 0 40px;
+    }
+    .title-container {
+      position: initial;
+      ${mixins.flexbox("row", "center", "flex-start")};
+      .title {
+        ${fonts.h5};
+      }
+    }
+    .content-wrap {
+      gap: 24px;
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+    }
+    .remove-liquidity-section {
+      margin: none;
+      width: 100%;
+    }
   }
 `;

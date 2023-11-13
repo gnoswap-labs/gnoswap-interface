@@ -18,18 +18,20 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     ${mixins.posMoveToTopAndLeft(0, "40px")};
     gap: 8px;
+    ${media.mobile} {
+      gap: 10px;
+    }
     .title {
       ${fonts.h3};
       color: ${theme.color.text02};
     }
   }
 
-  @media (min-width: 769px) {
-    .stake-liquidity-section {
-      margin: 0 auto;
-      height: 100%;
-    }
+  .add-liquidity-section {
+    margin: 0 auto;
+    height: 100%;
   }
+
   ${media.tablet} {
     main {
       margin: 60px 0;
@@ -40,10 +42,10 @@ export const wrapper = (theme: Theme) => css`
       }
     }
   }
-  ${media.mobile} {
+  ${media.tabletMiddle} {
     main {
       margin: 24px 0;
-      padding: 0 16px;
+      padding: 0 40px;
     }
     .title-container {
       position: initial;

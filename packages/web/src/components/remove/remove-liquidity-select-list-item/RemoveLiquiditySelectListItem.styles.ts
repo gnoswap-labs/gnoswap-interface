@@ -12,7 +12,7 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   width: 100%;
   height: 56px;
   gap: 8px;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid
     ${({ theme, selected }) =>
       selected ? theme.color.border03 : theme.color.border02};
@@ -23,7 +23,7 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   transition: all 0.3s ease;
 
   input[type="checkbox"] + label:before {
-    background-color: ${({ theme }) => theme.color.background02};
+    background-color: ${({ theme }) => theme.color.background12};
   }
 
   .liquidity-value {

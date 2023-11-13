@@ -34,6 +34,5 @@ export const RemoveLiquiditySelectListWrapper = styled.div`
   label:before {
     display: block;
     content: " ";
-    padding-left: 10px;
   }
 `;

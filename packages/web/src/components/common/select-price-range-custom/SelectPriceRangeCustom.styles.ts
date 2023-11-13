@@ -18,6 +18,9 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
+    > div {
+      padding: 2px;
+    }
 
     .graph-option-wrapper {
       display: flex;
@@ -47,6 +50,9 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     align-items: center;
     gap: 8px;
     color: ${({ theme }) => theme.color.text05};
+    > span:first-of-type {
+      color: ${({ theme }) => theme.color.text04};
+    }
     ${fonts.body12};
   }
 

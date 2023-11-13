@@ -78,10 +78,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 : item.apr}
             </div>
           </div>
-          <div className="pool-price-graph">
+          <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
             <div className="price-range-info">
               <div className="current-price" onClick={handleClickShowRange}>
-                <span>Show Range</span>
+                <span>{isHiddenStart ? "Show Range" : "Hide Range"}</span>
               </div>
               <RangeBadge
                 status={

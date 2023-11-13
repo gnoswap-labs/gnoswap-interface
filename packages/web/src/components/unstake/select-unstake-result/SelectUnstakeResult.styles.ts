@@ -15,7 +15,7 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     padding: 15px;
-    background-color: ${theme.color.backgroundOpacity};
+    background-color: ${theme.color.background20};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;

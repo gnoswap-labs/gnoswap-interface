@@ -15,15 +15,10 @@ export const wrapper = (theme: Theme) => css`
     padding: 0px 15px;
     color: ${theme.color.text05};
     ${fonts.body12};
-    .period-label {
-      width: 60px;
-      text-align: right;
-      margin-right: 70px;
-      margin-left: auto;
-    }
     .liquidity-label {
       width: 80px;
       text-align: right;
+      margin-left: auto;
     }
   }
   ul {

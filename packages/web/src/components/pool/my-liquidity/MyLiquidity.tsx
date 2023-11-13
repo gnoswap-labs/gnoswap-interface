@@ -11,13 +11,20 @@ interface MyLiquidityProps {
   connected: boolean;
   isSwitchNetwork: boolean;
   handleClickAddPosition: () => void;
+  handleClickRemovePosition: () => void;
 }
 
-const MyLiquidity: React.FC<MyLiquidityProps> = ({ info, breakpoint, connected, isSwitchNetwork, handleClickAddPosition }) => {
+const MyLiquidity: React.FC<MyLiquidityProps> = ({ info, breakpoint, connected, isSwitchNetwork, handleClickAddPosition, handleClickRemovePosition }) => {
   return (
     <MyLiquidityWrapper>
       <div className="liquidity-wrap">
-        <MyLiquidityHeader info={info.poolInfo} connected={connected} isSwitchNetwork={isSwitchNetwork} handleClickAddPosition={handleClickAddPosition} />
+        <MyLiquidityHeader
+          info={info.poolInfo}
+          connected={connected}
+          isSwitchNetwork={isSwitchNetwork}
+          handleClickAddPosition={handleClickAddPosition}
+          handleClickRemovePosition={handleClickRemovePosition}  
+        />
         <MyLiquidityContent content={info} breakpoint={breakpoint} isDisabledButton={isSwitchNetwork || !connected} />
       </div>
       <PoolDivider />

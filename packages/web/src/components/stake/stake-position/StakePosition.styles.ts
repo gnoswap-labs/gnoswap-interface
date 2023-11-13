@@ -25,33 +25,7 @@ export const wrapper = (theme: Theme) => css`
       height: 41px;
     }
   }
-  .unstake-des {
-    background-color: ${theme.color.backgroundOpacity4};
-    border-radius: 8px;
-    padding: 12px 16px;
-    p, h5, a {
-      ${fonts.body12}
-      color: ${theme.color.text08};
-    }
-    .icon-link {
-      width: 16px;
-      height: 16px;
-      * {
-        fill: ${theme.color.icon14};
-      }
-    }
-    h5 {
-      fontWeight: 600;
-    }
-    p {
-      margin: 16px 0 24px;
-    }
-    a {
-      ${mixins.flexbox("rpw", "center", "flex-start")};
-      gap: 4px;
-    }
-  }
-  ${media.mobile} {
+  ${media.tabletMiddle} {
     max-width: 500px;
     width: 100%;
     padding: 12px;

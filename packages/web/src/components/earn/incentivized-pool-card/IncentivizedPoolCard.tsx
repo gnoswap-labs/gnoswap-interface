@@ -82,7 +82,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="value-text">{pool.fees24h}</span>
               </div>
             </div>
-            <div className="pool-content">
+            <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}

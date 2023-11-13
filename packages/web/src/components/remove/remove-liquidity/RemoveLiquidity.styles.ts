@@ -4,6 +4,7 @@ import mixins from "@styles/mixins";
 import iconChecked from "@components/common/icons/svg/icon-checked.svg";
 import iconCheckboxBlank from "@components/common/icons/svg/icon-checkbox-blank.svg";
 import iconCheckboxUnsure from "@components/common/icons/svg/icon-checkbox-unsure.svg";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -18,6 +19,19 @@ export const wrapper = (theme: Theme) => css`
   padding: 23px;
   .title {
     ${fonts.h6};
+  }
+  .button-stake-position {
+    height: 57px;
+    ${media.mobile} {
+      height: 41px;
+    }
+  }
+
+  ${media.tabletMiddle} {
+    max-width: 500px;
+    width: 100%;
+    padding: 12px;
+    margin: auto;
   }
 `;
 

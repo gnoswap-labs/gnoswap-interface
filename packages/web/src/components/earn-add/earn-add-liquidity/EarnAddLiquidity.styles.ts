@@ -28,6 +28,20 @@ export const EarnAddLiquidityWrapper = styled.section`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     gap: 4px;
     width: 100%;
+    position: relative;
+    .dim-content {
+      position: absolute;
+      top: 116px;
+      height: calc(100% - 116px);
+      width: 100%;
+      left: 0;
+      background: ${({ theme }) => theme.color.backgroundOpacity2};
+      border-radius: 8px;
+      ${media.mobile} {
+        top: 100px;
+        height: calc(100% - 100px);
+      }
+    }
   }
 
   .selector-wrapper {

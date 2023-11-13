@@ -4,7 +4,6 @@ import { wrapper } from "./StakePosition.styles";
 import { ValuesType } from "utility-types";
 import SelectLiquidity from "@components/stake/select-liquidity/SelectLiquidity";
 import SelectStakeResult from "@components/stake/select-stake-result/SelectStakeResult";
-import IconOpenLink from "@components/common/icons/IconOpenLink";
 
 interface StakePositionProps {
   data: any;
@@ -31,7 +30,6 @@ const StakePosition: React.FC<StakePositionProps> = ({
   onCheckedAll,
   checkedAll,
   submitPosition,
-  isUnstake,
 }) => {
   const isEmptyCheckList = useMemo(() => {
     return checkedList.length === 0;
@@ -39,7 +37,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
   
   return (
     <div css={wrapper}>
-      <h3 className="title">{isUnstake ? "Unstake Position" : "Stake Position"}</h3>
+      <h3 className="title">Stake Position</h3>
       <SelectLiquidity
         liquidity={data.liquidity}
         checkedList={checkedList}
@@ -48,18 +46,10 @@ const StakePosition: React.FC<StakePositionProps> = ({
         checkedAll={checkedAll}
         isHiddenTitle
       />
-      <SelectStakeResult checkedList={checkedList} isHiddenBadge isUnstake={isUnstake} />
-      {isUnstake && checkedList.length > 0 && <div className="unstake-des">
-        <h5>Your Staking Progress Will be Reset</h5>
-        <p>This will completely reset your staking progress. Once you re-stake, you will have to wait 30 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.</p>
-        <a href="/">
-          Learn more
-          <IconOpenLink className="icon-link"/>
-        </a>
-      </div>}
+      <SelectStakeResult checkedList={checkedList} isHiddenBadge />
       <Button
         className="button-stake-position"
-        text={isEmptyCheckList ? "Select Position" : isUnstake ? "Stake Position" : "Unstake"}
+        text={isEmptyCheckList ? "Select Position" : "Stake Position"}
         disabled={isEmptyCheckList}
         style={{
           hierarchy: ButtonHierarchy.Primary,

@@ -29,7 +29,6 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
         <label htmlFor="checkbox-all" className="select-all-label">
           Select All
         </label>
-        <span className="period-label">Period</span>
         <span className="liquidity-label">Liquidity</span>
       </div>
       <ul>

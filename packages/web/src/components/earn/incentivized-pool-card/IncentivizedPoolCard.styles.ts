@@ -52,7 +52,7 @@ export const PoolCardWrapper = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.color.background02};
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid ${({ theme }) => theme.color.border08};
+    border: 1px solid ${({ theme }) => theme.color.border14};
   }
   ${media.mobile} {
     min-width: 290px;
@@ -125,6 +125,7 @@ export const PoolCardWrapper = styled.div`
     gap: 24px;
     justify-content: center;
     align-items: center;
+    cursor: default;
 
     .pool-rate-wrapper {
       display: flex;
