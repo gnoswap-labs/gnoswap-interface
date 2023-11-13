@@ -46,13 +46,13 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
       />
       <RemoveLiquiditySelectResult selectedLiquidities={selectedLiquidites} />
       <Button
-        text="Remove Liquidity"
+        text={disabledConfirm ? "Select Position" : "Remove Position"}
         disabled={disabledConfirm}
         style={{
           hierarchy: ButtonHierarchy.Primary,
-          height: 57,
           fullWidth: true,
         }}
+        className="button-submit"
         onClick={onClickRemoveLiquidity}
       />
     </div>

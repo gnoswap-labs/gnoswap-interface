@@ -17,6 +17,9 @@ export const RemoveLiquiditySelectListWrapper = styled.div`
     padding: 0px 15px;
     color: ${({ theme }) => theme.color.text05};
     ${fonts.body12};
+    label {
+      gap: 8px;
+    }
   }
 
   ul {

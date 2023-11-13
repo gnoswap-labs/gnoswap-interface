@@ -50,7 +50,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
           <Tooltip
             placement="top"
             FloatingContent={
-              <div>You need to unstake your lpPosition first</div>
+              <div>You need to unstake your position first.</div>
             }
           >
             <IconInfo className="icon-info" />

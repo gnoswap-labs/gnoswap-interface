@@ -284,7 +284,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             connected={connected}
           />
         </article>
-        {/* {isEarnAdd && !existTokenPair && <div className="dim-content" />} */}
+        {isEarnAdd && !existTokenPair && <div className="dim-content" />}
       </div>
       <Button
         text={submitButtonStr}

@@ -20,7 +20,7 @@ export const wrapper = (theme: Theme) => css`
   .title {
     ${fonts.h6};
   }
-  .button-stake-position {
+  .button-submit {
     height: 57px;
     ${media.mobile} {
       height: 41px;

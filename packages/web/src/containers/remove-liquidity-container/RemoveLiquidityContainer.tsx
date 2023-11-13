@@ -144,7 +144,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const unstakedLiquidities = useMemo(() => {
-    return lpPositions;
+    return lpPositions.filter(item => item.position.balance !== 0);
   }, [lpPositions]);
 
   const selectedAll = useMemo(() => {

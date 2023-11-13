@@ -16,7 +16,7 @@ const dummyImg = [
 ];
 
 const HOVER_TEXT =
-  "Your estimated APR is calculated based on daily emissions and the value of total LP tokens staked in this pool.";
+  "The range of the estimated APR is calculated with the dynamic multiplier applied to your position based on the duration staked.";
 
 const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   checkedList,
