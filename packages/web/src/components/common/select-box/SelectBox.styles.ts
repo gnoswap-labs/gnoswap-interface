@@ -15,7 +15,9 @@ export const SelectBoxWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   background: ${({ theme }) => theme.color.background20};
   z-index: 3;
-
+  &:hover {
+    background: ${({ theme }) => theme.color.background11};
+  }
   .selected-wrapper {
     position: relative;
     display: flex;
@@ -30,6 +32,9 @@ export const SelectBoxWrapper = styled.div`
   .icon-arrow {
     width: 16px;
     height: 16px;
+      * {
+      fill: ${({ theme }) => theme.color.icon01};
+    }
   }
     
   .current {

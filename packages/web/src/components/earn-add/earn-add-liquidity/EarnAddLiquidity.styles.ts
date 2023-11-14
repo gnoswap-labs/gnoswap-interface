@@ -35,7 +35,7 @@ export const EarnAddLiquidityWrapper = styled.section`
       height: calc(100% - 116px);
       width: 100%;
       left: 0;
-      background: ${({ theme }) => theme.color.backgroundOpacity2};
+      background: ${({ theme }) => theme.color.backgroundOpacity5};
       border-radius: 8px;
       ${media.mobile} {
         top: 100px;
@@ -73,7 +73,7 @@ export const EarnAddLiquidityWrapper = styled.section`
 
       }
       .setting-modal {
-        top: 100%;
+        top: calc(100% + 4px);
       }
     }
     .fee-tier-bad {

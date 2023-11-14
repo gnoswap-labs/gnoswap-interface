@@ -37,7 +37,6 @@ export const SelectDistributionDateInputWrapper = styled.div`
     }
 
     & .date {
-      height: 16px;
       ${fonts.body9}
       color: ${({ theme }) => theme.color.text02};
     }

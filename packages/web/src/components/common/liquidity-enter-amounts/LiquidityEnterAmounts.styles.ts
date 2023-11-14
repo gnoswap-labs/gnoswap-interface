@@ -36,8 +36,9 @@ export const LiquidityEnterAmountsWrapper = styled.div`
   .amount {
     .token {
       > div {
-        padding-top: 5px;
-        padding-bottom: 5px;
+
+        padding-top: 4px;
+        padding-bottom: 4px;
         height: auto;
         > span {
           margin-right: 6px;

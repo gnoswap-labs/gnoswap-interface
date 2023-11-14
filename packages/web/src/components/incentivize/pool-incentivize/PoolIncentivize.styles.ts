@@ -4,6 +4,7 @@ import mixins from "@styles/mixins";
 import styled from "@emotion/styled";
 import { Theme } from "@emotion/react";
 import { css } from "@emotion/css";
+import { media } from "@styles/media";
 
 export const PoolIncentivizeWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -16,6 +17,10 @@ export const PoolIncentivizeWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   padding: 23px;
+  margin: 0 auto;
+  ${media.mobile} {
+    padding: 11px;
+  }
 
   .title {
     ${fonts.h6};
@@ -30,8 +35,11 @@ export const PoolIncentivizeWrapper = styled.div`
     padding: 15px;
     gap: 16px;
 
+    ${media.mobile} {
+      padding: 11px;
+    }
     .section-title {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text10};
       ${fonts.body12}
     }
   }

@@ -4,12 +4,13 @@ import { fonts } from "@constants/font.constant";
 import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.styles";
 
 export const wrapper = (theme: Theme) => css`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
   ${PoolIncentivizeBoxStyle(theme)};
   width: 100%;
   border: 1px solid ${theme.color.border02};
   border-radius: 8px;
   padding: 15px;
-
+  gap: 16px;
   section {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;

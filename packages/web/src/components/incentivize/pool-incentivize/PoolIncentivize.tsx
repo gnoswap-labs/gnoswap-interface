@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import Disclaimer from "@components/incentivize/disclaimer/Disclaimer";
 import PoolIncentivizeDetails from "@components/incentivize/pool-incentivize-details/PoolIncentivizeDetails";
 import SelectDistributionPeriod from "@components/incentivize/select-distribution-period/SelectDistributionPeriod";
-import SetRewardAmount from "@components/incentivize/set-reward-amount/SetRewardAmount";
+// import SetRewardAmount from "@components/incentivize/set-reward-amount/SetRewardAmount";
 import { PoolIncentivizeWrapper } from "./PoolIncentivize.styles";
 import PoolIncentivizeSelectPool from "../pool-incentivize-select-pool/PoolIncentivizeSelectPool";
 import { PoolModel } from "@models/pool/pool-model";
@@ -11,6 +11,7 @@ import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
 
 export interface DistributionPeriodDate {
   year: number;
@@ -35,11 +36,26 @@ interface PoolIncentivizeProps {
   details: PoolDetailModel | null;
   disclaimer: string;
 }
-
+const TEMP_TOKEN = {
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gno.land/r/gnos",
+  decimals: 4,
+  symbol: "GNOS",
+  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+  priceId: "gno.land/r/gnos",
+};
+const TEMP = {
+  token: TEMP_TOKEN,
+  amount: "12,211",
+  balance: "12,211",
+  usdValue: "12.3",
+  changable: true,
+  changeAmount: () => {},
+};
 const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
-  token,
-  tokens,
-  selectToken,
   pools,
   selectedPool,
   selectPool,
@@ -48,8 +64,6 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   period,
   periods,
   setPeriod,
-  amount,
-  onChangeAmount,
   details,
   disclaimer,
 }) => {
@@ -84,16 +98,10 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
       </article>
 
       <article>
-        <SetRewardAmount
-          token={token}
-          tokens={tokens}
-          selectToken={selectToken}
-          amount={amount}
-          onChangeAmount={onChangeAmount}
-        />
+        <TokenAmountInput changeToken={() => {}} connected={true} {...TEMP} />
       </article>
       {details &&
-        <PoolIncentivizeDetails details={details} />
+        <PoolIncentivizeDetails details={details} startDate={startDate} period={period} />
       }
 
       <Disclaimer disclaimer={disclaimer} />

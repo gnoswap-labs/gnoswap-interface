@@ -38,10 +38,11 @@ export const TokenAmountInputWrapper = styled.div`
   .amount-text {
     width: 100%;
     ${fonts.body1};
-    font-size: 27px;
-    line-height: 38px;
     color: ${({ theme }) => theme.color.text01};
     margin-right: 30px;
+    ${media.mobile} {
+      ${fonts.body5};
+    }
   }
 
   .price-text,

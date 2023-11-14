@@ -5,13 +5,25 @@ import React, { useMemo } from "react";
 import { wrapper } from "./PoolIncentivizeDetails.styles";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import BigNumber from "bignumber.js";
+import { DistributionPeriodDate } from "../pool-incentivize/PoolIncentivize";
 
 interface PoolIncentivizeDetailsProps {
   details: PoolDetailModel;
+  startDate?: DistributionPeriodDate;
+  period: number;
+}
+
+function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
+  const utcDate: Date = new Date(Date.UTC(myDate?.year || 0, myDate?.month || 1 - 1, (myDate?.date || 0) + (days || 0), 0, 0, 0));
+  const formattedDate: string =
+    utcDate.toISOString().replace(/T/, " ").replace(/\..+/, "") + " (UTC)";
+  return formattedDate;
 }
 
 const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   details,
+  startDate,
+  period,
 }) => {
   const feeStr = useMemo(() => {
     return BigNumber(details.fee).toString();
@@ -30,7 +42,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
           <span className="pair-symbol">
             {makePairName(details)}
           </span>
-          <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
+          <Badge text={`${feeStr}%`} type={BADGE_TYPE.DARK_DEFAULT} />
         </div>
       </section>
       <section>
@@ -48,8 +60,8 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
         <h5 className="section-title">Period</h5>
         <div className="section-info">
           <span className="select-date">
-            2022-12-06 00:00 (UTC)
-            <br />- 2023-01-05 00:00 (UTC)
+            {formatDate(startDate, 0)}
+            <br />- {formatDate(startDate, period)}
           </span>
           <span className="period-desc">
             1,820.5 GNOS will be distributed daily

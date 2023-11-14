@@ -144,23 +144,21 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (isSwitchNetwork) {
       return "SWITCH_NETWORK";
     }
-    if (!swapFeeTier) {
+    if (!tokenA || !tokenB) {
+      return "INVALID_PAIR";
+    }
+    if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput)) {
       return "ENTER_AMOUNT";
     }
-    if (!priceRange) {
-      return "INVALID_RANGE";
-    }
+
     if (!account?.balances || account.balances.length === 0) {
       return "INSUFFICIENT_BALANCE";
     }
     if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
       return "INSUFFICIENT_BALANCE";
     }
-    if (BigNumber(tokenAAmountInput.amount).isLessThanOrEqualTo(0)) {
-      return "ENTER_AMOUNT";
-    }
-    if (BigNumber(tokenBAmountInput.amount).isLessThanOrEqualTo(0)) {
-      return "ENTER_AMOUNT";
+    if (!priceRange) {
+      return "INVALID_RANGE";
     }
     return "CREATE_POOL";
   }, [
@@ -171,6 +169,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     tokenAAmountInput.amount,
     tokenBAmountInput.amount,
     isSwitchNetwork,
+    tokenA,
+    tokenB,
   ]);
 
   useEffect(() => {

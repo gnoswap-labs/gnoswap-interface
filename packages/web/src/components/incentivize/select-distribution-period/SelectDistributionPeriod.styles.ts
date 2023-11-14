@@ -8,7 +8,7 @@ export const SelectDistributionPeriodWrapper = styled.div`
   gap: 16px;
 
   .section-title {
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text10};
     ${fonts.body12}
   }
 
