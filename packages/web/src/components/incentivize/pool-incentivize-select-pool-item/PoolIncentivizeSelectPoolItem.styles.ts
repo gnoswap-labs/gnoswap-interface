@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
   display: flex;
@@ -19,9 +20,11 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
     align-items: center;
 
     .token-pair-name {
-      height: 14px;
       color: ${({ theme }) => theme.color.text03};
-      ${fonts.body12}
+      ${fonts.body10}
+      ${media.mobile} {
+        ${fonts.body12}
+      }
     }
   }
 
@@ -35,7 +38,10 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
     .liquidity {
       height: 14px;
       color: ${({ theme }) => theme.color.text03};
-      ${fonts.body12}
+      ${fonts.body11}
+      ${media.mobile} {
+        ${fonts.body12}
+      }
     }
   }
 

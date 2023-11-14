@@ -76,6 +76,9 @@ export const PoolCardWrapper = styled.div`
     .box-group {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 2px;
+      .content {
+        gap: 4px;
+      }
     }
   }
 

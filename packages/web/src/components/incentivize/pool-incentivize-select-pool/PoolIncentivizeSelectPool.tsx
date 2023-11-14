@@ -79,7 +79,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
             <div className="search-wrapper" onClick={e => e.stopPropagation()}>
               <SearchInput
                 onChange={onChangeKeyword}
-                placeholder="Search name or paste address"
+                placeholder="Search by Name, Symbol, or Path"
               />
             </div>
             <div className="pool-list-wrapper">

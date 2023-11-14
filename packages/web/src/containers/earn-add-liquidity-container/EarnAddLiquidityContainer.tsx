@@ -13,7 +13,7 @@ import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
 import { useAtom } from "jotai";
-import { SwapState } from "@states/index";
+import { EarnState, SwapState } from "@states/index";
 import { useRouter } from "next/router";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { usePool } from "@hooks/pool/use-pool";
@@ -82,6 +82,7 @@ const TEMP_CUSTOM_PRICE_RANGE: AddLiquidityPriceRage[] = [
 ];
 
 const EarnAddLiquidityContainer: React.FC = () => {
+  const [isEarnAdd, setIsEarnAdd] = useAtom(EarnState.isOneClick);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
   const { query } = useRouter();
@@ -232,6 +233,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
     changeSlippage(Number(vl));
   }, []);
 
+  const handleClickOneStaking = useCallback(() => {
+    if (!isEarnAdd) {
+      setIsEarnAdd(true);
+    }
+  }, [isEarnAdd, setIsEarnAdd]);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -258,6 +265,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       connected={connectedWallet}
       slippage={slippage}
       changeSlippage={handleChangeSlippage}
+      handleClickOneStaking={handleClickOneStaking}
     />
   );
 };

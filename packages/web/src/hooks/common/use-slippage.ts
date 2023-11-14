@@ -8,7 +8,7 @@ export const useSlippage = () => {
 
   const changeSlippage = useCallback(
     (slippage: number) => {
-      const changedSlippage = Math.min(100, Math.max(0, slippage));
+      const changedSlippage = Math.min(100, Math.max(0.01, slippage));
       setSlippage(changedSlippage);
     },
     [setSlippage],

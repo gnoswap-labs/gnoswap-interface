@@ -16,6 +16,8 @@ import { TokenModel } from "@models/token/token-model";
 import SelectPriceRangeCustom from "@components/common/select-price-range-custom/SelectPriceRangeCustom";
 import IconSettings from "@components/common/icons/IconSettings";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
+import IconStaking from "@components/common/icons/IconStaking";
+import { useConnectWalletModal } from "@hooks/wallet/use-test";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -42,6 +44,7 @@ interface EarnAddLiquidityProps {
   connected: boolean;
   slippage: number;
   changeSlippage: (value: string) => void;
+  handleClickOneStaking?: () => void;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -68,12 +71,15 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   connected,
   slippage,
   changeSlippage,
+  handleClickOneStaking,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openCustomPriceRange, setOpenCustomPriceRange] = useState(false);
   const [openedSetting, setOpenedSetting] = useState(false);
+  const { openModal } = useConnectWalletModal(); 
+  
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
@@ -149,6 +155,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     if (tokenA && tokenA.symbol !== token.symbol) {
       setOpenedFeeTier(true);
       setOpenedPriceRange(true);
+      handleClickOneStaking?.();
     }
     changeTokenB(token);
   }, [changeTokenB, tokenA, tokenB]);
@@ -157,6 +164,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     if (tokenB && tokenB.symbol !== token.symbol) {
       setOpenedFeeTier(true);
       setOpenedPriceRange(true);
+      handleClickOneStaking?.();
     }
     changeTokenA(token);
   }, [changeTokenA, tokenA, tokenB]);
@@ -258,7 +266,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             ticks={ticks}
           />
           }
-          <SelectPriceRangeSummary {...priceRangeSummary} />
+          {selectedPriceRange && existTokenPair && selectedFeeRate && <SelectPriceRangeSummary {...priceRangeSummary} />}
         </article>
 
         <article className="selector-wrapper">
@@ -276,13 +284,15 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               />
             )}
           </div>
-          <LiquidityEnterAmounts
-            tokenAInput={tokenAInput}
-            tokenBInput={tokenBInput}
-            changeTokenA={changeTokenA}
-            changeTokenB={changeTokenB}
-            connected={connected}
-          />
+          <div className="liquity-enter-amount">
+            <LiquidityEnterAmounts
+              tokenAInput={tokenAInput}
+              tokenBInput={tokenBInput}
+              changeTokenA={changeTokenA}
+              changeTokenB={changeTokenB}
+              connected={connected}
+            />
+          </div>
         </article>
         {isEarnAdd && !existTokenPair && <div className="dim-content" />}
       </div>
@@ -295,6 +305,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         }}
         className="button-submit"
       />
+      {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && <div className="btn-one-click" onClick={() => openModal()}>
+        <IconStaking /> One-Click Staking
+      </div>}
     </EarnAddLiquidityWrapper>
   );
 };

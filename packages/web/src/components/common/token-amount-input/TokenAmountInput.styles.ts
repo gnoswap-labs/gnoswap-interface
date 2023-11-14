@@ -22,7 +22,7 @@ export const TokenAmountInputWrapper = styled.div`
   }
 
   .token {
-    height: 30px;
+    height: 32px;
     cursor: default;
     span {
       font-size: 15px;
@@ -43,12 +43,15 @@ export const TokenAmountInputWrapper = styled.div`
     ${media.mobile} {
       ${fonts.body5};
     }
+    &::placeholder {
+      color: ${({ theme }) => theme.color.text02};
+    }
   }
 
   .price-text,
   .balance-text {
     ${fonts.p2};
-    color: ${({ theme }) => theme.color.text10};
+    color: ${({ theme }) => theme.color.text04};
   }
   .disable-pointer {
     cursor: default;

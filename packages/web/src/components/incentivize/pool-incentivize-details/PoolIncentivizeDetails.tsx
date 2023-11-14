@@ -14,7 +14,7 @@ interface PoolIncentivizeDetailsProps {
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
-  const utcDate: Date = new Date(Date.UTC(myDate?.year || 0, myDate?.month || 1 - 1, (myDate?.date || 0) + (days || 0), 0, 0, 0));
+  const utcDate: Date = new Date(Date.UTC(myDate?.year || 0, (myDate?.month || 1) - 1, (myDate?.date || 0) + (days || 0), 0, 0, 0));
   const formattedDate: string =
     utcDate.toISOString().replace(/T/, " ").replace(/\..+/, "") + " (UTC)";
   return formattedDate;
@@ -42,7 +42,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
           <span className="pair-symbol">
             {makePairName(details)}
           </span>
-          <Badge text={`${feeStr}%`} type={BADGE_TYPE.DARK_DEFAULT} />
+          <Badge text={`${Number(feeStr) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
         </div>
       </section>
       <section>

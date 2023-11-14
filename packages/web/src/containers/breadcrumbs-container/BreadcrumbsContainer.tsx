@@ -31,7 +31,6 @@ interface Props {
 
 const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb }) => {
   const router = useRouter();
-  console.log(router.pathname);
 
   const removePoolSteps = useMemo(() => {
     if (listBreadcrumb) {

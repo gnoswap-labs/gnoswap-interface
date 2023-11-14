@@ -79,6 +79,9 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     .badge-group {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 3px;
+      .content {
+        gap: 4px;
+      }
       .staking-icon {
         width: 16px;
         height: 16px;
