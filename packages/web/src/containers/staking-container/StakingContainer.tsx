@@ -127,11 +127,11 @@ const StakingContainer: React.FC = () => {
   }, []);
 
   const handleClickStakeRedirect = useCallback(() => {
-    router.push("/earn/pool/stake");
+    router.push("/earn/pool/bar_foo_100/stake");
   }, []);
 
   const handleClickUnStakeRedirect = useCallback(() => {
-    router.push("/earn/pool/unstake");
+    router.push("/earn/pool/bar_foo_100/unstake");
   }, []);
 
   return (

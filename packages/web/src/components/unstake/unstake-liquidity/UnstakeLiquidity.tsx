@@ -46,6 +46,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
           height: 57,
           fullWidth: true,
         }}
+        disabled={checkedList.length === 0}
       />
     </div>
   );
