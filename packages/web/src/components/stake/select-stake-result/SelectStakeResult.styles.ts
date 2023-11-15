@@ -73,7 +73,7 @@ export const wrapper = (theme: Theme) => css`
     h5 {
       margin-right: 4px;
       &.total-amount-title, &.apr-title {
-        margin-right: 8px;
+        margin-right: 4px;
         color: ${theme.color.text04};
       }
     }

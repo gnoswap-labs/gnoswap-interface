@@ -63,4 +63,9 @@ export const wrapper = (theme: Theme) => css`
       width: 100%;
     }
   }
+  ${media.mobile} {
+    .content-wrap {
+      padding: 0 16px;
+    }
+  }
 `;

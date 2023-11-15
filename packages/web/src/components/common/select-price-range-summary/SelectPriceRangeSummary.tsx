@@ -21,6 +21,12 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
   return (
     <SelectPriceRangeSummaryWrapper>
       <div className="row">
+        <div className="title-wrapper">
+          <span className="title">Deposit Ratio</span>
+          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The deposit ratio of the two tokens is determined based on the current price and the set price range.</ToolTipContentWrapper>}>
+            <IconInfo />
+          </Tooltip>
+        </div>
         <span className="title">Deposit Ratio</span>
         <span className="value">{depositRatio}</span>
       </div>
@@ -36,7 +42,12 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
       </div>
 
       <div className="row">
-        <span className="title">Estimated APR</span>
+        <div className="title-wrapper">
+          <span className="title">Fee APR</span>
+          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The estimated APR from swap fees is calculated based on the selected price range of the position.</ToolTipContentWrapper>}>
+            <IconInfo />
+          </Tooltip>
+        </div>
         <span className="value">{estimatedApr}</span>
       </div>
     </SelectPriceRangeSummaryWrapper>

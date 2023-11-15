@@ -7,7 +7,7 @@ export const HEADER_NAV = [
   {
     title: "Earn",
     path: "/earn",
-    subPath: ["/earn/pool/", "/earn/add"]
+    subPath: ["/earn/pool/", "/earn/add", "/earn/stake"]
   },
   {
     title: "Wallet",

@@ -1,4 +1,4 @@
-import ConnectWalletContainer from "@containers/connect-wallet-containerTest/ConnectWalletContainer";
+import OneClickStakingModalContainer from "@containers/one-click-staking-modal-container/OneClickStakingModalContainer";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback } from "react";
@@ -7,13 +7,13 @@ export interface Props {
   openModal: () => void;
 }
 
-export const useConnectWalletModal = (): Props => {
+export const useOneClickStakingModal = (): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
-    setModalContent(<ConnectWalletContainer />);
+    setModalContent(<OneClickStakingModalContainer />);
   }, [setModalContent, setOpenedModal]);
 
   return {

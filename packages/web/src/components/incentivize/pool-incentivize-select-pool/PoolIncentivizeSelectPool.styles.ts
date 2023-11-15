@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.styles";
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
+import { media } from "@styles/media";
 
 export const PoolIncentivizeSelectPoolWrapper = styled.div`
   ${({ theme }) => PoolIncentivizeBoxStyle(theme)};
@@ -37,8 +38,8 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div`
     align-items: center;
 
     .icon-wrapper {
-      width: 24px;
-      height: 24px;
+      width: 16px;
+      height: 16px;
       * {
         fill: ${({ theme }) => theme.color.icon01};
       }
@@ -79,5 +80,11 @@ export const PoolIncentivizeSelectPoolBox = styled.div`
         padding: 16px 24px;
       }
     }
+  }
+  ${media.mobile} {
+    top: 0;
+    left: calc((100% - 100vw) / 2);
+    width: 100vw;
+
   }
 `;

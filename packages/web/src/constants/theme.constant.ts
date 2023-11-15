@@ -48,6 +48,7 @@ const palette = {
   greenDark: "#2eff8266",
   transparent: "transparent",
   shadowDark: "8px 8px 20px rgba(0, 0, 0, 0.2)",
+  shadowDark1: "10px 14px 60px rgba(0, 0, 0, 0.4)",
   shadowLight: "8px 8px 20px rgba(0, 0, 0, 0.08)",
 };
 
@@ -220,6 +221,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   redDark: colors.global.redDark,
   greenDark: colors.global.greenDark,
   shadow: colors.global.shadowDark,
+  shadow01: colors.global.shadowDark1,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -327,4 +329,5 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   redDark: colors.global.redDark,
   greenDark: colors.global.greenDark,
   shadow: colors.global.shadowLight,
+  shadow01: colors.global.shadowLight,
 };

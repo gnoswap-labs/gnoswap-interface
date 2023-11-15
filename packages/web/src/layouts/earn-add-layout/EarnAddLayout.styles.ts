@@ -34,10 +34,11 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .add-liquidity-section {
-    margin: 0 auto;
+    margin: auto;
     height: 100%;
   }
   .one-click-staking {
+    padding: 0 24px 0 16px;
     .fake-div {
     }
   }
@@ -61,8 +62,14 @@ export const wrapper = (theme: Theme) => css`
         ${fonts.h4};
       }
     }
+    .add-liquidity-section {
+      margin: auto;
+    }
     .one-click-staking {
+      padding: 0;
       margin: 16px auto 0;
+      width: 100%;
+      max-width: 500px;
       .fake-div {
         width: 430px;
       }
@@ -89,6 +96,11 @@ export const wrapper = (theme: Theme) => css`
     }
     .add-liquidity-section {
       margin: none;
+    }
+  }
+  ${media.mobile} {
+    .content-wrap {
+      padding: 0 16px;
     }
   }
 `;

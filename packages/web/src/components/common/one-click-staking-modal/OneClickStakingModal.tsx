@@ -1,4 +1,4 @@
-import { ConnectWalletModalWrapper } from "./ConnectWalletModal.styles";
+import { OneClickStakingModalWrapper } from "./OneClickStakingModal.styles";
 import React, { useCallback } from "react";
 import IconClose from "../icons/IconCancel";
 import LiquidityEnterAmounts from "../liquidity-enter-amounts/LiquidityEnterAmounts";
@@ -47,13 +47,13 @@ const priceRangeInfo = {
   feeBoost: "x10.23",
   estimatedAPR: "N/A",
 };
-const ConnectWalletModal: React.FC<Props> = ({ close }) => {
+const OneClickStakingModal: React.FC<Props> = ({ close }) => {
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
 
   return (
-    <ConnectWalletModalWrapper>
+    <OneClickStakingModalWrapper>
       <div className="modal-body">
         <div className="header">
           <h6>Confirm One-Click Staking</h6>
@@ -83,13 +83,13 @@ const ConnectWalletModal: React.FC<Props> = ({ close }) => {
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
               }}
-              className="button-connect"
+              className="button-confirm"
             />
           </div>
         </div>
       </div>
-    </ConnectWalletModalWrapper>
+    </OneClickStakingModalWrapper>
   );
 };
 
-export default ConnectWalletModal;
+export default OneClickStakingModal;

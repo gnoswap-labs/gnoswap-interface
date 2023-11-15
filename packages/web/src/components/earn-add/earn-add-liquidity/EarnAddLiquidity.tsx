@@ -17,7 +17,6 @@ import SelectPriceRangeCustom from "@components/common/select-price-range-custom
 import IconSettings from "@components/common/icons/IconSettings";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
 import IconStaking from "@components/common/icons/IconStaking";
-import { useConnectWalletModal } from "@hooks/wallet/use-test";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -45,6 +44,7 @@ interface EarnAddLiquidityProps {
   slippage: number;
   changeSlippage: (value: string) => void;
   handleClickOneStaking?: () => void;
+  openModal: () => void;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -72,13 +72,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   slippage,
   changeSlippage,
   handleClickOneStaking,
+  openModal,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openCustomPriceRange, setOpenCustomPriceRange] = useState(false);
   const [openedSetting, setOpenedSetting] = useState(false);
-  const { openModal } = useConnectWalletModal(); 
   
 
   const existTokenPair = useMemo(() => {
@@ -305,7 +305,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         }}
         className="button-submit"
       />
-      {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && <div className="btn-one-click" onClick={() => openModal()}>
+      {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && <div className="btn-one-click" onClick={openModal}>
         <IconStaking /> One-Click Staking
       </div>}
     </EarnAddLiquidityWrapper>

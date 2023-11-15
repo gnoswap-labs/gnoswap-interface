@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const SelectBoxWrapper = styled.div`
   position: relative;
@@ -40,6 +41,9 @@ export const SelectBoxWrapper = styled.div`
   .current {
     ${fonts.body9}
     color: ${({ theme }) => theme.color.text02};
+  }
+  ${media.mobile} {
+    padding: 0 12px;
   }
 `;
 

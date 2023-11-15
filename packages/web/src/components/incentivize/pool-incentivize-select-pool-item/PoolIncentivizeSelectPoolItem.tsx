@@ -60,7 +60,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
   }
 
   return (
-    <PoolIncentivizeSelectPoolItemWrapper onClick={onClickItem}>
+    <PoolIncentivizeSelectPoolItemWrapper visibleLiquidity={visibleLiquidity} onClick={onClickItem}>
       <div className="main-content-wrapper">
         <DoubleLogo
           {...doubleLogos}

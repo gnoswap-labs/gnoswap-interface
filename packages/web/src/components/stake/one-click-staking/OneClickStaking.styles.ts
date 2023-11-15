@@ -5,11 +5,11 @@ import { media } from "@styles/media";
 
 export const OneClickStakingWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
+  background-color: ${({ theme }) => theme.color.background01};
   width: 430px;
   padding: 23px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
-  margin-left: 16px;
   gap: 16px;
   .one-click-info,
   .unstake-info,
@@ -78,7 +78,7 @@ export const OneClickStakingWrapper = styled.div`
   }
   ${media.tablet} {
     margin-left: 0;
-    width: 500px;
+    width: 100%;
     max-width: 500px;
   }
 `;

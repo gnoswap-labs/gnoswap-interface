@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const ConnectWalletModalWrapper = styled.div`
+export const OneClickStakingModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
   padding: 24px;
@@ -51,7 +51,7 @@ export const ConnectWalletModalWrapper = styled.div`
       > div {
         width: 100%;
         
-        .button-connect {
+        .button-confirm {
           gap: 8px;
           height: 57px;
           span {
@@ -87,7 +87,7 @@ export const ConnectWalletModalWrapper = styled.div`
         .content {
             gap: 8px;
             > div {
-              .button-connect {
+              .button-confirm {
                 height: 44px;
                 span {
                   ${fonts.body9}

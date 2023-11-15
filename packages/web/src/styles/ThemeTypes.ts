@@ -103,6 +103,7 @@ export interface ThemeColorType {
   redDark: string;
   greenDark: string;
   shadow: string;
+  shadow01: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

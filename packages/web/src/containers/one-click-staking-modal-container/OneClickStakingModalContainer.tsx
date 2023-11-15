@@ -1,9 +1,9 @@
-import ConnectWalletModal from "@components/common/connect-wallet-modal-test/ConnectWalletModal";
+import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import React, { useCallback } from "react";
 
-const ConnectWalletContainer = () => {
+const OneClickStakingModalContainer = () => {
   const clearModal = useClearModal();
   const { connectAdenaClient } = useWallet();
 
@@ -16,7 +16,7 @@ const ConnectWalletContainer = () => {
     close();
   }, [connectAdenaClient, close]);
   
-  return <ConnectWalletModal close={close} connect={connect}/>;
+  return <OneClickStakingModal close={close} connect={connect}/>;
 };
 
-export default ConnectWalletContainer;
+export default OneClickStakingModalContainer;

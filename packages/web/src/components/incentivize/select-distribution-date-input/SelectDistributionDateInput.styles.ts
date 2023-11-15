@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
 export const SelectDistributionDateInputWrapper = styled.div`
   display: flex;
@@ -40,6 +41,9 @@ export const SelectDistributionDateInputWrapper = styled.div`
       ${fonts.body9}
       color: ${({ theme }) => theme.color.text02};
     }
+    ${media.mobile} {
+      padding: 0 12px;
+    }
   }
 
   & .calendar-container {
@@ -48,7 +52,8 @@ export const SelectDistributionDateInputWrapper = styled.div`
     & .calendar-wrapper {
       position: absolute;
       top: 0;
-      width: 315px;
+      width: 100%;
+      min-width: 315px;
       z-index: 10;
     }
   }

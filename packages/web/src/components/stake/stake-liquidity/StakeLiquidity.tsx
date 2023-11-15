@@ -20,7 +20,7 @@ export const CONTENT_TITLE = {
   PERIOD: "1. Select Unstaking Period",
   LIQUIDITY: "2. Select Liquidity",
   TOTAL_STAKING: "Total Staking Amount",
-  APR: "Estimated APR",
+  APR: "Staking APR",
   UNCLAIM_GNS: "Unclaimed GNS Rewards",
   UNCLAIM_GNOT: "Unclaimed GNOT Rewards",
 };

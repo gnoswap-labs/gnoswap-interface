@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const SelectDistributionPeriodWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "center")};
@@ -31,5 +32,13 @@ export const SelectDistributionPeriodWrapper = styled.div`
   .period {
     flex-shrink: 0;
     width: 150px;
+  }
+  ${media.mobile} {
+    .select-date-wrap {
+      gap: 8px;
+    }
+    .period {
+      width: 110px;
+    }
   }
 `;

@@ -15,11 +15,13 @@ export const PoolIncentivizeWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background20};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
-  box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: ${({ theme }) => theme.color.shadow01};
   padding: 23px;
   margin: 0 auto;
   ${media.mobile} {
     padding: 11px;
+    width: 100%;
+    max-width: 500px;
   }
 
   .title {

@@ -4,7 +4,7 @@ import Footer from "@components/common/footer/Footer";
 import EarnAddLayout from "@layouts/earn-add-layout/EarnAddLayout";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import EarnAddLiquidityContainer from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import OneClickStakingContainer from "@containers/one-click-staking/OneClickStakingContainer";
+import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 

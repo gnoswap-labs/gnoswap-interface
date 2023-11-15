@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { usePool } from "@hooks/pool/use-pool";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -105,6 +106,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   );
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
+  const { openModal: openOneClickModal } = useOneClickStakingModal();
 
   const {
     connected: connectedWallet,
@@ -287,6 +289,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       connected={connectedWallet}
       slippage={slippage}
       changeSlippage={handleChangeSlippage}
+      openModal={openOneClickModal}
     />
   );
 };

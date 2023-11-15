@@ -2,13 +2,19 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
-export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
+interface Props {
+  visibleLiquidity: boolean;
+}
+
+export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
   display: flex;
   flex-direction: row;
   width: 100%;
   height: auto;
   align-items: center;
-  padding: 16px 0;
+  padding: ${({ visibleLiquidity}) => {
+    return visibleLiquidity ? "12px 0" : "16px 0";
+  }};
   cursor: pointer;
 
   .main-content-wrapper {
@@ -46,7 +52,9 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.color.hover02};
+    background-color:  ${({ visibleLiquidity, theme}) => {
+      return visibleLiquidity ? theme.color.hover02 : "transparent";
+    }};
   }
 `;
 

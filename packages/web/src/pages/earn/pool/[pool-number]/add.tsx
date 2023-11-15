@@ -6,7 +6,7 @@ import PoolAddLayout from "@layouts/pool-add-layout/PoolAddLayout";
 import PoolAddLiquidityContainer from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
-import OneClickStakingContainer from "@containers/one-click-staking/OneClickStakingContainer";
+import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
 
 export default function EarnAdd() {
   const { breakpoint } = useWindowSize();

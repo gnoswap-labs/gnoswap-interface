@@ -16,7 +16,7 @@ const tempDATA = [
     value: 108.85,
   },
   {
-    label: "Reward APR",
+    label: "Staking APR",
     value: 108.85,
   },
   {
@@ -83,7 +83,7 @@ const OneClickStaking: React.FC<Props> = ({ handleClickGotoStaking }) => {
       </div>
       <div className="stake-info">
         <div className="title">
-          <div className="label">My Unstaked Positions</div>
+          <div className="label">My Staked Positions</div>
         </div>
         {UNSTAKE_DATA.map((item, index) => (
           <div className="content" key={index}>
