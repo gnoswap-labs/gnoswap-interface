@@ -44,9 +44,9 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
     .liquidity {
       height: 14px;
       color: ${({ theme }) => theme.color.text03};
-      ${fonts.body11}
+      ${fonts.body9}
       ${media.mobile} {
-        ${fonts.body12}
+        ${fonts.body11}
       }
     }
   }

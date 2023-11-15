@@ -68,6 +68,14 @@ export const wrapper = (theme: Theme) => css`
         background-color: ${theme.color.point};
         border-radius: 4px;
       }
+      &.disable-date {
+        pointer-events: none;
+        cursor: default;
+        color: ${theme.color.text22};
+        &:hover {
+          background-color: transparent;
+        }
+      }
     }
   }
 `;

@@ -12,6 +12,8 @@ import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
+import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { TokenModel } from "@models/token/token-model";
 
 export interface DistributionPeriodDate {
   year: number;
@@ -31,31 +33,13 @@ interface PoolIncentivizeProps {
   period: number;
   periods: number[];
   setPeriod: (period: number) => void;
-  amount: string;
-  onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
   details: PoolDetailModel | null;
   disclaimer: string;
   handleConfirmIncentivize: () => void;
+  tokenAmountInput: TokenAmountInputModel;
+  changeToken: (token: TokenModel) => void;
 }
-const TEMP_TOKEN = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
-  decimals: 4,
-  symbol: "GNOS",
-  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
-  priceId: "gno.land/r/gnos",
-};
-const TEMP = {
-  token: TEMP_TOKEN,
-  amount: "12,211",
-  balance: "12,211",
-  usdValue: "12.3",
-  changable: true,
-  changeAmount: () => {},
-};
+
 const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   pools,
   selectedPool,
@@ -68,6 +52,8 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   details,
   disclaimer,
   handleConfirmIncentivize,
+  tokenAmountInput,
+  changeToken,
 }) => {
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
@@ -100,7 +86,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
       </article>
 
       <article>
-        <TokenAmountInput changeToken={() => {}} connected={true} {...TEMP} />
+        <TokenAmountInput changeToken={changeToken} connected={true} {...tokenAmountInput} changable={true} />
       </article>
       {details &&
         <PoolIncentivizeDetails details={details} startDate={startDate} period={period} />

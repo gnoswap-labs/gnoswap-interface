@@ -38,8 +38,11 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div`
     align-items: center;
 
     .icon-wrapper {
-      width: 16px;
-      height: 16px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       * {
         fill: ${({ theme }) => theme.color.icon01};
       }

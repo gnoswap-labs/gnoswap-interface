@@ -6,6 +6,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
 import POOLS from "@repositories/pool/mock/pools.json";
 import { useIncentivizePoolModal } from "@hooks/incentivize/use-incentivize-pool-modal";
+import { TokenModel } from "@models/token/token-model";
+import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 export const dummyDisclaimer =
   "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
 
@@ -27,12 +29,17 @@ const periods = [90, 180, 365];
 const PoolIncentivizeContainer: React.FC = () => {
   const [startDate, setStartDate] = useState<DistributionPeriodDate>(DefaultDate);
   const [period, setPeriod] = useState(90);
-  const [amount, setAmount] = useState("");
   const [currentPool, setCurrentPool] = useState<PoolModel | null>(null);
   const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
+  const [token, setToken] = useState<TokenModel | null>(null);
+  const tokenAmountInput = useTokenAmountInput(token);
 
   const { openModal } = useIncentivizePoolModal();
+
+  const changeToken = useCallback((token: TokenModel) => {
+    setToken(token);
+  }, []);
 
   useEffect(() => {
     setPoolDetail(PoolDetailData.pool);
@@ -52,14 +59,6 @@ const PoolIncentivizeContainer: React.FC = () => {
     }
   }, []);
 
-  const onChangeAmount = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setAmount(value);
-    },
-    [],
-  );
-
   const handleConfirmIncentivize = useCallback(() => {
     openModal();
   }, []);
@@ -74,14 +73,14 @@ const PoolIncentivizeContainer: React.FC = () => {
       periods={periods}
       period={period}
       setPeriod={setPeriod}
-      amount={amount}
-      onChangeAmount={onChangeAmount}
       details={poolDetail}
       disclaimer={dummyDisclaimer}
       token={currentToken}
       tokens={tokenBalances}
       selectToken={selectToken}
       handleConfirmIncentivize={handleConfirmIncentivize}
+      tokenAmountInput={tokenAmountInput}
+      changeToken={changeToken}
     />
   );
 };
