@@ -48,7 +48,7 @@ export const wrapper = (theme: Theme) => css`
       height: 24px;
       ${mixins.flexbox("row", "center", "center")};
       p {
-        color: ${theme.color.text04};
+        color: ${theme.color.text03};
         margin-left: 5px;
       }
       strong {

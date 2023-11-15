@@ -80,7 +80,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
 
   return (
     <PoolIncentivizeWrapper>
-      <h3 className="title">Incentivize</h3>
+      <h3 className="title">Incentivize Pool</h3>
       <article>
         <PoolIncentivizeSelectPool
           pools={poolSelectItems}

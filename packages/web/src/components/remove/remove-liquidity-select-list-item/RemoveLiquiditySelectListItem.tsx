@@ -44,7 +44,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
       />
       <label htmlFor={`checkbox-item-${lpPosition.lpRewardId}`} />
       <DoubleLogo {...doubleLogo} size={24} />
-      <span className="token-id">#{lpPosition.lpRewardId}</span>
+      <span className="token-id">ID {lpPosition.lpRewardId}</span>
       {!selectable && (
         <div className="hover-info">
           <Tooltip

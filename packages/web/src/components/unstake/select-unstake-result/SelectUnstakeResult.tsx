@@ -20,12 +20,12 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
       <ul className="pooled-section">
         <li>
           <DoubleLogo left={dummyImg[0]} right={dummyImg[1]} size={24} />
-          <span className="token-id">#14450</span>
+          <span className="token-id">ID 14450</span>
           <strong className="period-value">available in 21 days</strong>
         </li>
         <li>
           <DoubleLogo left={dummyImg[0]} right={dummyImg[1]} size={24} />
-          <span className="token-id">#14450</span>
+          <span className="token-id">ID 14450</span>
           <strong className="period-value">available in 21 days</strong>
         </li>
       </ul>

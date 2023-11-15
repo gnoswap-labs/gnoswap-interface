@@ -2,6 +2,7 @@ import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const RemoveLiquiditySelectResultWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
@@ -60,9 +61,18 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
     h5 {
       ${fonts.body10};
     }
+    
     .total-value {
       ${fonts.body6}
       color: ${({ theme }) => theme.color.text02}
+    }
+    ${media.mobile} {
+      h5 {
+        ${fonts.body12};
+      }
+      .total-value {
+        ${fonts.body8}
+      }
     }
   }
 `;

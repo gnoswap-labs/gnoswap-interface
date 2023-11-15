@@ -21,6 +21,9 @@ export const wrapper = (theme: Theme) => css`
   }
   ${media.tabletMiddle} {
     margin: 0 auto;
+    max-width: 500px;
+    width: 100%;
+    padding: 12px;
   }
   .unstake-des {
     background-color: ${theme.color.backgroundOpacity4};
