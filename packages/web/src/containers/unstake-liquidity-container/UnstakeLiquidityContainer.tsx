@@ -1,5 +1,6 @@
 import UnstakeLiquidity from "@components/unstake/unstake-liquidity/UnstakeLiquidity";
 import { STAKED_OPTION } from "@constants/option.constant";
+import { useUnstakePositionModal } from "@hooks/earn/use-unstake-position-modal";
 import React, { useCallback, useEffect, useState } from "react";
 
 export const initData = [
@@ -26,6 +27,8 @@ export const initData = [
 const UnstakeLiquidityContainer: React.FC = () => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const [checkedAll, setCheckedAll] = useState(false);
+
+  const { openModal } = useUnstakePositionModal();
 
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
@@ -58,6 +61,10 @@ const UnstakeLiquidityContainer: React.FC = () => {
     [checkedList],
   );
 
+  const handleConfirmUnstake = useCallback(() => {
+    openModal();
+  }, []);
+
   return (
     <UnstakeLiquidity
       data={initData}
@@ -65,6 +72,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
+      handleConfirmUnstake={handleConfirmUnstake}
     />
   );
 };

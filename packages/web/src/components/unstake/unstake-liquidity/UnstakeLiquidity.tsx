@@ -11,6 +11,7 @@ interface UnstakeLiquidityProps {
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  handleConfirmUnstake: () => void;
 }
 
 const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
@@ -19,6 +20,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  handleConfirmUnstake,
 }) => {
   return (
     <div css={wrapper}>
@@ -47,6 +49,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
           fullWidth: true,
         }}
         disabled={checkedList.length === 0}
+        onClick={handleConfirmUnstake}
       />
     </div>
   );
