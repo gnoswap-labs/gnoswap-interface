@@ -123,7 +123,7 @@ const StakingContainer: React.FC = () => {
   }, [isSwitchNetwork, connectedWallet]);
 
   const handleClickStaking = useCallback(() => {
-    router.push("/earn/pool/bar_foo_100/add?tokenA=gno.land%2Fr%2Fbar&tokenB=gno.land%2Fr%2Fgnos&direction=EXACT_IN");
+    router.push("/earn/pool/bar_foo_100/stake");
   }, []);
 
   const handleClickStakeRedirect = useCallback(() => {

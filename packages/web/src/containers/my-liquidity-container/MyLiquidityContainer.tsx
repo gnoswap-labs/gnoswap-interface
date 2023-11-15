@@ -135,7 +135,7 @@ const MyLiquidityContainer: React.FC = () => {
   }, [router]);
 
   const handleClickRemovePosition = useCallback(() => {
-    router.push("/earn/pool/remove");
+    router.push("/earn/pool/bar_foo_100/remove");
   }, [router]);
 
   return (
