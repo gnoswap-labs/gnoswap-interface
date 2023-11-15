@@ -38,6 +38,8 @@ interface PoolIncentivizeProps {
   handleConfirmIncentivize: () => void;
   tokenAmountInput: TokenAmountInputModel;
   changeToken: (token: TokenModel) => void;
+  textBtn: string;
+  disableButton: boolean;
 }
 
 const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
@@ -54,6 +56,8 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   handleConfirmIncentivize,
   tokenAmountInput,
   changeToken,
+  textBtn,
+  disableButton,
 }) => {
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
@@ -89,17 +93,18 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
         <TokenAmountInput changeToken={changeToken} connected={true} {...tokenAmountInput} changable={true} />
       </article>
       {details &&
-        <PoolIncentivizeDetails details={details} startDate={startDate} period={period} />
+        <PoolIncentivizeDetails amount={tokenAmountInput.amount} details={details} startDate={startDate} period={period} />
       }
 
       <Disclaimer disclaimer={disclaimer} />
       <Button
-        text="Incentivize Pool"
+        text={textBtn}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           height: 57,
           fullWidth: true,
         }}
+        disabled={disableButton}
         onClick={handleConfirmIncentivize}
       />
     </PoolIncentivizeWrapper>

@@ -25,7 +25,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       setBalance("0");
     }
   }, [balances, token]);
-
+  
   const usdValue = useMemo(() => {
     if (!usd) {
       return "-";
@@ -37,7 +37,6 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!token) {
       return;
     }
-
     const amount = BigNumber(value);
     setAmount(amount.toString());
 

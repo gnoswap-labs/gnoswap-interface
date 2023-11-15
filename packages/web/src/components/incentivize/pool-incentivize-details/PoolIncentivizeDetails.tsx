@@ -11,6 +11,7 @@ interface PoolIncentivizeDetailsProps {
   details: PoolDetailModel;
   startDate?: DistributionPeriodDate;
   period: number;
+  amount: string;
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
@@ -24,6 +25,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   details,
   startDate,
   period,
+  amount,
 }) => {
   const feeStr = useMemo(() => {
     return BigNumber(details.fee).toString();
@@ -64,7 +66,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
             <br />- {formatDate(startDate, period)}
           </span>
           <span className="period-desc">
-            1,820.5 GNOS will be distributed daily
+            {(Number(amount || 0) / period).toFixed(2)} GNOS will be distributed daily
           </span>
         </div>
       </section>
