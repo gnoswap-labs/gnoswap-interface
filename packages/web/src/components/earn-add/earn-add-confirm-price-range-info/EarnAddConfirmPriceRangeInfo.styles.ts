@@ -62,12 +62,38 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
   .key {
     color: ${({ theme }) => theme.color.text04};
   }
+  .icon-swap {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
   .value {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
     color: ${({ theme }) => theme.color.text10};
     svg * {
-      fill: ${({ theme }) => theme.color.icon03};
+      fill: ${({ theme }) => theme.color.icon16};
     }
   }
+  .title-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
+  }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

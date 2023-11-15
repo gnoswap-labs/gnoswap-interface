@@ -45,8 +45,10 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
       height: 14px;
       color: ${({ theme }) => theme.color.text03};
       ${fonts.body9}
+      line-height: 100%;
       ${media.mobile} {
         ${fonts.body11}
+        line-height: 100%;
       }
     }
   }

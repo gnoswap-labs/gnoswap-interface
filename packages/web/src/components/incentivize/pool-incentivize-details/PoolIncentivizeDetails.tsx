@@ -1,17 +1,18 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { makePairName } from "@utils/string-utils";
-import React, { useMemo } from "react";
+import React from "react";
 import { wrapper } from "./PoolIncentivizeDetails.styles";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import BigNumber from "bignumber.js";
 import { DistributionPeriodDate } from "../pool-incentivize/PoolIncentivize";
+import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import { TokenModel } from "@models/token/token-model";
 
 interface PoolIncentivizeDetailsProps {
-  details: PoolDetailModel;
+  details: PoolSelectItemInfo | null;
   startDate?: DistributionPeriodDate;
   period: number;
   amount: string;
+  token: TokenModel | null;
 }
 
 function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
@@ -26,16 +27,14 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   startDate,
   period,
   amount,
+  token,
 }) => {
-  const feeStr = useMemo(() => {
-    return BigNumber(details.fee).toString();
-  }, [details]);
-
+  
   return (
     <div css={wrapper}>
       <section>
         <h5 className="section-title">Pool</h5>
-        <div className="section-info">
+        {details ? <div className="section-info">
           <DoubleLogo
             left={details.tokenA.logoURI}
             right={details.tokenB.logoURI}
@@ -44,19 +43,19 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
           <span className="pair-symbol">
             {makePairName(details)}
           </span>
-          <Badge text={`${Number(feeStr) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
-        </div>
+          <Badge text="0.05%" type={BADGE_TYPE.DARK_DEFAULT} />
+        </div> : <div className="section-info">-</div>}
       </section>
       <section>
         <h5 className="section-title">Total Amount</h5>
-        <div className="section-info">
+        {amount && token ? <div className="section-info">
           <img
-            src={details.tokenA.logoURI}
+            src={token.logoURI}
             alt="token-logo"
             className="token-logo"
           />
-          <span className="total-amount-value">106,208.255 GNOS</span>
-        </div>
+          <span className="total-amount-value">{amount} GNOS</span>
+        </div> : <div className="section-info">-</div>}
       </section>
       <section className="period-section">
         <h5 className="section-title">Period</h5>

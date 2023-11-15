@@ -44,6 +44,21 @@ export const PoolIncentivizeWrapper = styled.div`
       color: ${({ theme }) => theme.color.text10};
       ${fonts.body12}
     }
+    &.token-amount-input {
+      > div {
+        padding: 16px;
+        ${media.mobile} {
+          padding: 12px;
+        }
+      }
+      .token {
+        > div {
+          padding: 5px 10px 5px 12px;
+          gap: 8px;
+          height: 34px;
+        }
+      }
+    }
   }
 `;
 

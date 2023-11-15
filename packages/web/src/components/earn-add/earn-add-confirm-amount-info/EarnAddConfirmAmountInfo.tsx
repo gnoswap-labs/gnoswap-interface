@@ -43,7 +43,7 @@ const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
       </div>
 
       <EarnAddConfirmFeeInfoSection>
-        <span className="key">Fee</span>
+        <span className="key">Fee Tier</span>
         <Badge
           text={feeRate}
           type={BADGE_TYPE.DARK_DEFAULT}

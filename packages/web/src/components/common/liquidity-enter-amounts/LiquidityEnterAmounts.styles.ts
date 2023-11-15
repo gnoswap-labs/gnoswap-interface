@@ -47,7 +47,7 @@ export const LiquidityEnterAmountsWrapper = styled.div`
       .token-symbol {
         ${fonts.body9}
         margin-right: 6px;
-        height: 100%;
+        height: auto;
         margin-left: 0;
       }
     }

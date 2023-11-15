@@ -15,14 +15,14 @@ export const usePoolData = () => {
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(PoolState.isFetchedPositions);
 
   const poolListInfos = useMemo(() => {
-    return pools.map(PoolMapper.toListInfo);
+    return pools?.map(PoolMapper.toListInfo);
   }, [pools]);
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
-    const sortedTokens = pools.sort((p1, p2) => {
+    const sortedTokens = pools?.sort((p1, p2) => {
       return p2.topBin.annualizedFeeGrowth - p1.topBin.annualizedFeeGrowth;
     }).filter((_, index) => index < 3);
-    return sortedTokens.map(pool => ({
+    return sortedTokens?.map(pool => ({
       pool,
       upDown: "none",
       content: `${pool.topBin.annualizedFeeGrowth || 0}%`
@@ -38,7 +38,7 @@ export const usePoolData = () => {
 
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     return pools
-      .map(PoolMapper.toCardInfo)
+      ?.map(PoolMapper.toCardInfo)
       .filter(info => info.incentiveType === "Incentivized");
   }, [pools]);
 

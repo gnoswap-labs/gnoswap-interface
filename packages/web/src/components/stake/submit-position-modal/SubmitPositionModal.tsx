@@ -31,11 +31,11 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
             <div className="item-content">
               <div>
                 <div className="label">
-                  Estimated APR
+                  Staking APR
                   <Tooltip
                     placement="top"
                     FloatingContent={<ToolTipContentWrapper>
-                      The range of the estimated APR is calculated with the dynamic multiplier applied to your position based on the duration staked. on the duration staked.
+                      The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration.
                     </ToolTipContentWrapper>}
                   >
                     <IconInfo />
@@ -57,7 +57,7 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                   />
                   <div>ID 14450</div>
                 </div>
-                <div className="value">100.23% ~ 300.69%</div>
+                <div className="value">$145,541.10</div>
               </div>
               <div>
                 <div className="label-logo">
@@ -68,7 +68,7 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                   />
                   <div>ID 14450</div>
                 </div>
-                <div className="value">100.23% ~ 300.69%</div>
+                <div className="value">$145,541.10</div>
               </div>
             </div>
           </div>

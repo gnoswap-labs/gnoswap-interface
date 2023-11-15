@@ -124,7 +124,7 @@ const Header: React.FC<HeaderProps> = ({
               {HEADER_NAV.map(item => (
                 <BottomNavItem
                   key={item.title}
-                  className={pathname === item.path ? "selected" : ""}
+                  className={pathname === item.path || (item.subPath || []).some(_ => pathname.includes(_)) ? "selected" : ""}
                 >
                   <Link href={item.path}>{item.title}</Link>
                 </BottomNavItem>

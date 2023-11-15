@@ -57,4 +57,13 @@ export const SelectBoxModalWrapper = styled.div`
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   z-index: 4;
+  ${media.mobile} {
+    position: fixed;
+    top: auto;
+    bottom: 48px;
+    width: 100vw;
+    min-width: 360px;
+    left: 0;
+    zIndex: 1000;
+  }
 `;

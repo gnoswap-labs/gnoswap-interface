@@ -96,12 +96,18 @@ export const SubmitPositionModalWrapper = styled.div`
             color: ${({ theme }) => theme.color.text02};
           }
           .label-large {
-            color: ${({ theme }) => theme.color.text03};
+            color: ${({ theme }) => theme.color.text04};
             ${fonts.body10}
+            ${media.mobile} {
+              ${fonts.body12};
+            }
           }
           .value-large {
             ${fonts.body6}
             color: ${({ theme }) => theme.color.text02};
+            ${media.mobile} {
+              ${fonts.body8};
+            }
           }
         }
       }

@@ -40,14 +40,14 @@ export const EarnAddConfirmAmountInfoWrapper = styled.div`
       justify-content: center;
       align-items: center;
       border-radius: 40px;
-      background-color: ${({ theme }) => theme.color.background20};
+      background-color: ${({ theme }) => theme.color.background01};
       border: 1px solid ${({ theme }) => theme.color.border02};
 
       svg {
         width: 16px;
         height: 16px;
         * {
-          fill: ${({ theme }) => theme.color.text01};
+          fill: ${({ theme }) => theme.color.icon03};
         }
       }
     }
@@ -62,7 +62,7 @@ export const EarnAddConfirmFeeInfoSection = styled(
   justify-content: space-between;
   align-items: center;
   .value {
-    color: ${({ theme }) => theme.color.text03};
+    color: ${({ theme }) => theme.color.text12};
   }
   ${media.mobile} {
     height: 42px;

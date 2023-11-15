@@ -53,14 +53,14 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                     size={24}
                   />
                   <div className="value">{pool ? pool?.tokenA.symbol : ""}/{pool ? pool?.tokenB.symbol : ""}</div>
-                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text={"0.3%"} />
+                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text={"0.05%"} />
                 </div>
               </div>
               <div>
                 <div className="label">Total Amount</div>
                 <div className="value-content">
-                  <img className="image-logo" src="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png" alt="logo" />
-                  <div className="value">106,208.255 GNS</div>
+                  <img className="image-logo" src={data?.token?.logoURI || ""} alt="logo" />
+                  <div className="value">{data?.amount} GNS</div>
                 </div>
               </div>
               <div>
@@ -68,7 +68,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                 <div className="value-content value-content-column">
                   <div className="value">{formatDate(date, 0)} <br />
                   - {formatDate(date, period)}</div>
-                  <div className="sub-value">{(Number(data?.amount || 0) / period).toFixed(2)} GNS will be distributed daily</div>
+                  <div className="sub-value">{(Number(data?.amount || 0) / period).toFixed(2)} {data?.token?.symbol} will be distributed daily</div>
                 </div>
               </div>
             </div>

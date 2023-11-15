@@ -58,7 +58,8 @@ const PoolIncentivizeContainer: React.FC = () => {
       setCurrentPool(pool);
     }
   }, [setCurrentPool]);
-
+  console.log(currentPool, "currentPool");
+  
   const selectToken = useCallback((path: string) => {
     const token = tokenBalances.find(token => token.path === path);
     if (token) {
@@ -132,6 +133,7 @@ const PoolIncentivizeContainer: React.FC = () => {
       changeToken={changeToken}
       textBtn={textBtn}
       disableButton={disableButton}
+      connected={connected}
     />
   );
 };

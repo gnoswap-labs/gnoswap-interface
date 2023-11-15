@@ -150,7 +150,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
-    if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput)) {
+    if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
 

@@ -97,7 +97,7 @@ const StakingContainer: React.FC = () => {
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
   const [type, setType] = useState(3);
   const router = useRouter();
-
+  
   const handleResize = () => {
     if (typeof window !== "undefined") {
       window.innerWidth < 931 && window.innerWidth > 375
@@ -123,16 +123,16 @@ const StakingContainer: React.FC = () => {
   }, [isSwitchNetwork, connectedWallet]);
 
   const handleClickStaking = useCallback(() => {
-    router.push("/earn/pool/bar_foo_100/stake");
-  }, []);
+    router.push(`/earn/pool/${router.query["pool-number"]}/stake`);
+  }, [router]);
 
   const handleClickStakeRedirect = useCallback(() => {
-    router.push("/earn/pool/bar_foo_100/stake");
-  }, []);
+    router.push(`/earn/pool/${router.query["pool-number"]}/stake`);
+  }, [router]);
 
   const handleClickUnStakeRedirect = useCallback(() => {
-    router.push("/earn/pool/bar_foo_100/unstake");
-  }, []);
+    router.push(`/earn/pool/${router.query["pool-number"]}/unstake`);
+  }, [router]);
 
   return (
     <Staking

@@ -52,6 +52,7 @@ export const TokenAmountInputWrapper = styled.div`
   .balance-text {
     ${fonts.p2};
     color: ${({ theme }) => theme.color.text04};
+    cursor: pointer;
   }
   .disable-pointer {
     cursor: default;

@@ -46,6 +46,9 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div`
       * {
         fill: ${({ theme }) => theme.color.icon01};
       }
+      .icon-arrow {
+        fill: ${({ theme }) => theme.color.icon08};
+      }
     }
   }
 `;
@@ -85,9 +88,11 @@ export const PoolIncentivizeSelectPoolBox = styled.div`
     }
   }
   ${media.mobile} {
-    top: 0;
-    left: calc((100% - 100vw) / 2);
+    top: auto;
+    bottom: 48px;
+    left: 0;
     width: 100vw;
-
+    position: fixed;
+    min-width: 360px;
   }
 `;

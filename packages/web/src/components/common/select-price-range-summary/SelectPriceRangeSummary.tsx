@@ -27,7 +27,6 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
             <IconInfo />
           </Tooltip>
         </div>
-        <span className="title">Deposit Ratio</span>
         <span className="value">{depositRatio}</span>
       </div>
 

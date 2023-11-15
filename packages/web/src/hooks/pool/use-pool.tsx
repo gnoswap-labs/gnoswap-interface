@@ -27,7 +27,7 @@ export const usePool = ({
     }
 
     const tokenPairOfPaths = [tokenA.path, tokenB.path]; // [tokenA.path, tokenB.path];
-    return pools.filter(pool => tokenPairOfPaths.includes(pool.tokenA.path) && tokenPairOfPaths.includes(pool.tokenB.path));
+    return pools?.filter(pool => tokenPairOfPaths.includes(pool.tokenA.path) && tokenPairOfPaths.includes(pool.tokenB.path));
   }, [pools, tokenA, tokenB]);
 
   async function fetchPoolInfos(pools: PoolModel[]) {

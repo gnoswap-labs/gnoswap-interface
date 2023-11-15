@@ -1,8 +1,11 @@
+import IconInfo from "@components/common/icons/IconInfo";
 import IconSwap from "@components/common/icons/IconSwap";
-import React from "react";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import React, { useState, useCallback} from "react";
 import {
   EarnAddConfirmPriceRangeInfoSection,
   EarnAddConfirmPriceRangeInfoWrapper,
+  ToolTipContentWrapper,
 } from "./EarnAddConfirmPriceRangeInfo.styles";
 
 export interface EarnAddConfirmPriceRangeInfoProps {
@@ -28,6 +31,11 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   symbolTokenA,
   symbolTokenB,
 }) => {
+  const [swap, setSwap] = useState(false);
+
+  const onClickSwap = useCallback(() => {
+    setSwap(prev => !prev);
+  }, []);
   return (
     <EarnAddConfirmPriceRangeInfoWrapper>
       <p>Price Range</p>
@@ -53,16 +61,29 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
         <div className="row">
           <span className="key">Current Price:</span>
           <div className="value">
-            {Number(currentPrice).toFixed(2)} {symbolTokenA} per {symbolTokenB}{" "}
-            <IconSwap />
+            {Number(swap ? 1 / Number(currentPrice) : currentPrice).toFixed(2)} {swap ? symbolTokenB : symbolTokenA} per {swap ? symbolTokenA : symbolTokenB}{" "}
+            <div className="icon-swap" onClick={onClickSwap}>
+              <IconSwap />
+            </div>
           </div>
         </div>
         <div className="row">
-          <span className="key">Fee Boost:</span>
+          <div className="title-wrapper">
+            <span className="key">Fee Boost:</span>
+            <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>An indication of the additional swap fees you can receive for your selected price range compared to a full-range position.</ToolTipContentWrapper>}>
+              <IconInfo />
+            </Tooltip>
+          </div>
+
           <span className="value">{feeBoost}</span>
         </div>
         <div className="row">
-          <span className="key">Estimated APR:</span>
+          <div className="title-wrapper">
+            <span className="key">Fee APR:</span>
+              <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The estimated APR from swap fees is calculated based on the selected price range of the position.</ToolTipContentWrapper>}>
+                <IconInfo />
+              </Tooltip>
+          </div>
           <span className="value">{estimatedAPR}</span>
         </div>
       </EarnAddConfirmPriceRangeInfoSection>

@@ -116,6 +116,7 @@ export const SelectTokenWrapper = styled.div`
         border-radius: 36px;
         border: 1px solid ${({ theme }) => theme.color.border12};
         background-color: ${({ theme }) => theme.color.background02};
+        height: 34px;
         &:hover {
           background-color: ${({ theme }) => theme.color.hover02};
         }

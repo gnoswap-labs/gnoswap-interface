@@ -1,4 +1,5 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import IconSwapRight from "@components/common/icons/IconSwapRight";
 import React from "react";
 import { wrapper } from "./SelectUnstakeResult.styles";
 
@@ -21,12 +22,12 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
         <li>
           <DoubleLogo left={dummyImg[0]} right={dummyImg[1]} size={24} />
           <span className="token-id">ID 14450</span>
-          <strong className="period-value">available in 21 days</strong>
+          <strong className="period-value">125.23% APR <IconSwapRight /> 0% APR</strong>
         </li>
         <li>
           <DoubleLogo left={dummyImg[0]} right={dummyImg[1]} size={24} />
           <span className="token-id">ID 14450</span>
-          <strong className="period-value">available in 21 days</strong>
+          <strong className="period-value">125.23% APR <IconSwapRight /> 0% APR</strong>
         </li>
       </ul>
       <ul className="result-section">

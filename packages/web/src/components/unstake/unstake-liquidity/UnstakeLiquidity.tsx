@@ -42,7 +42,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         </a>
       </div>}
       <Button
-        text="Unstake Position"
+        text={checkedList.length === 0 ? "Select Position" : "Unstake Position"}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           height: 57,

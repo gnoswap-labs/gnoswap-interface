@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { TokenAmountInputWrapper } from "./TokenAmountInput.styles";
 import SelectPairButton from "../select-pair-button/SelectPairButton";
-import BigNumber from "bignumber.js";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
+import { isAmount } from "@common/utils/data-check-util";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -27,8 +27,9 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   }, [changable]);
 
   const onChangeAmountInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = BigNumber(event.target.value).toString();
-    changeAmount(value);
+    const value = event.target.value;
+    if (value !== "" && !isAmount(value)) return;
+    changeAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
   }, [changeAmount]);
 
   const handleFillBalance = useCallback(() => {

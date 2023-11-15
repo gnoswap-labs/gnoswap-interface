@@ -36,7 +36,16 @@ export const wrapper = (theme: Theme) => css`
       margin-left: 8px;
     }
     .period-value {
+      ${mixins.flexbox("row", "center", "flex-end")};
+      gap: 5px;
       margin-left: auto;
+      .svg {
+        width: 12px;
+        height: 12px;
+        * {
+          fill: ${theme.color.icon02};
+        }
+      }
     }
   }
 

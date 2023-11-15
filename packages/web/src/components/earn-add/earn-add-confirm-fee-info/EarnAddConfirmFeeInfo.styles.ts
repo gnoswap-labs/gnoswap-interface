@@ -17,6 +17,7 @@ export const EarnAddConfirmFeeInfoWrapper = styled.div`
 export const EarnAddConfirmFeeInfoSection = styled(
   EarnAddConfirmContentSection,
 )`
+  height: 60px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

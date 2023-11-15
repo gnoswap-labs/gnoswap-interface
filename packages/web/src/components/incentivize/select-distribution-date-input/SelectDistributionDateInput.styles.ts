@@ -51,10 +51,19 @@ export const SelectDistributionDateInputWrapper = styled.div`
 
     & .calendar-wrapper {
       position: absolute;
-      top: 0;
+      top: 5px;
       width: 100%;
       min-width: 315px;
       z-index: 10;
+      ${media.mobile} {
+        position: fixed;
+        top: auto;
+        bottom: 48px;
+        width: 100vw;
+        min-width: 360px;
+        left: 0;
+        zIndex: 1000;
+      }
     }
   }
 `;
