@@ -5,6 +5,7 @@ import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import React, { useCallback, useEffect, useState } from "react";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
 import POOLS from "@repositories/pool/mock/pools.json";
+import { useIncentivizePoolModal } from "@hooks/incentivize/use-incentivize-pool-modal";
 export const dummyDisclaimer =
   "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
 
@@ -30,6 +31,8 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [currentPool, setCurrentPool] = useState<PoolModel | null>(null);
   const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
+
+  const { openModal } = useIncentivizePoolModal();
 
   useEffect(() => {
     setPoolDetail(PoolDetailData.pool);
@@ -57,6 +60,10 @@ const PoolIncentivizeContainer: React.FC = () => {
     [],
   );
 
+  const handleConfirmIncentivize = useCallback(() => {
+    openModal();
+  }, []);
+
   return (
     <PoolIncentivize
       pools={pools}
@@ -74,6 +81,7 @@ const PoolIncentivizeContainer: React.FC = () => {
       token={currentToken}
       tokens={tokenBalances}
       selectToken={selectToken}
+      handleConfirmIncentivize={handleConfirmIncentivize}
     />
   );
 };

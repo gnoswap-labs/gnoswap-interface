@@ -35,6 +35,7 @@ interface PoolIncentivizeProps {
   onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
   details: PoolDetailModel | null;
   disclaimer: string;
+  handleConfirmIncentivize: () => void;
 }
 const TEMP_TOKEN = {
   chainId: "dev",
@@ -66,6 +67,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   setPeriod,
   details,
   disclaimer,
+  handleConfirmIncentivize,
 }) => {
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
@@ -112,6 +114,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
           height: 57,
           fullWidth: true,
         }}
+        onClick={handleConfirmIncentivize}
       />
     </PoolIncentivizeWrapper>
   );
