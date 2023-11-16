@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
+import { Z_INDEX } from "@styles/zIndex";
 
 export const SelectBoxWrapper = styled.div`
   position: relative;
@@ -57,13 +58,24 @@ export const SelectBoxModalWrapper = styled.div`
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   z-index: 4;
-  ${media.mobile} {
+  display: none;
+    ${media.mobile} {
+    transition: max-height 1s ease;
     position: fixed;
     top: auto;
-    bottom: 48px;
+    bottom: 0;
     width: 100vw;
     min-width: 360px;
     left: 0;
-    zIndex: 1000;
+    z-index: ${Z_INDEX.fixed};
+    max-height: 0;
+    display: block;
   }
+  &.open {
+    display: block;
+    ${media.mobile} {
+      max-height: 273px;
+    }
+  }
+
 `;

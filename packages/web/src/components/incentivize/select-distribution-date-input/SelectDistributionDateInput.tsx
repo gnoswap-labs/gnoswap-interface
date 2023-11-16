@@ -57,14 +57,12 @@ const SelectDistributionDateInput: React.FC<SelectDistributionDateInputProps> = 
       </div>
 
       <div className="calendar-container">
-        {opened && (
-          <div ref={modalRef} className="calendar-wrapper">
-            <Calendar
-              selectedDate={date || DefaultDate}
-              onClickDate={onClickCalendarDate}
-            />
-          </div>
-        )}
+        <div ref={modalRef} className={`calendar-wrapper ${opened && "open"}`}>
+          <Calendar
+            selectedDate={date || DefaultDate}
+            onClickDate={onClickCalendarDate}
+          />
+        </div>
       </div>
     </SelectDistributionDateInputWrapper>
   );

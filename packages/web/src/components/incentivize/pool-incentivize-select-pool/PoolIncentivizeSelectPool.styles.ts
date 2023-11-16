@@ -3,6 +3,7 @@ import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.sty
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import { media } from "@styles/media";
+import { Z_INDEX } from "@styles/zIndex";
 
 export const PoolIncentivizeSelectPoolWrapper = styled.div`
   ${({ theme }) => PoolIncentivizeBoxStyle(theme)};
@@ -63,6 +64,7 @@ export const PoolIncentivizeSelectPoolBox = styled.div`
   border-radius: 8px;
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   z-index: 4;
+  display: none;
 
   .search-wrapper {
     padding: 16px 24px;
@@ -89,10 +91,20 @@ export const PoolIncentivizeSelectPoolBox = styled.div`
   }
   ${media.mobile} {
     top: auto;
-    bottom: 48px;
+    bottom: 0;
     left: 0;
     width: 100vw;
     position: fixed;
     min-width: 360px;
+    z-index: ${Z_INDEX.fixed};
+    max-height: 0;
+    transition: max-height 0.8s ease;
+    display: block;
+  }
+  &.open {
+    display: block;
+    ${media.mobile} {
+      max-height: 600px;
+    }
   }
 `;

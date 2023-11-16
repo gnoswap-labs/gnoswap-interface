@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
+import { Z_INDEX } from "@styles/zIndex";
 
 export const SelectDistributionDateInputWrapper = styled.div`
   display: flex;
@@ -51,18 +52,30 @@ export const SelectDistributionDateInputWrapper = styled.div`
 
     & .calendar-wrapper {
       position: absolute;
+      height: 0;
       top: 5px;
       width: 100%;
       min-width: 315px;
       z-index: 10;
+      height: 0;
+      display: none;
       ${media.mobile} {
+        transition: height 0.5s ease;
         position: fixed;
         top: auto;
-        bottom: 48px;
+        bottom: 0;
         width: 100vw;
         min-width: 360px;
         left: 0;
-        zIndex: 1000;
+        z-index: ${Z_INDEX.fixed};
+        display: block;
+      }
+    }
+    & .open {
+      display: block;
+      height: 273px;
+      ${media.mobile} {
+      height: 273px;
       }
     }
   }

@@ -74,32 +74,30 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
             <IconArrowDown className="icon-arrow" />}
         </div>
 
-        {openedSelector && (
-          <PoolIncentivizeSelectPoolBox>
-            <div className="search-wrapper" onClick={e => e.stopPropagation()}>
-              <SearchInput
-                onChange={onChangeKeyword}
-                placeholder="Search by Name, Symbol, or Path"
-              />
+        <PoolIncentivizeSelectPoolBox className={openedSelector ? "open" : ""}>
+          <div className="search-wrapper" onClick={e => e.stopPropagation()}>
+            <SearchInput
+              onChange={onChangeKeyword}
+              placeholder="Search by Name, Symbol, or Path"
+            />
+          </div>
+          <div className="pool-list-wrapper">
+            <div className="pool-list-headrer">
+              <span className="total-info">Pools</span>
+              <span className="liquidity-info">Liquidity</span>
             </div>
-            <div className="pool-list-wrapper">
-              <div className="pool-list-headrer">
-                <span className="total-info">Pools</span>
-                <span className="liquidity-info">Liquidity</span>
-              </div>
-              <div className="pool-list-content">
-                {filteredPools.map((pool, index) => (
-                  <PoolIncentivizeSelectPoolItem
-                    key={index}
-                    poolSelectItem={pool}
-                    visibleLiquidity={true}
-                    select={selectPoolItem}
-                  />
-                ))}
-              </div>
+            <div className="pool-list-content">
+              {filteredPools.map((pool, index) => (
+                <PoolIncentivizeSelectPoolItem
+                  key={index}
+                  poolSelectItem={pool}
+                  visibleLiquidity={true}
+                  select={selectPoolItem}
+                />
+              ))}
             </div>
-          </PoolIncentivizeSelectPoolBox>
-        )}
+          </div>
+        </PoolIncentivizeSelectPoolBox>
       </div>
     </PoolIncentivizeSelectPoolWrapper>
   );

@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import { Theme } from "@emotion/react";
 import { css } from "@emotion/css";
 import { media } from "@styles/media";
+import { Z_INDEX } from "@styles/zIndex";
 
 export const PoolIncentivizeWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -36,7 +37,9 @@ export const PoolIncentivizeWrapper = styled.div`
     border: 1px solid ${({ theme }) => theme.color.border02};
     padding: 15px;
     gap: 16px;
-
+    &:first-of-type {
+      z-index: ${Z_INDEX.fixed};
+    }
     ${media.mobile} {
       padding: 11px;
     }
