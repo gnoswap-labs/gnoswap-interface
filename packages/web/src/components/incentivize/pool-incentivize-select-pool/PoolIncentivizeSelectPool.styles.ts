@@ -45,7 +45,7 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div<Props>`
     justify-content: space-between;
     align-items: center;
 
-    .icon-wrapper {
+    > .icon-wrapper {
       width: 24px;
       height: 24px;
       display: flex;

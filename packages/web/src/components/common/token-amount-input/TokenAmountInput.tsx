@@ -37,7 +37,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
       changeAmount(formatValue);
     }
-  }, [changeAmount, connected]);
+  }, [changeAmount, connected, balance]);
 
   return (
     <TokenAmountInputWrapper>

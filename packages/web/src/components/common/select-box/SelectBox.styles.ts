@@ -44,7 +44,7 @@ export const SelectBoxWrapper = styled.div`
     color: ${({ theme }) => theme.color.text02};
   }
   ${media.mobile} {
-    padding: 0 12px;
+    padding: 0 8px;
   }
 `;
 

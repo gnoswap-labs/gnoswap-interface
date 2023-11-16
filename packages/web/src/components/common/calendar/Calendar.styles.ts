@@ -8,7 +8,7 @@ export const wrapper = (theme: Theme) => css`
   width: 100%;
   height: 100%;
   padding: 16px;
-  background-color: ${theme.color.background02};
+  background-color: ${theme.color.background06};
   border-radius: 8px;
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
 
@@ -60,12 +60,12 @@ export const wrapper = (theme: Theme) => css`
       color: ${theme.color.text02};
 
       &:hover {
-        background-color: ${theme.color.point};
+        background-color: ${theme.color.background04};
         border-radius: 4px;
       }
 
       &.selected {
-        background-color: ${theme.color.point};
+        background-color: ${theme.color.background04};
         border-radius: 4px;
       }
       &.disable-date {

@@ -37,15 +37,15 @@ const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = 
     <div
       css={wrapper(Boolean(token), disabled || hiddenModal, isHiddenArrow)}
       onClick={onClickButton}
-      className={className}
+      className={`${className} ${token ? "selected-token" : "not-selected-token"}`}
     >
       {token ? (
-        <div>
+        <div className="token-pair-wrapper">
           <img src={token.logoURI} alt="token logo" className="token-logo" />
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (
-        <span>Select</span>
+        <span className="token-label-select">Select</span>
       )}
       {!isHiddenArrow && <IconStrokeArrowDown className="arrow-icon" />}
     </div>

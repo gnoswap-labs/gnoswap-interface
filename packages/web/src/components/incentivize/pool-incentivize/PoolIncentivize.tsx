@@ -110,11 +110,11 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
         text={textBtn}
         style={{
           hierarchy: ButtonHierarchy.Primary,
-          height: 57,
           fullWidth: true,
         }}
         disabled={disableButton}
         onClick={handleConfirmIncentivize}
+        className="button-confirm"
       />
     </PoolIncentivizeWrapper>
   );

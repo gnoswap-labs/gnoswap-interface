@@ -57,11 +57,35 @@ export const PoolIncentivizeWrapper = styled.div`
         }
       }
       .token {
-        > div {
+        .selected-token {
+          padding: 5px 10px 5px 6px;
+          gap: 8px;
+          height: 34px;
+          span {
+            font-size: 16px;
+          }
+        }
+        .not-selected-token {
           padding: 5px 10px 5px 12px;
           gap: 8px;
           height: 34px;
+          span {
+            font-size: 16px;
+          }
         }
+      }
+    }
+  }
+  .button-confirm {
+    gap: 8px;
+    height: 57px;
+    span {
+      ${fonts.body7}
+    }
+    ${media.mobile} {
+      height: 41px;
+      span {
+        ${fonts.body9}
       }
     }
   }

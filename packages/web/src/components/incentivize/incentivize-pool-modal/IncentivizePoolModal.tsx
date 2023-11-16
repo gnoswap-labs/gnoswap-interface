@@ -60,7 +60,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                 <div className="label">Total Amount</div>
                 <div className="value-content">
                   <img className="image-logo" src={data?.token?.logoURI || ""} alt="logo" />
-                  <div className="value">{data?.amount} GNS</div>
+                  <div className="value">{Number(data?.amount).toLocaleString()} GNS</div>
                 </div>
               </div>
               <div>
@@ -68,7 +68,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                 <div className="value-content value-content-column">
                   <div className="value">{formatDate(date, 0)} <br />
                   - {formatDate(date, period)}</div>
-                  <div className="sub-value">{(Number(data?.amount || 0) / period).toFixed(2)} {data?.token?.symbol} will be distributed daily</div>
+                  <div className="sub-value">{Number((Number(data?.amount || 0) / period).toFixed(2)).toLocaleString()} {data?.token?.symbol} will be distributed daily</div>
                 </div>
               </div>
             </div>

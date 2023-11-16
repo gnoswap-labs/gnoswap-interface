@@ -87,7 +87,7 @@ const PoolIncentivizeContainer: React.FC = () => {
     if (Number(tokenAmountInput.amount) < 0.000001) {
       return true;
     }
-    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance)) {
+    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
       return true;
     }
     return false;
@@ -106,7 +106,7 @@ const PoolIncentivizeContainer: React.FC = () => {
     if (Number(tokenAmountInput.amount) < 0.000001) {
       return "Amount Too Low";
     }
-    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance)) {
+    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
       return "Insufficient Balance";
     }
     return "Incentivize Pool";

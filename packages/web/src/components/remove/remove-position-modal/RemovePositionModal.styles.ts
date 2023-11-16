@@ -146,7 +146,7 @@ export const RemovePositionModalWrapper = styled.div`
             ${fonts.body7}
           }
           ${media.mobile} {
-            height: 44px;
+            height: 41px;
             span {
               ${fonts.body9}
             }

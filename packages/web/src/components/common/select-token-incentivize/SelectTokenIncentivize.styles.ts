@@ -13,6 +13,7 @@ export const SelectTokenIncentivizeWrapper = styled.div`
   ${media.mobile} {
     width: 328px;
     padding: 16px 0px;
+    gap: 16px;
   }
 
   .content {
@@ -179,22 +180,22 @@ export const SelectTokenIncentivizeWrapper = styled.div`
         gap: 8px;
         .token-name {
           color: ${({ theme }) => theme.color.text02};
-          ${fonts.body8}
+          ${fonts.body10}
           ${media.mobile} {
             ${fonts.body12}
           }
         }
         .token-symbol {
           color: ${({ theme }) => theme.color.text04};
-          ${fonts.body8}
+          ${fonts.body12}
           ${media.mobile} {
-            ${fonts.body12}
+            ${fonts.p4}
           }
         }
       }
       .token-balance {
         color: ${({ theme }) => theme.color.text02};
-        ${fonts.body7}
+        ${fonts.body9}
         ${media.mobile} {
           ${fonts.body11}
         }

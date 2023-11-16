@@ -37,8 +37,10 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!token) {
       return;
     }
-    const amount = BigNumber(value);
-    setAmount(amount.toString());
+    // const amount = BigNumber(value);
+
+    setAmount(value.toString());
+
 
     if (tokenPrices[token.priceId]) {
       const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(amount).toNumber();

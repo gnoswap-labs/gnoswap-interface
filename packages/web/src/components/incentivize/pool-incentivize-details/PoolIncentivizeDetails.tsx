@@ -54,7 +54,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
             alt="token-logo"
             className="token-logo"
           />
-          <span className="total-amount-value">{amount} GNOS</span>
+          <span className="total-amount-value">{Number(amount).toLocaleString()} GNOS</span>
         </div> : <div className="section-info">-</div>}
       </section>
       <section className="period-section">
@@ -65,7 +65,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
             <br />- {formatDate(startDate, period)}
           </span>
           <span className="period-desc">
-            {(Number(amount || 0) / period).toFixed(2)} GNOS will be distributed daily
+            {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()} GNOS will be distributed daily
           </span>
         </div>
       </section>
