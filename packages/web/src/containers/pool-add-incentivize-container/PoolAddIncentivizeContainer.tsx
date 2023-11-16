@@ -20,11 +20,12 @@ const pools: PoolModel[] = POOLS.pools;
 const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 180, 365];
 
-const PoolIncentivizeContainer: React.FC = () => {
+const PoolAddIncentivizeContainer: React.FC = () => {
   const [period, setPeriod] = useAtom(EarnState.period);
   const [startDate, setStartDate] = useAtom(EarnState.date);
   const [, setDataModal] = useAtom(EarnState.dataModal);
-  const [currentPool, setCurrentPool] = useAtom(EarnState.pool);
+  const [currentPool, setCurrentPool] = useState(pools[0]);
+  const [, setPool] = useAtom(EarnState.pool);
 
   const { connected, connectAdenaClient } = useWallet();
 
@@ -34,6 +35,10 @@ const PoolIncentivizeContainer: React.FC = () => {
   const tokenAmountInput = useTokenAmountInput(token);
   const { updateTokenPrices } = useTokenData();
   
+  useEffect(() => {
+    setPool(pools[0]);
+  }, []);
+
   useEffect(() => {
     setDataModal(tokenAmountInput);
   }, [tokenAmountInput.amount, token]);
@@ -133,8 +138,9 @@ const PoolIncentivizeContainer: React.FC = () => {
       textBtn={textBtn}
       disableButton={disableButton}
       connected={connected}
+      isDisabledSelect
     />
   );
 };
 
-export default PoolIncentivizeContainer;
+export default PoolAddIncentivizeContainer;

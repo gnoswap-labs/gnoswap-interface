@@ -41,6 +41,7 @@ interface PoolIncentivizeProps {
   textBtn: string;
   disableButton: boolean;
   connected: boolean;
+  isDisabledSelect?: boolean;
 }
 
 const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
@@ -59,6 +60,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   textBtn,
   disableButton,
   connected,
+  isDisabledSelect,
 }) => {
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
@@ -77,6 +79,7 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
           pools={poolSelectItems}
           selectedPool={selectedItem}
           select={selectPool}
+          isDisabled={isDisabledSelect}
         />
       </article>
 

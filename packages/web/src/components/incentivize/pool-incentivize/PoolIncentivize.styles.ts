@@ -38,7 +38,9 @@ export const PoolIncentivizeWrapper = styled.div`
     padding: 15px;
     gap: 16px;
     &:first-of-type {
-      z-index: ${Z_INDEX.fixed};
+      ${media.mobile} {
+        z-index: ${Z_INDEX.fixed};
+      }
     }
     ${media.mobile} {
       padding: 11px;

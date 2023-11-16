@@ -5,7 +5,11 @@ import mixins from "@styles/mixins";
 import { media } from "@styles/media";
 import { Z_INDEX } from "@styles/zIndex";
 
-export const PoolIncentivizeSelectPoolWrapper = styled.div`
+interface Props {
+  isDisabled?: boolean;
+}
+
+export const PoolIncentivizeSelectPoolWrapper = styled.div<Props>`
   ${({ theme }) => PoolIncentivizeBoxStyle(theme)};
   position: relative;
   display: flex;
@@ -15,7 +19,9 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div`
   gap: 16px;
 
   h5 {
-    color: ${({ theme }) => theme.color.text10};
+    color: ${({ isDisabled, theme }) => {
+      return isDisabled ? theme.color.text04 : theme.color.text10;
+    }};
     ${fonts.body12}
   }
 
@@ -33,6 +39,7 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div`
       background: ${({ theme }) => theme.color.background11};
       cursor: pointer;
     }
+    pointer-events: ${({ isDisabled }) => !isDisabled ? "" : "none"};
     color: var(--text-02-dark-gray-100-text-2, #e0e8f4);
     ${fonts.body9}
     justify-content: space-between;

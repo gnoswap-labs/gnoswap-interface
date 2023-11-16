@@ -10,12 +10,14 @@ export interface PoolIncentivizeSelectPoolProps {
   selectedPool: PoolSelectItemInfo | null;
   pools: PoolSelectItemInfo[];
   select: (poolId: string) => void;
+  isDisabled?: boolean;
 }
 
 const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   selectedPool,
   pools,
-  select
+  select,
+  isDisabled,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [openedSelector, setOpenedSelector] = useState(false);
@@ -58,9 +60,9 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   const onChangeKeyword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(event.target.value);
   }, []);
-
+  
   return (
-    <PoolIncentivizeSelectPoolWrapper>
+    <PoolIncentivizeSelectPoolWrapper isDisabled={isDisabled}>
       <h5>1. Select Pool</h5>
       <div className="pool-select-wrapper" onClick={toggleSelector}>
         <PoolIncentivizeSelectPoolItem
@@ -68,11 +70,11 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
           visibleLiquidity={false}
           select={toggleSelector}
         />
-        <div className="icon-wrapper">
+        {!isDisabled && <div className="icon-wrapper">
           {openedSelector ?
             <IconArrowUp className="icon-arrow" /> :
             <IconArrowDown className="icon-arrow" />}
-        </div>
+        </div>}
 
         <PoolIncentivizeSelectPoolBox className={openedSelector ? "open" : ""}>
           <div className="search-wrapper" onClick={e => e.stopPropagation()}>

@@ -6,11 +6,9 @@ const OneClickStakingContainer: React.FC = () => {
   const router = useRouter();
 
   const handleClickGotoStaking = useCallback(() => {
-    router.push("/earn/pool/bar_foo_3000/stake");
-  }, []);
-
+    router.push(`/earn/pool/${router.query?.["pool-number"]}/stake`);
+  }, [router]);
 
   return <OneClickStaking handleClickGotoStaking={handleClickGotoStaking} />;
 };
-
 export default OneClickStakingContainer;

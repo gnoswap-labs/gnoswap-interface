@@ -1,7 +1,7 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import PoolIncentivizeContainer from "@containers/pool-incentivize-container/PoolIncentivizeContainer";
+import PoolAddIncentivizeContainer from "@containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import PoolIncentivizeLayout from "@layouts/pool-incentivize-layout/PoolIncentivizeLayout";
 import { DEVICE_TYPE } from "@styles/media";
@@ -20,7 +20,7 @@ export default function PoolIncentivize() {
     <PoolIncentivizeLayout
       header={<HeaderContainer />}
       breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} />}
-      poolIncentivize={<PoolIncentivizeContainer />}
+      poolIncentivize={<PoolAddIncentivizeContainer />}
       footer={<Footer />}
     />
   );

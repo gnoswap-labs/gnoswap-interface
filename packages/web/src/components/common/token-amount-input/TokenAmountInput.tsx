@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { TokenAmountInputWrapper } from "./TokenAmountInput.styles";
-import SelectPairButton from "../select-pair-button/SelectPairButton";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
+import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncentivizeButton";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -50,7 +50,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
           placeholder="0"
         />
         <div className="token">
-          <SelectPairButton
+          <SelectPairIncentivizeButton
             token={token}
             disabled={disabledSelectPair}
             changeToken={changeToken}
