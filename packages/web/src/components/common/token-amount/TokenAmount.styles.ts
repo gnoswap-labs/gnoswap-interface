@@ -53,4 +53,7 @@ export const TokenAmountWrapper = styled.div`
     color: ${({ theme }) => theme.color.text04};
     ${fonts.p2};
   }
+  ${media.mobile} {
+    padding: 12px;
+  }
 `;

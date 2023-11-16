@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const EarnAddConfirmWrapper = styled.div`
   display: flex;
@@ -34,6 +35,27 @@ export const EarnAddConfirmWrapper = styled.div`
         * {
           fill: ${({ theme }) => theme.color.icon07};
         }
+      }
+    }
+  }
+  .button-confirm {
+    gap: 8px;
+    height: 57px;
+    span {
+      ${fonts.body7}
+    }
+    
+  }
+  ${media.mobile} {
+    width: 328px;
+    padding: 16px 12px;
+    span {
+      ${fonts.body7}
+    }
+    .button-confirm {
+      height: 41px;
+      span {
+        ${fonts.body9}
       }
     }
   }

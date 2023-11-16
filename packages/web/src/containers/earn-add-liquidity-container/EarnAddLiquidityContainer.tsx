@@ -8,7 +8,7 @@ import {
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import BigNumber from "bignumber.js";
+// import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
@@ -98,7 +98,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
   );
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
-  const { openModal: openOneClickModal } = useOneClickStakingModal();
 
   const {
     connected: connectedWallet,
@@ -119,6 +118,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
     slippage,
     swapFeeTier,
     createPool
+  });
+
+  const { openModal: openOneClickModal } = useOneClickStakingModal({
+    tokenA,
+    tokenB,
+    tokenAAmountInput,
+    tokenBAmountInput,
+    priceRange,
+    currentPrice: startPrice,
+    swapFeeTier,
   });
 
   useEffect(() => {
@@ -154,12 +163,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return "ENTER_AMOUNT";
     }
 
-    if (!account?.balances || account.balances.length === 0) {
-      return "INSUFFICIENT_BALANCE";
-    }
-    if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
-      return "INSUFFICIENT_BALANCE";
-    }
+    // if (!account?.balances || account.balances.length === 0) {
+    //   return "INSUFFICIENT_BALANCE";
+    // }
+    // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
+    //   return "INSUFFICIENT_BALANCE";
+    // }
     if (!priceRange) {
       return "INVALID_RANGE";
     }
@@ -232,6 +241,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   ]);
 
   const handleChangeSlippage = useCallback((vl: string) => {
+    console.log(vl);
+    
     changeSlippage(Number(vl));
   }, []);
 

@@ -88,7 +88,7 @@ export const OneClickStakingModalWrapper = styled.div`
             gap: 8px;
             > div {
               .button-confirm {
-                height: 44px;
+                height: 41px;
                 span {
                   ${fonts.body9}
                 }

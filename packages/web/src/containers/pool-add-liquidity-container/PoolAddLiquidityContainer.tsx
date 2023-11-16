@@ -106,7 +106,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
   );
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
-  const { openModal: openOneClickModal } = useOneClickStakingModal();
 
   const {
     connected: connectedWallet,
@@ -118,6 +117,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const { pools, feetierOfLiquidityMap, createPool } = usePool({ tokenA, tokenB });
   const { tokens, updateTokens, updateTokenPrices } = useTokenData();
+
+  const { openModal: openOneClickModal } = useOneClickStakingModal({
+    tokenA,
+    tokenB,
+    tokenAAmountInput,
+    tokenBAmountInput,
+    priceRange,
+    currentPrice: startPrice,
+    swapFeeTier,
+  });
 
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
     tokenA,
@@ -163,12 +172,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!priceRange) {
       return "INVALID_RANGE";
     }
-    if (!account?.balances || account.balances.length === 0) {
-      return "INSUFFICIENT_BALANCE";
-    }
-    if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
-      return "INSUFFICIENT_BALANCE";
-    }
+    // if (!account?.balances || account.balances.length === 0) {
+    //   return "INSUFFICIENT_BALANCE";
+    // }
+    // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
+    //   return "INSUFFICIENT_BALANCE";
+    // }
     if (BigNumber(tokenAAmountInput.amount).isLessThanOrEqualTo(0)) {
       return "ENTER_AMOUNT";
     }

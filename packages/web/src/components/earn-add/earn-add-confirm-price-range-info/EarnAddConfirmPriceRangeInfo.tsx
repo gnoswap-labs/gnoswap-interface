@@ -18,6 +18,7 @@ export interface EarnAddConfirmPriceRangeInfoProps {
   estimatedAPR: string;
   symbolTokenA: string;
   symbolTokenB: string;
+  isShowStaking?: boolean;
 }
 
 const EarnAddConfirmPriceRangeInfo: React.FC<
@@ -30,6 +31,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   estimatedAPR,
   symbolTokenA,
   symbolTokenB,
+  isShowStaking,
 }) => {
   const [swap, setSwap] = useState(false);
 
@@ -59,7 +61,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
 
       <EarnAddConfirmPriceRangeInfoSection>
         <div className="row">
-          <span className="key">Current Price:</span>
+          <span className="key">Current Price</span>
           <div className="value">
             {Number(swap ? 1 / Number(currentPrice) : currentPrice).toFixed(2)} {swap ? symbolTokenB : symbolTokenA} per {swap ? symbolTokenA : symbolTokenB}{" "}
             <div className="icon-swap" onClick={onClickSwap}>
@@ -69,7 +71,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
         </div>
         <div className="row">
           <div className="title-wrapper">
-            <span className="key">Fee Boost:</span>
+            <span className="key">Fee Boost</span>
             <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>An indication of the additional swap fees you can receive for your selected price range compared to a full-range position.</ToolTipContentWrapper>}>
               <IconInfo />
             </Tooltip>
@@ -79,13 +81,22 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
         </div>
         <div className="row">
           <div className="title-wrapper">
-            <span className="key">Fee APR:</span>
+            <span className="key">Fee APR</span>
               <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The estimated APR from swap fees is calculated based on the selected price range of the position.</ToolTipContentWrapper>}>
                 <IconInfo />
               </Tooltip>
           </div>
           <span className="value">{estimatedAPR}</span>
         </div>
+        {isShowStaking && <div className="row">
+          <div className="title-wrapper">
+            <span className="key">Staking APR</span>
+              <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration.</ToolTipContentWrapper>}>
+                <IconInfo />
+              </Tooltip>
+          </div>
+          <span className="value">74.24% ~ 124.22%</span>
+        </div>}
       </EarnAddConfirmPriceRangeInfoSection>
     </EarnAddConfirmPriceRangeInfoWrapper>
   );

@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { EarnAddConfirmContentSection } from "../earn-add-confirm/EarnAddConfirm.styles";
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
+import { media } from "@styles/media";
 
 export const EarnAddConfirmPriceRangeInfoWrapper = styled.div`
   display: flex;
@@ -34,7 +35,7 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
   color: ${({ theme }) => theme.color.text10};
 
   &.range-section {
-    padding: 16px 8px;
+    padding: 15px 8px;
     gap: 8px;
     justify-content: space-between;
     align-items: center;
@@ -61,6 +62,7 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
   }
   .key {
     color: ${({ theme }) => theme.color.text04};
+    ${fonts.body12}
   }
   .icon-swap {
     width: 16px;
@@ -69,6 +71,7 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
   }
   .value {
     ${mixins.flexbox("row", "center", "flex-start")};
+    ${fonts.body12}
     gap: 4px;
     color: ${({ theme }) => theme.color.text10};
     svg * {
@@ -88,6 +91,12 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
       * {
         fill: ${({ theme }) => theme.color.icon03};
       }
+    }
+  }
+  ${media.mobile} {
+    gap: 8px;
+    .key, .value {
+      ${fonts.p2}
     }
   }
 `;

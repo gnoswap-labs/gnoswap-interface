@@ -66,9 +66,8 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
-          height: 57,
-          fontType: "body7",
         }}
+        className="button-confirm"
       />
     </EarnAddConfirmWrapper>
   );
