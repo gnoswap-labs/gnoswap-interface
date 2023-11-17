@@ -17,6 +17,8 @@ import SelectPriceRangeCustom from "@components/common/select-price-range-custom
 import IconSettings from "@components/common/icons/IconSettings";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
 import IconStaking from "@components/common/icons/IconStaking";
+import IconArrowDown from "@components/common/icons/IconArrowDown";
+import IconArrowUp from "@components/common/icons/IconArrowUp";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -145,6 +147,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         return "Insufficient Balance";
       case "INVALID_RANGE":
         return "Invalid Range";
+      case "AMOUNT_TOO_LOW":
+        return "Amount Too Low";
       case "ENTER_AMOUNT":
       default:
         return "Enter Amount";
@@ -171,12 +175,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   const handleSelectFeeTier = useCallback((feeTier: SwapFeeTierType) => {
     selectFeeTier(feeTier);
-    setOpenedFeeTier(false);
   }, [selectFeeTier]);
 
   const handlePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     if (priceRange.type !== "Custom") {
-      setOpenedPriceRange(false);
       setOpenCustomPriceRange(false);
     } else {
       setOpenCustomPriceRange(true);
@@ -219,7 +221,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
         <article className="selector-wrapper">
           <div className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""} ${!isEarnAdd && "disable-text"}`} onClick={toggleFeeTier}>
-            <h5>2. Select Fee Tier</h5>
+            <div className="header-wrapper-title">
+              <h5>2. Select Fee Tier</h5>
+              {existTokenPair && isEarnAdd && (!openedFeeTier ? <IconArrowDown /> : <IconArrowUp />)}
+            </div>
             {selectedFeeRate && (
               <Badge
                 text={selectedFeeRate}
@@ -242,7 +247,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
         <article className="selector-wrapper">
           <div className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""}`} onClick={togglePriceRange}>
-            <h5>3. Select Price Range</h5>
+            <div className="header-wrapper-title">
+              <h5>3. Select Price Range</h5>
+              {existTokenPair && (!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />)}
+            </div>
             {selectedPriceRange && (
               <Badge
                 text={selectedPriceRange}

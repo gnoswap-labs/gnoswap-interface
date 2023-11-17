@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const SelectPriceRangeWrapper = styled.div`
@@ -60,6 +61,9 @@ export const SelectPriceRangeItemWrapper = styled.div`
     color: ${({ theme }) => theme.color.text02};
     ${fonts.body11};
     margin-left: auto;
+  }
+  ${media.mobile} {
+    padding: 12px;
   }
 `;
 

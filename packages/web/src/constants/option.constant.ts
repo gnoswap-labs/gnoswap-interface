@@ -142,4 +142,5 @@ export type AddLiquiditySubmitType =
   | "INSUFFICIENT_BALANCE"
   | "INVALID_RANGE"
   | "SWITCH_NETWORK"
-  | "SELECT_TOKEN";
+  | "SELECT_TOKEN"
+  | "AMOUNT_TOO_LOW";

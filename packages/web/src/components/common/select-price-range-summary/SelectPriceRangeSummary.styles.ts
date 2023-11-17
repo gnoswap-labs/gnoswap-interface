@@ -9,7 +9,6 @@ export const SelectPriceRangeSummaryWrapper = styled.div`
   height: auto;
   padding: 16px;
   gap: 16px;
-  margin-top: 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   background: ${({ theme }) => theme.color.background20};

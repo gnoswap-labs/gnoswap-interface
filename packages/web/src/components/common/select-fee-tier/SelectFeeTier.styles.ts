@@ -11,9 +11,6 @@ export const SelectFeeTierWrapper = styled.div`
   grid-template-rows: auto;
   grid-gap: 4px;
   grid-template-columns: repeat(4, 1fr);
-
-  .fee-tier-box {
-  }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
   }
@@ -59,6 +56,7 @@ export const SelectFeeTierItemWrapper = styled.div`
   }
   ${media.mobile} {
     ${mixins.flexbox("row", "flex-start", "space-between")};
+    padding: 12px;
     > div {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 4px;

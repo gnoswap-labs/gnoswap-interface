@@ -50,6 +50,11 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     }
     span {
       color: ${({ theme }) => theme.color.text04};
+      ${media.mobile} {
+        &:first-of-type {
+          ${fonts.body12}
+        }
+      }
     }
   }
   
@@ -75,7 +80,12 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     gap: 4px;
     color: ${({ theme }) => theme.color.text10};
     svg * {
-      fill: ${({ theme }) => theme.color.icon16};
+      fill: ${({ theme }) => theme.color.icon03};
+    }
+    &:hover {
+      svg * {
+        fill: ${({ theme }) => theme.color.icon16};
+      }
     }
   }
   .title-wrapper {

@@ -10,7 +10,7 @@ export interface SelectPriceRangeSummaryProps {
 }
 
 const ModalContent = <ToolTipContentWrapper>
-  An indication of how much more swap fees you can get for your selected price range compared to a full-range position.
+  An indication of the additional swap fees you can receive for your selected price range compared to a full-range position.
 </ToolTipContentWrapper>;
 
 const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({

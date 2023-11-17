@@ -75,6 +75,17 @@ export const EarnAddLiquidityWrapper = styled.section`
       .setting-modal {
         top: calc(100% + 4px);
       }
+      &-title {
+        ${mixins.flexbox("row", "center", "flex")};
+        gap: 4px;
+        svg {
+          width: 16px;
+          height: 16px;
+          * {
+            fill: ${({ theme }) => theme.color.icon16};
+          }
+        }
+      }
     }
     .liquity-enter-amount {
       .token {

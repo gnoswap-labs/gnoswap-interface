@@ -61,6 +61,11 @@ export const EarnAddConfirmFeeInfoSection = styled(
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  .key {
+    ${media.mobile} {
+      ${fonts.body12}
+    }
+  }
   .value {
     color: ${({ theme }) => theme.color.text12};
   }

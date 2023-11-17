@@ -81,7 +81,7 @@ const OneClickStaking: React.FC<Props> = ({ handleClickGotoStaking }) => {
               />
               {item.label}
             </div>
-            <div className="value">${item.value}</div>
+            <div className="value">${item.value.toLocaleString()}</div>
           </div>
         ))}
       </div>
@@ -99,7 +99,7 @@ const OneClickStaking: React.FC<Props> = ({ handleClickGotoStaking }) => {
               />
               {item.label}
             </div>
-            <div className="value">${item.value}</div>
+            <div className="value">${item.value.toLocaleString()}</div>
           </div>
         ))}
       </div>

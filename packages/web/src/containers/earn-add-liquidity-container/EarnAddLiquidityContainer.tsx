@@ -139,6 +139,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     setSwapFeeTier("FEE_3000");
     setPriceRange(TEMP_CUSTOM_PRICE_RANGE[1]);
+    return () => {
+      setSwapValue({
+        tokenA: null,
+        tokenB: null,
+        type: "EXACT_IN",
+      });
+    };
   }, []);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -159,8 +166,20 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
-    if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
+    if (!Number(tokenAAmountInput.amount) || !Number(tokenBAmountInput.amount)) {
       return "ENTER_AMOUNT";
+    }
+    if ((Number(tokenAAmountInput.amount) < 0.000001)) {
+      return "AMOUNT_TOO_LOW";
+    }
+    if ((Number(tokenBAmountInput.amount) < 0.000001)) {
+      return "AMOUNT_TOO_LOW";
+    }
+    if (Number(tokenAAmountInput.amount) > Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, "")))) {
+      return "INSUFFICIENT_BALANCE";
+    }
+    if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
+      return "INSUFFICIENT_BALANCE";
     }
 
     // if (!account?.balances || account.balances.length === 0) {
@@ -179,12 +198,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
     priceRange,
     swapFeeTier,
     tokenAAmountInput.amount,
+    tokenAAmountInput.balance,
     tokenBAmountInput.amount,
+    tokenBAmountInput.balance,
     isSwitchNetwork,
     tokenA,
     tokenB,
   ]);
-
+  console.log(submitType, tokenBAmountInput);
+  
   useEffect(() => {
     updateTokenPrices();
   }, []);
