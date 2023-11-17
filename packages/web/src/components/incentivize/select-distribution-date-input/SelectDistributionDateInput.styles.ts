@@ -9,6 +9,9 @@ export const SelectDistributionDateInputWrapper = styled.div`
   width: 100%;
   height: auto;
   z-index: 3;
+  ${media.mobile} {
+    z-index: auto;
+  }
 
   & .description {
     ${fonts.p4}

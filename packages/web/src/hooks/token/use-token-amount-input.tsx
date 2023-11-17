@@ -43,10 +43,10 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
 
 
     if (tokenPrices[token.priceId]) {
-      const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(amount).toNumber();
+      const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(value.toString()).toNumber();
       setUSD(usd);
     }
-  }, [token, tokenPrices]);
+  }, [token, tokenPrices, setUSD, amount]);
 
   return {
     token,

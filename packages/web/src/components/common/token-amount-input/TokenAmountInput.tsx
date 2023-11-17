@@ -59,7 +59,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
         </div>
       </div>
       <div className="info">
-        <span className="price-text">{usdValue}</span>
+        <span className="price-text disable-pointer ">{usdValue}</span>
         <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>Balance: {connected ? balance : "-"}</span>
       </div>
     </TokenAmountInputWrapper>

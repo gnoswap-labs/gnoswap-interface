@@ -2,7 +2,6 @@ import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
-import { Z_INDEX } from "@styles/zIndex";
 
 export const SelectDistributionPeriodWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "center")};
@@ -20,7 +19,6 @@ export const SelectDistributionPeriodWrapper = styled.div`
     width: 100%;
     position: relative;
     ${media.mobile} {
-      z-index: ${Z_INDEX.fixed};
     }
   }
 

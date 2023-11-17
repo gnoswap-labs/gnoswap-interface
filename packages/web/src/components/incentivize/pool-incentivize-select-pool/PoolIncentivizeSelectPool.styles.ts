@@ -75,6 +75,7 @@ export const PoolIncentivizeSelectPoolBox = styled.div`
 
   .search-wrapper {
     padding: 16px 24px;
+    cursor: default;
   }
 
   .pool-list-wrapper {
@@ -85,6 +86,7 @@ export const PoolIncentivizeSelectPoolBox = styled.div`
       padding: 0 24px 8px 24px;
       color: ${({ theme }) => theme.color.text04};
       ${fonts.p4}
+      cursor: default;
     }
 
     .pool-list-content {

@@ -5,7 +5,6 @@ import styled from "@emotion/styled";
 import { Theme } from "@emotion/react";
 import { css } from "@emotion/css";
 import { media } from "@styles/media";
-import { Z_INDEX } from "@styles/zIndex";
 
 export const PoolIncentivizeWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -39,7 +38,7 @@ export const PoolIncentivizeWrapper = styled.div`
     gap: 16px;
     &:first-of-type {
       ${media.mobile} {
-        z-index: ${Z_INDEX.fixed};
+        position: relative;
       }
     }
     ${media.mobile} {

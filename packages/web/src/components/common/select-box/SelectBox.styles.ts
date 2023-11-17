@@ -45,6 +45,7 @@ export const SelectBoxWrapper = styled.div`
   }
   ${media.mobile} {
     padding: 0 8px;
+    z-index: auto;
   }
 `;
 

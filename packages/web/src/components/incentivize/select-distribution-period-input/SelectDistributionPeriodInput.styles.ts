@@ -1,16 +1,11 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
-import { media } from "@styles/media";
-import { Z_INDEX } from "@styles/zIndex";
 
 export const SelectDistributionPeriodInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: auto;
-  ${media.mobile} {
-    z-index: ${Z_INDEX.fixed};
-  }
   & .description {
     ${fonts.p4}
     color: ${({ theme }) => theme.color.text04};

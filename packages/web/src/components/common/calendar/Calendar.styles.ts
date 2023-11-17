@@ -67,11 +67,12 @@ export const wrapper = (theme: Theme) => css`
       &.selected {
         background-color: ${theme.color.background04};
         border-radius: 4px;
+        color: ${theme.color.text20};
       }
       &.disable-date {
         pointer-events: none;
         cursor: default;
-        color: ${theme.color.text22};
+        color: ${theme.color.text04};
         &:hover {
           background-color: transparent;
         }

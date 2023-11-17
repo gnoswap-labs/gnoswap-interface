@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useRef } from "react";
 import { PoolIncentivizeSelectPoolBox, PoolIncentivizeSelectPoolWrapper } from "./PoolIncentivizeSelectPool.styles";
 import PoolIncentivizeSelectPoolItem from "../pool-incentivize-select-pool-item/PoolIncentivizeSelectPoolItem";
 import SearchInput from "@components/common/search-input/SearchInput";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 
 export interface PoolIncentivizeSelectPoolProps {
   selectedPool: PoolSelectItemInfo | null;
@@ -21,6 +22,10 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
 }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [openedSelector, setOpenedSelector] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeModal = useCallback(() => setOpenedSelector(false), []);
+
+  useModalCloseEvent(modalRef, closeModal);
 
   const filteredPools = useMemo(() => {
     if (searchKeyword === "") {
@@ -76,7 +81,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
             <IconArrowDown className="icon-arrow" />}
         </div>}
 
-        <PoolIncentivizeSelectPoolBox className={openedSelector ? "open" : ""}>
+        <PoolIncentivizeSelectPoolBox ref={modalRef} className={openedSelector ? "open" : ""} onClick={e => e.stopPropagation()}>
           <div className="search-wrapper" onClick={e => e.stopPropagation()}>
             <SearchInput
               onChange={onChangeKeyword}
