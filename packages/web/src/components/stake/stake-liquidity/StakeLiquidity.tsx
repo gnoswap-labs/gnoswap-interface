@@ -19,7 +19,7 @@ interface StakeLiquidityProps {
 export const CONTENT_TITLE = {
   PERIOD: "1. Select Unstaking Period",
   LIQUIDITY: "2. Select Liquidity",
-  TOTAL_STAKING: "Total Staking Amount",
+  TOTAL_STAKING: "Total Amount",
   APR: "Staking APR",
   UNCLAIM_GNS: "Unclaimed GNS Rewards",
   UNCLAIM_GNOT: "Unclaimed GNOT Rewards",

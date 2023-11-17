@@ -51,6 +51,19 @@ export const wrapper = (theme: Theme) => css`
       gap: 4px;
     }
   }
+  .button-confirm {
+    gap: 8px;
+    height: 57px;
+    span {
+      ${fonts.body7}
+    }
+    ${media.mobile} {
+      height: 41px;
+      span {
+        ${fonts.body9}
+      }
+    }
+  }
 `;
 
 export const inputStyle = (theme: Theme) => css`
@@ -76,7 +89,7 @@ export const inputStyle = (theme: Theme) => css`
     }
   }
   input[type="checkbox"]:checked + label:before {
-    background-color: ${theme.color.point};
+    background-color: ${theme.color.background04};
     mask-image: url(${iconChecked});
   }
 `;

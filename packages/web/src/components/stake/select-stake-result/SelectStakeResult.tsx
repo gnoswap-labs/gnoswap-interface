@@ -45,7 +45,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">{CONTENT_TITLE.TOTAL_STAKING}</h5>
+          <h5 className="total-amount-title">Total Amount</h5>
           {!isHiddenBadge && <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />}
           <span className="result-value">$1,572,146.14</span>
         </div>

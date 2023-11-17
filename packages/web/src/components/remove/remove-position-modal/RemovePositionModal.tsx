@@ -86,7 +86,7 @@ const RemovePositionModal: React.FC<Props> = ({ close, onSubmit }) => {
             <div className="item-content">
               <div>
                 <div className="label-large">
-                  Total
+                  Total Amount
                 </div>
                 <div className="value-large">$291,082.2</div>
               </div>

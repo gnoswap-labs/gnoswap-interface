@@ -60,6 +60,7 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
     height: 63px;
     h5 {
       ${fonts.body10};
+      color: ${({ theme }) => theme.color.text04}
     }
     
     .total-value {

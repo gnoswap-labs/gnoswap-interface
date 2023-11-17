@@ -54,7 +54,7 @@ export const inputStyle = (theme: Theme) => css`
     }
   }
   input[type="checkbox"]:checked + label:before {
-    background-color: ${theme.color.point};
+    background-color: ${theme.color.background04};
     mask-image: url(${iconChecked});
   }
 `;

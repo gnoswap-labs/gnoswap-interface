@@ -45,9 +45,9 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         text={checkedList.length === 0 ? "Select Position" : "Unstake Position"}
         style={{
           hierarchy: ButtonHierarchy.Primary,
-          height: 57,
           fullWidth: true,
         }}
+        className="button-confirm"
         disabled={checkedList.length === 0}
         onClick={handleConfirmUnstake}
       />

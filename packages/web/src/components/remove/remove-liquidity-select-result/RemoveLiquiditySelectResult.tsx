@@ -109,7 +109,7 @@ const RemoveLiquiditySelectResult: React.FC<
           ))}
         </ul>
         <div className="total-section">
-          <h5>Total</h5>
+          <h5>Total Amount</h5>
           <span className="total-value">{`$${Number(totalAmount.replace(/,/g, "") || 0).toFixed(2)}`}</span>
         </div>
       </RemoveLiquiditySelectResultWrapper>
