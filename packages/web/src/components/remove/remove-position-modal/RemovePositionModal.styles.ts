@@ -65,6 +65,10 @@ export const RemovePositionModalWrapper = styled.div`
           background: ${({ theme }) => theme.color.background20};
           border: 1px solid ${({ theme }) => theme.color.border02};
           gap: 16px;
+          ${media.mobile} {
+            padding: 11px;
+            gap: 8px;
+          }
           > div {
             width: 100%;
             ${mixins.flexbox("row", "center", "space-between")};

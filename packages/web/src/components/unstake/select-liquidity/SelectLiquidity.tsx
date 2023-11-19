@@ -26,9 +26,8 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
           checked={checkedAll}
           onChange={e => onCheckedAll(e.target.checked)}
         />
-        <label htmlFor="checkbox-all" className="select-all-label">
-          Select All
-        </label>
+        <label htmlFor="checkbox-all" className="select-all-label" />
+        <span className="custom-label">Select All</span>
         <span className="liquidity-label">Liquidity</span>
       </div>
       <ul>

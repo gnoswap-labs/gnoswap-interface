@@ -26,13 +26,16 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   return (
     <RemoveLiquiditySelectListWrapper>
       <div className="checked-all-wrap">
-        <input
-          id="checkbox-all"
-          type="checkbox"
-          checked={selectedAll}
-          onChange={selectAll}
-        />
-        <label htmlFor="checkbox-all"> Select All</label>
+        <div className="wrapper-check-label">
+          <input
+            id="checkbox-all"
+            type="checkbox"
+            checked={selectedAll}
+            onChange={selectAll}
+          />
+          <label htmlFor="checkbox-all" />
+          <span className="custom-label">Select All</span>
+        </div>
         <span>Liquidity</span>
       </div>
       <ul>

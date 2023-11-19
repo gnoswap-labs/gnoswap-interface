@@ -1,5 +1,3 @@
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import IconSwapRight from "@components/common/icons/IconSwapRight";
 import React from "react";
 import { wrapper } from "./SelectUnstakeResult.styles";
 
@@ -18,19 +16,23 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
   if (checkedList.length === 0) return <></>;
   return (
     <div css={wrapper}>
-      <ul className="pooled-section">
-        <li>
-          <DoubleLogo left={dummyImg[0]} right={dummyImg[1]} size={24} />
-          <span className="token-id">ID 14450</span>
-          <strong className="period-value">125.23% APR <IconSwapRight /> 0% APR</strong>
-        </li>
-        <li>
-          <DoubleLogo left={dummyImg[0]} right={dummyImg[1]} size={24} />
-          <span className="token-id">ID 14450</span>
-          <strong className="period-value">125.23% APR <IconSwapRight /> 0% APR</strong>
-        </li>
-      </ul>
       <ul className="result-section">
+        <li>
+          <div className="main-info">
+            <img src={dummyImg[0]} alt="pooled tokenA logo" />
+            <p>Pooled GNS</p>
+            <strong>123,456.058845</strong>
+          </div>
+          <span className="dallor">$90,564.48</span>
+        </li>
+        <li>
+          <div className="main-info">
+            <img src={dummyImg[0]} alt="pooled tokenA logo" />
+            <p>Pooled GNOT</p>
+            <strong>123,456.058845</strong>
+          </div>
+          <span className="dallor">$90,564.48</span>
+        </li>
         <li>
           <div className="main-info">
             <img src={dummyImg[0]} alt="pooled tokenA logo" />
@@ -47,6 +49,12 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
             <strong>942.55884</strong>
           </div>
           <span className="dallor">$5,564.48</span>
+        </li>
+      </ul>
+      <ul className="total-amount-section">
+        <li>
+          <div className="label">Total Amount</div>
+          <div className="value">$321,082.2</div>
         </li>
       </ul>
     </div>

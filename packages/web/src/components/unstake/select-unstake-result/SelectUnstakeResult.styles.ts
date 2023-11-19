@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -19,6 +20,10 @@ export const wrapper = (theme: Theme) => css`
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;
+    ${media.mobile} {
+      padding: 11px;
+      gap: 8px;
+    }
   }
 
   li {
@@ -50,11 +55,9 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .result-section li {
-    height: 39px;
     ${mixins.flexbox("column", "flex-end", "center")};
     .main-info {
       width: 100%;
-      height: 24px;
       ${mixins.flexbox("row", "center", "center")};
       p {
         color: ${theme.color.text03};
@@ -68,6 +71,15 @@ export const wrapper = (theme: Theme) => css`
     .dallor {
       ${fonts.p4}
       color: ${theme.color.text04}
+    }
+  }
+  .total-amount-section li {
+    ${mixins.flexbox("row", "center", "space-between")};
+    .label {
+      color: ${theme.color.text04}
+    }
+    .value {
+      color: ${theme.color.text02}
     }
   }
 `;

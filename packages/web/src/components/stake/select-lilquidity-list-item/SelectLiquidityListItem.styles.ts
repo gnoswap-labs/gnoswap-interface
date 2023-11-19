@@ -2,6 +2,7 @@ import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { inputStyle } from "@components/stake/stake-liquidity/StakeLiquidity.styles";
+import { media } from "@styles/media";
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`
@@ -37,4 +38,37 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
         }
       }
     }
+    .token-id {
+      cursor: default;
+    }
+    ${media.mobile} {
+      padding: 11px;
+    }
   `;
+
+export const tooltipWrapper = () => (theme: Theme) =>
+  css`
+  width: 268px;
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  ${fonts.body12}
+  > div {
+    &:not(:first-of-type) {
+      padding: 4px 0;
+    }
+    width: 100%;
+    ${mixins.flexbox("row", "center", "space-between")};
+    .title {
+      color: ${theme.color.text04};
+    }
+    .value {
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 8px;
+      color: ${theme.color.text02};
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+`;

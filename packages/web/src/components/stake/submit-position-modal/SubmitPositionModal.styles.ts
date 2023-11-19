@@ -60,10 +60,14 @@ export const SubmitPositionModalWrapper = styled.div`
           width: 100%;
           ${mixins.flexbox("column", "flex-start", "flex-start")};
           border-radius: 8px;
-          padding: 16px;
+          padding: 15px;
           background: ${({ theme }) => theme.color.background20};
           border: 1px solid ${({ theme }) => theme.color.border02};
           gap: 16px;
+          ${media.mobile} {
+            padding: 11px;
+            gap: 8px;
+          }
           > div {
             width: 100%;
             ${mixins.flexbox("row", "center", "space-between")};

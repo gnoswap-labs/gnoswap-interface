@@ -1,3 +1,4 @@
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
@@ -34,7 +35,8 @@ const UnstakePositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     right="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
                     size={24}
                   />
-                  <div>ID 14450</div>
+                  <div>GNS/GNOT</div>
+                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text="0.3%" />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>
@@ -45,7 +47,8 @@ const UnstakePositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     right="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
                     size={24}
                   />
-                  <div>ID 14450</div>
+                  <div>GNS/GNOT</div>
+                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text="0.3%" />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>

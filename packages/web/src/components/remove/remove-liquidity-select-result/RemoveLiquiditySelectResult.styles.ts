@@ -20,11 +20,18 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
     background-color: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
     border-radius: 8px;
+    ${media.mobile} {
+      padding: 11px;
+      gap: 8px;
+    }
   }
 
   ul {
     ${mixins.flexbox("column", "center", "center")};
     gap: 16px;
+    ${media.mobile} {
+      gap: 8px;
+    }
   }
 
   li {
@@ -57,23 +64,19 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
 
   .total-section {
     ${mixins.flexbox("row", "center", "space-between")};
-    height: 63px;
     h5 {
       ${fonts.body10};
       color: ${({ theme }) => theme.color.text04}
     }
     
     .total-value {
-      ${fonts.body6}
+      ${fonts.body12}
       color: ${({ theme }) => theme.color.text02}
     }
     ${media.mobile} {
       h5 {
         ${fonts.body12};
       }
-      .total-value {
-        ${fonts.body8}
-      }
-    }
+s    }
   }
 `;

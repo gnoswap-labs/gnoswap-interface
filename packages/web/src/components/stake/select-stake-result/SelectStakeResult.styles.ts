@@ -2,6 +2,7 @@ import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
@@ -21,6 +22,10 @@ export const wrapper = (theme: Theme) => css`
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;
+    ${media.mobile} {
+      padding: 11px;
+      gap: 8px;
+    }
   }
 
   li {
@@ -53,7 +58,6 @@ export const wrapper = (theme: Theme) => css`
 
   .result-section {
     ${mixins.flexbox("column", "center", "center")};
-    height: 90px;
     color: ${theme.color.text02};
     ${fonts.body12}
     .result-value {
@@ -66,6 +70,9 @@ export const wrapper = (theme: Theme) => css`
     }
     .total-amount-box {
       height: 24px;
+      ${media.mobile} {
+        height: 18px;
+      }
     }
     .apr-box {
       height: 18px;

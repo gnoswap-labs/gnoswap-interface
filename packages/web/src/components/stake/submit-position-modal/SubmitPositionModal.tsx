@@ -1,3 +1,4 @@
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
@@ -56,6 +57,7 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     size={24}
                   />
                   <div>ID 14450</div>
+                  <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>
@@ -67,6 +69,7 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     size={24}
                   />
                   <div>ID 14450</div>
+                  <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>
