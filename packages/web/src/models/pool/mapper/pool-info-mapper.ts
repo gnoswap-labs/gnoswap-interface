@@ -1,5 +1,5 @@
 import { PoolInfoResponse } from "@repositories/pool/response/pool-info-response";
-import { rawByX96 } from "@utils/swap-utils";
+import { rawBySqrtX96 } from "@utils/swap-utils";
 import { PoolInfoModel } from "../pool-info-model";
 
 export class PoolInfoMapper {
@@ -8,7 +8,7 @@ export class PoolInfoMapper {
       throw new Error("mapper error");
     }
     const sqrtPriceX96 = response.response.data.sqrt_price_x96;
-    const price = rawByX96(sqrtPriceX96);
+    const price = rawBySqrtX96(sqrtPriceX96);
 
     return {
       poolPath: response.response.data.pool_path,

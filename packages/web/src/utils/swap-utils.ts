@@ -40,12 +40,12 @@ export function priceToNearTick(price: number, tickSpacing: number) {
   return tickRaw - mod;
 }
 
-export function rawByX96(value: number) {
-  return BigNumber(value).dividedBy(X96).toNumber();
+export function rawBySqrtX96(value: number) {
+  return BigNumber(value).dividedBy(X96).pow(2).toNumber();
 }
 
 export function priceX96ToNearTick(priceX96: number, tickSpacing: number) {
-  const price = rawByX96(priceX96);
+  const price = rawBySqrtX96(priceX96);
   return priceToNearTick(price, tickSpacing);
 }
 
