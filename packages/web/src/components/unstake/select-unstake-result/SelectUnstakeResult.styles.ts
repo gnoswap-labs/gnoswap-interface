@@ -62,6 +62,14 @@ export const wrapper = (theme: Theme) => css`
       p {
         color: ${theme.color.text03};
         margin-left: 5px;
+        br {
+          display: none;
+        }
+        ${media.mobile} {
+          br {
+            display: initial;
+          }
+        }
       }
       strong {
         margin-left: auto;

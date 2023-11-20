@@ -2,6 +2,7 @@ import { css, type Theme } from "@emotion/react";
 import { inputStyle } from "@components/unstake/unstake-liquidity/UnstakeLiquidity.styles";
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
@@ -22,6 +23,9 @@ export const wrapper = (theme: Theme) => css`
     }
     .custom-label {
       margin-left: 8px;
+    }
+    ${media.mobile} {
+      padding: 0 11px;
     }
   }
   ul {

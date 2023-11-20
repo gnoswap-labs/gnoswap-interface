@@ -16,7 +16,7 @@ const dummyImg = [
 ];
 
 const HOVER_TEXT =
-  "The range of the estimated APR is calculated with the dynamic multiplier applied to your position based on the duration staked.";
+  "The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration.";
 
 const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   checkedList,

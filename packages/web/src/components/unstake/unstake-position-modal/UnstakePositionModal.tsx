@@ -36,7 +36,7 @@ const UnstakePositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     size={24}
                   />
                   <div>GNS/GNOT</div>
-                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text="0.3%" />
+                  <Badge className="unstake-bar" type={BADGE_TYPE.DARK_DEFAULT} text="0.3%" />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>
@@ -48,14 +48,14 @@ const UnstakePositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     size={24}
                   />
                   <div>GNS/GNOT</div>
-                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text="0.3%" />
+                  <Badge className="unstake-bar" type={BADGE_TYPE.DARK_DEFAULT} text="0.3%" />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>
             </div>
           </div>
           <div className="box-item box-item-unclaim">
-            <h4>Unclaimed Fees</h4>
+            <h4>Unclaimed Rewards</h4>
             <div className="item-content">
               <div>
                 <div>
