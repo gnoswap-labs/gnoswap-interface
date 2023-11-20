@@ -26,7 +26,7 @@ export interface PoolGraphProps {
     bottom: number;
   },
   themeKey: "dark" | "light";
-  rectWidth?: number; 
+  rectWidth?: number;
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
@@ -70,7 +70,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     .tickSize(0)
     .tickFormat(v => BigNumber(1.001 ** (v.valueOf() / 2)).toFormat(4));
   const [minX, maxX] = d3.extent(bins, (bin) => bin.currentTick);
-  const [, max] = d3.extent(bins, (bin) => bin.totalSupply);
+  const [, max] = d3.extent(bins, (bin) => bin.liquidity);
 
   const scaleY = useMemo(() => {
     return d3
@@ -143,7 +143,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   /** Update Chart by data */
   function updateChart() {
-    const tickSpacing = rectWidth ? rectWidth :getTickSpacing();
+    const tickSpacing = rectWidth ? rectWidth : getTickSpacing();
     const centerPosition = scaleX(centerX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
@@ -167,9 +167,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .style("fill", bin => fillByBin(bin))
       .attr("class", "rects")
       .attr("x", bin => scaleX(bin.currentTick))
-      .attr("y", bin => scaleY(bin.totalSupply))
+      .attr("y", bin => scaleY(bin.liquidity))
       .attr("width", tickSpacing)
-      .attr("height", bin => boundsHeight - scaleY(bin.totalSupply))
+      .attr("height", bin => boundsHeight - scaleY(bin.liquidity))
       .on("mouseover", onMouseoverChartBin)
       .on("mousemove", onMouseoverChartBin)
       .on("mouseout", onMouseoutChartBin);
@@ -196,19 +196,19 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   function onMouseoverChartBin(event: MouseEvent, bin: PoolBinModel) {
     if (mouseover && tooltipRef.current) {
-      if (bin.binId) {
+      if (tooltipRef.current.getAttribute("bin-id") !== `${bin.minTick}`) {
         const content = renderToStaticMarkup(
           <PoolGraphBinTooptip
             tokenA={tokenA}
             tokenB={tokenB}
-            tokenAAmount={bin.reserveA}
-            tokenBAmount={bin.reserveB}
+            tokenAAmount={bin.tokenAAmount}
+            tokenBAmount={bin.tokenBAmount}
             tokenARange={{ min: null, max: null }}
             tokenBRange={{ min: null, max: null }}
           />
         );
         tooltipRef.current.innerHTML = content;
-        tooltipRef.current.setAttribute("bin-id", bin.binId);
+        tooltipRef.current.setAttribute("bin-id", `${bin.minTick}`);
       }
       const tooltipPositionX = `${event.offsetX - 195}px`;
       const tooltipPositionY = `${event.offsetY - 130 - 30}px`;

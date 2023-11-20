@@ -10,7 +10,7 @@ export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
     const {
       id,
-      topBin,
+      currentTick,
       price,
       tokenA,
       tokenB,
@@ -51,7 +51,7 @@ export class PoolMapper {
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
       incentiveType: "Incentivized",
-      currentTick: topBin.currentTick,
+      currentTick,
       price,
       bins,
     };
@@ -74,7 +74,7 @@ export class PoolMapper {
   public static toCardInfo(poolModel: PoolModel): PoolCardInfo {
     const {
       id,
-      topBin,
+      currentTick,
       price,
       tokenA,
       tokenB,
@@ -115,7 +115,7 @@ export class PoolMapper {
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
       incentiveType: "Incentivized",
-      currentTick: topBin.currentTick,
+      currentTick,
       price,
       bins,
     };
