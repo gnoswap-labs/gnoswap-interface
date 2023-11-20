@@ -23,7 +23,7 @@ export interface PoolModel {
 
   bins: PoolBinModel[];
 
-  topBin: PoolBinModel;
+  topBin: PoolBinModel | null;
 
   tvl: AmountModel;
 
