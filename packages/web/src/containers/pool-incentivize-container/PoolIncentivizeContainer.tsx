@@ -42,6 +42,7 @@ const PoolIncentivizeContainer: React.FC = () => {
 
   useEffect(() => {
     updateTokenPrices();
+    setCurrentPool(null);
   }, []);
 
   const changeToken = useCallback((token: TokenModel) => {

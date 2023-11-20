@@ -12,7 +12,7 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     height: 56px;
     gap: 5px;
     background-color: ${theme.color.background20};
-    border: 1px solid ${checked ? theme.color.border03 : theme.color.border02};
+    border: 1px solid ${checked ? theme.color.border15 : theme.color.border02};
     border-radius: 8px;
     padding: 15px;
     ${fonts.body12};

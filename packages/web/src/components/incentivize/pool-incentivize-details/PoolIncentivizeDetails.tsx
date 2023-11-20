@@ -43,7 +43,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
           <span className="pair-symbol">
             {makePairName(details)}
           </span>
-          <Badge text="0.05%" type={BADGE_TYPE.DARK_DEFAULT} />
+          <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
         </div> : <div className="section-info">-</div>}
       </section>
       <section>
@@ -54,7 +54,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
             alt="token-logo"
             className="token-logo"
           />
-          <span className="total-amount-value">{Number(amount).toLocaleString()} GNOS</span>
+          <span className="total-amount-value">{Number(amount).toLocaleString()} {token.symbol}</span>
         </div> : <div className="section-info">-</div>}
       </section>
       <section className="period-section">
@@ -65,7 +65,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
             <br />- {formatDate(startDate, period)}
           </span>
           <span className="period-desc">
-            {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()} GNOS will be distributed daily
+            {Number((Number(amount || 0) / period).toFixed(2)).toLocaleString()} {token?.symbol} will be distributed daily
           </span>
         </div>
       </section>

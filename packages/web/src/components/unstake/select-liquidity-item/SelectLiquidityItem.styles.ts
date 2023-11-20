@@ -11,7 +11,7 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     width: 100%;
     gap: 5px;
     background-color: ${theme.color.background20};
-    border: 1px solid ${checked ? theme.color.border03 : theme.color.border02};
+    border: 1px solid ${checked ? theme.color.border15 : theme.color.border02};
     border-radius: 8px;
     padding: 15px;
     ${fonts.body12};
@@ -55,9 +55,6 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     }
     label {
       margin-right: 3px;
-    }
-    > div:first-of-type {
-      margin-left: 3px;
     }
     ${media.mobile} {
       padding: 11px;

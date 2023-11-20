@@ -30,7 +30,7 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div<Props>`
     display: flex;
     width: 100%;
     height: 48px;
-    padding: 0 16px;
+    padding: 0 15px;
     background-color: #fff;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
@@ -57,6 +57,9 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div<Props>`
       .icon-arrow {
         fill: ${({ theme }) => theme.color.icon08};
       }
+    }
+    ${media.mobile} {
+      padding: 0 11px;
     }
   }
 `;
