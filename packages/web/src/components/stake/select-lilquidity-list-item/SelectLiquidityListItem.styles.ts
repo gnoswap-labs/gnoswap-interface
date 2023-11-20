@@ -10,7 +10,7 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     ${mixins.flexbox("row", "center", "flex-start")};
     width: 100%;
     height: 56px;
-    gap: 8px;
+    gap: 5px;
     background-color: ${theme.color.background20};
     border: 1px solid ${checked ? theme.color.border03 : theme.color.border02};
     border-radius: 8px;
@@ -41,8 +41,12 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     .token-id {
       cursor: default;
     }
+    > div:first-of-type {
+      margin-left: 3px;
+    }
     ${media.mobile} {
       padding: 11px;
+      height: 48px;
     }
   `;
 
