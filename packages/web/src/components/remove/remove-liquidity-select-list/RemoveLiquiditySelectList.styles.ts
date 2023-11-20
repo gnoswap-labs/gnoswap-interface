@@ -3,6 +3,7 @@ import mixins from "@styles/mixins";
 import { inputStyle } from "@components/remove/remove-liquidity/RemoveLiquidity.styles";
 
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const RemoveLiquiditySelectListWrapper = styled.div`
   ${({ theme }) => inputStyle(theme)};
@@ -25,6 +26,9 @@ export const RemoveLiquiditySelectListWrapper = styled.div`
     }
     .wrapper-check-label {
       ${mixins.flexbox("row", "center", "flex-start")}
+    }
+    ${media.mobile} {
+      padding: 0px 11px;
     }
   }
   

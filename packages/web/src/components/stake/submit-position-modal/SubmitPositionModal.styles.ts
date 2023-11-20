@@ -116,6 +116,7 @@ export const SubmitPositionModalWrapper = styled.div`
           .position-bar {
             > div {
               ${fonts.p4}
+              color: ${({ theme }) => theme.color.text12};
             }
           }
         }

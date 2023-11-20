@@ -11,7 +11,6 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   ${({ theme }) => inputStyle(theme)};
   ${mixins.flexbox("row", "center", "flex-start")};
   width: 100%;
-  height: 56px;
   gap: 5px;
   background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid

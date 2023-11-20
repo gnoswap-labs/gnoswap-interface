@@ -36,7 +36,7 @@ const RemovePositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     size={24}
                   />
                   <div>GNS/GNOT</div>
-                  <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+                  <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>
@@ -48,7 +48,7 @@ const RemovePositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     size={24}
                   />
                   <div>GNS/GNOT</div>
-                  <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+                  <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
                 </div>
                 <div className="value">$145,541.10</div>
               </div>

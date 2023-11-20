@@ -65,7 +65,7 @@ export const RemoveLiquiditySelectResultWrapper = styled.div`
   .total-section {
     ${mixins.flexbox("row", "center", "space-between")};
     h5 {
-      ${fonts.body10};
+      ${fonts.body12};
       color: ${({ theme }) => theme.color.text04}
     }
     

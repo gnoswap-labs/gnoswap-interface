@@ -80,7 +80,7 @@ export const RemovePositionModalWrapper = styled.div`
             gap: 4px;
           }
           .label-logo {
-            gap: 8px;
+            gap: 5px;
             ${mixins.flexbox("row", "center", "center")};
             > div {
               color: ${({ theme }) => theme.color.text03};
@@ -116,6 +116,12 @@ export const RemovePositionModalWrapper = styled.div`
             color: ${({ theme }) => theme.color.text02};
             ${media.mobile} {
               ${fonts.body8};
+            }
+          }
+          .position-bar {
+            > div {
+              ${fonts.p4};
+              color: ${({ theme }) => theme.color.text12};
             }
           }
         }

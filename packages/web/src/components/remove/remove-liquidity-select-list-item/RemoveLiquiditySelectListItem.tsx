@@ -81,7 +81,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
         placement="top"
         FloatingContent={<TooltipContent selectable={!selectable}/>}
       >
-        <span className="token-id">{lpPosition.lpRewardId}</span>
+        <span className="token-id">GNS/GNOT</span>
       </Tooltip>
       <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT}/>
       <span className="liquidity-value">${lpPosition.position.balance.toLocaleString()}</span>

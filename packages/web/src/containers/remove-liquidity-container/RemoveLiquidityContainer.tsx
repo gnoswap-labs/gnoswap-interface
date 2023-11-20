@@ -5,7 +5,7 @@ import { useRemovePositionModal } from "@hooks/earn/use-remove-position-modal";
 
 const MOCK_DATA = {
   "apr": 0.04483021186938406,
-  "lpRewardId": "GNS/GNOT",
+  "lpRewardId": "14450",
   "position": {
     "balance": 760102.5916965322,
     "volume": 803845.101127504,
@@ -135,6 +135,7 @@ const MOCK_DATA = {
 const LIST_DATA: LPPositionModel[] = [1, 2, 3, 4].map((item) => {
   return {
     ...MOCK_DATA,
+    lpRewardId: (Number(MOCK_DATA.lpRewardId) +  item).toString(),
     position: item > 2 ? { ...MOCK_DATA.position, balance: 0 } : MOCK_DATA.position,
   };
 });
