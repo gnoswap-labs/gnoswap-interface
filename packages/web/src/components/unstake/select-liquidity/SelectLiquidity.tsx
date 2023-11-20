@@ -1,6 +1,7 @@
 import React from "react";
 import SelectLiquidityItem from "@components/unstake/select-liquidity-item/SelectLiquidityItem";
 import { wrapper } from "./SelectLiquidity.styles";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface SelectLiquidityProps {
   list: any[];
@@ -8,6 +9,7 @@ interface SelectLiquidityProps {
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  breakpoint: DEVICE_TYPE;
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
@@ -16,6 +18,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  breakpoint,
 }) => {
   return (
     <div css={wrapper}>
@@ -37,6 +40,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
             checkedList={checkedList}
             onCheckedItem={onCheckedItem}
             key={idx}
+            breakpoint={breakpoint}
           />
         ))}
       </ul>

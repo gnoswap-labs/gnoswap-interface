@@ -143,9 +143,14 @@ export const MyPositionCardWrapper = styled.div<Props>`
         color: ${({ theme }) => theme.color.text04};
       }
       .content-text {
+        ${mixins.flexbox("row", "center", "flex-start")};
         ${fonts.body2};
         ${media.tablet} {
           ${fonts.body4};
+          svg {
+            height: 25px;
+            width: 25px;
+          }
         }
         ${media.mobile} {
           ${fonts.body8};

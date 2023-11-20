@@ -54,7 +54,7 @@ export const MyLiquidityContentWrapper = styled.div`
   }
 
   span.content-value {
-    cursor: pointer;
+    cursor: default;
     ${fonts.body2};
     ${media.tablet} {
       ${fonts.body4}

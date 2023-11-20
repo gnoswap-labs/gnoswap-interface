@@ -1,5 +1,6 @@
 import StakePosition from "@components/stake/stake-position/StakePosition";
 import { STAKED_OPTION } from "@constants/option.constant";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { useSubmitPositionModal } from "@hooks/earn/use-submit-position-modal";
 import React, { useCallback, useState, useEffect } from "react";
 
@@ -24,7 +25,7 @@ export const selectLiquidityInit = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     ],
     path: "GNS/BTC",
-    liquidity: "$145,541.10",
+    liquidity: "14554112.10",
     staked: STAKED_OPTION.UNSTAKED,
   },
   {
@@ -33,7 +34,7 @@ export const selectLiquidityInit = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     ],
     path: "GNS/ETH",
-    liquidity: "$145,541.10",
+    liquidity: "14554112.10",
     staked: STAKED_OPTION.UNSTAKED,
   },
 ];
@@ -44,6 +45,7 @@ export const data = {
 };
 
 const StakePositionContainer: React.FC = () => {
+  const { breakpoint } = useWindowSize();
 
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const [checkedAll, setCheckedAll] = useState(false);
@@ -94,6 +96,7 @@ const StakePositionContainer: React.FC = () => {
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       submitPosition={submitPosition}
+      breakpoint={breakpoint}
     />
   );
 };

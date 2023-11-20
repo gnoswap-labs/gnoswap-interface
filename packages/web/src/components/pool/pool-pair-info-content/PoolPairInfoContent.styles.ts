@@ -72,14 +72,20 @@ export const PoolPairInfoContentWrapper = styled.div`
   }
 
   strong {
+    ${mixins.flexbox("row", "center", "flex-start")};
     ${fonts.body2};
     ${media.tablet} {
       ${fonts.body4};
     }
-    ${media.tablet} {
+    ${media.mobile} {
       ${fonts.body7};
+      svg {
+        height: 25px;
+        width: 25px;
+      }
     }
     color: ${({ theme }) => theme.color.text02};
+
   }
 `;
 

@@ -17,7 +17,7 @@ const IconLineGradient = ({ className }: { className?: string }) => (
         y2="49"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stopColor="#0059FF"></stop>
+        <stop stopColor="#233DBD"></stop>
         <stop offset="1" stopColor="#E0E8F4"></stop>
       </linearGradient>
     </defs>

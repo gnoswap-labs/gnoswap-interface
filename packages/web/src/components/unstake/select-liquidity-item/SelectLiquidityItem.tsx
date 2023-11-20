@@ -1,6 +1,8 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { DEVICE_TYPE } from "@styles/media";
+import { convertLiquidity } from "@utils/stake-position-utils";
 import React from "react";
 import { tooltipWrapper, wrapper } from "./SelectLiquidityItem.styles";
 
@@ -8,6 +10,7 @@ interface SelectLiquidityItemProps {
   item: any;
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
+  breakpoint: DEVICE_TYPE;
 }
 
 const TooltipContent:React.FC = () => {
@@ -39,6 +42,7 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
   item,
   checkedList,
   onCheckedItem,
+  breakpoint,
 }) => {
   return (
     <li css={wrapper(checkedList.includes(item.path))}>
@@ -57,7 +61,7 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
         <span className="token-id">{item.path}</span>
       </Tooltip>
       <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
-      <span className="liquidity-value">{item.liquidity}</span>
+      <span className="liquidity-value">${breakpoint === DEVICE_TYPE.MOBILE ? convertLiquidity(item.liquidity) : Number(item.liquidity).toLocaleString()}</span>
     </li>
   );
 };

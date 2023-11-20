@@ -66,7 +66,7 @@ const PriceTooltipContent = ({ item } : { item: any }) => {
           left={item.logoURI[0]}
           right={item.logoURI[1]}
         />
-        <span className="title">ID 982932</span>
+        <span className="title">ID #982932</span>
       </div>
       <div className="list">
         <span className="label">Total Value</span>
@@ -87,7 +87,7 @@ const PriceTooltipContent = ({ item } : { item: any }) => {
           left={item.logoURI[0]}
           right={item.logoURI[1]}
         />
-        <span className="title">ID 982932</span>
+        <span className="title">ID #982932</span>
       </div>
       <div className="list">
         <span className="label">Total Value</span>

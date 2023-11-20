@@ -112,7 +112,6 @@ export const StakingContentCardWrapper = styled.div`
         .tooltip-icon {
           width: 16px;
           height: 16px;
-          cursor: pointer;
           * {
             fill: ${({ theme }) => theme.color.icon03};
           }
@@ -147,7 +146,7 @@ export const StakingContentCardWrapper = styled.div`
       gap: 12px;
     }
     .price {
-      cursor: pointer;
+      cursor: default;
       span {
         div {
           ${mixins.flexbox("row", "center", "flex-start")};
@@ -180,7 +179,7 @@ export const StakingContentCardWrapper = styled.div`
       ${media.mobile} {
         gap: 8px;
       }
-      .price-gd-text:not(:hover) {
+      .price-gd-text {
         background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
@@ -226,7 +225,7 @@ export const StakingContentCardWrapper = styled.div`
           ${fonts.body12}
         }
         &:hover {
-          cursor: pointer;
+          cursor: default;
           color: ${({ theme }) => theme.color.text07};
         }
       }
@@ -235,7 +234,7 @@ export const StakingContentCardWrapper = styled.div`
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        cursor: pointer;
+        cursor: default;
         ${fonts.body6}
         ${media.tablet} {
           ${fonts.body8}

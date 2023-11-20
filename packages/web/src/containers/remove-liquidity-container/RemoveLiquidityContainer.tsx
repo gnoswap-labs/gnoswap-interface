@@ -2,6 +2,7 @@ import RemoveLiquidity from "@components/remove/remove-liquidity/RemoveLiquidity
 import React, { useCallback, useMemo, useState } from "react";
 import { LPPositionModel } from "@models/position/lp-position-model";
 import { useRemovePositionModal } from "@hooks/earn/use-remove-position-modal";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 const MOCK_DATA = {
   "apr": 0.04483021186938406,
@@ -143,8 +144,9 @@ const LIST_DATA: LPPositionModel[] = [1, 2, 3, 4].map((item) => {
 const RemoveLiquidityContainer: React.FC = () => {
   const [lpPositions] = useState<LPPositionModel[]>(LIST_DATA);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const { breakpoint } = useWindowSize();
 
-const { openModal } = useRemovePositionModal();
+  const { openModal } = useRemovePositionModal();
 
   const unstakedLiquidities = useMemo(() => {
     return lpPositions.filter(item => item.position.balance !== 0);
@@ -183,6 +185,7 @@ const { openModal } = useRemovePositionModal();
       select={select}
       selectAll={selectAll}
       removeLiquidity={removeLiquidity}
+      breakpoint={breakpoint}
     />
   );
 };

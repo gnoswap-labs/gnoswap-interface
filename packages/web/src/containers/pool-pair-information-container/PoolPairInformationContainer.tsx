@@ -67,7 +67,7 @@ export const poolPairInit = {
     },
   },
   apr: {
-    value: "✨108.21%",
+    value: "108.21%",
     fees: "-3.52%",
     rewards: "88.13%",
   },

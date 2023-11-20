@@ -4,6 +4,7 @@ import { wrapper } from "./StakePosition.styles";
 import { ValuesType } from "utility-types";
 import SelectLiquidity from "@components/stake/select-liquidity/SelectLiquidity";
 import SelectStakeResult from "@components/stake/select-stake-result/SelectStakeResult";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface StakePositionProps {
   data: any;
@@ -12,6 +13,7 @@ interface StakePositionProps {
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   submitPosition: () => void;
+  breakpoint: DEVICE_TYPE;
   isUnstake?: boolean;
 }
 
@@ -30,6 +32,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
   onCheckedAll,
   checkedAll,
   submitPosition,
+  breakpoint,
 }) => {
   const isEmptyCheckList = useMemo(() => {
     return checkedList.length === 0;
@@ -44,6 +47,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
+        breakpoint={breakpoint}
         isHiddenTitle
       />
       <SelectStakeResult checkedList={checkedList} isHiddenBadge />

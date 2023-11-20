@@ -5,6 +5,7 @@ import { wrapper } from "./StakeLiquidity.styles";
 import { ValuesType } from "utility-types";
 import SelectLiquidity from "@components/stake/select-liquidity/SelectLiquidity";
 import SelectStakeResult from "@components/stake/select-stake-result/SelectStakeResult";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface StakeLiquidityProps {
   data: any;
@@ -13,6 +14,7 @@ interface StakeLiquidityProps {
   onClickPeriod: (idx: number) => void;
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
+  breakpoint: DEVICE_TYPE;
   checkedAll: boolean;
 }
 
@@ -34,6 +36,7 @@ const StakeLiquidity: React.FC<StakeLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  breakpoint,
 }) => {
   return (
     <div css={wrapper}>
@@ -49,6 +52,7 @@ const StakeLiquidity: React.FC<StakeLiquidityProps> = ({
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
+        breakpoint={breakpoint}
       />
       <SelectStakeResult checkedList={checkedList} />
       <Button

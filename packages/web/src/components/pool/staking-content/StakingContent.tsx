@@ -3,12 +3,10 @@ import StakingContentCard, {
   SummuryApr,
 } from "@components/pool/staking-content-card/StakingContentCard";
 import {
-  CustomButtonStaking,
   StakingContentWrapper,
 } from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
-import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 
 interface StakingContentProps {
   content: any[];
@@ -16,7 +14,6 @@ interface StakingContentProps {
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   type: number;
-  handleClickStaking: () => void;
 }
 
 const TEXT_BTN = [
@@ -32,7 +29,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
   breakpoint,
   mobile,
   type,
-  handleClickStaking,
 }) => {
   return (
     <StakingContentWrapper isMobile={mobile}>
@@ -77,19 +73,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       </div>
       <div className="button-wrap">
         <Button
-          text={
-            type !== 0 ? (
-              TEXT_BTN[type]
-            ) : (
-              <div className="wrapper-staking-btn">
-                {TEXT_BTN[type]}
-                <CustomButtonStaking onClick={handleClickStaking}>
-                  Go to Staking
-                  <IconStrokeArrowRight />
-                </CustomButtonStaking>
-              </div>
-            )
-          }
+          text={TEXT_BTN[type]}
           style={{
             width: `${
               breakpoint === DEVICE_TYPE.WEB

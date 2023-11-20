@@ -122,10 +122,6 @@ const StakingContainer: React.FC = () => {
     return isSwitchNetwork || !connectedWallet;
   }, [isSwitchNetwork, connectedWallet]);
 
-  const handleClickStaking = useCallback(() => {
-    router.push(`/earn/pool/${router.query["pool-number"]}/stake`);
-  }, [router]);
-
   const handleClickStakeRedirect = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-number"]}/stake`);
   }, [router]);
@@ -142,7 +138,6 @@ const StakingContainer: React.FC = () => {
       mobile={mobile}
       isDisabledButton={isDisabledButton}
       type={type}
-      handleClickStaking={handleClickStaking}
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
     />

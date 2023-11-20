@@ -4,11 +4,14 @@ import React, { useCallback, useMemo } from "react";
 import { RemoveLiquiditySelectListItemWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
 import { LPPositionModel } from "@models/position/lp-position-model";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import { DEVICE_TYPE } from "@styles/media";
+import { convertLiquidity } from "@utils/stake-position-utils";
 
 interface RemoveLiquiditySelectListItemProps {
   selected: boolean;
   lpPosition: LPPositionModel;
   select: (id: string) => void;
+  breakpoint: DEVICE_TYPE;
 }
 
 interface TooltipProps {
@@ -48,6 +51,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
   selected,
   lpPosition,
   select,
+  breakpoint,
 }) => {
 
   const selectable = useMemo(() => {
@@ -84,7 +88,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
         <span className="token-id">GNS/GNOT</span>
       </Tooltip>
       <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT}/>
-      <span className="liquidity-value">${lpPosition.position.balance.toLocaleString()}</span>
+      <span className="liquidity-value">${breakpoint === DEVICE_TYPE.MOBILE ? convertLiquidity(lpPosition.position.balance.toString()) : lpPosition.position.balance.toLocaleString()}</span>
     </RemoveLiquiditySelectListItemWrapper>
   );
 };
