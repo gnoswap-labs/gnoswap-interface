@@ -8,9 +8,8 @@ export const SelectPriceRangeCustomWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 24px;
-  background: ${({ theme }) => theme.color.background06};
+  background: ${({ theme }) => theme.color.background11};
   border-radius: 8px;
-  margin-top: 8px;
 
   .option-wrapper {
     display: flex;
@@ -47,12 +46,24 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     }
   }
 
+  .loading-wrapper {
+    margin: 73px 0;
+    > div {
+      width: 60px;
+      height: 60px;
+      &:before {
+        width: 48px;
+        height: 48px;
+      }
+    }
+  }
+
   .current-price-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text10};
     > span:first-of-type {
       color: ${({ theme }) => theme.color.text04};
     }

@@ -67,8 +67,6 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   changePriceRange,
   submitType,
   submit,
-  currentTick,
-  ticks,
   isEarnAdd,
   connected,
   slippage,
@@ -225,7 +223,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               <h5>2. Select Fee Tier</h5>
               {existTokenPair && isEarnAdd && (!openedFeeTier ? <IconArrowDown /> : <IconArrowUp />)}
             </div>
-            {selectedFeeRate && (
+            {selectedFeeRate && existTokenPair && (
               <Badge
                 text={selectedFeeRate}
                 type={BADGE_TYPE.LINE}
@@ -251,7 +249,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               <h5>3. Select Price Range</h5>
               {existTokenPair && (!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />)}
             </div>
-            {selectedPriceRange && (
+            {selectedPriceRange && existTokenPair && (
               <Badge
                 text={selectedPriceRange}
                 type={BADGE_TYPE.LINE}
@@ -267,11 +265,11 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               changePriceRange={handlePriceRange}
             />
           )}
-          {openedPriceRange && openCustomPriceRange && tokenA && tokenB && currentTick && ticks && <SelectPriceRangeCustom
+          {openedPriceRange && openCustomPriceRange && tokenA && tokenB && <SelectPriceRangeCustom
             tokenA={tokenA}
             tokenB={tokenB}
-            currentTick={currentTick}
-            ticks={ticks}
+            currentTick={undefined}
+            ticks={[]}
           />
           }
           {selectedPriceRange && existTokenPair && selectedFeeRate && <SelectPriceRangeSummary {...priceRangeSummary} />}

@@ -71,5 +71,6 @@ export const EarnAddConfirmFeeInfoSection = styled(
   }
   ${media.mobile} {
     height: 42px;
+    padding: 8px 11px;
   }
 `;

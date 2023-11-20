@@ -16,7 +16,9 @@ export const EarnAddLiquidityWrapper = styled.section`
   padding: 23px;
   .button-submit {
     height: 57px;
-    ${fonts.body7};
+    span {
+      ${fonts.body7};
+    }
   }
   h3 {
     ${fonts.h6}
@@ -144,7 +146,9 @@ export const EarnAddLiquidityWrapper = styled.section`
     }
     .button-submit {
       height: 41px;
-      ${fonts.body9};
+      span {
+        ${fonts.body9};
+      }
     }
     .btn-one-click {
       ${fonts.p4}

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import IconRefresh from "../icons/IconRefresh";
 import IconSwap from "../icons/IconSwap";
 import SelectPriceRangeCutomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
@@ -7,6 +7,7 @@ import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 import { TokenInfo } from "@models/token/token-info";
 import { PoolTick } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import BigNumber from "bignumber.js";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenInfo | undefined;
@@ -23,6 +24,14 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 }) => {
   const [minTick, setMinTick] = useState<PoolTick>();
   const [maxTick, setMaxTick] = useState<PoolTick>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const token0Symbol = useMemo(() => {
     return tokenA?.symbol || "";
@@ -119,13 +128,16 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
           <span className="graph-option-item increase">+</span>
         </div>
       </div>
-      <div className="current-price-wrapper">
+      {!isLoading && <div className="current-price-wrapper">
         <span>Current Price</span>
         <span>{currentPriceInfo}</span>
-      </div>
-      <div className="range-graph-wrapper">
+      </div>}
+      {!isLoading && <div className="range-graph-wrapper">
         {/* TBD: SelectLiquidityGraph */}
-      </div>
+      </div>}
+      {isLoading && <div className="loading-wrapper">
+        <LoadingSpinner />
+      </div>}
 
       <div className="range-controller-wrapper">
         <SelectPriceRangeCutomController

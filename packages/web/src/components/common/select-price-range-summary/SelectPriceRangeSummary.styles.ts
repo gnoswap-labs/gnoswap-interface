@@ -47,6 +47,7 @@ export const SelectPriceRangeSummaryWrapper = styled.div`
     }
   }
   ${media.mobile} {
+    padding: 11px;
     margin-top: 0;
     .row {
       flex-direction: column;

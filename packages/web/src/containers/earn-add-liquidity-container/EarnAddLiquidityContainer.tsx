@@ -139,13 +139,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     setSwapFeeTier("FEE_3000");
     setPriceRange(TEMP_CUSTOM_PRICE_RANGE[1]);
-    return () => {
-      setSwapValue({
-        tokenA: null,
-        tokenB: null,
-        type: "EXACT_IN",
-      });
-    };
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
+    setIsEarnAdd(false);
   }, []);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {

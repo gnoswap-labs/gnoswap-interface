@@ -8,7 +8,6 @@ import {
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
 import { useAtom } from "jotai";
@@ -166,11 +165,23 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (isSwitchNetwork) {
       return "SWITCH_NETWORK";
     }
-    if (!swapFeeTier) {
+    if (!tokenA || !tokenB) {
+      return "INVALID_PAIR";
+    }
+    if (!Number(tokenAAmountInput.amount) || !Number(tokenBAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
-    if (!priceRange) {
-      return "INVALID_RANGE";
+    if ((Number(tokenAAmountInput.amount) < 0.000001)) {
+      return "AMOUNT_TOO_LOW";
+    }
+    if ((Number(tokenBAmountInput.amount) < 0.000001)) {
+      return "AMOUNT_TOO_LOW";
+    }
+    if (Number(tokenAAmountInput.amount) > Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, "")))) {
+      return "INSUFFICIENT_BALANCE";
+    }
+    if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
+      return "INSUFFICIENT_BALANCE";
     }
     // if (!account?.balances || account.balances.length === 0) {
     //   return "INSUFFICIENT_BALANCE";
@@ -178,11 +189,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
     //   return "INSUFFICIENT_BALANCE";
     // }
-    if (BigNumber(tokenAAmountInput.amount).isLessThanOrEqualTo(0)) {
-      return "ENTER_AMOUNT";
-    }
-    if (BigNumber(tokenBAmountInput.amount).isLessThanOrEqualTo(0)) {
-      return "ENTER_AMOUNT";
+    if (!priceRange) {
+      return "INVALID_RANGE";
     }
     return "CREATE_POOL";
   }, [
@@ -191,8 +199,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
     priceRange,
     swapFeeTier,
     tokenAAmountInput.amount,
+    tokenAAmountInput.balance,
     tokenBAmountInput.amount,
+    tokenBAmountInput.balance,
     isSwitchNetwork,
+    tokenA,
+    tokenB,
   ]);
 
   useEffect(() => {

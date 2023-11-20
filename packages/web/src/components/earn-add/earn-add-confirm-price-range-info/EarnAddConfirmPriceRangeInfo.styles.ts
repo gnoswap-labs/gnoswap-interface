@@ -10,12 +10,15 @@ export const EarnAddConfirmPriceRangeInfoWrapper = styled.div`
   width: 100%;
   height: auto;
   gap: 2px;
-
-  p {
-    ${fonts.body12}
-    color: ${({ theme }) => theme.color.text10};
+  .range-title {
+    ${mixins.flexbox("row", "center", "space-between")};
     margin-bottom: 6px;
+    p {
+      ${fonts.body12}
+      color: ${({ theme }) => theme.color.text10};
+    }
   }
+
 
   .price-range-wrapper {
     display: flex;
@@ -35,7 +38,7 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
   color: ${({ theme }) => theme.color.text10};
 
   &.range-section {
-    padding: 15px 8px;
+    padding: 15px 7px;
     gap: 8px;
     justify-content: space-between;
     align-items: center;
@@ -56,6 +59,9 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
         }
       }
     }
+    ${media.mobile} {
+      padding: 11px 7px;
+    }
   }
   
   .row {
@@ -73,6 +79,11 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     width: 16px;
     height: 16px;
     cursor: pointer;
+    &:hover {
+      svg * {
+        fill: ${({ theme }) => theme.color.icon16};
+      }
+    }
   }
   .value {
     ${mixins.flexbox("row", "center", "flex-start")};
@@ -81,11 +92,6 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     color: ${({ theme }) => theme.color.text10};
     svg * {
       fill: ${({ theme }) => theme.color.icon03};
-    }
-    &:hover {
-      svg * {
-        fill: ${({ theme }) => theme.color.icon16};
-      }
     }
   }
   .title-wrapper {

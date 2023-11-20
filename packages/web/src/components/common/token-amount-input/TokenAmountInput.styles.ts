@@ -58,7 +58,7 @@ export const TokenAmountInputWrapper = styled.div`
     cursor: default;
   }
   ${media.mobile} {
-    padding: 12px;
+    padding: 11px;
     gap: 8px;
     .amount {
       margin-bottom: 0;

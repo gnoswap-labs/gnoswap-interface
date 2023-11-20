@@ -1,6 +1,8 @@
 import IconInfo from "@components/common/icons/IconInfo";
 import IconSwap from "@components/common/icons/IconSwap";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import React, { useState, useCallback} from "react";
 import {
   EarnAddConfirmPriceRangeInfoSection,
@@ -40,7 +42,10 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   }, []);
   return (
     <EarnAddConfirmPriceRangeInfoWrapper>
-      <p>Price Range</p>
+      <div className="range-title">
+        <p>Price Range</p>
+        <RangeBadge status={RANGE_STATUS_OPTION.IN} />
+      </div>
 
       <div className="price-range-wrapper">
         <EarnAddConfirmPriceRangeInfoSection className="range-section">

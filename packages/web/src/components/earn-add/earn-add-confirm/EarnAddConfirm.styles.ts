@@ -20,6 +20,9 @@ export const EarnAddConfirmWrapper = styled.div`
     .title {
       ${fonts.h6}
       color: ${({ theme }) => theme.color.text01};
+      ${media.mobile} {
+      ${fonts.body9}
+      }
     }
 
     .close-button {
@@ -66,7 +69,7 @@ export const EarnAddConfirmContentSection = styled.div`
   flex-direction: column;
   width: 100%;
   height: auto;
-  padding: 16px;
+  padding: 15px;
   background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
@@ -78,5 +81,8 @@ export const EarnAddConfirmContentSection = styled.div`
 
   .value {
     color: ${({ theme }) => theme.color.text16};
+  }
+  ${media.mobile} {
+    padding: 11px;
   }
 `;

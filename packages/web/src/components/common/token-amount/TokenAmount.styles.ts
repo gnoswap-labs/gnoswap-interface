@@ -54,6 +54,6 @@ export const TokenAmountWrapper = styled.div`
     ${fonts.p2};
   }
   ${media.mobile} {
-    padding: 12px;
+    padding: 11px;
   }
 `;

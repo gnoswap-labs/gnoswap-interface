@@ -63,7 +63,7 @@ export const SelectPriceRangeItemWrapper = styled.div`
     margin-left: auto;
   }
   ${media.mobile} {
-    padding: 12px;
+    padding: 11px;
   }
 `;
 
