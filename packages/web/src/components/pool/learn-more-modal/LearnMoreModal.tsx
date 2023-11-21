@@ -73,6 +73,19 @@ const LEARN_MORE_DATA: LearnMoreProps[] = [
     darkImageUrl:
       "https://media.discordapp.net/attachments/1138037908482314292/1162054336499695767/image_53.png?ex=653a8a6f&is=6528156f&hm=289336d87487c2c25490a4834333ea9663b3ed477d4ef818329bc03540a6fdfd",
   },
+  {
+    title: "Keep Your Yield!",
+    description: (
+      <>
+        Unstaking will reset your progress!<br />
+        Keep your position staked to maximize your yield.
+      </>
+    ),
+    lightImageURL:
+      "https://media.discordapp.net/attachments/1138037908482314292/1162098588118167803/image_55.png?ex=653ab3a6&is=65283ea6&hm=636cd11c78cc8c37cbddea2df74e27913b05c517a81f1222f749c315a88056aa",
+    darkImageUrl:
+      "https://media.discordapp.net/attachments/1138037908482314292/1162054336499695767/image_53.png?ex=653a8a6f&is=6528156f&hm=289336d87487c2c25490a4834333ea9663b3ed477d4ef818329bc03540a6fdfd",
+  },
 ];
 
 const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
@@ -167,7 +180,7 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
         </Slider>
         <Button
           text="Close"
-          className={`${index == 2 ? "active-btn" : ""} learn-more-btn`}
+          className={`${index == 3 ? "active-btn" : ""} learn-more-btn`}
           style={{
             fullWidth: true,
             fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",

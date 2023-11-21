@@ -24,12 +24,12 @@ Default.args = {
     total: 5,
     tdWidth: POOL_TD_WIDTH,
     list: [
-      { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-      { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-      { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
+      { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true , className: ""},
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
+      { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
+      { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false , className: ""},
+      { width: 20, type: SHAPE_TYPES.CIRCLE, left: false , className: ""},
     ],
   },
 };
