@@ -25,7 +25,7 @@ export const selectLiquidityInit = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     ],
     path: "GNS/BTC",
-    liquidity: "14554112.10",
+    liquidity: "1455433112.10",
     staked: STAKED_OPTION.UNSTAKED,
   },
   {
@@ -34,7 +34,7 @@ export const selectLiquidityInit = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     ],
     path: "GNS/ETH",
-    liquidity: "14554112.10",
+    liquidity: "112.10",
     staked: STAKED_OPTION.UNSTAKED,
   },
 ];
@@ -45,8 +45,7 @@ export const data = {
 };
 
 const StakePositionContainer: React.FC = () => {
-  const { breakpoint } = useWindowSize();
-
+  const { width } = useWindowSize();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const [checkedAll, setCheckedAll] = useState(false);
   const { openModal } = useSubmitPositionModal();
@@ -96,7 +95,7 @@ const StakePositionContainer: React.FC = () => {
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       submitPosition={submitPosition}
-      breakpoint={breakpoint}
+      width={width}
     />
   );
 };

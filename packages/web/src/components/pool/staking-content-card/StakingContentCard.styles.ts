@@ -3,7 +3,11 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const StakingContentCardWrapper = styled.div`
+interface Props {
+  nonTotal: boolean;
+}
+
+export const StakingContentCardWrapper = styled.div<Props>`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
   ${media.tabletMiddle} {
@@ -41,7 +45,7 @@ export const StakingContentCardWrapper = styled.div`
         right: 9px;
         bottom: -49px;
         stroke-width: 1px;
-        stroke: var(--point-global-point, #0059ff);
+        stroke: var(--point-global-point, #233DBD);
       }
       .check-line-long {
         height: 456px;
@@ -49,7 +53,7 @@ export const StakingContentCardWrapper = styled.div`
         left: 9px;
         top: 20px;
         stroke-width: 1px;
-        stroke: var(--point-global-point, #0059ff);
+        stroke: var(--point-global-point, #233DBD);
       }
       .border-not-active {
         width: 1px;
@@ -159,6 +163,9 @@ export const StakingContentCardWrapper = styled.div`
             color: ${({ theme }) => theme.color.text02};
             
           }
+          pointer-events: ${({ nonTotal }) => {
+            return nonTotal ? "none" : "initial";
+          }};
           &:hover {
             span {
               color: ${({ theme }) => theme.color.text07};

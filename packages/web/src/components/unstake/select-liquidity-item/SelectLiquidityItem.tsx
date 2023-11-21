@@ -1,16 +1,15 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { DEVICE_TYPE } from "@styles/media";
 import { convertLiquidity } from "@utils/stake-position-utils";
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { tooltipWrapper, wrapper } from "./SelectLiquidityItem.styles";
 
 interface SelectLiquidityItemProps {
   item: any;
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
-  breakpoint: DEVICE_TYPE;
+  width: number;
 }
 
 const TooltipContent:React.FC = () => {
@@ -42,26 +41,40 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
   item,
   checkedList,
   onCheckedItem,
-  breakpoint,
+  width,
 }) => {
+  const [checkWidth, setIsCheckWidth] = useState(true);
+  const leftDivRef = useRef<HTMLDivElement>(null);
+  const liquidityRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const windowWidth = Math.min(width, 500);
+      const totalWidth = (leftDivRef?.current?.offsetWidth || 0) + (liquidityRef?.current?.offsetWidth || 0) + 100;
+      setIsCheckWidth(windowWidth > totalWidth);
+    }
+  }, [liquidityRef.current, leftDivRef.current, width]);
   return (
     <li css={wrapper(checkedList.includes(item.path))}>
-      <input
-        id={`checkbox-item-${item.path}`}
-        type="checkbox"
-        checked={checkedList.includes(item.path)}
-        onChange={e => onCheckedItem(e.target.checked, item.path)}
-      />
-      <label htmlFor={`checkbox-item-${item.path}`} />
-      <DoubleLogo left={item.pairLogo[0]} right={item.pairLogo[1]} size={24} />
-      <Tooltip
-        placement="top"
-        FloatingContent={<TooltipContent />}
-      >
-        <span className="token-id">{item.path}</span>
-      </Tooltip>
-      <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
-      <span className="liquidity-value">${breakpoint === DEVICE_TYPE.MOBILE ? convertLiquidity(item.liquidity) : Number(item.liquidity).toLocaleString()}</span>
+      <div className="left-content" ref={leftDivRef}>
+        <input
+          id={`checkbox-item-${item.path}`}
+          type="checkbox"
+          checked={checkedList.includes(item.path)}
+          onChange={e => onCheckedItem(e.target.checked, item.path)}
+        />
+        <label htmlFor={`checkbox-item-${item.path}`} />
+        <DoubleLogo left={item.pairLogo[0]} right={item.pairLogo[1]} size={24} />
+        <Tooltip
+          placement="top"
+          FloatingContent={<TooltipContent />}
+        >
+          <span className="token-id">{item.path}</span>
+        </Tooltip>
+        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+      </div>
+      <span className="liquidity-value-fake" ref={liquidityRef}>${Number(item.liquidity).toLocaleString()}</span>
+      <span className="liquidity-value">${!checkWidth ? convertLiquidity(item.liquidity) : Number(item.liquidity).toLocaleString()}</span>
     </li>
   );
 };

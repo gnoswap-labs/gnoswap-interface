@@ -9,7 +9,7 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     ${inputStyle(theme)};
     ${mixins.flexbox("row", "center", "flex-start")};
     width: 100%;
-    gap: 5px;
+    gap: 8px;
     background-color: ${theme.color.background20};
     border: 1px solid ${checked ? theme.color.border15 : theme.color.border02};
     border-radius: 8px;
@@ -19,6 +19,10 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     transition: all 0.3s ease;
     input[type="checkbox"] + label:before {
       background-color: ${theme.color.background12};
+    }
+    .left-content {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
     }
     .period-value {
       color: ${theme.color.text02};
@@ -30,7 +34,6 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     .liquidity-value {
       margin-left: auto;
       color: ${theme.color.text02};
-      width: 80px;
       text-align: right;
     }
     .hover-info {
@@ -55,6 +58,13 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     }
     label {
       margin-right: 3px;
+    }
+    .liquidity-value-fake {
+      position: absolute;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      right: 0;
     }
     ${media.mobile} {
       padding: 11px;

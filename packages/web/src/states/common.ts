@@ -20,6 +20,8 @@ export const modalContent = atom<React.ReactNode | null>(null);
 
 export const breakpoint = atom<DEVICE_TYPE>(DEVICE_TYPE.WEB);
 
+export const currentWidth = atom<number>(0);
+
 export const network = atom<NetworkModel | null>(null);
 
 export const slippage = atomWithStorage<number>("slippage", DEFAULT_SLIPPAGE);

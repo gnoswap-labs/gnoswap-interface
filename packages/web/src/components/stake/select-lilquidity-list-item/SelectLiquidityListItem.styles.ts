@@ -6,11 +6,12 @@ import { media } from "@styles/media";
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`
+    position: relative;
     ${inputStyle(theme)};
     ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
     width: 100%;
     height: 56px;
-    gap: 5px;
     background-color: ${theme.color.background20};
     border: 1px solid ${checked ? theme.color.border15 : theme.color.border02};
     border-radius: 8px;
@@ -21,9 +22,23 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     input[type="checkbox"] + label:before {
       background-color: ${theme.color.background12};
     }
+    .left-content {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
+      > div:first-of-type {
+        margin-left: 3px;
+      }
+    }
     .liquidity-value {
       margin-left: auto;
       color: ${theme.color.text02};
+    }
+    .liquidity-value-fake {
+      position: absolute;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      right: 0;
     }
     .hover-info {
       &,
@@ -41,9 +56,7 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
     .token-id {
       cursor: default;
     }
-    > div:first-of-type {
-      margin-left: 3px;
-    }
+
     ${media.mobile} {
       padding: 11px;
       height: 48px;

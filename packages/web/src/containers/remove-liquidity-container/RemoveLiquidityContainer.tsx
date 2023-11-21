@@ -144,7 +144,7 @@ const LIST_DATA: LPPositionModel[] = [1, 2, 3, 4].map((item) => {
 const RemoveLiquidityContainer: React.FC = () => {
   const [lpPositions] = useState<LPPositionModel[]>(LIST_DATA);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const { breakpoint } = useWindowSize();
+  const { width } = useWindowSize();
 
   const { openModal } = useRemovePositionModal();
 
@@ -185,7 +185,7 @@ const RemoveLiquidityContainer: React.FC = () => {
       select={select}
       selectAll={selectAll}
       removeLiquidity={removeLiquidity}
-      breakpoint={breakpoint}
+      width={width}
     />
   );
 };

@@ -155,7 +155,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${media.mobile} {
           ${fonts.body8};
         }
-        cursor: pointer;
+        cursor: default;
         transition: color 0.3s ease;
         &:hover {
           color: ${({ theme }) => theme.color.text07};

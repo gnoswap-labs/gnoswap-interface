@@ -111,7 +111,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   index,
 }) => {
   return (
-    <StakingContentCardWrapper>
+    <StakingContentCardWrapper nonTotal={item.total === "0"}>
       <div className="left">
         <div className="mobile-wrap">
           <div className={`check-wrap ${index > item.currentIndex ? "check-wrap-not-active" : ""}`}>
@@ -197,7 +197,7 @@ interface SummuryAprProps {
 
 export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index }) => {
   return (
-    <StakingContentCardWrapper>
+    <StakingContentCardWrapper nonTotal={item.total === "0"}>
       <div className="left">
         <div className="mobile-wrap">
           <div className={`check-wrap ${item.currentIndex < 4 ? "check-wrap-not-active" : ""}`}>

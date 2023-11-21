@@ -41,12 +41,21 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       }
       @media (max-width: 376px) {
         position: absolute;
-        left: ${({ isMobile }) => {
-          return isMobile ? "0px" : "21px";
-        }};
+        left: 0;
         bottom: ${({ isMobile }) => {
-          return isMobile ? "-21px" : "0px";
+          return isMobile ? "-21px" : "calc(-100% - 5px)";
         }};
+      }
+    }
+    .to-mobile {
+      display: none;
+    }
+    @media (max-width: 376px) {
+      .to-web {
+        display: none;
+      }
+      .to-mobile {
+        display: initial;
       }
     }
     .coin-info {
@@ -87,6 +96,9 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     gap: 8px;
     ${media.mobile} {
       gap: 16px;
+    }
+    @media (max-width: 376px) {
+      margin-top: 24px;
     }
     span {
       color: ${({ theme }) => theme.color.text04};

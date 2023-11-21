@@ -11,7 +11,7 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   ${({ theme }) => inputStyle(theme)};
   ${mixins.flexbox("row", "center", "flex-start")};
   width: 100%;
-  gap: 5px;
+  gap: 8px;
   background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid
     ${({ theme, selected }) =>
@@ -30,9 +30,20 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
     background-color: ${({ theme }) => theme.color.background12};
   }
 
+  .left-content {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 5px;
+  }
   .liquidity-value {
     margin-left: auto;
     color: ${({ theme }) => theme.color.text02};
+  }
+  .liquidity-value-fake {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    right: 0;
   }
 
   .hover-info {

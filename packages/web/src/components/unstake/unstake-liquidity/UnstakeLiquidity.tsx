@@ -4,7 +4,6 @@ import SelectLiquidity from "@components/unstake/select-liquidity/SelectLiquidit
 import SelectUnstakeResult from "@components/unstake/select-unstake-result/SelectUnstakeResult";
 import { wrapper } from "./UnstakeLiquidity.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
-import { DEVICE_TYPE } from "@styles/media";
 
 interface UnstakeLiquidityProps {
   data: any[];
@@ -13,7 +12,7 @@ interface UnstakeLiquidityProps {
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   handleConfirmUnstake: () => void;
-  breakpoint: DEVICE_TYPE;
+  width: number;
 }
 
 const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
@@ -23,7 +22,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
   onCheckedAll,
   checkedAll,
   handleConfirmUnstake,
-  breakpoint,
+  width,
 }) => {
   return (
     <div css={wrapper}>
@@ -34,7 +33,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
-        breakpoint={breakpoint}
+        width={width}
       />
       <SelectUnstakeResult checkedList={checkedList} />
       {checkedList.length > 0 && <div className="unstake-des">

@@ -11,7 +11,7 @@ export const initData = [
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
     ],
     path: "GNS/BTC",
-    liquidity: "145541.10",
+    liquidity: "1455433112.10",
     staked: STAKED_OPTION.UNSTAKED,
   },
   {
@@ -30,7 +30,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
   const [checkedAll, setCheckedAll] = useState(false);
 
   const { openModal } = useUnstakePositionModal();
-  const { breakpoint } = useWindowSize();
+  const { width } = useWindowSize();
 
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
@@ -75,7 +75,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       handleConfirmUnstake={handleConfirmUnstake}
-      breakpoint={breakpoint}
+      width={width}
     />
   );
 };

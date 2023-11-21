@@ -4,7 +4,6 @@ import { wrapper } from "./RemoveLiquidity.styles";
 import { LPPositionModel } from "@models/position/lp-position-model";
 import RemoveLiquiditySelectList from "../remove-liquidity-select-list/RemoveLiquiditySelectList";
 import RemoveLiquiditySelectResult from "../remove-liquidity-select-result/RemoveLiquiditySelectResult";
-import { DEVICE_TYPE } from "@styles/media";
 
 interface RemoveLiquidityProps {
   selectedAll: boolean;
@@ -13,7 +12,7 @@ interface RemoveLiquidityProps {
   select: (id: string) => void;
   selectAll: () => void;
   removeLiquidity: () => void;
-  breakpoint: DEVICE_TYPE;
+  width: number;
 }
 
 const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
@@ -23,7 +22,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   select,
   selectAll,
   removeLiquidity,
-  breakpoint,
+  width,
 }) => {
   const selectedLiquidites = useMemo(() => {
     return lpPositions.filter(lpPosition => selectedIds.includes(lpPosition.lpRewardId));
@@ -46,7 +45,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         selectedAll={selectedAll}
         select={select}
         selectAll={selectAll}
-        breakpoint={breakpoint}
+        width={width}
       />
       <RemoveLiquiditySelectResult selectedLiquidities={selectedLiquidites} />
       <Button

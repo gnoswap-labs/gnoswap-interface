@@ -12,9 +12,22 @@ interface MyLiquidityProps {
   isSwitchNetwork: boolean;
   handleClickAddPosition: () => void;
   handleClickRemovePosition: () => void;
+  divRef: React.RefObject<HTMLDivElement>;
+  onScroll: () => void;
+  currentIndex: number;
 }
 
-const MyLiquidity: React.FC<MyLiquidityProps> = ({ info, breakpoint, connected, isSwitchNetwork, handleClickAddPosition, handleClickRemovePosition }) => {
+const MyLiquidity: React.FC<MyLiquidityProps> = ({ 
+  info,
+  breakpoint,
+  connected,
+  isSwitchNetwork,
+  handleClickAddPosition,
+  handleClickRemovePosition,
+  divRef,
+  onScroll,
+  currentIndex,
+}) => {
   return (
     <MyLiquidityWrapper>
       <div className="liquidity-wrap">
@@ -34,7 +47,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({ info, breakpoint, connected, 
         ))
       ) : (
         <>
-          <div className="slider-wrap">
+          <div className="slider-wrap" ref={divRef}  onScroll={onScroll}>
             <div className="box-slider">
               {info.positionList.map((item: any, idx: number) => (
                 <MyPositionCard
@@ -46,7 +59,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({ info, breakpoint, connected, 
             </div>
           </div>
           <div className="box-indicator">
-            <span className="current-page">1</span>
+            <span className="current-page">{currentIndex}</span>
             <span>/</span>
             <span>{info.positionList.length}</span>
           </div>

@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import { RemoveLiquiditySelectListWrapper } from "./RemoveLiquiditySelectList.styles";
 import { LPPositionModel } from "@models/position/lp-position-model";
 import RemoveLiquiditySelectListItem from "../remove-liquidity-select-list-item/RemoveLiquiditySelectListItem";
-import { DEVICE_TYPE } from "@styles/media";
 
 interface RemoveLiquiditySelectListProps {
   selectedAll: boolean;
@@ -10,7 +9,7 @@ interface RemoveLiquiditySelectListProps {
   selectedIds: string[];
   select: (id: string) => void;
   selectAll: () => void;
-  breakpoint: DEVICE_TYPE;
+  width: number;
 }
 
 const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
@@ -19,7 +18,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   selectedIds,
   select,
   selectAll,
-  breakpoint,
+  width,
 }) => {
 
   const isSelectLiquidity = useCallback((lpPosition: LPPositionModel) => {
@@ -48,7 +47,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             lpPosition={lpPosition}
             selected={isSelectLiquidity(lpPosition)}
             select={select}
-            breakpoint={breakpoint}
+            width={width}
           />
         ))}
       </ul>

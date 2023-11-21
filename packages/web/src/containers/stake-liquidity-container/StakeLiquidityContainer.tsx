@@ -1,6 +1,5 @@
 import StakeLiquidity from "@components/stake/stake-liquidity/StakeLiquidity";
 import { STAKED_OPTION } from "@constants/option.constant";
-import { DEVICE_TYPE } from "@styles/media";
 import React, { useCallback, useState } from "react";
 
 export const unstakingPeriodInit = [
@@ -88,7 +87,7 @@ const StakeLiquidityContainer: React.FC = () => {
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
-      breakpoint={DEVICE_TYPE.WEB}
+      width={0}
     />
   );
 };
