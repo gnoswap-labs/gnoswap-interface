@@ -28,7 +28,8 @@ export const wrapper = (theme: Theme) => css`
   ${media.tabletMiddle} {
     max-width: 500px;
     width: 100%;
-    padding: 11px;
+    padding: 15px;
+    gap: 12px;
     margin: auto;
   }
 `;

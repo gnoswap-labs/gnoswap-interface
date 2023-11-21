@@ -30,8 +30,9 @@ export const wrapper = (theme: Theme) => css`
   ${media.tabletMiddle} {
     max-width: 500px;
     width: 100%;
-    padding: 12px;
+    padding: 15px;
     margin: auto;
+    gap: 12px;
   }
 `;
 

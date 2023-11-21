@@ -64,7 +64,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   }
 
   .has-tooltip {
-    cursor: pointer;
+    cursor: default;
     transition: color 0.3s ease;
     &:hover {
       color: ${({ theme }) => theme.color.text07};

@@ -140,6 +140,7 @@ export const EarnAddLiquidityWrapper = styled.section`
     width: 100%;
     max-width: 500px;
     padding: 15px;
+    gap: 12px;
     .selector-wrapper {
       gap: 8px;
       padding: 11px;

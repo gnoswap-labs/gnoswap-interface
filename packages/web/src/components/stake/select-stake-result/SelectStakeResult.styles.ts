@@ -12,7 +12,9 @@ export const wrapper = (theme: Theme) => css`
   ${fonts.body12};
   border-top: 1px solid ${theme.color.border02};
   padding-top: 16px;
-
+  ${media.mobile} {
+    padding-top: 12px;
+  }
   .pooled-section,
   .result-section {
     ${mixins.flexbox("column", "center", "center")};

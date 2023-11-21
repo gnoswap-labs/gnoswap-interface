@@ -140,11 +140,12 @@ export const SubmitPositionModalWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 16px 12px;
+    padding: 15px;
     width: 328px;
     .modal-body {
+      gap: 12px;
       .content {
-        gap: 16px;
+        gap: 12px;
         > div {
           .button-connect {
             height: 44px;

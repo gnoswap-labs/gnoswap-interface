@@ -6,7 +6,7 @@ export const EarnAddConfirmWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 460px;
-  padding: 24px;
+  padding: 23px;
   height: auto;
   gap: 16px;
 
@@ -51,7 +51,8 @@ export const EarnAddConfirmWrapper = styled.div`
   }
   ${media.mobile} {
     width: 328px;
-    padding: 16px 12px;
+    padding: 15px;
+    gap: 12px;
     span {
       ${fonts.body7}
     }

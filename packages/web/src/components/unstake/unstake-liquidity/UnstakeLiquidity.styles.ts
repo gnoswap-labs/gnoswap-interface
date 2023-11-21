@@ -23,7 +23,10 @@ export const wrapper = (theme: Theme) => css`
     margin: 0 auto;
     max-width: 500px;
     width: 100%;
-    padding: 12px;
+  }
+  ${media.mobile} {
+    padding: 15px;
+    gap: 12px;
   }
   .unstake-des {
     background-color: ${theme.color.backgroundOpacity4};

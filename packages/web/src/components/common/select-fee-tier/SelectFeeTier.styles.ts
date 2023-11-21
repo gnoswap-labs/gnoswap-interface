@@ -13,6 +13,7 @@ export const SelectFeeTierWrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
+    grid-gap: 8px;
   }
 `;
 
@@ -56,7 +57,7 @@ export const SelectFeeTierItemWrapper = styled.div`
   }
   ${media.mobile} {
     ${mixins.flexbox("row", "flex-start", "space-between")};
-    padding: 12px;
+    padding: 11px;
     > div {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 4px;

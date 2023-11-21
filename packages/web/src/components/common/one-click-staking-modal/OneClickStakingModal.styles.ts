@@ -81,10 +81,12 @@ export const OneClickStakingModalWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 16px 12px;
+    padding: 16px;
     width: 328px;
     .modal-body {
+      gap: 12px;
         .content {
+            gap: 12px;
             > div {
               .button-confirm {
                 height: 41px;
