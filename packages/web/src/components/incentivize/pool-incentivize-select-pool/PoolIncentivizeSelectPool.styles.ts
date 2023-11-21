@@ -24,7 +24,9 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div<Props>`
     }};
     ${fonts.body12}
   }
-
+  ${media.mobile} {
+    gap: 8px;
+  }
   .pool-select-wrapper {
     position: relative;
     display: flex;

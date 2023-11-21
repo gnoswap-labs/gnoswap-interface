@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.styles";
 
@@ -20,5 +21,10 @@ export const wrapper = (theme: Theme) => css`
     word-break: break-all;
     color: ${theme.color.text10};
     ${fonts.body12}
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("column", "flex-start", "center")};
+    padding: 15px 11px;
+    gap: 8px;
   }
 `;

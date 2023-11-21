@@ -6,7 +6,7 @@ import mixins from "@styles/mixins";
 export const OneClickStakingModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
-  padding: 24px;
+  padding: 23px;
   gap: 16px;
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -81,7 +81,7 @@ export const OneClickStakingModalWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 16px;
+    padding: 15px;
     width: 328px;
     .modal-body {
       gap: 12px;

@@ -17,6 +17,11 @@ export const EarnAddConfirmPriceRangeInfoWrapper = styled.div`
       ${fonts.body12}
       color: ${({ theme }) => theme.color.text10};
     }
+    > div {
+      span {
+        ${fonts.p4}
+      }
+    }
   }
 
 
@@ -103,7 +108,6 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     svg {
       width: 16px;
       height: 16px;
-      cursor: pointer;
       * {
         fill: ${({ theme }) => theme.color.icon03};
       }

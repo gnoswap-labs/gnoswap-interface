@@ -18,16 +18,23 @@ export const PoolIncentivizeWrapper = styled.div`
   box-shadow: ${({ theme }) => theme.color.shadow01};
   padding: 23px;
   margin: 0 auto;
-  ${media.mobile} {
-    padding: 11px;
-    width: 100%;
-    max-width: 500px;
-  }
+
 
   .title {
     ${fonts.h6};
   }
 
+  ${media.mobile} {
+    padding: 15px;
+    width: 100%;
+    max-width: 500px;
+    gap: 4px;
+    .title {
+      margin-bottom: 8px;
+    }
+
+  }
+  
   article {
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
@@ -43,6 +50,7 @@ export const PoolIncentivizeWrapper = styled.div`
     }
     ${media.mobile} {
       padding: 11px;
+      gap: 8px;
     }
     .section-title {
       color: ${({ theme }) => theme.color.text10};
@@ -83,6 +91,7 @@ export const PoolIncentivizeWrapper = styled.div`
     }
     ${media.mobile} {
       height: 41px;
+      margin-top: 8px;
       span {
         ${fonts.body9}
       }

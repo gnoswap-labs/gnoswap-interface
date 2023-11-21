@@ -33,8 +33,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
   return (
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
-        <span>Stake your position to earn rewards up to </span>
+        <span>Stake your position to earn rewards up <span className="to-web">to</span></span>
         <div className="header-wrap">
+          <span className="to-mobile">to</span>
           <span className="apr">{rewardInfo.apr}% APR </span>
           <div className="coin-info">
             <img

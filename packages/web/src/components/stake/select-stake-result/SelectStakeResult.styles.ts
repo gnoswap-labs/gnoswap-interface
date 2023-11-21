@@ -94,7 +94,7 @@ export const wrapper = (theme: Theme) => css`
       width: 16px;
       height: 16px;
     }
-    cursor: pointer;
+    cursor: default;
     .icon-info {
       * {
         fill: ${theme.color.icon03};

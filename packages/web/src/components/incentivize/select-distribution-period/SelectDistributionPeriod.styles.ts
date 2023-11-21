@@ -37,6 +37,7 @@ export const SelectDistributionPeriodWrapper = styled.div`
     width: 150px;
   }
   ${media.mobile} {
+    gap: 8px;
     .select-date-wrap {
       gap: 8px;
     }

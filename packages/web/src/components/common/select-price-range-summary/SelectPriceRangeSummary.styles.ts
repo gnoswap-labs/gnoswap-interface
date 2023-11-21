@@ -29,7 +29,6 @@ export const SelectPriceRangeSummaryWrapper = styled.div`
       svg {
         width: 16px;
         height: 16px;
-        cursor: pointer;
         * {
           fill: ${({ theme }) => theme.color.icon03};
         }

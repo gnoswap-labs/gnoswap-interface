@@ -2,6 +2,7 @@ import { css, Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { PoolIncentivizeBoxStyle } from "../pool-incentivize/PoolIncentivize.styles";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -43,5 +44,9 @@ export const wrapper = (theme: Theme) => css`
       color: ${theme.color.text04};
       ${fonts.p4}
     }
+  }
+  ${media.mobile} {
+    padding: 11px;
+    gap: 8px;
   }
 `;
