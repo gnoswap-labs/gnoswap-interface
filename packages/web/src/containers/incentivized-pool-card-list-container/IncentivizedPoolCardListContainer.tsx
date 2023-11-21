@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
+import { useWindowSize } from "@hooks/common/use-window-size";
 export interface PoolListProps {
   logo: string[];
   name: string[];
@@ -31,9 +32,10 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
-  const { incentivizedPools, isFetchedPools } = usePoolData();
+  const { incentivizedPools, isFetchedPools, updatePools } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
+  const { width } = useWindowSize();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -43,6 +45,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
 
   useEffect(() => {
     handleResize();
+    updatePools();
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -68,9 +71,26 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.floor(currentScrollX / 230) + 1);
+      setCurrentIndex(Math.min(Math.floor(currentScrollX / 230) + 1, incentivizedPools.length));
     }
   };
+
+  const showPagination = useMemo(() => {
+    if (width < 1400) {
+      if (width > 1000) {
+        const totalWidth = incentivizedPools.length * 322 + 80 + 24 * incentivizedPools.length;
+        return totalWidth > width;
+      } else if (width > 768) {
+        const totalWidth = incentivizedPools.length * 322 + 80 + 12 * incentivizedPools.length;
+        return totalWidth > width;
+      } else {
+        const totalWidth = incentivizedPools.length * 290 + 32 + 12 * incentivizedPools.length;
+        return totalWidth > width;
+      }
+    } else {
+      return false;
+    }
+  }, [incentivizedPools, width]);
 
   return (
     <IncentivizedPoolCardList
@@ -85,6 +105,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       themeKey={themeKey}
       divRef={divRef}
       onScroll={handleScroll}
+      showPagination={showPagination}
+      width={width}
     />
   );
 };

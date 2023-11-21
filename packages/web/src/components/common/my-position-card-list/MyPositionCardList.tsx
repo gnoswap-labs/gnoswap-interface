@@ -15,6 +15,9 @@ interface MyPositionCardListProps {
   mobile: boolean;
   divRef?: React.RefObject<HTMLDivElement>;
   onScroll?: () => void;
+  showPagination: boolean;
+  showLoadMore: boolean;
+  width: number;
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -27,6 +30,9 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   mobile,
   divRef,
   onScroll,
+  showPagination,
+  showLoadMore,
+  width,
 }) => (
   <CardListWrapper>
     <GridWrapper ref={divRef} onScroll={onScroll}>
@@ -37,7 +43,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
         ))}
       {isFetched &&
         positions.length > 0 && positions.length < 4 &&
-        (Array(4 - positions.length).fill(1)).map((_, index) => (
+        (Array((width <= 1180 && width >= 1000 ? 3 : 4) - positions.length).fill(1)).map((_, index) => (
           <BlankPositionCard key={index} />
         ))
       }
@@ -50,13 +56,11 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {!mobile && (
-      loadMore &&
-      onClickLoadMore && (
+    {(showLoadMore && loadMore && onClickLoadMore &&(
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )
     )} 
-    {(positions.length !== 0 && mobile &&
+    {(showPagination &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
         <span>/</span>

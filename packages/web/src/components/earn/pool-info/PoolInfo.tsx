@@ -8,6 +8,8 @@ import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import POOLS from "@repositories/pool/mock/pools.json";
+const POOL_DATA = POOLS.pools[0];
 interface PoolInfoProps {
   pool: PoolListInfo;
   routeItem: (id: string) => void;
@@ -75,7 +77,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             tokenA={tokenA}
             tokenB={tokenB}
             currentTick={currentTick}
-            bins={bins}
+            bins={POOL_DATA.bins}
             mouseover
             themeKey={themeKey}
           />

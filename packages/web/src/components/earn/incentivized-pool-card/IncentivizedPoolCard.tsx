@@ -9,6 +9,8 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import POOLS from "@repositories/pool/mock/pools.json";
+const POOL_DATA = POOLS.pools[0];
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -86,8 +88,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
-                bins={pool.bins}
-                currentTick={pool.currentTick}
+                bins={POOL_DATA.bins}
+                currentTick={20}
                 width={258}
                 height={80.62}
                 mouseover

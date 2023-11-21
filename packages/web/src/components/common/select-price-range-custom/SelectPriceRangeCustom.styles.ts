@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const SelectPriceRangeCustomWrapper = styled.div`
   display: flex;
@@ -19,6 +20,11 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     align-self: stretch;
     > div {
       padding: 2px;
+      ${media.mobile} {
+        button {
+          width: 72px;
+        }
+      }
     }
 
     .graph-option-wrapper {

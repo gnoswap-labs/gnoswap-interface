@@ -14,6 +14,9 @@ export interface EarnMyPositionContentProps {
   divRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
   currentIndex: number;
+  showPagination: boolean;
+  showLoadMore: boolean;
+  width: number;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -27,6 +30,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   divRef,
   onScroll,
   currentIndex,
+  showPagination,
+  showLoadMore,
+  width,
 }) => {
   const randomForTest = useMemo(() => {
     return Math.floor(Math.random() * 2 + 1);
@@ -54,6 +60,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       mobile={mobile}
       divRef={divRef}
       onScroll={onScroll}
+      showPagination={showPagination}
+      showLoadMore={showLoadMore}
+      width={width}
     />
   );
 };

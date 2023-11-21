@@ -17,6 +17,9 @@ export interface EarnMyPositionsProps {
   divRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
   currentIndex: number;
+  showPagination: boolean;
+  showLoadMore: boolean;
+  width: number;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -32,6 +35,9 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   onScroll,
   divRef,
   currentIndex,
+  showPagination,
+  showLoadMore,
+  width,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -50,6 +56,9 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       divRef={divRef}
       onScroll={onScroll}
       currentIndex={currentIndex}
+      showPagination={showPagination}
+      showLoadMore={showLoadMore}
+      width={width}
     />
   </EarnMyPositionswrapper>
 );

@@ -124,7 +124,7 @@ export const IncentivizePoolModalWrapper = styled.div`
     .modal-body {
       gap: 12px;
       .content {
-        gap: 16px;
+        gap: 12px;
         > div {
           .button-connect {
             height: 44px;

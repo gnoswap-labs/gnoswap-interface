@@ -41,7 +41,7 @@ export const PoolCardWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   min-width: 322px;
-  padding: 16px;
+  padding: 15px;
   gap: 8px;
   background-color: ${({ theme }) => theme.color.background03};
   border: 1px solid ${({ theme }) => theme.color.border14};
@@ -75,7 +75,7 @@ export const PoolCardWrapper = styled.div`
     }
     .box-group {
       ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 2px;
+      gap: 3px;
       .content {
         gap: 4px;
       }

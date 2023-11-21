@@ -204,7 +204,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     tokenA,
     tokenB,
   ]);
-  console.log(submitType, tokenBAmountInput);
   
   useEffect(() => {
     updateTokenPrices();
@@ -262,7 +261,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
   ]);
 
   const handleChangeSlippage = useCallback((vl: string) => {
-    console.log(vl);
     
     changeSlippage(Number(vl));
   }, []);

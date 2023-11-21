@@ -24,7 +24,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   currentIndex,
 }) => {
   const { tokenPair } = item;
-  const [isHiddenStart, setIsHiddenStart] = useState(true);
+  const [isHiddenStart, setIsHiddenStart] = useState(false);
 
   const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();

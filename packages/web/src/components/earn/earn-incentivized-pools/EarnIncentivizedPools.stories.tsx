@@ -33,5 +33,7 @@ Default.args = {
     themeKey="dark"
     divRef={null as any}
     onScroll={action("onScroll")}
+    width={1440}
+    showPagination={false}
   />
 };

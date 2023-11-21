@@ -1,7 +1,9 @@
 import Button from "@components/common/button/Button";
 import IconStrokeArrowLeft from "@components/common/icons/IconStrokeArrowLeft";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { ThemeState } from "@states/index";
+import { DEVICE_TYPE } from "@styles/media";
 import { useAtomValue } from "jotai";
 import React, {
   Dispatch,
@@ -77,6 +79,7 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
   const [index, setIndex] = useState(0);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const { breakpoint } = useWindowSize();
 
   const handleResize = () => {
     if (typeof window !== "undefined" && modalRef.current) {
@@ -167,7 +170,7 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
           className={`${index == 2 ? "active-btn" : ""} learn-more-btn`}
           style={{
             fullWidth: true,
-            fontType: "body7",
+            fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
             textColor: "text01",
           }}
           onClick={() => setIsShowLearnMoreModal(false)}

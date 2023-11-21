@@ -20,6 +20,8 @@ export interface IncentivizedPoolCardListProps {
   themeKey: "dark" | "light";
   divRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
+  showPagination: boolean;
+  width: number;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -34,6 +36,8 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   themeKey,
   divRef,
   onScroll,
+  showPagination,
+  width,
 }) => {
   return (
     <IncentivizedWrapper>
@@ -45,7 +49,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
           ))}
         {isFetched &&
           incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
-          (Array((incentivizedPools.length < 4 ? 4 : 8) - incentivizedPools.length).fill(1)).map((_, index) => (
+          (Array((incentivizedPools.length > 4 ? 8 : (width <= 1180 && width >= 1000) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
             <BlankIncentivizedCard key={index}/>
           ))}
         {!isFetched &&
@@ -57,18 +61,18 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
             />
           ))}
       </PoolListWrapper>
-      {!mobile ? (
+      {!mobile && (
         incentivizedPools.length > 8 &&
         onClickLoadMore && (
           <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
         )
-      ) : (
+      )}
+      {showPagination &&
         <div className="box-indicator">
           <span className="current-page">{currentIndex}</span>
           <span>/</span>
           <span>{incentivizedPools.length}</span>
-        </div>
-      )}
+        </div>}
     </IncentivizedWrapper>
   );
 };

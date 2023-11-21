@@ -5,7 +5,7 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { DEVICE_TYPE } from "@styles/media";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ValuesType } from "utility-types";
 
 export const POSITION_CONTENT_LABEL = {
@@ -70,7 +70,7 @@ const EarnMyPositionContainer: React.FC<
   const router = useRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { isFetchedPositions, myPositions, updatePositions } = usePoolData();
-  const { breakpoint } = useWindowSize();
+  const { breakpoint, width } = useWindowSize();
   const divRef = useRef<HTMLDivElement | null>(null);
 
   const { openModal } = useConnectWalletModal();
@@ -103,9 +103,41 @@ const EarnMyPositionContainer: React.FC<
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.floor(currentScrollX / 220) + 1);
+      setCurrentIndex(Math.min(Math.floor(currentScrollX / 220) + 1, myPositions.length));
     }
   };
+
+  const showPagination = useMemo(() => {
+    if (width < 1400) {
+      if (width > 1000) {
+        const totalWidth = myPositions.length * 322 + 80 + 24 * myPositions.length;
+        return totalWidth > width;
+      } else if (width > 768) {
+        const totalWidth = myPositions.length * 322 + 80 + 12 * myPositions.length;
+        return totalWidth > width;
+      } else {
+        const totalWidth = myPositions.length * 290 + 32 + 12 * myPositions.length;
+        return totalWidth > width;
+      }
+    } else {
+      return false;
+    }
+  }, [myPositions, width]);
+  
+  const showLoadMore = useMemo(() => {
+    if (width > 1000) {
+      if (width > 1180 && myPositions.length > 8) {
+        return true;
+      } else if (width < 1180 && myPositions.length > 6) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }, [myPositions, width]);
+
 
   return (
     <EarnMyPositions
@@ -121,6 +153,9 @@ const EarnMyPositionContainer: React.FC<
       onScroll={handleScroll}
       divRef={divRef}
       currentIndex={currentIndex}
+      showPagination={showPagination}
+      showLoadMore={showLoadMore}
+      width={width}
     />
   );
 };

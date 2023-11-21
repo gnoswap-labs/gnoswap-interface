@@ -30,7 +30,7 @@ export const usePoolData = () => {
   }, [pools]);
 
   const myPositions: PoolPosition[] = useMemo(() => {
-    return [position, position];
+    return [position, position, position];
   }, []);
   async function updatePositions() {
     setIsFetchedPositions(true);
