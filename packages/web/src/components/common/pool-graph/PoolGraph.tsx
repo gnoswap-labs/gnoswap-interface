@@ -196,7 +196,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   function onMouseoverChartBin(event: MouseEvent, bin: PoolBinModel) {
     if (mouseover && tooltipRef.current) {
-      if (tooltipRef.current.getAttribute("bin-id") !== bin.binId) {
+      if (bin.binId) {
         const content = renderToStaticMarkup(
           <PoolGraphBinTooptip
             tokenA={tokenA}

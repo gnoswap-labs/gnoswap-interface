@@ -134,12 +134,12 @@ const BarGraph: React.FC<BarGraphProps> = ({
 
     let currentPointIndex = -1;
     for (const point of getGraphPoints()) {
-      const distance = Math.abs(point.x - xPosition);
+      const distance = xPosition - point.x;
       currentPointIndex += 1;
-      if (minDistance < 0) {
+      if (minDistance < 0 && distance >= 0) {
         minDistance = distance;
       }
-      if (distance < minDistance + 1) {
+      if (distance >= 0 && distance < minDistance + 1) {
         currentPoint = point;
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);

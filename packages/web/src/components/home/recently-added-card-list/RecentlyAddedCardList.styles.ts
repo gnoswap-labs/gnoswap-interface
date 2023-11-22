@@ -55,7 +55,9 @@ export const LoadingWrapper = styled.div`
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   padding: 16px 0px 12px;
-
+  & > div:first-of-type {
+    padding: 0 24px 13px 24px;
+  }
   ${media.mobile} {
     padding: 16px 0px;
   }

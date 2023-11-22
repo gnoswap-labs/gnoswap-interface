@@ -19,6 +19,9 @@ export const BarAreaGraphWrapper = styled.div<{
     width: 100%;
     height: 100%;
     pointer-events: none;
+    > g, > polygon {
+      pointer-events: initial;
+    }
     .area {
       background: linear-gradient(
         270deg,

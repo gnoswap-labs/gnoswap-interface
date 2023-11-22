@@ -46,7 +46,7 @@ export const skeletonTrendingStyle =
     width: ${typeof skeletonWidth === "number"
       ? `${skeletonWidth}px`
       : skeletonWidth};
-    height: 25px;
+    height: 24px;
     background: ${theme.color.background23};
     overflow: hidden;
     border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
@@ -55,10 +55,14 @@ export const skeletonTrendingStyle =
       position: absolute;
       left: 0%;
       top: 0;
-      transform: translateX(-50%);
+      transform: translateX(-100%);
       width: 100%;
       height: 100%;
-      background: ${theme.color.backgroundGradient5};
+      background: linear-gradient(
+        0,
+        ${theme.color.backgroundGradient} 0%,
+        ${theme.color.backgroundGradient} 100%
+      );
       animation: ${skeletonAni} 2s ease infinite;
     }
   `;
