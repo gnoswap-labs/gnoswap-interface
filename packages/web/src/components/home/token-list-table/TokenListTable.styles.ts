@@ -158,6 +158,9 @@ export const noDataText = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center")};
   color: ${theme.color.text04};
   ${fonts.body12};
-  width: 100%;
+  width: calc(100vw - 82px);
   height: 300px;
+  ${media.mobile} {
+    width: calc(100vw - 34px);
+  }
 `;

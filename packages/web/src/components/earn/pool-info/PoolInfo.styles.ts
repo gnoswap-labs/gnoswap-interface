@@ -39,5 +39,6 @@ export const PoolInfoWrapper = styled.div`
 
   .chart-wrapper {
     width: 100px;
+    cursor: default;
   }
 `;

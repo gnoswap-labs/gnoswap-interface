@@ -2,6 +2,11 @@ import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
+import { CSSProperties } from "react";
+
+interface SkeletonStyleProps {
+  tdWidth?: CSSProperties["width"];
+}
 
 export const HighestAprsCardListwrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "center")}
@@ -32,5 +37,26 @@ export const HighestAprsCardListwrapper = styled.div`
   .icon-diamond {
     width: 25px;
     height: 25px;
+  }
+`;
+
+export const SkeletonItem = styled.div<SkeletonStyleProps>`
+  width: ${({ tdWidth }) => `${tdWidth}`};
+  height: 100%;
+  padding: 8px 24px;
+  ${mixins.flexbox("row", "center", "flex-start")};
+`;
+
+export const LoadingWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")}
+  width: 100%;
+  background-color: ${({ theme }) => theme.color.background06};
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 16px 0px 12px;
+
+  ${media.mobile} {
+    padding: 16px 0px;
   }
 `;

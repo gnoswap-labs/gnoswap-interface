@@ -9,7 +9,11 @@ import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import POOLS from "@repositories/pool/mock/pools.json";
-const POOL_DATA = POOLS.pools[0];
+const POOL_DATA = POOLS.pools[0].bins.slice(0, 10);
+const POOL_DATA_RIGHT  = POOL_DATA.map((item, index) => ({
+  ...item,
+  currentTick: index + 11,
+}));
 interface PoolInfoProps {
   pool: PoolListInfo;
   routeItem: (id: string) => void;
@@ -40,7 +44,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
     }
     return <DoubleLogo left={rewards[0].token.logoURI} right={rewards[1].token.logoURI} size={20} />;
   }, [rewards]);
-
+  
   return (
     <PoolInfoWrapper
       onClick={() => routeItem(poolId)}
@@ -76,10 +80,11 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             height={45}
             tokenA={tokenA}
             tokenB={tokenB}
-            currentTick={currentTick}
-            bins={POOL_DATA.bins}
+            currentTick={10}
+            bins={[...POOL_DATA, ...POOL_DATA_RIGHT]}
             mouseover
             themeKey={themeKey}
+            rectWidth={4}
           />
         </div>
       </TableColumn>

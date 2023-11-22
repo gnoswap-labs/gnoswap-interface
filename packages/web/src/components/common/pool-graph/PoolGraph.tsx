@@ -26,6 +26,7 @@ export interface PoolGraphProps {
     bottom: number;
   },
   themeKey: "dark" | "light";
+  rectWidth?: number; 
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
@@ -45,6 +46,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     bottom: 0,
   },
   themeKey,
+  rectWidth,
 }) => {
   const svgRef = useRef(null);
   const chartRef = useRef(null);
@@ -141,15 +143,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   /** Update Chart by data */
   function updateChart() {
-    const tickSpacing = getTickSpacing();
+    const tickSpacing = rectWidth ? rectWidth :getTickSpacing();
     const centerPosition = scaleX(centerX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
       if (currentTick && scaleX(bin.currentTick) < centerPosition) {
-        return "url(#gradient-bar-red)";
+        return "url(#gradient-bar-green)";
       }
-      return "url(#gradient-bar-green)";
+      return "url(#gradient-bar-red)";
     }
 
     // Clean child elements.

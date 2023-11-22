@@ -17,9 +17,9 @@ export default {
 const Template: ComponentStory<typeof CardList> = () => {
   return (
     <div css={wrapper}>
-      <TrendingCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} />
-      <HighestAprsCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} />
-      <RecentlyAddedCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} />
+      <TrendingCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} loading={false} />
+      <HighestAprsCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} loading={false} />
+      <RecentlyAddedCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} loading={false} />
     </div>
   );
 };

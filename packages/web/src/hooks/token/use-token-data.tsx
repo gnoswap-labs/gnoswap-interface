@@ -15,6 +15,14 @@ export const useTokenData = () => {
   const [tokens, setTokens] = useAtom(TokenState.tokens);
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
+  const [loading, setLoading] = useAtom(TokenState.isLoading);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  },[]); 
 
   useEffect(() => {
     if (rpcProvider && account) {
@@ -111,5 +119,6 @@ export const useTokenData = () => {
     updateTokens,
     updateTokenPrices,
     updateBalances,
+    loading,
   };
 };

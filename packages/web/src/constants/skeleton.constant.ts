@@ -37,6 +37,32 @@ export const skeletonStyle =
       }
     `;
 
+
+export const skeletonTrendingStyle =
+(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
+(theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: 25px;
+    background: ${theme.color.background23};
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: ${theme.color.backgroundGradient5};
+      animation: ${skeletonAni} 2s ease infinite;
+    }
+  `;
+
 export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];

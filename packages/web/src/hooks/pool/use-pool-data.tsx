@@ -6,13 +6,21 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 export const usePoolData = () => {
   const { poolRepository } = useGnoswapContext();
   const [pools, setPools] = useAtom(PoolState.pools);
   const [isFetchedPools, setIsFetchedPools] = useAtom(PoolState.isFetchedPools);
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(PoolState.isFetchedPositions);
+  const [loading, setLoading] = useAtom(PoolState.isLoading);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  },[]); 
 
   const poolListInfos = useMemo(() => {
     return pools?.map(PoolMapper.toListInfo);
@@ -58,5 +66,6 @@ export const usePoolData = () => {
     incentivizedPools,
     updatePools,
     updatePositions,
+    loading,
   };
 };
