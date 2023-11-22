@@ -159,7 +159,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
 
   .chart-wrapper {
     width: 100%;
-    cursor: pointer;
+    cursor: default;
   }
 
   .min-max-price {

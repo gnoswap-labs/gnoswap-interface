@@ -55,6 +55,9 @@ const StakePositionContainer: React.FC = () => {
         return setCheckedList((prev: string[]) => [...prev, path]);
       }
       if (!isChecked && checkedList.includes(path)) {
+        if (checkedAll) {
+          setCheckedAll(false);
+        }
         return setCheckedList(checkedList.filter(el => el !== path));
       }
     },

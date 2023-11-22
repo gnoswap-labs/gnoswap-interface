@@ -17,7 +17,7 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
   width: 100%;
   height: auto;
   overflow: visible;
-
+  pointer-events: none;
   & > svg {
     display: flex;
     flex-direction: column;
@@ -25,6 +25,7 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
     height: 100%;
     overflow: visible;
     rect {
+      pointer-events: auto;
       &:hover {
         fill: ${(props) =>
           props.svgColor === "default" ? ({ theme }) => theme.color.point : ""};
