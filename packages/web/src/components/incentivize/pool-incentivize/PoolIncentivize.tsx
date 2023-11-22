@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import Disclaimer from "@components/incentivize/disclaimer/Disclaimer";
 import PoolIncentivizeDetails from "@components/incentivize/pool-incentivize-details/PoolIncentivizeDetails";
 import SelectDistributionPeriod from "@components/incentivize/select-distribution-period/SelectDistributionPeriod";
-import SetRewardAmount from "@components/incentivize/set-reward-amount/SetRewardAmount";
+// import SetRewardAmount from "@components/incentivize/set-reward-amount/SetRewardAmount";
 import { PoolIncentivizeWrapper } from "./PoolIncentivize.styles";
 import PoolIncentivizeSelectPool from "../pool-incentivize-select-pool/PoolIncentivizeSelectPool";
 import { PoolModel } from "@models/pool/pool-model";
@@ -11,6 +11,9 @@ import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
+import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { TokenModel } from "@models/token/token-model";
 
 export interface DistributionPeriodDate {
   year: number;
@@ -30,16 +33,18 @@ interface PoolIncentivizeProps {
   period: number;
   periods: number[];
   setPeriod: (period: number) => void;
-  amount: string;
-  onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
   details: PoolDetailModel | null;
   disclaimer: string;
+  handleConfirmIncentivize: () => void;
+  tokenAmountInput: TokenAmountInputModel;
+  changeToken: (token: TokenModel) => void;
+  textBtn: string;
+  disableButton: boolean;
+  connected: boolean;
+  isDisabledSelect?: boolean;
 }
 
 const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
-  token,
-  tokens,
-  selectToken,
   pools,
   selectedPool,
   selectPool,
@@ -48,10 +53,14 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   period,
   periods,
   setPeriod,
-  amount,
-  onChangeAmount,
-  details,
   disclaimer,
+  handleConfirmIncentivize,
+  tokenAmountInput,
+  changeToken,
+  textBtn,
+  disableButton,
+  connected,
+  isDisabledSelect,
 }) => {
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
@@ -64,12 +73,13 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
 
   return (
     <PoolIncentivizeWrapper>
-      <h3 className="title">Incentivize</h3>
+      <h3 className="title">Incentivize Pool</h3>
       <article>
         <PoolIncentivizeSelectPool
           pools={poolSelectItems}
           selectedPool={selectedItem}
           select={selectPool}
+          isDisabled={isDisabledSelect}
         />
       </article>
 
@@ -83,27 +93,28 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
         />
       </article>
 
-      <article>
-        <SetRewardAmount
-          token={token}
-          tokens={tokens}
-          selectToken={selectToken}
-          amount={amount}
-          onChangeAmount={onChangeAmount}
-        />
+      <article className="token-amount-input">
+        <h5 className="section-title">3. Set Reward Amount</h5>
+        <TokenAmountInput changeToken={changeToken} connected={connected} {...tokenAmountInput} changable={true} />
       </article>
-      {details &&
-        <PoolIncentivizeDetails details={details} />
-      }
+      <PoolIncentivizeDetails
+        amount={tokenAmountInput.amount}
+        details={selectedItem}
+        startDate={startDate}
+        period={period}
+        token={tokenAmountInput.token}
+      />
 
       <Disclaimer disclaimer={disclaimer} />
       <Button
-        text="Incentivize"
+        text={textBtn}
         style={{
           hierarchy: ButtonHierarchy.Primary,
-          height: 57,
           fullWidth: true,
         }}
+        disabled={disableButton}
+        onClick={handleConfirmIncentivize}
+        className="button-confirm"
       />
     </PoolIncentivizeWrapper>
   );

@@ -20,8 +20,14 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({ info }) => {
         </h3>
       </div>
       <div className="badge-wrap">
-        <div className="badge">{info.feeRate}</div>
-        <div className="badge">{info.incentivized}</div>
+        <div className="badge">{info.feeRate}%</div>
+        <div className="badge">
+          {info.incentivized}
+          <DoubleLogo
+            left={info.tokenPair.tokenA.logoURI}
+            right={info.tokenPair.tokenB.logoURI}
+          />
+        </div>
       </div>
     </PoolInfoHeaderWrapper>
   );

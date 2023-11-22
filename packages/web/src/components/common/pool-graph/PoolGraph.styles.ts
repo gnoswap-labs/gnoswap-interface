@@ -7,11 +7,25 @@ export const PoolGraphWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: auto;
+  overflow: visible;
 
+  .dark-shadow {
+    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
+  svg {
+    rect {
+      &:hover {
+        opacity: 0.4;
+      }
+    }
+  }
   .tooltip-container {
     position: absolute;
     pointer-events: none;
-
+    border-radius: 8px;
     .tooltip-wrapper {
       display: flex;
       flex-direction: column;

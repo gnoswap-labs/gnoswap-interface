@@ -26,10 +26,10 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
         {staking}
         <div className="button">
           <span>Want to boost up incentives for this pool?&nbsp;</span>
-          <div className="pointer-wrap">
-            <span> Click here to start the process</span>
+          <a href="/earn/pool/bar_foo_100/incentivize" className="pointer-wrap">
+            <span> Click here</span>
             <IconStrokeArrowRight className="arrow-icon" />
-          </div>
+          </a>
         </div>
       </div>
     </div>

@@ -1,13 +1,14 @@
 import React, { useCallback, useMemo } from "react";
 import { TokenAmountInputWrapper } from "./TokenAmountInput.styles";
-import SelectPairButton from "../select-pair-button/SelectPairButton";
-import BigNumber from "bignumber.js";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
+import { isAmount } from "@common/utils/data-check-util";
+import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncentivizeButton";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
   changeToken: (token: TokenModel) => void;
+  connected: boolean;
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
@@ -18,6 +19,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   usdValue,
   changeAmount,
   changeToken,
+  connected,
 }) => {
 
   const disabledSelectPair = useMemo(() => {
@@ -25,9 +27,17 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   }, [changable]);
 
   const onChangeAmountInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = BigNumber(event.target.value).toString();
-    changeAmount(value);
+    const value = event.target.value;
+    if (value !== "" && !isAmount(value)) return;
+    changeAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
   }, [changeAmount]);
+
+  const handleFillBalance = useCallback(() => {
+    if (connected) {
+      const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
+      changeAmount(formatValue);
+    }
+  }, [changeAmount, connected, balance]);
 
   return (
     <TokenAmountInputWrapper>
@@ -40,7 +50,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
           placeholder="0"
         />
         <div className="token">
-          <SelectPairButton
+          <SelectPairIncentivizeButton
             token={token}
             disabled={disabledSelectPair}
             changeToken={changeToken}
@@ -49,8 +59,8 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
         </div>
       </div>
       <div className="info">
-        <span className="price-text">{usdValue}</span>
-        <span className="balance-text">Balance : {balance}</span>
+        <span className="price-text disable-pointer ">{usdValue}</span>
+        <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>Balance: {connected ? balance : "-"}</span>
       </div>
     </TokenAmountInputWrapper>
   );

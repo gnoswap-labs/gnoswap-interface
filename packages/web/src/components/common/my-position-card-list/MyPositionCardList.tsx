@@ -3,7 +3,7 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
 import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
-import { CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
+import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
 
 interface MyPositionCardListProps {
   loadMore?: boolean;
@@ -13,6 +13,11 @@ interface MyPositionCardListProps {
   currentIndex: number;
   movePoolDetail: (id: string) => void;
   mobile: boolean;
+  divRef?: React.RefObject<HTMLDivElement>;
+  onScroll?: () => void;
+  showPagination: boolean;
+  showLoadMore: boolean;
+  width: number;
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -23,14 +28,25 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   currentIndex,
   movePoolDetail,
   mobile,
+  divRef,
+  onScroll,
+  showPagination,
+  showLoadMore,
+  width,
 }) => (
   <CardListWrapper>
-    <GridWrapper>
+    <GridWrapper ref={divRef} onScroll={onScroll}>
       {isFetched &&
         positions.length > 0 &&
         positions.map((item, idx) => (
-          <MyPositionCard item={item} key={idx} movePoolDetail={movePoolDetail} />
+          <MyPositionCard currentIndex={idx} item={item} key={idx} movePoolDetail={movePoolDetail} mobile={mobile}/>
         ))}
+      {isFetched &&
+        positions.length > 0 && positions.length < 4 &&
+        (Array((width <= 1180 && width >= 1000 ? 3 : 4) - positions.length).fill(1)).map((_, index) => (
+          <BlankPositionCard key={index} />
+        ))
+      }
       {!isFetched &&
         Array.from({ length: 4 }).map((_, idx) => (
           <span
@@ -40,13 +56,11 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {!mobile && (
-      loadMore &&
-      onClickLoadMore && (
+    {(showLoadMore && loadMore && onClickLoadMore &&(
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )
     )} 
-    {(positions.length !== 0 && mobile &&
+    {(showPagination &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
         <span>/</span>

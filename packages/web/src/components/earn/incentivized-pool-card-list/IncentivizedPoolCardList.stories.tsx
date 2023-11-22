@@ -33,6 +33,9 @@ Default.args = {
   isFetched: true,
   routeItem: action("routeItem"),
   mobile: false,
+  page: 1,
+  width: 1440,
+  showPagination: false,
 };
 
 const wrapper = css`

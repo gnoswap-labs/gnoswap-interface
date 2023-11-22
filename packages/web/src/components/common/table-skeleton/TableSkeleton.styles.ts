@@ -30,4 +30,16 @@ export const SkeletonItem = styled.div<SkeletonStyleProps>`
     flex-shrink: 0;
     justify-content: flex-start;
   }
+  &.left-padding {
+    padding: 16px 16px 16px 0;
+  }
+  &.right-padding-16 {
+    padding: 16px 0 16px 16px;
+  }
+  &.right-padding-12 {
+    padding: 16px 12px 16px 16px;
+  }
+  &.padding-12 {
+    padding: 16px 12px 16px 12px;
+  }
 `;

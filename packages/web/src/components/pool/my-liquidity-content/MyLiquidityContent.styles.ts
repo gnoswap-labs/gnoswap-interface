@@ -7,7 +7,7 @@ export const MyLiquidityContentWrapper = styled.div`
   ${mixins.flexbox("row", "flex-start", "flex-start")};
   width: 100%;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.background11};
   border: 1px solid ${({ theme }) => theme.color.border02};
   ${media.mobile} {
     flex-direction: column;
@@ -31,6 +31,12 @@ export const MyLiquidityContentWrapper = styled.div`
       &:not(:first-of-type) {
         border-top: 1px solid ${({ theme }) => theme.color.border02};
       }
+      border-left: none !important;
+    }
+    @media (max-width: 1180px) and (min-width: 769px) {
+      &:nth-of-type(3) {
+        min-width: 300px;
+      }
     }
   }
 
@@ -48,6 +54,7 @@ export const MyLiquidityContentWrapper = styled.div`
   }
 
   span.content-value {
+    cursor: default;
     ${fonts.body2};
     ${media.tablet} {
       ${fonts.body4}
@@ -56,6 +63,9 @@ export const MyLiquidityContentWrapper = styled.div`
       ${fonts.body8}
     }
     color: ${({ theme }) => theme.color.text02};
+    &:hover {
+      color: ${({ theme }) => theme.color.text07};
+    }
   }
 
   .claim-wrap {
@@ -75,6 +85,7 @@ export const MyLiquidityContentWrapper = styled.div`
 export const RewardsContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 8px;
+  width: 300px;
   ${fonts.body12};
   ${media.mobile} {
     gap: 4px;
@@ -96,14 +107,14 @@ export const RewardsContent = styled.div`
     }
   }
   .title {
-    color: ${({ theme }) => theme.color.text08};
+    color: ${({ theme }) => theme.color.text04};
   }
   .content {
-    color: var(--global-gray-gray-100, #e0e8f4);
+    color: ${({ theme }) => theme.color.text02};
   }
   p {
     ${fonts.p4};
-    color: var(--global-brand-brand-400, #536cd7);
+    color: ${({ theme }) => theme.color.text04};
   }
 `;
 
@@ -111,5 +122,5 @@ export const TooltipDivider = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   height: 1px;
   width: 100%;
-  background: ${({ theme }) => theme.color.border04};
+  background: ${({ theme }) => theme.color.border01};
 `;

@@ -127,7 +127,7 @@ export const PriceRangeTooltip: {
   Active:
     "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
   Passive:
-    "A passive price range of [-50% ~ +100%] for moderate risks & returns.",
+    "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
   Custom: undefined,
 };
 
@@ -141,4 +141,6 @@ export type AddLiquiditySubmitType =
   | "ENTER_AMOUNT"
   | "INSUFFICIENT_BALANCE"
   | "INVALID_RANGE"
-  | "SWITCH_NETWORK";
+  | "SWITCH_NETWORK"
+  | "SELECT_TOKEN"
+  | "AMOUNT_TOO_LOW";

@@ -46,13 +46,13 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
   const getGradientColor = useCallback(() => {
     if (getStatus() === "UP") {
       return {
-        start: "#2EFF8266",
-        end: "#4BFF2E00"
+        start: "#16C78A66",
+        end: "#16C78A00"
       };
     }
     return {
-      start: "#FF494966",
-      end: "#FF494910"
+      start: "#EA394366",
+      end: "#EA394300"
     };
   }, [getStatus]);
 

@@ -19,6 +19,7 @@ interface PoolListTableProps {
   sort: (head: TABLE_HEAD) => void;
   isSortOption: (head: TABLE_HEAD) => boolean;
   routeItem: (id: string) => void;
+  themeKey: "dark" | "light";
 }
 
 const PoolListTable: React.FC<PoolListTableProps> = ({
@@ -28,6 +29,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
   sort,
   isSortOption,
   routeItem,
+  themeKey,
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
@@ -88,7 +90,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         {isFetched &&
           pools.length > 0 &&
           pools.map((pool, idx) => (
-            <PoolInfo pool={pool} key={idx} routeItem={routeItem} />
+            <PoolInfo pool={pool} key={idx} routeItem={routeItem} themeKey={themeKey}/>
           ))}
         {!isFetched && <TableSkeleton info={POOL_INFO} />}
       </div>

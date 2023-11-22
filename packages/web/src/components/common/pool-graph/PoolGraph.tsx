@@ -7,6 +7,7 @@ import BigNumber from "bignumber.js";
 import { renderToStaticMarkup } from "react-dom/server";
 import { TokenModel } from "@models/token/token-model";
 import { toMillionFormat } from "@utils/number-utils";
+import { useColorGraph } from "@hooks/common/use-color-graph";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -24,6 +25,8 @@ export interface PoolGraphProps {
     top: number;
     bottom: number;
   },
+  themeKey: "dark" | "light";
+  rectWidth?: number; 
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
@@ -41,11 +44,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     right: 0,
     top: 0,
     bottom: 0,
-  }
+  },
+  themeKey,
+  rectWidth,
 }) => {
   const svgRef = useRef(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const { redColor, greenColor } = useColorGraph();
 
   const tickFullRange = MAX_TICK - MIN_TICK;
   const boundsWidth = width - margin.right - margin.left;
@@ -136,15 +143,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   /** Update Chart by data */
   function updateChart() {
-    const tickSpacing = getTickSpacing();
+    const tickSpacing = rectWidth ? rectWidth :getTickSpacing();
     const centerPosition = scaleX(centerX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
       if (currentTick && scaleX(bin.currentTick) < centerPosition) {
-        return "url(#gradient-bar-red)";
+        return "url(#gradient-bar-green)";
       }
-      return "url(#gradient-bar-green)";
+      return "url(#gradient-bar-red)";
     }
 
     // Clean child elements.
@@ -189,7 +196,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   function onMouseoverChartBin(event: MouseEvent, bin: PoolBinModel) {
     if (mouseover && tooltipRef.current) {
-      if (tooltipRef.current.getAttribute("bin-id") !== bin.binId) {
+      if (bin.binId) {
         const content = renderToStaticMarkup(
           <PoolGraphBinTooptip
             tokenA={tokenA}
@@ -242,12 +249,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       <svg ref={svgRef}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#2eff8266" />
-            <stop offset="100%" stopColor="rgba(75, 255, 46, 0.00)" />
+            <stop offset="0%" stopColor={greenColor.start} />
+            <stop offset="100%" stopColor={greenColor.end} />
           </linearGradient>
           <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#ff2e2e66" />
-            <stop offset="100%" stopColor="rgba(255, 46, 46, 0.00)" />
+            <stop offset="0%" stopColor={redColor.start} />
+            <stop offset="100%" stopColor={redColor.end} />
           </linearGradient>
         </defs>
         <g
@@ -258,7 +265,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         >
         </g>
       </svg>
-      <div ref={tooltipRef} className="tooltip-container">
+      <div ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow`}>
       </div>
     </PoolGraphWrapper>
   );

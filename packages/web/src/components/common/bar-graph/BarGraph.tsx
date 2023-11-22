@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useState } from "react";
-import { BarGraphTooltipWrapper, BarGraphWrapper } from "./BarGraph.styles";
-
+import { BarGraphTooltipWrapper, BarGraphWrapper, IncentivizeGraphTooltipWrapper } from "./BarGraph.styles";
+import { useColorGraph } from "@hooks/common/use-color-graph";
 export interface BarGraphProps {
   className?: string;
   color?: string;
@@ -12,6 +12,9 @@ export interface BarGraphProps {
   minGap?: number;
   width?: number;
   height?: number;
+  tooltipOption?: string;
+  svgColor?: string;
+  currentIndex?: number;
 }
 
 interface Point {
@@ -32,10 +35,14 @@ const BarGraph: React.FC<BarGraphProps> = ({
   minGap = 1,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
+  tooltipOption = "default",
+  svgColor = "default",
+  currentIndex,
 }) => {
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
+  const { redColor, greenColor } = useColorGraph();
 
   const getStrokeWidth = useCallback(() => {
     const maxStorkeWidth = BigNumber(
@@ -114,8 +121,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       setCurrentPointIndex(-1);
       return;
     }
-
-    const { clientX, currentTarget } = event;
+  const { clientX, currentTarget } = event;
     const { left } = currentTarget.getBoundingClientRect();
     const positionX = clientX - left;
     const clientWidth = currentTarget.clientWidth;
@@ -128,12 +134,12 @@ const BarGraph: React.FC<BarGraphProps> = ({
 
     let currentPointIndex = -1;
     for (const point of getGraphPoints()) {
-      const distance = Math.abs(point.x - xPosition);
+      const distance = xPosition - point.x;
       currentPointIndex += 1;
-      if (minDistance < 0) {
+      if (minDistance < 0 && distance >= 0) {
         minDistance = distance;
       }
-      if (distance < minDistance + 1) {
+      if (distance >= 0 && distance < minDistance + 1) {
         currentPoint = point;
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);
@@ -145,6 +151,19 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }
   };
 
+  const locationHovertooltip = useMemo(() => {
+    const temp = currentPoint?.x || 0;
+    if (typeof window !== "undefined" && window?.innerWidth <= 1440) {
+      if (currentIndex !== undefined && currentIndex === 0 && temp < 120) {
+        return 120;
+      }
+      if (currentIndex === 3 && temp > 120) {
+        return 130;
+      }
+    } 
+    return temp;
+  }, [currentIndex, currentPoint]);
+  
   return (
     <BarGraphWrapper
       className={className}
@@ -153,16 +172,17 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onMouseMove={onMouseMove}
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
+      svgColor={svgColor}
     >
       <svg viewBox={`0 0 ${width} ${height}`}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#2eff8266" />
-            <stop offset="100%" stopColor="rgba(75, 255, 46, 0.00)" />
+            <stop offset="0%" stopColor={greenColor.start} />
+            <stop offset="100%" stopColor={greenColor.end} />
           </linearGradient>
           <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#ff2e2e66" />
-            <stop offset="100%" stopColor="rgba(255, 46, 46, 0.00)" />
+            <stop offset="0%" stopColor={redColor.start} />
+            <stop offset="100%" stopColor={redColor.end} />
           </linearGradient>
         </defs>
         {getGraphPoints().map((point, index) => (
@@ -182,12 +202,12 @@ const BarGraph: React.FC<BarGraphProps> = ({
             y1={height}
             y2={0}
             strokeDasharray={4}
-            stroke={"#FFFFFF"}
+            stroke={"#E0E8F4"}
             strokeWidth={0.5}
           />
         )}
       </svg>
-      {currentPointIndex > -1 && activated && (
+      {tooltipOption === "default" && currentPointIndex > -1 && activated && (
         <BarGraphTooltipWrapper
           x={
             currentPoint?.x && currentPoint?.x > width - 40
@@ -203,6 +223,34 @@ const BarGraph: React.FC<BarGraphProps> = ({
             <span className="date">Aug 03, 2023 09:00 PM - 10:00 PM</span>
           </div>
         </BarGraphTooltipWrapper>
+      )}
+      {tooltipOption === "incentivized" && currentPointIndex > -1 && activated && (
+        <IncentivizeGraphTooltipWrapper
+          x={locationHovertooltip}
+          y={currentPoint?.y || 0}
+        >
+          <div className="row">
+            <div className="token">Token</div>
+            <div className="amount">Amount</div>
+            <div className="price">Price Range</div>
+          </div>
+          <div className="body">
+            <div className="token">
+              <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="token logo" className="token-logo" />
+              BTC
+            </div>
+            <div className="amount">-</div>
+            <div className="price">19.30K - 21.45K ADN</div>
+          </div>
+          <div className="body">
+            <div className="token">
+              <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="token logo" className="token-logo" />
+              BTC
+            </div>
+            <div className="amount">Amount</div>
+            <div className="price">0.000046 - 0.000051 BTC</div>
+          </div>
+        </IncentivizeGraphTooltipWrapper>
       )}
     </BarGraphWrapper>
   );

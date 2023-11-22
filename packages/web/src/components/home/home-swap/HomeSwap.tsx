@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { wrapper } from "./HomeSwap.styles";
-import IconSettings from "@components/common/icons/IconSettings";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
@@ -65,9 +64,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
     <div css={wrapper}>
       <div className="header">
         <span className="title">Swap</span>
-        <button className="setting-button" disabled>
-          <IconSettings className="setting-icon" />
-        </button>
       </div>
       <div className="inputs">
         <div className="from">

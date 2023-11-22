@@ -25,7 +25,7 @@ const SetRewardAmount: React.FC<SetRewardAmountProps> = ({
 
   return (
     <SetRewardAmountWrapper>
-      <h5 className="section-title">2. Select Distribution Period</h5>
+      <h5 className="section-title">3. Set Reward Amount</h5>
       <div className="input-wrapper">
         <div className="token-input-wrapper">
           <div className="token-selector">

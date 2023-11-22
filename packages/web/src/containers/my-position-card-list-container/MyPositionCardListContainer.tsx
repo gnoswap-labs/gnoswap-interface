@@ -1,6 +1,7 @@
 import { generateBarAreaDatas } from "@common/utils/test-util";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
@@ -127,6 +128,7 @@ const MyPositionCardListContainer: React.FC<
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { width } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -159,6 +161,9 @@ const MyPositionCardListContainer: React.FC<
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}
+      width={width}
+      showPagination={false}
+      showLoadMore={false}
     />
   );
 };

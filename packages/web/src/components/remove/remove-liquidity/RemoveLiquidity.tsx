@@ -12,6 +12,7 @@ interface RemoveLiquidityProps {
   select: (id: string) => void;
   selectAll: () => void;
   removeLiquidity: () => void;
+  width: number;
 }
 
 const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
@@ -21,6 +22,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   select,
   selectAll,
   removeLiquidity,
+  width,
 }) => {
   const selectedLiquidites = useMemo(() => {
     return lpPositions.filter(lpPosition => selectedIds.includes(lpPosition.lpRewardId));
@@ -36,23 +38,24 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
 
   return (
     <div css={wrapper}>
-      <h3 className="title">Remove Liquidity</h3>
+      <h3 className="title">Remove Position</h3>
       <RemoveLiquiditySelectList
         lpPositions={lpPositions}
         selectedIds={selectedIds}
         selectedAll={selectedAll}
         select={select}
         selectAll={selectAll}
+        width={width}
       />
       <RemoveLiquiditySelectResult selectedLiquidities={selectedLiquidites} />
       <Button
-        text="Remove Liquidity"
+        text={disabledConfirm ? "Select Position" : "Remove Position"}
         disabled={disabledConfirm}
         style={{
           hierarchy: ButtonHierarchy.Primary,
-          height: 57,
           fullWidth: true,
         }}
+        className="button-submit"
         onClick={onClickRemoveLiquidity}
       />
     </div>

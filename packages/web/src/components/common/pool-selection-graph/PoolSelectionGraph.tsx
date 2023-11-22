@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { tickToPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
+import { useColorGraph } from "@hooks/common/use-color-graph";
 
 export interface PoolSelectionGraphProps {
   bins: PoolBinModel[];
@@ -159,6 +160,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const maxXTick = tickToPrice(maxX ?? 1) * 10000;
   const binRange = maxXTick / tickAmount;
   const currentPrice = tickToPrice(currentTick || 0);
+
+  const { redColor, greenColor } = useColorGraph();
 
   const resolvedBins = () => {
     const sortedBins = bins.sort((b1, b2) => b1.currentTick - b2.currentTick)
@@ -473,12 +476,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       <svg ref={svgRef}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#16C78AB2" />
-            <stop offset="100%" stopColor="#16C78A24" />
+            <stop offset="0%" stopColor={greenColor.start} />
+            <stop offset="100%" stopColor={greenColor.end} />
           </linearGradient>
           <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#EA3943B2" />
-            <stop offset="100%" stopColor="#EA394324" />
+            <stop offset="0%" stopColor={redColor.start} />
+            <stop offset="100%" stopColor={redColor.end} />
           </linearGradient>
           <linearGradient id="gradient-selection-area" gradientTransform="rotate(0)">
             <stop offset="0%" stopColor={"#FF020233"} />

@@ -10,7 +10,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   border-radius: 8px;
   color: ${({ theme }) => theme.color.text04};
   border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.background11};
   ${media.mobile} {
     flex-direction: column;
   }
@@ -33,12 +33,16 @@ export const PoolPairInfoContentWrapper = styled.div`
       &:not(:first-of-type) {
         border-top: 1px solid ${({ theme }) => theme.color.border02};
       }
+      border-left: none !important;
     }
   }
 
   .section-info {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 16px;
+    @media (min-width: 769px) and (max-width: 800px) {
+      gap: 8px;
+    }
     .negative {
       color: ${({ theme }) => theme.color.red01};
     }
@@ -60,7 +64,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   }
 
   .has-tooltip {
-    cursor: pointer;
+    cursor: default;
     transition: color 0.3s ease;
     &:hover {
       color: ${({ theme }) => theme.color.text07};
@@ -68,14 +72,20 @@ export const PoolPairInfoContentWrapper = styled.div`
   }
 
   strong {
+    ${mixins.flexbox("row", "center", "flex-start")};
     ${fonts.body2};
     ${media.tablet} {
       ${fonts.body4};
     }
-    ${media.tablet} {
+    ${media.mobile} {
       ${fonts.body7};
+      svg {
+        height: 25px;
+        width: 25px;
+      }
     }
     color: ${({ theme }) => theme.color.text02};
+
   }
 `;
 
@@ -103,10 +113,10 @@ export const TooltipContent = styled.div`
     }
   }
   .title {
-    color: ${({ theme }) => theme.color.text08};
+    color: ${({ theme }) => theme.color.text04};
   }
   .content {
-    color: var(--global-gray-gray-100, #e0e8f4);
+    color: ${({ theme }) => theme.color.text02};
   }
 `;
 

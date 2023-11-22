@@ -14,7 +14,7 @@ const Template: ComponentStory<typeof EarnMyPositions> = args => (
   <EarnMyPositions {...args} />
 );
 
-const position: PoolPosition = {
+export const position: PoolPosition = {
   tokenPair: {
     tokenA: {
       path: Math.floor(Math.random() * 50 + 1).toString(),
@@ -66,12 +66,12 @@ const position: PoolPosition = {
   currentPriceAmount: "1184.24 GNOS per ETH",
   minPriceAmount: "1.75 GNOT Per GNOS",
   maxPriceAmount: "2.25 GNOT Per GNOS",
-  currentTick: 4,
+  currentTick: 20,
   minTick: 40,
   maxTick: 200,
   minLabel: "-30%",
   maxLabel: "50%",
-  ticks: ["1", "1", "2", "2", "3", "3", "2", "2", "1", "1"]
+  ticks: ["1", "1", "3", "0", "2", "0", "4", "0", "0", "1", "2", "4","1", "5", "1", "6", "2", "7", "0", "1", "0", "2", "5", "0", "1", "0", "5", "4", "1", "3", "0", "5", "2", "1", "1", "0", "0", "0", "0", "0"]
 };
 
 export const UnConnected = Template.bind({});

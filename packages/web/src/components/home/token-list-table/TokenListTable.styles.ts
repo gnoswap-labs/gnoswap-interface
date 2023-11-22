@@ -18,6 +18,9 @@ export const TableWrapper = styled.div`
   color: ${({ theme }) => theme.color.text04};
   ${fonts.body11};
   overflow-x: auto;
+  &.hidden-scroll {
+    overflow-x: hidden;
+  }
   .scroll-wrapper {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     height: auto;
@@ -158,6 +161,10 @@ export const noDataText = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "center")};
   color: ${theme.color.text04};
   ${fonts.body12};
-  width: 100%;
+  width: calc(100vw - 82px);
+  max-width: 1358px;
   height: 300px;
+  ${media.mobile} {
+    width: calc(100vw - 34px);
+  }
 `;

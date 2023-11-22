@@ -10,6 +10,7 @@ interface LiquidityEnterAmountsProps {
   tokenBInput: TokenAmountInputModel;
   changeTokenA: (token: TokenModel) => void;
   changeTokenB: (token: TokenModel) => void;
+  connected: boolean;
 }
 
 const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
@@ -17,12 +18,13 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
   tokenBInput,
   changeTokenA,
   changeTokenB,
+  connected,
 }) => {
 
   return (
     <LiquidityEnterAmountsWrapper>
-      <TokenAmountInput changeToken={changeTokenA} {...tokenAInput} />
-      <TokenAmountInput changeToken={changeTokenB} {...tokenBInput} />
+      <TokenAmountInput changeToken={changeTokenA} {...tokenAInput} connected={connected} />
+      <TokenAmountInput changeToken={changeTokenB} {...tokenBInput} connected={connected} />
       <div className="arrow">
         <div className="shape">
           <IconAdd className="add-icon" />

@@ -6,8 +6,6 @@ export const SelectDistributionPeriodInputWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: auto;
-  z-index: 3;
-
   & .description {
     ${fonts.p4}
     color: ${({ theme }) => theme.color.text04};
@@ -26,7 +24,7 @@ export const SelectDistributionPeriodInputWrapper = styled.div`
     align-items: center;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
-    background: ${({ theme }) => theme.color.backgroundOpacity};
+    background: ${({ theme }) => theme.color.background20};
 
     & .icon-arrow {
       width: 16px;

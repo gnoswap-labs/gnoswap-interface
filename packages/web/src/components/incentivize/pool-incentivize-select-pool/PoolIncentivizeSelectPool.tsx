@@ -1,24 +1,31 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useRef } from "react";
 import { PoolIncentivizeSelectPoolBox, PoolIncentivizeSelectPoolWrapper } from "./PoolIncentivizeSelectPool.styles";
 import PoolIncentivizeSelectPoolItem from "../pool-incentivize-select-pool-item/PoolIncentivizeSelectPoolItem";
 import SearchInput from "@components/common/search-input/SearchInput";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
+import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 
 export interface PoolIncentivizeSelectPoolProps {
   selectedPool: PoolSelectItemInfo | null;
   pools: PoolSelectItemInfo[];
   select: (poolId: string) => void;
+  isDisabled?: boolean;
 }
 
 const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   selectedPool,
   pools,
-  select
+  select,
+  isDisabled,
 }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [openedSelector, setOpenedSelector] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeModal = useCallback(() => setOpenedSelector(false), []);
+
+  useModalCloseEvent(modalRef, closeModal);
 
   const filteredPools = useMemo(() => {
     if (searchKeyword === "") {
@@ -46,10 +53,6 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
     });
   }, [searchKeyword, pools]);
 
-  const totalInfo = useMemo(() => {
-    return `Total ${filteredPools.length} Pools`;
-  }, [filteredPools.length]);
-
   const toggleSelector = useCallback(() => {
     setOpenedSelector(!openedSelector);
   }, [openedSelector]);
@@ -62,9 +65,9 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   const onChangeKeyword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(event.target.value);
   }, []);
-
+  
   return (
-    <PoolIncentivizeSelectPoolWrapper>
+    <PoolIncentivizeSelectPoolWrapper isDisabled={isDisabled}>
       <h5>1. Select Pool</h5>
       <div className="pool-select-wrapper" onClick={toggleSelector}>
         <PoolIncentivizeSelectPoolItem
@@ -72,38 +75,36 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
           visibleLiquidity={false}
           select={toggleSelector}
         />
-        <div className="icon-wrapper">
+        {!isDisabled && <div className="icon-wrapper">
           {openedSelector ?
             <IconArrowUp className="icon-arrow" /> :
             <IconArrowDown className="icon-arrow" />}
-        </div>
+        </div>}
 
-        {openedSelector && (
-          <PoolIncentivizeSelectPoolBox>
-            <div className="search-wrapper" onClick={e => e.stopPropagation()}>
-              <SearchInput
-                onChange={onChangeKeyword}
-                placeholder="Search name or paste address"
-              />
+        <PoolIncentivizeSelectPoolBox ref={modalRef} className={openedSelector ? "open" : ""} onClick={e => e.stopPropagation()}>
+          <div className="search-wrapper" onClick={e => e.stopPropagation()}>
+            <SearchInput
+              onChange={onChangeKeyword}
+              placeholder="Search by Name, Symbol, or Path"
+            />
+          </div>
+          <div className="pool-list-wrapper">
+            <div className="pool-list-headrer">
+              <span className="total-info">Pools</span>
+              <span className="liquidity-info">Liquidity</span>
             </div>
-            <div className="pool-list-wrapper">
-              <div className="pool-list-headrer">
-                <span className="total-info">{totalInfo}</span>
-                <span className="liquidity-info">Liquidity</span>
-              </div>
-              <div className="pool-list-content">
-                {filteredPools.map((pool, index) => (
-                  <PoolIncentivizeSelectPoolItem
-                    key={index}
-                    poolSelectItem={pool}
-                    visibleLiquidity={true}
-                    select={selectPoolItem}
-                  />
-                ))}
-              </div>
+            <div className="pool-list-content">
+              {filteredPools.map((pool, index) => (
+                <PoolIncentivizeSelectPoolItem
+                  key={index}
+                  poolSelectItem={pool}
+                  visibleLiquidity={true}
+                  select={selectPoolItem}
+                />
+              ))}
             </div>
-          </PoolIncentivizeSelectPoolBox>
-        )}
+          </div>
+        </PoolIncentivizeSelectPoolBox>
       </div>
     </PoolIncentivizeSelectPoolWrapper>
   );

@@ -44,7 +44,7 @@ export const wrapper = (theme: Theme) => css`
       width: 100%;
       padding: 9px 23px;
 
-      background-color: ${theme.color.background01};
+      background-color: ${theme.color.background20};
       border: 1px solid ${theme.color.border02};
       border-radius: 8px;
     }

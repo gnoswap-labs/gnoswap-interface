@@ -9,6 +9,7 @@ interface RemoveLiquiditySelectListProps {
   selectedIds: string[];
   select: (id: string) => void;
   selectAll: () => void;
+  width: number;
 }
 
 const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
@@ -17,6 +18,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   selectedIds,
   select,
   selectAll,
+  width,
 }) => {
 
   const isSelectLiquidity = useCallback((lpPosition: LPPositionModel) => {
@@ -26,13 +28,16 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   return (
     <RemoveLiquiditySelectListWrapper>
       <div className="checked-all-wrap">
-        <input
-          id="checkbox-all"
-          type="checkbox"
-          checked={selectedAll}
-          onChange={selectAll}
-        />
-        <label htmlFor="checkbox-all"> Select All</label>
+        <div className="wrapper-check-label">
+          <input
+            id="checkbox-all"
+            type="checkbox"
+            checked={selectedAll}
+            onChange={selectAll}
+          />
+          <label htmlFor="checkbox-all" />
+          <span className="custom-label">Select All</span>
+        </div>
         <span>Liquidity</span>
       </div>
       <ul>
@@ -42,6 +47,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             lpPosition={lpPosition}
             selected={isSelectLiquidity(lpPosition)}
             select={select}
+            width={width}
           />
         ))}
       </ul>

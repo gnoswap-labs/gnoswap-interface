@@ -8,12 +8,17 @@ import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/Li
 import SelectPair from "@components/common/select-pair/SelectPair";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import IconSettings from "@components/common/icons/IconSettings";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { PoolModel } from "@models/pool/pool-model";
 import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
 import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
 import { TokenModel } from "@models/token/token-model";
+import SelectPriceRangeCustom from "@components/common/select-price-range-custom/SelectPriceRangeCustom";
+import IconSettings from "@components/common/icons/IconSettings";
+import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
+import IconStaking from "@components/common/icons/IconStaking";
+import IconArrowDown from "@components/common/icons/IconArrowDown";
+import IconArrowUp from "@components/common/icons/IconArrowUp";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -36,6 +41,12 @@ interface EarnAddLiquidityProps {
   currentTick: PoolTick | null;
   submitType: AddLiquiditySubmitType;
   submit: () => void;
+  isEarnAdd: boolean;
+  connected: boolean;
+  slippage: number;
+  changeSlippage: (value: string) => void;
+  handleClickOneStaking?: () => void;
+  openModal: () => void;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -56,10 +67,19 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   changePriceRange,
   submitType,
   submit,
+  isEarnAdd,
+  connected,
+  slippage,
+  changeSlippage,
+  handleClickOneStaking,
+  openModal,
 }) => {
-  const [openedSelectPair, setOpenedSelectPair] = useState(true);
-  const [openedFeeTier, setOpenedFeeTier] = useState(true);
-  const [openedPriceRange, setOpenedPriceRange] = useState(true);
+  const [openedSelectPair] = useState(isEarnAdd ? true : false);
+  const [openedFeeTier, setOpenedFeeTier] = useState(false);
+  const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
+  const [openCustomPriceRange, setOpenCustomPriceRange] = useState(false);
+  const [openedSetting, setOpenedSetting] = useState(false);
+  
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
@@ -87,17 +107,15 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     return `${priceRange.type}`;
   }, [priceRange]);
 
-  const toggleSelectPair = useCallback(() => {
-    setOpenedSelectPair(!openedSelectPair);
-  }, [openedSelectPair]);
-
   const toggleFeeTier = useCallback(() => {
-    setOpenedFeeTier(!openedFeeTier);
-  }, [openedFeeTier]);
+    if (isEarnAdd) {
+      tokenA && tokenB && setOpenedFeeTier(!openedFeeTier);
+    }
+  }, [tokenA, tokenB, openedFeeTier, isEarnAdd]);
 
   const togglePriceRange = useCallback(() => {
-    setOpenedPriceRange(!openedPriceRange);
-  }, [openedPriceRange]);
+    tokenA && tokenB && setOpenedPriceRange(!openedPriceRange);
+  }, [tokenA, tokenB, openedPriceRange]);
 
   const activatedSubmit = useMemo(() => {
     switch (submitType) {
@@ -127,24 +145,65 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         return "Insufficient Balance";
       case "INVALID_RANGE":
         return "Invalid Range";
+      case "AMOUNT_TOO_LOW":
+        return "Amount Too Low";
       case "ENTER_AMOUNT":
       default:
         return "Enter Amount";
     }
   }, [submitType]);
 
+  const handleChangeTokenB = useCallback((token: TokenModel) => {
+    if (tokenA && tokenA.symbol !== token.symbol) {
+      setOpenedFeeTier(true);
+      setOpenedPriceRange(true);
+      handleClickOneStaking?.();
+    }
+    changeTokenB(token);
+  }, [changeTokenB, tokenA, tokenB]);
+
+  const handleChangeTokenA = useCallback((token: TokenModel) => {
+    if (tokenB && tokenB.symbol !== token.symbol) {
+      setOpenedFeeTier(true);
+      setOpenedPriceRange(true);
+      handleClickOneStaking?.();
+    }
+    changeTokenA(token);
+  }, [changeTokenA, tokenA, tokenB]);
+
+  const handleSelectFeeTier = useCallback((feeTier: SwapFeeTierType) => {
+    selectFeeTier(feeTier);
+  }, [selectFeeTier]);
+
+  const handlePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
+    if (priceRange.type !== "Custom") {
+      setOpenCustomPriceRange(false);
+    } else {
+      setOpenCustomPriceRange(true);
+    }
+    changePriceRange(priceRange);
+  }, [changePriceRange]);
+  
+  const openSetting = useCallback(() => {
+    setOpenedSetting(true);
+  }, []);
+
+  const closeSetting = useCallback(() => {
+    setOpenedSetting(() => false);
+  }, []);
+  
   return (
     <EarnAddLiquidityWrapper>
-      <h3>Add Liquidity</h3>
+      <h3>Create Position</h3>
       <div className="select-content">
         <article className="selector-wrapper">
-          <div className="header-wrapper" onClick={toggleSelectPair}>
+          <div className={`header-wrapper default-cursor ${!isEarnAdd ? "disable-text" : ""}`}>
             <h5>1. Select Pair</h5>
-            {existTokenPair && (
+            {!isEarnAdd && existTokenPair && (
               <DoubleLogo
                 left={tokenALogo}
                 right={tokenBLogo}
-                size={24}
+                size={30}
               />
             )}
           </div>
@@ -152,19 +211,23 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             <SelectPair
               tokenA={tokenA}
               tokenB={tokenB}
-              changeTokenA={changeTokenA}
-              changeTokenB={changeTokenB}
+              changeTokenA={handleChangeTokenA}
+              changeTokenB={handleChangeTokenB}
             />
           )}
         </article>
 
         <article className="selector-wrapper">
-          <div className="header-wrapper" onClick={toggleFeeTier}>
-            <h5>2. Select Fee Tier</h5>
-            {selectedFeeRate && (
+          <div className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""} ${!isEarnAdd && "disable-text"}`} onClick={toggleFeeTier}>
+            <div className="header-wrapper-title">
+              <h5>2. Select Fee Tier</h5>
+              {existTokenPair && isEarnAdd && (!openedFeeTier ? <IconArrowDown /> : <IconArrowUp />)}
+            </div>
+            {selectedFeeRate && existTokenPair && (
               <Badge
                 text={selectedFeeRate}
                 type={BADGE_TYPE.LINE}
+                className="fee-tier-bad"
               />
             )}
           </div>
@@ -175,18 +238,22 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               feeTiers={feeTiers}
               feeTier={feeTier}
               pools={pools}
-              selectFeeTier={selectFeeTier}
+              selectFeeTier={handleSelectFeeTier}
             />
           )}
         </article>
 
         <article className="selector-wrapper">
-          <div className="header-wrapper" onClick={togglePriceRange}>
-            <h5>3. Select Price Range</h5>
-            {selectedPriceRange && (
+          <div className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""}`} onClick={togglePriceRange}>
+            <div className="header-wrapper-title">
+              <h5>3. Select Price Range</h5>
+              {existTokenPair && (!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />)}
+            </div>
+            {selectedPriceRange && existTokenPair && (
               <Badge
                 text={selectedPriceRange}
                 type={BADGE_TYPE.LINE}
+                className="fee-tier-bad"
               />
             )}
           </div>
@@ -195,27 +262,45 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             <SelectPriceRange
               priceRanges={priceRanges}
               priceRange={priceRange}
-              changePriceRange={changePriceRange}
+              changePriceRange={handlePriceRange}
             />
           )}
-
-          <SelectPriceRangeSummary {...priceRangeSummary} />
+          {openedPriceRange && openCustomPriceRange && tokenA && tokenB && <SelectPriceRangeCustom
+            tokenA={tokenA}
+            tokenB={tokenB}
+            currentTick={undefined}
+            ticks={[]}
+          />
+          }
+          {selectedPriceRange && existTokenPair && selectedFeeRate && <SelectPriceRangeSummary {...priceRangeSummary} />}
         </article>
 
         <article className="selector-wrapper">
-          <div className="header-wrapper">
+          <div className="header-wrapper default-cursor">
             <h5>4. Enter Amounts</h5>
-            <button className="setting-button">
-              <IconSettings className="setting-icon" />
+            <button className="setting-button" onClick={openSetting}>
+              <IconSettings className="setting-icon"/>
             </button>
+            {openedSetting && (
+              <SettingMenuModal
+                slippage={slippage}
+                changeSlippage={changeSlippage}
+                close={closeSetting}
+                className="setting-modal"
+              />
+            )}
           </div>
-          <LiquidityEnterAmounts
-            tokenAInput={tokenAInput}
-            tokenBInput={tokenBInput}
-            changeTokenA={changeTokenA}
-            changeTokenB={changeTokenB}
-          />
+          <div className="liquity-enter-amount">
+            <LiquidityEnterAmounts
+              tokenAInput={tokenAInput}
+              tokenBInput={tokenBInput}
+              changeTokenA={changeTokenA}
+              changeTokenB={changeTokenB}
+              connected={connected}
+            />
+          </div>
         </article>
+        {isEarnAdd && !existTokenPair && <div className="dim-content" />}
       </div>
       <Button
         text={submitButtonStr}
@@ -223,10 +308,12 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         style={{
           hierarchy: activatedSubmit ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
           fullWidth: true,
-          height: 57,
-          fontType: "body7",
         }}
+        className="button-submit"
       />
+      {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && <div className="btn-one-click" onClick={openModal}>
+        <IconStaking /> One-Click Staking
+      </div>}
     </EarnAddLiquidityWrapper>
   );
 };

@@ -95,7 +95,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         </TableColumn>
       </HoverSection>
       <HoverSection>
-        <TableColumn className="liquid-col" tdWidth={TOKEN_TD_WIDTH[9]}>
+        <TableColumn className="liquid-col padding-12" tdWidth={TOKEN_TD_WIDTH[9]}>
           <DoubleLogo
             left={mostLiquidPool.tokenPair.tokenA.logoURI}
             right={mostLiquidPool.tokenPair.tokenB.logoURI}

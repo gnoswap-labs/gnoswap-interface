@@ -34,3 +34,5 @@ export const swap = atom<TokenSwapModel>({
   },
   type: "EXACT_IN",
 });
+
+export const isLoading = atom<boolean>(true);

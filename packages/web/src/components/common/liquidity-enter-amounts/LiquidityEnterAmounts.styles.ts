@@ -1,6 +1,7 @@
 import mixins from "@styles/mixins";
 
 import styled from "@emotion/styled";
+import { fonts } from "@constants/font.constant";
 
 export const LiquidityEnterAmountsWrapper = styled.div`
   ${mixins.flexbox("column", "center", "space-between")};
@@ -27,8 +28,27 @@ export const LiquidityEnterAmountsWrapper = styled.div`
         width: 16px;
         height: 16px;
         * {
-          fill: ${({ theme }) => theme.color.text01};
+          fill: ${({ theme }) => theme.color.icon03};
         }
+      }
+    }
+  }
+  .amount {
+    .token {
+      > div {
+
+        padding-top: 4px;
+        padding-bottom: 4px;
+        height: auto;
+        > span {
+          margin-right: 6px;
+        }
+      }
+      .token-symbol {
+        ${fonts.body9}
+        margin-right: 6px;
+        height: auto;
+        margin-left: 0;
       }
     }
   }

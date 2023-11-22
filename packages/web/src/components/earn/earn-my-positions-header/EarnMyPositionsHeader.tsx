@@ -5,11 +5,13 @@ import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 export interface EarnMyPositionsHeaderProps {
   connected: boolean;
   moveEarnAdd: () => void;
+  moveEarnStake: () => void;
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   connected,
-  moveEarnAdd
+  moveEarnAdd,
+  moveEarnStake,
 }) => {
 
   const disabledNewPosition = useMemo(() => {
@@ -17,27 +19,35 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   }, [connected]);
 
   const onClickNewPosition = useCallback(() => {
-    if (disabledNewPosition) {
-      return;
-    }
     moveEarnAdd();
-  }, [disabledNewPosition, moveEarnAdd]);
+  }, [moveEarnAdd]);
 
   return (
     <PositionsWrapper>
       <h2>My Positions</h2>
-      <Button
-        text="New Position"
-        style={{
-          hierarchy: ButtonHierarchy.Primary,
-          fontType: "p1",
-          height: 36,
-          width: 114,
-          padding: "10px 16px",
-        }}
-        onClick={onClickNewPosition}
-        disabled={disabledNewPosition}
-      />
+      <div className="button-wrapper">
+        <Button
+          text="Stake Position"
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fontType: "p1",
+            height: 36,
+            padding: "10px 16px",
+          }}
+          disabled={disabledNewPosition}
+          onClick={moveEarnStake}
+        />
+        <Button
+          text="New Position"
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fontType: "p1",
+            height: 36,
+            padding: "10px 16px",
+          }}
+          onClick={onClickNewPosition}
+        />
+      </div>
     </PositionsWrapper>
   );
 };

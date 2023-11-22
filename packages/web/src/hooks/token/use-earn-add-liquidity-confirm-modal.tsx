@@ -91,9 +91,9 @@ export const useEarnAddLiquidityConfirmModal = ({
         priceId: "GNOLAND",
         chainId: "dev",
         name: "Gno.land",
-        symbol: "GNOT",
+        symbol: "GNS",
         decimals: 6,
-        logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+        logoURI: "/gnos.svg",
         createdAt: ""
       },
       fee: "0.000001"

@@ -3,10 +3,14 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const StakingContentCardWrapper = styled.div`
+interface Props {
+  nonTotal: boolean;
+}
+
+export const StakingContentCardWrapper = styled.div<Props>`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
-  ${media.mobile} {
+  ${media.tabletMiddle} {
     flex-direction: column;
     align-items: flex-end;
     gap: 5px;
@@ -14,7 +18,7 @@ export const StakingContentCardWrapper = styled.div`
   }
   .left {
     ${mixins.flexbox("row", "center", "flex-start")};
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       justify-content: space-between;
       align-self: stretch;
     }
@@ -22,7 +26,7 @@ export const StakingContentCardWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       height: 50px;
       gap: 24px;
-      ${media.mobile} {
+      ${media.tabletMiddle} {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 12px;
         flex: 1 0 0;
@@ -34,28 +38,40 @@ export const StakingContentCardWrapper = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 99px;
-      background: var(--global-color-point, #0059ff);
+      background: ${({ theme }) => theme.color.background04};
       .check-line {
         height: 49px;
         position: absolute;
-        right: 10px;
+        right: 9px;
         bottom: -49px;
         stroke-width: 1px;
-        stroke: var(--point-global-point, #0059ff);
+        stroke: var(--point-global-point, #233DBD);
       }
       .check-line-long {
         height: 456px;
         position: absolute;
-        left: 10px;
+        left: 9px;
         top: 20px;
         stroke-width: 1px;
-        stroke: var(--point-global-point, #0059ff);
+        stroke: var(--point-global-point, #233DBD);
+      }
+      .border-not-active {
+        width: 1px;
+        height: 55px;
+        border-left: 1px solid ${({ theme }) => theme.color.border08};
+        ${media.tabletMiddle} {
+          height: 150px;
+        }
+      }
+      &-not-active {
+        border: 1px solid ${({ theme }) => theme.color.border08};
+        background: ${({ theme }) => theme.color.background02};
       }
     }
     .name-wrap {
-      ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 8px;
-      ${media.mobile} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 4px;
+      ${media.tabletMiddle} {
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
@@ -75,33 +91,31 @@ export const StakingContentCardWrapper = styled.div`
       .icon-wrap {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 4px;
+        ${media.mobile} {
+          gap: 5.33px;
+        }
         .content-text {
           color: ${({ theme }) => theme.color.text04};
           ${fonts.body12}
-          ${media.tablet} {
-            ${fonts.p4}
-          }
           ${media.mobile} {
             ${fonts.p6}
+            font-size: 11px;
           }
         }
         .content-gd-text {
-          background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+          background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
           background-clip: text;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           ${fonts.body12}
-          ${media.tablet} {
-            ${fonts.p4}
-          }
           ${media.mobile} {
             ${fonts.p6}
+            font-size: 11px;
           }
         }
         .tooltip-icon {
           width: 16px;
           height: 16px;
-          cursor: pointer;
           * {
             fill: ${({ theme }) => theme.color.icon03};
           }
@@ -110,7 +124,7 @@ export const StakingContentCardWrapper = styled.div`
     }
   }
   .contents-wrap {
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
       padding-left: 32px;
@@ -127,7 +141,7 @@ export const StakingContentCardWrapper = styled.div`
     ${media.tablet} {
       width: 600px;
     }
-    ${media.mobile} {
+    ${media.tabletMiddle} {
       width: 100%;
       padding: 12px 16px;
       flex-direction: column;
@@ -136,10 +150,28 @@ export const StakingContentCardWrapper = styled.div`
       gap: 12px;
     }
     .price {
-      ${mixins.flexbox("row", "flex-start", "flex-start")};
-      gap: 16px;
+      cursor: default;
       span {
-        color: ${({ theme }) => theme.color.text02};
+        div {
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 6px;
+          ${media.mobile} {
+            gap: 8px;
+          }
+          color: ${({ theme }) => theme.color.text02};
+          span {
+            color: ${({ theme }) => theme.color.text02};
+            
+          }
+          pointer-events: ${({ nonTotal }) => {
+            return nonTotal ? "none" : "initial";
+          }};
+          &:hover {
+            span {
+              color: ${({ theme }) => theme.color.text07};
+            }
+          }
+        }
         ${fonts.body3}
         ${media.tablet} {
           ${fonts.body7}
@@ -155,13 +187,14 @@ export const StakingContentCardWrapper = styled.div`
         gap: 8px;
       }
       .price-gd-text {
-        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
       .badge {
         ${mixins.flexbox("row", "center", "center")};
+        margin-left: 10px;
         width: 58px;
         height: 34px;
         padding: 0px 6px;
@@ -193,19 +226,26 @@ export const StakingContentCardWrapper = styled.div`
         ${fonts.body6}
         ${media.tablet} {
           ${fonts.body8}
+          font-size: 17px;
         }
         ${media.mobile} {
           ${fonts.body12}
         }
+        &:hover {
+          cursor: default;
+          color: ${({ theme }) => theme.color.text07};
+        }
       }
       .apr-gd-text {
-        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        cursor: default;
         ${fonts.body6}
         ${media.tablet} {
           ${fonts.body8}
+          font-size: 17px;
         }
         ${media.mobile} {
           ${fonts.body12}
@@ -216,6 +256,10 @@ export const StakingContentCardWrapper = styled.div`
         .token-logo {
           width: 36px;
           height: 36px;
+          ${media.tablet} {
+            width: 24px;
+            height: 24px;
+          }
           ${media.mobile} {
             width: 20px;
             height: 20px;
@@ -227,4 +271,81 @@ export const StakingContentCardWrapper = styled.div`
       }
     }
   }
+`;
+
+export const RewardsContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  width: 300px;
+  ${fonts.body12};
+  ${media.mobile} {
+    gap: 4px;
+    ${fonts.p2};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 4px 0px;
+    .coin-info {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      width: 170px;
+      gap: 8px;
+      flex-shrink: 0;
+      .token-logo {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .title {
+    color: ${({ theme }) => theme.color.text04};
+  }
+  .content {
+    color: ${({ theme }) => theme.color.text02};
+  }
+  p {
+    ${fonts.p4};
+    color: ${({ theme }) => theme.color.text04};
+  }
+`;
+
+export const TooltipDivider = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  height: 1px;
+  width: 100%;
+  background: ${({ theme }) => theme.color.border01};
+`;
+
+export const PriceTooltipContentWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  width: 300px;
+  ${fonts.body12};
+  ${media.mobile} {
+    gap: 4px;
+    ${fonts.p2};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 4px 0px;
+    &.list-logo {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
+    }
+  }
+  .title {
+    color: ${({ theme }) => theme.color.text02};
+  }
+  .content {
+    color: ${({ theme }) => theme.color.text02};
+  }
+  .label {
+    color: ${({ theme }) => theme.color.text04};
+  }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
 `;

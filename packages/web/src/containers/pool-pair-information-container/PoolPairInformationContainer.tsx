@@ -67,7 +67,7 @@ export const poolPairInit = {
     },
   },
   apr: {
-    value: "✨108.21%",
+    value: "108.21%",
     fees: "-3.52%",
     rewards: "88.13%",
   },
@@ -75,6 +75,16 @@ export const poolPairInit = {
 export type poolPairProps = typeof poolPairInit;
 export type poolInfoProps = (typeof poolPairInit)["poolInfo"];
 export type liquidityProps = (typeof poolPairInit)["liquidity"];
+
+function extractFee(input: string): number | null {
+  const match = input.match(/_(\d+)$/);
+
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+
+  return null;
+}
 
 const PoolPairInformationContainer = () => {
   const router = useRouter();
@@ -88,6 +98,7 @@ const PoolPairInformationContainer = () => {
       info={poolPairInit}
       menu={menuInit}
       onClickPath={onClickPath}
+      fee={extractFee(router?.query?.["pool-number"] as string || "")}
     />
   );
 };

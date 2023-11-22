@@ -42,7 +42,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
     border: 1px solid ${({ theme }) => theme.color.border03};
     color: ${({ theme }) => theme.color.text01};
     .search-icon * {
-      fill: ${({ theme }) => theme.color.icon03};
+      fill: ${({ theme }) => theme.color.icon08};
     }
   }
 
@@ -51,7 +51,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
     border: 1px solid ${({ theme }) => theme.color.border02};
     color: ${({ theme }) => theme.color.text14};
     .search-icon * {
-      fill: ${({ theme }) => theme.color.icon03};
+      fill: ${({ theme }) => theme.color.icon08};
     }
   }
 

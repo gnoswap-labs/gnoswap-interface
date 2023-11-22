@@ -97,8 +97,8 @@ export const DashboardLayoutWrapper = styled.div`
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
-      width: 90%;
-      padding: 48px 0px 48px 0px;
+      width: 100%;
+      padding: 48px 16px 48px 16px;
     }
   }
 

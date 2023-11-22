@@ -1,5 +1,7 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
+import { Z_INDEX } from "@styles/zIndex";
 
 export const SelectDistributionDateInputWrapper = styled.div`
   display: flex;
@@ -7,6 +9,9 @@ export const SelectDistributionDateInputWrapper = styled.div`
   width: 100%;
   height: auto;
   z-index: 3;
+  ${media.mobile} {
+    z-index: auto;
+  }
 
   & .description {
     ${fonts.p4}
@@ -25,7 +30,10 @@ export const SelectDistributionDateInputWrapper = styled.div`
     align-items: center;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
-    background: ${({ theme }) => theme.color.backgroundOpacity};
+    background: ${({ theme }) => theme.color.background20};
+    &:hover {
+      background: ${({ theme }) => theme.color.background11};
+    }
     cursor: pointer;
 
     & .icon-calender {
@@ -34,9 +42,11 @@ export const SelectDistributionDateInputWrapper = styled.div`
     }
 
     & .date {
-      height: 16px;
       ${fonts.body9}
       color: ${({ theme }) => theme.color.text02};
+    }
+    ${media.mobile} {
+      padding: 0 12px;
     }
   }
 
@@ -45,9 +55,31 @@ export const SelectDistributionDateInputWrapper = styled.div`
 
     & .calendar-wrapper {
       position: absolute;
-      top: 0;
-      width: 315px;
+      height: 0;
+      top: 5px;
+      width: 100%;
+      min-width: 315px;
       z-index: 10;
+      height: 0;
+      display: none;
+      ${media.mobile} {
+        transition: height 0.5s ease;
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        width: 100vw;
+        min-width: 360px;
+        left: 0;
+        z-index: ${Z_INDEX.fixed};
+        display: block;
+      }
+    }
+    & .open {
+      display: block;
+      height: 273px;
+      ${media.mobile} {
+      height: 273px;
+      }
     }
   }
 `;

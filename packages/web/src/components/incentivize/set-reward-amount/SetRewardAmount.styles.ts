@@ -8,10 +8,15 @@ export const SetRewardAmountWrapper = styled.div`
   width: 100%;
   gap: 16px;
 
+  h5 {
+    color: ${({ theme }) => theme.color.text10};
+    ${fonts.body12}
+  }
+
   .input-wrapper {
     ${mixins.flexbox("column", "center", "space-between")};
     width: 100%;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity};
+    background-color: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
     border-radius: 8px;
     padding: 15px;

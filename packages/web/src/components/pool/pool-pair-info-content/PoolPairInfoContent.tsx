@@ -6,6 +6,7 @@ import {
   TooltipContent,
 } from "./PoolPairInfoContent.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import IconStar from "@components/common/icons/IconStar";
 interface PoolPairInfoContentProps {
   content: any;
 }
@@ -84,7 +85,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       </section>
       <section>
         <h4>APR</h4>
-        <strong>{apr.value}</strong>
+        <strong><IconStar /> {apr.value}</strong>
         <div className="apr-info">
           <div className="content-wrap">
             <span>Fees</span>

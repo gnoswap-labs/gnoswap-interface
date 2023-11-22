@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
 export const SelectPriceRangeSummaryWrapper = styled.div`
   display: flex;
@@ -8,10 +9,9 @@ export const SelectPriceRangeSummaryWrapper = styled.div`
   height: auto;
   padding: 16px;
   gap: 16px;
-  margin-top: 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
-  background: ${({ theme }) => theme.color.backgroundOpacity};
+  background: ${({ theme }) => theme.color.background20};
 
   .row {
     display: flex;
@@ -29,7 +29,6 @@ export const SelectPriceRangeSummaryWrapper = styled.div`
       svg {
         width: 16px;
         height: 16px;
-        cursor: pointer;
         * {
           fill: ${({ theme }) => theme.color.icon03};
         }
@@ -46,4 +45,19 @@ export const SelectPriceRangeSummaryWrapper = styled.div`
       ${fonts.body12};
     }
   }
+  ${media.mobile} {
+    padding: 11px;
+    margin-top: 0;
+    .row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

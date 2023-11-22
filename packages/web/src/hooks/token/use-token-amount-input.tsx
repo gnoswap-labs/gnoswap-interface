@@ -25,27 +25,28 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       setBalance("0");
     }
   }, [balances, token]);
-
+  
   const usdValue = useMemo(() => {
     if (!usd) {
       return "-";
     }
-    return `$ ${usd}`;
+    return `$${usd}`;
   }, [usd]);
 
   const changeAmount = useCallback((value: string) => {
     if (!token) {
       return;
     }
+    // const amount = BigNumber(value);
 
-    const amount = BigNumber(value);
-    setAmount(amount.toString());
+    setAmount(value.toString());
+
 
     if (tokenPrices[token.priceId]) {
-      const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(amount).toNumber();
+      const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(value.toString()).toNumber();
       setUSD(usd);
     }
-  }, [token, tokenPrices]);
+  }, [token, tokenPrices, setUSD, amount]);
 
   return {
     token,

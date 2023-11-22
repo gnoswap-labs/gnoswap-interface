@@ -15,7 +15,7 @@ export const wrapper = (theme: Theme) => css`
     cursor: pointer;
     transition: color 0.3s ease;
     &:hover {
-      color: ${theme.color.text02};
+      color: ${theme.color.text16};
     }
     &:last-of-type {
       color: ${theme.color.text10};

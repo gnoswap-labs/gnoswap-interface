@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
@@ -15,10 +16,14 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     padding: 15px;
-    background-color: ${theme.color.backgroundOpacity};
+    background-color: ${theme.color.background20};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
     gap: 16px;
+    ${media.mobile} {
+      padding: 11px;
+      gap: 8px;
+    }
   }
 
   li {
@@ -36,19 +41,35 @@ export const wrapper = (theme: Theme) => css`
       margin-left: 8px;
     }
     .period-value {
+      ${mixins.flexbox("row", "center", "flex-end")};
+      gap: 5px;
       margin-left: auto;
+      .svg {
+        width: 12px;
+        height: 12px;
+        * {
+          fill: ${theme.color.icon02};
+        }
+      }
     }
   }
 
   .result-section li {
-    height: 39px;
     ${mixins.flexbox("column", "flex-end", "center")};
     .main-info {
       width: 100%;
-      height: 24px;
       ${mixins.flexbox("row", "center", "center")};
       p {
+        color: ${theme.color.text03};
         margin-left: 5px;
+        br {
+          display: none;
+        }
+        ${media.mobile} {
+          br {
+            display: initial;
+          }
+        }
       }
       strong {
         margin-left: auto;
@@ -58,6 +79,15 @@ export const wrapper = (theme: Theme) => css`
     .dallor {
       ${fonts.p4}
       color: ${theme.color.text04}
+    }
+  }
+  .total-amount-section li {
+    ${mixins.flexbox("row", "center", "space-between")};
+    .label {
+      color: ${theme.color.text04}
+    }
+    .value {
+      color: ${theme.color.text02}
     }
   }
 `;

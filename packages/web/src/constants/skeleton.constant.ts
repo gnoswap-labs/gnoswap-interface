@@ -37,7 +37,37 @@ export const skeletonStyle =
       }
     `;
 
-export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 200];
+
+export const skeletonTrendingStyle =
+(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
+(theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: 24px;
+    background: ${theme.color.background23};
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-100%);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        0,
+        ${theme.color.backgroundGradient} 0%,
+        ${theme.color.backgroundGradient} 100%
+      );
+      animation: ${skeletonAni} 2s ease infinite;
+    }
+  `;
+
+export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];
 export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];
@@ -75,12 +105,13 @@ export const POOL_INFO = {
   total: 15,
   tdWidth: POOL_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
+    { width: 240, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 190, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 170, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
 
@@ -100,17 +131,17 @@ export const TOKEN_INFO = {
   total: 15,
   tdWidth: TOKEN_TD_WIDTH,
   list: [
-    { width: 10, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 10, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
+    { width: 199, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "left-padding" },
+    { width: 105, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
+    { width: 85, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
+    { width: 85, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
+    { width: 85, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
+    { width: 138, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
+    { width: 201, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
+    { width: 124, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
   ],
 };
 

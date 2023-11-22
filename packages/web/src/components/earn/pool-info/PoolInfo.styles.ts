@@ -30,7 +30,7 @@ export const PoolInfoWrapper = styled.div`
   }
 
   .symbol-pair {
-    margin: 0px 4px;
+    margin: 0px 8px;
   }
   .feeRate {
     ${fonts.body12};
@@ -39,5 +39,6 @@ export const PoolInfoWrapper = styled.div`
 
   .chart-wrapper {
     width: 100px;
+    cursor: default;
   }
 `;

@@ -9,6 +9,8 @@ interface SelectLiquidityProps {
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  width: number;
+  isHiddenTitle?: boolean;
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
@@ -17,16 +19,19 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  isHiddenTitle = false,
+  width,
 }) => {
   return (
     <section css={wrapper}>
-      <h5 className="section-title">{CONTENT_TITLE.LIQUIDITY}</h5>
+      {!isHiddenTitle && <h5 className="section-title">{CONTENT_TITLE.LIQUIDITY}</h5>}
       <SelectLiquidityList
         list={liquidity}
         checkedList={checkedList}
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
+        width={width}
       />
     </section>
   );

@@ -6,9 +6,9 @@ import mixins from "@styles/mixins";
 export const SelectTabWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start", false)};
   background-color: ${({ theme }) => theme.color.background15};
-  border: 1px solid ${({ theme }) => theme.color.border10};
+  border: 1px solid ${({ theme }) => theme.color.border13};
   border-radius: 4px;
-  padding: 2px;
+  padding: 1px;
   flex-shrink: 0;
 `;
 
@@ -25,7 +25,12 @@ export const SelectButton = styled.button`
   }
   ${media.mobile} {
     ${fonts.body12};
+    padding: 4px 16px;
+    &:first-of-type {
+      padding: 4px 24px;
+    }
   }
+
   &.selected {
     background-color: ${({ theme }) => theme.color.select};
     color: ${({ theme }) => theme.color.text02};

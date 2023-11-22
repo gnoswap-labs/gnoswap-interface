@@ -12,6 +12,7 @@ import { useAtomValue } from "jotai";
 import { CommonState, ThemeState } from "@states/index";
 import { useAtom } from "jotai";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -84,7 +85,9 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, connectAdenaClient, disconnectWallet, switchNetwork, isSwitchNetwork } = useWallet();
+  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork } = useWallet();
+
+  const { openModal } = useConnectWalletModal();
 
   const {
     isFetched,
@@ -109,11 +112,15 @@ const HeaderContainer: React.FC = () => {
 
   usePreventScroll(searchMenuToggle);
 
+  const handleConnectWallet = useCallback(() => {
+    openModal();
+  }, [openModal])
+
   return (
     <Header
       account={account}
       connected={connected}
-      connectAdenaClient={connectAdenaClient}
+      connectAdenaClient={handleConnectWallet}
       disconnectWallet={disconnectWallet}
       pathname={pathname}
       sideMenuToggle={sideMenuToggle}

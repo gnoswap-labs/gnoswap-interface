@@ -133,24 +133,27 @@ async function fetchTokens(
   sortKey?: string, // eslint-disable-line
   direction?: string, // eslint-disable-line
 ): Promise<Token[]> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    Promise.resolve([
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-      ...createDummyTokenList(),
-    ]),
+  return new Promise(resolve => setTimeout(resolve, 2000)).then(() => {
+      const data = [
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+        ...createDummyTokenList(),
+      ];
+      const randomData = Math.floor(Math.random() * 2);
+      return Promise.resolve(randomData === 0 ? data : []);
+    },
   );
 }
 
@@ -231,7 +234,7 @@ const TokenListContainer: React.FC = () => {
     },
     [sortOption],
   );
-
+  
   return (
     <TokenList
       tokens={tokens ?? []}
@@ -243,7 +246,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={100}
+      totalPage={(tokens || []).length}
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}

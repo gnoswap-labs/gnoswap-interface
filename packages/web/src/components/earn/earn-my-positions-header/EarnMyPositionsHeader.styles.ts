@@ -9,6 +9,18 @@ export const PositionsWrapper = styled.div`
   color: ${({ theme }) => theme.color.text02};
   ${fonts.h5}
   ${media.mobile} {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
     ${fonts.h6}
+    gap: 12px;
+  }
+  .button-wrapper {
+    ${mixins.flexbox("row", "center", "flex-end")};
+    gap: 8px;
+    ${media.mobile} {
+      width: 100%;
+      button {
+        width: 50%;
+      }
+    }
   }
 `;

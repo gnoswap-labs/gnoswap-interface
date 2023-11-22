@@ -18,7 +18,7 @@ const EarnAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({
       <EarnAddConfirmFeeInfoSection>
         <div className="token-info">
           <img src={token.logoURI} alt="token logo" />
-          <span>{token.symbol}</span>
+          <div>{token.symbol}</div>
         </div>
         <div className="fee-info">
           <span>{fee}</span>

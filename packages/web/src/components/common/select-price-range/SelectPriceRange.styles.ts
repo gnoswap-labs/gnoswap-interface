@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const SelectPriceRangeWrapper = styled.div`
@@ -31,7 +32,7 @@ export const SelectPriceRangeItemWrapper = styled.div`
 
   &.selected,
   &:hover {
-    background-color: ${({ theme }) => theme.color.background06};
+    background-color: ${({ theme }) => theme.color.background11};
     border: 1px solid ${({ theme }) => theme.color.border03};
   }
 
@@ -61,4 +62,13 @@ export const SelectPriceRangeItemWrapper = styled.div`
     ${fonts.body11};
     margin-left: auto;
   }
+  ${media.mobile} {
+    padding: 11px;
+  }
+`;
+
+export const TooltipContentWrapper = styled.div`
+  width: 296px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

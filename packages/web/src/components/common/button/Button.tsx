@@ -2,7 +2,7 @@ import { ButtonStyleProps, ButtonWrapper, StyledText } from "./Button.styles";
 
 interface ButtonProps {
   leftIcon?: React.ReactNode;
-  text?: string;
+  text?: string | React.ReactNode;
   rightIcon?: React.ReactNode;
   className?: string;
   style: ButtonStyleProps;

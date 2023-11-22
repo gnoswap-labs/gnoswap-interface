@@ -28,5 +28,12 @@ Default.args = {
     isFetched={true}
     routeItem={action("routeItem")}
     mobile={false}
+    loadMore={false}
+    page={1}
+    themeKey="dark"
+    divRef={null as any}
+    onScroll={action("onScroll")}
+    width={1440}
+    showPagination={false}
   />
 };
