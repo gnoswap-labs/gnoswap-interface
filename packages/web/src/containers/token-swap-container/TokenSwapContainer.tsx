@@ -18,6 +18,7 @@ import { AmountModel } from "@models/common/amount-model";
 import { amountEmptyNumberInit } from "@common/values";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 
 const swapSummaryInfoTemp: SwapSummaryInfo = {
   tokenA: {
@@ -112,6 +113,8 @@ const TokenSwapContainer: React.FC = () => {
   const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
   const [slippage, setSlippage] = useState(1);
 
+  const { openModal } = useConnectWalletModal(); 
+  
   const {
     tokenPrices,
     balances,
@@ -122,8 +125,8 @@ const TokenSwapContainer: React.FC = () => {
     connected: connectedWallet,
     isSwitchNetwork,
     switchNetwork,
-    connectAdenaClient,
   } = useWallet();
+
   const { getExpectedSwap } = useSwap({
     tokenA,
     tokenB,
@@ -138,11 +141,11 @@ const TokenSwapContainer: React.FC = () => {
 
   const connectWallet = useCallback(() => {
     if (!connectedWallet) {
-      connectAdenaClient();
+      openModal();
     } else if (isSwitchNetwork) {
       switchNetwork();
     }
-  }, [switchNetwork, connectAdenaClient, isSwitchNetwork, connectedWallet]);
+  }, [switchNetwork, openModal, isSwitchNetwork, connectedWallet]);
 
   const switchSwapDirection = useCallback(() => {
     const preTokenA = tokenA ? { ...tokenA } : null;

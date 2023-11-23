@@ -15,12 +15,14 @@ interface PoolPairInformationProps {
   info: poolPairProps;
   menu: pathProps;
   onClickPath: (path: string) => void;
+  fee: number | null;
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   info,
   menu,
   onClickPath,
+  fee,
 }) => {
   return (
     <PoolPairInformationWrapper>
@@ -31,7 +33,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           <IconStrokeArrowRight className="step-icon" />
           <span className="token">
             {info.poolInfo.tokenPair.tokenA.symbol}/
-            {info.poolInfo.tokenPair.tokenB.symbol} ({info.poolInfo.feeRate})
+            {info.poolInfo.tokenPair.tokenB.symbol} ({(fee ?? 0) / 10000}%)
           </span>
         </div>
       </BreadcrumbsWrapper>

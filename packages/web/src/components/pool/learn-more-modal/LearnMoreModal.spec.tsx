@@ -1,18 +1,16 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import PoolGraph, { PoolGraphProps } from "./PoolGraph";
+import LearnMoreModal from "./LearnMoreModal";
 
-describe("PoolGraph Component", () => {
-  it("PoolGraph render", () => {
-    const args: PoolGraphProps = {
-      ticks: []
-    };
+describe("LearnMoreModal Component", () => {
+  it("LearnMoreModal render", () => {
+    const mockProps = {};
 
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <PoolGraph {...args} />
+          <LearnMoreModal {...mockProps} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

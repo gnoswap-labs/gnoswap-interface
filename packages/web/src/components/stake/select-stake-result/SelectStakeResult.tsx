@@ -3,10 +3,11 @@ import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import React from "react";
 import { CONTENT_TITLE } from "@components/stake/stake-liquidity/StakeLiquidity";
-import { wrapper } from "./SelectStakeResult.styles";
+import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 
 interface SelectStakeResultProps {
   checkedList: string[];
+  isHiddenBadge?: boolean;
 }
 
 const dummyImg = [
@@ -15,10 +16,11 @@ const dummyImg = [
 ];
 
 const HOVER_TEXT =
-  "Your estimated APR is calculated based on daily emissions and the value of total LP tokens staked in this pool.";
+  "The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration.";
 
 const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
   checkedList,
+  isHiddenBadge = false,
 }) => {
   if (checkedList.length === 0) return <></>;
   return (
@@ -44,13 +46,13 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       <div className="result-section">
         <div className="total-amount-box">
           <h5 className="total-amount-title">{CONTENT_TITLE.TOTAL_STAKING}</h5>
-          <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />
+          {!isHiddenBadge && <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />}
           <span className="result-value">$1,572,146.14</span>
         </div>
         <div className="apr-box">
           <h5 className="apr-title">{CONTENT_TITLE.APR}</h5>
           <div className="hover-info">
-            <Tooltip placement="top" FloatingContent={<div>{HOVER_TEXT}</div>}>
+            <Tooltip placement="top" FloatingContent={<HoverTextWrapper>{HOVER_TEXT}</HoverTextWrapper>}>
               <IconInfo className="icon-info" />
             </Tooltip>
           </div>

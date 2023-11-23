@@ -13,7 +13,7 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
   gap: 8px;
 
   .title {
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text04};
     ${fonts.body12};
   }
 
@@ -44,7 +44,7 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
   }
 
   .token-info-wrapper {
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text04};
     ${fonts.p4}
   }
 `;

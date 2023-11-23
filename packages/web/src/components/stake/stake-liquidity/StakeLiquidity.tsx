@@ -13,14 +13,17 @@ interface StakeLiquidityProps {
   onClickPeriod: (idx: number) => void;
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
+  width: number;
   checkedAll: boolean;
 }
 
 export const CONTENT_TITLE = {
   PERIOD: "1. Select Unstaking Period",
   LIQUIDITY: "2. Select Liquidity",
-  TOTAL_STAKING: "Total Staking Amount",
-  APR: "Estimated APR",
+  TOTAL_STAKING: "Total Amount",
+  APR: "Staking APR",
+  UNCLAIM_GNS: "Unclaimed GNS Rewards",
+  UNCLAIM_GNOT: "Unclaimed GNOT Rewards",
 };
 export type CONTENT_TITLE = ValuesType<typeof CONTENT_TITLE>;
 
@@ -32,6 +35,7 @@ const StakeLiquidity: React.FC<StakeLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  width,
 }) => {
   return (
     <div css={wrapper}>
@@ -47,6 +51,7 @@ const StakeLiquidity: React.FC<StakeLiquidityProps> = ({
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
+        width={width}
       />
       <SelectStakeResult checkedList={checkedList} />
       <Button

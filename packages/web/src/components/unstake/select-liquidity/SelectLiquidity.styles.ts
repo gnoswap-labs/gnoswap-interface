@@ -2,6 +2,7 @@ import { css, type Theme } from "@emotion/react";
 import { inputStyle } from "@components/unstake/unstake-liquidity/UnstakeLiquidity.styles";
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "center", "center")};
@@ -13,17 +14,18 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 32px;
     padding: 0px 15px;
-    color: ${theme.color.text05};
+    color: ${theme.color.text10};
     ${fonts.body12};
-    .period-label {
-      width: 60px;
-      text-align: right;
-      margin-right: 70px;
-      margin-left: auto;
-    }
     .liquidity-label {
       width: 80px;
       text-align: right;
+      margin-left: auto;
+    }
+    .custom-label {
+      margin-left: 8px;
+    }
+    ${media.mobile} {
+      padding: 0 11px;
     }
   }
   ul {

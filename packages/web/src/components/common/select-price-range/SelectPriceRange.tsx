@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { SelectPriceRangeItemWrapper, SelectPriceRangeWrapper } from "./SelectPriceRange.styles";
+import { SelectPriceRangeItemWrapper, SelectPriceRangeWrapper, TooltipContentWrapper } from "./SelectPriceRange.styles";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 
 interface SelectPriceRangeProps {
@@ -71,7 +71,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
         <div className="tooltip-wrap">
           <Tooltip
             placement="top"
-            FloatingContent={<p className="tooltip-content">{tooltip}</p>}
+            FloatingContent={<TooltipContentWrapper dangerouslySetInnerHTML={{ __html: tooltip }}></TooltipContentWrapper>}
           >
             <IconInfo className="tooltip-icon" />
           </Tooltip>

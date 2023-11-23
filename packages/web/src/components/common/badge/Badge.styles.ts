@@ -13,6 +13,10 @@ export const BadgeWrapper = styled.div<BadgeStyle>`
   height: 24px;
   border-radius: 4px;
   padding: 0px 6px;
+  .content {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 5px;
+  }
   ${({ type, theme }) => {
     if (type === BADGE_TYPE.LINE)
       return css`
@@ -22,8 +26,7 @@ export const BadgeWrapper = styled.div<BadgeStyle>`
       `;
     if (type === BADGE_TYPE.PRIMARY)
       return css`
-        background-color: ${theme.color.point};
-        border: 1px solid ${theme.color.border06};
+        background-color: ${theme.color.background04};
         color: ${theme.color.text06};
       `;
     if (type === BADGE_TYPE.LIGHT_DEFAULT)
@@ -34,9 +37,9 @@ export const BadgeWrapper = styled.div<BadgeStyle>`
       `;
     if (type === BADGE_TYPE.DARK_DEFAULT)
       return css`
-        background-color: ${theme.color.background08};
-        border: 1px solid ${theme.color.border03};
-        color: ${theme.color.text03};
+        background-color: ${theme.color.backgroundOpacity3};
+        border: 1px solid ${theme.color.border08};
+        color: ${theme.color.text12};
       `;
     return css`
       background-color: ${theme.color.background03};

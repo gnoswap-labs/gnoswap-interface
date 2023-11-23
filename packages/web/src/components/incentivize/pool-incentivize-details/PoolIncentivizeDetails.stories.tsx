@@ -17,5 +17,5 @@ const poolDetail = PoolDetailData.pool;
 
 export const Default = Template.bind({});
 Default.args = {
-  details: poolDetail,
+  details: poolDetail as any,
 };

@@ -10,6 +10,9 @@ interface StakingProps {
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   isDisabledButton: boolean;
+  type: number;
+  handleClickStakeRedirect: () => void;
+  handleClickUnStakeRedirect: () => void;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -18,15 +21,19 @@ const Staking: React.FC<StakingProps> = ({
   rewardInfo,
   mobile,
   isDisabledButton,
+  type,
+  handleClickStakeRedirect,
+  handleClickUnStakeRedirect,
 }) => {
   return (
     <StakingWrapper>
-      <StakingHeader breakpoint={breakpoint} isDisabledButton={isDisabledButton} />
+      <StakingHeader breakpoint={breakpoint} isDisabledButton={isDisabledButton} handleClickStakeRedirect={handleClickStakeRedirect} handleClickUnStakeRedirect={handleClickUnStakeRedirect} />
       <StakingContent
         content={info}
         rewardInfo={rewardInfo}
         breakpoint={breakpoint}
         mobile={mobile}
+        type={type}
       />
     </StakingWrapper>
   );

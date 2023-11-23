@@ -8,6 +8,7 @@ interface SelectLiquidityProps {
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  width: number;
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
@@ -16,6 +17,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  width,
 }) => {
   return (
     <div css={wrapper}>
@@ -26,10 +28,8 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
           checked={checkedAll}
           onChange={e => onCheckedAll(e.target.checked)}
         />
-        <label htmlFor="checkbox-all" className="select-all-label">
-          Select All
-        </label>
-        <span className="period-label">Period</span>
+        <label htmlFor="checkbox-all" className="select-all-label" />
+        <span className="custom-label">Select All</span>
         <span className="liquidity-label">Liquidity</span>
       </div>
       <ul>
@@ -39,6 +39,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
             checkedList={checkedList}
             onCheckedItem={onCheckedItem}
             key={idx}
+            width={width}
           />
         ))}
       </ul>

@@ -68,7 +68,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
   };
 
   return breakpoint !== DEVICE_TYPE.MOBILE ? (
-    <TableWrapper>
+    <TableWrapper className={tokens.length === 0 ? "hidden-scroll" : ""}>
       <div className="scroll-wrapper">
         <div className="token-list-head">
           {Object.values(TABLE_HEAD).map((head, idx) => (

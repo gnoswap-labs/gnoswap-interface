@@ -39,7 +39,7 @@ export const MyLiquidityWrapper = styled.div`
       ${fonts.body12};
     }
     .current-page {
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text03};
     }
   }
 `;

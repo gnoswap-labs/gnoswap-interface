@@ -14,6 +14,7 @@ interface PoolListHeaderProps {
   breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
   onTogleSearch: () => void;
+  searchRef: React.RefObject<HTMLDivElement>;
 }
 
 const PoolListHeader: React.FC<PoolListHeaderProps> = ({
@@ -24,6 +25,7 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
   breakpoint,
   searchIcon,
   onTogleSearch,
+  searchRef,
 }) => (
   <PoolHeaderWrapper>
     <div className="title-container">
@@ -35,13 +37,15 @@ const PoolListHeader: React.FC<PoolListHeaderProps> = ({
           onClick={changePoolType}
         />
       ) : searchIcon ? (
-        <SearchInput
-          width={200}
-          height={40}
-          value={keyword}
-          onChange={search}
-          className="tokens-search"
-        />
+        <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+          <SearchInput
+            width={200}
+            height={40}
+            value={keyword}
+            onChange={search}
+            className="tokens-search"
+          />
+        </div>
       ) : (
         <div className="icon-wrap" onClick={onTogleSearch}>
           <IconSearch className="search-icon" />

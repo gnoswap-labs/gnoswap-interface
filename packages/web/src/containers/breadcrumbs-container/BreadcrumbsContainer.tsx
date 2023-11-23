@@ -17,21 +17,38 @@ export interface Steps {
 //   },
 // ];
 
-const BreadcrumbsContainer: React.FC = () => {
+const getMapping: any = (router: any) => {
+  return {
+    "/earn/add": "Add Liquidity",
+    "/earn/stake": "Stake Position",
+    "/tokens/[token-path]": `${router.query["token-path"] || "BTC"}`,
+  };
+};
+
+interface Props {
+  listBreadcrumb?: { title: string, path: string } [];
+}
+
+const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb }) => {
   const router = useRouter();
 
   const removePoolSteps = useMemo(() => {
+    if (listBreadcrumb) {
+      return listBreadcrumb;
+    }
     return [
       {
         title: "Main",
         path: "/",
       },
       {
-        title: `${router.query["token-path"] || "BTC"}`,
+        title:
+          getMapping(router)[router.pathname as any] ||
+          `${router.query["token-path"] || "BTC"}`,
         path: "",
       },
     ];
-  }, [router.query]);
+  }, [router, getMapping, listBreadcrumb]);
 
   const onClickPath = (path: string) => {
     router.push(path);

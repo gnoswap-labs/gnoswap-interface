@@ -39,7 +39,6 @@ const dummyDisclaimer = "This feature enables you to provide incentives as staki
 const periods = [90, 120, 210];
 
 const Template: ComponentStory<typeof PoolIncentivize> = args => {
-  const [amount, setAmount] = useState("");
   const [startDate, setStartDate] = useState<DistributionPeriodDate>();
   const [period, setPeriod] = useState<number>(90);
   const [token, setToken] = useState<TokenBalanceInfo | null>(tokenA);
@@ -59,18 +58,9 @@ const Template: ComponentStory<typeof PoolIncentivize> = args => {
     }
   }, []);
 
-  const onChangeAmount = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setAmount(value);
-    },
-    [],
-  );
   return (
     <PoolIncentivize
       {...args}
-      amount={amount}
-      onChangeAmount={onChangeAmount}
       startDate={startDate}
       period={period}
       periods={periods}

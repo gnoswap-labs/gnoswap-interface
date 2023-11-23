@@ -1,11 +1,12 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const EarnAddConfirmWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 460px;
-  padding: 24px;
+  padding: 23px;
   height: auto;
   gap: 16px;
 
@@ -19,6 +20,9 @@ export const EarnAddConfirmWrapper = styled.div`
     .title {
       ${fonts.h6}
       color: ${({ theme }) => theme.color.text01};
+      ${media.mobile} {
+      ${fonts.body9}
+      }
     }
 
     .close-button {
@@ -30,6 +34,33 @@ export const EarnAddConfirmWrapper = styled.div`
       svg * {
         fill: ${({ theme }) => theme.color.icon01};
       }
+      &:hover {
+        * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
+    }
+  }
+  .button-confirm {
+    gap: 8px;
+    height: 57px;
+    span {
+      ${fonts.body7}
+    }
+    
+  }
+  ${media.mobile} {
+    width: 328px;
+    padding: 15px;
+    gap: 12px;
+    span {
+      ${fonts.body7}
+    }
+    .button-confirm {
+      height: 41px;
+      span {
+        ${fonts.body9}
+      }
     }
   }
 `;
@@ -39,8 +70,8 @@ export const EarnAddConfirmContentSection = styled.div`
   flex-direction: column;
   width: 100%;
   height: auto;
-  padding: 16px;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  padding: 15px;
+  background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   ${fonts.body12}
@@ -51,5 +82,8 @@ export const EarnAddConfirmContentSection = styled.div`
 
   .value {
     color: ${({ theme }) => theme.color.text16};
+  }
+  ${media.mobile} {
+    padding: 11px;
   }
 `;

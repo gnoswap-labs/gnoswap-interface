@@ -3,6 +3,11 @@ import styled from "@emotion/styled";
 import { UpDownType } from "@models/common/card-list-item-info";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { CSSProperties } from "react";
+
+interface SkeletonStyleProps {
+  tdWidth?: CSSProperties["width"];
+}
 
 export const CardListWrapper = styled.ul`
   ${mixins.flexbox("column", "center", "flex-start")};
@@ -63,4 +68,11 @@ export const ListItem = styled.li<{ upDown: UpDownType }>`
       return theme.color.text01;
     }};
   }
+`;
+
+export const SkeletonItem = styled.div<SkeletonStyleProps>`
+  width: ${({ tdWidth }) => `${tdWidth}`};
+  height: 100%;
+  padding: 8px 24px;
+  ${mixins.flexbox("row", "center", "flex-start")};
 `;

@@ -21,6 +21,7 @@ import { useRouter } from "next/router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
 import { useNotice } from "@hooks/common/use-notice";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 
 const SwapContainer: React.FC = () => {
   const [swapValue , setSwapValue] = useAtom(SwapState.swap);
@@ -31,7 +32,7 @@ const SwapContainer: React.FC = () => {
 
   const [query, setQuery] = useState<{ [key in string]: string | null }>({});
   const [initialized, setInitialized] = useState(false);
-  const { connected: connectedWallet, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
+  const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances } = useTokenData();
   const [swapError, setSwapError] = useState<SwapError | null>(null);
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
@@ -45,6 +46,8 @@ const SwapContainer: React.FC = () => {
   const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { openModal } = useConnectWalletModal();
 
   const { swap, getExpectedSwap } = useSwap({
     tokenA,
@@ -141,8 +144,8 @@ const SwapContainer: React.FC = () => {
   }, []);
 
   const openConnectWallet = useCallback(() => {
-    connectAdenaClient();
-  }, [connectAdenaClient]);
+    openModal();
+  }, [openModal]);
 
   const closeModal = useCallback(() => {
     setSubmitted(false);

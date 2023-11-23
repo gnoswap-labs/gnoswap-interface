@@ -1,7 +1,7 @@
 import React from "react";
 import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
-import { SelectPriceRangeSummaryWrapper } from "./SelectPriceRangeSummary.styles";
+import { SelectPriceRangeSummaryWrapper, ToolTipContentWrapper } from "./SelectPriceRangeSummary.styles";
 
 export interface SelectPriceRangeSummaryProps {
   depositRatio: string;
@@ -9,9 +9,9 @@ export interface SelectPriceRangeSummaryProps {
   estimatedApr: string;
 }
 
-const ModalContent = <>
-  An indication of how much more swap<br />fees you can get for your selected price<br />range compared to a full-range position.
-</>;
+const ModalContent = <ToolTipContentWrapper>
+  An indication of the additional swap fees you can receive for your selected price range compared to a full-range position.
+</ToolTipContentWrapper>;
 
 const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
   depositRatio,
@@ -21,14 +21,19 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
   return (
     <SelectPriceRangeSummaryWrapper>
       <div className="row">
-        <span className="title">Deposit Ratio</span>
+        <div className="title-wrapper">
+          <span className="title">Deposit Ratio</span>
+          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The deposit ratio of the two tokens is determined based on the current price and the set price range.</ToolTipContentWrapper>}>
+            <IconInfo />
+          </Tooltip>
+        </div>
         <span className="value">{depositRatio}</span>
       </div>
 
       <div className="row">
         <div className="title-wrapper">
           <span className="title">Fee Boost</span>
-          <Tooltip placement="top" FloatingContent={<div>{ModalContent}</div>}>
+          <Tooltip placement="top" FloatingContent={ModalContent}>
             <IconInfo />
           </Tooltip>
         </div>
@@ -36,7 +41,12 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
       </div>
 
       <div className="row">
-        <span className="title">Estimated APR</span>
+        <div className="title-wrapper">
+          <span className="title">Fee APR</span>
+          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The estimated APR from swap fees is calculated based on the selected price range of the position.</ToolTipContentWrapper>}>
+            <IconInfo />
+          </Tooltip>
+        </div>
         <span className="value">{estimatedApr}</span>
       </div>
     </SelectPriceRangeSummaryWrapper>

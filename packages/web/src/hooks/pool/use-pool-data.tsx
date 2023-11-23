@@ -1,3 +1,4 @@
+import { position } from "@components/earn/earn-my-positions/EarnMyPositions.stories";
 import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
@@ -5,23 +6,31 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 export const usePoolData = () => {
   const { poolRepository } = useGnoswapContext();
   const [pools, setPools] = useAtom(PoolState.pools);
   const [isFetchedPools, setIsFetchedPools] = useAtom(PoolState.isFetchedPools);
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(PoolState.isFetchedPositions);
+  const [loading, setLoading] = useAtom(PoolState.isLoading);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  },[]); 
 
   const poolListInfos = useMemo(() => {
-    return pools.map(PoolMapper.toListInfo);
+    return pools?.map(PoolMapper.toListInfo);
   }, [pools]);
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
-    const sortedTokens = pools.sort((p1, p2) => {
+    const sortedTokens = pools?.sort((p1, p2) => {
       return p2.topBin.annualizedFeeGrowth - p1.topBin.annualizedFeeGrowth;
     }).filter((_, index) => index < 3);
-    return sortedTokens.map(pool => ({
+    return sortedTokens?.map(pool => ({
       pool,
       upDown: "none",
       content: `${pool.topBin.annualizedFeeGrowth || 0}%`
@@ -29,7 +38,7 @@ export const usePoolData = () => {
   }, [pools]);
 
   const myPositions: PoolPosition[] = useMemo(() => {
-    return [];
+    return [position, position, position];
   }, []);
   async function updatePositions() {
     setIsFetchedPositions(true);
@@ -37,7 +46,7 @@ export const usePoolData = () => {
 
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     return pools
-      .map(PoolMapper.toCardInfo)
+      ?.map(PoolMapper.toCardInfo)
       .filter(info => info.incentiveType === "Incentivized");
   }, [pools]);
 
@@ -57,5 +66,6 @@ export const usePoolData = () => {
     incentivizedPools,
     updatePools,
     updatePositions,
+    loading,
   };
 };

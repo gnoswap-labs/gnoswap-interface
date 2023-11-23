@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { FEE_RATE_OPTION } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useRouter } from "next/router";
 
 export const liquidityInit = {
   poolInfo: {
@@ -90,7 +91,7 @@ export const liquidityInit = {
         range: true,
         balance: "18,092.45",
         totalRewards: "1,015.24",
-        estimatedAPR: "90.5",
+        estimatedAPR: "100.5",
         minAmount: "1,105.1",
         maxAmount: "1,268.2",
       },
@@ -127,6 +128,24 @@ export const liquidityInit = {
 const MyLiquidityContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
+  const router = useRouter();
+  const divRef = useRef<HTMLDivElement | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(1);
+  
+  const handleClickAddPosition = useCallback(() => {
+    router.push(`${router.asPath}/add?tokenA=gno.land/r/foo&tokenB=gno.land/r/bar&direction=EXACT_IN`);
+  }, [router]);
+
+  const handleClickRemovePosition = useCallback(() => {
+    router.push("/earn/pool/bar_foo_100/remove");
+  }, [router]);
+
+  const handleScroll = () => {
+    if (divRef.current) {
+      const currentScrollX = divRef.current.scrollLeft;
+      setCurrentIndex(Math.floor(currentScrollX / 240) + 1);
+    }
+  };
 
   return (
     <MyLiquidity
@@ -134,6 +153,11 @@ const MyLiquidityContainer: React.FC = () => {
       breakpoint={breakpoint}
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}
+      handleClickAddPosition={handleClickAddPosition}
+      handleClickRemovePosition={handleClickRemovePosition}
+      divRef={divRef}
+      onScroll={handleScroll}
+      currentIndex={currentIndex}
     />
   );
 };

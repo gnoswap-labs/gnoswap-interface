@@ -27,6 +27,7 @@ interface List {
   width: number;
   type: SHAPE_TYPES;
   left: boolean;
+  className?: string;
 }
 interface TableSkeletonProps {
   info: TableInfoType;
@@ -40,7 +41,7 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info }) => {
           {info.list.map((item, idx) => (
             <SkeletonItem
               key={idx}
-              className={cx({ left: item.left })}
+              className={cx({ left: item.left, [item.className as string]: true })}
               tdWidth={info.tdWidth[idx]}
             >
               <span css={skeletonStyle(item.width, item.type)} />

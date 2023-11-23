@@ -2,29 +2,43 @@ import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { inputStyle } from "@components/stake/stake-liquidity/StakeLiquidity.styles";
+import { media } from "@styles/media";
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`
+    position: relative;
     ${inputStyle(theme)};
     ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
     width: 100%;
     height: 56px;
-    gap: 8px;
-    background-color: ${checked
-      ? theme.color.background09
-      : theme.color.backgroundOpacity};
-    border: 1px solid ${checked ? theme.color.border03 : theme.color.border02};
+    background-color: ${theme.color.background20};
+    border: 1px solid ${checked ? theme.color.border15 : theme.color.border02};
     border-radius: 8px;
     padding: 15px;
     ${fonts.body12};
     color: ${theme.color.text03};
     transition: all 0.3s ease;
     input[type="checkbox"] + label:before {
-      background-color: ${theme.color.background02};
+      background-color: ${theme.color.background12};
+    }
+    .left-content {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
+      > div:first-of-type {
+        margin-left: 3px;
+      }
     }
     .liquidity-value {
       margin-left: auto;
       color: ${theme.color.text02};
+    }
+    .liquidity-value-fake {
+      position: absolute;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      right: 0;
     }
     .hover-info {
       &,
@@ -39,4 +53,39 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
         }
       }
     }
+    .token-id {
+      cursor: default;
+    }
+
+    ${media.mobile} {
+      padding: 11px;
+      height: 48px;
+    }
   `;
+
+export const tooltipWrapper = () => (theme: Theme) =>
+  css`
+  width: 268px;
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  ${fonts.body12}
+  > div {
+    &:not(:first-of-type) {
+      padding: 4px 0;
+    }
+    width: 100%;
+    ${mixins.flexbox("row", "center", "space-between")};
+    .title {
+      color: ${theme.color.text04};
+    }
+    .value {
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 8px;
+      color: ${theme.color.text02};
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+`;

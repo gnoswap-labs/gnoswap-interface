@@ -40,22 +40,20 @@ const SelectBox: <ItemType>(p: SelectBoxProps<ItemType>) => JSX.Element = ({
         }
       </div>
 
-      {opened && (
-        <SelectBoxModalWrapper>
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className="item-wrapper"
-              onClick={() => {
-                select(item);
-                closeModal();
-              }}
-            >
-              {render(item)}
-            </div>
-          ))}
-        </SelectBoxModalWrapper>
-      )}
+      <SelectBoxModalWrapper className={opened ? "open" : ""}>
+        {items.map((item, index) => (
+          <div
+            key={index}
+            className="item-wrapper"
+            onClick={() => {
+              select(item);
+              closeModal();
+            }}
+          >
+            {render(item)}
+          </div>
+        ))}
+      </SelectBoxModalWrapper>
     </SelectBoxWrapper>
   );
 };

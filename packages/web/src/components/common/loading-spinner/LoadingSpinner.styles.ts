@@ -20,7 +20,7 @@ export const wrapper = (theme: Theme) => css`
   background: conic-gradient(
     from 0deg at 50% 50.63%,
     #000000 0deg,
-    #0059ff 360deg
+    #233DBD 360deg
   );
 
   &::before {

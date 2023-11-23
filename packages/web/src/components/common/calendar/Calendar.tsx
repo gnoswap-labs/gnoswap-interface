@@ -32,6 +32,12 @@ const Calendar: React.FC<CalendarProps> = ({
     return date !== -1;
   }
 
+  function verifyDate(date: number) {
+    const crDate = new Date();
+    const checkDate = new Date(`${currentDate.year}-${currentDate.month}-${date}`);
+    return crDate <= checkDate;
+  }
+
   const getCurrent = useCallback(() => {
     return new Date(currentDate.year, currentDate.month - 1, currentDate.date);
   }, [currentDate]);
@@ -120,7 +126,7 @@ const Calendar: React.FC<CalendarProps> = ({
           isDate(date) ? (
             <span
               key={index}
-              className={isSelected(date) ? "date selected" : "date"}
+              className={`${isSelected(date) ? "date selected" : "date"} ${!verifyDate(date) ? "disable-date" : ""}`}
               onClick={() => onClickCalendarDate(date)}
             >
               {date}

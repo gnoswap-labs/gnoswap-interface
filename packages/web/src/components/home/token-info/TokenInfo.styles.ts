@@ -44,6 +44,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.right-padding-12 {
     padding: 16px 12px 16px 16px;
   }
+  &.padding-12 {
+    padding: 16px 12px 16px 12px;
+  }
   &.negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.green01};
@@ -67,7 +70,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
   &.last7days-graph {
     display: flex;
-    padding: 16px;
   }
 
   .token-logo {

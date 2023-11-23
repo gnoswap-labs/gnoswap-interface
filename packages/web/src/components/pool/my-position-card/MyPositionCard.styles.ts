@@ -3,25 +3,27 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const MyPositionCardWrapper = styled.div`
+interface Props {
+  type: boolean;
+}
+
+export const MyPositionCardWrapper = styled.div<Props>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   padding: 24px 36px;
   gap: 16px;
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ theme }) => theme.color.background06};
+  border: 1px solid ${({ theme }) => theme.color.border01};
+  background-color: ${({ theme }) => theme.color.background03};
   ${media.tablet} {
     padding: 24px;
     border-radius: 10px;
-    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 290px;
-    height: 434px;
     padding: 12px;
-    gap: 16px;
+    gap: 12px;
   }
   .box-title {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -43,6 +45,9 @@ export const MyPositionCardWrapper = styled.div`
           flex-direction: column;
           justify-content: center;
           align-items: flex-start;
+        }
+        .visible-badge {
+          visibility: hidden; 
         }
       }
       .mobile-container {
@@ -109,6 +114,7 @@ export const MyPositionCardWrapper = styled.div`
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
+      gap: 12px;
     }
     .info-box {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -122,25 +128,34 @@ export const MyPositionCardWrapper = styled.div`
         gap: 16px;
       }
       ${media.mobile} {
-        padding: 12px;
+        padding: 12px 12px 0 12px;
         gap: 8px;
         &:not(:first-of-type) {
           border-top: 1px solid ${({ theme }) => theme.color.border02};
         }
+        border-left: none !important;
+        &:last-of-type {
+          padding: 12px;
+        }
       }
       .symbol-text {
         ${fonts.body12};
-        color: ${({ theme }) => theme.color.text10};
+        color: ${({ theme }) => theme.color.text04};
       }
       .content-text {
+        ${mixins.flexbox("row", "center", "flex-start")};
         ${fonts.body2};
         ${media.tablet} {
           ${fonts.body4};
+          svg {
+            height: 25px;
+            width: 25px;
+          }
         }
         ${media.mobile} {
           ${fonts.body8};
         }
-        cursor: pointer;
+        cursor: default;
         transition: color 0.3s ease;
         &:hover {
           color: ${({ theme }) => theme.color.text07};
@@ -149,4 +164,80 @@ export const MyPositionCardWrapper = styled.div`
       }
     }
   }
+`;
+
+export const TooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  width: 268px;
+  ${fonts.body12};
+  ${media.mobile} {
+    gap: 4px;
+    ${fonts.p2};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 4px 0px;
+    .coin-info {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      width: 170px;
+      gap: 8px;
+      flex-shrink: 0;
+      .token-logo {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .title {
+    color: ${({ theme }) => theme.color.text04};
+  }
+  .content {
+    color: ${({ theme }) => theme.color.text02};
+  }
+`;
+
+
+export const RewardsContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  width: 300px;
+  ${fonts.body12};
+  ${media.mobile} {
+    gap: 4px;
+    ${fonts.p2};
+  }
+  .list {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    padding: 4px 0px;
+    .coin-info {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      width: 170px;
+      gap: 8px;
+      flex-shrink: 0;
+      .token-logo {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .title {
+    color: ${({ theme }) => theme.color.text04};
+  }
+  .content {
+    color: ${({ theme }) => theme.color.text02};
+  }
+  p {
+    ${fonts.p4};
+    color: ${({ theme }) => theme.color.text04};
+  }
+`;
+
+export const TooltipDivider = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  height: 1px;
+  width: 100%;
+  background: ${({ theme }) => theme.color.border01};
 `;

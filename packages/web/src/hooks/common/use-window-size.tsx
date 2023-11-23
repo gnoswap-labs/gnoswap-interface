@@ -4,11 +4,13 @@ import { DeviceSize, DEVICE_TYPE } from "@styles/media";
 
 export const useWindowSize = () => {
   const [breakpoint, setBreakpoint] = useAtom(CommonState.breakpoint);
+  const [currentWidth, setCurrentWidth] = useAtom(CommonState.currentWidth);
 
   const findDeviceType = (width: number) => {
+    setCurrentWidth(width);
     return width > DeviceSize.tablet
       ? DEVICE_TYPE.WEB
-      : width > DeviceSize.mobile
+      : width > DeviceSize.tabletMiddle
         ? DEVICE_TYPE.TABLET
         : width > DeviceSize.mobile
           ? DEVICE_TYPE.TABLET_M
@@ -22,5 +24,5 @@ export const useWindowSize = () => {
     }
   };
 
-  return { breakpoint, handleBreakpoint };
+  return { breakpoint, handleBreakpoint, width: currentWidth };
 };

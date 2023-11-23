@@ -7,12 +7,20 @@ import React, { useMemo } from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import POOLS from "@repositories/pool/mock/pools.json";
+const POOL_DATA = POOLS.pools[0].bins.slice(0, 10);
+const POOL_DATA_RIGHT  = POOL_DATA.map((item, index) => ({
+  ...item,
+  currentTick: index + 11,
+}));
 interface PoolInfoProps {
   pool: PoolListInfo;
   routeItem: (id: string) => void;
+  themeKey: "dark" | "light";
 }
 
-const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
+const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
   const {
     poolId,
     tokenA,
@@ -23,7 +31,8 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
     volume24h,
     fees24h,
     rewards,
-    tickInfo
+    currentTick,
+    bins,
   } = pool;
 
   const rewardImage = useMemo(() => {
@@ -35,7 +44,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
     }
     return <DoubleLogo left={rewards[0].token.logoURI} right={rewards[1].token.logoURI} size={20} />;
   }, [rewards]);
-
+  
   return (
     <PoolInfoWrapper
       onClick={() => routeItem(poolId)}
@@ -66,11 +75,16 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem }) => {
       </TableColumn>
       <TableColumn tdWidth={POOL_TD_WIDTH[6]}>
         <div className="chart-wrapper">
-          <BarGraph
+          <PoolGraph
             width={100}
             height={45}
-            currentTick={tickInfo.currentTick}
-            datas={tickInfo.ticks}
+            tokenA={tokenA}
+            tokenB={tokenB}
+            currentTick={10}
+            bins={[...POOL_DATA, ...POOL_DATA_RIGHT]}
+            mouseover
+            themeKey={themeKey}
+            rectWidth={4}
           />
         </div>
       </TableColumn>

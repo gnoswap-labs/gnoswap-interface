@@ -7,7 +7,7 @@ import React, { useCallback } from "react";
 const TrendingCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
-  const { trendingTokens } = useTokenData();
+  const { trendingTokens, loading } = useTokenData();
 
   const moveTokenDetails = useCallback((path: string) => {
     router.push("/tokens/" + path);
@@ -22,6 +22,7 @@ const TrendingCardListContainer: React.FC = () => {
       list={trendingTokens}
       device={breakpoint}
       onClickItem={onClickItem}
+      loading={loading}
     />
   );
 };

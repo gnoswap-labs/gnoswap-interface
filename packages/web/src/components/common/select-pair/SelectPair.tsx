@@ -20,9 +20,9 @@ const SelectPair: React.FC<SelectPairProps> = ({
 }) => {
 
   return (
-    <SelectPairWrapper>
-      <SelectPairButton disabled={disabled} token={tokenA} changeToken={changeTokenA} />
-      <SelectPairButton disabled={disabled} token={tokenB} changeToken={changeTokenB} />
+    <SelectPairWrapper isTokenA={!!tokenA} isTokenB={!!tokenB}>
+      <SelectPairButton className={tokenA ? "change-select-pair-A" : ""} disabled={disabled} token={tokenA} changeToken={changeTokenA} />
+      <SelectPairButton className={tokenB ? "change-select-pair-B" : ""} disabled={disabled} token={tokenB} changeToken={changeTokenB} />
     </SelectPairWrapper>
   );
 };

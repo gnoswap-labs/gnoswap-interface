@@ -43,7 +43,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   }, [changeSlippage]);
 
   const onClickReset = useCallback(() => {
-    changeSlippage("1");
+    changeSlippage("0.5");
   }, [changeSlippage]);
 
   return (

@@ -9,3 +9,5 @@ export const pools = atom<PoolModel[]>([]);
 export const isFetchedPositions = atom<boolean>(false);
 
 export const positions = atom<PositionModel[]>([]);
+
+export const isLoading = atom<boolean>(true);

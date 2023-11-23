@@ -3,6 +3,7 @@ import { EarnAddConfirmAmountInfoWrapper, EarnAddConfirmFeeInfoSection } from ".
 import TokenAmount from "@components/common/token-amount/TokenAmount";
 import IconAdd from "@components/common/icons/IconAdd";
 import { TokenModel } from "@models/token/token-model";
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 
 export interface EarnAddConfirmAmountInfoProps {
   tokenA: {
@@ -42,8 +43,12 @@ const EarnAddConfirmAmountInfo: React.FC<EarnAddConfirmAmountInfoProps> = ({
       </div>
 
       <EarnAddConfirmFeeInfoSection>
-        <span className="key">Fee</span>
-        <span className="value">{feeRate}</span>
+        <span className="key">Fee Tier</span>
+        <Badge
+          text={feeRate}
+          type={BADGE_TYPE.DARK_DEFAULT}
+          className="value"
+        />
       </EarnAddConfirmFeeInfoSection>
     </EarnAddConfirmAmountInfoWrapper>
   );

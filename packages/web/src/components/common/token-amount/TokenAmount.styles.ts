@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TokenAmountWrapper = styled.div`
@@ -9,7 +10,7 @@ export const TokenAmountWrapper = styled.div`
   width: 100%;
   padding: 16px 24px;
 
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  background-color: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
 
@@ -37,15 +38,22 @@ export const TokenAmountWrapper = styled.div`
   .amount-text {
     width: 100%;
     ${fonts.body1};
-    font-size: 27px;
-    line-height: 38px;
     color: ${({ theme }) => theme.color.text01};
     margin-right: 30px;
+    ${media.mobile} {
+      ${fonts.body5};
+    }
   }
 
-  .price-text,
   .balance-text {
     ${fonts.p2};
     color: ${({ theme }) => theme.color.text10};
+  }
+  .price-text {
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.p2};
+  }
+  ${media.mobile} {
+    padding: 11px;
   }
 `;

@@ -87,6 +87,7 @@ const StakeLiquidityContainer: React.FC = () => {
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
+      width={0}
     />
   );
 };

@@ -48,7 +48,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   return (
     <EarnAddConfirmWrapper>
       <div className="confirm-header">
-        <h6 className="title">Confirm Liquidity Addition</h6>
+        <h6 className="title">Confirm Create Position</h6>
         <button className="close-button" onClick={close}>
           <IconClose />
         </button>
@@ -56,19 +56,18 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <EarnAddConfirmAmountInfo {...amountInfo} />
 
-      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} />
+      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} symbolTokenA={amountInfo.tokenA.info.symbol} symbolTokenB={amountInfo.tokenB.info.symbol} />
 
       <EarnAddConfirmFeeInfo {...feeInfo} />
 
       <Button
-        text="Confirm Liquidity Addition"
+        text="Confirm Create Position"
         onClick={confirm}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
-          height: 57,
-          fontType: "body7",
         }}
+        className="button-confirm"
       />
     </EarnAddConfirmWrapper>
   );

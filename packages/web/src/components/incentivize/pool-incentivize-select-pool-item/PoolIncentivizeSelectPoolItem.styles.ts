@@ -1,13 +1,20 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
-export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
+interface Props {
+  visibleLiquidity: boolean;
+}
+
+export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
   display: flex;
   flex-direction: row;
   width: 100%;
   height: auto;
   align-items: center;
-  padding: 16px 0;
+  padding: ${({ visibleLiquidity}) => {
+    return visibleLiquidity ? "12px 0" : "16px 0";
+  }};
   cursor: pointer;
 
   .main-content-wrapper {
@@ -19,9 +26,11 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
     align-items: center;
 
     .token-pair-name {
-      height: 14px;
       color: ${({ theme }) => theme.color.text03};
-      ${fonts.body12}
+      ${fonts.body10}
+      ${media.mobile} {
+        ${fonts.body12}
+      }
     }
   }
 
@@ -35,12 +44,19 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div`
     .liquidity {
       height: 14px;
       color: ${({ theme }) => theme.color.text03};
-      ${fonts.body12}
+      ${fonts.body9}
+      line-height: 100%;
+      ${media.mobile} {
+        ${fonts.body11}
+        line-height: 100%;
+      }
     }
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.color.hover02};
+    background-color:  ${({ visibleLiquidity, theme}) => {
+      return visibleLiquidity ? theme.color.hover02 : "transparent";
+    }};
   }
 `;
 

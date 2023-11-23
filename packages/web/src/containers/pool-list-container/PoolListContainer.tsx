@@ -3,11 +3,12 @@ import { type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { ValuesType } from "utility-types";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { CommonState } from "@states/index";
 import { useRouter } from "next/router";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-
+import useClickOutside from "@hooks/common/use-click-outside";
+import { ThemeState } from "@states/index";
 export interface Pool {
   poolId: string;
   tokenPair: TokenPairInfo;
@@ -86,10 +87,21 @@ const PoolListContainer: React.FC = () => {
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useRouter();
   const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
+  const [componentRef, isClickOutside, setIsInside] = useClickOutside();
+
+  const themeKey = useAtomValue(ThemeState.themeKey);
 
   useEffect(() => {
     updatePools();
   }, []);
+
+  useEffect(() => {
+    if (!keyword) {
+      if (isClickOutside) {
+        setSearchIcon(false);
+      }
+    }
+  }, [isClickOutside, keyword]);
 
   const sortedPoolListInfos = useMemo(() => {
     return poolListInfos.filter(info => {
@@ -104,10 +116,10 @@ const PoolListContainer: React.FC = () => {
       }
       return true;
     });
-  }, [keyword, poolListInfos, poolType]);
+  }, [keyword, poolListInfos, poolType, sortOption]);
 
   const totalPage = useMemo(() => {
-    return sortedPoolListInfos.length / 20 + 1;
+    return Math.floor(sortedPoolListInfos.length / 20) + 1;
   }, [sortedPoolListInfos.length]);
 
   const routeItem = (id: string) => {
@@ -115,6 +127,7 @@ const PoolListContainer: React.FC = () => {
   };
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
+    setIsInside(true);
   };
 
   const changePoolType = useCallback((newType: string) => {
@@ -163,7 +176,7 @@ const PoolListContainer: React.FC = () => {
     const disableItems = ["Rewards", "Liquidity Plot"];
     return !disableItems.includes(head);
   }, []);
-
+  
   return (
     <PoolList
       pools={sortedPoolListInfos}
@@ -182,6 +195,8 @@ const PoolListContainer: React.FC = () => {
       routeItem={routeItem}
       searchIcon={searchIcon}
       onTogleSearch={onTogleSearch}
+      searchRef={componentRef}
+      themeKey={themeKey}
     />
   );
 };

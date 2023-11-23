@@ -20,12 +20,20 @@ export interface ThemeColorType {
   background17: string;
   background18: string;
   background19: string;
+  background20: string;
+  background21: string;
+  background22: string;
+  background23: string;
   backgroundOpacity: string;
   backgroundOpacity2: string;
   backgroundOpacity3: string;
+  backgroundOpacity4: string;
+  backgroundOpacity5: string;
   backgroundGradient: string;
   backgroundGradient2: string;
   backgroundGradient3: string;
+  backgroundGradient4: string;
+  backgroundGradient5: string;
   border01: string;
   border02: string;
   border03: string;
@@ -38,6 +46,10 @@ export interface ThemeColorType {
   border10: string;
   border11: string;
   border12: string;
+  border13: string;
+  border14: string;
+  border15: string;
+  border16: string;
   text01: string;
   text02: string;
   text03: string;
@@ -61,6 +73,9 @@ export interface ThemeColorType {
   text21: string;
   text22: string;
   text23: string;
+  text24: string;
+  text25: string;
+  text26: string;
   icon01: string;
   icon02: string;
   icon03: string;
@@ -72,8 +87,10 @@ export interface ThemeColorType {
   icon09: string;
   icon10: string;
   icon11: string;
+  icon13: string;
   icon14: string;
   icon15: string;
+  icon16: string;
   hover01: string;
   hover02: string;
   hover03: string;
@@ -88,6 +105,8 @@ export interface ThemeColorType {
   select: string;
   redDark: string;
   greenDark: string;
+  shadow: string;
+  shadow01: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

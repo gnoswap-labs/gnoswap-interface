@@ -18,7 +18,7 @@ export const ContentWrapper = styled.div`
     align-self: stretch;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
-    background: ${({ theme }) => theme.color.background01};
+    background: ${({ theme }) => theme.color.background20};
     ${media.mobile} {
       padding: 12px;
     }
@@ -71,7 +71,7 @@ export const ContentWrapper = styled.div`
     gap: 8px;
     align-self: stretch;
     border-radius: 8px;
-    background: ${({ theme }) => theme.color.background01};
+    background: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
     ${media.mobile} {
       padding: 12px;

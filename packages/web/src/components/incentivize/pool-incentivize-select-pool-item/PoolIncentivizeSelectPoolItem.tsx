@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { PoolIncentivizeSelectPoolItemWrapper, PoolIncentivizeSelectPoolItemDefaultWrapper } from "./PoolIncentivizeSelectPoolItem.styles";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import Badge from "@components/common/badge/Badge";
+import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 
 export interface PoolIncentivizeSelectPoolItemProps {
@@ -37,13 +37,6 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
     return `${poolSelectItem.tokenA.symbol}/${poolSelectItem.tokenB.symbol}`;
   }, [poolSelectItem]);
 
-  const feeTier = useMemo(() => {
-    if (!poolSelectItem) {
-      return "-";
-    }
-    return poolSelectItem.feeRate;
-  }, [poolSelectItem]);
-
   const liquidity = useMemo(() => {
     if (!poolSelectItem) {
       return "-";
@@ -67,7 +60,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
   }
 
   return (
-    <PoolIncentivizeSelectPoolItemWrapper onClick={onClickItem}>
+    <PoolIncentivizeSelectPoolItemWrapper visibleLiquidity={visibleLiquidity} onClick={onClickItem}>
       <div className="main-content-wrapper">
         <DoubleLogo
           {...doubleLogos}
@@ -75,8 +68,8 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
         />
         <span className="token-pair-name">{tokenPairName}</span>
         <Badge
-          text={feeTier}
-          type="lightDefault"
+          text={"0.3%"}
+          type={BADGE_TYPE.DARK_DEFAULT}
         />
       </div>
 

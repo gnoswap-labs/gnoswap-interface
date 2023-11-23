@@ -82,7 +82,7 @@ const RemoveLiquiditySelectResult: React.FC<
     if (selectedLiquidities.length === 0) {
       return <></>;
     }
-
+    
     return (
       <RemoveLiquiditySelectResultWrapper>
         <ul>
@@ -91,9 +91,9 @@ const RemoveLiquiditySelectResult: React.FC<
               <div className="main-info">
                 <img src={pooledTokenMap[path].logoURI} alt="pooled tokenA logo" />
                 <p>{`Pooled ${pooledTokenMap[path].symbol}`}</p>
-                <strong>{pooledTokenMap[path].amount}</strong>
+                <strong>{Number(pooledTokenMap[path].amount).toFixed(2)}</strong>
               </div>
-              <span className="dallor">{`$${pooledTokenMap[path].amount}`}</span>
+              <span className="dallor">{`$${Number(pooledTokenMap[path].amount).toFixed(2)}`}</span>
             </li>
           ))}
 
@@ -102,15 +102,15 @@ const RemoveLiquiditySelectResult: React.FC<
               <div className="main-info">
                 <img src={unclaimedTokenMap[path].logoURI} alt="pooled tokenA logo" />
                 <p>{`Unclaimed ${unclaimedTokenMap[path].symbol} Fees`}</p>
-                <strong>{unclaimedTokenMap[path].amount}</strong>
+                <strong>{Number(unclaimedTokenMap[path].amount).toFixed(2)}</strong>
               </div>
-              <span className="dallor">{`$${unclaimedTokenMap[path].amount}`}</span>
+              <span className="dallor">{`$${Number(unclaimedTokenMap[path].amount).toFixed(2)}`}</span>
             </li>
           ))}
         </ul>
         <div className="total-section">
-          <h5>Total</h5>
-          <span className="total-value">{`$${totalAmount}`}</span>
+          <h5>Total Amount</h5>
+          <span className="total-value">{`$${Number(totalAmount.replace(/,/g, "") || 0).toFixed(2)}`}</span>
         </div>
       </RemoveLiquiditySelectResultWrapper>
     );

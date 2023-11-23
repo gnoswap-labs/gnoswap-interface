@@ -56,3 +56,14 @@ export const PoolListWrapper = styled.div`
     grid-auto-columns: 290px;
   }
 `;
+
+export const BlankIncentivizedCard = styled.div`
+  min-width: 322px;
+  ${media.mobile} {
+    min-width: 290px;
+  }
+  border-radius: 10px;
+  background: ${({ theme }) => theme.color.background08};
+  box-shadow: ${({ theme }) => theme.color.shadow};
+  border: 1px solid ${({ theme }) => theme.color.border14};
+`;

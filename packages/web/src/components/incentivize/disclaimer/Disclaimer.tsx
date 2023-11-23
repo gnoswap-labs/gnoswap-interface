@@ -8,7 +8,7 @@ const Disclaimer: React.FC<DisclaimerProps> = ({ disclaimer }) => {
   return (
     <div css={wrapper}>
       <h5 className="section-title">Disclaimer</h5>
-      <div className="desc">{disclaimer}</div>
+      <div className="desc" dangerouslySetInnerHTML={{ __html: disclaimer }}/>
     </div>
   );
 };

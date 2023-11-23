@@ -68,7 +68,7 @@ export const TitleWrapper = styled.h1`
   }
 
   span {
-    color: ${({ theme }) => theme.color.point};
+    color: ${({ theme }) => theme.color.text24};
   }
 `;
 export const SubTitleWrapper = styled.h4`

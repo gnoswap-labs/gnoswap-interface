@@ -2,28 +2,52 @@ import PoolIncentivize from "@components/incentivize/pool-incentivize/PoolIncent
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenBalanceInfo } from "@models/token/token-balance-info";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
+import POOLS from "@repositories/pool/mock/pools.json";
+import { useIncentivizePoolModal } from "@hooks/incentivize/use-incentivize-pool-modal";
+import { TokenModel } from "@models/token/token-model";
+import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useAtom } from "jotai";
+import { EarnState } from "@states/index";
+import { useWallet } from "@hooks/wallet/use-wallet";
+
 export const dummyDisclaimer =
-  "Disclaimer1Disclaimer1 Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer3Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer2Disclaimer";
+  "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
 
-interface DistributionPeriodDate {
-  year: number;
-  month: number;
-  date: number;
-}
-
-const pools: PoolModel[] = [];
+const pools: PoolModel[] = POOLS.pools;
 const tokenBalances: TokenBalanceInfo[] = [];
-const periods = [90, 120, 150, 180, 210, 240];
+const periods = [90, 180, 365];
 
 const PoolIncentivizeContainer: React.FC = () => {
-  const [startDate, setStartDate] = useState<DistributionPeriodDate>();
-  const [period, setPeriod] = useState(90);
-  const [amount, setAmount] = useState("");
-  const [currentPool, setCurrentPool] = useState<PoolModel | null>(null);
+  const [period, setPeriod] = useAtom(EarnState.period);
+  const [startDate, setStartDate] = useAtom(EarnState.date);
+  const [, setDataModal] = useAtom(EarnState.dataModal);
+  const [currentPool, setCurrentPool] = useAtom(EarnState.pool);
+
+  const { connected, connectAdenaClient } = useWallet();
+
   const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
+  const [token, setToken] = useState<TokenModel | null>(null);
+  const tokenAmountInput = useTokenAmountInput(token);
+  const { updateTokenPrices } = useTokenData();
+  
+  useEffect(() => {
+    setDataModal(tokenAmountInput);
+  }, [tokenAmountInput.amount, token]);
+
+  const { openModal } = useIncentivizePoolModal();
+
+  useEffect(() => {
+    updateTokenPrices();
+    setCurrentPool(null);
+  }, []);
+
+  const changeToken = useCallback((token: TokenModel) => {
+    setToken(token);
+  }, []);
 
   useEffect(() => {
     setPoolDetail(PoolDetailData.pool);
@@ -35,7 +59,7 @@ const PoolIncentivizeContainer: React.FC = () => {
       setCurrentPool(pool);
     }
   }, [setCurrentPool]);
-
+  
   const selectToken = useCallback((path: string) => {
     const token = tokenBalances.find(token => token.path === path);
     if (token) {
@@ -43,13 +67,51 @@ const PoolIncentivizeContainer: React.FC = () => {
     }
   }, []);
 
-  const onChangeAmount = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setAmount(value);
-    },
-    [],
-  );
+  const handleConfirmIncentivize = useCallback(() => {
+    if (!connected) {
+      connectAdenaClient();
+    } else {
+      openModal();
+    }
+  }, [connected, connectAdenaClient, openModal]);
+
+  const disableButton = useMemo(() => {
+    if (!connected) {
+      return false;
+    }
+    if (!currentPool) {
+      return true;
+    }
+    if (Number(tokenAmountInput.amount) === 0) {
+      return true;
+    }
+    if (Number(tokenAmountInput.amount) < 0.000001) {
+      return true;
+    }
+    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
+      return true;
+    }
+    return false;
+  }, [connected, currentPool, tokenAmountInput]);
+
+  const textBtn = useMemo(() => {
+    if (!connected) {
+      return "Wallet Login";
+    }
+    if (!currentPool) {
+      return "Select Pool";
+    }
+    if (Number(tokenAmountInput.amount) === 0) {
+      return "Enter Amount";
+    }
+    if (Number(tokenAmountInput.amount) < 0.000001) {
+      return "Amount Too Low";
+    }
+    if (Number(tokenAmountInput.amount) > Number(tokenAmountInput.balance.replace(/,/g, ""))) {
+      return "Insufficient Balance";
+    }
+    return "Incentivize Pool";
+  }, [connected, currentPool, tokenAmountInput]);
 
   return (
     <PoolIncentivize
@@ -61,13 +123,17 @@ const PoolIncentivizeContainer: React.FC = () => {
       periods={periods}
       period={period}
       setPeriod={setPeriod}
-      amount={amount}
-      onChangeAmount={onChangeAmount}
       details={poolDetail}
       disclaimer={dummyDisclaimer}
       token={currentToken}
       tokens={tokenBalances}
       selectToken={selectToken}
+      handleConfirmIncentivize={handleConfirmIncentivize}
+      tokenAmountInput={tokenAmountInput}
+      changeToken={changeToken}
+      textBtn={textBtn}
+      disableButton={disableButton}
+      connected={connected}
     />
   );
 };

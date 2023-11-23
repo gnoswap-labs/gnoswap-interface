@@ -29,6 +29,8 @@ export const ModalWrapper = styled.div<ModalStyleProps>`
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
+  max-height: 100vh;
+  overflow: scroll;
 `;
 
 export const ModalHeader = styled.div<ModalStyleProps>`

@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const SelectPriceRangeCustomWrapper = styled.div`
   display: flex;
@@ -8,9 +9,8 @@ export const SelectPriceRangeCustomWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 24px;
-  background: ${({ theme }) => theme.color.background06};
+  background: ${({ theme }) => theme.color.background11};
   border-radius: 8px;
-  margin-top: 8px;
 
   .option-wrapper {
     display: flex;
@@ -18,6 +18,14 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
+    > div {
+      padding: 2px;
+      ${media.mobile} {
+        button {
+          width: 72px;
+        }
+      }
+    }
 
     .graph-option-wrapper {
       display: flex;
@@ -27,16 +35,31 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       .graph-option-item {
         display: flex;
         padding: 2px;
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         border-radius: 4px;
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;
         background: ${({ theme }) => theme.color.background02};
         color: ${({ theme }) => theme.color.icon05};
         ${fonts.body6}
         line-height: 22px;
         cursor: pointer;
+        &:hover {
+          background: ${({ theme }) => theme.color.backgroundOpacity};
+        }
+      }
+    }
+  }
+
+  .loading-wrapper {
+    margin: 73px 0;
+    > div {
+      width: 60px;
+      height: 60px;
+      &:before {
+        width: 48px;
+        height: 48px;
       }
     }
   }
@@ -46,7 +69,10 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text10};
+    > span:first-of-type {
+      color: ${({ theme }) => theme.color.text04};
+    }
     ${fonts.body12};
   }
 
@@ -74,15 +100,22 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       svg {
         width: 16px;
         height: 16px;
-
-        path {
-          fill: ${({ theme }) => theme.color.icon05};
+        * {
+          fill: ${({ theme }) => theme.color.text10};
         }
+        
       }
-
       span {
-        color: ${({ theme }) => theme.color.text05};
+        color: ${({ theme }) => theme.color.text10};
         ${fonts.body11};
+      }
+    }
+    .icon-button:hover {
+      svg * {
+        fill: ${({ theme }) => theme.color.text16};
+      }
+      span {
+        color: ${({ theme }) => theme.color.text16};
       }
     }
   }
