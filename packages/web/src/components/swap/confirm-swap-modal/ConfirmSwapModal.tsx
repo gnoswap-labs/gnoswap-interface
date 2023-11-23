@@ -228,7 +228,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         <div className="transaction-state">
           <span className="submitted">Waiting for Confirmation</span>
           <span className="swap-message">
-            Swapping 0.1 GNOS for 0.12 GNOT
+            Swapping 0.1 GNS for 0.12 GNOT
           </span>
           <div className="view-transaction">
             <span>Confirm this transaction in your wallet</span>

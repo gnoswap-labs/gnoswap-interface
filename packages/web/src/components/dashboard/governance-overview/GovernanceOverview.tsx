@@ -31,7 +31,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
       <div className="total-issued">
         <div className="label-title">
           <div>Total xGNOS Issued</div>
-          <DashboardLabel tooltip="Total amount of xGNOS currently issued through GNOS-GNOT staking." />
+          <DashboardLabel tooltip="Total amount of xGNOS currently issued through GNS-GNOT staking." />
         </div>
         <div>{governenceOverviewInfo.totalXgnosIssued}</div>
       </div>
@@ -68,7 +68,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
       <div className="community-pool">
         <div className="label-title">
           <div>Community Pool</div>
-          <DashboardLabel tooltip="Amount of GNOS accumulated in the Community Pool from emissions." />
+          <DashboardLabel tooltip="Amount of GNS accumulated in the Community Pool from emissions." />
         </div>
         <div>{governenceOverviewInfo.communityPool}</div>
       </div>

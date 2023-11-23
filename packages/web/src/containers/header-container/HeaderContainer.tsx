@@ -24,6 +24,7 @@ export interface Token {
   token: TokenInfo;
   price: string;
   priceOf1d: NegativeStatusType;
+  tokenB?: TokenInfo;
 }
 
 export const RecentdummyToken: Token[] = [
@@ -40,6 +41,12 @@ export const RecentdummyToken: Token[] = [
     priceOf1d: {
       status: MATH_NEGATIVE_TYPE.POSITIVE,
       value: "12.08%",
+    },
+    tokenB: {
+      path: "1",
+      name: "GNOT",
+      symbol: "GNOT",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
     },
   },
 ];

@@ -18,7 +18,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
       <div className="total-supply">
         <div className="label-title">
           Total Supply
-          <DashboardLabel tooltip="The total supply of GNOS tokens is 1,000,000,000 GNOS." />
+          <DashboardLabel tooltip="The total supply of GNS tokens is 1,000,000,000 GNS." />
         </div>
         <div>{supplyOverviewInfo.totalSupply}</div>
       </div>
@@ -26,7 +26,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         <div className="circulating-info">
           <div className="label-title">
             <div>Circulating Supply</div>
-            <DashboardLabel tooltip="The sum of liquid GNOS tokens including released vesting allocations and cumulative block emissions." />
+            <DashboardLabel tooltip="The sum of liquid GNS tokens including released vesting allocations and cumulative block emissions." />
           </div>
           <div>{supplyOverviewInfo.circulatingSupply}</div>
         </div>
@@ -37,17 +37,17 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
       <div className="daily-block-emissions">
         <div className="label-title">
           <div>Daily Block Emissions</div>
-          <DashboardLabel tooltip="Number of newly minted GNOS tokens per block." />
+          <DashboardLabel tooltip="Number of newly minted GNS tokens per block." />
         </div>
         <div className="daily-block-emissions-tooltip">
           <div>{supplyOverviewInfo.dailyBlockEmissions}</div>
-          <DashboardLabel tooltip="Number of newly minted GNOS tokens per block." />
+          <DashboardLabel tooltip="Number of newly minted GNS tokens per block." />
         </div>
       </div>
       <div className="total-staked">
         <div className="label-title">
           <div>Total Staked</div>
-          <DashboardLabel tooltip="Amount of GNOS in LPs being staked." />
+          <DashboardLabel tooltip="Amount of GNS in LPs being staked." />
         </div>
         <div className="staked-info">
           <div>{supplyOverviewInfo.totalStaked}</div>

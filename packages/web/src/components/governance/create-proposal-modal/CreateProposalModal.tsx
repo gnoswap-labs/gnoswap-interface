@@ -62,7 +62,7 @@ const ProposalOption = [
 const TOKEN = {
   urlIcon:
     "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-  currency: "GNOS",
+  currency: "GNS",
   value: -500,
 };
 const BoxContent: React.FC<BoxContentProps> = ({

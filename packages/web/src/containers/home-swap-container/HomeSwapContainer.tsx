@@ -28,7 +28,7 @@ const TOKEN_B = {
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
   path: "gno.land/r/gnos",
   decimals: 4,
-  symbol: "GNOS",
+  symbol: "GNS",
   logoURI: "/gnos.svg",
   priceId: "gno.land/r/gnos",
 };
@@ -104,7 +104,7 @@ const HomeSwapContainer: React.FC = () => {
   ]);
 
   const swapNow = useCallback(() => {
-    router.push("/swap?from=GNOT&to=GNOS");
+    router.push("/swap?from=GNOT&to=GNS");
   }, [router]);
 
   const onSubmitSwapValue = () => {

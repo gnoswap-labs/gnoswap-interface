@@ -34,7 +34,7 @@ export interface ChartInfo {
 const dummyTokenInfo: TokenInfo = {
   token: {
     name: "Gnoswap",
-    symbol: "GNOS",
+    symbol: "GNS",
     image: "https://miro.medium.com/v2/resize:fill:44:44/1*61CWWk33Fx8vLVvto5nJHQ.png",
   },
   priceInfo: {

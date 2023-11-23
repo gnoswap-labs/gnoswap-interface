@@ -47,7 +47,7 @@ export const SearchWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background06};
   color: ${({ theme }) => theme.color.text14};
   .search-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+    fill: ${({ theme }) => theme.color.icon08};
   }
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   &:focus-within {
@@ -130,21 +130,21 @@ export const ModalContainer = styled.div`
       height: 24px;
     }
     .token-name {
-      ${fonts.body8};
+      ${fonts.body10};
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
         ${fonts.body12}
       }
     }
     .token-symbol {
-      ${fonts.body8};
+      ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
       ${media.mobile} {
-        ${fonts.body12}
+        ${fonts.p4}
       }
     }
     .token-price {
-      ${fonts.body7};
+      ${fonts.body9};
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
         ${fonts.body11}
@@ -161,7 +161,7 @@ export const ModalContainer = styled.div`
       ${fonts.body12};
       color: ${({ theme }) => theme.color.green01};
       ${media.mobile} {
-        ${fonts.p2}
+        ${fonts.p4}
       }
     }
   }

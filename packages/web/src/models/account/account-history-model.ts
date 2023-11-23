@@ -12,4 +12,5 @@ export interface TransactionModel {
   status: StatusOptions;
   createdAt: string;
   content?: string;
+  isRead?: boolean;
 }

@@ -24,7 +24,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
         <div className="gnos-image-wrapper">
           <IconLogoWhite className="gnos-image" />
         </div>
-        <div className="gnos-symbol">GNOS</div>
+        <div className="gnos-symbol">GNS</div>
       </GnosLogoWrapper>
       <div>{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>

@@ -35,7 +35,7 @@ const LEARN_MORE_DATA: LearnMoreProps[] = [
     title: "How to get xGNOS",
     description: (
       <>
-        Stake liquidity from GNOT-GNOS pools to earn xGNOS,
+        Stake liquidity from GNOT-GNS pools to earn xGNOS,
         <br />
         which represent your voting shares in the Gnoswap Governance.
       </>

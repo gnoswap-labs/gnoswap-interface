@@ -11,6 +11,7 @@ import {
 } from "./SearchMenuModal.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import Badge, { BADGE_TYPE } from "../badge/Badge";
+import DoubleLogo from "../double-logo/DoubleLogo";
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -145,16 +146,13 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           onClick={() => onClickItem(item.token.symbol)}
                         >
                           <div className="coin-info">
-                            <img
-                              src={item.token.logoURI}
-                              alt="token logo"
-                              className="token-logo"
+                            <DoubleLogo
+                              size={24}
+                              left={item.token.logoURI}
+                              right={item?.tokenB?.logoURI || ""}
                             />
                             <span className="token-name">
-                              {item.token.name}
-                            </span>
-                            <span className="token-symbol">
-                              {item.token.symbol}
+                              {item.token.name}/{item?.tokenB?.name}
                             </span>
                             <Badge
                               text={"0.3%"}

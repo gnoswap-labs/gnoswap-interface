@@ -105,17 +105,18 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
             arrowColor: "text18",
             padding: "10px 16px",
             gap: "8px",
+            height: 36
           }}
           onClick={onMenuToggle}
         />
       ) : (
         <Button
-          text="Connect Wallet"
+          text="Wallet Login"
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
-            width: 155,
+            width: 136,
             height: 36,
             padding: "10px 16px 10px 20px",
             justify: "space-between",

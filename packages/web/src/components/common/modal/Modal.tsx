@@ -24,7 +24,6 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   usePositionModal(modalRef);
-
   return (
     <>
       <ModalWrapper ref={modalRef} {...style}>

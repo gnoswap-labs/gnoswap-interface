@@ -120,13 +120,13 @@ export const TxsSummaryItem = styled.div`
     margin-left: auto;
   }
   .success-icon * {
-    fill: ${({ theme }) => theme.color.point};
+    fill: ${({ theme }) => theme.color.green01};
   }
   .failed-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+    fill: ${({ theme }) => theme.color.red01};
   }
   .pending-icon * {
-    fill: ${({ theme }) => theme.color.icon06};
+    fill: ${({ theme }) => theme.color.text24};
   }
 `;
 
@@ -175,13 +175,13 @@ export const TransactionItemsWrap = styled.div`
     }
   }
   .success-icon * {
-    fill: ${({ theme }) => theme.color.point};
+    fill: ${({ theme }) => theme.color.green01};
   }
   .failed-icon * {
-    fill: ${({ theme }) => theme.color.icon03};
+    fill: ${({ theme }) => theme.color.red01};
   }
   .pending-icon * {
-    fill: ${({ theme }) => theme.color.icon06};
+    fill: ${({ theme }) => theme.color.text24};
   }
   ${media.mobile} {
     margin-top: 4px;

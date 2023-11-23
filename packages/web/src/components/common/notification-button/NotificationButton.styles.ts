@@ -13,6 +13,7 @@ export const AlertButton = styled.button`
   padding: 3px 4px 5px 4px;
   border-radius: 4px;
   transition: all 0.3s ease;
+  position: relative;
   ${media.tablet} {
     width: 32px;
     height: 32px;
@@ -25,12 +26,21 @@ export const AlertButton = styled.button`
       height: 24px;
     }
     * {
-      fill: ${({ theme }) => theme.color.icon05};
+      fill: ${({ theme }) => theme.color.icon03};
     }
   }
   &:hover {
     .notification-icon * {
       fill: ${({ theme }) => theme.color.icon07};
     }
+  }
+  .point-unread {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.color.red01};
+    top: 5.5px;
+    right: 5.5px;
   }
 `;

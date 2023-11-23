@@ -38,6 +38,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     <NotificationWrapper>
       <AlertButton onClick={onListToggle}>
         <IconAlert className="notification-icon" />
+        <div className="point-unread"/>
       </AlertButton>
       {toggle.notification && (
         <NotificationList

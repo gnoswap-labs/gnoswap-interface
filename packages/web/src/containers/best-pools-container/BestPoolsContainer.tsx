@@ -40,7 +40,7 @@ export const bestPoolListInit: BestPool[] = [
 ];
 
 const BestPoolsContainer: React.FC = () => {
-  return <BestPools titleSymbol={"GNOS"} cardList={bestPoolListInit} />;
+  return <BestPools titleSymbol={"GNS"} cardList={bestPoolListInit} />;
 };
 
 export default BestPoolsContainer;

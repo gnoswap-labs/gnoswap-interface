@@ -22,11 +22,11 @@ export interface SupplyOverviewInfo {
 }
 
 const initialSupplyOverviewInfo: SupplyOverviewInfo = {
-  totalSupply: "1,000,000,000 GNOS",
-  circulatingSupply: "218,184,885 GNOS",
-  progressBar: "580 GNOS",
-  dailyBlockEmissions: "580 GNOS",
-  totalStaked: "152,412,148 GNOS",
+  totalSupply: "1,000,000,000 GNS",
+  circulatingSupply: "218,184,885 GNS",
+  progressBar: "580 GNS",
+  dailyBlockEmissions: "580 GNS",
+  totalStaked: "152,412,148 GNS",
   stakingRatio: "55.15%",
 };
 
@@ -43,7 +43,7 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
   holders: "14,072",
   passedProposals: "125",
   activeProposals: "2",
-  communityPool: "2,412,148 GNOS",
+  communityPool: "2,412,148 GNS",
 };
 
 const DashboardInfoContainer: React.FC = () => {

@@ -17,6 +17,7 @@ export const notificationDummyList: Array<TransactionModel> = [
       new Date().setDate(new Date().getDate() - 40),
     ).toString(),
     content: "Unwrapped 2.01821423 GNOT",
+    isRead: false,
   },
   {
     txType: 1,
@@ -32,6 +33,7 @@ export const notificationDummyList: Array<TransactionModel> = [
       new Date().setDate(new Date().getDate() - 31),
     ).toString(),
     content: "Unwrapped 2.01821423 GNOT",
+    isRead: false,
   },
   {
     txType: 2,
@@ -47,6 +49,7 @@ export const notificationDummyList: Array<TransactionModel> = [
       new Date().setDate(new Date().getDate() - 30),
     ).toString(),
     content: "Unstaked 2.01821423 GNOT",
+    isRead: false,
   },
   {
     txType: 1,
@@ -61,7 +64,8 @@ export const notificationDummyList: Array<TransactionModel> = [
     createdAt: new Date(
       new Date().setDate(new Date().getDate() - 29),
     ).toString(),
-    content: "Added 2.01821423 GNOT to GNOT/GNOS Pool",
+    content: "Added 2.01821423 GNOT to GNOT/GNS Pool",
+    isRead: false,
   },
   {
     txType: 4,
@@ -76,7 +80,8 @@ export const notificationDummyList: Array<TransactionModel> = [
     createdAt: new Date(
       new Date().setDate(new Date().getDate() - 8),
     ).toString(),
-    content: "Removed 2.01821423 GNOT and 1.0352 GNOS",
+    content: "Removed 2.01821423 GNOT and 1.0352 GNS",
+    isRead: false,
   },
   {
     txType: 5,
@@ -91,7 +96,8 @@ export const notificationDummyList: Array<TransactionModel> = [
     createdAt: new Date(
       new Date().setDate(new Date().getDate() - 7),
     ).toString(),
-    content: "Created GNOT/GNOS Pool",
+    content: "Created GNOT/GNS Pool",
+    isRead: false,
   },
   {
     txType: 1,
@@ -106,7 +112,8 @@ export const notificationDummyList: Array<TransactionModel> = [
     createdAt: new Date(
       new Date().setDate(new Date().getDate() - 6),
     ).toString(),
-    content: "Added 2.01821423 GNOT to GNOT/GNOS Pool",
+    content: "Added 2.01821423 GNOT to GNOT/GNS Pool",
+    isRead: false,
   },
   {
     txType: 7,
@@ -120,6 +127,7 @@ export const notificationDummyList: Array<TransactionModel> = [
     status: "SUCCESS",
     createdAt: new Date().toString(),
     content: "Approved GNOT",
+    isRead: false,
   },
 ];
 
