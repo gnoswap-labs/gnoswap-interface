@@ -2,6 +2,7 @@ import { SwapDirectionType } from "@common/values";
 import HomeSwap from "@components/home/home-swap/HomeSwap";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 import { numberToUSD } from "@utils/number-utils";
@@ -42,20 +43,24 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenBAmount] = useState<string>("0");
   const [swapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
+  const { connected } = useWallet();
+
 
   const tokenABalance = useMemo(() => {
+    if (!connected) return "-";
     if (tokenA && balances[tokenA.priceId]) {
       return BigNumber(balances[tokenA.priceId] || 0).toFormat();
     }
     return "0";
-  }, [balances, tokenA]);
+  }, [connected ,balances, tokenA]);
 
   const tokenBBalance = useMemo(() => {
+    if (!connected) return "-";
     if (tokenB && balances[tokenB.priceId]) {
       return BigNumber(balances[tokenB.priceId] || 0).toFormat();
     }
     return "0";
-  }, [balances, tokenB]);
+  }, [connected ,balances, tokenB]);
 
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[tokenA.priceId]) {

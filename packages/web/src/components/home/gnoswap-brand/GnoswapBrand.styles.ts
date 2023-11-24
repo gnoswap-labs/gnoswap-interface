@@ -16,6 +16,7 @@ export const GnoswapBrandWrapper = styled.div`
     max-width: 328px;
     align-items: center;
     gap: 32px;
+    padding: 10px 0 0 0;
   }
 
   .sns {

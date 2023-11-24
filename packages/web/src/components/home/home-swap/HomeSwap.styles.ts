@@ -84,7 +84,7 @@ export const wrapper = (theme: Theme) => css`
     .price-text,
     .balance-text {
       ${fonts.p2};
-      color: ${theme.color.text10};
+      color: ${theme.color.text04};
     }
 
     .token {

@@ -63,7 +63,7 @@ export const skeletonTrendingStyle =
         ${theme.color.backgroundGradient} 0%,
         ${theme.color.backgroundGradient} 100%
       );
-      animation: ${skeletonAni} 2s ease infinite;
+      animation: ${skeletonAni} 3s ease infinite;
     }
   `;
 
