@@ -5,15 +5,17 @@ import {
   TNoticeType,
 } from "src/context/NoticeContext";
 import IconClose from "../icons/IconCancel";
+import IconFailed from "../icons/IconFailed";
 import IconNewTab from "../icons/IconNewTab";
 import IconSuccess from "../icons/IconSuccess";
-import { NoticeContextWrapper, NoticeUIWrapper } from "./NoticeToast.styles";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
+import { NoticeUIList, NoticeUIWrapper } from "./NoticeToast.styles";
 
 interface NoticeProps {
   closeable?: boolean;
-  onClose?: () => void;
-  type?: TNoticeType;
-  children?: React.ReactNode;
+  onClose?: (id: number) => void;
+  type: TNoticeType;
+  id: number;
 }
 
 const TEMP_URL =
@@ -34,43 +36,94 @@ const SuccessContent: FC = () => {
   );
 };
 
-const NoticeUI: FC<NoticeProps> = ({
-  children,
-  closeable = true,
-  onClose,
-  type = "success",
-}) => {
+const PendingContent: FC = () => {
   return (
-    <NoticeUIWrapper>
+    <div className="notice-body">
+      <LoadingSpinner className="loading-icon" />
+      <div>
+        <h5>Broadcasting Transaction</h5>
+        <p>Waiting for Transaction Confirmation</p>
+        <a href={TEMP_URL} target="_blank">
+          View transaction <IconNewTab />
+        </a>
+      </div>
+    </div>
+  );
+};
+
+const FailContent: FC = () => {
+  return (
+    <div className="notice-body">
+      <IconFailed className="icon-success" />
+      <div>
+        <h5>Swap - Success!</h5>
+        <p>Swapped 1541.5 GNOT for 1090.55 GNS</p>
+        <a href={TEMP_URL} target="_blank">
+          View transaction <IconNewTab />
+        </a>
+      </div>
+    </div>
+  );
+};
+
+const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id }) => {
+  const [typeAnimation, setTypeAnimation] = useState<
+    "toast-item" | "closing" | ""
+  >("toast-item");
+
+  const handleClose = useCallback(() => {
+    setTypeAnimation("closing");
+    const timeout = setTimeout(() => {
+      onClose?.(id);
+      setTypeAnimation("");
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [onClose]);
+
+  useEffect(() => {
+    const autoCloseTimeout = setTimeout(() => {
+      setTypeAnimation("closing");
+      const animationTimeout = setTimeout(() => {
+        onClose?.(id);
+      }, 500);
+      return () => clearTimeout(animationTimeout);
+    }, 5000);
+
+    return () => {
+      clearTimeout(autoCloseTimeout);
+    };
+  }, [onClose]);
+
+  return (
+    <NoticeUIWrapper className={`${typeAnimation}`}>
       {type === "success" && <SuccessContent />}
-      {children}
-      {closeable && (
-        <div className="icon-close" onClick={onClose}>
-          <IconClose />
-        </div>
-      )}
+      {type === "error" && <FailContent />}
+      {type === "pending" && <PendingContent />}
+      <div className="icon-close" onClick={handleClose}>
+        <IconClose />
+      </div>
     </NoticeUIWrapper>
   );
 };
 
 const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentNotice, setCurrentNotice] = useState<
-    (NoticeProps & { timeout?: number }) | null
+    (NoticeProps & { timeout: number }) | null
   >(null);
+  const [list, setList] = useState<{ type: TNoticeType; id: number }[]>([]);
 
   const setNotice = useCallback<INoticeContext["setNotice"]>(
-    (content, options) => {
+    (_, options) => {
       setCurrentNotice({
-        children: content,
         ...options,
       });
+      setList(prev => [...prev, { type: options.type, id: options.id }]);
     },
-    []
+    [list],
   );
 
   const onCloseNotice = useCallback<INoticeContext["onCloseNotice"]>(() => {
     setCurrentNotice(null);
-    currentNotice?.onClose?.();
   }, []);
 
   const contextValue = useMemo(
@@ -78,7 +131,7 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
       setNotice,
       onCloseNotice,
     }),
-    [setNotice, onCloseNotice]
+    [setNotice, onCloseNotice],
   );
 
   useEffect(() => {
@@ -95,20 +148,30 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
     };
   }, [currentNotice]);
 
+  const handleClose = useCallback(
+    (id: number) => {
+      console.log(id);
+
+      setList(prev => prev.filter(item => item.id !== id));
+    },
+    [setList],
+  );
+
   return (
     <NoticeContext.Provider value={contextValue}>
-      {currentNotice && (
-        <NoticeContextWrapper>
-          <NoticeUI
-            {...currentNotice}
-            onClose={() => {
-              setCurrentNotice(null);
-              currentNotice.onClose?.();
-            }}
-          >
-            {currentNotice.children}
-          </NoticeUI>
-        </NoticeContextWrapper>
+      {list.length > 0 && (
+        <NoticeUIList>
+          {list.map(item_ => {
+            return (
+              <NoticeUIItem
+                key={item_.id}
+                type={item_.type}
+                id={item_.id}
+                onClose={handleClose}
+              />
+            );
+          })}
+        </NoticeUIList>
       )}
       {children}
     </NoticeContext.Provider>

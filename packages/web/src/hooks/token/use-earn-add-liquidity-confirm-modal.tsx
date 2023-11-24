@@ -8,6 +8,7 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { TokenAmountInputModel } from "./use-token-amount-input";
 import { getCurrentPriceByRaw } from "@utils/swap-utils";
+import { useNotice } from "@hooks/common/use-notice";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -47,6 +48,7 @@ export const useEarnAddLiquidityConfirmModal = ({
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const navigator = useNavigate();
+  const { setNotice } = useNotice();
 
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -114,6 +116,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     if (!tokenA || !tokenB || !priceRange || !swapFeeTier) {
       return;
     }
+    setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
     createPool({
       tokenAAmount: tokenAAmountInput.amount,
       tokenBAmount: tokenBAmountInput.amount,

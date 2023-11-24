@@ -3,31 +3,54 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
+import { keyframes } from "@emotion/react";
 
-export const NoticeContextWrapper = styled.div`
-  display: block;
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100lvh;
-  z-index: ${Z_INDEX.modalTooltip};
+const toastInRight = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 `;
 
+const toastOutRightClose = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+`;
+
+export const NoticeUIList = styled.div`
+  display: block;
+  position: fixed;
+  top: 38px;
+  right: 36px;
+  width: 380px;
+  .toast-item {
+    animation: ${toastInRight} 500ms;
+  }
+  z-index: ${Z_INDEX.modalOverlay};
+  ${media.mobile} {
+    right: 0;
+  }
+`;
+
+
 export const NoticeUIWrapper = styled.div`
-  position: absolute;
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   padding: 16px 24px;
   color: ${({ theme }) => theme.color.text02};
   background-color: ${({ theme }) => theme.color.background02};
   border: 1px solid ${({ theme }) => theme.color.border02};
-  width: 380px;
-  bottom: 38px;
-  right: 36px;
   border-radius: 8px;
-  transition: all 0.3s ease-in-out;
+  margin-top: 10px;
+  position: relative;
+  &.closing {
+    animation: ${toastOutRightClose} 500ms;
+  }
   ${media.mobile} {
     width: 90%;
     top: 16px;
@@ -46,6 +69,14 @@ export const NoticeUIWrapper = styled.div`
     svg {
       width: 24px;
       height: 24px;
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+      &:hover {
+        * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
     }
     ${media.mobile} {
       right: 16px;
@@ -63,12 +94,20 @@ export const NoticeUIWrapper = styled.div`
         height: 24px;
       }
     }
+    .loading-icon {
+      width: 36px;
+      height: 36px;
+      &:before {
+        width: 24px;
+        height: 24px;
+      }
+    }
     > div {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
 
       gap: 8px;
       h5 {
-        ${fonts.body5};
+        ${fonts.body7};
         color: ${({ theme }) => theme.color.text02};
         ${media.mobile} {
           ${fonts.body7}
@@ -90,9 +129,16 @@ export const NoticeUIWrapper = styled.div`
         ${media.mobile} {
           ${fonts.p2}
         }
+        &:hover {
+          color: ${({ theme }) => theme.color.icon07};
+          svg * {
+            fill: ${({ theme }) => theme.color.icon07};
+          }
+        }
         svg {
           width: 16px;
           height: 16px;
+          
         }
       }
       ${media.mobile} {

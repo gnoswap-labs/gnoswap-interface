@@ -1,3 +1,4 @@
+// import { network } from './../../states/common';
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -80,9 +81,10 @@ export const useWallet = () => {
 
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
-      const network = NetworkData.find(
-        network => network.chainId === account.chainId,
-      );
+      const network = account.chainId === CHAIN_ID;
+      // const network = NetworkData.find(
+      //   network => network.chainId === account.chainId,
+      // );
       if (!network) {
         switchNetwork();
       }
@@ -111,10 +113,10 @@ export const useWallet = () => {
   const isSwitchNetwork = useMemo(() => {
     
     if (!walletAccount) return true;
-    const network = NetworkData.find(
-      network => network.chainId === walletAccount.chainId,
-    );
-    
+    // const network = NetworkData.find(
+    //   network => network.chainId === walletAccount.chainId,
+    // );
+    const network = walletAccount.chainId === CHAIN_ID;
     return network ? false : true;
   }, [walletAccount]);
 

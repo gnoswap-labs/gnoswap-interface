@@ -62,7 +62,7 @@ export const wrapper = (theme: Theme) => css`
         height: 34px;
       }
       span {
-        font-size: 15px;
+        font-size: 16px;
         line-height: 19px;
       }
     }

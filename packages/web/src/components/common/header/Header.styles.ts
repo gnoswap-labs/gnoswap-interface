@@ -137,7 +137,7 @@ export const RightSection = styled.div`
   ${mixins.flexbox("row", "center", "flex-end")};
   max-width: 255px;
   width: 100%;
-  gap: 16px;
+  gap: 10px;
   ${media.tablet} {
     max-width: 231px;
     gap: 8px;
@@ -156,6 +156,7 @@ export const SearchButton = styled.button`
   ${mixins.flexbox("row", "center", "flex-start")};
   border-radius: 4px;
   transition: all 0.3s ease;
+  margin-right: 2px;
   .search-icon {
     width: 32.5px;
     height: 32.5px;
@@ -180,7 +181,7 @@ export const DepositButton = styled.button`
   gap: 8px;
   ${fonts.p1}
   padding: 10px 16px 10px 14px;
-  background-color: ${({ theme }) => theme.color.background24};
+  background-color: ${({ theme }) => theme.color.background04};
   border-radius: 8px;
   width: 101px;
   svg {

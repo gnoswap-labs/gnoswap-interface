@@ -22,6 +22,7 @@ import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
 import { useNotice } from "@hooks/common/use-notice";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { TNoticeType } from "src/context/NoticeContext";
 
 const SwapContainer: React.FC = () => {
   const [swapValue , setSwapValue] = useAtom(SwapState.swap);
@@ -153,7 +154,7 @@ const SwapContainer: React.FC = () => {
     setOpenedConfirModal(false);
     updateBalances();
     if (swapResult?.success) {
-      setNotice(null, {timeout: 2000});
+      setNotice(null, {timeout: 50000, type: ["success", "error"][Math.floor(Math.random() * 2)] as TNoticeType, closeable: true, id: Math.random() * 19999});
     }
   }, [updateBalances, swapResult]);
 
@@ -354,6 +355,7 @@ const SwapContainer: React.FC = () => {
       return;
     }
     setSubmitted(true);
+    setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
     swap(tokenAAmount, tokenBAmount).then(result => {
       setSwapResult({
         success: result !== null,
