@@ -439,7 +439,7 @@ const TokenSwapContainer: React.FC = () => {
       return true;
     }
     if (isSwitchNetwork) {
-      return false;
+      return true;
     }
     if (!tokenA || !tokenB) {
       return false;

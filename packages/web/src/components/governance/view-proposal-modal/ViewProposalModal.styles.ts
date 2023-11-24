@@ -260,7 +260,7 @@ export const BoxQuorumWrapper = styled.div`
       color: ${({ theme }) => theme.color.text10};
       ${fonts.body12}
     }
-    > div {
+    > div:first-of-type {
       ${fonts.body4}
       color: ${({ theme }) => theme.color.text02};
     }

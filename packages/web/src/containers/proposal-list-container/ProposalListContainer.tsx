@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProposalList from "@components/governance/proposals-list/ProposalList";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 
 type ProposalStatus = "ACTIVE" | "REJECTED" | "PASSED" | "CANCELLED";
 export type TypeVote = "" | "YES" | "NO" | "ABSTAIN";
@@ -73,8 +74,9 @@ const ProposalListContainer: React.FC = () => {
   const [isShowCancelled, toggleShowCancelled] = useState(false);
   const [isShowProposalModal, setIsShowProposalModal] = useState(false);
   const [isShowCreateProposal, setIsShowCreateProposal] = useState(false);
-  const { isSwitchNetwork, connected } = useWallet();
+  const { isSwitchNetwork, connected, switchNetwork } = useWallet();
   const { breakpoint } = useWindowSize();
+  const { openModal } = useConnectWalletModal(); 
 
   const { data: proposalList = [] } = useQuery<ProposalDetailProps[], Error>({
     queryKey: ["proposalList", isShowCancelled],
@@ -112,6 +114,14 @@ const ProposalListContainer: React.FC = () => {
     setIsShowProposalModal(true);
   };
 
+  const handleSelectVote = useCallback(() => {
+    if (!connected) {
+      openModal();
+    } else if (isSwitchNetwork) {
+      switchNetwork();
+    }
+  }, [switchNetwork, openModal, isSwitchNetwork, connected]);
+
   return (
     <ProposalList
       isConnected={connected}
@@ -130,6 +140,7 @@ const ProposalListContainer: React.FC = () => {
         setIsShowCreateProposal(!isShowCreateProposal)
       }
       isSwitchNetwork={isSwitchNetwork}
+      handleSelectVote={handleSelectVote}
     />
   );
 };

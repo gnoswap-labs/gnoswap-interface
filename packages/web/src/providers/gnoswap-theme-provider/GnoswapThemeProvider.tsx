@@ -10,7 +10,7 @@ import { GNOSWAP_THEME_KEY } from "@states/theme";
 
 const getInitialThemeValue = () => {
   const storedTheme = localStorage.getItem(GNOSWAP_THEME_KEY);
-  return storedTheme !== null ? storedTheme.slice(1, -1) as any : "light";
+  return storedTheme !== null ? storedTheme.slice(1, -1) as any : "dark";
 };
 
 const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
@@ -40,7 +40,6 @@ const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
 
   useEffect(() => {
     const initialTheme = getInitialThemeValue();
-    console.log(initialTheme);
     
     setCurrentTheme(initialTheme as any);
   }, []);

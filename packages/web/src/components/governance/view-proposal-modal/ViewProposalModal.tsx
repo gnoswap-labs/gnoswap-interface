@@ -39,6 +39,9 @@ interface Props {
   breakpoint: DEVICE_TYPE;
   proposalDetail: ProposalDetailProps;
   setIsShowProposalModal: Dispatch<SetStateAction<boolean>>;
+  isConnected: boolean;
+  isSwitchNetwork: boolean;
+  handleSelectVote: () => void;
 }
 
 type OptionVote = "YES" | "NO" | "ABSTAIN" | "";
@@ -161,6 +164,9 @@ const ViewProposalModal: React.FC<Props> = ({
   breakpoint,
   proposalDetail,
   setIsShowProposalModal,
+  isSwitchNetwork,
+  isConnected,
+  handleSelectVote,
 }) => {
   const [optionVote, setOptionVote] = useState<OptionVote>("");
 
@@ -202,7 +208,33 @@ const ViewProposalModal: React.FC<Props> = ({
     };
   }, [modalRef]);
 
-  const handleSelectVoting = useCallback(() => {}, [optionVote]);
+  const handleSelectVoting = useCallback(() => {
+    handleSelectVote();
+  }, [optionVote, handleSelectVote]);
+
+  const disableButton = useMemo(() => {
+    if (!isConnected) {
+      return false;
+    }
+    if (isSwitchNetwork) {
+      return false;
+    }
+    return optionVote === "";
+  },[isConnected, isSwitchNetwork, optionVote]);
+
+  const textButton = useMemo(() => {
+    if (!isConnected) {
+      return "Wallet Login";
+    }
+    if (isSwitchNetwork) {
+      return "Switch to Gnoland";
+    }
+    return proposalDetail.typeVote
+      ? "Already Vote"
+      : optionVote === ""
+      ? "Select Voting Option"
+      : "Vote";
+  },[isConnected, isSwitchNetwork, proposalDetail, optionVote]);
 
   if (!proposalDetail) return null;
 
@@ -301,14 +333,8 @@ const ViewProposalModal: React.FC<Props> = ({
           <VotingPower proposalDetail={proposalDetail} />
           {proposalDetail.status === "ACTIVE" && (
             <Button
-              disabled={optionVote === ""}
-              text={
-                proposalDetail.typeVote
-                  ? "Already Vote"
-                  : optionVote === ""
-                  ? "Select Voting Option"
-                  : "Vote"
-              }
+              disabled={disableButton}
+              text={textButton}
               style={{
                 fullWidth: true,
                 height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
@@ -316,8 +342,7 @@ const ViewProposalModal: React.FC<Props> = ({
                 textColor: "text09",
                 bgColor: "background17",
                 width: breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
-                hierarchy:
-                  optionVote === "" ? undefined : ButtonHierarchy.Primary,
+                hierarchy: disableButton ? undefined : ButtonHierarchy.Primary,
               }}
               onClick={handleSelectVoting}
             />

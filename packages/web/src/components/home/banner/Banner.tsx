@@ -17,7 +17,7 @@ const Banner: React.FC = () => {
           bgColor: "background04",
           fontType: "body11",
           padding: "16px 40px",
-          textColor: "text09",
+          textColor: "border07",
         }}
         className="banner-button"
       />

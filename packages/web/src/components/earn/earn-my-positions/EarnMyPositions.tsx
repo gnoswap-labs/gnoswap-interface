@@ -44,6 +44,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       connected={connected}
       moveEarnAdd={moveEarnAdd}
       moveEarnStake={moveEarnStake}
+      isSwitchNetwork={isSwitchNetwork}
     />
     <EarnMyPositionsContent
       connected={connected}

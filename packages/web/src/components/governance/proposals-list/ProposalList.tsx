@@ -19,6 +19,7 @@ interface ProposalListProps {
   setIsShowCreateProposal: Dispatch<SetStateAction<boolean>>;
   isConnected: boolean;
   isSwitchNetwork: boolean;
+  handleSelectVote: () => void;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -34,6 +35,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   setIsShowCreateProposal,
   isConnected,
   isSwitchNetwork,
+  handleSelectVote,
 }) => (
   <ProposalListWrapper>
     <ProposalHeader
@@ -55,6 +57,9 @@ const ProposalList: React.FC<ProposalListProps> = ({
         breakpoint={breakpoint}
         proposalDetail={proposalDetail}
         setIsShowProposalModal={setIsShowProposalModal}
+        isConnected={isConnected}
+        isSwitchNetwork={isSwitchNetwork}
+        handleSelectVote={handleSelectVote}
       />
     )}
     {isShowCreateProposal && (

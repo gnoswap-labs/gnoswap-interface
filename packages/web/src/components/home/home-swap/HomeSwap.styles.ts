@@ -36,11 +36,14 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 100%;
     position: relative;
+    
     .from,
     .to {
       ${mixins.flexbox("row", "center", "space-between")};
       flex-wrap: wrap;
-
+      &:focus-within {
+        border: 1px solid ${theme.color.border15};
+      }
       width: 100%;
       padding: 9px 23px;
 

@@ -56,8 +56,8 @@ const FailContent: FC = () => {
     <div className="notice-body">
       <IconFailed className="icon-success" />
       <div>
-        <h5>Swap - Success!</h5>
-        <p>Swapped 1541.5 GNOT for 1090.55 GNS</p>
+        <h5>Swap - Failure!</h5>
+        <p>Failed swapping 0.1 GNOT for 0.12 GNS</p>
         <a href={TEMP_URL} target="_blank">
           View transaction <IconNewTab />
         </a>
