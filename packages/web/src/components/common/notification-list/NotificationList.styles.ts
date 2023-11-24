@@ -71,6 +71,9 @@ export const NotificationHeader = styled.div`
 export const ClearButton = styled.button`
   ${fonts.body11};
   color: ${({ theme }) => theme.color.text04};
+  &:hover {
+    color: ${({ theme }) => theme.color.text03};
+  }
 `;
 
 export const TxsListItem = styled.div`

@@ -170,7 +170,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
       ) : (
         <div className="button-container">
           <Button
-            text="Connect Wallet"
+            text="Wallet Login"
             onClick={connect}
             style={{
               hierarchy: ButtonHierarchy.Primary,

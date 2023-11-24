@@ -58,8 +58,9 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect }) => {
           </a>{" "}
           and consent to our{" "}
           <a href="/" target="_blank">
-            Privacy Policy.
+            Privacy Policy
           </a>
+          .
         </div>
       </div>
     </ConnectWalletModalWrapper>

@@ -56,9 +56,11 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .token {
-      width: 112px;
-      height: 30px;
       cursor: default;
+      > div {
+        padding: 5px 12px 5px 6px;
+        height: 34px;
+      }
       span {
         font-size: 15px;
         line-height: 19px;
