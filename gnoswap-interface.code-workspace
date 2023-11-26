@@ -5,6 +5,10 @@
       "path": "packages/web"
     },
     {
+      "name": "swap-router",
+      "path": "packages/swap-router"
+    },
+    {
       "name": "monorepo",
       "path": "."
     }
@@ -26,10 +30,6 @@
     "typescript.enablePromptUseWorkspaceTsdk": true
   },
   "extensions": {
-    "recommendations": [
-      "arcanis.vscode-zipfs",
-      "esbenp.prettier-vscode",
-      "editorconfig.editorconfig"
-    ]
+    "recommendations": ["arcanis.vscode-zipfs", "esbenp.prettier-vscode", "editorconfig.editorconfig"]
   }
 }
