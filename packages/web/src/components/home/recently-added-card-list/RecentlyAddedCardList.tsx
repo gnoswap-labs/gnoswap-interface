@@ -29,7 +29,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoadingTitle(false);
-    }, 1000);
+    }, 500);
     return () => clearTimeout(timeout);
   }, []);
 
@@ -42,7 +42,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
       {loading && loadingTitle ? (
         <SkeletonItem tdWidth="100%">
           <span
-            css={skeletonTrendingStyle("120px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={skeletonTrendingStyle("120px", SHAPE_TYPES.ROUNDED_SQUARE, 1.5)}
           />
         </SkeletonItem>
       ) : (

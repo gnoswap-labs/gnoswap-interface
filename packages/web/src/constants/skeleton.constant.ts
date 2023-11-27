@@ -39,7 +39,7 @@ export const skeletonStyle =
 
 
 export const skeletonTrendingStyle =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
+(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) =>
 (theme: Theme) =>
   css`
     position: relative;
@@ -63,7 +63,7 @@ export const skeletonTrendingStyle =
         ${theme.color.backgroundGradient} 0%,
         ${theme.color.backgroundGradient} 100%
       );
-      animation: ${skeletonAni} 3s ease infinite;
+      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
     }
   `;
 
