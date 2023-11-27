@@ -92,7 +92,7 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork } = useWallet();
+  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
 
   const { openModal } = useConnectWalletModal();
 
@@ -143,6 +143,7 @@ const HeaderContainer: React.FC = () => {
       themeKey={themeKey}
       switchNetwork={switchNetwork}
       isSwitchNetwork={isSwitchNetwork}
+      loadingConnect={loadingConnect}
     />
   );
 };

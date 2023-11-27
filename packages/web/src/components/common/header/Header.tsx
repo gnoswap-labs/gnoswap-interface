@@ -45,6 +45,7 @@ interface HeaderProps {
   disconnectWallet: () => void;
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
+  loadingConnect: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -65,6 +66,7 @@ const Header: React.FC<HeaderProps> = ({
   disconnectWallet,
   switchNetwork,
   isSwitchNetwork,
+  loadingConnect,
 }) => {
   return (
     <>
@@ -119,6 +121,7 @@ const Header: React.FC<HeaderProps> = ({
                 disconnectWallet={disconnectWallet}
                 switchNetwork={switchNetwork}
                 isSwitchNetwork={isSwitchNetwork}
+                loadingConnect={loadingConnect}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />

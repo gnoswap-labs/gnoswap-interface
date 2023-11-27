@@ -126,6 +126,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   }, [menuRef, onMenuToggle]);
 
   const connect = useCallback(() => {
+    onMenuToggle();
     connectAdenaClient();
   }, [connectAdenaClient]);
 

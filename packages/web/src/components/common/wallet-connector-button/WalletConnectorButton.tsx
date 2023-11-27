@@ -14,6 +14,7 @@ import { AccountModel } from "@models/account/account-model";
 import IconFailed from "../icons/IconFailed";
 import Tooltip from "../tooltip/Tooltip";
 import { Global, css } from "@emotion/react";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -23,6 +24,7 @@ interface WalletConnectProps {
   disconnectWallet: () => void;
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
+  loadingConnect: string;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -58,6 +60,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   disconnectWallet,
   switchNetwork,
   isSwitchNetwork,
+  loadingConnect,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
 
@@ -74,6 +77,10 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       walletConnect: !prev.walletConnect,
     }));
   };
+
+  const isLoading = useMemo(() => {
+    return loadingConnect === "loading";
+  }, [loadingConnect]);
 
   return (
     <WalletConnectorButtonWrapper>
@@ -111,14 +118,14 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
         />
       ) : (
         <Button
-          text="Wallet Login"
-          rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
+          text={isLoading ? "" : "Wallet Login"}
+          rightIcon={isLoading ? <LoadingSpinner className="loading-button"/> : <IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
             width: 136,
             height: 36,
-            padding: "10px 16px 10px 20px",
+            padding: isLoading ? "8.5px 16px 7.5px 20px" : "10px 16px 10px 20px",
             justify: "space-between",
           }}
           onClick={onMenuToggle}
