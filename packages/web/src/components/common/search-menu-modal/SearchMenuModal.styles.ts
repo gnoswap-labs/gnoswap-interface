@@ -5,15 +5,7 @@ import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
 
 export const SearchModalBackground = styled.div`
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 14, 23, 0.7);
-  z-index: ${Z_INDEX.modalOverlay};
+  z-index: ${Z_INDEX.modal};
 `;
 
 export const SearchContainer = styled.div`
@@ -170,4 +162,17 @@ export const ModalContainer = styled.div`
       }
     }
   }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: ${Z_INDEX.modalOverlay};
+  background: rgba(10, 14, 23, 0.7);
 `;

@@ -13,6 +13,7 @@ import { CommonState, ThemeState } from "@states/index";
 import { useAtom } from "jotai";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -135,6 +136,11 @@ const HeaderContainer: React.FC = () => {
   const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
 
   const { openModal } = useConnectWalletModal();
+
+  const handleESC = () => {
+    setSearchMenuToggle(false);
+  }
+  useEscCloseModal(handleESC);
 
   const {
     isFetched,

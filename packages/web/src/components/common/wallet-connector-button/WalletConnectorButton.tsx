@@ -15,6 +15,7 @@ import IconFailed from "../icons/IconFailed";
 import Tooltip from "../tooltip/Tooltip";
 import { Global, css } from "@emotion/react";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -63,6 +64,16 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   loadingConnect,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
+  const handleESC = () => {
+    if (!toggle.walletConnect) {
+      setToggle((prev) => ({
+        ...prev,
+        walletConnect: false,
+      }));
+    }
+  };
+  
+  useEscCloseModal(handleESC);
 
   const address = useMemo(() => {
     if (account === null) {

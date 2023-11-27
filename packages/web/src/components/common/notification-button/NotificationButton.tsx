@@ -10,6 +10,7 @@ import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
 import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 export interface TransactionGroupsType {
   title: string;
@@ -18,6 +19,15 @@ export interface TransactionGroupsType {
 
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
+  const handleESC = () => {
+    if (toggle.notification) {
+      setToggle(prev => ({
+        ...prev,
+        notification: false,
+      }));
+    }
+  };
+  useEscCloseModal(handleESC);
 
   const onListToggle = () => {
     setToggle(prev => ({

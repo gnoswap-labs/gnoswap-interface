@@ -46,7 +46,7 @@ export const skeletonTrendingStyle =
     width: ${typeof skeletonWidth === "number"
       ? `${skeletonWidth}px`
       : skeletonWidth};
-    height: 24px;
+    height: 25px;
     background: ${theme.color.background23};
     overflow: hidden;
     border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};

@@ -27,7 +27,7 @@ export const NoticeUIList = styled.div`
   display: block;
   position: fixed;
   top: 82px;
-  right: 20px;
+  right: 30px;
   width: 380px;
   .toast-item {
     animation: ${toastInRight} 500ms;

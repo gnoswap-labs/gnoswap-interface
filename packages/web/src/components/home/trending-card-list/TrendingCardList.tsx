@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import CardList from "@components/home/card-list/CardList";
 import {
   SkeletonItem,
@@ -24,14 +24,6 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
   onClickItem,
   loading,
 }) => {
-  const [loadingTitle, setLoadingTitle] = useState(true);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoadingTitle(false);
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, []);
 
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
@@ -39,10 +31,10 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
 
   return visible ? (
     <TrendingCardListwrapper>
-      {loading && loadingTitle ? (
+      {loading ? (
         <SkeletonItem tdWidth="100%">
           <span
-            css={skeletonTrendingStyle("120px", SHAPE_TYPES.ROUNDED_SQUARE, 1.5)}
+            css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
           />
         </SkeletonItem>
       ) : (

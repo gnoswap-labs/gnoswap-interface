@@ -14,11 +14,11 @@ export const RecentlyAddedCardListwrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
-  padding: 16px 0px 12px;
-  gap: 12px;
+  padding: 15px 0px 15px;
+  gap: 8px;
 
   ${media.mobile} {
-    padding: 16px 0px;
+    padding: 15px 0px;
     gap: 16px;
   }
   h2 {
@@ -45,6 +45,6 @@ export const SkeletonItem = styled.div<SkeletonStyleProps>`
   padding: 4px 24px;
   ${mixins.flexbox("row", "center", "flex-start")};
   &:first-of-type {
-    padding: 0px 24px 1px 24px;
+    padding: 0px 24px 12px 24px;
   }
 `;

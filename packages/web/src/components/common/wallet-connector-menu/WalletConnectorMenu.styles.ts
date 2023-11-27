@@ -17,6 +17,7 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
   border-radius: 8px;
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   padding: 16px;
+  z-index: ${Z_INDEX.modal};
   right: ${({ width }) => {
     return width && width < 1521 && "0px";
   }};
@@ -131,4 +132,16 @@ export const CopyTooltip = styled.div`
   .polygon-icon * {
     fill: ${({ theme }) => theme.color.background02};
   }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: ${Z_INDEX.modalOverlay};
 `;
