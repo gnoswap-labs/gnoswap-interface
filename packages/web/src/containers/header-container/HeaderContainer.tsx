@@ -33,14 +33,56 @@ export const RecentdummyToken: Token[] = [
     searchType: "recent",
     token: {
       path: "1",
-      name: "Bitcoin",
-      symbol: "BTC",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+      name: "GNS",
+      symbol: "APR",
+      logoURI: "/gnos.svg",
     },
     price: "$12,090.09",
     priceOf1d: {
       status: MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "12.08%",
+      value: "52.4",
+    },
+    tokenB: {
+      path: "1",
+      name: "GNOT",
+      symbol: "GNOT",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+    },
+  },
+  {
+    path: Math.floor(Math.random() * 50 + 1).toString(),
+    searchType: "recent",
+    token: {
+      path: "1",
+      name: "GNS",
+      symbol: "APR",
+      logoURI: "/gnos.svg",
+    },
+    price: "$12,090.09",
+    priceOf1d: {
+      status: MATH_NEGATIVE_TYPE.POSITIVE,
+      value: "107.4",
+    },
+    tokenB: {
+      path: "1",
+      name: "GNOT",
+      symbol: "GNOT",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+    },
+  },
+  {
+    path: Math.floor(Math.random() * 50 + 1).toString(),
+    searchType: "recent",
+    token: {
+      path: "1",
+      name: "GNS",
+      symbol: "APR",
+      logoURI: "/gnos.svg",
+    },
+    price: "$12,090.09",
+    priceOf1d: {
+      status: MATH_NEGATIVE_TYPE.POSITIVE,
+      value: "31.4",
     },
     tokenB: {
       path: "1",
@@ -74,8 +116,6 @@ async function fetchTokens(
 ): Promise<Token[]> {
   return new Promise(resolve => setTimeout(resolve, 1500)).then(() => {
     const data = [
-      ...RecentdummyToken,
-      ...RecentdummyToken,
       ...RecentdummyToken,
       ...PopulardummyToken,
       ...PopulardummyToken,

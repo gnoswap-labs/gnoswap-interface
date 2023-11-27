@@ -26,8 +26,8 @@ const toastOutRightClose = keyframes`
 export const NoticeUIList = styled.div`
   display: block;
   position: fixed;
-  top: 38px;
-  right: 36px;
+  top: 82px;
+  right: 20px;
   width: 380px;
   .toast-item {
     animation: ${toastInRight} 500ms;
@@ -35,15 +35,16 @@ export const NoticeUIList = styled.div`
   z-index: ${Z_INDEX.modalOverlay};
   ${media.mobile} {
     right: 0;
+    top: 0px;
   }
 `;
 
 
 export const NoticeUIWrapper = styled.div`
-  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
-  padding: 16px 24px;
+  box-shadow: ${({ theme }) => theme.color.shadow};
+  padding: 15px 23px;
   color: ${({ theme }) => theme.color.text02};
-  background-color: ${({ theme }) => theme.color.background02};
+  background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   margin-top: 10px;
@@ -109,6 +110,7 @@ export const NoticeUIWrapper = styled.div`
       h5 {
         ${fonts.body7};
         color: ${({ theme }) => theme.color.text02};
+        line-height: 23px;
         ${media.mobile} {
           ${fonts.body7}
         }

@@ -84,8 +84,8 @@ export const ConnectWalletModalWrapper = styled.div`
     height: 32px;
     background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
     &::before {
-      width: 20px;
-      height: 20px;
+      width: 23.4px;
+      height: 23.4px;
       background-color: ${({ theme }) => theme.color.background04Hover};
     }
   }

@@ -12,6 +12,7 @@ import {
 import IconSearch from "@components/common/icons/IconSearch";
 import Badge, { BADGE_TYPE } from "../badge/Badge";
 import DoubleLogo from "../double-logo/DoubleLogo";
+import IconStar from "../icons/IconStar";
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -160,7 +161,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             />
                           </div>
                           <span className="token-price">
-                            {item.priceOf1d.value} {item.token.symbol}
+                          {Number(item.priceOf1d.value) >= 100 && <IconStar />}{item.priceOf1d.value}% {item.token.symbol}
                           </span>
                         </li>
                       ))}

@@ -144,10 +144,15 @@ export const ModalContainer = styled.div`
       }
     }
     .token-price {
+      ${mixins.flexbox("row", "center", "flex-end")};
       ${fonts.body9};
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
         ${fonts.body11}
+      }
+      svg {
+        height: 20px;
+        width: auto;
       }
     }
     .negative {

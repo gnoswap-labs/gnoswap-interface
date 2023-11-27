@@ -153,9 +153,6 @@ const SwapContainer: React.FC = () => {
     setSwapResult(null);
     setOpenedConfirModal(false);
     updateBalances();
-    if (swapResult?.success) {
-      setNotice(null, {timeout: 50000, type: ["success", "error"][Math.floor(Math.random() * 2)] as TNoticeType, closeable: true, id: Math.random() * 19999});
-    }
   }, [updateBalances, swapResult]);
 
   const changeTokenAAmount = useCallback((value: string) => {
@@ -355,11 +352,25 @@ const SwapContainer: React.FC = () => {
       return;
     }
     setSubmitted(true);
-    setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
     swap(tokenAAmount, tokenBAmount).then(result => {
+      if (result !== false) {
+        setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
+        setTimeout(() => {
+          if (!!result) {
+            setNotice(null, {timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999});
+          } else {
+            setNotice(null, {timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999});
+          }
+        }, 1000);
+      }
       setSwapResult({
-        success: result !== null,
+        success: !!result,
         hash: (result as SwapResponse)?.tx_hash || "",
+      });
+    }).catch(() => {
+      setSwapResult({
+        success: false,
+        hash: "",
       });
     });
   }

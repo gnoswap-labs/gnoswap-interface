@@ -246,9 +246,6 @@ export const ConfirmModal = styled.div`
       .animation-logo {
         width: 72px;
         height: 72px;
-        * {
-          fill: ${({ theme }) => theme.color.point};
-        }
         ${media.mobile} {
           width: 60px;
           height: 54px;

@@ -82,6 +82,9 @@ export const wrapper = (theme: Theme) => css`
       line-height: 38px;
       color: ${theme.color.text01};
       margin-right: 30px;
+      &::placeholder {
+        color: ${theme.color.text01};
+      }
     }
 
     .price-text,
