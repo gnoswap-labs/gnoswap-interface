@@ -5,6 +5,7 @@ import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
 
 export const ConfirmSwapModalBackground = styled.div`
+  z-index: ${Z_INDEX.modal};
   position: fixed;
   overflow: scroll;
   top: 0px;
@@ -13,11 +14,11 @@ export const ConfirmSwapModalBackground = styled.div`
   right: 0px;
   width: 100%;
   height: 100%;
-  background: rgba(10, 14, 23, 0.7);
-  z-index: ${Z_INDEX.modalOverlay};
+  pointer-events: none;
 `;
 
 export const ConfirmModal = styled.div`
+  pointer-events: initial;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   overflow: hidden;
   width: 460px;

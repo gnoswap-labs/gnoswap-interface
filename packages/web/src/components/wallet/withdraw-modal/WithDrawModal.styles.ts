@@ -4,15 +4,6 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
 export const WithDrawModalBackground = styled.div`
-  position: fixed;
-  overflow: scroll;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  width: 100%;
-  height: 100lvh;
-  background: rgba(10, 14, 23, 0.7);
   z-index: ${Z_INDEX.modalOverlay};
 `;
 
@@ -30,6 +21,7 @@ export const WithDrawModalWrapper = styled.div`
   box-shadow: 10px 14px 60px 0px rgba(0, 0, 0, 0.4);
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
+  z-index: ${Z_INDEX.modal};
   ${media.mobile} {
     width: 328px;
     padding: 16px 11px;

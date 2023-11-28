@@ -29,7 +29,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   }, [device]);
 
   return visible ? (
-    <RecentlyAddedCardListwrapper>
+    <RecentlyAddedCardListwrapper loading={loading}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span

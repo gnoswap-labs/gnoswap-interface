@@ -11,7 +11,7 @@ function useEscCloseModal(callback: () => void) {
     window.addEventListener("keydown", handleEsc);
 
     return () => {
-      window.addEventListener("keydown", handleEsc);
+      window.removeEventListener("keydown", handleEsc);
     };
   }, []);
 }

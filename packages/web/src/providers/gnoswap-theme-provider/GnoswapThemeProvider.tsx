@@ -7,21 +7,22 @@ import { ThemeState } from "@states/index";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DeviceSize } from "@styles/media";
 import { GNOSWAP_THEME_KEY } from "@states/theme";
+import { ThemeKeys } from "@styles/ThemeTypes";
 
 const getInitialThemeValue = () => {
   const storedTheme = localStorage.getItem(GNOSWAP_THEME_KEY);
-  return storedTheme !== null ? storedTheme.slice(1, -1) as any : "dark";
+  return storedTheme !== null ? storedTheme.slice(1, -1) as ThemeKeys : "dark";
 };
 
 const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [themeKey] = useAtom(ThemeState.themeKey);
-  const [currentTheme, setCurrentTheme] = useState(null);
+  const [currentTheme, setCurrentTheme] = useState<ThemeKeys | null>(null);
   const { breakpoint, handleBreakpoint } = useWindowSize();
 
   useEffect(() => {
-    setCurrentTheme(themeKey as any);
+    setCurrentTheme(themeKey);
   }, [themeKey]);
 
   useEffect(() => {
@@ -41,11 +42,11 @@ const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
   useEffect(() => {
     const initialTheme = getInitialThemeValue();
     
-    setCurrentTheme(initialTheme as any);
+    setCurrentTheme(initialTheme);
   }, []);
 
   const theme = useMemo(() => {
-    return getTheme(currentTheme as any);
+    return getTheme(currentTheme || "dark");
   }, [currentTheme]);
 
   if (!currentTheme) return null;

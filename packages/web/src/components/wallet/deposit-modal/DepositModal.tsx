@@ -2,8 +2,9 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconFailed from "@components/common/icons/IconFailed";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import { Overlay } from "@components/common/modal/Modal.styles";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
-import useModalCloseEvent from "@hooks/common/use-modal-close-event";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-postion-modal";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
@@ -47,7 +48,7 @@ const DepositModal: React.FC<Props> = ({
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [amount, setAmount] = useState("0");
 
-  useModalCloseEvent(modalRef, close);
+  useEscCloseModal(close);
   usePositionModal(modalRef);
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,92 +65,95 @@ const DepositModal: React.FC<Props> = ({
   );
 
   return (
-    <DepositModalBackground>
-      <DepositModalWrapper ref={modalRef}>
-        <div className="modal-body">
-          <div className="header">
-            <h6>IBC Deposit</h6>
-            <div className="close-wrap" onClick={close}>
-              <IconClose className="close-icon" />
+    <>
+      <DepositModalBackground>
+        <DepositModalWrapper ref={modalRef}>
+          <div className="modal-body">
+            <div className="header">
+              <h6>IBC Deposit</h6>
+              <div className="close-wrap" onClick={close}>
+                <IconClose className="close-icon" />
+              </div>
             </div>
-          </div>
-          <DepositContent>
-            <div className="deposit">
-              <div className="amount">
-                <input
-                  className="amount-text"
-                  value={amount}
-                  onChange={onChangeAmount}
-                  placeholder="0"
-                />
-                <div className="token">
-                  <SelectPairButton
-                    token={depositInfo}
-                    changeToken={changeToken}
-                    callback={callback}
-                    isHiddenArrow
-                    disabled
+            <DepositContent>
+              <div className="deposit">
+                <div className="amount">
+                  <input
+                    className="amount-text"
+                    value={amount}
+                    onChange={onChangeAmount}
+                    placeholder="0"
                   />
+                  <div className="token">
+                    <SelectPairButton
+                      token={depositInfo}
+                      changeToken={changeToken}
+                      callback={callback}
+                      isHiddenArrow
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="info">
+                  <span className="price-text">{!Number(amount) ? "-" : `$${amount}`}</span>
+                  <span className="balance-text">Available: -</span>
                 </div>
               </div>
-              <div className="info">
-                <span className="price-text">{!Number(amount) ? "-" : `$${amount}`}</span>
-                <span className="balance-text">Available: -</span>
+            </DepositContent>
+            <BoxFromTo>
+              <div className="from">
+                <h5>From</h5>
+                <div>
+                  <img
+                    src={fromToken.logoURI}
+                    alt="token logo"
+                    className="token-logo"
+                  />
+                  <strong className="token-name">{fromToken.symbol}</strong>
+                </div>
+                <p>{formatAddress(fromToken.address)}</p>
               </div>
-            </div>
-          </DepositContent>
-          <BoxFromTo>
-            <div className="from">
-              <h5>From</h5>
-              <div>
-                <img
-                  src={fromToken.logoURI}
-                  alt="token logo"
-                  className="token-logo"
-                />
-                <strong className="token-name">{fromToken.symbol}</strong>
+              <IconButton>
+                <IconStrokeArrowRight />
+              </IconButton>
+              <div className="to">
+                <h5>To</h5>
+                <div>
+                  <img
+                    src={toToken.logoURI}
+                    alt="token logo"
+                    className="token-logo"
+                  />
+                  <strong className="token-name">{toToken.symbol}</strong>
+                </div>
+                <p>{formatAddress(toToken.address)}</p>
               </div>
-              <p>{formatAddress(fromToken.address)}</p>
-            </div>
-            <IconButton>
-              <IconStrokeArrowRight />
-            </IconButton>
-            <div className="to">
-              <h5>To</h5>
-              <div>
-                <img
-                  src={toToken.logoURI}
-                  alt="token logo"
-                  className="token-logo"
-                />
-                <strong className="token-name">{toToken.symbol}</strong>
-              </div>
-              <p>{formatAddress(toToken.address)}</p>
-            </div>
-          </BoxFromTo>
-          <BoxDescription>
-            <IconFailed className="fail-icon" />
-            <p>This feature will be available once Gnoland enables IBC.</p>
-          </BoxDescription>
-          <Button
-            disabled={true}
-            text="Deposit"
-            className="btn-deposit"
-            style={{
-              fullWidth: true,
-              textColor: "text09",
-              fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-              hierarchy:
-                connected && !Number(amount || 0)
-                  ? undefined
-                  : ButtonHierarchy.Primary,
-              bgColor:
-                connected && !Number(amount || 0) ? "background17" : undefined,
-            }}
-          />
-        </div>
-      </DepositModalWrapper>
-    </DepositModalBackground>
+            </BoxFromTo>
+            <BoxDescription>
+              <IconFailed className="fail-icon" />
+              <p>This feature will be available once Gnoland enables IBC.</p>
+            </BoxDescription>
+            <Button
+              disabled={true}
+              text="Deposit"
+              className="btn-deposit"
+              style={{
+                fullWidth: true,
+                textColor: "text09",
+                fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
+                hierarchy:
+                  connected && !Number(amount || 0)
+                    ? undefined
+                    : ButtonHierarchy.Primary,
+                bgColor:
+                  connected && !Number(amount || 0) ? "background17" : undefined,
+              }}
+            />
+          </div>
+        </DepositModalWrapper>
+      </DepositModalBackground>
+      <Overlay onClick={close}/>
+    </>
   );
 };
 

@@ -33,9 +33,14 @@ export const NoticeUIList = styled.div`
     animation: ${toastInRight} 500ms;
   }
   z-index: ${Z_INDEX.modalOverlay};
+  ${media.tablet} {
+    top: 70px;
+    right: 30px;
+  }
   ${media.mobile} {
-    right: 0;
-    top: 0px;
+    width: 328px;
+    right: 16px;
+    top: -16px;
   }
 `;
 
@@ -53,12 +58,12 @@ export const NoticeUIWrapper = styled.div`
     animation: ${toastOutRightClose} 500ms;
   }
   ${media.mobile} {
-    width: 90%;
+    width: 100%;
     top: 16px;
     left: 50%;
     transform: translateX(-50%);
     height: fit-content;
-    padding: 16px;
+    padding: 15px;
   }
   .icon-close {
     width: 24px;
@@ -101,6 +106,14 @@ export const NoticeUIWrapper = styled.div`
       &:before {
         width: 24px;
         height: 24px;
+      }
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+        &:before {
+          width: 15.4px;
+          height: 15.4px;
+        }
       }
     }
     > div {

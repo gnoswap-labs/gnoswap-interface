@@ -32,6 +32,8 @@ import {
 } from "./ViewProposalModal.styles";
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
+import { Overlay } from "@components/common/modal/Modal.styles";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 dayjs.extend(relative);
 
@@ -185,20 +187,7 @@ const ViewProposalModal: React.FC<Props> = ({
     }
   };
 
-  useEffect(() => {
-    const closeModal = (e: MouseEvent) => {
-      if (modalRef.current && modalRef.current.contains(e.target as Node)) {
-        return;
-      } else {
-        e.stopPropagation();
-        setIsShowProposalModal(true);
-      }
-    };
-    window.addEventListener("click", closeModal, true);
-    return () => {
-      window.removeEventListener("click", closeModal, true);
-    };
-  }, [modalRef, setIsShowProposalModal]);
+  useEscCloseModal(() => setIsShowProposalModal(false));
 
   useEffect(() => {
     handleResize();
@@ -239,118 +228,121 @@ const ViewProposalModal: React.FC<Props> = ({
   if (!proposalDetail) return null;
 
   return (
-    <ViewProposalModalBackground>
-      <ViewProposalModalWrapper ref={modalRef}>
-        <div className="modal-body">
-          <ModalHeaderWrapper>
-            <div className="header">
-              <div className="title">
-                <span>{proposalDetail.title}</span>
-                {breakpoint !== DEVICE_TYPE.MOBILE && (
-                  <Badge
-                    className="badge-label"
-                    type={BADGE_TYPE.DARK_DEFAULT}
-                    text={proposalDetail.label}
-                  />
-                )}
+    <>
+      <ViewProposalModalBackground>
+        <ViewProposalModalWrapper ref={modalRef}>
+          <div className="modal-body">
+            <ModalHeaderWrapper>
+              <div className="header">
+                <div className="title">
+                  <span>{proposalDetail.title}</span>
+                  {breakpoint !== DEVICE_TYPE.MOBILE && (
+                    <Badge
+                      className="badge-label"
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={proposalDetail.label}
+                    />
+                  )}
+                </div>
+                <div
+                  className="close-wrap"
+                  onClick={() => setIsShowProposalModal(false)}
+                >
+                  <IconClose className="close-icon" />
+                </div>
               </div>
-              <div
-                className="close-wrap"
-                onClick={() => setIsShowProposalModal(false)}
-              >
-                <IconClose className="close-icon" />
+              {breakpoint === DEVICE_TYPE.MOBILE && (
+                <Badge
+                  className="badge-label"
+                  type={BADGE_TYPE.DARK_DEFAULT}
+                  text={proposalDetail.label}
+                />
+              )}
+              <div className="active-wrapper">
+                {MAPPING_STATUS[proposalDetail.status]}
+                <div className="status time">
+                  <IconOutlineClock className="status-icon" />{" "}
+                  {`Voting ${
+                    proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended1"
+                  } ${dayjs(proposalDetail.timeEnd).fromNow()} `}
+                  <br />
+                  {proposalDetail.timeEnd}
+                </div>
               </div>
-            </div>
-            {breakpoint === DEVICE_TYPE.MOBILE && (
-              <Badge
-                className="badge-label"
-                type={BADGE_TYPE.DARK_DEFAULT}
-                text={proposalDetail.label}
+            </ModalHeaderWrapper>
+            <ModalQuorum>
+              <div className="quorum-header">
+                <span>Quorum</span>
+                <div className="progress-value">
+                  <span>{proposalDetail.currentValue.toLocaleString()}</span>/
+                  <div>{proposalDetail.maxValue.toLocaleString()}</div>
+                </div>
+              </div>
+              <ProgressWrapper>
+                <ProgressBar
+                  rateWidth={`${proposalDetail.yesOfQuorum}%`}
+                  abstainOfQuorumWidth={`${
+                    proposalDetail.abstainOfQuorum +
+                    proposalDetail.yesOfQuorum +
+                    proposalDetail.noOfQuorum
+                  }%`}
+                  noOfQuorumWidth={`${
+                    proposalDetail.noOfQuorum + proposalDetail.yesOfQuorum
+                  }%`}
+                >
+                  <FloatingTooltip
+                    className="float-progress"
+                    position="top"
+                    content={`Yes ${proposalDetail.yesOfQuorum}%`}
+                  >
+                    <div className="progress-bar-yes-of-quorum progress-bar-rate" />
+                  </FloatingTooltip>
+                  <FloatingTooltip
+                    className="float-progress"
+                    position="top"
+                    content={`No ${proposalDetail.noOfQuorum}%`}
+                  >
+                    <div className="progress-bar-no-of-quorum progress-bar-rate" />
+                  </FloatingTooltip>
+                  <FloatingTooltip
+                    className="float-progress"
+                    position="top"
+                    content={`Abstain ${proposalDetail.abstainOfQuorum}%`}
+                  >
+                    <div className="progress-bar-abstain progress-bar-rate" />
+                  </FloatingTooltip>
+                </ProgressBar>
+              </ProgressWrapper>
+            </ModalQuorum>
+            <BoxQuorum
+              breakpoint={breakpoint}
+              proposalDetail={proposalDetail}
+              optionVote={optionVote}
+              setOptionVote={setOptionVote}
+            />
+            <VotingPower proposalDetail={proposalDetail} />
+            {proposalDetail.status === "ACTIVE" && (
+              <Button
+                disabled={disableButton}
+                text={textButton}
+                style={{
+                  fullWidth: true,
+                  height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
+                  fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
+                  textColor: "text09",
+                  bgColor: "background17",
+                  width: breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
+                  hierarchy: disableButton ? undefined : ButtonHierarchy.Primary,
+                }}
+                onClick={handleSelectVoting}
               />
             )}
-            <div className="active-wrapper">
-              {MAPPING_STATUS[proposalDetail.status]}
-              <div className="status time">
-                <IconOutlineClock className="status-icon" />{" "}
-                {`Voting ${
-                  proposalDetail.status === "ACTIVE" ? "Ends in" : "Ended1"
-                } ${dayjs(proposalDetail.timeEnd).fromNow()} `}
-                <br />
-                {proposalDetail.timeEnd}
-              </div>
-            </div>
-          </ModalHeaderWrapper>
-          <ModalQuorum>
-            <div className="quorum-header">
-              <span>Quorum</span>
-              <div className="progress-value">
-                <span>{proposalDetail.currentValue.toLocaleString()}</span>/
-                <div>{proposalDetail.maxValue.toLocaleString()}</div>
-              </div>
-            </div>
-            <ProgressWrapper>
-              <ProgressBar
-                rateWidth={`${proposalDetail.yesOfQuorum}%`}
-                abstainOfQuorumWidth={`${
-                  proposalDetail.abstainOfQuorum +
-                  proposalDetail.yesOfQuorum +
-                  proposalDetail.noOfQuorum
-                }%`}
-                noOfQuorumWidth={`${
-                  proposalDetail.noOfQuorum + proposalDetail.yesOfQuorum
-                }%`}
-              >
-                <FloatingTooltip
-                  className="float-progress"
-                  position="top"
-                  content={`Yes ${proposalDetail.yesOfQuorum}%`}
-                >
-                  <div className="progress-bar-yes-of-quorum progress-bar-rate" />
-                </FloatingTooltip>
-                <FloatingTooltip
-                  className="float-progress"
-                  position="top"
-                  content={`No ${proposalDetail.noOfQuorum}%`}
-                >
-                  <div className="progress-bar-no-of-quorum progress-bar-rate" />
-                </FloatingTooltip>
-                <FloatingTooltip
-                  className="float-progress"
-                  position="top"
-                  content={`Abstain ${proposalDetail.abstainOfQuorum}%`}
-                >
-                  <div className="progress-bar-abstain progress-bar-rate" />
-                </FloatingTooltip>
-              </ProgressBar>
-            </ProgressWrapper>
-          </ModalQuorum>
-          <BoxQuorum
-            breakpoint={breakpoint}
-            proposalDetail={proposalDetail}
-            optionVote={optionVote}
-            setOptionVote={setOptionVote}
-          />
-          <VotingPower proposalDetail={proposalDetail} />
-          {proposalDetail.status === "ACTIVE" && (
-            <Button
-              disabled={disableButton}
-              text={textButton}
-              style={{
-                fullWidth: true,
-                height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
-                fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                textColor: "text09",
-                bgColor: "background17",
-                width: breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
-                hierarchy: disableButton ? undefined : ButtonHierarchy.Primary,
-              }}
-              onClick={handleSelectVoting}
-            />
-          )}
-          <ProposalContent proposalDetail={proposalDetail} />
-        </div>
-      </ViewProposalModalWrapper>
-    </ViewProposalModalBackground>
+            <ProposalContent proposalDetail={proposalDetail} />
+          </div>
+        </ViewProposalModalWrapper>
+      </ViewProposalModalBackground>
+      <Overlay onClick={() => setIsShowProposalModal(false)}/>
+    </>
   );
 };
 

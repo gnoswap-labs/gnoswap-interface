@@ -65,15 +65,18 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const handleESC = () => {
-    if (!toggle.walletConnect) {
-      setToggle((prev) => ({
-        ...prev,
-        walletConnect: false,
-      }));
-    }
+    setToggle(prev => {
+      if (prev.walletConnect) {
+        return {
+          ...prev,
+          walletConnect: false,
+        };
+      }
+      return prev;
+    });
   };
   
-  useEscCloseModal(handleESC);
+  useEscCloseModal(() => handleESC());
 
   const address = useMemo(() => {
     if (account === null) {

@@ -20,14 +20,18 @@ export interface TransactionGroupsType {
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const handleESC = () => {
-    if (toggle.notification) {
-      setToggle(prev => ({
-        ...prev,
-        notification: false,
-      }));
-    }
+    setToggle(prev => {
+      if (prev.notification) {
+        return {
+          ...prev,
+          notification: false,
+        };
+      }
+      return prev;
+    });
   };
-  useEscCloseModal(handleESC);
+  
+  useEscCloseModal(() => handleESC());
 
   const onListToggle = () => {
     setToggle(prev => ({

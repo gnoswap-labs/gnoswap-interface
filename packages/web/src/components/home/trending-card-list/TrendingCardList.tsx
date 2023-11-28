@@ -30,7 +30,7 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
   }, [device]);
 
   return visible ? (
-    <TrendingCardListwrapper>
+    <TrendingCardListwrapper loading={loading}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span

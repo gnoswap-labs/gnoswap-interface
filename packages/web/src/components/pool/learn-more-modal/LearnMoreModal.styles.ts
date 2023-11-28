@@ -12,11 +12,12 @@ export const LearnMoreModalBackground = styled.div`
   right: 0px;
   width: 100%;
   height: 100lvh;
-  background: rgba(10, 14, 23, 0.7);
-  z-index: ${Z_INDEX.modalOverlay};
+  z-index: ${Z_INDEX.modal};
+  pointer-events: none;
 `;
 
 export const LearnMoreModalWrapper = styled.div`
+  pointer-events: initial;
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   position: absolute;
   overflow: hidden;

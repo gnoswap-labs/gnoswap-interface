@@ -6,16 +6,23 @@ import { CSSProperties } from "react";
 interface SkeletonStyleProps {
   tdWidth?: CSSProperties["width"];
 }
+interface Props {
+  loading: boolean;
+}
 
-export const TrendingCardListwrapper = styled.div`
+export const TrendingCardListwrapper = styled.div<Props>`
   ${mixins.flexbox("column", "flex-start", "flex-start")}
   width: 100%;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
-  padding: 15px 0px 15px;
-  gap: 8px;
+  padding: ${({ loading }) => {
+    return loading ? "15px 0px 15px" : "15px 0px 11px";
+  }};
+  gap: ${({ loading }) => {
+    return loading ? "8px" : "12px";
+  }};
 
   ${media.mobile} {
     padding: 15px 0px;
@@ -45,6 +52,6 @@ export const SkeletonItem = styled.div<SkeletonStyleProps>`
   padding: 4px 24px;
   ${mixins.flexbox("row", "center", "flex-start")};
   &:first-of-type {
-    padding: 0px 24px 12px 24px;
+    padding: 0px 24px 5px 24px;
   }
 `;

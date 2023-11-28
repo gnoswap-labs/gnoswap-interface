@@ -30,7 +30,7 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
   }, [device]);
 
   return visible ? (
-    <HighestAprsCardListwrapper>
+    <HighestAprsCardListwrapper loading={loading}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
           <span

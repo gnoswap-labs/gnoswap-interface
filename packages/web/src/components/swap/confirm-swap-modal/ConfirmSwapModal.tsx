@@ -15,11 +15,12 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo, swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import useModalCloseEvent from "@hooks/common/use-modal-close-event";
 import { numberToUSD, toNumberFormat } from "@utils/number-utils";
 import { numberToFormat } from "@utils/string-utils";
 import BigNumber from "bignumber.js";
 import { usePositionModal } from "@hooks/common/use-position-modal";
+import { Overlay } from "@components/common/modal/Modal.styles";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -41,7 +42,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  useModalCloseEvent(menuRef, close);
+  useEscCloseModal(close);
   usePositionModal(menuRef);
 
   const tokenAAmountStr = useMemo(() => {
@@ -93,119 +94,122 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [swapSummaryInfo.gasFeeUSD]);
 
   return (
-    <ConfirmSwapModalBackground>
-      <ConfirmModal ref={menuRef}>
-        <div className={`modal-body ${swapResult === null && "modal-body-loading"}`}>
-          <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
-            {!submitted && <span>Confirm Swap</span>}
-            <div className="close-wrap" onClick={close}>
-              <IconClose className="close-icon" />
+    <>
+      <ConfirmSwapModalBackground>
+        <ConfirmModal ref={menuRef}>
+          <div className={`modal-body ${swapResult === null && "modal-body-loading"}`}>
+            <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
+              {!submitted && <span>Confirm Swap</span>}
+              <div className="close-wrap" onClick={close}>
+                <IconClose className="close-icon" />
+              </div>
             </div>
-          </div>
-          {submitted ? (
-            <ConfirmSwapResult
-              swapResult={swapResult}
-              close={close}
-            />
-          ) : (
-            <>
-              <div className="modal-receipt">
-                <div className="input-group">
-                  <div className="first-section">
-                    <div className="amount-container">
-                      <span>{tokenAAmountStr}</span>
-                      <div className="button-wrapper">
-                        <img
-                          src={swapSummaryInfo.tokenA.logoURI}
-                          alt="logo"
-                          className="coin-logo"
-                        />
-                        <span>{swapSummaryInfo.tokenA.symbol}</span>
+            {submitted ? (
+              <ConfirmSwapResult
+                swapResult={swapResult}
+                close={close}
+              />
+            ) : (
+              <>
+                <div className="modal-receipt">
+                  <div className="input-group">
+                    <div className="first-section">
+                      <div className="amount-container">
+                        <span>{tokenAAmountStr}</span>
+                        <div className="button-wrapper">
+                          <img
+                            src={swapSummaryInfo.tokenA.logoURI}
+                            alt="logo"
+                            className="coin-logo"
+                          />
+                          <span>{swapSummaryInfo.tokenA.symbol}</span>
+                        </div>
+                      </div>
+                      <div className="amount-info">
+                        <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
+                      </div>
+                      <div className="arrow">
+                        <div className="shape">
+                          <IconSwapArrowDown className="shape-icon" />
+                        </div>
                       </div>
                     </div>
-                    <div className="amount-info">
-                      <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
-                    </div>
-                    <div className="arrow">
-                      <div className="shape">
-                        <IconSwapArrowDown className="shape-icon" />
+                    <div className="second-section">
+                      <div className="amount-container">
+                        <span>{tokenBAmountStr}</span>
+                        <div className="button-wrapper">
+                          <img
+                            src={swapSummaryInfo.tokenB.logoURI}
+                            alt="logo"
+                            className="coin-logo"
+                          />
+                          <span>{swapSummaryInfo.tokenB.symbol}</span>
+                        </div>
+                      </div>
+                      <div className="amount-info">
+                        <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="second-section">
-                    <div className="amount-container">
-                      <span>{tokenBAmountStr}</span>
-                      <div className="button-wrapper">
-                        <img
-                          src={swapSummaryInfo.tokenB.logoURI}
-                          alt="logo"
-                          className="coin-logo"
-                        />
-                        <span>{swapSummaryInfo.tokenB.symbol}</span>
-                      </div>
-                    </div>
-                    <div className="amount-info">
-                      <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="swap-info">
-                  <div className="coin-info">
-                    <IconInfo className="icon-info" />
-                    <span className="gnos-price">
-                      {swapRateDescription}
-                    </span>
-                    <span className="exchange-price">
-                      {swapRateUSDStr}
-                    </span>
-                  </div>
-                </div>
-                <div className="gas-info">
-                  <div className="price-impact">
-                    <span className="gray-text">Price Impact</span>
-                    <span className="white-text">
-                      {priceImpactStr}
-                    </span>
-                  </div>
-                  <div className="slippage">
-                    <span className="gray-text">Max. Slippage</span>
-                    <span className="white-text">{slippageStr}</span>
-                  </div>
-                  <SwapDivider />
-                  <div className="received">
-                    <span className="gray-text">{guaranteedTypeStr}</span>
-                    <span className="white-text">
-                      {guaranteedStr}
-                    </span>
-                  </div>
-                  <div className="gas-fee">
-                    <span className="gray-text">Gas Fee</span>
-                    <span className="white-text">
-                      {gasFeeStr} GNOT
-                      <span className="gray-text">
-                        ({gasFeeUSDStr})
+                  <div className="swap-info">
+                    <div className="coin-info">
+                      <IconInfo className="icon-info" />
+                      <span className="gnos-price">
+                        {swapRateDescription}
                       </span>
-                    </span>
+                      <span className="exchange-price">
+                        {swapRateUSDStr}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="gas-info">
+                    <div className="price-impact">
+                      <span className="gray-text">Price Impact</span>
+                      <span className="white-text">
+                        {priceImpactStr}
+                      </span>
+                    </div>
+                    <div className="slippage">
+                      <span className="gray-text">Max. Slippage</span>
+                      <span className="white-text">{slippageStr}</span>
+                    </div>
+                    <SwapDivider />
+                    <div className="received">
+                      <span className="gray-text">{guaranteedTypeStr}</span>
+                      <span className="white-text">
+                        {guaranteedStr}
+                      </span>
+                    </div>
+                    <div className="gas-fee">
+                      <span className="gray-text">Gas Fee</span>
+                      <span className="white-text">
+                        {gasFeeStr} GNOT
+                        <span className="gray-text">
+                          ({gasFeeUSDStr})
+                        </span>
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="modal-button">
-                <Button
-                  text="Confirm Swap"
-                  style={{
-                    fullWidth: true,
-                    height: 57,
-                    fontType: "body7",
-                    hierarchy: ButtonHierarchy.Primary,
-                  }}
-                  onClick={swap}
-                />
-              </div>
-            </>
-          )}
-        </div>
-      </ConfirmModal>
-    </ConfirmSwapModalBackground>
+                <div className="modal-button">
+                  <Button
+                    text="Confirm Swap"
+                    style={{
+                      fullWidth: true,
+                      height: 57,
+                      fontType: "body7",
+                      hierarchy: ButtonHierarchy.Primary,
+                    }}
+                    onClick={swap}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </ConfirmModal>
+      </ConfirmSwapModalBackground>
+      <Overlay onClick={close}/>
+    </>
   );
 };
 
