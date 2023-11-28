@@ -13,7 +13,7 @@ export const ContentWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     position: relative;
     width: 100%;
-    padding: 16px 24px;
+    padding: 15px 23px;
     gap: 8px;
     align-self: stretch;
     border-radius: 8px;
@@ -23,7 +23,7 @@ export const ContentWrapper = styled.div`
       border: 1px solid  ${({ theme }) => theme.color.border15};
     }
     ${media.mobile} {
-      padding: 12px;
+      padding: 11px;
     }
   }
 
@@ -76,14 +76,17 @@ export const ContentWrapper = styled.div`
 
   .second-section {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    padding: 16px 24px;
+    padding: 15px 23px;
     gap: 8px;
     align-self: stretch;
     border-radius: 8px;
     background: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
+    &:focus-within {
+      border: 1px solid  ${({ theme }) => theme.color.border15};
+    }
     ${media.mobile} {
-      padding: 12px;
+      padding: 11px;
     }
   }
   .arrow {

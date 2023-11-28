@@ -25,12 +25,14 @@ export const DetailWrapper = styled.div<WrapperProps>`
     .loading-change {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 8px;
+      color: ${({ theme }) => theme.color.text10};
       > div {
         width: 16px;
         height: 16px;
         &::before {
           width: 12px;
           height: 12px;
+          background-color: ${({ theme }) => theme.color.background01};
         }
       }
     }
@@ -52,6 +54,7 @@ export const DetailWrapper = styled.div<WrapperProps>`
         }
         .swap-rate {
           cursor: pointer;
+          color: ${({ theme }) => theme.color.text10};
         }
         .exchange-price {
           color: ${({ theme }) => theme.color.text04};
@@ -60,7 +63,7 @@ export const DetailWrapper = styled.div<WrapperProps>`
           width: 16px;
           height: 16px;
           * {
-            fill: ${({ theme }) => theme.color.icon05};
+            fill: ${({ theme }) => theme.color.icon03};
           }
         }
       }

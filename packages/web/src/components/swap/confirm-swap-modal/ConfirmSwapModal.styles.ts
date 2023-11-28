@@ -185,7 +185,7 @@ export const ConfirmModal = styled.div`
             ${media.mobile} {
               ${fonts.p2};
             }
-            color: ${({ theme }) => theme.color.text03};
+            color: ${({ theme }) => theme.color.text10};
           }
           .exchange-price {
             ${fonts.body12};

@@ -23,6 +23,7 @@ import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card
 import { useNotice } from "@hooks/common/use-notice";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { TNoticeType } from "src/context/NoticeContext";
+import { useSlippage } from "@hooks/common/use-slippage";
 
 const SwapContainer: React.FC = () => {
   const [swapValue , setSwapValue] = useAtom(SwapState.swap);
@@ -42,7 +43,8 @@ const SwapContainer: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
   const [swapRate] = useState<number>(100);
-  const [slippage, setSlippage] = useState(1);
+  const { slippage, changeSlippage } = useSlippage();
+
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
   const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
@@ -188,10 +190,6 @@ const SwapContainer: React.FC = () => {
     setTokenBAmount(value);
     setQuery({ ...query, direction: "EXACT_OUT" });
   }, [query, setTokenAAmount]);
-
-  const changeSlippage = useCallback((value: string) => {
-    setSlippage(BigNumber(value || 0).toNumber());
-  }, [setSlippage]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
@@ -465,6 +463,11 @@ const SwapContainer: React.FC = () => {
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
 
+  const handleChangeSlippage = useCallback((vl: string) => {
+    
+    changeSlippage(Number(vl));
+  }, []);
+
   return (
     <SwapCard
       connectedWallet={connectedWallet}
@@ -481,7 +484,7 @@ const SwapContainer: React.FC = () => {
       changeTokenAAmount={changeTokenAAmount}
       changeTokenB={changeTokenB}
       changeTokenBAmount={changeTokenBAmount}
-      changeSlippage={changeSlippage}
+      changeSlippage={handleChangeSlippage}
       switchSwapDirection={switchSwapDirection}
       openConfirmModal={openConfirmModal}
       openConnectWallet={openConnectWallet}

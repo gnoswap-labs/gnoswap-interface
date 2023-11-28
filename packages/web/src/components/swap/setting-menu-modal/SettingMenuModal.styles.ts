@@ -104,3 +104,15 @@ export const ModalTooltipWrap = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
   }
 `;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: ${Z_INDEX.modalOverlay};
+`;

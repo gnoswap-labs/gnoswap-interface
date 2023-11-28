@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 export const SwapCardWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
-  padding: 24px;
+  padding: 23px;
   gap: 16px;
 
   border-radius: 8px;
@@ -14,8 +14,8 @@ export const SwapCardWrapper = styled.div`
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
 
   ${media.mobile} {
-    padding: 16px;
-    gap: 8px;
+    padding: 15px;
+    gap: 12px;
     align-self: stretch;
   }
 

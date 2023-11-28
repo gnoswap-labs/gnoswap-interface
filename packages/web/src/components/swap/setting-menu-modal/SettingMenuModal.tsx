@@ -5,9 +5,10 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useCallback, useRef } from "react";
 import {
   ModalTooltipWrap,
+  Overlay,
   SettingMenuModalWrapper,
 } from "./SettingMenuModal.styles";
-import useModalCloseEvent from "@hooks/common/use-modal-close-event";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 interface SettingMenuModalProps {
   slippage: number;
@@ -23,7 +24,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   className,
 }) => {
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
-  useModalCloseEvent(settingMenuRef, close);
+  useEscCloseModal(close);
 
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
@@ -47,46 +48,49 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   }, [changeSlippage]);
 
   return (
-    <SettingMenuModalWrapper ref={settingMenuRef} className={className}>
-      <div className="modal-body">
-        <div className="modal-header">
-          <span>Settings</span>
-          <div className="close-wrap" onClick={close}>
-            <IconClose className="close-icon" />
-          </div>
-        </div>
-        <div className="title">
-          <span>Slippage tolerance</span>
-          <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
-            <div className="info-wrap">
-              <IconInfo className="info-icon" />
+    <>
+      <SettingMenuModalWrapper ref={settingMenuRef} className={className}>
+        <div className="modal-body">
+          <div className="modal-header">
+            <span>Settings</span>
+            <div className="close-wrap" onClick={close}>
+              <IconClose className="close-icon" />
             </div>
-          </Tooltip>
-        </div>
-        <div className="setting-input">
-          <Button
-            text="Auto"
-            style={{
-              width: 62,
-              height: 36,
-              fontType: "p1",
-              textColor: "text20",
-              hierarchy: ButtonHierarchy.Primary,
-            }}
-            onClick={onClickReset}
-          />
-          <div className="input-button">
-            <input
-              className="amount-text"
-              value={slippage}
-              onChange={onChangeSlippage}
-              placeholder="0"
+          </div>
+          <div className="title">
+            <span>Slippage tolerance</span>
+            <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
+              <div className="info-wrap">
+                <IconInfo className="info-icon" />
+              </div>
+            </Tooltip>
+          </div>
+          <div className="setting-input">
+            <Button
+              text="Auto"
+              style={{
+                width: 62,
+                height: 36,
+                fontType: "p1",
+                textColor: "text20",
+                hierarchy: ButtonHierarchy.Primary,
+              }}
+              onClick={onClickReset}
             />
-            <span>%</span>
+            <div className="input-button">
+              <input
+                className="amount-text"
+                value={slippage}
+                onChange={onChangeSlippage}
+                placeholder="0"
+              />
+              <span>%</span>
+            </div>
           </div>
         </div>
-      </div>
-    </SettingMenuModalWrapper>
+      </SettingMenuModalWrapper>
+      <Overlay onClick={close}/>
+    </>
   );
 };
 
