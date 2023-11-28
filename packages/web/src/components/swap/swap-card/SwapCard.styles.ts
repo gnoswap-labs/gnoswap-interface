@@ -26,6 +26,12 @@ export const SwapCardWrapper = styled.div`
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     position: relative;
     width: 100%;
+    button {
+      height: 57px;
+      ${media.mobile} {
+        height: 41px;
+      }
+    }
   }
   .tooltip {
   }

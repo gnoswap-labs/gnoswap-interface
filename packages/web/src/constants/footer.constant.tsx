@@ -76,12 +76,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "Discord Support",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "Twitter Support",
+        title: "Twitter",
         path: "/",
         newTab: true,
       },

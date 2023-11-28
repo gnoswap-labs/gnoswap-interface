@@ -9,6 +9,8 @@ import { numberToUSD } from "@utils/number-utils";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
+import { useAtom } from "jotai";
+import { SwapState } from "@states/index";
 
 const TOKEN_A = {
   chainId: "dev",
@@ -41,9 +43,10 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenAAmount] = useState<string>("1000");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
   const [tokenBAmount] = useState<string>("0");
-  const [swapDirection] = useState<SwapDirectionType>("EXACT_IN");
+  const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
   const { connected } = useWallet();
+  const [, setSwapValue] = useAtom(SwapState.swap);
 
 
   const tokenABalance = useMemo(() => {
@@ -109,19 +112,33 @@ const HomeSwapContainer: React.FC = () => {
   ]);
 
   const swapNow = useCallback(() => {
-    router.push("/swap?from=GNOT&to=GNS");
-  }, [router]);
+    if (swapDirection === "EXACT_IN") {
+      router.push("/swap?tokenA=gno.land/r/bar&tokenB=gno.land/r/foo&direction=EXACT_IN");
+    } else {
+      router.push("/swap?tokenA=gno.land/r/foo&tokenB=gno.land/r/bar&direction=EXACT_IN");
+    }
+  }, [router, swapDirection]);
 
   const onSubmitSwapValue = () => {
     setTokenA(tokenB);
     setTokenB(tokenA);
+    setSwapDirection(prev => prev === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN");
   };
+
+  const changeTokenAAmount = useCallback((value: string) => {
+    setSwapValue((prev) => ({
+      ...prev,
+      tokenAAmount: value,
+    }));
+  }, []);
+
 
   return (
     <HomeSwap
       swapTokenInfo={swapTokenInfo}
       swapNow={swapNow}
       onSubmitSwapValue={onSubmitSwapValue}
+      changeTokenAAmount={changeTokenAAmount}
     />
   );
 };

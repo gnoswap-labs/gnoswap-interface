@@ -143,7 +143,6 @@ const SwapButton: React.FC<SwapButtonProps> = ({
     fullWidth: true,
     fontType: "body7" as FontsKey,
     hierarchy: ButtonHierarchy.Primary,
-    height: 56,
   };
 
   if (!connectedWallet) {

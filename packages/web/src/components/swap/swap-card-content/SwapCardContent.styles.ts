@@ -19,6 +19,9 @@ export const ContentWrapper = styled.div`
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
     background: ${({ theme }) => theme.color.background20};
+    &:focus-within {
+      border: 1px solid  ${({ theme }) => theme.color.border15};
+    }
     ${media.mobile} {
       padding: 12px;
     }
@@ -45,7 +48,13 @@ export const ContentWrapper = styled.div`
 
   .token-selector {
     display: block;
-    height: 32px;
+    height: 34px;
+    .selected-token {
+      padding: 5px 12px 5px 6px;
+    }
+    .not-selected-token {
+      padding: 5px 10px 5px 12px
+    }
   }
 
   .amount-info {
@@ -58,7 +67,7 @@ export const ContentWrapper = styled.div`
       ${media.mobile} {
         ${fonts.p2};
       }
-      color: ${({ theme }) => theme.color.text10};
+      color: ${({ theme }) => theme.color.text04};
     }
     .balance-text-disabled {
       cursor: pointer;

@@ -26,7 +26,7 @@ import { TNoticeType } from "src/context/NoticeContext";
 
 const SwapContainer: React.FC = () => {
   const [swapValue , setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN", tokenAAmount: defaultTokenAAmount } = swapValue;
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
   const { setNotice } = useNotice();
@@ -36,7 +36,7 @@ const SwapContainer: React.FC = () => {
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances } = useTokenData();
   const [swapError, setSwapError] = useState<SwapError | null>(null);
-  const [tokenAAmount, setTokenAAmount] = useState<string>("");
+  const [tokenAAmount, setTokenAAmount] = useState<string>(defaultTokenAAmount ?? "");
   const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -95,7 +95,7 @@ const SwapContainer: React.FC = () => {
 
   const swapButtonText = useMemo(() => {
     if (!connectedWallet) {
-      return "Connect Wallet";
+      return "Wallet Login";
     }
     if (isSwitchNetwork) {
       return "Switch to Gnoland";
@@ -378,8 +378,20 @@ const SwapContainer: React.FC = () => {
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
   }, []);
 
+  useEffect(() => {
+    if (defaultTokenAAmount) {
+      setIsLoading(true);
+    }
+  }, [defaultTokenAAmount]);
+
+  
   useEffect(() => {
     if (!tokenA || !tokenB) {
       return;

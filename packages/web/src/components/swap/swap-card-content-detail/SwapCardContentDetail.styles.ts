@@ -13,7 +13,7 @@ export const DetailWrapper = styled.div<WrapperProps>`
   border-radius: ${({ opened }) => {
     return opened ? "8px 8px 0px 0px" : "8px";
   }};
-  background: ${({ theme }) => theme.color.background01};
+  background: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
 
   .exchange-section {
@@ -91,7 +91,7 @@ export const FeelWrapper = styled.div<WrapperProps>`
   border-radius: ${({ opened }) => {
     return opened ? "0px 0px 8px 8px" : "8px";
   }};
-  background: ${({ theme }) => theme.color.background01};
+  background: ${({ theme }) => theme.color.background20};
   border-left: 1px solid ${({ theme }) => theme.color.border02};
   border-right: 1px solid ${({ theme }) => theme.color.border02};
   border-bottom: 1px solid ${({ theme }) => theme.color.border02};
@@ -115,5 +115,5 @@ export const SwapDivider = styled.div`
   width: 100%;
   height: 1px;
   align-self: stretch;
-  background: ${({ theme }) => theme.color.border02};
+  background: ${({ theme }) => theme.color.background20};
 `;
