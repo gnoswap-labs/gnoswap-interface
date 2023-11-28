@@ -40,7 +40,9 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
 
   const onChangeSlippage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    changeSlippage(value);
+    if (/^\d+(\.\d{0,2})?$/.test(value)) {
+      changeSlippage(value);
+    }
   }, [changeSlippage]);
 
   const onClickReset = useCallback(() => {

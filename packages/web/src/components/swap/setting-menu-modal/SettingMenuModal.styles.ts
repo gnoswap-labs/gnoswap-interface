@@ -8,7 +8,7 @@ export const SettingMenuModalWrapper = styled.div`
   z-index: ${Z_INDEX.modal};
   position: absolute;
   width: 236px;
-  padding: 16px 0px;
+  padding: 15px 0px;
   gap: 16px;
   border-radius: 8px;
   background: ${({ theme }) => theme.color.background06};
@@ -20,7 +20,7 @@ export const SettingMenuModalWrapper = styled.div`
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 0px 16px;
+    padding: 0px 15px;
     gap: 16px;
 
     .modal-header {

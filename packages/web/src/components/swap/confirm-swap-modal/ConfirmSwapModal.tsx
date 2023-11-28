@@ -6,7 +6,6 @@ import {
 } from "./ConfirmSwapModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import IconInfo from "@components/common/icons/IconInfo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconSuccess from "@components/common/icons/IconSuccess";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
@@ -153,7 +152,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </div>
                   <div className="swap-info">
                     <div className="coin-info">
-                      <IconInfo className="icon-info" />
                       <span className="gnos-price">
                         {swapRateDescription}
                       </span>
@@ -267,7 +265,6 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
             text="Close"
             style={{
               fullWidth: true,
-              height: 57,
               fontType: "body7",
               hierarchy: ButtonHierarchy.Primary,
             }}

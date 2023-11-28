@@ -25,6 +25,7 @@ export interface ThemeColorType {
   background22: string;
   background23: string;
   background24: string;
+  bgLoading: string;
   backgroundOpacity: string;
   backgroundOpacity2: string;
   backgroundOpacity3: string;

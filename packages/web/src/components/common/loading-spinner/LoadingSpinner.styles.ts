@@ -19,7 +19,7 @@ export const wrapper = (theme: Theme) => css`
   animation: ${spin} 1s linear infinite;
   background: conic-gradient(
     from 0deg at 50% 50.63%,
-    #000000 0deg,
+    ${theme.color.bgLoading} 0deg,
     #233DBD 360deg
   );
 

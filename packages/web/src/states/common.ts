@@ -1,7 +1,6 @@
 import { NetworkModel } from "@models/common/network-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { atom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
 interface HeaderToggleProps {
@@ -24,4 +23,4 @@ export const currentWidth = atom<number>(0);
 
 export const network = atom<NetworkModel | null>(null);
 
-export const slippage = atomWithStorage<number>("slippage", DEFAULT_SLIPPAGE);
+export const slippage = atom<number>(DEFAULT_SLIPPAGE);

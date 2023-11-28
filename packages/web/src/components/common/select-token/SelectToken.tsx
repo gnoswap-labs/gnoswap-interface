@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import { SelectTokenWrapper } from "./SelectToken.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
@@ -25,6 +25,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   close,
   themeKey,
 }) => {
+  const myElementRef = useRef<HTMLDivElement | null>(null);
+  const [height, setHeight] = useState(0);
+
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
     if (tokenPrice === null || Number.isNaN(tokenPrice)) {
@@ -47,8 +50,20 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     changeKeyword(searchKeyword);
   }, [changeKeyword]);
 
+  useEffect(() => {
+    const getHeight = () => {
+      const element = myElementRef.current;
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        setHeight(Math.max(height, rect.height));
+        
+      }
+    };
+    getHeight();
+  }, [height]);
+  
   return (
-    <SelectTokenWrapper>
+    <SelectTokenWrapper ref={myElementRef} style={{ minHeight: `${height}px`}}>
       <div className="content">
         <div className="header">
           <span>Select a token</span>

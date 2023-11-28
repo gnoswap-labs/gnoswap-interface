@@ -44,13 +44,13 @@ export const AutoRouterWrapper = styled.div`
         gap: 4px;
         border-radius: 4px;
         ${fonts.p3};
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text10};
         border: 1px solid ${({ theme }) => theme.color.border08};
         background: ${({ theme }) => theme.color.background05};
       }
       span {
         ${fonts.p3};
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text10};
       }
     }
 
@@ -64,7 +64,7 @@ export const AutoRouterWrapper = styled.div`
       background: ${({ theme }) => theme.color.background02};
       h1 {
         ${fonts.p3};
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text10};
       }
       .coin-logo {
         ${mixins.flexbox("row", "flex-start", "flex-start")};
