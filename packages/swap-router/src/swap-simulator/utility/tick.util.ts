@@ -1,6 +1,13 @@
 import BigNumber from "bignumber.js";
 import { Pool } from "../swap-simulator.types";
-import { LSB, MAX_UINT256, MAX_UINT8, MSB } from "./math.util";
+import { LSB, MAX_UINT256, MAX_UINT8, MSB, Q96 } from "./math.util";
+
+export function tickToPrice(tick: number): number {
+  const sqrtPriceX96 = tickToSqrtPriceX96(tick);
+  return BigNumber(sqrtPriceX96.toString())
+    .dividedBy(Q96.toString())
+    .toNumber();
+}
 
 export function tickToSqrtPriceX96(tick: number): bigint {
   const absTick = BigInt(Math.abs(tick));
@@ -81,68 +88,50 @@ export function tickToSqrtPriceX96(tick: number): bigint {
   }
 }
 
-export function tickBitmapNextInitializedTickWithInOneWord(
-  tickBitmaps: { [key in number]: string },
+export function nextInitializedTickWithinOneWord(
+  tickBitmaps: { [key in number]: bigint },
   tick: number,
   tickSpacing: number,
-  exactIn: boolean,
+  isTickToLeft: boolean,
 ): { tickNext: number; initialized: boolean } {
-  let compress = Math.floor(tick / tickSpacing);
+  let compressed = Number(BigInt(tick) / BigInt(tickSpacing));
   if (tick < 0 && tick % tickSpacing !== 0) {
-    compress--;
+    compressed--;
   }
 
-  if (exactIn) {
-    const { wordPos, bitPos } = tickBitmapPosition(compress);
-
+  if (isTickToLeft) {
+    const { wordPos, bitPos } = tickBitmapPosition(compressed);
     const mask = (1n << BigInt(bitPos)) - 1n + (1n << BigInt(bitPos));
-    const bitmap = BigInt(tickBitmaps[wordPos] || 0n);
+    const bitmap = tickBitmaps[wordPos] || 0n;
     const masked = bitmap & mask;
 
     const initialized = masked !== 0n;
-
-    if (initialized) {
-      const next = (compress - bitPos + Number(MSB(masked))) * tickSpacing;
-      return { tickNext: next, initialized };
-    }
-
-    const next = (compress - bitPos) * tickSpacing;
-    return { tickNext: next, initialized };
+    const tickNext = initialized
+      ? (compressed - bitPos + Number(MSB(masked))) * tickSpacing
+      : (compressed - bitPos) * tickSpacing;
+    return { tickNext, initialized };
   }
 
-  const { wordPos, bitPos } = tickBitmapPosition(compress + 1);
-
-  // check zero
-  let mask = 0n;
-  if (bitPos === 0) {
-    mask = MAX_UINT256 - 1n;
-  } else {
-    mask = MAX_UINT256 - (1n << (BigInt(bitPos) - 1n));
-  }
-
-  if (mask < 0) {
-    mask = -mask;
-  }
-
-  const bitmap = BigInt(tickBitmaps[wordPos]);
+  const { wordPos, bitPos } = tickBitmapPosition(compressed + 1);
+  const mask = ~((1n << BigInt(bitPos)) - 1n);
+  const bitmap = tickBitmaps[wordPos] || 0n;
   const masked = bitmap & mask;
 
   const initialized = masked !== 0n;
-  if (initialized) {
-    const next = (compress + 1 + (Number(LSB(masked)) - bitPos)) * tickSpacing;
-    return { tickNext: next, initialized };
-  } else {
-    const next =
-      (compress +
-        1 +
+  const nextCompressed = compressed + 1;
+  const tickNext = initialized
+    ? (nextCompressed + (Number(LSB(masked)) - bitPos)) * tickSpacing
+    : (nextCompressed +
         BigNumber(MAX_UINT8.toString()).minus(bitPos).toNumber()) *
       tickSpacing;
-    return { tickNext: next, initialized };
-  }
+  return {
+    tickNext,
+    initialized,
+  };
 }
 
 function tickBitmapPosition(tick: number): { wordPos: number; bitPos: number } {
-  const wordPos = Math.floor(tick / 256); // tick >> 8
+  const wordPos = tick >> 8; // tick >> 8
   const bitPos = tick % 256;
 
   return {

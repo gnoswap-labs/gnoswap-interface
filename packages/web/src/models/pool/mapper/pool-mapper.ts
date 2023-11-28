@@ -120,4 +120,14 @@ export class PoolMapper {
       bins,
     };
   }
+
+  public static fromResponse(poolModel: PoolModel): PoolModel {
+    const bins = poolModel.bins.map(bin => ({
+      ...bin,
+    }));
+    return {
+      ...poolModel,
+      bins,
+    };
+  }
 }

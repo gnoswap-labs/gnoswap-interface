@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import { MAX_UINT160, Q96 } from "./math.util";
 
 export function getNextSqrtPriceFromAmountARoundingUp(
@@ -111,18 +110,10 @@ export function getAmountADeltaHelper(
     changedSqrtRatioB = sqrtRatioAX96;
   }
 
-  const numerator1 = BigNumber(liquidity.toString()).multipliedBy(
-    Q96.toString(),
-  );
+  const numerator1 = liquidity * Q96;
   const numerator2 = changedSqrtRatioB - changedSqrtRatioA;
 
-  return BigInt(
-    numerator1
-      .multipliedBy(numerator2.toString())
-      .dividedBy(changedSqrtRatioA.toString())
-      .dividedBy(changedSqrtRatioB.toString())
-      .toFixed(0, BigNumber.ROUND_FLOOR),
-  );
+  return (numerator1 * numerator2) / (changedSqrtRatioA * changedSqrtRatioB);
 }
 
 export function getAmountBDeltaHelper(

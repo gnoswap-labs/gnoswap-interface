@@ -23,10 +23,6 @@ export interface Pool {
 
   feeProtocol: number;
 
-  feeGrowthGlobal0X128: number;
-
-  feeGrowthGlobal1X128: number;
-
   tokenAProtocolFee: number;
 
   tokenBProtocolFee: number;
@@ -35,7 +31,7 @@ export interface Pool {
 
   ticks: number[];
 
-  tickBitmaps: { [key in number]: string };
+  tickBitmaps: { [key in string]: bigint };
 
   positions: Position[];
 }
@@ -55,6 +51,8 @@ export interface Position {
 }
 
 export interface SwapResult {
+  cached: boolean;
+
   amountA: bigint;
 
   amountB: bigint;

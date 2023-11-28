@@ -1,68 +1,149 @@
 import BigNumber from "bignumber.js";
-import { MAX_TICK, MIN_PRICE_X96, MIN_TICK } from "../constants/swap.constant";
+import { multipliedToBigint } from "../common/bigint.util";
+import {
+  MAX_PRICE_X96,
+  MAX_TICK,
+  MIN_PRICE_X96,
+  MIN_TICK,
+} from "../constants/swap.constant";
 import { Pool, SwapResult } from "./swap-simulator.types";
 import {
   computeSwapStep,
   sqrtPriceX96ToTick,
-  tickBitmapNextInitializedTickWithInOneWord,
+  nextInitializedTickWithinOneWord,
   tickToSqrtPriceX96,
 } from "./utility";
 import { makeCacheKey } from "./utility/cache.util";
 
 export class SwapSimulator {
+  private isCache;
+
   private _cache: { [key in string]: SwapResult | null };
 
   constructor() {
+    this.isCache = false;
     this._cache = {};
   }
 
+  public getSwapCache(
+    pool: Pool,
+    swapAmount: bigint,
+    exactType: "EXACT_IN" | "EXACT_OUT",
+    zeroForOne: boolean,
+  ): SwapResult | null {
+    if (!this.isCache) {
+      return null;
+    }
+    const cacheKey = makeCacheKey(pool, exactType, zeroForOne);
+    const cachedSwapResult = this._cache[cacheKey];
+    if (!cachedSwapResult) {
+      return null;
+    }
+    let compareAmount =
+      (exactType === "EXACT_IN") === zeroForOne
+        ? cachedSwapResult.amountA
+        : cachedSwapResult.amountB;
+    compareAmount = compareAmount >= 0 ? compareAmount : compareAmount * -1n;
+
+    if (swapAmount > compareAmount) {
+      return null;
+    }
+
+    return cachedSwapResult;
+  }
+
   public swap(
+    pool: Pool,
+    fromTokenPath: string,
+    swapAmount: bigint,
+    exactType: "EXACT_IN" | "EXACT_OUT",
+  ): SwapResult {
+    const zeroForOne = pool.tokenAPath === fromTokenPath;
+    const cacheKey = makeCacheKey(pool, exactType, zeroForOne);
+
+    const cachedSwapResult = this.getSwapCache(
+      pool,
+      swapAmount,
+      exactType,
+      zeroForOne,
+    );
+    if (cachedSwapResult) {
+      return this.estimateCacheSwap(
+        cachedSwapResult,
+        swapAmount,
+        exactType,
+        zeroForOne,
+      );
+    }
+    const swapResult = this.estimateSwap(
+      pool,
+      swapAmount,
+      exactType,
+      zeroForOne,
+    );
+    this._cache[cacheKey] = swapResult;
+    return swapResult;
+  }
+
+  public estimateCacheSwap(
+    cachedSwapResult: SwapResult,
+    swapAmount: bigint,
+    exactType: "EXACT_IN" | "EXACT_OUT",
+    zeroForOne: boolean,
+  ) {
+    let amountRemaining = swapAmount;
+    const quotes: {
+      tick0: number;
+      tick1: number;
+      amountIn: bigint;
+      amountOut: bigint;
+      rate: number;
+    }[] = [];
+    let accumulateAmountIn = 0n;
+    let accumulateAmountOut = 0n;
+    const orderd = (exactType === "EXACT_IN") === zeroForOne;
+    for (const quote of cachedSwapResult.quotes) {
+      let amountIn = 0n;
+      let amountOut = 0n;
+      if (orderd) {
+        const remained = amountRemaining - quote.amountIn > 0;
+        amountIn = remained ? quote.amountIn : amountRemaining;
+
+        const tickRemainedAll = amountIn === quote.amountIn;
+        amountOut = tickRemainedAll
+          ? quote.amountOut
+          : multipliedToBigint(amountIn, quote.rate);
+      } else {
+        const remained = amountRemaining - quote.amountOut > 0;
+        amountOut = remained ? quote.amountOut : amountRemaining;
+
+        const tickRemainedAll = amountOut === quote.amountOut;
+        amountIn = tickRemainedAll
+          ? quote.amountIn
+          : multipliedToBigint(amountOut, quote.rate);
+      }
+      quotes.push({
+        ...quote,
+        amountIn,
+        amountOut,
+      });
+      accumulateAmountIn += amountIn;
+      accumulateAmountOut += amountOut;
+    }
+    return {
+      amountA: accumulateAmountIn,
+      amountB: accumulateAmountOut,
+      quotes: quotes,
+      cached: true,
+    };
+  }
+
+  public estimateSwap(
     pool: Pool,
     swapAmount: bigint,
     exactType: "EXACT_IN" | "EXACT_OUT",
     zeroForOne: boolean,
   ): SwapResult {
-    const cacheKey = makeCacheKey(pool, exactType, zeroForOne);
-    const cachedSwapResult = this._cache[cacheKey];
-    if (cachedSwapResult) {
-      let amountRemaining = swapAmount;
-      const quotes: {
-        tick0: number;
-        tick1: number;
-        amountIn: bigint;
-        amountOut: bigint;
-        rate: number;
-      }[] = [];
-      let accumulateAmountIn = 0n;
-      let accumulateAmountOut = 0n;
-      for (const quote of cachedSwapResult.quotes) {
-        const amountIn =
-          amountRemaining - quote.amountIn > 0
-            ? quote.amountIn
-            : amountRemaining;
-        const amountOut =
-          quote.amountIn > 0
-            ? quote.amountOut
-            : BigInt(
-                BigNumber(amountIn.toString())
-                  .multipliedBy(quote.rate)
-                  .toFixed(0),
-              );
-        quotes.push({
-          ...quote,
-          amountIn,
-          amountOut,
-        });
-        accumulateAmountIn += amountIn;
-        accumulateAmountOut += amountOut;
-      }
-      return {
-        amountA: accumulateAmountIn,
-        amountB: accumulateAmountOut,
-        quotes: quotes,
-      };
-    }
-
     const amount = exactType === "EXACT_IN" ? swapAmount : -1n * swapAmount;
     const exactIn = amount >= 0;
     const swapState = {
@@ -70,14 +151,12 @@ export class SwapSimulator {
       amountCalculated: 0n,
       sqrtPriceX96: BigInt(pool.sqrtPriceX96),
       tick: pool.tick,
-      feeGrowthGlobalX128: BigInt(
-        exactIn ? pool.feeGrowthGlobal0X128 : pool.feeGrowthGlobal1X128,
-      ),
+      feeGrowthGlobalX128: 0n,
       protocolFee: 0n,
       liquidity: pool.liquidity,
     };
 
-    const sqrtPriceLimitX96 = MIN_PRICE_X96;
+    const sqrtPriceLimitX96 = zeroForOne ? MIN_PRICE_X96 : MAX_PRICE_X96;
 
     const quotes: {
       tick0: number;
@@ -119,10 +198,7 @@ export class SwapSimulator {
 
       step.sqrtPriceStartX96 = BigInt(swapState.sqrtPriceX96);
       quote.tick0 = swapState.tick;
-      const {
-        initialized,
-        tickNext,
-      } = tickBitmapNextInitializedTickWithInOneWord(
+      const { initialized, tickNext } = nextInitializedTickWithinOneWord(
         pool.tickBitmaps,
         swapState.tick,
         pool.tickSpacing,
@@ -183,27 +259,19 @@ export class SwapSimulator {
         swapState.amountCalculated += step.amountIn + step.feeAmount;
       }
 
-      // Caclulate accumulate quotes
-      const previousQuote =
-        quotes.length > 0
-          ? quotes[quotes.length - 1]
-          : {
-              tick0: 0,
-              tick1: 0,
-              amountIn: 0n,
-              amountOut: 0n,
-              rate: 1,
-            };
-      const quoteAmountA =
-        zeroForOne === exactIn
-          ? step.amountIn + step.feeAmount
-          : step.amountOut;
-      const quoteAmountB =
-        zeroForOne === exactIn
-          ? step.amountOut
-          : step.amountIn + step.feeAmount;
-      quote.amountIn = previousQuote.amountIn + quoteAmountA;
-      quote.amountOut = previousQuote.amountOut + quoteAmountB;
+      const quoteAmountSpecified = exactIn
+        ? step.amountIn + step.feeAmount
+        : step.amountOut * -1n;
+      const quoteAmountCalculated = exactIn
+        ? step.amountOut * -1n
+        : step.amountIn + step.feeAmount;
+      if (exactIn === zeroForOne) {
+        quote.amountIn = quoteAmountSpecified;
+        quote.amountOut = quoteAmountCalculated;
+      } else {
+        quote.amountIn = quoteAmountCalculated;
+        quote.amountOut = quoteAmountSpecified;
+      }
       quote.rate = BigNumber(quote.amountOut.toString())
         .dividedBy(quote.amountIn.toString())
         .toNumber();
@@ -211,7 +279,7 @@ export class SwapSimulator {
     }
 
     let amountA, amountB;
-    if (zeroForOne === exactIn) {
+    if (exactIn === zeroForOne) {
       amountA = amount - swapState.amountSpecifiedRemaining;
       amountB = swapState.amountCalculated;
     } else {
@@ -219,12 +287,21 @@ export class SwapSimulator {
       amountB = amount - swapState.amountSpecifiedRemaining;
     }
 
-    const swapResult: SwapResult = {
+    if (zeroForOne) {
+      if (pool.tokenBBalance + amountB < 0) {
+        amountB = pool.tokenBBalance;
+      }
+    } else {
+      if (pool.tokenABalance + amountA < 0) {
+        amountA = pool.tokenABalance;
+      }
+    }
+
+    return {
       amountA,
       amountB,
       quotes,
+      cached: false,
     };
-    this._cache[cacheKey] = swapResult;
-    return swapResult;
   }
 }

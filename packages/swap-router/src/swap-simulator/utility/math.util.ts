@@ -29,6 +29,10 @@ export const MAX_UINT256 = 11579208923731619542357098500868790785326998466564056
 
 export const MAX_UINT160 = 1461501637330902918203684832716283019655932542975n as const;
 
+export function fromSqrtX96(value: number | bigint) {
+  return BigNumber(`${value}`).dividedBy(Q96.toString()).sqrt().toNumber();
+}
+
 export function MSB(x: number | bigint): bigint {
   let r = 0n;
   let calculated = BigInt(x);
@@ -76,34 +80,34 @@ export function MSB(x: number | bigint): bigint {
 }
 
 export function LSB(x: number | bigint): bigint {
-  let r = 0n;
+  let r = 255n;
   let calculated = BigInt(x);
 
-  if (Number(calculated & MAX_UINT128) > 0) {
+  if ((calculated & MAX_UINT128) > 0n) {
     r -= 128n;
   } else {
     calculated >>= 128n;
   }
 
-  if (Number(calculated & MAX_UINT64) > 0) {
+  if ((calculated & MAX_UINT64) > 0n) {
     r -= 64n;
   } else {
     calculated >>= 64n;
   }
 
-  if (Number(calculated & MAX_UINT32) > 0) {
+  if ((calculated & MAX_UINT32) > 0n) {
     r -= 32n;
   } else {
     calculated >>= 32n;
   }
 
-  if (Number(calculated & MAX_UINT16) > 0) {
+  if ((calculated & MAX_UINT16) > 0n) {
     r -= 16n;
   } else {
     calculated >>= 16n;
   }
 
-  if (Number(calculated & MAX_UINT8) > 0) {
+  if ((calculated & MAX_UINT8) > 0n) {
     r -= 8n;
   } else {
     calculated >>= 8n;

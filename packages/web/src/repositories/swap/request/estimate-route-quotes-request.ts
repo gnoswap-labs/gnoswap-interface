@@ -13,4 +13,6 @@ export interface EstimateRouteQuotesRequest {
   routes: RouteModel[];
 
   distributionRatio: number;
+
+  hopSize: number;
 }

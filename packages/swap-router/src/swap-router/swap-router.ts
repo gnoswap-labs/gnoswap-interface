@@ -1,8 +1,9 @@
 import BigNumber from "bignumber.js";
 import { Queue } from "../common";
+import { sum } from "../common/array.util";
 import { SwapSimulator } from "../swap-simulator";
 import { Pool } from "../swap-simulator/swap-simulator.types";
-import { EstimatedRoute, Route } from "./swap-router.types";
+import { EstimatedRoute, Route, RouteWithQuote } from "./swap-router.types";
 import { makeRouteKey } from "./utility/route.util";
 
 export class SwapRouter {
@@ -115,7 +116,17 @@ export class SwapRouter {
         }
       }
     }
-    return routes;
+
+    const sortedRoutes = routes.sort((route1, route2) => {
+      if (route2.pools[0].sqrtPriceX96 - route1.pools[0].sqrtPriceX96 > 0) {
+        if (route2.pools[0].liquidity - route1.pools[0].liquidity > 0) {
+          return 1;
+        }
+        return -1;
+      }
+      return -1;
+    });
+    return sortedRoutes;
   }
 
   public estimateSwapRoute = (
@@ -131,123 +142,147 @@ export class SwapRouter {
     }
     const routes = this.findCandidateRoutesBy(inputTokenPath, outputTokenPath);
 
-    const filteredRoutes = routes
-      .sort((route1, route2) => {
-        if (route2.pools[0].sqrtPriceX96 - route1.pools[0].sqrtPriceX96 > 0) {
-          if (route2.pools[0].liquidity - route1.pools[0].liquidity > 0) {
-            return 1;
-          }
-          return -1;
-        }
-        return -1;
-      })
-      .filter((_, index) => index < hopSize);
+    const filteredRoutes = routes.filter((_, index) => index < hopSize);
 
     const simulator = new SwapSimulator();
-    const routeMap = filteredRoutes.reduce<
-      {
-        [key in string]: {
-          routeId: string;
-          route: Route;
-          amountIn: bigint;
-          amountOut: bigint;
-          quote: number;
-        }[];
-      }
-    >((routeMap, route) => {
-      const routeId = makeRouteKey(route);
-      for (
-        let ratio = distributionRatio;
-        ratio <= 100;
-        ratio += distributionRatio
-      ) {
-        let currentInputTokenPath = inputTokenPath;
-        let currentOutputTokenPath = outputTokenPath;
-        let currentAmount = BigInt(
-          BigNumber(amount.toString()).multipliedBy(ratio).toFixed(0),
-        );
-        const amountIn = currentAmount;
-        for (const pool of route.pools) {
-          const { tokenAPath, tokenBPath } = pool;
-          const zeroForOne = currentInputTokenPath === tokenAPath;
-          currentOutputTokenPath = zeroForOne ? tokenAPath : tokenBPath;
-          const { amountB } = simulator.swap(
-            pool,
-            currentAmount,
-            exactType,
-            zeroForOne,
+
+    const routeWithQuotes: { [key in string]: RouteWithQuote[] } = {};
+    for (const route of filteredRoutes) {
+      const routeKey = makeRouteKey(route);
+      for (let ratio = 100; ratio >= 0; ratio -= distributionRatio) {
+        try {
+          let currentInputTokenPath = inputTokenPath;
+          let currentAmount = BigInt(
+            BigNumber(amount.toString())
+              .multipliedBy(ratio / 100.0)
+              .toFixed(0),
           );
-          currentInputTokenPath = currentOutputTokenPath;
-          currentAmount = amountB;
-        }
-        if (!routeMap[routeId]) {
-          routeMap[routeId] = [];
-        }
-        routeMap[routeId].push({
-          routeId,
-          route,
-          amountIn,
-          amountOut: currentAmount,
-          quote: ratio,
-        });
-      }
-      return routeMap;
-    }, {});
-
-    let currentQuote = 0;
-    const estimatedRoutes: EstimatedRoute[] = [];
-    for (let i = 0; i < filteredRoutes.length; i++) {
-      const routeKey = makeRouteKey(filteredRoutes[i]);
-      const routeQuotes = routeMap[routeKey].sort(
-        (r1, r2) => r1.quote - r2.quote,
-      );
-      for (let j = i; j < filteredRoutes.length; j++) {
-        let quote = 0;
-        const nextRouteKey = makeRouteKey(filteredRoutes[j]);
-        const limitRouteQuote = routeMap[nextRouteKey]
-          .sort((r1, r2) => r2.quote - r1.quote)
-          .find(next => {
-            return routeQuotes.find(current => {
-              if (current.quote > next.quote) {
-                quote = current.quote;
-                return false;
-              }
-              return true;
-            });
+          const amountIn = currentAmount;
+          for (const pool of route.pools) {
+            const { tokenAPath, tokenBPath } = pool;
+            const zeroForOne = currentInputTokenPath === tokenAPath;
+            const { amountA, amountB } = simulator.swap(
+              pool,
+              currentInputTokenPath,
+              currentAmount,
+              exactType,
+            );
+            currentInputTokenPath = zeroForOne ? tokenBPath : tokenAPath;
+            const changedAmountA = zeroForOne ? amountA : amountB;
+            const changedAmountB = zeroForOne ? amountB : amountA;
+            if (exactType === "EXACT_IN") {
+              currentAmount =
+                changedAmountB >= 0 ? changedAmountB : changedAmountB * -1n;
+            } else {
+              currentAmount =
+                changedAmountA >= 0 ? changedAmountA : changedAmountA * -1n;
+            }
+          }
+          const amountRatio =
+            exactType === "EXACT_IN"
+              ? Number(currentAmount) / Number(amountIn)
+              : Number(amountIn) / Number(currentAmount);
+          if (!routeWithQuotes[routeKey]) {
+            routeWithQuotes[routeKey] = [];
+          }
+          routeWithQuotes[routeKey].push({
+            routeKey,
+            route,
+            amountIn,
+            amountOut: currentAmount,
+            quote: ratio,
+            amountRatio,
           });
-        currentQuote += quote;
-        const currentRouteQuote = routeMap[routeKey].find(
-          route => route.quote === quote,
-        );
-        if (currentRouteQuote && limitRouteQuote) {
-          if (currentRouteQuote.quote >= currentQuote)
-            estimatedRoutes.push({
-              pools: currentRouteQuote.route.pools,
-              amountIn: currentRouteQuote.amountIn,
-              amountOut: currentRouteQuote.amountOut,
-              quote:
-                currentRouteQuote.quote >= currentQuote
-                  ? currentQuote
-                  : currentRouteQuote.quote,
-            });
-          break;
-        }
-      }
-
-      if (i === filteredRoutes.length && currentQuote > 0) {
-        const currentRouteQuote = routeMap[routeKey].find(
-          route => route.quote === currentQuote,
-        );
-        if (currentRouteQuote) {
-          estimatedRoutes.push({
-            pools: currentRouteQuote.route.pools,
-            amountIn: currentRouteQuote.amountIn,
-            amountOut: currentRouteQuote.amountOut,
-            quote: currentQuote,
-          });
-        }
+        } catch {}
       }
     }
-    return estimatedRoutes;
+
+    const quoteMap = Object.keys(routeWithQuotes).reduce<
+      {
+        [key in string]: {
+          quote: number;
+          amountOut: bigint;
+        };
+      }
+    >((acc, key) => {
+      if (!acc[key]) {
+        const item = routeWithQuotes[key].find((_, index) => index === 0);
+        if (item) {
+          acc[key] = {
+            quote: item.quote,
+            amountOut: item.amountOut,
+          };
+        }
+      }
+      return acc;
+    }, {});
+
+    let quoteSum = sum(Object.values(quoteMap).map(({ quote }) => quote));
+
+    while (quoteSum > 100) {
+      let decreaseTargetKey: string | null = null;
+      let maxSum: bigint | null = null;
+
+      for (const routeKey of Object.keys(quoteMap)) {
+        if (quoteMap[routeKey].quote <= 0) {
+          continue;
+        }
+        const nextRoute = routeWithQuotes[routeKey].find(
+          r => r.quote === quoteMap[routeKey].quote - distributionRatio,
+        );
+        if (!nextRoute) {
+          continue;
+        }
+
+        const currentSumOfAmmountOut = Object.entries(quoteMap).reduce(
+          (acc, [key, value]) => {
+            if (key === routeKey) {
+              return acc + nextRoute.amountOut;
+            }
+            return acc + value.amountOut;
+          },
+          0n,
+        );
+        if (maxSum === null || maxSum < currentSumOfAmmountOut) {
+          decreaseTargetKey = nextRoute.routeKey;
+          maxSum = currentSumOfAmmountOut;
+        }
+      }
+
+      if (decreaseTargetKey && quoteMap[decreaseTargetKey]) {
+        const changedQuote =
+          quoteMap[decreaseTargetKey].quote - distributionRatio;
+        const amountOut = routeWithQuotes[decreaseTargetKey].find(
+          r => r.routeKey === decreaseTargetKey && r.quote === changedQuote,
+        )?.amountOut;
+        quoteMap[decreaseTargetKey] = {
+          quote: changedQuote > 0 ? changedQuote : 0,
+          amountOut: amountOut ?? 0n,
+        };
+      }
+      quoteSum = sum(Object.values(quoteMap).map(({ quote }) => quote));
+    }
+
+    const estimatedRoutes: EstimatedRoute[] = [];
+    Object.entries(quoteMap)
+      .filter(([, value]) => value.quote > 0)
+      .forEach(([routeKey, value]) => {
+        const route = routeWithQuotes[routeKey].find(
+          r => r.quote === value.quote,
+        );
+        if (route) {
+          estimatedRoutes.push({
+            routeKey: route.routeKey,
+            pools: route.route.pools,
+            quote: route.quote,
+            amountIn: route.amountIn,
+            amountOut: route.amountOut,
+          });
+        }
+      });
+
+    return estimatedRoutes.sort(
+      (route1, route2) => route2.quote - route1.quote,
+    );
   };
 }

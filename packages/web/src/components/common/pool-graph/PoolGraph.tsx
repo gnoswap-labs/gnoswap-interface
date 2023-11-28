@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -8,6 +8,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { TokenModel } from "@models/token/token-model";
 import { toMillionFormat } from "@utils/number-utils";
 import { useColorGraph } from "@hooks/common/use-color-graph";
+import { tickToPriceStr } from "@utils/swap-utils";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -48,6 +49,23 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   themeKey,
   rectWidth,
 }) => {
+  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
+
+  useEffect(() => {
+    if (bins.length > 0) {
+      new Promise<{ [key in number]: string }>(resolve => {
+        const tickOfPrices = bins.flatMap(bin => [bin.minTick, bin.maxTick, -bin.minTick, -bin.maxTick])
+          .reduce<{ [key in number]: string }>((acc, current) => {
+            if (!acc[current]) {
+              acc[current] = tickToPriceStr(current).toString();
+            }
+            return acc;
+          }, {});
+        resolve(tickOfPrices);
+      }).then(setTickOfPrices);
+    }
+  }, [bins]);
+
   const svgRef = useRef(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -197,14 +215,22 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   function onMouseoverChartBin(event: MouseEvent, bin: PoolBinModel) {
     if (mouseover && tooltipRef.current) {
       if (tooltipRef.current.getAttribute("bin-id") !== `${bin.minTick}`) {
+        const tokenARange = {
+          min: tickOfPrices[bin?.minTick] || null,
+          max: tickOfPrices[bin?.maxTick] || null,
+        };
+        const tokenBRange = {
+          min: tickOfPrices[-bin?.maxTick] || null,
+          max: tickOfPrices[-bin?.minTick] || null,
+        };
         const content = renderToStaticMarkup(
           <PoolGraphBinTooptip
             tokenA={tokenA}
             tokenB={tokenB}
             tokenAAmount={bin.tokenAAmount}
             tokenBAmount={bin.tokenBAmount}
-            tokenARange={{ min: null, max: null }}
-            tokenBRange={{ min: null, max: null }}
+            tokenARange={tokenARange}
+            tokenBRange={tokenBRange}
           />
         );
         tooltipRef.current.innerHTML = content;
@@ -279,12 +305,12 @@ interface PoolGraphBinTooptipProps {
   tokenAAmount: number;
   tokenBAmount: number;
   tokenARange: {
-    min: number | null;
-    max: number | null;
+    min: string | null;
+    max: string | null;
   };
   tokenBRange: {
-    min: number | null;
-    max: number | null;
+    min: string | null;
+    max: string | null;
   };
 }
 
