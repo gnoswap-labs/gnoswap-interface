@@ -231,6 +231,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   greenDark: colors.global.greenDark,
   shadow: colors.global.shadowDark,
   shadow01: colors.global.shadowDark1,
+  shadow02: colors.global.shadowDark,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -344,4 +345,5 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   greenDark: colors.global.greenDark,
   shadow: colors.global.shadowLight,
   shadow01: colors.global.shadowLight,
+  shadow02: colors.global.none,
 };

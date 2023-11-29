@@ -45,7 +45,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
             {copied && (
               <CopyTooltip>
                 <div className={`box ${themeKey}-shadow`}>
-                  <span>URL Copied!</span>
+                  <span>Swap URL Copied!</span>
                 </div>
                 <IconPolygon className="polygon-icon" />
               </CopyTooltip>

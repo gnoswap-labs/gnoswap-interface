@@ -63,6 +63,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                   {tokens
                     .filter(item => item.searchType === "recent")
                     .map((item, idx) => (
+                      !item.isLiquid ? (
                       <li
                         key={idx}
                         onClick={() => onClickItem(item.token.symbol)}
@@ -81,14 +82,38 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         <span className="token-price">{item.price}</span>
                         {item.priceOf1d.status === "POSITIVE" ? (
                           <span className="positive">
-                            +{item.priceOf1d.value}
+                            +{item.priceOf1d.value}%
                           </span>
                         ) : (
                           <span className="negative">
-                            -{item.priceOf1d.value}
+                            -{item.priceOf1d.value}%
                           </span>
                         )}
                       </li>
+                      ) : (
+                      <li
+                        key={idx}
+                        onClick={() => onClickItem(item.token.symbol)}
+                      >
+                        <div className="coin-info">
+                          <DoubleLogo
+                            size={24}
+                            left={item.token.logoURI}
+                            right={item?.tokenB?.logoURI || ""}
+                          />
+                          <span className="token-name">
+                            {item.token.name}/{item?.tokenB?.name}
+                          </span>
+                          <Badge
+                            text={"0.3%"}
+                            type={BADGE_TYPE.DARK_DEFAULT}
+                          />
+                        </div>
+                        <span className="token-price">
+                        {Number(item.priceOf1d.value) >= 100 && <IconStar />}{item.priceOf1d.value}% {item.token.symbol}
+                        </span>
+                      </li>
+                    )
                     ))}
                   <div className="popular-tokens">
                     {!keyword ? "Popular Tokens" : "Pools"}

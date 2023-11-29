@@ -120,9 +120,10 @@ export const ConfirmModal = styled.div`
         }
         .button-wrapper {
           ${mixins.flexbox("row", "center", "flex-start")};
-          padding: 4px 12px 4px 6px;
+          padding: 5px 12px 5px 6px;
           gap: 8px;
           border-radius: 36px;
+          height: 34px;
           background: ${({ theme }) => theme.color.background13};
           ${fonts.body9}
           color: ${({ theme }) => theme.color.text02};
@@ -135,7 +136,7 @@ export const ConfirmModal = styled.div`
           ${mixins.flexbox("row", "center", "flex-start")};
           .price-text {
             ${fonts.body12};
-            color: ${({ theme }) => theme.color.text10};
+            color: ${({ theme }) => theme.color.text04};
             ${media.mobile} {
               ${fonts.p2};
             }

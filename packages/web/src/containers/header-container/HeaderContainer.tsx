@@ -26,6 +26,7 @@ export interface Token {
   price: string;
   priceOf1d: NegativeStatusType;
   tokenB?: TokenInfo;
+  isLiquid?: boolean;
 }
 
 export const RecentdummyToken: Token[] = [
@@ -49,6 +50,7 @@ export const RecentdummyToken: Token[] = [
       symbol: "GNOT",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
     },
+    isLiquid: true,
   },
   {
     path: Math.floor(Math.random() * 50 + 1).toString(),
