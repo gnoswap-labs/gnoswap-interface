@@ -1,5 +1,5 @@
-import { Q96, X96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
+export const Q96 = 79228162514264337593543950336n as const;
 
 export const MIN_INT8 = -128n as const;
 export const MAX_INT8 = 127n as const;
@@ -269,7 +269,7 @@ export function getNextSqrtPriceFromAmountBRoundingDown(
       quotient = BigInt(
         BigNumber(amount.toString())
           .dividedBy(liquidity.toString())
-          .multipliedBy(X96)
+          .multipliedBy(Q96.toString())
           .toFixed(0),
       );
     } else {
@@ -281,7 +281,7 @@ export function getNextSqrtPriceFromAmountBRoundingDown(
       quotient = BigInt(
         BigNumber(amount.toString())
           .dividedBy(liquidity.toString())
-          .multipliedBy(X96)
+          .multipliedBy(Q96.toString())
           .toFixed(0),
       );
     } else {

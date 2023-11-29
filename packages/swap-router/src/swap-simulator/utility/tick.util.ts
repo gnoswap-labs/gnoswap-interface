@@ -89,7 +89,7 @@ export function tickToSqrtPriceX96(tick: number): bigint {
 }
 
 export function nextInitializedTickWithinOneWord(
-  tickBitmaps: { [key in number]: bigint },
+  tickBitmaps: { [key in number]: string },
   tick: number,
   tickSpacing: number,
   isTickToLeft: boolean,
@@ -102,7 +102,7 @@ export function nextInitializedTickWithinOneWord(
   if (isTickToLeft) {
     const { wordPos, bitPos } = tickBitmapPosition(compressed);
     const mask = (1n << BigInt(bitPos)) - 1n + (1n << BigInt(bitPos));
-    const bitmap = tickBitmaps[wordPos] || 0n;
+    const bitmap = BigInt(tickBitmaps[wordPos] || 0n);
     const masked = bitmap & mask;
 
     const initialized = masked !== 0n;
@@ -114,7 +114,7 @@ export function nextInitializedTickWithinOneWord(
 
   const { wordPos, bitPos } = tickBitmapPosition(compressed + 1);
   const mask = ~((1n << BigInt(bitPos)) - 1n);
-  const bitmap = tickBitmaps[wordPos] || 0n;
+  const bitmap = BigInt(tickBitmaps[wordPos] || 0n);
   const masked = bitmap & mask;
 
   const initialized = masked !== 0n;

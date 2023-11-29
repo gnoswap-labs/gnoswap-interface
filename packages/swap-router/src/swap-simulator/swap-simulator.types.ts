@@ -31,7 +31,7 @@ export interface Pool {
 
   ticks: number[];
 
-  tickBitmaps: { [key in string]: bigint };
+  tickBitmaps: { [key in string]: string };
 
   positions: Position[];
 }

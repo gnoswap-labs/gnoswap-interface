@@ -1,4 +1,4 @@
-import { EstimatedRouteModel } from "@models/swap/estimated-route-model";
+import { EstimatedRoute } from "@gnoswap-labs/swap-router";
 import { TokenModel } from "@models/token/token-model";
 
 export interface SwapRouteRequest {
@@ -10,7 +10,7 @@ export interface SwapRouteRequest {
 
   exactType: "EXACT_IN" | "EXACT_OUT";
 
-  estimatedRoutes: EstimatedRouteModel[];
+  estimatedRoutes: EstimatedRoute[];
 
   tokenAmountLimit: number;
 }

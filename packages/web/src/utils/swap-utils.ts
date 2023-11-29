@@ -4,7 +4,7 @@ import {
 } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK, X96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
-import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
+import { Q96, tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
 
 const LOG10001 = Math.log(1.0001);
 
@@ -21,46 +21,15 @@ export function makeSwapFeeTier(value: string | number): SwapFeeTierType {
   return "NONE";
 }
 
-export function generate() {
-  const gap = 5000;
-  const start = 885000;
-  const count = start / gap;
-
-  const a: any = {};
-
-  const PRICE5000 = "1.6486800559311757";
-  const PRICEM5000 = "0.6065458221578347";
-
-  console.log("genereate");
-  for (let i = 1; i < count + 1; i++) {
-    const price = BigNumber(PRICE5000).pow(i);
-    const mPrice = BigNumber(PRICEM5000).pow(i);
-    a[`${i * gap}`] = {
-      price: price.toNumber(),
-      sqrtPriceX96: price.sqrt().multipliedBy(X96).toFixed(0),
-    };
-    a[`${i * gap * -1}`] = {
-      price: mPrice.toNumber(),
-      sqrtPriceX96: mPrice.sqrt().multipliedBy(X96).toFixed(0),
-    };
-  }
-  console.log(a);
-}
-
-export function tickToPrice(tick: number) {
-  const sqrtPriceX96 = tickToSqrtPriceX96(tick);
-  return rawBySqrtX96(sqrtPriceX96);
-}
-
-export function priceToTick(price: number) {
+export function priceToTick(price: number | bigint) {
   if (price === 0) {
     return MIN_TICK;
   }
-  const logPrice = Math.log(price ** 2);
+  const logPrice = 2 * Math.log(Number(price));
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
-export function priceToNearTick(price: number, tickSpacing: number) {
+export function priceToNearTick(price: number | bigint, tickSpacing: number) {
   const tickRaw = priceToTick(price);
   const tickAbs = Math.abs(tickRaw);
   const mod = tickAbs % tickSpacing;
@@ -85,12 +54,20 @@ export function priceToNearTick(price: number, tickSpacing: number) {
 }
 
 export function rawBySqrtX96(value: number | bigint | string) {
-  return BigNumber(value.toString()).dividedBy(X96).toNumber();
+  return BigNumber(value.toString()).dividedBy(Q96.toString()).toNumber();
 }
 
-export function priceX96ToNearTick(priceX96: number, tickSpacing: number) {
+export function priceX96ToNearTick(
+  priceX96: number | bigint,
+  tickSpacing: number,
+) {
   const price = rawBySqrtX96(priceX96);
   return priceToNearTick(price, tickSpacing);
+}
+
+export function tickToPrice(tick: number) {
+  const sqrtPriceX96 = tickToSqrtPriceX96(tick);
+  return rawBySqrtX96(sqrtPriceX96);
 }
 
 export function tickToPriceStr(tick: number, decimals?: number) {
@@ -101,7 +78,7 @@ export function tickToPriceStr(tick: number, decimals?: number) {
     return "∞";
   }
   const decimalsLimit = decimals || 4;
-  const result = BigNumber(tickToPrice(tick))
+  const result = BigNumber(tickToPrice(tick).toString())
     .toFormat(decimalsLimit)
     .replace(/\.?0+$/, "");
   if (result === "0") {

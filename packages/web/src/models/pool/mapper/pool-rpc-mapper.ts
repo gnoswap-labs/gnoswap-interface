@@ -29,9 +29,9 @@ export class PoolRPCMapper {
       liquidity: BigInt(responseData.liquidity),
       ticks: responseData.ticks,
       tickBitmaps: Object.entries(responseData.tick_bitmaps).reduce<
-        { [key in string]: bigint }
+        { [key in string]: string }
       >((acc, [key, value]) => {
-        acc[key] = BigInt(value);
+        acc[key] = value.toString();
         return acc;
       }, {}),
       positions: responseData.positions.map(position => ({

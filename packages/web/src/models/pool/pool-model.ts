@@ -1,6 +1,5 @@
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
-import { AmountModel } from "@models/common/amount-model";
 
 export interface PoolModel {
   id: string;
@@ -23,17 +22,15 @@ export interface PoolModel {
 
   bins: PoolBinModel[];
 
-  topBin: PoolBinModel | null;
-
-  tvl: AmountModel;
+  tvl: number;
 
   tvlChange: number;
 
-  volume: AmountModel;
+  volume: number;
 
   volumeChange: number;
 
-  totalVolume: AmountModel;
+  totalVolume: number;
 
   fee: string;
 

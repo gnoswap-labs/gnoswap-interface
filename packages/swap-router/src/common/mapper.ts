@@ -23,9 +23,9 @@ export function makePool(data: any): Pool {
     liquidity: BigInt(responseData.liquidity),
     ticks: responseData.ticks,
     tickBitmaps: Object.entries(responseData.tick_bitmaps).reduce<
-      { [key in string]: bigint }
+      { [key in string]: string }
     >((acc, [key, value]) => {
-      acc[key] = BigInt(value as string);
+      acc[key] = value as string;
       return acc;
     }, {}),
     positions: responseData.positions.map((position: any) => ({

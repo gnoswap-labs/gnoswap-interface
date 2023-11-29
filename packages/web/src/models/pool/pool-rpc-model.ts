@@ -33,7 +33,9 @@ export interface PoolRPCModel {
 
   ticks: number[];
 
-  tickBitmaps: { [key in number]: bigint };
+  tickBitmaps: {
+    [key in number]: string;
+  };
 
   positions: PositionRPCModel[];
 }
