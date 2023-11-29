@@ -146,6 +146,9 @@ export class SwapRouter {
 
     const simulator = new SwapSimulator();
 
+    /**
+     * Store the results of the swap route by input token amount.
+     */
     const routeWithQuotes: { [key in string]: RouteWithQuote[] } = {};
     for (const route of filteredRoutes) {
       const routeKey = makeRouteKey(route);
@@ -197,28 +200,31 @@ export class SwapRouter {
       }
     }
 
-    const quoteMap = Object.keys(routeWithQuotes).reduce<
-      {
-        [key in string]: {
-          quote: number;
-          amountOut: bigint;
-        };
-      }
-    >((acc, key) => {
-      if (!acc[key]) {
+    type QuoteMap = {
+      [key in string]: {
+        quote: number;
+        amountOut: bigint;
+      };
+    };
+    const quoteMap = Object.keys(routeWithQuotes).reduce<QuoteMap>(
+      (accum, key) => {
         const item = routeWithQuotes[key].find((_, index) => index === 0);
         if (item) {
-          acc[key] = {
+          accum[key] = {
             quote: item.quote,
             amountOut: item.amountOut,
           };
         }
-      }
-      return acc;
-    }, {});
+        return accum;
+      },
+      {},
+    );
 
+    /**
+     * From the sum of the maximum percentages for each path,
+     * find the maximum sum of 100% while sequentially reducing the percentages.
+     */
     let quoteSum = sum(Object.values(quoteMap).map(({ quote }) => quote));
-
     while (quoteSum > 100) {
       let decreaseTargetKey: string | null = null;
       let maxSum: bigint | null = null;
@@ -228,18 +234,17 @@ export class SwapRouter {
           continue;
         }
         const nextRoute = routeWithQuotes[routeKey].find(
-          r => r.quote === quoteMap[routeKey].quote - distributionRatio,
+          route => route.quote === quoteMap[routeKey].quote - distributionRatio,
         );
         if (!nextRoute) {
           continue;
         }
 
         const currentSumOfAmmountOut = Object.entries(quoteMap).reduce(
-          (acc, [key, value]) => {
-            if (key === routeKey) {
-              return acc + nextRoute.amountOut;
-            }
-            return acc + value.amountOut;
+          (accum, [key, value]) => {
+            return key === routeKey
+              ? accum + nextRoute.amountOut
+              : accum + value.amountOut;
           },
           0n,
         );
@@ -253,7 +258,9 @@ export class SwapRouter {
         const changedQuote =
           quoteMap[decreaseTargetKey].quote - distributionRatio;
         const amountOut = routeWithQuotes[decreaseTargetKey].find(
-          r => r.routeKey === decreaseTargetKey && r.quote === changedQuote,
+          route =>
+            route.routeKey === decreaseTargetKey &&
+            route.quote === changedQuote,
         )?.amountOut;
         quoteMap[decreaseTargetKey] = {
           quote: changedQuote > 0 ? changedQuote : 0,
@@ -263,12 +270,15 @@ export class SwapRouter {
       quoteSum = sum(Object.values(quoteMap).map(({ quote }) => quote));
     }
 
+    /**
+     * Process the result of the calculated swap path.
+     */
     const estimatedRoutes: EstimatedRoute[] = [];
     Object.entries(quoteMap)
       .filter(([, value]) => value.quote > 0)
       .forEach(([routeKey, value]) => {
         const route = routeWithQuotes[routeKey].find(
-          r => r.quote === value.quote,
+          route => route.quote === value.quote,
         );
         if (route) {
           estimatedRoutes.push({

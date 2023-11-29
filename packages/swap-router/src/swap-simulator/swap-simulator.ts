@@ -145,7 +145,14 @@ export class SwapSimulator {
     zeroForOne: boolean,
   ): SwapResult {
     const exactIn = exactType === "EXACT_IN";
-    const amount = exactType === "EXACT_IN" ? swapAmount : -1n * swapAmount;
+    let amount = swapAmount;
+    if (!exactIn) {
+      const amountLimit = zeroForOne ? pool.tokenBBalance : pool.tokenABalance;
+      if (amount > amountLimit) {
+        amount = amountLimit;
+      }
+      amount *= -1n;
+    }
     const swapState = {
       amountSpecifiedRemaining: amount,
       amountCalculated: 0n,
@@ -259,7 +266,7 @@ export class SwapSimulator {
       }
 
       if (quoteAmountSpecified === 0n || quoteAmountCalculated === 0n) {
-        continue;
+        break;
       }
 
       if (exactIn) {
