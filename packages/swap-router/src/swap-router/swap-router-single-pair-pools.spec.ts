@@ -141,8 +141,6 @@ describe("swap router of single pair pool", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -162,8 +160,6 @@ describe("swap router of single pair pool", () => {
         10000n,
         "EXACT_OUT",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -187,8 +183,6 @@ describe("swap router of single pair pool", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -208,8 +202,6 @@ describe("swap router of single pair pool", () => {
         10000n,
         "EXACT_OUT",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -234,8 +226,6 @@ describe("swap router of single pair multi pools", () => {
         10000n,
         "EXACT_IN",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -267,8 +257,6 @@ describe("swap router of single pair multi pools", () => {
         "EXACT_OUT",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -291,8 +279,6 @@ describe("swap router of single pair multi pools", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -312,8 +298,6 @@ describe("swap router of single pair multi pools", () => {
         10000n,
         "EXACT_OUT",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),

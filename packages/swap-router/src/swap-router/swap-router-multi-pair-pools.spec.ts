@@ -1,4 +1,3 @@
-import { printEstimateRouteInfo, printPoolInfo } from "../common";
 import { sumBigInts } from "../common/array.util";
 import { makePoolsByRPC } from "../common/mapper";
 import { SwapRouter } from "./swap-router";
@@ -133,7 +132,6 @@ const multiPairPools = makePoolsByRPC([
 describe("swap router of multi pair pools", () => {
   describe("gno.land/r/bar to gno.land/r/qux", () => {
     test("EXANCT_IN, 100000", async () => {
-      printPoolInfo(multiPairPools);
       const swapRouter = new SwapRouter(multiPairPools);
       const estimatedRoutes = swapRouter.estimateSwapRoute(
         "gno.land/r/bar",
@@ -141,8 +139,6 @@ describe("swap router of multi pair pools", () => {
         10000n,
         "EXACT_IN",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -170,8 +166,6 @@ describe("swap router of multi pair pools", () => {
         "EXACT_OUT",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -194,8 +188,6 @@ describe("swap router of multi pair pools", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -215,8 +207,6 @@ describe("swap router of multi pair pools", () => {
         10000n,
         "EXACT_OUT",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),

@@ -57,8 +57,6 @@ describe("swap router of lower range positions pool", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -79,8 +77,6 @@ describe("swap router of lower range positions pool", () => {
         10000n,
         "EXACT_OUT",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -104,8 +100,6 @@ describe("swap router of lower range positions pool", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -125,8 +119,6 @@ describe("swap router of lower range positions pool", () => {
         10000n,
         "EXACT_OUT",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),

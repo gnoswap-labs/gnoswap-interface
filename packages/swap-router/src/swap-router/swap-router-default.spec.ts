@@ -1,4 +1,3 @@
-import { printEstimateRouteInfo, printPoolInfo } from "../common";
 import { sumBigInts } from "../common/array.util";
 import { Pool } from "../swap-simulator";
 import { SwapRouter } from "./swap-router";
@@ -250,8 +249,6 @@ describe("swap router of swap simulator test pool", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -271,8 +268,6 @@ describe("swap router of swap simulator test pool", () => {
         10000n,
         "EXACT_OUT",
       );
-
-      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -295,8 +290,6 @@ describe("swap router of swap simulator test pool", () => {
           "EXACT_IN",
         );
 
-        printEstimateRouteInfo(estimatedRoutes);
-
         const sumAmount = sumBigInts(
           estimatedRoutes.map(route => route.amountOut),
         );
@@ -316,8 +309,6 @@ describe("swap router of swap simulator test pool", () => {
           10000n,
           "EXACT_OUT",
         );
-
-        printEstimateRouteInfo(estimatedRoutes);
 
         const sumAmount = sumBigInts(
           estimatedRoutes.map(route => route.amountOut),
@@ -344,8 +335,6 @@ describe("swap simulator", () => {
         "EXACT_IN",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -370,8 +359,6 @@ describe("swap simulator", () => {
         "EXACT_OUT",
       );
 
-      printEstimateRouteInfo(estimatedRoutes);
-
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -393,8 +380,6 @@ describe("swap simulator", () => {
           "EXACT_IN",
         );
 
-        printEstimateRouteInfo(estimatedRoutes);
-
         const sumAmount = sumBigInts(
           estimatedRoutes.map(route => route.amountOut),
         );
@@ -414,8 +399,6 @@ describe("swap simulator", () => {
           10000n,
           "EXACT_OUT",
         );
-
-        printEstimateRouteInfo(estimatedRoutes);
 
         const sumAmount = sumBigInts(
           estimatedRoutes.map(route => route.amountOut),
