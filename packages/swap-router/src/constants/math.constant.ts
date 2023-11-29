@@ -1,3 +1,6 @@
+export const Q96 = 79228162514264337593543950336n as const;
+export const Q128 = 340282366920938463463374607431768211456n as const;
+
 export const MIN_INT8 = -128n as const;
 export const MAX_INT8 = 127n as const;
 export const MAX_UINT8 = 255n as const;

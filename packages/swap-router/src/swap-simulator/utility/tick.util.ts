@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
-import { Pool } from "../swap-simulator.types";
-import { LSB, MAX_UINT256, MAX_UINT8, MSB, Q96 } from "./math.util";
+import { MAX_UINT256, MAX_UINT8, Q96 } from "../../constants";
+import { LSB, MSB } from "./math.util";
 
 export function tickToPrice(tick: number): number {
   const sqrtPriceX96 = tickToSqrtPriceX96(tick);

@@ -144,8 +144,8 @@ export class SwapSimulator {
     exactType: "EXACT_IN" | "EXACT_OUT",
     zeroForOne: boolean,
   ): SwapResult {
+    const exactIn = exactType === "EXACT_IN";
     const amount = exactType === "EXACT_IN" ? swapAmount : -1n * swapAmount;
-    const exactIn = amount >= 0;
     const swapState = {
       amountSpecifiedRemaining: amount,
       amountCalculated: 0n,
@@ -241,6 +241,13 @@ export class SwapSimulator {
       step.feeAmount = computedFeeAmount;
       swapState.sqrtPriceX96 = computedSqrtRatioNextX96;
 
+      const quoteAmountSpecified = exactIn
+        ? step.amountIn + step.feeAmount
+        : step.amountOut * -1n;
+      const quoteAmountCalculated = exactIn
+        ? step.amountOut * -1n
+        : step.amountIn + step.feeAmount;
+
       if (swapState.sqrtPriceX96 === step.sqrtPriceNextX96) {
         if (zeroForOne) {
           swapState.tick = step.tickNext - 1;
@@ -251,6 +258,10 @@ export class SwapSimulator {
         swapState.tick = sqrtPriceX96ToTick(swapState.sqrtPriceX96);
       }
 
+      if (quoteAmountSpecified === 0n || quoteAmountCalculated === 0n) {
+        continue;
+      }
+
       if (exactIn) {
         swapState.amountSpecifiedRemaining -= step.amountIn + step.feeAmount;
         swapState.amountCalculated -= step.amountOut;
@@ -258,13 +269,6 @@ export class SwapSimulator {
         swapState.amountSpecifiedRemaining += step.amountOut;
         swapState.amountCalculated += step.amountIn + step.feeAmount;
       }
-
-      const quoteAmountSpecified = exactIn
-        ? step.amountIn + step.feeAmount
-        : step.amountOut * -1n;
-      const quoteAmountCalculated = exactIn
-        ? step.amountOut * -1n
-        : step.amountIn + step.feeAmount;
       if (exactIn === zeroForOne) {
         quote.amountIn = quoteAmountSpecified;
         quote.amountOut = quoteAmountCalculated;

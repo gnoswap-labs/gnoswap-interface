@@ -1,4 +1,4 @@
-import { MAX_UINT160, Q96 } from "./math.util";
+import { MAX_UINT160, Q96 } from "../../constants";
 
 export function getNextSqrtPriceFromAmountARoundingUp(
   sqrtPriceX96: bigint,

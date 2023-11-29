@@ -1,33 +1,12 @@
 import BigNumber from "bignumber.js";
-
-export const Q96 = 79228162514264337593543950336n as const;
-export const Q128 = 340282366920938463463374607431768211456n as const;
-
-export const MIN_INT8 = -128n as const;
-export const MAX_INT8 = 127n as const;
-export const MAX_UINT8 = 255n as const;
-
-export const MIN_INT16 = -32768n as const;
-export const MAX_INT16 = 32767n as const;
-export const MAX_UINT16 = 65535n as const;
-
-export const MIN_INT32 = -2147483648n as const;
-export const MAX_INT32 = 2147483647n as const;
-export const MAX_UINT32 = 4294967295n as const;
-
-export const MIN_INT64 = -9223372036854775808n as const;
-export const MAX_INT64 = 9223372036854775807n as const;
-export const MAX_UINT64 = 18446744073709551615n as const;
-
-export const MIN_INT128 = -170141183460469231731687303715884105728n as const;
-export const MAX_INT128 = 170141183460469231731687303715884105727n as const;
-export const MAX_UINT128 = 340282366920938463463374607431768211455n as const;
-
-export const MIN_INT256 = -57896044618658097711785492504343953926634992332820282019728792003956564819968n as const;
-export const MAX_INT256 = 57896044618658097711785492504343953926634992332820282019728792003956564819967n as const;
-export const MAX_UINT256 = 115792089237316195423570985008687907853269984665640564039457584007913129639935n as const;
-
-export const MAX_UINT160 = 1461501637330902918203684832716283019655932542975n as const;
+import {
+  MAX_UINT128,
+  MAX_UINT16,
+  MAX_UINT32,
+  MAX_UINT64,
+  MAX_UINT8,
+  Q96,
+} from "../../constants";
 
 export function fromSqrtX96(value: number | bigint) {
   return BigNumber(`${value}`).dividedBy(Q96.toString()).sqrt().toNumber();
