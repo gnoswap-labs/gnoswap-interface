@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import TokenChart from "@components/token/token-chart/TokenChart";
 
-export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "YTD"] as const;
+export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
 
 export interface TokenInfo {
@@ -35,7 +35,7 @@ const dummyTokenInfo: TokenInfo = {
   token: {
     name: "Gnoswap",
     symbol: "GNS",
-    image: "https://miro.medium.com/v2/resize:fill:44:44/1*61CWWk33Fx8vLVvto5nJHQ.png",
+    image: "/gnos.svg",
   },
   priceInfo: {
     amount: {
@@ -79,7 +79,7 @@ function createXAxisDummyDatas(currentTab: TokenChartGraphPeriodType) {
         const yearStr = date.getFullYear();
         return `${yearStr}`;
       }).reverse();
-    case "YTD":
+    case "ALL":
     default:
       return Array.from({ length: 10 }, (_, index) => {
         const date = new Date(now);
@@ -92,7 +92,7 @@ function createXAxisDummyDatas(currentTab: TokenChartGraphPeriodType) {
 }
 
 function createDummyAmountDatas() {
-  const length = 24;
+  const length = 60;
   return Array.from({ length }, (_, index) => {
     const date = new Date();
     date.setHours(date.getHours() - index);

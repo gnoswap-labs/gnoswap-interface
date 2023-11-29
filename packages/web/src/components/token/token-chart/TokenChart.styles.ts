@@ -9,7 +9,7 @@ export const TokenChartWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border02};
   width: 100%;
   height: auto;
-  padding: 24px;
+  padding: 23px;
   border-radius: 8px;
   ${media.mobile} {
     background-color: transparent;

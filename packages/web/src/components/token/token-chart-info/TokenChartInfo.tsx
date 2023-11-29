@@ -39,7 +39,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
           </div>
         </div>
         <div className="price-info">
-          <span className="price">{`$ ${priceInfo.amount.value}`}</span>
+          <span className="price">{`$${priceInfo.amount.value}`}</span>
           <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?

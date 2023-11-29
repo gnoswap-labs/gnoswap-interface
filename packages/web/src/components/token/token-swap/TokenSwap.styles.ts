@@ -5,7 +5,7 @@ import { media } from "@styles/media";
 import styled from "@emotion/styled";
 
 export const wrapper = (theme: Theme) => css`
-  padding: 24px;
+  padding: 23px;
   background-color: ${theme.color.background06};
   border: 1px solid ${theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
@@ -74,30 +74,20 @@ export const wrapper = (theme: Theme) => css`
     .to {
       ${mixins.flexbox("row", "center", "space-between")};
       flex-wrap: wrap;
-
       width: 100%;
       padding: 16px 24px;
-
       background-color: ${theme.color.background01};
       border: 1px solid ${theme.color.border02};
       border-radius: 8px;
+      &:focus-within {
+        border: 1px solid  ${theme.color.border15};
+      }
     }
 
     .amount {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
       margin-bottom: 8px;
-    }
-
-    .token {
-      width: auto;
-      height: 30px;
-      cursor: default;
-      span {
-        font-size: 15px;
-        line-height: 19px;
-        margin: 0px;
-      }
     }
 
     .info {
@@ -112,6 +102,9 @@ export const wrapper = (theme: Theme) => css`
       line-height: 38px;
       color: ${theme.color.text01};
       margin-right: 30px;
+      &::placeholder {
+        color: ${theme.color.text02};
+      }
     }
 
     .price-text,
@@ -126,12 +119,18 @@ export const wrapper = (theme: Theme) => css`
     .token {
       ${mixins.flexbox("row", "center", "center")}
       width: auto;
-      height: 30px;
-      font-size: 15px;
-      font-weight: 500;
-      line-height: 19px;
       border-radius: 36px;
       color: ${theme.color.text01};
+      height: 34px;
+      .selected-token {
+        padding: 5px 10px 5px 6px;
+      }
+      .not-selected-token {
+        padding: 5px 10px 5px 12px
+      }
+      .token-symbol {
+        height: 21px;
+      }
     }
 
     .arrow {

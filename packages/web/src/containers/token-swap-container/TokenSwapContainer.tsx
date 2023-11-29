@@ -386,7 +386,7 @@ const TokenSwapContainer: React.FC = () => {
 
   const swapButtonText = useMemo(() => {
     if (!connectedWallet) {
-      return "Connect Wallet";
+      return "Wallet Login";
     }
     if (isSwitchNetwork) {
       return "Switch to Gnoland";

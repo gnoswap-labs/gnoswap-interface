@@ -61,10 +61,11 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   const onClickReset = useCallback(() => {
     changeSlippage(DEFAULT_SLIPPAGE);
   }, [changeSlippage]);
-
+  
   const handleClickWrapper = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (buttonRef && buttonRef.current && buttonRef.current.contains(event.target as Node)) {
-      changeSlippage(DEFAULT_SLIPPAGE);
+        setPrevios(DEFAULT_SLIPPAGE);
+        changeSlippage(DEFAULT_SLIPPAGE);
       return;
     }
     if (closeRef && closeRef.current && closeRef.current.contains(event.target as Node)) {
@@ -81,6 +82,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
         setPrevios("30");
       } else {
         setPrevios(value);
+        changeSlippage(value);
       }
     }
   }, [changeSlippage, setPrevios, previos]);
@@ -99,10 +101,11 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
         setPrevios("30");
       } else {
         setPrevios(value);
+        changeSlippage(value);
       }
     }
-  }, [changeSlippage]);
-
+  }, [changeSlippage, setPrevios]);
+  
   return (
     <>
       <SettingMenuModalWrapper ref={settingMenuRef} className={className} onClick={handleClickWrapper}>

@@ -13,7 +13,7 @@ function useEscCloseModal(callback: () => void) {
     return () => {
       window.removeEventListener("keydown", handleEsc);
     };
-  }, []);
+  }, [callback]);
 }
 
 export default useEscCloseModal;
