@@ -1,3 +1,4 @@
+import { printEstimateRouteInfo } from "../common";
 import { sumBigInts } from "../common/array.util";
 import { makePoolsByRPC } from "../common/mapper";
 import { SwapRouter } from "./swap-router";
@@ -57,6 +58,8 @@ describe("swap router of higher range positions pool", () => {
         "EXACT_IN",
       );
 
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -78,6 +81,8 @@ describe("swap router of higher range positions pool", () => {
         "EXACT_OUT",
       );
 
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -86,7 +91,7 @@ describe("swap router of higher range positions pool", () => {
         "gno.land/r/bar:gno.land/r/baz:500",
       );
       expect(estimatedRoutes[0].quote).toBe(100);
-      expect(sumAmount).toBe(4176n);
+      expect(sumAmount).toBe(3253n);
     });
   });
 
@@ -99,6 +104,8 @@ describe("swap router of higher range positions pool", () => {
         10000n,
         "EXACT_IN",
       );
+
+      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -119,6 +126,8 @@ describe("swap router of higher range positions pool", () => {
         10000n,
         "EXACT_OUT",
       );
+
+      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),

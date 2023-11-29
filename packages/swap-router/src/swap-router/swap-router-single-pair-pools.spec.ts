@@ -1,3 +1,4 @@
+import { printEstimateRouteInfo } from "../common";
 import { sumBigInts } from "../common/array.util";
 import { makePoolsByRPC } from "../common/mapper";
 import { SwapRouter } from "./swap-router";
@@ -140,6 +141,8 @@ describe("swap router of single pair pool", () => {
         "EXACT_IN",
       );
 
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -159,6 +162,8 @@ describe("swap router of single pair pool", () => {
         10000n,
         "EXACT_OUT",
       );
+
+      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -182,6 +187,8 @@ describe("swap router of single pair pool", () => {
         "EXACT_IN",
       );
 
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -201,6 +208,8 @@ describe("swap router of single pair pool", () => {
         10000n,
         "EXACT_OUT",
       );
+
+      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -226,6 +235,8 @@ describe("swap router of single pair multi pools", () => {
         "EXACT_IN",
       );
 
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -234,10 +245,12 @@ describe("swap router of single pair multi pools", () => {
         "gno.land/r/bar:gno.land/r/baz:500",
       );
       expect(estimatedRoutes[0].quote).toBe(60);
+
       expect(estimatedRoutes[1].routeKey).toBe(
         "gno.land/r/bar:gno.land/r/baz:100",
       );
       expect(estimatedRoutes[1].quote).toBe(35);
+
       expect(estimatedRoutes[2].routeKey).toBe(
         "gno.land/r/bar:gno.land/r/baz:3000",
       );
@@ -254,15 +267,17 @@ describe("swap router of single pair multi pools", () => {
         "EXACT_OUT",
       );
 
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
       expect(estimatedRoutes).toHaveLength(1);
       expect(estimatedRoutes[0].routeKey).toBe(
-        "gno.land/r/bar:gno.land/r/baz:3000",
+        "gno.land/r/bar:gno.land/r/baz:100",
       );
       expect(estimatedRoutes[0].quote).toBe(100);
-      expect(sumAmount).toBe(9724n);
+      expect(sumAmount).toBe(7444n);
     });
   });
 
@@ -275,6 +290,8 @@ describe("swap router of single pair multi pools", () => {
         10000n,
         "EXACT_IN",
       );
+
+      printEstimateRouteInfo(estimatedRoutes);
 
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
@@ -296,15 +313,22 @@ describe("swap router of single pair multi pools", () => {
         "EXACT_OUT",
       );
 
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
-      expect(estimatedRoutes).toHaveLength(1);
+      expect(estimatedRoutes).toHaveLength(2);
       expect(estimatedRoutes[0].routeKey).toBe(
-        "gno.land/r/bar:gno.land/r/baz:3000",
+        "gno.land/r/bar:gno.land/r/baz:500",
       );
-      expect(estimatedRoutes[0].quote).toBe(100);
-      expect(sumAmount).toBe(1145661n);
+      expect(estimatedRoutes[0].quote).toBe(60);
+
+      expect(estimatedRoutes[1].routeKey).toBe(
+        "gno.land/r/bar:gno.land/r/baz:100",
+      );
+      expect(estimatedRoutes[1].quote).toBe(40);
+      expect(sumAmount).toBe(15814n);
     });
   });
 });

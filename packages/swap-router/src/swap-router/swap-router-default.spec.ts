@@ -1,6 +1,51 @@
+import { printEstimateRouteInfo, printPoolInfo } from "../common";
 import { sumBigInts } from "../common/array.util";
 import { Pool } from "../swap-simulator";
 import { SwapRouter } from "./swap-router";
+
+const defaultPool = [
+  {
+    poolPath: "gno.land/r/bar:gno.land/r/baz:500",
+    tokenAPath: "gno.land/r/bar",
+    tokenBPath: "gno.land/r/baz",
+    fee: 500,
+    tokenABalance: 9937690n,
+    tokenBBalance: 10943746n,
+    tickSpacing: 10,
+    maxLiquidityPerTick: 103951672670308,
+    price: 1.2904451607773892,
+    sqrtPriceX96: 102239599540632204908365252323n,
+    tick: 5099,
+    feeProtocol: 0,
+    tokenAProtocolFee: 0,
+    tokenBProtocolFee: 0,
+    liquidity: 291453167n,
+    ticks: [4000, 6000, 5000],
+    tickBitmaps: {
+      "1":
+        "28269553036454149273332760011908996998438272973151439048218347582187896832",
+      "2": "309485009821345068724781056",
+    },
+    positions: [
+      {
+        liquidity: 144812895n,
+        owner: "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        tickLower: 4000,
+        tickUpper: 6000,
+        tokenAOwed: 0n,
+        tokenBOwed: 0n,
+      },
+      {
+        liquidity: 146640272n,
+        owner: "g1htpxzv2dkplvzg50nd8fswrneaxmdpwn459thx",
+        tickLower: 5000,
+        tickUpper: 6000,
+        tokenAOwed: 0n,
+        tokenBOwed: 0n,
+      },
+    ],
+  },
+];
 
 const pools: Pool[] = [
   {
@@ -194,9 +239,103 @@ const pools: Pool[] = [
   },
 ];
 
+describe("swap router of swap simulator test pool", () => {
+  describe("gno.land/r/bar to gno.land/r/baz", () => {
+    test("EXANCT_IN 10000n", async () => {
+      const swapRouter = new SwapRouter(defaultPool);
+      const estimatedRoutes = swapRouter.estimateSwapRoute(
+        "gno.land/r/bar",
+        "gno.land/r/baz",
+        10000n,
+        "EXACT_IN",
+      );
+
+      printEstimateRouteInfo(estimatedRoutes);
+
+      const sumAmount = sumBigInts(
+        estimatedRoutes.map(route => route.amountOut),
+      );
+      expect(estimatedRoutes).toHaveLength(1);
+      expect(estimatedRoutes[0].routeKey).toBe(
+        "gno.land/r/bar:gno.land/r/baz:500",
+      );
+      expect(estimatedRoutes[0].quote).toBe(100);
+      expect(sumAmount).toBe(16643n);
+    });
+
+    test("EXANCT_OUT, 10000n", async () => {
+      const swapRouter = new SwapRouter(defaultPool);
+      const estimatedRoutes = swapRouter.estimateSwapRoute(
+        "gno.land/r/bar",
+        "gno.land/r/baz",
+        10000n,
+        "EXACT_OUT",
+      );
+
+      printEstimateRouteInfo(estimatedRoutes);
+
+      const sumAmount = sumBigInts(
+        estimatedRoutes.map(route => route.amountOut),
+      );
+      expect(estimatedRoutes).toHaveLength(1);
+      expect(estimatedRoutes[0].routeKey).toBe(
+        "gno.land/r/bar:gno.land/r/baz:500",
+      );
+      expect(estimatedRoutes[0].quote).toBe(100);
+      expect(sumAmount).toBe(6008n);
+    });
+
+    describe("gno.land/r/baz to gno.land/r/bar", () => {
+      test("EXANCT_IN, 10000n", async () => {
+        const swapRouter = new SwapRouter(defaultPool);
+        const estimatedRoutes = swapRouter.estimateSwapRoute(
+          "gno.land/r/baz",
+          "gno.land/r/bar",
+          10000n,
+          "EXACT_IN",
+        );
+
+        printEstimateRouteInfo(estimatedRoutes);
+
+        const sumAmount = sumBigInts(
+          estimatedRoutes.map(route => route.amountOut),
+        );
+        expect(estimatedRoutes).toHaveLength(1);
+        expect(estimatedRoutes[0].routeKey).toBe(
+          "gno.land/r/bar:gno.land/r/baz:500",
+        );
+        expect(estimatedRoutes[0].quote).toBe(100);
+        expect(sumAmount).toBe(6001n);
+      });
+
+      test("EXANCT_OUT, 10000n", async () => {
+        const swapRouter = new SwapRouter(defaultPool);
+        const estimatedRoutes = swapRouter.estimateSwapRoute(
+          "gno.land/r/baz",
+          "gno.land/r/bar",
+          10000n,
+          "EXACT_OUT",
+        );
+
+        printEstimateRouteInfo(estimatedRoutes);
+
+        const sumAmount = sumBigInts(
+          estimatedRoutes.map(route => route.amountOut),
+        );
+        expect(estimatedRoutes).toHaveLength(1);
+        expect(estimatedRoutes[0].routeKey).toBe(
+          "gno.land/r/bar:gno.land/r/baz:500",
+        );
+        expect(estimatedRoutes[0].quote).toBe(100);
+        expect(sumAmount).toBe(16661n);
+      });
+    });
+  });
+});
+
 describe("swap simulator", () => {
   describe("gno.land/r/bar to gno.land/r/baz", () => {
-    test("EXANCT_IN 10000n is 16417n", async () => {
+    test("EXANCT_IN 10000n", async () => {
       const swapRouter = new SwapRouter(pools);
       const estimatedRoutes = swapRouter.estimateSwapRoute(
         "gno.land/r/bar",
@@ -204,6 +343,9 @@ describe("swap simulator", () => {
         10000n,
         "EXACT_IN",
       );
+
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -219,7 +361,7 @@ describe("swap simulator", () => {
       expect(sumAmount).toBe(16417n);
     });
 
-    test("EXANCT_OUT, 10000n is 27036n", async () => {
+    test("EXANCT_OUT, 10000n", async () => {
       const swapRouter = new SwapRouter(pools);
       const estimatedRoutes = swapRouter.estimateSwapRoute(
         "gno.land/r/bar",
@@ -227,6 +369,9 @@ describe("swap simulator", () => {
         10000n,
         "EXACT_OUT",
       );
+
+      printEstimateRouteInfo(estimatedRoutes);
+
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
@@ -239,7 +384,7 @@ describe("swap simulator", () => {
     });
 
     describe("gno.land/r/baz to gno.land/r/bar", () => {
-      test("EXANCT_IN, 10000n is 26992n", async () => {
+      test("EXANCT_IN, 10000n", async () => {
         const swapRouter = new SwapRouter(pools);
         const estimatedRoutes = swapRouter.estimateSwapRoute(
           "gno.land/r/baz",
@@ -247,6 +392,9 @@ describe("swap simulator", () => {
           10000n,
           "EXACT_IN",
         );
+
+        printEstimateRouteInfo(estimatedRoutes);
+
         const sumAmount = sumBigInts(
           estimatedRoutes.map(route => route.amountOut),
         );
@@ -258,7 +406,7 @@ describe("swap simulator", () => {
         expect(sumAmount).toBe(26992n);
       });
 
-      test("EXANCT_OUT, 10000n is 16438n", async () => {
+      test("EXANCT_OUT, 10000n", async () => {
         const swapRouter = new SwapRouter(pools);
         const estimatedRoutes = swapRouter.estimateSwapRoute(
           "gno.land/r/baz",
@@ -266,6 +414,9 @@ describe("swap simulator", () => {
           10000n,
           "EXACT_OUT",
         );
+
+        printEstimateRouteInfo(estimatedRoutes);
+
         const sumAmount = sumBigInts(
           estimatedRoutes.map(route => route.amountOut),
         );
