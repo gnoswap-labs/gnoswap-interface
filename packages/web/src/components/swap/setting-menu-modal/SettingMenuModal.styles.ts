@@ -62,7 +62,6 @@ export const SettingMenuModalWrapper = styled.div`
         ${mixins.flexbox("row", "center", "center")};
         width: 16px;
         height: 16px;
-        cursor: pointer;
         .info-icon {
           * {
             fill: ${({ theme }) => theme.color.icon03};
@@ -85,6 +84,9 @@ export const SettingMenuModalWrapper = styled.div`
         color: ${({ theme }) => theme.color.text03};
         border: 1px solid ${({ theme }) => theme.color.border02};
         background: ${({ theme }) => theme.color.background01};
+        &:focus-within {
+          border: 1px solid  ${({ theme }) => theme.color.border15};
+        }
       }
       .amount-text {
         ${mixins.flexbox("row", "center", "flex-end")};

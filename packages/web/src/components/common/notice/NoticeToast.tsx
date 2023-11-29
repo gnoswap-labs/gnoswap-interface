@@ -150,8 +150,6 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const handleClose = useCallback(
     (id: number) => {
-      console.log(id);
-
       setList(prev => prev.filter(item => item.id !== id));
     },
     [setList],

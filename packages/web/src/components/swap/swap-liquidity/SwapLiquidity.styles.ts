@@ -7,7 +7,7 @@ export const SwapLiquidityWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   padding: 23px 0px;
-  gap: 24px;
+  gap: 16px;
   ${media.mobile} {
     padding: 15px 0px;
     gap: 12px;

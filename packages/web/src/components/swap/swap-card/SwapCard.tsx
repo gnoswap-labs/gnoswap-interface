@@ -27,9 +27,9 @@ interface SwapCardProps {
   isLoading: boolean;
 
   changeTokenA: (token: TokenModel) => void;
-  changeTokenAAmount: (value: string) => void;
+  changeTokenAAmount: (value: string, none?: boolean) => void;
   changeTokenB: (token: TokenModel) => void;
-  changeTokenBAmount: (value: string) => void;
+  changeTokenBAmount: (value: string, none?: boolean) => void;
   changeSlippage: (value: string) => void;
 
   switchSwapDirection: () => void;

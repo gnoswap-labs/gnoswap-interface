@@ -68,7 +68,6 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     };
     getPositionTop();
   }, [positionTop]);
-  console.log(positionTop);
   
   return (
     <SelectTokenWrapper ref={myElementRef}>

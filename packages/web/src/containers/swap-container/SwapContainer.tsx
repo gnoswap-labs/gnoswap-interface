@@ -157,11 +157,17 @@ const SwapContainer: React.FC = () => {
     updateBalances();
   }, [updateBalances, swapResult]);
 
-  const changeTokenAAmount = useCallback((value: string) => {
+  const changeTokenAAmount = useCallback((value: string, none?: boolean) => {
+    if (none) {
+      setIsLoading(false);
+      return;
+    }
     if (!matchInputNumber(value)) {
       return;
     }
     if (!!Number(value)) {
+      console.log(value);
+      
       setIsLoading(true);
     } else {
       setTokenBAmount("0");
@@ -174,7 +180,11 @@ const SwapContainer: React.FC = () => {
     setQuery({ ...query, direction: "EXACT_IN" });
   }, [query, setTokenBAmount]);
 
-  const changeTokenBAmount = useCallback((value: string) => {
+  const changeTokenBAmount = useCallback((value: string, none?: boolean) => {
+    if (none) {
+      setIsLoading(false);
+      return;
+    }
     if (!matchInputNumber(value)) {
       return;
     }
@@ -207,7 +217,7 @@ const SwapContainer: React.FC = () => {
       slippage
     };
   }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
-
+  
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
       return null;
@@ -462,7 +472,7 @@ const SwapContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-
+  
   return (
     <SwapCard
       connectedWallet={connectedWallet}

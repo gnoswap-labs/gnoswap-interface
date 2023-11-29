@@ -50,10 +50,13 @@ export const ContentWrapper = styled.div`
     display: block;
     height: 34px;
     .selected-token {
-      padding: 5px 12px 5px 6px;
+      padding: 5px 10px 5px 6px;
     }
     .not-selected-token {
       padding: 5px 10px 5px 12px
+    }
+    .token-symbol {
+      height: 21px;
     }
   }
 

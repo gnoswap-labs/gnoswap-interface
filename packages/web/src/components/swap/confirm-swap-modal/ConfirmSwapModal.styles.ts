@@ -97,7 +97,7 @@ export const ConfirmModal = styled.div`
           padding: 16px;
           gap: 8px;
           border-radius: 8px;
-          background: ${({ theme }) => theme.color.background01};
+          background: ${({ theme }) => theme.color.background20};
           border: 1px solid ${({ theme }) => theme.color.border02};
         }
         .second-section {
@@ -106,7 +106,7 @@ export const ConfirmModal = styled.div`
           padding: 16px;
           gap: 8px;
           border-radius: 8px;
-          background: ${({ theme }) => theme.color.background01};
+          background: ${({ theme }) => theme.color.background20};
           border: 1px solid ${({ theme }) => theme.color.border02};
         }
         .amount-container {
@@ -154,7 +154,7 @@ export const ConfirmModal = styled.div`
             ${mixins.flexbox("row", "center", "center")};
             width: 40px;
             height: 40px;
-            background-color: ${({ theme }) => theme.color.background01};
+            background-color: ${({ theme }) => theme.color.background20};
             border: 1px solid ${({ theme }) => theme.color.border02};
             border-radius: 50%;
 
@@ -177,7 +177,7 @@ export const ConfirmModal = styled.div`
           padding: 12px;
         }
         border-radius: 8px;
-        background: ${({ theme }) => theme.color.background01};
+        background: ${({ theme }) => theme.color.background20};
         border: 1px solid ${({ theme }) => theme.color.border02};
         .coin-info {
           ${mixins.flexbox("row", "center", "flex-start")};
@@ -212,7 +212,7 @@ export const ConfirmModal = styled.div`
           gap: 8px;
         }
         border-radius: 8px;
-        background: ${({ theme }) => theme.color.background01};
+        background: ${({ theme }) => theme.color.background20};
         border: 1px solid ${({ theme }) => theme.color.border02};
 
         ${fonts.body12};

@@ -16,7 +16,6 @@ import { SwapSummaryInfo, swapDirectionToGuaranteedType } from "@models/swap/swa
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { numberToUSD, toNumberFormat } from "@utils/number-utils";
 import { numberToFormat } from "@utils/string-utils";
-import BigNumber from "bignumber.js";
 import { usePositionModal } from "@hooks/common/use-position-modal";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
@@ -43,14 +42,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   useEscCloseModal(close);
   usePositionModal(menuRef);
-
-  const tokenAAmountStr = useMemo(() => {
-    return BigNumber(swapTokenInfo.tokenAAmount).toFormat();
-  }, [swapTokenInfo.tokenAAmount]);
-
-  const tokenBAmountStr = useMemo(() => {
-    return BigNumber(swapTokenInfo.tokenBAmount).toFormat();
-  }, [swapTokenInfo.tokenBAmount]);
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
@@ -91,7 +82,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
     return `$${toNumberFormat(gasFeeUSD)}`;
   }, [swapSummaryInfo.gasFeeUSD]);
-
+  
   return (
     <>
       <ConfirmSwapModalBackground>
@@ -114,7 +105,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   <div className="input-group">
                     <div className="first-section">
                       <div className="amount-container">
-                        <span>{tokenAAmountStr}</span>
+                        <span>{swapTokenInfo.tokenAAmount}</span>
                         <div className="button-wrapper">
                           <img
                             src={swapSummaryInfo.tokenA.logoURI}
@@ -135,7 +126,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     </div>
                     <div className="second-section">
                       <div className="amount-container">
-                        <span>{tokenBAmountStr}</span>
+                        <span>{swapTokenInfo.tokenBAmount}</span>
                         <div className="button-wrapper">
                           <img
                             src={swapSummaryInfo.tokenB.logoURI}

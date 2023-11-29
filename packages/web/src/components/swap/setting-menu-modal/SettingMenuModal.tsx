@@ -2,7 +2,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ModalTooltipWrap,
   Overlay,
@@ -25,8 +25,18 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   close,
   className,
 }) => {
+  const [previos, setPrevios] = useState(slippage);
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
-  useEscCloseModal(close);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const wrapperInputRef = useRef<HTMLDivElement | null>(null);
+  const closeRef = useRef<HTMLDivElement | null>(null);
+  
+  const handleClose = useCallback(() => {
+    changeSlippage(previos);
+    close();
+  }, [close, changeSlippage, previos]);
+  useEscCloseModal(handleClose);
 
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
@@ -44,7 +54,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
     const value = event.target.value;
     if (value !== "" && !isAmount(value)) return;
     if (/^\d{0,10}(\.\d{0,2})?$/.test(value)) {
-      changeSlippage(value);
+      changeSlippage(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     }
   }, [changeSlippage]);
 
@@ -52,23 +62,54 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
     changeSlippage(DEFAULT_SLIPPAGE);
   }, [changeSlippage]);
 
-  const handleBlur = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (!Number(value)) {
+  const handleClickWrapper = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (buttonRef && buttonRef.current && buttonRef.current.contains(event.target as Node)) {
       changeSlippage(DEFAULT_SLIPPAGE);
-    } else if (Number(value) > 100) {
-      changeSlippage("100");
+      return;
     }
-    
+    if (closeRef && closeRef.current && closeRef.current.contains(event.target as Node)) {
+      changeSlippage(previos);
+      return;
+    }
+    if (inputRef && inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      const value = inputRef.current.value;
+      if (value === "") {
+        changeSlippage("0");
+        setPrevios("0");
+      } else if (Number(value) > 30) {
+        changeSlippage("30");
+        setPrevios("30");
+      } else {
+        setPrevios(value);
+      }
+    }
+  }, [changeSlippage, setPrevios, previos]);
+
+  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) {
+      const value = event.currentTarget.value;
+      if (inputRef && inputRef.current) {
+        inputRef.current.blur();
+      }
+      if (value === "") {
+        changeSlippage("0");
+        setPrevios("0");
+      } else if (Number(value) > 30) {
+        changeSlippage("30");
+        setPrevios("30");
+      } else {
+        setPrevios(value);
+      }
+    }
   }, [changeSlippage]);
 
   return (
     <>
-      <SettingMenuModalWrapper ref={settingMenuRef} className={className}>
+      <SettingMenuModalWrapper ref={settingMenuRef} className={className} onClick={handleClickWrapper}>
         <div className="modal-body">
           <div className="modal-header">
             <span>Settings</span>
-            <div className="close-wrap" onClick={close}>
+            <div className="close-wrap" onClick={close} ref={closeRef}>
               <IconClose className="close-icon" />
             </div>
           </div>
@@ -90,22 +131,24 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
                 textColor: "text20",
                 hierarchy: ButtonHierarchy.Primary,
               }}
+              buttonRef={buttonRef}
               onClick={onClickReset}
             />
-            <div className="input-button">
+            <div className="input-button" ref={wrapperInputRef}>
               <input
                 className="amount-text"
                 value={slippage}
                 onChange={onChangeSlippage}
                 placeholder="0"
-                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                ref={inputRef}
               />
               <span>%</span>
             </div>
           </div>
         </div>
       </SettingMenuModalWrapper>
-      <Overlay onClick={close}/>
+      <Overlay onClick={handleClose}/>
     </>
   );
 };
