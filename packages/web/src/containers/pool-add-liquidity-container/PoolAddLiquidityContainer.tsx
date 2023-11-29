@@ -279,10 +279,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-  
-  const handleChangeSlippage = useCallback((vl: string) => {
-    changeSlippage(Number(vl));
-  }, []);
 
   return (
     <EarnAddLiquidity
@@ -309,7 +305,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isEarnAdd={false}
       connected={connectedWallet}
       slippage={slippage}
-      changeSlippage={handleChangeSlippage}
+      changeSlippage={changeSlippage}
       openModal={openOneClickModal}
     />
   );

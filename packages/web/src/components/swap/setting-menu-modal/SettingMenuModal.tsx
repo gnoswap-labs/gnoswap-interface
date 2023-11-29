@@ -9,9 +9,11 @@ import {
   SettingMenuModalWrapper,
 } from "./SettingMenuModal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { isAmount } from "@common/utils/data-check-util";
+import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
 interface SettingMenuModalProps {
-  slippage: number;
+  slippage: string;
   changeSlippage: (value: string) => void;
   close: () => void;
   className?: string;
@@ -40,13 +42,24 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
 
   const onChangeSlippage = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    if (/^\d+(\.\d{0,2})?$/.test(value)) {
+    if (value !== "" && !isAmount(value)) return;
+    if (/^\d{0,10}(\.\d{0,2})?$/.test(value)) {
       changeSlippage(value);
     }
   }, [changeSlippage]);
 
   const onClickReset = useCallback(() => {
-    changeSlippage("0.5");
+    changeSlippage(DEFAULT_SLIPPAGE);
+  }, [changeSlippage]);
+
+  const handleBlur = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (!Number(value)) {
+      changeSlippage(DEFAULT_SLIPPAGE);
+    } else if (Number(value) > 100) {
+      changeSlippage("100");
+    }
+    
   }, [changeSlippage]);
 
   return (
@@ -85,6 +98,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
                 value={slippage}
                 onChange={onChangeSlippage}
                 placeholder="0"
+                onBlur={handleBlur}
               />
               <span>%</span>
             </div>

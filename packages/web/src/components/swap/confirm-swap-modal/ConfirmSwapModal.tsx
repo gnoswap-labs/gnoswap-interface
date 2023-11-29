@@ -96,7 +96,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     <>
       <ConfirmSwapModalBackground>
         <ConfirmModal ref={menuRef}>
-          <div className={`modal-body ${swapResult === null && "modal-body-loading"}`}>
+          <div className={`modal-body ${swapResult === null && submitted && "modal-body-loading"}`}>
             <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
               {!submitted && <span>Confirm Swap</span>}
               <div className="close-wrap" onClick={close}>

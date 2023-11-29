@@ -94,7 +94,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBUSD: 0,
   tokenBUSDStr: "0",
   direction: "EXACT_IN",
-  slippage: 10,
+  slippage: "10",
 };
 
 const TokenSwapContainer: React.FC = () => {
@@ -111,7 +111,7 @@ const TokenSwapContainer: React.FC = () => {
   const [swapRate] = useState<number>(100);
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
   const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
-  const [slippage, setSlippage] = useState(1);
+  const [slippage, setSlippage] = useState("1");
 
   const { openModal } = useConnectWalletModal(); 
   
@@ -131,7 +131,7 @@ const TokenSwapContainer: React.FC = () => {
     tokenA,
     tokenB,
     direction: type,
-    slippage: 1,
+    slippage: "1",
   });
 
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -505,10 +505,6 @@ const TokenSwapContainer: React.FC = () => {
     };
   }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenBAmount]);
 
-  const changeSlippage = useCallback((value: string) => {
-    setSlippage(BigNumber(value || 0).toNumber());
-  }, [setSlippage]);
-
   return (
     <>
       <TokenSwap
@@ -545,7 +541,7 @@ const TokenSwapContainer: React.FC = () => {
       {openedSetting && (
         <SettingMenuModal
           slippage={slippage}
-          changeSlippage={changeSlippage}
+          changeSlippage={setSlippage}
           close={handleCloseSetting}
           className="swap-setting-class"
         />

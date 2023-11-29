@@ -17,7 +17,7 @@ export interface EarnAddLiquidityConfirmModalProps {
   tokenBAmountInput: TokenAmountInputModel;
   currentPrice: string;
   priceRange: AddLiquidityPriceRage | null;
-  slippage: number;
+  slippage: string;
   swapFeeTier: SwapFeeTierType | null;
   createPool: (
     params: {
@@ -26,7 +26,7 @@ export interface EarnAddLiquidityConfirmModalProps {
       swapFeeTier: SwapFeeTierType;
       startPrice: string;
       priceRange: AddLiquidityPriceRage;
-      slippage: number;
+      slippage: string;
     }
   ) => Promise<string | null>;
 }

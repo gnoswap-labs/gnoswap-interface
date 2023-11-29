@@ -463,11 +463,6 @@ const SwapContainer: React.FC = () => {
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
 
-  const handleChangeSlippage = useCallback((vl: string) => {
-    
-    changeSlippage(Number(vl));
-  }, []);
-
   return (
     <SwapCard
       connectedWallet={connectedWallet}
@@ -484,7 +479,7 @@ const SwapContainer: React.FC = () => {
       changeTokenAAmount={changeTokenAAmount}
       changeTokenB={changeTokenB}
       changeTokenBAmount={changeTokenBAmount}
-      changeSlippage={handleChangeSlippage}
+      changeSlippage={changeSlippage}
       switchSwapDirection={switchSwapDirection}
       openConfirmModal={openConfirmModal}
       openConnectWallet={openConnectWallet}

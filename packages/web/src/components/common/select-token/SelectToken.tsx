@@ -13,6 +13,7 @@ export interface SelectTokenProps {
   changeToken: (token: TokenModel) => void;
   close: () => void;
   themeKey: "dark" | "light";
+  modalRef?: React.RefObject<HTMLDivElement>;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -24,9 +25,10 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   changeToken,
   close,
   themeKey,
+  modalRef,
 }) => {
   const myElementRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState(0);
+  const [positionTop, setPositionTop] = useState(0);
 
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
@@ -51,19 +53,25 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   }, [changeKeyword]);
 
   useEffect(() => {
-    const getHeight = () => {
+    const getPositionTop = () => {
       const element = myElementRef.current;
       if (element) {
         const rect = element.getBoundingClientRect();
-        setHeight(Math.max(height, rect.height));
+        const temp = Math.max(positionTop, rect.top);
+        if (modalRef && modalRef.current) {
+          modalRef.current.style.top = `${temp}px`;
+          modalRef.current.style.transform = "translate(-50%, 0)";
+        }
+        setPositionTop(temp);
         
       }
     };
-    getHeight();
-  }, [height]);
+    getPositionTop();
+  }, [positionTop]);
+  console.log(positionTop);
   
   return (
-    <SelectTokenWrapper ref={myElementRef} style={{ minHeight: `${height}px`}}>
+    <SelectTokenWrapper ref={myElementRef}>
       <div className="content">
         <div className="header">
           <span>Select a token</span>

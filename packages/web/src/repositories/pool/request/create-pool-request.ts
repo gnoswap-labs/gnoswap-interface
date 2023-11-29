@@ -10,6 +10,6 @@ export interface CreatePoolRequest {
   startPrice: string;
   minTick: number;
   maxTick: number;
-  slippage: number;
+  slippage: string;
   caller: string;
 }

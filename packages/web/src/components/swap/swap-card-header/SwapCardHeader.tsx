@@ -11,7 +11,7 @@ import {
 interface SwapCardHeaderProps {
   copied: boolean;
   copyURL: () => void;
-  slippage: number;
+  slippage: string;
   changeSlippage: (value: string) => void;
   themeKey: "dark" | "light";
 }

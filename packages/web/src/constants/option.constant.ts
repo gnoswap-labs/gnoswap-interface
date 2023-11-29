@@ -131,7 +131,7 @@ export const PriceRangeTooltip: {
   Custom: undefined,
 };
 
-export const DEFAULT_SLIPPAGE = 0.5;
+export const DEFAULT_SLIPPAGE = "0.5";
 
 export type AddLiquiditySubmitType =
   | "CREATE_POOL"

@@ -32,7 +32,7 @@ export const AutoRouterWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       height: 28px;
       padding: 0px 4px 0px 4px;
-      gap: 2px;
+      gap: 4px;
       border-radius: 4px;
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.background02};
@@ -58,7 +58,7 @@ export const AutoRouterWrapper = styled.div`
       ${mixins.flexbox("row", "center", "center")};
       height: 28px;
       padding: 0px 6px;
-      gap: 2px;
+      gap: 4px;
       border-radius: 4px;
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.background02};

@@ -40,10 +40,11 @@ export const ConfirmModal = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 0px 23px;
-    gap: 24px;
+    gap: 16px;
 
     ${media.mobile} {
       padding: 0px 15px;
+      gap: 12px;
     }
 
     .modal-header {

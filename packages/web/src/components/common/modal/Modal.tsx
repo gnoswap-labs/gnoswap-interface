@@ -4,7 +4,7 @@ import {
   ModalWrapper,
   Overlay,
 } from "./Modal.styles";
-import { useRef } from "react";
+import React, { useRef, cloneElement } from "react";
 
 interface ModalProps {
   hasLeftArrow?: boolean;
@@ -23,11 +23,15 @@ const Modal: React.FC<ModalProps> = ({
   children,
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const cloneChildren = () =>
+  React.Children.map(children, (child) =>
+    cloneElement(child as React.ReactElement, { modalRef })
+  );
   usePositionModal(modalRef);
   return (
     <>
       <ModalWrapper ref={modalRef} {...style}>
-        {children}
+        {cloneChildren()}
       </ModalWrapper>
       <Overlay onClick={exitClick} />
     </>

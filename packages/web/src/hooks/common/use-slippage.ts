@@ -2,24 +2,17 @@ import { useAtom } from "jotai";
 import { CommonState } from "@states/index";
 import { useCallback, useEffect } from "react";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
-import { isNumber } from "@utils/number-utils";
 
 export const useSlippage = () => {
   const [slippage, setSlippage] = useAtom(CommonState.slippage || 0);
 
   useEffect(() => {
-    setSlippage(0.5);
+    setSlippage(DEFAULT_SLIPPAGE);
   }, []);
 
   const changeSlippage = useCallback(
-    (slippage: number) => {
-      if (!isNumber(slippage)) {
-        setSlippage(0.01);
-        return;
-      }
-      
-      const changedSlippage = Math.min(100, Math.max(0.01, slippage));
-      setSlippage(changedSlippage);
+    (slippage: string) => {
+      setSlippage(slippage);
     },
     [setSlippage],
   );

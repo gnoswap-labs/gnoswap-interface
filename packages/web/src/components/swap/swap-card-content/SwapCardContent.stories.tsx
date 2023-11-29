@@ -37,7 +37,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBUSD: 0,
   tokenBUSDStr: "0",
   direction: "EXACT_IN",
-  slippage: 10
+  slippage: "10"
 };
 
 export default {

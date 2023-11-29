@@ -90,6 +90,9 @@ export const SettingMenuModalWrapper = styled.div`
         ${mixins.flexbox("row", "center", "flex-end")};
         text-align: right;
         width: 100%;
+        &::placeholder {
+          color: ${({ theme }) => theme.color.text03};
+        }
       }
     }
   }
