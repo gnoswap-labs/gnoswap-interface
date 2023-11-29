@@ -5,7 +5,7 @@
   ],
   "scripts": {
     "install:clean": "yarn cache clean && yarn install",
-    "dev": "ultra --recursive dev",
+    "dev": "yarn workspace @gnoswap-labs/swap-router build && yarn workspace @gnoswap-labs/web build",
     "storybook": "yarn workspace @gnoswap-labs/web storybook",
     "test:ci": "ultra --recursive test:ci",
     "build": "yarn workspace @gnoswap-labs/web build"
