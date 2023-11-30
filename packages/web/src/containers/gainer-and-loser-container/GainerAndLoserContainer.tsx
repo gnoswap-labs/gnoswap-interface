@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import GainerAndLoser from "@components/token/gainer-and-loser/GainerAndLoser";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
@@ -79,7 +79,23 @@ export const losersInit = [
 ];
 
 const GainerAndLoserContainer: React.FC = () => {
-  return <GainerAndLoser gainers={gainersInit} losers={losersInit} />;
+  const [loadingGain, setLoadingGain] = useState(true);
+  const [loadingLose, setLoadingLose] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoadingGain(false);
+      setLoadingLose(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return <GainerAndLoser
+    gainers={gainersInit}
+    losers={losersInit}
+    loadingLose={loadingLose}
+    loadingGain={loadingGain}
+    />;
 };
 
 export default GainerAndLoserContainer;

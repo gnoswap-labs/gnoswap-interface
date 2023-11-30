@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
 
 export const descriptionInit = {
@@ -17,12 +17,20 @@ export const descriptionInit = {
 };
 
 const TokenDescriptionContainer: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
   return (
     <TokenDescription
       tokenName={descriptionInit.token.name}
       tokenSymbol={descriptionInit.token.symbol}
       content={descriptionInit.desc}
       links={descriptionInit.links}
+      loading={loading}
     />
   );
 };

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const TokenChartWrapper = styled.div`
   display: flex;
@@ -21,5 +22,22 @@ export const TokenChartWrapper = styled.div`
   }
 
   .chart-graph-wrapper {
+  }
+`;
+
+
+export const LoadingChart = styled.div`
+  ${mixins.flexbox("row", "center", "center")}
+  width: 100%;
+  height: 361px;
+  background-color: ${({ theme }) => theme.color.background15};
+  border-radius: 8px;
+  > div {
+    &::before {
+      background-color: ${({ theme }) => theme.color.background25};
+    }
+  }
+  ${media.mobile} {
+    height: 263px;
   }
 `;

@@ -1,7 +1,10 @@
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { TokenChartGraphWrapper } from "./TokenChartGraph.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
+import { TokenChartGraphPeriodType, TokenChartGraphPeriods } from "@containers/token-chart-container/TokenChartContainer";
 
 export interface TokenChartGraphProps {
   datas: {
@@ -13,18 +16,21 @@ export interface TokenChartGraphProps {
   }[];
   xAxisLabels: string[];
   yAxisLabels: string[];
+  currentTab: TokenChartGraphPeriodType;
 }
 
 const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   datas,
   xAxisLabels,
   yAxisLabels,
+  currentTab,
 }) => {
   const theme = useTheme();
+  const { breakpoint } = useWindowSize();
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState<number | undefined>(undefined);
   const [height, setHeight] = useState<number | undefined>(undefined);
-
+  
   useEffect(() => {
     const updateWidth = () => {
       if (wrapperRef.current) {
@@ -41,6 +47,11 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       window.removeEventListener("resize", updateWidth);
     };
   }, []);
+  const countXAxis = useMemo(() => {
+    if (breakpoint !== DEVICE_TYPE.MOBILE)
+      return Math.floor((((width || 0) + 20) - 25) / (currentTab === TokenChartGraphPeriods[0] ? 60: 100));
+    return Math.floor((((width || 0) + 20) - 8) / 80);
+    }, [width, breakpoint, currentTab]);
 
   return (
     <TokenChartGraphWrapper>
@@ -49,8 +60,8 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           cursor
           className="graph"
           width={width}
-          height={height}
-          color={theme.color.point}
+          height={(height || 0) - (breakpoint !== DEVICE_TYPE.MOBILE ? 47.55 : 32.35)}
+          color={"#192EA2"}
           strokeWidth={1}
           datas={datas.map(data => ({
             value: data.amount.value,
@@ -59,7 +70,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           firstPointColor={theme.color.border05}
         />
         <div className="xaxis-wrapper">
-          {xAxisLabels.map((label, index) => (
+          {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
             <span key={index} className="label">
               {label}
             </span>

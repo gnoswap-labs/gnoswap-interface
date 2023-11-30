@@ -79,3 +79,21 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 `;
+
+export const loadingWrapper = (theme: Theme) => css`
+  ${mixins.flexbox("row", "flex-start", "center")}
+  width: 100%;
+  height: 196px;
+  background-color: ${theme.color.background01};
+  border-radius: 8px;
+  padding-top: 53px;
+  > div {
+    width: 36px;
+    height: 36px;
+    &::before {
+      background-color: ${theme.color.background25};
+      width: 24px;
+      height: 24px;
+    }
+  }
+`;

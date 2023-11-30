@@ -329,11 +329,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
           }
           y={currentPoint?.y || 0}
         >
-          <div className="tooltip-header">
-            <span className="value">{`$${BigNumber(
-              datas[currentPointIndex].value,
-            ).toString()}`}</span>
-          </div>
           <div className="tooltip-body">
             <span className="date">
               {typeOfChart === "tvl"
@@ -345,6 +340,11 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 ? parseTimeTVL(datas[currentPointIndex].time).time
                 : parseTime(datas[currentPointIndex].time).time}
             </span>
+          </div>
+          <div className="tooltip-header">
+            <span className="value">{`$${Number(BigNumber(
+              datas[currentPointIndex].value,
+            )).toLocaleString()}`}</span>
           </div>
         </LineGraphTooltipWrapper>
       )}

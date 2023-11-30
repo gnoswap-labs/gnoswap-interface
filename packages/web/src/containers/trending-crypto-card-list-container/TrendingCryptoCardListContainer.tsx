@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TrendingCryptoCardList from "@components/token/trending-crypto-card-list/TrendingCryptoCardList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
@@ -36,7 +36,16 @@ export const trendingCryptoListInit = [
 ];
 
 const TrendingCryptoCardListContainer: React.FC = () => {
-  return <TrendingCryptoCardList list={trendingCryptoListInit} />;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return <TrendingCryptoCardList list={trendingCryptoListInit} loading={loading} />;
 };
 
 export default TrendingCryptoCardListContainer;

@@ -37,7 +37,7 @@ export const LineGraphTooltipWrapper = styled.div<LineGraphTooltipWrapperProps>`
   flex-direction: column;
   min-width: 148px;
   height: auto;
-  padding: 6px 8px;
+  padding: 10px;
   background: ${({ theme }) => theme.color.background02};
   border-radius: 4px;
   box-shadow: 2px 2px 12px 0px rgba(0, 0, 0, 0.15);
@@ -51,17 +51,18 @@ export const LineGraphTooltipWrapper = styled.div<LineGraphTooltipWrapperProps>`
     width: 100%;
     height: auto;
     justify-content: space-between;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 19px;
-    color: ${({ theme }) => theme.color.point};
+    ${fonts.body9}
+    color: ${({ theme }) => theme.color.text02};
   }
 
   & .tooltip-body {
-    ${fonts.p4};
+    ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
-    .date {
-      margin-right: 3px;
+    .time {
+      margin-left: 40px;
+      ${media.tablet} {
+        display: none;
+      }
     }
   }
 `;

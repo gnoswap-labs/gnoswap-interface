@@ -2,17 +2,19 @@ import React from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { type BestPool } from "@containers/best-pools-container/BestPoolsContainer";
 import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
-import { wrapper } from "./BestPoolCardList.styles";
+import { loadingWrapper, wrapper } from "./BestPoolCardList.styles";
 import Link from "next/link";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface BestPoolCardListProps {
   list: BestPool[];
+  loading: boolean;
 }
 
 const LIST_TITLE = ["Pair", "TVL", "APR"];
 
-const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list }) => {
+const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) => {
   return (
     <div css={wrapper}>
       <div className="title-wrap">
@@ -22,7 +24,10 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list }) => {
           </span>
         ))}
       </div>
-      <ul>
+      {loading && <div css={loadingWrapper}>
+        <LoadingSpinner />
+      </div>}
+      {!loading && <ul>
         {list.map((info, idx) => (
           <Link href="/earn/pool/5" key={idx}>
             <li>
@@ -42,7 +47,7 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list }) => {
             </li>
           </Link>
         ))}
-      </ul>
+      </ul>}
     </div>
   );
 };

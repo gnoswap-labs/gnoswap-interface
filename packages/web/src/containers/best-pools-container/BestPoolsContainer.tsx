@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
@@ -40,7 +40,16 @@ export const bestPoolListInit: BestPool[] = [
 ];
 
 const BestPoolsContainer: React.FC = () => {
-  return <BestPools titleSymbol={"GNS"} cardList={bestPoolListInit} />;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return <BestPools titleSymbol={"GNS"} cardList={bestPoolListInit} loading={loading}/>;
 };
 
 export default BestPoolsContainer;

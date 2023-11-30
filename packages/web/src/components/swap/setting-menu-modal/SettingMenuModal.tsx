@@ -38,6 +38,18 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   }, [close, changeSlippage, previos]);
   useEscCloseModal(handleClose);
 
+  const handleCloseExit = useCallback(() => {
+    if (inputRef && inputRef.current) {
+      if (Number(inputRef.current.value) > 30) {
+        changeSlippage("30");
+      } else {
+        changeSlippage(inputRef.current.value);
+      }
+    }
+    close();
+  }, [close, changeSlippage, previos]);
+  useEscCloseModal(handleClose);
+  
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
       <div className="tooltip-wrap">
@@ -81,8 +93,8 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
         changeSlippage("30");
         setPrevios("30");
       } else {
-        setPrevios(value);
-        changeSlippage(value);
+        setPrevios(Number(value).toString());
+        changeSlippage(Number(value).toString());
       }
     }
   }, [changeSlippage, setPrevios, previos]);
@@ -100,8 +112,8 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
         changeSlippage("30");
         setPrevios("30");
       } else {
-        setPrevios(value);
-        changeSlippage(value);
+        setPrevios(Number(value).toString());
+        changeSlippage(Number(value).toString());
       }
     }
   }, [changeSlippage, setPrevios]);
@@ -151,7 +163,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
           </div>
         </div>
       </SettingMenuModalWrapper>
-      <Overlay onClick={handleClose}/>
+      <Overlay onClick={handleCloseExit}/>
     </>
   );
 };
