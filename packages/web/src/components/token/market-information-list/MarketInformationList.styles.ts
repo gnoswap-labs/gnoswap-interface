@@ -16,7 +16,7 @@ export const wrapper = (theme: Theme) => css`
     background-color: ${theme.color.backgroundOpacity3};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
-    padding: 16px;
+    padding: 15px;
     gap: 16px;
     .title {
       ${fonts.body12};

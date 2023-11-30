@@ -29,9 +29,9 @@ export interface TokenSwapProps {
   handleCopied: () => void;
   connectWallet: () => void;
   changeTokenA: (token: TokenModel) => void;
-  changeTokenAAmount: (value: string) => void;
+  changeTokenAAmount: (value: string, none?: boolean) => void;
   changeTokenB: (token: TokenModel) => void;
-  changeTokenBAmount: (value: string) => void;
+  changeTokenBAmount: (value: string, none?: boolean) => void;
   switchSwapDirection: () => void;
 }
 
@@ -67,6 +67,9 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      if (value === "") {
+        changeTokenAAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
       changeTokenAAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
@@ -76,6 +79,9 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   const onChangeTokenBAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      if (value === "") {
+        changeTokenBAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
       changeTokenBAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
@@ -186,12 +192,11 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           text={swapButtonText}
           style={{
             fullWidth: true,
-            height: 57,
-            fontType: "body7",
             hierarchy: ButtonHierarchy.Primary,
           }}
           disabled={!isAvailSwap}
           onClick={onClickConfirm}
+          className="confirm-button"
         />
       </div>
     </div>

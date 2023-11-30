@@ -166,8 +166,6 @@ const SwapContainer: React.FC = () => {
       return;
     }
     if (!!Number(value)) {
-      console.log(value);
-      
       setIsLoading(true);
     } else {
       setTokenBAmount("0");

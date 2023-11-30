@@ -19,7 +19,7 @@ export const wrapper = (theme: Theme) => css`
     background-color: ${theme.color.backgroundOpacity3};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
-    padding: 16px;
+    padding: 15px;
     gap: 16px;
     br {
       display: none;
@@ -46,7 +46,7 @@ export const wrapper = (theme: Theme) => css`
   }
   @media (max-width: 1360px) and (min-width: 930px) {
     .information-wrap {
-      padding: 16px 0 16px 16px;
+      padding: 15px 0 15px 15px;
       .title {
         br {
           display: block;

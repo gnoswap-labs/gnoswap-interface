@@ -10,7 +10,6 @@ export const wrapper = (theme: Theme) => css`
   border: 1px solid ${theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
-
   .header {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -163,6 +162,27 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     padding-top: 16px;
+    .confirm-button {
+      height: 57px;
+      span {
+        ${fonts.body7}
+      }
+    }
+  }
+  ${media.mobile} {
+    padding: 15px;
+    .header {
+      padding-bottom: 12px;
+    }
+    .footer {
+      padding-top: 12px;
+      .confirm-button {
+        height: 41px;
+        span {
+          ${fonts.body9}
+        }
+      }
+    }
   }
 `;
 

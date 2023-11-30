@@ -12,90 +12,19 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import BigNumber from "bignumber.js";
 import { SwapError } from "@common/errors/swap";
 import { TokenModel } from "@models/token/token-model";
-import { DataTokenInfo } from "@models/token/token-swap-model";
 import { matchInputNumber, numberToUSD } from "@utils/number-utils";
 import { AmountModel } from "@models/common/amount-model";
-import { amountEmptyNumberInit } from "@common/values";
+import { SwapDirectionType, amountEmptyNumberInit } from "@common/values";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { swapRouteInfos as tempSwapRouteInfos } from "@components/swap/swap-card/SwapCard.stories";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
-
-const swapSummaryInfoTemp: SwapSummaryInfo = {
-  tokenA: {
-    chainId: "test3",
-    address: "0x111111111117dC0aa78b770fA6A738034120C302",
-    path: "gno.land/r/demo/1inch",
-    name: "1inch",
-    symbol: "1INCH",
-    decimals: 6,
-    logoURI:
-      "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
-    priceId: "1inch",
-    createdAt: "1999-01-01T00:00:01Z",
-  },
-  tokenB: {
-    chainId: "test3",
-    address: "0x111111111117dC0aa78b770fA6A738034120C302",
-    path: "gno.land/r/demo/1inch",
-    name: "1inch",
-    symbol: "1INCH",
-    decimals: 6,
-    logoURI:
-      "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
-    priceId: "1inch",
-    createdAt: "1999-01-01T00:00:01Z",
-  },
-  swapDirection: "EXACT_IN",
-  swapRate: 1.14,
-  swapRateUSD: 1.14,
-  priceImpact: 0.3,
-  guaranteedAmount: {
-    amount: 45124,
-    currency: "GNOT",
-  },
-  gasFee: {
-    amount: 0.000001,
-    currency: "GNOT",
-  },
-  gasFeeUSD: 0.1,
-};
-
-const swapTokenInfo: SwapTokenInfo = {
-  tokenA: {
-    chainId: "test3",
-    address: "0x111111111117dC0aa78b770fA6A738034120C302",
-    path: "gno.land/r/demo/1inch",
-    name: "1inch",
-    symbol: "1INCH",
-    decimals: 6,
-    logoURI:
-      "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
-    priceId: "1inch",
-    createdAt: "1999-01-01T00:00:01Z",
-  },
-  tokenAAmount: "0",
-  tokenABalance: "0",
-  tokenAUSD: 0,
-  tokenAUSDStr: "0",
-  tokenB: {
-    chainId: "test3",
-    address: "0x111111111117dC0aa78b770fA6A738034120C302",
-    path: "gno.land/r/demo/1inch",
-    name: "1inch",
-    symbol: "1INCH",
-    decimals: 6,
-    logoURI:
-      "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
-    priceId: "1inch",
-    createdAt: "1999-01-01T00:00:01Z",
-  },
-  tokenBAmount: "0",
-  tokenBBalance: "0",
-  tokenBUSD: 0,
-  tokenBUSDStr: "0",
-  direction: "EXACT_IN",
-  slippage: "10",
-};
+import { useSlippage } from "@hooks/common/use-slippage";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { SwapResultInfo } from "@models/swap/swap-result-info";
+import { useNotice } from "@hooks/common/use-notice";
+import { SwapResponse } from "@repositories/swap";
+import { TNoticeType } from "src/context/NoticeContext";
+import { useRouter } from "next/router";
 
 const TokenSwapContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(TokenState.swap);
@@ -111,15 +40,39 @@ const TokenSwapContainer: React.FC = () => {
   const [swapRate] = useState<number>(100);
   const [gasFeeAmount] = useState<AmountModel>(amountEmptyNumberInit);
   const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
-  const [slippage, setSlippage] = useState("1");
+  const { slippage, changeSlippage } = useSlippage();
+  const [submitted, setSubmitted] = useState(false);
+  const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
 
+  const [initialized, setInitialized] = useState(false);
+  const [query, setQuery] = useState<{ [key in string]: string | null }>({});
+  const router = useRouter();
+
+  const { setNotice } = useNotice();
   const { openModal } = useConnectWalletModal(); 
+
+  usePreventScroll(openedConfirmModal || submitted);
   
+  useEffect(() => {
+    const queryValues = [];
+    for (const [key, value] of Object.entries(query)) {
+      if (value) {
+        queryValues.push(`${key}=${value}`);
+      }
+    }
+    // if (queryValues.length > 0) {
+    //   const path = `/tokens/${router.query["token-path"]}?${queryValues.join("&")}`;
+    //   router.replace(path);
+    // }
+  }, [query]);
+
   const {
+    tokens,
     tokenPrices,
     balances,
     updateTokens,
     updateTokenPrices,
+    updateBalances,
   } = useTokenData();
   const {
     connected: connectedWallet,
@@ -127,17 +80,50 @@ const TokenSwapContainer: React.FC = () => {
     switchNetwork,
   } = useWallet();
 
-  const { getExpectedSwap } = useSwap({
+  const { swap, getExpectedSwap } = useSwap({
     tokenA,
     tokenB,
     direction: type,
-    slippage: "1",
+    slippage,
   });
 
   const themeKey = useAtomValue(ThemeState.themeKey);
   const swapNow = useCallback(() => {
-    setOpenedConfirmModal(true);
-  }, []);
+    if (!tokenA || !tokenB) {
+      return;
+    }
+    setSubmitted(true);
+    swap(tokenAAmount, tokenBAmount).then(result => {
+      if (result !== false) {
+        setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
+        setTimeout(() => {
+          if (!!result) {
+            setNotice(null, {timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999});
+          } else {
+            setNotice(null, {timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999});
+          }
+        }, 1000);
+      }
+      setSwapResult({
+        success: !!result,
+        hash: (result as SwapResponse)?.tx_hash || "",
+      });
+    }).catch(() => {
+      setSwapResult({
+        success: false,
+        hash: "",
+      });
+    });
+  }, [
+    setSwapResult,
+    setSubmitted,
+    setNotice,
+    swap,
+    tokenAAmount,
+    tokenBAmount,
+    tokenA,
+    tokenB,
+  ]);
 
   const connectWallet = useCallback(() => {
     if (!connectedWallet) {
@@ -281,30 +267,6 @@ const TokenSwapContainer: React.FC = () => {
     isLoading,
   ]);
 
-  const dataTokenInfo: DataTokenInfo = useMemo(() => {
-    return {
-      tokenA,
-      tokenAAmount,
-      tokenABalance,
-      tokenAUSDStr: numberToUSD(tokenAUSD),
-      tokenB,
-      tokenBAmount,
-      tokenBBalance,
-      tokenBUSDStr: numberToUSD(tokenBUSD),
-      direction: type,
-    };
-  }, [
-    type,
-    tokenA,
-    tokenB,
-    tokenAAmount,
-    tokenB,
-    tokenABalance,
-    tokenBBalance,
-    tokenAUSD,
-    tokenBUSD,
-  ]);
-
   const changeTokenA = useCallback(
     (token: TokenModel) => {
       let changedSwapDirection = type;
@@ -342,7 +304,11 @@ const TokenSwapContainer: React.FC = () => {
   );
 
   const changeTokenAAmount = useCallback(
-    (value: string) => {
+    (value: string, none?: boolean) => {
+      if (none) {
+        setIsLoading(false);
+        return;
+      }
       if (!matchInputNumber(value)) {
         return;
       }
@@ -361,7 +327,11 @@ const TokenSwapContainer: React.FC = () => {
   );
 
   const changeTokenBAmount = useCallback(
-    (value: string) => {
+    (value: string, none?: boolean) => {
+      if (none) {
+        setIsLoading(false);
+        return;
+      }
       if (!matchInputNumber(value)) {
         return;
       }
@@ -505,19 +475,66 @@ const TokenSwapContainer: React.FC = () => {
     };
   }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenBAmount]);
 
+  const closeModal = useCallback(() => {
+    setSubmitted(false);
+    setSwapResult(null);
+    setOpenedConfirmModal(false);
+    updateBalances();
+  }, [updateBalances, swapResult]);
+
+  const swapTokenInfo: SwapTokenInfo = useMemo(() => {
+    return {
+      tokenA,
+      tokenAAmount,
+      tokenABalance,
+      tokenAUSD,
+      tokenAUSDStr: numberToUSD(tokenAUSD),
+      tokenB,
+      tokenBAmount,
+      tokenBBalance,
+      tokenBUSD,
+      tokenBUSDStr: numberToUSD(tokenBUSD),
+      direction: type,
+      slippage
+    };
+  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  useEffect(() => {
+    if (tokens.length === 0 || Object.keys(router.query).length === 0) {
+      return;
+    }
+    if (!initialized) {
+      setInitialized(true);
+      const query = router.query;
+      const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
+      const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
+      const direction: SwapDirectionType = query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
+      setSwapValue({
+        tokenA: currentTokenA,
+        tokenB: currentTokenB,
+        type: direction,
+      });
+      setQuery({
+        tokenA: currentTokenA?.path || null,
+        tokenB: currentTokenB?.path || null,
+        direction,
+      });
+      return;
+    }
+  }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
+  
   return (
     <>
       <TokenSwap
         connected={connectedWallet}
         connectWallet={connectWallet}
-        swapNow={swapNow}
+        swapNow={() => setOpenedConfirmModal(true)}
         switchSwapDirection={switchSwapDirection}
         copied={copied}
         handleCopied={handleCopied}
         themeKey={themeKey}
         handleSetting={handleSetting}
         isSwitchNetwork={isSwitchNetwork}
-        dataTokenInfo={dataTokenInfo}
+        dataTokenInfo={swapTokenInfo}
         changeTokenA={changeTokenA}
         changeTokenB={changeTokenB}
         changeTokenAAmount={changeTokenAAmount}
@@ -528,20 +545,20 @@ const TokenSwapContainer: React.FC = () => {
         swapSummaryInfo={swapSummaryInfo}
         swapRouteInfos={swapRouteInfos}
       />
-      {openedConfirmModal && (
+      {openedConfirmModal && swapSummaryInfo && (
         <ConfirmSwapModal
-          submitted={false}
+          submitted={submitted}
           swapTokenInfo={swapTokenInfo}
-          swapSummaryInfo={swapSummaryInfoTemp}
-          swapResult={null}
+          swapSummaryInfo={swapSummaryInfo}
+          swapResult={swapResult}
           swap={swapNow}
-          close={() => setOpenedConfirmModal(false)}
+          close={closeModal}
         />
       )}
       {openedSetting && (
         <SettingMenuModal
           slippage={slippage}
-          changeSlippage={setSlippage}
+          changeSlippage={changeSlippage}
           close={handleCloseSetting}
           className="swap-setting-class"
         />
