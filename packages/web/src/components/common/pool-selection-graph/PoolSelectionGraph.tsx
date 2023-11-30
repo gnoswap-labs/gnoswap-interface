@@ -176,7 +176,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
           bin =>
             bin.currentPrice < endPrice &&
             bin.currentPrice >= startPrice)
-          .reduce((a, b) => a + b.totalSupply, 0);
+          .reduce((a, b) => a + b.liquidity, 0);
       },
     );
   };

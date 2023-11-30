@@ -1,19 +1,17 @@
 export interface PoolBinModel {
-  binId: string;
-
-  poolId: string;
+  poolPath: string;
 
   currentTick: number;
 
-  reserveA: number;
+  tokenAAmount: number;
 
-  reserveB: number;
+  tokenBAmount: number;
 
-  totalSupply: number;
+  minTick: number;
 
-  lpTokenId: string;
+  maxTick: number;
 
-  timestamp: string;
+  liquidity: number;
 
-  annualizedFeeGrowth: number;
+  apr: number;
 }

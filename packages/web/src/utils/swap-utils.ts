@@ -4,9 +4,12 @@ import {
 } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK, X96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
+import { Q96, tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
+
+const LOG10001 = Math.log(1.0001);
 
 export function getCurrentPriceByRaw(raw: string) {
-  return BigNumber(raw).dividedBy(2 ** 96);
+  return BigNumber(raw).dividedBy(X96).pow(2);
 }
 
 export function makeSwapFeeTier(value: string | number): SwapFeeTierType {
@@ -18,35 +21,53 @@ export function makeSwapFeeTier(value: string | number): SwapFeeTierType {
   return "NONE";
 }
 
-export function tickToPrice(tick: number) {
-  const pow10001 = BigNumber(1.0001).pow(tick);
-  return Number(BigNumber(pow10001).sqrt().toFixed(16));
+export function priceToTick(price: number | bigint) {
+  if (price === 0) {
+    return MIN_TICK;
+  }
+  const logPrice = 2 * Math.log(Number(price));
+  return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
-export function priceToTick(price: number) {
-  const logPrice = Math.log(price ** 2);
-  const log10001 = Math.log(1.0001);
-  return Math.round(BigNumber(logPrice).dividedBy(log10001).toNumber());
-}
-
-export function priceToNearTick(price: number, tickSpacing: number) {
+export function priceToNearTick(price: number | bigint, tickSpacing: number) {
   const tickRaw = priceToTick(price);
-  const mod = Math.abs(tickRaw) % tickSpacing;
+  const tickAbs = Math.abs(tickRaw);
+  const mod = tickAbs % tickSpacing;
   const sign = Math.sign(tickRaw);
 
-  if (sign < 0) {
-    return tickRaw - (tickSpacing - mod);
+  if (mod === 0) {
+    return tickAbs * sign;
   }
-  return tickRaw - mod;
+
+  const maxTick = MAX_TICK - (MAX_TICK % tickSpacing);
+  if (tickAbs > maxTick) {
+    return maxTick * sign;
+  }
+
+  const nearTick = (tickAbs - mod) * sign;
+  if (sign > 0) {
+    return nearTick;
+  }
+
+  const minTick = maxTick * -1;
+  return nearTick - tickSpacing > minTick ? nearTick - tickSpacing : minTick;
 }
 
-export function rawByX96(value: number) {
-  return BigNumber(value).dividedBy(X96).toNumber();
+export function rawBySqrtX96(value: number | bigint | string) {
+  return BigNumber(value.toString()).dividedBy(Q96.toString()).toNumber();
 }
 
-export function priceX96ToNearTick(priceX96: number, tickSpacing: number) {
-  const price = rawByX96(priceX96);
+export function priceX96ToNearTick(
+  priceX96: number | bigint,
+  tickSpacing: number,
+) {
+  const price = rawBySqrtX96(priceX96);
   return priceToNearTick(price, tickSpacing);
+}
+
+export function tickToPrice(tick: number) {
+  const sqrtPriceX96 = tickToSqrtPriceX96(tick);
+  return rawBySqrtX96(sqrtPriceX96);
 }
 
 export function tickToPriceStr(tick: number, decimals?: number) {
@@ -57,11 +78,31 @@ export function tickToPriceStr(tick: number, decimals?: number) {
     return "∞";
   }
   const decimalsLimit = decimals || 4;
-  const result = BigNumber(1.001 ** (tick / 2))
+  const result = BigNumber(tickToPrice(tick).toString())
     .toFormat(decimalsLimit)
     .replace(/\.?0+$/, "");
   if (result === "0") {
     return "";
   }
   return result;
+}
+
+export function feeBoostRateByPrices(
+  minPrice: number | null,
+  maxPrice: number | null,
+) {
+  if (minPrice === null || maxPrice === null || minPrice > maxPrice) {
+    return null;
+  }
+  const sqrt4Value = BigNumber(minPrice / maxPrice)
+    .squareRoot()
+    .squareRoot();
+  return BigNumber(1)
+    .dividedBy(1 - sqrt4Value.toNumber())
+    .toFixed(2);
+}
+
+export function sqrtPriceX96ToTick(priceX96: number | BigInt) {
+  const price = getCurrentPriceByRaw(priceX96.toString());
+  return priceToTick(price.toNumber());
 }

@@ -10,7 +10,7 @@ export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
     const {
       id,
-      topBin,
+      currentTick,
       price,
       tokenA,
       tokenB,
@@ -45,13 +45,13 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      liquidity: `$${BigNumber(totalVolume.amount).toFormat()}`,
+      liquidity: `$${BigNumber(totalVolume).toFormat()}`,
       apr: `${BigNumber(apr).toFormat(2)}%`,
-      volume24h: `$${BigNumber(volume.amount).toFormat()}`,
+      volume24h: `$${BigNumber(volume).toFormat()}`,
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
       incentiveType: "Incentivized",
-      currentTick: topBin.currentTick,
+      currentTick,
       price,
       bins,
     };
@@ -74,7 +74,7 @@ export class PoolMapper {
   public static toCardInfo(poolModel: PoolModel): PoolCardInfo {
     const {
       id,
-      topBin,
+      currentTick,
       price,
       tokenA,
       tokenB,
@@ -109,14 +109,24 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      liquidity: `$${BigNumber(totalVolume.amount).toFormat()}`,
+      liquidity: `$${BigNumber(totalVolume).toFormat()}`,
       apr: `${BigNumber(apr).toFormat(2)}%`,
-      volume24h: `$${BigNumber(volume.amount).toFormat()}`,
+      volume24h: `$${BigNumber(volume).toFormat()}`,
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
       incentiveType: "Incentivized",
-      currentTick: topBin.currentTick,
+      currentTick,
       price,
+      bins,
+    };
+  }
+
+  public static fromResponse(poolModel: PoolModel): PoolModel {
+    const bins = poolModel.bins.map(bin => ({
+      ...bin,
+    }));
+    return {
+      ...poolModel,
       bins,
     };
   }

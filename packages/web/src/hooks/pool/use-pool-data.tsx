@@ -20,20 +20,22 @@ export const usePoolData = () => {
       setLoading(false);
     }, 2000);
     return () => clearTimeout(timeout);
-  },[]); 
+  }, []);
 
   const poolListInfos = useMemo(() => {
     return pools?.map(PoolMapper.toListInfo);
   }, [pools]);
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
-    const sortedTokens = pools?.sort((p1, p2) => {
-      return p2.topBin.annualizedFeeGrowth - p1.topBin.annualizedFeeGrowth;
+    const sortedTokens = pools.sort((p1, p2) => {
+      const p2Apr = Math.max(...p2.bins.map(b => b.apr)) || 0;
+      const p1Apr = Math.max(...p2.bins.map(b => b.apr)) || 0;
+      return p2Apr - p1Apr;
     }).filter((_, index) => index < 3);
     return sortedTokens?.map(pool => ({
       pool,
       upDown: "none",
-      content: `${pool.topBin.annualizedFeeGrowth || 0}%`
+      content: `${Math.max(...pool.bins.map(b => b.apr)) || 0}%`
     }));
   }, [pools]);
 
