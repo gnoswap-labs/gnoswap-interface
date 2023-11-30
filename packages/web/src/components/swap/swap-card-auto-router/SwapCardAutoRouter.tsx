@@ -3,6 +3,7 @@ import { AutoRouterWrapper, DotLine } from "./SwapCardAutoRouter.styles";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { useTokenImage } from "@hooks/token/use-token-image";
 
 interface ContentProps {
   swapRouteInfos: SwapRouteInfo[];
@@ -13,6 +14,7 @@ const SwapCardAutoRouter: React.FC<ContentProps> = ({
   swapRouteInfos,
   swapSummaryInfo,
 }) => {
+
   const bestGasFee = useMemo(() => {
     const totalGasFee = swapRouteInfos.reduce((prev, current) => prev + current.gasFeeUSD, 0);
     return `$${totalGasFee}`;
@@ -39,9 +41,26 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
   swapRouteInfo,
   swapSummaryInfo,
 }) => {
+  const { getTokenImage } = useTokenImage();
+
   const weightStr = useMemo(() => {
     return `${swapRouteInfo.weight}%`;
   }, [swapRouteInfo.weight]);
+
+  const routeInfos = useMemo(() => {
+    let currentFromToken = swapSummaryInfo.tokenA.path;
+    return swapRouteInfo.pools.map((pool) => {
+      const ordered = currentFromToken === pool.tokenAPath;
+      const fromToken = ordered ? pool.tokenAPath : pool.tokenBPath;
+      const toToken = ordered ? pool.tokenBPath : pool.tokenAPath;
+      currentFromToken = toToken;
+      return {
+        fee: `${(pool.fee / 10000).toFixed(2)}%`,
+        fromToken,
+        toToken
+      };
+    });
+  }, [swapRouteInfo.pools, swapSummaryInfo.tokenA.path]);
 
   return (
     <div className="row">
@@ -51,14 +70,14 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
         <span>{weightStr}</span>
       </div>
       <DotLine />
-      {swapRouteInfo.pools.map((pool, index) => (
-        <>
-          <div key={`pool-${index}`} className="pair-fee">
-            <DoubleLogo left={pool.tokenA.logoURI} right={pool.tokenB.logoURI} size={16} />
-            <h1>{pool.fee}</h1>
+      {routeInfos.map((routeInfo, index) => (
+        <React.Fragment key={`pool-${index}`}>
+          <div className="pair-fee">
+            <DoubleLogo left={getTokenImage(routeInfo.fromToken) || ""} right={getTokenImage(routeInfo.toToken) || ""} size={16} />
+            <h1>{routeInfo.fee}</h1>
           </div>
-          <DotLine key={`line-${index}`} />
-        </>
+          <DotLine />
+        </React.Fragment>
       ))}
       <img src={swapSummaryInfo.tokenB.logoURI} alt="token logo" className="token-logo" />
     </div>

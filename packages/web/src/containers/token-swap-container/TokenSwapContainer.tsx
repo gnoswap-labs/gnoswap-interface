@@ -113,8 +113,8 @@ const TokenSwapContainer: React.FC = () => {
   const [swapRouteInfos] = useState<SwapRouteInfo[]>(tempSwapRouteInfos);
   const [slippage, setSlippage] = useState(1);
 
-  const { openModal } = useConnectWalletModal(); 
-  
+  const { openModal } = useConnectWalletModal();
+
   const {
     tokenPrices,
     balances,
@@ -127,7 +127,7 @@ const TokenSwapContainer: React.FC = () => {
     switchNetwork,
   } = useWallet();
 
-  const { getExpectedSwap } = useSwap({
+  const { estimateSwapRoute } = useSwap({
     tokenA,
     tokenB,
     direction: type,
@@ -246,9 +246,9 @@ const TokenSwapContainer: React.FC = () => {
       return;
     }
     const timeout = setTimeout(() => {
-      getExpectedSwap(changedAmount).then((result) => {
+      estimateSwapRoute(changedAmount).then((result) => {
         const isError = result === null;
-        const expectedAmount = isError ? "" : result;
+        const expectedAmount = isError ? "" : result.amount;
         let swapError = null;
         if (isError) {
           swapError = new SwapError("INSUFFICIENT_BALANCE");
@@ -272,7 +272,7 @@ const TokenSwapContainer: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [
     checkBalance,
-    getExpectedSwap,
+    estimateSwapRoute,
     type,
     tokenA,
     tokenAAmount,

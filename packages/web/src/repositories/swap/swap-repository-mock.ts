@@ -10,7 +10,6 @@ import {
 } from ".";
 import { SwapRequest } from "./request";
 import { WalletClient } from "@common/clients/wallet-client";
-import { SwapPoolResponse } from "./response/swap-pool-response";
 
 export class SwapRepositoryMock implements SwapRepository {
   private localStorageClient: StorageClient;
@@ -20,14 +19,6 @@ export class SwapRepositoryMock implements SwapRepository {
     this.localStorageClient = new MockStorageClient("LOCAL");
     this.walletClient = walletClient;
   }
-  public findSwapPool = async (): Promise<SwapPoolResponse> => {
-    return {
-      feeTier: "FEE_100",
-      poolPath: "",
-      sqrtPriceX96: "",
-      tickSpacing: 20,
-    };
-  };
 
   public getSwapRate = async (): Promise<SwapRateResponse> => {
     return {
