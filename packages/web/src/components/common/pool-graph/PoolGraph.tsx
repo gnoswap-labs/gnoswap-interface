@@ -3,7 +3,6 @@ import { PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
-import BigNumber from "bignumber.js";
 import { renderToStaticMarkup } from "react-dom/server";
 import { TokenModel } from "@models/token/token-model";
 import { toMillionFormat } from "@utils/number-utils";
@@ -86,8 +85,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const xAxis = d3
     .axisBottom(scaleX)
     .tickSize(0)
-    .tickFormat(v => BigNumber(1.001 ** (v.valueOf() / 2)).toFormat(4));
-  const [minX, maxX] = d3.extent(bins, (bin) => bin.currentTick);
+    .tickFormat(v => v.toString());
+  const [minX, maxX] = d3.extent(bins, (bin) => bin.minTick);
   const [, max] = d3.extent(bins, (bin) => bin.liquidity);
 
   const scaleY = useMemo(() => {
@@ -152,7 +151,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (bins.length === 2) {
       return 20;
     }
-    const spacing = scaleX(bins[1].currentTick) - scaleX(bins[0].currentTick);
+    const spacing = scaleX(bins[1].minTick) - scaleX(bins[0].minTick);
     if (spacing < 2) {
       return spacing;
     }
@@ -166,7 +165,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
-      if (currentTick && scaleX(bin.currentTick) < centerPosition) {
+      if (currentTick && (bin.minTick) < currentTick) {
         return "url(#gradient-bar-green)";
       }
       return "url(#gradient-bar-red)";
@@ -184,7 +183,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .append("rect")
       .style("fill", bin => fillByBin(bin))
       .attr("class", "rects")
-      .attr("x", bin => scaleX(bin.currentTick))
+      .attr("x", bin => scaleX(bin.minTick))
       .attr("y", bin => scaleY(bin.liquidity))
       .attr("width", tickSpacing)
       .attr("height", bin => boundsHeight - scaleY(bin.liquidity))
@@ -227,8 +226,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           <PoolGraphBinTooptip
             tokenA={tokenA}
             tokenB={tokenB}
-            tokenAAmount={bin.tokenAAmount}
-            tokenBAmount={bin.tokenBAmount}
+            tokenAAmount={bin.reserveTokenA}
+            tokenBAmount={bin.reserveTokenB}
             tokenARange={tokenARange}
             tokenBRange={tokenBRange}
           />

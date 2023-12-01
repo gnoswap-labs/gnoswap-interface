@@ -156,7 +156,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const boundsHeight = height - margin.top - margin.bottom - labelHeight - paddingHeight;
   const tickAmount = 10000;
 
-  const [, maxX] = d3.extent(bins.map(bin => bin.currentTick));
+  const [, maxX] = d3.extent(bins.map(bin => bin.minTick));
   const maxXTick = tickToPrice(maxX ?? 1) * 10000;
   const binRange = maxXTick / tickAmount;
   const currentPrice = tickToPrice(currentTick || 0);
@@ -164,8 +164,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const { redColor, greenColor } = useColorGraph();
 
   const resolvedBins = () => {
-    const sortedBins = bins.sort((b1, b2) => b1.currentTick - b2.currentTick)
-      .map(bin => ({ ...bin, currentPrice: tickToPrice(bin.currentTick) }));
+    const sortedBins = bins.sort((b1, b2) => b1.minTick - b2.minTick)
+      .map(bin => ({ ...bin, currentPrice: tickToPrice(bin.minTick) }));
     console.log(sortedBins);
     return Array.from(
       { length: tickAmount },
