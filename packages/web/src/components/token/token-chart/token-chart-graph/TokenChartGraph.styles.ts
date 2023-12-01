@@ -63,12 +63,32 @@ export const TokenChartGraphWrapper = styled.div`
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
     }
+    .large-text {
+      ${fonts.body12};
+    }
+    .medium-text {
+      ${fonts.p4}
+    }
+    .small-text {
+      ${fonts.p6}
+    }
     ${media.mobile} {
       ${fonts.p7};
-      padding-left: 5px;
+      padding-left: 0px;
       width: 14px;
       span {
         ${fonts.p7};
+      }
+      .large-text {
+        ${fonts.p7};
+      }
+      .medium-text {
+        font-size: 7px;
+        line-height: 9px;
+      }
+      .small-text {
+        font-size: 5px;
+        line-height: 7px;
       }
     }
   }

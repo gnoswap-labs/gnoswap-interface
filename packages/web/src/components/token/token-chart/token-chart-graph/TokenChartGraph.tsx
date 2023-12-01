@@ -56,6 +56,18 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return breakpoint !== DEVICE_TYPE.MOBILE ? 47.55: 32.35;
   }, [breakpoint]);
 
+  const typeYAxis = useMemo(() => {
+    if (yAxisLabels.length > 0) {
+      const leng = yAxisLabels[0].length;
+      if (leng > 0) {
+        if (leng === 1) return "large-text";
+        if (leng === 2) return "medium-text";
+        return "small-text";
+      }
+    }
+    return "small-text";
+  }, [yAxisLabels]);
+
   return (
     <TokenChartGraphWrapper>
       <div className="data-wrapper" ref={wrapperRef}>
@@ -83,8 +95,8 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       </div>
       <div className="yaxis-wrapper">
         {yAxisLabels.map((label, index) => (
-          <span key={index} className="label">
-            {label}
+          <span key={index} className={`label ${typeYAxis}`}>
+            ${label}
           </span>
         ))}
       </div>

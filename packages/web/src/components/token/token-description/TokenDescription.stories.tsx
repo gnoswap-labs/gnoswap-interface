@@ -17,6 +17,6 @@ export const Default = Template.bind({});
 Default.args = {
   tokenName: descriptionInit.token.name,
   tokenSymbol: descriptionInit.token.symbol,
-  content: descriptionInit.desc,
+  content: descriptionInit.token.description,
   links: descriptionInit.links,
 };

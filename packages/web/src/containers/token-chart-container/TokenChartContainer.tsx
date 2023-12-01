@@ -1,5 +1,7 @@
 import React, { useCallback, useState, useEffect } from "react";
 import TokenChart from "@components/token/token-chart/TokenChart";
+import TOKEN_LIST from "@repositories/token/mock/assets.json";
+import { useRouter } from "next/router";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
@@ -9,6 +11,10 @@ export interface TokenInfo {
     name: string;
     symbol: string;
     image: string;
+    pkg_path: string
+    decimals: number
+    description: string
+    website_url: string
   };
   priceInfo: {
     amount: {
@@ -38,6 +44,10 @@ const dummyTokenInfo: TokenInfo = {
     name: "Gnoswap",
     symbol: "GNS",
     image: "/gnos.svg",
+    pkg_path: "string",
+    decimals: 1,
+    description: "string",
+    website_url: "string",
   },
   priceInfo: {
     amount: {
@@ -102,7 +112,7 @@ function createXAxisDummyDatas(currentTab: TokenChartGraphPeriodType) {
 }
 
 function createDummyAmountDatas() {
-  const length = 60;
+  const length = 55;
   return Array.from({ length }, (_, index) => {
     const date = new Date();
     date.setHours(date.getHours() - index);
@@ -118,9 +128,20 @@ function createDummyAmountDatas() {
 }
 
 const TokenChartContainer: React.FC = () => {
-  const [tokenInfo] = useState<TokenInfo>(dummyTokenInfo);
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
   const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
+  useEffect(() => {
+    const currentToken = TOKEN_LIST.filter(item => item.symbol === router.query["token-path"])[0];
+    setTokenInfo(prev => ({
+      ...prev,
+      token: {
+        ...currentToken
+      }
+    }));
+  }, [router.query]);
   
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -154,9 +175,12 @@ const TokenChartContainer: React.FC = () => {
   };
 
   const getYAxisLabels = (): string[] => {
-    return ["1", "2", "3", "4", "5", "6", "7"];
+    const fake1 = ["1", "2", "3", "4", "5", "6", "7"];
+    const fake2 = ["10", "20", "30", "40", "50", "60", "70"];
+    const fake3 = ["100", "200", "300", "400", "500", "600", "700"];
+    return [fake1, fake2, fake3][Math.floor(Math.random() * 3)];
   };
-
+  
   return (
     <TokenChart
       tokenInfo={tokenInfo}

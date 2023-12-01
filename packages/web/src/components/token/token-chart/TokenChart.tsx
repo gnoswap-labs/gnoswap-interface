@@ -36,7 +36,7 @@ const TokenChart: React.FC<TokenChartProps> = ({
       </LoadingChart>}
       {!loading && <TokenChartGraph
         xAxisLabels={chartInfo?.xAxisLabels || []}
-        yAxisLabels={["1", "2", "3", "4", "5", "6", "7"]}
+        yAxisLabels={chartInfo?.yAxisLabels || []}
         datas={chartInfo?.datas || []}
         currentTab={currentTab}
       />}

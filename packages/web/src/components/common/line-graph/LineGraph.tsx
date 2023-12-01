@@ -196,19 +196,21 @@ const LineGraph: React.FC<LineGraphProps> = ({
     let minDistance = -1;
 
     let currentPointIndex = -1;
+    
     for (const point of points) {
-      const distance = Math.abs(point.x - xPosition);
+      const distance = xPosition - point.x;
       currentPointIndex += 1;
-      if (minDistance < 0) {
+      if (minDistance < 0 && distance >= 0) {
         minDistance = distance;
       }
-      if (distance < minDistance + 10) {
+      if (distance >= 0 && distance < minDistance + 1) {
         currentPoint = point;
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);
       }
     }
     if (currentPoint) {
+      console.log(currentPointIndex);
       setCurrentPoint(currentPoint);
     }
   };
@@ -246,6 +248,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     return points[0];
   }, [points]);
+  console.log(currentPoint, "currentPoint");
   
   return (
     <LineGraphWrapper

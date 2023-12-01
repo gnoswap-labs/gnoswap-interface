@@ -48,7 +48,9 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   } = item;
 
   const onClickItem = (symbol: string) => {
-    location.href = "/tokens/" + symbol + "?tokenB=gno.land/r/foo&direction=EXACT_IN";
+    console.log(symbol);
+    
+    location.href = "/tokens/" + "FOO" + "?tokenB=gno.land/r/foo&direction=EXACT_IN";
   };
 
   return (

@@ -15,5 +15,5 @@ const Template: ComponentStory<typeof TokenDescriptionContent> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  content: descriptionInit.desc,
+  content: descriptionInit.token.description,
 };
