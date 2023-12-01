@@ -7,9 +7,9 @@ export const VolumeChartWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
-  padding: 24px;
+  padding: 23px;
   ${media.mobile} {
-    padding: 12px 12px 12px 12px;
+    padding: 11px 11px 11px 11px;
   }
 `;
 

@@ -38,7 +38,7 @@ function createXAxisDummyDatas(currentTab: CHART_TYPE) {
         return `${yearStr}-${monthStr}`;
       }).reverse();
     case "1Y":
-    case "YTD":
+    case "ALL":
     default:
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);

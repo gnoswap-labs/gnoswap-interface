@@ -13,7 +13,7 @@ const ActivityListHeader: React.FC<ActivityListHeaderProps> = ({
   changeActivityType,
 }) => (
   <ActivityListHeaderwrapper>
-    <h2>Activities</h2>
+    <h2>Onchain Activities</h2>
     <div className="overflow-tab">
       <SelectTab
         selectType={activityType}

@@ -7,7 +7,7 @@ export const DashboardInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   max-width: ${ContainerWidth.WEB_CONTAINER};
   width: 100%;
-  padding: 24px;
+  padding: 23px;
   gap: 24px;
   background-color: ${({ theme }) => theme.color.background03};
   border: 1px solid ${({ theme }) => theme.color.border01};

@@ -7,10 +7,10 @@ export const GovernanceOverviewWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   color: ${({ theme }) => theme.color.text02};
-  padding: 24px;
+  padding: 23px;
   gap: 24px;
   ${media.mobile} {
-    padding: 12px 12px 16px 12px;
+    padding: 11px 11px 15px 11px;
     gap: 16px;
   }
 `;
@@ -87,7 +87,6 @@ export const GovernanceWrapper = styled.div`
       ${fonts.body12}
     }
     svg {
-      cursor: pointer;
       margin: 1.5px 0px;
       width: 18px;
       height: 18px;

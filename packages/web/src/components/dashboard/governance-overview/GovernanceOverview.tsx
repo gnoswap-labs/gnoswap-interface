@@ -30,7 +30,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
     <GovernanceWrapper>
       <div className="total-issued">
         <div className="label-title">
-          <div>Total xGNOS Issued</div>
+          <div>Total xGNS Issued</div>
           <DashboardLabel tooltip="Total amount of xGNOS currently issued through GNS-GNOT staking." />
         </div>
         <div>{governenceOverviewInfo.totalXgnosIssued}</div>

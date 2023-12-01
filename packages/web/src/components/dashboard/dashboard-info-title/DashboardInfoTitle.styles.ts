@@ -19,7 +19,7 @@ export const DashboardInfoTitleWrapper = styled.div`
 
 export const TokenWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  gap: 16px;
+  gap: 8px;
 `;
 
 export const GnosLogoWrapper = styled.div`

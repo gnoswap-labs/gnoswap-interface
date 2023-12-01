@@ -11,7 +11,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({
 }) => (
   <GovernanceDetailWrapper>
     <GovernanceDetailInfo
-      title={"Total xGNOS Issued"}
+      title={"Total xGNS Issued"}
       value={governanceDetailInfo.totalXGnosIssued}
       tooltip={
         "Total amount of xGNOS currently issued through GNS-GNOT staking."

@@ -25,7 +25,7 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
             width={size.width}
             height={size.height}
             color={theme.color.background04Hover}
-            hoverColor={theme.color.point}
+            hoverColor={theme.color.background04}
             strokeWidth={size.width * 0.022}
             datas={datas}
           />

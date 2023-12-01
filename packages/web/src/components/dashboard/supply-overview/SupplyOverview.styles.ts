@@ -7,7 +7,7 @@ export const SupplyOverviewWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")}
   width: 100%;
   color: ${({ theme }) => theme.color.text02};
-  padding: 24px;
+  padding: 23px;
   gap: 24px;
   .supply-overview {
     ${fonts.body9};
@@ -16,7 +16,7 @@ export const SupplyOverviewWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 12px;
+    padding: 11px;
     gap: 16px;
   }
 `;
@@ -41,7 +41,6 @@ export const SupplyInfoWrapper = styled.div`
       ${fonts.body12}
     }
     svg {
-      cursor: pointer;
       margin: 1.5px 0px;
       width: 18px;
       height: 18px;

@@ -28,7 +28,7 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
       pointer-events: auto;
       &:hover {
         fill: ${(props) =>
-          props.svgColor === "default" ? ({ theme }) => theme.color.point : ""};
+          props.svgColor === "default" ? ({ hoverColor }) => hoverColor : ""};
         opacity: ${(props) => (props.svgColor === "incentivized" ? 0.4 : 1)};
       }
     }
