@@ -44,7 +44,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const swapRouter = new SwapRouter(pools);
     const estimatedRoutes = swapRouter.estimateSwapRoute(inputTokenPath, outputTokenPath, BigInt(tokenAmount), exactType);
     
-    const routesQuery = makeRoutesQuery(estimatedRoutes);
+    const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
     const param = makeABCIParams("DrySwapRoute", [
       inputTokenPath,
@@ -86,7 +86,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       estimatedRoutes,
       tokenAmountLimit
     } = request;
-    const routesQuery = makeRoutesQuery(estimatedRoutes);
+    const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
     const response = await this.walletClient.sendTransaction({
       messages: [
