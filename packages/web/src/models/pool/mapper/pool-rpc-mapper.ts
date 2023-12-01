@@ -1,7 +1,4 @@
-import {
-  PoolListRPCResponse,
-  PoolRPCResponse,
-} from "@repositories/pool/response/pool-rpc-response";
+import { PoolRPCResponse } from "@repositories/pool/response/pool-rpc-response";
 import { rawBySqrtX96 } from "@utils/swap-utils";
 import { PoolRPCModel } from "../pool-rpc-model";
 
@@ -45,11 +42,11 @@ export class PoolRPCMapper {
     };
   }
 
-  public static fromList(response: PoolListRPCResponse | null): PoolRPCModel[] {
-    if (!response || !response?.response?.data) {
+  public static fromList(response: PoolRPCResponse[] | null): PoolRPCModel[] {
+    if (!response) {
       throw new Error("mapper error");
     }
 
-    return response.response.data.map(PoolRPCMapper.from);
+    return response.map(PoolRPCMapper.from);
   }
 }

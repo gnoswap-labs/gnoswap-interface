@@ -1,19 +1,29 @@
-export class Queue<T = unknown> {
-  private _arr: T[];
+export function wait<T>(
+  runner: () => Promise<T>,
+  waitTime = 1000,
+  finishTime = 10000,
+) {
+  return new Promise<T | null>(resolve => {
+    let finishedResult = false;
+    let result: T | null = null;
+    let currentTime = 0;
 
-  constructor() {
-    this._arr = [];
-  }
+    runner().then(response => {
+      result = response;
+      finishedResult = true;
+    });
 
-  public get arr() {
-    return this._arr;
-  }
+    const interval = setInterval(() => {
+      if (finishedResult && currentTime >= waitTime) {
+        clearInterval(interval);
+        resolve(result);
+      }
 
-  enqueue(item: T) {
-    this._arr.push(item);
-  }
-
-  dequeue() {
-    return this._arr.shift();
-  }
+      if (currentTime >= finishTime) {
+        clearInterval(interval);
+        resolve(null);
+      }
+      currentTime += 500;
+    }, 500);
+  });
 }

@@ -1,4 +1,3 @@
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { TokenModel } from "@models/token/token-model";
 
 export interface EstimateSwapRouteRequest {
@@ -9,6 +8,4 @@ export interface EstimateSwapRouteRequest {
   tokenAmount: number;
 
   exactType: "EXACT_IN" | "EXACT_OUT";
-
-  pools: PoolRPCModel[];
 }

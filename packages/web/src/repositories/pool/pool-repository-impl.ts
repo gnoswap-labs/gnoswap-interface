@@ -22,7 +22,7 @@ import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { PoolListRPCResponse, PoolRPCResponse } from "./response/pool-rpc-response";
+import { PoolRPCResponse } from "./response/pool-rpc-response";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
@@ -51,11 +51,11 @@ export class PoolRepositoryImpl implements PoolRepository {
     const result: PoolRPCModel[] = await this.rpcProvider.evaluateExpression(
       poolPackagePath,
       param,
-    ).then(evaluateExpressionToObject<PoolListRPCResponse>)
+    ).then(evaluateExpressionToObject<PoolRPCResponse[]>)
     .then(PoolRPCMapper.fromList)
     .catch(e => {
       console.error(e);
-      return [] as PoolRPCModel[];
+      return [];
     });
     return result;
   };
@@ -174,11 +174,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     startPrice: string,
     caller: string,
   ) {
-    // Todo: Change to Path
-    // const tokenAPath = tokenA.path;
-    // const tokenBPath = tokenB.path;
-    const tokenAPath = tokenA.symbol.toLowerCase();
-    const tokenBPath = tokenB.symbol.toLowerCase();
+    const tokenAPath = tokenA.path;
+    const tokenBPath = tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     return {
       caller,
@@ -214,11 +211,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     slippage: number,
     caller: string,
   ) {
-    // Todo: Change to Path
-    // const tokenAPath = tokenA.path;
-    // const tokenBPath = tokenB.path;
-    const tokenAPath = tokenA.symbol.toLowerCase();
-    const tokenBPath = tokenB.symbol.toLowerCase();
+    const tokenAPath = tokenA.path;
+    const tokenBPath = tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     const deadline = "7282571140";
     return {

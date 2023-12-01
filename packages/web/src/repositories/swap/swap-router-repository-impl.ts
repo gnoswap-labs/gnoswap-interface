@@ -5,11 +5,12 @@ import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
-import { evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
+import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
 import { SwapRouter } from "@gnoswap-labs/swap-router";
+import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
 const ROUTER_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_ADDRESS || "";
@@ -17,23 +18,28 @@ const ROUTER_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_ADDRESS || "";
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
   private walletClient: WalletClient | null;
+  private pools: PoolRPCModel[];
 
-  constructor(rpcProvider: GnoProvider, walletClient: WalletClient) {
+  constructor(
+    rpcProvider: GnoProvider | null,
+    walletClient: WalletClient | null,
+  ) {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
+    this.pools = [];
   }
 
-  public estimateSwapRoute = async(request: EstimateSwapRouteRequest):Promise<EstimateSwapRouteResponse> => {
+  public updatePools(pools: PoolRPCModel[]) {
+    this.pools = pools;
+  }
+
+  public estimateSwapRoute = async (
+    request: EstimateSwapRouteRequest,
+  ): Promise<EstimateSwapRouteResponse> => {
     if (!ROUTER_PACKAGE_PATH || !this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
-    const {
-      inputToken,
-      outputToken,
-      exactType,
-      tokenAmount,
-      pools,
-    } = request;
+    const { inputToken, outputToken, exactType, tokenAmount } = request;
 
     if (Number.isNaN(tokenAmount)) {
       throw new SwapError("INVALID_PARAMS");
@@ -41,9 +47,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const inputTokenPath = inputToken.path;
     const outputTokenPath = outputToken.path;
-    const swapRouter = new SwapRouter(pools);
-    const estimatedRoutes = swapRouter.estimateSwapRoute(inputTokenPath, outputTokenPath, BigInt(tokenAmount), exactType);
-    
+    const swapRouter = new SwapRouter(this.pools);
+    const estimatedRoutes = swapRouter.estimateSwapRoute(
+      inputTokenPath,
+      outputTokenPath,
+      BigInt(tokenAmount),
+      exactType,
+    );
+
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
     const param = makeABCIParams("DrySwapRoute", [
@@ -57,19 +68,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const result = await this.rpcProvider
       .evaluateExpression(ROUTER_PACKAGE_PATH, param)
-      .then(evaluateExpressionToObject<{
-        response: {
-          data: EstimateSwapRouteResponse;
-        }
-      }>);
+      .then(evaluateExpressionToNumber);
 
-      if (result === null) {
-        throw new SwapError("NOT_FOUND_SWAP_POOL");
-      }
-      return result.response.data;
+    if (result === null) {
+      throw new SwapError("NOT_FOUND_SWAP_POOL");
+    }
+    return {
+      amount: result.toString(),
+      estimatedRoutes,
+    };
   };
 
-  public swapRoute = async(request: SwapRouteRequest):Promise<string> => {
+  public swapRoute = async (request: SwapRouteRequest): Promise<string> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -84,14 +94,22 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       exactType,
       tokenAmount,
       estimatedRoutes,
-      tokenAmountLimit
+      tokenAmountLimit,
     } = request;
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
     const response = await this.walletClient.sendTransaction({
       messages: [
-        SwapRouterRepositoryImpl.makeApproveTokenMessage(inputToken, "", address),
-        SwapRouterRepositoryImpl.makeApproveTokenMessage(outputToken, "", address),
+        SwapRouterRepositoryImpl.makeApproveTokenMessage(
+          inputToken,
+          "",
+          address,
+        ),
+        SwapRouterRepositoryImpl.makeApproveTokenMessage(
+          outputToken,
+          "",
+          address,
+        ),
         {
           caller: address,
           send: "",
@@ -117,7 +135,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
     return response.type;
   };
-
 
   private static makeApproveTokenMessage(
     token: TokenModel,
