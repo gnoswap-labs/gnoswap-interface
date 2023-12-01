@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { type FeeOptions } from "@common/values/data-constant";
+import { IncentivizedOptions, type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { ValuesType } from "utility-types";
@@ -50,34 +50,6 @@ export const POOL_TYPE = {
 
 export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
 
-// const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-//   "Pool Name": "name",
-//   Liquidity: "liquidity",
-//   "Volume (24h)": "volume",
-//   "Fees (24h)": "fees",
-//   APR: "apr",
-//   Rewards: "rewards",
-//   "Liquidity Plot": "liquidity_plot",
-// };
-
-// async function fetchPools(
-//   type: POOL_TYPE, // eslint-disable-line
-//   page: number, // eslint-disable-line
-//   keyword: string, // eslint-disable-line
-//   sortKey?: string, // eslint-disable-line
-//   direction?: string, // eslint-disable-line
-// ): Promise<Pool[]> {
-//   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-//     Promise.resolve([
-//       ...dummyPoolList,
-//       ...dummyPoolList,
-//       ...dummyPoolList,
-//       ...dummyPoolList,
-//       ...dummyPoolList,
-//     ]),
-//   );
-// }
-
 const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);
   const [page, setPage] = useState(0);
@@ -104,19 +76,29 @@ const PoolListContainer: React.FC = () => {
   }, [isClickOutside, keyword]);
 
   const sortedPoolListInfos = useMemo(() => {
-    return poolListInfos.filter(info => {
-      if (poolType !== "All") {
-        return info.incentiveType === poolType;
+    function filteredPoolType(poolType: POOL_TYPE, incentivizedType: IncentivizedOptions) {
+      switch (poolType) {
+        case "Incentivized":
+          return incentivizedType !== "INCENTIVIZED";
+        case "Non-Incentivized":
+          return incentivizedType === "NON_INCENTIVIZED";
+        default:
+          break;
       }
+      return true;
+    }
+
+    return poolListInfos.filter(info => {
       if (keyword !== "") {
         return info.tokenA.name.toLowerCase().includes(keyword.toLowerCase()) ||
           info.tokenB.name.toLowerCase().includes(keyword.toLowerCase()) ||
           info.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
           info.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase());
       }
-      return true;
+
+      return filteredPoolType(poolType, info.incentivizedType);
     });
-  }, [keyword, poolListInfos, poolType, sortOption]);
+  }, [keyword, poolListInfos, poolType]);
 
   const totalPage = useMemo(() => {
     return Math.floor(sortedPoolListInfos.length / 20) + 1;
@@ -176,7 +158,7 @@ const PoolListContainer: React.FC = () => {
     const disableItems = ["Rewards", "Liquidity Plot"];
     return !disableItems.includes(head);
   }, []);
-  
+
   return (
     <PoolList
       pools={sortedPoolListInfos}

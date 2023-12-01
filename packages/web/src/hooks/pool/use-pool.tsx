@@ -81,7 +81,7 @@ export const usePool = ({
         const feetierOfLiquidityMap: { [key in string]: number } = {};
         const totalLiquidities = infos.map(info => info.liquidity).reduce((total, cur) => total + cur, 0n);
         for (const info of infos) {
-          const liquidityRate = Math.round((Number(info.liquidity) / Number(totalLiquidities)) * 100);
+          const liquidityRate = Math.round(Number(info.liquidity / totalLiquidities) * 100);
           const feeTier = currentPools.find(pool => pool.id === info.poolPath)?.fee;
           if (feeTier) {
             feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;

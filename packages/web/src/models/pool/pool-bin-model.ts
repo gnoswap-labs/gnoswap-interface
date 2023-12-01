@@ -1,17 +1,23 @@
 export interface PoolBinModel {
-  poolPath: string;
+  index: number;
 
-  currentTick: number;
+  liquidity: number;
 
-  tokenAAmount: number;
+  reserveTokenA: number;
 
-  tokenBAmount: number;
+  reserveTokenB: number;
+
+  currentTick?: number;
 
   minTick: number;
 
   maxTick: number;
 
-  liquidity: number;
+  minTickPrice?: string;
 
-  apr: number;
+  maxTickPrice?: string;
+
+  reverseMinTickPrice?: string;
+
+  reverseMaxTickPrice?: string;
 }

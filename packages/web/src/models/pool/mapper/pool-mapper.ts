@@ -5,17 +5,20 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { PoolRewardInfo } from "../info/pool-reward-info";
 import { PoolCardInfo } from "../info/pool-card-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
+import { PoolResponse } from "@repositories/pool";
+import { IncentivizedOptions } from "@common/values";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
     const {
       id,
+      incentivizedType,
       currentTick,
       price,
       tokenA,
       tokenB,
       volume,
-      totalVolume,
+      tvl,
       fee,
       feeVolume,
       apr,
@@ -42,15 +45,15 @@ export class PoolMapper {
 
     return {
       poolId: id,
+      incentivizedType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      liquidity: `$${BigNumber(totalVolume).toFormat()}`,
+      liquidity: `$${BigNumber(tvl).toFormat()}`,
       apr: `${BigNumber(apr).toFormat(2)}%`,
       volume24h: `$${BigNumber(volume).toFormat()}`,
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
-      incentiveType: "Incentivized",
       currentTick,
       price,
       bins,
@@ -75,11 +78,12 @@ export class PoolMapper {
     const {
       id,
       currentTick,
+      incentivizedType,
       price,
       tokenA,
       tokenB,
+      tvl,
       volume,
-      totalVolume,
       fee,
       feeVolume,
       apr,
@@ -106,27 +110,35 @@ export class PoolMapper {
 
     return {
       poolId: id,
+      incentivizedType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      liquidity: `$${BigNumber(totalVolume).toFormat()}`,
+      liquidity: `$${BigNumber(tvl).toFormat()}`,
       apr: `${BigNumber(apr).toFormat(2)}%`,
       volume24h: `$${BigNumber(volume).toFormat()}`,
       fees24h: `$${BigNumber(feeVolume).toFormat()}`,
       rewards: [defaultReward],
-      incentiveType: "Incentivized",
       currentTick,
       price,
       bins,
     };
   }
 
-  public static fromResponse(poolModel: PoolModel): PoolModel {
-    const bins = poolModel.bins.map(bin => ({
+  public static fromResponse(pool: PoolResponse): PoolModel {
+    const bins = pool.bins.map(bin => ({
       ...bin,
     }));
+    const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
+    const incentivizedType: IncentivizedOptions =
+      incentivizedTypeStr !== "INCENTIVIZED"
+        ? incentivizedTypeStr === "EXTERNAL_INCENTIVIZED"
+          ? "EXTERNAL_INCENTIVIZED"
+          : "INCENTIVIZED"
+        : "NON_INCENTIVIZED";
     return {
-      ...poolModel,
+      ...pool,
+      incentivizedType,
       bins,
     };
   }

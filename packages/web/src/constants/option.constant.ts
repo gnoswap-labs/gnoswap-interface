@@ -112,11 +112,6 @@ export const CHART_TYPE = {
 } as const;
 export type CHART_TYPE = ValuesType<typeof CHART_TYPE>;
 
-export type IncentivizedOptions =
-  | "INCENTIVIZED"
-  | "NON_INCENTIVIZED"
-  | "EXTERNAL_INCENTIVIZED";
-
 export type AddLiquidityType = "POOL" | "LIQUIDITY";
 
 export type PriceRangeType = "Active" | "Passive" | "Custom";

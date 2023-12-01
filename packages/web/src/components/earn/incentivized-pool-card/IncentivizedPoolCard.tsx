@@ -86,8 +86,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
-                bins={[]}
-                currentTick={20}
+                bins={pool.bins}
+                currentTick={pool.currentTick}
                 width={258}
                 height={80.62}
                 mouseover

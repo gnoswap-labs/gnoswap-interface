@@ -3,6 +3,7 @@ import PoolSelectionGraph, { type PoolSelectionGraphProps } from "./PoolSelectio
 import { ComponentStory, Meta, StoryObj } from "@storybook/react";
 import POOLS from "@repositories/pool/mock/pools.json";
 import { tickToPrice } from "@utils/swap-utils";
+import { PoolModel } from "@models/pool/pool-model";
 
 
 const test = [
@@ -1832,7 +1833,7 @@ const test = [
   }
 ];
 
-const pool = POOLS.pools[0];
+const pool = POOLS.pools[0] as PoolModel;
 
 export default {
   title: "common/PoolSelectionGraph",

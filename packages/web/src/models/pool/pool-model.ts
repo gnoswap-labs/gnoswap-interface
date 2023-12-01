@@ -1,8 +1,11 @@
+import { IncentivizedOptions } from "@common/values";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
 
 export interface PoolModel {
   id: string;
+
+  incentivizedType: IncentivizedOptions;
 
   name: string;
 
