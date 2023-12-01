@@ -1,9 +1,10 @@
+import { PoolModel } from "@models/pool/pool-model";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { CreatePoolRequest } from "./request/create-pool-request";
-import { PoolDetailResponse, PoolListResponse } from "./response";
+import { PoolDetailResponse } from "./response";
 
 export interface PoolRepository {
-  getPools: () => Promise<PoolListResponse>;
+  getPools: () => Promise<PoolModel[]>;
 
   getRPCPools: () => Promise<PoolRPCModel[]>;
 

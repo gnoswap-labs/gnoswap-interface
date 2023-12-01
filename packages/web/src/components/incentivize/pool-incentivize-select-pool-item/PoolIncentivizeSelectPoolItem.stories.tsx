@@ -5,7 +5,7 @@ import { PoolRepositoryMock } from "@repositories/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 
 const poolRepository = new PoolRepositoryMock();
-const pools = (await poolRepository.getPools()).pools;
+const pools = (await poolRepository.getPools());
 
 const Template: React.FC<PoolIncentivizeSelectPoolItemProps> = (args) => {
   return (

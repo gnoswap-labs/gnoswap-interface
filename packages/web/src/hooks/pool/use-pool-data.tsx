@@ -42,12 +42,12 @@ export const usePoolData = () => {
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     return pools
       ?.map(PoolMapper.toCardInfo)
-      .filter(info => info.incentiveType === "Incentivized");
+      .filter(info => info.incentivizedType !== "NON_INCENTIVIZED");
   }, [pools]);
 
   async function updatePools() {
-    const response = await poolRepository.getPools();
-    setPools(response.pools);
+    const pools = await poolRepository.getPools();
+    setPools(pools);
     setLoading(false);
     setIsFetchedPools(true);
   }

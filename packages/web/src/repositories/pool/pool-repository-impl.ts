@@ -23,6 +23,7 @@ import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCResponse } from "./response/pool-rpc-response";
+import { PoolModel } from "@models/pool/pool-model";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
@@ -60,14 +61,14 @@ export class PoolRepositoryImpl implements PoolRepository {
     return result;
   };
 
-  getPools = async (): Promise<PoolListResponse> => {
+  getPools = async (): Promise<PoolModel[]> => {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    return {
-      meta: response.data.meta,
-      pools: response.data.pools.map(PoolMapper.fromResponse)
-    };
+    const pools = response?.data?.pools ? 
+      response.data.pools.map(PoolMapper.fromResponse) :
+      [];
+    return pools;
   };
 
   getPoolDetailByPoolId = async (
