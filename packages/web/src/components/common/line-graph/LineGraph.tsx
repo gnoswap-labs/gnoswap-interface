@@ -63,6 +63,7 @@ export interface LineGraphProps {
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
+  customWidth?: number;
 }
 
 interface Point {
@@ -117,6 +118,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   point,
   firstPointColor,
   typeOfChart,
+  customWidth,
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -252,7 +254,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
     >
-      <svg viewBox={`0 0 ${width} ${height}`}>
+      <svg viewBox={`0 0 ${width} ${height + (customWidth || 0)}`} style={{ marginTop: customWidth ? customWidth / 2 : 0}}>
         <defs>
           <linearGradient
             id={"gradient" + COMPONENT_ID}
@@ -302,9 +304,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 stroke={color}
                 strokeWidth={1}
                 x1={currentPoint.x}
-                y1={0}
+                y1={customWidth ? -1 * customWidth / 2 : 0}
                 x2={currentPoint.x}
-                y2={height}
+                y2={height + (customWidth ? customWidth / 2 : 0)}
                 strokeDasharray={3}
               />
             )}

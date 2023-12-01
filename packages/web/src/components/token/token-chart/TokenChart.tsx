@@ -25,7 +25,7 @@ const TokenChart: React.FC<TokenChartProps> = ({
   
   return (
     <TokenChartWrapper>
-      <TokenChartInfo {...tokenInfo} />
+      <TokenChartInfo {...tokenInfo} loading={loading}/>
       <TokenChartGraphTab
         currentTab={currentTab}
         changeTab={changeTab}

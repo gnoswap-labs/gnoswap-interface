@@ -34,7 +34,7 @@ export const LoadingChart = styled.div`
   border-radius: 8px;
   > div {
     &::before {
-      background-color: ${({ theme }) => theme.color.background25};
+      background-color: ${({ theme }) => theme.color.background01};
     }
   }
   ${media.mobile} {

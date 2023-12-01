@@ -91,7 +91,7 @@ export const loadingWrapper = (theme: Theme) => css`
     width: 36px;
     height: 36px;
     &::before {
-      background-color: ${theme.color.background25};
+      background-color: ${theme.color.background01};
       width: 24px;
       height: 24px;
     }

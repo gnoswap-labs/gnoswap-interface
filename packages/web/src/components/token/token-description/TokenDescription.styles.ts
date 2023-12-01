@@ -23,9 +23,13 @@ export const wrapper = (theme: Theme) => css`
       ${fonts.body9};
     }
     margin-top: 16px;
+    margin-bottom: 16px;
     ${fonts.body9};
     border: none;
     gap: 8px;
     padding: 0;
+    .loading-value {
+      height: 20px;
+    }
   }
 `;

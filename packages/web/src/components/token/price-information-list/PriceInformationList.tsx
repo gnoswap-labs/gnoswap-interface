@@ -44,6 +44,7 @@ const PriceInformationList: React.FC<PriceInformationListProps> = ({
             {item.value}
           </span>}
           {loading && <span
+            className="loading-value"
             css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
           />}
         </div>

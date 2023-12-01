@@ -1,4 +1,5 @@
 import { css, keyframes, Theme } from "@emotion/react";
+import { media } from "@styles/media";
 import { CSSProperties } from "react";
 import { ValuesType } from "utility-types";
 
@@ -89,6 +90,9 @@ export const skeletonTokenDetail =
       height: 100%;
       background: ${theme.color.backgroundGradient6};
       animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+    }
+    ${media.mobile} {
+      height: 18px;
     }
   `;
 

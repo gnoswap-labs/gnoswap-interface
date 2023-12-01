@@ -24,9 +24,11 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
       {!loading && <TokenDescriptionContent content={content}/>}
       {loading && <>
         <span
+          className="loading-value"
           css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
         />
         <span
+          className="loading-value"
           css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
         />
       </>}

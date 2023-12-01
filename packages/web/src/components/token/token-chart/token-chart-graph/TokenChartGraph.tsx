@@ -52,6 +52,9 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       return Math.floor((((width || 0) + 20) - 25) / (currentTab === TokenChartGraphPeriods[0] ? 60: 100));
     return Math.floor((((width || 0) + 20) - 8) / 80);
     }, [width, breakpoint, currentTab]);
+  const customWidth = useMemo(() => {
+    return breakpoint !== DEVICE_TYPE.MOBILE ? 47.55: 32.35;
+  }, [breakpoint]);
 
   return (
     <TokenChartGraphWrapper>
@@ -60,7 +63,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           cursor
           className="graph"
           width={width}
-          height={(height || 0) - (breakpoint !== DEVICE_TYPE.MOBILE ? 47.55 : 32.35)}
+          height={(height || 0) - customWidth}
           color={"#192EA2"}
           strokeWidth={1}
           datas={datas.map(data => ({
@@ -68,6 +71,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
             time: data.time,
           }))}
           firstPointColor={theme.color.border05}
+          customWidth={customWidth}
         />
         <div className="xaxis-wrapper">
           {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (

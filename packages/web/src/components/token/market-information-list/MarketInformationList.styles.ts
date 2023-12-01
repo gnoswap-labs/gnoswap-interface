@@ -21,12 +21,21 @@ export const wrapper = (theme: Theme) => css`
     .title {
       ${fonts.body12};
       color: ${theme.color.text04};
+      ${media.tablet} {
+        ${fonts.p4};
+      }
+      ${media.tabletMiddle} {
+        ${fonts.body12};
+      }
     }
     .market-info-value {
       ${fonts.body10};
       ${media.mobile} {
         ${fonts.body12};
       }
+    }
+    .loading-value {
+      max-width: 200px;
     }
   }
   @media (max-width: 1180px) {

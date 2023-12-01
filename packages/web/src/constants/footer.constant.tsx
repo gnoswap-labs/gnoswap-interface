@@ -76,7 +76,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "Twitter",
+        title: "Twitter (X)",
         path: "/",
         newTab: true,
       },

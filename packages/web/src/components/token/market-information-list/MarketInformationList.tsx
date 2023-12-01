@@ -19,6 +19,7 @@ const MarketInformationList: React.FC<MarketInformationListProps> = ({
           <span className="title">{TITLE_LIST[idx]}</span>
           {!loading && <span className="market-info-value">{item}</span>}
           {loading && <span
+            className="loading-value"
             css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
           />}
         </div>

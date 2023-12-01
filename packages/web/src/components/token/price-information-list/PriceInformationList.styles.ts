@@ -40,6 +40,9 @@ export const wrapper = (theme: Theme) => css`
         ${fonts.body12};
       }
     }
+    .loading-value {
+      max-width: 200px;
+    }
     .negative {
       color: ${theme.color.red01};
     }
