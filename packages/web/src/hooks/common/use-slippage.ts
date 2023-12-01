@@ -9,11 +9,11 @@ export const useSlippage = () => {
 
   const changeSlippage = useCallback(
     (slippage: number) => {
-      if (!isNumber(slippage)) {
+      if (!isNumber(slippage) || Number.isNaN(slippage)) {
         setSlippage(0.01);
         return;
       }
-      
+
       const changedSlippage = Math.min(100, Math.max(0.01, slippage));
       setSlippage(changedSlippage);
     },

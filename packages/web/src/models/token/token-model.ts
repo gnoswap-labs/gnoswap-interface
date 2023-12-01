@@ -21,3 +21,11 @@ export interface TokenModel {
 
   isGasToken?: boolean;
 }
+
+export interface NativeTokenModel extends TokenModel {
+  originName: string;
+
+  originSymbol: string;
+
+  originDenom: string;
+}

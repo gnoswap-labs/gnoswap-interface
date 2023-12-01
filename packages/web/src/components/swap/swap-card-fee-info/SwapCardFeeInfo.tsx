@@ -57,7 +57,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       <div className="gas-fee">
         <span className="gray-text">Gas Fee</span>
         <span className="white-text">
-          {gasFeeStr} GNOT
+          {gasFeeStr}
           <span className="gray-text">{`(${gasFeeUSDStr})`}</span>
         </span>
       </div>
