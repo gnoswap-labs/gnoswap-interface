@@ -23,6 +23,7 @@ const MOCK_DATA = {
     "nftId": "0x7a8",
     "pool": {
       "name": "ETH-swETH",
+      "incentivizedType": "INCENTIVIZED",
       "tokenA": {
         "name": "Ether",
         "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -99,7 +100,7 @@ const LIST_DATA: LPPositionModel[] = [1, 2, 3, 4].map((item) => {
     ...MOCK_DATA,
     lpRewardId: (Number(MOCK_DATA.lpRewardId) + item).toString(),
     position: item > 2 ? { ...MOCK_DATA.position, balance: 0 } : MOCK_DATA.position,
-  };
+  } as LPPositionModel;
 });
 
 const RemoveLiquidityContainer: React.FC = () => {

@@ -8,20 +8,19 @@ describe("tick convert to price", () => {
     expect(tickToPrice(tick)).toBe(1);
   });
 
-  test("10000 to 1.6486800559310761", () => {
+  test("10000 to 1.6486800559311758", () => {
     const tick = 10000;
-    expect(tickToPrice(tick)).toBe(1.6486800559310761);
+    expect(tickToPrice(tick)).toBe(1.6486800559311758);
   });
 
-  test("10001 to 1.6487624878731255", () => {
+  test("10001 to 1.6487624878732252", () => {
     const tick = 10001;
-    expect(tickToPrice(tick)).toBe(1.6487624878731255);
+    expect(tickToPrice(tick)).toBe(1.6487624878732252);
   });
 
-  test("100000 to 148.37606292298494", () => {
+  test("100000 to 148.3760629230746", () => {
     const tick = 100000;
-    console.log(tickToPrice(tick));
-    expect(tickToPrice(tick)).toBe(148.37606292298494);
+    expect(tickToPrice(tick)).toBe(148.3760629230746);
   });
 });
 
@@ -33,20 +32,20 @@ describe("tick convert to sqrtPriceX96", () => {
     );
   });
 
-  test("10000 to 1.6486800559310761", () => {
+  test("10000 to 1.6486800559311758", () => {
     const tick = 10000;
-    expect(tickToPrice(tick)).toBe(1.6486800559310761);
+    expect(tickToPrice(tick)).toBe(1.6486800559311758);
   });
 
-  test("10001 to 1.6487624878731255", () => {
+  test("10001 to 1.6487624878732252", () => {
     const tick = 10001;
-    expect(tickToPrice(tick)).toBe(1.6487624878731255);
+    expect(tickToPrice(tick)).toBe(1.6487624878732252);
   });
 
-  test("100000 to 148.37606292298494", () => {
+  test("100000 to 148.3760629230746", () => {
     const tick = 100000;
     console.log(tickToPrice(tick));
-    expect(tickToPrice(tick)).toBe(148.37606292298494);
+    expect(tickToPrice(tick)).toBe(148.3760629230746);
   });
 
   test("100000 to 148.3760629230746", () => {

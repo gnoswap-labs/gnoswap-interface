@@ -1,4 +1,4 @@
-import { PoolRPCResponse } from "./pool-info-response";
+import { PoolRPCResponse } from "./pool-rpc-response";
 
 export interface PoolListRPCResponse {
   stat: {
