@@ -61,7 +61,7 @@ export const useTokenData = () => {
   }, [tokenPrices, tokens]);
 
   const getTokenUSDPrice = useCallback((tokenAId: string, amount: bigint | string | number) => {
-    const tokenUSDPrice = tokenPrices[tokenAId].usd;
+    const tokenUSDPrice = tokenPrices[tokenAId]?.usd || "0";
     if (!tokenUSDPrice || Number.isNaN(amount)) {
       return null;
     }
@@ -69,8 +69,8 @@ export const useTokenData = () => {
   }, [tokenPrices]);
 
   const getTokenPriceRate = useCallback((tokenAId: string, tokenBId: string) => {
-    const tokenAUSDPrice = tokenPrices[tokenAId].usd;
-    const tokenBUSDPrice = tokenPrices[tokenBId].usd;
+    const tokenAUSDPrice = tokenPrices[tokenAId]?.usd;
+    const tokenBUSDPrice = tokenPrices[tokenBId]?.usd;
     if (!tokenAUSDPrice || !tokenBUSDPrice) {
       return null;
     }
