@@ -7,6 +7,7 @@ import { PoolCardInfo } from "../info/pool-card-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { IncentivizedOptions } from "@common/values";
+import { makeId } from "@utils/common";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -129,6 +130,7 @@ export class PoolMapper {
     const bins = pool.bins.map(bin => ({
       ...bin,
     }));
+    const id = pool.id ?? makeId(pool.poolPath);
     const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
     const incentivizedType: IncentivizedOptions =
       incentivizedTypeStr !== "INCENTIVIZED"
@@ -138,6 +140,8 @@ export class PoolMapper {
         : "NON_INCENTIVIZED";
     return {
       ...pool,
+      id,
+      path: pool.poolPath,
       incentivizedType,
       bins,
     };

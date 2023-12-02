@@ -92,12 +92,16 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.rpcProvider.evaluateExpression(
       poolPackagePath,
       param,
-    ).then(evaluateExpressionToObject<PoolRPCResponse>)
+    ).then(evaluateExpressionToObject<{
+      response: {
+        data: PoolRPCResponse
+      }
+    }>)
     .then(response => {
-      if (!response) {
+      if (!response?.response?.data) {
         return null;
       }
-      return PoolRPCMapper.from(response);
+      return PoolRPCMapper.from(response?.response?.data);
     })
     .catch(e => {
       console.error(e);

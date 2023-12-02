@@ -5,6 +5,8 @@ import { PoolBinModel } from "./pool-bin-model";
 export interface PoolModel {
   id: string;
 
+  path: string;
+
   incentivizedType: IncentivizedOptions;
 
   name: string;
