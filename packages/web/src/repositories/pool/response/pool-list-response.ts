@@ -9,7 +9,9 @@ export interface PoolListResponse {
   pools: PoolResponse[];
 }
 export interface PoolResponse {
-  id: string;
+  id?: string;
+
+  poolPath: string;
 
   incentivizedType?: string;
 

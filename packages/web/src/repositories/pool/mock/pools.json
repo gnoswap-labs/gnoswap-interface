@@ -35,6 +35,7 @@
       "volumeChange": 118279700.0,
       "totalVolume": 1182797.0,
       "id": "bar_foo_500",
+      "path": "gno.land/r/bar:gno.land/r/bar:500",
       "apr": 0.12345,
       "fee": "0.05%",
       "feeVolume": 131.937491,

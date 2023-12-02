@@ -22,6 +22,7 @@ const MOCK_DATA = {
     "id": "0x7a80x0ce176e1b11a8f88a4ba2535de80e81f88592bad",
     "nftId": "0x7a8",
     "pool": {
+      "path": "gno.land/r/bar:gno.land/r/foo:300",
       "name": "ETH-swETH",
       "incentivizedType": "INCENTIVIZED",
       "tokenA": {

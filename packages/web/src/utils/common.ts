@@ -1,3 +1,5 @@
+import * as CryptoJS from "crypto-js";
+
 export function wait<T>(
   runner: () => Promise<T>,
   waitTime = 1000,
@@ -26,4 +28,8 @@ export function wait<T>(
       currentTime += 500;
     }, 500);
   });
+}
+
+export function makeId(value: string) {
+  return CryptoJS.SHA256(value).toString();
 }
