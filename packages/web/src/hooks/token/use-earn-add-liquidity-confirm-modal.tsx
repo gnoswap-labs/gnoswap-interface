@@ -1,21 +1,22 @@
 import EarnAddConfirm from "@components/earn-add/earn-add-confirm/EarnAddConfirm";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import useNavigate from "@hooks/common/use-navigate";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { TokenAmountInputModel } from "./use-token-amount-input";
-import { getCurrentPriceByRaw } from "@utils/swap-utils";
+import { priceToNearTick } from "@utils/swap-utils";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import { numberToFormat } from "@utils/string-utils";
+import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   tokenAAmountInput: TokenAmountInputModel;
   tokenBAmountInput: TokenAmountInputModel;
-  currentPrice: string;
-  priceRange: AddLiquidityPriceRage | null;
+  selectPool: SelectPool;
   slippage: number;
   swapFeeTier: SwapFeeTierType | null;
   createPool: (
@@ -24,7 +25,18 @@ export interface EarnAddLiquidityConfirmModalProps {
       tokenBAmount: string;
       swapFeeTier: SwapFeeTierType;
       startPrice: string;
-      priceRange: AddLiquidityPriceRage;
+      minTick: number;
+      maxTick: number;
+      slippage: number;
+    }
+  ) => Promise<string | null>;
+  addLiquidity: (
+    params: {
+      tokenAAmount: string;
+      tokenBAmount: string;
+      swapFeeTier: SwapFeeTierType;
+      minTick: number;
+      maxTick: number;
       slippage: number;
     }
   ) => Promise<string | null>;
@@ -38,11 +50,11 @@ export const useEarnAddLiquidityConfirmModal = ({
   tokenB,
   tokenAAmountInput,
   tokenBAmountInput,
-  priceRange,
-  currentPrice,
+  selectPool,
   slippage,
   swapFeeTier,
   createPool,
+  addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -67,21 +79,42 @@ export const useEarnAddLiquidityConfirmModal = ({
     };
   }, [swapFeeTier, tokenA, tokenAAmountInput, tokenBAmountInput, tokenB]);
 
+  const priceLabel = useMemo(() => {
+    if (!selectPool.compareToken || !tokenA || !tokenB) {
+      return "-";
+    }
+    const tokenASymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol : tokenB?.symbol;
+    const tokenBSymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol : tokenA?.symbol;
+    return `${tokenASymbol} per ${tokenBSymbol}`;
+  }, [selectPool.compareToken, tokenA, tokenB]);
+
 
   const priceRangeInfo = useMemo(() => {
-    if (!priceRange) {
+    if (!selectPool) {
       return null;
     }
+    const currentPrice = `${selectPool.currentPrice}`;
+    if (selectPool.selectedFullRange) {
+      return {
+        currentPrice,
+        minPrice: "0.0000",
+        maxPrice: "∞",
+        priceLabel,
+        feeBoost: "x1",
+        estimatedAPR: "N/A",
+      };
+    }
+
+    const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
     return {
-      currentPrice: getCurrentPriceByRaw(currentPrice).toFixed(),
-      minPrice: `${priceRange.range.minTick}`,
-      minPriceLable: priceRange.range.minPrice,
-      maxPrice: `${priceRange.range.maxTick}`,
-      maxPriceLable: priceRange.range.maxPrice,
-      feeBoost: "-",
+      currentPrice,
+      minPrice: numberToFormat(`${selectPool.minPrice || 0}`, 4),
+      maxPrice: numberToFormat(`${selectPool.maxPrice || 0}`, 4),
+      priceLabel,
+      feeBoost,
       estimatedAPR: "N/A",
     };
-  }, [currentPrice, priceRange]);
+  }, [priceLabel, selectPool]);
 
   const feeInfo = useMemo(() => {
     return {
@@ -111,18 +144,44 @@ export const useEarnAddLiquidityConfirmModal = ({
   }, [close, navigator]);
 
   const confirm = useCallback(() => {
-    if (!tokenA || !tokenB || !priceRange || !swapFeeTier) {
+    if (!tokenA || !tokenB || !swapFeeTier) {
       return;
     }
-    createPool({
+
+    const minTickMod = Math.abs(MIN_TICK) % selectPool.tickSpacing;
+    const maxTickMod = Math.abs(MAX_TICK) % selectPool.tickSpacing;
+    let minTick = MIN_TICK + minTickMod;
+    let maxTick = MAX_TICK - maxTickMod;
+
+    if (selectPool.minPrice && selectPool.maxPrice) {
+      if (!selectPool.selectedFullRange) {
+        minTick = priceToNearTick(selectPool.minPrice, selectPool.tickSpacing);
+        maxTick = priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing);
+      }
+    }
+
+    if (selectPool.isCreate) {
+      createPool({
+        tokenAAmount: tokenAAmountInput.amount,
+        tokenBAmount: tokenBAmountInput.amount,
+        minTick,
+        maxTick,
+        slippage,
+        startPrice: `${selectPool.startPrice || 1}`,
+        swapFeeTier,
+      }).then(result => result && moveEarn());
+      return;
+    }
+
+    addLiquidity({
       tokenAAmount: tokenAAmountInput.amount,
       tokenBAmount: tokenBAmountInput.amount,
-      priceRange,
+      minTick,
+      maxTick,
       slippage,
-      startPrice: currentPrice,
       swapFeeTier,
     }).then(result => result && moveEarn());
-  }, [createPool, currentPrice, moveEarn, priceRange, slippage, swapFeeTier, tokenA, tokenAAmountInput.amount, tokenB, tokenBAmountInput.amount]);
+  }, [selectPool.isCreate, selectPool.maxPrice, selectPool.minPrice, selectPool.startPrice, selectPool.tickSpacing, slippage, swapFeeTier, tokenA, tokenAAmountInput.amount, tokenB, tokenBAmountInput.amount]);
 
   const openModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {

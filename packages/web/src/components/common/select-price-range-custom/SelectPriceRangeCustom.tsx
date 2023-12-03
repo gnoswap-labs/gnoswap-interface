@@ -1,173 +1,270 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import IconRefresh from "../icons/IconRefresh";
 import IconSwap from "../icons/IconSwap";
 import SelectPriceRangeCutomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
 import SelectTab from "../select-tab/SelectTab";
 import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
-import { TokenInfo } from "@models/token/token-info";
-import { PoolTick } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
-import BigNumber from "bignumber.js";
+import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
+import { TokenModel } from "@models/token/token-model";
+import { SelectPool } from "@hooks/pool/use-select-pool";
+import * as d3 from "d3";
+import { numberToFormat } from "@utils/string-utils";
+import { PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
+import { toNumberFormat } from "@utils/number-utils";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
 export interface SelectPriceRangeCustomProps {
-  tokenA: TokenInfo | undefined;
-  tokenB: TokenInfo | undefined;
-  currentTick?: PoolTick;
-  ticks: PoolTick[];
+  tokenA: TokenModel;
+  tokenB: TokenModel;
+  priceRangeType: PriceRangeType | null;
+  selectPool: SelectPool;
+  changeStartingPrice: (price: string) => void;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   tokenA,
   tokenB,
-  currentTick,
-  ticks,
+  priceRangeType,
+  selectPool,
+  changeStartingPrice
 }) => {
-  const [minTick, setMinTick] = useState<PoolTick>();
-  const [maxTick, setMaxTick] = useState<PoolTick>();
-  const [isLoading, setIsLoading] = useState(true);
+  const GRAPH_WIDTH = 388;
+  const GRAPH_HEIGHT = 160;
+  const [startingPriceValue, setStartingPriceValue] = useState<string>("");
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, []);
+  function getPriceRange() {
+    const currentPrice = selectPool.currentPrice || 1;
+    if (selectPool.liquidityOfTickPoints.length === 0) {
+      const priceGap = currentPrice * 0.5;
+      return [currentPrice - priceGap, currentPrice + priceGap];
+    }
+    const [minX, maxX] = d3.extent(selectPool.liquidityOfTickPoints.map(point => point[0]));
 
-  const token0Symbol = useMemo(() => {
-    return tokenA?.symbol || "";
-  }, [tokenA]);
+    const minPriceGap = (typeof selectPool.currentPrice === "number" && typeof minX === "number") ? Math.abs(selectPool.currentPrice - minX) : 0;
+    const maxPriceGap = (typeof selectPool.currentPrice === "number" && typeof maxX === "number") ? Math.abs(selectPool.currentPrice - maxX) : 0;
+    const priceGap = Math.min(maxPriceGap, minPriceGap);
+    return [currentPrice - priceGap, currentPrice + priceGap];
+  }
 
-  const token1Symbol = useMemo(() => {
-    return tokenB?.symbol || "";
-  }, [tokenB]);
+  function getHeightRange() {
+    const [, maxY] = d3.extent(selectPool.liquidityOfTickPoints.map(point => point[1]));
+    return [0, maxY || 0];
+  }
 
-  const tabItems = useMemo(() => {
-    return [token0Symbol, token1Symbol];
-  }, [token0Symbol, token1Symbol]);
+  /** D3 Variables */
+  const defaultScaleX = d3
+    .scaleLinear()
+    .domain(getPriceRange())
+    .range([0, GRAPH_WIDTH]);
 
-  const currentPriceInfo = useMemo(() => {
-    if (!currentTick) {
+  const scaleX = defaultScaleX.copy();
+
+  const scaleY = d3
+    .scaleLinear()
+    .domain(getHeightRange())
+    .range([GRAPH_HEIGHT, 0]);
+
+  const isCustom = priceRangeType === "Custom";
+
+  const isLoading = selectPool.renderState === "LOADING";
+
+  const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState === "DONE";
+
+  const comparedTokenA = selectPool.compareToken?.symbol !== tokenB.symbol;
+
+  const currentTokenA = useMemo(() => {
+    return comparedTokenA ? tokenA : tokenB;
+  }, [comparedTokenA, tokenA, tokenB]);
+
+  const currentTokenB = useMemo(() => {
+    return comparedTokenA ? tokenB : tokenA;
+  }, [comparedTokenA, tokenA, tokenB]);
+
+  const currentPriceStr = useMemo(() => {
+    if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = BigNumber(currentTick.price).toFixed(4);
-    return `${currentPrice} ${token0Symbol} per ${token1Symbol}`;
-  }, [currentTick, token0Symbol, token1Symbol]);
+    const currentPrice = toNumberFormat(selectPool.currentPrice, 4);
+    return `${currentPrice} ${currentTokenA.symbol} per ${currentTokenB.symbol}`;
+  }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
-  const findPreviousTick = useCallback((tick: PoolTick) => {
-    const tickIndex = ticks.findIndex(item => item.tick === tick.tick);
-    if (tickIndex < 0) {
-      return undefined;
-    }
-    if (tickIndex < 1) {
-      return ticks[0];
-    }
-    return ticks[tickIndex - 1];
-  }, [ticks]);
+  const minPriceStr = useMemo(() => {
+    return numberToFormat(`${selectPool.minPrice || 0}`, 4);
+  }, [selectPool.minPrice]);
 
-  const findNextTick = useCallback((tick: PoolTick) => {
-    const tickIndex = ticks.findIndex(item => item.tick === tick.tick);
-    if (tickIndex < 0) {
-      return undefined;
+  const maxPriceStr = useMemo(() => {
+    if (selectPool.selectedFullRange) {
+      return "∞";
     }
-    if (tickIndex >= ticks.length - 1) {
-      return ticks[ticks.length - 1];
-    }
-    return ticks[tickIndex + 1];
-  }, [ticks]);
+    return numberToFormat(`${selectPool.maxPrice || 0}`, 4);
+  }, [selectPool.maxPrice, selectPool.selectedFullRange]);
 
-  const onClickTabItem = useCallback(() => {
-    return;
+  const onClickTabItem = useCallback((symbol: string) => {
+    const compareToken = tokenA.symbol === symbol ? tokenA : tokenB;
+    selectPool.setCompareToken(compareToken);
+  }, [selectPool, tokenA, tokenB]);
+
+  const selectFullRange = useCallback(() => {
+    selectPool.selectFullRange();
+  }, [selectPool]);
+
+  function initPriceRange() {
+    if (selectPool.currentPrice && selectPool.feeTier && priceRangeType) {
+      const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][priceRangeType];
+      const minRateAmount = selectPool.currentPrice * (priceRange.min / 100);
+      const maxRateAmount = selectPool.currentPrice * (priceRange.max / 100);
+      selectPool.setMinPosition(selectPool.currentPrice + minRateAmount);
+      selectPool.setMaxPosition(selectPool.currentPrice + maxRateAmount);
+    }
+  }
+
+  function resetRange() {
+    selectPool.resetRange();
+    scaleX.domain(defaultScaleX.domain());
+    initPriceRange();
+  }
+
+  const onChangeStartingPrice = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setStartingPriceValue(value);
   }, []);
 
-  const decreaseMinPrice = useCallback(() => {
-    if (!minTick) {
-      return;
-    }
-    const tick = findPreviousTick(minTick);
-    setMinTick(tick);
-    return;
-  }, [findPreviousTick, minTick]);
+  const updateStartingPrice = useCallback(() => {
+    changeStartingPrice(startingPriceValue);
+  }, [startingPriceValue]);
 
-  const increaseMinPrice = useCallback(() => {
-    if (!minTick) {
-      return;
-    }
-    const tick = findNextTick(minTick);
-    setMinTick(tick);
-    return;
-  }, [findNextTick, minTick]);
+  const finishMove = useCallback(() => {
+    // Considering whether to adjust ticks at the end of a graph event 
+  }, [selectPool]);
 
-  const decreaseMaxPrice = useCallback(() => {
-    if (!maxTick) {
-      return;
-    }
-    const tick = findPreviousTick(maxTick);
-    setMaxTick(tick);
-    return;
-  }, [findPreviousTick, maxTick]);
+  useEffect(() => {
+    selectPool.setCompareToken(tokenA);
+  }, []);
 
-  const increaseMaxPrice = useCallback(() => {
-    if (!maxTick) {
-      return;
+  useEffect(() => {
+    resetRange();
+  }, [selectPool.currentPrice, selectPool.feeTier, priceRangeType, selectPool.liquidityOfTickPoints]);
+
+  useEffect(() => {
+    defaultScaleX.domain(getPriceRange());
+    scaleX.domain(defaultScaleX.domain());
+  }, [selectPool.liquidityOfTickPoints]);
+
+  useEffect(() => {
+    if (selectPool.currentPrice) {
+      selectPool.setFocusPosition(scaleX(selectPool.currentPrice));
     }
-    const tick = findNextTick(maxTick);
-    setMaxTick(tick);
-    return;
-  }, [findNextTick, maxTick]);
+  }, [selectPool.currentPrice]);
+
+  if (selectPool.renderState === "NONE") {
+    return <></>;
+  }
+
+  if (!selectPool.isCreate && !isCustom) {
+    return <></>;
+  }
 
   return (
     <SelectPriceRangeCustomWrapper>
-      <div className="option-wrapper">
-        <SelectTab
-          selectType={token0Symbol}
-          list={tabItems}
-          onClick={onClickTabItem}
-        />
-        <div className="graph-option-wrapper">
-          <span className="graph-option-item decrease">-</span>
-          <span className="graph-option-item increase">+</span>
-        </div>
-      </div>
-      {!isLoading && <div className="current-price-wrapper">
-        <span>Current Price</span>
-        <span>{currentPriceInfo}</span>
-      </div>}
-      {!isLoading && <div className="range-graph-wrapper">
-        {/* TBD: SelectLiquidityGraph */}
-      </div>}
-      {isLoading && <div className="loading-wrapper">
-        <LoadingSpinner />
-      </div>}
-
-      <div className="range-controller-wrapper">
-        <SelectPriceRangeCutomController
-          title="Min Price"
-          current={minTick?.price}
-          token0Symbol={token0Symbol}
-          token1Symbol={token1Symbol}
-          decrease={decreaseMinPrice}
-          increase={increaseMinPrice}
-        />
-        <SelectPriceRangeCutomController
-          title="Max Price"
-          current={maxTick?.price}
-          token0Symbol={token1Symbol}
-          token1Symbol={token0Symbol}
-          decrease={decreaseMaxPrice}
-          increase={increaseMaxPrice}
-        />
-      </div>
-
-      <div className="extra-wrapper">
-        <div className="icon-button reset">
-          <IconRefresh />
-          <span>Reset Range</span>
-        </div>
-        <div className="icon-button full">
-          <IconSwap />
-          <span>Full Price Range</span>
-        </div>
-      </div>
+      {
+        selectPool.isCreate && (
+          <div className="starting-price-wrapper">
+            <span className="sub-title">Starting Price</span>
+            <input
+              className="starting-price-input"
+              value={startingPriceValue}
+              onChange={onChangeStartingPrice}
+              onBlur={updateStartingPrice}
+              placeholder="Enter price"
+            />
+          </div>
+        )
+      }
+      {
+        isCustom && (
+          <>
+            <div className="option-wrapper">
+              <SelectTab
+                selectType={selectPool.compareToken?.symbol || ""}
+                list={[tokenA.symbol, tokenB.symbol]}
+                onClick={onClickTabItem}
+              />
+              <div className="graph-option-wrapper">
+                <span className="graph-option-item decrease" onClick={selectPool.zoomIn}>-</span>
+                <span className="graph-option-item increase" onClick={selectPool.zoomOut}>+</span>
+              </div>
+            </div>
+            {
+              isLoading && (
+                <div className="loading-wrapper">
+                  <LoadingSpinner />
+                </div>
+              )
+            }
+            {
+              availSelect && (
+                <>
+                  <div className="current-price-wrapper">
+                    <span>Current Price</span>
+                    <span>{currentPriceStr}</span>
+                  </div>
+                  <div className="range-graph-wrapper">
+                    <PoolSelectionGraph
+                      scaleX={scaleX}
+                      scaleY={scaleY}
+                      selectedFullRange={selectPool.selectedFullRange}
+                      setFullRange={selectPool.setFullRange}
+                      zoomLevel={selectPool.zoomLevel}
+                      minPrice={selectPool.minPrice}
+                      maxPrice={selectPool.maxPrice}
+                      setMinPrice={selectPool.setMinPosition}
+                      setMaxPrice={selectPool.setMaxPosition}
+                      liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
+                      currentPrice={selectPool.currentPrice}
+                      focusPosition={selectPool.focusPosition}
+                      width={GRAPH_WIDTH}
+                      height={GRAPH_HEIGHT}
+                      finishMove={finishMove}
+                    />
+                  </div>
+                </>
+              )
+            }
+            <div className="range-controller-wrapper">
+              <SelectPriceRangeCutomController
+                title="Min Price"
+                current={minPriceStr}
+                token0Symbol={currentTokenA.symbol}
+                token1Symbol={currentTokenB.symbol}
+                tickSpacing={selectPool.tickSpacing}
+                changePrice={selectPool.setMinPosition}
+                decrease={selectPool.decreaseMinTick}
+                increase={selectPool.increaseMinTick}
+              />
+              <SelectPriceRangeCutomController
+                title="Max Price"
+                current={maxPriceStr}
+                token0Symbol={currentTokenA.symbol}
+                token1Symbol={currentTokenB.symbol}
+                tickSpacing={selectPool.tickSpacing}
+                changePrice={selectPool.setMaxPosition}
+                decrease={selectPool.decreaseMaxTick}
+                increase={selectPool.increaseMaxTick}
+              />
+            </div>
+            <div className="extra-wrapper">
+              <div className="icon-button reset" onClick={resetRange}>
+                <IconRefresh />
+                <span>Reset Range</span>
+              </div>
+              <div className="icon-button full" onClick={selectFullRange}>
+                <IconSwap />
+                <span>Full Price Range</span>
+              </div>
+            </div>
+          </>
+        )
+      }
     </SelectPriceRangeCustomWrapper>
   );
 };

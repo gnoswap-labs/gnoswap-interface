@@ -40,6 +40,11 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
 
     .value-wrapper {
       ${fonts.body4}
+
+      input {
+        max-width: 110px;
+        text-align: center;
+      }
     }
   }
 

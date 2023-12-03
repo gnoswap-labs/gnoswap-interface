@@ -26,4 +26,8 @@ export class PoolRepositoryMock implements PoolRepository {
   createPool = async (): Promise<string> => {
     return "hash";
   };
+
+  addLiquidity = async (): Promise<string> => {
+    return "hash";
+  };
 }

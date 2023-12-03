@@ -12,6 +12,34 @@ export const SelectPriceRangeCustomWrapper = styled.div`
   background: ${({ theme }) => theme.color.background11};
   border-radius: 8px;
 
+  .starting-price-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+
+    .sub-title {
+      color: ${({ theme }) => theme.color.text05};
+      ${fonts.p4}
+      line-height: 22px;
+    }
+
+    .starting-price-input {
+      display: flex;
+      padding: 16px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      align-self: stretch;
+      text-align: right;
+      border-radius: 8px;
+      border: 1px solid ${({ theme }) => theme.color.border02};
+      background: ${({ theme }) => theme.color.backgroundOpacity};
+      ${fonts.body10}
+    }
+  }
+
   .option-wrapper {
     display: flex;
     width: 100%;
@@ -62,6 +90,14 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         height: 48px;
       }
     }
+  }
+
+  .loading-wrapper {
+    display: flex;
+    width: 100%;
+    height: 220px;
+    justify-content: center;
+    align-items: center;
   }
 
   .current-price-wrapper {

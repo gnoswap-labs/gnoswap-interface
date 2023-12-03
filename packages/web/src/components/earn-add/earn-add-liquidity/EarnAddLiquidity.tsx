@@ -13,12 +13,12 @@ import { PoolModel } from "@models/pool/pool-model";
 import SelectPriceRange from "@components/common/select-price-range/SelectPriceRange";
 import SelectPriceRangeSummary from "@components/common/select-price-range-summary/SelectPriceRangeSummary";
 import { TokenModel } from "@models/token/token-model";
-import SelectPriceRangeCustom from "@components/common/select-price-range-custom/SelectPriceRangeCustom";
 import IconSettings from "@components/common/icons/IconSettings";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
 import IconStaking from "@components/common/icons/IconStaking";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
+import { SelectPool } from "@hooks/pool/use-select-pool";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -28,6 +28,8 @@ interface EarnAddLiquidityProps {
   changeTokenB: (token: TokenModel) => void;
   tokenAInput: TokenAmountInputModel;
   tokenBInput: TokenAmountInputModel;
+  changeTokenAAmount: (amount: string) => void;
+  changeTokenBAmount: (amount: string) => void;
   feetierOfLiquidityMap: { [key in string]: number };
   feeTiers: SwapFeeTierType[];
   feeTier: SwapFeeTierType | null;
@@ -47,6 +49,8 @@ interface EarnAddLiquidityProps {
   changeSlippage: (value: string) => void;
   handleClickOneStaking?: () => void;
   openModal: () => void;
+  selectPool: SelectPool;
+  changeStartingPrice: (price: string) => void;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -56,6 +60,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   changeTokenB,
   tokenAInput,
   tokenBInput,
+  changeTokenAAmount,
+  changeTokenBAmount,
   feetierOfLiquidityMap,
   feeTiers,
   feeTier,
@@ -73,13 +79,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   changeSlippage,
   handleClickOneStaking,
   openModal,
+  selectPool,
+  changeStartingPrice
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
-  const [openCustomPriceRange, setOpenCustomPriceRange] = useState(false);
   const [openedSetting, setOpenedSetting] = useState(false);
-  
+
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
@@ -175,15 +182,6 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     selectFeeTier(feeTier);
   }, [selectFeeTier]);
 
-  const handlePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
-    if (priceRange.type !== "Custom") {
-      setOpenCustomPriceRange(false);
-    } else {
-      setOpenCustomPriceRange(true);
-    }
-    changePriceRange(priceRange);
-  }, [changePriceRange]);
-  
   const openSetting = useCallback(() => {
     setOpenedSetting(true);
   }, []);
@@ -191,7 +189,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const closeSetting = useCallback(() => {
     setOpenedSetting(() => false);
   }, []);
-  
+
   return (
     <EarnAddLiquidityWrapper>
       <h3>Create Position</h3>
@@ -257,21 +255,17 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               />
             )}
           </div>
-
           {openedPriceRange && (
             <SelectPriceRange
+              tokenA={tokenA}
+              tokenB={tokenB}
               priceRanges={priceRanges}
               priceRange={priceRange}
-              changePriceRange={handlePriceRange}
+              changePriceRange={changePriceRange}
+              changeStartingPrice={changeStartingPrice}
+              selectPool={selectPool}
             />
           )}
-          {openedPriceRange && openCustomPriceRange && tokenA && tokenB && <SelectPriceRangeCustom
-            tokenA={tokenA}
-            tokenB={tokenB}
-            currentTick={undefined}
-            ticks={[]}
-          />
-          }
           {selectedPriceRange && existTokenPair && selectedFeeRate && <SelectPriceRangeSummary {...priceRangeSummary} />}
         </article>
 
@@ -279,7 +273,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           <div className="header-wrapper default-cursor">
             <h5>4. Enter Amounts</h5>
             <button className="setting-button" onClick={openSetting}>
-              <IconSettings className="setting-icon"/>
+              <IconSettings className="setting-icon" />
             </button>
             {openedSetting && (
               <SettingMenuModal
@@ -296,6 +290,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               tokenBInput={tokenBInput}
               changeTokenA={changeTokenA}
               changeTokenB={changeTokenB}
+              changeTokenAAmount={changeTokenAAmount}
+              changeTokenBAmount={changeTokenBAmount}
               connected={connected}
             />
           </div>

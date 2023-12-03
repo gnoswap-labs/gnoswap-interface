@@ -5,8 +5,9 @@ import { CommonState, WalletState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import NetworkData from "@resources/chains.json";
+import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
 
-const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
+const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
@@ -44,30 +45,27 @@ export const useWallet = () => {
 
   function initSession() {
     const connectedBySession = accountRepository.isConnectedWalletBySession();
-    if (connectedBySession) {
+    if (connectedBySession && walletClient === null) {
       connectAdenaClient();
     }
   }
 
-  const switchNetwork = useCallback(
-    async () => {
-      const res = await accountRepository.switchNetwork(CHAIN_ID);
-      if (res.code === 0) {
-        const account = await accountRepository.getAccount();
-        setWalletAccount(account);
-        accountRepository.setConnectedWallet(true);
-      }
-    },
-    [accountRepository, setWalletAccount]
-  );
-
-  const connectAdenaClient = useCallback(() => {
+  function connectAdenaClient() {
     const adena = AdenaClient.createAdenaClient();
     if (adena !== null) {
       adena.initAdena();
     }
     setWalletClient(adena);
-  }, [setWalletClient]);
+  }
+
+  const switchNetwork = async () => {
+    const res = await accountRepository.switchNetwork(CHAIN_ID);
+    if (res.code === 0) {
+      const account = await accountRepository.getAccount();
+      setWalletAccount(account);
+      accountRepository.setConnectedWallet(true);
+    }
+  };
 
   const connectAccount = useCallback(async () => {
     const established = await accountRepository
@@ -109,12 +107,11 @@ export const useWallet = () => {
   }
 
   const isSwitchNetwork = useMemo(() => {
-    
     if (!walletAccount) return true;
     const network = NetworkData.find(
       network => network.chainId === walletAccount.chainId,
     );
-    
+
     return network ? false : true;
   }, [walletAccount]);
 

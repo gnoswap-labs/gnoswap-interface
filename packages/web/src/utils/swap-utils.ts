@@ -2,9 +2,9 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { MAX_TICK, MIN_TICK, X96 } from "@constants/swap.constant";
+import { MAX_TICK, MIN_TICK, Q96, X96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
-import { Q96, tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
+import { tickToSqrtPriceX96 } from "./math.utils";
 
 const LOG10001 = Math.log(1.0001);
 

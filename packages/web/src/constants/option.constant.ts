@@ -15,6 +15,82 @@ export interface SwapFeeTierInfo {
   description: string;
 }
 
+export const SwapFeeTierPriceRange: Record<
+  SwapFeeTierType,
+  Record<PriceRangeType, { min: number; max: number }>
+> = {
+  FEE_100: {
+    Active: {
+      min: -0.5,
+      max: 0.5,
+    },
+    Passive: {
+      min: -1,
+      max: 1,
+    },
+    Custom: {
+      min: -1,
+      max: 1,
+    },
+  },
+  FEE_500: {
+    Active: {
+      min: -50,
+      max: 50,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+  FEE_3000: {
+    Active: {
+      min: -50,
+      max: 50,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+  FEE_10000: {
+    Active: {
+      min: -50,
+      max: 50,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+  NONE: {
+    Active: {
+      min: -50,
+      max: 50,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+};
+
 export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   FEE_100: {
     type: "FEE_100",

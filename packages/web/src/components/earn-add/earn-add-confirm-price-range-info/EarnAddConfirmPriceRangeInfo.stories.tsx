@@ -8,9 +8,8 @@ export default {
 
 const priceRangeInfo = {
   minPrice: "123",
-  minPriceLable: "GNOS per ETH",
   maxPrice: "123",
-  maxPriceLable: "GNOS per ETH",
+  priceLabel: "GNOS per ETH",
   currentPrice: "11 ETH per GNOT",
   feeBoost: "x10.23",
   estimatedAPR: "N/A",

@@ -1,12 +1,15 @@
-import React, { useCallback, useMemo } from "react";
-import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
+import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 
 export interface SelectPriceRangeCutomControllerProps {
   title: string;
   token0Symbol: string;
   token1Symbol: string;
   current?: string;
+  tickSpacing?: number;
+  changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
 }
@@ -16,20 +19,16 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   token0Symbol,
   token1Symbol,
   current,
+  tickSpacing = 2,
+  changePrice,
   decrease,
   increase,
 }) => {
+  const [value, setValue] = useState("");
 
   const tokenInfo = useMemo(() => {
     return `${token0Symbol} per ${token1Symbol}`;
   }, [token0Symbol, token1Symbol]);
-
-  const currentPriceStr = useMemo(() => {
-    if (!current) {
-      return "-";
-    }
-    return BigNumber(current).toFixed(4);
-  }, [current]);
 
   const onClickDecrease = useCallback(() => {
     decrease();
@@ -39,6 +38,25 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     increase();
   }, [increase]);
 
+  const onChangeValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setValue(value);
+  }, []);
+
+  const onBlurUpdate = useCallback(() => {
+    const currentValue = BigNumber(value);
+    if (currentValue.isNaN()) {
+      return;
+    }
+    const nearTick = priceToNearTick(currentValue.toNumber(), tickSpacing);
+    const price = tickToPrice(nearTick);
+    changePrice(price);
+  }, [tickSpacing, value]);
+
+  useEffect(() => {
+    setValue(`${current}`);
+  }, [current]);
+
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
@@ -47,7 +65,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
           <span>-</span>
         </div>
         <div className="value-wrapper">
-          <span className="value">{currentPriceStr}</span>
+          <input className="value" value={value} onChange={onChangeValue} onBlur={onBlurUpdate} />
         </div>
         <div className="icon-wrapper increase" onClick={onClickIncrease}>
           <span>+</span>

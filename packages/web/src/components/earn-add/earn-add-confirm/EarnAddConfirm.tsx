@@ -24,9 +24,8 @@ export interface EarnAddConfirmProps {
   priceRangeInfo: {
     currentPrice: string;
     minPrice: string;
-    minPriceLable: string;
     maxPrice: string;
-    maxPriceLable: string;
+    priceLabel: string;
     feeBoost: string;
     estimatedAPR: string;
   };
