@@ -73,7 +73,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const {
     connected: connectedWallet,
-    account,
     switchNetwork,
     isSwitchNetwork,
   } = useWallet();
@@ -158,12 +157,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
       return "INSUFFICIENT_BALANCE";
     }
-    // if (!account?.balances || account.balances.length === 0) {
-    //   return "INSUFFICIENT_BALANCE";
-    // }
-    // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
-    //   return "INSUFFICIENT_BALANCE";
-    // }
     if (!priceRange) {
       return "INVALID_RANGE";
     }
