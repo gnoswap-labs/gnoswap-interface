@@ -49,7 +49,11 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       border-radius: 8px;
       border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.backgroundOpacity};
-      ${fonts.body10}
+      ${fonts.body12}
+
+      &::placeholder {
+        color: ${({ theme }) => theme.color.text04};
+      }
     }
   }
 
