@@ -28,8 +28,8 @@ export const useSwap = ({
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
   const tokenAmountLimit = useMemo(() => {
-    if (estimatedAmount && !Number.isNaN(slippage)) {
-      const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(slippage * 0.01);
+    if (estimatedAmount && !Number.isNaN(Number(slippage))) {
+      const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(Number(slippage) * 0.01);
       const tokenAmountLimit = direction === "EXACT_IN" ?
         BigNumber(estimatedAmount).minus(slippageAmountNumber).toNumber() :
         BigNumber(estimatedAmount).plus(slippageAmountNumber).toNumber();

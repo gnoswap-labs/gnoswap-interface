@@ -159,10 +159,7 @@ const SwapContainer: React.FC = () => {
     setSwapResult(null);
     setOpenedConfirModal(false);
     updateBalances();
-    if (swapResult?.success) {
-      setNotice(null, { timeout: 2000 });
-    }
-  }, [updateBalances, swapResult]);
+  }, [updateBalances]);
 
   const changeTokenAAmount = useCallback((value: string, none?: boolean) => {
     if (none) {

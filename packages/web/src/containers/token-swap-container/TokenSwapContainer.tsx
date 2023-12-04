@@ -80,7 +80,7 @@ const TokenSwapContainer: React.FC = () => {
     switchNetwork,
   } = useWallet();
 
-  const { swap, estimateSwapRoute } = useSwap({
+  const { swap, estimateSwapRoute, estimatedRoutes, tokenAmountLimit } = useSwap({
     tokenA,
     tokenB,
     direction: type,
@@ -93,7 +93,8 @@ const TokenSwapContainer: React.FC = () => {
       return;
     }
     setSubmitted(true);
-    swap(tokenAAmount, tokenBAmount).then(result => {
+    const swapAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
+    swap(estimatedRoutes, swapAmount).then(result => {
       if (result !== false) {
         setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
         setTimeout(() => {
@@ -106,7 +107,7 @@ const TokenSwapContainer: React.FC = () => {
       }
       setSwapResult({
         success: !!result,
-        hash: (result as SwapResponse)?.tx_hash || "",
+        hash: (result as unknown as SwapResponse)?.tx_hash || "",
       });
     }).catch(() => {
       setSwapResult({
@@ -123,6 +124,7 @@ const TokenSwapContainer: React.FC = () => {
     tokenBAmount,
     tokenA,
     tokenB,
+    type,
   ]);
 
   const connectWallet = useCallback(() => {
@@ -467,13 +469,13 @@ const TokenSwapContainer: React.FC = () => {
       swapRateUSD,
       priceImpact: 0.1,
       guaranteedAmount: {
-        amount: BigNumber(tokenBAmount).toNumber(),
+        amount: tokenAmountLimit,
         currency: type === "EXACT_IN" ? tokenB.symbol : tokenA.symbol,
       },
       gasFee: gasFeeAmount,
       gasFeeUSD,
     };
-  }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenBAmount]);
+  }, [gasFeeAmount, type, swapRate, tokenA, tokenB, tokenAmountLimit]);
 
   const closeModal = useCallback(() => {
     setSubmitted(false);
