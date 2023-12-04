@@ -187,3 +187,35 @@ export const LoadingProgressWrapper = styled.div`
     display: block;
   }
 `;
+
+export const BlockEmissionsWrapper = styled.div`
+  width: 268px;
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 8px;
+  ${media.mobile} {
+    gap: 4px;
+  }
+  h5 {
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.body12}
+  }
+  .content {
+    height: 28px;
+    width: 100%;
+    ${mixins.flexbox("row", "center", "space-between")};
+    
+    .label, .value {
+      color: ${({ theme }) => theme.color.text02};
+      ${fonts.body12}
+    }
+    .value {
+      ${mixins.flexbox("row", "center", "flex-end")};
+      gap: 8px;
+      img {
+        display: block;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+`;

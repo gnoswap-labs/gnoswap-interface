@@ -6,6 +6,7 @@ import {
   ProgressBar,
   LoadingTextWrapper,
   LoadingProgressWrapper,
+  BlockEmissionsWrapper,
 } from "./SupplyOverview.styles";
 import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 
@@ -32,6 +33,33 @@ const LoadingProgress = () => {
       />
     </LoadingProgressWrapper>
   );
+};
+
+const BlockEmissions = () => {
+  return (<BlockEmissionsWrapper>
+    <h5>Block Emissions</h5>
+    <div className="content">
+      <div className="label">Liquidity Staking </div>
+      <div className="value">
+        <img src="/gnos.svg" alt="logo"/>
+        <div>123.44 / day</div>
+      </div>
+    </div>
+    <div className="content">
+      <div className="label">DevOps </div>
+      <div className="value">
+        <img src="/gnos.svg" alt="logo"/>
+        <div>53.44 / day</div>
+      </div>
+    </div>
+    <div className="content">
+      <div className="label">Community </div>
+      <div className="value">
+        <img src="/gnos.svg" alt="logo"/>
+        <div>12.44 / day</div>
+      </div>
+    </div>
+  </BlockEmissionsWrapper>);
 };
 
 const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
@@ -67,7 +95,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         </div>
         <div className="daily-block-emissions-tooltip">
           {!loading ? <div>{supplyOverviewInfo.dailyBlockEmissions}</div> : <LoadingText />}
-          {!loading && <DashboardLabel tooltip="Number of newly minted GNS tokens per block." />}
+          {!loading && <DashboardLabel tooltip={<BlockEmissions />} />}
         </div>
       </div>
       <div className="total-staked">

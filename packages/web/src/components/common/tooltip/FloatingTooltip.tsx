@@ -17,11 +17,12 @@ interface TooltipProps {
   position: FloatingPosition;
   content: React.ReactNode;
   className?: string;
+  isHiddenArrow?: boolean;
   children?: any;
 }
 
 const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
-  ({ children, content, className }, ref) => {
+  ({ children, content, className, isHiddenArrow }, ref) => {
     const {
       handleMouseMove,
       x,
@@ -73,15 +74,15 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
             }}
             className={className}
           >
-            <FloatingArrow
+            {!isHiddenArrow && <FloatingArrow
               ref={arrowRef}
               context={context}
               fill={theme.color.background14}
               width={20}
               height={14}
               tipRadius={4}
-            />
-            <FloatContent>{content}</FloatContent>
+            />}
+            {content && <FloatContent>{content}</FloatContent>}
           </div>
         </FloatingPortal>
       </>

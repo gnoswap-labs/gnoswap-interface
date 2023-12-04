@@ -36,8 +36,10 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       if (wrapperRef.current) {
         const newWidth = wrapperRef.current.getBoundingClientRect().width;
         const newHeight = wrapperRef.current.getBoundingClientRect().height;
+        console.log(newHeight, );
+        
         setWidth(newWidth);
-        setHeight(newHeight - 30);
+        setHeight(newHeight - (breakpoint !== DEVICE_TYPE.MOBILE ? 40 : 30));
       }
     };
     updateWidth();
@@ -46,26 +48,26 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return () => {
       window.removeEventListener("resize", updateWidth);
     };
-  }, []);
+  }, [breakpoint]);
   const countXAxis = useMemo(() => {
     if (breakpoint !== DEVICE_TYPE.MOBILE)
       return Math.floor((((width || 0) + 20) - 25) / (currentTab === TokenChartGraphPeriods[0] ? 60: 100));
     return Math.floor((((width || 0) + 20) - 8) / 80);
     }, [width, breakpoint, currentTab]);
   const customData = useMemo(() => {
-    const temp = breakpoint !== DEVICE_TYPE.MOBILE ? 47.55: 32.35;
+    const temp = 47.55;
     return {
       height: temp,
       marginTop: temp / 2,
     };
-  }, [breakpoint]);
+  }, []);
 
   const typeYAxis = useMemo(() => {
     if (yAxisLabels.length > 0) {
       const leng = yAxisLabels[0].length;
       if (leng > 0) {
-        if (leng === 1) return "large-text";
-        if (leng === 2) return "medium-text";
+        if (leng <=3 ) return "large-text";
+        if (leng === 4) return "medium-text";
         return "small-text";
       }
     }
@@ -90,7 +92,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           customData={customData}
         />
         <div className="xaxis-wrapper">
-          {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
+          {xAxisLabels.slice(0, Math.min(countXAxis, 7)).map((label, index) => (
             <span key={index} className="label">
               {label}
             </span>

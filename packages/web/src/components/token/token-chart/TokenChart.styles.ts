@@ -36,8 +36,16 @@ export const LoadingChart = styled.div`
     &::before {
       background-color: ${({ theme }) => theme.color.background01};
     }
+    &::after {
+      ${mixins.positionCenter()};
+      content: "";
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      background-color: ${({ theme }) => theme.color.background15};
+    }
   }
   ${media.mobile} {
-    height: 263px;
+    height: 252px;
   }
 `;

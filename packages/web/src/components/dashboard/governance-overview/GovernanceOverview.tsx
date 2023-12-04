@@ -45,14 +45,14 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
       <div className="total-issued">
         <div className="label-title">
           <div>Total xGNS Issued</div>
-          <DashboardLabel tooltip="Total amount of xGNOS currently issued through GNS-GNOT staking." />
+          <DashboardLabel tooltip="Total amount of xGNS currently issued through GNS-GNOT staking." />
         </div>
         {!loading ? <div>{governenceOverviewInfo.totalXgnosIssued}</div> : <LoadingText />}
       </div>
       <div className="holders">
         <div className="label-title">
           <div>Holders</div>
-          <DashboardLabel tooltip="Number of accounts with at least 1 xGNOS." />
+          <DashboardLabel tooltip="Number of accounts with at least 1 xGNS." />
         </div>
         {!loading ? <div>{governenceOverviewInfo.holders}</div> : <LoadingText />}
       </div>

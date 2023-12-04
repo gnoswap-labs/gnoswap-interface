@@ -1,6 +1,8 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
+import FloatingTooltip from "../tooltip/FloatingTooltip";
+import { Global, css } from "@emotion/react";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -104,6 +106,21 @@ function parseTimeTVL(time: string) {
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
 
+const ChartGlobalTooltip = () => {
+  return (
+    <Global
+      styles={() => css`
+        .chart-tooltip {
+          > div {
+            padding: 10px;
+            box-shadow: 2px 2px 12px 0px rgba(0, 0, 0, 0.15);
+          }
+        }
+      `}
+    />
+  );
+};
+
 const LineGraph: React.FC<LineGraphProps> = ({
   className = "",
   cursor,
@@ -126,6 +143,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
   const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
+  console.log(width, height);
 
   const isFocus = useCallback(() => {
     return activated && cursor;
@@ -256,83 +274,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
     >
-      <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
-        <defs>
-          <linearGradient
-            id={"gradient" + COMPONENT_ID}
-            gradientTransform="rotate(90)"
-          >
-            <stop offset="0%" stopColor={gradientStartColor} />
-            <stop offset="100%" stopColor={gradientEndColor} />
-          </linearGradient>
-        </defs>
-        <g width={width}>
-          <path
-            fill={`url(#gradient${COMPONENT_ID})`}
-            stroke={color}
-            strokeWidth={0}
-            d={getFillGraphLine(smooth)}
-          />
-          <path
-            fill="none"
-            stroke={color}
-            strokeWidth={strokeWidth}
-            d={getGraphLine(smooth)}
-          />
-          {point &&
-            points.map((point, index) => (
-              <circle
-                key={index}
-                cx={point.x}
-                cy={point.y}
-                r={1}
-                stroke={color}
-              />
-            ))}
-        </g>
-        {
-          <g>
-            {firstPointColor && <line
-              stroke={firstPointColor ? firstPointColor : color}
-              strokeWidth={1}
-              x1={0}
-              y1={firstPoint.y}
-              x2={width}
-              y2={firstPoint.y}
-              strokeDasharray={3}
-            />}
-            {isFocus() && currentPoint && (
-              <line
-                stroke={color}
-                strokeWidth={1}
-                x1={currentPoint.x}
-                y1={customHeight ? -1 * customMarginTop : 0}
-                x2={currentPoint.x}
-                y2={height + (customHeight ? (customHeight - customMarginTop) : 0)}
-                strokeDasharray={3}
-              />
-            )}
-            {isFocus() && currentPoint && (
-              <circle
-                cx={currentPoint.x}
-                cy={currentPoint.y}
-                r={3}
-                stroke={color}
-                fill={color}
-              />
-            )}
-          </g>
-        }
-      </svg>
-      {isFocus() && currentPointIndex > -1 && (
-        <LineGraphTooltipWrapper
-          x={
-            currentPoint?.x && currentPoint?.x > width / 2
-              ? currentPoint?.x - 150
-              : currentPoint?.x || 0
-          }
-          y={currentPoint?.y || 0}
-        >
+      <FloatingTooltip className="chart-tooltip" isHiddenArrow position="top" content={currentPointIndex > -1 ?
+        <LineGraphTooltipWrapper>
           <div className="tooltip-body">
             <span className="date">
               {typeOfChart === "tvl"
@@ -348,8 +291,78 @@ const LineGraph: React.FC<LineGraphProps> = ({
               datas[currentPointIndex].value,
             )).toLocaleString()}`}</span>
           </div>
-        </LineGraphTooltipWrapper>
-      )}
+        </LineGraphTooltipWrapper> : null
+      }>
+        <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
+          <defs>
+            <linearGradient
+              id={"gradient" + COMPONENT_ID}
+              gradientTransform="rotate(90)"
+            >
+              <stop offset="0%" stopColor={gradientStartColor} />
+              <stop offset="100%" stopColor={gradientEndColor} />
+            </linearGradient>
+          </defs>
+          <g width={width}>
+            <path
+              fill={`url(#gradient${COMPONENT_ID})`}
+              stroke={color}
+              strokeWidth={0}
+              d={getFillGraphLine(smooth)}
+            />
+            <path
+              fill="none"
+              stroke={color}
+              strokeWidth={strokeWidth}
+              d={getGraphLine(smooth)}
+            />
+            {point &&
+              points.map((point, index) => (
+                <circle
+                  key={index}
+                  cx={point.x}
+                  cy={point.y}
+                  r={1}
+                  stroke={color}
+                />
+              ))}
+          </g>
+          {
+            <g>
+              {firstPointColor && <line
+                stroke={firstPointColor ? firstPointColor : color}
+                strokeWidth={1}
+                x1={0}
+                y1={firstPoint.y}
+                x2={width}
+                y2={firstPoint.y}
+                strokeDasharray={3}
+              />}
+              {isFocus() && currentPoint && (
+                <line
+                  stroke={color}
+                  strokeWidth={1}
+                  x1={currentPoint.x}
+                  y1={customHeight ? -1 * customMarginTop : 0}
+                  x2={currentPoint.x}
+                  y2={height + (customHeight ? (customHeight - customMarginTop) : 0)}
+                  strokeDasharray={3}
+                />
+              )}
+              {isFocus() && currentPoint && (
+                <circle
+                  cx={currentPoint.x}
+                  cy={currentPoint.y}
+                  r={3}
+                  stroke={color}
+                  fill={color}
+                />
+              )}
+            </g>
+          }
+        </svg>
+      </FloatingTooltip>
+      <ChartGlobalTooltip />
     </LineGraphWrapper>
   );
 };

@@ -51,6 +51,7 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
               marginTop: 24,
             }}
             times={times}
+            radiusBorder={datas.length !== 91 ? 2 : 1}
           />
         </div>
         <div className="xaxis-wrapper">

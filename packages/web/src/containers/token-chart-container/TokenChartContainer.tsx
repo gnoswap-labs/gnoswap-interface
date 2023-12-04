@@ -175,9 +175,9 @@ const TokenChartContainer: React.FC = () => {
   };
 
   const getYAxisLabels = (): string[] => {
-    const fake1 = ["1", "2", "3", "4", "5", "6", "7"];
-    const fake2 = ["10", "20", "30", "40", "50", "60", "70"];
-    const fake3 = ["100", "200", "300", "400", "500", "600", "700"];
+    const fake1 = ["10", "20", "30", "40", "50", "60", "70"];
+    const fake2 = ["100", "200", "300", "400", "500", "600", "700"];
+    const fake3 = ["1000", "2000", "3000", "4000", "5000", "6000", "7000"];
     return [fake1, fake2, fake3][Math.floor(Math.random() * 3)];
   };
   

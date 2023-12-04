@@ -2,6 +2,9 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useState } from "react";
 import { BarGraphTooltipWrapper, BarGraphWrapper, IncentivizeGraphTooltipWrapper } from "./BarGraph.styles";
 import { useColorGraph } from "@hooks/common/use-color-graph";
+import { Global, css } from "@emotion/react";
+import FloatingTooltip from "../tooltip/FloatingTooltip";
+
 export interface BarGraphProps {
   className?: string;
   color?: string;
@@ -17,6 +20,7 @@ export interface BarGraphProps {
   currentIndex?: number;
   customData?: { height: number, marginTop: number};
   times?: string[];
+  radiusBorder?: number;
 }
 
 interface Point {
@@ -44,6 +48,21 @@ function parseTime(time: string) {
   };
 }
 
+const ChartGlobalTooltip = () => {
+  return (
+    <Global
+      styles={() => css`
+        .chart-tooltip {
+          > div {
+            padding: 10px;
+            box-shadow: 2px 2px 12px 0px rgba(0, 0, 0, 0.15);
+          }
+        }
+      `}
+    />
+  );
+};
+
 const BarGraph: React.FC<BarGraphProps> = ({
   className = "",
   color,
@@ -56,12 +75,11 @@ const BarGraph: React.FC<BarGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   tooltipOption = "default",
   svgColor = "default",
-  currentIndex,
   customData = { height: 0, marginTop: 0},
   times = [],
+  radiusBorder = 0,
 }) => {
   const [activated, setActivated] = useState(false);
-  const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const { redColor, greenColor } = useColorGraph();
   const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
@@ -165,26 +183,11 @@ const BarGraph: React.FC<BarGraphProps> = ({
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);
       }
-    }
-
-    if (currentPoint) {
-      setCurrentPoint(currentPoint);
+      console.log(currentPoint);
+      
     }
   };
 
-  const locationHovertooltip = useMemo(() => {
-    const temp = currentPoint?.x || 0;
-    if (typeof window !== "undefined" && window?.innerWidth <= 1440) {
-      if (currentIndex !== undefined && currentIndex === 0 && temp < 120) {
-        return 120;
-      }
-      if (currentIndex === 3 && temp > 120) {
-        return 130;
-      }
-    } 
-    return temp;
-  }, [currentIndex, currentPoint]);
-  
   return (
     <BarGraphWrapper
       className={className}
@@ -195,48 +198,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onMouseLeave={() => setActivated(false)}
       svgColor={svgColor}
     >
-      <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
-        <defs>
-          <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor={greenColor.start} />
-            <stop offset="100%" stopColor={greenColor.end} />
-          </linearGradient>
-          <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor={redColor.start} />
-            <stop offset="100%" stopColor={redColor.end} />
-          </linearGradient>
-        </defs>
-        {getGraphPoints().map((point, index) => (
-          <rect
-            key={index}
-            x={point.x}
-            width={getStrokeWidth()}
-            y={point.y}
-            height={height - point.y}
-            fill={getStorkeColor(index)}
-          />
-        ))}
-        {currentPosition && (
-          <line
-            x1={currentPosition.x}
-            x2={currentPosition.x}
-            y1={height}
-            y2={0}
-            strokeDasharray={4}
-            stroke={"#E0E8F4"}
-            strokeWidth={0.5}
-          />
-        )}
-      </svg>
-      {tooltipOption === "default" && currentPointIndex > -1 && activated && (
-        <BarGraphTooltipWrapper
-          x={
-            currentPoint?.x && currentPoint?.x > width - 40
-              ? currentPoint?.x - 40
-              : currentPoint?.x || 0
-          }
-          y={currentPoint?.y ? currentPoint.y + customMarginTop : 0}
-        >
+      <FloatingTooltip className="chart-tooltip" isHiddenArrow position="top" 
+        content={tooltipOption === "default" && currentPointIndex > -1 && activated ? 
+        <BarGraphTooltipWrapper>
           <div className="tooltip-body">
             <span className="date">
               {parseTime(times[currentPointIndex]).date}
@@ -247,13 +211,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
               datas[currentPointIndex],
             )).toLocaleString()}`}</span>
           </div>
-        </BarGraphTooltipWrapper>
-      )}
-      {tooltipOption === "incentivized" && currentPointIndex > -1 && activated && (
-        <IncentivizeGraphTooltipWrapper
-          x={locationHovertooltip}
-          y={currentPoint?.y ? currentPoint.y + customMarginTop : 0}
-        >
+        </BarGraphTooltipWrapper>: 
+        tooltipOption === "incentivized" && currentPointIndex > -1 && activated ?
+        <IncentivizeGraphTooltipWrapper>
           <div className="row">
             <div className="token">Token</div>
             <div className="amount">Amount</div>
@@ -275,8 +235,51 @@ const BarGraph: React.FC<BarGraphProps> = ({
             <div className="amount">Amount</div>
             <div className="price">0.000046 - 0.000051 BTC</div>
           </div>
-        </IncentivizeGraphTooltipWrapper>
-      )}
+        </IncentivizeGraphTooltipWrapper> : null
+      }>
+        <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
+          <defs>
+            <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor={greenColor.start} />
+              <stop offset="100%" stopColor={greenColor.end} />
+            </linearGradient>
+            <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor={redColor.start} />
+              <stop offset="100%" stopColor={redColor.end} />
+            </linearGradient>
+          </defs>
+          {radiusBorder && getGraphPoints().map((point, index) => (
+            <path
+              key={index}
+              d={`M${point.x} ${point.y + 10} h${getStrokeWidth()} v${height - (point.y + 10)} h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
+              fill={getStorkeColor(index)}
+            />
+          ))}
+          {getGraphPoints().map((point, index) => (
+            <rect
+              key={index}
+              x={point.x}
+              width={getStrokeWidth()}
+              y={point.y}
+              height={height - point.y}
+              fill={getStorkeColor(index)}
+              rx={radiusBorder}
+            />
+          ))}
+          {currentPosition && (
+            <line
+              x1={currentPosition.x}
+              x2={currentPosition.x}
+              y1={height}
+              y2={0}
+              strokeDasharray={4}
+              stroke={"#E0E8F4"}
+              strokeWidth={0.5}
+            />
+          )}
+        </svg>
+      </FloatingTooltip>
+      <ChartGlobalTooltip />
     </BarGraphWrapper>
   );
 };

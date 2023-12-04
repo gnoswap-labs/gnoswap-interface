@@ -301,6 +301,7 @@ const TokenSwapContainer: React.FC = () => {
           prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
         type: changedSwapDirection,
       }));
+      router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
     },
     [tokenA, type, tokenBAmount, tokenAAmount]
   );
