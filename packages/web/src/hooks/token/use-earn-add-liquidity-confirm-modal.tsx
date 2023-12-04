@@ -190,6 +190,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     setOpenedModal(true);
     setModalContent(
       <EarnAddConfirm
+        isPoolCreation={selectPool.isCreate}
         amountInfo={amountInfo}
         priceRangeInfo={priceRangeInfo}
         feeInfo={feeInfo}
@@ -197,7 +198,7 @@ export const useEarnAddLiquidityConfirmModal = ({
         close={close}
       />
     );
-  }, [amountInfo, close, confirm, feeInfo, priceRangeInfo, setModalContent, setOpenedModal]);
+  }, [amountInfo, close, confirm, feeInfo, priceRangeInfo, setModalContent, setOpenedModal, selectPool.isCreate]);
 
   return {
     openModal
