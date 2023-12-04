@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import IconAdd from "../icons/IconAdd";
 import { LiquidityEnterAmountsWrapper } from "./LiquidityEnterAmounts.styles";
 import TokenAmountInput from "../token-amount-input/TokenAmountInput";
@@ -6,6 +6,8 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 
 interface LiquidityEnterAmountsProps {
+  compareToken: TokenModel | null;
+  depositRatio: number | null;
   tokenAInput: TokenAmountInputModel;
   tokenBInput: TokenAmountInputModel;
   changeTokenA: (token: TokenModel) => void;
@@ -16,6 +18,8 @@ interface LiquidityEnterAmountsProps {
 }
 
 const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
+  compareToken,
+  depositRatio,
   tokenAInput,
   tokenBInput,
   changeTokenA,
@@ -24,15 +28,51 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
   changeTokenAAmount,
   changeTokenBAmount,
 }) => {
+  const orderedCompare = useMemo(() => {
+    if (compareToken?.path === null || tokenAInput?.token?.path === null) {
+      return null;
+    }
+    return compareToken?.path === tokenAInput.token?.path;
+  }, [compareToken?.path, tokenAInput.token]);
+
+  const visibleTokenA = useMemo(() => {
+    if (orderedCompare === null || depositRatio === null) {
+      return true;
+    }
+    return orderedCompare ? depositRatio <= 0 : depositRatio >= 100;
+  }, [depositRatio, orderedCompare]);
+
+  const visibleTokenB = useMemo(() => {
+    if (orderedCompare === null || depositRatio === null) {
+      return true;
+    }
+    return orderedCompare ? depositRatio >= 100 : depositRatio <= 0;
+  }, [depositRatio, orderedCompare]);
+
   return (
     <LiquidityEnterAmountsWrapper>
-      <TokenAmountInput {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
-      <TokenAmountInput {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
-      <div className="arrow">
-        <div className="shape">
-          <IconAdd className="add-icon" />
-        </div>
-      </div>
+      {
+        (depositRatio === 0 || depositRatio === 100) ? (
+          <React.Fragment>
+            {visibleTokenA && (
+              <TokenAmountInput {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
+            )}
+            {visibleTokenB && (
+              <TokenAmountInput {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
+            )}
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <TokenAmountInput {...tokenAInput} connected={connected} changeToken={changeTokenA} changeAmount={changeTokenAAmount} />
+            <TokenAmountInput {...tokenBInput} connected={connected} changeToken={changeTokenB} changeAmount={changeTokenBAmount} />
+            <div className="arrow">
+              <div className="shape">
+                <IconAdd className="add-icon" />
+              </div>
+            </div>
+          </React.Fragment>
+        )
+      }
     </LiquidityEnterAmountsWrapper>
   );
 };

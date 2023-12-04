@@ -286,6 +286,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           </div>
           <div className="liquity-enter-amount">
             <LiquidityEnterAmounts
+              compareToken={selectPool.compareToken}
+              depositRatio={selectPool.depositRatio}
               tokenAInput={tokenAInput}
               tokenBInput={tokenBInput}
               changeTokenA={changeTokenA}

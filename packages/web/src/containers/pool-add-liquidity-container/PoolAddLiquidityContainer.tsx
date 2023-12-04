@@ -146,13 +146,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
-    if (!Number(tokenAAmountInput.amount) || !Number(tokenBAmountInput.amount)) {
+    if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
-    if ((Number(tokenAAmountInput.amount) < 0.000001)) {
-      return "AMOUNT_TOO_LOW";
-    }
-    if ((Number(tokenBAmountInput.amount) < 0.000001)) {
+    if (Number(tokenAAmountInput.amount) < 0.000001 && Number(tokenBAmountInput.amount) < 0.000001) {
       return "AMOUNT_TOO_LOW";
     }
     if (Number(tokenAAmountInput.amount) > Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, "")))) {
@@ -171,19 +168,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return "INVALID_RANGE";
     }
     return "CREATE_POOL";
-  }, [
-    account?.balances,
-    connectedWallet,
-    priceRange,
-    swapFeeTier,
-    tokenAAmountInput.amount,
-    tokenAAmountInput.balance,
-    tokenBAmountInput.amount,
-    tokenBAmountInput.balance,
-    isSwitchNetwork,
-    tokenA,
-    tokenB,
-  ]);
+  }, [connectedWallet, priceRange, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, isSwitchNetwork, tokenA, tokenB]);
 
   useEffect(() => {
     updateTokens();
