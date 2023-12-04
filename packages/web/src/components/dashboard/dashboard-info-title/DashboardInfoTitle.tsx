@@ -8,6 +8,7 @@ import {
 import IconLogoWhite from "../../common/icons/IconLogoWhite";
 import { DashboardTokenInfo } from "@containers/dashboard-info-container/DashboardInfoContainer";
 import { DEVICE_TYPE } from "@styles/media";
+import IconLogoGnot from "@components/common/icons/IconLogoGnot";
 
 interface DashboardInfoTitleProps {
   dashboardTokenInfo: DashboardTokenInfo;
@@ -32,7 +33,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
     <TokenWrapper>
       <GnotLogoWrapper>
         <div className="gnot-image-wrapper">
-          <IconLogoWhite className="gnot-image" />
+          <IconLogoGnot className="gnot-image" />
         </div>
         <div className="gnot-symbol">GNOT</div>
       </GnotLogoWrapper>

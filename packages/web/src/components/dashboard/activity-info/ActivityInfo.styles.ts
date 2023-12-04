@@ -50,7 +50,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     color: ${({ theme }) => theme.color.text02};
   }
   .tooltip-label {
-    cursor: pointer;
+    cursor: default;
   }
   .symbol-text {
     font-weight: 700;

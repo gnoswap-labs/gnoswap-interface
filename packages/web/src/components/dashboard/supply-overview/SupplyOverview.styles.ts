@@ -103,10 +103,25 @@ export const SupplyInfoWrapper = styled.div`
       ${mixins.flexbox("column", "flex-end", "center")};
       width: 100%;
       gap: 4px;
+      .loading-text-wrapper {
+        &:last-of-type {
+          padding: 0;
+          margin-bottom: -4px;
+        }
+      }
       ${media.tabletMiddle} {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
+        justify-content: space-between;
         gap: 4px;
+        .loading-text-wrapper {
+          span {
+            width: 100px;
+          }
+          &:last-of-type {
+            margin-bottom: 0px;
+          }
+        }
       }
     }
     .staked-ratio-title {
@@ -119,7 +134,7 @@ export const SupplyInfoWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
     svg {
-      cursor: pointer;
+      cursor: default;
       margin: 3.5px 0px;
       width: 18px;
       height: 18px;
@@ -147,5 +162,23 @@ export const ProgressBar = styled.div<progressBarProps>`
     height: 12px;
     border-radius: 8px;
     background-color: ${({ theme }) => theme.color.point};
+  }
+`;
+
+export const LoadingTextWrapper = styled.div`
+  padding: 2.5px 0;
+  span {
+    height: 20px;
+    display: block;
+  }
+  ${media.mobile} {
+    padding: 1px 0;
+  }
+`;
+export const LoadingProgressWrapper = styled.div`
+  width: 100%;
+  span {
+    height: 12px;
+    display: block;
   }
 `;

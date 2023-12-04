@@ -63,7 +63,7 @@ export interface LineGraphProps {
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
-  customWidth?: number;
+  customData?: { height: number, marginTop: number};
 }
 
 interface Point {
@@ -118,13 +118,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
   point,
   firstPointColor,
   typeOfChart,
-  customWidth,
+  customData = { height: 0, marginTop: 0},
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
+  const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
 
   const isFocus = useCallback(() => {
     return activated && cursor;
@@ -210,7 +211,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }
     }
     if (currentPoint) {
-      console.log(currentPointIndex);
       setCurrentPoint(currentPoint);
     }
   };
@@ -257,7 +257,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
     >
-      <svg viewBox={`0 0 ${width} ${height + (customWidth || 0)}`} style={{ marginTop: customWidth ? customWidth / 2 : 0}}>
+      <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
         <defs>
           <linearGradient
             id={"gradient" + COMPONENT_ID}
@@ -307,9 +307,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 stroke={color}
                 strokeWidth={1}
                 x1={currentPoint.x}
-                y1={customWidth ? -1 * customWidth / 2 : 0}
+                y1={customHeight ? -1 * customMarginTop : 0}
                 x2={currentPoint.x}
-                y2={height + (customWidth ? customWidth / 2 : 0)}
+                y2={height + (customHeight ? (customHeight - customMarginTop) : 0)}
                 strokeDasharray={3}
               />
             )}

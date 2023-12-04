@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import DashboardInfo from "@components/dashboard/dashboard-info/DashboardInfo";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
@@ -48,6 +48,14 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
 
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <DashboardInfo
@@ -55,6 +63,7 @@ const DashboardInfoContainer: React.FC = () => {
       supplyOverviewInfo={initialSupplyOverviewInfo}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}
+      loading={loading}
     />
   );
 };

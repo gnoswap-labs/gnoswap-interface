@@ -162,3 +162,14 @@ export const GovernanceWrapper = styled.div`
     }
   }
 `;
+
+export const LoadingTextWrapper = styled.div`
+  padding: 2.5px 0;
+  span {
+    height: 20px;
+    display: block;
+  }
+  ${media.mobile} {
+    padding: 1px 0;
+  }
+`;

@@ -6,14 +6,16 @@ import {
 } from "@containers/volume-chart-container/VolumeChartContainer";
 import VolumeChartPriceInfo from "../volume-chart-price-info/VolumeChartPriceInfo";
 import VolumeChartSelectTab from "../volume-chart-select-tab/VolumeChartSelectTab";
-import { VolumeChartWrapper, ChartWrapper } from "./VolumeChart.styles";
+import { VolumeChartWrapper, ChartWrapper, LoadingVolumnChart } from "./VolumeChart.styles";
 import VolumeChartGraph from "../volume-chart-graph/VolumeChartGraph";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface VolumeChartItemProps {
   volumeChartType: CHART_TYPE;
   changeVolumeChartType: (newType: string) => void;
   volumePriceInfo: VolumePriceInfo;
   volumeChartInfo: VolumeChartInfo;
+  loading: boolean;
 }
 
 const VolumeChart: React.FC<VolumeChartItemProps> = ({
@@ -21,6 +23,7 @@ const VolumeChart: React.FC<VolumeChartItemProps> = ({
   changeVolumeChartType,
   volumePriceInfo,
   volumeChartInfo,
+  loading,
 }) => (
   <VolumeChartWrapper>
     <VolumeChartPriceInfo volumePriceInfo={volumePriceInfo} />
@@ -29,10 +32,13 @@ const VolumeChart: React.FC<VolumeChartItemProps> = ({
         volumeChartType={volumeChartType}
         changeVolumeChartType={changeVolumeChartType}
       />
-      <VolumeChartGraph
+      {!loading && <VolumeChartGraph
         xAxisLabels={volumeChartInfo.xAxisLabels}
         datas={volumeChartInfo.datas}
-      />
+      />}
+      {loading && <LoadingVolumnChart>
+        <LoadingSpinner />
+      </LoadingVolumnChart>}
     </ChartWrapper>
   </VolumeChartWrapper>
 );

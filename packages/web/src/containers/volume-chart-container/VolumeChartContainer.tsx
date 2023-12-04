@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VolumeChart from "@components/dashboard/volume-chart/VolumeChart";
 import { CHART_TYPE } from "@constants/option.constant";
@@ -17,7 +17,9 @@ const initialVolumePriceInfo: VolumePriceInfo = {
   amount: "$994,120,000",
   fee: "$12,231",
 };
-
+const months = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 function createXAxisDummyDatas(currentTab: CHART_TYPE) {
   const now = Date.now();
   switch (currentTab) {
@@ -25,26 +27,41 @@ function createXAxisDummyDatas(currentTab: CHART_TYPE) {
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setDate(date.getDate() - 1 * index);
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        const dateStr = `${date.getDate()}`.padStart(2, "0");
-        return `${monthStr}-${dateStr}`;
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const yearStr = date.getFullYear();
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1M":
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        return `${yearStr}-${monthStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1Y":
-    case "ALL":
-    default:
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setFullYear(date.getFullYear() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        return `${yearStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
+      }).reverse();
+    case "ALL":
+    default:
+      return Array.from({ length: 10 }, (_, index) => {
+        const date = new Date(now);
+        date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const yearStr = date.getFullYear();
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
   }
 }
@@ -61,6 +78,15 @@ async function fetchVolumePriceInfo(): Promise<VolumePriceInfo> {
 }
 
 const VolumeChartContainer: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
+
   const [volumeChartType, setVolumeChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
   );
@@ -96,6 +122,7 @@ const VolumeChartContainer: React.FC = () => {
       changeVolumeChartType={changeVolumeChartType}
       volumePriceInfo={volumePriceInfo}
       volumeChartInfo={getChartInfo()}
+      loading={loading}
     />
   );
 };

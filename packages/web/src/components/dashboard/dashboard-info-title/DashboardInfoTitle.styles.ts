@@ -28,10 +28,13 @@ export const GnosLogoWrapper = styled.div`
 
   .gnos-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
-    background-color: ${({ theme }) => theme.color.point};
     width: 36px;
     height: 36px;
     border-radius: 100%;
+    svg {
+      width: 100%;
+      height: auto;
+    }
     ${media.mobile} {
       width: 25px;
       height: 25px;
@@ -64,6 +67,10 @@ export const GnotLogoWrapper = styled.div`
     width: 36px;
     height: 36px;
     border-radius: 100%;
+    svg {
+      width: 100%;
+      height: auto;
+    }
     ${media.mobile} {
       width: 25px;
       height: 25px;

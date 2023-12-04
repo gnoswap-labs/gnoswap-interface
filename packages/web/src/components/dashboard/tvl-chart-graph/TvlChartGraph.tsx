@@ -1,8 +1,10 @@
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { TvlChartGraphWrapper } from "./TvlChartGraph.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 export interface TvlChartGraphProps {
   datas: {
@@ -22,6 +24,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
 }) => {
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
+  const { breakpoint } = useWindowSize();
 
   const getDatas = useCallback(() => {
     return datas.map(data => ({
@@ -29,7 +32,12 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       time: data.time,
     }));
   }, [datas]);
-
+  
+  const countXAxis = useMemo(() => {
+    if (breakpoint !== DEVICE_TYPE.MOBILE)
+      return Math.floor((((size.width || 0) + 20) - 25) / 100);
+    return Math.floor((((size.width || 0) + 20) - 8) / 80);
+    }, [size.width, breakpoint]);
   return (
     <TvlChartGraphWrapper>
       <div className="data-wrapper">
@@ -38,15 +46,19 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
             cursor
             className="graph"
             width={size.width}
-            height={size.height}
+            height={size.height - 36}
             color={theme.color.background04Hover}
             strokeWidth={1}
             datas={getDatas()}
             typeOfChart="tvl"
+            customData={{
+              height: 36,
+              marginTop: 24,
+            }}
           />
         </div>
         <div className="xaxis-wrapper">
-          {xAxisLabels.map((label, index) => (
+          {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
             <span key={index}>{label}</span>
           ))}
         </div>

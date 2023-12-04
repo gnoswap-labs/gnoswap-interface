@@ -7,7 +7,9 @@ export const ActivityListHeaderwrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   width: 100%;
   gap: 36px;
-
+  ${media.tabletMiddle} {
+    gap: 2px;
+  }
   ${media.mobile} {
     flex-direction: column;
     justify-content: center;

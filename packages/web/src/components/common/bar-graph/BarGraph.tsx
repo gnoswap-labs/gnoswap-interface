@@ -15,6 +15,7 @@ export interface BarGraphProps {
   tooltipOption?: string;
   svgColor?: string;
   currentIndex?: number;
+  customData?: { height: number, marginTop: number};
 }
 
 interface Point {
@@ -38,11 +39,13 @@ const BarGraph: React.FC<BarGraphProps> = ({
   tooltipOption = "default",
   svgColor = "default",
   currentIndex,
+  customData = { height: 0, marginTop: 0},
 }) => {
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const { redColor, greenColor } = useColorGraph();
+  const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
 
   const getStrokeWidth = useCallback(() => {
     const maxStorkeWidth = BigNumber(
@@ -174,7 +177,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onMouseLeave={() => setActivated(false)}
       svgColor={svgColor}
     >
-      <svg viewBox={`0 0 ${width} ${height}`}>
+      <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
         <defs>
           <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={greenColor.start} />
@@ -214,7 +217,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
               ? currentPoint?.x - 40
               : currentPoint?.x || 0
           }
-          y={currentPoint?.y || 0}
+          y={currentPoint?.y ? currentPoint.y + customMarginTop : 0}
         >
           <div className="tooltip-header">
             <span className="value">$98,412,880</span>
@@ -227,7 +230,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       {tooltipOption === "incentivized" && currentPointIndex > -1 && activated && (
         <IncentivizeGraphTooltipWrapper
           x={locationHovertooltip}
-          y={currentPoint?.y || 0}
+          y={currentPoint?.y ? currentPoint.y + customMarginTop : 0}
         >
           <div className="row">
             <div className="token">Token</div>
