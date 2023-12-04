@@ -113,6 +113,22 @@ describe("fee boost by prices", () => {
     expect(feeBoost).toBe("20001.50");
   });
 
+  test("Active, 0.3050333395159978 ~ 0.9151000185479934 tick price to 4.16", () => {
+    // current price: 0.6100666790319956
+    const minPrice = 0.3050333395159978;
+    const maxPrice = 0.9151000185479934;
+    const feeBoost = feeBoostRateByPrices(minPrice, maxPrice);
+    expect(feeBoost).toBe("4.16");
+  });
+
+  test("Passive, 0.3050333395159978 ~ 1.2201333580639913 tick price to 3.41", () => {
+    // current price: 0.6100666790319956
+    const minPrice = 0.3050333395159978;
+    const maxPrice = 1.2201333580639913;
+    const feeBoost = feeBoostRateByPrices(minPrice, maxPrice);
+    expect(feeBoost).toBe("3.41");
+  });
+
   test("0.8976, 1.1041 to 19.82", () => {
     const feeBoost = feeBoostRateByPrices(0.8976, 1.1041);
     expect(feeBoost).toBe("19.82");

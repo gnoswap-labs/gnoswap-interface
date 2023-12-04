@@ -220,6 +220,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   </div>
                   <div className="range-graph-wrapper">
                     <PoolSelectionGraph
+                      feeTier={selectPool.feeTier}
                       scaleX={scaleX}
                       scaleY={scaleY}
                       selectedFullRange={selectPool.selectedFullRange}

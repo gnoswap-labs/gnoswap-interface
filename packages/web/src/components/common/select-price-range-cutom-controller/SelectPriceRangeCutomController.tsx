@@ -1,3 +1,4 @@
+import { numberToFormat } from "@utils/string-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -7,7 +8,7 @@ export interface SelectPriceRangeCutomControllerProps {
   title: string;
   token0Symbol: string;
   token1Symbol: string;
-  current?: string;
+  current: string | null;
   tickSpacing?: number;
   changePrice: (price: number) => void;
   decrease: () => void;
@@ -54,7 +55,11 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   }, [tickSpacing, value]);
 
   useEffect(() => {
-    setValue(`${current}`);
+    if (current === null) {
+      setValue("");
+      return;
+    }
+    setValue(numberToFormat(current, 4));
   }, [current]);
 
   return (
