@@ -61,19 +61,19 @@ describe("price convert to tick", () => {
     expect(priceToTick(price)).toBe(0);
   });
 
-  test("1.6486800559311758 to 10000", () => {
+  test("1.6486800559311758 to 5000", () => {
     const price = 1.6486800559311758;
-    expect(priceToTick(price)).toBe(10000);
+    expect(priceToTick(price)).toBe(5000);
   });
 
-  test("1.6487624878732252 to 10001", () => {
+  test("1.6487624878732252 to 5001", () => {
     const price = 1.6487624878732252;
-    expect(priceToTick(price)).toBe(10001);
+    expect(priceToTick(price)).toBe(5001);
   });
 
-  test("0.60651549714 to -10001", () => {
+  test("0.60651549714 to -5001", () => {
     const price = 0.60651549714;
-    expect(priceToTick(price)).toBe(-10001);
+    expect(priceToTick(price)).toBe(-5001);
   });
 });
 
@@ -84,22 +84,22 @@ describe("price convert to near tick", () => {
     expect(priceToNearTick(price, tickSpacing)).toBe(0);
   });
 
-  test("1.6486800559311758 to 10002", () => {
+  test("1.6486800559311758 to 5002", () => {
     const price = 1.6489273641220126;
     const tickSpacing = 2;
-    expect(priceToNearTick(price, tickSpacing)).toBe(10002);
+    expect(priceToNearTick(price, tickSpacing)).toBe(5002);
   });
 
-  test("0.60651549714 to -10002", () => {
+  test("0.60651549714 to -5002", () => {
     const price = 0.60651549714;
     const tickSpacing = 2;
-    expect(priceToNearTick(price, tickSpacing)).toBe(-10002);
+    expect(priceToNearTick(price, tickSpacing)).toBe(-5002);
   });
 
-  test("0.60651549714 to -10004", () => {
+  test("0.60651549714 to -5004", () => {
     const price = 0.60651549714;
     const tickSpacing = 4;
-    expect(priceToNearTick(price, tickSpacing)).toBe(-10004);
+    expect(priceToNearTick(price, tickSpacing)).toBe(-5004);
   });
 });
 

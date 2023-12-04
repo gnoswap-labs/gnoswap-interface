@@ -21,7 +21,7 @@ export function priceToTick(price: number | bigint) {
   if (price === 0) {
     return MIN_TICK;
   }
-  const logPrice = 2 * Math.log(Number(price));
+  const logPrice = Math.log(Number(price));
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
