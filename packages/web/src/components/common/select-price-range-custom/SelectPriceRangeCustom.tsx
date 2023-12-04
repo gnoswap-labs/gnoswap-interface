@@ -99,6 +99,13 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     return numberToFormat(`${selectPool.maxPrice || 0}`, 4);
   }, [selectPool.maxPrice, selectPool.selectedFullRange]);
 
+  const startingPriceDescription = useMemo(() => {
+    if (startingPriceValue === "" || Number.isNaN(startingPriceValue) || !currentTokenA || !currentTokenB) {
+      return "";
+    }
+    return `1 ${currentTokenA.symbol} = ${startingPriceValue} ${currentTokenB.symbol}`;
+  }, [currentTokenA, currentTokenB, startingPriceValue]);
+
   const onClickTabItem = useCallback((symbol: string) => {
     const compareToken = tokenA.symbol === symbol ? tokenA : tokenB;
     selectPool.setCompareToken(compareToken);
@@ -169,7 +176,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       {
         selectPool.isCreate && (
           <div className="starting-price-wrapper">
-            <span className="sub-title">Starting Price</span>
+            <div className="title-wrapper">
+              <span className="sub-title">Starting Price</span>
+              <span className="description">{startingPriceDescription}</span>
+            </div>
             <input
               className="starting-price-input"
               value={startingPriceValue}

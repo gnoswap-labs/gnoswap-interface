@@ -311,7 +311,6 @@ export const useSelectPool = ({
           }))
         };
         setPoolInfo(changedPoolInfo);
-        console.info(`POOL_INFO(${poolInfo.poolPath})`, poolInfo);
       }).catch(() => setPoolInfo(null));
     }
   }, [poolRepository, feeTier, tokenA, tokenB, compareToken, isCreate, startPrice]);

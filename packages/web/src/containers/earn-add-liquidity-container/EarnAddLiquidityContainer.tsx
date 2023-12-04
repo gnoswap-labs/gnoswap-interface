@@ -15,7 +15,6 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
 import { useAtom } from "jotai";
 import { EarnState, SwapState } from "@states/index";
-import { useRouter } from "next/router";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { usePool } from "@hooks/pool/use-pool";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
@@ -57,7 +56,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [isEarnAdd, setIsEarnAdd] = useAtom(EarnState.isOneClick);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
-  const { query } = useRouter();
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
@@ -102,23 +100,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     selectPool,
     swapFeeTier,
   });
-
-  useEffect(() => {
-    if (query?.feeTier) {
-      setSwapFeeTier(query?.feeTier as SwapFeeTierType);
-    }
-  }, [query]);
-
-  useEffect(() => {
-    setSwapFeeTier("FEE_3000");
-    setPriceRange({ type: "Passive" });
-    setSwapValue({
-      tokenA: null,
-      tokenB: null,
-      type: "EXACT_IN",
-    });
-    setIsEarnAdd(false);
-  }, []);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";

@@ -48,7 +48,6 @@ export class PoolRPCMapper {
     const sqrtPriceX96 = BigInt(responseData.sqrt_price_x96);
     const price = rawBySqrtX96(sqrtPriceX96);
     const tickSpacing = responseData.tick_spacing;
-    console.log(data);
 
     return {
       poolPath: responseData.pool_path,

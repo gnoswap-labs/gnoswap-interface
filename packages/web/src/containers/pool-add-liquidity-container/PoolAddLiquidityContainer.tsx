@@ -20,6 +20,8 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
+import { makeSwapFeeTier } from "@utils/swap-utils";
+import { usePoolData } from "@hooks/pool/use-pool-data";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -79,6 +81,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { tokens, updateTokens, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean } | null>(null);
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
+  const { pools: poolInfos, updatePools } = usePoolData();
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
   const { openModal: openOneClickModal } = useOneClickStakingModal({
     tokenA,
@@ -303,15 +306,23 @@ const EarnAddLiquidityContainer: React.FC = () => {
   ]);
 
   useEffect(() => {
-    if (router.query?.feeTier) {
-      setSwapFeeTier(router.query?.feeTier as SwapFeeTierType);
-    }
-  }, [router.query]);
+    updatePools();
+  }, []);
 
   useEffect(() => {
-    setSwapFeeTier("FEE_3000");
-    setPriceRange({ type: "Passive" });
-  }, []);
+    const poolId = router.query["pool-number"];
+    const pool = poolInfos.find(pool => pool.id === poolId);
+    if (pool) {
+      const feeTier = makeSwapFeeTier(pool.fee);
+      setSwapFeeTier(feeTier);
+      setPriceRange({ type: "Passive" });
+      setSwapValue({
+        tokenA: pool.tokenA,
+        tokenB: pool.tokenB,
+        type: "EXACT_IN",
+      });
+    }
+  }, [pools, router.query]);
 
   useEffect(() => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {

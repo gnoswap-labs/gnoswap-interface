@@ -19,10 +19,23 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     gap: 8px;
     align-self: stretch;
 
-    .sub-title {
-      color: ${({ theme }) => theme.color.text04};
-      ${fonts.p4}
+    .title-wrapper {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
       line-height: 22px;
+
+      .sub-title {
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.p4}
+      }
+
+      .description {
+        color: ${({ theme }) => theme.color.text05};
+        ${fonts.p4}
+      }
     }
 
     .starting-price-input {
