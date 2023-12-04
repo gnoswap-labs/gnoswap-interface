@@ -37,7 +37,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           <SelectPriceRangeItem
             key={index}
             selected={item.type === priceRange?.type}
-            tooltip={PriceRangeTooltip[item.type]}
+            tooltip={PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]}
             priceRange={item}
             changePriceRange={changePriceRange}
           />

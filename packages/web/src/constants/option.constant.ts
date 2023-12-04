@@ -193,13 +193,41 @@ export type AddLiquidityType = "POOL" | "LIQUIDITY";
 export type PriceRangeType = "Active" | "Passive" | "Custom";
 
 export const PriceRangeTooltip: {
-  [key in PriceRangeType]: string | undefined;
+  [key in SwapFeeTierType]: { [key in PriceRangeType]: string | undefined };
 } = {
-  Active:
-    "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
-  Passive:
-    "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
-  Custom: undefined,
+  FEE_10000: {
+    Active:
+      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  FEE_3000: {
+    Active:
+      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  FEE_500: {
+    Active:
+      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  FEE_100: {
+    Active:
+      "An aggressive price range of [-0.5% ~ +0.5%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-1% ~ 1%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  NONE: {
+    Active: undefined,
+    Passive: undefined,
+    Custom: undefined,
+  },
 };
 
 export const DEFAULT_SLIPPAGE = 0.5;
