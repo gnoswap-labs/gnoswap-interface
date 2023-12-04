@@ -248,7 +248,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     return points[0];
   }, [points]);
-  console.log(currentPoint, "currentPoint");
   
   return (
     <LineGraphWrapper
@@ -340,11 +339,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 ? parseTimeTVL(datas[currentPointIndex].time).date
                 : parseTime(datas[currentPointIndex].time).date}
             </span>
-            <span className="time">
-              {typeOfChart === "tvl"
-                ? parseTimeTVL(datas[currentPointIndex].time).time
-                : parseTime(datas[currentPointIndex].time).time}
-            </span>
+            {typeOfChart !== "tvl" && <span className="time">
+              {parseTime(datas[currentPointIndex].time).time}
+            </span>}
           </div>
           <div className="tooltip-header">
             <span className="value">{`$${Number(BigNumber(

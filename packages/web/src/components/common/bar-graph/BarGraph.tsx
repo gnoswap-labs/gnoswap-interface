@@ -16,6 +16,7 @@ export interface BarGraphProps {
   svgColor?: string;
   currentIndex?: number;
   customData?: { height: number, marginTop: number};
+  times?: string[];
 }
 
 interface Point {
@@ -25,6 +26,23 @@ interface Point {
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
+
+function parseTime(time: string) {
+  const dateObject = new Date(time);
+  const month = dateObject.toLocaleString("en-US", { month: "short" });
+  const day = dateObject.getDate();
+  const year = dateObject.getFullYear();
+  const hours = dateObject.getHours();
+  const minutes = dateObject.getMinutes();
+  const isPM = hours >= 12;
+  const formattedHours = hours % 12 || 12;
+  return {
+    date: `${month} ${day}, ${year}`,
+    time: `${formattedHours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")} ${isPM ? "PM" : "AM"}`,
+  };
+}
 
 const BarGraph: React.FC<BarGraphProps> = ({
   className = "",
@@ -40,6 +58,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   svgColor = "default",
   currentIndex,
   customData = { height: 0, marginTop: 0},
+  times = [],
 }) => {
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
@@ -51,9 +70,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
     const maxStorkeWidth = BigNumber(
       width - (datas.length - 1) * minGap,
     ).dividedBy(datas.length);
-    return maxStorkeWidth.isLessThan(strokeWidth)
-      ? maxStorkeWidth.toNumber()
-      : strokeWidth;
+
+    return maxStorkeWidth.toNumber();
   }, [width, datas.length, minGap, strokeWidth]);
 
   const getGraphPoints = useCallback(() => {
@@ -219,11 +237,15 @@ const BarGraph: React.FC<BarGraphProps> = ({
           }
           y={currentPoint?.y ? currentPoint.y + customMarginTop : 0}
         >
-          <div className="tooltip-header">
-            <span className="value">$98,412,880</span>
-          </div>
           <div className="tooltip-body">
-            <span className="date">Aug 03, 2023 09:00 PM - 10:00 PM</span>
+            <span className="date">
+              {parseTime(times[currentPointIndex]).date}
+            </span>
+          </div>
+          <div className="tooltip-header">
+            <span className="value">{`$${Number(BigNumber(
+              datas[currentPointIndex],
+            )).toLocaleString()}`}</span>
           </div>
         </BarGraphTooltipWrapper>
       )}

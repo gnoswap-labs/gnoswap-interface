@@ -21,7 +21,6 @@ export const VolumeChartGraphWrapper = styled.div`
     }
 
     .graph {
-      padding: 0px 6px;
       height: 204px;
       border-bottom: 1px solid ${({ theme }) => theme.color.border02};
       & svg {

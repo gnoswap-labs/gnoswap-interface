@@ -36,6 +36,14 @@ export const LoadingVolumnChart = styled.div`
       height: 48px;
       background-color: ${({ theme }) => theme.color.background01};
     }
+    &::after {
+      ${mixins.positionCenter()};
+      content: "";
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      background-color: ${({ theme }) => theme.color.background15};
+    }
   }
   ${media.mobile} {
     height: 224px;

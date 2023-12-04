@@ -110,8 +110,13 @@ export const SupplyInfoWrapper = styled.div`
         }
       }
       ${media.tabletMiddle} {
-        flex-direction: row;
+        flex-direction: column;
         align-items: flex-start;
+        gap: 4px;
+      }
+      ${media.mobile} {
+        flex-direction: row;
+        align-items: center;
         justify-content: space-between;
         gap: 4px;
         .loading-text-wrapper {

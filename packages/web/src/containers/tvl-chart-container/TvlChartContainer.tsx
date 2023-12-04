@@ -88,7 +88,7 @@ function createDummyAmountDatas(tvlChartType: CHART_TYPE) {
 
     return {
       amount: {
-        value: `${Math.round(Math.random() * 500) + 1000}`,
+        value: `${Math.round(Math.random() * 5000000) + 100000000}`,
         denom: "USD"
       },
       time: date.toString()

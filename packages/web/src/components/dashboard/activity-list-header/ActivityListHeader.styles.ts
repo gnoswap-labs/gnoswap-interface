@@ -18,6 +18,7 @@ export const ActivityListHeaderwrapper = styled.div`
   }
   h2 {
     ${fonts.h5};
+    flex: 0 0 auto;
     ${media.mobile} {
       ${fonts.h6};
     }
@@ -26,6 +27,9 @@ export const ActivityListHeaderwrapper = styled.div`
   .overflow-tab {
     > div {
       padding: 1px;
+    }
+    ${media.tabletMiddle} {
+      overflow-x: scroll;
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};

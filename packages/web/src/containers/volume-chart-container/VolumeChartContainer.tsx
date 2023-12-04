@@ -11,6 +11,7 @@ export interface VolumePriceInfo {
 export interface VolumeChartInfo {
   datas: string[];
   xAxisLabels: string[];
+  times: string[];
 }
 
 const initialVolumePriceInfo: VolumePriceInfo = {
@@ -66,9 +67,28 @@ function createXAxisDummyDatas(currentTab: CHART_TYPE) {
   }
 }
 
-function createDummyAmountDatas() {
-  const length = 24;
-  return Array.from({ length }, () => `${Math.round(Math.random() * 50) + 1}`);
+function createDummyAmountDatas(volumeChartType: CHART_TYPE) {
+  let length = 8;
+  if (CHART_TYPE["7D"] === volumeChartType) {
+    length = 8;
+  }
+  if (CHART_TYPE["1M"] === volumeChartType) {
+    length = 31;
+  }
+  if (CHART_TYPE["1Y"] === volumeChartType) {
+    length = 91;
+  }
+  if (CHART_TYPE["ALL"] === volumeChartType) {
+    length = 91;
+  }
+  return Array.from({ length }, (_, index) => {
+    const date = new Date();
+    date.setHours(date.getHours() - index);
+    return {
+      amount: `${Math.round(Math.random() * 10000000) + 10000000}`,
+      time: date.toString()
+    };
+  });
 }
 
 async function fetchVolumePriceInfo(): Promise<VolumePriceInfo> {
@@ -106,11 +126,12 @@ const VolumeChartContainer: React.FC = () => {
 
   const getChartInfo = useCallback(() => {
     const xAxisLabels = createXAxisDummyDatas(volumeChartType);
-    const datas = createDummyAmountDatas();
+    const datas = createDummyAmountDatas(volumeChartType);
 
     const chartInfo: VolumeChartInfo = {
       xAxisLabels,
-      datas: datas,
+      datas: datas.map(item => item.amount),
+      times: datas.map(item => item.time),
     };
 
     return chartInfo;
