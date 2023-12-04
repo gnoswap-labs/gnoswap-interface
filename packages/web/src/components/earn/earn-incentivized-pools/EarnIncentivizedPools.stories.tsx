@@ -4,8 +4,9 @@ import IncentivizedPoolCardList from "../incentivized-pool-card-list/Incentivize
 import POOLS from "@repositories/pool/mock/pools.json";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { action } from "@storybook/addon-actions";
+import { PoolModel } from "@models/pool/pool-model";
 
-const pool = POOLS.pools[0];
+const pool = POOLS.pools[0] as PoolModel;
 
 const cardInfo = PoolMapper.toCardInfo(pool);
 

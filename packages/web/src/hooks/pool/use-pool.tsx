@@ -31,7 +31,7 @@ export const usePool = ({
   }, [pools, tokenA, tokenB]);
 
   async function fetchPoolInfos(pools: PoolModel[]) {
-    const poolInfos = await (await Promise.all(pools.map(pool => poolRepository.getPoolInfoByPoolPath(pool.id).catch(null)))).filter(info => info !== null);
+    const poolInfos = await (await Promise.all(pools.map(pool => poolRepository.getPoolInfoByPoolPath(pool.path).catch(null)))).filter(info => info !== null);
     return poolInfos;
   }
 
@@ -79,10 +79,10 @@ export const usePool = ({
     fetchPoolInfos(currentPools)
       .then(infos => {
         const feetierOfLiquidityMap: { [key in string]: number } = {};
-        const totalLiquidities = infos.map(info => info.liquidity).reduce((total, cur) => total + cur, 0);
+        const totalLiquidities = infos.map(info => info.liquidity).reduce((total, cur) => total + cur, 0n);
         for (const info of infos) {
-          const liquidityRate = Math.round((info.liquidity / totalLiquidities) * 100);
-          const feeTier = currentPools.find(pool => pool.id === info.poolPath)?.fee;
+          const liquidityRate = Number(info.liquidity) * 100 / Number(totalLiquidities);
+          const feeTier = currentPools.find(pool => pool.path === info.poolPath)?.fee;
           if (feeTier) {
             feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
           }

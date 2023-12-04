@@ -1,10 +1,11 @@
 import { SwapDirectionType } from "@common/values";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { EstimatedRoute } from "@gnoswap-labs/swap-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useSlippage } from "@hooks/common/use-slippage";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -19,107 +20,75 @@ export const useSwap = ({
   direction,
 }: UseSwapProps) => {
   const { account } = useWallet();
-  const { swapRepository } = useGnoswapContext();
+  const { poolRepository, swapRouterRepository } = useGnoswapContext();
+  const [estimatedRoutes, setEstimatedRoutes] = useState<EstimatedRoute[]>([]);
+  const [estimatedAmount, setEstimatedAmount] = useState<string | null>(null);
+  const { slippage } = useSlippage();
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
-  /**
-   * TODO: Once a contract can handle GRC20 tokens dynamically, it will need to be reconsidered.
-   */
-  const zeroForOne = useMemo(() => {
-    return tokenA?.symbol.toLowerCase() === "foo";
-  }, [tokenA?.symbol]);
+  const tokenAmountLimit = useMemo(() => {
+    if (estimatedAmount && !Number.isNaN(slippage)) {
+      const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(slippage * 0.01);
+      const tokenAmountLimit = direction === "EXACT_IN" ?
+        BigNumber(estimatedAmount).minus(slippageAmountNumber).toNumber() :
+        BigNumber(estimatedAmount).plus(slippageAmountNumber).toNumber();
 
-  const amountDirection = useMemo(() => {
-    return direction === "EXACT_IN" ? 1 : -1;
-  }, [direction]);
-
-  const tempAmountDirection = useMemo(() => {
-    if (!zeroForOne) {
-      return -1 * amountDirection;
+      return tokenAmountLimit > 0 ? Math.round(tokenAmountLimit) : 0;
     }
-    return amountDirection;
-  }, [amountDirection, zeroForOne]);
+    return 0;
+  }, [direction, estimatedAmount, slippage]);
 
-  /**
-   * TODO: Once a contract can handle GRC20 tokens dynamically, it will need to be reconsidered.
-   */
-  const getAmountResult = useCallback((inputAmount: number, tokenAAmount: number, tokenBAmount: number) => {
-    const isExactIn = inputAmount >= 0;
-    if (isExactIn === zeroForOne) {
-      return BigNumber(tokenBAmount).abs().toString();
-    }
-    return BigNumber(tokenAAmount).abs().toString();
-  }, [zeroForOne]);
-
-  const findSwapPool = useCallback(async (amount: string) => {
+  const estimateSwapRoute = async (amount: string) => {
     if (!selectedTokenPair) {
       return null;
     }
-    const amountSpecified = BigNumber(amount).multipliedBy(tempAmountDirection).toNumber();
-
-    return await swapRepository.findSwapPool({
-      tokenA: zeroForOne ? tokenA : tokenB,
-      tokenB: zeroForOne ? tokenB : tokenA,
-      zeroForOne,
-      amountSpecified,
-    }).catch(() => null);
-  }, [selectedTokenPair, tempAmountDirection, swapRepository, zeroForOne, tokenA, tokenB]);
-
-  const getExpectedSwap = useCallback(async (amount: string) => {
-    if (!selectedTokenPair) {
+    if (Number.isNaN(amount)) {
       return null;
     }
-    const swapPool = await findSwapPool(amount);
-    if (!swapPool) {
+    const pools = await poolRepository.getRPCPools();
+    swapRouterRepository.updatePools(pools);
+
+    return swapRouterRepository.estimateSwapRoute({
+      inputToken: tokenA,
+      outputToken: tokenB,
+      exactType: direction,
+      tokenAmount: Number(amount)
+    }).then(response => {
+      console.log("response", response);
+      setEstimatedRoutes(response.estimatedRoutes);
+      setEstimatedAmount(response.amount);
+      return response;
+    }).catch(() => {
+      setEstimatedRoutes([]);
+      setEstimatedAmount(null);
       return null;
-    }
-    const fee = SwapFeeTierInfoMap[swapPool.feeTier].fee;
+    });
+  };
 
-    const amountSpecified = BigNumber(amount || 0).multipliedBy(tempAmountDirection).toNumber();
-
-    return swapRepository.getExpectedSwapResult({
-      tokenA: zeroForOne ? tokenA : tokenB,
-      tokenB: zeroForOne ? tokenB : tokenA,
-      fee,
-      receiver: "",
-      zeroForOne,
-      amountSpecified,
-    }).then((data) =>
-      getAmountResult(amountSpecified, data.tokenAAmount, data.tokenBAmount))
-      .catch(() => null);
-  }, [selectedTokenPair, findSwapPool, tempAmountDirection, swapRepository, zeroForOne, tokenA, tokenB, getAmountResult]);
-
-  const swap = useCallback(async (tokenAAmount: string, tokenBAmount: string) => {
+  const swap = useCallback(async (estimatedRoutes: EstimatedRoute[], tokenAmount: string) => {
     if (!account) {
       return false;
     }
     if (!selectedTokenPair) {
       return false;
     }
-    const amountSpecified = direction === "EXACT_IN" ?
-      BigNumber(tokenAAmount).multipliedBy(amountDirection).toNumber() :
-      BigNumber(tokenBAmount).multipliedBy(amountDirection).toNumber();
-
-    const swapPool = await findSwapPool(`${amountSpecified}`);
-    if (!swapPool) {
-      return false;
-    }
-    const fee = SwapFeeTierInfoMap[swapPool.feeTier].fee;
-    const response = await swapRepository.swap({
-      tokenA: zeroForOne ? tokenA : tokenB,
-      tokenB: zeroForOne ? tokenB : tokenA,
-      fee,
-      receiver: account.address,
-      zeroForOne,
-      amountSpecified,
+    const response = await swapRouterRepository.swapRoute({
+      inputToken: tokenA,
+      outputToken: tokenB,
+      estimatedRoutes,
+      exactType: direction,
+      tokenAmount: Math.floor(Number(tokenAmount)),
+      tokenAmountLimit
     })
       .catch(() => false);
     return response;
-  }, [account, amountDirection, direction, findSwapPool, selectedTokenPair, swapRepository, tokenA, tokenB, zeroForOne]);
+  }, [account, direction, selectedTokenPair, swapRouterRepository, tokenA, tokenAmountLimit, tokenB]);
 
   return {
+    tokenAmountLimit,
+    estimatedRoutes,
     swap,
-    getExpectedSwap
+    estimateSwapRoute
   };
 };

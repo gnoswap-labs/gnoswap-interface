@@ -123,7 +123,7 @@ const EarnMyPositionContainer: React.FC<
       return false;
     }
   }, [myPositions, width]);
-  
+
   const showLoadMore = useMemo(() => {
     if (width > 1000) {
       if (width > 1180 && myPositions.length > 8) {

@@ -18,10 +18,12 @@ import {
   evaluateExpressionToObject,
   makeABCIParams,
 } from "@utils/rpc-utils";
-import { PoolInfoResponse } from "./response/pool-info-response";
-import { PoolInfoModel } from "@models/pool/pool-info-model";
-import { PoolInfoMapper } from "@models/pool/mapper/pool-info-mapper";
+import { PoolRPCModel } from "@models/pool/pool-rpc-model";
+import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { PoolRPCResponse } from "./response/pool-rpc-response";
+import { PoolModel } from "@models/pool/pool-model";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
@@ -41,14 +43,32 @@ export class PoolRepositoryImpl implements PoolRepository {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
+  getRPCPools = async(): Promise<PoolRPCModel[]> => {
+    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    if (!poolPackagePath || !this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+    }
+    const param = makeABCIParams("RpcGetPools", []);
+    const result: PoolRPCModel[] = await this.rpcProvider.evaluateExpression(
+      poolPackagePath,
+      param,
+    ).then(evaluateExpressionToObject<PoolRPCResponse[]>)
+    .then(PoolRPCMapper.fromList)
+    .catch(e => {
+      console.error(e);
+      return [];
+    });
+    return result;
+  };
 
-  getPools = async (): Promise<PoolListResponse> => {
+  getPools = async (): Promise<PoolModel[]> => {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    return {
-      ...response.data,
-    };
+    const pools = response?.data?.pools ? 
+      response.data.pools.map(PoolMapper.fromResponse) :
+      [];
+    return pools;
   };
 
   getPoolDetailByPoolId = async (
@@ -62,7 +82,7 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   getPoolInfoByPoolPath = async (
     poolPath: string,
-  ): Promise<PoolInfoModel> => {
+  ): Promise<PoolRPCModel> => {
     const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
@@ -72,8 +92,17 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.rpcProvider.evaluateExpression(
       poolPackagePath,
       param,
-    ).then(evaluateExpressionToObject<PoolInfoResponse>)
-    .then(PoolInfoMapper.fromResponse)
+    ).then(evaluateExpressionToObject<{
+      response: {
+        data: PoolRPCResponse
+      }
+    }>)
+    .then(response => {
+      if (!response?.response?.data) {
+        return null;
+      }
+      return PoolRPCMapper.from(response?.response?.data);
+    })
     .catch(e => {
       console.error(e);
       return null;
@@ -150,11 +179,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     startPrice: string,
     caller: string,
   ) {
-    // Todo: Change to Path
-    // const tokenAPath = tokenA.path;
-    // const tokenBPath = tokenB.path;
-    const tokenAPath = tokenA.symbol.toLowerCase();
-    const tokenBPath = tokenB.symbol.toLowerCase();
+    const tokenAPath = tokenA.path;
+    const tokenBPath = tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     return {
       caller,
@@ -190,11 +216,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     slippage: string,
     caller: string,
   ) {
-    // Todo: Change to Path
-    // const tokenAPath = tokenA.path;
-    // const tokenBPath = tokenB.path;
-    const tokenAPath = tokenA.symbol.toLowerCase();
-    const tokenBPath = tokenB.symbol.toLowerCase();
+    const tokenAPath = tokenA.path;
+    const tokenBPath = tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     const deadline = "7282571140";
     return {

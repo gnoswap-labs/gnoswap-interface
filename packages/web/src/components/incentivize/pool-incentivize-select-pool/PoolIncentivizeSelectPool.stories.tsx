@@ -6,7 +6,7 @@ import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 
 const poolRepository = new PoolRepositoryMock();
-const pools = (await poolRepository.getPools()).pools.map(PoolMapper.toPoolSelectItemInfo);
+const pools = (await poolRepository.getPools()).map(PoolMapper.toPoolSelectItemInfo);
 
 export default {
   title: "incentivize/PoolIncentivizeSelectPool",

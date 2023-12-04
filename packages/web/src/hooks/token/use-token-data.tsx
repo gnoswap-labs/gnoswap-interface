@@ -7,7 +7,7 @@ import { TokenState } from "@states/index";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 export const useTokenData = () => {
   const { account } = useWallet();
@@ -16,19 +16,6 @@ export const useTokenData = () => {
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  },[]); 
-
-  useEffect(() => {
-    if (rpcProvider && account) {
-      updateBalances();
-    }
-  }, [rpcProvider, account]);
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens.sort((t1, t2) => {
@@ -73,8 +60,26 @@ export const useTokenData = () => {
       }));
   }, [tokenPrices, tokens]);
 
+  const getTokenUSDPrice = useCallback((tokenAId: string, amount: bigint | string | number) => {
+    const tokenUSDPrice = tokenPrices[tokenAId]?.usd || "0";
+    if (!tokenUSDPrice || Number.isNaN(amount)) {
+      return null;
+    }
+    return BigNumber(amount.toString()).multipliedBy(tokenUSDPrice).toNumber();
+  }, [tokenPrices]);
+
+  const getTokenPriceRate = useCallback((tokenAId: string, tokenBId: string) => {
+    const tokenAUSDPrice = tokenPrices[tokenAId]?.usd;
+    const tokenBUSDPrice = tokenPrices[tokenBId]?.usd;
+    if (!tokenAUSDPrice || !tokenBUSDPrice) {
+      return null;
+    }
+    return BigNumber(tokenBUSDPrice).dividedBy(tokenAUSDPrice).toNumber();
+  }, [tokenPrices]);
+
   async function updateTokens() {
     const response = await tokenRepository.getTokens();
+    setLoading(false);
     setTokens(response?.tokens || []);
   }
 
@@ -116,6 +121,8 @@ export const useTokenData = () => {
     balances,
     trendingTokens,
     recentlyAddedTokens,
+    getTokenUSDPrice,
+    getTokenPriceRate,
     updateTokens,
     updateTokenPrices,
     updateBalances,

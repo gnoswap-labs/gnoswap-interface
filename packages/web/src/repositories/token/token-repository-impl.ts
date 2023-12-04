@@ -26,6 +26,9 @@ export class TokenRepositoryImpl implements TokenRepository {
     const response = await this.networkClient.get<TokenListResponse>({
       url: "/tokens",
     });
+    if (response.data.tokens === null) {
+      return { tokens: [] };
+    }
     return response.data;
   };
 

@@ -3,9 +3,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCardAutoRouter from "./SwapCardAutoRouter";
 import { css } from "@emotion/react";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import PoolData from "@repositories/pool/mock/pools.json";
-
-const pools = PoolData.pools;
 
 const swapRouteInfos: SwapRouteInfo[] = [{
   from: {
@@ -35,7 +32,7 @@ const swapRouteInfos: SwapRouteInfo[] = [{
     currency: "GNOT"
   },
   gasFeeUSD: 0.1,
-  pools,
+  pools: [],
   version: "V1",
   weight: 100,
 }];

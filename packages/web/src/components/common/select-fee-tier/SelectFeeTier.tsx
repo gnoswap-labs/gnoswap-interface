@@ -31,7 +31,7 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
           selected={feeTier === item}
           feeTier={item}
           pools={pools}
-          liquidityRange={feetierOfLiquidityMap[SwapFeeTierInfoMap[item].fee] || null}
+          liquidityRange={feetierOfLiquidityMap[SwapFeeTierInfoMap[item].fee]}
           onClick={() => onClickFeeTierItem(item)}
         />
       ))}
@@ -61,7 +61,7 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
     if (liquidityRange === null) {
       return "Not created";
     }
-    return `${liquidityRange}% Select`;
+    return `${Math.round(liquidityRange)}% Select`;
   }, [liquidityRange]);
 
   const description = useMemo(() => {

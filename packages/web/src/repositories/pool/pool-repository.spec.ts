@@ -8,16 +8,16 @@ beforeEach(() => {
 
 describe("getPools", () => {
   it("success", async () => {
-    const response = await poolRepository.getPools();
+    const pools = await poolRepository.getPools();
 
-    expect(response.pools).not.toBeNull();
+    expect(pools).not.toBeNull();
   });
 });
 
 describe("getPoolDetail", () => {
   it("success", async () => {
-    const response = await poolRepository.getPoolDetailByPoolId("");
+    const pools = await poolRepository.getPoolDetailByPoolId("");
 
-    expect(response.pool).not.toBeNull();
+    expect(pools).not.toBeNull();
   });
 });

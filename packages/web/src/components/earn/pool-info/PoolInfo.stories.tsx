@@ -51,7 +51,7 @@ const pool: PoolCardInfo = {
       amount: 10
     }
   ],
-  incentiveType: "Incentivized",
+  incentivizedType: "INCENTIVIZED",
   currentTick: 0,
   price: 0,
   bins: []

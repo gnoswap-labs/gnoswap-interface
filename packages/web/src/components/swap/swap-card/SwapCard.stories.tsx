@@ -3,10 +3,8 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SwapCard from "./SwapCard";
 import { css } from "@emotion/react";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
-import PoolData from "@repositories/pool/mock/pools.json";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 
-const pools = PoolData.pools;
 
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {
@@ -74,7 +72,7 @@ export const swapRouteInfos: SwapRouteInfo[] = [{
     currency: "GNOT"
   },
   gasFeeUSD: 0.1,
-  pools,
+  pools: [],
   version: "V1",
   weight: 100,
 }];

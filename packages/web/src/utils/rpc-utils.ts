@@ -32,7 +32,7 @@ export function evaluateExpressionToObject<T extends {}>(
     }
 
     const objectStr = parseABCIValue(result[0]);
-    const object = JSON.parse(JSON.parse(objectStr)) as T;
+    const object = JSON.parse(JSON.parse(objectStr), (_, value) => value as T);
     return object;
   } catch {
     console.error("Parse Error: " + evaluateExpression);

@@ -31,7 +31,7 @@ const tokenB = {
 const tokens = [tokenA, tokenB];
 
 
-const pools = (await poolRepository.getPools()).pools;
+const pools = (await poolRepository.getPools());
 
 const details = (await poolRepository.getPoolDetailByPoolId()).pool;
 

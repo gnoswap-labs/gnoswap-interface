@@ -119,7 +119,7 @@ export class SwapRepositoryImpl implements SwapRepository {
     const tokenAPath = tokenA.symbol.toLowerCase();
     const tokenBPath = tokenB.symbol.toLowerCase();
     const priceLimit = zeroForOne ? MIN_PRICE_X96 : MAX_PRICE_X96;
-    const param = makeABCIParams("DrySwap", [tokenAPath, tokenBPath, fee, receiver, zeroForOne, amountSpecified, priceLimit]);
+    const param = makeABCIParams("DrySwap", [tokenAPath, tokenBPath, fee, receiver, zeroForOne, amountSpecified, priceLimit.toString()]);
     const result = await this.rpcProvider
       .evaluateExpression(poolPackagePath, param)
       .then(evaluateExpressionToValues);

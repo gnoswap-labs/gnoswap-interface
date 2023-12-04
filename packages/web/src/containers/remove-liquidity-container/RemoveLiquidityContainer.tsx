@@ -18,30 +18,13 @@ const MOCK_DATA = {
     "feesBUSD": 39.33637115494873,
     "feesB": 0.024392530977123676,
     "fees": 160.7690202255008,
-    "bins": [
-      {
-        "binId": "12",
-        "poolId": "0x0ce176e1b11a8f88a4ba2535de80e81f88592bad",
-        "currentTick": 11,
-        "reserveA": 112.61356909355652,
-        "reserveB": 360.0467817301862,
-        "lpTokenId": "1",
-        "timestamp": "1695364079",
-        "annualizedFeeGrowth": 0.006368988626613128,
-        "percentage": 1,
-        "path": [],
-        "parentAVolume": 0,
-        "parentBVolume": 0,
-        "parentlpTokenId": "0",
-        "tokenAVolume": 380.9675639393881,
-        "tokenBVolume": 121.96265488561838,
-        "totalSupply": 1,
-      }
-    ],
+    "bins": [],
     "id": "0x7a80x0ce176e1b11a8f88a4ba2535de80e81f88592bad",
     "nftId": "0x7a8",
     "pool": {
+      "path": "gno.land/r/bar:gno.land/r/foo:300",
       "name": "ETH-swETH",
+      "incentivizedType": "INCENTIVIZED",
       "tokenA": {
         "name": "Ether",
         "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -65,20 +48,11 @@ const MOCK_DATA = {
         "priceId": "sweth",
         "createdAt": "1999-01-01T00:00:00Z"
       },
-      "tvl": {
-        "amount": 2367720.6946660844,
-        "currency": "USD"
-      },
+      "tvl": 2367720.6946660844,
       "tvlChange": 0,
-      "volume": {
-        "amount": 0,
-        "currency": "USD"
-      },
+      "volume": 0,
       "volumeChange": 0.4222374881117897,
-      "totalVolume": {
-        "amount": 3103122102.2697988,
-        "currency": "USD"
-      },
+      "totalVolume": 3103122102.2697988,
       "id": "0xd0b2f5018b5d22759724af6d4281ac0b13266360",
       "fee": "0.00002",
       "feeVolume": 1563.3775664056654,
@@ -88,17 +62,6 @@ const MOCK_DATA = {
       "tokenABalance": 648682.5470470262,
       "tokenBBalance": 1718920.6115409774,
       "tickSpacing": 2,
-      "topBin": {
-        "binId": "16",
-        "poolId": "0x0ce176e1b11a8f88a4ba2535de80e81f88592bad",
-        "currentTick": 11,
-        "reserveA": 0.41506341750051834,
-        "reserveB": 1.3270358881977602,
-        "lpTokenId": "2",
-        "timestamp": "1695364079",
-        "annualizedFeeGrowth": 0.01032467684017463,
-        "totalSupply": 1,
-      },
       "price": 123,
       "bins": [],
       "apr": 128.7
@@ -136,9 +99,9 @@ const MOCK_DATA = {
 const LIST_DATA: LPPositionModel[] = [1, 2, 3, 4].map((item) => {
   return {
     ...MOCK_DATA,
-    lpRewardId: (Number(MOCK_DATA.lpRewardId) +  item).toString(),
+    lpRewardId: (Number(MOCK_DATA.lpRewardId) + item).toString(),
     position: item > 2 ? { ...MOCK_DATA.position, balance: 0 } : MOCK_DATA.position,
-  };
+  } as LPPositionModel;
 });
 
 const RemoveLiquidityContainer: React.FC = () => {

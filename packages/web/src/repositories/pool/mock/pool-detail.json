@@ -1,6 +1,7 @@
 {
   "pool": {
     "name": "bar_foo_500",
+    "path": "gno.land/r/bar:gno.land/r/bar:500",
     "tokenA": {
       "chainId": "dev",
       "createdAt": "2023-10-12T06:56:10+09:00",
@@ -23,23 +24,15 @@
       "logoURI": "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
       "priceId": "gno.land/r/foo"
     },
-    "tvl": {
-      "amount": 1182782.0,
-      "currency": "USD"
-    },
+    "incentivizedType": "INCENTIVIZED",
+    "tvl": 1182782.0,
     "tvlChange": 118278200.0,
-    "volume": {
-      "amount": 1182797.0,
-      "currency": "USD"
-    },
+    "volume": 1182797.0,
     "volumeChange": 118279700.0,
-    "totalVolume": {
-      "amount": 1182797.0,
-      "currency": "USD"
-    },
+    "totalVolume": 1182797.0,
     "id": "bar_foo_500",
     "apr": 0.12345,
-    "fee": "500",
+    "fee": "0.05%",
     "feeVolume": 131.937491,
     "feeChange": 13193.749143,
     "currentTick": 8090,
@@ -48,17 +41,7 @@
     "tokenBBalance": 2777571,
     "tickSpacing": 10,
     "bins": [],
-    "resolvedBins": [],
-    "topBin": {
-      "binId": "",
-      "poolId": "",
-      "currentTick": 0,
-      "reserveA": 0,
-      "reserveB": 0,
-      "totalSupply": 0,
-      "lpTokenId": "",
-      "timestamp": "0001-01-01T00:00:00Z",
-      "annualizedFeeGrowth": 0
-    }
+    "topBin": null,
+    "resolvedBins": []
   }
 }
