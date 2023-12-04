@@ -53,7 +53,7 @@ export const usePool = ({
   }, [compareToken, tokenA, tokenB]);
 
   async function fetchPoolInfos(pools: PoolModel[]) {
-    const poolInfos = await (await Promise.all(pools.map(pool => poolRepository.getPoolInfoByPoolPath(pool.path).catch(null)))).filter(info => info !== null);
+    const poolInfos = await (await Promise.all(pools.map(pool => poolRepository.getPoolDetailRPCByPoolPath(pool.path).catch(null)))).filter(info => info !== null);
     return poolInfos;
   }
 

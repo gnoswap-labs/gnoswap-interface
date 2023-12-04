@@ -2,9 +2,9 @@ import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant"
 import { TokenModel } from "@models/token/token-model";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { PoolInfoModel } from "@models/pool/pool-info-model";
 import { feeBoostRateByPrices, priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { MAX_TICK, MIN_PRICE, MIN_TICK } from "@constants/swap.constant";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
+import { MAX_TICK, MIN_PRICE_X96, MIN_TICK } from "@constants/swap.constant";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -66,7 +66,7 @@ export const useSelectPool = ({
   const [minPosition, setMinPosition] = useState<number | null>(null);
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
-  const [poolInfo, setPoolInfo] = useState<PoolInfoModel | null>(null);
+  const [poolInfo, setPoolInfo] = useState<PoolDetailRPCModel | null>(null);
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
 
   const renderState: RenderState = useMemo(() => {
@@ -136,7 +136,7 @@ export const useSelectPool = ({
     }
 
     const logMin = minPrice <= 0 ?
-      Math.log(currentPrice / MIN_PRICE) :
+      Math.log(currentPrice / Number(MIN_PRICE_X96)) :
       Math.log(currentPrice / minPrice);
     const logMax = Math.log(maxPrice / currentPrice);
     return logMin * 100 / (logMin + logMax);
@@ -147,7 +147,7 @@ export const useSelectPool = ({
       return null;
     }
     if (minPrice <= 0) {
-      return feeBoostRateByPrices(MIN_PRICE, maxPrice);
+      return feeBoostRateByPrices(Number(MIN_PRICE_X96), maxPrice);
     }
     return feeBoostRateByPrices(minPrice, maxPrice);
   }, [maxPrice, minPrice]);
@@ -273,32 +273,33 @@ export const useSelectPool = ({
         setPoolInfo(null);
         return;
       }
-      const poolInfo: PoolInfoModel = {
+      const poolInfo: PoolDetailRPCModel = {
         poolPath: "",
-        tokenABalance: 0,
-        tokenBBalance: 0,
+        tokenAPath: "",
+        tokenBPath: "",
+        fee: 0,
+        tokenABalance: 0n,
+        tokenBBalance: 0n,
         tickSpacing: SwapFeeTierInfoMap[feeTier].tickSpacing,
         maxLiquidityPerTick: 0,
         price: startPrice,
-        sqrtPriceX96: 0,
+        sqrtPriceX96: 0n,
         tick: 0,
         feeProtocol: 0,
-        feeGrowthGlobal0X128: 0,
-        feeGrowthGlobal1X128: 0,
         tokenAProtocolFee: 0,
         tokenBProtocolFee: 0,
-        liquidity: 0,
+        liquidity: 0n,
         ticks: [],
         tickBitmaps: [],
         positions: []
       };
       setPoolInfo(poolInfo);
     } else {
-      const tokenPair = [tokenA.symbol.toLowerCase(), tokenB.symbol.toLowerCase()].sort();
-      const poolPath = `${tokenPair.join("_")}_${SwapFeeTierInfoMap[feeTier].fee}`;
+      const tokenPair = [tokenA.path, tokenB.path].sort();
+      const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
       const reverse = [tokenA?.path, tokenB?.path].sort().findIndex(path => path === compareToken?.path) === 1;
 
-      poolRepository.getPoolInfoByPoolPath(poolPath).then(poolInfo => {
+      poolRepository.getPoolDetailRPCByPoolPath(poolPath).then(poolInfo => {
         const changedPoolInfo = reverse === false ? poolInfo : {
           ...poolInfo,
           price: 1 / poolInfo.price,

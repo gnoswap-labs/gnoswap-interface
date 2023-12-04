@@ -6,6 +6,7 @@ import { PoolError } from "@common/errors/pool";
 import rpcPools from "./mock/rpc-pools.json";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolModel } from "@models/pool/pool-model";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 export class PoolRepositoryMock implements PoolRepository {
   getPools = async (): Promise<PoolModel[]> => {
     return [];
@@ -15,7 +16,7 @@ export class PoolRepositoryMock implements PoolRepository {
     return rpcPools.map(pool => PoolRPCMapper.from(pool as any));
   };
 
-  getPoolInfoByPoolPath = async (): Promise<PoolRPCModel> => {
+  getPoolDetailRPCByPoolPath = async (): Promise<PoolDetailRPCModel> => {
     throw new PoolError("NOT_FOUND_POOL");
   };
 

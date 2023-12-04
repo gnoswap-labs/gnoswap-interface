@@ -1,3 +1,4 @@
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { PoolModel } from "@models/pool/pool-model";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
@@ -9,7 +10,7 @@ export interface PoolRepository {
 
   getRPCPools: () => Promise<PoolRPCModel[]>;
 
-  getPoolInfoByPoolPath: (poolPath: string) => Promise<PoolRPCModel>;
+  getPoolDetailRPCByPoolPath: (poolPath: string) => Promise<PoolDetailRPCModel>;
 
   getPoolDetailByPoolId: (poolId: string) => Promise<PoolDetailResponse>;
 

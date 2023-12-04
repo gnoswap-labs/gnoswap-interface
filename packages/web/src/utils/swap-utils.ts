@@ -2,15 +2,11 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { MAX_TICK, MIN_TICK, Q96, X96 } from "@constants/swap.constant";
+import { MAX_TICK, MIN_TICK, Q96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
 import { tickToSqrtPriceX96 } from "./math.utils";
 
 const LOG10001 = Math.log(1.0001);
-
-export function getCurrentPriceByRaw(raw: string) {
-  return BigNumber(raw).dividedBy(X96).pow(2);
-}
 
 export function makeSwapFeeTier(value: string | number): SwapFeeTierType {
   for (const swapFeeTierInfo of Object.values(SwapFeeTierInfoMap)) {
@@ -54,7 +50,10 @@ export function priceToNearTick(price: number | bigint, tickSpacing: number) {
 }
 
 export function rawBySqrtX96(value: number | bigint | string) {
-  return BigNumber(value.toString()).dividedBy(Q96.toString()).toNumber();
+  return BigNumber(value.toString())
+    .dividedBy(Q96.toString())
+    .pow(2)
+    .toNumber();
 }
 
 export function priceX96ToNearTick(
@@ -96,13 +95,14 @@ export function feeBoostRateByPrices(
   }
   const sqrt4Value = BigNumber(minPrice / maxPrice)
     .squareRoot()
-    .squareRoot();
+    .squareRoot()
+    .abs();
   return BigNumber(1)
     .dividedBy(1 - sqrt4Value.toNumber())
     .toFixed(2);
 }
 
 export function sqrtPriceX96ToTick(priceX96: number | BigInt) {
-  const price = getCurrentPriceByRaw(priceX96.toString());
-  return priceToTick(price.toNumber());
+  const price = rawBySqrtX96(priceX96.toString());
+  return priceToTick(price);
 }

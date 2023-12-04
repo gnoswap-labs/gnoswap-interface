@@ -28,6 +28,7 @@ import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import BigNumber from "bignumber.js";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { X96 } from "@constants/swap.constant";
+import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
@@ -84,9 +85,9 @@ export class PoolRepositoryImpl implements PoolRepository {
     return response.data;
   };
 
-  getPoolInfoByPoolPath = async (
+  getPoolDetailRPCByPoolPath = async (
     poolPath: string,
-  ): Promise<PoolRPCModel> => {
+  ): Promise<PoolDetailRPCModel> => {
     const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
@@ -105,7 +106,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       if (!response?.response?.data) {
         return null;
       }
-      return PoolRPCMapper.from(response?.response?.data);
+      return PoolRPCMapper.detailFrom(response?.response?.data);
     })
     .catch(e => {
       console.error(e);

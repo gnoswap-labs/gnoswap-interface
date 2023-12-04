@@ -381,7 +381,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       currentTick={null}
       submitType={submitType}
       submit={submit}
-      isEarnAdd={true}
+      isEarnAdd={false}
       connected={connectedWallet}
       slippage={slippage}
       changeSlippage={handleChangeSlippage}

@@ -100,7 +100,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   /** Zoom */
   const zoom: d3.ZoomBehavior<any, unknown> = d3
     .zoom()
-    .scaleExtent([1, tickFullRange / 2])
+    .scaleExtent([0, tickFullRange])
     .translateExtent([
       [0, 0],
       [boundsWidth, boundsHeight]
@@ -115,10 +115,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const svgElement = d3.select(svgRef.current);
     const minXTick = minX || 0;
     const maxXTick = maxX || 0;
-    const distance = Math.abs(centerX - minXTick) > Math.abs(centerX - maxXTick)
-      ? Math.abs(minXTick - centerX)
-      : Math.abs(maxXTick - centerX);
-    const scaleRate = (tickFullRange / (distance) / 2);
+    const tick = currentTick || 0;
+    const distance = Math.abs(tick - minXTick) > Math.abs(tick - maxXTick)
+      ? Math.abs(tick - minXTick)
+      : Math.abs(tick - maxXTick);
+    const scaleRate = (MAX_TICK / distance);
     zoom.scaleTo(svgElement, scaleRate, [scaleX(centerX), 0]);
   }
 
@@ -130,20 +131,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     updateChart();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function zoomIn() {
-    d3.select(svgRef.current)
-      .transition()
-      .call(zoom.scaleBy, 4);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function zoomOut() {
-    d3.select(svgRef.current)
-      .transition()
-      .call(zoom.scaleBy, 0.25);
-  }
-
   function getTickSpacing() {
     if (bins.length < 1) {
       return 0;
@@ -151,7 +138,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (bins.length === 2) {
       return 20;
     }
-    const spacing = scaleX(bins[1].minTick) - scaleX(bins[0].minTick);
+    const spacing = scaleX(bins[0].maxTick) - scaleX(bins[0].minTick);
     if (spacing < 2) {
       return spacing;
     }
