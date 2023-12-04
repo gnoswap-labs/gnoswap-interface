@@ -139,7 +139,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const submitButtonStr = useMemo(() => {
     switch (submitType) {
       case "CREATE_POOL":
-        return "Create Pool";
+        return "Create Position";
       case "ADD_LIQUIDITY":
         return "Add Liquidity";
       case "CONNECT_WALLET":
