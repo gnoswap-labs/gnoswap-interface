@@ -73,7 +73,9 @@ function changeLine(
   x: number,
   rate: number,
   right = false,
+  selectedFullRange = false,
 ) {
+  const hidden = type === "end" && selectedFullRange === true;
   const rateStr = `${Math.round(rate).toFixed(0)}%`;
   const lineElement = selectionElement.select(`#${type}`)
     .attr("x", x);
@@ -100,6 +102,9 @@ function changeLine(
     .attr("text-anchor", "middle")
     .style("fill", "#FFF")
     .html(rateStr);
+  if (hidden) {
+    labelWrapper.attr("display", "none");
+  }
 }
 
 export interface PoolSelectionGraphProps {
@@ -290,7 +295,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const isRightStartLine = startPosition - 75 < 0;
     const isRightEndLine = endPosition + 75 < boundsWidth;
     changeLine(brushElement, "start", startPosition as number, startRate, isRightStartLine);
-    changeLine(brushElement, "end", endPosition as number, endRate, isRightEndLine);
+    changeLine(brushElement, "end", endPosition as number, endRate, isRightEndLine, selectedFullRange);
   }
 
   function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
