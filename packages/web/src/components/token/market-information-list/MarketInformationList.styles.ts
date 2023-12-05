@@ -16,17 +16,26 @@ export const wrapper = (theme: Theme) => css`
     background-color: ${theme.color.backgroundOpacity3};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
-    padding: 16px;
+    padding: 15px;
     gap: 16px;
     .title {
       ${fonts.body12};
       color: ${theme.color.text04};
+      ${media.tablet} {
+        ${fonts.p4};
+      }
+      ${media.tabletMiddle} {
+        ${fonts.body12};
+      }
     }
     .market-info-value {
       ${fonts.body10};
       ${media.mobile} {
         ${fonts.body12};
       }
+    }
+    .loading-value {
+      max-width: 200px;
     }
   }
   @media (max-width: 1180px) {

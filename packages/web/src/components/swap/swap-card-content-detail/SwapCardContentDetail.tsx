@@ -63,7 +63,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const handleSwapRate = useCallback(() => {
     setSwapRateAction((prev) => (prev === "ATOB" ? "BTOA" : "ATOB"));
   }, [swapRateAction]);
-
+  
   return (
     <>
       <DetailWrapper opened={openedDetailInfo}>
@@ -82,7 +82,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
             )}
             {isLoading && (
               <div className="loading-change">
-                <LoadingSpinner /> Fetching Best Price..
+                <LoadingSpinner /> Fetching Best Price...
               </div>
             )}
             <div className="price-info">

@@ -27,9 +27,9 @@ interface SwapCardProps {
   isLoading: boolean;
 
   changeTokenA: (token: TokenModel) => void;
-  changeTokenAAmount: (value: string) => void;
+  changeTokenAAmount: (value: string, none?: boolean) => void;
   changeTokenB: (token: TokenModel) => void;
-  changeTokenBAmount: (value: string) => void;
+  changeTokenBAmount: (value: string, none?: boolean) => void;
   changeSlippage: (value: string) => void;
 
   switchSwapDirection: () => void;
@@ -143,7 +143,6 @@ const SwapButton: React.FC<SwapButtonProps> = ({
     fullWidth: true,
     fontType: "body7" as FontsKey,
     hierarchy: ButtonHierarchy.Primary,
-    height: 56,
   };
 
   if (!connectedWallet) {

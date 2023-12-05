@@ -260,11 +260,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     switchNetwork,
   ]);
 
-  const handleChangeSlippage = useCallback((vl: string) => {
-    
-    changeSlippage(Number(vl));
-  }, []);
-
   const handleClickOneStaking = useCallback(() => {
     if (!isEarnAdd) {
       setIsEarnAdd(true);
@@ -296,7 +291,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isEarnAdd={true}
       connected={connectedWallet}
       slippage={slippage}
-      changeSlippage={handleChangeSlippage}
+      changeSlippage={changeSlippage}
       handleClickOneStaking={handleClickOneStaking}
       openModal={openOneClickModal}
     />

@@ -46,10 +46,11 @@ export const SettingMenuButton = styled.div`
 export const CopyTooltip = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   position: absolute;
+  cursor: default;
   top: -65px;
   .box {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    width: 115px;
+    width: 155px;
     padding: 16px;
     gap: 8px;
     flex-shrink: 0;

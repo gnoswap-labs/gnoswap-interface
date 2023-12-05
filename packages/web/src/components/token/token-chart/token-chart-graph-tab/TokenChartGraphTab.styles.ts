@@ -15,6 +15,7 @@ export const TokenChartGraphTabWrapper = styled.div`
   }
   .select-tab-wrapper {
     border: none;
+    padding: 2px;
   }
   @media (max-width: 1180px) {
     .chart-select-button {

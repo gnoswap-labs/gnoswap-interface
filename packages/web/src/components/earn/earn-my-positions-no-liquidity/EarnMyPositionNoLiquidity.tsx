@@ -19,7 +19,7 @@ const EarnMyPositionNoLiquidity: React.FC<
       </p>
       <span className="description">
         Add liquidity to Gnoswap’s pools to earn trading fees on every swap. You
-        may also stake LP tokens to earn GNOS token rewards.
+        may also stake LP tokens to earn GNS token rewards.
       </span>
     </NoLiquidityWrapper>
   );

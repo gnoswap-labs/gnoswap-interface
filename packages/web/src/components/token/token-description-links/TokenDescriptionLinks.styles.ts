@@ -15,7 +15,7 @@ export const wrapper = (theme: Theme) => css`
     ${fonts.p4};
     gap: 4px;
     height: 24px;
-    background-color: ${theme.color.background06};
+    background-color: ${theme.color.background11};
     border-radius: 4px;
     padding: 0px 8px;
     color: ${theme.color.text05};

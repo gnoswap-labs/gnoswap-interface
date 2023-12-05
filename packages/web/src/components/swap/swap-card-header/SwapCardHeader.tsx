@@ -11,7 +11,7 @@ import {
 interface SwapCardHeaderProps {
   copied: boolean;
   copyURL: () => void;
-  slippage: number;
+  slippage: string;
   changeSlippage: (value: string) => void;
   themeKey: "dark" | "light";
 }
@@ -45,7 +45,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
             {copied && (
               <CopyTooltip>
                 <div className={`box ${themeKey}-shadow`}>
-                  <span>URL Copied!</span>
+                  <span>Swap URL Copied!</span>
                 </div>
                 <IconPolygon className="polygon-icon" />
               </CopyTooltip>

@@ -8,7 +8,7 @@ export const SettingMenuModalWrapper = styled.div`
   z-index: ${Z_INDEX.modal};
   position: absolute;
   width: 236px;
-  padding: 16px 0px;
+  padding: 15px 0px;
   gap: 16px;
   border-radius: 8px;
   background: ${({ theme }) => theme.color.background06};
@@ -20,7 +20,7 @@ export const SettingMenuModalWrapper = styled.div`
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 0px 16px;
+    padding: 0px 15px;
     gap: 16px;
 
     .modal-header {
@@ -62,7 +62,6 @@ export const SettingMenuModalWrapper = styled.div`
         ${mixins.flexbox("row", "center", "center")};
         width: 16px;
         height: 16px;
-        cursor: pointer;
         .info-icon {
           * {
             fill: ${({ theme }) => theme.color.icon03};
@@ -85,11 +84,17 @@ export const SettingMenuModalWrapper = styled.div`
         color: ${({ theme }) => theme.color.text03};
         border: 1px solid ${({ theme }) => theme.color.border02};
         background: ${({ theme }) => theme.color.background01};
+        &:focus-within {
+          border: 1px solid  ${({ theme }) => theme.color.border15};
+        }
       }
       .amount-text {
         ${mixins.flexbox("row", "center", "flex-end")};
         text-align: right;
         width: 100%;
+        &::placeholder {
+          color: ${({ theme }) => theme.color.text03};
+        }
       }
     }
   }
@@ -103,4 +108,16 @@ export const ModalTooltipWrap = styled.div`
   .tooltip-wrap {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
   }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: ${Z_INDEX.modalOverlay};
 `;

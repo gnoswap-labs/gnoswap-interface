@@ -48,7 +48,7 @@ export const usePool = ({
     swapFeeTier: SwapFeeTierType;
     startPrice: string;
     priceRange: AddLiquidityPriceRage;
-    slippage: number;
+    slippage: string;
   }) => {
     if (!tokenA || !tokenB || !account) {
       return null;

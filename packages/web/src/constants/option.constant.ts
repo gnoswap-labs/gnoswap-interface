@@ -108,7 +108,7 @@ export const CHART_TYPE = {
   "7D": "7D",
   "1M": "1M",
   "1Y": "1Y",
-  YTD: "YTD",
+  ALL: "ALL",
 } as const;
 export type CHART_TYPE = ValuesType<typeof CHART_TYPE>;
 
@@ -126,7 +126,7 @@ export const PriceRangeTooltip: {
   Custom: undefined,
 };
 
-export const DEFAULT_SLIPPAGE = 0.5;
+export const DEFAULT_SLIPPAGE = "0.5";
 
 export type AddLiquiditySubmitType =
   | "CREATE_POOL"

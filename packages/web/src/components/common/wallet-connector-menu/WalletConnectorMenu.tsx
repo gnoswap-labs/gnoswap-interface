@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -15,6 +14,7 @@ import {
   CopyTooltip,
   IconButton,
   MenuHeader,
+  Overlay,
   ThemeSelector,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
@@ -110,50 +110,55 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     disconnectWallet();
   }, [disconnectWallet]);
 
-  useEffect(() => {
-    const closeMenu = (e: MouseEvent) => {
-      if (menuRef.current && menuRef.current.contains(e.target as Node)) {
-        return;
-      } else {
-        e.stopPropagation();
-        onMenuToggle();
-      }
-    };
-    window.addEventListener("click", closeMenu, true);
-    return () => {
-      window.removeEventListener("click", closeMenu, true);
-    };
-  }, [menuRef, onMenuToggle]);
-
   const connect = useCallback(() => {
+    onMenuToggle();
     connectAdenaClient();
   }, [connectAdenaClient]);
 
   return (
-    <WalletConnectorMenuWrapper ref={menuRef} width={window?.innerWidth}>
-      {connected ? (
-        <div className="button-container">
-          <MenuHeader>
+    <>
+      <WalletConnectorMenuWrapper ref={menuRef} width={window?.innerWidth}>
+        {connected ? (
+          <div className="button-container">
+            <MenuHeader>
+              {isSwitchNetwork ? (
+                <IconFailed className="fail-icon" />
+              ) : (
+                <IconAdenaLogo />
+              )}
+              <span className="user-address">
+                {formatAddress(account?.address || "")}
+              </span>
+              <IconButtonMaker
+                copyClick={copyClick}
+                openLinkClick={openLinkClick}
+                themeKey={themeKey}
+                copied={copied}
+                onClickDisconnect={onClickDisconnect}
+              />
+            </MenuHeader>
             {isSwitchNetwork ? (
-              <IconFailed className="fail-icon" />
+              <Button
+                text="Switch Network"
+                onClick={switchNetwork}
+                style={{
+                  hierarchy: ButtonHierarchy.Primary,
+                  fontType: "body9",
+                  fullWidth: true,
+                  height: 41,
+                  justify: "center",
+                }}
+                className="switch-network"
+              />
             ) : (
-              <IconAdenaLogo />
+              <AmountInfoBox>{balanceText}</AmountInfoBox>
             )}
-            <span className="user-address">
-              {formatAddress(account?.address || "")}
-            </span>
-            <IconButtonMaker
-              copyClick={copyClick}
-              openLinkClick={openLinkClick}
-              themeKey={themeKey}
-              copied={copied}
-              onClickDisconnect={onClickDisconnect}
-            />
-          </MenuHeader>
-          {isSwitchNetwork ? (
+          </div>
+        ) : (
+          <div className="button-container">
             <Button
-              text="Switch Network"
-              onClick={switchNetwork}
+              text="Wallet Login"
+              onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fontType: "body9",
@@ -161,34 +166,18 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
                 height: 41,
                 justify: "center",
               }}
-              className="switch-network"
             />
-          ) : (
-            <AmountInfoBox>{balanceText}</AmountInfoBox>
-          )}
+          </div>
+        )}
+        <div className="theme-container">
+          <ThemeSelector>
+            <span>Theme</span>
+            <ThemeModeContainer />
+          </ThemeSelector>
         </div>
-      ) : (
-        <div className="button-container">
-          <Button
-            text="Connect Wallet"
-            onClick={connect}
-            style={{
-              hierarchy: ButtonHierarchy.Primary,
-              fontType: "body9",
-              fullWidth: true,
-              height: 41,
-              justify: "center",
-            }}
-          />
-        </div>
-      )}
-      <div className="theme-container">
-        <ThemeSelector>
-          <span>Theme</span>
-          <ThemeModeContainer />
-        </ThemeSelector>
-      </div>
-    </WalletConnectorMenuWrapper>
+      </WalletConnectorMenuWrapper>
+      <Overlay onClick={onMenuToggle} />
+    </>
   );
 };
 

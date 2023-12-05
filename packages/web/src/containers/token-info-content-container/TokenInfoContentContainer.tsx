@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TokenInfoContent from "@components/token/token-info-content/TokenInfoContent";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
@@ -76,11 +76,27 @@ export const marketInformationInit = {
 };
 
 const TokenInfoContentContainer: React.FC = () => {
+  const [loadingPricePerform, setLoadingPricePerform] = useState(true);
+  const [loadingPriceInfo, setLoadingPriceInfo] = useState(true);
+  const [loadingMarketInfo, setLoadingMarketInfo] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoadingPricePerform(false);
+      setLoadingPriceInfo(false);
+      setLoadingMarketInfo(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <TokenInfoContent
       performance={performanceInit}
       priceInfo={priceInfomationInit}
       marketInfo={marketInformationInit}
+      loadingPricePerform={loadingPricePerform}
+      loadingPriceInfo={loadingPriceInfo}
+      loadingMarketInfo={loadingMarketInfo}
     />
   );
 };

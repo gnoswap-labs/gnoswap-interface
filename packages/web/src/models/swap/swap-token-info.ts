@@ -24,5 +24,5 @@ export interface SwapTokenInfo {
 
   direction: SwapDirectionType;
 
-  slippage: number;
+  slippage: string;
 }

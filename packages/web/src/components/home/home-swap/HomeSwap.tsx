@@ -7,6 +7,7 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface HomeSwapProps {
+  changeTokenAAmount: (value: string) => void;
   swapTokenInfo: SwapTokenInfo;
   swapNow: () => void;
   onSubmitSwapValue: () => void;
@@ -17,7 +18,7 @@ function isAmount(str: string) {
   return regex.test(str);
 }
 
-const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwapValue }) => {
+const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwapValue, changeTokenAAmount}) => {
   const { breakpoint } = useWindowSize();
   const [fromAmount, setFromAmount] = useState("0");
   const [toAmount, setToAmount] = useState("0");
@@ -27,7 +28,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
       const value = e.target.value;
 
       if (value !== "" && !isAmount(value)) return;
-      setFromAmount(value);
+      const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
+      setFromAmount(temp);
+      changeTokenAAmount(temp);
       // TODO
       // - mapT0AmountToT0Price
       // - mapT0AmpuntT1Amount
@@ -41,7 +44,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
       const value = e.target.value;
 
       if (value !== "" && !isAmount(value)) return;
-      setToAmount(value);
+      setToAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
       // TODO
       // - mapT1AmountToT1Price
       // - mapT1AmpuntT0Amount

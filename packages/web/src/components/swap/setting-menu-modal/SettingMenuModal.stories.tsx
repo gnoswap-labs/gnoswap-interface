@@ -19,7 +19,7 @@ const Template: ComponentStory<typeof SettingMenuModal> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  slippage: 0,
+  slippage: "0",
   changeSlippage: action("changeSlippage"),
   close: action("close"),
 };

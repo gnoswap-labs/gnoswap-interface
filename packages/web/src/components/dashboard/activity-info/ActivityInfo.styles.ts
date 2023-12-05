@@ -15,7 +15,6 @@ export const TokenInfoWrapper = styled.div`
 
 export const HoverSection = styled.div`
   ${mixins.flexbox("row", "center", "center", false)};
-  background-color: ${({ theme }) => theme.color.background01};
   transition: background-color 0.3s ease;
   height: 100%;
   &:hover {
@@ -49,6 +48,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     gap: 4px;
     ${fonts.body11};
     color: ${({ theme }) => theme.color.text02};
+  }
+  .tooltip-label {
+    cursor: default;
   }
   .symbol-text {
     font-weight: 700;

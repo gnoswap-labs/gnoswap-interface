@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import { SelectTokenWrapper } from "./SelectToken.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
@@ -13,6 +13,7 @@ export interface SelectTokenProps {
   changeToken: (token: TokenModel) => void;
   close: () => void;
   themeKey: "dark" | "light";
+  modalRef?: React.RefObject<HTMLDivElement>;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -24,7 +25,11 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   changeToken,
   close,
   themeKey,
+  modalRef,
 }) => {
+  const myElementRef = useRef<HTMLDivElement | null>(null);
+  const [positionTop, setPositionTop] = useState(0);
+
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
     if (tokenPrice === null || Number.isNaN(tokenPrice)) {
@@ -47,8 +52,25 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     changeKeyword(searchKeyword);
   }, [changeKeyword]);
 
+  useEffect(() => {
+    const getPositionTop = () => {
+      const element = myElementRef.current;
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const temp = Math.max(positionTop, rect.top);
+        if (modalRef && modalRef.current) {
+          modalRef.current.style.top = `${temp}px`;
+          modalRef.current.style.transform = "translate(-50%, 0)";
+        }
+        setPositionTop(temp);
+        
+      }
+    };
+    getPositionTop();
+  }, [positionTop]);
+  
   return (
-    <SelectTokenWrapper>
+    <SelectTokenWrapper ref={myElementRef}>
       <div className="content">
         <div className="header">
           <span>Select a token</span>

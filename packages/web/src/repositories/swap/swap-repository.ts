@@ -18,7 +18,7 @@ export interface SwapRepository {
 
   getSlippage: () => number;
 
-  setSlippage: (slippage: number) => boolean;
+  setSlippage: (slippage: string) => boolean;
 
   swap: (request: SwapRequest) => Promise<SwapResponse | null>;
 }

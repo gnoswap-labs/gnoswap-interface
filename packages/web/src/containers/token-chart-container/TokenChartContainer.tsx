@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import TokenChart from "@components/token/token-chart/TokenChart";
+import TOKEN_LIST from "@repositories/token/mock/assets.json";
+import { useRouter } from "next/router";
 
-export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "YTD"] as const;
+export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
 
 export interface TokenInfo {
@@ -9,6 +11,10 @@ export interface TokenInfo {
     name: string;
     symbol: string;
     image: string;
+    pkg_path: string
+    decimals: number
+    description: string
+    website_url: string
   };
   priceInfo: {
     amount: {
@@ -18,7 +24,9 @@ export interface TokenInfo {
     changedRate: number;
   };
 }
-
+const months = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 export interface ChartInfo {
   xAxisLabels: string[];
   yAxisLabels: string[];
@@ -34,8 +42,12 @@ export interface ChartInfo {
 const dummyTokenInfo: TokenInfo = {
   token: {
     name: "Gnoswap",
-    symbol: "GNOS",
-    image: "https://miro.medium.com/v2/resize:fill:44:44/1*61CWWk33Fx8vLVvto5nJHQ.png",
+    symbol: "GNS",
+    image: "/gnos.svg",
+    pkg_path: "string",
+    decimals: 1,
+    description: "string",
+    website_url: "string",
   },
   priceInfo: {
     amount: {
@@ -60,39 +72,47 @@ function createXAxisDummyDatas(currentTab: TokenChartGraphPeriodType) {
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setDate(date.getDate() - 1 * index);
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        const dateStr = `${date.getDate()}`.padStart(2, "0");
-        return `${monthStr}-${dateStr}`;
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const yearStr = date.getFullYear();
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1M":
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        return `${yearStr}-${monthStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1Y":
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setFullYear(date.getFullYear() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        return `${yearStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
-    case "YTD":
+    case "ALL":
     default:
       return Array.from({ length: 10 }, (_, index) => {
         const date = new Date(now);
         date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        return `${yearStr}-${monthStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
   }
 }
 
 function createDummyAmountDatas() {
-  const length = 24;
+  const length = 55;
   return Array.from({ length }, (_, index) => {
     const date = new Date();
     date.setHours(date.getHours() - index);
@@ -108,8 +128,27 @@ function createDummyAmountDatas() {
 }
 
 const TokenChartContainer: React.FC = () => {
-  const [tokenInfo] = useState<TokenInfo>(dummyTokenInfo);
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
+  const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
+  useEffect(() => {
+    const currentToken = TOKEN_LIST.filter(item => item.symbol === router.query["token-path"])[0];
+    setTokenInfo(prev => ({
+      ...prev,
+      token: {
+        ...currentToken
+      }
+    }));
+  }, [router.query]);
+  
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const changeTab = useCallback((tab: string) => {
     const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";
@@ -136,15 +175,19 @@ const TokenChartContainer: React.FC = () => {
   };
 
   const getYAxisLabels = (): string[] => {
-    return ["1", "2", "3", "4", "5", "6", "7"];
+    const fake1 = ["10", "20", "30", "40", "50", "60", "70"];
+    const fake2 = ["100", "200", "300", "400", "500", "600", "700"];
+    const fake3 = ["1000", "2000", "3000", "4000", "5000", "6000", "7000"];
+    return [fake1, fake2, fake3][Math.floor(Math.random() * 3)];
   };
-
+  
   return (
     <TokenChart
       tokenInfo={tokenInfo}
       chartInfo={getChartInfo()}
       currentTab={currentTab}
       changeTab={changeTab}
+      loading={loading}
     />
   );
 };

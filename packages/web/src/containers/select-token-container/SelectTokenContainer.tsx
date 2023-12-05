@@ -10,11 +10,13 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
+  modalRef?: React.RefObject<HTMLDivElement>;
 }
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   changeToken,
   callback,
+  modalRef,
 }) => {
   const { tokens, balances, updateTokens, updateBalances } = useTokenData();
   const [keyword, setKeyword] = useState("");
@@ -71,6 +73,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       changeToken={selectToken}
       close={close}
       themeKey={themeKey}
+      modalRef={modalRef}
     />
   );
 };

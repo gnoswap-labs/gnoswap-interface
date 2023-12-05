@@ -45,6 +45,8 @@ const palette = {
   gradient4: "linear-gradient(to left, #536CD7, #A7B9F8)",
   gradient5: "linear-gradient(to right, #59678240, #59678200)",
   gradient6: "linear-gradient(0, #E0E8F4 0%, #E0E8F4 100%)",
+  gradient7: "linear-gradient(90deg, rgba(89, 103, 130, 0.25) 0%, rgba(89, 103, 130, 0) 99.91%)",
+  gradient8: "linear-gradient(90deg, #E0E8F4 0%, rgba(224, 232, 244, 0) 100%)",
   whiteGradient4: "linear-gradient(to left, #536CD7, #233DBD)",
   redDark: "#ff2e2e66",
   greenDark: "#2eff8266",
@@ -146,6 +148,9 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   background21: colors.dark.brand900BG,
   background22: colors.global.none,
   background23: colors.dark.gradientBG,
+  background24: colors.global.brand500,
+  background25: colors.dark.blackBG,
+  bgLoading: colors.global.black2,
   backgroundOpacity: colors.dark.blackOpacity07BG,
   backgroundOpacity2: colors.dark.blackOpacity07BG,
   backgroundOpacity3: colors.global.gray600Opacity,
@@ -156,6 +161,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   backgroundGradient3: colors.global.gradient3,
   backgroundGradient4: colors.global.gradient4,
   backgroundGradient5: colors.global.gradient5,
+  backgroundGradient6: colors.global.gradient7,
   border01: colors.dark.gray600Border1,
   border02: colors.dark.gray500Border2,
   border03: colors.dark.gray400Border3,
@@ -229,6 +235,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   greenDark: colors.global.greenDark,
   shadow: colors.global.shadowDark,
   shadow01: colors.global.shadowDark1,
+  shadow02: colors.global.shadowDark,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -257,6 +264,9 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   background21: colors.global.whiteGradient4,
   background22: colors.global.brand500,
   background23: colors.white.whiteBG,
+  background24: colors.global.brand600,
+  background25: colors.white.gray100BG,
+  bgLoading: colors.white.whiteBG,
   backgroundOpacity: colors.white.gray100Opacity05BG,
   backgroundOpacity2: colors.white.whiteOpacity07BG,
   backgroundOpacity3: colors.white.gray100Opacity05BG,
@@ -267,6 +277,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   backgroundGradient3: colors.white.whiteBG,
   backgroundGradient4: colors.global.whiteGradient4,
   backgroundGradient5: colors.global.gradient6,
+  backgroundGradient6: colors.global.gradient8,
   border01: colors.white.gray100Border1,
   border02: colors.white.gray100Border1,
   border03: colors.white.gray200Border2,
@@ -340,4 +351,5 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   greenDark: colors.global.greenDark,
   shadow: colors.global.shadowLight,
   shadow01: colors.global.shadowLight,
+  shadow02: colors.global.none,
 };

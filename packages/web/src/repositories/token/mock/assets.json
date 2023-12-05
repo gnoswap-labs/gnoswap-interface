@@ -1,0 +1,56 @@
+[
+    {
+      "name": "Tong",
+      "pkg_path": "gno.land/r/demo/tong",
+      "symbol": "TONG",
+      "decimals": 4,
+      "description": "Tong is a realm of GRC20",
+      "website_url": "https://test3.gno.land/r/demo/tong",
+      "image": "https://raw.githubusercontent.com/onbloc/gno-token-resource/e780d05dbf4919894951de7825239730b2b86f58/grc20/images/gno_land_r_demo_tong.svg"
+    },
+    {
+      "name": "Foo",
+      "pkg_path": "gno.land/r/foo",
+      "symbol": "FOO",
+      "decimals": 4,
+      "description": "Foo is a GRC20 token solely with the testing purpose.",
+      "website_url": "https://twitter.com/gnoswaplabs",
+      "image": "https://raw.githubusercontent.com/onbloc/gno-token-resource/e780d05dbf4919894951de7825239730b2b86f58/grc20/images/gno_land_r_foo.svg"
+    },
+    {
+      "name": "Bar",
+      "pkg_path": "gno.land/r/bar",
+      "symbol": "BAR",
+      "decimals": 4,
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eu pretium sit amet, varius in quam. In auctor gravida pretium. Maecenas est ante, pulvinar id accumsan eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque eu, fringilla sit amet sapien. Proin ut semper risus. Vivamus fringilla eget lectus ut faucibus. Proin vitae mollis massa. Sed bibendum tortor eget aliquam commodo. Etiam et eleifend augue. Donec molestie placerat elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nisi orci, ultrices sit amet mi eget, efficitur elementum tellus. Integer augue purus, rutrum eu pretium sit amet, varius in quam. In auctor gravida pretium. Maecenas est ante, pulvinar id accumsan eget, aliquam ac turpis. Donec vulputate nunc tellus. In sit amet mattis nisl. Mauris libero quam, hendrerit dapibus scelerisque.",
+      "website_url": "https://twitter.com/gnoswaplabs",
+      "image": "https://raw.githubusercontent.com/onbloc/gno-token-resource/e780d05dbf4919894951de7825239730b2b86f58/grc20/images/gno_land_r_bar.svg"
+    },
+    {
+      "name": "Baz",
+      "pkg_path": "gno.land/r/baz",
+      "symbol": "BAZ",
+      "decimals": 4,
+      "description": "Baz is a GRC20 token solely with the testing purpose.",
+      "website_url": "https://twitter.com/gnoswaplabs",
+      "image": "https://raw.githubusercontent.com/onbloc/gno-token-resource/e780d05dbf4919894951de7825239730b2b86f58/grc20/images/gno_land_r_baz.svg"
+    },
+    {
+      "name": "Qux",
+      "pkg_path": "gno.land/r/qux",
+      "symbol": "QUX",
+      "decimals": 4,
+      "description": "Qux is a GRC20 token solely with the testing purpose.",
+      "website_url": "https://twitter.com/gnoswaplabs",
+      "image": "https://raw.githubusercontent.com/onbloc/gno-token-resource/e780d05dbf4919894951de7825239730b2b86f58/grc20/images/gno_land_r_qux.svg"
+    },
+    {
+      "name": "Gnoswap",
+      "pkg_path": "gno.land/r/gns",
+      "symbol": "GNS",
+      "decimals": 4,
+      "description": "GNS is a GRC20 token solely with the testing purpose.",
+      "website_url": "https://twitter.com/gnoswaplabs",
+      "image": "https://raw.githubusercontent.com/onbloc/gno-token-resource/e780d05dbf4919894951de7825239730b2b86f58/grc20/images/gno_land_r_gns.svg"
+    }
+  ]

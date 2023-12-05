@@ -9,9 +9,9 @@ export const wrapper = (theme: Theme) => css`
   width: 100%;
   color: ${theme.color.text01};
   gap: 12px;
-  padding: 24px;
+  padding: 23px;
   @media (max-width: 1180px) {
-    padding: 16px;
+    padding: 15px;
   }
   ${media.mobile} {
     ${fonts.body9};

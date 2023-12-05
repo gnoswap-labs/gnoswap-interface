@@ -137,7 +137,7 @@ export const RightSection = styled.div`
   ${mixins.flexbox("row", "center", "flex-end")};
   max-width: 255px;
   width: 100%;
-  gap: 16px;
+  gap: 10px;
   ${media.tablet} {
     max-width: 231px;
     gap: 8px;
@@ -146,7 +146,7 @@ export const RightSection = styled.div`
 
 export const SearchContainer = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  gap: 18px;
+  gap: 10px;
   ${media.tablet} {
     gap: 10px;
   }
@@ -156,11 +156,12 @@ export const SearchButton = styled.button`
   ${mixins.flexbox("row", "center", "flex-start")};
   border-radius: 4px;
   transition: all 0.3s ease;
+  margin-right: 2px;
   .search-icon {
     width: 32.5px;
     height: 32.5px;
     * {
-      fill: ${({ theme }) => theme.color.icon05};
+      fill: ${({ theme }) => theme.color.icon03};
     }
     ${media.tablet} {
       width: 29px;
@@ -171,5 +172,26 @@ export const SearchButton = styled.button`
     .search-icon * {
       fill: ${({ theme }) => theme.color.icon07};
     }
+  }
+`;
+
+export const DepositButton = styled.button`
+  ${mixins.flexbox("row", "center", "center")};
+  color: #E0E8F4;
+  gap: 8px;
+  ${fonts.p1}
+  padding: 10px 16px 10px 14px;
+  background-color: ${({ theme }) => theme.color.background04};
+  border-radius: 8px;
+  width: 101px;
+  svg {
+    width: 15px;
+    height: 15px;
+    * {
+    fill: #E0E8F4;
+    }
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.color.background04Hover};
   }
 `;

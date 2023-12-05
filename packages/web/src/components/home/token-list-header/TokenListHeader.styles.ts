@@ -41,16 +41,20 @@ export const TokenTitleWrapper = styled.div`
     }
   }
 
-  .search-icon {
-    width: 24px;
-    height: 24px;
-    * {
-      fill: ${({ theme }) => theme.color.icon08};
+  .icon-wrap {
+    height: 100%;
+    .search-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 13px;
+      * {
+        fill: ${({ theme }) => theme.color.icon08};
+      }
     }
-  }
-  .search-icon:hover {
-    * {
-      fill: ${({ theme }) => theme.color.icon02};
+    .search-icon:hover {
+      * {
+        fill: ${({ theme }) => theme.color.icon02};
+      }
     }
   }
 `;

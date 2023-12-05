@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import DashboardInfo from "@components/dashboard/dashboard-info/DashboardInfo";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
@@ -22,11 +22,11 @@ export interface SupplyOverviewInfo {
 }
 
 const initialSupplyOverviewInfo: SupplyOverviewInfo = {
-  totalSupply: "1,000,000,000 GNOS",
-  circulatingSupply: "218,184,885 GNOS",
-  progressBar: "580 GNOS",
-  dailyBlockEmissions: "580 GNOS",
-  totalStaked: "152,412,148 GNOS",
+  totalSupply: "1,000,000,000 GNS",
+  circulatingSupply: "218,184,885 GNS",
+  progressBar: "580 GNS",
+  dailyBlockEmissions: "580 GNS",
+  totalStaked: "152,412,148 GNS",
   stakingRatio: "55.15%",
 };
 
@@ -43,11 +43,19 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
   holders: "14,072",
   passedProposals: "125",
   activeProposals: "2",
-  communityPool: "2,412,148 GNOS",
+  communityPool: "2,412,148 GNS",
 };
 
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <DashboardInfo
@@ -55,6 +63,7 @@ const DashboardInfoContainer: React.FC = () => {
       supplyOverviewInfo={initialSupplyOverviewInfo}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}
+      loading={loading}
     />
   );
 };

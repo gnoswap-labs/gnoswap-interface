@@ -14,9 +14,9 @@ interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
   changeTokenA: (token: TokenModel) => void;
-  changeTokenAAmount: (value: string) => void;
+  changeTokenAAmount: (value: string, none?: boolean) => void;
   changeTokenB: (token: TokenModel) => void;
-  changeTokenBAmount: (value: string) => void;
+  changeTokenBAmount: (value: string, none?: boolean) => void;
   switchSwapDirection: () => void;
   connectedWallet: boolean;
   isLoading: boolean;
@@ -41,6 +41,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      if (value === "") {
+        changeTokenAAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
       changeTokenAAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
@@ -50,6 +53,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const onChangeTokenBAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      if (value === "") {
+        changeTokenBAmount("", true);
+      }
       if (value !== "" && !isAmount(value)) return;
       changeTokenBAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },

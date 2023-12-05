@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import {
   ClearButton,
   NoDataText,
   NotificationHeader,
   NotificationListWrapper,
+  Overlay,
 } from "./NotificationList.styles";
 import TransactionItems from "./TransactionItems";
 import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
@@ -22,47 +23,35 @@ const NotificationList: React.FC<NotificationListProps> = ({
 }) => {
   const listRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const closeList = (e: MouseEvent) => {
-      if (listRef.current && listRef.current.contains(e.target as Node)) {
-        return;
-      } else {
-        e.stopPropagation();
-        onListToggle();
-      }
-    };
-    window.addEventListener("click", closeList, true);
-    return () => {
-      window.removeEventListener("click", closeList, true);
-    };
-  }, [listRef, onListToggle]);
-
   return (
-    <NotificationListWrapper ref={listRef} width={window?.innerWidth}>
-      <NotificationHeader>
-        <span className="notification-title">Notification</span>
-        {txsGroupsInformation.length > 0 && (
-          <ClearButton>Clear All</ClearButton>
-        )}
-      </NotificationHeader>
-      {txsGroupsInformation && txsGroupsInformation.length > 0 ? (
-        <div className="list-container">
-          <div className="list-content">
-            {txsGroupsInformation.map(groups => (
-              <TransactionItems
-                key={groups.title}
-                groups={groups}
-                breakpoint={breakpoint}
-              />
-            ))}
+    <>
+      <NotificationListWrapper ref={listRef} width={window?.innerWidth}>
+        <NotificationHeader>
+          <span className="notification-title">Notification</span>
+          {txsGroupsInformation.length > 0 && (
+            <ClearButton>Clear All</ClearButton>
+          )}
+        </NotificationHeader>
+        {txsGroupsInformation && txsGroupsInformation.length > 0 ? (
+          <div className="list-container">
+            <div className="list-content">
+              {txsGroupsInformation.map(groups => (
+                <TransactionItems
+                  key={groups.title}
+                  groups={groups}
+                  breakpoint={breakpoint}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ) : (
-        <>
-          <NoDataText>No notifications found</NoDataText>
-        </>
-      )}
-    </NotificationListWrapper>
+        ) : (
+          <>
+            <NoDataText>No notifications found</NoDataText>
+          </>
+        )}
+      </NotificationListWrapper>
+      <Overlay onClick={onListToggle} />
+    </>
   );
 };
 

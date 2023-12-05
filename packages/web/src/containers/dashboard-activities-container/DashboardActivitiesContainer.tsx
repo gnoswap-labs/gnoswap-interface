@@ -49,10 +49,10 @@ const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
 
 export const dummyTokenList: Activity[] = [
   {
-    action: "Add GNOT and GNOS",
+    action: "Add GNOT and GNS",
     totalValue: "$12,090",
     tokenAmountOne: "100 ATOM",
-    tokenAmountTwo: "19 GNOS",
+    tokenAmountTwo: "19 GNS",
     account: "g129kua...ndsu12",
     time: "less than a minute ago",
   },

@@ -11,8 +11,12 @@ export const wrapper = (theme: Theme) => css`
   background-color: ${theme.color.backgroundOpacity3};
   border: 1px solid ${theme.color.border02};
   border-radius: 8px;
-  padding: 16px;
+  padding: 15px;
   gap: 16px;
+  ${media.mobile} {
+    gap: 12px;
+    height: auto;
+  }
 
   .title-wrap,
   .performance-list {
@@ -34,9 +38,15 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     gap: 16px;
+    ${media.mobile} {
+      gap: 12px;
+    }
   }
   .performance-list {
     height: 25px;
+    ${media.mobile} {
+      height: auto;
+    }
     span {
       ${fonts.body10};
       width: 200px;

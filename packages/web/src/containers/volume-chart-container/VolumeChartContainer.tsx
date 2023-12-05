@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VolumeChart from "@components/dashboard/volume-chart/VolumeChart";
 import { CHART_TYPE } from "@constants/option.constant";
@@ -11,13 +11,16 @@ export interface VolumePriceInfo {
 export interface VolumeChartInfo {
   datas: string[];
   xAxisLabels: string[];
+  times: string[];
 }
 
 const initialVolumePriceInfo: VolumePriceInfo = {
   amount: "$994,120,000",
   fee: "$12,231",
 };
-
+const months = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 function createXAxisDummyDatas(currentTab: CHART_TYPE) {
   const now = Date.now();
   switch (currentTab) {
@@ -25,33 +28,67 @@ function createXAxisDummyDatas(currentTab: CHART_TYPE) {
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setDate(date.getDate() - 1 * index);
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        const dateStr = `${date.getDate()}`.padStart(2, "0");
-        return `${monthStr}-${dateStr}`;
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const yearStr = date.getFullYear();
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1M":
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        return `${yearStr}-${monthStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1Y":
-    case "YTD":
-    default:
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setFullYear(date.getFullYear() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        return `${yearStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
+      }).reverse();
+    case "ALL":
+    default:
+      return Array.from({ length: 10 }, (_, index) => {
+        const date = new Date(now);
+        date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const yearStr = date.getFullYear();
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
   }
 }
 
-function createDummyAmountDatas() {
-  const length = 24;
-  return Array.from({ length }, () => `${Math.round(Math.random() * 50) + 1}`);
+function createDummyAmountDatas(volumeChartType: CHART_TYPE) {
+  let length = 8;
+  if (CHART_TYPE["7D"] === volumeChartType) {
+    length = 8;
+  }
+  if (CHART_TYPE["1M"] === volumeChartType) {
+    length = 31;
+  }
+  if (CHART_TYPE["1Y"] === volumeChartType) {
+    length = 91;
+  }
+  if (CHART_TYPE["ALL"] === volumeChartType) {
+    length = 91;
+  }
+  return Array.from({ length }, (_, index) => {
+    const date = new Date();
+    date.setHours(date.getHours() - index);
+    return {
+      amount: `${Math.round(Math.random() * 10000000) + 10000000}`,
+      time: date.toString()
+    };
+  });
 }
 
 async function fetchVolumePriceInfo(): Promise<VolumePriceInfo> {
@@ -61,6 +98,15 @@ async function fetchVolumePriceInfo(): Promise<VolumePriceInfo> {
 }
 
 const VolumeChartContainer: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
+
   const [volumeChartType, setVolumeChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
   );
@@ -80,11 +126,12 @@ const VolumeChartContainer: React.FC = () => {
 
   const getChartInfo = useCallback(() => {
     const xAxisLabels = createXAxisDummyDatas(volumeChartType);
-    const datas = createDummyAmountDatas();
+    const datas = createDummyAmountDatas(volumeChartType);
 
     const chartInfo: VolumeChartInfo = {
       xAxisLabels,
-      datas: datas,
+      datas: datas.map(item => item.amount),
+      times: datas.map(item => item.time),
     };
 
     return chartInfo;
@@ -96,6 +143,7 @@ const VolumeChartContainer: React.FC = () => {
       changeVolumeChartType={changeVolumeChartType}
       volumePriceInfo={volumePriceInfo}
       volumeChartInfo={getChartInfo()}
+      loading={loading}
     />
   );
 };

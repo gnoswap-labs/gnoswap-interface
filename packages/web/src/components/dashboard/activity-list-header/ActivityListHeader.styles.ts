@@ -7,7 +7,9 @@ export const ActivityListHeaderwrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   width: 100%;
   gap: 36px;
-
+  ${media.tabletMiddle} {
+    gap: 36px;
+  }
   ${media.mobile} {
     flex-direction: column;
     justify-content: center;
@@ -16,6 +18,7 @@ export const ActivityListHeaderwrapper = styled.div`
   }
   h2 {
     ${fonts.h5};
+    flex: 0 0 auto;
     ${media.mobile} {
       ${fonts.h6};
     }
@@ -24,6 +27,9 @@ export const ActivityListHeaderwrapper = styled.div`
   .overflow-tab {
     > div {
       padding: 1px;
+    }
+    ${media.tabletMiddle} {
+      overflow-x: scroll;
     }
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};

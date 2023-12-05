@@ -24,10 +24,6 @@ export const SIDE_MENU_NAV = {
     title: "Governance",
     path: "/governance",
   },
-  AIRDROP: {
-    title: "Airdrop",
-    path: "/airdrop",
-  },
   HELPCENTER: {
     title: "Help Center",
     path: "/helpcenter",

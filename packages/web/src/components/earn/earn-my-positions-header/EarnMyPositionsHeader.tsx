@@ -4,19 +4,21 @@ import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 
 export interface EarnMyPositionsHeaderProps {
   connected: boolean;
+  isSwitchNetwork: boolean;
   moveEarnAdd: () => void;
   moveEarnStake: () => void;
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   connected,
+  isSwitchNetwork,
   moveEarnAdd,
   moveEarnStake,
 }) => {
 
   const disabledNewPosition = useMemo(() => {
-    return !connected;
-  }, [connected]);
+    return !connected || isSwitchNetwork;
+  }, [connected, isSwitchNetwork]);
 
   const onClickNewPosition = useCallback(() => {
     moveEarnAdd();

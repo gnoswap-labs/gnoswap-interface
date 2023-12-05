@@ -20,11 +20,12 @@ import { useRouter } from "next/router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useNotice } from "@hooks/common/use-notice";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import { TNoticeType } from "src/context/NoticeContext";
 import { useSlippage } from "@hooks/common/use-slippage";
 
 const SwapContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN", tokenAAmount: defaultTokenAAmount } = swapValue;
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
   const { setNotice } = useNotice();
@@ -33,13 +34,13 @@ const SwapContainer: React.FC = () => {
   const [initialized, setInitialized] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances, getTokenUSDPrice, getTokenPriceRate } = useTokenData();
-  const [tokenAAmount, setTokenAAmount] = useState<string>("");
+  const [tokenAAmount, setTokenAAmount] = useState<string>(defaultTokenAAmount ?? "");
   const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
-  const { slippage: storedSlippage, changeSlippage: changeStoredSlippage } = useSlippage();
-  const [slippage, setSlippage] = useState(storedSlippage);
+  const { slippage, changeSlippage } = useSlippage();
+
   const [gasFeeAmount] = useState<AmountModel>({
     amount: 0.000001,
     currency: "GNOT"
@@ -111,7 +112,7 @@ const SwapContainer: React.FC = () => {
 
   const swapButtonText = useMemo(() => {
     if (!connectedWallet) {
-      return "Connect Wallet";
+      return "Wallet Login";
     }
     if (isSwitchNetwork) {
       return "Switch to Gnoland";
@@ -158,12 +159,13 @@ const SwapContainer: React.FC = () => {
     setSwapResult(null);
     setOpenedConfirModal(false);
     updateBalances();
-    if (swapResult?.success) {
-      setNotice(null, { timeout: 2000 });
-    }
-  }, [updateBalances, swapResult]);
+  }, [updateBalances]);
 
-  const changeTokenAAmount = useCallback((value: string) => {
+  const changeTokenAAmount = useCallback((value: string, none?: boolean) => {
+    if (none) {
+      setIsLoading(false);
+      return;
+    }
     if (!matchInputNumber(value)) {
       return;
     }
@@ -180,7 +182,11 @@ const SwapContainer: React.FC = () => {
     setQuery({ ...query, direction: "EXACT_IN" });
   }, [query, setTokenBAmount]);
 
-  const changeTokenBAmount = useCallback((value: string) => {
+  const changeTokenBAmount = useCallback((value: string, none?: boolean) => {
+    if (none) {
+      setIsLoading(false);
+      return;
+    }
     if (!matchInputNumber(value)) {
       return;
     }
@@ -196,13 +202,6 @@ const SwapContainer: React.FC = () => {
     setTokenBAmount(value);
     setQuery({ ...query, direction: "EXACT_OUT" });
   }, [query]);
-
-  const changeSlippage = useCallback((value: string) => {
-    setSlippage(BigNumber(value || 0).toNumber());
-    if (!Number.isNaN(value)) {
-      changeStoredSlippage(Number(value));
-    }
-  }, []);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
@@ -220,7 +219,7 @@ const SwapContainer: React.FC = () => {
       slippage
     };
   }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
-
+  
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
       return null;
@@ -367,9 +366,24 @@ const SwapContainer: React.FC = () => {
     setSubmitted(true);
     const swapAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     swap(estimatedRoutes, swapAmount).then(result => {
+      if (result !== false) {
+        setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
+        setTimeout(() => {
+          if (!!result) {
+            setNotice(null, {timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999});
+          } else {
+            setNotice(null, {timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999});
+          }
+        }, 1000);
+      }
       setSwapResult({
         success: result !== null,
         hash: (result as unknown as SwapResponse)?.tx_hash || "",
+      });
+    }).catch(() => {
+      setSwapResult({
+        success: false,
+        hash: "",
       });
     });
   }
@@ -377,8 +391,20 @@ const SwapContainer: React.FC = () => {
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
   }, []);
 
+  useEffect(() => {
+    if (defaultTokenAAmount) {
+      setIsLoading(true);
+    }
+  }, [defaultTokenAAmount]);
+
+  
   useEffect(() => {
     if (!tokenA || !tokenB) {
       return;
@@ -448,7 +474,7 @@ const SwapContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-
+  
   return (
     <SwapCard
       connectedWallet={connectedWallet}

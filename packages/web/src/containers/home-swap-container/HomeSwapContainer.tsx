@@ -2,12 +2,15 @@ import { SwapDirectionType } from "@common/values";
 import HomeSwap from "@components/home/home-swap/HomeSwap";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 import { numberToUSD } from "@utils/number-utils";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
+import { useAtom } from "jotai";
+import { SwapState } from "@states/index";
 
 const TOKEN_A = {
   chainId: "dev",
@@ -28,7 +31,7 @@ const TOKEN_B = {
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
   path: "gno.land/r/gnos",
   decimals: 4,
-  symbol: "GNOS",
+  symbol: "GNS",
   logoURI: "/gnos.svg",
   priceId: "gno.land/r/gnos",
 };
@@ -40,22 +43,27 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenAAmount] = useState<string>("1000");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
   const [tokenBAmount] = useState<string>("0");
-  const [swapDirection] = useState<SwapDirectionType>("EXACT_IN");
+  const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
+  const { connected } = useWallet();
+  const [, setSwapValue] = useAtom(SwapState.swap);
+
 
   const tokenABalance = useMemo(() => {
+    if (!connected) return "-";
     if (tokenA && balances[tokenA.priceId]) {
       return BigNumber(balances[tokenA.priceId] || 0).toFormat();
     }
     return "0";
-  }, [balances, tokenA]);
+  }, [connected ,balances, tokenA]);
 
   const tokenBBalance = useMemo(() => {
+    if (!connected) return "-";
     if (tokenB && balances[tokenB.priceId]) {
       return BigNumber(balances[tokenB.priceId] || 0).toFormat();
     }
     return "0";
-  }, [balances, tokenB]);
+  }, [connected ,balances, tokenB]);
 
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[tokenA.priceId]) {
@@ -104,19 +112,33 @@ const HomeSwapContainer: React.FC = () => {
   ]);
 
   const swapNow = useCallback(() => {
-    router.push("/swap?from=GNOT&to=GNOS");
-  }, [router]);
+    if (swapDirection === "EXACT_IN") {
+      router.push("/swap?tokenA=gno.land/r/bar&tokenB=gno.land/r/foo&direction=EXACT_IN");
+    } else {
+      router.push("/swap?tokenA=gno.land/r/foo&tokenB=gno.land/r/bar&direction=EXACT_IN");
+    }
+  }, [router, swapDirection]);
 
   const onSubmitSwapValue = () => {
     setTokenA(tokenB);
     setTokenB(tokenA);
+    setSwapDirection(prev => prev === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN");
   };
+
+  const changeTokenAAmount = useCallback((value: string) => {
+    setSwapValue((prev) => ({
+      ...prev,
+      tokenAAmount: value,
+    }));
+  }, []);
+
 
   return (
     <HomeSwap
       swapTokenInfo={swapTokenInfo}
       swapNow={swapNow}
       onSubmitSwapValue={onSubmitSwapValue}
+      changeTokenAAmount={changeTokenAAmount}
     />
   );
 };

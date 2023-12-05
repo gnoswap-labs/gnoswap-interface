@@ -144,6 +144,10 @@ export function numberToUSD(value: number) {
   return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat()}`;
 }
 
+export function numberToUSDV2(value: number) {
+  return Number.isNaN(value) ? "-" : `$${value}`;
+}
+
 export function matchInputNumber(value: string) {
   const regexpOfNum = /^(\d*)[\.]?(\d*)?$/g;
   const regexpOfStartWithZeroes = /^(?!00)/;

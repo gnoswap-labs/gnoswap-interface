@@ -10,7 +10,6 @@ export const TokenChartGraphWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background15};
   border-radius: 8px;
   justify-content: space-between;
-  padding: 0 5px 12px 0;
 
   .data-wrapper {
     display: flex;
@@ -28,10 +27,10 @@ export const TokenChartGraphWrapper = styled.div`
     .xaxis-wrapper {
       display: flex;
       flex-direction: row;
+      height: 40px;
       width: 100%;
-      margin: 12px 0 0 0;
-      padding-right: 13px;
-      padding-left: 12px;
+      align-items: center;
+      padding: 0 12px;
       justify-content: space-between;
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
@@ -40,13 +39,12 @@ export const TokenChartGraphWrapper = styled.div`
         ${fonts.body12};
         color: ${({ theme }) => theme.color.text04};
         ${media.mobile} {
-          ${fonts.p7};
+          ${fonts.p4};
         }
       }
       ${media.mobile} {
-        padding-right: 4px;
-        padding-left: 4px;
-        margin-top: 4px;
+        height: 30px;
+        padding: 0 4px;
       }
     }
   }
@@ -55,24 +53,41 @@ export const TokenChartGraphWrapper = styled.div`
     text-align: center;
     display: flex;
     flex-direction: column-reverse;
-    width: 24px;
-    padding: 8px 0 9px 5px;
-    margin-bottom: 30px;
+    min-width: 50px;
+    margin-bottom: 40px;
+    padding: 8px 0;
     justify-content: space-between;
     span {
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
     }
+    .large-text {
+      ${fonts.body12};
+    }
+    .medium-text {
+      ${fonts.p4}
+    }
+    .small-text {
+      ${fonts.p6}
+      font-size: 11px;
+    }
     ${media.mobile} {
       ${fonts.p7};
-      padding-left: 5px;
-      width: 14px;
+      margin-bottom: 30px;
+      min-width: 40px;
+      padding: 4px 0;
       span {
         ${fonts.p7};
       }
+      .large-text {
+        ${fonts.p4};
+      }
+      .medium-text {
+        ${fonts.p6}
+      }
+      .small-text {
+        ${fonts.p7}
+      }
     }
-  }
-  ${media.mobile} {
-    padding: 0 5px 4px 0;
   }
 `;

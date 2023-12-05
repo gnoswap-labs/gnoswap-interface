@@ -27,7 +27,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
   const [currentPool, setCurrentPool] = useState(pools[0]);
   const [, setPool] = useAtom(EarnState.pool);
 
-  const { connected, connectAdenaClient } = useWallet();
+  const { connected, connectAdenaClient, isSwitchNetwork } = useWallet();
 
   const [currentToken, setCurrentToken] = useState<TokenBalanceInfo | null>(null);
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
@@ -83,6 +83,9 @@ const PoolAddIncentivizeContainer: React.FC = () => {
     if (!connected) {
       return false;
     }
+    if (isSwitchNetwork) {
+      return false;
+    }
     if (!currentPool) {
       return true;
     }
@@ -102,6 +105,9 @@ const PoolAddIncentivizeContainer: React.FC = () => {
     if (!connected) {
       return "Wallet Login";
     }
+    if (isSwitchNetwork) {
+      return "Switch to Gnoland";
+    }
     if (!currentPool) {
       return "Select Pool";
     }
@@ -115,7 +121,7 @@ const PoolAddIncentivizeContainer: React.FC = () => {
       return "Insufficient Balance";
     }
     return "Incentivize Pool";
-  }, [connected, currentPool, tokenAmountInput]);
+  }, [connected, currentPool, tokenAmountInput, isSwitchNetwork]);
 
   return (
     <PoolIncentivize

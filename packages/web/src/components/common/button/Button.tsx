@@ -8,6 +8,7 @@ interface ButtonProps {
   style: ButtonStyleProps;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
 }
 
 export enum ButtonHierarchy {
@@ -24,9 +25,11 @@ const Button = ({
   style,
   onClick,
   disabled,
+  buttonRef,
 }: ButtonProps) => {
   return (
     <ButtonWrapper
+      ref={buttonRef}
       {...style}
       onClick={onClick}
       disabled={disabled}

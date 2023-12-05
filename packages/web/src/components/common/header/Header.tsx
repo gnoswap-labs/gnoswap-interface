@@ -14,6 +14,7 @@ import {
   BottomNavWrapper,
   BottomNavContainer,
   BottomNavItem,
+  DepositButton,
 } from "./Header.styles";
 import NotificationButton from "@components/common/notification-button/NotificationButton";
 import { HEADER_NAV } from "@constants/header.constant";
@@ -23,6 +24,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
 import { AccountModel } from "@models/account/account-model";
+import IconDownload from "../icons/IconDownload";
 
 interface HeaderProps {
   pathname?: string;
@@ -43,6 +45,7 @@ interface HeaderProps {
   disconnectWallet: () => void;
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
+  loadingConnect: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -63,6 +66,7 @@ const Header: React.FC<HeaderProps> = ({
   disconnectWallet,
   switchNetwork,
   isSwitchNetwork,
+  loadingConnect,
 }) => {
   return (
     <>
@@ -105,6 +109,10 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
+              {connected && breakpoint !== DEVICE_TYPE.MOBILE && <DepositButton>
+                <IconDownload />
+                <span>Deposit</span>
+              </DepositButton>}
               <WalletConnectorButton
                 account={account}
                 connected={connected}
@@ -113,6 +121,7 @@ const Header: React.FC<HeaderProps> = ({
                 disconnectWallet={disconnectWallet}
                 switchNetwork={switchNetwork}
                 isSwitchNetwork={isSwitchNetwork}
+                loadingConnect={loadingConnect}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />
