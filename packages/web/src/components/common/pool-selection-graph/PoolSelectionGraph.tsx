@@ -13,7 +13,7 @@ function makeBadge(
   reverse = false,
 ) {
   const badge = refer.append("svg")
-    .attr("x", "0")
+    .attr("x", right ? "0" : "-12")
     .attr("y", "0")
     .attr("width", "11")
     .attr("height", "32")
@@ -261,9 +261,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
       /** Start Line */
       brushElement.select("#start").selectChildren().remove();
-      const startLineElement = brushElement.select("#start")
-        .append("g");
-      startLineElement.insert("line")
+      const startLineElement = brushElement.select("#start").insert("svg");
+      startLineElement.append("line")
         .attr("y1", 0)
         .attr("y2", boundsHeight + paddingHeight)
         .style("stroke", "#ff2e2e")
