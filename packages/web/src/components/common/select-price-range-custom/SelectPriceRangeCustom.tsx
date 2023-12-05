@@ -12,6 +12,8 @@ import { numberToFormat } from "@utils/string-utils";
 import { PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
 import { toNumberFormat } from "@utils/number-utils";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
+import { tickToPrice } from "@utils/swap-utils";
+import { MAX_TICK } from "@constants/swap.constant";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -140,15 +142,29 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const onChangeStartingPrice = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setStartingPriceValue(value);
-    changeStartingPrice(startingPriceValue);
   }, []);
 
   const updateStartingPrice = useCallback(() => {
+    if (startingPriceValue === "" || !Number(startingPriceValue)) {
+      setStartingPriceValue("");
+      changeStartingPrice("");
+      return;
+    }
     changeStartingPrice(startingPriceValue);
-  }, [startingPriceValue]);
+  }, [changeStartingPrice, startingPriceValue]);
 
   const finishMove = useCallback(() => {
     // Considering whether to adjust ticks at the end of a graph event 
+  }, [selectPool]);
+
+  const onSelectCustomRangeByMin = useCallback(() => {
+    selectPool.setFullRange(false);
+    selectPool.setMaxPosition(tickToPrice(MAX_TICK));
+  }, [selectPool]);
+
+  const onSelectCustomRangeByMax = useCallback(() => {
+    selectPool.setFullRange(false);
+    selectPool.setMinPosition(0);
   }, [selectPool]);
 
   useEffect(() => {
@@ -211,43 +227,41 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <span className="graph-option-item increase" onClick={selectPool.zoomOut}>+</span>
               </div>
             </div>
-            {
-              isLoading && (
-                <div className="loading-wrapper">
-                  <LoadingSpinner />
+
+            {isLoading && (
+              <div className="loading-wrapper">
+                <LoadingSpinner />
+              </div>
+            )}
+
+            {availSelect && (
+              <>
+                <div className="current-price-wrapper">
+                  <span>Current Price</span>
+                  <span>{currentPriceStr}</span>
                 </div>
-              )
-            }
-            {
-              availSelect && (
-                <>
-                  <div className="current-price-wrapper">
-                    <span>Current Price</span>
-                    <span>{currentPriceStr}</span>
-                  </div>
-                  <div className="range-graph-wrapper">
-                    <PoolSelectionGraph
-                      feeTier={selectPool.feeTier}
-                      scaleX={scaleX}
-                      scaleY={scaleY}
-                      selectedFullRange={selectPool.selectedFullRange}
-                      setFullRange={selectPool.setFullRange}
-                      zoomLevel={selectPool.zoomLevel}
-                      minPrice={selectPool.minPrice}
-                      maxPrice={selectPool.maxPrice}
-                      setMinPrice={selectPool.setMinPosition}
-                      setMaxPrice={selectPool.setMaxPosition}
-                      liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
-                      currentPrice={selectPool.currentPrice}
-                      focusPosition={selectPool.focusPosition}
-                      width={GRAPH_WIDTH}
-                      height={GRAPH_HEIGHT}
-                      finishMove={finishMove}
-                    />
-                  </div>
-                </>
-              )
-            }
+                <div className="range-graph-wrapper">
+                  <PoolSelectionGraph
+                    feeTier={selectPool.feeTier}
+                    scaleX={scaleX}
+                    scaleY={scaleY}
+                    selectedFullRange={selectPool.selectedFullRange}
+                    setFullRange={selectPool.setFullRange}
+                    zoomLevel={selectPool.zoomLevel}
+                    minPrice={selectPool.minPrice}
+                    maxPrice={selectPool.maxPrice}
+                    setMinPrice={selectPool.setMinPosition}
+                    setMaxPrice={selectPool.setMaxPosition}
+                    liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
+                    currentPrice={selectPool.currentPrice}
+                    focusPosition={selectPool.focusPosition}
+                    width={GRAPH_WIDTH}
+                    height={GRAPH_HEIGHT}
+                    finishMove={finishMove}
+                  />
+                </div>
+              </>
+            )}
             <div className="range-controller-wrapper">
               <SelectPriceRangeCutomController
                 title="Min Price"
@@ -255,6 +269,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 token0Symbol={currentTokenA.symbol}
                 token1Symbol={currentTokenB.symbol}
                 tickSpacing={selectPool.tickSpacing}
+                selectedFullRange={selectPool.selectedFullRange}
+                onSelectCustomRange={onSelectCustomRangeByMin}
                 changePrice={selectPool.setMinPosition}
                 decrease={selectPool.decreaseMinTick}
                 increase={selectPool.increaseMinTick}
@@ -265,6 +281,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 token0Symbol={currentTokenA.symbol}
                 token1Symbol={currentTokenB.symbol}
                 tickSpacing={selectPool.tickSpacing}
+                selectedFullRange={selectPool.selectedFullRange}
+                onSelectCustomRange={onSelectCustomRangeByMax}
                 changePrice={selectPool.setMaxPosition}
                 decrease={selectPool.decreaseMaxTick}
                 increase={selectPool.increaseMaxTick}

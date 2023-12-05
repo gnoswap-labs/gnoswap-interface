@@ -28,26 +28,26 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
   changeTokenAAmount,
   changeTokenBAmount,
 }) => {
-  const orderedCompare = useMemo(() => {
+  const isSelectTokenA = useMemo(() => {
     if (compareToken?.path === null || tokenAInput?.token?.path === null) {
       return null;
     }
-    return compareToken?.path === tokenAInput.token?.path;
+    return (compareToken?.path !== tokenAInput.token?.path);
   }, [compareToken?.path, tokenAInput.token]);
 
   const visibleTokenA = useMemo(() => {
-    if (orderedCompare === null || depositRatio === null) {
+    if (isSelectTokenA === null || depositRatio === null) {
       return true;
     }
-    return orderedCompare ? depositRatio <= 0 : depositRatio >= 100;
-  }, [depositRatio, orderedCompare]);
+    return isSelectTokenA ? depositRatio <= 0 : depositRatio >= 100;
+  }, [depositRatio, isSelectTokenA]);
 
   const visibleTokenB = useMemo(() => {
-    if (orderedCompare === null || depositRatio === null) {
+    if (isSelectTokenA === null || depositRatio === null) {
       return true;
     }
-    return orderedCompare ? depositRatio >= 100 : depositRatio <= 0;
-  }, [depositRatio, orderedCompare]);
+    return isSelectTokenA ? depositRatio >= 100 : depositRatio <= 0;
+  }, [depositRatio, isSelectTokenA]);
 
   return (
     <LiquidityEnterAmountsWrapper>

@@ -10,6 +10,8 @@ export interface SelectPriceRangeCutomControllerProps {
   token1Symbol: string;
   current: string | null;
   tickSpacing?: number;
+  selectedFullRange: boolean;
+  onSelectCustomRange: () => void;
   changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
@@ -24,6 +26,8 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   changePrice,
   decrease,
   increase,
+  selectedFullRange,
+  onSelectCustomRange,
 }) => {
   const [value, setValue] = useState("");
 
@@ -42,16 +46,17 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   const onChangeValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setValue(value);
-  }, []);
+    if (selectedFullRange) {
+      onSelectCustomRange();
+    }
+  }, [onSelectCustomRange, selectedFullRange]);
 
   const onBlurUpdate = useCallback(() => {
     const currentValue = BigNumber(value);
-    if (currentValue.isNaN()) {
-      return;
-    }
     const nearTick = priceToNearTick(currentValue.toNumber(), tickSpacing);
     const price = tickToPrice(nearTick);
     changePrice(price);
+    setValue(numberToFormat(price, 4));
   }, [tickSpacing, value]);
 
   useEffect(() => {
@@ -59,7 +64,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       setValue("");
       return;
     }
-    setValue(numberToFormat(current, 4));
+    setValue(current);
   }, [current]);
 
   return (

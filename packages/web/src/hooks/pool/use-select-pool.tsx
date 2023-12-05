@@ -319,7 +319,7 @@ export const useSelectPool = ({
         setPoolInfo(changedPoolInfo);
       }).catch(() => setPoolInfo(null));
     }
-  }, [poolRepository, feeTier, tokenA, tokenB, compareToken, isCreate, startPrice]);
+  }, [feeTier, tokenA, tokenB, compareToken, isCreate, startPrice]);
 
   useEffect(() => {
     if (interactionType === "TICK_UPDATE") {

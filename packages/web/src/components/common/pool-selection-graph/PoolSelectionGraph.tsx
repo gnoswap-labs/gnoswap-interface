@@ -7,13 +7,12 @@ import { useColorGraph } from "@hooks/common/use-color-graph";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 
-function makeBadge(
+function makeLeftBadge(
   refer: d3.Selection<any, unknown, null, undefined>,
-  right = false,
   reverse = false,
 ) {
   const badge = refer.append("svg")
-    .attr("x", right ? "0" : "-12")
+    .attr("x", "-12")
     .attr("y", "0")
     .attr("width", "11")
     .attr("height", "32")
@@ -34,7 +33,37 @@ function makeBadge(
     .attr("height", "28")
     .style("fill", "#90A2C0");
 
-  makeLabel(refer, right, reverse);
+  makeLabel(refer, false, reverse);
+  return badge;
+}
+
+function makeRightBadge(
+  refer: d3.Selection<any, unknown, null, undefined>,
+  reverse = false,
+) {
+  const badge = refer.append("svg")
+    .attr("x", "1")
+    .attr("y", "0")
+    .attr("width", "11")
+    .attr("height", "32")
+    .style("fill", "none");
+  badge.append("path")
+    .attr("d", "M0 0H9C10.1046 0 11 0.895431 11 2V30C11 31.1046 10.1046 32 9 32H0V0Z")
+    .style("fill", "#596782");
+  badge.append("rect")
+    .attr("x", "3.5")
+    .attr("y", "2")
+    .attr("width", "1")
+    .attr("height", "28")
+    .style("fill", "#90A2C0");
+  badge.append("rect")
+    .attr("x", "6.5")
+    .attr("y", "2")
+    .attr("width", "1")
+    .attr("height", "28")
+    .style("fill", "#90A2C0");
+
+  makeLabel(refer, true, reverse);
   return badge;
 }
 
@@ -267,7 +296,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .attr("y2", boundsHeight + paddingHeight)
         .style("stroke", "#ff2e2e")
         .attr("stroke-width", 2);
-      makeBadge(startLineElement);
+      makeLeftBadge(startLineElement);
 
       /** End Line */
       brushElement.select("#end").selectChildren().remove();
@@ -278,7 +307,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .style("stroke", "#2eff82")
         .attr("stroke-width", 2);
 
-      makeBadge(endLineElement, true);
+      makeRightBadge(endLineElement);
     }
 
     const selection = event.selection ? event.selection : [0, 0];
@@ -308,7 +337,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .selectChildren()
         .remove();
       setMinPrice(null);
-      setMinPrice(null);
+      setMaxPrice(null);
     } else {
       const selection = event.selection ? event.selection : [0, 0];
       const startPosition = selection[0] as number;
