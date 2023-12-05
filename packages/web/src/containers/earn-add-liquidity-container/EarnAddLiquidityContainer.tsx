@@ -161,7 +161,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
     //   return "INSUFFICIENT_BALANCE";
     // }
-    if (!priceRange) {
+    if ((selectPool.minPrice && selectPool.maxPrice) && selectPool.minPrice >= selectPool.maxPrice) {
       return "INVALID_RANGE";
     }
     if (!account?.balances || account.balances.length === 0) {
@@ -180,19 +180,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return "ENTER_AMOUNT";
     }
     return "CREATE_POOL";
-  }, [
-    account?.balances,
-    connectedWallet,
-    priceRange,
-    swapFeeTier,
-    tokenAAmountInput.amount,
-    tokenAAmountInput.balance,
-    tokenBAmountInput.amount,
-    tokenA,
-    selectPool.compareToken,
-    selectPool.depositRatio,
-    isSwitchNetwork
-  ]);
+  }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice, selectPool.compareToken?.path, selectPool.depositRatio, account?.balances]);
 
   useEffect(() => {
     updateTokenPrices();

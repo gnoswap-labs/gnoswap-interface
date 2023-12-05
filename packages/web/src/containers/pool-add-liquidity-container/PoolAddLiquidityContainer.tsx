@@ -157,11 +157,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
       return "INSUFFICIENT_BALANCE";
     }
-    if (!priceRange) {
+    if ((selectPool.minPrice && selectPool.maxPrice) && selectPool.minPrice >= selectPool.maxPrice) {
       return "INVALID_RANGE";
     }
     return "CREATE_POOL";
-  }, [connectedWallet, priceRange, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, isSwitchNetwork, tokenA, tokenB]);
+  }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice]);
 
   useEffect(() => {
     updateTokens();

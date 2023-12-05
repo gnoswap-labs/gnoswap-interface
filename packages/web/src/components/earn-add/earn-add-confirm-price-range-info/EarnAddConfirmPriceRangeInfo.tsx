@@ -33,11 +33,16 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
       return `${numberToFormat(currentPrice, 4)} ${priceLabel}`;
     }, [currentPrice, priceLabel]);
 
+    const rangeStatus = useMemo(() => {
+      const inRange = maxPrice >= currentPrice && currentPrice >= minPrice;
+      return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
+    }, [currentPrice, maxPrice, minPrice]);
+
     return (
       <EarnAddConfirmPriceRangeInfoWrapper>
         <div className="range-title">
           <p>Price Range</p>
-          <RangeBadge status={RANGE_STATUS_OPTION.IN} />
+          <RangeBadge status={rangeStatus} />
         </div>
 
         <div className="price-range-wrapper">
