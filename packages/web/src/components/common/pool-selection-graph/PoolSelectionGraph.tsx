@@ -443,7 +443,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       brushElement,
       [minPricePosition > zeroPosition ? minPricePosition : zeroPosition, scaleX(maxPrice)]
     );
-  }, [minPrice, maxPrice, scaleX, selectedFullRange, brush]);
+    updateChart();
+  }, [minPrice, maxPrice, scaleX, selectedFullRange, brush, currentPrice]);
 
   useEffect(() => {
     const svgElement = d3.select(svgRef.current)
