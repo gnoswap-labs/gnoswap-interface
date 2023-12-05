@@ -54,6 +54,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
             customData={{
               height: 36,
               marginTop: 24,
+              locationTooltip: 170,
             }}
           />
         </div>

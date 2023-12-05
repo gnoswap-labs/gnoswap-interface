@@ -65,7 +65,7 @@ export interface LineGraphProps {
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
-  customData?: { height: number, marginTop: number};
+  customData?: { height: number, marginTop: number, locationTooltip: number};
 }
 
 interface Point {
@@ -135,7 +135,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   point,
   firstPointColor,
   typeOfChart,
-  customData = { height: 0, marginTop: 0},
+  customData = { height: 0, marginTop: 0, locationTooltip: 0},
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -143,7 +143,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
   const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
-  console.log(width, height);
 
   const isFocus = useCallback(() => {
     return activated && cursor;
@@ -266,7 +265,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     return points[0];
   }, [points]);
-  
+
+  const locationTooltip = useMemo(() => {
+    if (width < (currentPoint?.x || 0) + customData.locationTooltip) return "left";
+    return "right";
+  }, [currentPoint, width, customData]);
+
   return (
     <LineGraphWrapper
       className={className}
@@ -274,7 +278,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
     >
-      <FloatingTooltip className="chart-tooltip" isHiddenArrow position="top" content={currentPointIndex > -1 ?
+      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltip} content={currentPointIndex > -1 ?
         <LineGraphTooltipWrapper>
           <div className="tooltip-body">
             <span className="date">

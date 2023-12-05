@@ -22,7 +22,7 @@ interface TooltipProps {
 }
 
 const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
-  ({ children, content, className, isHiddenArrow }, ref) => {
+  ({ children, content, className, isHiddenArrow, position = "top" as FloatingPosition, offset = 20 }, ref) => {
     const {
       handleMouseMove,
       x,
@@ -35,9 +35,10 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
       floating,
       setOpened,
     } = useFloatingTooltip({
-      offset: 20,
-      position: "top",
+      offset: offset,
+      position: position,
     });
+    
     const theme = useTheme();
 
     const targetRef = useMergedRef(boundaryRef, (children as any).ref, ref);

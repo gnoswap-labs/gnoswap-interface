@@ -36,7 +36,6 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       if (wrapperRef.current) {
         const newWidth = wrapperRef.current.getBoundingClientRect().width;
         const newHeight = wrapperRef.current.getBoundingClientRect().height;
-        console.log(newHeight, );
         
         setWidth(newWidth);
         setHeight(newHeight - (breakpoint !== DEVICE_TYPE.MOBILE ? 40 : 30));
@@ -59,6 +58,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return {
       height: temp,
       marginTop: temp / 2,
+      locationTooltip: 198,
     };
   }, []);
 

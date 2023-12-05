@@ -49,6 +49,7 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
             customData={{
               height: 24,
               marginTop: 24,
+              locationTooltip: 170,
             }}
             times={times}
             radiusBorder={datas.length !== 91 ? 2 : 1}

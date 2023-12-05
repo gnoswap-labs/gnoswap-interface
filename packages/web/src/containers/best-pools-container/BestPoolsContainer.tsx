@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
+import { useRouter } from "next/router";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -41,6 +42,7 @@ export const bestPoolListInit: BestPool[] = [
 
 const BestPoolsContainer: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -49,7 +51,7 @@ const BestPoolsContainer: React.FC = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  return <BestPools titleSymbol={"GNS"} cardList={bestPoolListInit} loading={loading}/>;
+  return <BestPools titleSymbol={router?.query["token-path"] as string || ""} cardList={bestPoolListInit} loading={loading}/>;
 };
 
 export default BestPoolsContainer;

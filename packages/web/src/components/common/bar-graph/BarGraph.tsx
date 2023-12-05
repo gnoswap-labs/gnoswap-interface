@@ -18,7 +18,7 @@ export interface BarGraphProps {
   tooltipOption?: string;
   svgColor?: string;
   currentIndex?: number;
-  customData?: { height: number, marginTop: number};
+  customData?: { height: number, marginTop: number, locationTooltip: number};
   times?: string[];
   radiusBorder?: number;
 }
@@ -75,11 +75,12 @@ const BarGraph: React.FC<BarGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   tooltipOption = "default",
   svgColor = "default",
-  customData = { height: 0, marginTop: 0},
+  customData = { height: 0, marginTop: 0, locationTooltip: 0},
   times = [],
   radiusBorder = 0,
 }) => {
   const [activated, setActivated] = useState(false);
+  const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const { redColor, greenColor } = useColorGraph();
   const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
@@ -183,10 +184,16 @@ const BarGraph: React.FC<BarGraphProps> = ({
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);
       }
-      console.log(currentPoint);
-      
+      if (currentPoint) {
+        setCurrentPoint(currentPoint);
+      }
     }
   };
+
+  const locationTooltip = useMemo(() => {
+    if (width < (currentPoint?.x || 0) + customData.locationTooltip) return "left";
+    return "right";
+  }, [currentPoint, width, customData]);
 
   return (
     <BarGraphWrapper
@@ -198,7 +205,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onMouseLeave={() => setActivated(false)}
       svgColor={svgColor}
     >
-      <FloatingTooltip className="chart-tooltip" isHiddenArrow position="top" 
+      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltip} 
         content={tooltipOption === "default" && currentPointIndex > -1 && activated ? 
         <BarGraphTooltipWrapper>
           <div className="tooltip-body">

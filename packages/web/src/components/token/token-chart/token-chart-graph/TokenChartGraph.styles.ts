@@ -39,7 +39,7 @@ export const TokenChartGraphWrapper = styled.div`
         ${fonts.body12};
         color: ${({ theme }) => theme.color.text04};
         ${media.mobile} {
-          ${fonts.p7};
+          ${fonts.p4};
         }
       }
       ${media.mobile} {
