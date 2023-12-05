@@ -266,6 +266,37 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
     );
   }
 
+  if (swapResult.code !== 4000) {
+    return (
+      <>
+        <div className="animation">
+          <IconFailed className="animation-logo" />
+        </div>
+        <div className="transaction-state">
+          <span className="submitted">Broadcasting Failed</span>
+          <div className="view-transaction">
+            <span>
+            Your transcation has not been broadcasted. <br  className="br"/>
+            Please try again.
+            </span>
+          </div>
+        </div>
+        <div className="close-button">
+          <Button
+            text="Close"
+            style={{
+              fullWidth: true,
+              height: 57,
+              fontType: "body7",
+              hierarchy: ButtonHierarchy.Primary,
+            }}
+            onClick={close}
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <div className="animation">

@@ -117,12 +117,84 @@ export const ModalContainer = styled.div`
       gap: 8px;
       flex: 1 0 0;
     }
+    .coin-info-wrapper {
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      gap: 8px;
+      flex: 1 0 0;
+    }
     .token-logo {
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+      }
+    }
+    .coin-info-detail {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 2px;
+      > span {
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.p4}
+      }
+      > div {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 8px;
+        .token-path {
+          padding: 1.5px 4px;
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 2px;
+          background-color: ${({ theme }) => theme.color.background26};
+          border-radius: 4px;
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.p6}
+          svg {
+            width: 10px;
+            height: 10px;
+            * {
+              fill: ${({ theme }) => theme.color.icon03}; 
+            }
+          }
+          &:hover {
+            color: ${({ theme }) => theme.color.text03};
+            svg {
+              * {
+                fill: ${({ theme }) => theme.color.icon07}; 
+              }
+            }
+          }
+        }
+      }
+    }
+    .coin-infor-value {
+      ${mixins.flexbox("column", "flex-end", "flex-end")};
+      gap: 2px;
+      .positive, .negative  {
+        ${fonts.p4}
+        ${mixins.flexbox("row", "center", "center")};
+        
+      }
+      .token-price-apr {
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.p4}
+      }
+      .negative {
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.red01};
+          }
+        }
+      }
+      .positive {
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.green01};
+          }
+        }
+      }
     }
     .token-name {
-      ${fonts.body10};
+      ${fonts.body9};
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
         ${fonts.body12}

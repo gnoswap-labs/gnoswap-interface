@@ -55,6 +55,7 @@ const palette = {
   shadowDark: "8px 8px 20px rgba(0, 0, 0, 0.2)",
   shadowDark1: "10px 14px 60px rgba(0, 0, 0, 0.4)",
   shadowLight: "8px 8px 20px rgba(0, 0, 0, 0.08)",
+  headerBg: "#0D121C",
 };
 
 const colors = {
@@ -90,6 +91,7 @@ const colors = {
     brand700Tooltip1: palette.brand700,
     brand700TooltipBorder: palette.brand700,
     gradientBG: palette.gradient5,
+    headerBg: palette.headerBg,
   },
   white: {
     whiteBG: palette.white,
@@ -119,6 +121,7 @@ const colors = {
     brand600TooltipBorder: palette.brand600,
     gradient1: palette.gradient1,
     brand300Opacity03BG: palette.brand300Opacity03,
+    headerBg: palette.gray100Opacity06,
   },
 };
 
@@ -150,6 +153,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   background23: colors.dark.gradientBG,
   background24: colors.global.brand500,
   background25: colors.dark.blackBG,
+  background26: colors.dark.headerBg,
   bgLoading: colors.global.black2,
   backgroundOpacity: colors.dark.blackOpacity07BG,
   backgroundOpacity2: colors.dark.blackOpacity07BG,
@@ -266,6 +270,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   background23: colors.white.whiteBG,
   background24: colors.global.brand600,
   background25: colors.white.gray100BG,
+  background26: colors.white.headerBg,
   bgLoading: colors.white.whiteBG,
   backgroundOpacity: colors.white.gray100Opacity05BG,
   backgroundOpacity2: colors.white.whiteOpacity07BG,

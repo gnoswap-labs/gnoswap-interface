@@ -34,7 +34,7 @@ export const RecentdummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      path: "1",
+      path: "gno.land/r/demo/gns",
       name: "GNS",
       symbol: "APR",
       logoURI: "/gnos.svg",
@@ -45,7 +45,7 @@ export const RecentdummyToken: Token[] = [
       value: "52.4",
     },
     tokenB: {
-      path: "1",
+      path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
@@ -56,7 +56,7 @@ export const RecentdummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      path: "1",
+      path: "gno.land/r/demo/gns",
       name: "GNS",
       symbol: "APR",
       logoURI: "/gnos.svg",
@@ -67,7 +67,7 @@ export const RecentdummyToken: Token[] = [
       value: "107.4",
     },
     tokenB: {
-      path: "1",
+      path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
@@ -77,7 +77,7 @@ export const RecentdummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "recent",
     token: {
-      path: "1",
+      path: "gno.land/r/demo/gns",
       name: "GNS",
       symbol: "APR",
       logoURI: "/gnos.svg",
@@ -88,7 +88,7 @@ export const RecentdummyToken: Token[] = [
       value: "31.4",
     },
     tokenB: {
-      path: "1",
+      path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
@@ -101,7 +101,7 @@ export const PopulardummyToken: Token[] = [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     searchType: "popular",
     token: {
-      path: "2",
+      path: "gno.land/r/demo/gns",
       name: "Gnoland",
       symbol: "GNOT",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",

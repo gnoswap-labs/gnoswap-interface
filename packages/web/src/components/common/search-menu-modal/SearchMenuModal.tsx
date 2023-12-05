@@ -14,6 +14,9 @@ import IconSearch from "@components/common/icons/IconSearch";
 import Badge, { BADGE_TYPE } from "../badge/Badge";
 import DoubleLogo from "../double-logo/DoubleLogo";
 import IconStar from "../icons/IconStar";
+import IconNewTab from "../icons/IconNewTab";
+import IconTriangleArrowDown from "../icons/IconTriangleArrowDown";
+import IconTriangleArrowUp from "../icons/IconTriangleArrowUp";
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -60,7 +63,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                   <div className="recent-searches">
                     {!keyword ? "Recent Searches" : "Tokens"}
                   </div>
-                  {tokens
+                  {tokens.slice(0,2)
                     .filter(item => item.searchType === "recent")
                     .map((item, idx) => (
                       !item.isLiquid ? (
@@ -68,27 +71,37 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         key={idx}
                         onClick={() => onClickItem(item.token.symbol)}
                       >
-                        <div className="coin-info">
+                        <div className="coin-info-wrapper">
                           <img
                             src={item.token.logoURI}
                             alt="token logo"
                             className="token-logo"
                           />
-                          <span className="token-name">{item.token.name}</span>
-                          <span className="token-symbol">
-                            {item.token.symbol}
-                          </span>
+                          <div className="coin-info-detail">
+                            <div>
+                              <span className="token-name">{item.token.name}</span>
+                              <div className="token-path">
+                                {item.token.path}
+                                <IconNewTab />
+                              </div>
+                            </div>
+                            <span>
+                              ETH
+                            </span>
+                          </div>
                         </div>
-                        <span className="token-price">{item.price}</span>
-                        {item.priceOf1d.status === "POSITIVE" ? (
-                          <span className="positive">
-                            +{item.priceOf1d.value}%
-                          </span>
-                        ) : (
-                          <span className="negative">
-                            -{item.priceOf1d.value}%
-                          </span>
-                        )}
+                        <div className="coin-infor-value">
+                          <span className="token-price">{item.price}</span>
+                          {item.priceOf1d.status === "POSITIVE" ? (
+                            <span className="positive">
+                              <IconTriangleArrowUp />{item.priceOf1d.value}%
+                            </span>
+                          ) : (
+                            <span className="negative">
+                              -<IconTriangleArrowDown /> {item.priceOf1d.value}%
+                            </span>
+                          )}
+                        </div>
                       </li>
                       ) : (
                       <li
@@ -97,7 +110,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       >
                         <div className="coin-info">
                           <DoubleLogo
-                            size={24}
+                            size={32}
                             left={item.token.logoURI}
                             right={item?.tokenB?.logoURI || ""}
                           />
@@ -109,9 +122,12 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             type={BADGE_TYPE.DARK_DEFAULT}
                           />
                         </div>
-                        <span className="token-price">
-                        {Number(item.priceOf1d.value) >= 100 && <IconStar />}{item.priceOf1d.value}% {item.token.symbol}
-                        </span>
+                        <div className="coin-infor-value">
+                          <span className="token-price">
+                            $123.25M
+                          </span>
+                          <div className="token-price-apr">{item.priceOf1d.value}% {item.token.symbol}</div>
+                        </div>
                       </li>
                     )
                     ))}
@@ -125,27 +141,37 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         key={idx}
                         onClick={() => onClickItem(item.token.symbol)}
                       >
-                        <div className="coin-info">
+                        <div className="coin-info-wrapper">
                           <img
                             src={item.token.logoURI}
                             alt="token logo"
                             className="token-logo"
                           />
-                          <span className="token-name">{item.token.name}</span>
-                          <span className="token-symbol">
-                            {item.token.symbol}
-                          </span>
+                          <div className="coin-info-detail">
+                            <div>
+                              <span className="token-name">{item.token.name}</span>
+                              <div className="token-path">
+                                {item.token.path}
+                                <IconNewTab />
+                              </div>
+                            </div>
+                            <span>
+                              ETH
+                            </span>
+                          </div>
                         </div>
-                        <span className="token-price">{item.price}</span>
-                        {item.priceOf1d.status === "POSITIVE" ? (
-                          <span className="positive">
-                            +{item.priceOf1d.value}
-                          </span>
-                        ) : (
-                          <span className="negative">
-                            -{item.priceOf1d.value}
-                          </span>
-                        )}
+                        <div className="coin-infor-value">
+                          <span className="token-price">{item.price}</span>
+                          {item.priceOf1d.status === "POSITIVE" ? (
+                            <span className="positive">
+                              <IconTriangleArrowUp />{item.priceOf1d.value}%
+                            </span>
+                          ) : (
+                            <span className="negative">
+                              -<IconTriangleArrowDown /> {item.priceOf1d.value}%
+                            </span>
+                          )}
+                        </div>
                       </li>
                     ))}
                   {!keyword && (
@@ -160,7 +186,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           >
                             <div className="coin-info">
                               <DoubleLogo
-                                size={24}
+                                size={32}
                                 left={item.token.logoURI}
                                 right={item?.tokenB?.logoURI || ""}
                               />
@@ -172,9 +198,12 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                 type={BADGE_TYPE.DARK_DEFAULT}
                               />
                             </div>
-                            <span className="token-price">
-                            {Number(item.priceOf1d.value) >= 100 && <IconStar />}{item.priceOf1d.value}% {item.token.symbol}
-                            </span>
+                            <div className="coin-infor-value">
+                              <span className="token-price">
+                                $123.25M
+                              </span>
+                              <div className="token-price-apr">{item.priceOf1d.value}% {item.token.symbol}</div>
+                            </div>
                           </li>
                         ))}
                     </>

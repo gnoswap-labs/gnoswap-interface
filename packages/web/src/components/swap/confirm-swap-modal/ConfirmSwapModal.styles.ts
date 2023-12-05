@@ -23,7 +23,7 @@ export const ConfirmModal = styled.div`
   overflow: hidden;
   width: 460px;
   padding: 23px 0px;
-  gap: 16px;
+  gap: 24px;
   ${mixins.positionCenter}
   border-radius: 8px;
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
@@ -40,7 +40,7 @@ export const ConfirmModal = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 0px 23px;
-    gap: 16px;
+    gap: 24px;
 
     ${media.mobile} {
       padding: 0px 15px;
@@ -254,7 +254,7 @@ export const ConfirmModal = styled.div`
       align-self: stretch;
       .animation-logo {
         width: 72px;
-        height: 72px;
+        height: auto;
         ${media.mobile} {
           width: 60px;
           height: 54px;
@@ -287,6 +287,9 @@ export const ConfirmModal = styled.div`
             ${media.mobile} {
               display: initial;
             }
+          }
+          .br {
+            display: initial;
           }
         }
         .open-link {
