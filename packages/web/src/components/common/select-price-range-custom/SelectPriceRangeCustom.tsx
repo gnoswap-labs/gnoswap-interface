@@ -34,16 +34,13 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   function getPriceRange() {
     const currentPrice = selectPool.currentPrice || 1;
-    if (selectPool.liquidityOfTickPoints.length === 0) {
-      const priceGap = currentPrice * 0.5;
-      return [currentPrice - priceGap, currentPrice + priceGap];
+    if (!selectPool.feeTier || !priceRangeType) {
+      return [0, currentPrice * 2];
     }
-    const [minX, maxX] = d3.extent(selectPool.liquidityOfTickPoints.map(point => point[0]));
 
-    const minPriceGap = (typeof selectPool.currentPrice === "number" && typeof minX === "number") ? Math.abs(selectPool.currentPrice - minX) : 0;
-    const maxPriceGap = (typeof selectPool.currentPrice === "number" && typeof maxX === "number") ? Math.abs(selectPool.currentPrice - maxX) : 0;
-    const priceGap = Math.min(maxPriceGap, minPriceGap);
-    return [currentPrice - priceGap, currentPrice + priceGap];
+    const visibleRate = SwapFeeTierPriceRange[selectPool.feeTier][priceRangeType].max / 100;
+    const range = currentPrice * visibleRate;
+    return [currentPrice - range, currentPrice + range];
   }
 
   function getHeightRange() {

@@ -136,7 +136,7 @@ export const useSelectPool = ({
     }
 
     const logMin = minPrice <= 0 ?
-      Math.log(currentPrice / Number(MIN_PRICE_X96)) :
+      Math.log(currentPrice / Number(0.0000000001)) :
       Math.log(currentPrice / minPrice);
     const logMax = Math.log(maxPrice / currentPrice);
     return logMin * 100 / (logMin + logMax);
@@ -199,6 +199,9 @@ export const useSelectPool = ({
   const decreaseMinTick = useCallback(() => {
     excuteInteraction(() => {
       if (!poolInfo || !minPosition) {
+        return;
+      }
+      if (minPosition === 0) {
         return;
       }
       setInteractionType("INTERACTION");
