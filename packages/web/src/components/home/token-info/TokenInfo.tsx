@@ -48,10 +48,12 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   } = item;
 
   const onClickItem = (symbol: string) => {
-    console.log(symbol);
-    
     location.href = "/tokens/" + "FOO" + "?tokenB=gno.land/r/foo&direction=EXACT_IN";
   };
+
+  const onClickPoolItem = () => {
+    location.href = "/earn/pool/1c550fbfa3149fd8da5a52055f16b1b34c00fe1c1f3f543dc5f2d669a4db55dc";
+  }
 
   return (
     <TokenInfoWrapper>
@@ -96,7 +98,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="volume">{volume24h}</span>
         </TableColumn>
       </HoverSection>
-      <HoverSection>
+      <HoverSection onClick={onClickPoolItem}>
         <TableColumn className="liquid-col padding-12" tdWidth={TOKEN_TD_WIDTH[9]}>
           <DoubleLogo
             left={mostLiquidPool.tokenPair.tokenA.logoURI}

@@ -26,6 +26,9 @@ export const TvlChartGraphWrapper = styled.div`
       cursor: default;
       & svg {
         height: 204px;
+        .line-chart-g {
+          transform: translateY(24px);
+        }
       }
     }
 

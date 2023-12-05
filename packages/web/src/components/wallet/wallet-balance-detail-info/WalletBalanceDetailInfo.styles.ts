@@ -47,7 +47,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     }
 
     svg {
-      cursor: pointer;
+      cursor: default;
       width: 16px;
       height: 16px;
     }

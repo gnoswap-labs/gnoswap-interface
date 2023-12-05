@@ -7,14 +7,15 @@ export const PoolInfoHeaderWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")}
   width: 100%;
   gap: 8px;
-  ${media.mobile} {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
   .left-wrap {
     ${mixins.flexbox("row", "center", "flex-start")}
     gap: 8px;
+    img {
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+      }
+    }
   }
 
   h3 {

@@ -56,6 +56,15 @@ export const LearnMoreModalWrapper = styled.div`
       height: 41px;
     }
   }
+  .active-btn {
+    span {
+      color: #E0E8F4;
+    }
+    background-color: ${({ theme }) => theme.color.background04};
+    &:hover {
+      background-color: ${({ theme }) => theme.color.background04Hover};
+    }
+  }
 `;
 
 export const Progress = styled.div`
@@ -82,6 +91,14 @@ export const Slider = styled.div`
 export const Title = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   padding: 0px 77px;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   ${media.mobile} {
     padding: 0px;
   }

@@ -330,7 +330,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
               <stop offset="100%" stopColor={gradientEndColor} />
             </linearGradient>
           </defs>
-          <g width={width} style={{ transform: "translateY(24px)" }}>
+          <g width={width} className="line-chart-g">
             <path
               fill={`url(#gradient${COMPONENT_ID})`}
               stroke={color}

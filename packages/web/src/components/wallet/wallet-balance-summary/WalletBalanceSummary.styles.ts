@@ -19,7 +19,7 @@ export const WalletBalanceSummaryWrapper = styled.div`
   }
   .total-balance-title {
     ${fonts.body4};
-    color: ${({ theme }) => theme.color.text10};
+    color: ${({ theme }) => theme.color.text04};
     ${media.tablet} {
       ${fonts.body6};
     }

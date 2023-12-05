@@ -52,7 +52,7 @@ export const GovernanceDetailInfoWrapper = styled.div`
     svg {
       width: 16px;
       height: 16px;
-      cursor: pointer;
+      cursor: default;
     }
     path {
       fill: ${({ theme }) => theme.color.icon03};

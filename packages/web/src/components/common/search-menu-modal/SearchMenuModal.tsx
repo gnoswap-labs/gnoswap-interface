@@ -15,8 +15,8 @@ import Badge, { BADGE_TYPE } from "../badge/Badge";
 import DoubleLogo from "../double-logo/DoubleLogo";
 import IconStar from "../icons/IconStar";
 import IconNewTab from "../icons/IconNewTab";
-import IconTriangleArrowDown from "../icons/IconTriangleArrowDown";
-import IconTriangleArrowUp from "../icons/IconTriangleArrowUp";
+import IconTriangleArrowDownV2 from "../icons/IconTriangleArrowDownV2";
+import IconTriangleArrowUpV2 from "../icons/IconTriangleArrowUpV2";
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -94,11 +94,11 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           <span className="token-price">{item.price}</span>
                           {item.priceOf1d.status === "POSITIVE" ? (
                             <span className="positive">
-                              <IconTriangleArrowUp />{item.priceOf1d.value}%
+                              <IconTriangleArrowUpV2 />{item.priceOf1d.value}%
                             </span>
                           ) : (
                             <span className="negative">
-                              -<IconTriangleArrowDown /> {item.priceOf1d.value}%
+                              -<IconTriangleArrowDownV2 /> {item.priceOf1d.value}%
                             </span>
                           )}
                         </div>
@@ -164,11 +164,11 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           <span className="token-price">{item.price}</span>
                           {item.priceOf1d.status === "POSITIVE" ? (
                             <span className="positive">
-                              <IconTriangleArrowUp />{item.priceOf1d.value}%
+                              <IconTriangleArrowUpV2 />{item.priceOf1d.value}%
                             </span>
                           ) : (
                             <span className="negative">
-                              -<IconTriangleArrowDown /> {item.priceOf1d.value}%
+                              -<IconTriangleArrowDownV2 /> {item.priceOf1d.value}%
                             </span>
                           )}
                         </div>

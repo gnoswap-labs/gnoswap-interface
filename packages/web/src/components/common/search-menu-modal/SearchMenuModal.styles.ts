@@ -67,7 +67,7 @@ export const ModalContainer = styled.div`
   width: 460px;
   left: calc(50vw - 230px);
   top: 67.5px;
-  padding: 8px 0px;
+  padding: 0px 0 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
@@ -101,11 +101,11 @@ export const ModalContainer = styled.div`
   }
   li {
     ${mixins.flexbox("row", "center", "flex-start")};
-    padding: 16px 24px;
+    padding: 10px 24px;
     gap: 8px;
     cursor: pointer;
     ${media.mobile} {
-      padding: 12px;
+      padding: 10px 12px;
       ${fonts.p2}
     }
     &.selected,
@@ -172,6 +172,7 @@ export const ModalContainer = styled.div`
       .positive, .negative  {
         ${fonts.p4}
         ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
         
       }
       .token-price-apr {

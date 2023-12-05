@@ -16,7 +16,7 @@ export const TableWrapper = styled.div`
   .pool-list-head {
     min-width: 100%;
     ${mixins.flexbox("row", "center", "flex-start")}
-    height: 50px;
+    height: 49px;
     border-bottom: 1px solid ${({ theme }) => theme.color.border02};
     ${fonts.body12};
   }
@@ -33,6 +33,12 @@ export const TableWrapper = styled.div`
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   padding: 16px;
+  &:first-of-type {
+    padding: 16px 16px 16px 15px;
+  }
+  &:last-of-type {
+    padding: 16px 15px 16px 16px;
+  }
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
     flex-shrink: 0;

@@ -68,6 +68,14 @@ export const GovernanceLayoutWrapper = styled.div`
     svg * {
       fill: ${({ theme }) => theme.color.icon03};
     }
+    &:hover {
+      color: ${({ theme }) => theme.color.text03};
+      svg {
+        * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
+    }
     @media (max-width: 1180px) {
       margin-left: 12px;
       bottom: 6px;

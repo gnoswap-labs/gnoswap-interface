@@ -6,7 +6,7 @@ import mixins from "@styles/mixins";
 export const ConnectWalletModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
-  padding: 24px;
+  padding: 23px;
   gap: 16px;
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -90,20 +90,21 @@ export const ConnectWalletModalWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 16px 12px;
+    padding: 15px;
     width: 328px;
     .modal-body {
-        .content {
-            gap: 8px;
-            > div {
-              .button-connect {
-                height: 44px;
-                span {
-                  ${fonts.body9}
-                }
+      gap: 12px;
+      .content {
+          gap: 8px;
+          > div {
+            .button-connect {
+              height: 44px;
+              span {
+                ${fonts.body9}
               }
             }
           }
+        }
     }
   }
 `;

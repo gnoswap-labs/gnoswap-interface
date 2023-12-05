@@ -81,6 +81,11 @@ export const ModalHeaderWrapper = styled.div`
         * {
           fill: ${({ theme }) => theme.color.icon01};
         }
+        &:hover {
+          * {
+            fill: ${({ theme }) => theme.color.icon07};
+          }
+        }
       }
     }
   }

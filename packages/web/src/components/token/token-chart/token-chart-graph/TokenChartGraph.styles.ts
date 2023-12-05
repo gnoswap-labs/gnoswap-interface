@@ -20,6 +20,11 @@ export const TokenChartGraphWrapper = styled.div`
     .graph {
       border-bottom: 1px solid ${({ theme }) => theme.color.border02};
       border-right: 1px solid ${({ theme }) => theme.color.border02};
+      > svg {
+        .line-chart-g {
+          transform: translateY(24px);
+        }
+      }
     }
     @media (max-width: 930px) {
       max-width: 800px;
