@@ -43,7 +43,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
 
     const targetRef = useMergedRef(boundaryRef, (children as any).ref, ref);
 
-    const onMouseEnter = (event: React.MouseEvent<unknown, MouseEvent>) => {
+    const onMouseEnter = (event: React.MouseEvent<unknown, MouseEvent> | React.TouchEvent<unknown>) => {
       children.props.onMouseEnter?.(event);
       handleMouseMove(event);
       setOpened(true);
@@ -54,6 +54,12 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
       setOpened(false);
     };
 
+    const onTouchStart = (event: React.TouchEvent<unknown>) => {
+      children.props.onPointerEnter?.(event);
+      handleMouseMove(event);
+      setOpened(true);
+    };
+
     return (
       <>
         {cloneElement(children, {
@@ -61,6 +67,8 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
           ref: targetRef,
           onMouseEnter,
           onMouseLeave,
+          onTouchStart: onTouchStart,
+          onTouchMove: onTouchStart,
         })}
 
         <FloatingPortal>
@@ -74,6 +82,8 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
               zIndex: Z_INDEX.modalTooltip,
             }}
             className={className}
+            onTouchMove={onTouchStart}
+            onTouchStart={onTouchStart}
           >
             {!isHiddenArrow && <FloatingArrow
               ref={arrowRef}

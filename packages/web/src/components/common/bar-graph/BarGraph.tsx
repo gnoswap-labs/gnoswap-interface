@@ -155,16 +155,20 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return getGraphPoints()[currentTick];
   }, [currentTick, getGraphPoints]);
 
-  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    const isTouch = event.type.startsWith("touch");
+    const touch = isTouch ? (event as React.TouchEvent<HTMLDivElement>).touches[0] : null;
+    const clientX = isTouch ? touch?.clientX : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
+    const clientY = isTouch ? touch?.clientY : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
     if (!activated) {
       setCurrentPointIndex(-1);
       return;
     }
-  const { clientX, currentTarget, clientY } = event;
+  const { currentTarget } = event;
     const { left, top } = currentTarget.getBoundingClientRect();
-    const positionX = clientX - left;
+    const positionX = (clientX || 0) - left;
     const clientWidth = currentTarget.clientWidth;
     const xPosition = new BigNumber(positionX)
       .multipliedBy(width)
@@ -186,7 +190,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
         setCurrentPointIndex(currentPointIndex);
       }
       if (currentPoint) {
-        setChartPoint({ x: positionX, y: clientY - top});
+        setChartPoint({ x: positionX, y: (clientY || 0) - top});
         setCurrentPoint(currentPoint);
       }
     }
@@ -204,6 +208,16 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return "right";
   }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
 
+    
+  const onTouchMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
+    onMouseMove(event);
+  };
+  
+  const onTouchStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    onMouseMove(event);
+  };
+
   return (
     <BarGraphWrapper
       className={className}
@@ -213,6 +227,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
       svgColor={svgColor}
+      onTouchMove={onTouchMove}
+      onTouchStart={onTouchStart}
     >
       <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition} 
         content={tooltipOption === "default" && currentPointIndex > -1 && activated ? 

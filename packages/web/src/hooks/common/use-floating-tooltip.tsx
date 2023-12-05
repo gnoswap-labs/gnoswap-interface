@@ -55,7 +55,12 @@ export function useFloatingTooltip<T extends HTMLElement = any>({
     : 0;
   
   const handleMouseMove = useCallback(
-    ({ clientX, clientY }: MouseEvent | React.MouseEvent<T, MouseEvent>) => {
+    ( event: MouseEvent | React.MouseEvent<T, MouseEvent> | React.TouchEvent<T>) => {
+      const isTouch = event.type.startsWith("touch");
+      const touch = isTouch ? (event as React.TouchEvent<T>).touches[0] : null;
+      const clientX = (isTouch ? touch?.clientX : (event as React.MouseEvent<T, MouseEvent>).clientX) || 0;
+      const clientY = (isTouch ? touch?.clientY : (event as React.MouseEvent<T, MouseEvent>).clientY) || 0;
+      
       refs.setPositionReference({
         getBoundingClientRect() {
           return {
