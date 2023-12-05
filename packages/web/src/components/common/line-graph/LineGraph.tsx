@@ -65,7 +65,7 @@ export interface LineGraphProps {
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
-  customData?: { height: number, marginTop: number, locationTooltip: number};
+  customData?: { height: number, locationTooltip: number};
 }
 
 interface Point {
@@ -135,14 +135,15 @@ const LineGraph: React.FC<LineGraphProps> = ({
   point,
   firstPointColor,
   typeOfChart,
-  customData = { height: 0, marginTop: 0, locationTooltip: 0},
+  customData = { height: 0, locationTooltip: 0},
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
+  const [chartPoint, setChartPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
-  const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
+  const { height: customHeight = 0, locationTooltip } = customData;
 
   const isFocus = useCallback(() => {
     return activated && cursor;
@@ -202,8 +203,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
       return;
     }
 
-    const { clientX, currentTarget } = event;
-    const { left } = currentTarget.getBoundingClientRect();
+    const { clientX, currentTarget, clientY } = event;
+    const { left, top } = currentTarget.getBoundingClientRect();
     const positionX = clientX - left;
     const clientWidth = currentTarget.clientWidth;
     const xPosition = new BigNumber(positionX)
@@ -228,10 +229,11 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }
     }
     if (currentPoint) {
+      setChartPoint({ x: positionX, y: clientY - top});
       setCurrentPoint(currentPoint);
     }
   };
-
+  
   const getGraphLine = useCallback(
     (smooth?: boolean, fill?: boolean) => {
       function mappedPoint(point: Point, index: number, points: Point[]) {
@@ -265,12 +267,18 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     return points[0];
   }, [points]);
-
-  const locationTooltip = useMemo(() => {
-    if (width < (currentPoint?.x || 0) + customData.locationTooltip) return "left";
+  const locationTooltipPosition = useMemo(() => {
+    if ((chartPoint?.y || 0) > customHeight + height - 25) {
+      if (width < (currentPoint?.x || 0) + locationTooltip) {
+        return "top-end";
+      } else {
+        return "top-start";
+      }
+    }
+    if (width < (currentPoint?.x || 0) + locationTooltip) return "left";
     return "right";
-  }, [currentPoint, width, customData]);
-
+  }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
+  
   return (
     <LineGraphWrapper
       className={className}
@@ -278,7 +286,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       onMouseEnter={() => setActivated(true)}
       onMouseLeave={() => setActivated(false)}
     >
-      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltip} content={currentPointIndex > -1 ?
+      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition} content={currentPointIndex > -1 ?
         <LineGraphTooltipWrapper>
           <div className="tooltip-body">
             <span className="date">
@@ -297,7 +305,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
           </div>
         </LineGraphTooltipWrapper> : null
       }>
-        <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
+        <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`}>
           <defs>
             <linearGradient
               id={"gradient" + COMPONENT_ID}
@@ -307,7 +315,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
               <stop offset="100%" stopColor={gradientEndColor} />
             </linearGradient>
           </defs>
-          <g width={width}>
+          <g width={width} style={{ transform: "translateY(24px)" }}>
             <path
               fill={`url(#gradient${COMPONENT_ID})`}
               stroke={color}
@@ -347,16 +355,16 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   stroke={color}
                   strokeWidth={1}
                   x1={currentPoint.x}
-                  y1={customHeight ? -1 * customMarginTop : 0}
+                  y1={0}
                   x2={currentPoint.x}
-                  y2={height + (customHeight ? (customHeight - customMarginTop) : 0)}
+                  y2={height + (customHeight ? customHeight : 0)}
                   strokeDasharray={3}
                 />
               )}
               {isFocus() && currentPoint && (
                 <circle
                   cx={currentPoint.x}
-                  cy={currentPoint.y}
+                  cy={currentPoint.y + 24}
                   r={3}
                   stroke={color}
                   fill={color}

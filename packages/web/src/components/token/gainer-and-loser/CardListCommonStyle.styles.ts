@@ -91,12 +91,12 @@ export const loadingWrapper = (theme: Theme) => css`
   border-radius: 8px;
   padding-top: 16px;
   > div {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     &::before {
       background-color: ${theme.color.background01};
-      width: 24px;
-      height: 24px;
+      width: 38px;
+      height: 38px;
     }
   }
 `;

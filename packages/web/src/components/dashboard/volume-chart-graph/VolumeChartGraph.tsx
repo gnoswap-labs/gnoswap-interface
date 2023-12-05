@@ -48,7 +48,6 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
             minGap={minGap}
             customData={{
               height: 24,
-              marginTop: 24,
               locationTooltip: 170,
             }}
             times={times}

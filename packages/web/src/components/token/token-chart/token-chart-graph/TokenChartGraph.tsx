@@ -57,7 +57,6 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     const temp = 47.55;
     return {
       height: temp,
-      marginTop: temp / 2,
       locationTooltip: 198,
     };
   }, []);
@@ -82,7 +81,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           className="graph"
           width={width}
           height={(height || 0) - customData.height}
-          color={"#192EA2"}
+          color="#192EA2"
           strokeWidth={1}
           datas={datas.map(data => ({
             value: data.amount.value,

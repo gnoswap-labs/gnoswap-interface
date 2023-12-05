@@ -42,6 +42,10 @@ export function useFloatingTooltip<T extends HTMLElement = any>({
     ? offset
     : position.includes("left")
     ? offset * -1
+    : position.includes("top-start")
+    ? offset
+    : position.includes("top-end")
+    ? - offset
     : 0;
 
   const verticalOffset = placement.includes("bottom") || placement.includes("right") || placement.includes("left")
@@ -52,7 +56,6 @@ export function useFloatingTooltip<T extends HTMLElement = any>({
   
   const handleMouseMove = useCallback(
     ({ clientX, clientY }: MouseEvent | React.MouseEvent<T, MouseEvent>) => {
-      console.log(clientX, clientY, verticalOffset, horizontalOffset);
       refs.setPositionReference({
         getBoundingClientRect() {
           return {

@@ -18,7 +18,7 @@ export interface BarGraphProps {
   tooltipOption?: string;
   svgColor?: string;
   currentIndex?: number;
-  customData?: { height: number, marginTop: number, locationTooltip: number};
+  customData?: { height: number, locationTooltip: number};
   times?: string[];
   radiusBorder?: number;
 }
@@ -75,7 +75,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   tooltipOption = "default",
   svgColor = "default",
-  customData = { height: 0, marginTop: 0, locationTooltip: 0},
+  customData = { height: 0, locationTooltip: 0},
   times = [],
   radiusBorder = 0,
 }) => {
@@ -83,7 +83,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const { redColor, greenColor } = useColorGraph();
-  const { height: customHeight = 0, marginTop: customMarginTop = 0 } = customData;
+  const { height: customHeight = 0, locationTooltip = 0 } = customData;
+  const [chartPoint, setChartPoint] = useState<Point>();
 
   const getStrokeWidth = useCallback(() => {
     const maxStorkeWidth = BigNumber(
@@ -161,8 +162,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
       setCurrentPointIndex(-1);
       return;
     }
-  const { clientX, currentTarget } = event;
-    const { left } = currentTarget.getBoundingClientRect();
+  const { clientX, currentTarget, clientY } = event;
+    const { left, top } = currentTarget.getBoundingClientRect();
     const positionX = clientX - left;
     const clientWidth = currentTarget.clientWidth;
     const xPosition = new BigNumber(positionX)
@@ -185,15 +186,23 @@ const BarGraph: React.FC<BarGraphProps> = ({
         setCurrentPointIndex(currentPointIndex);
       }
       if (currentPoint) {
+        setChartPoint({ x: positionX, y: clientY - top});
         setCurrentPoint(currentPoint);
       }
     }
   };
 
-  const locationTooltip = useMemo(() => {
-    if (width < (currentPoint?.x || 0) + customData.locationTooltip) return "left";
+  const locationTooltipPosition = useMemo(() => {
+    if ((chartPoint?.y || 0) > customHeight + height - 25) {
+      if (width < (currentPoint?.x || 0) + locationTooltip) {
+        return "top-end";
+      } else {
+        return "top-start";
+      }
+    }
+    if (width < (currentPoint?.x || 0) + locationTooltip) return "left";
     return "right";
-  }, [currentPoint, width, customData]);
+  }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
 
   return (
     <BarGraphWrapper
@@ -205,7 +214,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onMouseLeave={() => setActivated(false)}
       svgColor={svgColor}
     >
-      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltip} 
+      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition} 
         content={tooltipOption === "default" && currentPointIndex > -1 && activated ? 
         <BarGraphTooltipWrapper>
           <div className="tooltip-body">
@@ -244,7 +253,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
           </div>
         </IncentivizeGraphTooltipWrapper> : null
       }>
-        <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`} style={{ marginTop: customMarginTop ? customMarginTop : 0}}>
+        <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`}>
           <defs>
             <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={greenColor.start} />
@@ -258,7 +267,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
           {radiusBorder && getGraphPoints().map((point, index) => (
             <path
               key={index}
-              d={`M${point.x} ${point.y + 10} h${getStrokeWidth()} v${height - (point.y + 10)} h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
+              d={`M${point.x} ${point.y + 1} h${getStrokeWidth()} v${height - (point.y + 1)} h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
               fill={getStorkeColor(index)}
             />
           ))}
