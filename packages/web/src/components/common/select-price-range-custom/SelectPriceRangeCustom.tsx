@@ -32,15 +32,24 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const GRAPH_HEIGHT = 160;
   const [startingPriceValue, setStartingPriceValue] = useState<string>("");
 
-  function getPriceRange() {
+  function getPriceRange(inputPriceRangeType?: PriceRangeType) {
+    const currentPriceRangeType = inputPriceRangeType || priceRangeType;
     const currentPrice = selectPool.currentPrice || 1;
-    if (!selectPool.feeTier || !priceRangeType) {
+    if (!selectPool.feeTier || !currentPriceRangeType) {
       return [0, currentPrice * 2];
     }
 
-    const visibleRate = SwapFeeTierPriceRange[selectPool.feeTier][priceRangeType].max / 100;
+    const visibleRate = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType].max / 100;
     const range = currentPrice * visibleRate;
     return [currentPrice - range, currentPrice + range];
+  }
+
+  function getScaleRange() {
+    const currentPrice = selectPool.currentPrice || 1;
+    const [min, max] = getPriceRange();
+    const rangeGap = max - min;
+
+    return [currentPrice - rangeGap, currentPrice + rangeGap];
   }
 
   function getHeightRange() {
@@ -51,7 +60,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   /** D3 Variables */
   const defaultScaleX = d3
     .scaleLinear()
-    .domain(getPriceRange())
+    .domain(getScaleRange())
     .range([0, GRAPH_WIDTH]);
 
   const scaleX = defaultScaleX.copy();
@@ -131,6 +140,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const onChangeStartingPrice = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setStartingPriceValue(value);
+    changeStartingPrice(startingPriceValue);
   }, []);
 
   const updateStartingPrice = useCallback(() => {
@@ -147,12 +157,12 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   useEffect(() => {
     resetRange();
-  }, [selectPool.currentPrice, selectPool.feeTier, priceRangeType, selectPool.liquidityOfTickPoints]);
+  }, [selectPool.currentPrice, selectPool.feeTier, priceRangeType, selectPool.liquidityOfTickPoints, selectPool.compareToken]);
 
   useEffect(() => {
     defaultScaleX.domain(getPriceRange());
     scaleX.domain(defaultScaleX.domain());
-  }, [selectPool.liquidityOfTickPoints]);
+  }, [selectPool.liquidityOfTickPoints, priceRangeType]);
 
   useEffect(() => {
     if (selectPool.currentPrice) {

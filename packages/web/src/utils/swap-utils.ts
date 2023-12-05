@@ -2,12 +2,7 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import {
-  MAX_TICK,
-  MIN_PRICE_X96,
-  MIN_TICK,
-  Q96,
-} from "@constants/swap.constant";
+import { MAX_TICK, MIN_TICK, Q96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
 import { tickToSqrtPriceX96 } from "./math.utils";
 
@@ -23,14 +18,6 @@ export function makeSwapFeeTier(value: string | number): SwapFeeTierType {
 }
 
 export function priceToTick(price: number | bigint) {
-  const priceX96 = BigInt(
-    BigNumber(Math.sqrt(Number(price)).toString())
-      .multipliedBy(Q96.toString())
-      .toFixed(0),
-  );
-  if (priceX96 <= MIN_PRICE_X96) {
-    return MIN_TICK;
-  }
   const logPrice = Math.log(Number(price));
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }

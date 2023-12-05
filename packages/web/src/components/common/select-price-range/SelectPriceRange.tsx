@@ -30,6 +30,12 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
 }) => {
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
+  const changePriceRangeWithClear = useCallback((priceRange: AddLiquidityPriceRage) => {
+    selectPool.setMinPosition(null);
+    selectPool.setMaxPosition(null);
+    changePriceRange(priceRange);
+  }, []);
+
   return (
     <SelectPriceRangeWrapper>
       <div className="type-selector-wrapper">
@@ -39,7 +45,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
             selected={item.type === priceRange?.type}
             tooltip={PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]}
             priceRange={item}
-            changePriceRange={changePriceRange}
+            changePriceRange={changePriceRangeWithClear}
           />
         ))}
       </div>

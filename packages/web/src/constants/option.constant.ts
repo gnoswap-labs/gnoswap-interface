@@ -35,8 +35,8 @@ export const SwapFeeTierPriceRange: Record<
   },
   FEE_500: {
     Active: {
-      min: -50,
-      max: 50,
+      min: -10,
+      max: 10,
     },
     Passive: {
       min: -50,
@@ -49,8 +49,8 @@ export const SwapFeeTierPriceRange: Record<
   },
   FEE_3000: {
     Active: {
-      min: -50,
-      max: 50,
+      min: -10,
+      max: 10,
     },
     Passive: {
       min: -50,
@@ -63,8 +63,8 @@ export const SwapFeeTierPriceRange: Record<
   },
   FEE_10000: {
     Active: {
-      min: -50,
-      max: 50,
+      min: -10,
+      max: 10,
     },
     Passive: {
       min: -50,

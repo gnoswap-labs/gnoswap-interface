@@ -70,7 +70,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
           <span>-</span>
         </div>
         <div className="value-wrapper">
-          <input className="value" value={value} onChange={onChangeValue} onBlur={onBlurUpdate} />
+          <input className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate} />
         </div>
         <div className="icon-wrapper increase" onClick={onClickIncrease}>
           <span>+</span>

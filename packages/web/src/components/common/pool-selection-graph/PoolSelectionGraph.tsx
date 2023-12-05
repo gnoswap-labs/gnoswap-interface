@@ -309,8 +309,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const selection = event.selection ? event.selection : [0, 0];
       const startPosition = selection[0] as number;
       const endPosition = selection[1] as number;
-      const minPrice = tickToPrice(priceToNearTick(scaleX.invert(startPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2));
-      const maxPrice = tickToPrice(priceToNearTick(scaleX.invert(endPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2));
+      const minPrice = !Number.isNaN(scaleX.invert(startPosition)) ? tickToPrice(priceToNearTick(scaleX.invert(startPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
+      const maxPrice = !Number.isNaN(scaleX.invert(endPosition)) ? tickToPrice(priceToNearTick(scaleX.invert(endPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
       setMinPrice(minPrice);
       setMaxPrice(maxPrice);
     }
@@ -356,9 +356,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       0
     );
 
-    const zeroPosition = Number(BigNumber(scaleX(0)).toFixed(10));
     brush.extent([
-      [zeroPosition, 0],
+      [scaleX(0), 0],
       [boundsWidth, boundsHeight + paddingHeight]
     ]);
   }
@@ -409,35 +408,38 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   }
 
   function interactChart() {
-    initZoom();
-
     if (brushRef.current) {
       try {
-        const brushElement = d3.select(brushRef.current);
         const zeroPosition = Number(BigNumber(scaleX(0)).toFixed(10));
         if (selectedFullRange) {
           brush?.move(
             d3.select(brushRef.current),
             [zeroPosition, width]
           );
-        } else if (minPrice !== null && maxPrice !== null) {
-          const minPricePosition = selectedFullRange ? zeroPosition : scaleX(minPrice);
-          brush.move(
-            brushElement,
-            [minPricePosition > zeroPosition ? minPricePosition : zeroPosition, scaleX(maxPrice)]
-          );
-        } else {
-          brush.clear(brushElement);
-          brushElement.selectChildren().remove();
         }
       } catch { }
     }
   }
 
   useEffect(() => {
+    initZoom();
     interactChart();
     updateChart();
-  }, [zoomLevel, focusPosition, minPrice, maxPrice, currentPrice, selectedFullRange]);
+  }, [zoomLevel, focusPosition, selectedFullRange]);
+
+  useEffect(() => {
+    initZoom();
+    if (!brushRef.current || !minPrice || !maxPrice) {
+      return;
+    }
+    const zeroPosition = scaleX(0);
+    const brushElement = d3.select(brushRef.current);
+    const minPricePosition = selectedFullRange ? zeroPosition : scaleX(minPrice);
+    brush.move(
+      brushElement,
+      [minPricePosition > zeroPosition ? minPricePosition : zeroPosition, scaleX(maxPrice)]
+    );
+  }, [minPrice, maxPrice, scaleX, selectedFullRange, brush]);
 
   useEffect(() => {
     const svgElement = d3.select(svgRef.current)

@@ -109,8 +109,11 @@ export const useSelectPool = ({
   }, [minPosition]);
 
   const maxPrice = useMemo(() => {
+    if (fullRange) {
+      return tickToPrice(MAX_TICK);
+    }
     return maxPosition;
-  }, [maxPosition]);
+  }, [fullRange, maxPosition]);
 
   const depositRatio = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
