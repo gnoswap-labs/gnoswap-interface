@@ -17,6 +17,7 @@ interface Props {
 }
 
 export interface SelectPool {
+  poolPath: string | null;
   isCreate: boolean;
   renderState: RenderState;
   startPrice?: number | null;
@@ -67,7 +68,12 @@ export const useSelectPool = ({
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
   const [poolInfo, setPoolInfo] = useState<PoolDetailRPCModel | null>(null);
+  const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
+
+  const poolPath = useMemo(() => {
+    return latestPoolPath;
+  }, [latestPoolPath]);
 
   const renderState: RenderState = useMemo(() => {
     if (!tokenA || !tokenB || !feeTier) {
@@ -274,7 +280,7 @@ export const useSelectPool = ({
     setMinPosition(maxPriceRange.minPrice);
     setMaxPosition(maxPriceRange.maxPrice);
     setFullRange(true);
-  }, []);
+  }, [feeTier]);
 
   useEffect(() => {
     if (!tokenA || !tokenB || !feeTier) {
@@ -342,7 +348,17 @@ export const useSelectPool = ({
     }
   }, [interactionType]);
 
+  useEffect(() => {
+    if (isCreate && startPrice === null) {
+      setLatestPoolPath(null);
+    }
+    if (poolInfo) {
+      setLatestPoolPath(poolInfo.poolPath);
+    }
+  }, [isCreate, poolInfo, startPrice]);
+
   return {
+    poolPath,
     renderState,
     feeTier,
     tickSpacing,

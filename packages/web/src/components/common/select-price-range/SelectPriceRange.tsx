@@ -31,10 +31,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   const selectedTokenPair = true;
 
   const changePriceRangeWithClear = useCallback((priceRange: AddLiquidityPriceRage) => {
-    selectPool.setMinPosition(null);
-    selectPool.setMaxPosition(null);
     changePriceRange(priceRange);
-  }, [changePriceRange, selectPool]);
+  }, [changePriceRange]);
 
   return (
     <SelectPriceRangeWrapper>

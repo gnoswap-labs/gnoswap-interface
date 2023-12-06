@@ -72,9 +72,13 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     if (value === "∞" || value === "-") {
       return;
     }
-    const currentValue = BigNumber(value.replace(",", ""));
+    const currentValue = BigNumber(Number(value.replace(",", "")));
     if (currentValue.isNaN()) {
       setValue("-");
+      return;
+    }
+    if (currentValue.isLessThanOrEqualTo(0.00000001)) {
+      setValue("0");
       return;
     }
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
@@ -87,14 +91,18 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     if (selectedFullRange) {
       onSelectCustomRange();
     }
-  }, [value, tickSpacing, selectedFullRange]);
+  }, [changed, value, tickSpacing, selectedFullRange]);
 
   useEffect(() => {
-    if (current === null || BigNumber(current).isNaN()) {
+    if (current === null || BigNumber(Number(current)).isNaN()) {
       setValue("-");
       return;
     }
     const currentValue = BigNumber(current).toNumber();
+    if (currentValue < 0.00000001) {
+      setValue("0");
+      return;
+    }
     const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
     if (currentValue <= minPrice) {
       setValue("0");

@@ -130,7 +130,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       feeBoost,
       estimatedApr: "-",
     };
-  }, [selectPool.currentPrice, selectPool.maxPrice, selectPool.minPrice, tokenA?.symbol, tokenB?.symbol]);
+  }, [selectPool.compareToken?.symbol, selectPool.depositRatio, selectPool.feeBoost, selectPool.selectedFullRange, tokenA?.symbol, tokenB?.symbol]);
 
   const submitType: AddLiquiditySubmitType = useMemo(() => {
     if (!connectedWallet) {
@@ -187,8 +187,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, []);
 
   const selectSwapFeeTier = useCallback((swapFeeTier: SwapFeeTierType) => {
-    setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
     setSwapFeeTier(swapFeeTier);
+    setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
   }, [priceRanges]);
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
