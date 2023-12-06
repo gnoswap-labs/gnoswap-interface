@@ -36,6 +36,11 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
       ${fonts.body6}
       line-height: 22px;
       cursor: pointer;
+
+      &.disabled {
+        cursor: default;
+        color: ${({ theme }) => theme.color.icon08};
+      }
     }
 
     .value-wrapper {

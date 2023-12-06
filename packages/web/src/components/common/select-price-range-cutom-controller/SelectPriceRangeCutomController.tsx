@@ -1,6 +1,6 @@
 import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { numberToFormat } from "@utils/string-utils";
-import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
@@ -39,6 +39,15 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     return `${token0Symbol} per ${token1Symbol}`;
   }, [token0Symbol, token1Symbol]);
 
+  const disabledController = useMemo(() => {
+    return value === "" ||
+      value === "-" ||
+      Number.isNaN(value) ||
+      value === "NaN" ||
+      value === "0" ||
+      value === "∞";
+  }, [value]);
+
   const onClickDecrease = useCallback(() => {
     decrease();
   }, [decrease]);
@@ -64,10 +73,13 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       return;
     }
     const currentValue = BigNumber(value.replace(",", ""));
-    const nearTick = priceToNearTick(currentValue.toNumber(), tickSpacing);
-    const price = tickToPrice(nearTick);
-    changePrice(price);
-    setValue(numberToFormat(price, 4));
+    const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
+    changePrice(nearPrice);
+    if (nearPrice > 1) {
+      setValue(numberToFormat(nearPrice, 4));
+    } else {
+      setValue(nearPrice.toString());
+    }
     if (selectedFullRange) {
       onSelectCustomRange();
     }
@@ -81,27 +93,31 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     const currentValue = BigNumber(current).toNumber();
     const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
     if (currentValue <= minPrice) {
-      setValue(numberToFormat(0, 4));
+      setValue("0");
       return;
     }
-    if (currentValue / maxPrice > 0.9) {
+    if (currentValue >= maxPrice) {
       setValue("∞");
       return;
     }
-    setValue(numberToFormat(current, 4));
+    if (currentValue >= 1) {
+      setValue(BigNumber(current).toFixed(4));
+      return;
+    }
+    setValue(BigNumber(current).toFixed());
   }, [current, feeTier]);
 
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
       <div className="controller-wrapper">
-        <div className="icon-wrapper decrease" onClick={onClickDecrease}>
+        <div className={disabledController ? "icon-wrapper decrease disabled" : "icon-wrapper decrease"} onClick={onClickDecrease}>
           <span>-</span>
         </div>
         <div className="value-wrapper">
           <input className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate} />
         </div>
-        <div className="icon-wrapper increase" onClick={onClickIncrease}>
+        <div className={disabledController ? "icon-wrapper increase disabled" : "icon-wrapper increase"} onClick={onClickIncrease}>
           <span>+</span>
         </div>
       </div>

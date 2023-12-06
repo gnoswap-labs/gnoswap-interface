@@ -1,5 +1,6 @@
 import {
   SwapFeeTierInfoMap,
+  SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK, Q96 } from "@constants/swap.constant";
@@ -17,13 +18,51 @@ export function makeSwapFeeTier(value: string | number): SwapFeeTierType {
   return "NONE";
 }
 
+export function makeSwapFeeTierByTickSpacing(
+  tickSpacing: number,
+): SwapFeeTierType {
+  for (const swapFeeTierInfo of Object.values(SwapFeeTierInfoMap)) {
+    if (swapFeeTierInfo.tickSpacing === tickSpacing) {
+      return swapFeeTierInfo.type;
+    }
+  }
+  return "NONE";
+}
+
 export function priceToTick(price: number | bigint) {
   const logPrice = Math.log(Number(price));
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
+export function findNearPrice(price: number, tickSpacing: number) {
+  const feeTier = makeSwapFeeTierByTickSpacing(tickSpacing);
+  const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+  let currentPrice = price;
+  if (currentPrice <= minPrice) {
+    currentPrice = minPrice;
+  } else if (currentPrice >= maxPrice) {
+    currentPrice = maxPrice;
+  }
+
+  const tickRaw = priceToTick(currentPrice);
+  const tickAbs = Math.abs(tickRaw);
+  const mod = tickAbs % tickSpacing;
+  const sign = Math.sign(tickRaw);
+
+  const previouTickAbs = tickAbs - mod;
+  const nextTickAbs = tickAbs - mod + tickSpacing;
+  const previousPrice = tickToPrice(previouTickAbs * sign);
+  const nextPrice = tickToPrice(nextTickAbs * sign);
+
+  if (
+    Math.abs(previousPrice - currentPrice) > Math.abs(nextPrice - currentPrice)
+  ) {
+    return nextPrice;
+  }
+  return previousPrice;
+}
+
 export function priceToNearTick(price: number, tickSpacing: number) {
-  console.log(price);
   const tickRaw = priceToTick(price);
   const tickAbs = Math.abs(tickRaw);
   const mod = tickAbs % tickSpacing;
