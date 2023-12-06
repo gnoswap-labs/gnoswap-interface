@@ -108,7 +108,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       setValue("0");
       return;
     }
-    if (currentValue >= maxPrice) {
+    if (currentValue / maxPrice > 0.9) {
       setValue("∞");
       return;
     }
