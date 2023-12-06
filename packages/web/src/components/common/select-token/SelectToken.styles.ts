@@ -6,8 +6,8 @@ import mixins from "@styles/mixins";
 export const SelectTokenWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
-  padding: 24px 0px 16px 0px;
-  gap: 24px;
+  padding: 24px 0px 8px 0px;
+  gap: 8px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
@@ -20,6 +20,7 @@ export const SelectTokenWrapper = styled.div`
     width: 100%;
     padding: 0px 24px;
     gap: 24px;
+    margin-bottom: 16px;
     ${media.mobile} {
       padding: 0px 12px;
       gap: 16px;
@@ -143,7 +144,6 @@ export const SelectTokenWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
-    max-height: 292px;
     &.token-list-wrapper-auto-height {
       height: auto;
     }
@@ -210,7 +210,7 @@ export const SelectTokenWrapper = styled.div`
             padding: 1.5px 4px;
             ${mixins.flexbox("row", "center", "flex-start")};
             gap: 2px;
-            background-color: ${({ theme }) => theme.color.background26};
+            background-color: ${({ theme }) => theme.color.backgroundOpacity};
             border-radius: 4px;
             color: ${({ theme }) => theme.color.text04};
             ${fonts.p6}
@@ -241,4 +241,9 @@ export const SelectTokenWrapper = styled.div`
       }
     }
   }
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  border-top: 1px solid ${({ theme }) => theme.color.border02};
 `;

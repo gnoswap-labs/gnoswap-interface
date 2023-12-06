@@ -6,6 +6,7 @@ import { TokenModel } from "@models/token/token-model";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -22,7 +23,13 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
-
+  const { openModal: openTradingModal } = useTokenTradingModal({
+    onClickConfirm: (value) => {
+      changeToken?.(value);
+      close();
+    }
+  });
+  
   useEffect(() => {
     updateTokens();
   }, []);
@@ -42,15 +49,21 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       token.name.toLowerCase().includes(lowerKeyword) ||
       token.symbol.toLowerCase().includes(lowerKeyword) ||
       token.path.toLowerCase().includes(lowerKeyword)
-    );
+    ).slice(0, 5);
   }, [keyword, tokens]);
 
   const selectToken = useCallback((token: TokenModel) => {
     if (!changeToken) {
       return;
     }
-    changeToken(token);
-  }, [changeToken]);
+    const temp = Math.floor(Math.random() * 2);
+    if (temp === 1) {
+      changeToken(token);
+      close();
+    } else {
+      openTradingModal(token);
+    }
+  }, [changeToken, openTradingModal]);
 
   const changeKeyword = useCallback((keyword: string) => {
     setKeyword(keyword);

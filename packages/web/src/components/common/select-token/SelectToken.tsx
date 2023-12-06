@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
-import { SelectTokenWrapper } from "./SelectToken.styles";
+import { Divider, SelectTokenWrapper } from "./SelectToken.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
@@ -45,7 +45,6 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const onClickToken = useCallback((token: TokenModel) => {
     changeToken(token);
-    close();
   }, [changeToken, close]);
 
   const onChangeSearchKeyword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,6 +102,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
           ))}
         </div>
       </div>
+      <Divider />
       <div
         className={`token-list-wrapper ${
           tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
