@@ -152,6 +152,7 @@ const Header: React.FC<HeaderProps> = ({
             keyword={keyword}
             tokens={tokens}
             isFetched={isFetched}
+            breakpoint={breakpoint}
           />
         )}
       </HeaderWrapper>

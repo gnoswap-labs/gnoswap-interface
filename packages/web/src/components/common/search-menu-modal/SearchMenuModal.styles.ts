@@ -91,7 +91,7 @@ export const ModalContainer = styled.div`
       color: ${({ theme }) => theme.color.text04};
       ${media.mobile} {
         padding: 12px 12px 8px 12px;
-        ${fonts.p2}
+        ${fonts.p4}
       }
     }
     .no-data-found {
@@ -198,7 +198,7 @@ export const ModalContainer = styled.div`
       ${fonts.body9};
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
-        ${fonts.body12}
+        ${fonts.body11}
       }
     }
     .token-symbol {

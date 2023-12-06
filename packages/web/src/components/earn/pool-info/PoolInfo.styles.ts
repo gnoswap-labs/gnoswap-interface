@@ -47,4 +47,8 @@ export const PoolInfoWrapper = styled.div`
     width: 100px;
     cursor: default;
   }
+  .icon-reward {
+    width: 20px;
+    height: 20px;
+  }
 `;

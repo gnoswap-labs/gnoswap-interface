@@ -161,10 +161,10 @@ export const SelectTokenWrapper = styled.div`
     .list {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
-      padding: 16px 24px;
+      padding: 10px 24px;
       gap: 8px;
       ${media.mobile} {
-        padding: 12px;
+        padding: 10px 12px;
       }
       &:hover {
         background-color: ${({ theme }) => theme.color.hover02};
@@ -175,7 +175,11 @@ export const SelectTokenWrapper = styled.div`
         height: 24px;
       }
       .token-info {
-        ${mixins.flexbox("row", "center", "flex-start")};
+        ${mixins.flexbox("row", "flex-start", "flex-start")};
+        .token-logo {
+          width: 32px;
+          height: 32px;
+        }
         gap: 8px;
         .token-name {
           color: ${({ theme }) => theme.color.text02};
@@ -186,9 +190,45 @@ export const SelectTokenWrapper = styled.div`
         }
         .token-symbol {
           color: ${({ theme }) => theme.color.text04};
-          ${fonts.body12}
+          ${fonts.p4}
           ${media.mobile} {
             ${fonts.p4}
+          }
+        }
+      }
+      .token-info-detail {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        gap: 2px;
+        > span {
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.p4}
+        }
+        > div {
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 8px;
+          .token-path {
+            padding: 1.5px 4px;
+            ${mixins.flexbox("row", "center", "flex-start")};
+            gap: 2px;
+            background-color: ${({ theme }) => theme.color.background26};
+            border-radius: 4px;
+            color: ${({ theme }) => theme.color.text04};
+            ${fonts.p6}
+            svg {
+              width: 10px;
+              height: 10px;
+              * {
+                fill: ${({ theme }) => theme.color.icon03}; 
+              }
+            }
+            &:hover {
+              color: ${({ theme }) => theme.color.text03};
+              svg {
+                * {
+                  fill: ${({ theme }) => theme.color.icon07}; 
+                }
+              }
+            }
           }
         }
       }

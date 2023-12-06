@@ -17,6 +17,7 @@ import IconStar from "../icons/IconStar";
 import IconNewTab from "../icons/IconNewTab";
 import IconTriangleArrowDownV2 from "../icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "../icons/IconTriangleArrowUpV2";
+import { DEVICE_TYPE } from "@styles/media";
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,6 +25,7 @@ interface SearchMenuModalProps {
   tokens: Token[];
   isFetched: boolean;
   placeholder?: string;
+  breakpoint: DEVICE_TYPE;
 }
 
 const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
@@ -33,6 +35,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   tokens,
   isFetched,
   placeholder = "Search",
+  breakpoint,
 }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const onClickItem = (symbol: string) => {
@@ -110,7 +113,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       >
                         <div className="coin-info">
                           <DoubleLogo
-                            size={32}
+                            size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
                             left={item.token.logoURI}
                             right={item?.tokenB?.logoURI || ""}
                           />
@@ -186,7 +189,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           >
                             <div className="coin-info">
                               <DoubleLogo
-                                size={32}
+                                size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
                                 left={item.token.logoURI}
                                 right={item?.tokenB?.logoURI || ""}
                               />

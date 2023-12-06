@@ -23,13 +23,19 @@ export const ConfirmModal = styled.div`
   overflow: hidden;
   width: 460px;
   padding: 23px 0px;
-  gap: 24px;
+  gap: 16px;
   ${mixins.positionCenter}
   border-radius: 8px;
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
-
+  &.modal-body-wrapper {
+    gap: 24px;
+    ${media.mobile} {
+      ${mixins.positionCenter}
+      padding: 12px 0px;
+    }
+  }
   ${media.mobile} {
     width: 328px;
     ${mixins.positionCenter}
@@ -40,11 +46,10 @@ export const ConfirmModal = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 0px 23px;
-    gap: 24px;
+    gap: 16px;
 
     ${media.mobile} {
       padding: 0px 15px;
-      gap: 12px;
     }
 
     .modal-header {
@@ -324,6 +329,12 @@ export const ConfirmModal = styled.div`
           width: 304px;
         }
       }
+    }
+  }
+  .submitted-modal {
+    gap: 24px;
+    ${media.mobile} {
+      padding: 0 12px;
     }
   }
   .modal-body-loading {

@@ -4,6 +4,7 @@ import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
+import IconNewTab from "../icons/IconNewTab";
 export interface SelectTokenProps {
   keyword: string;
   defaultTokens: TokenModel[];
@@ -116,8 +117,16 @@ const SelectToken: React.FC<SelectTokenProps> = ({
             >
               <div className="token-info">
                 <img src={token.logoURI} alt="logo" className="token-logo" />
-                <span className="token-name">{token.name}</span>
-                <span className="token-symbol">{token.symbol}</span>
+                <div className="token-info-detail">
+                  <div>
+                    <span className="token-name">{token.name}</span>
+                    <div className="token-path">
+                      <div>{token.path}</div>
+                      <IconNewTab />
+                    </div>
+                  </div>
+                  <span className="token-symbol">{token.symbol}</span>
+                </div>
               </div>
               <span className="token-balance">{getTokenPrice(token)}</span>
             </div>
