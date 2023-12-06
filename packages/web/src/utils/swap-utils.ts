@@ -37,7 +37,11 @@ export function priceToNearTick(price: number | bigint, tickSpacing: number) {
     return maxTick * sign;
   }
 
-  const nearTick = (tickAbs - mod) * sign;
+  const nearTickAmount = tickAbs - mod;
+  const nearTick =
+    mod > tickSpacing / 2
+      ? (nearTickAmount + tickSpacing) * sign
+      : nearTickAmount * sign;
   if (sign > 0) {
     return nearTick;
   }

@@ -149,7 +149,6 @@ export interface PoolSelectionGraphProps {
   setMinPrice: (tick: number | null) => void;
   setMaxPrice: (tick: number | null) => void;
   selectedFullRange: boolean;
-  setFullRange: (fullRange: boolean) => void;
   finishMove: () => void;
   focusPosition: number | null;
   width: number;
@@ -462,7 +461,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   useEffect(() => {
     initZoom();
-    if (!brushRef.current || !minPrice || !maxPrice) {
+    if (!brushRef.current || minPrice === null || maxPrice === null) {
       return;
     }
     const zeroPosition = scaleX(0);

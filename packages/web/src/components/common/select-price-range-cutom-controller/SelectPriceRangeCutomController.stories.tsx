@@ -8,7 +8,7 @@ export default {
 
 export const Default: StoryObj<SelectPriceRangeCutomControllerProps> = {
   args: {
-    current: "123,123",
+    current: 123123,
     title: "GNOS per GNOT"
   },
 };

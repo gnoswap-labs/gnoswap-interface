@@ -142,6 +142,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
+    if ((selectPool.minPrice && selectPool.maxPrice) && selectPool.minPrice >= selectPool.maxPrice) {
+      return "INVALID_RANGE";
+    }
     if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
@@ -161,9 +164,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
     //   return "INSUFFICIENT_BALANCE";
     // }
-    if ((selectPool.minPrice && selectPool.maxPrice) && selectPool.minPrice >= selectPool.maxPrice) {
-      return "INVALID_RANGE";
-    }
     if (!account?.balances || account.balances.length === 0) {
       return "INSUFFICIENT_BALANCE";
     }

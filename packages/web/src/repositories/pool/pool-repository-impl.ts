@@ -214,7 +214,7 @@ export class PoolRepositoryImpl implements PoolRepository {
           maxTick,
           tokenAAmount,
           tokenBAmount,
-          slippage,
+          slippage.toString(),
           caller,
         ),
       ],

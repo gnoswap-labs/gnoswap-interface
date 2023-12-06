@@ -15,6 +15,47 @@ export interface SwapFeeTierInfo {
   description: string;
 }
 
+export const SwapFeeTierMaxPriceRangeMap: Record<
+  SwapFeeTierType,
+  {
+    minTick: number;
+    minPrice: number;
+    maxTick: number;
+    maxPrice: number;
+  }
+> = {
+  FEE_100: {
+    minTick: -887272,
+    minPrice: 2.9389568087743114e-39,
+    maxTick: 887272,
+    maxPrice: 3.4025678683638813e38,
+  },
+  FEE_500: {
+    minTick: -887270,
+    minPrice: 2.93954462969822e-39,
+    maxTick: 887270,
+    maxPrice: 3.4018874568536357e38,
+  },
+  FEE_3000: {
+    minTick: -887220,
+    minPrice: 2.954278419690599e-39,
+    maxTick: 887220,
+    maxPrice: 3.384921318552238e38,
+  },
+  FEE_10000: {
+    minTick: -887200,
+    minPrice: 2.9601925924784057e-39,
+    maxTick: 887200,
+    maxPrice: 3.378158579040119e38,
+  },
+  NONE: {
+    minTick: -887272,
+    minPrice: 2.9389568087743114e-39,
+    maxTick: 887272,
+    maxPrice: 3.4025678683638813e38,
+  },
+};
+
 export const SwapFeeTierPriceRange: Record<
   SwapFeeTierType,
   Record<PriceRangeType, { min: number; max: number }>

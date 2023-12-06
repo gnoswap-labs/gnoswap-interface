@@ -8,7 +8,6 @@ import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import * as d3 from "d3";
-import { numberToFormat } from "@utils/string-utils";
 import { PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
 import { toNumberFormat } from "@utils/number-utils";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
@@ -96,17 +95,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     return `${currentPrice} ${currentTokenA.symbol} per ${currentTokenB.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
-  const minPriceStr = useMemo(() => {
-    return numberToFormat(`${selectPool.minPrice || 0}`, 4);
-  }, [selectPool.minPrice]);
-
-  const maxPriceStr = useMemo(() => {
-    if (selectPool.selectedFullRange) {
-      return "∞";
-    }
-    return numberToFormat(`${selectPool.maxPrice || 0}`, 4);
-  }, [selectPool.maxPrice, selectPool.selectedFullRange]);
-
   const startingPriceDescription = useMemo(() => {
     if (startingPriceValue === "" || Number.isNaN(startingPriceValue) || !currentTokenA || !currentTokenB) {
       return "";
@@ -117,6 +105,13 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const onClickTabItem = useCallback((symbol: string) => {
     const compareToken = tokenA.symbol === symbol ? tokenA : tokenB;
     selectPool.setCompareToken(compareToken);
+    const { minPosition, maxPosition } = selectPool;
+    if (minPosition !== null) {
+      selectPool.setMaxPosition(1 / minPosition);
+    }
+    if (maxPosition !== null) {
+      selectPool.setMinPosition(1 / maxPosition);
+    }
   }, [selectPool, tokenA, tokenB]);
 
   const selectFullRange = useCallback(() => {
@@ -173,7 +168,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   useEffect(() => {
     resetRange();
-  }, [selectPool.currentPrice, selectPool.feeTier, priceRangeType, selectPool.liquidityOfTickPoints, selectPool.compareToken]);
+  }, [selectPool.feeTier, priceRangeType]);
 
   useEffect(() => {
     defaultScaleX.domain(getPriceRange());
@@ -246,7 +241,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     scaleX={scaleX}
                     scaleY={scaleY}
                     selectedFullRange={selectPool.selectedFullRange}
-                    setFullRange={selectPool.setFullRange}
                     zoomLevel={selectPool.zoomLevel}
                     minPrice={selectPool.minPrice}
                     maxPrice={selectPool.maxPrice}
@@ -265,10 +259,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
             <div className="range-controller-wrapper">
               <SelectPriceRangeCutomController
                 title="Min Price"
-                current={minPriceStr}
+                current={selectPool.minPrice}
                 token0Symbol={currentTokenA.symbol}
                 token1Symbol={currentTokenB.symbol}
                 tickSpacing={selectPool.tickSpacing}
+                feeTier={selectPool.feeTier || "NONE"}
                 selectedFullRange={selectPool.selectedFullRange}
                 onSelectCustomRange={onSelectCustomRangeByMin}
                 changePrice={selectPool.setMinPosition}
@@ -277,10 +272,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
               />
               <SelectPriceRangeCutomController
                 title="Max Price"
-                current={maxPriceStr}
+                current={selectPool.maxPrice}
                 token0Symbol={currentTokenA.symbol}
                 token1Symbol={currentTokenB.symbol}
                 tickSpacing={selectPool.tickSpacing}
+                feeTier={selectPool.feeTier || "NONE"}
                 selectedFullRange={selectPool.selectedFullRange}
                 onSelectCustomRange={onSelectCustomRangeByMax}
                 changePrice={selectPool.setMaxPosition}

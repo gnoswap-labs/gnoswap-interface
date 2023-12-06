@@ -1,10 +1,10 @@
-import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { feeBoostRateByPrices, priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import { MAX_TICK, MIN_PRICE_X96, MIN_TICK } from "@constants/swap.constant";
+import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -150,10 +150,11 @@ export const useSelectPool = ({
       return null;
     }
     if (minPrice <= 0) {
-      return feeBoostRateByPrices(Number(MIN_PRICE_X96), maxPrice);
+      const minPriceLimit = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"].minPrice;
+      return feeBoostRateByPrices(minPriceLimit, maxPrice);
     }
     return feeBoostRateByPrices(minPrice, maxPrice);
-  }, [maxPrice, minPrice]);
+  }, [maxPrice, minPrice, feeTier]);
 
   const estimatedAPR = useMemo(() => {
     return null;
@@ -175,7 +176,11 @@ export const useSelectPool = ({
       setMinPosition(null);
       return;
     }
-    setMinPosition(Number(num.toFixed(16)));
+    if (num === 0) {
+      const { minPrice } = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
+      setMinPosition(minPrice);
+    }
+    setMinPosition(num);
   }, []);
 
   const changeMaxPosition = useCallback((num: number | null) => {
@@ -183,7 +188,7 @@ export const useSelectPool = ({
       setMaxPosition(null);
       return;
     }
-    setMaxPosition(Number(num.toFixed(16)));
+    setMaxPosition(num);
   }, []);
 
   const increaseMinTick = useCallback(() => {
@@ -264,7 +269,10 @@ export const useSelectPool = ({
   }, [zoomLevel]);
 
   const selectFullRange = useCallback(() => {
+    const maxPriceRange = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
     setZoomLevel(9);
+    setMinPosition(maxPriceRange.minPrice);
+    setMaxPosition(maxPriceRange.maxPrice);
     setFullRange(true);
   }, []);
 

@@ -1,5 +1,5 @@
 import EarnAddConfirm from "@components/earn-add/earn-add-confirm/EarnAddConfirm";
-import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import useNavigate from "@hooks/common/use-navigate";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
@@ -107,11 +107,24 @@ export const useEarnAddLiquidityConfirmModal = ({
       };
     }
 
+    const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
+    let minPriceStr = "0.0000";
+    let maxPriceStr = "0.0000";
+    if (selectPool.minPrice && selectPool.minPrice > minPrice) {
+      minPriceStr = numberToFormat(selectPool.minPrice, 4);
+    }
+    if (selectPool.maxPrice) {
+      if (selectPool.maxPrice / maxPrice > 0.9) {
+        maxPriceStr = "∞";
+      } else {
+        maxPriceStr = numberToFormat(selectPool.maxPrice, 4);
+      }
+    }
     const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
     return {
       currentPrice,
-      minPrice: numberToFormat(`${selectPool.minPrice || 0}`, 4),
-      maxPrice: numberToFormat(`${selectPool.maxPrice || 0}`, 4),
+      minPrice: minPriceStr,
+      maxPrice: maxPriceStr,
       priceLabel,
       feeBoost,
       estimatedAPR: "N/A",

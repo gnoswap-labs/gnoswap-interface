@@ -145,6 +145,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
+    if ((selectPool.minPrice && selectPool.maxPrice) && selectPool.minPrice >= selectPool.maxPrice) {
+      return "INVALID_RANGE";
+    }
     if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
@@ -156,9 +159,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
     if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
       return "INSUFFICIENT_BALANCE";
-    }
-    if ((selectPool.minPrice && selectPool.maxPrice) && selectPool.minPrice >= selectPool.maxPrice) {
-      return "INVALID_RANGE";
     }
     return "CREATE_POOL";
   }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice]);
