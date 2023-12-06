@@ -20,7 +20,7 @@ export interface SelectPool {
   poolPath: string | null;
   isCreate: boolean;
   renderState: RenderState;
-  startPrice?: number | null;
+  startPrice: number | null;
   feeTier: SwapFeeTierType | null;
   tickSpacing: number;
   minPosition: number | null;
@@ -58,7 +58,7 @@ export const useSelectPool = ({
   tokenB,
   feeTier,
   isCreate = false,
-  startPrice,
+  startPrice = null,
 }: Props) => {
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
@@ -134,8 +134,8 @@ export const useSelectPool = ({
       return 50;
     }
 
-    const minPriceGap = price - minPrice;
-    const maxPriceGap = maxPrice - price;
+    const minPriceGap = currentPrice - minPrice;
+    const maxPriceGap = maxPrice - currentPrice;
 
     if (maxPriceGap < 0) {
       return 100;
@@ -149,7 +149,7 @@ export const useSelectPool = ({
       Math.log(currentPrice / minPrice);
     const logMax = Math.log(maxPrice / currentPrice);
     return logMin * 100 / (logMin + logMax);
-  }, [isCreate, maxPrice, minPrice, price, startPrice, fullRange]);
+  }, [maxPrice, minPrice, price, fullRange, startPrice, isCreate]);
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
@@ -160,7 +160,7 @@ export const useSelectPool = ({
       return feeBoostRateByPrices(minPriceLimit, maxPrice);
     }
     return feeBoostRateByPrices(minPrice, maxPrice);
-  }, [maxPrice, minPrice, feeTier]);
+  }, [startPrice, maxPrice, minPrice, feeTier]);
 
   const estimatedAPR = useMemo(() => {
     return null;
@@ -333,7 +333,7 @@ export const useSelectPool = ({
         setPoolInfo(changedPoolInfo);
       }).catch(() => setPoolInfo(null));
     }
-  }, [feeTier, tokenA, tokenB, compareToken, isCreate, startPrice]);
+  }, [feeTier, tokenA, tokenB, compareToken, isCreate, startPrice, poolRepository]);
 
   useEffect(() => {
     if (interactionType === "TICK_UPDATE") {
@@ -358,6 +358,7 @@ export const useSelectPool = ({
   }, [isCreate, poolInfo, startPrice]);
 
   return {
+    startPrice,
     poolPath,
     renderState,
     feeTier,

@@ -76,8 +76,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
   const { updateTokenPrices } = useTokenData();
-  const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean } | null>(null);
-  const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
+  const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
+  const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption.isCreate, startPrice: createOption.startPrice });
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
     tokenA,
@@ -214,15 +214,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const changeStartingPrice = useCallback((price: string) => {
     if (price === "") {
       setCreateOption({
-        isCreate: true,
+        ...createOption,
         startPrice: null
       });
       return;
     }
     const priceNum = BigNumber(price).toNumber();
-    if (Number.isNaN(priceNum)) {
+    if (BigNumber(Number(priceNum)).isNaN()) {
       setCreateOption({
-        isCreate: true,
+        ...createOption,
         startPrice: null
       });
       return;
@@ -346,13 +346,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
     const fee = SwapFeeTierInfoMap[swapFeeTier].fee;
     if (feetierOfLiquidityMap[fee] === undefined) {
       setCreateOption({
-        isCreate: true,
-        startPrice: createOption?.startPrice || null
+        ...createOption,
+        isCreate: true
       });
     } else {
-      setCreateOption(null);
+      setCreateOption({
+        ...createOption,
+        isCreate: false
+      });
     }
-  }, [changeStartingPrice, feetierOfLiquidityMap, swapFeeTier]);
+  }, [feetierOfLiquidityMap, swapFeeTier]);
 
   return (
     <EarnAddLiquidity

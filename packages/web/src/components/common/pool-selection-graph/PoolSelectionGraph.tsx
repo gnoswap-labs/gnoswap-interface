@@ -326,7 +326,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   }
 
   function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
-    if (!brushRef.current) {
+    if (!brushRef.current || event.mode === undefined) {
       return;
     }
 
