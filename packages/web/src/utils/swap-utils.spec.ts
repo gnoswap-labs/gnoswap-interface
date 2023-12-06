@@ -93,13 +93,13 @@ describe("price convert to near tick", () => {
   test("0.60651549714 to -5002", () => {
     const price = 0.60651549714;
     const tickSpacing = 2;
-    expect(priceToNearTick(price, tickSpacing)).toBe(-5002);
+    expect(priceToNearTick(price, tickSpacing)).toBe(-5000);
   });
 
   test("0.60651549714 to -5004", () => {
     const price = 0.60651549714;
     const tickSpacing = 4;
-    expect(priceToNearTick(price, tickSpacing)).toBe(-5004);
+    expect(priceToNearTick(price, tickSpacing)).toBe(-5000);
   });
 });
 

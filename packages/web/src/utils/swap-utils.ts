@@ -22,7 +22,8 @@ export function priceToTick(price: number | bigint) {
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
-export function priceToNearTick(price: number | bigint, tickSpacing: number) {
+export function priceToNearTick(price: number, tickSpacing: number) {
+  console.log(price);
   const tickRaw = priceToTick(price);
   const tickAbs = Math.abs(tickRaw);
   const mod = tickAbs % tickSpacing;
@@ -37,7 +38,7 @@ export function priceToNearTick(price: number | bigint, tickSpacing: number) {
     return maxTick * sign;
   }
 
-  const nearTickAmount = tickAbs - mod;
+  const nearTickAmount = sign > 0 ? tickAbs - mod : tickAbs - mod - tickSpacing;
   const nearTick =
     mod > tickSpacing / 2
       ? (nearTickAmount + tickSpacing) * sign
