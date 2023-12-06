@@ -1,10 +1,11 @@
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import OneClickStakingModalContainer from "@containers/one-click-staking-modal-container/OneClickStakingModalContainer";
+import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
-import { getCurrentPriceByRaw } from "@utils/swap-utils";
+import { numberToFormat } from "@utils/string-utils";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
@@ -17,9 +18,9 @@ export interface OneClickConfirmModalProps {
   tokenB: TokenModel | null;
   tokenAAmountInput: TokenAmountInputModel;
   tokenBAmountInput: TokenAmountInputModel;
-  currentPrice: string;
   priceRange: AddLiquidityPriceRage | null;
   swapFeeTier: SwapFeeTierType | null;
+  selectPool: SelectPool | null;
 }
 
 export const useOneClickStakingModal = ({
@@ -27,9 +28,8 @@ export const useOneClickStakingModal = ({
   tokenB,
   tokenAAmountInput,
   tokenBAmountInput,
-  priceRange,
-  currentPrice,
   swapFeeTier,
+  selectPool
 }: OneClickConfirmModalProps): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -55,19 +55,19 @@ export const useOneClickStakingModal = ({
 
 
   const priceRangeInfo = useMemo(() => {
-    if (!priceRange) {
+    if (!selectPool) {
       return null;
     }
     return {
-      currentPrice: getCurrentPriceByRaw(currentPrice).toFixed(),
-      minPrice: `${priceRange.range.minTick}`,
-      minPriceLable: priceRange.range.minPrice,
-      maxPrice: `${priceRange.range.maxTick}`,
-      maxPriceLable: priceRange.range.maxPrice,
-      feeBoost: "-",
-      estimatedAPR: "N/A",
+      currentPrice: selectPool.currentPrice ? numberToFormat(selectPool.currentPrice, 4) : "-",
+      minPrice: numberToFormat(selectPool.minPrice || 0, 4),
+      minPriceLable: numberToFormat(selectPool.minPrice || 0, 4),
+      maxPrice: numberToFormat(selectPool.minPrice || 0, 4),
+      maxPriceLable: numberToFormat(selectPool.maxPrice || 0, 4),
+      feeBoost: selectPool.feeBoost ? numberToFormat(selectPool.feeBoost, 4) : "-",
+      estimatedAPR: selectPool.estimatedAPR ? numberToFormat(selectPool.estimatedAPR, 4) : "N/A",
     };
-  }, [currentPrice, priceRange]);
+  }, [selectPool]);
 
   const openModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {

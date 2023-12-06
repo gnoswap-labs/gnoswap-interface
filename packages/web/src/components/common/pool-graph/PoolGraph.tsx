@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { renderToStaticMarkup } from "react-dom/server";
 import { TokenModel } from "@models/token/token-model";
 import { toMillionFormat } from "@utils/number-utils";
@@ -35,8 +34,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   bins,
   currentTick = null,
   mouseover,
-  zoomable,
-  visibleLabel,
   width,
   height,
   margin = {
@@ -48,22 +45,33 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   themeKey,
   rectWidth,
 }) => {
+
+  const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
+
+  const resolvedBins = useMemo(() => {
+    return bins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => ({
+      ...bin,
+      minTick: bin.minTick - defaultMinX,
+      maxTick: bin.maxTick - defaultMinX,
+    }));
+  }, [bins, defaultMinX]);
+
   const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
 
   useEffect(() => {
-    if (bins.length > 0) {
+    if (resolvedBins.length > 0) {
       new Promise<{ [key in number]: string }>(resolve => {
-        const tickOfPrices = bins.flatMap(bin => [bin.minTick, bin.maxTick, -bin.minTick, -bin.maxTick])
+        const tickOfPrices = resolvedBins.flatMap(bin => [bin.minTick, bin.maxTick, -bin.minTick, -bin.maxTick])
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
-              acc[current] = tickToPriceStr(current).toString();
+              acc[current] = tickToPriceStr(current + defaultMinX).toString();
             }
             return acc;
           }, {});
         resolve(tickOfPrices);
       }).then(setTickOfPrices);
     }
-  }, [bins]);
+  }, [resolvedBins]);
 
   const svgRef = useRef(null);
   const chartRef = useRef(null);
@@ -71,87 +79,38 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   const { redColor, greenColor } = useColorGraph();
 
-  const tickFullRange = MAX_TICK - MIN_TICK;
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
+
+  const minX = d3.min(resolvedBins, (bin) => bin.minTick) || 0;
+  const maxX = d3.max(resolvedBins, (bin) => bin.maxTick) || 0;
+  const maxHeight = d3.max(resolvedBins, (bin) => bin.liquidity) || 0;
+
 
   /** D3 Variables */
   const defaultScaleX = d3
     .scaleLinear()
-    .domain([MIN_TICK, MAX_TICK])
+    .domain([0, maxX - minX])
     .range([margin.left, boundsWidth]);
 
   const scaleX = defaultScaleX.copy();
-  const xAxis = d3
-    .axisBottom(scaleX)
-    .tickSize(0)
-    .tickFormat(v => v.toString());
-  const [minX, maxX] = d3.extent(bins, (bin) => bin.minTick);
-  const [, max] = d3.extent(bins, (bin) => bin.liquidity);
 
   const scaleY = useMemo(() => {
     return d3
       .scaleLinear()
-      .domain([0, max || 0])
+      .domain([0, maxHeight || 0])
       .range([boundsHeight, 0]);
-  }, [boundsHeight, max]);
+  }, [boundsHeight, maxHeight]);
   const centerX = currentTick ?? ((minX && maxX) ? (minX + maxX) / 2 : 0);
 
-  /** Zoom */
-  const zoom: d3.ZoomBehavior<any, unknown> = d3
-    .zoom()
-    .scaleExtent([1, tickFullRange / 2])
-    .translateExtent([
-      [0, 0],
-      [boundsWidth, boundsHeight]
-    ])
-    .extent([
-      [0, 0],
-      [boundsWidth, boundsHeight]
-    ])
-    .on("zoom", onZoom);
-
-  function initZoom() {
-    const svgElement = d3.select(svgRef.current);
-    const minXTick = minX || 0;
-    const maxXTick = maxX || 0;
-    const distance = Math.abs(centerX - minXTick) > Math.abs(centerX - maxXTick)
-      ? Math.abs(minXTick - centerX)
-      : Math.abs(maxXTick - centerX);
-    const scaleRate = (tickFullRange / (distance) / 2);
-    zoom.scaleTo(svgElement, scaleRate, [scaleX(centerX), 0]);
-  }
-
-  function onZoom(event: d3.D3ZoomEvent<SVGElement, null>) {
-    if (event.sourceEvent && event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-    const transform = event.transform;
-    scaleX.domain(transform.rescaleX(defaultScaleX).domain());
-
-    updateChart();
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function zoomIn() {
-    d3.select(svgRef.current)
-      .transition()
-      .call(zoom.scaleBy, 4);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function zoomOut() {
-    d3.select(svgRef.current)
-      .transition()
-      .call(zoom.scaleBy, 0.25);
-  }
-
   function getTickSpacing() {
-    if (bins.length < 1) {
+    if (resolvedBins.length < 1) {
       return 0;
     }
-    if (bins.length === 2) {
+    if (resolvedBins.length === 2) {
       return 20;
     }
-    const spacing = scaleX(bins[1].minTick) - scaleX(bins[0].minTick);
+    const spacing = scaleX(resolvedBins[1].minTick) - scaleX(resolvedBins[0].minTick);
     if (spacing < 2) {
       return spacing;
     }
@@ -161,11 +120,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = rectWidth ? rectWidth : getTickSpacing();
-    const centerPosition = scaleX(centerX) - tickSpacing / 2;
+    const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
-      if (currentTick && (bin.minTick) < currentTick) {
+      if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
         return "url(#gradient-bar-green)";
       }
       return "url(#gradient-bar-red)";
@@ -178,7 +137,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const rects = d3.select(chartRef.current);
     rects.attr("clip-path", "url(#clip)");
     rects.selectAll("rects")
-      .data(bins)
+      .data(resolvedBins)
       .enter()
       .append("rect")
       .style("fill", bin => fillByBin(bin))
@@ -201,13 +160,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("stroke-dasharray", 4)
         .attr("stroke", "#FFFFFF")
         .attr("stroke-width", 0.5);
-    }
-
-    // Create x axis labels.
-    if (visibleLabel) {
-      rects.append("g")
-        .attr("transform", `translate(0,${boundsHeight})`)
-        .call(xAxis);
     }
   }
 
@@ -254,17 +206,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto;");
 
-    if (zoomable) {
-      svgElement.call(zoom);
-    }
 
     svgElement.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
       .attr("width", width)
       .attr("height", height);
-
-    initZoom();
 
     updateChart();
   }, [scaleX, scaleY]);

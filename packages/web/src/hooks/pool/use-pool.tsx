@@ -1,5 +1,4 @@
 import { SwapFeeTierType } from "@constants/option.constant";
-import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
@@ -8,11 +7,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePoolData } from "./use-pool-data";
 
 interface Props {
+  compareToken: TokenModel | null;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
 }
 
 export const usePool = ({
+  compareToken,
   tokenA,
   tokenB
 }: Props) => {
@@ -30,8 +31,29 @@ export const usePool = ({
     return pools?.filter(pool => tokenPairOfPaths.includes(pool.tokenA.path) && tokenPairOfPaths.includes(pool.tokenB.path));
   }, [pools, tokenA, tokenB]);
 
+  const getCurrentTokenPairAmount = useCallback((tokenAAmount: string, tokenBAmount: string) => {
+    if (!compareToken || !tokenA || !tokenB) {
+      return null;
+    }
+    const ordered = compareToken.path === tokenA.path;
+    if (ordered) {
+      return {
+        tokenA,
+        tokenAAmount,
+        tokenB,
+        tokenBAmount,
+      };
+    }
+    return {
+      tokenA: tokenB,
+      tokenAAmount: tokenBAmount,
+      tokenB: tokenA,
+      tokenBAmount: tokenAAmount,
+    };
+  }, [compareToken, tokenA, tokenB]);
+
   async function fetchPoolInfos(pools: PoolModel[]) {
-    const poolInfos = await (await Promise.all(pools.map(pool => poolRepository.getPoolInfoByPoolPath(pool.path).catch(null)))).filter(info => info !== null);
+    const poolInfos = await (await Promise.all(pools.map(pool => poolRepository.getPoolDetailRPCByPoolPath(pool.path).catch(null)))).filter(info => info !== null);
     return poolInfos;
   }
 
@@ -40,28 +62,34 @@ export const usePool = ({
     tokenBAmount,
     swapFeeTier,
     startPrice,
-    priceRange,
+    minTick,
+    maxTick,
     slippage,
   }: {
     tokenAAmount: string;
     tokenBAmount: string;
     swapFeeTier: SwapFeeTierType;
     startPrice: string;
-    priceRange: AddLiquidityPriceRage;
+    minTick: number;
+    maxTick: number;
     slippage: string;
   }) => {
     if (!tokenA || !tokenB || !account) {
       return null;
     }
+    const currentTokenData = getCurrentTokenPairAmount(tokenAAmount, tokenBAmount);
+    if (!currentTokenData) {
+      return null;
+    }
     const hash = await poolRepository.createPool({
-      tokenA,
-      tokenB,
-      tokenAAmount,
-      tokenBAmount,
+      tokenA: currentTokenData.tokenA,
+      tokenB: currentTokenData.tokenB,
+      tokenAAmount: currentTokenData.tokenAAmount,
+      tokenBAmount: currentTokenData.tokenBAmount,
       feeTier: swapFeeTier,
       startPrice,
-      minTick: priceRange.range.minTick,
-      maxTick: priceRange.range.maxTick,
+      minTick,
+      maxTick,
       slippage,
       caller: account.address
     }).catch(e => {
@@ -69,7 +97,46 @@ export const usePool = ({
       return null;
     });
     return hash;
-  }, [account, poolRepository, tokenA, tokenB]);
+  }, [account, poolRepository, tokenA, tokenB, compareToken]);
+
+  const addLiquidity = useCallback(async ({
+    tokenAAmount,
+    tokenBAmount,
+    swapFeeTier,
+    minTick,
+    maxTick,
+    slippage,
+  }: {
+    tokenAAmount: string;
+    tokenBAmount: string;
+    swapFeeTier: SwapFeeTierType;
+    minTick: number;
+    maxTick: number;
+    slippage: string;
+  }) => {
+    if (!tokenA || !tokenB || !account) {
+      return null;
+    }
+    const currentTokenData = getCurrentTokenPairAmount(tokenAAmount, tokenBAmount);
+    if (!currentTokenData) {
+      return null;
+    }
+    const hash = await poolRepository.addLiquidity({
+      tokenA: currentTokenData.tokenA,
+      tokenB: currentTokenData.tokenB,
+      tokenAAmount: currentTokenData.tokenAAmount,
+      tokenBAmount: currentTokenData.tokenBAmount,
+      feeTier: swapFeeTier,
+      minTick,
+      maxTick,
+      slippage: Number(slippage),
+      caller: account.address
+    }).catch(e => {
+      console.error(e);
+      return null;
+    });
+    return hash;
+  }, [account, poolRepository, tokenA, tokenB, compareToken]);
 
   useEffect(() => {
     updatePools();
@@ -95,6 +162,7 @@ export const usePool = ({
   return {
     pools: currentPools,
     feetierOfLiquidityMap,
-    createPool
+    createPool,
+    addLiquidity,
   };
 };

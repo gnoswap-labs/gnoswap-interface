@@ -8,6 +8,7 @@ import EarnAddConfirmFeeInfo from "../earn-add-confirm-fee-info/EarnAddConfirmFe
 import { TokenModel } from "@models/token/token-model";
 
 export interface EarnAddConfirmProps {
+  isPoolCreation?: boolean;
   amountInfo: {
     tokenA: {
       info: TokenModel;
@@ -24,9 +25,8 @@ export interface EarnAddConfirmProps {
   priceRangeInfo: {
     currentPrice: string;
     minPrice: string;
-    minPriceLable: string;
     maxPrice: string;
-    maxPriceLable: string;
+    priceLabel: string;
     feeBoost: string;
     estimatedAPR: string;
   };
@@ -39,6 +39,7 @@ export interface EarnAddConfirmProps {
 }
 
 const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
+  isPoolCreation,
   amountInfo,
   priceRangeInfo,
   feeInfo,
@@ -58,7 +59,9 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} symbolTokenA={amountInfo.tokenA.info.symbol} symbolTokenB={amountInfo.tokenB.info.symbol} />
 
-      <EarnAddConfirmFeeInfo {...feeInfo} />
+      {isPoolCreation && (
+        <EarnAddConfirmFeeInfo {...feeInfo} />
+      )}
 
       <Button
         text="Confirm Create Position"

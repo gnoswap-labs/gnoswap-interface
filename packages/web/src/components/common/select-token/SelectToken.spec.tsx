@@ -13,6 +13,7 @@ describe("SelectToken Component", () => {
       changeKeyword: () => { return; },
       changeToken: () => { return; },
       close: () => { return; },
+      themeKey: "dark"
     };
 
     render(

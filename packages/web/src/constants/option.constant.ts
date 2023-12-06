@@ -15,6 +15,123 @@ export interface SwapFeeTierInfo {
   description: string;
 }
 
+export const SwapFeeTierMaxPriceRangeMap: Record<
+  SwapFeeTierType,
+  {
+    minTick: number;
+    minPrice: number;
+    maxTick: number;
+    maxPrice: number;
+  }
+> = {
+  FEE_100: {
+    minTick: -887272,
+    minPrice: 2.9389568087743114e-39,
+    maxTick: 887272,
+    maxPrice: 3.4025678683638813e38,
+  },
+  FEE_500: {
+    minTick: -887270,
+    minPrice: 2.93954462969822e-39,
+    maxTick: 887270,
+    maxPrice: 3.4018874568536357e38,
+  },
+  FEE_3000: {
+    minTick: -887220,
+    minPrice: 2.954278419690599e-39,
+    maxTick: 887220,
+    maxPrice: 3.384921318552238e38,
+  },
+  FEE_10000: {
+    minTick: -887200,
+    minPrice: 2.9601925924784057e-39,
+    maxTick: 887200,
+    maxPrice: 3.378158579040119e38,
+  },
+  NONE: {
+    minTick: -887272,
+    minPrice: 2.9389568087743114e-39,
+    maxTick: 887272,
+    maxPrice: 3.4025678683638813e38,
+  },
+};
+
+export const SwapFeeTierPriceRange: Record<
+  SwapFeeTierType,
+  Record<PriceRangeType, { min: number; max: number }>
+> = {
+  FEE_100: {
+    Active: {
+      min: -0.5,
+      max: 0.5,
+    },
+    Passive: {
+      min: -1,
+      max: 1,
+    },
+    Custom: {
+      min: -1,
+      max: 1,
+    },
+  },
+  FEE_500: {
+    Active: {
+      min: -10,
+      max: 10,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+  FEE_3000: {
+    Active: {
+      min: -10,
+      max: 10,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+  FEE_10000: {
+    Active: {
+      min: -10,
+      max: 10,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+  NONE: {
+    Active: {
+      min: -50,
+      max: 50,
+    },
+    Passive: {
+      min: -50,
+      max: 100,
+    },
+    Custom: {
+      min: -50,
+      max: 100,
+    },
+  },
+};
+
 export const SwapFeeTierInfoMap: Record<SwapFeeTierType, SwapFeeTierInfo> = {
   FEE_100: {
     type: "FEE_100",
@@ -117,13 +234,41 @@ export type AddLiquidityType = "POOL" | "LIQUIDITY";
 export type PriceRangeType = "Active" | "Passive" | "Custom";
 
 export const PriceRangeTooltip: {
-  [key in PriceRangeType]: string | undefined;
+  [key in SwapFeeTierType]: { [key in PriceRangeType]: string | undefined };
 } = {
-  Active:
-    "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
-  Passive:
-    "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
-  Custom: undefined,
+  FEE_10000: {
+    Active:
+      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  FEE_3000: {
+    Active:
+      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  FEE_500: {
+    Active:
+      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  FEE_100: {
+    Active:
+      "An aggressive price range of [-0.5% ~ +0.5%] for higher risks & returns.",
+    Passive:
+      "A passive price range of [-1% ~ 1%] <br />for moderate risks & returns.",
+    Custom: undefined,
+  },
+  NONE: {
+    Active: undefined,
+    Passive: undefined,
+    Custom: undefined,
+  },
 };
 
 export const DEFAULT_SLIPPAGE = "0.5";

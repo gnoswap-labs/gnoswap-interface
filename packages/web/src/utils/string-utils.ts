@@ -42,3 +42,21 @@ export function makePairName({
 export function numberToFormat(num: string | number, decimals?: number) {
   return BigNumber(num).toFormat(decimals || 0);
 }
+
+export function displayTickNumber(range: number[], tick: number) {
+  const rangeGap = (range[1] - range[0]) / 10;
+  const rangeGapSplit = `${rangeGap}`.split(".");
+  if (rangeGap > 1) {
+    const fixedPosition = rangeGapSplit[0].length;
+    return BigNumber(tick)
+      .shiftedBy(fixedPosition)
+      .multipliedBy(10 ** fixedPosition)
+      .toFormat(0);
+  }
+  if (rangeGapSplit.length < 2) {
+    return tick.toFixed(1);
+  }
+  const fixedPosition =
+    Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
+  return tick.toFixed(fixedPosition);
+}

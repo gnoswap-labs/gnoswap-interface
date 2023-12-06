@@ -43,7 +43,7 @@ interface SelectFeeTierItemProps {
   selected: boolean;
   feeTier: SwapFeeTierType;
   pools: PoolModel[];
-  liquidityRange: number | null;
+  liquidityRange: number | undefined | null;
   onClick: () => void;
 }
 
@@ -58,7 +58,7 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   }, [feeTier]);
 
   const rangeStr = useMemo(() => {
-    if (liquidityRange === null) {
+    if (liquidityRange === null || liquidityRange === undefined) {
       return "Not created";
     }
     return `${Math.round(liquidityRange)}% Select`;

@@ -11,9 +11,10 @@ import { SwapRouteRequest } from "./request/swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
 import { SwapRouter } from "@gnoswap-labs/swap-router";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
+import BigNumber from "bignumber.js";
 
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
-const ROUTER_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_ADDRESS || "";
+const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -41,7 +42,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
     const { inputToken, outputToken, exactType, tokenAmount } = request;
 
-    if (Number.isNaN(tokenAmount)) {
+    if (BigNumber(tokenAmount).isNaN()) {
       throw new SwapError("INVALID_PARAMS");
     }
 
@@ -146,7 +147,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       send: "",
       pkg_path: token.path,
       func: "Approve",
-      args: [ROUTER_ADDRESS, "999999999999"],
+      args: [POOL_ADDRESS, "999999999999"],
     };
   }
 }
