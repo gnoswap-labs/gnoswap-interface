@@ -24,6 +24,9 @@ export interface ThemeColorType {
   background21: string;
   background22: string;
   background23: string;
+  background24: string;
+  background25: string;
+  bgLoading: string;
   backgroundOpacity: string;
   backgroundOpacity2: string;
   backgroundOpacity3: string;
@@ -34,6 +37,7 @@ export interface ThemeColorType {
   backgroundGradient3: string;
   backgroundGradient4: string;
   backgroundGradient5: string;
+  backgroundGradient6: string;
   border01: string;
   border02: string;
   border03: string;
@@ -107,6 +111,7 @@ export interface ThemeColorType {
   greenDark: string;
   shadow: string;
   shadow01: string;
+  shadow02: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

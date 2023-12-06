@@ -13,6 +13,7 @@ import { CommonState, ThemeState } from "@states/index";
 import { useAtom } from "jotai";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -24,6 +25,8 @@ export interface Token {
   token: TokenInfo;
   price: string;
   priceOf1d: NegativeStatusType;
+  tokenB?: TokenInfo;
+  isLiquid?: boolean;
 }
 
 export const RecentdummyToken: Token[] = [
@@ -32,14 +35,63 @@ export const RecentdummyToken: Token[] = [
     searchType: "recent",
     token: {
       path: "1",
-      name: "Bitcoin",
-      symbol: "BTC",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+      name: "GNS",
+      symbol: "APR",
+      logoURI: "/gnos.svg",
     },
     price: "$12,090.09",
     priceOf1d: {
       status: MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "12.08%",
+      value: "52.4",
+    },
+    tokenB: {
+      path: "1",
+      name: "GNOT",
+      symbol: "GNOT",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+    },
+    isLiquid: true,
+  },
+  {
+    path: Math.floor(Math.random() * 50 + 1).toString(),
+    searchType: "recent",
+    token: {
+      path: "1",
+      name: "GNS",
+      symbol: "APR",
+      logoURI: "/gnos.svg",
+    },
+    price: "$12,090.09",
+    priceOf1d: {
+      status: MATH_NEGATIVE_TYPE.POSITIVE,
+      value: "107.4",
+    },
+    tokenB: {
+      path: "1",
+      name: "GNOT",
+      symbol: "GNOT",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+    },
+  },
+  {
+    path: Math.floor(Math.random() * 50 + 1).toString(),
+    searchType: "recent",
+    token: {
+      path: "1",
+      name: "GNS",
+      symbol: "APR",
+      logoURI: "/gnos.svg",
+    },
+    price: "$12,090.09",
+    priceOf1d: {
+      status: MATH_NEGATIVE_TYPE.POSITIVE,
+      value: "31.4",
+    },
+    tokenB: {
+      path: "1",
+      name: "GNOT",
+      symbol: "GNOT",
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
     },
   },
 ];
@@ -68,8 +120,6 @@ async function fetchTokens(
   return new Promise(resolve => setTimeout(resolve, 1500)).then(() => {
     const data = [
       ...RecentdummyToken,
-      ...RecentdummyToken,
-      ...RecentdummyToken,
       ...PopulardummyToken,
       ...PopulardummyToken,
     ];
@@ -85,9 +135,14 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork } = useWallet();
+  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
 
   const { openModal } = useConnectWalletModal();
+
+  const handleESC = () => {
+    setSearchMenuToggle(false);
+  }
+  useEscCloseModal(handleESC);
 
   const {
     isFetched,
@@ -136,6 +191,7 @@ const HeaderContainer: React.FC = () => {
       themeKey={themeKey}
       switchNetwork={switchNetwork}
       isSwitchNetwork={isSwitchNetwork}
+      loadingConnect={loadingConnect}
     />
   );
 };

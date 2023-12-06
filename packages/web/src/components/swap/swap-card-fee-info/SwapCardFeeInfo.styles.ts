@@ -21,9 +21,12 @@ export const FeeWrapper = styled.div`
 
   .gray-text {
     color: ${({ theme }) => theme.color.text04};
+    &:last-of-type {
+      margin-left: 4px;
+    }
   }
   .white-text {
-    color: ${({ theme }) => theme.color.text03};
+    color: ${({ theme }) => theme.color.text10};
   }
   .received,
   .gas-fee,

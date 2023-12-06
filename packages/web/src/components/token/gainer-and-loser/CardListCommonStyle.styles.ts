@@ -9,7 +9,7 @@ export const cardStyle = (theme: Theme) => css`
   color: ${theme.color.text02};
   width: 100%;
   gap: 4px;
-  padding: 24px 0px;
+  padding: 23px 0px;
   &:first-of-type {
     border-bottom: 1px solid ${theme.color.border02};
   }
@@ -17,7 +17,7 @@ export const cardStyle = (theme: Theme) => css`
     ${fonts.body9};
     color: ${theme.color.text01};
     width: 100%;
-    padding: 0px 24px;
+    padding: 0px 23px;
     margin-bottom: 8px;
     ${media.mobile} {
       margin-bottom: 4px;
@@ -37,7 +37,7 @@ export const cardStyle = (theme: Theme) => css`
     }
     width: 100%;
     height: 36px;
-    padding: 0px 24px;
+    padding: 0px 23px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     &:hover {
@@ -70,15 +70,33 @@ export const cardStyle = (theme: Theme) => css`
     }
   }
   @media (max-width: 1180px) {
-    padding: 16px 0;
+    padding: 15px 0;
     .card-title {
-      padding: 0 16px;
+      padding: 0 15px;
     }
     .card-wrap {
-      padding: 0 16px;
+      padding: 0 15px;
     }
   }
   ${media.mobile} {
     gap: 4px;
+  }
+`;
+
+export const loadingWrapper = (theme: Theme) => css`
+  ${mixins.flexbox("row", "flex-start", "center")}
+  width: 100%;
+  height: 118px;
+  background-color: ${theme.color.background01};
+  border-radius: 8px;
+  padding-top: 16px;
+  > div {
+    width: 48px;
+    height: 48px;
+    &::before {
+      background-color: ${theme.color.background01};
+      width: 38px;
+      height: 38px;
+    }
   }
 `;

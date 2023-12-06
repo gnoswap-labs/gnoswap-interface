@@ -319,10 +319,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
 
-  const handleChangeSlippage = useCallback((vl: string) => {
-    changeSlippage(Number(vl));
-  }, []);
-
   useEffect(() => {
     if (exactType === "EXACT_IN") {
       updateTokenBAmountByTokenA(tokenAAmountInput.amount);
@@ -373,7 +369,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isEarnAdd={false}
       connected={connectedWallet}
       slippage={slippage}
-      changeSlippage={handleChangeSlippage}
+      changeSlippage={changeSlippage}
       openModal={openOneClickModal}
       selectPool={selectPool}
       handleClickOneStaking={() => null}

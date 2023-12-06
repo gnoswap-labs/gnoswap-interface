@@ -10,6 +10,7 @@ import { priceToNearTick } from "@utils/swap-utils";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { numberToFormat } from "@utils/string-utils";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
+import { useNotice } from "@hooks/common/use-notice";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -17,7 +18,7 @@ export interface EarnAddLiquidityConfirmModalProps {
   tokenAAmountInput: TokenAmountInputModel;
   tokenBAmountInput: TokenAmountInputModel;
   selectPool: SelectPool;
-  slippage: number;
+  slippage: string;
   swapFeeTier: SwapFeeTierType | null;
   createPool: (
     params: {
@@ -27,7 +28,7 @@ export interface EarnAddLiquidityConfirmModalProps {
       startPrice: string;
       minTick: number;
       maxTick: number;
-      slippage: number;
+      slippage: string;
     }
   ) => Promise<string | null>;
   addLiquidity: (
@@ -37,7 +38,7 @@ export interface EarnAddLiquidityConfirmModalProps {
       swapFeeTier: SwapFeeTierType;
       minTick: number;
       maxTick: number;
-      slippage: number;
+      slippage: string;
     }
   ) => Promise<string | null>;
 }
@@ -59,6 +60,7 @@ export const useEarnAddLiquidityConfirmModal = ({
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const navigator = useNavigate();
+  const { setNotice } = useNotice();
 
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -160,6 +162,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       }
     }
 
+    setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999 });
     if (selectPool.isCreate) {
       createPool({
         tokenAAmount: tokenAAmountInput.amount,
@@ -172,7 +175,6 @@ export const useEarnAddLiquidityConfirmModal = ({
       }).then(result => result && moveEarn());
       return;
     }
-
     addLiquidity({
       tokenAAmount: tokenAAmountInput.amount,
       tokenBAmount: tokenBAmountInput.amount,

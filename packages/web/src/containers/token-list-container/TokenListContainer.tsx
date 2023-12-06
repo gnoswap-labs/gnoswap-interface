@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import TokenList from "@components/home/token-list/TokenList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type TokenInfo } from "@models/token/token-info";
@@ -6,6 +6,7 @@ import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import useClickOutside from "@hooks/common/use-click-outside";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -164,8 +165,19 @@ const TokenListContainer: React.FC = () => {
   const [sortOption, setSortOption] = useState<SortOption>();
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
+  const [componentRef, isClickOutside, setIsInside] = useClickOutside();
+
+  useEffect(() => {
+    if (!keyword) {
+      if (isClickOutside) {
+        setSearchIcon(false);
+      }
+    }
+  }, [isClickOutside, keyword]);
+
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
+    setIsInside(true);
   };
 
   const {
@@ -253,6 +265,7 @@ const TokenListContainer: React.FC = () => {
       breakpoint={breakpoint}
       searchIcon={searchIcon}
       onTogleSearch={onTogleSearch}
+      searchRef={componentRef}
     />
   );
 };

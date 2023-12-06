@@ -27,8 +27,8 @@ export const TokenChartInfoWrapper = styled.div`
       }
 
       .token-symbol {
-        color: ${({ theme }) => theme.color.text05};
-        ${fonts.body4};
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.body6};
       }
     }
 

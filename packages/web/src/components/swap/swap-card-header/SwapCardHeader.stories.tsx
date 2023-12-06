@@ -21,7 +21,7 @@ export const Default = Template.bind({});
 Default.args = {
   copied: false,
   copyURL: action("copyURL"),
-  slippage: 0,
+  slippage: "0",
   changeSlippage: action("changeSlippage"),
 };
 

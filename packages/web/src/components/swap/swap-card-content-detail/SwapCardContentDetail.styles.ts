@@ -13,7 +13,7 @@ export const DetailWrapper = styled.div<WrapperProps>`
   border-radius: ${({ opened }) => {
     return opened ? "8px 8px 0px 0px" : "8px";
   }};
-  background: ${({ theme }) => theme.color.background01};
+  background: ${({ theme }) => theme.color.background20};
   border: 1px solid ${({ theme }) => theme.color.border02};
 
   .exchange-section {
@@ -25,12 +25,14 @@ export const DetailWrapper = styled.div<WrapperProps>`
     .loading-change {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 8px;
+      color: ${({ theme }) => theme.color.text10};
       > div {
         width: 16px;
         height: 16px;
         &::before {
           width: 12px;
           height: 12px;
+          background-color: ${({ theme }) => theme.color.background01};
         }
       }
     }
@@ -52,6 +54,7 @@ export const DetailWrapper = styled.div<WrapperProps>`
         }
         .swap-rate {
           cursor: pointer;
+          color: ${({ theme }) => theme.color.text10};
         }
         .exchange-price {
           color: ${({ theme }) => theme.color.text04};
@@ -60,7 +63,7 @@ export const DetailWrapper = styled.div<WrapperProps>`
           width: 16px;
           height: 16px;
           * {
-            fill: ${({ theme }) => theme.color.icon05};
+            fill: ${({ theme }) => theme.color.icon03};
           }
         }
       }
@@ -91,7 +94,7 @@ export const FeelWrapper = styled.div<WrapperProps>`
   border-radius: ${({ opened }) => {
     return opened ? "0px 0px 8px 8px" : "8px";
   }};
-  background: ${({ theme }) => theme.color.background01};
+  background: ${({ theme }) => theme.color.background20};
   border-left: 1px solid ${({ theme }) => theme.color.border02};
   border-right: 1px solid ${({ theme }) => theme.color.border02};
   border-bottom: 1px solid ${({ theme }) => theme.color.border02};
@@ -115,5 +118,5 @@ export const SwapDivider = styled.div`
   width: 100%;
   height: 1px;
   align-self: stretch;
-  background: ${({ theme }) => theme.color.border02};
+  background: ${({ theme }) => theme.color.background20};
 `;

@@ -1,6 +1,6 @@
 import React from "react";
-import IconLogoWhite from "../icons/IconLogoWhite";
-import IconLogoPrimary from "../icons/IconLogoPrimary";
+import IconFooterDarkLogo from "../icons/IconFooterDarkLogo";
+import IconFooterLightLogo from "../icons/IconFooterLightLogo";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import Link from "next/link";
@@ -51,9 +51,9 @@ const Footer: React.FC = () => {
       <FooterContainer>
         <FirstSection>
           {themeKey === "dark" ? (
-            <IconLogoWhite className="footer-main-logo" />
+            <IconFooterDarkLogo className="footer-main-logo" />
           ) : (
-            <IconLogoPrimary className="footer-main-logo" />
+            <IconFooterLightLogo className="footer-main-logo" />
           )}
           <p className="footer-content">{FOOTER_LEFT_NAV.content}</p>
           <SocialNav>

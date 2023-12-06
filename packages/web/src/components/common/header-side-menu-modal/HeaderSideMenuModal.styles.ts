@@ -9,16 +9,20 @@ export const HeaderSideMenuModalWrapper = styled.div`
   ${media.tablet} {
     top: 44px;
   }
-  ${media.mobile} {
-    top: -210px;
-    right: -10px;
-  }
+
   right: 0px;
   width: 240px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background01};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  ${media.mobile} {
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+    top: initial;
+  }
 `;
 
 export const Navigation = styled.nav`

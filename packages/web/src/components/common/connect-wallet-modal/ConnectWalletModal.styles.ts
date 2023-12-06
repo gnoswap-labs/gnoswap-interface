@@ -79,6 +79,16 @@ export const ConnectWalletModalWrapper = styled.div`
         }
     }
   }
+  .loading-button {
+    width: 32px;
+    height: 32px;
+    background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
+    &::before {
+      width: 23.4px;
+      height: 23.4px;
+      background-color: ${({ theme }) => theme.color.background04Hover};
+    }
+  }
   ${media.mobile} {
     padding: 16px 12px;
     width: 328px;

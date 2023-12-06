@@ -13,14 +13,17 @@ export const ContentWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     position: relative;
     width: 100%;
-    padding: 16px 24px;
+    padding: 15px 23px;
     gap: 8px;
     align-self: stretch;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
     background: ${({ theme }) => theme.color.background20};
+    &:focus-within {
+      border: 1px solid  ${({ theme }) => theme.color.border15};
+    }
     ${media.mobile} {
-      padding: 12px;
+      padding: 11px;
     }
   }
 
@@ -45,7 +48,16 @@ export const ContentWrapper = styled.div`
 
   .token-selector {
     display: block;
-    height: 32px;
+    height: 34px;
+    .selected-token {
+      padding: 5px 10px 5px 6px;
+    }
+    .not-selected-token {
+      padding: 5px 10px 5px 12px
+    }
+    .token-symbol {
+      height: 21px;
+    }
   }
 
   .amount-info {
@@ -58,7 +70,7 @@ export const ContentWrapper = styled.div`
       ${media.mobile} {
         ${fonts.p2};
       }
-      color: ${({ theme }) => theme.color.text10};
+      color: ${({ theme }) => theme.color.text04};
     }
     .balance-text-disabled {
       cursor: pointer;
@@ -67,14 +79,17 @@ export const ContentWrapper = styled.div`
 
   .second-section {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    padding: 16px 24px;
+    padding: 15px 23px;
     gap: 8px;
     align-self: stretch;
     border-radius: 8px;
     background: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
+    &:focus-within {
+      border: 1px solid  ${({ theme }) => theme.color.border15};
+    }
     ${media.mobile} {
-      padding: 12px;
+      padding: 11px;
     }
   }
   .arrow {

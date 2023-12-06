@@ -37,7 +37,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
     <div
       css={wrapper(Boolean(token), disabled || hiddenModal, isHiddenArrow)}
       onClick={onClickButton}
-      className={className}
+      className={`${className} ${token ? "selected-token" : "not-selected-token"}`}
     >
       {token ? (
         <div>

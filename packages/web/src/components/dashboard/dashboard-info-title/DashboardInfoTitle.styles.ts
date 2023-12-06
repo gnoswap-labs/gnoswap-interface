@@ -19,7 +19,7 @@ export const DashboardInfoTitleWrapper = styled.div`
 
 export const TokenWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  gap: 16px;
+  gap: 8px;
 `;
 
 export const GnosLogoWrapper = styled.div`
@@ -28,13 +28,13 @@ export const GnosLogoWrapper = styled.div`
 
   .gnos-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
-    background-color: ${({ theme }) => theme.color.point};
-    width: 36px;
-    height: 36px;
-    border-radius: 100%;
-    ${media.mobile} {
-      width: 25px;
-      height: 25px;
+    svg {
+      width: 36px;
+      height: 36px;
+      ${media.mobile} {
+        width: 25px;
+        height: 25px;
+      }
     }
   }
   .gnos-image {
@@ -60,13 +60,13 @@ export const GnotLogoWrapper = styled.div`
   gap: 8px;
   .gnot-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
-    background-color: ${({ theme }) => theme.color.icon09};
-    width: 36px;
-    height: 36px;
-    border-radius: 100%;
-    ${media.mobile} {
-      width: 25px;
-      height: 25px;
+    svg {
+      width: 36px;
+      height: 36px;
+      ${media.mobile} {
+        width: 25px;
+        height: 25px;
+      }
     }
   }
   .gnot-symbol {

@@ -22,6 +22,7 @@ export const AssetListHeaderWrapper = styled.div`
     gap: 36px;
     ${media.tabletMiddle} {
       gap: 24px;
+      height: 24px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
     }
     ${media.mobile} {
@@ -36,6 +37,7 @@ export const AssetListHeaderWrapper = styled.div`
   .icon-wrap {
     ${mixins.flexbox("row", "center", "center")};
     cursor: pointer;
+    margin-right: 13px;
   }
   .search-icon {
     width: 24px;

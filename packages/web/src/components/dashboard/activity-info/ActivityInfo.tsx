@@ -74,7 +74,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index">{account}</span>
+            <span className="token-index tooltip-label">{account}</span>
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[5]}>
@@ -86,7 +86,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index">{time}</span>
+            <span className="token-index tooltip-label">{time}</span>
           </Tooltip>
         </TableColumn>
       </HoverSection>

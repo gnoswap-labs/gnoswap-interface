@@ -46,7 +46,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: false,
       },
       {
-        title: "Add Liquidity",
+        title: "Create Position",
         path: "/earn/add",
         newTab: false,
       },
@@ -58,11 +58,6 @@ export const FOOTER_RIGHT_NAV = [
       {
         title: "Incentivize Pool",
         path: "/earn/pool/1/incentivize",
-        newTab: false,
-      },
-      {
-        title: "Airdrop",
-        path: "/airdrop",
         newTab: false,
       },
     ],
@@ -81,12 +76,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "Discord Support",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "Twitter Support",
+        title: "Twitter (X)",
         path: "/",
         newTab: true,
       },

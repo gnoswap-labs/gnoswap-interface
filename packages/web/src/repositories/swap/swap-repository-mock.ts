@@ -52,7 +52,7 @@ export class SwapRepositoryMock implements SwapRepository {
     return 0;
   };
 
-  public setSlippage = (slippage: number): boolean => {
+  public setSlippage = (slippage: string): boolean => {
     this.localStorageClient.set("slippage", `${slippage}`);
     return true;
   };

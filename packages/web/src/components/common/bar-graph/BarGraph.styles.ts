@@ -17,8 +17,8 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
   width: 100%;
   height: auto;
   overflow: visible;
-  pointer-events: none;
   & > svg {
+    transform: translateY(24px);
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -28,8 +28,13 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
       pointer-events: auto;
       &:hover {
         fill: ${(props) =>
-          props.svgColor === "default" ? ({ theme }) => theme.color.point : ""};
+          props.svgColor === "default" ? ({ hoverColor }) => hoverColor : ""};
         opacity: ${(props) => (props.svgColor === "incentivized" ? 0.4 : 1)};
+        + path {
+          fill: ${(props) =>
+            props.svgColor === "default" ? ({ hoverColor }) => hoverColor : ""};
+          opacity: ${(props) => (props.svgColor === "incentivized" ? 0.4 : 1)};
+        }
       }
     }
   }
@@ -43,26 +48,15 @@ export const BarLineWrapper = styled.line`
   }
 `;
 
-interface BarGraphTooltipWrapperProps {
-  x: number;
-  y: number;
-}
-
-export const BarGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperProps>`
-  position: absolute;
-  top: ${(props) => `${props.y - 51}px`};
-  left: ${(props) => `${props.x}px`};
+export const BarGraphTooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 220px;
+  min-width: 126px;
   height: auto;
-  padding: 6px 8px;
   background: ${({ theme }) => theme.color.background02};
   border-radius: 4px;
-  box-shadow: 2px 2px 12px 0px rgba(0, 0, 0, 0.15);
-  overflow: visible;
-  gap: 5px;
-  transform: translateX(-48%);
+  gap: 8px;
+
   ${fonts.p4};
 
   & .tooltip-header {
@@ -71,33 +65,27 @@ export const BarGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperProps>`
     width: 100%;
     height: auto;
     justify-content: space-between;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 19px;
-    color: ${({ theme }) => theme.color.point};
+    ${fonts.body9}
+    color: ${({ theme }) => theme.color.text02};
   }
 
   & .tooltip-body {
-    ${fonts.p4};
+    ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
-    .date {
-      margin-right: 3px;
+    .time {
+      margin-left: 40px;
+      ${media.tablet} {
+        display: none;
+      }
     }
   }
 `;
 
-export const IncentivizeGraphTooltipWrapper = styled.div<BarGraphTooltipWrapperProps>`
+export const IncentivizeGraphTooltipWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  position: absolute;
-  top: ${(props) => `${props.y - 140}px`};
-  left: ${(props) => `${props.x}px`};
-  padding: 16px;
   background: ${({ theme }) => theme.color.background02};
-  border-radius: 8px;
-  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   gap: 8px;
   z-index: ${Z_INDEX.modalTooltip};
-  transform: translateX(-50%);
   .row {
     ${mixins.flexbox("row", "flex-start", "flex-start")};
     .token,

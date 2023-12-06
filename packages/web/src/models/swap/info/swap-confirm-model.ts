@@ -9,7 +9,7 @@ export interface SwapConfirmModel {
   tokenAAmount: AmountModel;
   tokenBAmount: AmountModel;
   type: SwapDirectionType;
-  slippage: number;
+  slippage: string;
   gasFee: BigNumber;
 }
 

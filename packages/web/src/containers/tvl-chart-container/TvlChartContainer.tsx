@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import TvlChart from "@components/dashboard/tvl-chart/TvlChart";
 import { CHART_TYPE } from "@constants/option.constant";
@@ -18,6 +18,10 @@ export interface TvlChartInfo {
   }[];
 }
 
+const months = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
 function createXAxisDummyDatas(currentTab: CHART_TYPE) {
   const now = Date.now();
   switch (currentTab) {
@@ -25,39 +29,66 @@ function createXAxisDummyDatas(currentTab: CHART_TYPE) {
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setDate(date.getDate() - 1 * index);
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        const dateStr = `${date.getDate()}`.padStart(2, "0");
-        return `${monthStr}-${dateStr}`;
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const yearStr = date.getFullYear();
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1M":
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        const monthStr = `${date.getMonth() + 1}`.padStart(2, "0");
-        return `${yearStr}-${monthStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
     case "1Y":
-    case "YTD":
-    default:
       return Array.from({ length: 8 }, (_, index) => {
         const date = new Date(now);
         date.setFullYear(date.getFullYear() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
         const yearStr = date.getFullYear();
-        return `${yearStr}`;
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
+      }).reverse();
+    case "ALL":
+    default:
+      return Array.from({ length: 10 }, (_, index) => {
+        const date = new Date(now);
+        date.setMonth(date.getMonth() - 1 * index);
+        const monthStr = months[date.getMonth()];
+        const dayStr = `${date.getDate()}`.padStart(2, "0");
+        const yearStr = date.getFullYear();
+    
+        return `${monthStr} ${dayStr}, ${yearStr}`;
       }).reverse();
   }
 }
 
-function createDummyAmountDatas() {
-  const length = 24;
+function createDummyAmountDatas(tvlChartType: CHART_TYPE) {
+  let length = 8;
+  if (CHART_TYPE["7D"] === tvlChartType) {
+    length = 8;
+  }
+  if (CHART_TYPE["1M"] === tvlChartType) {
+    length = 31;
+  }
+  if (CHART_TYPE["1Y"] === tvlChartType) {
+    length = 91;
+  }
+  if (CHART_TYPE["ALL"] === tvlChartType) {
+    length = 91;
+  }
   return Array.from({ length }, (_, index) => {
     const date = new Date();
     date.setHours(date.getHours() - index);
 
     return {
       amount: {
-        value: `${Math.round(Math.random() * 500) + 1000}`,
+        value: `${Math.round(Math.random() * 5000000) + 100000000}`,
         denom: "USD"
       },
       time: date.toString()
@@ -76,6 +107,15 @@ async function fetchTvlPriceInfo(): Promise<TvlPriceInfo> {
 }
 
 const TvlChartContainer: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
+
   const [tvlChartType, setTvlChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
   );
@@ -100,7 +140,7 @@ const TvlChartContainer: React.FC = () => {
   const getChartInfo = useCallback(() => {
     const xAxisLabels = getXAxisLabels(tvlChartType);
 
-    const datas = createDummyAmountDatas();
+    const datas = createDummyAmountDatas(tvlChartType);
 
     const chartInfo: TvlChartInfo = {
       xAxisLabels,
@@ -116,6 +156,7 @@ const TvlChartContainer: React.FC = () => {
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={tvlPriceInfo}
       tvlChartInfo={getChartInfo()}
+      loading={loading}
     />
   );
 };

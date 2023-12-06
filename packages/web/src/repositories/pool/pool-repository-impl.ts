@@ -272,7 +272,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     maxTick: number,
     tokenAAmount: string,
     tokenBAmount: string,
-    slippage: number,
+    slippage: string,
     caller: string,
   ) {
     const tokenAPath = tokenA.path;

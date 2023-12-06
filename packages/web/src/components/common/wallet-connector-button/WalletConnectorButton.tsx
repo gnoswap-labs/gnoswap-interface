@@ -14,6 +14,8 @@ import { AccountModel } from "@models/account/account-model";
 import IconFailed from "../icons/IconFailed";
 import Tooltip from "../tooltip/Tooltip";
 import { Global, css } from "@emotion/react";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -23,6 +25,7 @@ interface WalletConnectProps {
   disconnectWallet: () => void;
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
+  loadingConnect: string;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -58,8 +61,22 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   disconnectWallet,
   switchNetwork,
   isSwitchNetwork,
+  loadingConnect,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
+  const handleESC = () => {
+    setToggle(prev => {
+      if (prev.walletConnect) {
+        return {
+          ...prev,
+          walletConnect: false,
+        };
+      }
+      return prev;
+    });
+  };
+  
+  useEscCloseModal(() => handleESC());
 
   const address = useMemo(() => {
     if (account === null) {
@@ -74,6 +91,10 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       walletConnect: !prev.walletConnect,
     }));
   };
+
+  const isLoading = useMemo(() => {
+    return loadingConnect === "loading";
+  }, [loadingConnect]);
 
   return (
     <WalletConnectorButtonWrapper>
@@ -105,19 +126,20 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
             arrowColor: "text18",
             padding: "10px 16px",
             gap: "8px",
+            height: 36
           }}
           onClick={onMenuToggle}
         />
       ) : (
         <Button
-          text="Connect Wallet"
-          rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
+          text={isLoading ? "" : "Wallet Login"}
+          rightIcon={isLoading ? <LoadingSpinner className="loading-button"/> : <IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
-            width: 155,
+            width: 136,
             height: 36,
-            padding: "10px 16px 10px 20px",
+            padding: isLoading ? "8.5px 16px 7.5px 20px" : "10px 16px 10px 20px",
             justify: "space-between",
           }}
           onClick={onMenuToggle}

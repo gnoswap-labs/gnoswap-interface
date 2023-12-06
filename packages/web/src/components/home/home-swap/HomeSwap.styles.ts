@@ -36,11 +36,14 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     height: 100%;
     position: relative;
+    
     .from,
     .to {
       ${mixins.flexbox("row", "center", "space-between")};
       flex-wrap: wrap;
-
+      &:focus-within {
+        border: 1px solid ${theme.color.border15};
+      }
       width: 100%;
       padding: 9px 23px;
 
@@ -56,11 +59,13 @@ export const wrapper = (theme: Theme) => css`
     }
 
     .token {
-      width: 112px;
-      height: 30px;
       cursor: default;
+      > div {
+        padding: 5px 12px 5px 6px;
+        height: 34px;
+      }
       span {
-        font-size: 15px;
+        font-size: 16px;
         line-height: 19px;
       }
     }
@@ -77,12 +82,15 @@ export const wrapper = (theme: Theme) => css`
       line-height: 38px;
       color: ${theme.color.text01};
       margin-right: 30px;
+      &::placeholder {
+        color: ${theme.color.text01};
+      }
     }
 
     .price-text,
     .balance-text {
       ${fonts.p2};
-      color: ${theme.color.text10};
+      color: ${theme.color.text04};
     }
 
     .token {

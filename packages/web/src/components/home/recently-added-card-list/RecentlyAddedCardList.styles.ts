@@ -7,18 +7,26 @@ interface SkeletonStyleProps {
   tdWidth?: CSSProperties["width"];
 }
 
-export const RecentlyAddedCardListwrapper = styled.div`
+interface Props {
+  loading: boolean;
+}
+
+export const RecentlyAddedCardListwrapper = styled.div<Props>`
   ${mixins.flexbox("column", "flex-start", "center")}
   width: 100%;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
-  padding: 16px 0px 12px;
-  gap: 12px;
+  padding: ${({ loading }) => {
+    return loading ? "15px 0px 15px" : "15px 0px 11px";
+  }};
+  gap: ${({ loading }) => {
+    return loading ? "8px" : "12px";
+  }};
 
   ${media.mobile} {
-    padding: 16px 0px;
+    padding: 15px 0px;
     gap: 16px;
   }
   h2 {
@@ -42,23 +50,9 @@ export const RecentlyAddedCardListwrapper = styled.div`
 export const SkeletonItem = styled.div<SkeletonStyleProps>`
   width: ${({ tdWidth }) => `${tdWidth}`};
   height: 100%;
-  padding: 8px 24px;
+  padding: 4px 24px;
   ${mixins.flexbox("row", "center", "flex-start")};
-`;
-
-
-export const LoadingWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")}
-  width: 100%;
-  background-color: ${({ theme }) => theme.color.background06};
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  padding: 16px 0px 12px;
-  & > div:first-of-type {
-    padding: 0 24px 13px 24px;
-  }
-  ${media.mobile} {
-    padding: 16px 0px;
+  &:first-of-type {
+    padding: 0px 24px 5px 24px;
   }
 `;

@@ -12,7 +12,6 @@ import {
 } from "./HeaderSideMenuModal.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconAccountUser from "../icons/IconAccountUser";
-import IconShoppingBag from "../icons/IconShoppingBag";
 
 interface HeaderSideMenuModalProps {
   onSideMenuToggle: () => void;
@@ -42,16 +41,6 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
     <HeaderSideMenuModalWrapper ref={menuRef}>
       <Navigation>
         <ul>
-          <li className="first-side-menu">
-            <Link href={SIDE_MENU_NAV.AIRDROP.path}>
-              <LeftIconMenu>
-                <LeftIcon onClick={() => {}}>
-                  <IconShoppingBag className="left-icon" />
-                </LeftIcon>
-                {SIDE_MENU_NAV.AIRDROP.title}
-              </LeftIconMenu>
-            </Link>
-          </li>
           <li>
             <Link href={SIDE_MENU_NAV.GOVERNENCE.path}>
               <LeftIconMenu>

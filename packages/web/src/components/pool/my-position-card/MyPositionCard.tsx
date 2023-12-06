@@ -194,12 +194,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <>
               <span className="symbol-text">Min</span>
               <span className="token-text">
-                {content.tokenPair.minAmount} GNOT per GNOS
+                {content.tokenPair.minAmount} GNOT per GNS
               </span>
               <span className="symbol-text">{"<->"}</span>
               <span className="symbol-text">Max</span>
               <span className="token-text">
-                {content.tokenPair.maxAmount} GNOT per GNOS
+                {content.tokenPair.maxAmount} GNOT per GNS
               </span>
             </>
           ) : (
@@ -207,13 +207,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <div className="min-mobile">
                 <span className="symbol-text">Min</span>
                 <span className="token-text">
-                  {content.tokenPair.minAmount} GNOT per GNOS {"<->"}
+                  {content.tokenPair.minAmount} GNOT per GNS {"<->"}
                 </span>
               </div>
               <div className="max-mobile">
                 <span className="symbol-text">Max</span>
                 <span className="token-text">
-                  {content.tokenPair.maxAmount} GNOT per GNOS
+                  {content.tokenPair.maxAmount} GNOT per GNS
                 </span>
               </div>
             </>

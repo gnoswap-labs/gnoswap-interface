@@ -6,15 +6,29 @@ import {
   GovernanceWrapper,
   IconButton,
   LabelIconButton,
+  LoadingTextWrapper,
 } from "./GovernanceOverview.styles";
 import { GovernenceOverviewInfo } from "@containers/dashboard-info-container/DashboardInfoContainer";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 
 interface GovernanceOverviewProps {
   governenceOverviewInfo: GovernenceOverviewInfo;
+  loading: boolean;
 }
+
+const LoadingText = () => {
+  return (
+    <LoadingTextWrapper className="loading-text-wrapper">
+      <span
+        css={skeletonTokenDetail("150px", SHAPE_TYPES.ROUNDED_SQUARE)}
+      />
+    </LoadingTextWrapper>
+  );
+};
 
 const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
   governenceOverviewInfo,
+  loading,
 }) => (
   <GovernanceOverviewWrapper>
     <GovernanceOverviewTitleWrapper>
@@ -30,31 +44,33 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
     <GovernanceWrapper>
       <div className="total-issued">
         <div className="label-title">
-          <div>Total xGNOS Issued</div>
-          <DashboardLabel tooltip="Total amount of xGNOS currently issued through GNOS-GNOT staking." />
+          <div>Total xGNS Issued</div>
+          <DashboardLabel tooltip="Total amount of xGNS currently issued through GNS-GNOT staking." />
         </div>
-        <div>{governenceOverviewInfo.totalXgnosIssued}</div>
+        {!loading ? <div>{governenceOverviewInfo.totalXgnosIssued}</div> : <LoadingText />}
       </div>
       <div className="holders">
         <div className="label-title">
           <div>Holders</div>
-          <DashboardLabel tooltip="Number of accounts with at least 1 xGNOS." />
+          <DashboardLabel tooltip="Number of accounts with at least 1 xGNS." />
         </div>
-        <div>{governenceOverviewInfo.holders}</div>
+        {!loading ? <div>{governenceOverviewInfo.holders}</div> : <LoadingText />}
       </div>
       <div className="passed-proposals">
         <div className="label-title">
           <div>Passed Proposals</div>
         </div>
-        <div>{governenceOverviewInfo.passedProposals}</div>
+        {!loading ? <div>{governenceOverviewInfo.passedProposals}</div> : <LoadingText />}
+
       </div>
       <div className="active-proposals">
         <div className="label-title">
           <div>Active Proposals</div>
         </div>
         <div className="active-proposals-emissions-tooltip">
-          <div>{governenceOverviewInfo.activeProposals}</div>
-          <IconButton
+        {!loading ? <div>{governenceOverviewInfo.activeProposals}</div> : <LoadingText />}
+
+          {!loading && <IconButton
             onClick={() => {
               alert("open Link");
             }}
@@ -62,15 +78,15 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
             <div className="icon-wrapper">
               <IconOpenLink className="action-icon" />
             </div>
-          </IconButton>
+          </IconButton>}
         </div>
       </div>
       <div className="community-pool">
         <div className="label-title">
           <div>Community Pool</div>
-          <DashboardLabel tooltip="Amount of GNOS accumulated in the Community Pool from emissions." />
+          <DashboardLabel tooltip="Amount of GNS accumulated in the Community Pool from emissions." />
         </div>
-        <div>{governenceOverviewInfo.communityPool}</div>
+        {!loading ? <div>{governenceOverviewInfo.communityPool}</div> : <LoadingText />}
       </div>
     </GovernanceWrapper>
   </GovernanceOverviewWrapper>

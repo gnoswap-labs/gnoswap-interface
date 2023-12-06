@@ -61,7 +61,7 @@ export const generateToken0 = () => {
 export const generateToken1 = () => {
   return {
     token_id: `${generateAddress()}`,
-    name: "GNOS",
+    name: "GNS",
     symbol: "GNOSWAP",
     amount: {
       value: generateNumberPlus(),
@@ -106,7 +106,7 @@ export const generateTokenMetas = () => {
     "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png";
   return {
     images: [image0, image1],
-    names: ["GNOT", "GNOS"],
+    names: ["GNOT", "GNS"],
   };
 };
 

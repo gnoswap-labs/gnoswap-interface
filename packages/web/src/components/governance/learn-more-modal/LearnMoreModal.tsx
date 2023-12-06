@@ -1,6 +1,8 @@
 import Button from "@components/common/button/Button";
 import IconStrokeArrowLeft from "@components/common/icons/IconStrokeArrowLeft";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import { Overlay } from "@components/common/modal/Modal.styles";
+import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import React, {
@@ -35,7 +37,7 @@ const LEARN_MORE_DATA: LearnMoreProps[] = [
     title: "How to get xGNOS",
     description: (
       <>
-        Stake liquidity from GNOT-GNOS pools to earn xGNOS,
+        Stake liquidity from GNOT-GNS pools to earn xGNOS,
         <br />
         which represent your voting shares in the Gnoswap Governance.
       </>
@@ -91,20 +93,7 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
     }
   };
 
-  useEffect(() => {
-    const closeModal = (e: MouseEvent) => {
-      if (modalRef.current && modalRef.current.contains(e.target as Node)) {
-        return;
-      } else {
-        e.stopPropagation();
-        setIsShowLearnMoreModal(false);
-      }
-    };
-    window.addEventListener("click", closeModal, true);
-    return () => {
-      window.removeEventListener("click", closeModal, true);
-    };
-  }, [modalRef, setIsShowLearnMoreModal]);
+  useEscCloseModal(() => setIsShowLearnMoreModal(false));
 
   useEffect(() => {
     handleResize();
@@ -115,65 +104,68 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
   }, [modalRef]);
 
   return (
-    <LearnMoreModalBackground>
-      <LearnMoreModalWrapper ref={modalRef}>
-        <Progress>
-          {LEARN_MORE_DATA.map((_, i) => (
-            <div
-              key={i}
-              className={`${index >= i ? "active-progress" : ""}`}
-            ></div>
-          ))}
-        </Progress>
-        <Slider>
-          <Title onMouseDown={e => e.preventDefault()}>
-            <h3>{LEARN_MORE_DATA[index].title}</h3>
-            <div>{LEARN_MORE_DATA[index].description}</div>
-          </Title>
-          <BoxImage>
-            <img
-              onDragStart={e => e.preventDefault()}
-              onMouseDown={e => e.preventDefault()}
-              draggable="false"
-              src={
-                themeKey === "dark"
-                  ? LEARN_MORE_DATA[index].darkImageUrl
-                  : LEARN_MORE_DATA[index].lightImageURL
-              }
-              alt="logo img"
-            />
-            <IconStrokeArrowRight
-              onClick={() =>
-                setIndex(
-                  index < LEARN_MORE_DATA.length - 1
-                    ? index + 1
-                    : LEARN_MORE_DATA.length - 1,
-                )
-              }
-              className={`slide-icon right-icon ${
-                index < LEARN_MORE_DATA.length - 1 ? "active-icon" : ""
-              }`}
-            />
-            <IconStrokeArrowLeft
-              onClick={() => setIndex(index > 0 ? index - 1 : 0)}
-              className={`slide-icon left-icon ${
-                index > 0 ? "active-icon" : ""
-              }`}
-            />
-          </BoxImage>
-        </Slider>
-        <Button
-          text="Close"
-          className="learn-more-btn"
-          style={{
-            fullWidth: true,
-            fontType: "body7",
-            textColor: "text01",
-          }}
-          onClick={() => setIsShowLearnMoreModal(false)}
-        />
-      </LearnMoreModalWrapper>
-    </LearnMoreModalBackground>
+    <>
+      <LearnMoreModalBackground>
+        <LearnMoreModalWrapper ref={modalRef}>
+          <Progress>
+            {LEARN_MORE_DATA.map((_, i) => (
+              <div
+                key={i}
+                className={`${index >= i ? "active-progress" : ""}`}
+              ></div>
+            ))}
+          </Progress>
+          <Slider>
+            <Title onMouseDown={e => e.preventDefault()}>
+              <h3>{LEARN_MORE_DATA[index].title}</h3>
+              <div>{LEARN_MORE_DATA[index].description}</div>
+            </Title>
+            <BoxImage>
+              <img
+                onDragStart={e => e.preventDefault()}
+                onMouseDown={e => e.preventDefault()}
+                draggable="false"
+                src={
+                  themeKey === "dark"
+                    ? LEARN_MORE_DATA[index].darkImageUrl
+                    : LEARN_MORE_DATA[index].lightImageURL
+                }
+                alt="logo img"
+              />
+              <IconStrokeArrowRight
+                onClick={() =>
+                  setIndex(
+                    index < LEARN_MORE_DATA.length - 1
+                      ? index + 1
+                      : LEARN_MORE_DATA.length - 1,
+                  )
+                }
+                className={`slide-icon right-icon ${
+                  index < LEARN_MORE_DATA.length - 1 ? "active-icon" : ""
+                }`}
+              />
+              <IconStrokeArrowLeft
+                onClick={() => setIndex(index > 0 ? index - 1 : 0)}
+                className={`slide-icon left-icon ${
+                  index > 0 ? "active-icon" : ""
+                }`}
+              />
+            </BoxImage>
+          </Slider>
+          <Button
+            text="Close"
+            className="learn-more-btn"
+            style={{
+              fullWidth: true,
+              fontType: "body7",
+              textColor: "text01",
+            }}
+            onClick={() => setIsShowLearnMoreModal(false)}
+          />
+        </LearnMoreModalWrapper>
+      </LearnMoreModalBackground>
+      <Overlay onClick={() => setIsShowLearnMoreModal(false)}/>
+    </>
   );
 };
 

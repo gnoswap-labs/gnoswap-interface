@@ -47,7 +47,7 @@ Default.args = {
     tokenBUSD: 0,
     tokenBUSDStr: "0",
     direction: "EXACT_IN",
-    slippage: 0,
+    slippage: "0",
   },
   swapNow: action("swapNow"),
 };

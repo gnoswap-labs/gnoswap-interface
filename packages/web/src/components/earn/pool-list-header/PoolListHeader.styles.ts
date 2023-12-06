@@ -18,6 +18,7 @@ export const PoolHeaderWrapper = styled.div`
     gap: 36px;
     ${media.mobile} {
       width: 100%;
+      height: 24px;
     }
   }
 

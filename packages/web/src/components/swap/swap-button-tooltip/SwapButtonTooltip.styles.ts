@@ -22,12 +22,11 @@ export const SwapButtonTooltipWrap = styled.div`
 
 export const IconWrap = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
-  cursor: pointer;
   .icon-info {
     width: 16px;
     height: 16px;
     * {
-      fill: ${({ theme }) => theme.color.background02};
+      fill: ${({ theme }) => theme.color.icon03};
     }
   }
 `;

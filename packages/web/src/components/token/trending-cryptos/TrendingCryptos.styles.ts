@@ -9,19 +9,19 @@ export const wrapper = (theme: Theme) => css`
   background-color: ${theme.color.background01};
   border: 1px solid ${theme.color.border02};
   border-radius: 8px;
-  padding: 24px 0px;
+  padding: 23px 0px;
   gap: 12px;
   h2 {
     ${fonts.body9};
     color: ${theme.color.text01};
     width: 100%;
-    padding: 0px 24px;
+    padding: 0px 23px;
   }
   @media (max-width: 1180px) {
     gap: 12px;
-    padding: 16px 0;
+    padding: 15px 0;
     h2 {
-      padding: 0 16px;
+      padding: 0 15px;
     }
   }
   ${media.mobile} {

@@ -15,6 +15,6 @@ const Template: ComponentStory<typeof BestPools> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  titleSymbol: "GNOS",
+  titleSymbol: "GNS",
   cardList: bestPoolListInit,
 };

@@ -16,11 +16,13 @@ export interface TokenChartInfoProps {
     };
     changedRate: number;
   };
+  loading: boolean;
 }
 
 const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
   token,
-  priceInfo
+  priceInfo,
+  loading,
 }) => {
 
   const isIncreasePrice = useCallback(() => {
@@ -39,15 +41,16 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
           </div>
         </div>
         <div className="price-info">
-          <span className="price">{`$ ${priceInfo.amount.value}`}</span>
-          <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
+          {<span className="price">{loading ? "-" : `$${priceInfo.amount.value}`}</span>}
+          {!loading && <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?
                 <IconTriangleArrowUp className="arrow-icon" /> :
                 <IconTriangleArrowDown className="arrow-icon" />
             }
             <span>{priceInfo.changedRate}%</span>
-          </div>
+          </div>}
+          {loading && <div className="change-rate-wrapper">&nbsp;</div>}
         </div>
       </div>
     </TokenChartInfoWrapper>

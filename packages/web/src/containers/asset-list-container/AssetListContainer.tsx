@@ -77,12 +77,12 @@ export const dummyAssetList: Asset[] = [
     balance: "0.1",
   },
   {
-    id: "GNOS",
+    id: "GNS",
     logoUri:
       "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
     type: ASSET_TYPE.GRC20,
     name: "Gnoswap",
-    symbol: "GNOS",
+    symbol: "GNS",
     chain: "Gnoland",
     balance: "0.000000",
   },

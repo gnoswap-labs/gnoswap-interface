@@ -5,3 +5,5 @@ import { atom } from "jotai";
 export const client = atom<WalletClient | null>(null);
 
 export const account = atom<AccountModel | null>(null);
+
+export const loadingConnect = atom<string>("initial");

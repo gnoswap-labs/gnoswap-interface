@@ -1,3 +1,4 @@
+// import { network } from './../../states/common';
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -14,7 +15,9 @@ export const useWallet = () => {
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [, setNetwork] = useAtom(CommonState.network);
-
+  const [loadingConnect, setLoadingConnect] = useAtom(
+    WalletState.loadingConnect,
+  );
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
   }, [walletAccount]);
@@ -50,22 +53,28 @@ export const useWallet = () => {
     }
   }
 
-  function connectAdenaClient() {
-    const adena = AdenaClient.createAdenaClient();
-    if (adena !== null) {
-      adena.initAdena();
-    }
-    setWalletClient(adena);
-  }
-
-  const switchNetwork = async () => {
+  const switchNetwork = useCallback(async () => {
+    setLoadingConnect("loading");
     const res = await accountRepository.switchNetwork(CHAIN_ID);
     if (res.code === 0) {
       const account = await accountRepository.getAccount();
       setWalletAccount(account);
       accountRepository.setConnectedWallet(true);
     }
-  };
+    setLoadingConnect("done");
+  }, [accountRepository, setWalletAccount]);
+
+  const connectAdenaClient = useCallback(() => {
+    const connectedBySession = accountRepository.isConnectedWalletBySession();
+    if (!connectedBySession) {
+      setLoadingConnect("loading");
+    }
+    const adena = AdenaClient.createAdenaClient();
+    if (adena !== null) {
+      adena.initAdena();
+    }
+    setWalletClient(adena);
+  }, [setWalletClient, setLoadingConnect, accountRepository]);
 
   const connectAccount = useCallback(async () => {
     const established = await accountRepository
@@ -78,18 +87,18 @@ export const useWallet = () => {
 
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
-      const network = NetworkData.find(
-        network => network.chainId === account.chainId,
-      );
+      const network = account.chainId === CHAIN_ID;
       if (!network) {
         switchNetwork();
       }
       setWalletAccount(account);
       accountRepository.setConnectedWallet(true);
+      setLoadingConnect("done");
     } else {
       accountRepository.setConnectedWallet(false);
+      setLoadingConnect("error");
     }
-  }, [accountRepository, setWalletAccount]);
+  }, [accountRepository, setWalletAccount, setLoadingConnect]);
 
   const disconnectWallet = useCallback(() => {
     setWalletAccount(null);
@@ -108,10 +117,7 @@ export const useWallet = () => {
 
   const isSwitchNetwork = useMemo(() => {
     if (!walletAccount) return true;
-    const network = NetworkData.find(
-      network => network.chainId === walletAccount.chainId,
-    );
-
+    const network = walletAccount.chainId === CHAIN_ID;
     return network ? false : true;
   }, [walletAccount]);
 
@@ -126,5 +132,6 @@ export const useWallet = () => {
     disconnectWallet,
     switchNetwork,
     isSwitchNetwork: isSwitchNetwork,
+    loadingConnect,
   };
 };

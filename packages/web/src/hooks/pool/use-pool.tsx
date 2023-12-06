@@ -72,7 +72,7 @@ export const usePool = ({
     startPrice: string;
     minTick: number;
     maxTick: number;
-    slippage: number;
+    slippage: string;
   }) => {
     if (!tokenA || !tokenB || !account) {
       return null;
@@ -112,7 +112,7 @@ export const usePool = ({
     swapFeeTier: SwapFeeTierType;
     minTick: number;
     maxTick: number;
-    slippage: number;
+    slippage: string;
   }) => {
     if (!tokenA || !tokenB || !account) {
       return null;
@@ -129,7 +129,7 @@ export const usePool = ({
       feeTier: swapFeeTier,
       minTick,
       maxTick,
-      slippage,
+      slippage: Number(slippage),
       caller: account.address
     }).catch(e => {
       console.error(e);

@@ -4,13 +4,15 @@ import IconClose from "../icons/IconCancel";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconWalletConnect from "../icons/defaultIcon/IconWalletConnect";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
 interface Props {
   close: () => void;
   connect: () => void;
+  loadingConnect: string;
 }
 
-const ConnectWalletModal: React.FC<Props> = ({ close, connect }) => {
+const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -19,7 +21,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect }) => {
     <ConnectWalletModalWrapper>
       <div className="modal-body">
         <div className="header">
-          <h6>Connect Wallet</h6>
+          <h6>Wallet Login</h6>
           <div className="close-wrap" onClick={onClickClose}>
             <IconClose className="close-icon" />
           </div>
@@ -27,8 +29,8 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect }) => {
         <div className="content">
           <div>
             <Button
-              text="Adena"
-              leftIcon={<IconAdenaLogo />}
+              text={loadingConnect === "loading" ? "" : "Adena"}
+              leftIcon={loadingConnect === "loading" ? <LoadingSpinner className="loading-button"/> : <IconAdenaLogo />}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
@@ -58,8 +60,9 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect }) => {
           </a>{" "}
           and consent to our{" "}
           <a href="/" target="_blank">
-            Privacy Policy.
+            Privacy Policy
           </a>
+          .
         </div>
       </div>
     </ConnectWalletModalWrapper>
