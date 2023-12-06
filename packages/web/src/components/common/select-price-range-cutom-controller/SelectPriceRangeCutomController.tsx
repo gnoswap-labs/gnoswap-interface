@@ -42,7 +42,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   const disabledController = useMemo(() => {
     return value === "" ||
       value === "-" ||
-      Number.isNaN(value) ||
+      BigNumber(value).isNaN() ||
       value === "NaN" ||
       value === "0" ||
       value === "∞";
@@ -69,10 +69,14 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       return;
     }
     setChanged(false);
-    if (value === "∞") {
+    if (value === "∞" || value === "-") {
       return;
     }
     const currentValue = BigNumber(value.replace(",", ""));
+    if (currentValue.isNaN()) {
+      setValue("-");
+      return;
+    }
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
     changePrice(nearPrice);
     if (nearPrice > 1) {
@@ -86,7 +90,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   }, [value, tickSpacing, selectedFullRange]);
 
   useEffect(() => {
-    if (current === null || Number.isNaN(current)) {
+    if (current === null || BigNumber(current).isNaN()) {
       setValue("-");
       return;
     }

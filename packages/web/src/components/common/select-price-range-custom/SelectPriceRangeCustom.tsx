@@ -13,6 +13,7 @@ import { toNumberFormat } from "@utils/number-utils";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
+import BigNumber from "bignumber.js";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -96,7 +97,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
   const startingPriceDescription = useMemo(() => {
-    if (startingPriceValue === "" || Number.isNaN(startingPriceValue) || !currentTokenA || !currentTokenB) {
+    if (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN() || !currentTokenA || !currentTokenB) {
       return "";
     }
     return `1 ${currentTokenA.symbol} = ${startingPriceValue} ${currentTokenB.symbol}`;

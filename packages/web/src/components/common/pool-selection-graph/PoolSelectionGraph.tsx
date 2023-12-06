@@ -341,8 +341,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const selection = event.selection ? event.selection : [0, 0];
       const startPosition = selection[0] as number;
       const endPosition = selection[1] as number;
-      const minPrice = !Number.isNaN(scaleX.invert(startPosition)) ? tickToPrice(priceToNearTick(scaleX.invert(startPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
-      const maxPrice = !Number.isNaN(scaleX.invert(endPosition)) ? tickToPrice(priceToNearTick(scaleX.invert(endPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
+      const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN() ? tickToPrice(priceToNearTick(scaleX.invert(startPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
+      const maxPrice = !BigNumber(scaleX.invert(endPosition)).isNaN() ? tickToPrice(priceToNearTick(scaleX.invert(endPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
       setMinPrice(minPrice);
       setMaxPrice(maxPrice);
     }
