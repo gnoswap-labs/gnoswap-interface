@@ -13,6 +13,5 @@ export const Default: StoryObj<BarAreaGraphProps> = {
     width: 400,
     height: 300,
     minGap: 1,
-    datas,
   },
 };

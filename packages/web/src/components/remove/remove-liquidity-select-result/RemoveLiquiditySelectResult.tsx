@@ -3,10 +3,10 @@ import { RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResul
 import BigNumber from "bignumber.js";
 import { TokenPairAmountInfo } from "@models/token/token-pair-amount-info";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
-import { LPPositionModel } from "@models/position/lp-position-model";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface RemoveLiquiditySelectResultProps {
-  selectedLiquidities: LPPositionModel[];
+  selectedLiquidities: PoolPositionModel[];
 }
 
 function mappedTokenPairAmountMap(tokenPairAmounts: TokenPairAmountInfo[]) {
@@ -58,12 +58,12 @@ const RemoveLiquiditySelectResult: React.FC<
   selectedLiquidities
 }) => {
     const pooledTokenMap = useMemo(() => {
-      const tokenPairAmounts = selectedLiquidities.map(lpPosition => PositionMapper.toTokenPairAmount(lpPosition.position));
+      const tokenPairAmounts = selectedLiquidities.map(position => PositionMapper.toTokenPairAmount(position));
       return mappedTokenPairAmountMap(tokenPairAmounts);
     }, [selectedLiquidities]);
 
     const unclaimedTokenMap = useMemo(() => {
-      const tokenPairAmounts = selectedLiquidities.map(lpPosition => PositionMapper.toTokenPairAmount(lpPosition.position));
+      const tokenPairAmounts = selectedLiquidities.map(position => PositionMapper.toTokenPairAmount(position));
       return mappedTokenPairAmountMap(tokenPairAmounts);
     }, [selectedLiquidities]);
 
@@ -82,7 +82,7 @@ const RemoveLiquiditySelectResult: React.FC<
     if (selectedLiquidities.length === 0) {
       return <></>;
     }
-    
+
     return (
       <RemoveLiquiditySelectResultWrapper>
         <ul>

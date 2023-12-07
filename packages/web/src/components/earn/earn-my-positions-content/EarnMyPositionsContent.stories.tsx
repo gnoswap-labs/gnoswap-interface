@@ -94,7 +94,7 @@ export const CardList = Template.bind({});
 CardList.args = {
   connected: true,
   fetched: true,
-  positions: [position, position],
+  positions: [],
   connect: action("connect"),
   movePoolDetail: action("movePoolDetail"),
 };
