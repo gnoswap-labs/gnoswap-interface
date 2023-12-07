@@ -44,11 +44,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    return numberToFormat(position.positionUsdValue.toString(), 2);
+    return `$${numberToFormat(position.positionUsdValue.toString(), 2)}`;
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
-    return numberToFormat(position.apr, 2);
+    return `${numberToFormat(position.apr, 2)}%`;
   }, [position.apr]);
 
   const currentPrice = useMemo(() => {
