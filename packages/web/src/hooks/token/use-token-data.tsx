@@ -30,16 +30,21 @@ export const useTokenData = () => {
       }
       return 0;
     }).filter((_, index) => index < 3);
-    return sortedTokens.map(token => (
-      tokenPrices[token.priceId] ? {
+    return sortedTokens.map(token => {
+      const tokenPrice = tokenPrices[token.priceId];
+      if (!tokenPrice || BigNumber(tokenPrice.change1d).isNaN()) {
+        return {
+          token,
+          upDown: "none",
+          content: "-"
+        };
+      }
+      return {
         token,
-        upDown: BigNumber(tokenPrices[token.priceId].change1d).isPositive() ? "up" : "down",
-        content: `${BigNumber(tokenPrices[token.priceId].change1d).toFixed()}%`
-      } : {
-        token,
-        upDown: "none",
-        content: "-"
-      }));
+        upDown: BigNumber(tokenPrice.change1d).isPositive() ? "up" : "down",
+        content: `${BigNumber(tokenPrice.change1d).toFixed()}%`
+      };
+    });
   }, [tokens, tokenPrices]);
 
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {

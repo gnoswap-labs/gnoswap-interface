@@ -1,4 +1,4 @@
-# Gnoswap Interface
+# Gnoswap Interface 
 Welcome to the open source interface for Gnoswap, the first decentralized exchange (DEX) powered by Gnoland, designed to simplify concentrated liquidity experience and increase capital efficiency for traders.
 
 _Note: Gnoswap is in active development and not yet in production, and we welcome your contributions! Please check our [contribution guidelines](https://github.com/gnoswap-labs/gnoswap-interface#contributing--support) and the [latest release](https://github.com/gnoswap-labs/gnoswap-interface/releases) to see the current development status._
