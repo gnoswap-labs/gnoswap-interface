@@ -1,3 +1,10 @@
+import { TokenPairInfo } from "./token-pair-info";
+
+export interface MostLiquidPool {
+  poolId: string;
+  tokenPair: TokenPairInfo;
+  feeRate: string;
+}
 export interface TokenModel {
   path: string;
 
@@ -20,6 +27,18 @@ export interface TokenModel {
   isWrappedGasToken?: boolean;
 
   isGasToken?: boolean;
+
+  type?: string
+
+  description?: string
+
+  websiteURL?: string
+
+  originName?: string
+
+  originSymbol?: string
+
+  originDenom?: string
 }
 
 export interface NativeTokenModel extends TokenModel {

@@ -47,8 +47,8 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     last7days,
   } = item;
 
-  const onClickItem = (symbol: string) => {
-    location.href = "/tokens/" + "FOO" + "?tokenB=gno.land/r/foo&direction=EXACT_IN";
+  const onClickItem = (symbol: string, path: string) => {
+    location.href = "/tokens/" + symbol + `?tokenB=${path}&direction=EXACT_IN`;
   };
 
   const onClickPoolItem = () => {
@@ -57,7 +57,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
 
   return (
     <TokenInfoWrapper>
-      <HoverSection onClick={() => onClickItem(token.symbol)}>
+      <HoverSection onClick={() => onClickItem(token.symbol, token.path)}>
         <TableColumn className="left" tdWidth={TOKEN_TD_WIDTH[0]}>
           <span className="token-index">{idx}</span>
         </TableColumn>

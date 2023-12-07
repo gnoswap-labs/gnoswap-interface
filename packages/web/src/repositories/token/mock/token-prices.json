@@ -13,7 +13,9 @@
       "change30d": "0.000000",
       "marketCap": "110200000000.000000",
       "liquidity": "195871.000000",
-      "volume": "195886.000000"
+      "volume": "195886.000000",
+      "mostLiquidityPool": "",
+      "last7Days": [{ "date": "", "price": "" }]
     },
     {
       "path": "gno.land/r/foo",
@@ -24,7 +26,9 @@
       "change30d": "0.000000",
       "marketCap": "8162479867.948110",
       "liquidity": "195871.000000",
-      "volume": "195871.000000"
+      "volume": "195871.000000",
+      "mostLiquidityPool": "",
+      "last7Days": [{ "date": "", "price": "" }]
     },
     {
       "path": "gno.land/r/bar",
@@ -35,7 +39,9 @@
       "change30d": "0.000000",
       "marketCap": "110200000000.000000",
       "liquidity": "195871.000000",
-      "volume": "195886.000000"
+      "volume": "195886.000000",
+      "mostLiquidityPool": "",
+      "last7Days": [{ "date": "", "price": "" }]
     }
   ]
 }

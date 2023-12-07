@@ -8,4 +8,6 @@ export interface TokenPriceModel {
   marketCap: string;
   liquidity: string;
   volume: string;
+  mostLiquidityPool: string;
+  last7Days: { date: string, price: string }[];
 }

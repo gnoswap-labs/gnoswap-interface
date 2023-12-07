@@ -1,12 +1,16 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import TokenList from "@components/home/token-list/TokenList";
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { type TokenInfo } from "@models/token/token-info";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import useClickOutside from "@hooks/common/use-click-outside";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { TokenModel } from "@models/token/token-model";
+import { TokenPriceListResponse } from "@repositories/token";
+import { TokenPriceModel } from "@models/token/token-price-model";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -16,7 +20,7 @@ export interface MostLiquidPool {
   tokenPair: TokenPairInfo;
   feeRate: string;
 }
-export interface Token {
+export interface Token{
   path: string;
   token: TokenInfo;
   price: string;
@@ -62,18 +66,16 @@ export const TOKEN_TYPE = {
 } as const;
 export type TOKEN_TYPE = ValuesType<typeof TOKEN_TYPE>;
 
-const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-  "#": "index",
-  Name: "name",
-  Price: "price",
-  "1d": "1d",
-  "7d": "7d",
-  "30d": "30d",
-  "Market Cap": "market_cap",
-  Liquidity: "liquidity",
-  "Volume (24h)": "volume",
-  "Most Liquid Pool": "most_liquidity_pool",
-  "Last 7 days": "last_7_days",
+const getStatus = (value: string) => {
+  if (Number(value ?? 0) === 0) {
+    return MATH_NEGATIVE_TYPE.NONE;
+  }
+
+  if (Number(value ?? 0) > 0) {
+    return MATH_NEGATIVE_TYPE.NEGATIVE;
+  }
+  
+  return MATH_NEGATIVE_TYPE.POSITIVE;
 };
 
 export const createDummyTokenList = (): Token[] => [
@@ -127,37 +129,6 @@ export const createDummyTokenList = (): Token[] => [
   },
 ];
 
-async function fetchTokens(
-  type: TOKEN_TYPE, // eslint-disable-line
-  page: number, // eslint-disable-line
-  keyword: string, // eslint-disable-line
-  sortKey?: string, // eslint-disable-line
-  direction?: string, // eslint-disable-line
-): Promise<Token[]> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() => {
-      const data = [
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-        ...createDummyTokenList(),
-      ];
-      const randomData = Math.floor(Math.random() * 2);
-      return Promise.resolve(randomData === 0 ? data : []);
-    },
-  );
-}
-
 const TokenListContainer: React.FC = () => {
   const [tokenType, setTokenType] = useState<TOKEN_TYPE>(TOKEN_TYPE.ALL);
   const [page, setPage] = useState(0);
@@ -166,6 +137,7 @@ const TokenListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
+  const { tokenRepository } = useGnoswapContext();
 
   useEffect(() => {
     if (!keyword) {
@@ -183,8 +155,8 @@ const TokenListContainer: React.FC = () => {
   const {
     isFetched,
     error,
-    data: tokens,
-  } = useQuery<Token[], Error>({
+    data: { tokens = []} = {},
+  } = useQuery<{ tokens: TokenModel[] }, Error>({
     queryKey: [
       "tokens",
       tokenType,
@@ -194,13 +166,22 @@ const TokenListContainer: React.FC = () => {
       sortOption?.direction,
     ],
     queryFn: () =>
-      fetchTokens(
-        tokenType,
-        page,
-        keyword,
-        sortOption && SORT_PARAMS[sortOption.key],
-        sortOption?.direction,
-      ),
+      tokenRepository.getTokens(),
+  });
+
+  const {
+    data: { prices = []} = {},
+  } = useQuery<TokenPriceListResponse, Error>({
+    queryKey: [
+      "token_prices",
+      tokenType,
+      page,
+      keyword,
+      sortOption?.key,
+      sortOption?.direction,
+    ],
+    queryFn: () =>
+      tokenRepository.getTokenPrices(),
   });
 
   const changeTokenType = useCallback((newType: string) => {
@@ -246,10 +227,53 @@ const TokenListContainer: React.FC = () => {
     },
     [sortOption],
   );
+
+  const data: Token[] = useMemo(() => {
+    return tokens.map((item: TokenModel) => {
+      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
+      const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
+      const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
+      return {
+        ...temp,
+        token: {
+          path: item.path,
+          name: item.name,
+          symbol: item.symbol,
+          logoURI: item.logoURI,
+        },
+        mostLiquidPool: {
+          poolId: Math.floor(Math.random() * 50 + 1).toString(),
+          tokenPair: {
+            tokenA: {
+              path: item.path,
+              name: item.name,
+              symbol: item.symbol,
+              logoURI: item.logoURI,
+            },
+            tokenB: {
+              path: Math.floor(Math.random() * 50 + 1).toString(),
+              name: "USDCoin",
+              symbol: "USDC",
+              logoURI: item.logoURI,
+            },
+          },
+          feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
+        },
+        last7days: temp?.last7Days?.map(item => Number(item.price || 0)) || [],
+        marketCap: `$${Number(temp.marketCap || 0).toLocaleString()}`,
+        liquidity: `$${Number(temp.liquidity || 0).toLocaleString()}`,
+        volume24h: `$${Number(temp.volume || 0).toLocaleString()}`,
+        price: `$${Number(temp.usd || 0).toLocaleString(undefined, { maximumFractionDigits: 10})}`,
+        priceOf1d: { status: getStatus(temp.change1d), value: `${temp.change1d || 0}%` },
+        priceOf7d: { status: getStatus(temp.change7d), value: `${temp.change7d || 0}%` },
+        priceOf30d: { status: getStatus(temp.change30d), value: `${temp.change30d || 0}%` },
+      };
+    });
+  }, [prices, tokens]);
   
   return (
     <TokenList
-      tokens={tokens ?? []}
+      tokens={data}
       isFetched={isFetched}
       error={error}
       tokenType={tokenType}
@@ -258,7 +282,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={(tokens || []).length}
+      totalPage={Math.floor((tokens || []).length / 20 + 1)}
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}
