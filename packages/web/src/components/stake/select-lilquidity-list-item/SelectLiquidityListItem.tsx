@@ -1,7 +1,7 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { convertLiquidity } from "@utils/stake-position-utils";
+import { convertLargePrice } from "@utils/stake-position-utils";
 import React, { useRef, useState, useEffect } from "react";
 import { tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
 
@@ -75,7 +75,7 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
         <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT}/>
       </div>
       <span className="liquidity-value-fake" ref={liquidityRef}>${Number(item.liquidity).toLocaleString()}</span>
-      <span className="liquidity-value" >${!checkWidth ? convertLiquidity(item.liquidity) : Number(item.liquidity).toLocaleString()}</span>
+      <span className="liquidity-value" >${!checkWidth ? convertLargePrice(item.liquidity) : Number(item.liquidity).toLocaleString()}</span>
     </li>
   );
 };

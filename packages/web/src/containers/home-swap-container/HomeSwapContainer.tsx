@@ -17,23 +17,23 @@ const TOKEN_A = {
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
+  path: "Gnoland",
   decimals: 4,
   symbol: "GNOT",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-  priceId: "gno.land/r/gnos",
+  priceId: "gno.land/r/Gnoland",
 };
 const TOKEN_B = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
+  path: "gno.land/r/gns",
   decimals: 4,
   symbol: "GNS",
   logoURI: "/gnos.svg",
-  priceId: "gno.land/r/gnos",
+  priceId: "gno.land/r/gns",
 };
 
 const HomeSwapContainer: React.FC = () => {
@@ -48,7 +48,8 @@ const HomeSwapContainer: React.FC = () => {
   const { connected } = useWallet();
   const [, setSwapValue] = useAtom(SwapState.swap);
 
-
+  console.log(tokenB);
+  
   const tokenABalance = useMemo(() => {
     if (!connected) return "-";
     if (tokenA && balances[tokenA.priceId]) {
@@ -113,11 +114,11 @@ const HomeSwapContainer: React.FC = () => {
 
   const swapNow = useCallback(() => {
     if (swapDirection === "EXACT_IN") {
-      router.push("/swap?tokenA=gno.land/r/bar&tokenB=gno.land/r/gns&direction=EXACT_IN");
+      router.push(`/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`);
     } else {
-      router.push("/swap?tokenA=gno.land/r/gns&tokenB=gno.land/r/bar&direction=EXACT_IN");
+      router.push(`/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`);
     }
-  }, [router, swapDirection]);
+  }, [router, swapDirection, tokenA, tokenB]);
 
   const onSubmitSwapValue = () => {
     setTokenA(tokenB);

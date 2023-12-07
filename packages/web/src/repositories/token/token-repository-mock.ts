@@ -3,6 +3,7 @@ import {
   TokenSearchLogListResponse,
   TokenListResponse,
   TokenPriceListResponse,
+  ITokenDetailResponse,
 } from ".";
 
 import { StorageKeyType } from "@common/values";
@@ -24,6 +25,37 @@ export class TokenRepositoryMock implements TokenRepository {
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {
     return TokenPriceData;
+  };
+
+  public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
+    console.log(path);
+    
+    return {
+      prices: [],
+      priceChangeDetail: {
+        priceToday: "",
+        changeToday: "",
+        price1h: "",
+        change1h: "",
+        price1d: "",
+        change1d: "",
+        price7d: "",
+        change7d: "",
+        price30d: "",
+        change30d: "",
+        price60d: "",
+        change60d: "",
+        price90d: "",
+        change90d: "",
+      },
+      market: {
+        popularity: "",
+        tvl: "",
+        volume24h: "",
+        fees24h: "",
+      },
+      bestPools: [],
+    };
   };
 
   public createSearchLog = async (

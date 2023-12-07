@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from "react"
 import { RemoveLiquiditySelectListItemWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
 import { LPPositionModel } from "@models/position/lp-position-model";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { convertLiquidity } from "@utils/stake-position-utils";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 interface RemoveLiquiditySelectListItemProps {
   selected: boolean;
@@ -101,7 +101,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
         <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT}/>
       </div>
       <span className="liquidity-value-fake" ref={liquidityRef}>${lpPosition.position.balance.toLocaleString()}</span>
-      <span className="liquidity-value" >${!checkWidth ? convertLiquidity(lpPosition.position.balance.toString()) : lpPosition.position.balance.toLocaleString()}</span>
+      <span className="liquidity-value" >${!checkWidth ? convertLargePrice(lpPosition.position.balance.toString()) : lpPosition.position.balance.toLocaleString()}</span>
     </RemoveLiquiditySelectListItemWrapper>
   );
 };

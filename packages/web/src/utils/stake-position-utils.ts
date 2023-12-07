@@ -1,6 +1,6 @@
-export const convertLiquidity = (price: string) => {
-  if (price.length < 7) {
-    return Number(price).toLocaleString();
+export const convertLargePrice = (price: string) => {
+  if (Math.floor(Number(price)).toString().length < 7) {
+    return Number(price).toLocaleString(undefined, { minimumFractionDigits: 2 });
   } else {
     const temp = Math.floor(Number(price));
     if (temp >= 1e9) {

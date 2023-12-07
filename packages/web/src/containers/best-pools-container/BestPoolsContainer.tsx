@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useRouter } from "next/router";
+import { useGetTokenDetailByPath } from "src/react-query/token";
+import { IBestPoolResponse } from "@repositories/token";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -41,17 +44,34 @@ export const bestPoolListInit: BestPool[] = [
 ];
 
 const BestPoolsContainer: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
+  const bestPoolList: BestPool[] = useMemo(() => {
+    return bestPools.map((item: IBestPoolResponse) => {
+      return {
+        tokenPair: {
+          tokenA: {
+            path: Math.floor(Math.random() * 50 + 1).toString(),
+            name: "HEX",
+            symbol: "HEX",
+            logoURI: item.tokenALogo,
+          },
+          tokenB: {
+            path: Math.floor(Math.random() * 50 + 1).toString(),
+            name: "USDCoin",
+            symbol: "USDC",
+            logoURI: item.tokenBLogo,
+          },
+        },
+        feeRate: `FEE_${item.fee}` as SwapFeeTierType,
+        tvl: `$${convertLargePrice(item.tvl)}`,
+        apr: `${item.apr}$`,
+      };
+    });
+  }, [bestPools]);
 
-  return <BestPools titleSymbol={router?.query["token-path"] as string || ""} cardList={bestPoolListInit} loading={loading}/>;
+  return <BestPools titleSymbol={router?.query["token-path"] as string || ""} cardList={bestPoolList} loading={isLoading}/>;
 };
 
 export default BestPoolsContainer;

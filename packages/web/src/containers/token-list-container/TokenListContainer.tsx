@@ -11,6 +11,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceListResponse } from "@repositories/token";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { convertLargePrice } from "@utils/stake-position-utils";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -260,9 +261,9 @@ const TokenListContainer: React.FC = () => {
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
         },
         last7days: temp?.last7Days?.map(item => Number(item.price || 0)) || [],
-        marketCap: `$${Number(temp.marketCap || 0).toLocaleString()}`,
-        liquidity: `$${Number(temp.liquidity || 0).toLocaleString()}`,
-        volume24h: `$${Number(temp.volume || 0).toLocaleString()}`,
+        marketCap: `$${convertLargePrice(temp.marketCap || "0")}`,
+        liquidity: `$${convertLargePrice(temp.liquidity || "0")}`,
+        volume24h: `$${convertLargePrice(temp.volume || "0")}`,
         price: `$${Number(temp.usd || 0).toLocaleString(undefined, { maximumFractionDigits: 10})}`,
         priceOf1d: { status: getStatus(temp.change1d), value: `${temp.change1d || 0}%` },
         priceOf7d: { status: getStatus(temp.change7d), value: `${temp.change7d || 0}%` },
