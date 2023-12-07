@@ -11,7 +11,6 @@ export const useGetTokensList = (
   return useQuery<TokenListResponse, Error>({
     queryKey: [QUERY_KEY.tokens],
     queryFn: () => tokenRepository.getTokens(),
-    enabled: false,
     ...options,
   });
 };

@@ -27,7 +27,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
 
   const isIncreasePrice = useCallback(() => {
     const changedRate = priceInfo.changedRate;
-    return changedRate > 0;
+    return changedRate >= 0;
   }, [priceInfo.changedRate]);
 
   return (

@@ -26,16 +26,21 @@ interface SearchMenuModalProps {
   isFetched: boolean;
   placeholder?: string;
   breakpoint: DEVICE_TYPE;
+  mostLiquidity: Token[];
+  populerTokens: Token[];
+  recents: Token[];
 }
 
 const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   onSearchMenuToggle,
   search,
   keyword,
-  tokens,
   isFetched,
   placeholder = "Search",
   breakpoint,
+  mostLiquidity,
+  populerTokens,
+  recents,
 }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const onClickItem = (symbol: string) => {
@@ -58,159 +63,157 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
           </SearchContainer>
           <ModalContainer>
             <ul>
-              {tokens.length === 0 && isFetched && (
-                <div className="no-data-found">No data found</div>
-              )}
-              {(tokens.length !== 0 || !isFetched) && (
+              {(populerTokens.length === 0 || mostLiquidity.length === 0) &&
+                isFetched && <div className="no-data-found">No data found</div>}
+              {recents.length > 0 && isFetched && (
                 <>
                   <div className="recent-searches">
                     {!keyword ? "Recent Searches" : "Tokens"}
                   </div>
-                  {tokens.slice(0,2)
-                    .filter(item => item.searchType === "recent")
-                    .map((item, idx) => (
+                  {recents
+                    .slice(0, 2)
+                    .filter((item) => item.searchType === "recent")
+                    .map((item, idx) =>
                       !item.isLiquid ? (
-                      <li
-                        key={idx}
-                        onClick={() => onClickItem(item.token.symbol)}
-                      >
-                        <div className="coin-info-wrapper">
-                          <img
-                            src={item.token.logoURI}
-                            alt="token logo"
-                            className="token-logo"
-                          />
-                          <div className="coin-info-detail">
-                            <div>
-                              <span className="token-name">{item.token.name}</span>
-                              <div className="token-path">
-                                {item.token.path}
-                                <IconNewTab />
+                        <li
+                          key={idx}
+                          onClick={() => onClickItem(item.token.symbol)}
+                        >
+                          <div className="coin-info-wrapper">
+                            <img
+                              src={item.token.logoURI}
+                              alt="token logo"
+                              className="token-logo"
+                            />
+                            <div className="coin-info-detail">
+                              <div>
+                                <span className="token-name">
+                                  {item.token.name}
+                                </span>
+                                <div className="token-path">
+                                  {item.token.path}
+                                  <IconNewTab />
+                                </div>
                               </div>
+                              <span>ETH</span>
                             </div>
-                            <span>
-                              ETH
-                            </span>
                           </div>
-                        </div>
-                        <div className="coin-infor-value">
-                          <span className="token-price">{item.price}</span>
-                          {item.priceOf1d.status === "POSITIVE" ? (
-                            <span className="positive">
-                              <IconTriangleArrowUpV2 />{item.priceOf1d.value}%
-                            </span>
-                          ) : (
-                            <span className="negative">
-                              -<IconTriangleArrowDownV2 /> {item.priceOf1d.value}%
-                            </span>
-                          )}
-                        </div>
-                      </li>
+                          <div className="coin-infor-value">
+                            <span className="token-price">{item.price}</span>
+                            {item.priceOf1d.status === "POSITIVE" ? (
+                              <span className="positive">
+                                <IconTriangleArrowUpV2 />
+                                {item.priceOf1d.value}
+                              </span>
+                            ) : (
+                              <span className="negative">
+                                <IconTriangleArrowDownV2 /> -
+                                {item.priceOf1d.value}
+                              </span>
+                            )}
+                          </div>
+                        </li>
                       ) : (
-                      <li
-                        key={idx}
-                        onClick={() => onClickItem(item.token.symbol)}
-                      >
-                        <div className="coin-info">
-                          <DoubleLogo
-                            size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
-                            left={item.token.logoURI}
-                            right={item?.tokenB?.logoURI || ""}
-                          />
-                          <span className="token-name">
-                            {item.token.name}/{item?.tokenB?.name}
-                          </span>
-                          <Badge
-                            text={"0.3%"}
-                            type={BADGE_TYPE.DARK_DEFAULT}
-                          />
-                        </div>
-                        <div className="coin-infor-value">
-                          <span className="token-price">
-                            $123.25M
-                          </span>
-                          <div className="token-price-apr">{item.priceOf1d.value}% {item.token.symbol}</div>
-                        </div>
-                      </li>
-                    )
-                    ))}
+                        <li
+                          key={idx}
+                          onClick={() => onClickItem(item.token.symbol)}
+                        >
+                          <div className="coin-info">
+                            <DoubleLogo
+                              size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
+                              left={item.token.logoURI}
+                              right={item?.tokenB?.logoURI || ""}
+                            />
+                            <span className="token-name">
+                              {item.token.name}/{item?.tokenB?.name}
+                            </span>
+                            <Badge
+                              text={"0.3%"}
+                              type={BADGE_TYPE.DARK_DEFAULT}
+                            />
+                          </div>
+                          <div className="coin-infor-value">
+                            <span className="token-price">$123.25M</span>
+                            <div className="token-price-apr">
+                              {item.priceOf1d.value}% {item.token.symbol}
+                            </div>
+                          </div>
+                        </li>
+                      )
+                    )}
+                </>
+              )}
+              {populerTokens.length > 0 && (
+                <>
                   <div className="popular-tokens">
                     {!keyword ? "Popular Tokens" : "Pools"}
                   </div>
-                  {tokens
-                    .filter(item => item.searchType === "popular")
-                    .map((item, idx) => (
-                      <li
-                        key={idx}
-                        onClick={() => onClickItem(item.token.symbol)}
-                      >
-                        <div className="coin-info-wrapper">
-                          <img
-                            src={item.token.logoURI}
-                            alt="token logo"
-                            className="token-logo"
-                          />
-                          <div className="coin-info-detail">
-                            <div>
-                              <span className="token-name">{item.token.name}</span>
-                              <div className="token-path">
-                                {item.token.path}
-                                <IconNewTab />
-                              </div>
-                            </div>
-                            <span>
-                              ETH
+                  {populerTokens.map((item, idx) => (
+                    <li
+                      key={idx}
+                      onClick={() => onClickItem(item.token.symbol)}
+                    >
+                      <div className="coin-info-wrapper">
+                        <img
+                          src={item.token.logoURI}
+                          alt="token logo"
+                          className="token-logo"
+                        />
+                        <div className="coin-info-detail">
+                          <div>
+                            <span className="token-name">
+                              {item.token.name}
                             </span>
+                            <div className="token-path">
+                              {item.token.path}
+                              <IconNewTab />
+                            </div>
                           </div>
+                          <span>ETH</span>
                         </div>
-                        <div className="coin-infor-value">
-                          <span className="token-price">{item.price}</span>
-                          {item.priceOf1d.status === "POSITIVE" ? (
-                            <span className="positive">
-                              <IconTriangleArrowUpV2 />{item.priceOf1d.value}%
-                            </span>
-                          ) : (
-                            <span className="negative">
-                              -<IconTriangleArrowDownV2 /> {item.priceOf1d.value}%
-                            </span>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  {!keyword && (
-                    <>
-                      <div className="popular-tokens">Most Liquid Pools</div>
-                      {tokens
-                        .filter(item => item.searchType === "recent")
-                        .map((item, idx) => (
-                          <li
-                            key={idx}
-                            onClick={() => onClickItem(item.token.symbol)}
-                          >
-                            <div className="coin-info">
-                              <DoubleLogo
-                                size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
-                                left={item.token.logoURI}
-                                right={item?.tokenB?.logoURI || ""}
-                              />
-                              <span className="token-name">
-                                {item.token.name}/{item?.tokenB?.name}
-                              </span>
-                              <Badge
-                                text={"0.3%"}
-                                type={BADGE_TYPE.DARK_DEFAULT}
-                              />
-                            </div>
-                            <div className="coin-infor-value">
-                              <span className="token-price">
-                                $123.25M
-                              </span>
-                              <div className="token-price-apr">{item.priceOf1d.value}% {item.token.symbol}</div>
-                            </div>
-                          </li>
-                        ))}
-                    </>
-                  )}
+                      </div>
+                      <div className="coin-infor-value">
+                        <span className="token-price">{item.price}</span>
+                        {item.priceOf1d.status === "POSITIVE" ? (
+                          <span className="positive">
+                            <IconTriangleArrowUpV2 />
+                            {item.priceOf1d.value}
+                          </span>
+                        ) : (
+                          <span className="negative">
+                            <IconTriangleArrowDownV2 /> -{item.priceOf1d.value}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </>
+              )}
+              {!keyword && mostLiquidity.length > 0 && (
+                <>
+                  <div className="popular-tokens">Most Liquid Pools</div>
+                  {mostLiquidity.map((item, idx) => (
+                    <li
+                      key={idx}
+                      onClick={() => onClickItem(item.token.symbol)}
+                    >
+                      <div className="coin-info">
+                        <DoubleLogo
+                          size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
+                          left={item.token.logoURI}
+                          right={item?.tokenB?.logoURI || ""}
+                        />
+                        <span className="token-name">
+                          {item.token.name}/{item?.tokenB?.name}
+                        </span>
+                        <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
+                      </div>
+                      <div className="coin-infor-value">
+                        <span className="token-price">{item.price}</span>
+                        <div className="token-price-apr">{item.apr}% APR</div>
+                      </div>
+                    </li>
+                  ))}
                 </>
               )}
             </ul>

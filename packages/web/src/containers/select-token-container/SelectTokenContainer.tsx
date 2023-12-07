@@ -49,7 +49,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       token.name.toLowerCase().includes(lowerKeyword) ||
       token.symbol.toLowerCase().includes(lowerKeyword) ||
       token.path.toLowerCase().includes(lowerKeyword)
-    ).slice(0, 5);
+    );
   }, [keyword, tokens]);
 
   const selectToken = useCallback((token: TokenModel) => {

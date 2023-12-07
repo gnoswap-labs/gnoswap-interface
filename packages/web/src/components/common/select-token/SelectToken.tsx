@@ -33,7 +33,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
-    if (tokenPrice === null || Number.isNaN(tokenPrice)) {
+    if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
       return "-";
     }
     return BigNumber(tokenPrice).toFormat();
@@ -69,6 +69,10 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     getPositionTop();
   }, [positionTop]);
   
+  const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    e.stopPropagation();
+    location.href = "https://gnoscan.io/tokens/" + path;
+  }, []);
   return (
     <SelectTokenWrapper ref={myElementRef}>
       <div className="content">
@@ -116,11 +120,11 @@ const SelectToken: React.FC<SelectTokenProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                <img src={token.logoURI} alt="logo" className="token-logo" />
+                {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
                 <div className="token-info-detail">
                   <div>
                     <span className="token-name">{token.name}</span>
-                    <div className="token-path">
+                    <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}>
                       <div>{token.path}</div>
                       <IconNewTab />
                     </div>

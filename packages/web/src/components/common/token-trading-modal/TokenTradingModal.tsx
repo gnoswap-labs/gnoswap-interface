@@ -33,7 +33,7 @@ const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm }) => {
             </div>
           </div>
           <div className="link">
-            <a href="/">https://gnoscan.io/tokens/gno.land/r/hopusd...</a>
+            <a href="/" target="_blank">https://gnoscan.io/tokens/gno.land/r/hopusd...</a>
             <IconNewTab className="new-tab"/>
             <IconCopy className="icon-copy"/>
           </div>

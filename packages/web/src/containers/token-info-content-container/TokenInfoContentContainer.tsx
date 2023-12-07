@@ -102,7 +102,7 @@ const TokenInfoContentContainer: React.FC = () => {
 
   const marketInformation = useMemo(() => {
     return {
-      popularity: `#${convertLargePrice(market.popularity)}`,
+      popularity: `#${convertLargePrice(market.popularity, 0)}`,
       tvl: `$${convertLargePrice(market.tvl)}`,
       volume24h: `$${convertLargePrice(market.volume24h)}`,
       fees24h: `$${convertLargePrice(market.fees24h)}`,

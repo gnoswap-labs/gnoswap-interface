@@ -11,7 +11,7 @@ export const TokenTradingModalWrapper = styled.div`
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    gap: 16px;
+    gap: 24px;
     .header {
       ${mixins.flexbox("row", "center", "flex-end")};
       width: 100%;
@@ -86,7 +86,7 @@ export const TokenTradingModalWrapper = styled.div`
           }
         }
         &:hover {
-          > div {
+          > a {
             color: ${({ theme }) => theme.color.hover06};
           }
           .new-tab * {
@@ -109,6 +109,9 @@ export const TokenTradingModalWrapper = styled.div`
           text-align: center;
           ${fonts.body11}
           color: ${({ theme }) => theme.color.text10};
+          &:hover {
+            color: ${({ theme }) => theme.color.text04};
+          }
         }
       }
     }

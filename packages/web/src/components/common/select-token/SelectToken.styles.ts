@@ -6,23 +6,23 @@ import mixins from "@styles/mixins";
 export const SelectTokenWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
-  padding: 24px 0px 8px 0px;
+  padding: 23px 0px 7px 0px;
   gap: 8px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
     width: 328px;
-    padding: 16px 0px;
+    padding: 15px 0px;
   }
 
   .content {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 0px 24px;
+    padding: 0px 23px;
     gap: 24px;
     margin-bottom: 16px;
     ${media.mobile} {
-      padding: 0px 12px;
+      padding: 0px 11px;
       gap: 16px;
     }
     .header {
@@ -144,6 +144,7 @@ export const SelectTokenWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
+    max-height: 306px;
     &.token-list-wrapper-auto-height {
       height: auto;
     }
@@ -161,10 +162,10 @@ export const SelectTokenWrapper = styled.div`
     .list {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
-      padding: 10px 24px;
+      padding: 10px 23px;
       gap: 8px;
       ${media.mobile} {
-        padding: 10px 12px;
+        padding: 10px 11px;
       }
       &:hover {
         background-color: ${({ theme }) => theme.color.hover02};
@@ -180,12 +181,25 @@ export const SelectTokenWrapper = styled.div`
           width: 32px;
           height: 32px;
         }
+        .fake-logo {
+          ${mixins.flexbox("row", "center", "center")};
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          color: ${({ theme }) => theme.color.text02};
+          background-color: ${({ theme }) => theme.color.border02};
+          ${fonts.p6}
+          ${media.mobile} {
+            font-size: 8px;
+            line-height: 10px;
+          }
+        }
         gap: 8px;
         .token-name {
           color: ${({ theme }) => theme.color.text02};
-          ${fonts.body10}
+          ${fonts.body9}
           ${media.mobile} {
-            ${fonts.body12}
+            ${fonts.body11}
           }
         }
         .token-symbol {
@@ -198,6 +212,7 @@ export const SelectTokenWrapper = styled.div`
       }
       .token-info-detail {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
+        max-width: 250px;
         gap: 2px;
         > span {
           color: ${({ theme }) => theme.color.text04};
@@ -206,7 +221,21 @@ export const SelectTokenWrapper = styled.div`
         > div {
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 8px;
+          .token-name {
+            max-width: 148px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
           .token-path {
+            > div {
+              max-width: 74px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              direction: rtl;
+              unicode-bidi: bidi-override;
+              white-space: nowrap;
+            }
             padding: 1.5px 4px;
             ${mixins.flexbox("row", "center", "flex-start")};
             gap: 2px;
@@ -228,6 +257,15 @@ export const SelectTokenWrapper = styled.div`
                   fill: ${({ theme }) => theme.color.icon07}; 
                 }
               }
+            }
+          }
+        }
+        ${media.mobile} {
+          max-width: 175px;
+          > div {
+            max-width: 100%;
+            .token-name {
+              max-width: 79px;
             }
           }
         }

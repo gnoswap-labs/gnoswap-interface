@@ -33,6 +33,7 @@ export const TokenChartInfoWrapper = styled.div`
     }
 
     .price-info {
+      text-align: right;
       .price {
         color: ${({ theme }) => theme.color.text01};
         ${fonts.body1};

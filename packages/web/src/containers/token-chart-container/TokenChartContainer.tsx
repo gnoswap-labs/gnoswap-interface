@@ -113,22 +113,45 @@ function createXAxisDummyDatas(currentTab: TokenChartGraphPeriodType) {
   }
 }
 
+const priceChangeDetailInit = {
+  priceToday: "0",
+  changeToday: "0",
+  price1h: "0",
+  change1h: "0",
+  price1d: "0",
+  change1d: "0",
+  price7d: "0",
+  change7d: "0",
+  price30d: "0",
+  change30d: "0",
+  price60d: "0",
+  change60d: "0",
+  price90d: "0",
+  change90d: "0",
+};
+
 const TokenChartContainer: React.FC = () => {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
   const router = useRouter();
   
-  const { data: { prices = [] } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  const { data: { prices = [], priceChangeDetail = priceChangeDetailInit } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
 
   useEffect(() => {
     const currentToken = TOKEN_LIST.filter(item => item.symbol === router.query["token-path"])[0];
-    setTokenInfo(prev => ({
-      ...prev,
+    setTokenInfo(() => ({
       token: {
         ...currentToken
-      }
+      },
+      priceInfo: {
+        amount: {
+          value: Number(priceChangeDetail?.priceToday || 0),
+          denom: "USD",
+        },
+        changedRate: Number(priceChangeDetail?.changeToday || 0),
+      },
     }));
-  }, [router.query]);
+  }, [router.query, priceChangeDetail.toString()]);
   
   const changeTab = useCallback((tab: string) => {
     const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";

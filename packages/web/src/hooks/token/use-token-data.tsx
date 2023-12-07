@@ -1,6 +1,6 @@
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { CardListTokenInfo } from "@models/common/card-list-item-info";
+import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenState } from "@states/index";
@@ -52,17 +52,17 @@ export const useTokenData = () => {
       const createTimeOfToken1 = new Date(t1.createdAt).getTime();
       const createTimeOfToken2 = new Date(t2.createdAt).getTime();
       return createTimeOfToken2 - createTimeOfToken1;
-    }).filter((_, index) => index < 3);
+    }).filter((_: TokenModel) => !!_.logoURI);
     return sortedTokens.map(token => (
       tokenPrices[token.priceId] ? {
         token,
-        upDown: "none",
+        upDown: "none" as UpDownType,
         content: `$${tokenPrices[token.priceId].usd}`
       } : {
         token,
-        upDown: "none",
+        upDown: "none" as UpDownType,
         content: "-"
-      }));
+      })).slice(0,3);
   }, [tokenPrices, tokens]);
 
   const getTokenUSDPrice = useCallback((tokenAId: string, amount: bigint | string | number) => {

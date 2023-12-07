@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TokenInfoWrapper = styled.div`
@@ -73,8 +74,22 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-logo {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+  }
+  .fake-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.border02};
+    font-size: 8px;
+    line-height: 10px;
+    ${media.mobile} {
+      font-size: 6px;
+      line-height: 8px;
+    }
   }
   .token-name {
     margin: 0px 8px;

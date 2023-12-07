@@ -66,7 +66,7 @@ const BestPoolsContainer: React.FC = () => {
         },
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
         tvl: `$${convertLargePrice(item.tvl)}`,
-        apr: `${item.apr}$`,
+        apr: `${Number(item.apr).toFixed(2)}%`,
       };
     });
   }, [bestPools]);

@@ -23,7 +23,7 @@ interface TokenInfoProps {
 
 const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
   <>
-    {status === MATH_NEGATIVE_TYPE.NEGATIVE ? (
+    {status === MATH_NEGATIVE_TYPE.POSITIVE ? (
       <IconTriangleArrowDown />
     ) : (
       <IconTriangleArrowUp />
@@ -62,7 +62,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
-          <img src={token.logoURI} alt="token logo" className="token-logo" />
+          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
           <strong className="token-name">{token.name}</strong>
           <span className="token-symbol">{token.symbol}</span>
         </TableColumn>
@@ -104,6 +104,8 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
             left={mostLiquidPool.tokenPair.tokenA.logoURI}
             right={mostLiquidPool.tokenPair.tokenB.logoURI}
             size={20}
+            leftSymbol={mostLiquidPool.tokenPair.tokenA.symbol}
+            rightSymbol={mostLiquidPool.tokenPair.tokenB.symbol}
           />
           <span className="liquid-symbol right-padding-12">
             {tokenPairSymbolToOneCharacter(mostLiquidPool.tokenPair)}
