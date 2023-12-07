@@ -50,7 +50,7 @@ const OneClickStakingModal: React.FC<Props> = ({ close, amountInfo, priceRangeIn
           <div>
             <EarnAddConfirmAmountInfo {...amountInfo} />
           </div>
-        <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} symbolTokenA={amountInfo.tokenA.info.symbol} symbolTokenB={amountInfo.tokenB.info.symbol} isShowStaking/>
+          <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} priceLabel={""} symbolTokenA={amountInfo.tokenA.info.symbol} symbolTokenB={amountInfo.tokenB.info.symbol} isShowStaking />
           <div>
             <Button
               text="Confirm One-Click Staking"

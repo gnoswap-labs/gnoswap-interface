@@ -25,7 +25,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       setBalance("0");
     }
   }, [balances, token]);
-  
+
   const usdValue = useMemo(() => {
     if (!usd) {
       return "-";
@@ -37,10 +37,12 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!token) {
       return;
     }
-    // const amount = BigNumber(value);
-
-    setAmount(value.toString());
-
+    const amount = BigNumber(value);
+    if (amount.isNaN() || !amount.isFinite()) {
+      setAmount("0");
+      return;
+    }
+    setAmount(amount.toString());
 
     if (tokenPrices[token.priceId]) {
       const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(value.toString()).toNumber();

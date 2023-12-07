@@ -131,9 +131,9 @@ const MyLiquidityContainer: React.FC = () => {
   const router = useRouter();
   const divRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(1);
-  
+
   const handleClickAddPosition = useCallback(() => {
-    router.push(`${router.asPath}/add?tokenA=gno.land/r/foo&tokenB=gno.land/r/bar&direction=EXACT_IN`);
+    router.push(`${router.asPath}/add`);
   }, [router]);
 
   const handleClickRemovePosition = useCallback(() => {

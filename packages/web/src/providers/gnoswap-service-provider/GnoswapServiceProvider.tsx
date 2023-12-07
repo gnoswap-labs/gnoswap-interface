@@ -8,14 +8,15 @@ import { StakingRepository, StakingRepositoryMock } from "@repositories/staking"
 import { SwapRepository } from "@repositories/swap";
 import { TokenRepository } from "@repositories/token";
 import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
-import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
+import { GnoJSONRPCProvider, GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 import ChainNetworkInfos from "@resources/chains.json";
 import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
 import { SwapRouterRepositoryImpl } from "@repositories/swap/swap-router-repository-impl";
+import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
 
 interface GnoswapContextProps {
   rpcProvider: GnoProvider | null;
@@ -91,6 +92,34 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new TokenRepositoryImpl(networkClient, localStorageClient);
   }, [localStorageClient, networkClient]);
 
+  async function initNetwork() {
+    const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
+    const currentNetwork = network || ChainNetworkInfos.find(info => info.chainId === defaultChainId);
+    if (currentNetwork) {
+      try {
+        const provider = new GnoWSProvider(currentNetwork.wsUrl, 5 * 1000);
+        await provider.waitForOpenConnection();
+        setRPCProvider(provider);
+        return true;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    setRPCProvider(null);
+    return false;
+  }
+
+  useLayoutEffect(() => {
+    if (window) {
+      setLocalStorageClient(WebStorageClient.createLocalStorageClient());
+      setSessionStorageClient(WebStorageClient.createSessionStorageClient());
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    initNetwork();
+  }, [network]);
+
   return (
     <GnoswapContext.Provider
       value={{
@@ -104,7 +133,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         swapRouterRepository,
       }}
     >
-      {children}
+      {rpcProvider && children}
     </GnoswapContext.Provider>
   );
 };

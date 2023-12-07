@@ -1,40 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import { PoolSelectionGraphWrapper } from "./PoolSelectionGraph.styles";
 import * as d3 from "d3";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { tickToPrice } from "@utils/swap-utils";
+import { displayTickNumber } from "@utils/string-utils";
 import BigNumber from "bignumber.js";
 import { useColorGraph } from "@hooks/common/use-color-graph";
+import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 
-export interface PoolSelectionGraphProps {
-  bins: PoolBinModel[];
-  currentTick: number | null;
-  zoomLevel: number;
-  displayLabels?: number;
-  minPrice: number | null;
-  maxPrice: number | null;
-  setMinPrice: (tick: number | null) => void;
-  setMaxPrice: (tick: number | null) => void;
-  selectedFullRange: boolean;
-  setSelectedFullRange: (selected: boolean) => void;
-  focusTick: number | null;
-  width: number;
-  height: number;
-  margin?: {
-    left: number;
-    right: number;
-    top: number;
-    bottom: number;
-  },
-}
-
-function makeBadge(
+function makeLeftBadge(
   refer: d3.Selection<any, unknown, null, undefined>,
-  right = false,
   reverse = false,
 ) {
   const badge = refer.append("svg")
-    .attr("x", "0")
+    .attr("x", "-12")
     .attr("y", "0")
     .attr("width", "11")
     .attr("height", "32")
@@ -55,7 +33,37 @@ function makeBadge(
     .attr("height", "28")
     .style("fill", "#90A2C0");
 
-  makeLabel(refer, right, reverse);
+  makeLabel(refer, false, reverse);
+  return badge;
+}
+
+function makeRightBadge(
+  refer: d3.Selection<any, unknown, null, undefined>,
+  reverse = false,
+) {
+  const badge = refer.append("svg")
+    .attr("x", "1")
+    .attr("y", "0")
+    .attr("width", "11")
+    .attr("height", "32")
+    .style("fill", "none");
+  badge.append("path")
+    .attr("d", "M0 0H9C10.1046 0 11 0.895431 11 2V30C11 31.1046 10.1046 32 9 32H0V0Z")
+    .style("fill", "#596782");
+  badge.append("rect")
+    .attr("x", "3.5")
+    .attr("y", "2")
+    .attr("width", "1")
+    .attr("height", "28")
+    .style("fill", "#90A2C0");
+  badge.append("rect")
+    .attr("x", "6.5")
+    .attr("y", "2")
+    .attr("width", "1")
+    .attr("height", "28")
+    .style("fill", "#90A2C0");
+
+  makeLabel(refer, true, reverse);
   return badge;
 }
 
@@ -94,14 +102,15 @@ function changeLine(
   x: number,
   rate: number,
   right = false,
+  selectedFullRange = false,
 ) {
-  const linePosition = right ? 0 : -12;
+  const hidden = type === "end" && selectedFullRange === true;
   const rateStr = `${Math.round(rate).toFixed(0)}%`;
   const lineElement = selectionElement.select(`#${type}`)
     .attr("x", x);
 
   lineElement.select("svg")
-    .attr("x", linePosition);
+    .attr("x", 0);
 
   const priceId = `${type}-price`;
   const color = type === "start" ? "#EA3943B2" : "#16C78AB2";
@@ -122,11 +131,42 @@ function changeLine(
     .attr("text-anchor", "middle")
     .style("fill", "#FFF")
     .html(rateStr);
+  if (hidden) {
+    labelWrapper.attr("display", "none");
+  }
+}
+
+export interface PoolSelectionGraphProps {
+  feeTier: SwapFeeTierType | null;
+  scaleX: d3.ScaleLinear<number, number, never>;
+  scaleY: d3.ScaleLinear<number, number, never>;
+  liquidityOfTickPoints: [number, number][];
+  currentPrice: number | null;
+  zoomLevel: number;
+  displayLabels?: number;
+  minPrice: number | null;
+  maxPrice: number | null;
+  setMinPrice: (tick: number | null) => void;
+  setMaxPrice: (tick: number | null) => void;
+  selectedFullRange: boolean;
+  finishMove: () => void;
+  focusPosition: number | null;
+  width: number;
+  height: number;
+  margin?: {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+  },
 }
 
 const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
-  bins,
-  currentTick = null,
+  feeTier,
+  scaleX,
+  scaleY,
+  liquidityOfTickPoints,
+  currentPrice = null,
   displayLabels = 8,
   width,
   height,
@@ -135,15 +175,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   setMinPrice,
   setMaxPrice,
   selectedFullRange,
-  setSelectedFullRange,
-  focusTick,
+  focusPosition,
   zoomLevel,
   margin = {
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-  }
+  },
 }) => {
   const svgRef = useRef(null);
   const chartRef = useRef<SVGGElement | null>(null);
@@ -151,199 +190,184 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const labelHeight = displayLabels > 0 ? 20 : 0;
 
-  const paddingHeight = 20;
+  const paddingHeight = 0;
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom - labelHeight - paddingHeight;
-  const tickAmount = 10000;
 
-  const [, maxX] = d3.extent(bins.map(bin => bin.minTick));
-  const maxXTick = tickToPrice(maxX ?? 1) * 10000;
-  const binRange = maxXTick / tickAmount;
-  const currentPrice = tickToPrice(currentTick || 0);
+  const getRange = () => {
+    return scaleX.domain();
+  };
+
+  const getBinWidth = () => {
+    return width / 20;
+  };
 
   const { redColor, greenColor } = useColorGraph();
 
+  function getInvertX(x: number) {
+    return Number(BigNumber(scaleX.invert(x)).toFixed(16));
+  }
+
   const resolvedBins = () => {
-    const sortedBins = bins.sort((b1, b2) => b1.minTick - b2.minTick)
-      .map(bin => ({ ...bin, currentPrice: tickToPrice(bin.minTick) }));
-    console.log(sortedBins);
-    return Array.from(
-      { length: tickAmount },
-      (_, index) => {
-        const startPrice = binRange * index;
-        const endPrice = startPrice + binRange;
-        return sortedBins.filter(
-          bin =>
-            bin.currentPrice < endPrice &&
-            bin.currentPrice >= startPrice)
-          .reduce((a, b) => a + b.liquidity, 0);
-      },
-    );
+    const binWidth = getBinWidth();
+    const startXPosition = (getInvertX(0) % binWidth) * -1;
+
+    return Array.from({ length: 22 }, (_, index) => {
+      const x: number = startXPosition + (binWidth * index);
+      const y: number = liquidityOfTickPoints.find((point, pIndex) => {
+        const pointPosition = scaleX(point[0]);
+        if (liquidityOfTickPoints.length <= pIndex + 1) {
+          return x >= pointPosition;
+        }
+        const nextPointPosition = scaleX(liquidityOfTickPoints[pIndex + 1][0]);
+        if (nextPointPosition > x && x >= pointPosition) {
+          return true;
+        }
+        return false;
+      })?.[1] || 0;
+
+      return {
+        x,
+        y,
+        width: binWidth
+      };
+    });
   };
 
   /** D3 Variables */
-  const defaultScaleX = d3
-    .scaleLinear()
-    .domain([-maxXTick, maxXTick])
-    .range([margin.left, boundsWidth]);
+  const defaultScaleX = scaleX.copy();
 
-  const scaleX = defaultScaleX.copy();
   const xAxis = d3
     .axisBottom(scaleX)
+    .tickFormat(tick => displayTickNumber([getInvertX(0), getInvertX(width)], Number(tick)))
     .tickArguments([displayLabels]);
-  const [, max] = d3.extent(resolvedBins());
-
-  const scaleY = d3
-    .scaleLinear()
-    .domain([0, max || 0])
-    .range([boundsHeight, 0]);
 
   const binData = () => {
-    function fillByBin(num: number, index: number) {
-      if (num === 0) {
+    const currentPricePosition = currentPrice ? scaleX(currentPrice) : null;
+    function fillByBin(bin: { x: number, y: number, width: number }) {
+      if (bin.y === 0) {
         return "#4c4c4c";
       }
-      if (currentTick && index * binRange < tickToPrice(currentTick)) {
+      const centerX = bin.x + (bin.width / 2);
+      if (currentPricePosition && centerX < currentPricePosition) {
         return "url(#gradient-bar-green)";
       }
       return "url(#gradient-bar-red)";
     }
 
-    return resolvedBins().map((bin, index) => {
-      const x = scaleX(index * binRange);
-      const y = bin < 100 ? boundsHeight - 5 : scaleY(bin);
-      const fill = fillByBin(bin, index);
-      const width = scaleX(binRange) - scaleX(0) > 2 ? scaleX(binRange) - scaleX(0) - 2 : scaleX(binRange) - scaleX(0);
+    return resolvedBins().map((bin) => {
+      const x = bin.x + 1;
+      const y = scaleY(bin.y);
+      const fill = fillByBin(bin);
+      const width = bin.width - 1;
       const height = boundsHeight - y;
 
       return {
         x,
         y,
         fill,
-        width,
-        height
+        width: width > 0 ? width : 0,
+        height: height > 0 ? height : 0
       };
     });
   };
 
-  /** Brush */
   const brush = d3.brushX()
     .extent([
       [scaleX(0), 0],
       [boundsWidth, boundsHeight + paddingHeight]
     ])
-    .on("start brush end", onBrush);
+    .on("start brush", onBrushMove)
+    .on("end", onBrushEnd);
 
-  function onBrush(event: d3.D3BrushEvent<unknown>) {
-    if (event.selection !== null) {
-      if (Array.isArray(event.selection)) {
-        if (typeof event.selection[0] !== "number" || typeof event.selection[1] !== "number") {
-          return;
-        }
-
-        if (!brushRef.current) {
-          return;
-        }
-
-        if (event.selection[0] === event.selection[1]) {
-          setMinPrice(null);
-          setMaxPrice(null);
-          const selectionElement = d3.select(brushRef.current);
-          selectionElement.select("#start").remove();
-          selectionElement.select("#end").remove();
-          return;
-        }
-
-        const minPricePosition = event.selection[0];
-        const minPrice = scaleX.invert(minPricePosition);
-        const maxPricePosition = event.selection[1];
-        const maxPrice = scaleX.invert(maxPricePosition);
-
-        setSelectedFullRange(false);
-
-        if (event.type === "drag" || event.type === "end") {
-          setMinPrice(BigNumber(minPrice.toPrecision(12)).toNumber());
-          setMaxPrice(BigNumber(maxPrice.toPrecision(12)).toNumber());
-        }
-        initBrushGradient(currentPrice, minPrice, maxPrice);
-      }
-    }
-  }
-
-  function initBrushGradient(currentPrice: number | null, minPrice: number | null, maxPrice: number | null) {
-    if (!currentPrice || !minPrice || !maxPrice) {
+  function onBrushMove(this: SVGGElement, event: d3.D3BrushEvent<null>) {
+    if (!brushRef.current) {
       return;
     }
+    const brushElement = d3.select(brushRef.current);
+    if (event.type === "start") {
 
-    function getCurrentTickOffset(currentPrice: number, minPrice: number, maxPrice: number) {
-      const diffMinPrice = currentPrice - minPrice;
-      const diffMaxPrice = maxPrice - currentPrice;
-      if (diffMinPrice <= 0) {
-        return "0%";
-      }
-      if (diffMaxPrice <= 0) {
-        return "100%";
-      }
-      return `${(diffMinPrice / (diffMaxPrice + diffMinPrice)) * 100}%`;
-    }
-
-    const currentTickOffset = getCurrentTickOffset(currentPrice, minPrice, maxPrice);
-    d3.select(svgRef.current)
-      .select("defs")
-      .select("#gradient-selection-current-position")
-      .attr("offset", currentTickOffset);
-
-    const selectionElement = d3.select(brushRef.current);
-
-    /** Start Line */
-    if (selectionElement.selectChild("#start").empty()) {
-      const startLineElement = selectionElement.insert("svg")
-        .attr("id", "start");
-      startLineElement.insert("line")
+      /** Start Line */
+      brushElement.select("#start").selectChildren().remove();
+      const startLineElement = brushElement.select("#start").insert("svg");
+      startLineElement.append("line")
         .attr("y1", 0)
         .attr("y2", boundsHeight + paddingHeight)
         .style("stroke", "#ff2e2e")
         .attr("stroke-width", 2);
+      makeLeftBadge(startLineElement);
 
-      makeBadge(startLineElement);
-    }
-
-    /** End Line */
-    if (selectionElement.selectChild("#end").empty()) {
-      const endLineElement = selectionElement.insert("svg")
-        .attr("id", "end");
-
-      endLineElement.insert("line")
+      /** End Line */
+      brushElement.select("#end").selectChildren().remove();
+      const endLineElement = brushElement.select("#end").insert("svg");
+      endLineElement.append("line")
         .attr("y1", boundsHeight + paddingHeight)
         .attr("y2", 0)
         .style("stroke", "#2eff82")
         .attr("stroke-width", 2);
 
-      makeBadge(endLineElement, true);
+      makeRightBadge(endLineElement);
     }
 
-    /** Draw Lines */
-    const isRightStartLine = scaleX(minPrice) - 75 < 0;
-    const minPriceRate = currentPrice === 0 ? 0 : (minPrice - currentPrice) / currentPrice * 100;
-    changeLine(selectionElement, "start", scaleX(minPrice), minPriceRate, isRightStartLine);
+    const selection = event.selection ? event.selection : [0, 0];
+    const startPosition = selection[0] as number;
+    const endPosition = selection[1] as number;
+    brushElement
+      .selectAll(".resize")
+      .attr("x", data => data === "w" ? startPosition : endPosition);
 
-    const isRightEndLine = scaleX(maxPrice) + 75 < boundsWidth;
-    const maxPriceRate = currentPrice === 0 ? 0 : (maxPrice - currentPrice) / currentPrice * 100;
-    changeLine(selectionElement, "end", scaleX(maxPrice), maxPriceRate, isRightEndLine);
+    const startRate = currentPrice ? (((scaleX.invert(startPosition) - currentPrice) / currentPrice) * 100) : 0;
+    const endRate = currentPrice ? (((scaleX.invert(endPosition) - currentPrice) / currentPrice) * 100) : 0;
+
+    const isRightStartLine = startPosition - 75 < 0;
+    const isRightEndLine = endPosition + 75 < boundsWidth;
+    changeLine(brushElement, "start", startPosition as number, startRate, isRightStartLine);
+    changeLine(brushElement, "end", endPosition as number, endRate, isRightEndLine, selectedFullRange);
   }
+
+  function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
+    if (!brushRef.current || event.mode === undefined) {
+      return;
+    }
+
+    if (!event.selection) {
+      d3.select(brushRef.current)
+        .selectAll(".resize")
+        .selectChildren()
+        .remove();
+      setMinPrice(null);
+      setMaxPrice(null);
+    } else {
+      const selection = event.selection ? event.selection : [0, 0];
+      const startPosition = selection[0] as number;
+      const endPosition = selection[1] as number;
+      const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN() ? tickToPrice(priceToNearTick(scaleX.invert(startPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
+      const maxPrice = !BigNumber(scaleX.invert(endPosition)).isNaN() ? tickToPrice(priceToNearTick(scaleX.invert(endPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
+      setMinPrice(minPrice);
+      setMaxPrice(maxPrice);
+    }
+  }
+
+  useEffect(() => {
+    if (!brushRef.current) {
+      return;
+    }
+    const brushElement = d3.select(brushRef.current).call(brush);
+    brushElement.selectAll(".resize")
+      .data([{ type: "w" }, { type: "e" }])
+      .enter()
+      .append("svg")
+      .attr("id", d => d.type === "w" ? "start" : "end")
+      .attr("width", "10")
+      .attr("height", boundsHeight)
+      .attr("cursor", "ew-resize")
+      .attr("class", d => "resize handle--custom handle--" + d.type);
+  }, [boundsHeight, brush, brushRef]);
 
   /** Zoom */
   const zoom: d3.ZoomBehavior<any, unknown> = d3
     .zoom()
-    .scaleExtent([-maxXTick, maxXTick])
-    .translateExtent([
-      [0, 0],
-      [boundsWidth, boundsHeight]
-    ])
-    .extent([
-      [0, 0],
-      [boundsWidth, boundsHeight]
-    ])
+    .scaleExtent([0.01, 2 ** 20])
     .on("zoom", onZoom);
 
   function onZoom(event: d3.D3ZoomEvent<SVGElement, null>) {
@@ -355,8 +379,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   function initZoom() {
     const svgElement = d3.select(svgRef.current);
-    const scaleRate = BigNumber(2).pow(zoomLevel * 3).toNumber();
-    zoom.scaleTo(svgElement, scaleRate, [scaleX(focusTick || 0), 0]);
+    const scaleRate = 2 ** (zoomLevel - 10);
+    zoom.scaleTo(svgElement, scaleRate, [0, 0]);
+    const [x1, x2] = getRange();
+    zoom.translateTo(
+      svgElement,
+      scaleX((x1 + x2) / 2),
+      0
+    );
 
     brush.extent([
       [scaleX(0), 0],
@@ -389,7 +419,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
 
     // Create a line of current tick.
-    if (currentTick) {
+    const currentPricePosition = currentPrice ? scaleX(currentPrice) : null;
+    if (currentPricePosition) {
       if (d3.select(svgRef.current).select("#current-price").empty()) {
         d3.select(svgRef.current)
           .append("line")
@@ -397,8 +428,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       }
       d3.select(svgRef.current)
         .select("#current-price")
-        .attr("x1", scaleX(tickToPrice(currentTick)))
-        .attr("x2", scaleX(tickToPrice(currentTick)))
+        .attr("x1", currentPricePosition)
+        .attr("x2", currentPricePosition)
         .attr("y1", boundsHeight + paddingHeight)
         .attr("y2", 0)
         .attr("stroke-dasharray", 4)
@@ -409,40 +440,39 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   }
 
   function interactChart() {
-    if (focusTick) {
-      const svgElement = d3.select(svgRef.current);
-      zoom.translateTo(
-        svgElement,
-        scaleX(focusTick),
-        0
-      );
-    }
-    initZoom();
-    updateChart();
-
-    if (brushRef.current && minPrice && maxPrice) {
+    if (brushRef.current) {
       try {
-        initBrushGradient(currentPrice, minPrice, maxPrice);
-        brush.move(
-          d3.select(brushRef.current),
-          [scaleX(minPrice), scaleX(maxPrice)]
-        );
+        const zeroPosition = Number(BigNumber(scaleX(0)).toFixed(10));
+        if (selectedFullRange) {
+          brush?.move(
+            d3.select(brushRef.current),
+            [zeroPosition, width]
+          );
+        }
       } catch { }
     }
   }
 
   useEffect(() => {
+    initZoom();
     interactChart();
-  }, [zoomLevel, focusTick, minPrice, maxPrice, currentTick]);
+    updateChart();
+  }, [zoomLevel, focusPosition, selectedFullRange]);
 
   useEffect(() => {
-    if (selectedFullRange && brushRef.current) {
-      brush.move(
-        d3.select(brushRef.current),
-        [scaleX(0), maxXTick]
-      );
+    initZoom();
+    if (!brushRef.current || minPrice === null || maxPrice === null) {
+      return;
     }
-  }, [selectedFullRange]);
+    const zeroPosition = scaleX(0);
+    const brushElement = d3.select(brushRef.current);
+    const minPricePosition = selectedFullRange ? zeroPosition : scaleX(minPrice);
+    brush.move(
+      brushElement,
+      [minPricePosition > zeroPosition ? minPricePosition : zeroPosition, scaleX(maxPrice)]
+    );
+    updateChart();
+  }, [minPrice, maxPrice, scaleX, selectedFullRange, brush, currentPrice]);
 
   useEffect(() => {
     const svgElement = d3.select(svgRef.current)
@@ -497,6 +527,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         />
         <g
           ref={brushRef}
+          className={"brush"}
           width={boundsWidth}
           height={boundsHeight + paddingHeight}
           transform={`translate(${[margin.left, margin.top].join(",")})`}

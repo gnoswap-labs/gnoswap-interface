@@ -1,11 +1,11 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import SelectToken, { SelectTokenProps } from "./SelectTokenIncentivize";
+import SelectToken, { SelectTokenIncentivizeProps } from "./SelectTokenIncentivize";
 
 describe("SelectToken Component", () => {
   it("SelectToken render", () => {
-    const args: SelectTokenProps = {
+    const args: SelectTokenIncentivizeProps = {
       keyword: "",
       defaultTokens: [],
       tokens: [],
@@ -13,6 +13,7 @@ describe("SelectToken Component", () => {
       changeKeyword: () => { return; },
       changeToken: () => { return; },
       close: () => { return; },
+      themeKey: "dark"
     };
 
     render(

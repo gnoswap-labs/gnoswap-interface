@@ -51,6 +51,8 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     .amount {
       ${fonts.body4}
       color: ${({ theme }) => theme.color.text01};
+      max-width: 180px;
+      overflow: auto;
     }
 
     .label {

@@ -1,12 +1,20 @@
-import React, { useCallback, useMemo } from "react";
-import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
+import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
+import { numberToFormat } from "@utils/string-utils";
+import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 
 export interface SelectPriceRangeCutomControllerProps {
   title: string;
   token0Symbol: string;
   token1Symbol: string;
-  current?: string;
+  current: number | null;
+  feeTier: SwapFeeTierType
+  tickSpacing?: number;
+  selectedFullRange: boolean;
+  onSelectCustomRange: () => void;
+  changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
 }
@@ -16,20 +24,29 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   token0Symbol,
   token1Symbol,
   current,
+  feeTier,
+  tickSpacing = 2,
+  changePrice,
   decrease,
   increase,
+  selectedFullRange,
+  onSelectCustomRange,
 }) => {
+  const [value, setValue] = useState("");
+  const [changed, setChanged] = useState(false);
 
   const tokenInfo = useMemo(() => {
     return `${token0Symbol} per ${token1Symbol}`;
   }, [token0Symbol, token1Symbol]);
 
-  const currentPriceStr = useMemo(() => {
-    if (!current) {
-      return "-";
-    }
-    return BigNumber(current).toFixed(4);
-  }, [current]);
+  const disabledController = useMemo(() => {
+    return value === "" ||
+      value === "-" ||
+      BigNumber(value).isNaN() ||
+      value === "NaN" ||
+      value === "0" ||
+      value === "∞";
+  }, [value]);
 
   const onClickDecrease = useCallback(() => {
     decrease();
@@ -39,17 +56,80 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     increase();
   }, [increase]);
 
+  const onChangeValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setValue(newValue);
+    if (value !== newValue) {
+      setChanged(true);
+    }
+  }, [value]);
+
+  const onBlurUpdate = useCallback(() => {
+    if (!changed) {
+      return;
+    }
+    setChanged(false);
+    if (value === "∞" || value === "-") {
+      return;
+    }
+    const currentValue = BigNumber(Number(value.replace(",", "")));
+    if (currentValue.isNaN()) {
+      setValue("-");
+      return;
+    }
+    if (currentValue.isLessThanOrEqualTo(0.00000001)) {
+      setValue("0");
+      return;
+    }
+    const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
+    changePrice(nearPrice);
+    if (nearPrice > 1) {
+      setValue(numberToFormat(nearPrice, 4));
+    } else {
+      setValue(nearPrice.toString());
+    }
+    if (selectedFullRange) {
+      onSelectCustomRange();
+    }
+  }, [changed, value, tickSpacing, selectedFullRange]);
+
+  useEffect(() => {
+    if (current === null || BigNumber(Number(current)).isNaN()) {
+      setValue("-");
+      return;
+    }
+    const currentValue = BigNumber(current).toNumber();
+    if (currentValue < 0.00000001) {
+      setValue("0");
+      return;
+    }
+    const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+    if (currentValue <= minPrice) {
+      setValue("0");
+      return;
+    }
+    if (currentValue / maxPrice > 0.9) {
+      setValue("∞");
+      return;
+    }
+    if (currentValue >= 1) {
+      setValue(BigNumber(current).toFixed(4));
+      return;
+    }
+    setValue(BigNumber(current).toFixed());
+  }, [current, feeTier]);
+
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
       <div className="controller-wrapper">
-        <div className="icon-wrapper decrease" onClick={onClickDecrease}>
+        <div className={disabledController ? "icon-wrapper decrease disabled" : "icon-wrapper decrease"} onClick={onClickDecrease}>
           <span>-</span>
         </div>
         <div className="value-wrapper">
-          <span className="value">{currentPriceStr}</span>
+          <input className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate} />
         </div>
-        <div className="icon-wrapper increase" onClick={onClickIncrease}>
+        <div className={disabledController ? "icon-wrapper increase disabled" : "icon-wrapper increase"} onClick={onClickIncrease}>
           <span>+</span>
         </div>
       </div>
