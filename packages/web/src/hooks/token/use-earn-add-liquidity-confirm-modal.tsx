@@ -136,6 +136,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       token: {
         path: "native",
         address: "",
+        type: "grc20",
         priceId: "GNOLAND",
         chainId: "dev",
         name: "Gno.land",

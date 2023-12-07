@@ -17,6 +17,7 @@ const pool: PoolCardInfo = {
     decimals: 4,
     symbol: "BAR",
     logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+    type: "grc20",
     priceId: "gno.land/r/bar"
   },
   tokenB: {
@@ -28,6 +29,7 @@ const pool: PoolCardInfo = {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+    type: "grc20",
     priceId: "gno.land/r/foo"
   },
   feeTier: "FEE_500",
@@ -46,6 +48,7 @@ const pool: PoolCardInfo = {
         decimals: 4,
         symbol: "GNS",
         logoURI: "/gnos.svg",
+        type: "grc20",
         priceId: "gno.land/r/gnos"
       },
       amount: 10

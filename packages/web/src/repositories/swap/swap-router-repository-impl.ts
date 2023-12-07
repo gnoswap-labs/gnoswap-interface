@@ -12,6 +12,7 @@ import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-respon
 import { SwapRouter } from "@gnoswap-labs/swap-router";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
@@ -49,10 +50,15 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const inputTokenPath = inputToken.path;
     const outputTokenPath = outputToken.path;
     const swapRouter = new SwapRouter(this.pools);
+    const tokenAmountRaw = makeRawTokenAmount(
+      exactType === "EXACT_IN" ? inputToken : outputToken,
+      tokenAmount,
+    );
+
     const estimatedRoutes = swapRouter.estimateSwapRoute(
       inputTokenPath,
       outputTokenPath,
-      BigInt(tokenAmount),
+      BigInt(tokenAmountRaw || 0),
       exactType,
     );
 
@@ -61,7 +67,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const param = makeABCIParams("DrySwapRoute", [
       inputTokenPath,
       outputTokenPath,
-      tokenAmount,
+      tokenAmountRaw || "0",
       exactType,
       routesQuery,
       quotes,
@@ -74,8 +80,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     if (result === null) {
       throw new SwapError("NOT_FOUND_SWAP_POOL");
     }
+    const resultAmount = makeDisplayTokenAmount(
+      exactType === "EXACT_IN" ? outputToken : inputToken,
+      result,
+    );
     return {
-      amount: result.toString(),
+      amount: resultAmount?.toString() || "0",
       estimatedRoutes,
     };
   };
@@ -97,8 +107,13 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       estimatedRoutes,
       tokenAmountLimit,
     } = request;
+
+    const targetToken = exactType === "EXACT_IN" ? inputToken : outputToken;
+    const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount);
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
+    const sendAmount =
+      targetToken.type === "native" ? `${tokenAmountRaw}ugnot` : "";
     const response = await this.walletClient.sendTransaction({
       messages: [
         SwapRouterRepositoryImpl.makeApproveTokenMessage(
@@ -113,13 +128,13 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         ),
         {
           caller: address,
-          send: "",
+          send: sendAmount,
           pkg_path: ROUTER_PACKAGE_PATH,
           func: "SwapRoute",
           args: [
             inputToken.path,
             outputToken.path,
-            `${tokenAmount}`,
+            `${tokenAmountRaw || 0}`,
             exactType,
             `${routesQuery}`,
             `${quotes}`,

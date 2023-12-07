@@ -22,6 +22,7 @@ const TOKEN_A = {
   decimals: 4,
   symbol: "GNOS",
   logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+  type: "grc20",
   priceId: "gno.land/r/gnos",
 }
 
@@ -51,9 +52,9 @@ Default.args = {
   swapNow: action("swapNow"),
   handleSetting: action("handleSetting"),
   handleCopied: action("handleCopied"),
-  changeTokenA: action("changeTokenA") ,
-  changeTokenAAmount: action("changeTokenAAmount") ,
-  changeTokenB: action("changeTokenB") ,
-  changeTokenBAmount: action("changeTokenBAmount") ,
-  switchSwapDirection: action("switchSwapDirection") ,
+  changeTokenA: action("changeTokenA"),
+  changeTokenAAmount: action("changeTokenAAmount"),
+  changeTokenB: action("changeTokenB"),
+  changeTokenBAmount: action("changeTokenBAmount"),
+  switchSwapDirection: action("switchSwapDirection"),
 };

@@ -37,7 +37,8 @@ export function getMinReceivedBy(swapSummaryInfo: SwapSummaryInfo) {
   if (swapDirection === "EXACT_OUT") {
     return "-";
   }
-  return `${toNumberFormat(guaranteedAmount.amount)} ${
-    guaranteedAmount.currency
-  }`;
+  return `${toNumberFormat(
+    guaranteedAmount.amount,
+    swapSummaryInfo.tokenB.decimals,
+  )} ${guaranteedAmount.currency}`;
 }

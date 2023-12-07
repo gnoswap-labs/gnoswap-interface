@@ -1,6 +1,8 @@
 export interface TokenModel {
   path: string;
 
+  type: "native" | "grc20";
+
   address: string;
 
   priceId: string;
@@ -20,6 +22,8 @@ export interface TokenModel {
   isWrappedGasToken?: boolean;
 
   isGasToken?: boolean;
+
+  denom?: string;
 }
 
 export interface NativeTokenModel extends TokenModel {

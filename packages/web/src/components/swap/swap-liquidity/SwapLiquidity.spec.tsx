@@ -12,6 +12,7 @@ const tokenA = {
   symbol: "1INCH",
   decimals: 6,
   logoURI: "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
+  type: "grc20",
   priceId: "1inch",
   createdAt: "1999-01-01T00:00:01Z"
 };
@@ -22,6 +23,7 @@ const tokenB = {
   symbol: "WETH",
   decimals: 6,
   chainId: "test3",
+  type: "grc20",
   priceId: "weth",
   createdAt: "1999-01-01T00:00:02Z",
   isWrappedGasToken: true,

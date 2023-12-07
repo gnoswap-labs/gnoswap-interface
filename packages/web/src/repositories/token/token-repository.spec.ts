@@ -45,6 +45,7 @@ describe("createSearchLog", () => {
     token: {
       path: "path",
       address: "address",
+      type: "grc20",
       priceId: "priceId",
       chainId: "chainId",
       name: "name",
@@ -78,6 +79,7 @@ describe("getSearchLogs", () => {
     token: {
       path: "path",
       address: "address",
+      type: "grc20",
       priceId: "priceId",
       chainId: "chainId",
       name: "name",

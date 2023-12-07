@@ -64,6 +64,7 @@ const DEPOSIT_TO = {
   symbol: "Cosmos",
   logoURI:
     "/cosmos.svg",
+  type: "grc20",
   priceId: "gno.land/r/gnos",
 };
 
@@ -77,6 +78,7 @@ const DEPOSIT_FROM = {
   symbol: "Gnoland",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  type: "grc20",
   priceId: "gno.land/r/gnos",
 };
 const DEPOSIT_INFO = {
@@ -89,6 +91,7 @@ const DEPOSIT_INFO = {
   symbol: "ATOM",
   logoURI:
     "/atom.svg",
+  type: "grc20",
   priceId: "gno.land/r/gnos",
 };
 
@@ -123,7 +126,7 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
 
-  const claimAll = useCallback(() => {}, []);
+  const claimAll = useCallback(() => { }, []);
 
   const {
     isLoading: isBalanceSummaryInfoLoading,

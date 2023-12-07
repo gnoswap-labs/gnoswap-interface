@@ -142,6 +142,7 @@ const DEPOSIT_TO = {
   symbol: "Cosmos",
   logoURI:
     "/cosmos.svg",
+  type: "grc20",
   priceId: "gno.land/r/gnos",
 };
 
@@ -155,6 +156,7 @@ const DEPOSIT_FROM = {
   symbol: "Gnoland",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  type: "grc20",
   priceId: "gno.land/r/gnos",
 };
 const DEPOSIT_INFO = {
@@ -167,6 +169,7 @@ const DEPOSIT_INFO = {
   symbol: "ATOM",
   logoURI:
     "/atom.svg",
+  type: "grc20",
   priceId: "gno.land/r/gnos",
 };
 
@@ -243,9 +246,9 @@ const AssetListContainer: React.FC = () => {
       const resultFilteredAssets = extended
         ? filteredAssets
         : filteredAssets.slice(
-            0,
-            Math.min(filteredAssets.length, COLLAPSED_LENGTH),
-          );
+          0,
+          Math.min(filteredAssets.length, COLLAPSED_LENGTH),
+        );
 
       setHasLoader(hasLoader);
       setFilteredAsset(resultFilteredAssets);
@@ -290,6 +293,7 @@ const AssetListContainer: React.FC = () => {
         decimals: 4,
         symbol: asset.symbol,
         logoURI: asset.logoUri,
+        type: "grc20",
         priceId: "gno.land/r/gnos",
       });
       // console.debug("deposit", `address: ${address}`, `assetId: ${assetId}`);
@@ -311,6 +315,7 @@ const AssetListContainer: React.FC = () => {
         decimals: 4,
         symbol: asset.symbol,
         logoURI: asset.logoUri,
+        type: "grc20",
         priceId: "gno.land/r/gnos",
       });
       // console.debug("withdraw", `address: ${address}`, `assetId: ${assetId}`);
@@ -326,8 +331,8 @@ const AssetListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setTokenSortOption({
         key,

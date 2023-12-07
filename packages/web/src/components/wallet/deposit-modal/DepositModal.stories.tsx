@@ -26,6 +26,7 @@ Default.args = {
     symbol: "GNOT",
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+    type: "grc20",
     priceId: "gno.land/r/gnos",
   },
   fromToken: {
@@ -38,6 +39,7 @@ Default.args = {
     symbol: "GNOT",
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+    type: "grc20",
     priceId: "gno.land/r/gnos",
   },
   toToken: {
@@ -50,6 +52,7 @@ Default.args = {
     symbol: "GNOT",
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+    type: "grc20",
     priceId: "gno.land/r/gnos",
   },
   connected: true,

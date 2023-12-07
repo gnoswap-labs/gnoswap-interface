@@ -19,6 +19,7 @@ describe("DepositModal Component", () => {
         symbol: "GNOT",
         logoURI:
           "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+        type: "grc20",
         priceId: "gno.land/r/gnos",
       },
       fromToken: {
@@ -31,6 +32,7 @@ describe("DepositModal Component", () => {
         symbol: "GNOT",
         logoURI:
           "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+        type: "grc20",
         priceId: "gno.land/r/gnos",
       },
       toToken: {
@@ -43,6 +45,7 @@ describe("DepositModal Component", () => {
         symbol: "GNOT",
         logoURI:
           "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+        type: "grc20",
         priceId: "gno.land/r/gnos",
       },
       connected: true,

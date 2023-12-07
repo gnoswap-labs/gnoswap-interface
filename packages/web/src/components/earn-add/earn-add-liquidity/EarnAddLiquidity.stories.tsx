@@ -21,6 +21,7 @@ const tokenA = {
   decimals: 4,
   symbol: "GNOS",
   logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+  type: "grc20",
   priceId: "gno.land/r/gnos"
 };
 const tokenB = {
@@ -32,6 +33,7 @@ const tokenB = {
   decimals: 4,
   symbol: "GNOS",
   logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+  type: "grc20",
   priceId: "gno.land/r/gnos"
 };
 

@@ -13,6 +13,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     symbol: "1INCH",
     decimals: 6,
     logoURI: "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
+    type: "grc20",
     priceId: "1inch",
     createdAt: "1999-01-01T00:00:01Z"
   },
@@ -24,6 +25,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     symbol: "1INCH",
     decimals: 6,
     logoURI: "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
+    type: "grc20",
     priceId: "1inch",
     createdAt: "1999-01-01T00:00:01Z"
   },

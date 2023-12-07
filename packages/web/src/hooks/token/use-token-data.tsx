@@ -5,6 +5,7 @@ import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenState } from "@states/index";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
@@ -16,6 +17,17 @@ export const useTokenData = () => {
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
+
+  const displayBalanceMap = useMemo(() => {
+    const tokenBalanceMap: { [key in string]: number | null } = {};
+    Object.keys(balances).forEach(key => {
+      const balance = balances[key];
+      const token = tokens.find(token => token.priceId === key);
+      const exist = token && balance !== null && balance !== undefined;
+      tokenBalanceMap[key] = exist ? makeDisplayTokenAmount(token, balance) : null;
+    });
+    return tokenBalanceMap;
+  }, [balances, tokens]);
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens.sort((t1, t2) => {
@@ -105,16 +117,23 @@ export const useTokenData = () => {
       if (!rpcProvider || !account) {
         return null;
       }
-      const param = `BalanceOf("${account.address}")`;
-      return rpcProvider.evaluateExpression(token.path, param)
-        .then(evaluateExpressionToNumber)
-        .catch(() => null);
+      if (token.type === "native") {
+        return rpcProvider.getBalance(account.address, token.denom || "ugnot")
+          .catch(() => null);
+      }
+      else if (token.type === "grc20") {
+        const param = `BalanceOf("${account.address}")`;
+        return rpcProvider.evaluateExpression(token.path, param)
+          .then(evaluateExpressionToNumber)
+          .catch(() => null);
+      }
+      return null;
     }
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
     const balances: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balances[tokens[index].path] = result;
+        balances[tokens[index].priceId] = result;
       }
     });
     setBalances(balances);
@@ -123,6 +142,7 @@ export const useTokenData = () => {
   return {
     tokens,
     tokenPrices,
+    displayBalanceMap,
     balances,
     trendingTokens,
     recentlyAddedTokens,

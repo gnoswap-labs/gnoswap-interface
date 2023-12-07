@@ -25,6 +25,7 @@ Default.args = {
       decimals: 4,
       symbol: "FOO",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      type: "grc20",
       priceId: "gno.land/r/foo"
     },
     tokenAAmount: "0",
@@ -40,6 +41,7 @@ Default.args = {
       decimals: 4,
       symbol: "FOO",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      type: "grc20",
       priceId: "gno.land/r/foo"
     },
     tokenBAmount: "0",
