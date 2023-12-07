@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import SelectPair from "./SelectPair";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "common/AddLiquidity/SelectPair",
@@ -12,7 +13,7 @@ const Template: ComponentStory<typeof SelectPair> = args => (
   <SelectPair {...args} />
 );
 
-const tokenA = {
+const tokenA: TokenModel = {
   chainId: "test3",
   address: "0x111111111117dC0aa78b770fA6A738034120C302",
   path: "gno.land/r/demo/1inch",
@@ -25,7 +26,7 @@ const tokenA = {
   createdAt: "1999-01-01T00:00:01Z"
 };
 
-const tokenB = {
+const tokenB: TokenModel = {
   name: "Wrapped Ether",
   address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
   path: "gno.land/r/demo/weth",

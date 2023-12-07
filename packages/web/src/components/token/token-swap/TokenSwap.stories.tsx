@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TokenSwap from "./TokenSwap";
 import { action } from "@storybook/addon-actions";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "token/TokenSwap",
@@ -13,7 +14,7 @@ const Template: ComponentStory<typeof TokenSwap> = args => (
   <TokenSwap {...args} />
 );
 
-const TOKEN_A = {
+const TOKEN_A: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",

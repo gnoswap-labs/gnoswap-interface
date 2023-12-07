@@ -6,6 +6,7 @@ import {
 
 import EnterAmounts from "./LiquidityEnterAmounts";
 import { action } from "@storybook/addon-actions";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "common/AddLiquidity/EnterAmounts",
@@ -16,7 +17,7 @@ const Template: ComponentStory<typeof EnterAmounts> = args => (
   <EnterAmounts {...args} />
 );
 
-const token = {
+const token: TokenModel = {
   "chainId": "test3",
   "address": "0x111111111117dC0aa78b770fA6A738034120C302",
   "path": "gno.land/r/demo/1inch",
@@ -24,6 +25,7 @@ const token = {
   "symbol": "1INCH",
   "decimals": 6,
   "logoURI": "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
+  "type": "grc20",
   "priceId": "1inch",
   "createdAt": "1999-01-01T00:00:01Z"
 };

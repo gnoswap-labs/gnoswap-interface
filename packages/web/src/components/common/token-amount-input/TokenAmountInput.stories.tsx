@@ -1,13 +1,14 @@
 import TokenAmountInput, { type TokenAmountInputProps } from "./TokenAmountInput";
 import { Meta, StoryObj } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "common/TokenAmountInput",
   component: TokenAmountInput,
 } as Meta<typeof TokenAmountInput>;
 
-const token = {
+const token: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",

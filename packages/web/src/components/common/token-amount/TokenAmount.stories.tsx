@@ -1,12 +1,13 @@
 import TokenAmount, { type TokenAmountProps } from "./TokenAmount";
 import { Meta, StoryObj } from "@storybook/react";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "common/TokenAmount",
   component: TokenAmount,
 } as Meta<typeof TokenAmount>;
 
-const token = {
+const token: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",

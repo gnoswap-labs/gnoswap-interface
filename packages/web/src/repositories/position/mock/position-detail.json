@@ -47,6 +47,7 @@
           "symbol": "ETH",
           "decimals": 6,
           "chainId": "test3",
+          "type": "grc20",
           "priceId": "ethereum",
           "isGasToken": true,
           "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/ethereum/info/logo.png?raw=true",
@@ -60,6 +61,7 @@
           "decimals": 6,
           "symbol": "swETH",
           "logoURI": "sweth.jpeg",
+          "type": "grc20",
           "priceId": "sweth",
           "createdAt": "1999-01-01T00:00:00Z"
         },
@@ -122,6 +124,7 @@
           "decimals": 6,
           "symbol": "swETH",
           "logoURI": "sweth.jpeg",
+          "type": "grc20",
           "priceId": "sweth",
           "createdAt": "1999-01-01T00:00:00Z"
         },

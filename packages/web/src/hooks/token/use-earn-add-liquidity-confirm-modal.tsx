@@ -131,7 +131,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     };
   }, [priceLabel, selectPool]);
 
-  const feeInfo = useMemo(() => {
+  const feeInfo = useMemo((): { token: TokenModel, fee: string } => {
     return {
       token: {
         path: "native",

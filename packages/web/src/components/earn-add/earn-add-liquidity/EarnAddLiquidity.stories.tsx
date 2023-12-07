@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import EarnAddLiquidity from "./EarnAddLiquidity";
 import { action } from "@storybook/addon-actions";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "earn-add/EarnAddLiquidity",
@@ -12,7 +13,7 @@ export default {
 const Template: ComponentStory<typeof EarnAddLiquidity> = args => (
   <EarnAddLiquidity {...args} />
 );
-const tokenA = {
+const tokenA: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
@@ -24,7 +25,7 @@ const tokenA = {
   type: "grc20",
   priceId: "gno.land/r/gnos"
 };
-const tokenB = {
+const tokenB: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",

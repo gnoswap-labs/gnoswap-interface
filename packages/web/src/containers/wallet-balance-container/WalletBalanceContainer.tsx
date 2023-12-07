@@ -54,7 +54,7 @@ async function fetchBalanceDetailInfo(
 }
 
 
-const DEPOSIT_TO = {
+const DEPOSIT_TO: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
@@ -68,7 +68,7 @@ const DEPOSIT_TO = {
   priceId: "gno.land/r/gnos",
 };
 
-const DEPOSIT_FROM = {
+const DEPOSIT_FROM: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
@@ -81,7 +81,7 @@ const DEPOSIT_FROM = {
   type: "grc20",
   priceId: "gno.land/r/gnos",
 };
-const DEPOSIT_INFO = {
+const DEPOSIT_INFO: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "ATOM",

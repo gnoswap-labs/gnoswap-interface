@@ -32,6 +32,7 @@ const MOCK_DATA = {
         "symbol": "ETH",
         "decimals": 6,
         "chainId": "test3",
+        "type": "grc20",
         "priceId": "ethereum",
         "isGasToken": true,
         "logoURI": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
@@ -45,6 +46,7 @@ const MOCK_DATA = {
         "decimals": 6,
         "symbol": "swETH",
         "logoURI": "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+        "type": "grc20",
         "priceId": "sweth",
         "createdAt": "1999-01-01T00:00:00Z"
       },
@@ -86,6 +88,7 @@ const MOCK_DATA = {
         "decimals": 6,
         "symbol": "swETH",
         "logoURI": "sweth.jpeg",
+        "type": "grc20",
         "priceId": "sweth",
         "createdAt": "1999-01-01T00:00:00Z"
       },

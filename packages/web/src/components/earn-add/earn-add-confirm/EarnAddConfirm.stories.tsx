@@ -1,6 +1,7 @@
 import { action } from "@storybook/addon-actions";
 import EarnAddConfirm, { type EarnAddConfirmProps } from "./EarnAddConfirm";
 import { Meta, StoryObj } from "@storybook/react";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "earn-add/EarnAddConfirm",
@@ -8,7 +9,11 @@ export default {
 } as Meta<typeof EarnAddConfirm>;
 
 
-const tokenA = {
+const tokenA: {
+  info: TokenModel;
+  amount: string;
+  usdPrice: string;
+} = {
   info: {
     chainId: "test3",
     address: "0x111111111117dC0aa78b770fA6A738034120C302",
@@ -25,7 +30,11 @@ const tokenA = {
   usdPrice: "$12.3",
 };
 
-const tokenB = {
+const tokenB: {
+  info: TokenModel;
+  amount: string;
+  usdPrice: string;
+} = {
   info: {
     chainId: "test3",
     address: "0x111111111117dC0aa78b770fA6A738034120C302",

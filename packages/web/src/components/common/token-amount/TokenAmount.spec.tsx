@@ -2,8 +2,9 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import TokenAmount, { TokenAmountProps } from "./TokenAmount";
+import { TokenModel } from "@models/token/token-model";
 
-const token = {
+const token: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
