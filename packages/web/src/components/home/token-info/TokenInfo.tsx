@@ -100,19 +100,21 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
       </HoverSection>
       <HoverSection onClick={onClickPoolItem}>
         <TableColumn className="liquid-col padding-12" tdWidth={TOKEN_TD_WIDTH[9]}>
-          <DoubleLogo
-            left={mostLiquidPool.tokenPair.tokenA.logoURI}
-            right={mostLiquidPool.tokenPair.tokenB.logoURI}
-            size={20}
-            leftSymbol={mostLiquidPool.tokenPair.tokenA.symbol}
-            rightSymbol={mostLiquidPool.tokenPair.tokenB.symbol}
-          />
-          <span className="liquid-symbol right-padding-12">
-            {tokenPairSymbolToOneCharacter(mostLiquidPool.tokenPair)}
-          </span>
-          <span className="fee-rate right-padding-12">
-            {mostLiquidPool.feeRate}
-          </span>
+          {mostLiquidPool.tokenPair.tokenA.logoURI ? <>
+            <DoubleLogo
+              left={mostLiquidPool.tokenPair.tokenA.logoURI}
+              right={mostLiquidPool.tokenPair.tokenB.logoURI}
+              size={20}
+              leftSymbol={mostLiquidPool.tokenPair.tokenA.symbol}
+              rightSymbol={mostLiquidPool.tokenPair.tokenB.symbol}
+            />
+            <span className="liquid-symbol right-padding-12">
+              {tokenPairSymbolToOneCharacter(mostLiquidPool.tokenPair)}
+            </span>
+            <span className="fee-rate right-padding-12">
+              {mostLiquidPool.feeRate}
+            </span>
+          </> : "-"}
         </TableColumn>
       </HoverSection>
       <TableColumn

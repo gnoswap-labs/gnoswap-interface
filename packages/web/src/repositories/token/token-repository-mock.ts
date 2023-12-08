@@ -29,8 +29,8 @@ export class TokenRepositoryMock implements TokenRepository {
 
   public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
     console.log(path);
-    
     return {
+      currentPrice: "",
       prices: [],
       priceChangeDetail: {
         priceToday: "",

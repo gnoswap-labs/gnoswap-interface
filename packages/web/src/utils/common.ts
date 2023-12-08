@@ -33,3 +33,13 @@ export function wait<T>(
 export function makeId(value: string) {
   return CryptoJS.SHA256(value).toString();
 }
+
+export const parseJson = (data: string) => {
+  try {
+    const jsonData = JSON.parse(data);
+    return jsonData;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};

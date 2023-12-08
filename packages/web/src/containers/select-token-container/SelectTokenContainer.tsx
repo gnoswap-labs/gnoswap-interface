@@ -56,8 +56,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     if (!changeToken) {
       return;
     }
-    const temp = Math.floor(Math.random() * 2);
-    if (temp === 1) {
+    if (token.logoURI) {
       changeToken(token);
       close();
     } else {

@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtomValue } from "jotai";
-import { CommonState, ThemeState } from "@states/index";
+import { CommonState, ThemeState, TokenState } from "@states/index";
 import { useAtom } from "jotai";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
@@ -20,6 +20,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { parseJson } from "@utils/common";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -156,12 +157,22 @@ const HeaderContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
+  const recentsData = useAtomValue(TokenState.recents);
+  
 
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
   const { data: { tokens: listTokens = []  } = {} } = useGetTokensList({ enabled: !!searchMenuToggle });
   const { data: { prices = [] } = {} } = useGetTokenPrices({ enabled: !!searchMenuToggle });
   
+  const recents = useMemo(() => {
+    return parseJson(recentsData);
+  }, [recentsData]);
+
   const mostLiquidity = useMemo(() => {
+    let temp = poolList;
+    if (keyword) {
+      temp = poolList.filter((item: PoolModel) => (item.tokenA.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenA.symbol.toLowerCase()).includes(keyword.toLowerCase()));
+    }
     return poolList.slice(0, 3).map((item: PoolModel) => {
       return {
         path: "",
@@ -184,38 +195,44 @@ const HeaderContainer: React.FC = () => {
           logoURI: item.tokenB.logoURI,
         },
         fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
+        isLiquid: true,
+        apr: `${item.apr || 0}`,
       };
     });
-  }, [poolList]);
-
-  const populerTokens = useMemo(() => {
-      return listTokens.slice(0, 6).map((item: TokenModel) => {
-        const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
-        return {
+  }, [poolList, keyword]);
+  
+  const popularTokens = useMemo(() => {
+    let temp = listTokens;
+    if (keyword) {
+      temp = listTokens.filter((item: TokenModel) => (item.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.symbol.toLowerCase()).includes(keyword.toLowerCase()));
+    }
+    return temp.slice(0, 6 - recents.length).map((item: TokenModel) => {
+      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
+      return {
+        path: "",
+        searchType: "",
+        token: {
+          path: item.path,
+          name: item.name,
+          symbol: item.symbol,
+          logoURI: item.logoURI,
+        },
+        price: `$${convertLargePrice(temp.usd || "0")}`,
+        priceOf1d: {
+          status: getStatus(temp.change1d),
+          value: `${temp.change1d || "0.00"}%`,
+        },
+        tokenB: {
           path: "",
-          searchType: "",
-          token: {
-            path: item.path,
-            name: item.name,
-            symbol: item.symbol,
-            logoURI: item.logoURI,
-          },
-          price: `$${Number(temp.usd || 0).toLocaleString()}`,
-          priceOf1d: {
-            status: getStatus(temp.change1d),
-            value: `${temp.change1d || 0}%`,
-          },
-          tokenB: {
-            path: "",
-            name: "",
-            symbol: "",
-            logoURI: "",
-          },
-          fee: "",
-        };
+          name: "",
+          symbol: "",
+          logoURI: "",
+        },
+        fee: "",
+        isLiquid: false,
+      };
     });
-  }, [listTokens]);
-  console.log(populerTokens);
+  }, [listTokens, recents.length, keyword]);
   
   const { openModal } = useConnectWalletModal();
 
@@ -250,7 +267,7 @@ const HeaderContainer: React.FC = () => {
   const handleConnectWallet = useCallback(() => {
     openModal();
   }, [openModal])
-  
+
   return (
     <Header
       account={account}
@@ -273,8 +290,8 @@ const HeaderContainer: React.FC = () => {
       isSwitchNetwork={isSwitchNetwork}
       loadingConnect={loadingConnect}
       mostLiquidity={mostLiquidity}
-      populerTokens={populerTokens}
-      recents={[]}
+      popularTokens={popularTokens}
+      recents={recents}
     />
   );
 };

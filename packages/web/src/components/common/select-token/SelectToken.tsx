@@ -71,7 +71,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
     e.stopPropagation();
-    location.href = "https://gnoscan.io/tokens/" + path;
+    window.open("https://gnoscan.io/tokens/" + path, "_blank") ;
   }, []);
   return (
     <SelectTokenWrapper ref={myElementRef}>

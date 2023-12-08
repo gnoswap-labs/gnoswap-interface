@@ -194,7 +194,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }));
     setPoints(points);
   };
-
+  
   const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -314,9 +314,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
             </span>}
           </div>
           <div className="tooltip-header">
-            <span className="value">{`$${Number(BigNumber(
-              datas[currentPointIndex].value,
-            )).toLocaleString()}`}</span>
+            <span className="value">{`$${datas[currentPointIndex].value}`}</span>
           </div>
         </LineGraphTooltipWrapper> : null
       }>

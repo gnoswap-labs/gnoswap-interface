@@ -9,6 +9,7 @@ export interface ITokenDetailResponse {
   priceChangeDetail: IPriceChangeDetailResponse
   market: IMarketResponse
   bestPools: IBestPoolResponse[]
+  currentPrice: string;
 }
 
 export interface IPriceResponse {

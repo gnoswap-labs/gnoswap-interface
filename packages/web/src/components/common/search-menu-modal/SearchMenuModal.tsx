@@ -1,7 +1,7 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
 import { Token } from "@containers/header-container/HeaderContainer";
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import {
   SearchModalBackground,
   SearchContainer,
@@ -13,11 +13,13 @@ import {
 import IconSearch from "@components/common/icons/IconSearch";
 import Badge, { BADGE_TYPE } from "../badge/Badge";
 import DoubleLogo from "../double-logo/DoubleLogo";
-import IconStar from "../icons/IconStar";
 import IconNewTab from "../icons/IconNewTab";
 import IconTriangleArrowDownV2 from "../icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "../icons/IconTriangleArrowUpV2";
 import { DEVICE_TYPE } from "@styles/media";
+import { useAtom } from "jotai";
+import { TokenState } from "@states/index";
+
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,7 +29,7 @@ interface SearchMenuModalProps {
   placeholder?: string;
   breakpoint: DEVICE_TYPE;
   mostLiquidity: Token[];
-  populerTokens: Token[];
+  popularTokens: Token[];
   recents: Token[];
 }
 
@@ -39,13 +41,26 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   placeholder = "Search",
   breakpoint,
   mostLiquidity,
-  populerTokens,
+  popularTokens,
   recents,
 }) => {
+  const [, setRecentsData] = useAtom(TokenState.recents);
+  
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const onClickItem = (symbol: string) => {
-    location.href = "/tokens/" + symbol;
+  const onClickItem = (item: Token) => {
+    const current = recents.length > 0 ? [item, recents[0]] : [item];
+
+    setRecentsData(JSON.stringify(current.filter((_item, index, self) => {
+      return self.indexOf(_item) === index;
+    })));
+    location.href = "/tokens/" + item.token.symbol;
+    
   };
+
+  const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    e.stopPropagation();
+    window.open("https://gnoscan.io/tokens/" + path, "_blank");
+  }, []);
 
   return (
     <>
@@ -63,34 +78,30 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
           </SearchContainer>
           <ModalContainer>
             <ul>
-              {(populerTokens.length === 0 || mostLiquidity.length === 0) &&
+              {(popularTokens.length === 0 && mostLiquidity.length === 0)  &&
                 isFetched && <div className="no-data-found">No data found</div>}
-              {recents.length > 0 && isFetched && (
+              {!keyword && recents.length > 0 && isFetched && (
                 <>
                   <div className="recent-searches">
                     {!keyword ? "Recent Searches" : "Tokens"}
                   </div>
                   {recents
-                    .slice(0, 2)
-                    .filter((item) => item.searchType === "recent")
+                    
                     .map((item, idx) =>
                       !item.isLiquid ? (
                         <li
                           key={idx}
-                          onClick={() => onClickItem(item.token.symbol)}
+                          onClick={() => onClickItem(item)}
                         >
                           <div className="coin-info-wrapper">
-                            <img
-                              src={item.token.logoURI}
-                              alt="token logo"
-                              className="token-logo"
-                            />
+                            {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{item.token.symbol.slice(0,3)}</div>}
+
                             <div className="coin-info-detail">
                               <div>
                                 <span className="token-name">
                                   {item.token.name}
                                 </span>
-                                <div className="token-path">
+                                <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
                                   {item.token.path}
                                   <IconNewTab />
                                 </div>
@@ -116,7 +127,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       ) : (
                         <li
                           key={idx}
-                          onClick={() => onClickItem(item.token.symbol)}
+                          onClick={() => onClickItem(item)}
                         >
                           <div className="coin-info">
                             <DoubleLogo
@@ -127,13 +138,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             <span className="token-name">
                               {item.token.name}/{item?.tokenB?.name}
                             </span>
-                            <Badge
-                              text={"0.3%"}
-                              type={BADGE_TYPE.DARK_DEFAULT}
-                            />
+                            <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT}/>
                           </div>
                           <div className="coin-infor-value">
-                            <span className="token-price">$123.25M</span>
+                            <span className="token-price">{item.price}</span>
                             <div className="token-price-apr">
                               {item.priceOf1d.value}% {item.token.symbol}
                             </div>
@@ -143,28 +151,25 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                     )}
                 </>
               )}
-              {populerTokens.length > 0 && (
+              {popularTokens.length > 0 && (
                 <>
                   <div className="popular-tokens">
-                    {!keyword ? "Popular Tokens" : "Pools"}
+                    {!keyword ? "Popular Tokens" : "Tokens"}
                   </div>
-                  {populerTokens.map((item, idx) => (
+                  {popularTokens.map((item, idx) => (
                     <li
                       key={idx}
-                      onClick={() => onClickItem(item.token.symbol)}
+                      onClick={() => onClickItem(item)}
                     >
                       <div className="coin-info-wrapper">
-                        <img
-                          src={item.token.logoURI}
-                          alt="token logo"
-                          className="token-logo"
-                        />
+                        {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{item.token.symbol.slice(0,3)}</div>}
+
                         <div className="coin-info-detail">
                           <div>
                             <span className="token-name">
                               {item.token.name}
                             </span>
-                            <div className="token-path">
+                            <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
                               {item.token.path}
                               <IconNewTab />
                             </div>
@@ -189,13 +194,15 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                   ))}
                 </>
               )}
-              {!keyword && mostLiquidity.length > 0 && (
+              {mostLiquidity.length > 0 && (
                 <>
-                  <div className="popular-tokens">Most Liquid Pools</div>
+                  <div className="popular-tokens">
+                    {!keyword ? "Most Liquid Pools" : "Pools"}
+                  </div>
                   {mostLiquidity.map((item, idx) => (
                     <li
                       key={idx}
-                      onClick={() => onClickItem(item.token.symbol)}
+                      onClick={() => onClickItem(item)}
                     >
                       <div className="coin-info">
                         <DoubleLogo

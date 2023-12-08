@@ -197,7 +197,8 @@ const TokenListContainer: React.FC = () => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
-      const tempToken = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
+      const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
+      const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
       return {
         ...temp,
         token: {
@@ -210,16 +211,16 @@ const TokenListContainer: React.FC = () => {
           poolId: Math.floor(Math.random() * 50 + 1).toString(),
           tokenPair: {
             tokenA: {
-              path: item.path,
-              name: item.name,
-              symbol: item.symbol,
-              logoURI: item.logoURI,
+              path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
+              name: tempTokenA?.[0]?.name || "",
+              symbol: tempTokenA?.[0]?.symbol || "",
+              logoURI: tempTokenA?.[0]?.logoURI || "",
             },
             tokenB: {
-              path: Math.floor(Math.random() * 50 + 1).toString(),
-              name: tempToken?.[0]?.name || "",
-              symbol: tempToken?.[0]?.symbol || "",
-              logoURI: tempToken?.[0]?.logoURI || "",
+              path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
+              name: tempTokenB?.[0]?.name || "",
+              symbol: tempTokenB?.[0]?.symbol || "",
+              logoURI: tempTokenB?.[0]?.logoURI || "",
             },
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
@@ -237,8 +238,11 @@ const TokenListContainer: React.FC = () => {
     if (keyword) {
       return temp.filter((item: Token) => (item.token.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.token.symbol.toLowerCase()).includes(keyword.toLowerCase()));
     }
+    if (tokenType !== TOKEN_TYPE.ALL) {
+      return temp.filter((item: Token) => ((item.token.path.includes("gno.land/r/"))));
+    }
     return temp;
-  }, [prices, tokens, keyword]);
+  }, [prices, tokens, keyword, tokenType]);
   
   return (
     <TokenList

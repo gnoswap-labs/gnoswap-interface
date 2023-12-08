@@ -219,6 +219,7 @@ export const SelectTokenWrapper = styled.div`
           ${fonts.p4}
         }
         > div {
+          max-width: 100%;
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 8px;
           .token-name {
@@ -233,7 +234,6 @@ export const SelectTokenWrapper = styled.div`
               overflow: hidden;
               text-overflow: ellipsis;
               direction: rtl;
-              unicode-bidi: bidi-override;
               white-space: nowrap;
             }
             padding: 1.5px 4px;

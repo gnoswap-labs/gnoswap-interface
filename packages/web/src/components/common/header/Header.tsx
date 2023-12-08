@@ -47,7 +47,7 @@ interface HeaderProps {
   isSwitchNetwork: boolean;
   loadingConnect: string;
   mostLiquidity: Token[];
-  populerTokens: Token[];
+  popularTokens: Token[];
   recents: Token[];
 }
 
@@ -71,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({
   isSwitchNetwork,
   loadingConnect,
   mostLiquidity,
-  populerTokens,
+  popularTokens,
   recents,
 }) => {
   return (
@@ -160,7 +160,7 @@ const Header: React.FC<HeaderProps> = ({
             isFetched={isFetched}
             breakpoint={breakpoint}
             mostLiquidity={mostLiquidity}
-            populerTokens={populerTokens}
+            popularTokens={popularTokens}
             recents={recents}
           />
         )}

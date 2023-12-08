@@ -90,8 +90,8 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-logo {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
   }
   .token-name {
     margin: 0px 8px;
