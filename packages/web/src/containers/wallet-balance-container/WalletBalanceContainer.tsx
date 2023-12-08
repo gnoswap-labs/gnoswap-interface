@@ -59,13 +59,13 @@ const DEPOSIT_TO: TokenModel = {
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
+  path: "gno.land/r/gns",
   decimals: 4,
   symbol: "Cosmos",
   logoURI:
     "/cosmos.svg",
   type: "grc20",
-  priceId: "gno.land/r/gnos",
+  priceId: "gno.land/r/gns",
 };
 
 const DEPOSIT_FROM: TokenModel = {
@@ -73,26 +73,26 @@ const DEPOSIT_FROM: TokenModel = {
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
+  path: "gno.land/r/gns",
   decimals: 4,
   symbol: "Gnoland",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "grc20",
-  priceId: "gno.land/r/gnos",
+  priceId: "gno.land/r/gns",
 };
 const DEPOSIT_INFO: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "ATOM",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
+  path: "gno.land/r/gns",
   decimals: 4,
   symbol: "ATOM",
   logoURI:
     "/atom.svg",
   type: "grc20",
-  priceId: "gno.land/r/gnos",
+  priceId: "gno.land/r/gns",
 };
 
 const WalletBalanceContainer: React.FC = () => {

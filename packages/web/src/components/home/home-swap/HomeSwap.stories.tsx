@@ -24,7 +24,7 @@ Default.args = {
       path: "gno.land/r/foo",
       decimals: 4,
       symbol: "FOO",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       type: "grc20",
       priceId: "gno.land/r/foo"
     },
@@ -40,7 +40,7 @@ Default.args = {
       path: "gno.land/r/foo",
       decimals: 4,
       symbol: "FOO",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       type: "grc20",
       priceId: "gno.land/r/foo"
     },
