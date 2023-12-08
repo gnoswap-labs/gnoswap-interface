@@ -47,7 +47,9 @@ const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm }) => {
               className="button-confirm"
               onClick={onClickConfirm}
             />
-            <p onClick={onClickClose}>Cancel</p>
+            <div className="cancel-button">
+              <span onClick={onClickClose}>Cancel</span>
+            </div>
           </div>
         </div>
       </div>

@@ -47,7 +47,7 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.symbol)}>
         <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
-          <img src={token.logoURI} alt="token logo" className="token-logo" />
+          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
           <div className="symbol-col">
             <strong className="token-name">{token.name}</strong>
             <span className="token-symbol">{token.symbol}</span>

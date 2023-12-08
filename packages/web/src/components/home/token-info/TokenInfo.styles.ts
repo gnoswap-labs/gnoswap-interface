@@ -1,6 +1,5 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
-import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TokenInfoWrapper = styled.div`
@@ -20,6 +19,9 @@ export const HoverSection = styled.div`
   cursor: pointer;
   height: 100%;
   overflow: hidden;
+  &.disabled-pointer {
+    pointer-events: none;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
   }
@@ -79,19 +81,18 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
   .fake-logo {
     ${mixins.flexbox("row", "center", "center")};
-    width: 24px;
+    min-width: 24px;
     height: 24px;
     border-radius: 50%;
     color: ${({ theme }) => theme.color.text02};
     background-color: ${({ theme }) => theme.color.border02};
     font-size: 8px;
     line-height: 10px;
-    ${media.mobile} {
-      font-size: 6px;
-      line-height: 8px;
-    }
   }
   .token-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin: 0px 8px;
   }
 

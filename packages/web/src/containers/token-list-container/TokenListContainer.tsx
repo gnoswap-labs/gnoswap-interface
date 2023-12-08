@@ -191,7 +191,7 @@ const TokenListContainer: React.FC = () => {
     },
     [sortOption],
   );
-
+    
   const getDatas = useCallback(() => {
     const temp = tokens.map((item: TokenModel) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
@@ -229,10 +229,10 @@ const TokenListContainer: React.FC = () => {
         marketCap: `$${Math.floor(Number(temp.marketCap || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(temp.liquidity || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(temp.volume || 0)).toLocaleString()}`,
-        price: `$${Number(temp.usd || 0).toLocaleString(undefined, { maximumFractionDigits: 10})}`,
-        priceOf1d: { status: getStatus(temp.change1d), value: `${temp.change1d || 0}%` },
-        priceOf7d: { status: getStatus(temp.change7d), value: `${temp.change7d || 0}%` },
-        priceOf30d: { status: getStatus(temp.change30d), value: `${temp.change30d || 0}%` },
+        price: `$${Number(temp.usd || 0).toLocaleString(undefined, { maximumFractionDigits: 10, minimumFractionDigits: 2})}`,
+        priceOf1d: { status: getStatus(temp.change1d), value: `${Number(temp.change1d || 0).toFixed(2)}%` },
+        priceOf7d: { status: getStatus(temp.change7d), value: `${Number(temp.change7d || 0).toFixed(2)}%` },
+        priceOf30d: { status: getStatus(temp.change30d), value: `${Number(temp.change30d || 0).toFixed(2)}%` },
       };
     });
     if (keyword) {
@@ -241,8 +241,59 @@ const TokenListContainer: React.FC = () => {
     if (tokenType !== TOKEN_TYPE.ALL) {
       return temp.filter((item: Token) => ((item.token.path.includes("gno.land/r/"))));
     }
+    if (sortOption) {
+      if(sortOption.key === TABLE_HEAD.NAME) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => b.token.name.localeCompare(a.token.name));
+        } else {
+          temp.sort((a: Token, b: Token) => a.token.name.localeCompare(b.token.name));
+        }
+      } else if (sortOption.key === TABLE_HEAD.PRICE) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => Number(a.price.slice(1)) - Number(b.price.slice(1)));
+        } else {
+          temp.sort((a: Token, b: Token) => - Number(a.price.slice(1)) + Number(b.price.slice(1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.PRICE_OF_1D) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => Number(a.priceOf1d.value.slice(0, a.priceOf1d.value.length - 1)) - Number(b.priceOf1d.value.slice(0, b.priceOf1d.value.length - 1)));
+        } else {
+          temp.sort((a: Token, b: Token) => - Number(a.priceOf1d.value.slice(0, a.priceOf1d.value.length - 1)) + Number(b.priceOf1d.value.slice(0, b.priceOf1d.value.length - 1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.PRICE_OF_30D) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => Number(a.priceOf30d.value.slice(0, a.priceOf30d.value.length - 1)) - Number(b.priceOf30d.value.slice(0, b.priceOf30d.value.length - 1)));
+        } else {
+          temp.sort((a: Token, b: Token) => - Number(a.priceOf30d.value.slice(0, a.priceOf30d.value.length - 1)) + Number(b.priceOf30d.value.slice(0, b.priceOf30d.value.length - 1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.PRICE_OF_7D) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => Number(a.priceOf7d.value.slice(0, a.priceOf7d.value.length - 1)) - Number(b.priceOf7d.value.slice(0, b.priceOf7d.value.length - 1)));
+        } else {
+          temp.sort((a: Token, b: Token) => - Number(a.priceOf7d.value.slice(0, a.priceOf7d.value.length - 1)) + Number(b.priceOf7d.value.slice(0, b.priceOf7d.value.length - 1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.MARKET_CAP) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => Number(a.marketCap.slice(1)) - Number(b.marketCap.slice(1)));
+        } else {
+          temp.sort((a: Token, b: Token) => - Number(a.marketCap.slice(1)) + Number(b.marketCap.slice(1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.VOLUME) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => Number(a.volume24h.slice(1)) - Number(b.volume24h.slice(1)));
+        } else {
+          temp.sort((a: Token, b: Token) => - Number(a.volume24h.slice(1)) + Number(b.volume24h.slice(1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.INDEX) {
+        if (sortOption.direction === "asc") {
+          return temp;
+        } else {
+          return temp.reverse();
+        }
+      }
+    }
     return temp;
-  }, [prices, tokens, keyword, tokenType]);
+  }, [prices, tokens, keyword, tokenType, sortOption]);
   
   return (
     <TokenList

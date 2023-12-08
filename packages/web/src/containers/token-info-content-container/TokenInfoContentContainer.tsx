@@ -140,7 +140,7 @@ const TokenInfoContentContainer: React.FC = () => {
         createdAt: "Today",
         amount: {
           status: isTodayPositive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : ""}$${convertLargePrice(priceChangeDetail.changeToday)}`,
+          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.changeToday)}`,
         },
         change: {
           status: isTodayPositive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
@@ -151,7 +151,7 @@ const TokenInfoContentContainer: React.FC = () => {
         createdAt: "30 days",
         amount: {
           status: is30Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : ""}$${convertLargePrice(priceChangeDetail.change30d)}`,
+          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change30d)}`,
         },
         change: {
           status: is30Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
@@ -162,7 +162,7 @@ const TokenInfoContentContainer: React.FC = () => {
         createdAt: "60 days",
         amount: {
           status: is60Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : ""}$${convertLargePrice(priceChangeDetail.change60d)}`,
+          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change60d)}`,
         },
         change: {
           status: is60Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
@@ -173,7 +173,7 @@ const TokenInfoContentContainer: React.FC = () => {
         createdAt: "90 days",
         amount: {
           status: is90Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : ""}$${convertLargePrice(priceChangeDetail.change90d)}`,
+          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change90d)}`,
         },
         change: {
           status: is90Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,

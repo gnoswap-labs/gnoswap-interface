@@ -5,7 +5,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { type Token } from "@containers/token-list-container/TokenListContainer";
+import { MostLiquidPool, type Token } from "@containers/token-list-container/TokenListContainer";
 import { cx } from "@emotion/css";
 import { tokenPairSymbolToOneCharacter } from "@utils/string-utils";
 import {
@@ -51,8 +51,10 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     location.href = "/tokens/" + symbol + `?tokenB=${path}&direction=EXACT_IN`;
   };
 
-  const onClickPoolItem = () => {
-    location.href = "/earn/pool/1c550fbfa3149fd8da5a52055f16b1b34c00fe1c1f3f543dc5f2d669a4db55dc";
+  const onClickPoolItem = (item: MostLiquidPool) => {
+    if (item.tokenPair.tokenA.logoURI) {
+      location.href = "/earn/pool/1c550fbfa3149fd8da5a52055f16b1b34c00fe1c1f3f543dc5f2d669a4db55dc";
+    }
   }
 
   return (
@@ -98,7 +100,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="volume">{volume24h}</span>
         </TableColumn>
       </HoverSection>
-      <HoverSection onClick={onClickPoolItem}>
+      <HoverSection onClick={() => onClickPoolItem(mostLiquidPool)} className={!!mostLiquidPool.tokenPair.tokenA.logoURI ? "" : "disabled-pointer"}>
         <TableColumn className="liquid-col padding-12" tdWidth={TOKEN_TD_WIDTH[9]}>
           {mostLiquidPool.tokenPair.tokenA.logoURI ? <>
             <DoubleLogo

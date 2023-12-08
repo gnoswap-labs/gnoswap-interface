@@ -101,7 +101,7 @@ export const ModalContainer = styled.div`
   }
   li {
     ${mixins.flexbox("row", "center", "flex-start")};
-    padding: 10px 24px;
+    padding: 15px 24px;
     gap: 8px;
     cursor: pointer;
     ${media.mobile} {
@@ -136,7 +136,7 @@ export const ModalContainer = styled.div`
       height: 32px;
       border-radius: 50%;
       color: ${({ theme }) => theme.color.text02};
-      background-color: ${({ theme }) => theme.color.border02};
+      background-color: ${({ theme }) => theme.color.backgroundOpacity7};
       ${fonts.p6}
       ${media.mobile} {
         width: 24px;

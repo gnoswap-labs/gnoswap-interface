@@ -62,7 +62,6 @@ export const TokenTradingModalWrapper = styled.div`
         background-color: ${({ theme }) => theme.color.backgroundOpacity6};
         padding: 1.5px 8px;
         border-radius: 8px;
-        cursor: pointer;
 
         > a {
           display: block;
@@ -71,6 +70,12 @@ export const TokenTradingModalWrapper = styled.div`
           text-overflow: ellipsis;
           ${fonts.body12}
           color: ${({ theme }) => theme.color.text10};
+          &:hover {
+            color: ${({ theme }) => theme.color.hover06};
+            ~ .new-tab *{
+              fill: ${({ theme }) => theme.color.hover06};
+            }
+          }
         }
         svg {
           width: 14px;
@@ -81,16 +86,9 @@ export const TokenTradingModalWrapper = styled.div`
           }
         }
         .icon-copy {
+          cursor: pointer;
           &:hover * {
             fill: ${({ theme }) => theme.color.icon17};
-          }
-        }
-        &:hover {
-          > a {
-            color: ${({ theme }) => theme.color.hover06};
-          }
-          .new-tab * {
-            fill: ${({ theme }) => theme.color.hover06};
           }
         }
       }
@@ -104,7 +102,10 @@ export const TokenTradingModalWrapper = styled.div`
             ${fonts.body7}
           }
         }
-        p {
+        .cancel-button {
+          text-align: center;
+        }
+        span {
           cursor: pointer;
           text-align: center;
           ${fonts.body11}

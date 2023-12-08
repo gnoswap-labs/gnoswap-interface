@@ -53,7 +53,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     setRecentsData(JSON.stringify(current.filter((_item, index, self) => {
       return self.indexOf(_item) === index;
     })));
-    location.href = "/tokens/" + item.token.symbol;
+    location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
     
   };
 
@@ -61,7 +61,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     e.stopPropagation();
     window.open("https://gnoscan.io/tokens/" + path, "_blank");
   }, []);
-
+  console.log(recents);
+  
   return (
     <>
       <SearchModalBackground>
@@ -106,7 +107,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                   <IconNewTab />
                                 </div>
                               </div>
-                              <span>ETH</span>
+                              <span>{item.token.symbol}</span>
                             </div>
                           </div>
                           <div className="coin-infor-value">
@@ -174,7 +175,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               <IconNewTab />
                             </div>
                           </div>
-                          <span>ETH</span>
+                          <span>{item.token.symbol}</span>
                         </div>
                       </div>
                       <div className="coin-infor-value">

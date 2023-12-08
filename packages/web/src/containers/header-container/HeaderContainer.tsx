@@ -203,10 +203,15 @@ const HeaderContainer: React.FC = () => {
   
   const popularTokens = useMemo(() => {
     let temp = listTokens;
+    console.log(temp);
+    
     if (keyword) {
-      temp = listTokens.filter((item: TokenModel) => (item.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.symbol.toLowerCase()).includes(keyword.toLowerCase()));
+      temp = listTokens.filter((item: TokenModel) => (item.name.toLowerCase()).includes(keyword.toLowerCase()) 
+      || (item.symbol.toLowerCase()).includes(keyword.toLowerCase())
+      || (item.path.toLowerCase()).includes(keyword.toLowerCase())
+      );
     }
-    return temp.slice(0, 6 - recents.length).map((item: TokenModel) => {
+    return temp.slice(0, keyword ? 6 : 6 - recents.length).map((item: TokenModel) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
       return {
         path: "",

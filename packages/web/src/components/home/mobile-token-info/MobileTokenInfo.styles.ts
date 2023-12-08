@@ -40,8 +40,12 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
+    width: 148px;
     flex-shrink: 0;
     justify-content: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &.negative {
@@ -92,6 +96,16 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   .token-logo {
     width: 24px;
     height: 24px;
+  }
+  .fake-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.border02};
+    font-size: 8px;
+    line-height: 10px;
   }
   .token-name {
     margin: 0px 8px;
