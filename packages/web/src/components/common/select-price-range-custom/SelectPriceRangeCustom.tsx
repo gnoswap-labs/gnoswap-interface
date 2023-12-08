@@ -100,7 +100,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN() || !currentTokenA || !currentTokenB) {
       return "";
     }
-    return `1 ${currentTokenA.symbol} = ${startingPriceValue} ${currentTokenB.symbol}`;
+    return `1 ${currentTokenB.symbol} = ${startingPriceValue} ${currentTokenA.symbol}`;
   }, [currentTokenA, currentTokenB, startingPriceValue]);
 
   const onClickTabItem = useCallback((symbol: string) => {
