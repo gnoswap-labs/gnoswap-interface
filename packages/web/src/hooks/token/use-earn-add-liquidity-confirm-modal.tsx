@@ -11,6 +11,8 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import { numberToFormat } from "@utils/string-utils";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { useNotice } from "@hooks/common/use-notice";
+import { useTokenData } from "./use-token-data";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -57,6 +59,7 @@ export const useEarnAddLiquidityConfirmModal = ({
   createPool,
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
+  const { gnotToken } = useTokenData();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const navigator = useNavigate();
@@ -133,21 +136,10 @@ export const useEarnAddLiquidityConfirmModal = ({
 
   const feeInfo = useMemo((): { token: TokenModel, fee: string } => {
     return {
-      token: {
-        path: "native",
-        address: "",
-        type: "grc20",
-        priceId: "GNOLAND",
-        chainId: "dev",
-        name: "Gno.land",
-        symbol: "GNS",
-        decimals: 6,
-        logoURI: "/gnos.svg",
-        createdAt: ""
-      },
-      fee: "0.000001"
+      token: gnotToken,
+      fee: `${makeDisplayTokenAmount(gnotToken, 1)}` || ""
     };
-  }, []);
+  }, [gnotToken]);
 
   const close = useCallback(() => {
     setOpenedModal(false);
@@ -197,7 +189,18 @@ export const useEarnAddLiquidityConfirmModal = ({
       slippage,
       swapFeeTier,
     }).then(result => result && moveEarn());
-  }, [selectPool.isCreate, selectPool.maxPrice, selectPool.minPrice, selectPool.startPrice, selectPool.tickSpacing, slippage, swapFeeTier, tokenA, tokenAAmountInput.amount, tokenB, tokenBAmountInput.amount]);
+  }, [
+    createPool,
+    addLiquidity,
+    setNotice,
+    selectPool,
+    slippage,
+    swapFeeTier,
+    tokenA,
+    tokenAAmountInput.amount,
+    tokenB,
+    tokenBAmountInput.amount
+  ]);
 
   const openModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {

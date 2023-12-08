@@ -48,13 +48,28 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
 
+  const svgRef = useRef(null);
+  const chartRef = useRef(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const { redColor, greenColor } = useColorGraph();
+
+  const boundsWidth = width - margin.right - margin.left;
+  const boundsHeight = height - margin.top - margin.bottom;
+
+  const minX = d3.min(bins, (bin) => bin.minTick - defaultMinX) || 0;
+  const maxX = d3.max(bins, (bin) => bin.maxTick - defaultMinX) || 0;
+
   const resolvedBins = useMemo(() => {
+    const maxHeight = d3.max(bins, (bin) => bin.liquidity) || 0;
     return bins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => ({
       ...bin,
       minTick: bin.minTick - defaultMinX,
       maxTick: bin.maxTick - defaultMinX,
+      liquidity: bin.liquidity * boundsHeight / maxHeight
     }));
-  }, [bins, defaultMinX]);
+  }, [bins, boundsHeight, defaultMinX]);
+  const maxHeight = d3.max(resolvedBins, (bin) => bin.liquidity) || 0;
 
   const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
 
@@ -72,19 +87,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }).then(setTickOfPrices);
     }
   }, [resolvedBins]);
-
-  const svgRef = useRef(null);
-  const chartRef = useRef(null);
-  const tooltipRef = useRef<HTMLDivElement | null>(null);
-
-  const { redColor, greenColor } = useColorGraph();
-
-  const boundsWidth = width - margin.right - margin.left;
-  const boundsHeight = height - margin.top - margin.bottom;
-
-  const minX = d3.min(resolvedBins, (bin) => bin.minTick) || 0;
-  const maxX = d3.max(resolvedBins, (bin) => bin.maxTick) || 0;
-  const maxHeight = d3.max(resolvedBins, (bin) => bin.liquidity) || 0;
 
 
   /** D3 Variables */
@@ -114,7 +116,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (spacing < 2) {
       return spacing;
     }
-    return spacing - 1;
+    return spacing;
   }
 
   /** Update Chart by data */
@@ -141,14 +143,14 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .enter()
       .append("rect")
       .style("fill", bin => fillByBin(bin))
+      .style("stroke-width", "1")
       .attr("class", "rects")
       .attr("x", bin => scaleX(bin.minTick))
       .attr("y", bin => scaleY(bin.liquidity))
       .attr("width", tickSpacing)
       .attr("height", bin => boundsHeight - scaleY(bin.liquidity))
       .on("mouseover", onMouseoverChartBin)
-      .on("mousemove", onMouseoverChartBin)
-      .on("mouseout", onMouseoutChartBin);
+      .on("mousemove", onMouseoverChartBin);
 
     // Create a line of current tick.
     if (currentTick) {
@@ -204,7 +206,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
+      .attr("style", "max-width: 100%; height: auto;")
+      .on("mouseout", onMouseoutChartBin);
 
 
     svgElement.append("defs").append("clipPath")

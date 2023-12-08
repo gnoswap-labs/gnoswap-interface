@@ -26,10 +26,12 @@ import { PoolRPCResponse } from "./response/pool-rpc-response";
 import { PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import BigNumber from "bignumber.js";
-import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { X96 } from "@constants/swap.constant";
+import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
+import { makeRawTokenAmount } from "@utils/token-utils";
+import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
 
+const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
@@ -136,37 +138,45 @@ export class PoolRepositoryImpl implements PoolRepository {
     } = request;
     const gasFee = 1;
     const gasWanted = 2000000;
+    const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
+    const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
+
+    const messages = [];
+    messages.push(PoolRepositoryImpl.makeApproveGnosTokenMessage(caller));
+    messages.push(PoolRepositoryImpl.makeCreatePoolMessage(
+      tokenA,
+      tokenB,
+      feeTier,
+      startPrice,
+      caller,
+    ));
+
+    const tokenAPath = tokenA.type === "grc20" ? tokenA.path : WRAPPED_GNOT_PATH;
+    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
+      tokenAPath,
+      tokenAAmountRaw,
+      caller,
+    ));
+    const tokenBPath = tokenB.type === "grc20" ? tokenB.path : WRAPPED_GNOT_PATH;
+    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
+      tokenBPath,
+      tokenBAmountRaw,
+      caller,
+    ));
+
+    messages.push(PoolRepositoryImpl.makeAddLiquidityMessage(
+      tokenA,
+      tokenB,
+      feeTier,
+      minTick,
+      maxTick,
+      tokenAAmountRaw,
+      tokenBAmountRaw,
+      slippage.toString(),
+      caller,
+    ));
     const result = await this.walletClient.sendTransaction({
-      messages: [
-        PoolRepositoryImpl.makeCreatePoolMessage(
-          tokenA,
-          tokenB,
-          feeTier,
-          startPrice,
-          caller,
-        ),
-        PoolRepositoryImpl.makeApproveTokenMessage(
-          tokenA,
-          tokenAAmount,
-          caller,
-        ),
-        PoolRepositoryImpl.makeApproveTokenMessage(
-          tokenB,
-          tokenBAmount,
-          caller,
-        ),
-        PoolRepositoryImpl.makeAddLiquidityMessage(
-          tokenA,
-          tokenB,
-          feeTier,
-          minTick,
-          maxTick,
-          tokenAAmount,
-          tokenBAmount,
-          slippage,
-          caller,
-        ),
-      ],
+      messages,
       gasFee,
       gasWanted,
     });
@@ -194,30 +204,36 @@ export class PoolRepositoryImpl implements PoolRepository {
     } = request;
     const gasFee = 1;
     const gasWanted = 2000000;
+    const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
+    const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
+    const messages = [];
+
+    const tokenAPath = tokenA.type === "grc20" ? tokenA.path : WRAPPED_GNOT_PATH;
+    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
+      tokenAPath,
+      tokenAAmountRaw,
+      caller,
+    ));
+    const tokenBPath = tokenB.type === "grc20" ? tokenB.path : WRAPPED_GNOT_PATH;
+    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
+      tokenBPath,
+      tokenBAmountRaw,
+      caller,
+    ));
+
+    messages.push(PoolRepositoryImpl.makeAddLiquidityMessage(
+      tokenA,
+      tokenB,
+      feeTier,
+      minTick,
+      maxTick,
+      tokenAAmountRaw,
+      tokenBAmountRaw,
+      slippage.toString(),
+      caller,
+    ));
     const result = await this.walletClient.sendTransaction({
-      messages: [
-        PoolRepositoryImpl.makeApproveTokenMessage(
-          tokenA,
-          tokenAAmount,
-          caller,
-        ),
-        PoolRepositoryImpl.makeApproveTokenMessage(
-          tokenB,
-          tokenBAmount,
-          caller,
-        ),
-        PoolRepositoryImpl.makeAddLiquidityMessage(
-          tokenA,
-          tokenB,
-          feeTier,
-          minTick,
-          maxTick,
-          tokenAAmount,
-          tokenBAmount,
-          slippage.toString(),
-          caller,
-        ),
-      ],
+      messages,
       gasFee,
       gasWanted,
     });
@@ -235,32 +251,35 @@ export class PoolRepositoryImpl implements PoolRepository {
     startPrice: string,
     caller: string,
   ) {
-    const tokenAPath = tokenA.path;
-    const tokenBPath = tokenB.path;
+    const tokenAPath = tokenA.priceId;
+    const tokenBPath = tokenB.priceId;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-    const currentTick =  priceToNearTick(BigNumber(startPrice).toNumber(), SwapFeeTierInfoMap[feeTier].tickSpacing);
-    const currentPriceX96 =  BigNumber(tickToPrice(currentTick)).multipliedBy(X96).toFixed(0);
+    const startPriceSqrt = tickToSqrtPriceX96(priceToNearTick(Number(startPrice), SwapFeeTierInfoMap[feeTier].tickSpacing));
 
     return {
       caller,
       send: "",
       pkg_path: POOL_PATH,
       func: "CreatePool",
-      args: [tokenAPath, tokenBPath, fee, currentPriceX96],
+      args: [tokenAPath, tokenBPath, fee, startPriceSqrt.toString()],
     };
   }
 
+  private static makeApproveGnosTokenMessage(caller: string) {
+    return this.makeApproveTokenMessage("gno.land/r/gns", "500", caller);
+  }
+
   private static makeApproveTokenMessage(
-    token: TokenModel,
+    tokenPath: string,
     amount: string,
     caller: string,
   ) {
     return {
       caller,
       send: "",
-      pkg_path: token.path,
+      pkg_path: tokenPath,
       func: "Approve",
-      args: [POOL_ADDRESS, "999999999999"],
+      args: [POOL_ADDRESS, amount],
     };
   }
 
@@ -275,14 +294,22 @@ export class PoolRepositoryImpl implements PoolRepository {
     slippage: string,
     caller: string,
   ) {
-    const tokenAPath = tokenA.path;
-    const tokenBPath = tokenB.path;
+    const tokenAPath = tokenA.priceId;
+    const tokenBPath = tokenB.priceId;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     const slippageRatio = 0;
     const deadline = "7282571140";
+    const sendItems = [];
+    if (tokenA.type === "native") {
+      sendItems.push(`${tokenAAmount}ugnot`);
+    }
+    if (tokenB.type === "native") {
+      sendItems.push(`${tokenBAmount}ugnot`);
+    }
+    const sendAmount = sendItems.join(",");
     return {
       caller,
-      send: "",
+      send: sendAmount,
       pkg_path: POSITION_PATH,
       func: "Mint",
       args: [

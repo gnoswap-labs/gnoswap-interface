@@ -29,7 +29,8 @@ export class TokenRepositoryImpl implements TokenRepository {
     if (response.data.tokens === null) {
       return { tokens: [] };
     }
-    return response.data;
+    const tokens = response?.data?.tokens || [];
+    return { tokens };
   };
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {

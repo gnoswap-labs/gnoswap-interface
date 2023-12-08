@@ -421,6 +421,11 @@ const SwapContainer: React.FC = () => {
         const isError = result === null;
         const expectedAmount = isError ? "" : result.amount;
         if (isError) {
+          if (isExactIn) {
+            setTokenBAmount("0");
+          } else {
+            setTokenAAmount("0");
+          }
         } else {
           if (!checkBalance(tokenA, tokenAAmount) ||
             !checkBalance(tokenB, tokenBAmount)) {

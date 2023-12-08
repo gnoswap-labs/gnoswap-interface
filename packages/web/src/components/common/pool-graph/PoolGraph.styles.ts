@@ -17,6 +17,7 @@ export const PoolGraphWrapper = styled.div`
   }
   svg {
     rect {
+      stroke: ${({ theme }) => theme.color.backgroundOpacity};
       &:hover {
         opacity: 0.4;
       }

@@ -1,3 +1,4 @@
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
@@ -17,6 +18,14 @@ export const useTokenData = () => {
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
+
+  const gnotToken = useMemo((): TokenModel => {
+    const token = tokens.find(token => token.path === "gnot");
+    if (token) {
+      return token;
+    }
+    return GNOT_TOKEN;
+  }, [tokens]);
 
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
@@ -140,6 +149,7 @@ export const useTokenData = () => {
   }
 
   return {
+    gnotToken,
     tokens,
     tokenPrices,
     displayBalanceMap,
