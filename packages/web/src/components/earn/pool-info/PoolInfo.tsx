@@ -40,6 +40,19 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
     return <DoubleLogo left={rewards[0].token.logoURI} right={rewards[1].token.logoURI} size={20} />;
   }, [rewards]);
 
+  const resolvedBins = useMemo(() => {
+    const length = 20;
+    if (pool.bins.length <= length) {
+      return pool.bins;
+    }
+    const resolvedRate = pool.bins.length / length;
+    return Array.from({ length }, (_, index) => {
+      const pickIndex = Math.round((index + 1) * resolvedRate) - 1;
+      console.log(pickIndex)
+      return pool.bins[pickIndex];
+    })
+  }, [pool.bins]);
+
   return (
     <PoolInfoWrapper
       onClick={() => routeItem(poolId)}
@@ -76,7 +89,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             tokenA={tokenA}
             tokenB={tokenB}
             currentTick={pool.currentTick}
-            bins={pool.bins}
+            bins={resolvedBins}
             mouseover
             themeKey={themeKey}
           />
