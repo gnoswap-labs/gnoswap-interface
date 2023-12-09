@@ -185,7 +185,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.tokenA.symbol,
           logoURI: item.tokenA.logoURI,
         },
-        price: `$${Math.floor(Number(priceItem.liquidity || 0)).toLocaleString()}`,
+        price: `$${convertLargePrice(priceItem.liquidity || "0")}`,
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",

@@ -72,27 +72,27 @@ export const priceInfomationInit = {
 };
 
 export const marketInformationInit = {
-  popularity: "#1",
-  tvl: "$0",
-  volume24h: "$0",
-  fees24h: "$0",
+  popularity: "",
+  tvl: "",
+  volume24h: "",
+  fees24h: "",
 };
 
 const priceChangeDetailInit = {
-  priceToday: "0",
-  changeToday: "0",
-  price1h: "0",
-  change1h: "0",
-  price1d: "0",
-  change1d: "0",
-  price7d: "0",
-  change7d: "0",
-  price30d: "0",
-  change30d: "0",
-  price60d: "0",
-  change60d: "0",
-  price90d: "0",
-  change90d: "0",
+  priceToday: "",
+  changeToday: "",
+  price1h: "",
+  change1h: "",
+  price1d: "",
+  change1d: "",
+  price7d: "",
+  change7d: "",
+  price30d: "",
+  change30d: "",
+  price60d: "",
+  change60d: "",
+  price90d: "",
+  change90d: "",
 };
 
 
@@ -102,82 +102,82 @@ const TokenInfoContentContainer: React.FC = () => {
 
   const marketInformation = useMemo(() => {
     return {
-      popularity: `#${Number(market.popularity)}`,
-      tvl: `$${convertLargePrice(market.tvl)}`,
-      volume24h: `$${convertLargePrice(market.volume24h)}`,
-      fees24h: `$${convertLargePrice(market.fees24h)}`,
+      popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
+      tvl: market.tvl ? `$${convertLargePrice(market.tvl)}` : "-",
+      volume24h: market.volume24h ? `$${convertLargePrice(market.volume24h)}` : "-",
+      fees24h: market.fees24h ? `$${convertLargePrice(market.fees24h)}` : "-",
     };
   }, [market]);
 
   const priceInfomation = useMemo(() => {
     return { 
       priceChange1h: {
-        status: Number(priceChangeDetail.change1h) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-        value: `${Number(priceChangeDetail.change1h).toFixed(2)}%`,
+        status: !priceChangeDetail.change1h ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.change1h) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+        value: priceChangeDetail.change1h ? `${Number(priceChangeDetail.change1h).toFixed(2)}%` : "-",
       },
       priceChange24h: {
-        status: Number(priceChangeDetail.change1d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-        value: `${Number(priceChangeDetail.change1d).toFixed(2)}%`,
+        status: !priceChangeDetail.change1d ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.change1d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+        value: priceChangeDetail.change1d ? `${Number(priceChangeDetail.change1d).toFixed(2)}%` : "-",
       },
       priceChange7d: {
-        status: Number(priceChangeDetail.change7d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-        value: `${Number(priceChangeDetail.change7d).toFixed(2)}%`,
+        status: !priceChangeDetail.change7d ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.change7d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+        value: priceChangeDetail.change7d ? `${Number(priceChangeDetail.change7d).toFixed(2)}%` : "-",
       },
       priceChange30d: {
-        status: Number(priceChangeDetail.change30d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-        value: `${Number(priceChangeDetail.change30d).toFixed(2)}%`,
+        status: !priceChangeDetail.change30d ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.change30d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+        value: priceChangeDetail.change30d ? `${Number(priceChangeDetail.change30d).toFixed(2)}%` : "-",
       }
     };
   }, [priceChangeDetail]);
 
   const pricePerformance = useMemo(() => {
-    const isTodayPositive= Number(priceChangeDetail.changeToday) >= 0;
-    const is30Positive= Number(priceChangeDetail.changeToday) >= 0;
-    const is60Positive= Number(priceChangeDetail.changeToday) >= 0;
-    const is90Positive= Number(priceChangeDetail.changeToday) >= 0;
+    const isTodayPositive: MATH_NEGATIVE_TYPE = !priceChangeDetail.changeToday ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.changeToday) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE;
+    const is30Positive: MATH_NEGATIVE_TYPE = !priceChangeDetail.change30d ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.change30d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE;
+    const is60Positive: MATH_NEGATIVE_TYPE = !priceChangeDetail.change60d ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.change60d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE;
+    const is90Positive: MATH_NEGATIVE_TYPE = !priceChangeDetail.change90d ? MATH_NEGATIVE_TYPE.NONE : Number(priceChangeDetail.change90d) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE;
     return [
       {
         createdAt: "Today",
         amount: {
-          status: isTodayPositive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.changeToday)}`,
+          status: isTodayPositive,
+          value: isTodayPositive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${isTodayPositive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertLargePrice(priceChangeDetail.changeToday)}`,
         },
         change: {
-          status: isTodayPositive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.changeToday)}%`,
+          status: isTodayPositive,
+          value: isTodayPositive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${isTodayPositive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${convertLargePrice(priceChangeDetail.changeToday)}%`,
         },
       },
       {
         createdAt: "30 days",
         amount: {
-          status: is30Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change30d)}`,
+          status: is30Positive,
+          value: is30Positive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${is30Positive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change30d)}`,
         },
         change: {
-          status: is30Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.change30d)}%`,
+          status: is30Positive,
+          value: is30Positive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${is30Positive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${convertLargePrice(priceChangeDetail.change30d)}%`,
         },
       },
       {
         createdAt: "60 days",
         amount: {
-          status: is60Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change60d)}`,
+          status: is60Positive,
+          value: is60Positive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${is60Positive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change60d)}`,
         },
         change: {
-          status: is60Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.change60d)}%`,
+          status: is60Positive,
+          value: is60Positive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${is60Positive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${convertLargePrice(priceChangeDetail.change60d)}%`,
         },
       },
       {
         createdAt: "90 days",
         amount: {
-          status: is90Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change90d)}`,
+          status: is90Positive,
+          value: is90Positive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${is90Positive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertLargePrice(priceChangeDetail.change90d)}`,
         },
         change: {
-          status: is90Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.change90d)}%`,
+          status: is90Positive,
+          value: is90Positive === MATH_NEGATIVE_TYPE.NONE ? "-" : `${is90Positive === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${convertLargePrice(priceChangeDetail.change90d)}%`,
         },
       },
     ];

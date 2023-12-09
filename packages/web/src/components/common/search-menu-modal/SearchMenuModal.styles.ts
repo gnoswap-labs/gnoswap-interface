@@ -81,6 +81,7 @@ export const ModalContainer = styled.div`
   }
 
   ul {
+    max-height: 100vh;
     width: 100%;
     .no-data-found,
     .recent-searches,
@@ -151,7 +152,7 @@ export const ModalContainer = styled.div`
       gap: 2px;
       > span {
         color: ${({ theme }) => theme.color.text04};
-        ${fonts.p4}
+        ${fonts.p3}
       }
       > div {
         max-width: 100%;
@@ -209,14 +210,14 @@ export const ModalContainer = styled.div`
       ${mixins.flexbox("column", "flex-end", "flex-end")};
       gap: 2px;
       .positive, .negative  {
-        ${fonts.p4}
+        ${fonts.p3}
         ${mixins.flexbox("row", "center", "center")};
         gap: 4px;
         
       }
       .token-price-apr {
         color: ${({ theme }) => theme.color.text04};
-        ${fonts.p4}
+        ${fonts.p3}
       }
       .negative {
         svg {

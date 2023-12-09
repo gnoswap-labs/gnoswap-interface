@@ -62,7 +62,7 @@ export const TokenTradingModalWrapper = styled.div`
         background-color: ${({ theme }) => theme.color.backgroundOpacity6};
         padding: 1.5px 8px;
         border-radius: 8px;
-
+        max-width: calc(100% - 44px);
         > a {
           display: block;
           width: calc(100% - 44px);
@@ -84,6 +84,10 @@ export const TokenTradingModalWrapper = styled.div`
           * {
             fill: ${({ theme }) => theme.color.icon16};
           }
+        }
+        .icon-wrapper {
+          ${mixins.flexbox("row", "center", "center")};
+          height: 18px;
         }
         .icon-copy {
           cursor: pointer;

@@ -10,7 +10,11 @@ export const useGetPoolList = (
 
   return useQuery<PoolModel[], Error>({
     queryKey: [QUERY_KEY.pools],
-    queryFn: () => poolRepository.getPools(),
+    queryFn: async () => {
+      const data = await poolRepository.getPools();
+      data.sort((a: PoolModel, b: PoolModel) => - Number(a.price) + Number(b.price));
+      return data;
+    },
     ...options,
   });
 };

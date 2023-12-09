@@ -53,6 +53,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     setRecentsData(JSON.stringify(current.filter((_item, index, self) => {
       return self.indexOf(_item) === index;
     })));
+    onSearchMenuToggle();
     location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
     
   };
@@ -61,7 +62,6 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     e.stopPropagation();
     window.open("https://gnoscan.io/tokens/" + path, "_blank");
   }, []);
-  console.log(recents);
   
   return (
     <>
@@ -137,7 +137,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               right={item?.tokenB?.logoURI || ""}
                             />
                             <span className="token-name">
-                              {item.token.name}/{item?.tokenB?.name}
+                              {item.token.symbol}/{item?.tokenB?.symbol}
                             </span>
                             <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT}/>
                           </div>
@@ -212,7 +212,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           right={item?.tokenB?.logoURI || ""}
                         />
                         <span className="token-name">
-                          {item.token.name}/{item?.tokenB?.name}
+                          {item.token.symbol}/{item?.tokenB?.symbol}
                         </span>
                         <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                       </div>

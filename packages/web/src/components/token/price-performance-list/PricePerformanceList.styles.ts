@@ -59,6 +59,9 @@ export const wrapper = (theme: Theme) => css`
       &.negative {
         color: ${theme.color.red01};
       }
+      &.none {
+        color: ${theme.color.text01};
+      }
       ${media.mobile} {
         ${fonts.body12};
       }

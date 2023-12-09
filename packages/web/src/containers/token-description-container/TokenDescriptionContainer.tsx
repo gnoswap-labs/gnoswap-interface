@@ -37,9 +37,8 @@ export const descriptionInit: DescriptionInfo = {
 };
 
 const TokenDescriptionContainer: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
-  const { data: { tokens = [] } = {} } = useGetTokensList();
+  const { data: { tokens = [] } = {}, isLoading } = useGetTokensList();
   const router = useRouter();
   useEffect(() => {
     const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
@@ -61,19 +60,14 @@ const TokenDescriptionContainer: React.FC = () => {
       }));
     }
   }, [router.query, tokens]);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
+
   return (
     <TokenDescription
       tokenName={descriptionInfo.token.name}
       tokenSymbol={descriptionInfo.token.symbol}
       content={descriptionInfo.token.description}
       links={descriptionInfo.links}
-      loading={loading}
+      loading={isLoading}
     />
   );
 };

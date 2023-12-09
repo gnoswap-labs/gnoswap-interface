@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import TokenList from "@components/home/token-list/TokenList";
 import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { type TokenInfo } from "@models/token/token-info";
@@ -129,7 +129,10 @@ const TokenListContainer: React.FC = () => {
   const [tokenType, setTokenType] = useState<TOKEN_TYPE>(TOKEN_TYPE.ALL);
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
-  const [sortOption, setSortOption] = useState<SortOption>();
+  const [sortOption, setSortOption] = useState<SortOption>({
+    key: TABLE_HEAD.MARKET_CAP,
+    direction: "asc",
+  });
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
@@ -193,11 +196,9 @@ const TokenListContainer: React.FC = () => {
     },
     [sortOption],
   );
-    
-  const getDatas = useCallback(() => {
-    console.log(prices, tokens);
-    
-    const temp = tokens.map((item: TokenModel, i: number) => {
+
+  const firstData = useMemo(() => {
+    const temp = tokens.map((item: TokenModel) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
@@ -237,9 +238,15 @@ const TokenListContainer: React.FC = () => {
         priceOf1d: { status: getStatus(temp.change1d), value: `${Number(temp.change1d || 0).toFixed(2)}%` },
         priceOf7d: { status: getStatus(temp.change7d), value: `${Number(temp.change7d || 0).toFixed(2)}%` },
         priceOf30d: { status: getStatus(temp.change30d), value: `${Number(temp.change30d || 0).toFixed(2)}%` },
-        idx: i,
+        idx: 1,
       };
     });
+    temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
+    return temp.map((item: Token, i: number) => ({...item, idx: i}));
+  }, [tokens, prices]);
+    
+  const getDatas = useCallback(() => {
+    const temp = firstData;
     if (keyword) {
       return temp.filter((item: Token) => (item.token.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.token.symbol.toLowerCase()).includes(keyword.toLowerCase()));
     }
@@ -279,9 +286,9 @@ const TokenListContainer: React.FC = () => {
         }
       } else if (sortOption.key === TABLE_HEAD.MARKET_CAP) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => Number(a.marketCap.replace(/,/g, "").slice(1)) - Number(b.marketCap.replace(/,/g, "").slice(1)));
+          temp.sort((a: Token, b: Token) => a.idx - b.idx);
         } else {
-          temp.sort((a: Token, b: Token) => - Number(a.marketCap.replace(/,/g, "").slice(1)) + Number(b.marketCap.replace(/,/g, "").slice(1)));
+          temp.sort((a: Token, b: Token) => - a.idx + b.idx);
         }
       } else if (sortOption.key === TABLE_HEAD.VOLUME) {
         if (sortOption.direction === "asc") {
@@ -304,7 +311,7 @@ const TokenListContainer: React.FC = () => {
       }
     }
     return temp;
-  }, [prices, tokens, keyword, tokenType, sortOption]);
+  }, [keyword, tokenType, sortOption, firstData]);
   
   return (
     <TokenList

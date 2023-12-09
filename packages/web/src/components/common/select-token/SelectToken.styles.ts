@@ -187,7 +187,7 @@ export const SelectTokenWrapper = styled.div`
           height: 32px;
           border-radius: 50%;
           color: ${({ theme }) => theme.color.text02};
-          background-color: ${({ theme }) => theme.color.border02};
+          background-color: ${({ theme }) => theme.color.text04};
           ${fonts.p6}
           ${media.mobile} {
             font-size: 8px;

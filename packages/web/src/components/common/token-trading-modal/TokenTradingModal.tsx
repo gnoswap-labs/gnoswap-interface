@@ -5,13 +5,20 @@ import IconFailed from "../icons/IconFailed";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconNewTab from "../icons/IconNewTab";
 import IconCopy from "../icons/IconCopy";
+import IconCheck from "../icons/IconCheck";
+import { TokenModel } from "@models/token/token-model";
+
 
 interface Props {
   close: () => void;
   onClickConfirm: () => void;
+  handleChecked: () => void;
+  checked: boolean;
+  token: TokenModel;
 }
 
-const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm }) => {
+const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm, checked, handleChecked, token }) => {
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -33,9 +40,9 @@ const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm }) => {
             </div>
           </div>
           <div className="link">
-            <a href="/" target="_blank">https://gnoscan.io/tokens/gno.land/r/hopusd...</a>
+            <a href="/" target="_blank">https://gnoscan.io/tokens/{token.path}</a>
             <IconNewTab className="new-tab"/>
-            <IconCopy className="icon-copy"/>
+            <div className="icon-wrapper" onClick={handleChecked}>{checked ? <IconCheck className="icon-copy"/> : <IconCopy className="icon-copy"/>}</div>
           </div>
           <div>
             <Button

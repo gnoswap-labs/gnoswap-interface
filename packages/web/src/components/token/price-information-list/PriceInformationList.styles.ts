@@ -46,6 +46,9 @@ export const wrapper = (theme: Theme) => css`
     .negative {
       color: ${theme.color.red01};
     }
+    .none {
+      color: ${theme.color.text01};
+    }
   }
   @media (max-width: 1360px) and (min-width: 930px) {
     .information-wrap {

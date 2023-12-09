@@ -18,7 +18,7 @@ export const useTokenTradingModal = ({onClickConfirm}: TokenTradingModalProps): 
   
   const openModal = useCallback((value: TokenModel) => {
     setOpenedModal(true);
-    setModalContent(<TokenTradingModalContainer onClickConfirm={() => onClickConfirm(value)}/>);
+    setModalContent(<TokenTradingModalContainer onClickConfirm={() => onClickConfirm(value)} token={value} />);
   }, [setModalContent, setOpenedModal, onClickConfirm]);
 
   return {
