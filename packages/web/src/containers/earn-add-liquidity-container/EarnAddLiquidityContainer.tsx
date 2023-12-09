@@ -75,7 +75,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isSwitchNetwork,
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { updateTokenPrices } = useTokenData();
+  const { updateTokens, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption.isCreate, startPrice: createOption.startPrice });
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
@@ -181,10 +181,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
     return "CREATE_POOL";
   }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice, selectPool.compareToken?.path, selectPool.depositRatio, account?.balances]);
-
-  useEffect(() => {
-    updateTokenPrices();
-  }, []);
 
   const selectSwapFeeTier = useCallback((swapFeeTier: SwapFeeTierType) => {
     setSwapFeeTier(swapFeeTier);
@@ -338,6 +334,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
       updateTokenAAmountByTokenB(tokenBAmountInput.amount);
     }
   }, [selectPool.currentPrice, selectPool.minPrice, selectPool.maxPosition]);
+
+  useEffect(() => {
+    updateTokenPrices();
+  }, []);
+
+  useEffect(() => {
+    if (account?.address) {
+      updateTokens();
+    }
+  }, [account?.address]);
 
   useEffect(() => {
     if (!selectPool.feeTier) {

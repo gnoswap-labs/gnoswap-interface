@@ -5,17 +5,15 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { EarnAddConfirmPriceRangeInfoSection, EarnAddConfirmPriceRangeInfoWrapper, ToolTipContentWrapper } from "./EarnAddConfirmPriceRangeInfo.styles";
 import { numberToFormat } from "@utils/string-utils";
-import BigNumber from "bignumber.js";
 
 export interface EarnAddConfirmPriceRangeInfoProps {
   currentPrice: string;
+  inRange: boolean;
   minPrice: string;
   maxPrice: string;
   priceLabel: string;
   feeBoost: string;
   estimatedAPR: string;
-  symbolTokenA: string;
-  symbolTokenB: string;
   isShowStaking?: boolean;
 }
 
@@ -23,6 +21,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   EarnAddConfirmPriceRangeInfoProps
 > = ({
   currentPrice,
+  inRange,
   minPrice,
   maxPrice,
   priceLabel,
@@ -35,9 +34,8 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
     }, [currentPrice, priceLabel]);
 
     const rangeStatus = useMemo(() => {
-      const inRange = BigNumber(maxPrice).isGreaterThanOrEqualTo(currentPrice) && BigNumber(currentPrice).isGreaterThanOrEqualTo(minPrice);
       return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
-    }, [currentPrice, maxPrice, minPrice]);
+    }, [inRange]);
 
     return (
       <EarnAddConfirmPriceRangeInfoWrapper>

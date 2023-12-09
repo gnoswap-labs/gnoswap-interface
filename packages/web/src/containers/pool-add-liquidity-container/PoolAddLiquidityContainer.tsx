@@ -73,11 +73,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const {
     connected: connectedWallet,
+    account,
     switchNetwork,
     isSwitchNetwork,
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { tokens, updateTokens, updateTokenPrices } = useTokenData();
+  const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean } | null>(null);
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
   const { pools: poolInfos, updatePools } = usePoolData();
@@ -214,7 +215,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
     const ordered = tokenA?.symbol === selectPool.compareToken?.symbol;
-    const currentPrice = ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice;
+    const currentPrice = ordered ? 1 / selectPool.currentPrice : selectPool.currentPrice;
     const depositRatioA = selectPool.depositRatio;
     if (selectPool.minPrice === null || selectPool.maxPrice === null || depositRatioA === null) {
       tokenBAmountInput.changeAmount(BigNumber(amount).multipliedBy(currentPrice).toFixed(0));
@@ -239,7 +240,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
     const ordered = tokenB?.symbol === selectPool.compareToken?.symbol;
-    const currentPrice = ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice;
+    const currentPrice = ordered ? 1 / selectPool.currentPrice : selectPool.currentPrice;
     const depositRatioA = selectPool.depositRatio;
     if (!selectPool.minPrice || !selectPool.maxPrice || depositRatioA === null) {
       tokenAAmountInput.changeAmount(BigNumber(amount).multipliedBy(currentPrice).toFixed(0));
@@ -286,7 +287,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     updatePools();
+    updateTokenPrices();
   }, []);
+
+  useEffect(() => {
+    if (account?.address) {
+      updateBalances();
+    }
+  }, [account?.address]);
 
   useEffect(() => {
     const poolId = router.query["pool-number"];

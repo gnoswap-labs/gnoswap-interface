@@ -64,6 +64,7 @@ const amountInfo = {
 const priceRangeInfo = {
   minPrice: "123",
   maxPrice: "123",
+  inRange: true,
   priceLabel: "GNOS per ETH",
   currentPrice: "11 ETH per GNOT",
   feeBoost: "x10.23",
