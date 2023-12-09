@@ -75,11 +75,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             height={45}
             tokenA={tokenA}
             tokenB={tokenB}
-            currentTick={10}
-            bins={[]}
+            currentTick={pool.currentTick}
+            bins={pool.bins}
             mouseover
             themeKey={themeKey}
-            rectWidth={4}
           />
         </div>
       </TableColumn>
