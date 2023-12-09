@@ -92,7 +92,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = toNumberFormat(selectPool.currentPrice, 4);
+    const currentPrice = toNumberFormat(1 / selectPool.currentPrice, 4);
     return `${currentPrice} ${currentTokenA.symbol} per ${currentTokenB.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
@@ -100,7 +100,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN() || !currentTokenA || !currentTokenB) {
       return "";
     }
-    return `1 ${currentTokenB.symbol} = ${startingPriceValue} ${currentTokenA.symbol}`;
+    return `1 ${currentTokenA.symbol} = ${startingPriceValue} ${currentTokenB.symbol}`;
   }, [currentTokenA, currentTokenB, startingPriceValue]);
 
   const onClickTabItem = useCallback((symbol: string) => {
