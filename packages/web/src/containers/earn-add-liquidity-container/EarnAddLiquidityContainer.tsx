@@ -75,7 +75,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isSwitchNetwork,
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { updateTokens, updateTokenPrices } = useTokenData();
+  const { updateBalances, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption.isCreate, startPrice: createOption.startPrice });
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
@@ -341,7 +341,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (account?.address) {
-      updateTokens();
+      updateBalances();
     }
   }, [account?.address]);
 
