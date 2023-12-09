@@ -139,7 +139,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const submitButtonStr = useMemo(() => {
     switch (submitType) {
       case "CREATE_POOL":
-        return "Create Position";
+        return "Add Position";
       case "ADD_LIQUIDITY":
         return "Add Liquidity";
       case "CONNECT_WALLET":
@@ -192,7 +192,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   return (
     <EarnAddLiquidityWrapper>
-      <h3>Create Position</h3>
+      <h3>Add Position</h3>
       <div className="select-content">
         <article className="selector-wrapper">
           <div className={`header-wrapper default-cursor ${!isEarnAdd ? "disable-text" : ""}`}>

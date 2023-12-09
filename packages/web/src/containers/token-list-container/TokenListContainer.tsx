@@ -30,6 +30,7 @@ export interface Token{
   volume24h: string;
   mostLiquidPool: MostLiquidPool;
   last7days: number[];
+  idx: number;
 }
 
 export interface SortOption {
@@ -120,6 +121,7 @@ export const createDummyTokenList = (): Token[] => [
     last7days: Array.from({ length: 40 }, () =>
       Math.round(Math.random() * 100),
     ),
+    idx: 1,
   },
 ];
 
@@ -193,7 +195,9 @@ const TokenListContainer: React.FC = () => {
   );
     
   const getDatas = useCallback(() => {
-    const temp = tokens.map((item: TokenModel) => {
+    console.log(prices, tokens);
+    
+    const temp = tokens.map((item: TokenModel, i: number) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
@@ -233,6 +237,7 @@ const TokenListContainer: React.FC = () => {
         priceOf1d: { status: getStatus(temp.change1d), value: `${Number(temp.change1d || 0).toFixed(2)}%` },
         priceOf7d: { status: getStatus(temp.change7d), value: `${Number(temp.change7d || 0).toFixed(2)}%` },
         priceOf30d: { status: getStatus(temp.change30d), value: `${Number(temp.change30d || 0).toFixed(2)}%` },
+        idx: i,
       };
     });
     if (keyword) {
@@ -274,21 +279,27 @@ const TokenListContainer: React.FC = () => {
         }
       } else if (sortOption.key === TABLE_HEAD.MARKET_CAP) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => Number(a.marketCap.slice(1)) - Number(b.marketCap.slice(1)));
+          temp.sort((a: Token, b: Token) => Number(a.marketCap.replace(/,/g, "").slice(1)) - Number(b.marketCap.replace(/,/g, "").slice(1)));
         } else {
-          temp.sort((a: Token, b: Token) => - Number(a.marketCap.slice(1)) + Number(b.marketCap.slice(1)));
+          temp.sort((a: Token, b: Token) => - Number(a.marketCap.replace(/,/g, "").slice(1)) + Number(b.marketCap.replace(/,/g, "").slice(1)));
         }
       } else if (sortOption.key === TABLE_HEAD.VOLUME) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => Number(a.volume24h.slice(1)) - Number(b.volume24h.slice(1)));
+          temp.sort((a: Token, b: Token) => Number(a.volume24h.replace(/,/g, "").slice(1)) - Number(b.volume24h.replace(/,/g, "").slice(1)));
         } else {
-          temp.sort((a: Token, b: Token) => - Number(a.volume24h.slice(1)) + Number(b.volume24h.slice(1)));
+          temp.sort((a: Token, b: Token) => - Number(a.volume24h.replace(/,/g, "").slice(1)) + Number(b.volume24h.replace(/,/g, "").slice(1)));
         }
       } else if (sortOption.key === TABLE_HEAD.INDEX) {
         if (sortOption.direction === "asc") {
-          return temp;
+          temp.sort((a: Token, b: Token) => a.idx - b.idx);
         } else {
-          return temp.reverse();
+          temp.sort((a: Token, b: Token) => - a.idx + b.idx);
+        }
+      } else if (sortOption.key === TABLE_HEAD.LIQUIDITY) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: Token, b: Token) => Number(a.liquidity.replace(/,/g, "").slice(1)) - Number(b.liquidity.replace(/,/g, "").slice(1)));
+        } else {
+          temp.sort((a: Token, b: Token) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
         }
       }
     }

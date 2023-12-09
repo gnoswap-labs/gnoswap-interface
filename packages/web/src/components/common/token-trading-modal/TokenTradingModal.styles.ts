@@ -104,16 +104,17 @@ export const TokenTradingModalWrapper = styled.div`
         }
         .cancel-button {
           text-align: center;
-        }
-        span {
-          cursor: pointer;
-          text-align: center;
-          ${fonts.body11}
-          color: ${({ theme }) => theme.color.text10};
-          &:hover {
-            color: ${({ theme }) => theme.color.text04};
+          span {
+            cursor: pointer;
+            text-align: center;
+            ${fonts.body11}
+            color: ${({ theme }) => theme.color.text10};
+            &:hover {
+              color: ${({ theme }) => theme.color.text04};
+            }
           }
         }
+        
       }
     }
 

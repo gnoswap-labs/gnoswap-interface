@@ -102,7 +102,7 @@ const TokenInfoContentContainer: React.FC = () => {
 
   const marketInformation = useMemo(() => {
     return {
-      popularity: `#${convertLargePrice(market.popularity, 0)}`,
+      popularity: `#${Number(market.popularity)}`,
       tvl: `$${convertLargePrice(market.tvl)}`,
       volume24h: `$${convertLargePrice(market.volume24h)}`,
       fees24h: `$${convertLargePrice(market.fees24h)}`,
@@ -144,7 +144,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: isTodayPositive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${convertLargePrice(priceChangeDetail.changeToday)}%`,
+          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.changeToday)}%`,
         },
       },
       {
@@ -155,7 +155,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: is30Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${convertLargePrice(priceChangeDetail.change30d)}%`,
+          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.change30d)}%`,
         },
       },
       {
@@ -166,7 +166,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: is60Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${convertLargePrice(priceChangeDetail.change60d)}%`,
+          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.change60d)}%`,
         },
       },
       {
@@ -177,7 +177,7 @@ const TokenInfoContentContainer: React.FC = () => {
         },
         change: {
           status: is90Positive ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${convertLargePrice(priceChangeDetail.change90d)}%`,
+          value: `${!isTodayPositive ? "-" : "+"}${convertLargePrice(priceChangeDetail.change90d)}%`,
         },
       },
     ];

@@ -18,7 +18,7 @@ const EarnMyPositionNoLiquidity: React.FC<
         <span className="emphasis-text">&nbsp;{apr}&nbsp;</span>APR.
       </p>
       <span className="description">
-        Add liquidity to Gnoswap’s pools to earn trading fees on every swap. You
+        Add Position to Gnoswap’s pools to earn trading fees on every swap. You
         may also stake LP tokens to earn GNS token rewards.
       </span>
     </NoLiquidityWrapper>

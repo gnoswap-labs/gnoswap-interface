@@ -136,7 +136,7 @@ export const ModalContainer = styled.div`
       height: 32px;
       border-radius: 50%;
       color: ${({ theme }) => theme.color.text02};
-      background-color: ${({ theme }) => theme.color.backgroundOpacity7};
+      background-color: ${({ theme }) => theme.color.text04};
       ${fonts.p6}
       ${media.mobile} {
         width: 24px;
@@ -147,15 +147,30 @@ export const ModalContainer = styled.div`
     }
     .coin-info-detail {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
+      max-width: 250px;
       gap: 2px;
       > span {
         color: ${({ theme }) => theme.color.text04};
         ${fonts.p4}
       }
       > div {
+        max-width: 100%;
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
+        .token-name {
+          max-width: 148px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         .token-path {
+          > div {
+            max-width: 74px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            direction: rtl;
+            white-space: nowrap;
+          }
           padding: 1.5px 4px;
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 2px;
@@ -177,6 +192,15 @@ export const ModalContainer = styled.div`
                 fill: ${({ theme }) => theme.color.icon07}; 
               }
             }
+          }
+        }
+      }
+      ${media.mobile} {
+        max-width: 175px;
+        > div {
+          max-width: 100%;
+          .token-name {
+            max-width: 79px;
           }
         }
       }

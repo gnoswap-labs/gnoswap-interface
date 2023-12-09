@@ -173,7 +173,9 @@ const HeaderContainer: React.FC = () => {
     if (keyword) {
       temp = poolList.filter((item: PoolModel) => (item.tokenA.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenA.symbol.toLowerCase()).includes(keyword.toLowerCase()));
     }
-    return poolList.slice(0, 3).map((item: PoolModel) => {
+    return temp.slice(0, 3).map((item: PoolModel) => {
+      const priceItem: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.mostLiquidityPool === item.poolPath)?.[0] ?? {};
+      
       return {
         path: "",
         searchType: "popular",
@@ -183,7 +185,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.tokenA.symbol,
           logoURI: item.tokenA.logoURI,
         },
-        price: `$${convertLargePrice(item.price.toString())}`,
+        price: `$${Math.floor(Number(priceItem.liquidity || 0)).toLocaleString()}`,
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",
@@ -199,7 +201,7 @@ const HeaderContainer: React.FC = () => {
         apr: `${item.apr || 0}`,
       };
     });
-  }, [poolList, keyword]);
+  }, [poolList, keyword, prices]);
   
   const popularTokens = useMemo(() => {
     let temp = listTokens;

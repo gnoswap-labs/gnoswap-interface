@@ -103,7 +103,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                   {item.token.name}
                                 </span>
                                 <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
-                                  {item.token.path}
+                                  <div>{item.token.path}</div>
                                   <IconNewTab />
                                 </div>
                               </div>
@@ -171,7 +171,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               {item.token.name}
                             </span>
                             <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
-                              {item.token.path}
+                              <div>{item.token.path}</div>
                               <IconNewTab />
                             </div>
                           </div>
