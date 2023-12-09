@@ -111,19 +111,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const targetToken = exactType === "EXACT_IN" ? inputToken : outputToken;
     const resultToken = exactType === "EXACT_IN" ? outputToken : inputToken;
-    const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount);
-    const tokenAmountLimitRaw = makeRawTokenAmount(
-      resultToken,
-      tokenAmountLimit,
-    );
+    const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount) || "0";
+    const tokenAmountLimitRaw =
+      makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
     let sendAmount = "";
     if (inputToken.type === "native") {
-      sendAmount =
-        exactType === "EXACT_IN"
-          ? `${tokenAmountRaw}ugnot`
-          : `${tokenAmountLimitRaw}ugnot`;
+      const sendTokeAnmount =
+        exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
+      sendAmount = BigNumber(sendTokeAnmount).isGreaterThan(0)
+        ? `${sendTokeAnmount}ugnot`
+        : "";
     }
     const inputTokenPath =
       inputToken.type === "grc20" ? inputToken.path : WRAPPED_GNOT_PATH;

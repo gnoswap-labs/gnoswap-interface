@@ -300,10 +300,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     const slippageRatio = 0;
     const deadline = "7282571140";
     const sendItems = [];
-    if (tokenA.type === "native") {
+    if (tokenA.type === "native" && BigNumber(tokenAAmount).isGreaterThan(0) ) {
       sendItems.push(`${tokenAAmount}ugnot`);
     }
-    if (tokenB.type === "native") {
+    if (tokenB.type === "native" && BigNumber(tokenAAmount).isGreaterThan(0)) {
       sendItems.push(`${tokenBAmount}ugnot`);
     }
     const sendAmount = sendItems.join(",");
