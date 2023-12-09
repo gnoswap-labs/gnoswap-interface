@@ -1,7 +1,7 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import PoolGraph from "../pool-graph/PoolGraph";
 import { BarAreaGraphLabel, BarAreaGraphWrapper } from "./BarAreaGraph.styles";
 
@@ -172,6 +172,32 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
     }
   };
 
+  const minTickPosition = useMemo(() => {
+    if (!minTick) {
+      return null;
+    }
+    if (minTick < 0) {
+      return 0;
+    }
+    if (minTick > width) {
+      return width;
+    }
+    return minTick;
+  }, [minTick, width]);
+
+  const maxTickPosition = useMemo(() => {
+    if (!maxTick) {
+      return null;
+    }
+    if (maxTick < 0) {
+      return 0;
+    }
+    if (maxTick > width) {
+      return width;
+    }
+    return maxTick;
+  }, [maxTick, width]);
+
   return (
     <BarAreaGraphWrapper
       className={className}
@@ -192,7 +218,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         themeKey={"dark"}
         mouseover
       />
-      {minTick && maxTick && !isHiddenStart && (
+      {minTickPosition && maxTickPosition && !isHiddenStart && (
         <svg className="selector" viewBox={`0 0 ${width} ${height}`}>
           <defs>
             <linearGradient id={"gradient-area"} gradientTransform="rotate(0)">
@@ -205,13 +231,13 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
               className="start-line"
               stroke="rgb(255, 2, 2)"
               strokeWidth={2}
-              x1={minTick}
+              x1={minTickPosition}
               y1={0}
-              x2={minTick}
+              x2={minTickPosition}
               y2={height}
             />
             {editable && (
-              <svg x={minTick - 12}>
+              <svg x={minTickPosition - 12}>
                 <rect width="11" height="32" rx="2" fill="#596782" />
                 <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
                 <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
@@ -228,13 +254,13 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
               className="end-line"
               stroke="rgb(0, 205, 46)"
               strokeWidth={2}
-              x1={maxTick}
+              x1={maxTickPosition}
               y1={0}
-              x2={maxTick}
+              x2={maxTickPosition}
               y2={height}
             />
             {editable && (
-              <svg x={maxTick + 1}>
+              <svg x={maxTickPosition + 1}>
                 <rect width="11" height="32" rx="2" fill="#596782" />
                 <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
                 <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
@@ -244,19 +270,19 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         </svg>
       )}
 
-      {minTick && !isHiddenStart && (
+      {minTickPosition && !isHiddenStart && (
         <BarAreaGraphLabel
           className="min"
-          x={minTick}
+          x={minTickPosition}
           y={20}
         >
           {minLabel}
         </BarAreaGraphLabel>
       )}
-      {maxTick && !isHiddenStart && (
+      {maxTickPosition && !isHiddenStart && (
         <BarAreaGraphLabel
           className="max"
-          x={maxTick}
+          x={maxTickPosition}
           y={20}
         >
           {maxLabel}
