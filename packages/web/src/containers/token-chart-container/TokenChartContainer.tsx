@@ -1,9 +1,9 @@
 import React, { useCallback, useState, useEffect } from "react";
 import TokenChart from "@components/token/token-chart/TokenChart";
-import TOKEN_LIST from "@repositories/token/mock/assets.json";
 import { useRouter } from "next/router";
-import { useGetTokenDetailByPath } from "src/react-query/token";
+import { useGetTokenDetailByPath, useGetTokensList } from "src/react-query/token";
 import { IPriceResponse } from "@repositories/token";
+import { TokenModel } from "@models/token/token-model";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
@@ -134,24 +134,34 @@ const TokenChartContainer: React.FC = () => {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
   const router = useRouter();
-  
+
+  const { data: { tokens = [] } = {} } = useGetTokensList();
   const { data: { prices = [], priceChangeDetail = priceChangeDetailInit, currentPrice = "0" } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
 
+
   useEffect(() => {
-    const currentToken = TOKEN_LIST.filter(item => item.symbol === router.query["token-path"])[0];
-    setTokenInfo(() => ({
-      token: {
-        ...currentToken
-      },
-      priceInfo: {
-        amount: {
-          value: Number(currentPrice),
-          denom: "USD",
+    const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
+    if (currentToken) {
+      setTokenInfo(() => ({
+        token: {
+          name: currentToken.name,
+          symbol: currentToken.symbol,
+          image: currentToken.logoURI,
+          pkg_path: currentToken.path,
+          decimals: 1,
+          description: currentToken.description || "",
+          website_url: currentToken.websiteURL || "",
         },
-        changedRate: Number(priceChangeDetail?.changeToday || 0),
-      },
-    }));
-  }, [router.query, priceChangeDetail.toString(), currentPrice]);
+        priceInfo: {
+          amount: {
+            value: Number(currentPrice),
+            denom: "USD",
+          },
+          changedRate: Number(priceChangeDetail?.changeToday || 0),
+        },
+      }));
+    }
+  }, [router.query, priceChangeDetail.toString(), currentPrice, tokens]);
   
   const changeTab = useCallback((tab: string) => {
     const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";
@@ -165,15 +175,16 @@ const TokenChartContainer: React.FC = () => {
     const length = currentTab === TokenChartGraphPeriods[0] ? 144 : currentTab === TokenChartGraphPeriods[1] ? 168 :
     currentTab === TokenChartGraphPeriods[2] ? 180 : currentTab === TokenChartGraphPeriods[3] ? 365 : 144;
  
-    const datas = prices.slice(0, length).map((item: IPriceResponse) => {
+
+    const datas = prices?.length > 0 ? prices.slice(0, length).map((item: IPriceResponse, i: number) => {
       return {
         amount: {
-          value: `${item.price}`,
+          value: i === 0 ? "0" : `${item.price}`,
           denom: "",
         },
         time: item.date,
       };
-    });
+    }) : [];
 
 
     const chartInfo: ChartInfo = {

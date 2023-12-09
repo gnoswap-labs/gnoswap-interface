@@ -4,6 +4,7 @@ import {
   TokenListResponse,
   TokenPriceListResponse,
   ITokenDetailResponse,
+  IChainResponse,
 } from ".";
 
 import { StorageKeyType } from "@common/values";
@@ -43,6 +44,13 @@ export class TokenRepositoryImpl implements TokenRepository {
   public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
     const response = await this.networkClient.get<ITokenDetailResponse>({
       url: `/token_details/${path}`,
+    });
+    return response.data;
+  };
+
+  public getChain = async (): Promise<IChainResponse> => {
+    const response = await this.networkClient.get<IChainResponse>({
+      url: "/chain",
     });
     return response.data;
   };

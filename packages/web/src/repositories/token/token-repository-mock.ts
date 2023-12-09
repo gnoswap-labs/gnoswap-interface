@@ -4,6 +4,7 @@ import {
   TokenListResponse,
   TokenPriceListResponse,
   ITokenDetailResponse,
+  IChainResponse,
 } from ".";
 
 import { StorageKeyType } from "@common/values";
@@ -11,6 +12,8 @@ import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { StorageClient } from "@common/clients/storage-client";
 import TokenData from "./mock/tokens.json";
 import TokenPriceData from "./mock/token-prices.json";
+import TokenDetail from "./mock/token-detail.json";
+import ChainData from "./mock/token-chain.json";
 
 export class TokenRepositoryMock implements TokenRepository {
   private localStorageClient: StorageClient<StorageKeyType>;
@@ -29,33 +32,12 @@ export class TokenRepositoryMock implements TokenRepository {
 
   public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
     console.log(path);
-    return {
-      currentPrice: "",
-      prices: [],
-      priceChangeDetail: {
-        priceToday: "",
-        changeToday: "",
-        price1h: "",
-        change1h: "",
-        price1d: "",
-        change1d: "",
-        price7d: "",
-        change7d: "",
-        price30d: "",
-        change30d: "",
-        price60d: "",
-        change60d: "",
-        price90d: "",
-        change90d: "",
-      },
-      market: {
-        popularity: "",
-        tvl: "",
-        volume24h: "",
-        fees24h: "",
-      },
-      bestPools: [],
-    };
+    
+    return TokenDetail;
+  };
+
+  public getChain = async (): Promise<IChainResponse> => {
+    return ChainData;
   };
 
   public createSearchLog = async (

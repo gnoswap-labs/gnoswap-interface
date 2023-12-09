@@ -1,4 +1,4 @@
-import { ITokenDetailResponse, TokenListResponse, TokenPriceListResponse } from "@repositories/token";
+import { IChainResponse, ITokenDetailResponse, TokenListResponse, TokenPriceListResponse } from "@repositories/token";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { QUERY_KEY } from "./types";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -34,6 +34,17 @@ export const useGetTokenDetailByPath = (
   return useQuery<ITokenDetailResponse, Error>({
     queryKey: [QUERY_KEY.tokenDetails, path],
     queryFn: () => tokenRepository.getTokenDetailByPath(path),
+    ...option,
+  });
+};
+
+export const useGetChainList = (
+  option?: UseQueryOptions<IChainResponse, Error>
+) => {
+  const { tokenRepository } = useGnoswapContext();
+  return useQuery<IChainResponse, Error>({
+    queryKey: [QUERY_KEY.chain],
+    queryFn: () => tokenRepository.getChain(),
     ...option,
   });
 };

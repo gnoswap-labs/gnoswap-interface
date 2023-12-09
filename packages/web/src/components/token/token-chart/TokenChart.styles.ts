@@ -49,3 +49,15 @@ export const LoadingChart = styled.div`
     height: 252px;
   }
 `;
+
+export const ChartNotFound = styled.div`
+  ${mixins.flexbox("row", "center", "center")}
+  width: 100%;
+  height: 361px;
+  background-color: ${({ theme }) => theme.color.background15};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.color.text04};
+  ${media.mobile} {
+    height: 252px;
+  }
+`;

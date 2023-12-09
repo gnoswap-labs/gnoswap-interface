@@ -1,6 +1,5 @@
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
-import { TokenListResponse, TokenSearchLogListResponse } from "./response";
-import { ITokenDetailResponse, TokenPriceListResponse } from "./response/token-price-list-response";
+import { IChainResponse, ITokenDetailResponse, TokenListResponse, TokenPriceListResponse, TokenSearchLogListResponse } from "./response";
 
 export interface TokenRepository {
   getTokens: () => Promise<TokenListResponse>;
@@ -14,4 +13,6 @@ export interface TokenRepository {
   getSearchLogs: () => Promise<TokenSearchLogListResponse>;
 
   clearSearchLogs: () => Promise<boolean>;
+
+  getChain: () => Promise<IChainResponse>;
 }

@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import TrendingCryptoCardList from "@components/token/trending-crypto-card-list/TrendingCryptoCardList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { useGetChainList, useGetTokensList } from "src/react-query/token";
+import { ITrending } from "@repositories/token";
+import { TokenModel } from "@models/token/token-model";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 const trendingCryptoInit = [
   {
@@ -36,16 +40,27 @@ export const trendingCryptoListInit = [
 ];
 
 const TrendingCryptoCardListContainer: React.FC = () => {
-  const [loading, setLoading] = useState(true);
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokensList();
+  const { data: { trending = [] } = {}, isLoading } = useGetChainList();
+  
+  const trendingCryptoList = useMemo(() => {
+    return trending.map((item: ITrending) => {
+      const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
+      return {
+        path: item.tokenPath,
+        name: temp.name,
+        symbol: temp.symbol,
+        logoURI: temp.logoURI,
+        price: `$${convertLargePrice(item.tokenPrice)}`,
+        change: {
+          status: MATH_NEGATIVE_TYPE.POSITIVE,
+          value: "+0.00%",
+        }
+      };
+    }).slice(0, 5);
+  }, [tokens, trending]);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  return <TrendingCryptoCardList list={trendingCryptoListInit} loading={loading} />;
+  return <TrendingCryptoCardList list={trendingCryptoList} loading={isLoading || isLoadingListToken} />;
 };
 
 export default TrendingCryptoCardListContainer;

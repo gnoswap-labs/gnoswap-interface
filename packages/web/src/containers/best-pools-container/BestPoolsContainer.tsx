@@ -52,16 +52,16 @@ const BestPoolsContainer: React.FC = () => {
       return {
         tokenPair: {
           tokenA: {
-            path: Math.floor(Math.random() * 50 + 1).toString(),
-            name: "HEX",
-            symbol: "HEX",
-            logoURI: item.tokenALogo,
+            path: item.tokenA.path,
+            name: item.tokenA.name,
+            symbol: item.tokenA.symbol,
+            logoURI: item.tokenA.logoURI,
           },
           tokenB: {
-            path: Math.floor(Math.random() * 50 + 1).toString(),
-            name: "USDCoin",
-            symbol: "USDC",
-            logoURI: item.tokenBLogo,
+            path: item.tokenB.path,
+            name: item.tokenB.name,
+            symbol: item.tokenB.symbol,
+            logoURI: item.tokenB.logoURI,
           },
         },
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,

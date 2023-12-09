@@ -13,6 +13,7 @@ interface SelectTokenContainerProps {
   callback?: (value: boolean) => void;
   modalRef?: React.RefObject<HTMLDivElement>;
 }
+const ORDER = ["GNOT", "GNS", "BAR", "FOO", "BAZ", "QUX"];
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   changeToken,
@@ -40,7 +41,11 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   }, [tokens]);
 
   const defaultTokens = useMemo(() => {
-    return tokens.filter((_, index) => index < 5);
+    const temp = tokens.filter((_) => !!_.logoURI);
+    const sortedTokenList = temp.sort((a: TokenModel, b: TokenModel) => {
+      return ORDER.indexOf(a.symbol) - ORDER.indexOf(b.symbol);
+  });
+  return sortedTokenList;
   }, [tokens]);
 
   const filteredTokens = useMemo(() => {

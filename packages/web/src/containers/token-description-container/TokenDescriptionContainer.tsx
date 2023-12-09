@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
 import { useRouter } from "next/router";
-import TOKEN_LIST from "@repositories/token/mock/assets.json";
+import { useGetTokensList } from "src/react-query/token";
+import { TokenModel } from "@models/token/token-model";
 
 export interface DescriptionInfo {
   token: {
@@ -38,22 +39,28 @@ export const descriptionInit: DescriptionInfo = {
 const TokenDescriptionContainer: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
+  const { data: { tokens = [] } = {} } = useGetTokensList();
   const router = useRouter();
   useEffect(() => {
-    const current = TOKEN_LIST.filter(item => item.symbol === router.query["token-path"])[0];
-    if (current) {
-      setDescriptionInfo(prev => ({
-        ...prev,
+    const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
+    if (currentToken) {
+      setDescriptionInfo(() => ({
         token: {
-          ...current
+          name: currentToken.name,
+          symbol: currentToken.symbol,
+          image: currentToken.logoURI,
+          pkg_path: currentToken.path,
+          decimals: 1,
+          description: currentToken.description || "",
+          website_url: currentToken.websiteURL || "",
         },
         links: {
-          Website: current.website_url,
+          Website: currentToken.websiteURL || "",
           Gnoscan: "gnoscan.io/tokens/r_demo_grc20_GNOS",
         }
       }));
     }
-  }, [router.query]);
+  }, [router.query, tokens]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoading(false);

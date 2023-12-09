@@ -3,7 +3,7 @@ import React from "react";
 import TokenChartInfo from "../token-chart-info/TokenChartInfo";
 import TokenChartGraphTab from "./token-chart-graph-tab/TokenChartGraphTab";
 import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
-import { LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
+import { ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 
@@ -30,11 +30,13 @@ const TokenChart: React.FC<TokenChartProps> = ({
         currentTab={currentTab}
         changeTab={changeTab}
       />
-
+      {chartInfo?.datas.length === 0 && !loading && <ChartNotFound>
+        No data found
+      </ChartNotFound>}
       {loading && <LoadingChart>
         <LoadingSpinner />
       </LoadingChart>}
-      {!loading && <TokenChartGraph
+      {chartInfo?.datas.length !== 0 && !loading && <TokenChartGraph
         xAxisLabels={chartInfo?.xAxisLabels || []}
         yAxisLabels={chartInfo?.yAxisLabels || []}
         datas={chartInfo?.datas || []}
