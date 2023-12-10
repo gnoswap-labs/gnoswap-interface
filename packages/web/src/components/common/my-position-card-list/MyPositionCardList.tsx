@@ -2,14 +2,14 @@ import React from "react";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
 import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
-import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface MyPositionCardListProps {
   loadMore?: boolean;
   isFetched: boolean;
   onClickLoadMore?: () => void;
-  positions: PoolPosition[];
+  positions: PoolPositionModel[];
   currentIndex: number;
   movePoolDetail: (id: string) => void;
   mobile: boolean;
@@ -38,8 +38,8 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
     <GridWrapper ref={divRef} onScroll={onScroll}>
       {isFetched &&
         positions.length > 0 &&
-        positions.map((item, idx) => (
-          <MyPositionCard currentIndex={idx} item={item} key={idx} movePoolDetail={movePoolDetail} mobile={mobile}/>
+        positions.map((position, idx) => (
+          <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} />
         ))}
       {isFetched &&
         positions.length > 0 && positions.length < 4 &&
@@ -56,10 +56,10 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {(showLoadMore && loadMore && onClickLoadMore &&(
-        <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
-      )
-    )} 
+    {(showLoadMore && loadMore && onClickLoadMore && (
+      <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+    )
+    )}
     {(showPagination &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>

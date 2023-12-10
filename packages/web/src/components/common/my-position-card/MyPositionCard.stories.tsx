@@ -16,11 +16,9 @@ const Template: ComponentStory<typeof MyPositionCard> = args => (
 
 export const Staked = Template.bind({});
 Staked.args = {
-  item: dummyPositionList[1],
 };
 
 export const Unstaked = Template.bind({});
 Unstaked.args = {
-  item: dummyPositionList[0],
   movePoolDetail: action("movePoolDetail"),
 };

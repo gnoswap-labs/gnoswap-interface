@@ -40,13 +40,13 @@ export const useTokenData = () => {
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens.sort((t1, t2) => {
-      if (tokenPrices[t1.priceId] && tokenPrices[t2.priceId]) {
-        return BigNumber(tokenPrices[t2.priceId].volume).toNumber() - BigNumber(tokenPrices[t1.priceId].volume).toNumber();
+      if (tokenPrices[t1.path] && tokenPrices[t2.path]) {
+        return BigNumber(tokenPrices[t2.path].volume).toNumber() - BigNumber(tokenPrices[t1.path].volume).toNumber();
       }
-      if (tokenPrices[t2.priceId]) {
+      if (tokenPrices[t2.path]) {
         return 1;
       }
-      if (tokenPrices[t1.priceId]) {
+      if (tokenPrices[t1.path]) {
         return -1;
       }
       return 0;
@@ -75,10 +75,10 @@ export const useTokenData = () => {
       return createTimeOfToken2 - createTimeOfToken1;
     }).filter((_, index) => index < 3);
     return sortedTokens.map(token => (
-      tokenPrices[token.priceId] ? {
+      tokenPrices[token.path] ? {
         token,
         upDown: "none",
-        content: `$${tokenPrices[token.priceId].usd}`
+        content: `$${tokenPrices[token.path].usd}`
       } : {
         token,
         upDown: "none",

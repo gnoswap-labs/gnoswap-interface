@@ -157,7 +157,7 @@ const MyPositionCardListContainer: React.FC<
       loadMore={true}
       isFetched={true}
       onClickLoadMore={onClickLoadMore}
-      positions={dummyPositionList}
+      positions={[]}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}

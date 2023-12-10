@@ -1,11 +1,10 @@
 import { fonts } from "@constants/font.constant";
-import { STAKED_OPTION } from "@constants/option.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 interface CardProps {
-  stakeType: STAKED_OPTION;
+  staked: boolean;
 }
 
 export const MyPositionCardWrapperBorder = styled.div`

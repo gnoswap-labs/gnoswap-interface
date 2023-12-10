@@ -1,6 +1,5 @@
 import RemoveLiquidity from "@components/remove/remove-liquidity/RemoveLiquidity";
-import React, { useCallback, useMemo, useState } from "react";
-import { LPPositionModel } from "@models/position/lp-position-model";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRemovePositionModal } from "@hooks/earn/use-remove-position-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
@@ -107,15 +106,19 @@ const LIST_DATA: LPPositionModel[] = [1, 2, 3, 4].map((item) => {
 });
 
 const RemoveLiquidityContainer: React.FC = () => {
-  const [lpPositions] = useState<LPPositionModel[]>(LIST_DATA);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const { width } = useWindowSize();
-
   const { openModal } = useRemovePositionModal();
+  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { getPositions } = usePositionData();
+
+  useEffect(() => {
+    getPositions().then(setPositions);
+  }, [getPositions]);
 
   const unstakedLiquidities = useMemo(() => {
-    return lpPositions.filter(item => item.position.balance !== 0);
-  }, [lpPositions]);
+    return positions.filter(item => item.unclaimedFee0Amount + item.unclaimedFee1Amount > 0);
+  }, [positions]);
 
   const selectedAll = useMemo(() => {
     return unstakedLiquidities.length === selectedIds.length;
@@ -126,7 +129,7 @@ const RemoveLiquidityContainer: React.FC = () => {
       setSelectedIds([]);
       return;
     }
-    const selectedIds = unstakedLiquidities.map(liquidity => liquidity.lpRewardId);
+    const selectedIds = unstakedLiquidities.map(liquidity => liquidity.id);
     setSelectedIds(selectedIds);
   }, [selectedAll, unstakedLiquidities]);
 
@@ -144,7 +147,7 @@ const RemoveLiquidityContainer: React.FC = () => {
 
   return (
     <RemoveLiquidity
-      lpPositions={lpPositions}
+      positions={positions}
       selectedAll={selectedAll}
       selectedIds={selectedIds}
       select={select}

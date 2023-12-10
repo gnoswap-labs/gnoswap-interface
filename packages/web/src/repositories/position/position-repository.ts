@@ -1,9 +1,5 @@
-import { PositionListResponse, PositionDetailResponse } from "./response";
+import { PositionModel } from "@models/position/position-model";
 
 export interface PositionRepository {
-  getPositions: () => Promise<PositionListResponse>;
-
-  getPositionDetailByPositionId: (
-    positionId: string,
-  ) => Promise<PositionDetailResponse>;
+  getPositionsByAddress: (address: string) => Promise<PositionModel[]>;
 }

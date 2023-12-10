@@ -1,6 +1,8 @@
 import { NetworkClient } from "@common/clients/network-client";
+import { PositionMapper } from "@models/position/mapper/position-mapper";
+import { PositionModel } from "@models/position/position-model";
 import { PositionRepository } from "./position-repository";
-import { PositionListResponse, PositionDetailResponse } from "./response";
+import { PositionListResponse } from "./response";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -9,19 +11,10 @@ export class PositionRepositoryImpl implements PositionRepository {
     this.networkClient = networkClient;
   }
 
-  getPositions = async (): Promise<PositionListResponse> => {
+  getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
     const response = await this.networkClient.get<PositionListResponse>({
-      url: "/positions",
+      url: "/positions/" + address,
     });
-    return response.data;
-  };
-
-  getPositionDetailByPositionId = async (
-    positionId: string,
-  ): Promise<PositionDetailResponse> => {
-    const response = await this.networkClient.get<PositionDetailResponse>({
-      url: "/positions/" + positionId,
-    });
-    return response.data;
+    return PositionMapper.fromList(response.data);
   };
 }

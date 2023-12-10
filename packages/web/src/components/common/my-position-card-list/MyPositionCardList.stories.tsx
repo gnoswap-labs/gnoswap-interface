@@ -1,7 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import MyPositionCardList from "./MyPositionCardList";
-import { dummyPositionList } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import { action } from "@storybook/addon-actions";
 
 export default {
@@ -16,7 +15,7 @@ export default {
 } as ComponentMeta<typeof MyPositionCardList>;
 
 const Template: ComponentStory<typeof MyPositionCardList> = args => (
-  <MyPositionCardList {...args} positions={dummyPositionList} />
+  <MyPositionCardList {...args} positions={[]} />
 );
 
 export const Default = Template.bind({});
