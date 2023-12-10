@@ -64,8 +64,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 }) => {
 
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
-
-  const svgRef = useRef(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
@@ -89,22 +88,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const maxHeight = d3.max(resolvedBins, (bin) => bin.liquidity) || 0;
 
   const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
-
-  useEffect(() => {
-    if (resolvedBins.length > 0) {
-      new Promise<{ [key in number]: string }>(resolve => {
-        const tickOfPrices = resolvedBins.flatMap(bin => [bin.minTick, bin.maxTick, -bin.minTick, -bin.maxTick])
-          .reduce<{ [key in number]: string }>((acc, current) => {
-            if (!acc[current]) {
-              acc[current] = tickToPriceStr(current + defaultMinX).toString();
-            }
-            return acc;
-          }, {});
-        resolve(tickOfPrices);
-      }).then(setTickOfPrices);
-    }
-  }, [resolvedBins]);
-
+  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
+  const [positionX, setPositionX] = useState<number | null>(null);
+  const [positionY, setPositionY] = useState<number | null>(null);
 
   /** D3 Variables */
   const defaultScaleX = d3
@@ -177,9 +163,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("x", bin => scaleX(bin.minTick))
       .attr("y", bin => scaleY(bin.liquidity))
       .attr("width", tickSpacing)
-      .attr("height", bin => boundsHeight - scaleY(bin.liquidity))
-      .on("mouseover", onMouseoverChartBin)
-      .on("mousemove", onMouseoverChartBin);
+      .attr("height", bin => boundsHeight - scaleY(bin.liquidity));
 
     // Create a line of current tick.
     if (currentTick) {
@@ -279,8 +263,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("height", height)
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto;")
+      .on("mousemove", onMouseoverChartBin)
       .on("mouseout", onMouseoutChartBin);
-
 
     svgElement.append("defs").append("clipPath")
       .attr("id", "clip")
