@@ -21,7 +21,7 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
   return (
     <div css={wrapper}>
       <div className="contract-path">
-        <h4>Realm (Contract) Path</h4>
+        <h3>Realm (Contract) Path</h3>
         <button>
           <span>gno.land/r/demo/gnoswap</span>
           <div className="icon-wrapper" onClick={copyClick}>

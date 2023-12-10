@@ -25,7 +25,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { openModal: openTradingModal } = useTokenTradingModal({
-    onClickConfirm: (value) => {
+    onClickConfirm: (value: any) => {
       changeToken?.(value);
       close();
     }

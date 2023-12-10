@@ -42,15 +42,15 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
         </div>
         <div className="price-info">
           {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${priceInfo.amount.value === 0 ? "0.00" : priceInfo.amount.value}`}</span>}
-          {(priceInfo.amount.value && !loading) && <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
+          {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?
                 <IconTriangleArrowUp className="arrow-icon" /> :
                 <IconTriangleArrowDown className="arrow-icon" />
             }
             <span>{priceInfo.changedRate.toFixed(2)}%</span>
-          </div>}
-          {loading && <div className="change-rate-wrapper">&nbsp;</div>}
+          </div> : <></>}
+          {(loading || !priceInfo.amount.value)&& <div className="change-rate-wrapper">&nbsp;</div>}
         </div>
       </div>
     </TokenChartInfoWrapper>

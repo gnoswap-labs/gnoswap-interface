@@ -5,7 +5,7 @@ import React, { useCallback, useState } from "react";
 
 interface Props {
   onClickConfirm: () => void;
-  token: TokenModel;
+  token: {[key in string]: string} | TokenModel;
 }
 
 const TokenTradingModalContainer:React.FC<Props> = ({ onClickConfirm, token }) => {
@@ -14,7 +14,7 @@ const TokenTradingModalContainer:React.FC<Props> = ({ onClickConfirm, token }) =
 
   const handleChecked = async () => {
     try {
-      const url = `https://gnoscan.io/tokens/${token.path}`;
+      const url = `https://gnoscan.io/tokens/${token?.path}`;
       await navigator.clipboard.writeText(url);
       if (!checked) {
         setChecked(true);

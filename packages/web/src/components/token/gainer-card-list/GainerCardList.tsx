@@ -17,6 +17,9 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain })
       {loadingGain && <div css={loadingWrapper}>
         <LoadingSpinner />
       </div>}
+      {!loadingGain && gainers.length === 0 && <div css={loadingWrapper}>
+        <span>No data</span>
+      </div>}
       {!loadingGain && gainers.map((gainer, idx) => (
         <Link href={`/tokens/${gainer.symbol}`} key={idx}>
           <div className="card-wrap">

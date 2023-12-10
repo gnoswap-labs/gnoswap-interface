@@ -9,6 +9,9 @@ export const wrapper = (theme: Theme) => css`
     color: ${theme.color.text01};
     ${fonts.body11};
     margin-right: 12px;
+    ${media.mobile} {
+      ${fonts.p3};
+    }
   }
   .contract-path {
 
@@ -32,13 +35,13 @@ export const wrapper = (theme: Theme) => css`
     }
   }
   .link {
-    ${mixins.flexbox("row", "center", "flex-start")};
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    gap: 12px;
+    button {
+      margin-left: 0;
+    }
     ${media.tablet} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
-      gap: 12px;
-      button {
-        margin-left: 0;
-      }
     }
     ${media.mobile} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};

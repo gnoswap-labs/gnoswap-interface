@@ -1,7 +1,7 @@
 import { FloatingPortal, FloatingArrow } from "@floating-ui/react";
 
 import type { ElementRef } from "react";
-import React, { cloneElement, forwardRef } from "react";
+import React, { cloneElement, forwardRef, useEffect} from "react";
 
 import { useMergedRef } from "@hooks/common/use-merged-ref";
 import {
@@ -59,6 +59,16 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
       handleMouseMove(event);
       setOpened(true);
     };
+
+    useEffect(() => {
+      const handleScroll = () => {
+        setOpened(false);
+      };
+      document.addEventListener("scroll", handleScroll);
+      return () => {
+        document.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
 
     return (
       <>

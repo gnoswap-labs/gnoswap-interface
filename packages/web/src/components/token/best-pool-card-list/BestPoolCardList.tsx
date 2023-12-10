@@ -27,6 +27,9 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) =>
       {loading && <div css={loadingWrapper}>
         <LoadingSpinner />
       </div>}
+      {!loading && list.length === 0 && <div css={loadingWrapper}>
+        <span>No data</span>
+      </div>}
       {!loading && <ul>
         {list.map((info, idx) => (
           <Link href="/earn/pool/5" key={idx}>

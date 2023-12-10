@@ -14,7 +14,7 @@ interface Props {
   onClickConfirm: () => void;
   handleChecked: () => void;
   checked: boolean;
-  token: TokenModel;
+  token: {[key in string]: string} | TokenModel;
 }
 
 const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm, checked, handleChecked, token }) => {

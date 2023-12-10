@@ -104,7 +104,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const balanceText = useMemo(() => `${account?.balances[0].amount} ${account?.balances[0].currency}` || "0 GNOT", [account?.balances]);
+  const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 5 })} GNOT` || "0 GNOT", [account?.balances]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();
