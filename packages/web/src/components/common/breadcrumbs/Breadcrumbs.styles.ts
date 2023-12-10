@@ -19,9 +19,10 @@ export const wrapper = (theme: Theme) => css`
     }
     &:last-of-type {
       color: ${theme.color.text10};
+      cursor: default;
     }
   }
-
+  
   .step-icon {
     width: 16px;
     height: 16px;

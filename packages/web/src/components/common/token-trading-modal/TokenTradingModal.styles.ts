@@ -63,20 +63,32 @@ export const TokenTradingModalWrapper = styled.div`
         padding: 1.5px 8px;
         border-radius: 8px;
         max-width: calc(100% - 44px);
-        > a {
-          display: block;
-          width: calc(100% - 44px);
-          overflow: hidden;
-          text-overflow: ellipsis;
-          ${fonts.body12}
-          color: ${({ theme }) => theme.color.text10};
+        .url-wrapper {
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 8px;
+          width: calc(100% - 22px);
           &:hover {
-            color: ${({ theme }) => theme.color.hover06};
-            ~ .new-tab *{
+            > div {
+              color: ${({ theme }) => theme.color.hover06};
+            }
+            .new-tab *{
               fill: ${({ theme }) => theme.color.hover06};
             }
           }
+          div {
+            width: calc(100% - 22px);
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            ${fonts.body12}
+            color: ${({ theme }) => theme.color.text10};
+            
+          }
+          ${media.mobile} {
+            max-width: 100%;
+          }
         }
+        
         svg {
           width: 14px;
           height: 14px;
@@ -138,9 +150,9 @@ export const TokenTradingModalWrapper = styled.div`
               ${fonts.p2}
             }
             .link {
-              width: 100%;
-              a {
-                width: calc(100% - 44px);
+              max-width: 100%;
+              .url-wrapper  > div {
+                width: calc(100% - 22px);
               }
             }
             > div {

@@ -11,7 +11,7 @@ export interface TokenChartInfoProps {
   };
   priceInfo: {
     amount: {
-      value: number;
+      value: number | string;
       denom: string;
     };
     changedRate: number;
@@ -41,8 +41,8 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
           </div>
         </div>
         <div className="price-info">
-          {<span className="price">{loading ? "-" : `$${priceInfo.amount.value === 0 ? "0.00" : priceInfo.amount.value}`}</span>}
-          {!loading && <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
+          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${priceInfo.amount.value === 0 ? "0.00" : priceInfo.amount.value}`}</span>}
+          {(priceInfo.amount.value && !loading) && <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?
                 <IconTriangleArrowUp className="arrow-icon" /> :

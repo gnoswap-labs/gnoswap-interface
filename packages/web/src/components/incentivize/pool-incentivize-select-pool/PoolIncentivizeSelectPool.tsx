@@ -6,6 +6,8 @@ import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
+import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
+import { QUERY_KEY } from "src/react-query/pools";
 
 export interface PoolIncentivizeSelectPoolProps {
   selectedPool: PoolSelectItemInfo | null;
@@ -24,6 +26,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   const [openedSelector, setOpenedSelector] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const closeModal = useCallback(() => setOpenedSelector(false), []);
+  const forceRefect = useForceRefetchQuery();
 
   useModalCloseEvent(modalRef, closeModal);
 
@@ -54,6 +57,9 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
   }, [searchKeyword, pools]);
 
   const toggleSelector = useCallback(() => {
+    if (!openedSelector) {
+      forceRefect({queryKey: [QUERY_KEY.pools]});
+    }
     setOpenedSelector(!openedSelector);
   }, [openedSelector]);
 

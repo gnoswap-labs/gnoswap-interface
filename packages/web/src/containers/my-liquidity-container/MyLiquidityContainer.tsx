@@ -133,11 +133,11 @@ const MyLiquidityContainer: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
 
   const handleClickAddPosition = useCallback(() => {
-    router.push(`${router.asPath}/add`);
+    router.push("/earn/add?path=" + router.query.path);
   }, [router]);
 
   const handleClickRemovePosition = useCallback(() => {
-    router.push("/earn/pool/bar_foo_100/remove");
+    router.push(`/earn/pool/${router.query["pool-number"]}/remove?path=${router.query.path}`);
   }, [router]);
 
   const handleScroll = () => {

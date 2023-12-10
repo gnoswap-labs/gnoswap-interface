@@ -1,5 +1,5 @@
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import { PoolModel } from "@models/pool/pool-model";
+import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
@@ -17,4 +17,7 @@ export interface PoolRepository {
   createPool: (request: CreatePoolRequest) => Promise<string | null>;
 
   addLiquidity: (request: AddLiquidityRequest) => Promise<string | null>;
+
+  getPoolDetailByPath: (poolPath: string) => Promise<IPoolDetailResponse>;
+
 }

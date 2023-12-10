@@ -39,7 +39,20 @@ export const descriptionInit: DescriptionInfo = {
 const TokenDescriptionContainer: React.FC = () => {
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
   const { data: { tokens = [] } = {}, isLoading } = useGetTokensList();
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
+
+  const copyClick = async () => {
+    try {
+      await navigator.clipboard.writeText(descriptionInfo.token.pkg_path);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (e) {
+      throw new Error("Copy Error!");
+    }
+  };
   useEffect(() => {
     const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
     if (currentToken) {
@@ -68,6 +81,8 @@ const TokenDescriptionContainer: React.FC = () => {
       content={descriptionInfo.token.description}
       links={descriptionInfo.links}
       loading={isLoading}
+      copyClick={copyClick}
+      copied={copied}
     />
   );
 };

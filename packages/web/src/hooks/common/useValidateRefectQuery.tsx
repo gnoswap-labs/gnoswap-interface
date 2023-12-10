@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 
-export const useForceRefetchQuery = () => {
+export const useValidateRefectQuery = () => {
   const client = useQueryClient();
 
-  return client.fetchQuery.bind(client);
+  return client.invalidateQueries.bind(client);
 };

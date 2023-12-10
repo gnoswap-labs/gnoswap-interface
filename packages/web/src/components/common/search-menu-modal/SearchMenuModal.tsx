@@ -218,7 +218,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       </div>
                       <div className="coin-infor-value">
                         <span className="token-price">{item.price}</span>
-                        <div className="token-price-apr">{item.apr}% APR</div>
+                        <div className="token-price-apr">{Number(item.apr) >= 10 ? item.apr : Number(item.apr).toFixed(2)}% APR</div>
                       </div>
                     </li>
                   ))}

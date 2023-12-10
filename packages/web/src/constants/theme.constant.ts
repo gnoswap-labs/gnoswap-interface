@@ -55,6 +55,7 @@ const palette = {
   shadowDark: "8px 8px 20px rgba(0, 0, 0, 0.2)",
   shadowDark1: "10px 14px 60px rgba(0, 0, 0, 0.4)",
   shadowLight: "8px 8px 20px rgba(0, 0, 0, 0.08)",
+  shadowLight2: "10px 14px 48px 0px rgba(0, 0, 0, 0.12);",
   headerBg: "#0D121C",
   gray400Opacity: "#59678280",
   gray400Opacity25: "#59678240",
@@ -257,6 +258,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   shadow: colors.global.shadowDark,
   shadow01: colors.global.shadowDark1,
   shadow02: colors.global.shadowDark,
+  shadow03: colors.global.shadowDark1,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -379,4 +381,5 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   shadow: colors.global.shadowLight,
   shadow01: colors.global.shadowLight,
   shadow02: colors.global.none,
+  shadow03: colors.global.shadowLight2,
 };

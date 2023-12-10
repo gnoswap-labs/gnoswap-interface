@@ -38,7 +38,6 @@ export const usePoolData = () => {
   async function updatePositions() {
     setIsFetchedPositions(true);
   }
-
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     return pools
       ?.map(PoolMapper.toCardInfo)

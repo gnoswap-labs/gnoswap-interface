@@ -40,8 +40,10 @@ const TokenTradingModal: React.FC<Props> = ({ close, onClickConfirm, checked, ha
             </div>
           </div>
           <div className="link">
-            <a href="/" target="_blank">https://gnoscan.io/tokens/{token.path}</a>
-            <IconNewTab className="new-tab"/>
+            <a className="url-wrapper" href="/" target="_blank">
+              <div>https://gnoscan.io/tokens/{token.path}</div>
+              <IconNewTab className="new-tab"/>
+            </a>
             <div className="icon-wrapper" onClick={handleChecked}>{checked ? <IconCheck className="icon-copy"/> : <IconCopy className="icon-copy"/>}</div>
           </div>
           <div>

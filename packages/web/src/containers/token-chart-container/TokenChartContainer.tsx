@@ -20,7 +20,7 @@ export interface TokenInfo {
   };
   priceInfo: {
     amount: {
-      value: number;
+      value: number | string;
       denom: string;
     };
     changedRate: number;
@@ -136,7 +136,7 @@ const TokenChartContainer: React.FC = () => {
   const router = useRouter();
 
   const { data: { tokens = [] } = {} } = useGetTokensList();
-  const { data: { prices = [], priceChangeDetail = priceChangeDetailInit, currentPrice = "0" } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  const { data: { prices = [], priceChangeDetail = priceChangeDetailInit, currentPrice = "" } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
 
 
   useEffect(() => {
@@ -154,7 +154,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: Number(currentPrice),
+            value: currentPrice ? Number(currentPrice) : "",
             denom: "USD",
           },
           changedRate: Number(priceChangeDetail?.changeToday || 0),

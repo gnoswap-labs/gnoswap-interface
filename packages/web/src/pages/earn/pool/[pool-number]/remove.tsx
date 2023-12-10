@@ -5,16 +5,31 @@ import RemoveLiquidityContainer from "@containers/remove-liquidity-container/Rem
 import { useWindowSize } from "@hooks/common/use-window-size";
 import PoolRemoveLayout from "@layouts/pool-remove-layout/PoolRemoveLayout";
 import { DEVICE_TYPE } from "@styles/media";
-import React from "react";
+import React, { useMemo } from "react";
+import { useRouter } from "next/router";
+import { useGetPoolDetailByPath } from "src/react-query/pools";
 
 export default function Earn() {
   const { breakpoint } = useWindowSize();
+  const router = useRouter();
+  const { path } = router.query;
+  const { data } = useGetPoolDetailByPath(path as string, { enabled: !!path });
 
-  const listBreadcrumb = [
-    { title: "Earn", path: "/earn" },
-    { title: breakpoint === DEVICE_TYPE.WEB ? "GNS/GNOT (0.3%)" : "...", path: "/earn/pool/bar_foo_100" },
-    { title: "Remove Position", path: "" },
-  ];
+  const listBreadcrumb = useMemo(() => {
+    return [
+      { title: "Earn", path: "/earn" },
+      {
+        title:
+          breakpoint === DEVICE_TYPE.WEB
+            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${
+                Number(data?.fee) / 10000
+              }%)`
+            : "...",
+        path: `/earn/pool/${router.query["pool-number"]}?path=${router.query.path}`,
+      },
+      { title: "Remove Position", path: "" },
+    ];
+  }, [data]);
   return (
     <PoolRemoveLayout
       header={<HeaderContainer />}

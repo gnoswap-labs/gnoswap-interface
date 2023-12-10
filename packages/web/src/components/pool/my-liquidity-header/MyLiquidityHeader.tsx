@@ -29,7 +29,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, 
           }}
         />
         <Button
-          text="Create Position"
+          text="Add Position"
           onClick={handleClickAddPosition}
           style={{
             hierarchy: ButtonHierarchy.Primary,

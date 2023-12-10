@@ -48,14 +48,14 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     text-overflow: ellipsis;
   }
 
-  &.negative {
+  .negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.green01};
     svg * {
       fill: ${({ theme }) => theme.color.green01};
     }
   }
-  &.positive {
+  .positive {
     padding-left: 0;
     color: ${({ theme }) => theme.color.red01};
     svg * {

@@ -22,7 +22,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
 }) => {
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
-    if (tokenPrice === null || Number.isNaN(tokenPrice)) {
+    if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
       return "-";
     }
     return BigNumber(tokenPrice).toFormat();
@@ -60,7 +60,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                <img src={token.logoURI} alt="logo" className="token-logo" />
+                {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
                 <span className="token-name">{token.name}</span>
                 <span className="token-symbol">{token.symbol}</span>
               </div>

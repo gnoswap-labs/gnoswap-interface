@@ -162,7 +162,7 @@ export const SelectTokenWrapper = styled.div`
     .list {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
-      padding: 10px 23px;
+      padding: 15px 23px;
       gap: 8px;
       ${media.mobile} {
         padding: 10px 11px;

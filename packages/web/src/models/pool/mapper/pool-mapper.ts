@@ -89,6 +89,7 @@ export class PoolMapper {
       feeVolume,
       apr,
       bins,
+      poolPath,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
@@ -123,6 +124,7 @@ export class PoolMapper {
       currentTick,
       price,
       bins,
+      poolPath: poolPath,
     };
   }
 

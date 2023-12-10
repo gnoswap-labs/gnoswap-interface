@@ -175,21 +175,34 @@ export const SelectTokenIncentivizeWrapper = styled.div`
         width: 24px;
         height: 24px;
       }
+      .fake-logo {
+        ${mixins.flexbox("row", "center", "center")};
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        color: ${({ theme }) => theme.color.text02};
+        background-color: ${({ theme }) => theme.color.text04};
+        ${fonts.p6}
+        ${media.mobile} {
+          font-size: 8px;
+          line-height: 10px;
+        }
+      }
       .token-info {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
         .token-name {
           color: ${({ theme }) => theme.color.text02};
-          ${fonts.body10}
+          ${fonts.body9}
           ${media.mobile} {
-            ${fonts.body12}
+            ${fonts.body11}
           }
         }
         .token-symbol {
           color: ${({ theme }) => theme.color.text04};
-          ${fonts.body12}
+          ${fonts.body11}
           ${media.mobile} {
-            ${fonts.p4}
+            ${fonts.p3}
           }
         }
       }

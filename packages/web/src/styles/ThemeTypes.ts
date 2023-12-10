@@ -118,6 +118,7 @@ export interface ThemeColorType {
   shadow: string;
   shadow01: string;
   shadow02: string;
+  shadow03: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;
