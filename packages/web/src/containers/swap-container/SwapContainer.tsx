@@ -33,7 +33,7 @@ const SwapContainer: React.FC = () => {
   const [query, setQuery] = useState<{ [key in string]: string | null }>({});
   const [initialized, setInitialized] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokens, tokenPrices, balances, updateTokens, updateTokenPrices, updateBalances, getTokenUSDPrice, getTokenPriceRate } = useTokenData();
+  const { tokens, tokenPrices, displayBalanceMap, updateTokens, updateTokenPrices, updateBalances, getTokenUSDPrice, getTokenPriceRate } = useTokenData();
   const [tokenAAmount, setTokenAAmount] = useState<string>(defaultTokenAAmount ?? "");
   const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
@@ -78,23 +78,23 @@ const SwapContainer: React.FC = () => {
   }, [estimatedRoutes, tokenA, tokenB]);
 
   const checkBalance = useCallback((token: TokenModel, amount: string) => {
-    const tokenBalance = balances[token.path] || 0;
+    const tokenBalance = displayBalanceMap[token.priceId] || 0;
     return BigNumber(tokenBalance).isGreaterThan(amount);
-  }, [balances]);
+  }, [displayBalanceMap]);
 
   const tokenABalance = useMemo(() => {
-    if (tokenA && !Number.isNaN(balances[tokenA.path])) {
-      return BigNumber(balances[tokenA.path] || 0).toFormat();
+    if (tokenA && !Number.isNaN(displayBalanceMap[tokenA.priceId])) {
+      return BigNumber(displayBalanceMap[tokenA.priceId] || 0).toFormat();
     }
     return "-";
-  }, [balances, tokenA]);
+  }, [displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (tokenB && !Number.isNaN(balances[tokenB.path])) {
-      return BigNumber(balances[tokenB.path] || 0).toFormat();
+    if (tokenB && !Number.isNaN(displayBalanceMap[tokenB.priceId])) {
+      return BigNumber(displayBalanceMap[tokenB.priceId] || 0).toFormat();
     }
     return "-";
-  }, [balances, tokenB]);
+  }, [displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[tokenA.path]) {
@@ -219,7 +219,7 @@ const SwapContainer: React.FC = () => {
       slippage
     };
   }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
-  
+
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
       return null;
@@ -367,12 +367,12 @@ const SwapContainer: React.FC = () => {
     const swapAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     swap(estimatedRoutes, swapAmount).then(result => {
       if (result !== false) {
-        setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
+        setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999 });
         setTimeout(() => {
           if (!!result) {
-            setNotice(null, {timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999});
+            setNotice(null, { timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999 });
           } else {
-            setNotice(null, {timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999});
+            setNotice(null, { timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999 });
           }
         }, 1000);
       }
@@ -404,7 +404,7 @@ const SwapContainer: React.FC = () => {
     }
   }, [defaultTokenAAmount]);
 
-  
+
   useEffect(() => {
     if (!tokenA || !tokenB) {
       return;
@@ -421,6 +421,11 @@ const SwapContainer: React.FC = () => {
         const isError = result === null;
         const expectedAmount = isError ? "" : result.amount;
         if (isError) {
+          if (isExactIn) {
+            setTokenBAmount("0");
+          } else {
+            setTokenAAmount("0");
+          }
         } else {
           if (!checkBalance(tokenA, tokenAAmount) ||
             !checkBalance(tokenB, tokenBAmount)) {
@@ -474,7 +479,7 @@ const SwapContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-  
+
   return (
     <SwapCard
       connectedWallet={connectedWallet}

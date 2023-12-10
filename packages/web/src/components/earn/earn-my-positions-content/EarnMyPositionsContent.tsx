@@ -1,12 +1,13 @@
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
-import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import EarnMyPositionNoLiquidity from "../earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyPositionsUnconnected";
-import React, { useMemo } from "react";
+import React from "react";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 export interface EarnMyPositionContentProps {
   connected: boolean;
   fetched: boolean;
-  positions: PoolPosition[];
+  isError: boolean;
+  positions: PoolPositionModel[];
   connect: () => void;
   movePoolDetail: (poolId: string) => void;
   isSwitchNetwork: boolean;
@@ -22,6 +23,7 @@ export interface EarnMyPositionContentProps {
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   connected,
   fetched,
+  isError,
   positions,
   connect,
   movePoolDetail,
@@ -34,10 +36,6 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   showLoadMore,
   width,
 }) => {
-  const randomForTest = useMemo(() => {
-    return Math.floor(Math.random() * 2 + 1);
-  }, [positions]);
-
   if (!connected || isSwitchNetwork) {
     return (
       <EarnMyPositionsUnconnected
@@ -47,7 +45,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     );
   }
 
-  if (randomForTest === 0) {
+  if (isError) {
     return <EarnMyPositionNoLiquidity />;
   }
 

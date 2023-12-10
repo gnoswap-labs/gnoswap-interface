@@ -8,13 +8,12 @@ import { numberToFormat } from "@utils/string-utils";
 
 export interface EarnAddConfirmPriceRangeInfoProps {
   currentPrice: string;
+  inRange: boolean;
   minPrice: string;
   maxPrice: string;
   priceLabel: string;
   feeBoost: string;
   estimatedAPR: string;
-  symbolTokenA: string;
-  symbolTokenB: string;
   isShowStaking?: boolean;
 }
 
@@ -22,6 +21,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   EarnAddConfirmPriceRangeInfoProps
 > = ({
   currentPrice,
+  inRange,
   minPrice,
   maxPrice,
   priceLabel,
@@ -34,9 +34,8 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
     }, [currentPrice, priceLabel]);
 
     const rangeStatus = useMemo(() => {
-      const inRange = maxPrice >= currentPrice && currentPrice >= minPrice;
       return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
-    }, [currentPrice, maxPrice, minPrice]);
+    }, [inRange]);
 
     return (
       <EarnAddConfirmPriceRangeInfoWrapper>

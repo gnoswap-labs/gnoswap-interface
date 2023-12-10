@@ -71,7 +71,7 @@ export const position: PoolPosition = {
   maxTick: 200,
   minLabel: "-30%",
   maxLabel: "50%",
-  ticks: ["1", "1", "3", "0", "2", "0", "4", "0", "0", "1", "2", "4","1", "5", "1", "6", "2", "7", "0", "1", "0", "2", "5", "0", "1", "0", "5", "4", "1", "3", "0", "5", "2", "1", "1", "0", "0", "0", "0", "0"]
+  ticks: ["1", "1", "3", "0", "2", "0", "4", "0", "0", "1", "2", "4", "1", "5", "1", "6", "2", "7", "0", "1", "0", "2", "5", "0", "1", "0", "5", "4", "1", "3", "0", "5", "2", "1", "1", "0", "0", "0", "0", "0"]
 };
 
 export const UnConnected = Template.bind({});
@@ -98,7 +98,7 @@ export const CardList = Template.bind({});
 CardList.args = {
   connected: true,
   fetched: true,
-  positions: [position, position],
+  positions: [],
   connect: action("connect"),
   moveEarnAdd: action("moveEarnAdd"),
   movePoolDetail: action("movePoolDetail"),

@@ -18,7 +18,7 @@ export interface BarGraphProps {
   tooltipOption?: string;
   svgColor?: string;
   currentIndex?: number;
-  customData?: { height: number, locationTooltip: number};
+  customData?: { height: number, locationTooltip: number };
   times?: string[];
   radiusBorder?: number;
 }
@@ -75,7 +75,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   tooltipOption = "default",
   svgColor = "default",
-  customData = { height: 0, locationTooltip: 0},
+  customData = { height: 0, locationTooltip: 0 },
   times = [],
   radiusBorder = 0,
 }) => {
@@ -166,7 +166,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       setCurrentPointIndex(-1);
       return;
     }
-  const { currentTarget } = event;
+    const { currentTarget } = event;
     const { left, top } = currentTarget.getBoundingClientRect();
     const positionX = (clientX || 0) - left;
     const clientWidth = currentTarget.clientWidth;
@@ -190,7 +190,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
         setCurrentPointIndex(currentPointIndex);
       }
       if (currentPoint) {
-        setChartPoint({ x: positionX, y: (clientY || 0) - top});
+        setChartPoint({ x: positionX, y: (clientY || 0) - top });
         setCurrentPoint(currentPoint);
       }
     }
@@ -208,11 +208,11 @@ const BarGraph: React.FC<BarGraphProps> = ({
     return "right";
   }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
 
-    
+
   const onTouchMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     onMouseMove(event);
   };
-  
+
   const onTouchStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     onMouseMove(event);
@@ -230,45 +230,45 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
     >
-      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition} 
-        content={tooltipOption === "default" && currentPointIndex > -1 && activated ? 
-        <BarGraphTooltipWrapper>
-          <div className="tooltip-body">
-            <span className="date">
-              {parseTime(times[currentPointIndex]).date}
-            </span>
-          </div>
-          <div className="tooltip-header">
-            <span className="value">{`$${Number(BigNumber(
-              datas[currentPointIndex],
-            )).toLocaleString()}`}</span>
-          </div>
-        </BarGraphTooltipWrapper>: 
-        tooltipOption === "incentivized" && currentPointIndex > -1 && activated ?
-        <IncentivizeGraphTooltipWrapper>
-          <div className="row">
-            <div className="token">Token</div>
-            <div className="amount">Amount</div>
-            <div className="price">Price Range</div>
-          </div>
-          <div className="body">
-            <div className="token">
-              <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="token logo" className="token-logo" />
-              BTC
+      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition}
+        content={tooltipOption === "default" && currentPointIndex > -1 && activated ?
+          <BarGraphTooltipWrapper>
+            <div className="tooltip-body">
+              <span className="date">
+                {parseTime(times[currentPointIndex]).date}
+              </span>
             </div>
-            <div className="amount">-</div>
-            <div className="price">19.30K - 21.45K ADN</div>
-          </div>
-          <div className="body">
-            <div className="token">
-              <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="token logo" className="token-logo" />
-              BTC
+            <div className="tooltip-header">
+              <span className="value">{`$${Number(BigNumber(
+                datas[currentPointIndex],
+              )).toLocaleString()}`}</span>
             </div>
-            <div className="amount">Amount</div>
-            <div className="price">0.000046 - 0.000051 BTC</div>
-          </div>
-        </IncentivizeGraphTooltipWrapper> : null
-      }>
+          </BarGraphTooltipWrapper> :
+          tooltipOption === "incentivized" && currentPointIndex > -1 && activated ?
+            <IncentivizeGraphTooltipWrapper>
+              <div className="row">
+                <div className="token">Token</div>
+                <div className="amount">Amount</div>
+                <div className="price">Price Range</div>
+              </div>
+              <div className="body">
+                <div className="token">
+                  <img src="https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg" alt="token logo" className="token-logo" />
+                  BTC
+                </div>
+                <div className="amount">-</div>
+                <div className="price">19.30K - 21.45K ADN</div>
+              </div>
+              <div className="body">
+                <div className="token">
+                  <img src="https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg" alt="token logo" className="token-logo" />
+                  BTC
+                </div>
+                <div className="amount">Amount</div>
+                <div className="price">0.000046 - 0.000051 BTC</div>
+              </div>
+            </IncentivizeGraphTooltipWrapper> : null
+        }>
         <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`}>
           <defs>
             <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">

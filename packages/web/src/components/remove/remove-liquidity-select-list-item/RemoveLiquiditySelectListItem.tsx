@@ -2,13 +2,13 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { RemoveLiquiditySelectListItemWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
-import { LPPositionModel } from "@models/position/lp-position-model";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { convertLiquidity } from "@utils/stake-position-utils";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface RemoveLiquiditySelectListItemProps {
   selected: boolean;
-  lpPosition: LPPositionModel;
+  position: PoolPositionModel;
   select: (id: string) => void;
   width: number;
 }
@@ -17,7 +17,7 @@ interface TooltipProps {
   selectable: boolean;
 }
 
-const TooltipContent:React.FC<TooltipProps> = ({ selectable }) => {
+const TooltipContent: React.FC<TooltipProps> = ({ selectable }) => {
   return (
     <TooltipWrapperContent>
       <div>
@@ -48,7 +48,7 @@ const TooltipContent:React.FC<TooltipProps> = ({ selectable }) => {
 
 const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps> = ({
   selected,
-  lpPosition,
+  position,
   select,
   width,
 }) => {
@@ -57,21 +57,21 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
   const liquidityRef = useRef<HTMLDivElement>(null);
 
   const selectable = useMemo(() => {
-    return lpPosition.position.balance > 0;
-  }, [lpPosition]);
+    return position.unclaimedFee0Amount + position.unclaimedFee1Amount > 0;
+  }, [position]);
 
   const doubleLogo = useMemo(() => {
-    const { tokenA, tokenB } = lpPosition.position.pool;
+    const { tokenA, tokenB } = position.pool;
     return {
       left: tokenA.logoURI,
       right: tokenB.logoURI,
     };
-  }, [lpPosition]);
+  }, [position]);
 
   const onChangeCheckbox = useCallback(() => {
-    select(lpPosition.lpRewardId);
-  }, [lpPosition.lpRewardId, select]);
-  
+    select(position.id);
+  }, [position.id, select]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const windowWidth = Math.min(width, 500);
@@ -84,24 +84,24 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
     <RemoveLiquiditySelectListItemWrapper selected={selected}>
       <div className="left-content" ref={leftDivRef}>
         <input
-          id={`checkbox-item-${lpPosition.lpRewardId}`}
+          id={`checkbox-item-${position.id}`}
           type="checkbox"
           disabled={!selectable}
           checked={selected}
           onChange={onChangeCheckbox}
         />
-        <label htmlFor={`checkbox-item-${lpPosition.lpRewardId}`} />
+        <label htmlFor={`checkbox-item-${position.id}`} />
         <DoubleLogo {...doubleLogo} size={24} />
         <Tooltip
           placement="top"
-          FloatingContent={<TooltipContent selectable={!selectable}/>}
+          FloatingContent={<TooltipContent selectable={!selectable} />}
         >
           <span className="token-id">GNS/GNOT</span>
         </Tooltip>
-        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT}/>
+        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
-      <span className="liquidity-value-fake" ref={liquidityRef}>${lpPosition.position.balance.toLocaleString()}</span>
-      <span className="liquidity-value" >${!checkWidth ? convertLiquidity(lpPosition.position.balance.toString()) : lpPosition.position.balance.toLocaleString()}</span>
+      <span className="liquidity-value-fake" ref={liquidityRef}>${position.liquidity.toLocaleString()}</span>
+      <span className="liquidity-value" >${!checkWidth ? convertLiquidity(position.liquidity.toString()) : position.liquidity.toLocaleString()}</span>
     </RemoveLiquiditySelectListItemWrapper>
   );
 };

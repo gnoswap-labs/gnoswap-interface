@@ -1,22 +1,24 @@
 import TokenAmountInput, { type TokenAmountInputProps } from "./TokenAmountInput";
 import { Meta, StoryObj } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "common/TokenAmountInput",
   component: TokenAmountInput,
 } as Meta<typeof TokenAmountInput>;
 
-const token = {
+const token: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
+  path: "gno.land/r/gns",
   decimals: 4,
-  symbol: "GNOS",
-  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
-  priceId: "gno.land/r/gnos"
+  symbol: "GNS",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  type: "grc20",
+  priceId: "gno.land/r/gns"
 };
 
 export const Default: StoryObj<TokenAmountInputProps> = {

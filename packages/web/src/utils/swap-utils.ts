@@ -22,7 +22,7 @@ export function makeSwapFeeTierByTickSpacing(
   tickSpacing: number,
 ): SwapFeeTierType {
   for (const swapFeeTierInfo of Object.values(SwapFeeTierInfoMap)) {
-    if (swapFeeTierInfo.tickSpacing === tickSpacing) {
+    if (swapFeeTierInfo.tickSpacing == tickSpacing) {
       return swapFeeTierInfo.type;
     }
   }

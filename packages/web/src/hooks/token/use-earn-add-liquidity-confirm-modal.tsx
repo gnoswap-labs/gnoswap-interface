@@ -11,6 +11,9 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import { numberToFormat } from "@utils/string-utils";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { useNotice } from "@hooks/common/use-notice";
+import { useTokenData } from "./use-token-data";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -57,29 +60,64 @@ export const useEarnAddLiquidityConfirmModal = ({
   createPool,
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
+  const { gnotToken } = useTokenData();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const navigator = useNavigate();
   const { setNotice } = useNotice();
 
+  const tokenAAmount = useMemo(() => {
+    const depositRatio = selectPool.depositRatio;
+    const compareTokenPath = selectPool.compareToken?.path;
+    if (depositRatio === null || compareTokenPath === undefined) {
+      return "0";
+    }
+    const ordered = compareTokenPath === tokenAAmountInput.token?.path;
+    if (ordered && depositRatio === 0) {
+      return "0";
+    }
+    if (!ordered && depositRatio === 100) {
+      return "0";
+    }
+    return tokenAAmountInput.amount;
+  }, [selectPool.depositRatio, selectPool.compareToken?.path, tokenAAmountInput.token?.path, tokenAAmountInput.amount]);
+
+  const tokenBAmount = useMemo(() => {
+    const depositRatio = selectPool.depositRatio;
+    const compareTokenPath = selectPool.compareToken?.path;
+    if (depositRatio === null || compareTokenPath === undefined) {
+      return "0";
+    }
+    const ordered = compareTokenPath === tokenBAmountInput.token?.path;
+    if (ordered && depositRatio === 0) {
+      return "0";
+    }
+    if (!ordered && depositRatio === 100) {
+      return "0";
+    }
+    return tokenBAmountInput.amount;
+  }, [selectPool.depositRatio, selectPool.compareToken?.path, tokenBAmountInput.token?.path, tokenBAmountInput.amount]);
+
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
       return null;
     }
+    const tokenAUsdValue = tokenAAmount === "0" ? "$0" : tokenAAmountInput.usdValue;
+    const tokenBUsdValue = tokenBAmount === "0" ? "$0" : tokenBAmountInput.usdValue;
     return {
       tokenA: {
         info: tokenA,
-        amount: tokenAAmountInput.amount,
-        usdPrice: tokenAAmountInput.usdValue,
+        amount: tokenAAmount,
+        usdPrice: tokenAUsdValue,
       },
       tokenB: {
         info: tokenB,
-        amount: tokenBAmountInput.amount,
-        usdPrice: tokenBAmountInput.usdValue,
+        amount: tokenBAmount,
+        usdPrice: tokenBUsdValue,
       },
       feeRate: SwapFeeTierInfoMap[swapFeeTier].rateStr
     };
-  }, [swapFeeTier, tokenA, tokenAAmountInput, tokenBAmountInput, tokenB]);
+  }, [tokenA, tokenB, swapFeeTier, tokenAAmount, tokenAAmountInput.usdValue, tokenBAmount, tokenBAmountInput.usdValue]);
 
   const priceLabel = useMemo(() => {
     if (!selectPool.compareToken || !tokenA || !tokenB) {
@@ -99,6 +137,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     if (selectPool.selectedFullRange) {
       return {
         currentPrice,
+        inRange: true,
         minPrice: "0.0000",
         maxPrice: "∞",
         priceLabel,
@@ -121,8 +160,17 @@ export const useEarnAddLiquidityConfirmModal = ({
       }
     }
     const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
+
+    let inRange = true;
+    if (!selectPool.maxPrice || BigNumber(selectPool.maxPrice).isLessThan(currentPrice)) {
+      inRange = false;
+    }
+    if (!selectPool.minPrice || BigNumber(selectPool.minPrice).isGreaterThan(currentPrice)) {
+      inRange = false;
+    }
     return {
       currentPrice,
+      inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
       priceLabel,
@@ -131,22 +179,12 @@ export const useEarnAddLiquidityConfirmModal = ({
     };
   }, [priceLabel, selectPool]);
 
-  const feeInfo = useMemo(() => {
+  const feeInfo = useMemo((): { token: TokenModel, fee: string } => {
     return {
-      token: {
-        path: "native",
-        address: "",
-        priceId: "GNOLAND",
-        chainId: "dev",
-        name: "Gno.land",
-        symbol: "GNS",
-        decimals: 6,
-        logoURI: "/gnos.svg",
-        createdAt: ""
-      },
-      fee: "0.000001"
+      token: gnotToken,
+      fee: `${makeDisplayTokenAmount(gnotToken, 1)}` || ""
     };
-  }, []);
+  }, [gnotToken]);
 
   const close = useCallback(() => {
     setOpenedModal(false);
@@ -178,8 +216,8 @@ export const useEarnAddLiquidityConfirmModal = ({
     setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999 });
     if (selectPool.isCreate) {
       createPool({
-        tokenAAmount: tokenAAmountInput.amount,
-        tokenBAmount: tokenBAmountInput.amount,
+        tokenAAmount,
+        tokenBAmount,
         minTick,
         maxTick,
         slippage,
@@ -189,14 +227,14 @@ export const useEarnAddLiquidityConfirmModal = ({
       return;
     }
     addLiquidity({
-      tokenAAmount: tokenAAmountInput.amount,
-      tokenBAmount: tokenBAmountInput.amount,
+      tokenAAmount,
+      tokenBAmount,
       minTick,
       maxTick,
       slippage,
       swapFeeTier,
     }).then(result => result && moveEarn());
-  }, [selectPool.isCreate, selectPool.maxPrice, selectPool.minPrice, selectPool.startPrice, selectPool.tickSpacing, slippage, swapFeeTier, tokenA, tokenAAmountInput.amount, tokenB, tokenBAmountInput.amount]);
+  }, [tokenA, tokenB, swapFeeTier, selectPool.tickSpacing, selectPool.minPrice, selectPool.maxPrice, selectPool.isCreate, selectPool.selectedFullRange, selectPool.startPrice, addLiquidity, tokenAAmount, tokenBAmount, slippage, createPool]);
 
   const openModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {

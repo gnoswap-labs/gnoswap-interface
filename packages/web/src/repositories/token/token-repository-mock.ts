@@ -8,8 +8,6 @@ import {
 import { StorageKeyType } from "@common/values";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { StorageClient } from "@common/clients/storage-client";
-import TokenData from "./mock/tokens.json";
-import TokenPriceData from "./mock/token-prices.json";
 
 export class TokenRepositoryMock implements TokenRepository {
   private localStorageClient: StorageClient<StorageKeyType>;
@@ -19,11 +17,11 @@ export class TokenRepositoryMock implements TokenRepository {
   }
 
   public getTokens = async (): Promise<TokenListResponse> => {
-    return TokenData;
+    return { tokens: [] };
   };
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {
-    return TokenPriceData;
+    return { prices: [] };
   };
 
   public createSearchLog = async (

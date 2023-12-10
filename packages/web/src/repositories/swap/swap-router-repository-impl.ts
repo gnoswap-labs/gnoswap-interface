@@ -1,6 +1,5 @@
 import { WalletClient } from "@common/clients/wallet-client";
 import { SwapRouterRepository } from "./swap-router-repository";
-import { TokenModel } from "@models/token/token-model";
 import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { CommonError } from "@common/errors";
@@ -12,7 +11,10 @@ import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-respon
 import { SwapRouter } from "@gnoswap-labs/swap-router";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { MAX_UINT64 } from "@utils/math.utils";
 
+const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 
@@ -49,10 +51,15 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const inputTokenPath = inputToken.path;
     const outputTokenPath = outputToken.path;
     const swapRouter = new SwapRouter(this.pools);
+    const tokenAmountRaw = makeRawTokenAmount(
+      exactType === "EXACT_IN" ? inputToken : outputToken,
+      tokenAmount,
+    );
+
     const estimatedRoutes = swapRouter.estimateSwapRoute(
       inputTokenPath,
       outputTokenPath,
-      BigInt(tokenAmount),
+      BigInt(tokenAmountRaw || 0),
       exactType,
     );
 
@@ -61,7 +68,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const param = makeABCIParams("DrySwapRoute", [
       inputTokenPath,
       outputTokenPath,
-      tokenAmount,
+      tokenAmountRaw || "0",
       exactType,
       routesQuery,
       quotes,
@@ -74,8 +81,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     if (result === null) {
       throw new SwapError("NOT_FOUND_SWAP_POOL");
     }
+    const resultAmount = makeDisplayTokenAmount(
+      exactType === "EXACT_IN" ? outputToken : inputToken,
+      result,
+    );
     return {
-      amount: result.toString(),
+      amount: resultAmount?.toString() || "0",
       estimatedRoutes,
     };
   };
@@ -97,33 +108,51 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       estimatedRoutes,
       tokenAmountLimit,
     } = request;
+
+    const targetToken = exactType === "EXACT_IN" ? inputToken : outputToken;
+    const resultToken = exactType === "EXACT_IN" ? outputToken : inputToken;
+    const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount) || "0";
+    const tokenAmountLimitRaw =
+      makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
+    let sendAmount = "";
+    if (inputToken.type === "native") {
+      const sendTokeAnmount =
+        exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
+      sendAmount = BigNumber(sendTokeAnmount).isGreaterThan(0)
+        ? `${sendTokeAnmount}ugnot`
+        : "";
+    }
+    const inputTokenPath =
+      inputToken.type === "grc20" ? inputToken.path : WRAPPED_GNOT_PATH;
+    const outputTokenPath =
+      outputToken.type === "grc20" ? outputToken.path : WRAPPED_GNOT_PATH;
     const response = await this.walletClient.sendTransaction({
       messages: [
         SwapRouterRepositoryImpl.makeApproveTokenMessage(
-          inputToken,
-          "",
+          inputTokenPath,
+          MAX_UINT64.toString(),
           address,
         ),
         SwapRouterRepositoryImpl.makeApproveTokenMessage(
-          outputToken,
-          "",
+          outputTokenPath,
+          MAX_UINT64.toString(),
           address,
         ),
         {
           caller: address,
-          send: "",
+          send: sendAmount,
           pkg_path: ROUTER_PACKAGE_PATH,
           func: "SwapRoute",
           args: [
             inputToken.path,
             outputToken.path,
-            `${tokenAmount}`,
+            `${tokenAmountRaw || 0}`,
             exactType,
             `${routesQuery}`,
             `${quotes}`,
-            `${tokenAmountLimit}`,
+            `${tokenAmountLimitRaw}`,
           ],
         },
       ],
@@ -138,16 +167,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   };
 
   private static makeApproveTokenMessage(
-    token: TokenModel,
+    tokenPath: string,
     amount: string,
     caller: string,
   ) {
     return {
       caller,
       send: "",
-      pkg_path: token.path,
+      pkg_path: tokenPath,
       func: "Approve",
-      args: [POOL_ADDRESS, "999999999999"],
+      args: [POOL_ADDRESS, amount],
     };
   }
 }

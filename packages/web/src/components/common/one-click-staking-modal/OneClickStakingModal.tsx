@@ -23,10 +23,10 @@ interface Props {
   };
   priceRangeInfo: {
     currentPrice: string;
+    inRange: boolean;
     minPrice: string;
-    minPriceLable: string;
     maxPrice: string;
-    maxPriceLable: string;
+    priceLabel: string;
     feeBoost: string;
     estimatedAPR: string;
   };
@@ -50,7 +50,7 @@ const OneClickStakingModal: React.FC<Props> = ({ close, amountInfo, priceRangeIn
           <div>
             <EarnAddConfirmAmountInfo {...amountInfo} />
           </div>
-          <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} priceLabel={""} symbolTokenA={amountInfo.tokenA.info.symbol} symbolTokenB={amountInfo.tokenB.info.symbol} isShowStaking />
+          <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} isShowStaking />
           <div>
             <Button
               text="Confirm One-Click Staking"

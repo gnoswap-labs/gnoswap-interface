@@ -15,16 +15,16 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const [amount, setAmount] = useState<string>("0");
   const [balance, setBalance] = useState<string>("0");
   const [usd, setUSD] = useState<number>();
-  const { balances, tokenPrices } = useTokenData();
+  const { displayBalanceMap, tokenPrices } = useTokenData();
 
   useEffect(() => {
-    if (token && balances[token.path]) {
-      const balance = balances[token.path];
+    if (token && displayBalanceMap[token.priceId]) {
+      const balance = displayBalanceMap[token.priceId];
       setBalance(BigNumber(balance ?? 0).toFormat());
     } else {
       setBalance("0");
     }
-  }, [balances, token]);
+  }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {
     if (!usd) {
@@ -48,7 +48,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(value.toString()).toNumber();
       setUSD(usd);
     }
-  }, [token, tokenPrices, setUSD, amount]);
+  }, [token, tokenPrices]);
 
   return {
     token,

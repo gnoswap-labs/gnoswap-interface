@@ -17,6 +17,8 @@ import ChainNetworkInfos from "@resources/chains.json";
 import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
 import { SwapRouterRepositoryImpl } from "@repositories/swap/swap-router-repository-impl";
 import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
+import { PositionRepository } from "@repositories/position/position-repository";
+import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
 
 interface GnoswapContextProps {
   rpcProvider: GnoProvider | null;
@@ -27,6 +29,7 @@ interface GnoswapContextProps {
   swapRepository: SwapRepository;
   swapRouterRepository: SwapRouterRepository;
   tokenRepository: TokenRepository;
+  positionRepository: PositionRepository;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -92,6 +95,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new TokenRepositoryImpl(networkClient, localStorageClient);
   }, [localStorageClient, networkClient]);
 
+  const positionRepository = useMemo(() => {
+    return new PositionRepositoryImpl(networkClient);
+  }, [networkClient]);
+
   async function initNetwork() {
     const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
     const currentNetwork = network || ChainNetworkInfos.find(info => info.chainId === defaultChainId);
@@ -131,6 +138,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         swapRepository,
         tokenRepository,
         swapRouterRepository,
+        positionRepository,
       }}
     >
       {rpcProvider && children}
