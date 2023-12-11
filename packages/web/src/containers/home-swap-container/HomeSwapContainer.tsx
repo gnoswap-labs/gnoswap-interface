@@ -45,18 +45,16 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenBAmount] = useState<string>("0");
   const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
-  const { connected } = useWallet();
+  const { connected, account } = useWallet();
   const [, setSwapValue] = useAtom(SwapState.swap);
-
-  console.log(tokenB);
   
   const tokenABalance = useMemo(() => {
     if (!connected) return "-";
-    if (tokenA && balances[tokenA.priceId]) {
-      return BigNumber(balances[tokenA.priceId] || 0).toFormat();
+    if (account?.balances[0].amount) {
+      return `${(Number(account?.balances[0].amount) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
     }
     return "0";
-  }, [connected ,balances, tokenA]);
+  }, [connected, account]);
 
   const tokenBBalance = useMemo(() => {
     if (!connected) return "-";

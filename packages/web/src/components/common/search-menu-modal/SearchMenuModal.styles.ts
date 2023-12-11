@@ -150,7 +150,6 @@ export const ModalContainer = styled.div`
     }
     .coin-info-detail {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
-      max-width: 250px;
       gap: 2px;
       > span {
         color: ${({ theme }) => theme.color.text04};
@@ -161,14 +160,14 @@ export const ModalContainer = styled.div`
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
         .token-name {
-          max-width: 148px;
+          min-width: 30px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
         .token-path {
+          max-width: calc(100% - 38px);
           > div {
-            max-width: 74px;
             overflow: hidden;
             text-overflow: ellipsis;
             direction: rtl;
@@ -182,6 +181,7 @@ export const ModalContainer = styled.div`
           color: ${({ theme }) => theme.color.text04};
           ${fonts.p6}
           svg {
+            min-width: 10px;
             width: 10px;
             height: 10px;
             * {
@@ -199,12 +199,8 @@ export const ModalContainer = styled.div`
         }
       }
       ${media.mobile} {
-        max-width: 175px;
         > div {
           max-width: 100%;
-          .token-name {
-            max-width: 79px;
-          }
         }
       }
     }
@@ -290,4 +286,20 @@ export const Overlay = styled.div`
   overflow: hidden;
   z-index: ${Z_INDEX.modalOverlay};
   background: rgba(10, 14, 23, 0.7);
+`;
+
+interface Props {
+  maxWidth: number;
+}
+
+export const TokenInfoWrapper = styled.div<Props>`
+  overflow-x: hidden;
+  max-width: ${({ maxWidth }) => {
+    return `calc(460px - 100px - ${maxWidth}px)`;
+  }};
+  ${media.mobile} {
+    max-width: ${({ maxWidth }) => {
+      return `calc(328px - 66px - ${maxWidth}px)`;
+    }};
+  }
 `;

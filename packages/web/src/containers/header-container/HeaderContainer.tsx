@@ -207,8 +207,6 @@ const HeaderContainer: React.FC = () => {
   
   const popularTokens = useMemo(() => {
     let temp = listTokens;
-    console.log(temp);
-    
     if (keyword) {
       temp = listTokens.filter((item: TokenModel) => (item.name.toLowerCase()).includes(keyword.toLowerCase()) 
       || (item.symbol.toLowerCase()).includes(keyword.toLowerCase())

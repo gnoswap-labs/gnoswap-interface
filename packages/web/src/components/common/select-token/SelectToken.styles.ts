@@ -163,7 +163,6 @@ export const SelectTokenWrapper = styled.div`
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
       padding: 15px 23px;
-      gap: 8px;
       ${media.mobile} {
         padding: 10px 11px;
       }
@@ -212,7 +211,6 @@ export const SelectTokenWrapper = styled.div`
       }
       .token-info-detail {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
-        max-width: 250px;
         gap: 2px;
         > span {
           color: ${({ theme }) => theme.color.text04};
@@ -223,14 +221,14 @@ export const SelectTokenWrapper = styled.div`
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 8px;
           .token-name {
-            max-width: 148px;
+            min-width: 25px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
           }
           .token-path {
+            max-width: calc(100% - 34px);
             > div {
-              max-width: 74px;
               overflow: hidden;
               text-overflow: ellipsis;
               direction: rtl;
@@ -261,17 +259,14 @@ export const SelectTokenWrapper = styled.div`
           }
         }
         ${media.mobile} {
-          max-width: 175px;
           > div {
             max-width: 100%;
-            .token-name {
-              max-width: 79px;
-            }
           }
         }
       }
       .token-balance {
         color: ${({ theme }) => theme.color.text02};
+        margin-left: 10px;
         ${fonts.body9}
         ${media.mobile} {
           ${fonts.body11}
@@ -284,4 +279,20 @@ export const SelectTokenWrapper = styled.div`
 export const Divider = styled.div`
   width: 100%;
   border-top: 1px solid ${({ theme }) => theme.color.border02};
+`;
+
+interface Props {
+  maxWidth: number;
+}
+
+export const TokenInfoWrapper = styled.div<Props>`
+  overflow-x: hidden;
+  max-width: ${({ maxWidth }) => {
+    return `calc(460px - 100px - ${maxWidth}px)`;
+  }};
+  ${media.mobile} {
+    max-width: ${({ maxWidth }) => {
+      return `calc(328px - 56px - ${maxWidth}px)`;
+    }};
+  }
 `;

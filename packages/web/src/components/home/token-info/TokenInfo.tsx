@@ -53,7 +53,6 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
 
   const onClickPoolItem = (item: MostLiquidPool) => {
     if (item.tokenPair.tokenA.logoURI) {
-      console.log(item);
       location.href = `/earn/pool/1c550fbfa3149fd8da5a52055f16b1b34c00fe1c1f3f543dc5f2d669a4db55dc?path=${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path}:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
     }
   }

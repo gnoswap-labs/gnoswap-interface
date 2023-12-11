@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
-import { Divider, SelectTokenWrapper } from "./SelectToken.styles";
+import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
@@ -29,6 +29,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   modalRef,
 }) => {
   const myElementRef = useRef<HTMLDivElement | null>(null);
+  const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
+  const [widthList, setWidthList] = useState<number[]>(tokens.map(() => (0)));
   const [positionTop, setPositionTop] = useState(0);
 
   const getTokenPrice = useCallback((token: TokenModel) => {
@@ -67,12 +69,25 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       }
     };
     getPositionTop();
-  }, [positionTop]);
-  
+  }, [positionTop, JSON.stringify(tokens)]);
+
+  useEffect(() => {
+    const temp: number[] = [];
+    priceRefs.current.forEach((ref, index) => {
+      if (ref.current) {
+        const width = ref.current.getBoundingClientRect().width;
+        temp.push(width);
+        console.log(`Width of token-balance span at index ${index}:`, width);
+      }
+    });
+    setWidthList(temp);
+  }, [priceRefs]);
+
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
     e.stopPropagation();
     window.open("https://gnoscan.io/tokens/" + path, "_blank") ;
   }, []);
+
   return (
     <SelectTokenWrapper ref={myElementRef}>
       <div className="content">
@@ -121,7 +136,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
             >
               <div className="token-info">
                 {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
-                <div className="token-info-detail">
+                <TokenInfoWrapper className="token-info-detail" maxWidth={widthList[index]}>
                   <div>
                     <span className="token-name">{token.name}</span>
                     <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}>
@@ -130,9 +145,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                     </div>
                   </div>
                   <span className="token-symbol">{token.symbol}</span>
-                </div>
+                </TokenInfoWrapper>
               </div>
-              <span className="token-balance">{getTokenPrice(token)}</span>
+              <span className="token-balance" ref={priceRefs.current[index]}>{getTokenPrice(token)}</span>
             </div>
           ))}
         {tokens.length === 0 && (

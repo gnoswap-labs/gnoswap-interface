@@ -1,7 +1,7 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
 import { Token } from "@containers/header-container/HeaderContainer";
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
 import {
   SearchModalBackground,
   SearchContainer,
@@ -9,6 +9,7 @@ import {
   InputStyle,
   ModalContainer,
   Overlay,
+  TokenInfoWrapper,
 } from "./SearchMenuModal.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import Badge, { BADGE_TYPE } from "../badge/Badge";
@@ -45,7 +46,11 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   recents,
 }) => {
   const [, setRecentsData] = useAtom(TokenState.recents);
-  
+  const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => (0)));
+  const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => (0)));
+  const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
+  const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
+
   const menuRef = useRef<HTMLDivElement | null>(null);
   const onClickItem = (item: Token) => {
     const current = recents.length > 0 ? [item, recents[0]] : [item];
@@ -63,6 +68,29 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     window.open("https://gnoscan.io/tokens/" + path, "_blank");
   }, []);
   
+  useEffect(() => {
+    let temp: number[] = [];
+    popularPriceRef.current.forEach((ref) => {
+      if (ref.current) {
+        const width = ref.current.getBoundingClientRect().width;
+        temp.push(width);
+      }
+    });
+    setWidthListPopular(temp);
+  }, [popularPriceRef]);
+
+
+  useEffect(() => {
+    let temp: number[] = [];
+    recentPriceRef.current.forEach((ref) => {
+      if (ref.current) {
+        const width = ref.current.getBoundingClientRect().width;
+        temp.push(width);
+      }
+    });
+    setWidthListRecent(temp);
+  }, [recentPriceRef]);
+
   return (
     <>
       <SearchModalBackground>
@@ -97,7 +125,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           <div className="coin-info-wrapper">
                             {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{item.token.symbol.slice(0,3)}</div>}
 
-                            <div className="coin-info-detail">
+                            <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListRecent[idx]}>
                               <div>
                                 <span className="token-name">
                                   {item.token.name}
@@ -108,9 +136,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                 </div>
                               </div>
                               <span>{item.token.symbol}</span>
-                            </div>
+                            </TokenInfoWrapper>
                           </div>
-                          <div className="coin-infor-value">
+                          <div className="coin-infor-value" ref={recentPriceRef.current[idx]}>
                             <span className="token-price">{item.price}</span>
                             {item.priceOf1d.status === "POSITIVE" ? (
                               <span className="positive">
@@ -165,7 +193,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       <div className="coin-info-wrapper">
                         {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{item.token.symbol.slice(0,3)}</div>}
 
-                        <div className="coin-info-detail">
+                        <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListPopular[idx]}>
                           <div>
                             <span className="token-name">
                               {item.token.name}
@@ -176,9 +204,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             </div>
                           </div>
                           <span>{item.token.symbol}</span>
-                        </div>
+                        </TokenInfoWrapper>
                       </div>
-                      <div className="coin-infor-value">
+                      <div className="coin-infor-value" ref={popularPriceRef.current[idx]}>
                         <span className="token-price">{item.price}</span>
                         {item.priceOf1d.status === "POSITIVE" ? (
                           <span className="positive">
