@@ -15,6 +15,19 @@ interface SelectTokenContainerProps {
 }
 const ORDER = ["GNOT", "GNS", "BAR", "FOO", "BAZ", "QUX"];
 
+const customSort = (a: TokenModel, b: TokenModel) => {
+  const symbolA = a.symbol.toUpperCase();
+  const symbolB = b.symbol.toUpperCase();
+
+  const indexA = ORDER.indexOf(symbolA);
+  const indexB = ORDER.indexOf(symbolB);
+
+  if (indexA === -1) return 1;
+  if (indexB === -1) return -1;
+
+  return indexA - indexB;
+};
+
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   changeToken,
   callback,
@@ -45,12 +58,11 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
 
   const defaultTokens = useMemo(() => {
     const temp = tokens.filter((_) => !!_.logoURI);
-    const sortedTokenList = temp.sort((a: TokenModel, b: TokenModel) => {
-      return ORDER.indexOf(a.symbol) - ORDER.indexOf(b.symbol);
-  });
-  return sortedTokenList;
+    const sortedTokenList = temp.sort(customSort);
+    return sortedTokenList;
   }, [tokens]);
-
+  console.log(defaultTokens);
+  
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
     return tokens.filter(token =>

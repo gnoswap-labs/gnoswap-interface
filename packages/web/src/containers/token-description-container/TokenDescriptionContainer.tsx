@@ -68,7 +68,7 @@ const TokenDescriptionContainer: React.FC = () => {
         },
         links: {
           Website: currentToken.websiteURL || "",
-          Gnoscan: "gnoscan.io/tokens/r_demo_grc20_GNOS",
+          Gnoscan: `https://gnoscan.io/tokens/${currentToken.path}`,
         }
       }));
     }
@@ -80,6 +80,7 @@ const TokenDescriptionContainer: React.FC = () => {
       tokenSymbol={descriptionInfo.token.symbol}
       content={descriptionInfo.token.description}
       links={descriptionInfo.links}
+      path={descriptionInfo.token.pkg_path}
       loading={isLoading}
       copyClick={copyClick}
       copied={copied}

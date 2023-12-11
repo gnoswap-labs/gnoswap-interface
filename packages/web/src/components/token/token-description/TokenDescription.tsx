@@ -11,6 +11,7 @@ interface TokenDescriptionProps {
   loading: boolean;
   copied: boolean;
   copyClick: () => void;
+  path: string;
 }
 
 const TokenDescription: React.FC<TokenDescriptionProps> = ({
@@ -20,7 +21,8 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
   links,
   loading,
   copied,
-  copyClick
+  copyClick,
+  path,
 }) => {
   return (
     <div css={wrapper}>
@@ -37,7 +39,7 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
         />
       </>}
 
-      <TokenDescriptionLinks links={links} copyClick={copyClick} copied={copied}/>
+      <TokenDescriptionLinks links={links} copyClick={copyClick} copied={copied} path={path}/>
     </div>
   );
 };

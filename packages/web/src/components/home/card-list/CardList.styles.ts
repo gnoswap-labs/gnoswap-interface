@@ -17,7 +17,7 @@ export const CardListWrapper = styled.ul`
 
 export const ListItem = styled.li<{ upDown: UpDownType }>`
   ${mixins.flexbox("row", "center", "flex-start")};
-  ${fonts.body12};
+  ${fonts.body11};
   width: 100%;
   height: 40px;
   padding: 8px 24px;

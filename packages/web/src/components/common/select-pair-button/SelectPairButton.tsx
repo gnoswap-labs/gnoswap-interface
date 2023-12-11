@@ -41,7 +41,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
     >
       {token ? (
         <div>
-          {token.logoURI ? <img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
+          {token.logoURI ? <img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (

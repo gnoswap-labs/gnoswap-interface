@@ -36,7 +36,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean, isHiddenArrow?: b
       height: 24px;
       border-radius: 50%;
     }
-    .fake-logo {
+    .missing-logo {
       ${mixins.flexbox("row", "center", "center")};
       min-width: 24px;
       height: 24px;

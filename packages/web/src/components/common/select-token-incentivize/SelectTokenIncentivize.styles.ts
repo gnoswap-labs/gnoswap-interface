@@ -175,7 +175,7 @@ export const SelectTokenIncentivizeWrapper = styled.div`
         width: 24px;
         height: 24px;
       }
-      .fake-logo {
+      .missing-logo {
         ${mixins.flexbox("row", "center", "center")};
         width: 24px;
         height: 24px;

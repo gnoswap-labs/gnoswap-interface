@@ -50,13 +50,17 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => (0)));
   const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
   const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
-
+  console.log(recents);
+  
   const menuRef = useRef<HTMLDivElement | null>(null);
   const onClickItem = (item: Token) => {
     const current = recents.length > 0 ? [item, recents[0]] : [item];
 
     setRecentsData(JSON.stringify(current.filter((_item, index, self) => {
-      return self.indexOf(_item) === index;
+      const _value = JSON.stringify(_item);
+      return index === current.findIndex(obj => {
+        return JSON.stringify(obj) === _value;
+      });
     })));
     onSearchMenuToggle();
     location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
@@ -123,7 +127,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           onClick={() => onClickItem(item)}
                         >
                           <div className="coin-info-wrapper">
-                            {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{item.token.symbol.slice(0,3)}</div>}
+                            {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
 
                             <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListRecent[idx]}>
                               <div>
@@ -191,7 +195,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       onClick={() => onClickItem(item)}
                     >
                       <div className="coin-info-wrapper">
-                        {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{item.token.symbol.slice(0,3)}</div>}
+                        {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
 
                         <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListPopular[idx]}>
                           <div>

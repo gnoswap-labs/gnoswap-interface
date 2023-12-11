@@ -79,7 +79,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     width: 24px;
     height: 24px;
   }
-  .fake-logo {
+  .missing-logo {
     ${mixins.flexbox("row", "center", "center")};
     min-width: 24px;
     height: 24px;
@@ -101,5 +101,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   .token-index {
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
+  }
+  .token-symbol,
+  .fee-rate {
+    ${fonts.body11};
   }
 `;

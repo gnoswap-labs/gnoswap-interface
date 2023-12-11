@@ -21,7 +21,7 @@ export const TokenChartInfoWrapper = styled.div`
         width: 36px;
         height: 36px;
       }
-      .fake-logo {
+      .missing-logo {
         ${mixins.flexbox("row", "center", "center")};
         width: 36px;
         height: 36px;

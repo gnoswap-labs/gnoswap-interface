@@ -180,7 +180,7 @@ export const SelectTokenWrapper = styled.div`
           width: 32px;
           height: 32px;
         }
-        .fake-logo {
+        .missing-logo {
           ${mixins.flexbox("row", "center", "center")};
           width: 32px;
           height: 32px;
@@ -203,9 +203,9 @@ export const SelectTokenWrapper = styled.div`
         }
         .token-symbol {
           color: ${({ theme }) => theme.color.text04};
-          ${fonts.p4}
+          ${fonts.p3}
           ${media.mobile} {
-            ${fonts.p4}
+            ${fonts.p3}
           }
         }
       }

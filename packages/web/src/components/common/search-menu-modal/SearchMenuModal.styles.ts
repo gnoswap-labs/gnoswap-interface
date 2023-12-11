@@ -133,7 +133,7 @@ export const ModalContainer = styled.div`
         height: 24px;
       }
     }
-    .fake-logo {
+    .missing-logo {
       ${mixins.flexbox("row", "center", "center")};
       width: 32px;
       height: 32px;

@@ -60,7 +60,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
+                {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
                 <span className="token-name">{token.name}</span>
                 <span className="token-symbol">{token.symbol}</span>
               </div>

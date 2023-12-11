@@ -64,7 +64,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
-          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="fake-logo">{token.symbol.slice(0,3)}</div>}
+          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
           <strong className="token-name">{token.name}</strong>
           <span className="token-symbol">{token.symbol}</span>
         </TableColumn>

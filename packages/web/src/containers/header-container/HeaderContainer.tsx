@@ -165,7 +165,7 @@ const HeaderContainer: React.FC = () => {
   const { data: { prices = [] } = {} } = useGetTokenPrices({ enabled: !!searchMenuToggle });
   
   const recents = useMemo(() => {
-    return parseJson(recentsData);
+    return parseJson(recentsData ? recentsData : "[]");
   }, [recentsData]);
 
   const mostLiquidity = useMemo(() => {

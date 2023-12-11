@@ -28,7 +28,7 @@ export const DoubleLogoWrapper = styled.div<DoubleLogoStyleProps>`
       return "-6px";
     }};
   }
-  .fake-logo {
+  .missing-logo {
     ${mixins.flexbox("row", "center", "center")};
     width: ${({ size }) => {
       if (size) return typeof size === "number" ? `${size}px` : size;

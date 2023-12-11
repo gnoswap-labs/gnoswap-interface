@@ -34,7 +34,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
     <TokenChartInfoWrapper>
       <div className="token-info-wrapper">
         <div className="token-info">
-          {token.image ? <img src={token.image} className="token-image" alt="token image" /> : <div className="fake-logo">{(token.symbol ?? "").slice(0,3)}</div>}
+          {token.image ? <img src={token.image} className="token-image" alt="token image" /> : <div className="missing-logo">{(token.symbol ?? "").slice(0,3)}</div>}
           <div>
             <span className="token-name">{token.name}</span>
             <span className="token-symbol">{token.symbol}</span>

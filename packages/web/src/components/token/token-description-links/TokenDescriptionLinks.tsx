@@ -8,12 +8,14 @@ interface TokenDescriptionLinksProps {
   links: { [key: string]: string };
   copied: boolean;
   copyClick: () => void;
+  path: string;
 }
 
 const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
   links,
   copied,
-  copyClick
+  copyClick,
+  path,
 }) => {
   const onClickLink = (link: string) => {
     return window.open(link, "_blank");
@@ -23,7 +25,7 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
       <div className="contract-path">
         <h3>Realm (Contract) Path</h3>
         <button>
-          <span>gno.land/r/demo/gnoswap</span>
+          <span>{path}</span>
           <div className="icon-wrapper" onClick={copyClick}>
             <IconCopy className="link-icon"/>
             {copied && (
