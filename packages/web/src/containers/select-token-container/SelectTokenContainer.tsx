@@ -8,12 +8,18 @@ import { ThemeState, TokenState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import BigNumber from "bignumber.js";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
   modalRef?: React.RefObject<HTMLDivElement>;
 }
+
+export interface SortedProps extends TokenModel {
+  price: string;
+}
+
 const ORDER = ["GNOT", "GNS", "BAR", "BAZ", "QUX", "FOO"];
 
 const customSort = (a: TokenModel, b: TokenModel) => {
@@ -27,6 +33,39 @@ const customSort = (a: TokenModel, b: TokenModel) => {
   if (indexB === -1) return -1;
 
   return indexA - indexB;
+};
+
+const customSortAll = (a: SortedProps, b: SortedProps): number => {
+  if (a.symbol === "GNOT" && b.symbol !== "GNOT") {
+    return -1;
+  } else if (a.symbol !== "GNOT" && b.symbol === "GNOT") {
+    return 1;
+  } else if (a.symbol === "GNS" && b.symbol !== "GNS") {
+    return -1;
+  } else if (a.symbol !== "GNS" && b.symbol === "GNS") {
+    return 1;
+  } else {
+    const priceA = parseFloat(a.price.replace(/,/g, ""));
+    const priceB = parseFloat(b.price.replace(/,/g, ""));
+    console.log(priceA);
+    
+    if (!isNaN(priceA) && !isNaN(priceB) &&  priceA > priceB) {
+      return -1;
+    } else if (!isNaN(priceA) || !isNaN(priceB) ) {
+      return 1;
+    } else {
+      const numberRegex = /\d+/;
+      const numberA = numberRegex.test(a.name);
+      const numberB = numberRegex.test(b.name);
+      if (numberA > numberB) {
+        return -1;
+      } else if (numberA > numberB) {
+        return 1;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    }
+  }
 };
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
@@ -66,12 +105,23 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
-    return tokens.filter(token =>
+    const temp: SortedProps[] = tokens.map((item: TokenModel) => {
+      const tokenPrice = balances[item.priceId];
+      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+        return {
+          price: "-",
+          ...item,
+        };
+      }
+      return {...item, price: BigNumber(tokenPrice).toFormat()};
+    });
+    const sortedData = temp.sort(customSortAll);
+    return sortedData.filter(token =>
       token.name.toLowerCase().includes(lowerKeyword) ||
       token.symbol.toLowerCase().includes(lowerKeyword) ||
       token.path.toLowerCase().includes(lowerKeyword)
     );
-  }, [keyword, tokens]);
+  }, [keyword, tokens, balances]);
 
   const selectToken = useCallback((token: TokenModel) => {
     if (!changeToken) {

@@ -227,6 +227,7 @@ export const ModalContainer = styled.div`
     }
     .token-name {
       ${fonts.body9};
+      white-space: nowrap;
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
         ${fonts.body11}
@@ -289,20 +290,20 @@ interface Props {
 export const TokenInfoWrapper = styled.div<Props>`
   overflow-x: hidden;
   max-width: ${({ maxWidth }) => {
-    return `calc(460px - 100px - ${maxWidth}px)`;
+    return `calc(460px - 150px - ${maxWidth}px)`;
   }};
   .token-path {
     max-width: ${({ tokenNameWidthList, maxWidth }) => {
-      return `calc(460px - 108px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+      return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
     }};
   }
   ${media.mobile} {
     max-width: ${({ maxWidth }) => {
-      return `calc(328px - 66px - ${maxWidth}px)`;
+      return `calc(328px - 96px - ${maxWidth}px)`;
     }};
     .token-path {
       max-width: ${({ tokenNameWidthList, maxWidth }) => {
-        return `calc(328px - 74px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+        return `calc(328px - 104px - ${maxWidth}px - ${tokenNameWidthList}px)`;
       }};
     }
   }

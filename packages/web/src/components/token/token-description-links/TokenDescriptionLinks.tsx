@@ -22,7 +22,7 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
   };
   return (
     <div css={wrapper}>
-      <div className="contract-path">
+      {path && <div className="contract-path">
         <h3>Realm (Contract) Path</h3>
         <button onClick={copyClick}>
           <span>{path}</span>
@@ -38,15 +38,17 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
             )}
           </div>
         </button>
-      </div>
+      </div>}
       <div className="link">
         <h3>Links</h3>
         <div className="group-button">
           {Object.keys(links)?.map((link, idx) => (
-            <button key={idx} onClick={() => onClickLink(links[link])}>
-              <span>{link}</span>
-              <IconOpenLink className="link-icon"/>
-            </button>
+            links[link] ? (
+              <button key={idx} onClick={() => onClickLink(links[link])}>
+                <span>{link}</span>
+                <IconOpenLink className="link-icon"/>
+              </button>
+            ) : null
           ))}
         </div>
       </div>

@@ -74,7 +74,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       }
     };
     getPositionTop();
-  }, [positionTop, JSON.stringify(tokens)]);
+  }, [positionTop]);
 
   useEffect(() => {
     const temp: number[] = [];
