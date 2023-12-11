@@ -79,6 +79,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .group-button {
     ${mixins.flexbox("row", "flex-start", "flex-start")};
+    gap: 4px;
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -107,8 +108,8 @@ export const copyTooltip = (theme: Theme) => css`
     ${fonts.body12};
     color: ${theme.color.text02};
     background-color: ${theme.color.background02};
+    box-shadow: ${theme.color.shadow03};
   }
-  box-shadow: ${theme.color.shadow03};
   .polygon-icon * {
     fill: ${theme.color.background02};
   }

@@ -31,7 +31,7 @@ const TokenChart: React.FC<TokenChartProps> = ({
         changeTab={changeTab}
       />
       {chartInfo?.datas.length === 0 && !loading && <ChartNotFound>
-        No data found
+        No data
       </ChartNotFound>}
       {loading && <LoadingChart>
         <LoadingSpinner />

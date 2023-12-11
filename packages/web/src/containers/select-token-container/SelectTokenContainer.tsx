@@ -3,8 +3,8 @@ import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { TokenModel } from "@models/token/token-model";
-import { useAtomValue } from "jotai";
-import { ThemeState } from "@states/index";
+import { useAtomValue, useAtom } from "jotai";
+import { ThemeState, TokenState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 
@@ -24,8 +24,11 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const [, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
+
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: (value: any) => {
+      setFromSelectToken(true);
       changeToken?.(value);
       close();
     }

@@ -246,6 +246,7 @@ const HeaderContainer: React.FC = () => {
   const { openModal } = useConnectWalletModal();
 
   const handleESC = () => {
+    setKeyword("");
     setSearchMenuToggle(false);
   }
   useEscCloseModal(handleESC);
@@ -264,6 +265,7 @@ const HeaderContainer: React.FC = () => {
   };
 
   const onSearchMenuToggle = () => {
+    setKeyword("");
     setSearchMenuToggle(prev => !prev);
   };
 

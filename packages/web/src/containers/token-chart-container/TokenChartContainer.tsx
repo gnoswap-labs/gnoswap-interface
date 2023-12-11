@@ -4,6 +4,10 @@ import { useRouter } from "next/router";
 import { useGetTokenDetailByPath, useGetTokensList } from "src/react-query/token";
 import { IPriceResponse } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
+import { useAtom } from "jotai";
+import { TokenState } from "@states/index";
+import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
+import { useClearModal } from "@hooks/common/use-clear-modal";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
@@ -134,7 +138,17 @@ const TokenChartContainer: React.FC = () => {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
   const router = useRouter();
+  const [fromSelectToken, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
+  const clearModal = useClearModal();
 
+  const { openModal: openTradingModal } = useTokenTradingModal({
+    onClickConfirm: (value: any) => {
+      console.log(value);
+      
+      setFromSelectToken(false);
+      clearModal();
+    }
+  });
   const { data: { tokens = [] } = {} } = useGetTokensList();
   const { data: { prices = [], priceChangeDetail = priceChangeDetailInit, currentPrice = "" } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
 
@@ -160,6 +174,9 @@ const TokenChartContainer: React.FC = () => {
           changedRate: Number(priceChangeDetail?.changeToday || 0),
         },
       }));
+      if (!fromSelectToken && !currentToken.logoURI) {
+        openTradingModal({ symbol: currentToken.symbol, path: currentToken.path });
+      }
     }
   }, [router.query, priceChangeDetail.toString(), currentPrice, tokens]);
   
