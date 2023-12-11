@@ -7,13 +7,14 @@ import { useAtomValue, useAtom } from "jotai";
 import { ThemeState, TokenState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
   modalRef?: React.RefObject<HTMLDivElement>;
 }
-const ORDER = ["GNOT", "GNS", "BAR", "FOO", "BAZ", "QUX"];
+const ORDER = ["GNOT", "GNS", "BAR", "BAZ", "QUX", "FOO"];
 
 const customSort = (a: TokenModel, b: TokenModel) => {
   const symbolA = a.symbol.toUpperCase();
@@ -33,6 +34,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   callback,
   modalRef,
 }) => {
+  const { breakpoint } = useWindowSize();
   const { tokens, balances, updateTokens, updateBalances } = useTokenData();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
@@ -59,9 +61,8 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const defaultTokens = useMemo(() => {
     const temp = tokens.filter((_) => !!_.logoURI);
     const sortedTokenList = temp.sort(customSort);
-    return sortedTokenList;
+    return sortedTokenList.slice(0, 6);
   }, [tokens]);
-  console.log(defaultTokens);
   
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
@@ -106,6 +107,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       close={close}
       themeKey={themeKey}
       modalRef={modalRef}
+      breakpoint={breakpoint}
     />
   );
 };

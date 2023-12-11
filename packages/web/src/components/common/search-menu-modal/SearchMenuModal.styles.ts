@@ -159,14 +159,7 @@ export const ModalContainer = styled.div`
         max-width: 100%;
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
-        .token-name {
-          min-width: 30px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
         .token-path {
-          max-width: calc(100% - 38px);
           > div {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -290,6 +283,7 @@ export const Overlay = styled.div`
 
 interface Props {
   maxWidth: number;
+  tokenNameWidthList: number;
 }
 
 export const TokenInfoWrapper = styled.div<Props>`
@@ -297,9 +291,19 @@ export const TokenInfoWrapper = styled.div<Props>`
   max-width: ${({ maxWidth }) => {
     return `calc(460px - 100px - ${maxWidth}px)`;
   }};
+  .token-path {
+    max-width: ${({ tokenNameWidthList, maxWidth }) => {
+      return `calc(460px - 108px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+    }};
+  }
   ${media.mobile} {
     max-width: ${({ maxWidth }) => {
       return `calc(328px - 66px - ${maxWidth}px)`;
     }};
+    .token-path {
+      max-width: ${({ tokenNameWidthList, maxWidth }) => {
+        return `calc(328px - 74px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+      }};
+    }
   }
 `;

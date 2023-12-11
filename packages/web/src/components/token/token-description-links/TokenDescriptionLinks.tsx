@@ -24,9 +24,9 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
     <div css={wrapper}>
       <div className="contract-path">
         <h3>Realm (Contract) Path</h3>
-        <button>
+        <button onClick={copyClick}>
           <span>{path}</span>
-          <div className="icon-wrapper" onClick={copyClick}>
+          <div className="icon-wrapper">
             <IconCopy className="link-icon"/>
             {copied && (
               <div css={copyTooltip}>

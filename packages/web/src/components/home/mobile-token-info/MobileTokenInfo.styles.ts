@@ -109,11 +109,11 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
   .token-name {
     margin: 0px 8px;
-    ${fonts.body12};
+    ${fonts.body11};
   }
   .token-symbol {
     margin: 0px 8px;
-    ${fonts.p4};
+    ${fonts.p3};
     color: ${({ theme }) => theme.color.text04};
   }
 

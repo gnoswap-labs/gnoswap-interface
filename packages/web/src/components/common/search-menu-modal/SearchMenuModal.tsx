@@ -1,7 +1,7 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
 import { Token } from "@containers/header-container/HeaderContainer";
-import React, { useRef, useCallback, useState, useEffect } from "react";
+import React, { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import {
   SearchModalBackground,
   SearchContainer,
@@ -48,15 +48,19 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const [, setRecentsData] = useAtom(TokenState.recents);
   const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => (0)));
   const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => (0)));
+  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useState<number[]>(recents.map(() => (0)));
+  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useState<number[]>(popularTokens.map(() => (0)));
+
+  const tokenNamePopularRef = useRef(popularTokens.map(() => React.createRef<HTMLSpanElement>()));
+  const tokenNameRecentsRef = useRef(recents.map(() => React.createRef<HTMLSpanElement>()));
   const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
   const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
-  console.log(recents);
   
   const menuRef = useRef<HTMLDivElement | null>(null);
   const onClickItem = (item: Token) => {
     const current = recents.length > 0 ? [item, recents[0]] : [item];
 
-    setRecentsData(JSON.stringify(current.filter((_item, index, self) => {
+    setRecentsData(JSON.stringify(current.filter((_item, index) => {
       const _value = JSON.stringify(_item);
       return index === current.findIndex(obj => {
         return JSON.stringify(obj) === _value;
@@ -64,12 +68,15 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     })));
     onSearchMenuToggle();
     location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
-    
   };
 
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
     e.stopPropagation();
-    window.open("https://gnoscan.io/tokens/" + path, "_blank");
+    if (path === "gnot") {
+      window.open("https://gnoscan.io/", "_blank");
+    } else {
+      window.open("https://gnoscan.io/tokens/" + path, "_blank");
+    }
   }, []);
   
   useEffect(() => {
@@ -95,6 +102,32 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     setWidthListRecent(temp);
   }, [recentPriceRef]);
 
+  useEffect(() => {
+    const temp: number[] = [];
+    tokenNameRecentsRef.current.forEach((ref) => {
+      if (ref.current) {
+        const width = ref.current.getBoundingClientRect().width;
+        temp.push(width);
+      }
+    });
+    setTokenNameRecentWidthList(temp);
+  }, [tokenNameRecentsRef]);
+
+  useEffect(() => {
+    const temp: number[] = [];
+    tokenNamePopularRef.current.forEach((ref) => {
+      if (ref.current) {
+        const width = ref.current.getBoundingClientRect().width;
+        temp.push(width);
+      }
+    });
+    setTokenNamePopularWidthList(temp);
+  }, [tokenNamePopularRef]);
+  
+  const length = useMemo(() => {
+    return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
+  }, [breakpoint]);
+
   return (
     <>
       <SearchModalBackground>
@@ -116,7 +149,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               {!keyword && recents.length > 0 && isFetched && (
                 <>
                   <div className="recent-searches">
-                    {!keyword ? "Recent Searches" : "Tokens"}
+                    {!keyword ? "Popular Searches" : "Tokens"}
                   </div>
                   {recents
                     
@@ -128,11 +161,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         >
                           <div className="coin-info-wrapper">
                             {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
-
-                            <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListRecent[idx]}>
+                            <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListRecent[idx]} tokenNameWidthList={tokenNameRecentWidthList[idx]}>
                               <div>
-                                <span className="token-name">
-                                  {item.token.name}
+                                <span className="token-name" ref={tokenNameRecentsRef.current[idx]}>
+                                  {item.token.name.length > length ? `${item.token.name.slice(0, length)}...` : item.token.name}
                                 </span>
                                 <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
                                   <div>{item.token.path}</div>
@@ -197,10 +229,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       <div className="coin-info-wrapper">
                         {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
 
-                        <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListPopular[idx]}>
+                        <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListPopular[idx]} tokenNameWidthList={tokenNamePopularWidthList[idx]}>
                           <div>
-                            <span className="token-name">
-                              {item.token.name}
+                            <span className="token-name" ref={tokenNamePopularRef.current[idx]}>
+                              {item.token.name.length > length ? `${item.token.name.slice(0, length)}...` : item.token.name}
                             </span>
                             <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token.path)}>
                               <div>{item.token.path}</div>

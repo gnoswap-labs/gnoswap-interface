@@ -1,10 +1,11 @@
-import React, { useCallback, useRef, useEffect, useState } from "react";
+import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import IconNewTab from "../icons/IconNewTab";
+import { DEVICE_TYPE } from "@styles/media";
 export interface SelectTokenProps {
   keyword: string;
   defaultTokens: TokenModel[];
@@ -15,6 +16,7 @@ export interface SelectTokenProps {
   close: () => void;
   themeKey: "dark" | "light";
   modalRef?: React.RefObject<HTMLDivElement>;
+  breakpoint: DEVICE_TYPE;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -27,10 +29,13 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   close,
   themeKey,
   modalRef,
+  breakpoint,
 }) => {
   const myElementRef = useRef<HTMLDivElement | null>(null);
   const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
+  const tokenNameRef = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => (0)));
+  const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => (0)));
   const [positionTop, setPositionTop] = useState(0);
 
   const getTokenPrice = useCallback((token: TokenModel) => {
@@ -73,20 +78,38 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   useEffect(() => {
     const temp: number[] = [];
-    priceRefs.current.forEach((ref, index) => {
+    priceRefs.current.forEach((ref) => {
       if (ref.current) {
         const width = ref.current.getBoundingClientRect().width;
         temp.push(width);
-        console.log(`Width of token-balance span at index ${index}:`, width);
       }
     });
     setWidthList(temp);
   }, [priceRefs]);
 
+  useEffect(() => {
+    const temp: number[] = [];
+    tokenNameRef.current.forEach((ref) => {
+      if (ref.current) {
+        const width = ref.current.getBoundingClientRect().width;
+        temp.push(width);
+      }
+    });
+    setTokenNameWidthList(temp);
+  }, [tokenNameRef]);
+
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
     e.stopPropagation();
-    window.open("https://gnoscan.io/tokens/" + path, "_blank") ;
+    if (path === "gnot") {
+      window.open("https://gnoscan.io/", "_blank");
+    } else {
+      window.open("https://gnoscan.io/tokens/" + path, "_blank");
+    }
   }, []);
+
+  const length = useMemo(() => {
+    return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
+  }, [breakpoint]);
 
   return (
     <SelectTokenWrapper ref={myElementRef}>
@@ -136,9 +159,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
             >
               <div className="token-info">
                 {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
-                <TokenInfoWrapper className="token-info-detail" maxWidth={widthList[index]}>
+                <TokenInfoWrapper className="token-info-detail" maxWidth={widthList[index]} tokenNameWidthList={tokenNameWidthList[index]}>
                   <div>
-                    <span className="token-name">{token.name}</span>
+                    <span className="token-name" ref={tokenNameRef.current[index]}>{token.name.length > length ? `${token.name.slice(0, length)}...` : token.name}</span>
                     <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}>
                       <div>{token.path}</div>
                       <IconNewTab />

@@ -17,7 +17,7 @@ const TOKEN_A = {
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "Gnoland",
+  path: "gnot",
   decimals: 4,
   symbol: "GNOT",
   logoURI:
@@ -40,9 +40,9 @@ const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, balances } = useTokenData();
   const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
-  const [tokenAAmount] = useState<string>("1000");
+  const [tokenAAmount, setTokenAAmount] = useState<string>("1000");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
-  const [tokenBAmount] = useState<string>("0");
+  const [tokenBAmount, setTokenBAmount] = useState<string>("0");
   const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
   const { connected, account } = useWallet();
@@ -74,14 +74,14 @@ const HomeSwapContainer: React.FC = () => {
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (!tokenB || !tokenPrices[tokenB.priceId]) {
+    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
       return Number.NaN;
     }
     return BigNumber(tokenBAmount)
       .multipliedBy(tokenPrices[tokenB.priceId].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
-
+  
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
       tokenA,
@@ -129,6 +129,15 @@ const HomeSwapContainer: React.FC = () => {
       ...prev,
       tokenAAmount: value,
     }));
+    setTokenAAmount(value);
+  }, []);
+
+  const changeTokenBAmount = useCallback((value: string) => {
+    setSwapValue((prev) => ({
+      ...prev,
+      tokenBAmount: value,
+    }));
+    setTokenBAmount(value);
   }, []);
 
 
@@ -138,6 +147,8 @@ const HomeSwapContainer: React.FC = () => {
       swapNow={swapNow}
       onSubmitSwapValue={onSubmitSwapValue}
       changeTokenAAmount={changeTokenAAmount}
+      connected={connected}
+      changeTokenBAmount={changeTokenBAmount}
     />
   );
 };

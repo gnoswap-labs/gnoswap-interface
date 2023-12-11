@@ -92,8 +92,12 @@ export const wrapper = (theme: Theme) => css`
 
     .price-text,
     .balance-text {
-      ${fonts.p2};
+      ${fonts.p1};
       color: ${theme.color.text04};
+    }
+    .balance-text-disabled {
+      cursor: pointer;
+      z-index: 1;
     }
 
     .token {
