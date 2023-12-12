@@ -1,3 +1,5 @@
+import { RewardResposne } from "./reward-response";
+
 export type PositionListResponse = PositionResponse[];
 
 export interface PositionResponse {
@@ -38,4 +40,14 @@ export interface PositionResponse {
   tokensOwed0Usd: string;
 
   tokensOwed1Usd: string;
+
+  apr?: number;
+
+  stakedAt?: String;
+
+  stakedUsdValue?: string;
+
+  rewards?: RewardResposne[];
+
+  dailyRewards?: RewardResposne[];
 }

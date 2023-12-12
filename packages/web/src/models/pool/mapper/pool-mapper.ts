@@ -9,6 +9,7 @@ import { PoolResponse } from "@repositories/pool";
 import { IncentivizedOptions } from "@common/values";
 import { makeId } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
+import { PoolDetailModel } from "../pool-detail-model";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -147,6 +148,29 @@ export class PoolMapper {
       path: pool.poolPath,
       incentivizedType,
       bins,
+      rewardTokens: pool.rewardTokens || [],
+    };
+  }
+
+  public static detailFromResponse(pool: PoolResponse): PoolDetailModel {
+    const bins = pool.bins.map(bin => ({
+      ...bin,
+    }));
+    const id = pool.id ?? makeId(pool.poolPath);
+    const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
+    const incentivizedType: IncentivizedOptions =
+      incentivizedTypeStr !== "INCENTIVIZED"
+        ? incentivizedTypeStr === "EXTERNAL_INCENTIVIZED"
+          ? "EXTERNAL_INCENTIVIZED"
+          : "INCENTIVIZED"
+        : "NON_INCENTIVIZED";
+    return {
+      ...pool,
+      id,
+      path: pool.poolPath,
+      incentivizedType,
+      bins,
+      rewardTokens: pool.rewardTokens || [],
     };
   }
 }

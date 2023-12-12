@@ -1,12 +1,12 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PoolPairInformation from "./PoolPairInformation";
-import {
-  menuInit,
-  poolPairInit,
-} from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { css } from "@emotion/react";
 import { action } from "@storybook/addon-actions";
+import { PoolRepositoryMock } from "@repositories/pool";
+
+const poolRepository = new PoolRepositoryMock();
+const pool = (await poolRepository.getPoolDetailByPoolPath());
 
 export default {
   title: "pool/PoolPairInformation",
@@ -23,8 +23,8 @@ const Template: ComponentStory<typeof PoolPairInformation> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  info: poolPairInit,
-  menu: menuInit,
+  pool,
+  feeStr: "0.01%",
   onClickPath: action("onClickPath"),
 };
 

@@ -152,7 +152,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
             exactType,
             `${routesQuery}`,
             `${quotes}`,
-            `${tokenAmountLimitRaw}`,
+            `${0}`,
           ],
         },
       ],

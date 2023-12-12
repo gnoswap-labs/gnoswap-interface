@@ -4,9 +4,10 @@ import MyLiquidityHeader from "@components/pool/my-liquidity-header/MyLiquidityH
 import { PoolDivider, MyLiquidityWrapper } from "./MyLiquidity.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import MyPositionCard from "../my-position-card/MyPositionCard";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface MyLiquidityProps {
-  info: any;
+  positions: PoolPositionModel[]
   breakpoint: DEVICE_TYPE;
   connected: boolean;
   isSwitchNetwork: boolean;
@@ -17,8 +18,8 @@ interface MyLiquidityProps {
   currentIndex: number;
 }
 
-const MyLiquidity: React.FC<MyLiquidityProps> = ({ 
-  info,
+const MyLiquidity: React.FC<MyLiquidityProps> = ({
+  positions,
   breakpoint,
   connected,
   isSwitchNetwork,
@@ -32,27 +33,31 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
     <MyLiquidityWrapper>
       <div className="liquidity-wrap">
         <MyLiquidityHeader
-          info={info.poolInfo}
           connected={connected}
           isSwitchNetwork={isSwitchNetwork}
           handleClickAddPosition={handleClickAddPosition}
-          handleClickRemovePosition={handleClickRemovePosition}  
+          handleClickRemovePosition={handleClickRemovePosition}
         />
-        <MyLiquidityContent content={info} breakpoint={breakpoint} isDisabledButton={isSwitchNetwork || !connected} />
+        <MyLiquidityContent
+          connected={connected}
+          positions={positions}
+          breakpoint={breakpoint}
+          isDisabledButton={isSwitchNetwork || !connected}
+        />
       </div>
       <PoolDivider />
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
-        info.positionList.map((item: any, idx: number) => (
-          <MyPositionCard content={item} key={idx} breakpoint={breakpoint} />
+        positions.map((position: PoolPositionModel, index: number) => (
+          <MyPositionCard position={position} key={index} breakpoint={breakpoint} />
         ))
       ) : (
         <>
-          <div className="slider-wrap" ref={divRef}  onScroll={onScroll}>
+          <div className="slider-wrap" ref={divRef} onScroll={onScroll}>
             <div className="box-slider">
-              {info.positionList.map((item: any, idx: number) => (
+              {positions.map((position: PoolPositionModel, index: number) => (
                 <MyPositionCard
-                  content={item}
-                  key={idx}
+                  position={position}
+                  key={index}
                   breakpoint={breakpoint}
                 />
               ))}
@@ -61,7 +66,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           <div className="box-indicator">
             <span className="current-page">{currentIndex}</span>
             <span>/</span>
-            <span>{info.positionList.length}</span>
+            <span>{positions.length}</span>
           </div>
         </>
       )}

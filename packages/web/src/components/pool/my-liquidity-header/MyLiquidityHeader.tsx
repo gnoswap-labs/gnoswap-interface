@@ -5,14 +5,13 @@ import React from "react";
 import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 
 interface MyLiquidityHeaderProps {
-  info: any;
   connected: boolean;
   isSwitchNetwork: boolean;
   handleClickAddPosition: () => void;
   handleClickRemovePosition: () => void;
 }
 
-const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ info, connected, isSwitchNetwork, handleClickAddPosition, handleClickRemovePosition }) => {
+const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ connected, isSwitchNetwork, handleClickAddPosition, handleClickRemovePosition }) => {
   return (
     <HeaderWrapper>
       <h2>My Positions</h2>

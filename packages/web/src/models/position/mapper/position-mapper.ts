@@ -5,8 +5,10 @@ import {
   PositionListResponse,
   PositionResponse,
 } from "@repositories/position/response";
+import { RewardResposne } from "@repositories/position/response/reward-response";
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
+import { RewardModel } from "../reward-model";
 
 export class PositionMapper {
   public static toTokenPairAmount(
@@ -57,12 +59,22 @@ export class PositionMapper {
       tokensOwed0Usd: position.tokensOwed0Usd,
       tokensOwed1Usd: position.tokensOwed1Usd,
       apr: "0",
-      rewards: [],
+      stakedAt: position.stakedAt || "",
+      stakedUsdValue: position.stakedUsdValue || "0",
+      rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
+      dailyRewards:
+        position.dailyRewards?.map(PositionMapper.rewardFromResponse) || [],
     };
   }
 
   public static fromList(positions: PositionListResponse): PositionModel[] {
     return positions.map(PositionMapper.from);
+  }
+
+  public static rewardFromResponse(reward: RewardResposne): RewardModel {
+    return {
+      ...reward,
+    };
   }
 
   public static makePoolPosition(

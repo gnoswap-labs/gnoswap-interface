@@ -1,8 +1,8 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PoolPairInfoContent from "./PoolPairInfoContent";
-import { poolPairInit } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { css } from "@emotion/react";
+import { PoolRepositoryMock } from "@repositories/pool";
 
 export default {
   title: "pool/PoolPairInfoContent",
@@ -15,9 +15,12 @@ const Template: ComponentStory<typeof PoolPairInfoContent> = args => (
   </div>
 );
 
+const poolRepository = new PoolRepositoryMock();
+const pool = (await poolRepository.getPoolDetailByPoolPath());
+
 export const Default = Template.bind({});
 Default.args = {
-  content: poolPairInit,
+  pool
 };
 
 const wrapper = () => css`

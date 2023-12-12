@@ -1,9 +1,8 @@
-import { position } from "@components/earn/earn-my-positions/EarnMyPositions.stories";
-import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
@@ -32,9 +31,6 @@ export const usePoolData = () => {
     }));
   }, [pools]);
 
-  const myPositions: PoolPosition[] = useMemo(() => {
-    return [position, position, position];
-  }, []);
   async function updatePositions() {
     setIsFetchedPositions(true);
   }
@@ -50,18 +46,28 @@ export const usePoolData = () => {
     setPools(pools);
     setLoading(false);
     setIsFetchedPools(true);
+    return pools;
+  }
+
+  async function fetchPoolDatils(poolId: string): Promise<PoolDetailModel | null> {
+    const currentPools = pools.length === 0 ? await updatePools() : pools;
+    const pool = currentPools.find(pool => pool.id === poolId);
+    if (!pool) {
+      return null;
+    }
+    return poolRepository.getPoolDetailByPoolPath(pool.path).catch(() => null);
   }
 
   return {
     isFetchedPools,
     higestAPRs,
     isFetchedPositions,
-    myPositions,
     pools,
     poolListInfos,
     incentivizedPools,
     updatePools,
     updatePositions,
+    fetchPoolDatils,
     loading,
   };
 };

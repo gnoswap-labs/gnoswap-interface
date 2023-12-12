@@ -39,8 +39,44 @@ export const usePositionData = () => {
       });
   }, [account?.address, pools, positionRepository]);
 
+  const getPositionsByPoolId = useCallback(
+    async (poolId: string): Promise<PoolPositionModel[]> => {
+      if (!account?.address) {
+        return [];
+      }
+      if (pools.length === 0) {
+        return [];
+      }
+      setIsError(false);
+
+      return positionRepository
+        .getPositionsByAddress(account.address)
+        .then(positions => {
+          const poolPositions: PoolPositionModel[] = [];
+          positions.forEach(position => {
+            const pool = pools.find(
+              pool => pool.path === position.poolPath && pool.id === poolId,
+            );
+            if (pool) {
+              poolPositions.push(
+                PositionMapper.makePoolPosition(position, pool),
+              );
+            }
+          });
+          setIsError(false);
+          return poolPositions;
+        })
+        .catch(() => {
+          setIsError(true);
+          return [];
+        });
+    },
+    [account?.address, pools, positionRepository],
+  );
+
   return {
     isError,
     getPositions,
+    getPositionsByPoolId,
   };
 };

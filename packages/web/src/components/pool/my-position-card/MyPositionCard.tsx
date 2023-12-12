@@ -3,137 +3,182 @@ import IconStaking from "@components/common/icons/IconStaking";
 import IconStar from "@components/common/icons/IconStar";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
-import React from "react";
-import { MyPositionCardWrapper, RewardsContent, TooltipContent, TooltipDivider } from "./MyPositionCard.styles";
+import { tickToPriceStr } from "@utils/swap-utils";
+import React, { useMemo } from "react";
+import { MyPositionCardWrapper } from "./MyPositionCard.styles";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { TokenModel } from "@models/token/token-model";
+import { toUnitFormat } from "@utils/number-utils";
+import { BalanceTooltipContent } from "./MyPositionCardBalanceContent";
+import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
+import { PositionRewardInfo } from "@models/position/info/position-reward-info";
+import { MyPositionAprContent } from "./MyPositionCardAprContent";
+import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 
 interface MyPositionCardProps {
-  content: any;
+  position: PoolPositionModel;
   breakpoint: DEVICE_TYPE;
 }
 
-export const BalanceTooltipContent = ({ content } : { content : any }) => {
-  return (
-    <TooltipContent>
-      <span className="title">Balance</span>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src={content.tokenPair.tokenA.logoURI}
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">
-            {content.tokenPair.tokenA.symbol}
-          </span>
-        </div>
-        <span className="content">50.05881</span>
-      </div>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src={content.tokenPair.tokenB.logoURI}
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">
-            {content.tokenPair.tokenB.symbol}
-          </span>
-        </div>
-        <span className="content">50.05881</span>
-      </div>
-    </TooltipContent>
-  );
-};
-
-export const TotalRewardsContent = ({ content, isReward } : { content : any, isReward?: boolean }) => {
-  return (
-    <RewardsContent>
-      <div className="list">
-        <span className="title">Swap Fees</span>
-        <span className="title">{isReward ? "$150.21" : "*Based on 7d avg"}</span>
-      </div>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src={content.tokenPair.tokenA.logoURI}
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">
-            {content.tokenPair.tokenA.symbol}
-          </span>
-        </div>
-        <span className="content">
-          {isReward ? "50.05881" : "+12.55%"}
-        </span>
-      </div>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src={content.tokenPair.tokenB.logoURI}
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">
-            {content.tokenPair.tokenB.symbol}
-          </span>
-        </div>
-        <span className="content">
-          {isReward ? "150.0255" : "+12.55%"}
-        </span>
-      </div>
-      <TooltipDivider />
-      <div className="list">
-        <span className="title">Staking Rewards</span>
-        <span className="title">{isReward && "$82.21"}</span>
-      </div>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src={content.tokenPair.tokenA.logoURI}
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">
-            GNS
-          </span>
-        </div>
-        <span className="content">
-          {isReward ? "50.05881" : "+183.94%"}
-        </span>
-      </div>
-      <TooltipDivider />
-      <div className="list">
-        <span className="title">External Rewards</span>
-        <span className="title">{isReward && "$82.21"}</span>
-      </div>
-      <div className="list">
-        <div className="coin-info">
-          <img
-            src={content.tokenPair.tokenB.logoURI}
-            alt="token logo"
-            className="token-logo"
-          />
-          <span className="content">
-            1.24K / day
-          </span>
-        </div>
-        <span className="content">
-          +19.75%
-        </span>
-      </div>
-    </RewardsContent>
-  );
-};
-
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
-  content,
+  position,
   breakpoint,
 }) => {
+  const { tokenPrices } = useTokenData();
+
+  const tokenA = useMemo(() => {
+    return position.pool.tokenA;
+  }, [position.pool.tokenA]);
+
+  const tokenB = useMemo(() => {
+    return position.pool.tokenB;
+  }, [position.pool.tokenB]);
+
+  const inRange = useMemo(() => {
+    const { tickLower, tickUpper, pool } = position;
+    const currentTick = pool.currentTick;
+    if (currentTick < tickLower || currentTick > tickUpper) {
+      return false;
+    }
+    return true;
+  }, [position]);
+
+  const minTickLabel = useMemo(() => {
+    const minPrice = tickToPriceStr(position.tickLower, 2);
+    return `${minPrice} ${tokenB.symbol} per ${tokenA.symbol}`;
+  }, [position.tickLower, tokenA.symbol, tokenB.symbol]);
+
+  const maxTickLabel = useMemo(() => {
+    const maxPrice = tickToPriceStr(position.tickUpper, 2);
+    return `${maxPrice} ${tokenB.symbol} per ${tokenA.symbol}`;
+  }, [position.tickUpper, tokenA.symbol, tokenB.symbol]);
+
+  const tokenABalanceUSD = useMemo(() => {
+    const tokenAUSD = Number(tokenPrices[tokenA.priceId]?.usd || "1");
+    const tokenABalance = makeDisplayTokenAmount(tokenA, position.token0Balance) || 0;
+    return tokenAUSD * tokenABalance;
+  }, [position.token0Balance, tokenA, tokenPrices]);
+
+  const tokenBBalanceUSD = useMemo(() => {
+    const tokenBUSD = Number(tokenPrices[tokenB.priceId]?.usd || "1");
+    const tokenBBalance = makeDisplayTokenAmount(tokenB, position.token1Balance) || 0;
+    return tokenBUSD * tokenBBalance;
+  }, [position.token1Balance, tokenB, tokenPrices]);
+
+  const positionBalanceUSD = useMemo(() => {
+    return toUnitFormat(tokenABalanceUSD + tokenBBalanceUSD, true);
+  }, [tokenABalanceUSD, tokenBBalanceUSD]);
+
+  const balances = useMemo((): { token: TokenModel; balance: number; balanceUSD: number }[] => {
+    return [{
+      token: tokenA,
+      balance: Number(position.token0Balance),
+      balanceUSD: tokenABalanceUSD,
+    }, {
+      token: tokenB,
+      balance: Number(position.token1Balance),
+      balanceUSD: tokenBBalanceUSD,
+    }];
+  }, [position.token0Balance, position.token1Balance, tokenA, tokenABalanceUSD, tokenB, tokenBBalanceUSD]);
+
+  const totalRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
+    const rewards = position.rewards;
+    if (rewards.length === 0) {
+      // TODO: Not implements API
+      const tokenA = position.pool.tokenA;
+      const tokenB = position.pool.tokenB;
+      const tokenAUnclaimedBalance = makeDisplayTokenAmount(tokenA, position.unclaimedFee0Amount + position.tokensOwed0Amount) || 0;
+      const tokenBUnclaimedBalance = makeDisplayTokenAmount(tokenB, position.unclaimedFee1Amount + position.tokensOwed1Amount) || 0;
+      const swapFees = [{
+        balance: tokenAUnclaimedBalance,
+        balanceUSD: tokenAUnclaimedBalance * Number(tokenPrices[tokenA.priceId]?.usd || 0),
+        token: tokenA
+      }, {
+        balance: tokenBUnclaimedBalance,
+        balanceUSD: tokenBUnclaimedBalance * Number(tokenPrices[tokenB.priceId]?.usd || 0),
+        token: tokenB
+      }];
+      return {
+        SWAP_FEE: swapFees,
+        STAKING: [],
+        EXTERNAL: []
+      };
+    }
+
+    const totalRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionRewardInfo[] }>((accum, current) => {
+      if (!accum[current.rewardType]) {
+        accum[current.rewardType] = [];
+      }
+      accum[current.rewardType].push({
+        token: current.token,
+        balance: Number(current.totalAmount),
+        balanceUSD: Number(current.totalAmount) * Number(tokenPrices[current.token.priceId].usd || 1)
+      });
+      return accum;
+    }, {
+      SWAP_FEE: [],
+      STAKING: [],
+      EXTERNAL: []
+    });
+    return totalRewardInfo;
+  }, [position.pool.tokenA, position.pool.tokenB, position.rewards, position.tokensOwed0Amount, position.tokensOwed1Amount, position.unclaimedFee0Amount, position.unclaimedFee1Amount, tokenPrices]);
+
+  const totalRewardUSD = useMemo(() => {
+    if (!totalRewardInfo) {
+      return "$0";
+    }
+    const usdValue = Object.values(totalRewardInfo)
+      .flatMap(item => item)
+      .reduce((accum, current) => {
+        return accum + current.balanceUSD;
+      }, 0);
+    return toUnitFormat(usdValue, true);
+  }, [totalRewardInfo]);
+
+  const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } = useMemo(() => {
+    const tokenA = position.pool.tokenA;
+    const tokenB = position.pool.tokenB;
+    const swapFees = [{
+      token: tokenA,
+      tokenAmountOf7d: 0,
+      aprOf7d: 0,
+    }, {
+      token: tokenB,
+      tokenAmountOf7d: 0,
+      aprOf7d: 0,
+    }];
+    return {
+      SWAP_FEE: swapFees,
+      STAKING: [],
+      EXTERNAL: []
+    };
+    /** TODO: Not implements API
+     * const aprRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionAPRInfo[] }>((accum, current) => {
+     *   if (!accum[current.rewardType]) {
+     *     accum[current.rewardType] = [];
+     *   }
+     *   accum[current.rewardType].push({
+     *     token: current.token,
+     *     tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
+     *     aprOf7d: Number(current.aprOf7d),
+     *   });
+     *   return accum;
+     * }, {
+     *   SWAP_FEE: [],
+     *   STAKING: [],
+     *   EXTERNAL: []
+     * });
+     * return aprRewardInfo;
+     */
+  }, [position.rewards]);
+
+
   return (
-    <MyPositionCardWrapper type={content.tokenPair.range}>
+    <MyPositionCardWrapper type={inRange}>
       <div className="box-title">
         <div className="box-header">
           <div className="box-left">
@@ -141,34 +186,34 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <>
                 <div className="coin-info">
                   <img
-                    src={content.tokenPair.tokenA.logoURI}
-                    alt="token logo"
+                    src={tokenA.logoURI}
                     className="token-logo"
+                    alt="token logo"
                   />
                   <img
-                    src={content.tokenPair.tokenB.logoURI}
-                    alt="token logo"
+                    src={tokenB.logoURI}
                     className="token-logo"
+                    alt="token logo"
                   />
                 </div>
-                <span className="product-id">ID #{content.productId}</span>
+                <span className="product-id">ID #{position.id}</span>
               </>
             ) : (
               <>
                 <div className="mobile-container">
                   <div className="coin-info">
                     <img
-                      src={content.tokenPair.tokenA.logoURI}
+                      src={tokenA.logoURI}
                       alt="token logo"
                       className="token-logo"
                     />
                     <img
-                      src={content.tokenPair.tokenB.logoURI}
+                      src={tokenB.logoURI}
                       alt="token logo"
                       className="token-logo"
                     />
                   </div>
-                  <span className="product-id">ID {content.productId}</span>
+                  <span className="product-id">ID {position.id}</span>
                 </div>
               </>
             )}
@@ -176,13 +221,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               type={BADGE_TYPE.PRIMARY}
               leftIcon={<IconStaking />}
               text={"Staked"}
-              className={!content.tokenPair.isStaked ? "visible-badge" : ""}
+              className={!position.staked ? "visible-badge" : ""}
             />
           </div>
           <div className="mobile-wrap">
             <RangeBadge
               status={
-                content.tokenPair.range === true
+                inRange
                   ? RANGE_STATUS_OPTION.IN
                   : RANGE_STATUS_OPTION.OUT
               }
@@ -194,12 +239,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <>
               <span className="symbol-text">Min</span>
               <span className="token-text">
-                {content.tokenPair.minAmount} GNOT per GNS
+                {minTickLabel}
               </span>
               <span className="symbol-text">{"<->"}</span>
               <span className="symbol-text">Max</span>
               <span className="token-text">
-                {content.tokenPair.maxAmount} GNOT per GNS
+                {maxTickLabel}
               </span>
             </>
           ) : (
@@ -207,13 +252,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <div className="min-mobile">
                 <span className="symbol-text">Min</span>
                 <span className="token-text">
-                  {content.tokenPair.minAmount} GNOT per GNS {"<->"}
+                  {minTickLabel} {"<->"}
                 </span>
               </div>
               <div className="max-mobile">
                 <span className="symbol-text">Max</span>
                 <span className="token-text">
-                  {content.tokenPair.maxAmount} GNOT per GNS
+                  {maxTickLabel}
                 </span>
               </div>
             </>
@@ -223,23 +268,35 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="info-wrap">
         <div className="info-box">
           <span className="symbol-text">Balance</span>
-          <Tooltip placement="top" FloatingContent={<div><BalanceTooltipContent content={content} /></div>}>
-            <span className="content-text">${content.tokenPair.balance}</span>
+          <Tooltip placement="top" FloatingContent={<div><BalanceTooltipContent balances={balances} /></div>}>
+            <span className="content-text">{positionBalanceUSD}</span>
           </Tooltip>
         </div>
         <div className="info-box">
           <span className="symbol-text">Total Rewards</span>
-          <Tooltip placement="top" FloatingContent={<div><TotalRewardsContent content={content} isReward/></div>}>
-            <span className="content-text">
-              ${content.tokenPair.totalRewards}
+          {totalRewardInfo ? (
+            <Tooltip placement="top" FloatingContent={
+              <div>
+                <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+              </div>}
+            >
+              <span className="content-text">
+                {totalRewardUSD}
+              </span>
+            </Tooltip>
+          ) : (
+            <span className="content-text disabled">
+              {totalRewardUSD}
             </span>
-          </Tooltip>
+          )}
         </div>
         <div className="info-box">
           <span className="symbol-text">Estimated APR</span>
-          <Tooltip placement="top" FloatingContent={<div><TotalRewardsContent content={content} /></div>}>
+          <Tooltip placement="top" FloatingContent={
+            <div><MyPositionAprContent rewardInfo={aprRewardInfo} /></div>
+          }>
             <span className="content-text">
-              {Number(content.tokenPair.estimatedAPR) >= 100 && <IconStar />}{content.tokenPair.estimatedAPR}%
+              {Number(position.apr) >= 100 && <IconStar />}{position.apr}%
             </span>
           </Tooltip>
         </div>

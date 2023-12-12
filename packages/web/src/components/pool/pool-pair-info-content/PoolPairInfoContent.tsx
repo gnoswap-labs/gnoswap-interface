@@ -1,5 +1,4 @@
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   AprDivider,
   PoolPairInfoContentWrapper,
@@ -7,14 +6,70 @@ import {
 } from "./PoolPairInfoContent.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconStar from "@components/common/icons/IconStar";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { numberToFormat } from "@utils/string-utils";
+import { toLowerUnitFormat } from "@utils/number-utils";
 interface PoolPairInfoContentProps {
-  content: any;
+  pool: PoolDetailModel;
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
-  content,
+  pool,
 }) => {
-  const { poolInfo, liquidity, volume24h, apr } = content;
+  const tokenABalance = useMemo(() => {
+    return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
+  }, [pool.tokenA, pool.tokenABalance]);
+
+  const tokenBBalance = useMemo(() => {
+    return makeDisplayTokenAmount(pool.tokenB, pool.tokenBBalance) || 0;
+  }, [pool.tokenB, pool.tokenBBalance]);
+
+  const depositRatio = useMemo(() => {
+    const sumOfBalances = tokenABalance + tokenBBalance;
+    if (sumOfBalances === 0) {
+      return 0.5;
+    }
+    return tokenABalance / sumOfBalances;
+  }, [tokenABalance, tokenBBalance]);
+
+  const depositRatioStrOfTokenA = useMemo(() => {
+    const depositStr = `${Math.round(depositRatio * 100)}%`;
+    return `${pool.tokenA.symbol} (${depositStr})`;
+  }, [depositRatio, pool.tokenA.symbol]);
+
+  const depositRatioStrOfTokenB = useMemo(() => {
+    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
+    return `${pool.tokenB.symbol} (${depositStr})`;
+  }, [depositRatio, pool.tokenB.symbol]);
+
+  const liquidityValue = useMemo((): string => {
+    return toLowerUnitFormat(pool.tvl, true);
+  }, [pool.tvl]);
+
+  const volumeValue = useMemo((): string => {
+    return toLowerUnitFormat(pool.volume, true);
+  }, [pool.volume]);
+
+  const aprValue = useMemo((): string => {
+    return `${pool.apr}%`;
+  }, [pool.apr]);
+
+  const liquidityChangedStr = useMemo((): string => {
+    return `${numberToFormat(pool.tvlChange, 2)}%`;
+  }, [pool.tvlChange]);
+
+  const volumeChangedStr = useMemo((): string => {
+    return `${numberToFormat(pool.volumeChange, 2)}%`;
+  }, [pool.volumeChange]);
+
+  const feeChangedStr = useMemo((): string => {
+    return `${numberToFormat(pool.feeChange, 2)}%`;
+  }, [pool.feeChange]);
+
+  const rewardChangedStr = useMemo((): string => {
+    return "0.00%";
+  }, []);
 
   return (
     <PoolPairInfoContentWrapper>
@@ -28,73 +83,71 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <div className="list">
                 <div className="coin-info">
                   <img
-                    src={poolInfo.tokenPair.tokenA.logoURI}
+                    src={pool.tokenA.logoURI}
                     alt="token logo"
                     className="token-logo"
                   />
                   <span className="content">
-                    {poolInfo.tokenPair.tokenA.symbol} (
-                    {poolInfo.tokenPair.tokenA.compositionPercent}%)
+                    {depositRatioStrOfTokenA}
                   </span>
                 </div>
                 <span className="content">
-                  {poolInfo.tokenPair.tokenA.composition}
+                  {numberToFormat(tokenABalance, pool.tokenA.decimals)}
                 </span>
               </div>
               <div className="list">
                 <div className="coin-info">
                   <img
-                    src={poolInfo.tokenPair.tokenB.logoURI}
+                    src={pool.tokenB.logoURI}
                     alt="token logo"
                     className="token-logo"
                   />
                   <span className="content">
-                    {poolInfo.tokenPair.tokenB.symbol} (
-                    {poolInfo.tokenPair.tokenB.compositionPercent}%)
+                    {depositRatioStrOfTokenB}
                   </span>
                 </div>
                 <span className="content">
-                  {poolInfo.tokenPair.tokenB.composition}
+                  {numberToFormat(tokenBBalance, pool.tokenB.decimals)}
                 </span>
               </div>
             </TooltipContent>
           }
         >
-          <strong className="has-tooltip">{liquidity.value}</strong>
+          <strong className="has-tooltip">{liquidityValue}</strong>
         </Tooltip>
         <div className="section-info">
           <span>24h Change</span>
-          {liquidity.change24h.status === MATH_NEGATIVE_TYPE.POSITIVE ? (
-            <span className="positive">{liquidity.change24h.value}</span>
+          {pool.tvlChange >= 0 ? (
+            <span className="positive">{liquidityChangedStr}</span>
           ) : (
-            <span className="negative">{liquidity.change24h.value}</span>
+            <span className="negative">{liquidityChangedStr}</span>
           )}
         </div>
       </section>
       <section>
         <h4>Volume (24h)</h4>
-        <strong>{volume24h.value}</strong>
+        <strong>{volumeValue}</strong>
         <div className="section-info">
           <span>24h Change</span>
-          {liquidity.status === MATH_NEGATIVE_TYPE.POSITIVE ? (
-            <span className="positive">{volume24h.change24h.value}</span>
+          {pool.volumeChange >= 0 ? (
+            <span className="positive">{volumeChangedStr}</span>
           ) : (
-            <span className="negative">{volume24h.change24h.value}</span>
+            <span className="negative">{volumeChangedStr}</span>
           )}
         </div>
       </section>
       <section>
         <h4>APR</h4>
-        <strong><IconStar /> {apr.value}</strong>
+        <strong><IconStar /> {aprValue}</strong>
         <div className="apr-info">
           <div className="content-wrap">
             <span>Fees</span>
-            <span className="apr-value">{apr.fees}</span>
+            <span className="apr-value">{feeChangedStr}</span>
           </div>
           <AprDivider />
           <div className="content-wrap">
             <span>Rewards</span>
-            <span className="apr-value">{apr.rewards}</span>
+            <span className="apr-value">{rewardChangedStr}</span>
           </div>
         </div>
       </section>

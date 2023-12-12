@@ -16,7 +16,7 @@ describe("getPools", () => {
 
 describe("getPoolDetail", () => {
   it("success", async () => {
-    const pools = await poolRepository.getPoolDetailByPoolId("");
+    const pools = await poolRepository.getPoolDetailByPoolPath("");
 
     expect(pools).not.toBeNull();
   });

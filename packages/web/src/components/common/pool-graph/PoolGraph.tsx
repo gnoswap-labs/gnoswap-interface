@@ -210,7 +210,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       max: tickOfPrices[-maxTick] || null,
     };
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
-    const tokenBAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
+    const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
     setTooltipInfo({
       tokenA: tokenA,
       tokenB: tokenB,
