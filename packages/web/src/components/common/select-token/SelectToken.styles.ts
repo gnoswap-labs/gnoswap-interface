@@ -133,6 +133,19 @@ export const SelectTokenWrapper = styled.div`
           width: 24px;
           height: 24px;
         }
+        .missing-logo {
+          ${mixins.flexbox("row", "center", "center")};
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          color: ${({ theme }) => theme.color.text02};
+          background-color: ${({ theme }) => theme.color.text04};
+          ${fonts.p7}
+          ${media.mobile} {
+            font-size: 8px;
+            line-height: 10px;
+          }
+        }
         &.border-button-none {
           border-color: transparent;
         }

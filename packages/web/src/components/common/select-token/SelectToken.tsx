@@ -6,6 +6,10 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import IconNewTab from "../icons/IconNewTab";
 import { DEVICE_TYPE } from "@styles/media";
+import { useAtom } from "jotai";
+import { TokenState } from "@states/index";
+import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
+
 export interface SelectTokenProps {
   keyword: string;
   defaultTokens: TokenModel[];
@@ -17,6 +21,7 @@ export interface SelectTokenProps {
   themeKey: "dark" | "light";
   modalRef?: React.RefObject<HTMLDivElement>;
   breakpoint: DEVICE_TYPE;
+  recents: TokenModel[];
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -30,6 +35,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   themeKey,
   modalRef,
   breakpoint,
+  recents,
 }) => {
   const myElementRef = useRef<HTMLDivElement | null>(null);
   const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
@@ -37,6 +43,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => (0)));
   const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => (0)));
   const [positionTop, setPositionTop] = useState(0);
+  const [, setRecentsData] = useAtom(TokenState.selectRecents);
 
   const getTokenPrice = useCallback((token: TokenModel) => {
     const tokenPrice = tokenPrices[token.priceId];
@@ -51,9 +58,16 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   }, [close]);
 
   const onClickToken = useCallback((token: TokenModel) => {
+    const current = [token, ...recents].filter((item) => !ORDER.includes(item.symbol));
+    setRecentsData(JSON.stringify(current.filter((_item, index) => {
+      const _value = JSON.stringify(_item);
+      return index === current.findIndex(obj => {
+        return JSON.stringify(obj) === _value;
+      });
+    }).slice(0, 4)));
     changeToken(token);
   }, [changeToken, close]);
-
+  
   const onChangeSearchKeyword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const searchKeyword = event.target.value;
     changeKeyword(searchKeyword);
@@ -96,7 +110,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       }
     });
     setTokenNameWidthList(temp);
-  }, [tokenNameRef]);
+  }, [tokenNameRef, keyword, tokens.toString()]);
 
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
     e.stopPropagation();
@@ -130,7 +144,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
           <IconSearch className="search-icon" />
         </div>
         <div className="token-select">
-          {defaultTokens.map((token, index) => (
+          {[...defaultTokens, ...recents].map((token, index) => (
             <div
               className={`token-button ${
                 themeKey === "dark" && "border-button-none"
@@ -138,7 +152,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
               key={index}
               onClick={() => onClickToken(token)}
             >
-              <img src={token.logoURI} alt="logo" className="token-logo" />
+              {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
               <span>{token.symbol}</span>
             </div>
           ))}

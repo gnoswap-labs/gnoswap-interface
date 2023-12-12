@@ -9,6 +9,7 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
+import { parseJson } from "@utils/common";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -20,7 +21,7 @@ export interface SortedProps extends TokenModel {
   price: string;
 }
 
-const ORDER = ["GNOT", "GNS", "BAR", "BAZ", "QUX", "FOO"];
+export const ORDER = ["GNOT", "GNS", "BAR", "BAZ"];
 
 const customSort = (a: TokenModel, b: TokenModel) => {
   const symbolA = a.symbol.toUpperCase();
@@ -47,7 +48,6 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
   } else {
     const priceA = parseFloat(a.price.replace(/,/g, ""));
     const priceB = parseFloat(b.price.replace(/,/g, ""));
-    console.log(priceA);
     
     if (!isNaN(priceA) && !isNaN(priceB) &&  priceA > priceB) {
       return -1;
@@ -79,6 +79,11 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
+  const recentsData = useAtomValue(TokenState.selectRecents);
+
+  const recents = useMemo(() => {
+    return parseJson(recentsData ? recentsData : "[]");
+  }, [recentsData]);
 
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: (value: any) => {
@@ -100,7 +105,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const defaultTokens = useMemo(() => {
     const temp = tokens.filter((_) => !!_.logoURI);
     const sortedTokenList = temp.sort(customSort);
-    return sortedTokenList.slice(0, 6);
+    return sortedTokenList.slice(0, 4);
   }, [tokens]);
   
   const filteredTokens = useMemo(() => {
@@ -158,6 +163,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       themeKey={themeKey}
       modalRef={modalRef}
       breakpoint={breakpoint}
+      recents={recents}
     />
   );
 };

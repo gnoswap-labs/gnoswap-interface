@@ -20,7 +20,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { parseJson } from "@utils/common";
+import { checkPositivePrice, parseJson } from "@utils/common";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -215,6 +215,8 @@ const HeaderContainer: React.FC = () => {
     }
     return temp.slice(0, keyword ? 6 : 6 - recents.length).map((item: TokenModel) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
+      const dataToday = checkPositivePrice((temp.pricesBefore?.latestPrice), (temp.pricesBefore?.priceToday));
+
       return {
         path: "",
         searchType: "",
@@ -224,10 +226,10 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${convertLargePrice(temp.usd || "0")}`,
+        price: `$${convertLargePrice(temp.usd || "0", 6)}`,
         priceOf1d: {
-          status: getStatus(temp.change1d),
-          value: `${temp.change1d || "0.00"}%`,
+          status: dataToday.status,
+          value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
         },
         tokenB: {
           path: "",

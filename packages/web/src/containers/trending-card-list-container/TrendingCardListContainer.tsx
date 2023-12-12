@@ -8,7 +8,7 @@ const TrendingCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
   const { trendingTokens, loading } = useTokenData();
-
+  
   const moveTokenDetails = useCallback((path: string) => {
     router.push("/tokens/" + path);
   }, [router]);

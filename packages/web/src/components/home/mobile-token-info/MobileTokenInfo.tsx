@@ -23,7 +23,7 @@ interface TokenInfoProps {
 
 const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
   <>
-    {status === MATH_NEGATIVE_TYPE.POSITIVE ? (
+    {status === MATH_NEGATIVE_TYPE.NEGATIVE ? (
       <IconTriangleArrowDown />
     ) : (
       <IconTriangleArrowUp />

@@ -30,9 +30,8 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
   const [token, setToken] = useState<TokenModel | null>(null);
   const tokenAmountInput = useTokenAmountInput(token);
-  const { updateTokenPrices, tokenPrices } = useTokenData();
+  const { updateTokenPrices } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
-  console.log(tokenPrices, "tokenPrices");
   
   useEffect(() => {
     setDataModal(tokenAmountInput);

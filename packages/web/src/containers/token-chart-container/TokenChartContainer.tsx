@@ -8,11 +8,11 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { formatTime, generateRandomPoints } from "@common/utils/date-util";
+import { generateRandomPoints } from "@common/utils/date-util";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
-import { getChange } from "@containers/token-info-content-container/TokenInfoContentContainer";
+import { checkPositivePrice } from "@utils/common";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
@@ -38,11 +38,14 @@ const getXaxis1Day = (data: IPrices1d[], numberAxis: number) : string[] => {
   const expectFirstPoint = (max(temp[0], oneDayAgo));
   const expectLastPoint = (min(temp[temp.length - 1], tenMinutesAgo));
   const randomPoints = generateRandomPoints(expectFirstPoint, expectLastPoint, numberAxis);
-  rs.push(formatTime(expectFirstPoint));
+  const formatOptions: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric" };
+
+  rs.push(expectFirstPoint.toLocaleTimeString(undefined, formatOptions));
   for (const entry of randomPoints) {
-    rs.push(formatTime(new Date(entry.date)));
+    const data = new Date(entry.date).toLocaleTimeString(undefined, formatOptions);
+    rs.push(data);
   }
-  rs.push(formatTime(expectLastPoint));
+  rs.push(expectLastPoint.toLocaleTimeString(undefined, formatOptions));
   return rs;
 };
 
@@ -127,7 +130,7 @@ function createXAxisDatas(currentTab: TokenChartGraphPeriodType, chartData: IPri
 
   switch (currentTab) {
     case "1D":
-      return getXaxis1Day(chartData, numberAxis);
+      return getXaxis1Day(chartData, numberAxis - 2);
     case "7D":
       return Array.from({ length: Math.min(numberAxis, uniqueDates.length) }, (_, index) => {
         const date = new Date(now);
@@ -209,8 +212,9 @@ const TokenChartContainer: React.FC = () => {
   useEffect(() => {
     const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
     if (currentToken) {
+      console.log(Number(pricesBefore.latestPrice) , Number(pricesBefore.priceToday));
 
-      const priceToday = getChange(Number(pricesBefore.latestPrice), Number(pricesBefore.priceToday));
+    const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday);
       setTokenInfo(() => ({
         token: {
           name: currentToken.name,
@@ -226,7 +230,7 @@ const TokenChartContainer: React.FC = () => {
             value: currentPrice ? Number(currentPrice) : "",
             denom: "USD",
           },
-          changedRate: Number(priceToday || 0),
+          changedRate: Number(dataToday.value || 0),
         },
       }));
       if (!fromSelectToken && !currentToken.logoURI) {

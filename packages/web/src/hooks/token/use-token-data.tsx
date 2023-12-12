@@ -1,10 +1,13 @@
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenState } from "@states/index";
+import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
+import { convertLargePrice } from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
@@ -16,7 +19,7 @@ export const useTokenData = () => {
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
-
+  
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens.sort((t1, t2) => {
       if (tokenPrices[t1.priceId] && tokenPrices[t2.priceId]) {
@@ -32,17 +35,18 @@ export const useTokenData = () => {
     }).filter((_, index) => index < 3);
     return sortedTokens.map(token => {
       const tokenPrice = tokenPrices[token.priceId];
-      if (!tokenPrice || BigNumber(tokenPrice.change1d).isNaN()) {
+      if (!tokenPrice || BigNumber(tokenPrice.pricesBefore.latestPrice).isNaN() || BigNumber(tokenPrice.pricesBefore.priceToday).isNaN()) {
         return {
           token,
           upDown: "none",
           content: "-"
         };
       }
+      const data1D = checkPositivePrice(tokenPrice.pricesBefore.latestPrice, tokenPrice.pricesBefore.priceToday);
       return {
         token,
-        upDown: BigNumber(tokenPrice.change1d).isPositive() ? "up" : "down",
-        content: `${BigNumber(tokenPrice.change1d).toFixed()}%`
+        upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
+        content: data1D.percent.replace(/[+-]/g, ""),
       };
     });
   }, [tokens, tokenPrices]);
@@ -57,7 +61,7 @@ export const useTokenData = () => {
       tokenPrices[token.priceId] ? {
         token,
         upDown: "none" as UpDownType,
-        content: `$${tokenPrices[token.priceId].usd}`
+        content: `$${convertLargePrice(tokenPrices[token.priceId].usd, 10)}`
       } : {
         token,
         upDown: "none" as UpDownType,

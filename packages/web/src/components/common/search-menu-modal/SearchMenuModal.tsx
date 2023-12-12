@@ -100,7 +100,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       }
     });
     setWidthListRecent(temp);
-  }, [recentPriceRef]);
+  }, [recentPriceRef, popularTokens.toString(), keyword]);
 
   useEffect(() => {
     const temp: number[] = [];
@@ -111,7 +111,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       }
     });
     setTokenNameRecentWidthList(temp);
-  }, [tokenNameRecentsRef]);
+  }, [tokenNameRecentsRef, recents.toString(), keyword]);
 
   useEffect(() => {
     const temp: number[] = [];
@@ -122,12 +122,12 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       }
     });
     setTokenNamePopularWidthList(temp);
-  }, [tokenNamePopularRef]);
+  }, [tokenNamePopularRef, keyword, popularTokens.toString()]);
   
   const length = useMemo(() => {
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
-
+  
   return (
     <>
       <SearchModalBackground>
@@ -149,7 +149,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               {!keyword && recents.length > 0 && isFetched && (
                 <>
                   <div className="recent-searches">
-                    {!keyword ? "Popular Searches" : "Tokens"}
+                    {!keyword ? "Recent Searches" : "Tokens"}
                   </div>
                   {recents
                     
@@ -183,7 +183,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               </span>
                             ) : (
                               <span className="negative">
-                                <IconTriangleArrowDownV2 /> -
+                                <IconTriangleArrowDownV2 />
                                 {item.priceOf1d.value}
                               </span>
                             )}
@@ -251,7 +251,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           </span>
                         ) : (
                           <span className="negative">
-                            <IconTriangleArrowDownV2 /> -{item.priceOf1d.value}
+                            <IconTriangleArrowDownV2 /> {item.priceOf1d.value}
                           </span>
                         )}
                       </div>

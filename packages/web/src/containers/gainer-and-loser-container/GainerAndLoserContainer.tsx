@@ -94,7 +94,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: temp.name,
         symbol: temp.symbol,
         logoURI: temp.logoURI,
-        price: `$${convertLargePrice(item.tokenPrice)}`,
+        price: `$${convertLargePrice(item.tokenPrice, 10)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
@@ -111,7 +111,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: temp.name,
         symbol: temp.symbol,
         logoURI: temp.logoURI,
-        price: `$${convertLargePrice(item.tokenPrice)}`,
+        price: `$${convertLargePrice(item.tokenPrice, 10)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,

@@ -1,4 +1,6 @@
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import * as CryptoJS from "crypto-js";
+import { convertLargePrice } from "./stake-position-utils";
 
 export function wait<T>(
   runner: () => Promise<T>,
@@ -42,4 +44,25 @@ export const parseJson = (data: string) => {
     console.log(error);
     return [];
   }
+};
+
+export const checkPositivePrice = (currentPrice: string, checkPrice: string, fixedPrice?: number) => {
+  const currentToNumber = Number(currentPrice);
+  const checkToNumber = Number(checkPrice);
+  const value = checkPrice >= currentPrice ?
+    ((checkToNumber / currentToNumber - 1) * 100).toFixed(2) :
+    ((1 - checkToNumber / currentToNumber) * 100).toFixed(2);
+    const isEmpty = !currentPrice || !checkPrice;
+  const status: MATH_NEGATIVE_TYPE = isEmpty ? MATH_NEGATIVE_TYPE.NONE :
+  Number(value) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE;
+  const percent = status === MATH_NEGATIVE_TYPE.NONE ? "-" : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "" : "+"}${value}%`;
+  const price = status === MATH_NEGATIVE_TYPE.NONE ? "-" : 
+  `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" :"+"}$${convertLargePrice((Math.abs(checkToNumber - currentToNumber)).toString(), fixedPrice ?? 2)}`;
+  return {
+    status: status,
+    value: value,
+    isEmpty: isEmpty,
+    percent: percent,
+    price: price,
+  };
 };

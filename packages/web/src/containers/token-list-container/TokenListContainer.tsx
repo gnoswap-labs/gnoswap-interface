@@ -9,6 +9,8 @@ import useClickOutside from "@hooks/common/use-click-outside";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetTokenPrices, useGetTokensList } from "src/react-query/token";
+import { checkPositivePrice } from "@utils/common";
+import { convertLargePrice } from "@utils/stake-position-utils";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -64,14 +66,6 @@ export const TOKEN_TYPE = {
   GRC20: "GRC20",
 } as const;
 export type TOKEN_TYPE = ValuesType<typeof TOKEN_TYPE>;
-
-const getStatus = (value: string) => {
-  if (Number(value ?? 0) > 0) {
-    return MATH_NEGATIVE_TYPE.POSITIVE;
-  }
-  
-  return MATH_NEGATIVE_TYPE.NEGATIVE;
-};
 
 export const createDummyTokenList = (): Token[] => [
   {
@@ -204,6 +198,10 @@ const TokenListContainer: React.FC = () => {
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
       const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
       const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
+      const dataToday = checkPositivePrice((temp.pricesBefore?.latestPrice), (temp.pricesBefore?.priceToday));
+      const data7day = checkPositivePrice((temp.pricesBefore?.latestPrice), (temp.pricesBefore?.price7d));
+      const data30D = checkPositivePrice((temp.pricesBefore?.latestPrice), (temp.pricesBefore?.price30d));
+      
       return {
         ...temp,
         token: {
@@ -234,10 +232,10 @@ const TokenListContainer: React.FC = () => {
         marketCap: `$${Math.floor(Number(temp.marketCap || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(temp.liquidity || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(temp.volume || 0)).toLocaleString()}`,
-        price: `$${Number(temp.usd || 0).toLocaleString(undefined, { maximumFractionDigits: 10, minimumFractionDigits: 2})}`,
-        priceOf1d: { status: getStatus(temp.change1d), value: `${Number(temp.change1d || 0).toFixed(2)}%` },
-        priceOf7d: { status: getStatus(temp.change7d), value: `${Number(temp.change7d || 0).toFixed(2)}%` },
-        priceOf30d: { status: getStatus(temp.change30d), value: `${Number(temp.change30d || 0).toFixed(2)}%` },
+        price: `$${convertLargePrice(temp.usd || "0", 6)}`,
+        priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent },
+        priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent },
+        priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent },
         idx: 1,
       };
     });
@@ -310,8 +308,8 @@ const TokenListContainer: React.FC = () => {
         }
       }
     }
-    return temp;
-  }, [keyword, tokenType, sortOption, firstData]);
+    return temp.slice(0, 15);
+  }, [keyword, tokenType, sortOption, firstData, page]);
   
   return (
     <TokenList
@@ -324,7 +322,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={Math.floor((tokens || []).length / 20 + 1)}
+      totalPage={Math.floor((tokens || []).length / 15 + 1)}
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}

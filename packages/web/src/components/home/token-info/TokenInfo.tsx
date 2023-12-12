@@ -15,19 +15,30 @@ import {
 } from "./TokenInfo.styles";
 import { TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
+import { Global, css } from "@emotion/react";
 
 interface TokenInfoProps {
   item: Token;
   idx: number;
 }
-
+const ChartGlobalTooltip = () => {
+  return (
+    <Global
+      styles={() => css`
+        .chart-tooltip {
+          display: none !important;
+        }
+      `}
+    />
+  );
+};
 const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
   <>
-    {status === MATH_NEGATIVE_TYPE.POSITIVE ? (
+    {status === MATH_NEGATIVE_TYPE.NEGATIVE ? (
       <IconTriangleArrowDown />
-    ) : (
+    ) : status === MATH_NEGATIVE_TYPE.POSITIVE ? (
       <IconTriangleArrowUp />
-    )}
+    ) : null}
     <span>{value}</span>
   </>
 );
@@ -124,6 +135,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         className="right-padding-12 last7days-graph"
       >
         <SimpleLineGraph width={100} height={33} datas={last7days} />
+        <ChartGlobalTooltip />
       </TableColumn>
     </TokenInfoWrapper>
   );
