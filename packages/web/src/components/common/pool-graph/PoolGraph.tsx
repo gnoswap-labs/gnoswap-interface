@@ -199,13 +199,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       setPositionY(null);
       return;
     }
+    const minTick = bin.minTick + defaultMinX;
+    const maxTick = bin.maxTick + defaultMinX;
     const tokenARange = {
-      min: tickOfPrices[bin.minTick] || null,
-      max: tickOfPrices[bin.maxTick] || null,
+      min: tickOfPrices[minTick] || null,
+      max: tickOfPrices[maxTick] || null,
     };
     const tokenBRange = {
-      min: tickOfPrices[-bin.maxTick] || null,
-      max: tickOfPrices[-bin.minTick] || null,
+      min: tickOfPrices[-minTick] || null,
+      max: tickOfPrices[-maxTick] || null,
     };
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
     const tokenBAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
@@ -243,9 +245,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }
 
   useEffect(() => {
-    if (resolvedBins.length > 0) {
+    if (bins.length > 0) {
       new Promise<{ [key in number]: string }>(resolve => {
-        const tickOfPrices = resolvedBins.flatMap(bin => [bin.minTick, bin.maxTick, -bin.minTick, -bin.maxTick])
+        const tickOfPrices = bins.flatMap(bin => {
+          const minTick = bin.minTick;
+          const maxTick = bin.maxTick;
+          return [minTick, maxTick, -minTick, -maxTick];
+        })
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
               acc[current] = tickToPriceStr(current).toString();
@@ -255,7 +261,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         resolve(tickOfPrices);
       }).then(setTickOfPrices);
     }
-  }, [resolvedBins]);
+  }, [bins]);
 
   useEffect(() => {
     const svgElement = d3.select(svgRef.current)

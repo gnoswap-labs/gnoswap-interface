@@ -138,17 +138,17 @@ export const useSelectPool = ({
     const maxPriceGap = maxPrice - currentPrice;
 
     if (maxPriceGap < 0) {
-      return 100;
+      return 0;
     }
     if (minPriceGap < 0) {
-      return 0;
+      return 100;
     }
 
     const logMin = minPrice <= 0 ?
       Math.log(currentPrice / Number(0.0000000001)) :
       Math.log(currentPrice / minPrice);
     const logMax = Math.log(maxPrice / currentPrice);
-    return logMin * 100 / (logMin + logMax);
+    return logMax * 100 / (logMin + logMax);
   }, [maxPrice, minPrice, price, fullRange, startPrice, isCreate]);
 
   const feeBoost = useMemo(() => {
