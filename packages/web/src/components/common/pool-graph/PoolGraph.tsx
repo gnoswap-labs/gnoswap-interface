@@ -186,7 +186,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const mouseY = event.offsetY;
     const bin = resolvedBins.find(bin => {
       const minX = scaleX(bin.minTick);
-      const maxX = scaleX(bin.maxTick);
+      const maxX = scaleX(bin.maxTick + 1);
       if (mouseY < 1 || mouseY >= height - 1) {
         return false;
       }
@@ -282,14 +282,18 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }, [width, height, scaleX, scaleY]);
 
   useEffect(() => {
-    window.addEventListener("scroll", onMouseoutChartBin);
-    return () => window.removeEventListener("scroll", onMouseoutChartBin);
-  }, []);
+    if (tooltipInfo) {
+      window.addEventListener("scroll", onMouseoutChartBin);
+      return () => window.removeEventListener("scroll", onMouseoutChartBin);
+    }
+  }, [tooltipInfo]);
 
   useEffect(() => {
-    window.addEventListener("mouseover", onMouseoverClear);
-    return () => window.removeEventListener("mouseover", onMouseoverClear);
-  }, []);
+    if (tooltipInfo) {
+      window.addEventListener("mousemove", onMouseoverClear);
+      return () => window.removeEventListener("mousemove", onMouseoverClear);
+    }
+  }, [tooltipInfo]);
 
   return (
     <PoolGraphWrapper>
