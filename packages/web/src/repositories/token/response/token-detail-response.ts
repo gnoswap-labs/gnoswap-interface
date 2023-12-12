@@ -1,32 +1,18 @@
 
 export interface ITokenDetailResponse {
-  prices: IPriceResponse[]
-  priceChangeDetail: IPriceChangeDetailResponse
   market: IMarketResponse
   bestPools: IBestPoolResponse[]
-  currentPrice: string;
+  currentPrice: string
+  prices1d: IPrices1d[]
+  prices7d: IPrices7d[]
+  prices1m: IPrices1m[]
+  prices1y: IPrices1y[]
+  pricesBefore: IPricesBefore
 }
 
 export interface IPriceResponse {
   date: string
   price: string
-}
-  
-export interface IPriceChangeDetailResponse {
-  priceToday: string
-  changeToday: string
-  price1h: string
-  change1h: string
-  price1d: string
-  change1d: string
-  price7d: string
-  change7d: string
-  price30d: string
-  change30d: string
-  price60d: string
-  change60d: string
-  price90d: string
-  change90d: string
 }
   
 export interface IMarketResponse {
@@ -61,3 +47,40 @@ export interface ITokenB {
   logoURI: string
 }
   
+export interface IPrices1d {
+  date: string
+  price: string
+}
+
+export interface IPrices7d {
+  date: string
+  price: string
+}
+
+export interface IPrices1m {
+  date: string
+  price: string
+}
+
+export interface IPrices1y {
+  date: string
+  price: string
+}
+
+export interface IPricesBefore {
+  latestPrice: string
+  priceToday: string
+  price1h: string
+  price2h: string
+  price1d: string
+  price2d: string
+  price7d: string
+  price8d: string
+  price30d: string
+  price31d: string
+  price60d: string
+  price61d: string
+  price90d: string
+  price91d: string
+}
+

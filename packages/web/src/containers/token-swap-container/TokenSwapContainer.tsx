@@ -159,9 +159,6 @@ const TokenSwapContainer: React.FC = () => {
         setTokenAAmount(tokenBAmount);
       }
     }
-    if (preTokenA) {
-      router.push(`/tokens/${preTokenA.symbol}?tokenB=${preTokenA.path}&direction=EXACT_IN`);
-    }
   }, [type, tokenA, tokenAAmount, tokenB, tokenBAmount]);
 
   const handleCopied = async () => {

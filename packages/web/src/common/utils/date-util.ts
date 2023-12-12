@@ -1,3 +1,4 @@
+import { IPrices1d } from "@repositories/token";
 import dayjs from "dayjs";
 
 const getDateUtcToLocal = (d: any) => {
@@ -40,3 +41,26 @@ export const getLocalDateString = (d: any) => {
     offsetHours === 0 ? "UTC" : `UTC${sign}${Math.abs(offsetHours)}`;
   return `${value} (${offsetHoursString})`;
 };
+
+export function generateRandomPoints(start: Date, end: Date, count: number): IPrices1d[] {
+  const timeDifference = end.getTime() - start.getTime();
+  const interval = timeDifference / (count + 1);
+
+  const randomPoints: IPrices1d[] = [];
+
+  for (let i = 1; i <= count - 2; i++) {
+      const randomTime = start.getTime() + i * interval;
+      const randomDate = new Date(randomTime);
+      const randomPrice = Math.random().toFixed(6);
+
+      randomPoints.push({ date: randomDate.toISOString(), price: randomPrice });
+  }
+
+  return randomPoints;
+}
+
+export function formatTime(date: Date): string {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}

@@ -24,6 +24,9 @@ export const TokenChartGraphWrapper = styled.div`
         .line-chart-g {
           transform: translateY(24px);
         }
+        .first-line {
+          transform: translateY(24px);
+        }
       }
     }
     @media (max-width: 930px) {
@@ -51,6 +54,9 @@ export const TokenChartGraphWrapper = styled.div`
         height: 30px;
         padding: 0 4px;
       }
+    }
+    .xaxis-wrapper-center {
+      justify-content: center;
     }
   }
 

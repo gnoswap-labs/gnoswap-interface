@@ -96,8 +96,8 @@ const GainerAndLoserContainer: React.FC = () => {
         logoURI: temp.logoURI,
         price: `$${convertLargePrice(item.tokenPrice)}`,
         change: {
-          status: MATH_NEGATIVE_TYPE.POSITIVE,
-          value: "+0.00%",
+          status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
         }
       };
     }).slice(0, 3);
@@ -113,8 +113,8 @@ const GainerAndLoserContainer: React.FC = () => {
         logoURI: temp.logoURI,
         price: `$${convertLargePrice(item.tokenPrice)}`,
         change: {
-          status: MATH_NEGATIVE_TYPE.POSITIVE,
-          value: "+0.00%",
+          status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
         }
       };
     }).slice(0, 3);

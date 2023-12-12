@@ -5,6 +5,8 @@ import TokenChartGraphTab from "./token-chart-graph-tab/TokenChartGraphTab";
 import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
 import { ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { ComponentSize } from "@hooks/common/use-component-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 
 export interface TokenChartProps {
@@ -13,6 +15,9 @@ export interface TokenChartProps {
   currentTab: TokenChartGraphPeriodType;
   changeTab: (tab: string) => void;
   loading: boolean;
+  componentRef: React.RefObject<HTMLDivElement>;
+  size: ComponentSize;
+  breakpoint: DEVICE_TYPE;
 }
 
 const TokenChart: React.FC<TokenChartProps> = ({
@@ -21,6 +26,9 @@ const TokenChart: React.FC<TokenChartProps> = ({
   currentTab,
   changeTab,
   loading,
+  componentRef,
+  size,
+  breakpoint,
 }) => {
   
   return (
@@ -41,6 +49,9 @@ const TokenChart: React.FC<TokenChartProps> = ({
         yAxisLabels={chartInfo?.yAxisLabels || []}
         datas={chartInfo?.datas || []}
         currentTab={currentTab}
+        componentRef={componentRef}
+        size={size}
+        breakpoint={breakpoint}
       />}
     </TokenChartWrapper>
   );
