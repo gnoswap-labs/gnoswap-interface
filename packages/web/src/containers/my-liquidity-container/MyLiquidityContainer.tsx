@@ -5,17 +5,19 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { useRouter } from "next/router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { usePosition } from "@hooks/common/use-position";
 
 
 
 const MyLiquidityContainer: React.FC = () => {
+  const router = useRouter();
+  const divRef = useRef<HTMLDivElement | null>(null);
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const { getPositionsByPoolId } = usePositionData();
-  const router = useRouter();
-  const divRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { claimAll } = usePosition(positions);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
@@ -42,6 +44,10 @@ const MyLiquidityContainer: React.FC = () => {
     }
   };
 
+  const claimAllReward = useCallback(() => {
+    claimAll();
+  }, [claimAll]);
+
   return (
     <MyLiquidity
       positions={positions}
@@ -53,6 +59,7 @@ const MyLiquidityContainer: React.FC = () => {
       divRef={divRef}
       onScroll={handleScroll}
       currentIndex={currentIndex}
+      claimAll={claimAllReward}
     />
   );
 };

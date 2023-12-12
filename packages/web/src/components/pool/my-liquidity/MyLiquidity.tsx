@@ -16,6 +16,7 @@ interface MyLiquidityProps {
   divRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
   currentIndex: number;
+  claimAll: () => void;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -28,6 +29,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   divRef,
   onScroll,
   currentIndex,
+  claimAll,
 }) => {
   return (
     <MyLiquidityWrapper>
@@ -43,6 +45,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           positions={positions}
           breakpoint={breakpoint}
           isDisabledButton={isSwitchNetwork || !connected}
+          claimAll={claimAll}
         />
       </div>
       <PoolDivider />

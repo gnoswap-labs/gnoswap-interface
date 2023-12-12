@@ -23,12 +23,14 @@ interface MyLiquidityContentProps {
   positions: PoolPositionModel[];
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
+  claimAll: () => void;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   connected,
   positions,
   breakpoint,
+  claimAll,
 }) => {
   const { tokenPrices } = useTokenData();
 
@@ -216,6 +218,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 padding: "10px 16px",
                 fontType: "p1",
               }}
+              onClick={claimAll}
             />
           </div>
         ) : (
@@ -245,6 +248,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   padding: "0px 16px",
                   fontType: "p1",
                 }}
+                onClick={claimAll}
               />
             </div>
           </>
