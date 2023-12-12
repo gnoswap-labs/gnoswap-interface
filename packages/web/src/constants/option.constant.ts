@@ -284,3 +284,5 @@ export type AddLiquiditySubmitType =
   | "SWITCH_NETWORK"
   | "SELECT_TOKEN"
   | "AMOUNT_TOO_LOW";
+
+export type RewardType = "SWAP_FEE" | "STAKING" | "EXTERNAL";

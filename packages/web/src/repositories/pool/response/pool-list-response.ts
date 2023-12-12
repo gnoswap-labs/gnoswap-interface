@@ -50,4 +50,6 @@ export interface PoolResponse {
   feeChange: number;
 
   apr: number;
+
+  rewardTokens?: TokenModel[];
 }

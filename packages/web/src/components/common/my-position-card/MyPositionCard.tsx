@@ -120,7 +120,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="base-border">
         <MyPositionCardWrapper
           staked={position.staked}
-          onClick={() => movePoolDetail("1")}
+          onClick={() => movePoolDetail(pool.id)}
         >
           <div className="title-wrapper">
             <div className="box-header">

@@ -44,5 +44,11 @@ export interface PositionModel {
 
   apr: string;
 
+  stakedAt: String;
+
+  stakedUsdValue: string;
+
   rewards: RewardModel[];
+
+  dailyRewards: RewardModel[];
 }

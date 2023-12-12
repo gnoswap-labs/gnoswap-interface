@@ -1,8 +1,11 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PoolPairInfoHeader from "./PoolPairInfoHeader";
-import { poolPairInit } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { css } from "@emotion/react";
+import { PoolRepositoryMock } from "@repositories/pool";
+
+const poolRepository = new PoolRepositoryMock();
+const pool = (await poolRepository.getPoolDetailByPoolPath());
 
 export default {
   title: "pool/PoolPairInfoHeader",
@@ -19,7 +22,11 @@ const Template: ComponentStory<typeof PoolPairInfoHeader> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  info: poolPairInit.poolInfo,
+  tokenA: pool.tokenA,
+  tokenB: pool.tokenB,
+  feeStr: "0.01%",
+  incentivizedType: pool.incentivizedType,
+  rewardTokens: [],
 };
 
 const wrapper = () => css`

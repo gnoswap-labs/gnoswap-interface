@@ -297,7 +297,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [account?.address]);
 
   useEffect(() => {
-    const poolId = router.query["pool-number"];
+    const poolId = router.query["pool-path"];
     const pool = poolInfos.find(pool => pool.id === poolId);
     if (pool) {
       const feeTier = makeSwapFeeTier(pool.fee);

@@ -59,7 +59,8 @@ export const useSwap = ({
       setEstimatedRoutes(response.estimatedRoutes);
       setEstimatedAmount(response.amount);
       return response;
-    }).catch(() => {
+    }).catch(e => {
+      console.error(e);
       setEstimatedRoutes([]);
       setEstimatedAmount(null);
       return null;

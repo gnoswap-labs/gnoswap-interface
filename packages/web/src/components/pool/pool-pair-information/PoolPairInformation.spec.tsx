@@ -2,16 +2,20 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import PoolPairInformation from "./PoolPairInformation";
-import {
-  menuInit,
-  poolPairInit,
-} from "@containers/pool-pair-information-container/PoolPairInformationContainer";
+import { PoolRepositoryMock } from "@repositories/pool";
+
+const poolRepository = new PoolRepositoryMock();
 
 describe("PoolPairInformation Component", () => {
-  it("PoolPairInformation render", () => {
+  it("PoolPairInformation render", async () => {
+    const pool = (await poolRepository.getPoolDetailByPoolPath());
     const mockProps = {
-      info: poolPairInit,
-      menu: menuInit,
+      pool,
+      feeStr: "0.01%",
+      menu: {
+        title: "Earn",
+        path: "/earn",
+      },
       onClickPath: () => null,
     };
 

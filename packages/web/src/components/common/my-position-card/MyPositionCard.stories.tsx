@@ -2,7 +2,6 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import MyPositionCard from "./MyPositionCard";
-import { dummyPositionList } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import { action } from "@storybook/addon-actions";
 
 export default {

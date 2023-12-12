@@ -1,7 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import MyLiquidity from "./MyLiquidity";
-import { liquidityInit } from "@containers/my-liquidity-container/MyLiquidityContainer";
 import { css } from "@emotion/react";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -20,7 +19,6 @@ const Template: ComponentStory<typeof MyLiquidity> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  info: liquidityInit,
   breakpoint: DEVICE_TYPE.WEB,
 };
 

@@ -1,6 +1,6 @@
 import { NetworkClient } from "@common/clients/network-client";
 import {
-  PoolDetailResponse,
+  PoolResponse,
   PoolListResponse,
   PoolRepository,
 } from ".";
@@ -30,6 +30,7 @@ import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
@@ -78,13 +79,13 @@ export class PoolRepositoryImpl implements PoolRepository {
     return pools;
   };
 
-  getPoolDetailByPoolId = async (
-    poolId: string,
-  ): Promise<PoolDetailResponse> => {
-    const response = await this.networkClient.get<PoolDetailResponse>({
-      url: "/pools/" + poolId,
-    });
-    return response.data;
+  getPoolDetailByPoolPath = async (
+    poolPath: string,
+  ): Promise<PoolDetailModel> => {
+    const pool = await this.networkClient.get<PoolResponse>({
+      url: "/pool_details/" + poolPath,
+    }).then(response => PoolMapper.detailFromResponse(response.data));
+    return pool;
   };
 
   getPoolDetailRPCByPoolPath = async (
