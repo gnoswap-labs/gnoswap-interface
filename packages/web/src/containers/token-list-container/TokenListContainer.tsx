@@ -192,7 +192,7 @@ const TokenListContainer: React.FC = () => {
   );
 
   const firstData = useMemo(() => {
-    const temp = tokens.map((item: TokenModel) => {
+    const temp = [...tokens, ...tokens].map((item: TokenModel) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
@@ -322,7 +322,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={Math.ceil((tokens || []).length / 15)}
+      totalPage={Math.ceil(([...tokens, ...tokens] || []).length / 15)}
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}
