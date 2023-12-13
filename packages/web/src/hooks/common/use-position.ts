@@ -7,7 +7,7 @@ export const usePosition = (positions: PoolPositionModel[]) => {
   const { positionRepository } = useGnoswapContext();
   const { account } = useWallet();
 
-  const claimAll = useCallback(() => {
+  const claimAll = useCallback(async () => {
     const address = account?.address;
     if (!address) {
       return null;
@@ -19,10 +19,12 @@ export const usePosition = (positions: PoolPositionModel[]) => {
           position.unclaimedFee0Amount + position.unclaimedFee1Amount > 0,
       )
       .map(position => position.lpTokenId);
-    return positionRepository.claimAll({
-      lpTokenIds,
-      receipient: address,
-    });
+    return positionRepository
+      .claimAll({
+        lpTokenIds,
+        receipient: address,
+      })
+      .catch(() => null);
   }, [account?.address, positionRepository, positions]);
 
   return {

@@ -128,7 +128,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
     if (!activated) {
-      return [];
+      return null;
     }
     return makeUniqueClaimableRewards(positions, tokenPrices);
   }, [activated, positions, tokenPrices]);

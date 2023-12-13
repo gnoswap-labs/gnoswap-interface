@@ -32,7 +32,6 @@ const Template: ComponentStory<typeof SelectLiquidityListItem> = args => {
 
 export const Default = Template.bind({});
 Default.args = {
-  item: init,
   checkedList: [],
   onCheckedItem: action("onCheckedItem"),
 };

@@ -1,7 +1,6 @@
 import React from "react";
 import { wrapper } from "./SelectUnstakePeriod.styles";
 import { cx } from "@emotion/css";
-import { CONTENT_TITLE } from "@components/stake/stake-liquidity/StakeLiquidity";
 
 interface SelectUnstakePeriodProps {
   period: any;
@@ -16,7 +15,7 @@ const SelectUnstakePeriod: React.FC<SelectUnstakePeriodProps> = ({
 }) => {
   return (
     <section css={wrapper}>
-      <h5 className="section-title">{CONTENT_TITLE.PERIOD}</h5>
+      <h5 className="section-title">1. Select Unstaking Period</h5>
       <div className="select-period">
         {period.map((item: any, idx: number) => (
           <div

@@ -1,7 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
-import { sectionBoxStyle } from "@components/stake/stake-liquidity/StakeLiquidity.styles";
+import { sectionBoxStyle } from "../stake-position/StakePosition.styles";
 
 export const wrapper = (theme: Theme) => css`
   ${sectionBoxStyle(theme)};

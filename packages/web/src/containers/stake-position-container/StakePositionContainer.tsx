@@ -1,104 +1,81 @@
 import StakePosition from "@components/stake/stake-position/StakePosition";
-import { STAKED_OPTION } from "@constants/option.constant";
-import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { useSubmitPositionModal } from "@hooks/earn/use-submit-position-modal";
-import React, { useCallback, useState, useEffect } from "react";
-
-export const unstakingPeriodInit = [
-  {
-    days: "7 days",
-    apr: "88%",
-  },
-  {
-    days: "14 days",
-    apr: "130%",
-  },
-  {
-    days: "21 days",
-    apr: "202%",
-  },
-];
-export const selectLiquidityInit = [
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    path: "GNS/BTC",
-    liquidity: "1455433112.10",
-    staked: STAKED_OPTION.UNSTAKED,
-  },
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    path: "GNS/ETH",
-    liquidity: "112.10",
-    staked: STAKED_OPTION.UNSTAKED,
-  },
-];
-
-export const data = {
-  period: unstakingPeriodInit,
-  liquidity: selectLiquidityInit,
-};
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useRouter } from "next/router";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 
 const StakePositionContainer: React.FC = () => {
-  const { width } = useWindowSize();
+  const router = useRouter();
+  const { account } = useWallet();
+  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { getPositionsByPoolId } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [checkedAll, setCheckedAll] = useState(false);
-  const { openModal } = useSubmitPositionModal();
+  const { openModal } = useSubmitPositionModal({
+    positions,
+    selectedIds: checkedList
+  });
+
+  const stakedPositions = useMemo(() => {
+    return positions.filter(position => position.staked);
+  }, [positions]);
+
+  const unstakedPositions = useMemo(() => {
+    return positions.filter(position => !position.staked);
+  }, [positions]);
+
+  const checkedAll = useMemo(() => {
+    if (unstakedPositions.length === 0) {
+      return false;
+    }
+    return unstakedPositions.length === checkedList.length;
+  }, [unstakedPositions, checkedList]);
+
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
       if (isChecked) {
         return setCheckedList((prev: string[]) => [...prev, path]);
       }
       if (!isChecked && checkedList.includes(path)) {
-        if (checkedAll) {
-          setCheckedAll(false);
-        }
         return setCheckedList(checkedList.filter(el => el !== path));
       }
     },
     [checkedList],
   );
 
-  useEffect(() => {
-    if (checkedList.length === data.liquidity.length) {
-      setCheckedAll(true);
-    } else if (checkedList.length === 0) {
-      setCheckedAll(false);
+  const onCheckedAll = useCallback(() => {
+    if (checkedAll) {
+      setCheckedList([]);
+      return;
     }
-  }, [checkedList]);
-
-  const onCheckedAll = useCallback(
-    (checked: boolean) => {
-      setCheckedAll((prev: boolean) => !prev);
-      if (checked) {
-        const filterCheckList: string[] = [];
-        selectLiquidityInit.forEach(item => filterCheckList.push(item.path));
-        setCheckedList(filterCheckList);
-      } else {
-        setCheckedList([]);
-      }
-    },
-    [selectLiquidityInit],
-  );
+    const checkedList = unstakedPositions.map(position => position.id);
+    setCheckedList(checkedList);
+  }, [checkedAll, unstakedPositions]);
 
   const submitPosition = useCallback(() => {
     openModal();
   }, [openModal]);
 
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    if (account?.address) {
+      getPositionsByPoolId(poolPath).then(setPositions);
+    }
+  }, [account?.address, getPositionsByPoolId, router.query]);
+
   return (
     <StakePosition
-      data={data}
+      stakedPositions={stakedPositions}
+      unstakedPositions={unstakedPositions}
       checkedList={checkedList}
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       submitPosition={submitPosition}
-      width={width}
     />
   );
 };

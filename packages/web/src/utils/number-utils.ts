@@ -192,7 +192,7 @@ export function toDecimalNumber(
 }
 
 export function numberToUSD(value: number) {
-  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat()}`;
+  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat(2)}`;
 }
 
 export function numberToUSDV2(value: number) {

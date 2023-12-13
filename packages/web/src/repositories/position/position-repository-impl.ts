@@ -14,10 +14,13 @@ import { PositionModel } from "@models/position/position-model";
 import { PositionRepository } from "./position-repository";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { DecreaseLiquidityReqeust } from "./request/decrease-liquidity-request";
+import { StakePositionsRequest } from "./request/stake-positions-request";
 import { PositionListResponse } from "./response";
 
 const STAKER_PATH = process.env.NEXT_PUBLIC_PACKAGE_STAKER_PATH || "";
+const STAKER_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_STAKER_ADDRESS || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
+const NFT_PATH = process.env.NEXT_PUBLIC_PACKAGE_NFT_PATH || "";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -63,6 +66,29 @@ export class PositionRepositoryImpl implements PositionRepository {
     // TODO: Need to check if a contract error occurred
     // messages.push(PositionRepositoryImpl.makeCollectRewardMessage(receipient));
 
+    const result = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
+    if (!hash) {
+      throw new Error(`${result}`);
+    }
+    return hash;
+  };
+
+  stakePositions = async (
+    request: StakePositionsRequest,
+  ): Promise<string | null> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const { lpTokenIds, caller } = request;
+    const messages = lpTokenIds.flatMap(lpTokenId => [
+      PositionRepositoryImpl.makeApporveStakeTokenMessage(lpTokenId, caller),
+      PositionRepositoryImpl.makeStakeMessage(lpTokenId, caller),
+    ]);
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee: DEFAULT_GAS_FEE,
@@ -129,6 +155,28 @@ export class PositionRepositoryImpl implements PositionRepository {
       pkg_path: STAKER_PATH,
       func: "CollectReward",
       args: [],
+    };
+  }
+  private static makeApporveStakeTokenMessage(
+    lpTokenId: string,
+    caller: string,
+  ) {
+    return {
+      caller,
+      send: "",
+      pkg_path: NFT_PATH,
+      func: "Approve",
+      args: [STAKER_ADDRESS, lpTokenId],
+    };
+  }
+
+  private static makeStakeMessage(lpTokenId: string, caller: string) {
+    return {
+      caller,
+      send: "",
+      pkg_path: STAKER_PATH,
+      func: "StakeToken",
+      args: [lpTokenId],
     };
   }
 
