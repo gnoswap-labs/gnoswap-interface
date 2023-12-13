@@ -1,3 +1,4 @@
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import TokenChartInfo, { type TokenChartInfoProps } from "./TokenChartInfo";
 import { Meta, StoryObj } from "@storybook/react";
 
@@ -17,6 +18,7 @@ export const Default: StoryObj<TokenChartInfoProps> = {
       amount: {
         value: 0.9844,
         denom: "UTC",
+        status: MATH_NEGATIVE_TYPE.NONE,
       },
       changedRate: 7.43,
     },

@@ -13,6 +13,7 @@ import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice } from "@utils/common";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
@@ -84,6 +85,7 @@ export interface TokenInfo {
     amount: {
       value: number | string;
       denom: string;
+      status: MATH_NEGATIVE_TYPE;
     };
     changedRate: number;
   };
@@ -117,6 +119,7 @@ const dummyTokenInfo: TokenInfo = {
     amount: {
       value: 0.9844,
       denom: "USD",
+      status: MATH_NEGATIVE_TYPE.NONE,
     },
     changedRate: 7.43,
   },
@@ -214,7 +217,9 @@ const TokenChartContainer: React.FC = () => {
     if (currentToken) {
       console.log(Number(pricesBefore.latestPrice) , Number(pricesBefore.priceToday));
 
-    const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday);
+    const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
+    console.log(dataToday);
+    
       setTokenInfo(() => ({
         token: {
           name: currentToken.name,
@@ -229,6 +234,7 @@ const TokenChartContainer: React.FC = () => {
           amount: {
             value: currentPrice ? Number(currentPrice) : "",
             denom: "USD",
+            status: dataToday.status,
           },
           changedRate: Number(dataToday.value || 0),
         },

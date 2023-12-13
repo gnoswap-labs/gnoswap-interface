@@ -308,7 +308,7 @@ const TokenListContainer: React.FC = () => {
         }
       }
     }
-    return temp.slice(0, 15);
+    return temp.slice(page * 15, (page +1 ) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
   
   return (
@@ -322,7 +322,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={Math.floor((tokens || []).length / 15 + 1)}
+      totalPage={Math.ceil((tokens || []).length / 15)}
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}

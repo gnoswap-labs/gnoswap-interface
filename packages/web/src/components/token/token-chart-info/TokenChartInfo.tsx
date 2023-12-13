@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { TokenChartInfoWrapper } from "./TokenChartInfo.styles";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
 export interface TokenChartInfoProps {
   token: {
@@ -13,6 +14,7 @@ export interface TokenChartInfoProps {
     amount: {
       value: number | string;
       denom: string;
+      status: MATH_NEGATIVE_TYPE;
     };
     changedRate: number;
   };
@@ -26,10 +28,10 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
 }) => {
 
   const isIncreasePrice = useCallback(() => {
-    const changedRate = priceInfo.changedRate;
-    return changedRate >= 0;
-  }, [priceInfo.changedRate]);
-
+    return priceInfo.amount.status === MATH_NEGATIVE_TYPE.POSITIVE;
+  }, [priceInfo.amount.status]);
+  console.log(priceInfo);
+  
   return (
     <TokenChartInfoWrapper>
       <div className="token-info-wrapper">
