@@ -14,9 +14,9 @@ const MyLiquidityContainer: React.FC = () => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
-  const { getPositionsByPoolId } = usePositionData();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { getPositionsByPoolId } = usePositionData();
   const { claimAll } = usePosition(positions);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const MyLiquidityContainer: React.FC = () => {
     if (account?.address) {
       getPositionsByPoolId(poolPath).then(setPositions);
     }
-  }, [account?.address, getPositionsByPoolId]);
+  }, [account?.address, getPositionsByPoolId, router.query]);
 
   const handleClickAddPosition = useCallback(() => {
     router.push(`${router.asPath}/add`);
@@ -45,8 +45,12 @@ const MyLiquidityContainer: React.FC = () => {
   };
 
   const claimAllReward = useCallback(() => {
-    claimAll();
-  }, [claimAll]);
+    claimAll().then(response => {
+      if (response !== null) {
+        router.reload();
+      }
+    });
+  }, [claimAll, router]);
 
   return (
     <MyLiquidity

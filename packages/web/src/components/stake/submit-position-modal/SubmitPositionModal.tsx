@@ -4,15 +4,23 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import React, { useCallback } from "react";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { numberToUSD } from "@utils/number-utils";
+import React, { useCallback, useMemo } from "react";
 import { Divider, SubmitPositionModalWrapper, ToolTipContentWrapper } from "./SubmitPositionModal.styles";
 
 interface Props {
+  positions: PoolPositionModel[];
   close: () => void;
   onSubmit: () => void;
 }
 
-const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
+const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
+  const totalLiquidityUSD = useMemo(() => {
+    const totalLiquidity = positions.reduce((accum, position) => accum + Number(position.liquidity), 0);
+    return numberToUSD(totalLiquidity);
+  }, [positions]);
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -42,37 +50,27 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                     <IconInfo />
                   </Tooltip>
                 </div>
-                <div className="value">100.23% ~ 300.69%</div>
+                <div className="value">-</div>
               </div>
             </div>
           </div>
           <div className="box-item">
             <h4>Positions</h4>
             <div className="item-content">
-              <div>
-                <div className="label-logo">
-                  <DoubleLogo
-                    left="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png"
-                    right="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
-                    size={24}
-                  />
-                  <div>GNS/GNOT</div>
-                  <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+              {positions.map((position, index) => (
+                <div key={index}>
+                  <div className="label-logo">
+                    <DoubleLogo
+                      left={position.pool.tokenA.logoURI}
+                      right={position.pool.tokenB.logoURI}
+                      size={24}
+                    />
+                    <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
+                    <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+                  </div>
+                  <div className="value">{numberToUSD(Number(position.liquidity))}</div>
                 </div>
-                <div className="value">$145,541.10</div>
-              </div>
-              <div>
-                <div className="label-logo">
-                  <DoubleLogo
-                    left="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png"
-                    right="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
-                    size={24}
-                  />
-                  <div>GNS/GNOT</div>
-                  <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
-                </div>
-                <div className="value">$145,541.10</div>
-              </div>
+              ))}
             </div>
           </div>
           <Divider />
@@ -82,7 +80,7 @@ const SubmitPositionModal: React.FC<Props> = ({ close, onSubmit }) => {
                 <div className="label-large">
                   Total Amount
                 </div>
-                <div className="value-large">$291,082.2</div>
+                <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>
           </div>
