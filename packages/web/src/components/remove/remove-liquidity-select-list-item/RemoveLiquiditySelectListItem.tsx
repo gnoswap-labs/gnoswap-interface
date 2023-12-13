@@ -1,107 +1,107 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { RemoveLiquiditySelectListItemWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import { convertLiquidity } from "@utils/stake-position-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { tooltipWrapper } from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem.styles";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { numberToUSD } from "@utils/number-utils";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { makeSwapFeeTier } from "@utils/swap-utils";
 
 interface RemoveLiquiditySelectListItemProps {
-  selected: boolean;
   position: PoolPositionModel;
-  select: (id: string) => void;
-  width: number;
+  checkedList: string[];
+  onCheckedItem: (checked: boolean, path: string) => void;
+  disabled?: boolean;
 }
 
 interface TooltipProps {
-  selectable: boolean;
+  position: PoolPositionModel;
+  disabled: boolean;
 }
 
-const TooltipContent: React.FC<TooltipProps> = ({ selectable }) => {
+const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
   return (
     <TooltipWrapperContent>
-      <div>
-        <div className="title">Token ID</div>
-        <div className="title">#982932</div>
-      </div>
-      <div>
-        <div className="value">
-          <img src="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png" />
-          GNS
+      <div css={tooltipWrapper()}>
+        <div>
+          <div className="title">Token ID</div>
+          <div className="title">#{position.id}</div>
         </div>
-        <div className="value">50.05881</div>
-      </div>
-      <div>
-        <div className="value">
-          <img src="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png" />
-          GNS
+        <div>
+          <div className="value">
+            <img src={position.pool.tokenA.logoURI} alt="token logo" />
+            {position.pool.tokenA.symbol}
+          </div>
+          <div className="value">{makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance)}</div>
         </div>
-        <div className="value">50.05881</div>
+        <div>
+          <div className="value">
+            <img src={position.pool.tokenB.logoURI} alt="token logo" />
+            {position.pool.tokenB.symbol}
+          </div>
+          <div className="value">{makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance)}</div>
+        </div>
       </div>
-      {selectable && <div className="divider"></div>}
-      {selectable && <div className="unstake-description">
-        *You need to unstake your position first.
-      </div>}
+      {!disabled && <div className="divider"></div>}
+      {!disabled && (
+        <div className="unstake-description">
+          *You need to unstake your position first.
+        </div>
+      )}
     </TooltipWrapperContent>
   );
 };
 
 const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps> = ({
-  selected,
   position,
-  select,
-  width,
+  checkedList,
+  onCheckedItem,
+  disabled = false,
 }) => {
-  const [checkWidth, setIsCheckWidth] = useState(true);
-  const leftDivRef = useRef<HTMLDivElement>(null);
-  const liquidityRef = useRef<HTMLDivElement>(null);
+  const checked = useMemo(() => {
+    return checkedList.includes(position.id);
+  }, [checkedList, position.id]);
 
-  const selectable = useMemo(() => {
-    return position.unclaimedFee0Amount + position.unclaimedFee1Amount > 0;
+  const tokenA = useMemo(() => {
+    return position.pool.tokenA;
+  }, [position.pool.tokenA]);
+
+  const tokenB = useMemo(() => {
+    return position.pool.tokenB;
+  }, [position.pool.tokenB]);
+
+  const liquidityUSD = useMemo(() => {
+    return numberToUSD(Number(position.positionUsdValue));
+  }, [position.positionUsdValue]);
+
+  const feeStr = useMemo(() => {
+    return SwapFeeTierInfoMap[makeSwapFeeTier(position.pool.fee)].rateStr;
   }, [position]);
-
-  const doubleLogo = useMemo(() => {
-    const { tokenA, tokenB } = position.pool;
-    return {
-      left: tokenA.logoURI,
-      right: tokenB.logoURI,
-    };
-  }, [position]);
-
-  const onChangeCheckbox = useCallback(() => {
-    select(position.id);
-  }, [position.id, select]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const windowWidth = Math.min(width, 500);
-      const totalWidth = (leftDivRef?.current?.offsetWidth || 0) + (liquidityRef?.current?.offsetWidth || 0) + 100;
-      setIsCheckWidth(windowWidth > totalWidth);
-    }
-  }, [liquidityRef.current, leftDivRef.current, width]);
 
   return (
-    <RemoveLiquiditySelectListItemWrapper selected={selected}>
-      <div className="left-content" ref={leftDivRef}>
+    <RemoveLiquiditySelectListItemWrapper selected={checked}>
+      <div className="left-content" >
         <input
           id={`checkbox-item-${position.id}`}
           type="checkbox"
-          disabled={!selectable}
-          checked={selected}
-          onChange={onChangeCheckbox}
+          disabled={disabled}
+          checked={checked}
+          onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
-        <DoubleLogo {...doubleLogo} size={24} />
+        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} />
         <Tooltip
           placement="top"
-          FloatingContent={<TooltipContent selectable={!selectable} />}
+          FloatingContent={<TooltipContent position={position} disabled={disabled} />}
         >
-          <span className="token-id">GNS/GNOT</span>
+          <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
         </Tooltip>
-        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+        <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
-      <span className="liquidity-value-fake" ref={liquidityRef}>${position.liquidity.toLocaleString()}</span>
-      <span className="liquidity-value" >${!checkWidth ? convertLiquidity(position.liquidity.toString()) : position.liquidity.toLocaleString()}</span>
+      <span className="liquidity-value" >{liquidityUSD}</span>
     </RemoveLiquiditySelectListItemWrapper>
   );
 };
