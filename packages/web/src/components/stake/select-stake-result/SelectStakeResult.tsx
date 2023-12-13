@@ -2,7 +2,6 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useMemo } from "react";
-import { CONTENT_TITLE } from "@components/stake/stake-liquidity/StakeLiquidity";
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -75,12 +74,12 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
       </ul>
       <div className="result-section">
         <div className="total-amount-box">
-          <h5 className="total-amount-title">{CONTENT_TITLE.TOTAL_STAKING}</h5>
+          <h5 className="total-amount-title">Total Amount</h5>
           {!isHiddenBadge && <Badge text={"21 days"} type={BADGE_TYPE.DARK_DEFAULT} />}
           <span className="result-value">{totalLiquidityUSD}</span>
         </div>
         <div className="apr-box">
-          <h5 className="apr-title">{CONTENT_TITLE.APR}</h5>
+          <h5 className="apr-title">Staking APR</h5>
           <div className="hover-info">
             <Tooltip placement="top" FloatingContent={<HoverTextWrapper>{HOVER_TEXT}</HoverTextWrapper>}>
               <IconInfo className="icon-info" />

@@ -1,37 +1,15 @@
 import React, { useCallback, useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import SelectLiquidity from "./SelectLiquidity";
-import { STAKED_OPTION } from "@constants/option.constant";
 
 export default {
   title: "stake/SelectLiquidity",
   component: SelectLiquidity,
 } as ComponentMeta<typeof SelectLiquidity>;
 
-const init = [
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    path: "#11111",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKED,
-  },
-  {
-    pairLogo: [
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-    ],
-    path: "#22222",
-    liquidity: "$145,541.10",
-    staked: STAKED_OPTION.UNSTAKED,
-  },
-];
-
 const Template: ComponentStory<typeof SelectLiquidity> = args => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [checkedAll, setCheckedAll] = useState(false);
+  const [checkedAll] = useState(false);
 
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
@@ -45,26 +23,11 @@ const Template: ComponentStory<typeof SelectLiquidity> = args => {
     [checkedList],
   );
 
-  const onCheckedAll = useCallback(
-    (checked: boolean) => {
-      setCheckedAll((prev: boolean) => !prev);
-      if (checked) {
-        const filterCheckList: string[] = [];
-        init.forEach(item => filterCheckList.push(item.path));
-        setCheckedList(filterCheckList);
-      } else {
-        setCheckedList([]);
-      }
-    },
-    [init],
-  );
-
   return (
     <SelectLiquidity
       {...args}
       checkedList={checkedList}
       onCheckedItem={onCheckedItem}
-      onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
     />
   );
@@ -72,5 +35,4 @@ const Template: ComponentStory<typeof SelectLiquidity> = args => {
 
 export const Default = Template.bind({});
 Default.args = {
-  liquidity: init,
 };
