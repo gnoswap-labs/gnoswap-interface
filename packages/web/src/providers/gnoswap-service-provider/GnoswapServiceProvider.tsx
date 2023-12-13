@@ -96,8 +96,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [localStorageClient, networkClient]);
 
   const positionRepository = useMemo(() => {
-    return new PositionRepositoryImpl(networkClient);
-  }, [networkClient]);
+    return new PositionRepositoryImpl(networkClient, rpcProvider, walletClient);
+  }, [networkClient, rpcProvider, walletClient]);
 
   async function initNetwork() {
     const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
