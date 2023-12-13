@@ -215,10 +215,8 @@ const TokenChartContainer: React.FC = () => {
   useEffect(() => {
     const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
     if (currentToken) {
-      console.log(Number(pricesBefore.latestPrice) , Number(pricesBefore.priceToday));
 
     const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
-    console.log(dataToday);
     
       setTokenInfo(() => ({
         token: {

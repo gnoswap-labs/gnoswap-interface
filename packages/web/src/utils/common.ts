@@ -56,7 +56,7 @@ export const checkPositivePrice = (currentPrice: string, checkPrice: string, fix
     const isEmpty = !currentPrice || !checkPrice;
   const status = isEmpty ? MATH_NEGATIVE_TYPE.NONE :
   currentToNumber >= checkToNumber ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE;
-  const percent = status === MATH_NEGATIVE_TYPE.NONE ? "-" : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "" : "+"}${value}%`;
+  const percent = status === MATH_NEGATIVE_TYPE.NONE ? "-" : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(Number(value))}%`;
   const price = status === MATH_NEGATIVE_TYPE.NONE ? "-" : 
   `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" :"+"}$${convertLargePrice((Math.abs(checkToNumber - currentToNumber)).toString(), fixedPrice ?? 2)}`;
   return {
