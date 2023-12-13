@@ -14,6 +14,7 @@ import { convertLargePrice } from "@utils/stake-position-utils";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
+  realValue: number;
 }
 export interface MostLiquidPool {
   poolId: string;
@@ -80,14 +81,17 @@ export const createDummyTokenList = (): Token[] => [
     priceOf1d: {
       status: MATH_NEGATIVE_TYPE.POSITIVE,
       value: "12.08%",
+      realValue: 0,
     },
     priceOf7d: {
       status: MATH_NEGATIVE_TYPE.NEGATIVE,
       value: "19.92%",
+      realValue: 0,
     },
     priceOf30d: {
       status: MATH_NEGATIVE_TYPE.NEGATIVE,
       value: "19.12%",
+      realValue: 0,
     },
     marketCap: "$311,421,241,255",
     liquidity: "$1,421,241,255",
@@ -233,9 +237,9 @@ const TokenListContainer: React.FC = () => {
         liquidity: `$${Math.floor(Number(temp.liquidity || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(temp.volume || 0)).toLocaleString()}`,
         price: `$${convertLargePrice(temp.usd || "0", 6)}`,
-        priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent },
-        priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent },
-        priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent },
+        priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
+        priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
+        priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
         idx: 1,
       };
     });
@@ -266,21 +270,21 @@ const TokenListContainer: React.FC = () => {
         }
       } else if (sortOption.key === TABLE_HEAD.PRICE_OF_1D) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => Number(a.priceOf1d.value.slice(0, a.priceOf1d.value.length - 1)) - Number(b.priceOf1d.value.slice(0, b.priceOf1d.value.length - 1)));
+          temp.sort((a: Token, b: Token) => (a.priceOf1d.realValue) - (b.priceOf1d.realValue));
         } else {
-          temp.sort((a: Token, b: Token) => - Number(a.priceOf1d.value.slice(0, a.priceOf1d.value.length - 1)) + Number(b.priceOf1d.value.slice(0, b.priceOf1d.value.length - 1)));
+          temp.sort((a: Token, b: Token) => - (a.priceOf1d.realValue) + (b.priceOf1d.realValue));
         }
       } else if (sortOption.key === TABLE_HEAD.PRICE_OF_30D) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => Number(a.priceOf30d.value.slice(0, a.priceOf30d.value.length - 1)) - Number(b.priceOf30d.value.slice(0, b.priceOf30d.value.length - 1)));
+          temp.sort((a: Token, b: Token) => (a.priceOf30d.realValue) - (b.priceOf30d.realValue));
         } else {
-          temp.sort((a: Token, b: Token) => - Number(a.priceOf30d.value.slice(0, a.priceOf30d.value.length - 1)) + Number(b.priceOf30d.value.slice(0, b.priceOf30d.value.length - 1)));
+          temp.sort((a: Token, b: Token) => - (a.priceOf30d.realValue) + (b.priceOf30d.realValue));
         }
       } else if (sortOption.key === TABLE_HEAD.PRICE_OF_7D) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: Token, b: Token) => Number(a.priceOf7d.value.slice(0, a.priceOf7d.value.length - 1)) - Number(b.priceOf7d.value.slice(0, b.priceOf7d.value.length - 1)));
+          temp.sort((a: Token, b: Token) => (a.priceOf7d.realValue) - (b.priceOf7d.realValue));
         } else {
-          temp.sort((a: Token, b: Token) => - Number(a.priceOf7d.value.slice(0, a.priceOf7d.value.length - 1)) + Number(b.priceOf7d.value.slice(0, b.priceOf7d.value.length - 1)));
+          temp.sort((a: Token, b: Token) => - (a.priceOf7d.realValue) + (b.priceOf7d.realValue));
         }
       } else if (sortOption.key === TABLE_HEAD.MARKET_CAP) {
         if (sortOption.direction === "asc") {

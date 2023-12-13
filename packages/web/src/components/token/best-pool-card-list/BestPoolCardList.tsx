@@ -15,8 +15,8 @@ interface BestPoolCardListProps {
 const LIST_TITLE = ["Pair", "TVL", "APR"];
 
 const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) => {
-  console.log(list, "!2122112122112");
-  
+  console.log(list, "bestPoolList");
+
   return (
     <div css={wrapper}>
       <div className="title-wrap">
@@ -34,7 +34,7 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) =>
       </div>}
       {!loading && <ul>
         {list.map((info, idx) => (
-          <Link href="/earn/pool/5" key={idx}>
+          <Link href={`/earn/pool/${info.id}?path=${info.poolPath}`} key={idx}>
             <li>
               <div>
                 <DoubleLogo
