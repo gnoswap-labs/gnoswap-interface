@@ -11,8 +11,12 @@ export const wrapper = (theme: Theme) => css`
   ${fonts.body12};
   border-top: 1px solid ${theme.color.border02};
   padding-top: 16px;
-
-  ul {
+  ${media.mobile} {
+    padding-top: 12px;
+  }
+  
+  .pooled-section,
+  .result-section {
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
     padding: 15px;
@@ -28,48 +32,20 @@ export const wrapper = (theme: Theme) => css`
 
   li {
     width: 100%;
-    img {
-      width: 24px;
-      height: 24px;
-    }
-  }
-
-  .pooled-section li {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    height: 24px;
-    .token-id {
-      margin-left: 8px;
-    }
-    .period-value {
-      ${mixins.flexbox("row", "center", "flex-end")};
-      gap: 5px;
-      margin-left: auto;
-      .svg {
-        width: 12px;
-        height: 12px;
-        * {
-          fill: ${theme.color.icon02};
-        }
-      }
-    }
-  }
-
-  .result-section li {
+    height: 39px;
     ${mixins.flexbox("column", "flex-end", "center")};
+    /* gap: 5px; */
     .main-info {
       width: 100%;
+      height: 24px;
       ${mixins.flexbox("row", "center", "center")};
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
       p {
-        color: ${theme.color.text03};
         margin-left: 5px;
-        br {
-          display: none;
-        }
-        ${media.mobile} {
-          br {
-            display: initial;
-          }
-        }
       }
       strong {
         margin-left: auto;
@@ -81,13 +57,48 @@ export const wrapper = (theme: Theme) => css`
       color: ${theme.color.text04}
     }
   }
-  .total-amount-section li {
-    ${mixins.flexbox("row", "center", "space-between")};
-    .label {
-      color: ${theme.color.text04}
+
+  .result-section {
+    ${mixins.flexbox("column", "center", "center")};
+    color: ${theme.color.text02};
+    ${fonts.body12}
+    .result-value {
+      margin-left: auto;
     }
-    .value {
-      color: ${theme.color.text02}
+    .total-amount-box,
+    .apr-box {
+      width: 100%;
+      ${mixins.flexbox("row", "center", "flex-start")};
+    }
+    .total-amount-box {
+      height: 24px;
+      ${media.mobile} {
+        height: 18px;
+      }
+    }
+    .apr-box {
+      height: 18px;
+    }
+    h5 {
+      margin-right: 4px;
+      &.total-amount-title, &.apr-title {
+        margin-right: 4px;
+        color: ${theme.color.text04};
+      }
+    }
+  }
+
+  .hover-info {
+    &,
+    & * {
+      width: 16px;
+      height: 16px;
+    }
+    cursor: default;
+    .icon-info {
+      * {
+        fill: ${theme.color.icon03};
+      }
     }
   }
 `;

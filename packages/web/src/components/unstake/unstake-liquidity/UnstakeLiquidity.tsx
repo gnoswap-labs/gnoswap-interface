@@ -1,47 +1,53 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import React from "react";
+import React, { useMemo } from "react";
 import SelectLiquidity from "@components/unstake/select-liquidity/SelectLiquidity";
 import SelectUnstakeResult from "@components/unstake/select-unstake-result/SelectUnstakeResult";
 import { wrapper } from "./UnstakeLiquidity.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface UnstakeLiquidityProps {
-  data: any[];
+  stakedPositions: PoolPositionModel[];
+  unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   handleConfirmUnstake: () => void;
-  width: number;
 }
 
 const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
-  data,
+  stakedPositions,
+  unstakedPositions,
   checkedList,
   onCheckedItem,
   onCheckedAll,
   checkedAll,
   handleConfirmUnstake,
-  width,
 }) => {
+
+  const selectedPositions = useMemo(() => {
+    return stakedPositions.filter(position => checkedList.includes(position.id));
+  }, [checkedList, stakedPositions]);
+
   return (
     <div css={wrapper}>
       <h3 className="title">Unstake Position</h3>
       <SelectLiquidity
-        list={data}
+        stakedPositions={stakedPositions}
+        unstakedPositions={unstakedPositions}
         checkedList={checkedList}
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
-        width={width}
       />
-      <SelectUnstakeResult checkedList={checkedList} />
-      {checkedList.length > 0 && <div className="unstake-des">
+      <SelectUnstakeResult positions={selectedPositions} />
+      {selectedPositions.length > 0 && <div className="unstake-des">
         <h5>Your Staking Progress Will be Reset</h5>
         <p>This will completely reset your staking progress. Once you re-stake, you will have to wait 30 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.</p>
         <a href="/">
           Learn more
-          <IconOpenLink className="icon-link"/>
+          <IconOpenLink className="icon-link" />
         </a>
       </div>}
       <Button
