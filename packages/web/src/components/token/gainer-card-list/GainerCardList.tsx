@@ -21,7 +21,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain })
         <span>No data</span>
       </div>}
       {!loadingGain && gainers.map((gainer, idx) => (
-        <Link href={`/tokens/${gainer.symbol}`} key={idx}>
+        <Link href={`/tokens/${gainer.symbol}?tokenB=${gainer.path}&direction=EXACT_IN`} key={idx}>
           <div className="card-wrap">
             <div>
               <img src={gainer?.logoURI} alt="logo" />

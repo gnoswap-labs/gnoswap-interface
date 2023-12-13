@@ -21,7 +21,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers, loadingLose }) => {
         <span>No data</span>
       </div>}
       {!loadingLose && losers.map((loser, idx) => (
-        <Link href={`/tokens/${loser.symbol}`} key={idx}>
+        <Link href={`/tokens/${loser.symbol}?tokenB=${loser.path}&direction=EXACT_IN`} key={idx}>
           <div className="card-wrap">
             <div>
               <img src={loser?.logoURI} alt="logo" />

@@ -48,6 +48,8 @@ const BestPoolsContainer: React.FC = () => {
   const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
 
   const bestPoolList: BestPool[] = useMemo(() => {
+    console.log(bestPools, "bestPools");
+    
     return bestPools.map((item: IBestPoolResponse) => {
       return {
         tokenPair: {

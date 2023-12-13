@@ -67,3 +67,41 @@ export const checkPositivePrice = (currentPrice: string, checkPrice: string, fix
     price: price,
   };
 };
+
+export function generateDateSequence(startDateString: string, endDateString: string) {
+  const startDate = new Date(startDateString);
+  const lastDate = new Date(endDateString);
+  const temp = [];
+  while (startDate <= lastDate) {
+    if (startDate.getMinutes() === 0) {
+      if (startDate.getHours() % 2 === 0) {
+        temp.push(new Date(startDate.toLocaleString("en-US")));
+        console.log(startDate.toLocaleString("en-US"));
+      }
+    } else {
+      startDate.setMinutes(0);
+    }
+    startDate.setHours(startDate.getHours() + 1);
+  }
+  return temp;
+  
+}
+
+export function countPoints(startDateTime: string, endDateTime: string, intervalMinutes: number): number {
+  const startDate = new Date(startDateTime);
+  const endDate = new Date(endDateTime);
+
+  const currentDateTime = new Date(startDate);
+
+  let count = 0;
+
+  while (currentDateTime <= endDate) {
+    console.log(currentDateTime.toLocaleString("en-US", { timeZone: "UTC" }));
+    count++;
+
+    // Tăng thêm số phút
+    currentDateTime.setMinutes(currentDateTime.getMinutes() + intervalMinutes);
+  }
+
+  return count;
+}

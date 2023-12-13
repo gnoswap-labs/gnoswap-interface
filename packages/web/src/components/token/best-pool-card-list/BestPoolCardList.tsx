@@ -15,6 +15,8 @@ interface BestPoolCardListProps {
 const LIST_TITLE = ["Pair", "TVL", "APR"];
 
 const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) => {
+  console.log(list, "!2122112122112");
+  
   return (
     <div css={wrapper}>
       <div className="title-wrap">

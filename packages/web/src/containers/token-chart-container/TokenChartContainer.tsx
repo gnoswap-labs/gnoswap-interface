@@ -8,45 +8,38 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { generateRandomPoints } from "@common/utils/date-util";
+// import { generateRandomPoints } from "@common/utils/date-util";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
-import { checkPositivePrice } from "@utils/common";
+import { checkPositivePrice, countPoints, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
 
-function max(a: Date, b: Date): Date {
-  return a > b ? a : b;
-}
+// function max(a: Date, b: Date): Date {
+//   return a > b ? a : b;
+// }
 
-function min(a: Date, b: Date): Date {
-  return a < b ? a : b;
-}
+// function min(a: Date, b: Date): Date {
+//   return a < b ? a : b;
+// }
 
 
-const getXaxis1Day = (data: IPrices1d[], numberAxis: number) : string[] => {
-  const temp: Date[] = [];
-  const now = new Date();
-  for (const entry of data) {
-    temp.push(new Date(entry.date));
-  }
+const getXaxis1Day = (data: Date[], numberAxis: number) : string[] => {
+  console.log(numberAxis);
+  
   const rs: string[] = [];
-  const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000);
-  const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  const expectFirstPoint = (max(temp[0], oneDayAgo));
-  const expectLastPoint = (min(temp[temp.length - 1], tenMinutesAgo));
-  const randomPoints = generateRandomPoints(expectFirstPoint, expectLastPoint, numberAxis);
-  const formatOptions: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric" };
-
-  rs.push(expectFirstPoint.toLocaleTimeString(undefined, formatOptions));
-  for (const entry of randomPoints) {
-    const data = new Date(entry.date).toLocaleTimeString(undefined, formatOptions);
+  // const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000);
+  // const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  // const expectFirstPoint = (max(new Date(data[0].date), oneDayAgo));
+  // const expectLastPoint = (min(new Date(data[data.length - 1].date), tenMinutesAgo));
+  const formatOptions: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric", timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, };
+  for (const entry of data) {
+    const data = new Date(entry).toLocaleTimeString("en-US", formatOptions);
     rs.push(data);
   }
-  rs.push(expectLastPoint.toLocaleTimeString(undefined, formatOptions));
   return rs;
 };
 
@@ -96,6 +89,8 @@ const months = [
 export interface ChartInfo {
   xAxisLabels: string[];
   yAxisLabels: string[];
+  left: number;
+  right: number;
   datas: {
     amount: {
       value: string;
@@ -125,7 +120,7 @@ const dummyTokenInfo: TokenInfo = {
   },
 };
 
-function createXAxisDatas(currentTab: TokenChartGraphPeriodType, chartData: IPrices1d[], numberAxis: number) {
+function createXAxisDatas(currentTab: TokenChartGraphPeriodType, chartData: IPrices1d[], numberAxis: number, date: Date[]) {
   const now = Date.now();
   const uniqueDates = [...new Set(chartData.map(entry => entry.date.split(" ")[0]))];
   const uniqueMonths = [...new Set(chartData.map(item => new Date(item.date).toLocaleString("default", { month: "long" })))];
@@ -133,7 +128,7 @@ function createXAxisDatas(currentTab: TokenChartGraphPeriodType, chartData: IPri
 
   switch (currentTab) {
     case "1D":
-      return getXaxis1Day(chartData, numberAxis - 2);
+      return getXaxis1Day(date, numberAxis - 2);
     case "7D":
       return Array.from({ length: Math.min(numberAxis, uniqueDates.length) }, (_, index) => {
         const date = new Date(now);
@@ -271,7 +266,14 @@ const TokenChartContainer: React.FC = () => {
   }, [prices1d.toString(), prices7d.toString, prices1m.toString(), prices1y.toString(), currentTab]);
 
   const getChartInfo = useCallback(() => {
-    const xAxisLabels = createXAxisDatas(currentTab, chartData, countXAxis);
+    const temp = generateDateSequence(chartData[0]?.date, chartData[chartData.length - 1]?.date);
+    let left = 0;
+    let right = 0;
+    if (temp.length > 1 && chartData.length > 1 && currentTab === TokenChartGraphPeriods[0]) {
+      left = countPoints(chartData[0].date, temp[0].toLocaleString(), 10) - 1;
+      right = countPoints(temp[temp.length - 1].toLocaleString(), chartData[chartData.length - 1].date, 10);
+    }
+    const xAxisLabels = createXAxisDatas(currentTab, chartData, countXAxis, temp);
     
     const length = currentTab === TokenChartGraphPeriods[0] ? 144 : currentTab === TokenChartGraphPeriods[1] ? 168 :
     currentTab === TokenChartGraphPeriods[2] ? 180 : currentTab === TokenChartGraphPeriods[3] ? 365 : 144;
@@ -287,29 +289,30 @@ const TokenChartContainer: React.FC = () => {
       };
     }) : [];
     const yAxisLabels = getYAxisLabels(datas.map((item) => Number(item.amount.value).toFixed(2)));
-
-
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
       datas: datas,
+      left: left,
+      right: right,
     };
 
     return chartInfo;
   }, [currentTab, chartData.toString(), countXAxis]);
   
   const getYAxisLabels = (datas: string[]): string[] => {
-    const temp = [datas[0]];
-    const space = (Number(datas[datas.length - 1]) - Number(datas[0])) / 6;
+    const convertNumber = datas.map(item => Number(item));
+    const minPoint = Math.min(...convertNumber);
+    const maxPoint = Math.max(...convertNumber);
+    const temp = [minPoint.toString()];
+    const space = Number(Number((maxPoint - minPoint) / 6).toFixed(2));
     for(let i = 0; i < 5; i++) {
       temp.push(`${(Number(temp[0]) + space * (i+1)).toFixed(2)}`);
     }
-    temp.push(datas[datas.length-1]);
+    temp.push(maxPoint.toString());
     return temp;
   };
 
-
-  
   return (
     <TokenChart
       tokenInfo={tokenInfo}

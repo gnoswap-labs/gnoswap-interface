@@ -92,7 +92,7 @@ const ChartGlobalTooltip = () => {
 };
 function parseTimeTVL(time: string) {
   const dateObject = new Date(time);
-  const month = dateObject.toLocaleString("en-US", { month: "short" });
+  const month = dateObject.toLocaleString("en-US", { month: "short", timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
   const day = dateObject.getDate();
   const year = dateObject.getFullYear();
   const hours = dateObject.getHours();

@@ -2,7 +2,12 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-export const TokenChartGraphWrapper = styled.div`
+interface Props {
+  left: number;
+  right: number;
+}
+
+export const TokenChartGraphWrapper = styled.div<Props>`
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -38,7 +43,9 @@ export const TokenChartGraphWrapper = styled.div`
       height: 40px;
       width: 100%;
       align-items: center;
-      padding: 0 12px;
+      padding: ${({ left, right }) => {
+        return (left || right) ? `0 ${right}px 0 ${left}px` : "0 12px";
+      }};
       justify-content: space-between;
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};

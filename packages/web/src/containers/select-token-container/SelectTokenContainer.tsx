@@ -74,7 +74,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   modalRef,
 }) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, balances, updateTokens, updateBalances } = useTokenData();
+  const { tokens, balances, updateTokens, updateBalances, tokenPrices } = useTokenData();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -118,7 +118,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
           ...item,
         };
       }
-      return {...item, price: BigNumber(tokenPrice).toFormat()};
+      return {...item, price: BigNumber(tokenPrice).multipliedBy(tokenPrices[item?.path]?.usd || "0").toFormat()};
     });
     const sortedData = temp.sort(customSortAll);
     return sortedData.filter(token =>
@@ -126,7 +126,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       token.symbol.toLowerCase().includes(lowerKeyword) ||
       token.path.toLowerCase().includes(lowerKeyword)
     );
-  }, [keyword, tokens, balances]);
+  }, [keyword, tokens, balances, tokenPrices]);
 
   const selectToken = useCallback((token: TokenModel) => {
     if (!changeToken) {
