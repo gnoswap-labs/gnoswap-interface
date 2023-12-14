@@ -35,7 +35,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   themeKey,
   modalRef,
   breakpoint,
-  recents,
+  recents = [],
 }) => {
   const myElementRef = useRef<HTMLDivElement | null>(null);
   const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));

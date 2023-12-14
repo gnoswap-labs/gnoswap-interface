@@ -8,9 +8,9 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { useGetTokenPrices, useGetTokensList } from "src/react-query/token";
 import { checkPositivePrice } from "@utils/common";
 import { convertLargePrice } from "@utils/stake-position-utils";
+import { useGetTokenPrices, useGetTokensList } from "@query/token";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -21,6 +21,7 @@ export interface MostLiquidPool {
   tokenPair: TokenPairInfo;
   feeRate: string;
 }
+
 export interface Token{
   path: string;
   token: TokenInfo;

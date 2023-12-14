@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
 import TokenChart from "@components/token/token-chart/TokenChart";
 import { useRouter } from "next/router";
-import { useGetTokenDetailByPath, useGetTokensList } from "src/react-query/token";
 import { IPriceResponse, IPrices1d } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
 import { useAtom } from "jotai";
@@ -14,6 +13,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice, countPoints, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { useGetTokenDetailByPath, useGetTokensList } from "../.././react-query/token";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
