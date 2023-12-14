@@ -36,6 +36,8 @@ const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
+const GNOS_TOKEN_PATH = process.env.NEXT_PUBLIC_GNOS_TOKEN_PATH || "";
+const CREATE_POOL_FEE = process.env.NEXT_PUBLIC_CREATE_POOL_FEE || "";
 
 export class PoolRepositoryImpl implements PoolRepository {
   private networkClient: NetworkClient;
@@ -267,7 +269,7 @@ export class PoolRepositoryImpl implements PoolRepository {
   }
 
   private static makeApproveGnosTokenMessage(caller: string) {
-    return this.makeApproveTokenMessage("gno.land/r/gns", "500", caller);
+    return this.makeApproveTokenMessage(GNOS_TOKEN_PATH, CREATE_POOL_FEE, caller);
   }
 
   private static makeApproveTokenMessage(
