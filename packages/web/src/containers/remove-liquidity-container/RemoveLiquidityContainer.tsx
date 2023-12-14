@@ -1,59 +1,81 @@
 import RemoveLiquidity from "@components/remove/remove-liquidity/RemoveLiquidity";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRemovePositionModal } from "@hooks/earn/use-remove-position-modal";
-import { useWindowSize } from "@hooks/common/use-window-size";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useRouter } from "next/router";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 const RemoveLiquidityContainer: React.FC = () => {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const { width } = useWindowSize();
-  const { openModal } = useRemovePositionModal();
+  const router = useRouter();
+  const { account } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositions } = usePositionData();
+  const [checkedList, setCheckedList] = useState<string[]>([]);
+  const { getPositionsByPoolId } = usePositionData();
+  const { openModal } = useRemovePositionModal({
+    positions,
+    selectedIds: checkedList,
+  });
 
-  useEffect(() => {
-    getPositions().then(setPositions);
-  }, [getPositions]);
-
-  const unstakedLiquidities = useMemo(() => {
-    return positions.filter(item => item.unclaimedFee0Amount + item.unclaimedFee1Amount > 0);
+  const stakedPositions = useMemo(() => {
+    return positions.filter(position => position.staked);
   }, [positions]);
 
-  const selectedAll = useMemo(() => {
-    return unstakedLiquidities.length === selectedIds.length;
-  }, [selectedIds.length, unstakedLiquidities.length]);
+  const unstakedPositions = useMemo(() => {
+    return positions.filter(position => !position.staked);
+  }, [positions]);
 
-  const selectAll = useCallback(() => {
-    if (selectedAll) {
-      setSelectedIds([]);
+  const checkedAll = useMemo(() => {
+    if (unstakedPositions.length === 0) {
+      return false;
+    }
+    return unstakedPositions.length === checkedList.length;
+  }, [unstakedPositions, checkedList]);
+
+  const onCheckedItem = useCallback(
+    (isChecked: boolean, path: string) => {
+      if (isChecked) {
+        return setCheckedList((prev: string[]) => [...prev, path]);
+      }
+      if (!isChecked && checkedList.includes(path)) {
+        return setCheckedList(checkedList.filter(el => el !== path));
+      }
+    },
+    [checkedList],
+  );
+
+  const onCheckedAll = useCallback(() => {
+    if (checkedAll) {
+      setCheckedList([]);
       return;
     }
-    const selectedIds = unstakedLiquidities.map(liquidity => liquidity.id);
-    setSelectedIds(selectedIds);
-  }, [selectedAll, unstakedLiquidities]);
-
-  const select = useCallback((id: string) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter((selectedId => selectedId !== id)));
-      return;
-    }
-    setSelectedIds([...selectedIds, id]);
-  }, [selectedIds]);
+    const checkedList = unstakedPositions.map(position => position.id);
+    setCheckedList(checkedList);
+  }, [checkedAll, unstakedPositions]);
 
   const removeLiquidity = useCallback(() => {
     openModal();
-  }, []);
+  }, [openModal]);
+
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    if (account?.address) {
+      getPositionsByPoolId(poolPath).then(setPositions);
+    }
+  }, [account?.address, getPositionsByPoolId, router.query]);
 
   return (
     <RemoveLiquidity
-      positions={positions}
-      selectedAll={selectedAll}
-      selectedIds={selectedIds}
-      select={select}
-      selectAll={selectAll}
+      stakedPositions={stakedPositions}
+      unstakedPositions={unstakedPositions}
+      checkedList={checkedList}
+      onCheckedItem={onCheckedItem}
+      onCheckedAll={onCheckedAll}
+      checkedAll={checkedAll}
       removeLiquidity={removeLiquidity}
-      width={width}
     />
   );
 };

@@ -58,8 +58,8 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    return numberToUSD(Number(position.liquidity));
-  }, [position.liquidity]);
+    return numberToUSD(Number(position.positionUsdValue));
+  }, [position.positionUsdValue]);
 
   return (
     <li css={wrapper(checked)}>

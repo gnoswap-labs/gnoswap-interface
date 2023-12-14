@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -19,15 +19,12 @@ const MyLiquidityContainer: React.FC = () => {
   const { getPositionsByPoolId } = usePositionData();
   const { claimAll } = usePosition(positions);
 
-  useEffect(() => {
-    const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
-      return;
+  const availableRemovePosition = useMemo(() => {
+    if (!connectedWallet || isSwitchNetwork) {
+      return false;
     }
-    if (account?.address) {
-      getPositionsByPoolId(poolPath).then(setPositions);
-    }
-  }, [account?.address, getPositionsByPoolId, router.query]);
+    return positions.length > 0;
+  }, [connectedWallet, isSwitchNetwork, positions.length]);
 
   const handleClickAddPosition = useCallback(() => {
     router.push(`${router.asPath}/add`);
@@ -52,6 +49,16 @@ const MyLiquidityContainer: React.FC = () => {
     });
   }, [claimAll, router]);
 
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    if (account?.address) {
+      getPositionsByPoolId(poolPath).then(setPositions);
+    }
+  }, [account?.address, getPositionsByPoolId, router.query]);
+
   return (
     <MyLiquidity
       positions={positions}
@@ -64,6 +71,7 @@ const MyLiquidityContainer: React.FC = () => {
       onScroll={handleScroll}
       currentIndex={currentIndex}
       claimAll={claimAllReward}
+      availableRemovePosition={availableRemovePosition}
     />
   );
 };

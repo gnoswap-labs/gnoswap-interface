@@ -1,6 +1,6 @@
 import { PositionModel } from "@models/position/position-model";
 import { ClaimAllRequest } from "./request/claim-all-request";
-import { DecreaseLiquidityReqeust } from "./request/decrease-liquidity-request";
+import { RemoveLiquidityReqeust } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 
@@ -15,7 +15,5 @@ export interface PositionRepository {
     request: UnstakePositionsRequest,
   ) => Promise<string | null>;
 
-  decreaseLiquidity: (
-    request: DecreaseLiquidityReqeust,
-  ) => Promise<string | null>;
+  removeLiquidity: (request: RemoveLiquidityReqeust) => Promise<string | null>;
 }
