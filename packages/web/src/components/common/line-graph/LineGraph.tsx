@@ -101,8 +101,8 @@ function parseTimeTVL(time: string) {
   const formattedHours = hours % 12 || 12;
   if (!month || !day || !year)
   return {
-    date: "Jan 01, 2023",
-    time: "00:00 AM"
+    date: "",
+    time: ""
   };
   return {
     date: `${month} ${day}, ${year}`,

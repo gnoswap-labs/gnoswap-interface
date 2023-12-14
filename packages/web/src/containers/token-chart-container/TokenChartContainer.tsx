@@ -7,7 +7,6 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-// import { generateRandomPoints } from "@common/utils/date-util";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
