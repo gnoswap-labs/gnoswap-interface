@@ -1,12 +1,53 @@
-import { LPPositionModel } from "@models/position/lp-position-model";
+import { RewardResposne } from "./reward-response";
 
-export interface PositionListResponse {
-  meta: {
-    height: number;
-    timestamp: string;
-  };
+export type PositionListResponse = PositionResponse[];
 
-  stakedPositions: LPPositionModel[];
+export interface PositionResponse {
+  lpTokenId: string;
 
-  unstakedPositions: LPPositionModel[];
+  poolPath: string;
+
+  staked: boolean;
+
+  incentivized: boolean;
+
+  operator: string;
+
+  tickLower: string;
+
+  tickUpper: string;
+
+  liquidity: string;
+
+  token0Balance: string;
+
+  token1Balance: string;
+
+  positionUsdValue: string;
+
+  unclaimedFee0Amount: string;
+
+  unclaimedFee1Amount: string;
+
+  unclaimedFee0Usd: string;
+
+  unclaimedFee1Usd: string;
+
+  tokensOwed0Amount: string;
+
+  tokensOwed1Amount: string;
+
+  tokensOwed0Usd: string;
+
+  tokensOwed1Usd: string;
+
+  apr?: number;
+
+  stakedAt?: String;
+
+  stakedUsdValue?: string;
+
+  rewards?: RewardResposne[];
+
+  dailyRewards?: RewardResposne[];
 }

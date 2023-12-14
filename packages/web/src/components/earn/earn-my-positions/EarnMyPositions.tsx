@@ -1,13 +1,14 @@
-import { PoolPosition } from "@containers/earn-my-position-container/EarnMyPositionContainer";
 import EarnMyPositionsContent from "../earn-my-positions-content/EarnMyPositionsContent";
 import EarnMyPositionsHeader from "../earn-my-positions-header/EarnMyPositionsHeader";
 import { EarnMyPositionswrapper } from "./EarnMyPositions.styles";
 import React from "react";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 export interface EarnMyPositionsProps {
   connected: boolean;
   fetched: boolean;
-  positions: PoolPosition[];
+  isError: boolean;
+  positions: PoolPositionModel[];
   isSwitchNetwork: boolean;
   connect: () => void;
   moveEarnAdd: () => void;
@@ -26,6 +27,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   connected,
   connect,
   fetched,
+  isError,
   positions,
   moveEarnAdd,
   movePoolDetail,
@@ -50,6 +52,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       connected={connected}
       connect={connect}
       fetched={fetched}
+      isError={isError}
       positions={positions}
       movePoolDetail={movePoolDetail}
       isSwitchNetwork={isSwitchNetwork}

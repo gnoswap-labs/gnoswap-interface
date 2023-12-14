@@ -11,12 +11,14 @@ import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { createContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
-import { GnoJSONRPCProvider, GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
+import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 import ChainNetworkInfos from "@resources/chains.json";
 import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
 import { SwapRouterRepositoryImpl } from "@repositories/swap/swap-router-repository-impl";
 import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
+import { PositionRepository } from "@repositories/position/position-repository";
+import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
 
 interface GnoswapContextProps {
   rpcProvider: GnoProvider | null;
@@ -27,6 +29,7 @@ interface GnoswapContextProps {
   swapRepository: SwapRepository;
   swapRouterRepository: SwapRouterRepository;
   tokenRepository: TokenRepository;
+  positionRepository: PositionRepository;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -92,13 +95,16 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return new TokenRepositoryImpl(networkClient, localStorageClient);
   }, [localStorageClient, networkClient]);
 
+  const positionRepository = useMemo(() => {
+    return new PositionRepositoryImpl(networkClient, rpcProvider, walletClient);
+  }, [networkClient, rpcProvider, walletClient]);
+
   async function initNetwork() {
     const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
     const currentNetwork = network || ChainNetworkInfos.find(info => info.chainId === defaultChainId);
     if (currentNetwork) {
       try {
-        const provider = new GnoWSProvider(currentNetwork.wsUrl, 5 * 1000);
-        await provider.waitForOpenConnection();
+        const provider = new GnoJSONRPCProvider(currentNetwork.rpcUrl);
         setRPCProvider(provider);
         return true;
       } catch (error) {
@@ -131,6 +137,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         swapRepository,
         tokenRepository,
         swapRouterRepository,
+        positionRepository,
       }}
     >
       {rpcProvider && children}

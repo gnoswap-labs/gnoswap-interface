@@ -3,6 +3,7 @@ import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import iconChecked from "@components/common/icons/svg/icon-checked.svg";
 import iconCheckboxBlank from "@components/common/icons/svg/icon-checkbox-blank.svg";
+import iconCheckboxUnsure from "@components/common/icons/svg/icon-checkbox-unsure.svg";
 import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
@@ -91,8 +92,15 @@ export const inputStyle = (theme: Theme) => css`
       mask-image: url(${iconCheckboxBlank});
     }
   }
+
   input[type="checkbox"]:checked + label:before {
     background-color: ${theme.color.background04};
     mask-image: url(${iconChecked});
+  }
+
+  input[type="checkbox"]:disabled + label:before {
+    background-color: ${theme.color.text04};
+    mask-image: url(${iconCheckboxUnsure});
+    cursor: default;
   }
 `;

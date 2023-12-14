@@ -46,6 +46,8 @@ export interface PoolModel {
   apr: number;
 
   poolPath?: string;
+
+  rewardTokens: TokenModel[];
 }
 
 export interface IPoolDetailResponse {
@@ -100,4 +102,5 @@ export interface IBin {
   reserveTokenB: string
   minTick: string
   maxTick: string
+  rewardTokens: TokenModel[];
 }

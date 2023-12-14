@@ -63,7 +63,7 @@ export const MyLiquidityContentWrapper = styled.div`
       ${fonts.body8}
     }
     color: ${({ theme }) => theme.color.text02};
-    &:hover {
+    &:hover:not(.disabled) {
       color: ${({ theme }) => theme.color.text07};
     }
   }

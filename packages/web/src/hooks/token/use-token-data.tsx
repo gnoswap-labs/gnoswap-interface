@@ -1,4 +1,4 @@
-import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
@@ -8,6 +8,7 @@ import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
 import { convertLargePrice } from "@utils/stake-position-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
@@ -20,15 +21,34 @@ export const useTokenData = () => {
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
   
+  const gnotToken = useMemo((): TokenModel => {
+    const token = tokens.find(token => token.path === "gnot");
+    if (token) {
+      return token;
+    }
+    return GNOT_TOKEN;
+  }, [tokens]);
+
+  const displayBalanceMap = useMemo(() => {
+    const tokenBalanceMap: { [key in string]: number | null } = {};
+    Object.keys(balances).forEach(key => {
+      const balance = balances[key];
+      const token = tokens.find(token => token.priceId === key);
+      const exist = token && balance !== null && balance !== undefined;
+      tokenBalanceMap[key] = exist ? makeDisplayTokenAmount(token, balance) : null;
+    });
+    return tokenBalanceMap;
+  }, [balances, tokens]);
+
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens.sort((t1, t2) => {
-      if (tokenPrices[t1.priceId] && tokenPrices[t2.priceId]) {
-        return BigNumber(tokenPrices[t2.priceId].volume).toNumber() - BigNumber(tokenPrices[t1.priceId].volume).toNumber();
+      if (tokenPrices[t1.path] && tokenPrices[t2.path]) {
+        return BigNumber(tokenPrices[t2.path].volume).toNumber() - BigNumber(tokenPrices[t1.path].volume).toNumber();
       }
-      if (tokenPrices[t2.priceId]) {
+      if (tokenPrices[t2.path]) {
         return 1;
       }
-      if (tokenPrices[t1.priceId]) {
+      if (tokenPrices[t1.path]) {
         return -1;
       }
       return 0;
@@ -58,10 +78,10 @@ export const useTokenData = () => {
       return createTimeOfToken2 - createTimeOfToken1;
     }).filter((_: TokenModel) => !!_.logoURI);
     return sortedTokens.map(token => (
-      tokenPrices[token.priceId] ? {
+      tokenPrices[token.path] ? {
         token,
         upDown: "none" as UpDownType,
-        content: `$${convertLargePrice(tokenPrices[token.priceId].usd, 10)}`
+        content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`
       } : {
         token,
         upDown: "none" as UpDownType,
@@ -109,24 +129,33 @@ export const useTokenData = () => {
       if (!rpcProvider || !account) {
         return null;
       }
-      const param = `BalanceOf("${account.address}")`;
-      return rpcProvider.evaluateExpression(token.path, param)
-        .then(evaluateExpressionToNumber)
-        .catch(() => null);
+      if (token.type === "native") {
+        return rpcProvider.getBalance(account.address, token.denom || "ugnot")
+          .catch(() => null);
+      }
+      else if (token.type === "grc20") {
+        const param = `BalanceOf("${account.address}")`;
+        return rpcProvider.evaluateExpression(token.path, param)
+          .then(evaluateExpressionToNumber)
+          .catch(() => null);
+      }
+      return null;
     }
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
     const balances: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balances[tokens[index].path] = result;
+        balances[tokens[index].priceId] = result;
       }
     });
     setBalances(balances);
   }
 
   return {
+    gnotToken,
     tokens,
     tokenPrices,
+    displayBalanceMap,
     balances,
     trendingTokens,
     recentlyAddedTokens,

@@ -1,32 +1,60 @@
+import { IncentivizedOptions } from "@common/values";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { poolInfoProps } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
-import React from "react";
+import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
+import { TokenModel } from "@models/token/token-model";
+import React, { useMemo } from "react";
 import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 
 interface PoolPairInfoHeaderProps {
-  info: poolInfoProps;
+  tokenA: TokenModel;
+  tokenB: TokenModel;
+  incentivizedType: IncentivizedOptions;
+  rewardTokens: TokenModel[];
+  feeStr: string;
 }
 
-const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({ info }) => {
+const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
+  tokenA,
+  tokenB,
+  feeStr,
+  rewardTokens,
+  incentivizedType
+}) => {
+  const incentivezedStr = useMemo(() => {
+    if (incentivizedType === "INCENTIVIZED") {
+      return "Incentivized";
+    }
+    if (incentivizedType === "EXTERNAL_INCENTIVIZED") {
+      return "External-Incentivized";
+    }
+    return "Non-Incentivized";
+  }, [incentivizedType]);
+
+  const rewardTokenLogos = useMemo(() => {
+    return rewardTokens.map(token => token.logoURI);
+  }, [rewardTokens]);
+
   return (
     <PoolInfoHeaderWrapper>
       <div className="left-wrap">
         <DoubleLogo
-          left={info.tokenPair.tokenA.logoURI}
-          right={info.tokenPair.tokenB.logoURI}
+          left={tokenA.logoURI}
+          right={tokenB.logoURI}
         />
         <h3>
-          {info.tokenPair.tokenA.symbol}/{info.tokenPair.tokenB.symbol}
+          {tokenA.symbol}/{tokenB.symbol}
         </h3>
       </div>
       <div className="badge-wrap">
-        <div className="badge">{info.feeRate}%</div>
+        <div className="badge">{feeStr}</div>
         <div className="badge">
-          {info.incentivized}
-          <DoubleLogo
-            left={info.tokenPair.tokenA.logoURI}
-            right={info.tokenPair.tokenB.logoURI}
-          />
+          {incentivezedStr}
+          {rewardTokens.length > 0 && (
+            <OverlapLogo
+              size={18}
+              logos={rewardTokenLogos}
+            />
+          )}
         </div>
       </div>
     </PoolInfoHeaderWrapper>

@@ -73,11 +73,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const {
     connected: connectedWallet,
+    account,
     switchNetwork,
     isSwitchNetwork,
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { tokens, updateTokens, updateTokenPrices } = useTokenData();
+  const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean } | null>(null);
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
   const { pools: poolInfos, updatePools } = usePoolData();
@@ -193,6 +194,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }));
   }, [type]);
 
+
+  const changeTokenAAmount = useCallback((amount: string) => {
+    tokenAAmountInput.changeAmount(amount);
+    setExactType("EXACT_IN");
+    updateTokenBAmountByTokenA(amount);
+  }, [tokenAAmountInput]);
+
+  const changeTokenBAmount = useCallback((amount: string) => {
+    tokenBAmountInput.changeAmount(amount);
+    setExactType("EXACT_OUT");
+    updateTokenAAmountByTokenB(amount);
+  }, [tokenBAmountInput]);
+
   const updateTokenBAmountByTokenA = useCallback((amount: string) => {
     if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
       return;
@@ -214,22 +228,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const depositRatioB = 100 - depositRatioA;
       const ratio = ordered ? depositRatioB / depositRatioA : depositRatioA / depositRatioB;
       const changedAmount = BigNumber(amount).multipliedBy(currentPrice * ratio);
-      tokenBAmountInput.changeAmount(changedAmount.toFixed(0));
+      tokenBAmountInput.changeAmount(changedAmount.toFixed(tokenB?.decimals || 0, BigNumber.ROUND_FLOOR));
     }
   }, [selectPool.compareToken?.symbol, selectPool.currentPrice, tokenA?.symbol, tokenBAmountInput, selectPool.depositRatio]);
-
-
-  const changeTokenAAmount = useCallback((amount: string) => {
-    tokenAAmountInput.changeAmount(amount);
-    setExactType("EXACT_IN");
-    updateTokenBAmountByTokenA(amount);
-  }, [tokenAAmountInput]);
-
-  const changeTokenBAmount = useCallback((amount: string) => {
-    tokenBAmountInput.changeAmount(amount);
-    setExactType("EXACT_OUT");
-    updateTokenAAmountByTokenB(amount);
-  }, [tokenBAmountInput]);
 
   const updateTokenAAmountByTokenB = useCallback((amount: string) => {
     if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
@@ -252,9 +253,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const depositRatioB = 100 - depositRatioA;
       const ratio = ordered ? depositRatioB / depositRatioA : depositRatioA / depositRatioB;
       const changedAmount = BigNumber(amount).multipliedBy(currentPrice * ratio);
-      tokenAAmountInput.changeAmount(changedAmount.toFixed(0));
+      tokenAAmountInput.changeAmount(changedAmount.toFixed(tokenA?.decimals || 0, BigNumber.ROUND_FLOOR));
     }
   }, [selectPool.compareToken?.symbol, selectPool.currentPrice, tokenAAmountInput, tokenB?.symbol, selectPool.depositRatio]);
+
 
   const submit = useCallback(() => {
     if (submitType === "CONNECT_WALLET") {
@@ -285,10 +287,17 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     updatePools();
+    updateTokenPrices();
   }, []);
 
   useEffect(() => {
-    const poolId = router.query["pool-number"];
+    if (account?.address) {
+      updateBalances();
+    }
+  }, [account?.address]);
+
+  useEffect(() => {
+    const poolId = router.query["pool-path"];
     const pool = poolInfos.find(pool => pool.id === poolId);
     if (pool) {
       const feeTier = makeSwapFeeTier(pool.fee);
@@ -329,16 +338,23 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (!selectPool.feeTier) {
+      setCreateOption({
+        isCreate: true,
+        startPrice: null
+      });
       return;
     }
     const fee = SwapFeeTierInfoMap[selectPool.feeTier].fee;
     if (feetierOfLiquidityMap[fee] === undefined) {
       setCreateOption({
         isCreate: true,
-        startPrice: 1
+        startPrice: null
       });
     } else {
-      setCreateOption(null);
+      setCreateOption({
+        isCreate: false,
+        startPrice: null
+      });
     }
   }, [feetierOfLiquidityMap, selectPool.feeTier]);
 

@@ -1,36 +1,54 @@
-import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { PoolModel } from "@models/pool/pool-model";
+import { IncentivizedOptions } from "@common/values";
+import { RewardModel } from "./reward-model";
 
 export interface PositionModel {
   id: string;
 
-  nftId: string;
+  lpTokenId: string;
 
-  balance: number;
+  incentivizedType: IncentivizedOptions;
 
-  volume: number;
+  poolPath: string;
 
-  volumeA: number;
+  staked: boolean;
 
-  volumeB: number;
+  operator: string;
 
-  feeAPR: number;
+  tickLower: number;
 
-  feesA: number;
+  tickUpper: number;
 
-  feesAUSD: number;
+  liquidity: bigint;
 
-  feesBUSD: number;
+  token0Balance: bigint;
 
-  feesB: number;
+  token1Balance: bigint;
 
-  fees: number;
+  positionUsdValue: string;
 
-  reserveA: number;
+  unclaimedFee0Amount: bigint;
 
-  reserveB: number;
+  unclaimedFee1Amount: bigint;
 
-  pool: PoolModel;
+  unclaimedFee0Usd: string;
 
-  bins: PoolBinModel[];
+  unclaimedFee1Usd: string;
+
+  tokensOwed0Amount: bigint;
+
+  tokensOwed1Amount: bigint;
+
+  tokensOwed0Usd: string;
+
+  tokensOwed1Usd: string;
+
+  apr: string;
+
+  stakedAt: String;
+
+  stakedUsdValue: string;
+
+  rewards: RewardModel[];
+
+  dailyRewards: RewardModel[];
 }

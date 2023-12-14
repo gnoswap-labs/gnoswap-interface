@@ -1,5 +1,8 @@
 import { MathSymbolType } from "@common/values/data-constant";
-import { unitsUpperCase } from "@common/values/global-initial-value";
+import {
+  unitsLowerCase,
+  unitsUpperCase,
+} from "@common/values/global-initial-value";
 import BigNumber from "bignumber.js";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
@@ -119,6 +122,54 @@ export const toUnitFormat = (
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toString();
 };
 
+/**
+ *
+ * @param value
+ * @param usd
+ * @returns
+ */
+export const toLowerUnitFormat = (
+  value: BigNumber | string | number,
+  usd = false,
+): string => {
+  if (!isNumber(value)) {
+    // TODO : Error Check
+    return usd ? "$0.00" : "0";
+  }
+
+  const bigNumber = BigNumber(value);
+  const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
+
+  const prefixe = usd ? "$" : "";
+  if (wholeNumberLength >= 13)
+    return (
+      prefixe +
+      bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
+      unitsLowerCase.trillion
+    );
+  if (wholeNumberLength >= 10)
+    return (
+      prefixe +
+      bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
+      unitsLowerCase.billion
+    );
+  if (wholeNumberLength >= 7)
+    return (
+      prefixe +
+      bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
+      unitsLowerCase.million
+    );
+  if (wholeNumberLength >= 4)
+    return (
+      prefixe +
+      bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
+      unitsLowerCase.thousand
+    );
+
+  // TODO : Else Return Type
+  return prefixe + bigNumber.decimalPlaces(2).toString();
+};
+
 export function toMillionFormat(value: number | string) {
   const num = BigNumber(value);
   if (num.isNaN()) {
@@ -141,7 +192,7 @@ export function toDecimalNumber(
 }
 
 export function numberToUSD(value: number) {
-  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat()}`;
+  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat(2)}`;
 }
 
 export function numberToUSDV2(value: number) {

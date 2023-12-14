@@ -85,7 +85,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
           modalRef.current.style.transform = "translate(-50%, 0)";
         }
         setPositionTop(temp);
-        
+
       }
     };
     getPositionTop();
@@ -147,9 +147,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="token-select">
           {[...defaultTokens, ...recents].map((token, index) => (
             <div
-              className={`token-button ${
-                themeKey === "dark" && "border-button-none"
-              }`}
+              className={`token-button ${themeKey === "dark" && "border-button-none"
+                }`}
               key={index}
               onClick={() => onClickToken(token)}
             >
@@ -161,9 +160,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       </div>
       <Divider />
       <div
-        className={`token-list-wrapper ${
-          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-        }`}
+        className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+          }`}
       >
         {tokens.length > 0 &&
           tokens.map((token, index) => (

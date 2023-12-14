@@ -1,81 +1,87 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { convertLargePrice } from "@utils/stake-position-utils";
-import React, { useRef, useState, useEffect } from "react";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { numberToUSD } from "@utils/number-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import React, { useMemo } from "react";
 import { tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
 
 interface SelectLiquidityListItemProps {
-  item: any;
+  disabled?: boolean;
+  position: PoolPositionModel;
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
-  width: number;
 }
 
-const TooltipContent:React.FC = () => {
+const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({ position }) => {
   return (
     <div css={tooltipWrapper()}>
       <div>
         <div className="title">Token ID</div>
-        <div className="title">#982932</div>
+        <div className="title">#{position.id}</div>
       </div>
       <div>
         <div className="value">
-          <img src="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png" />
-          GNS
+          <img src={position.pool.tokenA.logoURI} />
+          {position.pool.tokenA.symbol}
         </div>
-        <div className="value">50.05881</div>
+        <div className="value">{makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance)}</div>
       </div>
       <div>
         <div className="value">
-          <img src="https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png" />
-          GNS
+          <img src={position.pool.tokenB.logoURI} />
+          {position.pool.tokenB.symbol}
         </div>
-        <div className="value">50.05881</div>
+        <div className="value">{makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance)}</div>
       </div>
     </div>
   );
 };
 
 const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
-  item,
+  position,
   checkedList,
   onCheckedItem,
-  width,
+  disabled = false,
 }) => {
-  const [checkWidth, setIsCheckWidth] = useState(true);
-  const leftDivRef = useRef<HTMLDivElement>(null);
-  const liquidityRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const windowWidth = Math.min(width, 500);
-      const totalWidth = (leftDivRef?.current?.offsetWidth || 0) + (liquidityRef?.current?.offsetWidth || 0) + 100;
-      setIsCheckWidth(windowWidth > totalWidth);
-    }
-  }, [liquidityRef.current, leftDivRef.current, width]);
+  const checked = useMemo(() => {
+    return checkedList.includes(position.id);
+  }, [checkedList, position.id]);
+
+  const tokenA = useMemo(() => {
+    return position.pool.tokenA;
+  }, [position.pool.tokenA]);
+
+  const tokenB = useMemo(() => {
+    return position.pool.tokenB;
+  }, [position.pool.tokenB]);
+
+  const liquidityUSD = useMemo(() => {
+    return numberToUSD(Number(position.positionUsdValue));
+  }, [position.positionUsdValue]);
 
   return (
-    <li css={wrapper(checkedList.includes(item.path))}>
-      <div className="left-content" ref={leftDivRef}>
+    <li css={wrapper(checked)}>
+      <div className="left-content" >
         <input
-          id={`checkbox-item-${item.path}`}
+          id={`checkbox-item-${position.id}`}
           type="checkbox"
-          checked={checkedList.includes(item.path)}
-          onChange={e => onCheckedItem(e.target.checked, item.path)}
+          checked={checked}
+          disabled={disabled}
+          onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
-        <label htmlFor={`checkbox-item-${item.path}`} />
-        <DoubleLogo left={item.pairLogo[0]} right={item.pairLogo[1]} size={24} />
+        <label htmlFor={`checkbox-item-${position.id}`} />
+        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} />
         <Tooltip
           placement="top"
-          FloatingContent={<TooltipContent />}
+          FloatingContent={<TooltipContent position={position} />}
         >
-          <span className="token-id">{item.path}</span>
+          <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
         </Tooltip>
-        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT}/>
+        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
-      <span className="liquidity-value-fake" ref={liquidityRef}>${Number(item.liquidity).toLocaleString()}</span>
-      <span className="liquidity-value" >${!checkWidth ? convertLargePrice(item.liquidity) : Number(item.liquidity).toLocaleString()}</span>
+      <span className="liquidity-value" >{liquidityUSD}</span>
     </li>
   );
 };

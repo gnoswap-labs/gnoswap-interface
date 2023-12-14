@@ -24,6 +24,7 @@ export interface EarnAddConfirmProps {
   };
   priceRangeInfo: {
     currentPrice: string;
+    inRange: boolean;
     minPrice: string;
     maxPrice: string;
     priceLabel: string;
@@ -57,7 +58,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <EarnAddConfirmAmountInfo {...amountInfo} />
 
-      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} symbolTokenA={amountInfo.tokenA.info.symbol} symbolTokenB={amountInfo.tokenB.info.symbol} />
+      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} />
 
       {isPoolCreation && (
         <EarnAddConfirmFeeInfo {...feeInfo} />

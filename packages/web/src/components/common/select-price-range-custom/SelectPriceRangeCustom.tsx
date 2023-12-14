@@ -93,7 +93,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       return "-";
     }
     const currentPrice = toNumberFormat(selectPool.currentPrice, 4);
-    return `${currentPrice} ${currentTokenA.symbol} per ${currentTokenB.symbol}`;
+    return `${currentPrice} ${currentTokenB.symbol} per ${currentTokenA.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
   const startingPriceDescription = useMemo(() => {

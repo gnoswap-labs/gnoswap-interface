@@ -49,10 +49,10 @@ const TokenSwapContainer: React.FC = () => {
   const router = useRouter();
 
   const { setNotice } = useNotice();
-  const { openModal } = useConnectWalletModal(); 
+  const { openModal } = useConnectWalletModal();
 
   usePreventScroll(openedConfirmModal || submitted);
-  
+
   useEffect(() => {
     const queryValues = [];
     for (const [key, value] of Object.entries(query)) {
@@ -96,12 +96,12 @@ const TokenSwapContainer: React.FC = () => {
     const swapAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     swap(estimatedRoutes, swapAmount).then(result => {
       if (result !== false) {
-        setNotice(null, {timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999});
+        setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999 });
         setTimeout(() => {
           if (!!result) {
-            setNotice(null, {timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999});
+            setNotice(null, { timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999 });
           } else {
-            setNotice(null, {timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999});
+            setNotice(null, { timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999 });
           }
         }, 1000);
       }
@@ -239,6 +239,11 @@ const TokenSwapContainer: React.FC = () => {
         const expectedAmount = isError ? "" : result.amount;
         let swapError = null;
         if (isError) {
+          if (isExactIn) {
+            setTokenBAmount("0");
+          } else {
+            setTokenAAmount("0");
+          }
           swapError = new SwapError("INSUFFICIENT_BALANCE");
         }
         if (
@@ -524,7 +529,7 @@ const TokenSwapContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-  
+
   return (
     <>
       <TokenSwap

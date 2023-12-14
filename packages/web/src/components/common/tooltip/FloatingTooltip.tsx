@@ -15,7 +15,7 @@ import { useTheme } from "@emotion/react";
 interface TooltipProps {
   offset?: number;
   position: FloatingPosition;
-  content: React.ReactNode;
+  content: React.ReactNode | null;
   className?: string;
   isHiddenArrow?: boolean;
   children?: any;
@@ -38,7 +38,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
       offset: offset,
       position: position,
     });
-    
+
     const theme = useTheme();
 
     const targetRef = useMergedRef(boundaryRef, (children as any).ref, ref);
@@ -86,10 +86,11 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
             ref={floating}
             style={{
               position: strategy,
-              display: opened ? "block" : "none",
+              display: (opened && content !== null) ? "block" : "none",
               top: (y && Math.round(y)) ?? "",
               left: (x && Math.round(x)) ?? "",
               zIndex: Z_INDEX.modalTooltip,
+              pointerEvents: "none"
             }}
             className={className}
             onTouchMove={onTouchStart}

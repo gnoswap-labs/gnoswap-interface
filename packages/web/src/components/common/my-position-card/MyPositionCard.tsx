@@ -1,4 +1,4 @@
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { POSITION_CONTENT_LABEL } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -8,23 +8,105 @@ import {
   MyPositionCardWrapperBorder,
 } from "./MyPositionCard.styles";
 import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
+import { numberToFormat } from "@utils/string-utils";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 interface MyPositionCardProps {
-  item: any;
+  position: PoolPositionModel;
   movePoolDetail: (id: string) => void;
   mobile: boolean;
   currentIndex?: number;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
-  item,
+  position,
   movePoolDetail,
   mobile,
   currentIndex,
 }) => {
-  const { tokenPair } = item;
+  const GRAPH_WIDTH = mobile ? 226 : 258;
+  const GRAPH_HEIGHT = 80;
+  const { pool } = position;
+  const { tokenA, tokenB } = pool;
   const [isHiddenStart, setIsHiddenStart] = useState(false);
+  const { tokenPrices } = useTokenData();
+
+  const inRange = useMemo(() => {
+    return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
+  }, [pool.currentTick, position.tickLower, position.tickUpper]);
+
+  const feeRateStr = useMemo(() => {
+    const rateStr = SwapFeeTierInfoMap[makeSwapFeeTierByTickSpacing(pool.tickSpacing)].rateStr;
+    return `${rateStr} Fee`;
+  }, [pool.tickSpacing]);
+
+  const positionUsdValueStr = useMemo(() => {
+    return `$${numberToFormat(position.positionUsdValue.toString(), 2)}`;
+  }, [position.positionUsdValue]);
+
+  const aprStr = useMemo(() => {
+    return `${numberToFormat(position.apr, 2)}%`;
+  }, [position.apr]);
+
+  const currentPrice = useMemo(() => {
+    return tickToPrice(pool.currentTick);
+  }, [pool.currentTick]);
+
+  const minTickRate = useMemo(() => {
+    const minPrice = tickToPrice(position.tickLower);
+    return Math.round(((minPrice - currentPrice) / currentPrice) * 100);
+  }, [currentPrice, position.tickLower]);
+
+  const maxTickRate = useMemo(() => {
+    const maxPrice = tickToPrice(position.tickUpper);
+    return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
+  }, [currentPrice, position.tickUpper]);
+
+  const minTickLabel = useMemo(() => {
+    return `${minTickRate}%`;
+  }, [minTickRate]);
+
+  const maxTickLabel = useMemo(() => {
+    return `${maxTickRate}%`;
+  }, [maxTickRate]);
+
+  const tickRange = useMemo(() => {
+    const ticks = pool.bins.flatMap(bin => [bin.minTick, bin.maxTick]);
+    const min = Math.min(...ticks);
+    const max = Math.max(...ticks);
+    return [min, max];
+  }, [pool.bins]);
+
+  const minTickPosition = useMemo(() => {
+    const [min, max] = tickRange;
+    const rangeRate = GRAPH_WIDTH / (max - min);
+    const centerPosition = (pool.currentTick - min) * rangeRate;
+    const amount = centerPosition * minTickRate / 100;
+    return centerPosition + amount;
+  }, [GRAPH_WIDTH, minTickRate, pool.currentTick, tickRange]);
+
+  const maxTickPosition = useMemo(() => {
+    const [min, max] = tickRange;
+    const rangeRate = GRAPH_WIDTH / (max - min);
+    const centerPosition = (pool.currentTick - min) * rangeRate;
+    const amount = centerPosition * maxTickRate / 100;
+    return centerPosition + amount;
+  }, [GRAPH_WIDTH, maxTickRate, pool.currentTick, tickRange]);
+
+  const minPriceStr = useMemo(() => {
+    const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
+    const tokenAPriceStr = numberToFormat(tokenAPrice, 2);
+    return `${tokenAPriceStr} ${tokenA.symbol} per GNOT`;
+  }, [tokenA.path, tokenA.symbol, tokenPrices]);
+
+  const maxPriceStr = useMemo(() => {
+    const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
+    const tokenBPriceStr = numberToFormat(tokenBPrice, 2);
+    return `${tokenBPriceStr} ${tokenB.symbol} per GNOT`;
+  }, [tokenB.path, tokenB.symbol, tokenPrices]);
 
   const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -37,32 +119,32 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     >
       <div className="base-border">
         <MyPositionCardWrapper
-          stakeType={item.stakeType}
-          onClick={() => movePoolDetail("1")}
+          staked={position.staked}
+          onClick={() => movePoolDetail(pool.id)}
         >
           <div className="title-wrapper">
             <div className="box-header">
               <DoubleLogo
-                left={tokenPair.tokenA.logoURI}
-                right={tokenPair.tokenB.logoURI}
+                left={tokenA.logoURI}
+                right={tokenB.logoURI}
               />
-              <span>{`${tokenPair.tokenA.symbol}/${tokenPair.tokenB.symbol}`}</span>
+              <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
             </div>
             <div className="badge-group">
               <Badge
                 type={BADGE_TYPE.DARK_DEFAULT}
                 text={<>
-                Incentivized
-                <DoubleLogo
-                  size={16}
-                  left={tokenPair.tokenA.logoURI}
-                  right={tokenPair.tokenB.logoURI}
-                />
+                  Incentivized
+                  <DoubleLogo
+                    size={16}
+                    left={tokenA.logoURI}
+                    right={tokenB.logoURI}
+                  />
                 </>}
               />
               <Badge
                 type={BADGE_TYPE.DARK_DEFAULT}
-                text={`${item.feeRate} Fee`}
+                text={feeRateStr}
               />
             </div>
           </div>
@@ -72,10 +154,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span className="label-text">{POSITION_CONTENT_LABEL.APR}</span>
             </div>
             <div className="list-content">
-              <span>{item.value}</span>
-              {item.stakeType === "STAKED"
-                ? `${POSITION_CONTENT_LABEL.STAR_TAG}${item.apr}`
-                : item.apr}
+              <span>{positionUsdValueStr}</span>
+              {position.staked
+                ? `${POSITION_CONTENT_LABEL.STAR_TAG}${aprStr}`
+                : aprStr}
             </div>
           </div>
           <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
@@ -85,7 +167,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </div>
               <RangeBadge
                 status={
-                  item.inRange
+                  inRange
                     ? RANGE_STATUS_OPTION.IN
                     : RANGE_STATUS_OPTION.OUT
                 }
@@ -93,14 +175,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="chart-wrapper">
               <BarAreaGraph
-                width={mobile ? 226 : 258}
-                height={80}
-                currentTick={item.currentTick}
-                minLabel={item.minLabel}
-                maxLabel={item.maxLabel}
-                minTick={item.minTick}
-                maxTick={item.maxTick}
-                datas={item.ticks}
+                width={GRAPH_WIDTH}
+                height={GRAPH_HEIGHT}
+                currentTick={pool.currentTick}
+                minLabel={minTickLabel}
+                maxLabel={maxTickLabel}
+                minTick={minTickPosition}
+                maxTick={maxTickPosition}
+                bins={pool.bins}
+                tokenA={tokenA}
+                tokenB={tokenB}
                 isHiddenStart={isHiddenStart}
                 currentIndex={currentIndex}
               />
@@ -110,13 +194,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 <span className="label-text">
                   {POSITION_CONTENT_LABEL.MIN_PRICE}
                 </span>
-                <span className="label-text">{item.minPriceAmount}</span>
+                <span className="label-text">{minPriceStr}</span>
               </div>
               <div className="price-section">
                 <span className="label-text">
                   {POSITION_CONTENT_LABEL.MAX_PRICE}
                 </span>
-                <span className="label-text">{item.maxPriceAmount}</span>
+                <span className="label-text">{maxPriceStr}</span>
               </div>
             </div>
           </div>

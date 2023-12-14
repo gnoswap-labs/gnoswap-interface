@@ -8,6 +8,8 @@ import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { IncentivizedOptions } from "@common/values";
 import { makeId } from "@utils/common";
+import { toUnitFormat } from "@utils/number-utils";
+import { PoolDetailModel } from "../pool-detail-model";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -35,11 +37,12 @@ export class PoolMapper {
         createdAt: "2023-10-12T06:56:12+09:00",
         name: "Gnoswap",
         address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gnos",
+        path: "gno.land/r/gns",
         decimals: 4,
         symbol: "GNS",
         logoURI: "/gnos.svg",
-        priceId: "gno.land/r/gnos",
+        type: "grc20",
+        priceId: "gno.land/r/gns",
       },
       amount: 10,
     };
@@ -50,10 +53,10 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      liquidity: `$${BigNumber(tvl).toFormat()}`,
       apr: `${BigNumber(apr).toFormat(2)}%`,
-      volume24h: `$${BigNumber(volume).toFormat()}`,
-      fees24h: `$${BigNumber(feeVolume).toFormat()}`,
+      liquidity: toUnitFormat(tvl, true),
+      volume24h: toUnitFormat(volume, true),
+      fees24h: toUnitFormat(feeVolume, true),
       rewards: [defaultReward],
       currentTick,
       price,
@@ -101,11 +104,12 @@ export class PoolMapper {
         createdAt: "2023-10-12T06:56:12+09:00",
         name: "Gnoswap",
         address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gnos",
+        path: "gno.land/r/gns",
         decimals: 4,
         symbol: "GNS",
         logoURI: "/gnos.svg",
-        priceId: "gno.land/r/gnos",
+        type: "grc20",
+        priceId: "gno.land/r/gns",
       },
       amount: 10,
     };
@@ -116,10 +120,10 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      liquidity: `$${BigNumber(tvl).toFormat()}`,
       apr: `${BigNumber(apr).toFormat(2)}%`,
-      volume24h: `$${BigNumber(volume).toFormat()}`,
-      fees24h: `$${BigNumber(feeVolume).toFormat()}`,
+      liquidity: toUnitFormat(tvl, true),
+      volume24h: toUnitFormat(volume, true),
+      fees24h: toUnitFormat(feeVolume, true),
       rewards: [defaultReward],
       currentTick,
       price,
@@ -146,6 +150,29 @@ export class PoolMapper {
       path: pool.poolPath,
       incentivizedType,
       bins,
+      rewardTokens: pool.rewardTokens || [],
+    };
+  }
+
+  public static detailFromResponse(pool: PoolResponse): PoolDetailModel {
+    const bins = pool.bins.map(bin => ({
+      ...bin,
+    }));
+    const id = pool.id ?? makeId(pool.poolPath);
+    const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
+    const incentivizedType: IncentivizedOptions =
+      incentivizedTypeStr !== "INCENTIVIZED"
+        ? incentivizedTypeStr === "EXTERNAL_INCENTIVIZED"
+          ? "EXTERNAL_INCENTIVIZED"
+          : "INCENTIVIZED"
+        : "NON_INCENTIVIZED";
+    return {
+      ...pool,
+      id,
+      path: pool.poolPath,
+      incentivizedType,
+      bins,
+      rewardTokens: pool.rewardTokens || [],
     };
   }
 }

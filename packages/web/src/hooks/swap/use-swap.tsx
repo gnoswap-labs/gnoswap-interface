@@ -34,7 +34,7 @@ export const useSwap = ({
         BigNumber(estimatedAmount).minus(slippageAmountNumber).toNumber() :
         BigNumber(estimatedAmount).plus(slippageAmountNumber).toNumber();
 
-      return tokenAmountLimit > 0 ? Math.round(tokenAmountLimit) : 0;
+      return tokenAmountLimit > 0 ? tokenAmountLimit : 0;
     }
     return 0;
   }, [direction, estimatedAmount, slippage]);
@@ -59,7 +59,8 @@ export const useSwap = ({
       setEstimatedRoutes(response.estimatedRoutes);
       setEstimatedAmount(response.amount);
       return response;
-    }).catch(() => {
+    }).catch(e => {
+      console.error(e);
       setEstimatedRoutes([]);
       setEstimatedAmount(null);
       return null;
@@ -78,7 +79,7 @@ export const useSwap = ({
       outputToken: tokenB,
       estimatedRoutes,
       exactType: direction,
-      tokenAmount: Math.floor(Number(tokenAmount)),
+      tokenAmount: Number(tokenAmount),
       tokenAmountLimit
     })
       .catch(() => false);

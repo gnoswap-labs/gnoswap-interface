@@ -57,7 +57,7 @@ export const RecentdummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     fee: "0.03%",
     isLiquid: true,
@@ -80,7 +80,7 @@ export const RecentdummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     fee: "0.03%"
   },
@@ -102,7 +102,7 @@ export const RecentdummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     fee: "0.03%"
   },
@@ -116,7 +116,7 @@ export const PopulardummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "Gnoland",
       symbol: "GNOT",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     price: "$12,090.09",
     priceOf1d: {

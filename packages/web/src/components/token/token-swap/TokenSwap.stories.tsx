@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import TokenSwap from "./TokenSwap";
 import { action } from "@storybook/addon-actions";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "token/TokenSwap",
@@ -13,16 +14,17 @@ const Template: ComponentStory<typeof TokenSwap> = args => (
   <TokenSwap {...args} />
 );
 
-const TOKEN_A = {
+const TOKEN_A: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gnos",
+  path: "gno.land/r/gns",
   decimals: 4,
-  symbol: "GNOS",
-  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png",
-  priceId: "gno.land/r/gnos",
+  symbol: "GNS",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  type: "grc20",
+  priceId: "gno.land/r/gns",
 }
 
 export const Default = Template.bind({});
@@ -51,9 +53,9 @@ Default.args = {
   swapNow: action("swapNow"),
   handleSetting: action("handleSetting"),
   handleCopied: action("handleCopied"),
-  changeTokenA: action("changeTokenA") ,
-  changeTokenAAmount: action("changeTokenAAmount") ,
-  changeTokenB: action("changeTokenB") ,
-  changeTokenBAmount: action("changeTokenBAmount") ,
-  switchSwapDirection: action("switchSwapDirection") ,
+  changeTokenA: action("changeTokenA"),
+  changeTokenAAmount: action("changeTokenAAmount"),
+  changeTokenB: action("changeTokenB"),
+  changeTokenBAmount: action("changeTokenBAmount"),
+  switchSwapDirection: action("switchSwapDirection"),
 };

@@ -1,18 +1,17 @@
+import Overlap from "./OverlapLogo";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import BarAreaGraph, { BarAreaGraphProps } from "./BarAreaGraph";
 
-describe("BarAreaGraph Component", () => {
-  it("BarAreaGraph render", () => {
-    const args: BarAreaGraphProps = {
-      datas: []
-    };
-
+describe("Overlap Component", () => {
+  it("Overlap render", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <BarAreaGraph {...args} />
+          <Overlap
+            logos={[]}
+            size={36}
+          />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );

@@ -33,7 +33,7 @@ const tokens = [tokenA, tokenB];
 
 const pools = (await poolRepository.getPools());
 
-const details = (await poolRepository.getPoolDetailByPoolId()).pool;
+const details = (await poolRepository.getPoolDetailByPoolPath());
 
 const dummyDisclaimer = "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. By adding incentives to the pool, you may draw more liquidity providers, which could lead to better price rates and increased trading activities.As the incentivizer, you can choose the type of the token and the duration of the rewards. The rewards will be automatically distributed by the contract and you will not be able to withdraw the tokens once the you complete this step.";
 const periods = [90, 120, 210];

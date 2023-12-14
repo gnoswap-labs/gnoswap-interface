@@ -1,62 +1,59 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { wrapper } from "./RemoveLiquidity.styles";
-import { LPPositionModel } from "@models/position/lp-position-model";
 import RemoveLiquiditySelectList from "../remove-liquidity-select-list/RemoveLiquiditySelectList";
 import RemoveLiquiditySelectResult from "../remove-liquidity-select-result/RemoveLiquiditySelectResult";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface RemoveLiquidityProps {
-  selectedAll: boolean;
-  lpPositions: LPPositionModel[];
-  selectedIds: string[];
-  select: (id: string) => void;
-  selectAll: () => void;
+  stakedPositions: PoolPositionModel[];
+  unstakedPositions: PoolPositionModel[];
+  checkedList: string[];
+  onCheckedItem: (checked: boolean, path: string) => void;
+  onCheckedAll: (checked: boolean) => void;
+  checkedAll: boolean;
   removeLiquidity: () => void;
-  width: number;
 }
 
 const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
-  selectedAll,
-  lpPositions,
-  selectedIds,
-  select,
-  selectAll,
+  stakedPositions,
+  unstakedPositions,
+  checkedList,
+  onCheckedItem,
+  onCheckedAll,
+  checkedAll,
   removeLiquidity,
-  width,
 }) => {
-  const selectedLiquidites = useMemo(() => {
-    return lpPositions.filter(lpPosition => selectedIds.includes(lpPosition.lpRewardId));
-  }, [selectedIds, lpPositions]);
 
-  const disabledConfirm = useMemo(() => {
-    return selectedLiquidites.length === 0;
-  }, [selectedLiquidites.length]);
+  const disabledRemoveLiquidity = useMemo(() => {
+    return checkedList.length === 0;
+  }, [checkedList.length]);
 
-  const onClickRemoveLiquidity = useCallback(() => {
-    removeLiquidity();
-  }, [removeLiquidity]);
+  const selectedPositions = useMemo(() => {
+    return stakedPositions.filter(position => checkedList.includes(position.id));
+  }, [checkedList, stakedPositions]);
 
   return (
     <div css={wrapper}>
       <h3 className="title">Remove Position</h3>
       <RemoveLiquiditySelectList
-        lpPositions={lpPositions}
-        selectedIds={selectedIds}
-        selectedAll={selectedAll}
-        select={select}
-        selectAll={selectAll}
-        width={width}
+        stakedPositions={stakedPositions}
+        unstakedPositions={unstakedPositions}
+        checkedList={checkedList}
+        onCheckedItem={onCheckedItem}
+        onCheckedAll={onCheckedAll}
+        checkedAll={checkedAll}
       />
-      <RemoveLiquiditySelectResult selectedLiquidities={selectedLiquidites} />
+      <RemoveLiquiditySelectResult positions={selectedPositions} />
       <Button
-        text={disabledConfirm ? "Select Position" : "Remove Position"}
-        disabled={disabledConfirm}
+        text={disabledRemoveLiquidity ? "Select Position" : "Remove Position"}
+        disabled={disabledRemoveLiquidity}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
         className="button-submit"
-        onClick={onClickRemoveLiquidity}
+        onClick={removeLiquidity}
       />
     </div>
   );

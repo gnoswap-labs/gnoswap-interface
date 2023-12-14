@@ -15,15 +15,16 @@ const Template: ComponentStory<typeof SelectPairButton> = args => (
 export const Selected = Template.bind({});
 Selected.args = {
   token: {
-    chainId: "test3",
-    address: "0x111111111117dC0aa78b770fA6A738034120C302",
-    path: "gno.land/r/demo/1inch",
-    name: "1inch",
-    symbol: "1INCH",
-    decimals: 6,
-    logoURI: "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
-    priceId: "1inch",
-    createdAt: "1999-01-01T00:00:01Z"
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceId: "gno.land/r/foo",
+    address: ""
   },
 };
 

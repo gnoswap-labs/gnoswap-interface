@@ -1,6 +1,7 @@
 import { action } from "@storybook/addon-actions";
 import EarnAddConfirm, { type EarnAddConfirmProps } from "./EarnAddConfirm";
 import { Meta, StoryObj } from "@storybook/react";
+import { TokenModel } from "@models/token/token-model";
 
 export default {
   title: "earn-add/EarnAddConfirm",
@@ -8,33 +9,43 @@ export default {
 } as Meta<typeof EarnAddConfirm>;
 
 
-const tokenA = {
+const tokenA: {
+  info: TokenModel;
+  amount: string;
+  usdPrice: string;
+} = {
   info: {
-    chainId: "test3",
-    address: "0x111111111117dC0aa78b770fA6A738034120C302",
-    path: "gno.land/r/demo/1inch",
-    name: "1inch",
-    symbol: "1INCH",
-    decimals: 6,
-    logoURI: "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
-    priceId: "1inch",
-    createdAt: "1999-01-01T00:00:01Z"
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceId: "gno.land/r/foo",
+    address: ""
   },
   amount: "12,211",
   usdPrice: "$12.3",
 };
 
-const tokenB = {
+const tokenB: {
+  info: TokenModel;
+  amount: string;
+  usdPrice: string;
+} = {
   info: {
-    chainId: "test3",
-    address: "0x111111111117dC0aa78b770fA6A738034120C302",
-    path: "gno.land/r/demo/1inch",
-    name: "1inch",
-    symbol: "1INCH",
-    decimals: 6,
-    logoURI: "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
-    priceId: "1inch",
-    createdAt: "1999-01-01T00:00:01Z"
+    type: "grc20",
+    chainId: "dev.gnoswap",
+    createdAt: "2023-12-08T03:57:43Z",
+    name: "Foo",
+    path: "gno.land/r/foo",
+    decimals: 4,
+    symbol: "FOO",
+    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+    priceId: "gno.land/r/foo",
+    address: ""
   },
   amount: "12,211",
   usdPrice: "$12.3",
@@ -53,6 +64,7 @@ const amountInfo = {
 const priceRangeInfo = {
   minPrice: "123",
   maxPrice: "123",
+  inRange: true,
   priceLabel: "GNOS per ETH",
   currentPrice: "11 ETH per GNOT",
   feeBoost: "x10.23",

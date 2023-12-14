@@ -19,16 +19,16 @@ interface Props {
   };
   priceRangeInfo: {
     currentPrice: string;
+    inRange: boolean;
     minPrice: string;
-    minPriceLable: string;
     maxPrice: string;
-    maxPriceLable: string;
+    priceLabel: string;
     feeBoost: string;
     estimatedAPR: string;
   };
 }
 
-const OneClickStakingModalContainer:React.FC<Props> = ({
+const OneClickStakingModalContainer: React.FC<Props> = ({
   amountInfo,
   priceRangeInfo,
 }) => {

@@ -8,6 +8,8 @@ export interface MostLiquidPool {
 export interface TokenModel {
   path: string;
 
+  type: "native" | "grc20";
+
   address: string;
 
   priceId: string;
@@ -28,8 +30,6 @@ export interface TokenModel {
 
   isGasToken?: boolean;
 
-  type?: string
-
   description?: string
 
   websiteURL?: string
@@ -39,6 +39,7 @@ export interface TokenModel {
   originSymbol?: string
 
   originDenom?: string
+  denom?: string;
 }
 
 export interface NativeTokenModel extends TokenModel {

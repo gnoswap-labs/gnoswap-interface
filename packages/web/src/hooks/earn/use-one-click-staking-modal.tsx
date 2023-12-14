@@ -1,4 +1,4 @@
-import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import OneClickStakingModalContainer from "@containers/one-click-staking-modal-container/OneClickStakingModalContainer";
 import { SelectPool } from "@hooks/pool/use-select-pool";
@@ -6,6 +6,7 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
 import { numberToFormat } from "@utils/string-utils";
+import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
@@ -53,21 +54,64 @@ export const useOneClickStakingModal = ({
     };
   }, [swapFeeTier, tokenA, tokenAAmountInput, tokenBAmountInput, tokenB]);
 
+  const priceLabel = useMemo(() => {
+    if (!selectPool?.compareToken || !tokenA || !tokenB) {
+      return "-";
+    }
+    const tokenASymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol : tokenB?.symbol;
+    const tokenBSymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol : tokenA?.symbol;
+    return `${tokenASymbol} per ${tokenBSymbol}`;
+  }, [selectPool?.compareToken, tokenA, tokenB]);
 
   const priceRangeInfo = useMemo(() => {
-    if (!selectPool) {
+    if (!selectPool || selectPool.currentPrice === null) {
       return null;
     }
+    const currentPriceStr = `${selectPool.currentPrice}`;
+    if (selectPool.currentPrice === null || selectPool.selectedFullRange) {
+      return {
+        currentPrice: currentPriceStr,
+        inRange: true,
+        minPrice: "0.0000",
+        maxPrice: "∞",
+        priceLabel,
+        feeBoost: "x1",
+        estimatedAPR: "N/A",
+      };
+    }
+
+    const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
+    let minPriceStr = "0.0000";
+    let maxPriceStr = "0.0000";
+    if (selectPool.minPrice && selectPool.minPrice > minPrice) {
+      minPriceStr = numberToFormat(selectPool.minPrice, 4);
+    }
+    if (selectPool.maxPrice) {
+      if (selectPool.maxPrice / maxPrice > 0.9) {
+        maxPriceStr = "∞";
+      } else {
+        maxPriceStr = numberToFormat(selectPool.maxPrice, 4);
+      }
+    }
+    const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
+
+    let inRange = true;
+    if (!selectPool.maxPrice || BigNumber(selectPool.maxPrice).isLessThan(selectPool.currentPrice)) {
+      inRange = false;
+    }
+    if (!selectPool.minPrice || BigNumber(selectPool.minPrice).isGreaterThan(selectPool.currentPrice)) {
+      inRange = false;
+    }
     return {
-      currentPrice: selectPool.currentPrice ? numberToFormat(selectPool.currentPrice, 4) : "-",
-      minPrice: numberToFormat(selectPool.minPrice || 0, 4),
-      minPriceLable: numberToFormat(selectPool.minPrice || 0, 4),
-      maxPrice: numberToFormat(selectPool.minPrice || 0, 4),
-      maxPriceLable: numberToFormat(selectPool.maxPrice || 0, 4),
-      feeBoost: selectPool.feeBoost ? numberToFormat(selectPool.feeBoost, 4) : "-",
-      estimatedAPR: selectPool.estimatedAPR ? numberToFormat(selectPool.estimatedAPR, 4) : "N/A",
+      currentPrice: currentPriceStr,
+      inRange,
+      minPrice: minPriceStr,
+      maxPrice: maxPriceStr,
+      priceLabel,
+      feeBoost,
+      estimatedAPR: "N/A",
     };
-  }, [selectPool]);
+  }, [priceLabel, selectPool]);
 
   const openModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {

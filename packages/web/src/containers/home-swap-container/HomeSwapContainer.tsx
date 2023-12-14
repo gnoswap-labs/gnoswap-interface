@@ -12,19 +12,20 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 
-const TOKEN_A = {
+const TOKEN_A: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
   path: "gnot",
-  decimals: 4,
+  decimals: 6,
   symbol: "GNOT",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-  priceId: "gno.land/r/Gnoland",
+  type: "native",
+  priceId: "gnot",
 };
-const TOKEN_B = {
+const TOKEN_B: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
@@ -33,12 +34,13 @@ const TOKEN_B = {
   decimals: 4,
   symbol: "GNS",
   logoURI: "/gnos.svg",
+  type: "grc20",
   priceId: "gno.land/r/gns",
 };
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
-  const { tokenPrices, balances } = useTokenData();
+  const { tokenPrices, displayBalanceMap } = useTokenData();
   const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
   const [tokenAAmount, setTokenAAmount] = useState<string>("1000");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
@@ -50,19 +52,21 @@ const HomeSwapContainer: React.FC = () => {
   
   const tokenABalance = useMemo(() => {
     if (!connected) return "-";
-    if (account?.balances[0].amount) {
-      return `${(Number(account?.balances[0].amount) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+    if (tokenA && displayBalanceMap[tokenA.priceId]) {
+      const balance = displayBalanceMap[tokenA.priceId] || 0;
+      return BigNumber(balance).toFormat(tokenA.decimals);
     }
     return "0";
-  }, [connected, account]);
+  }, [connected, displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
     if (!connected) return "-";
-    if (tokenB && balances[tokenB.priceId]) {
-      return BigNumber(balances[tokenB.priceId] || 0).toFormat();
+    if (tokenB && displayBalanceMap[tokenB.priceId]) {
+      const balance = displayBalanceMap[tokenB.priceId] || 0;
+      return BigNumber(balance).toFormat(tokenB.decimals);
     }
     return "0";
-  }, [connected ,balances, tokenB]);
+  }, [connected, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[tokenA.priceId]) {

@@ -4,15 +4,16 @@ import { wrapper } from "./StakePosition.styles";
 import { ValuesType } from "utility-types";
 import SelectLiquidity from "@components/stake/select-liquidity/SelectLiquidity";
 import SelectStakeResult from "@components/stake/select-stake-result/SelectStakeResult";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface StakePositionProps {
-  data: any;
+  stakedPositions: PoolPositionModel[];
+  unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   submitPosition: () => void;
-  width: number;
   isUnstake?: boolean;
 }
 
@@ -25,31 +26,38 @@ export const CONTENT_TITLE = {
 export type CONTENT_TITLE = ValuesType<typeof CONTENT_TITLE>;
 
 const StakePosition: React.FC<StakePositionProps> = ({
-  data,
+  stakedPositions,
+  unstakedPositions,
   checkedList,
   onCheckedItem,
   onCheckedAll,
   checkedAll,
   submitPosition,
-  width,
 }) => {
   const isEmptyCheckList = useMemo(() => {
     return checkedList.length === 0;
   }, [checkedList]);
-  
+
+  const selectedPositions = useMemo(() => {
+    return unstakedPositions.filter(position => checkedList.includes(position.id));
+  }, [checkedList, unstakedPositions]);
+
   return (
     <div css={wrapper}>
       <h3 className="title">Stake Position</h3>
       <SelectLiquidity
-        liquidity={data.liquidity}
+        stakedPositions={stakedPositions}
+        unstakedPositions={unstakedPositions}
         checkedList={checkedList}
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
-        width={width}
         isHiddenTitle
       />
-      <SelectStakeResult checkedList={checkedList} isHiddenBadge />
+      <SelectStakeResult
+        positions={selectedPositions}
+        isHiddenBadge
+      />
       <Button
         className="button-stake-position"
         text={isEmptyCheckList ? "Select Position" : "Stake Position"}

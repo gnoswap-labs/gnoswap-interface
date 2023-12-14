@@ -74,7 +74,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   modalRef,
 }) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, balances, updateTokens, updateBalances, tokenPrices } = useTokenData();
+  const { tokens, balances, updateTokens, updateBalances, tokenPrices, displayBalanceMap } = useTokenData();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -151,12 +151,21 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
 
   useEscCloseModal(close);
 
+  useEffect(() => {
+    updateTokens();
+  }, []);
+
+  useEffect(() => {
+    if (tokens.length > 0)
+      updateBalances();
+  }, [tokens]);
+
   return (
     <SelectToken
       keyword={keyword}
       defaultTokens={defaultTokens}
       tokens={filteredTokens}
-      tokenPrices={balances}
+      tokenPrices={displayBalanceMap}
       changeKeyword={changeKeyword}
       changeToken={selectToken}
       close={close}

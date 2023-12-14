@@ -1,7 +1,7 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import UnstakeLiquidityContainer from "@containers/unstake-liquidity-container/UnstakeLiquidityContainer";
+import UnstakeLiquidityContainer from "@containers/unstake-position-container/UnstakePositionContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import UnstakeLiquidityLayout from "@layouts/unstake-liquidity-layout/UnstakeLiquidityLayout";
 import { DEVICE_TYPE } from "@styles/media";

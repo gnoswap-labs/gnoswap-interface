@@ -16,3 +16,10 @@ export const unitsUpperCase = {
   billion: "B",
   trillion: "T",
 };
+
+export const unitsLowerCase = {
+  thousand: "k",
+  million: "m",
+  billion: "b",
+  trillion: "t",
+};

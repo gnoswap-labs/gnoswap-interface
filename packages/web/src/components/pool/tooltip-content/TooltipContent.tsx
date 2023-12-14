@@ -5,7 +5,7 @@ import { wrapper } from "./TooltipContent.styles";
 export const TITLE = {
   COMPOSITION: "Composition",
   CLAIM_REWARDS: "Claim_rewards",
-  STAKING_REWARDS_UPPER: "Staking Rewards",
+  STAKINGS_UPPER: "Staking Rewards",
   UNCLAIMABLE: "Unclaimable",
   BALANCE: "Balance",
   TOTAL_REWARDS: "Total_rewards",
