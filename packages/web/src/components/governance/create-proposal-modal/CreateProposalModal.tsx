@@ -252,7 +252,7 @@ const CreateProposalModal: React.FC<Props> = ({
                     <div className="multiple-variable" key={item.id}>
                       <div>
                         <FormInput
-                          placeholder="subspace"
+                          placeholder="Subspace"
                           errorText={
                             errors?.variable
                               ? (errors?.variable as any)[index]?.subspace

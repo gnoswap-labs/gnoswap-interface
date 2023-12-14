@@ -32,6 +32,14 @@ export const ProposalHeaderWrapper = styled.div`
       svg * {
         fill: ${({ theme }) => theme.color.icon03};
       }
+      &:hover {
+        color: ${({ theme }) => theme.color.text03};
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.icon07};
+          }
+        }
+      }
     }
     ${media.tablet} {
       .sub-title {

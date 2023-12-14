@@ -8,13 +8,14 @@ import {
   DEFAULT_TRANSACTION_DEADLINE,
 } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { MAX_INT64 } from "@gnoswap-labs/swap-router";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PositionModel } from "@models/position/position-model";
+import { MAX_INT256 } from "@utils/math.utils";
 import { PositionRepository } from "./position-repository";
 import { ClaimAllRequest } from "./request/claim-all-request";
-import { DecreaseLiquidityReqeust } from "./request/decrease-liquidity-request";
+import { RemoveLiquidityReqeust } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
+import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import { PositionListResponse } from "./response";
 
 const STAKER_PATH = process.env.NEXT_PUBLIC_PACKAGE_STAKER_PATH || "";
@@ -101,28 +102,40 @@ export class PositionRepositoryImpl implements PositionRepository {
     return hash;
   };
 
-  decreaseLiquidity = async (
-    request: DecreaseLiquidityReqeust,
+  unstakePositions = async (
+    request: UnstakePositionsRequest,
   ): Promise<string | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const {
-      lpTokenId,
-      liquidity,
-      amountAMin,
-      amountBMax,
-      caller,
-      deadline = DEFAULT_TRANSACTION_DEADLINE,
-    } = request;
-    const messages = [];
-    messages.push(
+    const { lpTokenIds, caller } = request;
+    const messages = lpTokenIds.map(lpTokenId =>
+      PositionRepositoryImpl.makeUnstakeMessage(lpTokenId, caller),
+    );
+    const result = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
+    if (!hash) {
+      throw new Error(`${result}`);
+    }
+    return hash;
+  };
+
+  removeLiquidity = async (
+    request: RemoveLiquidityReqeust,
+  ): Promise<string | null> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const { lpTokenIds, caller } = request;
+    const messages = lpTokenIds.map(lpTokenId =>
       PositionRepositoryImpl.makeDecreaseLiquidityMessage(
         lpTokenId,
-        liquidity,
-        amountAMin,
-        amountBMax,
-        deadline,
+        MAX_INT256.toString(),
+        DEFAULT_TRANSACTION_DEADLINE,
         caller,
       ),
     );
@@ -144,7 +157,12 @@ export class PositionRepositoryImpl implements PositionRepository {
       send: "",
       pkg_path: POSITION_PATH,
       func: "Collect",
-      args: [lpTokenId, receipient, MAX_INT64.toString(), MAX_INT64.toString()],
+      args: [
+        lpTokenId,
+        receipient,
+        MAX_INT256.toString(),
+        MAX_INT256.toString(),
+      ],
     };
   }
 
@@ -180,11 +198,19 @@ export class PositionRepositoryImpl implements PositionRepository {
     };
   }
 
+  private static makeUnstakeMessage(lpTokenId: string, caller: string) {
+    return {
+      caller,
+      send: "",
+      pkg_path: STAKER_PATH,
+      func: "UnstakeToken",
+      args: [lpTokenId],
+    };
+  }
+
   private static makeDecreaseLiquidityMessage(
     lpTokenId: string,
     liquidity: string,
-    amountAMin: string,
-    amountBMin: string,
     deadeline: string,
     caller: string,
   ) {
@@ -193,7 +219,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       send: "",
       pkg_path: POSITION_PATH,
       func: "DecreaseLiquidity",
-      args: [lpTokenId, liquidity, amountAMin, amountBMin, deadeline],
+      args: [lpTokenId, liquidity, deadeline],
     };
   }
 
@@ -203,8 +229,6 @@ export class PositionRepositoryImpl implements PositionRepository {
   ) {
     return this.makeDecreaseLiquidityMessage(
       lpTokenId,
-      "0",
-      "0",
       "0",
       DEFAULT_TRANSACTION_DEADLINE,
       caller,

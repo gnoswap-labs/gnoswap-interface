@@ -39,15 +39,15 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     priceOf1d
   } = item;
 
-  const onClickItem = (symbol: string) => {
-    location.href = "/tokens/" + symbol;
+  const onClickItem = (symbol: string, path: string) => {
+    location.href = "/tokens/" + symbol + `?tokenB=${path}&direction=EXACT_IN`;
   };
 
   return (
     <TokenInfoWrapper>
-      <HoverSection onClick={() => onClickItem(token.symbol)}>
+      <HoverSection onClick={() => onClickItem(token.symbol, token.path)}>
         <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
-          <img src={token.logoURI} alt="token logo" className="token-logo" />
+          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
           <div className="symbol-col">
             <strong className="token-name">{token.name}</strong>
             <span className="token-symbol">{token.symbol}</span>

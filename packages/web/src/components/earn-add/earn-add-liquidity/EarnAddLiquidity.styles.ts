@@ -31,6 +31,14 @@ export const EarnAddLiquidityWrapper = styled.section`
     gap: 4px;
     width: 100%;
     position: relative;
+    .change-select-pair-A,
+    .change-select-pair-B {
+      .missing-logo {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+      }
+    }
     .dim-content {
       position: absolute;
       top: 116px;

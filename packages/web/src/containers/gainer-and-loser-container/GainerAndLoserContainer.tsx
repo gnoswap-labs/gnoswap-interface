@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import GainerAndLoser from "@components/token/gainer-and-loser/GainerAndLoser";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { useGetChainList, useGetTokensList } from "src/react-query/token";
+import { TokenModel } from "@models/token/token-model";
+import { IGainer } from "@repositories/token";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 export const gainersInit = [
   {
@@ -79,22 +83,48 @@ export const losersInit = [
 ];
 
 const GainerAndLoserContainer: React.FC = () => {
-  const [loadingGain, setLoadingGain] = useState(true);
-  const [loadingLose, setLoadingLose] = useState(true);
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokensList();
+  const { data: { gainers = [], losers = [] } = {}, isLoading } = useGetChainList();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoadingGain(false);
-      setLoadingLose(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
+  const gainersList = useMemo(() => {
+    return gainers.map((item: IGainer) => {
+      const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
+      return {
+        path: item.tokenPath,
+        name: temp.name,
+        symbol: temp.symbol,
+        logoURI: temp.logoURI,
+        price: `$${convertLargePrice(item.tokenPrice, 10)}`,
+        change: {
+          status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
+        }
+      };
+    }).slice(0, 3);
+  }, [tokens, gainers]);
+
+  const loserList = useMemo(() => {
+    return losers.map((item: IGainer) => {
+      const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
+      return {
+        path: item.tokenPath,
+        name: temp.name,
+        symbol: temp.symbol,
+        logoURI: temp.logoURI,
+        price: `$${convertLargePrice(item.tokenPrice, 10)}`,
+        change: {
+          status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
+        }
+      };
+    }).slice(0, 3);
+  }, [tokens, losers]);
 
   return <GainerAndLoser
-    gainers={gainersInit}
-    losers={losersInit}
-    loadingLose={loadingLose}
-    loadingGain={loadingGain}
+      gainers={gainersList}
+      losers={loserList}
+      loadingLose={isLoading || isLoadingListToken}
+      loadingGain={isLoading || isLoadingListToken}
     />;
 };
 

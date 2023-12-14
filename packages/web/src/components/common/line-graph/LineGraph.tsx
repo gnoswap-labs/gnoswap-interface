@@ -73,36 +73,6 @@ interface Point {
   y: number;
 }
 
-function parseTime(time: string) {
-  const dateObject = new Date(time);
-  const yaer = `${dateObject.getFullYear()}`;
-  const month = `${dateObject.getMonth() + 1}`.padStart(2, "0");
-  const date = `${dateObject.getDate()}`.padStart(2, "0");
-  const hours = `${dateObject.getHours()}`.padStart(2, "0");
-  const minutes = `${dateObject.getMinutes()}`.padStart(2, "0");
-  const seconds = `${dateObject.getSeconds()}`.padStart(2, "0");
-  return {
-    date: `${yaer}-${month}-${date}`,
-    time: `${hours}:${minutes}:${seconds}`,
-  };
-}
-
-function parseTimeTVL(time: string) {
-  const dateObject = new Date(time);
-  const month = dateObject.toLocaleString("en-US", { month: "short" });
-  const day = dateObject.getDate();
-  const year = dateObject.getFullYear();
-  const hours = dateObject.getHours();
-  const minutes = dateObject.getMinutes();
-  const isPM = hours >= 12;
-  const formattedHours = hours % 12 || 12;
-  return {
-    date: `${month} ${day}, ${year}`,
-    time: `${formattedHours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")} ${isPM ? "PM" : "AM"}`,
-  };
-}
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
 
@@ -120,6 +90,27 @@ const ChartGlobalTooltip = () => {
     />
   );
 };
+function parseTimeTVL(time: string) {
+  const dateObject = new Date(time);
+  const month = dateObject.toLocaleString("en-US", { month: "short", timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+  const day = dateObject.getDate();
+  const year = dateObject.getFullYear();
+  const hours = dateObject.getHours();
+  const minutes = dateObject.getMinutes();
+  const isPM = hours >= 12;
+  const formattedHours = hours % 12 || 12;
+  if (!month || !day || !year)
+  return {
+    date: "",
+    time: ""
+  };
+  return {
+    date: `${month} ${day}, ${year}`,
+    time: `${formattedHours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")} ${isPM ? "PM" : "AM"}`,
+  };
+}
 
 const LineGraph: React.FC<LineGraphProps> = ({
   className = "",
@@ -134,7 +125,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
   firstPointColor,
-  typeOfChart,
   customData = { height: 0, locationTooltip: 0},
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
@@ -144,7 +134,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
   const { height: customHeight = 0, locationTooltip } = customData;
-
+  
   const isFocus = useCallback(() => {
     return activated && cursor;
   }, [activated, cursor]);
@@ -194,7 +184,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }));
     setPoints(points);
   };
-
+  
   const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -221,7 +211,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     let currentPointIndex = -1;
     
     for (const point of points) {
-      const distance = xPosition - point.x;
+      const distance = Math.abs(xPosition - point.x);
       currentPointIndex += 1;
       if (minDistance < 0 && distance >= 0) {
         minDistance = distance;
@@ -305,18 +295,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
         <LineGraphTooltipWrapper>
           <div className="tooltip-body">
             <span className="date">
-              {typeOfChart === "tvl"
-                ? parseTimeTVL(datas[currentPointIndex].time).date
-                : parseTime(datas[currentPointIndex].time).date}
+              {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
             </span>
-            {typeOfChart !== "tvl" && <span className="time">
-              {parseTime(datas[currentPointIndex].time).time}
-            </span>}
+            <span className="time">
+              {parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
+            </span>
           </div>
           <div className="tooltip-header">
-            <span className="value">{`$${Number(BigNumber(
-              datas[currentPointIndex].value,
-            )).toLocaleString()}`}</span>
+            <span className="value">{`$${datas[currentPointIndex]?.value || "0"}`}</span>
           </div>
         </LineGraphTooltipWrapper> : null
       }>
@@ -330,7 +316,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
               <stop offset="100%" stopColor={gradientEndColor} />
             </linearGradient>
           </defs>
-          <g width={width} style={{ transform: "translateY(24px)" }}>
+          <g width={width} className="line-chart-g">
             <path
               fill={`url(#gradient${COMPONENT_ID})`}
               stroke={color}
@@ -364,7 +350,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 x2={width}
                 y2={firstPoint.y}
                 strokeDasharray={3}
-              />}
+                className="first-line"
+                />}
               {isFocus() && currentPoint && (
                 <line
                   stroke={color}

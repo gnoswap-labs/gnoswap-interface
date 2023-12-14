@@ -90,6 +90,11 @@ export const loadingWrapper = (theme: Theme) => css`
   background-color: ${theme.color.background01};
   border-radius: 8px;
   padding-top: 16px;
+  > span {
+    color: ${theme.color.text04};
+    ${fonts.body11}
+    margin-top: 18px;
+  }
   > div {
     width: 48px;
     height: 48px;

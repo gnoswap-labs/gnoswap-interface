@@ -1,11 +1,14 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { CardListTokenInfo } from "@models/common/card-list-item-info";
+import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenState } from "@states/index";
+import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
+import { convertLargePrice } from "@utils/stake-position-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
@@ -18,7 +21,7 @@ export const useTokenData = () => {
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
-
+  
   const gnotToken = useMemo((): TokenModel => {
     const token = tokens.find(token => token.path === "gnot");
     if (token) {
@@ -53,17 +56,18 @@ export const useTokenData = () => {
     }).filter((_, index) => index < 3);
     return sortedTokens.map(token => {
       const tokenPrice = tokenPrices[token.priceId];
-      if (!tokenPrice || BigNumber(tokenPrice.change1d).isNaN()) {
+      if (!tokenPrice || BigNumber(tokenPrice.pricesBefore.latestPrice).isNaN() || BigNumber(tokenPrice.pricesBefore.priceToday).isNaN()) {
         return {
           token,
           upDown: "none",
           content: "-"
         };
       }
+      const data1D = checkPositivePrice(tokenPrice.pricesBefore.latestPrice, tokenPrice.pricesBefore.priceToday);
       return {
         token,
-        upDown: BigNumber(tokenPrice.change1d).isPositive() ? "up" : "down",
-        content: `${BigNumber(tokenPrice.change1d).toFixed()}%`
+        upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
+        content: data1D.percent.replace(/[+-]/g, ""),
       };
     });
   }, [tokens, tokenPrices]);
@@ -73,17 +77,17 @@ export const useTokenData = () => {
       const createTimeOfToken1 = new Date(t1.createdAt).getTime();
       const createTimeOfToken2 = new Date(t2.createdAt).getTime();
       return createTimeOfToken2 - createTimeOfToken1;
-    }).filter((_, index) => index < 3);
+    }).filter((_: TokenModel) => !!_.logoURI);
     return sortedTokens.map(token => (
       tokenPrices[token.path] ? {
         token,
-        upDown: "none",
-        content: `$${tokenPrices[token.path].usd}`
+        upDown: "none" as UpDownType,
+        content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`
       } : {
         token,
-        upDown: "none",
+        upDown: "none" as UpDownType,
         content: "-"
-      }));
+      })).slice(0,3);
   }, [tokenPrices, tokens]);
 
   const getTokenUSDPrice = useCallback((tokenAId: string, amount: bigint | string | number) => {

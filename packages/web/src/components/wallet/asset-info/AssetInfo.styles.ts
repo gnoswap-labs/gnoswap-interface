@@ -7,7 +7,7 @@ export const AssetInfoWrapper = styled.div`
   transition: background-color 0.3s ease;
   cursor: pointer;
   min-width: 100%;
-  height: 68px;
+  height: 67px;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
@@ -19,8 +19,8 @@ export const AssetInfoWrapper = styled.div`
   }
 
   .logo {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
   }
 
   .name {

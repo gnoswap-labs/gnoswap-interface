@@ -58,8 +58,8 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    return numberToUSD(Number(position.liquidity));
-  }, [position.liquidity]);
+    return numberToUSD(Number(position.positionUsdValue));
+  }, [position.positionUsdValue]);
 
   return (
     <li css={wrapper(checked)}>
@@ -77,7 +77,7 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
           placement="top"
           FloatingContent={<TooltipContent position={position} />}
         >
-          <span className="token-id">#{position.id}</span>
+          <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
         </Tooltip>
         <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
       </div>

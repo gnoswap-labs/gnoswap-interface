@@ -5,19 +5,18 @@ import React from "react";
 import { HeaderWrapper } from "./MyLiquidityHeader.styles";
 
 interface MyLiquidityHeaderProps {
-  connected: boolean;
-  isSwitchNetwork: boolean;
+  availableRemovePosition: boolean;
   handleClickAddPosition: () => void;
   handleClickRemovePosition: () => void;
 }
 
-const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ connected, isSwitchNetwork, handleClickAddPosition, handleClickRemovePosition }) => {
+const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ availableRemovePosition, handleClickAddPosition, handleClickRemovePosition }) => {
   return (
     <HeaderWrapper>
       <h2>My Positions</h2>
       <div className="button-wrap">
         <Button
-          disabled={!connected || isSwitchNetwork}
+          disabled={!availableRemovePosition}
           text="Remove Position"
           onClick={handleClickRemovePosition}
           style={{
@@ -28,7 +27,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ connected, isSwit
           }}
         />
         <Button
-          text="Create Position"
+          text="Add Position"
           onClick={handleClickAddPosition}
           style={{
             hierarchy: ButtonHierarchy.Primary,

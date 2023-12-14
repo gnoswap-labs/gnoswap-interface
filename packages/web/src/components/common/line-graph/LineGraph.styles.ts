@@ -50,9 +50,6 @@ export const LineGraphTooltipWrapper = styled.div`
     color: ${({ theme }) => theme.color.text04};
     .time {
       margin-left: 40px;
-      ${media.tablet} {
-        display: none;
-      }
     }
   }
 `;

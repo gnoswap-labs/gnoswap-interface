@@ -29,7 +29,13 @@ export const ConfirmModal = styled.div`
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
-
+  &.modal-body-wrapper {
+    gap: 24px;
+    ${media.mobile} {
+      ${mixins.positionCenter}
+      padding: 12px 0px;
+    }
+  }
   ${media.mobile} {
     width: 328px;
     ${mixins.positionCenter}
@@ -44,7 +50,6 @@ export const ConfirmModal = styled.div`
 
     ${media.mobile} {
       padding: 0px 15px;
-      gap: 12px;
     }
 
     .modal-header {
@@ -254,7 +259,7 @@ export const ConfirmModal = styled.div`
       align-self: stretch;
       .animation-logo {
         width: 72px;
-        height: 72px;
+        height: auto;
         ${media.mobile} {
           width: 60px;
           height: 54px;
@@ -287,6 +292,9 @@ export const ConfirmModal = styled.div`
             ${media.mobile} {
               display: initial;
             }
+          }
+          .br {
+            display: initial;
           }
         }
         .open-link {
@@ -321,6 +329,12 @@ export const ConfirmModal = styled.div`
           width: 304px;
         }
       }
+    }
+  }
+  .submitted-modal {
+    gap: 24px;
+    ${media.mobile} {
+      padding: 0 12px;
     }
   }
   .modal-body-loading {

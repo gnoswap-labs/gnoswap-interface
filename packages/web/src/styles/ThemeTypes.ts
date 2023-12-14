@@ -26,12 +26,15 @@ export interface ThemeColorType {
   background23: string;
   background24: string;
   background25: string;
+  background26: string;
   bgLoading: string;
   backgroundOpacity: string;
   backgroundOpacity2: string;
   backgroundOpacity3: string;
   backgroundOpacity4: string;
   backgroundOpacity5: string;
+  backgroundOpacity6: string;
+  backgroundOpacity7: string;
   backgroundGradient: string;
   backgroundGradient2: string;
   backgroundGradient3: string;
@@ -95,11 +98,14 @@ export interface ThemeColorType {
   icon14: string;
   icon15: string;
   icon16: string;
+  icon17: string;
+  icon18: string;
   hover01: string;
   hover02: string;
   hover03: string;
   hover04: string;
   hover05: string;
+  hover06: string;
   tooltipBackground: string;
   point: string;
   green01: string;
@@ -112,6 +118,7 @@ export interface ThemeColorType {
   shadow: string;
   shadow01: string;
   shadow02: string;
+  shadow03: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

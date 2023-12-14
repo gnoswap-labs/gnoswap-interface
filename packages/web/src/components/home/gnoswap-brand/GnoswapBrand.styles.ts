@@ -63,8 +63,8 @@ export const TitleWrapper = styled.h1`
     line-height: 55px;
   }
   ${media.mobile} {
-    font-size: 36px;
-    font-weight: 600;
+    font-size: 38px;
+    font-weight: 700;
     line-height: 43px;
   }
 

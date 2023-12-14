@@ -8,9 +8,11 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface HomeSwapProps {
   changeTokenAAmount: (value: string) => void;
+  changeTokenBAmount: (value: string) => void;
   swapTokenInfo: SwapTokenInfo;
   swapNow: () => void;
   onSubmitSwapValue: () => void;
+  connected: boolean;
 }
 
 function isAmount(str: string) {
@@ -18,7 +20,7 @@ function isAmount(str: string) {
   return regex.test(str);
 }
 
-const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwapValue, changeTokenAAmount }) => {
+const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwapValue, changeTokenAAmount, connected, changeTokenBAmount}) => {
   const { breakpoint } = useWindowSize();
   const [fromAmount, setFromAmount] = useState("0");
   const [toAmount, setToAmount] = useState("0");
@@ -31,10 +33,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
       const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
       setFromAmount(temp);
       changeTokenAAmount(temp);
-      // TODO
-      // - mapT0AmountToT0Price
-      // - mapT0AmpuntT1Amount
-      // - mapT1AmpuntT1Price
     },
     [],
   );
@@ -44,11 +42,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
       const value = e.target.value;
 
       if (value !== "" && !isAmount(value)) return;
-      setToAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
-      // TODO
-      // - mapT1AmountToT1Price
-      // - mapT1AmpuntT0Amount
-      // - mapT0AmpuntT0Price
+      const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
+      setToAmount(temp);
+      changeTokenBAmount(temp);
     },
     [],
   );
@@ -62,6 +58,22 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
     setToAmount(fromAmount);
     onSubmitSwapValue();
   };
+
+  const handleAutoFillTokenA = useCallback(() => {
+    if (connected) {
+      const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      setFromAmount(formatValue);
+    }
+  }, [swapTokenInfo.tokenABalance, connected, setFromAmount]);
+
+  const handleAutoFillTokenB = useCallback(() => {
+    if (connected) {
+      const formatValue = parseFloat(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
+      setToAmount(formatValue);
+      changeTokenBAmount(formatValue);
+    }
+  }, [swapTokenInfo.tokenBBalance, connected, setToAmount, changeTokenBAmount]);
+
 
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
@@ -83,8 +95,8 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
           </div>
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
-            <span className="balance-text">
-              Balance: {swapTokenInfo.tokenABalance}
+            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenA}>
+              {`Balance: ${swapTokenInfo.tokenABalance}`}
             </span>
           </div>
         </div>
@@ -102,7 +114,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
           </div>
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
-            <span className="balance-text">
+            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenB}>
               Balance: {swapTokenInfo.tokenBBalance}
             </span>
           </div>

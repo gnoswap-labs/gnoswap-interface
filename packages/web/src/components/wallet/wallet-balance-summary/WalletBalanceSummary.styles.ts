@@ -7,19 +7,19 @@ export const WalletBalanceSummaryWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   gap: 16px;
-  padding: 36px;
+  padding: 35px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background03};
   border: 1px solid ${({ theme }) => theme.color.border02};
   ${media.tablet} {
-    padding: 36px 24px;
+    padding: 35px 23px;
   }
   ${media.mobile} {
-    padding: 12px;
+    padding: 11px;
   }
   .total-balance-title {
     ${fonts.body4};
-    color: ${({ theme }) => theme.color.text10};
+    color: ${({ theme }) => theme.color.text04};
     ${media.tablet} {
       ${fonts.body6};
     }

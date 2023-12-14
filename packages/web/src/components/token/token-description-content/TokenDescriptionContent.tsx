@@ -30,7 +30,7 @@ const TokenDescriptionContent: React.FC<TokenDescriptionContentProps> = ({
   return (
     <div css={wrapper}>
       <p ref={contentRef} className={cx({ "auto-height": !showMore })}>
-        {content}
+        {content ? content : "No token information"} 
       </p>
       {isMaxHeightOver && (
         <LoadMoreButton

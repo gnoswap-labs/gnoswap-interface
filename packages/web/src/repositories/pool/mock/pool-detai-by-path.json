@@ -1,0 +1,49 @@
+{
+    "poolPath": "gno.land/r/gns:gno.land/r/qux:100",
+    "tokenA": {
+        "type": "grc20",
+        "chainId": "dev",
+        "createdAt": "2023-12-06 12:34:56",
+        "name": "bar",
+        "path": "gno.land/r/gns",
+        "decimals": 4,
+        "symbol": "BAR",
+        "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+        "priceId": "gno.land/r/gns"
+    },
+    "tokenB": {
+        "type": "grc20",
+        "chainId": "dev",
+        "createdAt": "2023-12-06 12:34:56",
+        "name": "bar",
+        "path": "gno.land/r/gns",
+        "decimals": 4,
+        "symbol": "BAR",
+        "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+        "priceId": "gno.land/r/gns"
+    },
+    "tvl": "0.0",
+    "tvlChange": "0.0",
+    "volume": "0.0",
+    "volumeChange": "0.0",
+    "totalVolume": "0.0",
+    "apr": "0.0",
+    "fee": "0.0",
+    "feeVolume": "0.0",
+    "feeChange": "0.0",
+    "currentTick": "1234",
+    "price": "16.26",
+    "tokenABalance": "12345",
+    "tokenBBalance": "616561416",
+    "tickSpacing": "2",
+    "bins": [
+        {
+            "index": 0,
+            "liquidity": "131745",
+            "reserveTokenA": "151616",
+            "reserveTokenB": "468",
+            "minTick": "-6614",
+            "maxTick": "6660"
+        }
+    ]
+}

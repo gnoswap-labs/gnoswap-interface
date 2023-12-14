@@ -17,7 +17,7 @@ export const CardListWrapper = styled.ul`
 
 export const ListItem = styled.li<{ upDown: UpDownType }>`
   ${mixins.flexbox("row", "center", "flex-start")};
-  ${fonts.body12};
+  ${fonts.body11};
   width: 100%;
   height: 40px;
   padding: 8px 24px;
@@ -35,6 +35,16 @@ export const ListItem = styled.li<{ upDown: UpDownType }>`
     width: 20px;
     height: 20px;
     border-radius: 50%;
+  }
+  .missing-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.text04};
+    font-size: 8px;
+    line-height: 10px;
   }
   .index,
   .list-content {

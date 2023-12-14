@@ -46,6 +46,9 @@ interface HeaderProps {
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
   loadingConnect: string;
+  mostLiquidity: Token[];
+  popularTokens: Token[];
+  recents: Token[];
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -67,6 +70,9 @@ const Header: React.FC<HeaderProps> = ({
   switchNetwork,
   isSwitchNetwork,
   loadingConnect,
+  mostLiquidity,
+  popularTokens,
+  recents,
 }) => {
   return (
     <>
@@ -152,6 +158,11 @@ const Header: React.FC<HeaderProps> = ({
             keyword={keyword}
             tokens={tokens}
             isFetched={isFetched}
+            breakpoint={breakpoint}
+            mostLiquidity={mostLiquidity}
+            popularTokens={popularTokens}
+            recents={recents}
+            placeholder="Search by Name, Symbol, or Path"
           />
         )}
       </HeaderWrapper>

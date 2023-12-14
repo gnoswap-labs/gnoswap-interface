@@ -1,23 +1,24 @@
 import React from "react";
 import SelectLiquidityItem from "@components/unstake/select-liquidity-item/SelectLiquidityItem";
 import { wrapper } from "./SelectLiquidity.styles";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface SelectLiquidityProps {
-  list: any[];
+  stakedPositions: PoolPositionModel[];
+  unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
-  width: number;
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
-  list,
+  stakedPositions,
+  unstakedPositions,
   checkedList,
   onCheckedItem,
   onCheckedAll,
   checkedAll,
-  width,
 }) => {
   return (
     <div css={wrapper}>
@@ -33,13 +34,21 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
         <span className="liquidity-label">Liquidity</span>
       </div>
       <ul>
-        {list.map((item, idx) => (
+        {stakedPositions.map((position, index) => (
           <SelectLiquidityItem
-            item={item}
+            position={position}
             checkedList={checkedList}
             onCheckedItem={onCheckedItem}
-            key={idx}
-            width={width}
+            key={index}
+          />
+        ))}
+        {unstakedPositions.map((position, index) => (
+          <SelectLiquidityItem
+            position={position}
+            checkedList={checkedList}
+            onCheckedItem={onCheckedItem}
+            key={index}
+            disabled
           />
         ))}
       </ul>

@@ -1,62 +1,49 @@
+import { useUnstakeData } from "@hooks/stake/use-unstake-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import React from "react";
 import { wrapper } from "./SelectUnstakeResult.styles";
 
 interface SelectUnstakeResultProps {
-  checkedList: string[];
+  positions: PoolPositionModel[];
 }
 
-const dummyImg = [
-  "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-  "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-];
-
 const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({
-  checkedList,
+  positions,
 }) => {
-  if (checkedList.length === 0) return <></>;
+  const { pooledTokenInfos, unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
+
+
+  if (positions.length === 0) return <></>;
   return (
     <div css={wrapper}>
-      <ul className="result-section">
-        <li>
-          <div className="main-info">
-            <img src={dummyImg[0]} alt="pooled tokenA logo" />
-            <p>Pooled GNS</p>
-            <strong>123,456.058845</strong>
-          </div>
-          <span className="dallor">$90,564.48</span>
-        </li>
-        <li>
-          <div className="main-info">
-            <img src={dummyImg[0]} alt="pooled tokenA logo" />
-            <p>Pooled GNOT</p>
-            <strong>123,456.058845</strong>
-          </div>
-          <span className="dallor">$90,564.48</span>
-        </li>
-        <li>
-          <div className="main-info">
-            <img src={dummyImg[0]} alt="pooled tokenA logo" />
-            <p>Unclaimed <br /> GNS Rewards</p>
-            <strong>1,140.058845</strong>
-          </div>
-          <span className="dallor">$5,564.48</span>
-        </li>
-
-        <li>
-          <div className="main-info">
-            <img src={dummyImg[1]} alt="pooled tokenB logo" />
-            <p>Unclaimed <br /> GNOT Rewards</p>
-            <strong>942.55884</strong>
-          </div>
-          <span className="dallor">$5,564.48</span>
-        </li>
+      <ul className="pooled-section">
+        {pooledTokenInfos.map((pooledTokenInfo, index) => (
+          <li key={index}>
+            <div className="main-info">
+              <img src={pooledTokenInfo.token.logoURI} alt="pooled token logo" />
+              <p>Pooled {pooledTokenInfo.token.symbol}</p>
+              <strong>{pooledTokenInfo.amount}</strong>
+            </div>
+            <span className="dallor">{pooledTokenInfo.amountUSD}</span>
+          </li>
+        ))}
+        {unclaimedRewards.map((pooledTokenInfo, index) => (
+          <li key={index}>
+            <div className="main-info">
+              <img src={pooledTokenInfo.token.logoURI} alt="pooled token logo" />
+              <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
+              <strong>{pooledTokenInfo.amount}</strong>
+            </div>
+            <span className="dallor">{pooledTokenInfo.amountUSD}</span>
+          </li>
+        ))}
       </ul>
-      <ul className="total-amount-section">
-        <li>
-          <div className="label">Total Amount</div>
-          <div className="value">$321,082.2</div>
-        </li>
-      </ul>
+      <div className="result-section">
+        <div className="total-amount-box">
+          <h5 className="total-amount-title">Total Amount</h5>
+          <span className="result-value">{totalLiquidityUSD}</span>
+        </div>
+      </div>
     </div>
   );
 };

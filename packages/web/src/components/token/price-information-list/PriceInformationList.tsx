@@ -39,6 +39,7 @@ const PriceInformationList: React.FC<PriceInformationListProps> = ({
           {!loading && <span
             className={cx("price-info-value", {
               negative: item.status === MATH_NEGATIVE_TYPE.NEGATIVE,
+              none: item.status === MATH_NEGATIVE_TYPE.NONE,
             })}
           >
             {item.value}

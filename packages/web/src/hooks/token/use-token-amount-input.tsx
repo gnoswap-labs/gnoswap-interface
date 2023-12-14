@@ -30,7 +30,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!usd) {
       return "-";
     }
-    return `$${usd}`;
+    return `$${usd.toLocaleString()}`;
   }, [usd]);
 
   const changeAmount = useCallback((value: string) => {

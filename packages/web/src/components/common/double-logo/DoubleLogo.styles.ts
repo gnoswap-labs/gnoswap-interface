@@ -1,4 +1,6 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export interface DoubleLogoStyleProps {
@@ -25,5 +27,24 @@ export const DoubleLogoWrapper = styled.div<DoubleLogoStyleProps>`
         return typeof overlap === "number" ? `-${overlap}px` : `-${overlap}`;
       return "-6px";
     }};
+  }
+  .missing-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    width: ${({ size }) => {
+      if (size) return typeof size === "number" ? `${size}px` : size;
+      return "36px";
+    }};
+    height: ${({ size }) => {
+      if (size) return typeof size === "number" ? `${size}px` : size;
+      return "36px";
+    }};
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.border02};
+    ${fonts.p6}
+    ${media.mobile} {
+      font-size: 8px;
+      line-height: 10px;
+    }
   }
 `;

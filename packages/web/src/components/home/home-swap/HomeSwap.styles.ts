@@ -60,6 +60,9 @@ export const wrapper = (theme: Theme) => css`
 
     .token {
       cursor: default;
+      .token-symbol {
+        margin-right: 0;
+      }
       > div {
         padding: 5px 12px 5px 6px;
         height: 34px;
@@ -89,8 +92,12 @@ export const wrapper = (theme: Theme) => css`
 
     .price-text,
     .balance-text {
-      ${fonts.p2};
+      ${fonts.p1};
       color: ${theme.color.text04};
+    }
+    .balance-text-disabled {
+      cursor: pointer;
+      z-index: 1;
     }
 
     .token {

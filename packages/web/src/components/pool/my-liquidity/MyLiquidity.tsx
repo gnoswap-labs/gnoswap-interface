@@ -17,6 +17,7 @@ interface MyLiquidityProps {
   onScroll: () => void;
   currentIndex: number;
   claimAll: () => void;
+  availableRemovePosition: boolean;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -30,13 +31,13 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   onScroll,
   currentIndex,
   claimAll,
+  availableRemovePosition,
 }) => {
   return (
     <MyLiquidityWrapper>
       <div className="liquidity-wrap">
         <MyLiquidityHeader
-          connected={connected}
-          isSwitchNetwork={isSwitchNetwork}
+          availableRemovePosition={availableRemovePosition}
           handleClickAddPosition={handleClickAddPosition}
           handleClickRemovePosition={handleClickRemovePosition}
         />

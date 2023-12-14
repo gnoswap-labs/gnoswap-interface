@@ -46,7 +46,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: false,
       },
       {
-        title: "Create Position",
+        title: "Add Position",
         path: "/earn/add",
         newTab: false,
       },

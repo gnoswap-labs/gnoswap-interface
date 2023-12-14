@@ -109,7 +109,7 @@ export const ThemeSelector = styled.div`
 export const CopyTooltip = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   position: absolute;
-  top: -65px;
+  top: -70px;
   left: -35px;
   z-index: ${Z_INDEX.modalTooltip};
   .box {

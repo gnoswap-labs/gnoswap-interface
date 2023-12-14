@@ -166,7 +166,7 @@ export const ProgressBar = styled.div<progressBarProps>`
     }};
     height: 12px;
     border-radius: 8px;
-    background-color: ${({ theme }) => theme.color.point};
+    background-color: ${({ theme }) => theme.color.background04};
   }
 `;
 

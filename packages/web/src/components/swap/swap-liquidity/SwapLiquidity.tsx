@@ -33,21 +33,28 @@ const getPathname = (liquidity: LiquidityInfo) => {
   };
 };
 
+const Logo = ({ token }: { token: TokenModel }) => {
+  return <>
+    {token.logoURI ? <img src={token.logoURI} alt="token-logo" className="coin-logo" /> : <div className="missing-logo">{token.symbol}</div>}
+  </>;
+};
+
 const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
   liquiditys,
   tokenA,
   tokenB,
   createPool,
 }) => {
+  
   return (
     <SwapLiquidityWrapper>
       <div className="box-header">
         <div className="coin-pair">
           <div className="gnos-image-wrapper">
-            <img src={tokenA.logoURI} alt="token-logo" className="coin-logo" />
+            <Logo token={tokenA} />
           </div>
           <div className="gnot-image-wrapper">
-            <img src={tokenB.logoURI} alt="token-logo" className="coin-logo" />
+            <Logo token={tokenB} />
           </div>
         </div>
         <span>
@@ -61,7 +68,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
             add liquidity to this pair.
           </p>
           <Button
-            text="Create Position"
+            text="Add Position"
             leftIcon={<IconAdd />}
             style={{
               fullWidth: true,

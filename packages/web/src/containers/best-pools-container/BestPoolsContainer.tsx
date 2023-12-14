@@ -1,14 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useRouter } from "next/router";
+import { useGetTokenDetailByPath } from "src/react-query/token";
+import { IBestPoolResponse } from "@repositories/token";
+import { convertLargePrice } from "@utils/stake-position-utils";
+import { useGetPoolList } from "src/react-query/pools";
+import { PoolModel } from "@models/pool/pool-model";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
   feeRate: SwapFeeTierType;
   tvl: string;
   apr: string;
+  id: string;
+  poolPath: string;
 }
 
 export const bestPoolsInit: BestPool = {
@@ -31,6 +38,8 @@ export const bestPoolsInit: BestPool = {
   tvl: "$129.25M",
   feeRate: "FEE_100",
   apr: "120.52%",
+  id: "",
+  poolPath: "",
 };
 
 export const bestPoolListInit: BestPool[] = [
@@ -41,17 +50,39 @@ export const bestPoolListInit: BestPool[] = [
 ];
 
 const BestPoolsContainer: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  const { data: pools = [] } = useGetPoolList();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  return <BestPools titleSymbol={router?.query["token-path"] as string || ""} cardList={bestPoolListInit} loading={loading}/>;
+  const bestPoolList: BestPool[] = useMemo(() => {
+    return bestPools.map((item: IBestPoolResponse) => {
+      const temp = pools.filter((_item: PoolModel) => _item.poolPath === item.poolPath)?.[0] || {};
+      
+      return {
+        tokenPair: {
+          tokenA: {
+            path: item.tokenA.path,
+            name: item.tokenA.name,
+            symbol: item.tokenA.symbol,
+            logoURI: item.tokenA.logoURI,
+          },
+          tokenB: {
+            path: item.tokenB.path,
+            name: item.tokenB.name,
+            symbol: item.tokenB.symbol,
+            logoURI: item.tokenB.logoURI,
+          },
+        },
+        poolPath: temp?.poolPath || "", 
+        id: temp?.id || "",
+        feeRate: `FEE_${item.fee}` as SwapFeeTierType,
+        tvl: `$${convertLargePrice(item.tvl)}`,
+        apr: `${Number(item.apr).toFixed(2)}%`,
+      };
+    });
+  }, [bestPools, pools.toString()]);
+  
+  return <BestPools titleSymbol={router?.query["token-path"] as string || ""} cardList={bestPoolList} loading={isLoading}/>;
 };
 
 export default BestPoolsContainer;

@@ -1,29 +1,25 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { RemoveLiquiditySelectListWrapper } from "./RemoveLiquiditySelectList.styles";
 import RemoveLiquiditySelectListItem from "../remove-liquidity-select-list-item/RemoveLiquiditySelectListItem";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface RemoveLiquiditySelectListProps {
-  selectedAll: boolean;
-  positions: PoolPositionModel[];
-  selectedIds: string[];
-  select: (id: string) => void;
-  selectAll: () => void;
-  width: number;
+  stakedPositions: PoolPositionModel[];
+  unstakedPositions: PoolPositionModel[];
+  checkedList: string[];
+  onCheckedItem: (checked: boolean, path: string) => void;
+  onCheckedAll: (checked: boolean) => void;
+  checkedAll: boolean;
 }
 
 const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
-  selectedAll,
-  positions,
-  selectedIds,
-  select,
-  selectAll,
-  width,
+  stakedPositions,
+  unstakedPositions,
+  checkedList,
+  onCheckedItem,
+  onCheckedAll,
+  checkedAll,
 }) => {
-
-  const isSelectLiquidity = useCallback((position: PoolPositionModel) => {
-    return selectedIds.findIndex(id => id === position.id) > -1;
-  }, [selectedIds]);
 
   return (
     <RemoveLiquiditySelectListWrapper>
@@ -32,8 +28,8 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
           <input
             id="checkbox-all"
             type="checkbox"
-            checked={selectedAll}
-            onChange={selectAll}
+            checked={checkedAll}
+            onChange={e => onCheckedAll(e.target.checked)}
           />
           <label htmlFor="checkbox-all" />
           <span className="custom-label">Select All</span>
@@ -41,13 +37,21 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
         <span>Liquidity</span>
       </div>
       <ul>
-        {positions.map((position, index) => (
+        {unstakedPositions.map((position, index) => (
           <RemoveLiquiditySelectListItem
-            key={index}
             position={position}
-            selected={isSelectLiquidity(position)}
-            select={select}
-            width={width}
+            checkedList={checkedList}
+            onCheckedItem={onCheckedItem}
+            key={index}
+          />
+        ))}
+        {stakedPositions.map((position, index) => (
+          <RemoveLiquiditySelectListItem
+            position={position}
+            checkedList={checkedList}
+            onCheckedItem={onCheckedItem}
+            key={index}
+            disabled
           />
         ))}
       </ul>

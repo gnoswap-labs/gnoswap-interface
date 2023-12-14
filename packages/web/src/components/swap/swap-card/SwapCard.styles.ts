@@ -1,3 +1,4 @@
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
@@ -28,8 +29,14 @@ export const SwapCardWrapper = styled.div`
     width: 100%;
     button {
       height: 57px;
+      span {
+        ${fonts.body7}
+      }
       ${media.mobile} {
         height: 41px;
+        span {
+          ${fonts.body9}
+        }
       }
     }
   }

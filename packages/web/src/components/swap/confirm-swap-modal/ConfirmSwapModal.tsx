@@ -86,8 +86,8 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   return (
     <>
       <ConfirmSwapModalBackground>
-        <ConfirmModal ref={menuRef}>
-          <div className={`modal-body ${swapResult === null && submitted && "modal-body-loading"}`}>
+        <ConfirmModal ref={menuRef} className={submitted ? "modal-body-wrapper" : ""}>
+          <div className={`modal-body ${swapResult === null && submitted ? "modal-body-loading" : submitted ? "submitted-modal" : ""}`}>
             <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
               {!submitted && <span>Confirm Swap</span>}
               <div className="close-wrap" onClick={close}>
@@ -256,6 +256,37 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
             text="Close"
             style={{
               fullWidth: true,
+              fontType: "body7",
+              hierarchy: ButtonHierarchy.Primary,
+            }}
+            onClick={close}
+          />
+        </div>
+      </>
+    );
+  }
+
+  if (swapResult.code === 4000) {
+    return (
+      <>
+        <div className="animation">
+          <IconFailed className="animation-logo" />
+        </div>
+        <div className="transaction-state">
+          <span className="submitted">Broadcasting Failed</span>
+          <div className="view-transaction">
+            <span>
+            Your transcation has not been broadcasted. <br  className="br"/>
+            Please try again.
+            </span>
+          </div>
+        </div>
+        <div className="close-button">
+          <Button
+            text="Close"
+            style={{
+              fullWidth: true,
+              height: 57,
               fontType: "body7",
               hierarchy: ButtonHierarchy.Primary,
             }}

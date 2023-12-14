@@ -40,18 +40,22 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
   &.left {
+    width: 148px;
     flex-shrink: 0;
     justify-content: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  &.negative {
+  .positive {
     padding-left: 0;
     color: ${({ theme }) => theme.color.green01};
     svg * {
       fill: ${({ theme }) => theme.color.green01};
     }
   }
-  &.positive {
+  .negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.red01};
     svg * {
@@ -73,9 +77,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       }
       &.positive {
         padding-left: 0;
-        color: ${({ theme }) => theme.color.red01};
+        color: ${({ theme }) => theme.color.green01};
         svg * {
-          fill: ${({ theme }) => theme.color.red01};
+          fill: ${({ theme }) => theme.color.green01};
         }
       }
     }
@@ -90,16 +94,26 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-logo {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+  }
+  .missing-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.text04};
+    font-size: 8px;
+    line-height: 10px;
   }
   .token-name {
     margin: 0px 8px;
-    ${fonts.body12};
+    ${fonts.body11};
   }
   .token-symbol {
     margin: 0px 8px;
-    ${fonts.p4};
+    ${fonts.p3};
     color: ${({ theme }) => theme.color.text04};
   }
 

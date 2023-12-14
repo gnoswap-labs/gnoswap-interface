@@ -51,7 +51,7 @@ export const RemovePositionModalWrapper = styled.div`
       .box-item {
         width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
-        gap: 8px;
+        gap: 16px;
         
         h4 {
           ${fonts.body12}
@@ -150,7 +150,7 @@ export const RemovePositionModalWrapper = styled.div`
       > div {
         width: 100%;
         .button-confirm {
-          gap: 8px;
+          gap: 16px;
           height: 57px;
           span {
             ${fonts.body7}
@@ -183,8 +183,12 @@ export const RemovePositionModalWrapper = styled.div`
       }
     }
   }
-`;
 
+  .button-wrapper {
+    display: flex;
+    width: 100%;
+  }
+`;
 
 export const Divider = styled.div`
   width: 100%;

@@ -21,7 +21,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
     if (height) return typeof height === "number" ? height + "px" : height;
     return "auto";
   }};
-  padding: 12px 16px;
+  padding: 11px 15px;
   border-radius: 8px;
 
   .icon-wrapper {
@@ -29,7 +29,7 @@ export const SearchInputWrapper = styled.div<SearchInputStyleProps>`
   }
 
   ${media.mobile} {
-    padding: 8px 12px 8px 12px;
+    padding: 7px 11px;
     ${fonts.body11};
     .search-icon {
       width: 24px;

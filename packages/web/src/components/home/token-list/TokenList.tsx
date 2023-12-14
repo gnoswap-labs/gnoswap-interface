@@ -72,7 +72,7 @@ const TokenList: React.FC<TokenItem> = ({
         sort={sort}
         breakpoint={breakpoint}
       />
-      {totalPage !== 0 && <Pagination
+      {totalPage > 1  && <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}

@@ -17,7 +17,7 @@ interface Props {
 
 const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
   const totalLiquidityUSD = useMemo(() => {
-    const totalLiquidity = positions.reduce((accum, position) => accum + Number(position.liquidity), 0);
+    const totalLiquidity = positions.reduce((accum, position) => accum + Number(position.positionUsdValue), 0);
     return numberToUSD(totalLiquidity);
   }, [positions]);
 
@@ -68,7 +68,7 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
                     <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
                   </div>
-                  <div className="value">{numberToUSD(Number(position.liquidity))}</div>
+                  <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
                 </div>
               ))}
             </div>

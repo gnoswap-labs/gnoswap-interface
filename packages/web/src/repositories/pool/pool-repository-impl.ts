@@ -23,7 +23,7 @@ import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCResponse } from "./response/pool-rpc-response";
-import { PoolModel } from "@models/pool/pool-model";
+import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import BigNumber from "bignumber.js";
 import { priceToNearTick } from "@utils/swap-utils";
@@ -327,4 +327,13 @@ export class PoolRepositoryImpl implements PoolRepository {
       ],
     };
   }
+
+  getPoolDetailByPath = async (
+    poolPath: string,
+  ): Promise<IPoolDetailResponse> => {
+    const response = await this.networkClient.get<IPoolDetailResponse>({
+      url: "/pool_details/" + poolPath,
+    });
+    return response.data;
+  };
 }

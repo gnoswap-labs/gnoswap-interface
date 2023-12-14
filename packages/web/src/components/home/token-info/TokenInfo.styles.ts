@@ -19,6 +19,9 @@ export const HoverSection = styled.div`
   cursor: pointer;
   height: 100%;
   overflow: hidden;
+  &.disabled-pointer {
+    pointer-events: none;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
   }
@@ -47,14 +50,14 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.padding-12 {
     padding: 16px 12px 16px 12px;
   }
-  &.negative {
+  &.positive {
     padding-left: 0;
     color: ${({ theme }) => theme.color.green01};
     svg * {
       fill: ${({ theme }) => theme.color.green01};
     }
   }
-  &.positive {
+  &.negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.red01};
     svg * {
@@ -73,10 +76,23 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .token-logo {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+  }
+  .missing-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.text04};
+    font-size: 8px;
+    line-height: 10px;
   }
   .token-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin: 0px 8px;
   }
 
@@ -85,5 +101,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   .token-index {
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
+  }
+  .token-symbol,
+  .fee-rate {
+    ${fonts.body11};
   }
 `;

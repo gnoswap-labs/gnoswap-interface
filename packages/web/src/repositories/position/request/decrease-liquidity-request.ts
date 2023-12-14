@@ -5,7 +5,7 @@ export interface DecreaseLiquidityReqeust {
 
   amountAMin: string;
 
-  amountBMax: string;
+  amountBMin: string;
 
   deadline?: string;
 

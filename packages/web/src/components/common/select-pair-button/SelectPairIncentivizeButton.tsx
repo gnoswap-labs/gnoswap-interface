@@ -14,6 +14,12 @@ interface SelectPairIncentivizeButtonProps {
   className?: string;
 }
 
+const Logo = ({ token }: { token: TokenModel }) => {
+  return <>
+    {token.logoURI ? <img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol}</div>}
+  </>;
+};
+
 const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = ({
   token,
   changeToken,
@@ -41,7 +47,7 @@ const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = 
     >
       {token ? (
         <div className="token-pair-wrapper">
-          <img src={token.logoURI} alt="token logo" className="token-logo" />
+          <Logo token={token}/>
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (

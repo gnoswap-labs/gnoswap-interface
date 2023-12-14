@@ -4,11 +4,49 @@ import mixins from "@styles/mixins";
 import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
-  ${mixins.flexbox("row", "center", "flex-start")};
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
   h3 {
     color: ${theme.color.text01};
     ${fonts.body11};
     margin-right: 12px;
+    ${media.mobile} {
+      ${fonts.p3};
+    }
+  }
+  .contract-path {
+
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    margin-bottom: 24px;
+    gap: 12px;
+    h4 {
+      color: ${theme.color.text01};
+      ${fonts.p3};
+    }
+    button {
+      margin-left: 0;
+    }
+    .icon-wrapper {
+      position: relative;
+      ${mixins.flexbox("row", "center", "flex-start")};
+    }
+    ${media.mobile} {
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+  }
+  .link {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    gap: 12px;
+    button {
+      margin-left: 0;
+    }
+    ${media.tablet} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 8px;
+    }
   }
   button {
     ${mixins.flexbox("row", "center", "center")};
@@ -41,6 +79,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .group-button {
     ${mixins.flexbox("row", "flex-start", "flex-start")};
+    gap: 4px;
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -53,6 +92,25 @@ export const wrapper = (theme: Theme) => css`
         }
       }
     }
-    margin-top: 8px;
+  }
+`;
+
+export const copyTooltip = (theme: Theme) => css`
+  position: absolute;
+  top: -70px;
+  left: -35px;
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${theme.color.text02};
+    background-color: ${theme.color.background02};
+    box-shadow: ${theme.color.shadow03};
+  }
+  .polygon-icon * {
+    fill: ${theme.color.background02};
   }
 `;

@@ -1,10 +1,10 @@
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { TokenChartGraphWrapper } from "./TokenChartGraph.styles";
-import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
-import { TokenChartGraphPeriodType, TokenChartGraphPeriods } from "@containers/token-chart-container/TokenChartContainer";
+import { TokenChartGraphPeriodType } from "@containers/token-chart-container/TokenChartContainer";
+import { ComponentSize } from "@hooks/common/use-component-size";
 
 export interface TokenChartGraphProps {
   datas: {
@@ -17,42 +17,24 @@ export interface TokenChartGraphProps {
   xAxisLabels: string[];
   yAxisLabels: string[];
   currentTab: TokenChartGraphPeriodType;
+  componentRef: React.RefObject<HTMLDivElement>;
+  size: ComponentSize;
+  breakpoint: DEVICE_TYPE;
+  right: number;
+  left: number;
 }
 
 const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   datas,
   xAxisLabels,
   yAxisLabels,
-  currentTab,
+  componentRef,
+  size,
+  breakpoint,
+  left,
+  right,
 }) => {
   const theme = useTheme();
-  const { breakpoint } = useWindowSize();
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [width, setWidth] = useState<number | undefined>(undefined);
-  const [height, setHeight] = useState<number | undefined>(undefined);
-  
-  useEffect(() => {
-    const updateWidth = () => {
-      if (wrapperRef.current) {
-        const newWidth = wrapperRef.current.getBoundingClientRect().width;
-        const newHeight = wrapperRef.current.getBoundingClientRect().height;
-        
-        setWidth(newWidth);
-        setHeight(newHeight - (breakpoint !== DEVICE_TYPE.MOBILE ? 40 : 30));
-      }
-    };
-    updateWidth();
-
-    window.addEventListener("resize", updateWidth);
-    return () => {
-      window.removeEventListener("resize", updateWidth);
-    };
-  }, [breakpoint]);
-  const countXAxis = useMemo(() => {
-    if (breakpoint !== DEVICE_TYPE.MOBILE)
-      return Math.floor((((width || 0) + 20) - 25) / (currentTab === TokenChartGraphPeriods[0] ? 60: 100));
-    return Math.floor((((width || 0) + 20) - 8) / 80);
-    }, [width, breakpoint, currentTab]);
   const customData = useMemo(() => {
     const temp = 47.55;
     return {
@@ -73,14 +55,21 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return "small-text";
   }, [yAxisLabels]);
 
+  const paddingLeft = useMemo(() => {
+    return Math.max(0, Math.floor(size?.width / datas.length * left - 27));
+  }, [size, datas.length, left]);
+  const paddingRight = useMemo(() => {
+    return Math.max(0, Math.floor(size?.width / datas.length * right - 27));
+  }, [size, datas.length, right]);
+  
   return (
-    <TokenChartGraphWrapper>
-      <div className="data-wrapper" ref={wrapperRef}>
+    <TokenChartGraphWrapper left={paddingLeft} right={paddingRight}>
+      <div className="data-wrapper" ref={componentRef}>
         <LineGraph
           cursor
           className="graph"
-          width={width}
-          height={(height || 0) - customData.height}
+          width={size?.width || 0}
+          height={(size?.height || 0) - (breakpoint !== DEVICE_TYPE.MOBILE ? 40 : 30) - customData.height}
           color="#192EA2"
           strokeWidth={1}
           datas={datas.map(data => ({
@@ -90,8 +79,8 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           firstPointColor={theme.color.border05}
           customData={customData}
         />
-        <div className="xaxis-wrapper">
-          {xAxisLabels.slice(0, Math.min(countXAxis, 7)).map((label, index) => (
+        <div className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""}`}>
+          {xAxisLabels.map((label, index) => (
             <span key={index} className="label">
               {label}
             </span>

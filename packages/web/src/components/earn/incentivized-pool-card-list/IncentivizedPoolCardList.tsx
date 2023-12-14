@@ -14,7 +14,7 @@ export interface IncentivizedPoolCardListProps {
   isFetched: boolean;
   onClickLoadMore?: () => void;
   currentIndex: number;
-  routeItem: (id: string) => void;
+  routeItem: (id: string, path: string) => void;
   mobile: boolean;
   page: number;
   themeKey: "dark" | "light";

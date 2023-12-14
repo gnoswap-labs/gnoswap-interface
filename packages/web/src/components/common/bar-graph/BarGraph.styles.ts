@@ -18,7 +18,6 @@ export const BarGraphWrapper = styled.div<BarGraphWrapperProps>`
   height: auto;
   overflow: visible;
   & > svg {
-    transform: translateY(24px);
     display: flex;
     flex-direction: column;
     width: 100%;

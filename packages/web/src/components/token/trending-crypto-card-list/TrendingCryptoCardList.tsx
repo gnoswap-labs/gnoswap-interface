@@ -16,6 +16,15 @@ const TrendingCryptoCardList: React.FC<TrendingCryptoCardListProps> = ({
   <div css={loadingWrapper}>
     <LoadingSpinner />
   </div>);
+
+  if (list.length === 0) {
+    return (
+      <div css={loadingWrapper}>
+        <span>No data</span>
+      </div>
+    );
+  }
+
   return (
     <div css={wrapper}>
       {list.map((item, idx) => (

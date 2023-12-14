@@ -6,25 +6,25 @@ import { media } from "@styles/media";
 export const WalletBalanceDetailInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  padding: 24px 36px;
+  padding: 23px 35px;
   gap: 16px;
   &:last-of-type {
     min-width: 284px;
     @media (max-width: 1180px) and (min-width: 969px) {
       min-width: 261px;
-      padding: 23px 24px;
+      padding: 23px;
     }
   }
   ${media.tablet} {
-    padding: 24px;
+    padding: 23px;
   }
   @media (max-width: 968px) {
     ${mixins.flexbox("row", "center", "space-between")};
-    padding: 12px;
+    padding: 11px;
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    padding: 12px;
+    padding: 11px;
     gap: 8px;
   }
 
@@ -47,7 +47,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     }
 
     svg {
-      cursor: pointer;
+      cursor: default;
       width: 16px;
       height: 16px;
     }

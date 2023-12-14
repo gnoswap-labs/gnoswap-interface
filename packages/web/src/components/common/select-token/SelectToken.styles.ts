@@ -6,22 +6,23 @@ import mixins from "@styles/mixins";
 export const SelectTokenWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 460px;
-  padding: 24px 0px 16px 0px;
-  gap: 24px;
+  padding: 23px 0px 7px 0px;
+  gap: 8px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
     width: 328px;
-    padding: 16px 0px;
+    padding: 15px 0px;
   }
 
   .content {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    padding: 0px 24px;
+    padding: 0px 23px;
     gap: 24px;
+    margin-bottom: 16px;
     ${media.mobile} {
-      padding: 0px 12px;
+      padding: 0px 11px;
       gap: 16px;
     }
     .header {
@@ -132,6 +133,19 @@ export const SelectTokenWrapper = styled.div`
           width: 24px;
           height: 24px;
         }
+        .missing-logo {
+          ${mixins.flexbox("row", "center", "center")};
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          color: ${({ theme }) => theme.color.text02};
+          background-color: ${({ theme }) => theme.color.text04};
+          ${fonts.p7}
+          ${media.mobile} {
+            font-size: 8px;
+            line-height: 10px;
+          }
+        }
         &.border-button-none {
           border-color: transparent;
         }
@@ -143,7 +157,7 @@ export const SelectTokenWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     gap: 4px;
-    max-height: 292px;
+    max-height: 306px;
     &.token-list-wrapper-auto-height {
       height: auto;
     }
@@ -161,10 +175,9 @@ export const SelectTokenWrapper = styled.div`
     .list {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
-      padding: 16px 24px;
-      gap: 8px;
+      padding: 15px 23px;
       ${media.mobile} {
-        padding: 12px;
+        padding: 10px 11px;
       }
       &:hover {
         background-color: ${({ theme }) => theme.color.hover02};
@@ -175,30 +188,132 @@ export const SelectTokenWrapper = styled.div`
         height: 24px;
       }
       .token-info {
-        ${mixins.flexbox("row", "center", "flex-start")};
+        ${mixins.flexbox("row", "flex-start", "flex-start")};
+        .token-logo {
+          width: 32px;
+          height: 32px;
+        }
+        .missing-logo {
+          ${mixins.flexbox("row", "center", "center")};
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          color: ${({ theme }) => theme.color.text02};
+          background-color: ${({ theme }) => theme.color.text04};
+          ${fonts.p6}
+          ${media.mobile} {
+            font-size: 8px;
+            line-height: 10px;
+          }
+        }
         gap: 8px;
         .token-name {
+          white-space: nowrap;
           color: ${({ theme }) => theme.color.text02};
-          ${fonts.body10}
+          ${fonts.body9}
           ${media.mobile} {
-            ${fonts.body12}
+            ${fonts.body11}
           }
         }
         .token-symbol {
           color: ${({ theme }) => theme.color.text04};
-          ${fonts.body12}
+          ${fonts.p3}
           ${media.mobile} {
-            ${fonts.p4}
+            ${fonts.p3}
+          }
+        }
+      }
+      .token-info-detail {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        gap: 2px;
+        > span {
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.p4}
+        }
+        > div {
+          max-width: 100%;
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 8px;
+          .token-name {
+          }
+          .token-path {
+            > div {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              direction: rtl;
+              white-space: nowrap;
+            }
+            padding: 1.5px 4px;
+            ${mixins.flexbox("row", "center", "flex-start")};
+            gap: 2px;
+            background-color: ${({ theme }) => theme.color.backgroundOpacity};
+            border-radius: 4px;
+            color: ${({ theme }) => theme.color.text04};
+            ${fonts.p6}
+            svg {
+              min-width: 10px;
+              width: 10px;
+              height: 10px;
+              * {
+                fill: ${({ theme }) => theme.color.icon03}; 
+              }
+            }
+            &:hover {
+              color: ${({ theme }) => theme.color.text03};
+              svg {
+                * {
+                  fill: ${({ theme }) => theme.color.icon07}; 
+                }
+              }
+            }
+          }
+        }
+        ${media.mobile} {
+          > div {
+            max-width: 100%;
           }
         }
       }
       .token-balance {
         color: ${({ theme }) => theme.color.text02};
+        margin-left: 10px;
         ${fonts.body9}
         ${media.mobile} {
           ${fonts.body11}
         }
       }
+    }
+  }
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  border-top: 1px solid ${({ theme }) => theme.color.border02};
+`;
+
+interface Props {
+  maxWidth: number;
+  tokenNameWidthList: number;
+}
+
+export const TokenInfoWrapper = styled.div<Props>`
+  overflow-x: hidden;
+  max-width: ${({ maxWidth }) => {
+    return `calc(460px - 150px - ${maxWidth}px)`;
+  }};
+  .token-path {
+    max-width: ${({ tokenNameWidthList, maxWidth }) => {
+      return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+    }};
+  }
+  ${media.mobile} {
+    max-width: ${({ maxWidth }) => {
+      return `calc(328px - 86px - ${maxWidth}px)`;
+    }};
+    .token-path {
+      max-width: ${({ tokenNameWidthList, maxWidth }) => {
+        return `calc(328px - 105px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+      }};
     }
   }
 `;
