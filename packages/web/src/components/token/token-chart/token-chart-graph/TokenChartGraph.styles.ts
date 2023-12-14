@@ -59,7 +59,9 @@ export const TokenChartGraphWrapper = styled.div<Props>`
       }
       ${media.mobile} {
         height: 30px;
-        padding: 0 4px;
+        padding: ${({ left, right }) => {
+          return (left || right) ? `0 ${right}px 0 ${left}px` : "0 12px";
+        }};
       }
     }
     .xaxis-wrapper-center {

@@ -162,6 +162,7 @@ const Header: React.FC<HeaderProps> = ({
             mostLiquidity={mostLiquidity}
             popularTokens={popularTokens}
             recents={recents}
+            placeholder="Search by Name, Symbol, or Path"
           />
         )}
       </HeaderWrapper>

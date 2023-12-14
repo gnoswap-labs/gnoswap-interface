@@ -241,7 +241,7 @@ const HeaderContainer: React.FC = () => {
         isLiquid: false,
       };
     });
-  }, [listTokens, recents.length, keyword]);
+  }, [listTokens, recents.length, keyword, prices]);
   
   const { openModal } = useConnectWalletModal();
 

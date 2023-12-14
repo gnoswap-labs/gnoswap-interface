@@ -55,8 +55,12 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return "small-text";
   }, [yAxisLabels]);
 
-  const paddingLeft = Math.max(0, Math.floor(size.width / datas.length * left - 27));
-  const paddingRight = Math.max(0, Math.floor(size.width / datas.length * right - 27));
+  const paddingLeft = useMemo(() => {
+    return Math.max(0, Math.floor(size.width / datas.length * left - 27));
+  }, [size.width, datas.length, left]);
+  const paddingRight = useMemo(() => {
+    return Math.max(0, Math.floor(size.width / datas.length * right - 27));
+  }, [size.width, datas.length, right]);
   
   return (
     <TokenChartGraphWrapper left={paddingLeft} right={paddingRight}>

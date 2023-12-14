@@ -211,7 +211,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     let currentPointIndex = -1;
     
     for (const point of points) {
-      const distance = xPosition - point.x;
+      const distance = Math.abs(xPosition - point.x);
       currentPointIndex += 1;
       if (minDistance < 0 && distance >= 0) {
         minDistance = distance;

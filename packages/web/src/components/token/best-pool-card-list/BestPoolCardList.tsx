@@ -15,7 +15,6 @@ interface BestPoolCardListProps {
 const LIST_TITLE = ["Pair", "TVL", "APR"];
 
 const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) => {
-  console.log(list, "bestPoolList");
 
   return (
     <div css={wrapper}>

@@ -279,10 +279,10 @@ const TokenChartContainer: React.FC = () => {
     currentTab === TokenChartGraphPeriods[2] ? 180 : currentTab === TokenChartGraphPeriods[3] ? 365 : 144;
  
 
-    const datas = chartData?.length > 0 ? chartData.slice(0, length).map((item: IPriceResponse, i: number) => {
+    const datas = chartData?.length > 0 ? chartData.slice(0, length).map((item: IPriceResponse) => {
       return {
         amount: {
-          value: i === 0 ? "0" : `${item.price}`,
+          value: `${item.price}`,
           denom: "",
         },
         time: item.date,

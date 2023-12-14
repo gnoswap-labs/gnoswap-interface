@@ -76,7 +76,6 @@ export function generateDateSequence(startDateString: string, endDateString: str
     if (startDate.getMinutes() === 0) {
       if (startDate.getHours() % 2 === 0) {
         temp.push(new Date(startDate.toLocaleString("en-US")));
-        console.log(startDate.toLocaleString("en-US"));
       }
     } else {
       startDate.setMinutes(0);
@@ -96,7 +95,6 @@ export function countPoints(startDateTime: string, endDateTime: string, interval
   let count = 0;
 
   while (currentDateTime <= endDate) {
-    console.log(currentDateTime.toLocaleString("en-US", { timeZone: "UTC" }));
     count++;
 
     // Tăng thêm số phút
@@ -104,4 +102,25 @@ export function countPoints(startDateTime: string, endDateTime: string, interval
   }
 
   return count;
+}
+
+export function randomData() {
+  const startDate = new Date("2023-12-12 01:10:00");
+  const lastDate = new Date("2023-12-13 01:00:00");
+  const temp = [];
+  while (startDate <= lastDate) {
+    const year = startDate.getFullYear();
+    const month = String(startDate.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+    const day = String(startDate.getDate()).padStart(2, "0");
+    const hours = String(startDate.getHours()).padStart(2, "0");
+    const minutes = String(startDate.getMinutes()).padStart(2, "0");
+    const seconds = String(startDate.getSeconds()).padStart(2, "0");
+    temp.push({
+      price: "0.500041",
+      date: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
+    });
+    startDate.setMinutes(startDate.getMinutes() + 10);
+  }
+  return temp;
+  
 }
