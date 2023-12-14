@@ -2,7 +2,7 @@ import { SwapFeeTierType } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePoolData } from "./use-pool-data";
 
@@ -27,8 +27,14 @@ export const usePool = ({
       return [];
     }
 
-    const tokenPairOfPaths = [tokenA.path, tokenB.path]; // [tokenA.path, tokenB.path];
-    return pools?.filter(pool => tokenPairOfPaths.includes(pool.tokenA.path) && tokenPairOfPaths.includes(pool.tokenB.path));
+    const tokenATokenPath = isNativeToken(tokenA) ? tokenA.wrappedPath : tokenA.path;
+    const tokenBTokenPath = isNativeToken(tokenB) ? tokenB.wrappedPath : tokenB.path;
+    const tokenPairOfPaths = [tokenATokenPath, tokenBTokenPath];
+    return pools?.filter(pool => {
+      const currentTokenATokenPath = isNativeToken(pool.tokenA) ? pool.tokenA.wrappedPath : pool.tokenA.path;
+      const currentTokenBTokenPath = isNativeToken(pool.tokenB) ? pool.tokenB.wrappedPath : pool.tokenB.path;
+      return tokenPairOfPaths.includes(currentTokenATokenPath) && tokenPairOfPaths.includes(currentTokenBTokenPath);
+    });
   }, [pools, tokenA, tokenB]);
 
   const getCurrentTokenPairAmount = useCallback((tokenAAmount: string, tokenBAmount: string) => {
@@ -136,7 +142,7 @@ export const usePool = ({
       return null;
     });
     return hash;
-  }, [account, poolRepository, tokenA, tokenB, compareToken]);
+  }, [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository]);
 
   useEffect(() => {
     updatePools();

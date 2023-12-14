@@ -45,6 +45,14 @@ const ERROR_VALUE = {
     status: 5005,
     type: "Not found Recently tokens",
   },
+  FAILED_WRAP_TOKEN: {
+    status: 5006,
+    type: "Failed to wrap toekn",
+  },
+  FAILED_UNWRAP_TOKEN: {
+    status: 5007,
+    type: "Failed to unwrap toekn",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

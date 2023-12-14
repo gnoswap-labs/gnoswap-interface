@@ -21,11 +21,10 @@ export default function PoolIncentivize() {
       {
         title:
           breakpoint === DEVICE_TYPE.WEB
-            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${
-                Number(data?.fee) / 10000
-              }%)`
+            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${Number(data?.fee) / 10000
+            }%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-number"]}?path=${router.query.path}`,
+        path: `/earn/pool/${router.query["pool-path"]}`,
       },
       { title: "Incentivize Pool", path: "" },
     ];

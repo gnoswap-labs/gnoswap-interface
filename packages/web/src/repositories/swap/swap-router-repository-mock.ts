@@ -1,8 +1,9 @@
 import { SwapRouterRepository } from "./swap-router-repository";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
-import { SwapRouteRequest } from "./request/swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
+import { UnwrapTokenRequest } from "./request/unwrap-token-request";
+import { WrapTokenRequest } from "./request/wrap-token-request";
 
 export class SwapRouterRepositoryMock implements SwapRouterRepository {
   public pools: PoolRPCModel[] = [];
@@ -21,8 +22,15 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     };
   };
 
-  public swapRoute = async (request: SwapRouteRequest): Promise<string> => {
-    console.log(request);
-    return "tx_hash";
+  public swapRoute = async () => {
+    throw new Error("Mock swapRoute");
+  };
+
+  public wrapToken = async () => {
+    throw new Error("Mock wrapToken");
+  };
+
+  public unwrapToken = async () => {
+    throw new Error("Mock unwrapToken");
   };
 }

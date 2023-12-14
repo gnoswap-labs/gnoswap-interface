@@ -1,5 +1,5 @@
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { feeBoostRateByPrices, priceToNearTick, tickToPrice } from "@utils/swap-utils";
@@ -315,9 +315,11 @@ export const useSelectPool = ({
       };
       setPoolInfo(poolInfo);
     } else {
-      const tokenPair = [tokenA.path, tokenB.path].sort();
+      const tokenAPoolPath = isNativeToken(tokenA) ? tokenA.wrappedPath : tokenA.path;
+      const tokenBPoolPath = isNativeToken(tokenB) ? tokenB.wrappedPath : tokenB.path;
+      const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
       const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
-      const reverse = [tokenA?.path, tokenB?.path].sort().findIndex(path => path === compareToken?.path) === 1;
+      const reverse = [tokenAPoolPath, tokenBPoolPath].sort().findIndex(path => path === compareToken?.path) === 1;
 
       poolRepository.getPoolDetailRPCByPoolPath(poolPath).then(poolInfo => {
         const changedPoolInfo = reverse === false ? poolInfo : {

@@ -13,10 +13,19 @@ import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { MAX_UINT64 } from "@utils/math.utils";
+import { isNativeToken } from "@models/token/token-model";
+import {
+  makeDepositMessage,
+  makeWithdrawMessage,
+} from "@common/clients/wallet-client/transaction-messages/token";
+import { makePoolTokenApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
+import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
+import { WrapTokenRequest } from "./request/wrap-token-request";
+import { TokenError } from "@common/errors/token";
+import { UnwrapTokenRequest } from "./request/unwrap-token-request";
+import { SwapRouteResponse } from "./response/swap-route-response";
 
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
-const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -48,8 +57,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new SwapError("INVALID_PARAMS");
     }
 
-    const inputTokenPath = inputToken.path;
-    const outputTokenPath = outputToken.path;
+    const inputTokenPath = isNativeToken(inputToken)
+      ? inputToken.wrappedPath
+      : inputToken.path;
+    const outputTokenPath = isNativeToken(outputToken)
+      ? outputToken.wrappedPath
+      : outputToken.path;
     const swapRouter = new SwapRouter(this.pools);
     const tokenAmountRaw = makeRawTokenAmount(
       exactType === "EXACT_IN" ? inputToken : outputToken,
@@ -78,6 +91,17 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       .evaluateExpression(ROUTER_PACKAGE_PATH, param)
       .then(evaluateExpressionToNumber);
 
+    console.log("estimateRouteParams", [
+      inputTokenPath,
+      outputTokenPath,
+      tokenAmountRaw || "0",
+      exactType,
+      routesQuery,
+      quotes,
+    ]);
+
+    console.log("estimateRouteParams:Result", result);
+
     if (result === null) {
       throw new SwapError("NOT_FOUND_SWAP_POOL");
     }
@@ -91,7 +115,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     };
   };
 
-  public swapRoute = async (request: SwapRouteRequest): Promise<string> => {
+  public swapRoute = async (
+    request: SwapRouteRequest,
+  ): Promise<SwapRouteResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -116,46 +142,100 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
-    let sendAmount = "";
-    if (inputToken.type === "native") {
-      const sendTokeAnmount =
-        exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
-      sendAmount = BigNumber(sendTokeAnmount).isGreaterThan(0)
-        ? `${sendTokeAnmount}ugnot`
-        : "";
+    const inputTokenPath = isNativeToken(inputToken)
+      ? inputToken.wrappedPath
+      : inputToken.path;
+    const outputTokenPath = isNativeToken(outputToken)
+      ? outputToken.wrappedPath
+      : outputToken.path;
+    const messages = [];
+    const sendTokenAmount =
+      exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
+    if (isNativeToken(inputToken)) {
+      messages.push(
+        makeDepositMessage(inputTokenPath, sendTokenAmount, "ugnot", address),
+      );
     }
-    const inputTokenPath =
-      inputToken.type === "grc20" ? inputToken.path : WRAPPED_GNOT_PATH;
-    const outputTokenPath =
-      outputToken.type === "grc20" ? outputToken.path : WRAPPED_GNOT_PATH;
-    const response = await this.walletClient.sendTransaction({
-      messages: [
-        SwapRouterRepositoryImpl.makeApproveTokenMessage(
-          inputTokenPath,
-          MAX_UINT64.toString(),
-          address,
-        ),
-        SwapRouterRepositoryImpl.makeApproveTokenMessage(
-          outputTokenPath,
-          MAX_UINT64.toString(),
-          address,
-        ),
-        {
-          caller: address,
-          send: sendAmount,
-          pkg_path: ROUTER_PACKAGE_PATH,
-          func: "SwapRoute",
-          args: [
-            inputToken.path,
-            outputToken.path,
-            `${tokenAmountRaw || 0}`,
-            exactType,
-            `${routesQuery}`,
-            `${quotes}`,
-            `${0}`,
-          ],
-        },
+    messages.push(
+      makePoolTokenApproveMessage(
+        inputTokenPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+    );
+    messages.push(
+      makePoolTokenApproveMessage(
+        outputTokenPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+    );
+    messages.push({
+      caller: address,
+      send: "",
+      pkg_path: ROUTER_PACKAGE_PATH,
+      func: "SwapRoute",
+      args: [
+        inputToken.path,
+        outputToken.path,
+        `${tokenAmountRaw || 0}`,
+        exactType,
+        `${routesQuery}`,
+        `${quotes}`,
+        sendTokenAmount.toString(),
       ],
+    });
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasWanted: 2000000,
+      gasFee: 1,
+      memo: "",
+    });
+    if (response.code !== 0 || !response.data) {
+      throw new SwapError("SWAP_FAILED");
+    }
+    const data = response.data as SendTransactionSuccessResponse<string>;
+    if (BigNumber(data.data).isNaN()) {
+      throw new SwapError("SWAP_FAILED");
+    }
+    const resultAmount =
+      makeDisplayTokenAmount(resultToken, data.data)?.toString() || "0";
+    const slippageAmount =
+      makeDisplayTokenAmount(
+        resultToken,
+        sendTokenAmount.toString(),
+      )?.toString() || "0";
+    return {
+      hash: data.hash,
+      height: data.height,
+      resultToken,
+      resultAmount: resultAmount,
+      slippageAmount,
+    };
+  };
+
+  public wrapToken = async (request: WrapTokenRequest): Promise<string> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const account = await this.walletClient.getAccount();
+    if (!account.data || !ROUTER_PACKAGE_PATH) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const { address } = account.data;
+    const { token, tokenAmount } = request;
+
+    const tokenAmountRaw = makeRawTokenAmount(token, tokenAmount) || "0";
+
+    const messages = [];
+    if (!isNativeToken(token)) {
+      throw new TokenError("FAILED_WRAP_TOKEN");
+    }
+    messages.push(
+      makeDepositMessage(token.wrappedPath, tokenAmountRaw, "ugnot", address),
+    );
+    const response = await this.walletClient.sendTransaction({
+      messages,
       gasWanted: 2000000,
       gasFee: 1,
       memo: "",
@@ -163,20 +243,34 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     if (response.code !== 0) {
       throw new SwapError("SWAP_FAILED");
     }
-    return response.type;
+    return response.status;
   };
 
-  private static makeApproveTokenMessage(
-    tokenPath: string,
-    amount: string,
-    caller: string,
-  ) {
-    return {
-      caller,
-      send: "",
-      pkg_path: tokenPath,
-      func: "Approve",
-      args: [POOL_ADDRESS, amount],
-    };
-  }
+  public unwrapToken = async (request: UnwrapTokenRequest): Promise<string> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const account = await this.walletClient.getAccount();
+    if (!account.data || !ROUTER_PACKAGE_PATH) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const { address } = account.data;
+    const { token, tokenAmount } = request;
+
+    const tokenPath = isNativeToken(token) ? token.wrappedPath : token.path;
+    const tokenAmountRaw = makeRawTokenAmount(token, tokenAmount) || "0";
+
+    const messages = [];
+    messages.push(makeWithdrawMessage(tokenPath, tokenAmountRaw, address));
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasWanted: 2000000,
+      gasFee: 1,
+      memo: "",
+    });
+    if (response.code !== 0) {
+      throw new SwapError("SWAP_FAILED");
+    }
+    return response.status;
+  };
 }

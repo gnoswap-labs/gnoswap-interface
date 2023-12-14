@@ -3,7 +3,7 @@ import { WalletResponse } from "./wallet-response";
 export interface WalletTransactionMethod {
   sendTransaction: (
     transaction: SendTransactionRequestParam,
-  ) => Promise<WalletResponse<SendTransactionResponse>>;
+  ) => Promise<WalletResponse<SendTransactionResponse<string | null>>>;
 }
 
 export interface SendTransactionRequestParam {
@@ -31,18 +31,20 @@ export interface TransactionMessageOfContract {
   send: string;
   pkg_path: string;
   func: string;
-  args: (string | number | boolean)[];
+  args: (string | number | boolean)[] | null;
 }
 
 /**
  * Send Transaction Response
  */
-export type SendTransactionResponse =
-  | SendTransactionSuccessResponse
+export type SendTransactionResponse<T = unknown> =
+  | SendTransactionSuccessResponse<T>
   | SendTransactionErrorResponse;
 
-export interface SendTransactionSuccessResponse {
+export interface SendTransactionSuccessResponse<T = unknown> {
   hash: string;
+  height: string;
+  data: T;
 }
 
 export interface SendTransactionErrorResponse {

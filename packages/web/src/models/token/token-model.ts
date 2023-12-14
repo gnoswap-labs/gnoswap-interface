@@ -30,22 +30,19 @@ export interface TokenModel {
 
   isGasToken?: boolean;
 
-  description?: string
+  description?: string;
 
-  websiteURL?: string
+  websiteURL?: string;
 
-  originName?: string
+  wrappedPath?: string;
 
-  originSymbol?: string
-
-  originDenom?: string
   denom?: string;
 }
 
 export interface NativeTokenModel extends TokenModel {
-  originName: string;
+  wrappedPath: string;
+}
 
-  originSymbol: string;
-
-  originDenom: string;
+export function isNativeToken(token: TokenModel): token is NativeTokenModel {
+  return token.type === "native";
 }

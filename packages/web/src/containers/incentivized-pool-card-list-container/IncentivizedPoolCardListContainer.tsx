@@ -56,10 +56,10 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     return incentivizedPools.length > page * 8;
   }, [incentivizedPools.length, page]);
 
-  const routeItem = (id: string, path: string) => {
-    router.push(`/earn/pool/${id}?path=${path}`);
+  const routeItem = (id: string) => {
+    router.push(`/earn/pool/${id}`);
   };
-  
+
   const handleClickLoadMore = useCallback(() => {
     if (loadMore) {
       setPage(prev => prev + 1);

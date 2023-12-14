@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SwapCard from "@components/swap/swap-card/SwapCard";
 import { useSwap } from "@hooks/swap/use-swap";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useTokenData } from "@hooks/token/use-token-data";
 import BigNumber from "bignumber.js";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -11,7 +11,6 @@ import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { AmountModel } from "@models/common/amount-model";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import { SwapResponse } from "@repositories/swap";
 import { matchInputNumber, numberToUSD } from "@utils/number-utils";
 import { SwapState } from "@states/index";
 import { useAtomValue, useAtom } from "jotai";
@@ -22,6 +21,7 @@ import { useNotice } from "@hooks/common/use-notice";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { TNoticeType } from "src/context/NoticeContext";
 import { useSlippage } from "@hooks/common/use-slippage";
+import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 
 const SwapContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -50,7 +50,7 @@ const SwapContainer: React.FC = () => {
 
   const { openModal } = useConnectWalletModal();
 
-  const { estimatedRoutes, tokenAmountLimit, swap, estimateSwapRoute } = useSwap({
+  const { estimatedRoutes, tokenAmountLimit, swap, estimateSwapRoute, unwrapToken } = useSwap({
     tokenA,
     tokenB,
     direction: type,
@@ -359,6 +359,22 @@ const SwapContainer: React.FC = () => {
     }
   };
 
+  function unwrapBySwapResposne(swapReponse: SwapRouteResponse) {
+    if (!tokenA || !tokenB) {
+      return;
+    }
+    const { resultToken, resultAmount, slippageAmount } = swapReponse;
+    if (isNativeToken(tokenB) && type === "EXACT_IN") {
+      unwrapToken(resultToken, BigNumber(resultAmount).toString());
+    }
+    if (isNativeToken(tokenA) && type === "EXACT_OUT") {
+      const difference = BigNumber(slippageAmount).minus(resultAmount);
+      if (difference.isGreaterThan(0)) {
+        unwrapToken(resultToken, difference.toString());
+      }
+    }
+  }
+
   function executeSwap() {
     if (!tokenA || !tokenB) {
       return;
@@ -370,6 +386,9 @@ const SwapContainer: React.FC = () => {
         setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999 });
         setTimeout(() => {
           if (!!result) {
+            if (typeof result !== "boolean") {
+              unwrapBySwapResposne(result);
+            }
             setNotice(null, { timeout: 50000, type: "success" as TNoticeType, closeable: true, id: Math.random() * 19999 });
           } else {
             setNotice(null, { timeout: 50000, type: "error" as TNoticeType, closeable: true, id: Math.random() * 19999 });
@@ -378,7 +397,7 @@ const SwapContainer: React.FC = () => {
       }
       setSwapResult({
         success: !!result,
-        hash: (result as unknown as SwapResponse)?.tx_hash || "",
+        hash: (result as unknown as SwapRouteResponse)?.hash || "",
       });
     }).catch(() => {
       setSwapResult({
