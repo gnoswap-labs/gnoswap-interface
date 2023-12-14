@@ -1,4 +1,5 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";

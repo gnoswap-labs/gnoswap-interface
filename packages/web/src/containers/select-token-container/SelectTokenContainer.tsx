@@ -103,7 +103,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   }, [tokens]);
 
   const defaultTokens = useMemo(() => {
-    const temp = tokens.filter((_) => !!_.logoURI);
+    const temp = tokens;
     const sortedTokenList = temp.sort(customSort);
     return sortedTokenList.slice(0, 4);
   }, [tokens]);

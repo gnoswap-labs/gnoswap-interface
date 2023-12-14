@@ -47,7 +47,7 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenBAmount, setTokenBAmount] = useState<string>("0");
   const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
-  const { connected, account } = useWallet();
+  const { connected } = useWallet();
   const [, setSwapValue] = useAtom(SwapState.swap);
   
   const tokenABalance = useMemo(() => {

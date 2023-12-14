@@ -36,6 +36,16 @@ export const ListItem = styled.li<{ upDown: UpDownType }>`
     height: 20px;
     border-radius: 50%;
   }
+  .missing-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.text04};
+    font-size: 8px;
+    line-height: 10px;
+  }
   .index,
   .list-content {
     color: ${({ theme }) => theme.color.text04};

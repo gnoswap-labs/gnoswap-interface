@@ -44,24 +44,27 @@ const getXaxis1Day = (data: Date[], numberAxis: number) : string[] => {
 };
 
 const getXaxis1M = (data: IPrices1d[], numberAxis: number) : string[] => {
-  const lastDate = new Date(data[0].date);
-  const firstDate = new Date(data[data.length - 1].date);
-  const timeDifference = lastDate.getTime() - firstDate.getTime();
-  const interval = timeDifference / numberAxis;
-
-  const points: string[] = [];
-
-  for (let i = 0; i <= numberAxis - 1; i++) {
-    const pointTime = firstDate.getTime() + i * interval;
-    const pointDate = new Date(pointTime);
-    pointDate.setDate(pointDate.getDate());
-    const monthStr = months[pointDate.getMonth()];
-    const dayStr = `${pointDate.getDate()}`.padStart(2, "0");
-    const yearStr = pointDate.getFullYear();
-    const str = `${monthStr} ${dayStr}, ${yearStr}`;
-    points.push(str);
+  if (data.length > 0) {
+    const lastDate = new Date(data[0].date);
+    const firstDate = new Date(data[data.length - 1].date);
+    const timeDifference = lastDate.getTime() - firstDate.getTime();
+    const interval = timeDifference / numberAxis;
+  
+    const points: string[] = [];
+  
+    for (let i = 0; i <= numberAxis - 1; i++) {
+      const pointTime = firstDate.getTime() + i * interval;
+      const pointDate = new Date(pointTime);
+      pointDate.setDate(pointDate.getDate());
+      const monthStr = months[pointDate.getMonth()];
+      const dayStr = `${pointDate.getDate()}`.padStart(2, "0");
+      const yearStr = pointDate.getFullYear();
+      const str = `${monthStr} ${dayStr}, ${yearStr}`;
+      points.push(str);
+    }
+    return points.reverse();
   }
-  return points.reverse();
+  return [];
 };
 
 export interface TokenInfo {
@@ -189,9 +192,7 @@ const TokenChartContainer: React.FC = () => {
 
 
   const { openModal: openTradingModal } = useTokenTradingModal({
-    onClickConfirm: (value: any) => {
-      console.log(value);
-      
+    onClickConfirm: () => {
       setFromSelectToken(false);
       clearModal();
     }
@@ -212,7 +213,8 @@ const TokenChartContainer: React.FC = () => {
     if (currentToken) {
 
     const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
-    
+      console.log(dataToday);
+      
       setTokenInfo(() => ({
         token: {
           name: currentToken.name,
@@ -251,22 +253,22 @@ const TokenChartContainer: React.FC = () => {
   
   const chartData = useMemo(() => {
     if (currentTab === TokenChartGraphPeriods[0]) {
-      return prices1d;
+      return prices1d || [];
     }
     if (currentTab === TokenChartGraphPeriods[1]) {
-      return prices7d;
+      return prices7d || [];
     }
     if (currentTab === TokenChartGraphPeriods[2]) {
-      return prices1m;
+      return prices1m || [];
     }
     if (currentTab === TokenChartGraphPeriods[3]) {
-      return prices1y;
+      return prices1y || [];
     }
-    return prices1y;
-  }, [prices1d.toString(), prices7d.toString, prices1m.toString(), prices1y.toString(), currentTab]);
+    return prices1y || [];
+  }, [prices1d?.toString(), prices7d?.toString, prices1m?.toString(), prices1y?.toString(), currentTab]);
 
   const getChartInfo = useCallback(() => {
-    const temp = generateDateSequence(chartData[0]?.date, chartData[chartData.length - 1]?.date);
+    const temp = generateDateSequence(chartData?.[0]?.date, chartData[chartData?.length - 1]?.date);
     let left = 0;
     let right = 0;
     if (temp.length > 1 && chartData.length > 1 && currentTab === TokenChartGraphPeriods[0]) {
@@ -298,7 +300,7 @@ const TokenChartContainer: React.FC = () => {
     };
 
     return chartInfo;
-  }, [currentTab, chartData.toString(), countXAxis]);
+  }, [currentTab, chartData?.toString(), countXAxis]);
   
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));

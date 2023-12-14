@@ -61,7 +61,7 @@ export const checkPositivePrice = (currentPrice: string, checkPrice: string, fix
   `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" :"+"}$${convertLargePrice((Math.abs(checkToNumber - currentToNumber)).toString(), fixedPrice ?? 2)}`;
   return {
     status: status,
-    value: value,
+    value: value.includes("Infinity") ? "0" : value,
     isEmpty: isEmpty,
     percent: percent,
     price: price,
