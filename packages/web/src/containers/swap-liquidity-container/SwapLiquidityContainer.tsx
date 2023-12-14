@@ -37,7 +37,7 @@ export const dummyLiquidityList: LiquidityInfo[] = [
   {
     feeTier: "0.05",
     volume: "-",
-    liquidity: "",
+    liquidity: "-",
     apr: "-",
     feeTierType: "FEE_500",
   },
@@ -69,23 +69,29 @@ const SwapLiquidityContainer: React.FC = () => {
   };
   
   const poolDetail: PoolModel[]= useMemo(() => {
-    const pools: PoolModel[] = poolList.filter((item: PoolModel) => item.poolPath?.includes(`${tokenA}:${tokenB}`));
+    const pools: PoolModel[] = poolList.filter((item: PoolModel) => (item.poolPath?.includes(`${tokenA}:${tokenB}`) || item.poolPath?.includes(`${tokenB}:${tokenA}`)));
     return pools;
-  }, [poolList, tokenA, tokenB ]);
+  }, [poolList, tokenA, tokenB]);
 
   const liquidityListRandom = useMemo(() => {
-    return dummyLiquidityList.map((_) => {
+    let count = 0;
+    const temp = dummyLiquidityList.map((_) => {
       const poolItem = poolDetail.filter((item: PoolModel) => Number(item.fee) === Number(_.feeTier) * 10000);
       if (poolItem.length > 0) {
+        count++;
         return {
           ..._,
           volume: `$${convertLargePrice(poolItem[0].volume.toString(), 6)}`,
-          liquidity: convertLargePrice(poolItem[0].price.toString(), 6),
+          liquidity: `$${convertLargePrice(poolItem[0].tvl.toString(), 6)}`,
           apr: `${Number(poolItem[0].apr).toFixed(2)}%`,
         };
       }
       return _;
     });
+    if (count === 0) {
+      return [];
+    }
+    return temp;
   }, [poolDetail]);
   
   if (!swapValue.tokenA || !swapValue.tokenB || isLoading) return null;

@@ -13,6 +13,7 @@ interface StakingProps {
   type: number;
   handleClickStakeRedirect: () => void;
   handleClickUnStakeRedirect: () => void;
+  loading: boolean;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -24,6 +25,7 @@ const Staking: React.FC<StakingProps> = ({
   type,
   handleClickStakeRedirect,
   handleClickUnStakeRedirect,
+  loading,
 }) => {
   return (
     <StakingWrapper>
@@ -34,6 +36,7 @@ const Staking: React.FC<StakingProps> = ({
         breakpoint={breakpoint}
         mobile={mobile}
         type={type}
+        loading={loading}
       />
     </StakingWrapper>
   );

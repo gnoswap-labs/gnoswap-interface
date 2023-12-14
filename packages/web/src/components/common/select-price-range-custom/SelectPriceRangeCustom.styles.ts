@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const SelectPriceRangeCustomWrapper = styled.div`
   display: flex;
@@ -127,6 +128,21 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
     }
     ${fonts.body12};
+  }
+  .pool-initialization {
+    background-color: ${({ theme }) => theme.color.backgroundOpacity4};
+    color: ${({ theme }) => theme.color.text08};
+    ${mixins.flexbox("column", "flex-start", "flex-start")}
+    padding: 12px 16px;
+    gap: 16px;
+    border-radius: 8px;
+    > div {
+      ${fonts.body12}
+    }
+    span {
+      ${fonts.body12}
+      font-weight: 600;
+    }
   }
   .rangge-content-wrapper {
     display: flex;

@@ -220,7 +220,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
         )
       }
       {
-        isCustom && (
+        (isCustom || showDim) && (
           <React.Fragment>
             {availSelect && (
               <div className="option-wrapper">
@@ -241,14 +241,18 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <LoadingSpinner />
               </div>
             )}
-
-            {availSelect && (
+            
+            {(showDim || availSelect) && (
               <React.Fragment>
-                <div className="current-price-wrapper">
+                {!showDim && <div className="current-price-wrapper">
                   <span>Current Price</span>
                   <span>{currentPriceStr}</span>
-                </div>
-                <div className="range-graph-wrapper">
+                </div>}
+                {showDim && <div className="pool-initialization">
+                  <span>Pool Initialization</span>
+                  <div>As the first person to Add Position to this pool, you must initialize it. <span>Enter a starting price</span> for the pool, then select the price range and the deposit amount for your liquidity. Please note that <span>gas fees will be higher</span> than usual due to the initialization transaction.</div>
+                </div>}
+                {!showDim && <div className="range-graph-wrapper">
                   <PoolSelectionGraph
                     feeTier={selectPool.feeTier}
                     scaleX={scaleX}
@@ -266,7 +270,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     height={GRAPH_HEIGHT}
                     finishMove={finishMove}
                   />
-                </div>
+                </div>}
                 <div className="rangge-content-wrapper">
                   <div className="range-controller-wrapper">
                     <SelectPriceRangeCutomController

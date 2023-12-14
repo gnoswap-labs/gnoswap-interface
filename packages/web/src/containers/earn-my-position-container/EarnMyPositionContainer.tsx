@@ -30,6 +30,7 @@ const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
 > = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [page, setPage] = useState(1);
 
   const router = useRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
@@ -96,28 +97,20 @@ const EarnMyPositionContainer: React.FC<
     }
   }, [positions, width]);
 
-  const showLoadMore = useMemo(() => {
-    if (width > 1000) {
-      if (width > 1180 && positions.length > 8) {
-        return true;
-      } else if (width < 1180 && positions.length > 6) {
-        return true;
-      } else {
-        return false;
-      }
+  const handleClickLoadMore = useCallback(() => {
+    if (page === 1) {
+      setPage(prev => prev + 1);
     } else {
-      return false;
+      setPage(1);
     }
-  }, [positions, width]);
-
-
+  }, [page]);
   return (
     <EarnMyPositions
       connected={connected}
       connect={connect}
       fetched={isFetchedPositions}
       isError={isError}
-      positions={positions}
+      positions={page === 1 && width > 1000 ? positions.slice(0, 4) : positions}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
       moveEarnStake={moveEarnStake}
@@ -127,8 +120,10 @@ const EarnMyPositionContainer: React.FC<
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={showLoadMore}
+      showLoadMore={breakpoint === DEVICE_TYPE.MOBILE}
       width={width}
+      loadMore={page === 1}
+      onClickLoadMore={handleClickLoadMore}
     />
   );
 };

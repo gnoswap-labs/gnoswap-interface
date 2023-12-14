@@ -18,6 +18,14 @@ const MyLiquidityContainer: React.FC = () => {
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const { getPositionsByPoolId } = usePositionData();
   const { claimAll } = usePosition(positions);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -72,6 +80,7 @@ const MyLiquidityContainer: React.FC = () => {
       currentIndex={currentIndex}
       claimAll={claimAllReward}
       availableRemovePosition={availableRemovePosition}
+      loading={loading}
     />
   );
 };

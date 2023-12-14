@@ -291,13 +291,20 @@ const SwapContainer: React.FC = () => {
       changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
       setTokenAAmount(tokenBAmount);
       setTokenBAmount(tokenAAmount);
+      if (tokenA) {
+        setQuery({ ...query, tokenA: token.path, tokenB: tokenA.path });
+      } else {
+        setQuery({ tokenA: token.path, direction: type });
+      }
+    } else {
+      setQuery({ ...query, tokenA: token.path });
     }
     setSwapValue((prev) => ({
       tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
       tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
       type: changedSwapDirection,
     }));
-    setQuery({ ...query, tokenA: token.path });
+    
   }, [tokenA, tokenB, type, tokenBAmount, tokenAAmount, query]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
@@ -306,14 +313,20 @@ const SwapContainer: React.FC = () => {
       changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
       setTokenAAmount(tokenBAmount);
       setTokenBAmount(tokenAAmount);
+      if (tokenB) {
+        setQuery({ ...query, tokenB: token.path, tokenA: tokenB.path });
+      } else {
+        setQuery({  tokenB: token.path, direction: type });
+      }
+    } else {
+      setQuery({ ...query, tokenB: token.path });
     }
     setSwapValue((prev) => ({
       tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
       tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
       type: changedSwapDirection,
     }));
-    setQuery({ ...query, tokenB: token.path });
-  }, [tokenA, type, tokenBAmount, tokenAAmount, query]);
+  }, [tokenA, type, tokenBAmount, tokenAAmount, query, type]);
 
   const switchSwapDirection = useCallback(() => {
     const preTokenA = tokenA ? { ...tokenA } : null;

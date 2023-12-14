@@ -18,6 +18,7 @@ interface MyLiquidityProps {
   currentIndex: number;
   claimAll: () => void;
   availableRemovePosition: boolean;
+  loading: boolean;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -32,6 +33,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   currentIndex,
   claimAll,
   availableRemovePosition,
+  loading,
 }) => {
   return (
     <MyLiquidityWrapper>
@@ -47,12 +49,13 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           breakpoint={breakpoint}
           isDisabledButton={isSwitchNetwork || !connected}
           claimAll={claimAll}
+          loading={loading}
         />
       </div>
       <PoolDivider />
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
         positions.map((position: PoolPositionModel, index: number) => (
-          <MyPositionCard position={position} key={index} breakpoint={breakpoint} />
+          <MyPositionCard position={position} key={index} breakpoint={breakpoint} loading={loading}/>
         ))
       ) : (
         <>
@@ -63,6 +66,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                   position={position}
                   key={index}
                   breakpoint={breakpoint}
+                  loading={loading}
                 />
               ))}
             </div>

@@ -29,6 +29,7 @@ export interface PoolGraphProps {
   themeKey: "dark" | "light";
   rectWidth?: number;
   position?: FloatingPosition;
+  offset?: number;
 }
 
 interface TooltipInfo {
@@ -63,6 +64,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   themeKey,
   rectWidth,
   position,
+  offset = 20,
 }) => {
 
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
@@ -306,6 +308,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         className="chart-tooltip"
         isHiddenArrow
         position={tooltipPosition}
+        offset={offset}
         content={
           tooltipInfo ? (
             <PoolGraphTooltipWrapper ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow}`}>
@@ -381,7 +384,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       <div className="content">
         <div className="row">
           <span className="token">
-            <img className="logo" src={tooltipInfo.tokenA.logoURI} alt="logo" />
+            {tooltipInfo.tokenA.logoURI ? <img className="logo" src={tooltipInfo.tokenA.logoURI} alt="logo" /> : <div className="missing-logo">{tooltipInfo.tokenA.symbol.slice(0,3)}</div>}
             <span>{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount">
@@ -391,7 +394,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
         </div>
         <div className="row">
           <span className="token">
-            <img className="logo" src={tooltipInfo.tokenB.logoURI} alt="logo" />
+            {tooltipInfo.tokenB.logoURI ? <img className="logo" src={tooltipInfo.tokenB.logoURI} alt="logo" /> : <div className="missing-logo">{tooltipInfo.tokenB.symbol.slice(0,3)}</div>}
             <span>{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount">

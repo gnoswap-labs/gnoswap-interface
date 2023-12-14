@@ -13,11 +13,14 @@ import {
   ToolTipContentWrapper,
   TooltipDivider,
 } from "./StakingContentCard.styles";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 
 interface StakingContentCardProps {
   item: any;
   breakpoint: DEVICE_TYPE;
   index: number;
+  loading: boolean;
 }
 
 const TotalRewardsContent = () => {
@@ -109,6 +112,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   item,
   breakpoint,
   index,
+  loading,
 }) => {
   return (
     <StakingContentCardWrapper nonTotal={item.total === "0"}>
@@ -143,7 +147,12 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       </div>
       <div className="contents-wrap">
         <div className="contents">
-          <div className="price">
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="price">
             <span>
               <Tooltip
                 placement="top"
@@ -159,8 +168,13 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 <div className="badge">{item.lp} LP</div>
               </Tooltip>
             </span>
-          </div>
-          <div className="apr">
+          </div>}
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="apr">
             <Tooltip
               placement="top"
               FloatingContent={
@@ -183,7 +197,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 className="token-logo"
               />
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </StakingContentCardWrapper>
@@ -193,9 +207,10 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 interface SummuryAprProps {
   item: any;
   index: number;
+  loading: boolean;
 }
 
-export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index }) => {
+export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index, loading }) => {
   return (
     <StakingContentCardWrapper nonTotal={item.total === "0"}>
       <div className="left">
@@ -219,24 +234,34 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index }) => {
       </div>
       <div className="contents-wrap">
         <div className="contents">
-            <div className="price">
-              <span>
-                <Tooltip
-                  placement="top"
-                  FloatingContent={
-                    <div>
-                      <PriceTooltipContent item={item} />
-                    </div>
-                  }
-                >
-                  <span>{item.total}</span>
-                  {index <= item.currentIndex &&  "+ "}
-                  {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
-                  <div className="badge">{item.lp} LP</div>
-                </Tooltip>
-              </span>
-            </div>
-          <div className="apr">
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="price">
+            <span>
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <div>
+                    <PriceTooltipContent item={item} />
+                  </div>
+                }
+              >
+                <span>{item.total}</span>
+                {index <= item.currentIndex &&  "+ "}
+                {index <= item.currentIndex && <span className="price-gd-text">{item.staking}</span>}
+                <div className="badge">{item.lp} LP</div>
+              </Tooltip>
+            </span>
+          </div>}
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="apr">
             <Tooltip
               placement="top"
               FloatingContent={
@@ -259,7 +284,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index }) => {
                 className="token-logo"
               />
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </StakingContentCardWrapper>

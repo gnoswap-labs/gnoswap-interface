@@ -230,7 +230,7 @@ const TokenChartContainer: React.FC = () => {
             denom: "USD",
             status: dataToday.status,
           },
-          changedRate: Number(dataToday.value || 0),
+          changedRate: Math.abs(Number(dataToday.value || 0)),
         },
       }));
       if (!fromSelectToken && !currentToken.logoURI) {

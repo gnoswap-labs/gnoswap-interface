@@ -13,6 +13,7 @@ export const MyPositionCardWrapperBorder = styled.div`
     background: ${({ theme }) => theme.color.backgroundGradient4};
     border-radius: 10px;
     padding: 1px;
+    height: fit-content;
     ${media.tablet} {
       min-width: 322px;
     }

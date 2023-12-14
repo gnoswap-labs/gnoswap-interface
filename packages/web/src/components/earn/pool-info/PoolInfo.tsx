@@ -62,6 +62,8 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
           left={tokenA.logoURI}
           right={tokenB.logoURI}
           size={24}
+          leftSymbol={tokenA.symbol}
+          rightSymbol={tokenB.symbol}
         />
         <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
@@ -92,6 +94,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             bins={resolvedBins}
             mouseover
             themeKey={themeKey}
+            position="top"
           />
         </div>
       </TableColumn>

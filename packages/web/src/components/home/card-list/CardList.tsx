@@ -72,7 +72,7 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClic
       left: pool.tokenA.logoURI,
       right: pool.tokenB.logoURI,
       leftSymbol: pool.tokenA.symbol,
-      rightSymbol: pool.tokenA.symbol,
+      rightSymbol: pool.tokenB.symbol,
     };
   }, [item]);
 

@@ -37,6 +37,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <DoubleLogo
                   left={pool.tokenA.logoURI}
                   right={pool.tokenB.logoURI}
+                  leftSymbol={pool.tokenA.symbol}
+                  rightSymbol={pool.tokenB.symbol}
                 />
                 <span>{pairName}</span>
               </div>
@@ -49,6 +51,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                       size={16}
                       left={pool.tokenA.logoURI}
                       right={pool.tokenB.logoURI}
+                      leftSymbol={pool.tokenA.symbol}
+                      rightSymbol={pool.tokenB.symbol}
                     />
                   </>}
                 />
@@ -93,6 +97,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 mouseover
                 themeKey={themeKey}
                 position="top"
+                offset={40}
               />
             </div>
           </div>

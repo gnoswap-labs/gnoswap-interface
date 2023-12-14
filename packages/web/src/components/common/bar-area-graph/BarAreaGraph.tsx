@@ -218,6 +218,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         themeKey={"dark"}
         mouseover
         position="top"
+        offset={40}
       />
       {minTickPosition && maxTickPosition && !isHiddenStart && (
         <svg className="selector" viewBox={`0 0 ${width} ${height}`}>

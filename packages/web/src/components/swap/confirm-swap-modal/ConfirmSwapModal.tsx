@@ -107,11 +107,11 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <div className="amount-container">
                         <span>{swapTokenInfo.tokenAAmount}</span>
                         <div className="button-wrapper">
-                          <img
+                          {swapSummaryInfo.tokenA.logoURI ? <img
                             src={swapSummaryInfo.tokenA.logoURI}
                             alt="logo"
                             className="coin-logo"
-                          />
+                          /> : <div className="missing-logo">{swapSummaryInfo.tokenA.symbol.slice(0,3)}</div>}
                           <span>{swapSummaryInfo.tokenA.symbol}</span>
                         </div>
                       </div>
@@ -128,11 +128,11 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <div className="amount-container">
                         <span>{swapTokenInfo.tokenBAmount}</span>
                         <div className="button-wrapper">
-                          <img
+                          {swapSummaryInfo.tokenB.logoURI ? <img
                             src={swapSummaryInfo.tokenB.logoURI}
                             alt="logo"
                             className="coin-logo"
-                          />
+                          /> : <div className="missing-logo">{swapSummaryInfo.tokenB.symbol.slice(0,3)}</div>}
                           <span>{swapSummaryInfo.tokenB.symbol}</span>
                         </div>
                       </div>

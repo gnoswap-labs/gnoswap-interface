@@ -40,7 +40,7 @@ export const DoubleLogoWrapper = styled.div<DoubleLogoStyleProps>`
     }};
     border-radius: 50%;
     color: ${({ theme }) => theme.color.text02};
-    background-color: ${({ theme }) => theme.color.border02};
+    background-color: ${({ theme }) => theme.color.text04};
     ${fonts.p6}
     ${media.mobile} {
       font-size: 8px;

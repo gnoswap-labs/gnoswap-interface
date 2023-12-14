@@ -194,7 +194,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   const showDim = useMemo(() => {
     return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
-  }, [selectPool.isCreate, tokenA, createOption.startPrice]);
+  }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
   
   return (
     <EarnAddLiquidityWrapper>

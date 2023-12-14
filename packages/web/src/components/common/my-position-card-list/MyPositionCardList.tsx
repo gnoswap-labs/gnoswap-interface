@@ -6,7 +6,7 @@ import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCar
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface MyPositionCardListProps {
-  loadMore?: boolean;
+  loadMore: boolean;
   isFetched: boolean;
   onClickLoadMore?: () => void;
   positions: PoolPositionModel[];
@@ -31,7 +31,6 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   divRef,
   onScroll,
   showPagination,
-  showLoadMore,
   width,
 }) => (
   <CardListWrapper>
@@ -56,7 +55,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {(showLoadMore && loadMore && onClickLoadMore && (
+    {(!mobile && onClickLoadMore && (
       <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
     )
     )}

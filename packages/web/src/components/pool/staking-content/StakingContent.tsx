@@ -7,6 +7,8 @@ import {
 } from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 
 interface StakingContentProps {
   content: any[];
@@ -14,6 +16,7 @@ interface StakingContentProps {
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   type: number;
+  loading: boolean;
 }
 
 const TEXT_BTN = [
@@ -29,12 +32,18 @@ const StakingContent: React.FC<StakingContentProps> = ({
   breakpoint,
   mobile,
   type,
+  loading,
 }) => {
   return (
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
-        <span>Stake your position to earn rewards up <span className="to-web">to</span></span>
-        <div className="header-wrap">
+        {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          <span
+            css={skeletonTokenDetail("600px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+        </SkeletonEarnDetailWrapper>}
+        {!loading && <span>Stake your position to earn rewards up <span className="to-web">to</span></span>}
+        {!loading && <div className="header-wrap">
           <span className="to-mobile">to</span>
           <span className="apr">{rewardInfo.apr}% APR </span>
           <div className="coin-info">
@@ -49,7 +58,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               className="token-logo"
             />
           </div>
-        </div>
+        </div>}
       </div>
       <div className="staking-wrap">
         <>
@@ -60,6 +69,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 index={idx}
                 key={idx + 1}
                 item={content[content.length - 1]}
+                loading={loading}
               />
             ) : (
               <StakingContentCard
@@ -67,13 +77,19 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 key={idx}
                 breakpoint={breakpoint}
                 index={idx + 1}
+                loading={loading}
               />
             );
           })}
         </>
       </div>
       <div className="button-wrap">
-        <Button
+        {loading && <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
+          <span
+            css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+        </SkeletonEarnDetailWrapper>}
+        {!loading && <Button
           text={TEXT_BTN[type]}
           style={{
             width: `${
@@ -98,7 +114,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
           }}
           className={type < 3 ? "change-weight" : "receive-button"}
           onClick={() => {}}
-        />
+        />}
       </div>
     </StakingContentWrapper>
   );

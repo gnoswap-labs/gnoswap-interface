@@ -11,6 +11,7 @@ import {
 } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
@@ -44,9 +45,11 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
         </div>
       </BreadcrumbsWrapper>
       <div className="token-status">
-        {loading && <span
-          css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-        />}
+        {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          <span
+            css={skeletonTokenDetail("300px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+          </SkeletonEarnDetailWrapper>}
         {!loading && <PoolPairInfoHeader
           tokenA={pool.tokenA}
           tokenB={pool.tokenB}
@@ -54,7 +57,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           rewardTokens={pool.rewardTokens}
           feeStr={feeStr || ""}
         />}
-        <PoolPairInfoContent pool={pool} />
+        <PoolPairInfoContent pool={pool} loading={loading}/>
       </div>
     </PoolPairInformationWrapper>
   );
