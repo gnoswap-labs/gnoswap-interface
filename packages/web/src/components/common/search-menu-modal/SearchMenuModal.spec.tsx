@@ -6,6 +6,7 @@ import {
   RecentdummyToken,
   PopulardummyToken,
 } from "@containers/header-container/HeaderContainer";
+import { DEVICE_TYPE } from "@styles/media";
 
 describe("SearchMenuModal Component", () => {
   it("should render", () => {
@@ -16,7 +17,11 @@ describe("SearchMenuModal Component", () => {
       keyword: "",
       isFetched: true,
       placeholder: "Search",
-      tokens: [...RecentdummyToken, ...PopulardummyToken],
+      tokens: [],
+      breakpoint: DEVICE_TYPE.WEB,
+      mostLiquidity: [],
+      popularTokens: [],
+      recents: [],
     };
     render(
       <JotaiProvider>

@@ -154,7 +154,7 @@ const LearnMoreModal: React.FC<Props> = ({ setIsShowLearnMoreModal }) => {
           </Slider>
           <Button
             text="Close"
-            className="learn-more-btn"
+            className={`${index == 2 ? "active-btn" : ""} learn-more-btn`}
             style={{
               fullWidth: true,
               fontType: "body7",

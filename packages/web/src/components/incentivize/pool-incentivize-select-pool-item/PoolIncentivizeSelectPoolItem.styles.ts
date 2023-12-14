@@ -27,9 +27,9 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
 
     .token-pair-name {
       color: ${({ theme }) => theme.color.text03};
-      ${fonts.body10}
+      ${fonts.body9}
       ${media.mobile} {
-        ${fonts.body12}
+        ${fonts.body11}
       }
     }
   }

@@ -17,7 +17,7 @@ export const usePoolData = () => {
   const poolListInfos = useMemo(() => {
     return pools?.map(PoolMapper.toListInfo);
   }, [pools]);
-
+  
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools.sort((p1, p2) => {
       const p2Apr = p2.apr;
@@ -34,7 +34,6 @@ export const usePoolData = () => {
   async function updatePositions() {
     setIsFetchedPositions(true);
   }
-
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     return pools
       ?.map(PoolMapper.toCardInfo)

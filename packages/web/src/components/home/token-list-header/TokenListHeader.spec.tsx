@@ -4,8 +4,10 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import TokenListHeader from "./TokenListHeader";
 import { TOKEN_TYPE } from "@containers/token-list-container/TokenListContainer";
 import { DEVICE_TYPE } from "@styles/media";
+import React from "react";
 
 describe("TokenListHeader Component", () => {
+  const searchRef = React.createRef();
   it("TokenListHeader render", () => {
     const mockProps = {
       tokenType: TOKEN_TYPE.ALL,
@@ -15,6 +17,7 @@ describe("TokenListHeader Component", () => {
       breakpoint: DEVICE_TYPE.WEB,
       searchIcon: true,
       onTogleSearch: () => null,
+      searchRef,
     };
 
     render(

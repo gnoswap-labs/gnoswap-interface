@@ -61,7 +61,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
             add liquidity to this pair.
           </p>
           <Button
-            text="Create Position"
+            text="Add Position"
             leftIcon={<IconAdd />}
             style={{
               fullWidth: true,

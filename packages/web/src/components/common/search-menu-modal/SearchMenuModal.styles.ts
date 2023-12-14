@@ -66,8 +66,10 @@ export const ModalContainer = styled.div`
   position: absolute;
   width: 460px;
   left: calc(50vw - 230px);
+  max-height: calc(100vh - 80px);
+  overflow-y: scroll;
   top: 67.5px;
-  padding: 8px 0px;
+  padding: 0px 0 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
@@ -81,6 +83,7 @@ export const ModalContainer = styled.div`
   }
 
   ul {
+    max-height: 100vh;
     width: 100%;
     .no-data-found,
     .recent-searches,
@@ -91,7 +94,7 @@ export const ModalContainer = styled.div`
       color: ${({ theme }) => theme.color.text04};
       ${media.mobile} {
         padding: 12px 12px 8px 12px;
-        ${fonts.p2}
+        ${fonts.p4}
       }
     }
     .no-data-found {
@@ -101,11 +104,11 @@ export const ModalContainer = styled.div`
   }
   li {
     ${mixins.flexbox("row", "center", "flex-start")};
-    padding: 16px 24px;
+    padding: 15px 24px;
     gap: 8px;
     cursor: pointer;
     ${media.mobile} {
-      padding: 12px;
+      padding: 10px 12px;
       ${fonts.p2}
     }
     &.selected,
@@ -117,15 +120,117 @@ export const ModalContainer = styled.div`
       gap: 8px;
       flex: 1 0 0;
     }
+    .coin-info-wrapper {
+      ${mixins.flexbox("row", "flex-start", "flex-start")};
+      gap: 8px;
+      flex: 1 0 0;
+    }
     .token-logo {
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+      }
+    }
+    .missing-logo {
+      ${mixins.flexbox("row", "center", "center")};
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: ${({ theme }) => theme.color.text02};
+      background-color: ${({ theme }) => theme.color.text04};
+      ${fonts.p6}
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+        font-size: 8px;
+        line-height: 10px;
+      }
+    }
+    .coin-info-detail {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      gap: 2px;
+      > span {
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.p3}
+      }
+      > div {
+        max-width: 100%;
+        ${mixins.flexbox("row", "center", "flex-start")};
+        gap: 8px;
+        .token-path {
+          > div {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            direction: rtl;
+            white-space: nowrap;
+          }
+          padding: 1.5px 4px;
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 2px;
+          background-color: ${({ theme }) => theme.color.backgroundOpacity};
+          border-radius: 4px;
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.p6}
+          svg {
+            min-width: 10px;
+            width: 10px;
+            height: 10px;
+            * {
+              fill: ${({ theme }) => theme.color.icon03}; 
+            }
+          }
+          &:hover {
+            color: ${({ theme }) => theme.color.text03};
+            svg {
+              * {
+                fill: ${({ theme }) => theme.color.icon07}; 
+              }
+            }
+          }
+        }
+      }
+      ${media.mobile} {
+        > div {
+          max-width: 100%;
+        }
+      }
+    }
+    .coin-infor-value {
+      ${mixins.flexbox("column", "flex-end", "flex-end")};
+      gap: 2px;
+      .positive, .negative  {
+        ${fonts.p3}
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        
+      }
+      .token-price-apr {
+        color: ${({ theme }) => theme.color.text04};
+        ${fonts.p3}
+      }
+      .negative {
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.red01};
+          }
+        }
+      }
+      .positive {
+        svg {
+          * {
+            fill: ${({ theme }) => theme.color.green01};
+          }
+        }
+      }
     }
     .token-name {
-      ${fonts.body10};
+      ${fonts.body9};
+      white-space: nowrap;
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
-        ${fonts.body12}
+        ${fonts.body11}
       }
     }
     .token-symbol {
@@ -175,4 +280,31 @@ export const Overlay = styled.div`
   overflow: hidden;
   z-index: ${Z_INDEX.modalOverlay};
   background: rgba(10, 14, 23, 0.7);
+`;
+
+interface Props {
+  maxWidth: number;
+  tokenNameWidthList: number;
+}
+
+export const TokenInfoWrapper = styled.div<Props>`
+  overflow-x: hidden;
+  max-width: ${({ maxWidth }) => {
+    return `calc(460px - 150px - ${maxWidth}px)`;
+  }};
+  .token-path {
+    max-width: ${({ tokenNameWidthList, maxWidth }) => {
+      return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+    }};
+  }
+  ${media.mobile} {
+    max-width: ${({ maxWidth }) => {
+      return `calc(328px - 96px - ${maxWidth}px)`;
+    }};
+    .token-path {
+      max-width: ${({ tokenNameWidthList, maxWidth }) => {
+        return `calc(328px - 104px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+      }};
+    }
+  }
 `;

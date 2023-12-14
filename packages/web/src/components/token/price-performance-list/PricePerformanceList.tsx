@@ -31,6 +31,7 @@ const PricePerformanceList: React.FC<PricePerformanceListProps> = ({
             {!loading && <span
               className={cx({
                 negative: item.amount.status === MATH_NEGATIVE_TYPE.NEGATIVE,
+                none: item.amount.status === MATH_NEGATIVE_TYPE.NONE,
               })}
             >
               {item.amount.value}
@@ -44,6 +45,7 @@ const PricePerformanceList: React.FC<PricePerformanceListProps> = ({
             {!loading && <span
               className={cx({
                 negative: item.change.status === MATH_NEGATIVE_TYPE.NEGATIVE,
+                none: item.change.status === MATH_NEGATIVE_TYPE.NONE,
               })}
             >
               {item.change.value}

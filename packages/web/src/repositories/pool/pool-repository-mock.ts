@@ -5,8 +5,9 @@ import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolError } from "@common/errors/pool";
 import rpcPools from "./mock/rpc-pools.json";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
-import { PoolModel } from "@models/pool/pool-model";
+import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
+import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 export class PoolRepositoryMock implements PoolRepository {
   getPools = async (): Promise<PoolModel[]> => {
@@ -31,5 +32,11 @@ export class PoolRepositoryMock implements PoolRepository {
 
   addLiquidity = async (): Promise<string> => {
     return "hash";
+  };
+
+  getPoolDetailByPath = async (poolPath: string): Promise<IPoolDetailResponse> => {
+    console.log(poolPath);
+    
+    return PoolDetailDataByPath as IPoolDetailResponse;
   };
 }

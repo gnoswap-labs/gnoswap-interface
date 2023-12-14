@@ -3,6 +3,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useMemo } from "react";
 import { RemoveLiquiditySelectListItemWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+// import { convertLargePrice } from "@utils/stake-position-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { tooltipWrapper } from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -101,6 +102,8 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
         </Tooltip>
         <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
+      {/* <span className="liquidity-value-fake" ref={liquidityRef}>${lpPosition.position.balance.toLocaleString()}</span>
+      <span className="liquidity-value" >${!checkWidth ? convertLargePrice(lpPosition.position.balance.toString()) : lpPosition.position.balance.toLocaleString()}</span> */}
       <span className="liquidity-value" >{liquidityUSD}</span>
     </RemoveLiquiditySelectListItemWrapper>
   );

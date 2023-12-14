@@ -32,7 +32,16 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
-
+  &:first-of-type {
+    .asset {
+      padding: 16px 16px 16px 15px;
+    }
+  }
+  &:last-of-type {
+    .withdraw {
+      padding: 16px 15px 16px 12px;
+    }
+  }
   .asset {
     padding: 16px;
     ${media.tablet} {

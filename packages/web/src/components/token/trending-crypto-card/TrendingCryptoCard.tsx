@@ -9,7 +9,7 @@ interface TrendingCryptoCardProps {
 
 const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
   return (
-    <Link href={`/tokens/${item.symbol}`}>
+    <Link href={`/tokens/${item.symbol}?tokenB=${item.path}&direction=EXACT_IN`}>
       <div css={wrapper}>
         <div>
           <img src={item.logoURI} alt="logo" />

@@ -28,7 +28,8 @@
       "@states/*": ["src/states/*"],
       "@styles/*": ["src/styles/*"],
       "@layouts/*": ["src/layouts/*"],
-      "@models/*": ["src/models/*"]
+      "@models/*": ["src/models/*"],
+      "@query/*": ["src/react-query/*"]
     },
     "jsxImportSource": "@emotion/react"
   },

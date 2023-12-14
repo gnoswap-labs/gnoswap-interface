@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
 import { useRouter } from "next/router";
-import TOKEN_LIST from "@repositories/token/mock/assets.json";
+import { useGetTokensList } from "src/react-query/token";
+import { TokenModel } from "@models/token/token-model";
 
 export interface DescriptionInfo {
   token: {
@@ -36,37 +37,53 @@ export const descriptionInit: DescriptionInfo = {
 };
 
 const TokenDescriptionContainer: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
+  const { data: { tokens = [] } = {}, isLoading } = useGetTokensList();
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
+
+  const copyClick = async () => {
+    try {
+      await navigator.clipboard.writeText(descriptionInfo.token.pkg_path);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (e) {
+      throw new Error("Copy Error!");
+    }
+  };
   useEffect(() => {
-    const current = TOKEN_LIST.filter(item => item.symbol === router.query["token-path"])[0];
-    if (current) {
-      setDescriptionInfo(prev => ({
-        ...prev,
+    const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
+    if (currentToken) {
+      setDescriptionInfo(() => ({
         token: {
-          ...current
+          name: currentToken.name,
+          symbol: currentToken.symbol,
+          image: currentToken.logoURI,
+          pkg_path: currentToken.path,
+          decimals: 1,
+          description: currentToken.description || "",
+          website_url: currentToken.websiteURL || "",
         },
         links: {
-          Website: current.website_url,
-          Gnoscan: "gnoscan.io/tokens/r_demo_grc20_GNOS",
+          Website: currentToken.websiteURL || "",
+          Gnoscan: `https://gnoscan.io/tokens/${currentToken.path}`,
         }
       }));
     }
-  }, [router.query]);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
+  }, [router.query, tokens]);
+
   return (
     <TokenDescription
       tokenName={descriptionInfo.token.name}
       tokenSymbol={descriptionInfo.token.symbol}
       content={descriptionInfo.token.description}
       links={descriptionInfo.links}
-      loading={loading}
+      path={descriptionInfo.token.pkg_path}
+      loading={isLoading}
+      copyClick={copyClick}
+      copied={copied}
     />
   );
 };

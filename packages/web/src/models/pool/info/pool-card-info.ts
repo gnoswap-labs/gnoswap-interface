@@ -33,4 +33,6 @@ export interface PoolCardInfo {
   currentTick: number;
 
   bins: PoolBinModel[];
+
+  poolPath?: string;
 }

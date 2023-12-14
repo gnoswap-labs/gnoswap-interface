@@ -1,10 +1,8 @@
 import PoolIncentivize from "@components/incentivize/pool-incentivize/PoolIncentivize";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { PoolModel } from "@models/pool/pool-model";
 import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
-import POOLS from "@repositories/pool/mock/pools.json";
 import { useIncentivizePoolModal } from "@hooks/incentivize/use-incentivize-pool-modal";
 import { TokenModel } from "@models/token/token-model";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
@@ -12,11 +10,11 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { useGetPoolList } from "src/react-query/pools";
 
 export const dummyDisclaimer =
   "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
 
-const pools: PoolModel[] = POOLS.pools as PoolModel[];
 const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 180, 365];
 
@@ -33,7 +31,8 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [token, setToken] = useState<TokenModel | null>(null);
   const tokenAmountInput = useTokenAmountInput(token);
   const { updateTokenPrices } = useTokenData();
-
+  const { data: pools = [] } = useGetPoolList({ enabled: false });
+  
   useEffect(() => {
     setDataModal(tokenAmountInput);
   }, [tokenAmountInput.amount, token]);

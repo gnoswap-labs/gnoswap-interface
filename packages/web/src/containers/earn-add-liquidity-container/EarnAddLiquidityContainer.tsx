@@ -60,14 +60,22 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">("EXACT_IN");
-  const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
+  const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>("FEE_3000");
   const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
-    null
-  );
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Passive" });
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
-
+  useEffect(() => {
+    setSwapFeeTier("FEE_3000");
+    setPriceRange({ type: "Passive" });
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
+    setIsEarnAdd(false);
+  }, []);
+  
   const {
     connected: connectedWallet,
     account,

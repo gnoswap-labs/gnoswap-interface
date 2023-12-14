@@ -17,12 +17,19 @@ describe("Header Component", () => {
       onSideMenuToggle: () => null,
       searchMenuToggle: true,
       onSearchMenuToggle: () => null,
-      tokens: RecentdummyToken,
+      tokens: [],
       isFetched: true,
       error: null,
       search: () => null,
       keyword: "",
       breakpoint: DEVICE_TYPE.WEB,
+      themeKey: "dark",
+      switchNetwork: () => null,
+      isSwitchNetwork: false,
+      loadingConnect: false,
+      mostLiquidity: [],
+      popularTokens: [],
+      recents: [],
     };
     render(
       <JotaiProvider>

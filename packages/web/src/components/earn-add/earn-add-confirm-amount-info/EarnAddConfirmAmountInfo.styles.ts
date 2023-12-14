@@ -47,7 +47,7 @@ export const EarnAddConfirmAmountInfoWrapper = styled.div`
         width: 16px;
         height: 16px;
         * {
-          fill: ${({ theme }) => theme.color.icon03};
+          fill: ${({ theme }) => theme.color.icon02};
         }
       }
     }

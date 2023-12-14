@@ -42,15 +42,14 @@ const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, displayBalanceMap } = useTokenData();
   const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
-  const [tokenAAmount] = useState<string>("1000");
+  const [tokenAAmount, setTokenAAmount] = useState<string>("1000");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
-  const [tokenBAmount] = useState<string>("0");
+  const [tokenBAmount, setTokenBAmount] = useState<string>("0");
   const [swapDirection, setSwapDirection] = useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
   const { connected } = useWallet();
   const [, setSwapValue] = useAtom(SwapState.swap);
-
-
+  
   const tokenABalance = useMemo(() => {
     if (!connected) return "-";
     if (tokenA && displayBalanceMap[tokenA.priceId]) {
@@ -79,14 +78,14 @@ const HomeSwapContainer: React.FC = () => {
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (!tokenB || !tokenPrices[tokenB.priceId]) {
+    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
       return Number.NaN;
     }
     return BigNumber(tokenBAmount)
       .multipliedBy(tokenPrices[tokenB.priceId].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
-
+  
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
       tokenA,
@@ -117,11 +116,11 @@ const HomeSwapContainer: React.FC = () => {
 
   const swapNow = useCallback(() => {
     if (swapDirection === "EXACT_IN") {
-      router.push("/swap?tokenA=gno.land/r/bar&tokenB=gno.land/r/foo&direction=EXACT_IN");
+      router.push(`/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`);
     } else {
-      router.push("/swap?tokenA=gno.land/r/foo&tokenB=gno.land/r/bar&direction=EXACT_IN");
+      router.push(`/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`);
     }
-  }, [router, swapDirection]);
+  }, [router, swapDirection, tokenA, tokenB]);
 
   const onSubmitSwapValue = () => {
     setTokenA(tokenB);
@@ -134,6 +133,15 @@ const HomeSwapContainer: React.FC = () => {
       ...prev,
       tokenAAmount: value,
     }));
+    setTokenAAmount(value);
+  }, []);
+
+  const changeTokenBAmount = useCallback((value: string) => {
+    setSwapValue((prev) => ({
+      ...prev,
+      tokenBAmount: value,
+    }));
+    setTokenBAmount(value);
   }, []);
 
 
@@ -143,6 +151,8 @@ const HomeSwapContainer: React.FC = () => {
       swapNow={swapNow}
       onSubmitSwapValue={onSubmitSwapValue}
       changeTokenAAmount={changeTokenAAmount}
+      connected={connected}
+      changeTokenBAmount={changeTokenBAmount}
     />
   );
 };

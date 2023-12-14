@@ -71,6 +71,8 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClic
     return {
       left: pool.tokenA.logoURI,
       right: pool.tokenB.logoURI,
+      leftSymbol: pool.tokenA.symbol,
+      rightSymbol: pool.tokenA.symbol,
     };
   }, [item]);
 
@@ -83,8 +85,8 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClic
   }, [item.upDown]);
 
   const onClick = useCallback(() => {
-    onClickItem(item.pool.id);
-  }, [onClickItem, item.pool.id]);
+    onClickItem(`${item.pool.id}?path=${item.pool.path}`);
+  }, [onClickItem, `${item.pool.id}?path=${item.pool.path}`]);
 
   return (
     <ListItem onClick={onClick} upDown={item.upDown}>
@@ -127,7 +129,7 @@ const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onCl
   return (
     <ListItem onClick={onClick} upDown={item.upDown}>
       {!isHiddenIndex && <span className="index">{index}</span>}
-      <img src={item.token.logoURI} alt="logo" className="list-logo" />
+      {item.token.logoURI ? <img src={item.token.logoURI} alt="logo" className="list-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
       <strong className="token-name">{item.token.name}</strong>
       <span className="list-content">{item.token.symbol}</span>
       {visibleUp && (

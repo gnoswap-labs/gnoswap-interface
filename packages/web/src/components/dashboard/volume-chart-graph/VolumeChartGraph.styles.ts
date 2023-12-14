@@ -24,6 +24,7 @@ export const VolumeChartGraphWrapper = styled.div`
       height: 204px;
       border-bottom: 1px solid ${({ theme }) => theme.color.border02};
       & svg {
+        transform: translateY(24px);
         height: 204px;
       }
     }

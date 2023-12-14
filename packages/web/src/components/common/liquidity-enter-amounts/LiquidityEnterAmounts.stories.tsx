@@ -18,6 +18,13 @@ const Template: ComponentStory<typeof EnterAmounts> = args => (
 );
 
 const token: TokenModel = {
+  "isWrappedGasToken": false,
+  "isGasToken": false,
+  "description": "",
+  "websiteURL": "",
+  "originName": "",
+  "originSymbol": "",
+  "originDenom": "",
   type: "grc20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",

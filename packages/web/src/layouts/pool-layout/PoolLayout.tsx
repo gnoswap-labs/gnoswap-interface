@@ -1,6 +1,7 @@
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import React from "react";
 import { PoolLayoutWrapper } from "./PoolLayout.styles";
+import { useRouter } from "next/router";
 
 interface PoolLayoutProps {
   header: React.ReactNode;
@@ -16,25 +17,32 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
   liquidity,
   staking,
   footer,
-}) => (
-  <PoolLayoutWrapper>
-    {header}
-    <div className="pool-section">
-      <div className="summury-container">{poolPairInformation}</div>
-      <div className="positions-container">{liquidity}</div>
-      <div className="staking-container">
-        {staking}
-        <div className="button">
-          <span>Want to boost up incentives for this pool?&nbsp;</span>
-          <a href="/earn/pool/bar_foo_100/incentivize" className="pointer-wrap">
-            <span> Click here</span>
-            <IconStrokeArrowRight className="arrow-icon" />
-          </a>
+}) => {
+  const router = useRouter();
+  const { path } = router.query;
+  const onClickIncentivize = () => {
+    router.push(`/earn/pool/${router.query["pool-number"]}/incentivize?path=${path}`);
+  };
+  return (
+    <PoolLayoutWrapper>
+      {header}
+      <div className="pool-section">
+        <div className="summury-container">{poolPairInformation}</div>
+        <div className="positions-container">{liquidity}</div>
+        <div className="staking-container">
+          {staking}
+          <div className="button">
+            <span>Want to boost up incentives for this pool?&nbsp;</span>
+            <div className="pointer-wrap" onClick={onClickIncentivize}>
+              <span> Click here</span>
+              <IconStrokeArrowRight className="arrow-icon" />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    {footer}
-  </PoolLayoutWrapper>
-);
+      {footer}
+    </PoolLayoutWrapper>
+  );
+};
 
 export default PoolLayout;

@@ -50,7 +50,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
   return (
     <EarnAddConfirmWrapper>
       <div className="confirm-header">
-        <h6 className="title">Confirm Create Position</h6>
+        <h6 className="title">Confirm Add Position</h6>
         <button className="close-button" onClick={close}>
           <IconClose />
         </button>
@@ -65,7 +65,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
       )}
 
       <Button
-        text="Confirm Create Position"
+        text="Confirm Add Position"
         onClick={confirm}
         style={{
           hierarchy: ButtonHierarchy.Primary,

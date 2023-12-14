@@ -12,7 +12,7 @@ export default function EarnAdd() {
   const [isEarnAdd] = useAtom(EarnState.isOneClick);
   const listBreadcrumb = [
     { title: "Earn", path: "/earn" },
-    { title: "Create Position", path: "" },
+    { title: "Add Position", path: "" },
   ];
 
   return (

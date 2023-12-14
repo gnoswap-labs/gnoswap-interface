@@ -36,7 +36,7 @@ export const PoolListWrapper = styled.div`
     grid-gap: 12px;
     grid-template-columns: repeat(auto-fill, 290px);
     grid-auto-flow: column;
-    grid-auto-columns: 290px;
+    grid-auto-columns: 322px;
   }
 
   .card-skeleton {

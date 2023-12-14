@@ -377,7 +377,7 @@ const SwapContainer: React.FC = () => {
         }, 1000);
       }
       setSwapResult({
-        success: result !== null,
+        success: !!result,
         hash: (result as unknown as SwapResponse)?.tx_hash || "",
       });
     }).catch(() => {
