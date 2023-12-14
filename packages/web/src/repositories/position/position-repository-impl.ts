@@ -15,6 +15,7 @@ import { PositionRepository } from "./position-repository";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { DecreaseLiquidityReqeust } from "./request/decrease-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
+import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import { PositionListResponse } from "./response";
 
 const STAKER_PATH = process.env.NEXT_PUBLIC_PACKAGE_STAKER_PATH || "";
@@ -89,6 +90,28 @@ export class PositionRepositoryImpl implements PositionRepository {
       PositionRepositoryImpl.makeApporveStakeTokenMessage(lpTokenId, caller),
       PositionRepositoryImpl.makeStakeMessage(lpTokenId, caller),
     ]);
+    const result = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
+    if (!hash) {
+      throw new Error(`${result}`);
+    }
+    return hash;
+  };
+
+  unstakePositions = async (
+    request: UnstakePositionsRequest,
+  ): Promise<string | null> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const { lpTokenIds, caller } = request;
+    const messages = lpTokenIds.map(lpTokenId =>
+      PositionRepositoryImpl.makeUnstakeMessage(lpTokenId, caller),
+    );
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee: DEFAULT_GAS_FEE,
@@ -176,6 +199,16 @@ export class PositionRepositoryImpl implements PositionRepository {
       send: "",
       pkg_path: STAKER_PATH,
       func: "StakeToken",
+      args: [lpTokenId],
+    };
+  }
+
+  private static makeUnstakeMessage(lpTokenId: string, caller: string) {
+    return {
+      caller,
+      send: "",
+      pkg_path: STAKER_PATH,
+      func: "UnstakeToken",
       args: [lpTokenId],
     };
   }

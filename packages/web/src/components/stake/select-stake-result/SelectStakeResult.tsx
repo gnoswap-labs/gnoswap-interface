@@ -49,7 +49,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
     if (positions.length === 0) {
       return "-";
     }
-    const totalUSDValue = positions.reduce((accum, position) => accum + Number(position.liquidity), 0);
+    const totalUSDValue = positions.reduce((accum, position) => accum + Number(position.positionUsdValue), 0);
     return numberToUSD(totalUSDValue);
   }, [positions]);
 
