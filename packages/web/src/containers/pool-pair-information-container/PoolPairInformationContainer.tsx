@@ -19,7 +19,16 @@ export const menu = {
 const PoolPairInformationContainer = () => {
   const router = useRouter();
   const [pool, setPool] = useState<PoolDetailModel | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
   const { fetchPoolDatils } = usePoolData();
+
 
   const feeStr = useMemo(() => {
     if (!pool?.fee) {
@@ -33,6 +42,7 @@ const PoolPairInformationContainer = () => {
   };
 
   useEffect(() => {
+    
     const poolPath = router.query["pool-path"] as string;
     if (!poolPath) {
       return;
@@ -46,6 +56,7 @@ const PoolPairInformationContainer = () => {
       menu={menu}
       onClickPath={onClickPath}
       feeStr={feeStr}
+      loading={loading}
     />
   );
 };

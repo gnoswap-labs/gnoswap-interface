@@ -61,7 +61,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
         <DoubleLogo
           left={tokenA.logoURI}
           right={tokenB.logoURI}
-          size={20}
+          size={24}
         />
         <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>

@@ -10,12 +10,14 @@ import {
   pathProps,
 } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
   menu: pathProps;
   feeStr: string | null;
   onClickPath: (path: string) => void;
+  loading: boolean;
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
@@ -23,6 +25,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   menu,
   feeStr,
   onClickPath,
+  loading,
 }) => {
   const tokenInfo = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol} (${feeStr || "0"})`;
@@ -41,13 +44,16 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
         </div>
       </BreadcrumbsWrapper>
       <div className="token-status">
-        <PoolPairInfoHeader
+        {loading && <span
+          css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+        />}
+        {!loading && <PoolPairInfoHeader
           tokenA={pool.tokenA}
           tokenB={pool.tokenB}
           incentivizedType={pool.incentivizedType}
           rewardTokens={pool.rewardTokens}
           feeStr={feeStr || ""}
-        />
+        />}
         <PoolPairInfoContent pool={pool} />
       </div>
     </PoolPairInformationWrapper>

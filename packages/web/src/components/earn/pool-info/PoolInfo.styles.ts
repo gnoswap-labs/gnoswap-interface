@@ -9,6 +9,10 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   height: 100%;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-end")};
+  .icon-reward {
+    width: 20px;
+    height: 20px;
+  }
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
