@@ -28,6 +28,7 @@ export interface PoolGraphProps {
   },
   themeKey: "dark" | "light";
   rectWidth?: number;
+  position?: FloatingPosition;
 }
 
 interface TooltipInfo {
@@ -61,6 +62,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   },
   themeKey,
   rectWidth,
+  position,
 }) => {
 
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
@@ -123,6 +125,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }
 
   const tooltipPosition = useMemo((): FloatingPosition => {
+    if (position) {
+      return position;
+    }
     if (!positionX || !positionY) {
       return "top-start";
     }
@@ -132,7 +137,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       return `top-${isStart ? "start" : "end"}`;
     }
     return `${isStart ? "right" : "left"}`;
-  }, [width, height, positionX, positionY]);
+  }, [width, height, positionX, positionY, position]);
 
   /** Update Chart by data */
   function updateChart() {

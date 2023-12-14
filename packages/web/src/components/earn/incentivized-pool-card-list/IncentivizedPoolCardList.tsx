@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   BlankIncentivizedCard,
   IncentivizedWrapper,
@@ -26,7 +26,6 @@ export interface IncentivizedPoolCardListProps {
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   incentivizedPools,
-  loadMore,
   isFetched,
   onClickLoadMore,
   currentIndex,
@@ -39,12 +38,19 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   showPagination,
   width,
 }) => {
+  const data = useMemo(() => {
+    if (page === 1) {
+      return incentivizedPools.slice(0, 8);
+    } else {
+      return incentivizedPools;
+    }
+  }, [page, incentivizedPools]);
   return (
     <IncentivizedWrapper>
       <PoolListWrapper ref={divRef} onScroll={onScroll}>
         {isFetched &&
           incentivizedPools.length > 0 &&
-          incentivizedPools.slice(0, page * 8).map((info, index) => (
+          data.map((info, index) => (
             <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
           ))}
         {isFetched &&
@@ -64,7 +70,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
       {!mobile && (
         incentivizedPools.length > 8 &&
         onClickLoadMore && (
-          <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+          <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
         )
       )}
       {showPagination &&

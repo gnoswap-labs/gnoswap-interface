@@ -128,6 +128,23 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     }
     ${fonts.body12};
   }
+  .rangge-content-wrapper {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    .dim-content-3 {
+      position: absolute;
+      bottom: -24px;
+      height: calc(100% + 24px);
+      width: calc(100% + 32px);
+      left: -16px;
+      border-radius: 0 0 8px 8px;
+      background: ${({ theme }) => theme.color.backgroundOpacity8};
+    }
+  }
 
   .range-controller-wrapper {
     display: flex;

@@ -51,6 +51,7 @@ interface EarnAddLiquidityProps {
   openModal: () => void;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
+  createOption: { startPrice: number | null, isCreate: boolean };
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -80,7 +81,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   handleClickOneStaking,
   openModal,
   selectPool,
-  changeStartingPrice
+  changeStartingPrice,
+  createOption,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -190,6 +192,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     setOpenedSetting(() => false);
   }, []);
 
+  const showDim = useMemo(() => {
+    return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
+  }, [selectPool.isCreate, tokenA, createOption.startPrice]);
+  
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -266,12 +272,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               changePriceRange={changePriceRange}
               changeStartingPrice={changeStartingPrice}
               selectPool={selectPool}
+              showDim={showDim}
             />
           )}
           {selectedPriceRange && existTokenPair && selectedFeeRate && <SelectPriceRangeSummary {...priceRangeSummary} />}
         </article>
 
-        <article className="selector-wrapper">
+        <article className="selector-wrapper amount-input-wrapper">
           <div className="header-wrapper default-cursor">
             <h5>4. Enter Amounts</h5>
             <button className="setting-button" onClick={openSetting}>
@@ -299,6 +306,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               connected={connected}
             />
           </div>
+          {showDim && <div className="dim-content-4" />}
         </article>
         {isEarnAdd && !existTokenPair && <div className="dim-content" />}
       </div>

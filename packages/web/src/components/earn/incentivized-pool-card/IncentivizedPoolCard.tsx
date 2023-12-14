@@ -92,6 +92,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 height={80.62}
                 mouseover
                 themeKey={themeKey}
+                position="top"
               />
             </div>
           </div>

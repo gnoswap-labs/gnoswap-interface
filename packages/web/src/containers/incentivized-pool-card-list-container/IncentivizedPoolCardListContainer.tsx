@@ -61,12 +61,12 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   };
   
   const handleClickLoadMore = useCallback(() => {
-    if (loadMore) {
+    if (page === 1) {
       setPage(prev => prev + 1);
     } else {
       setPage(1);
     }
-  }, [loadMore]);
+  }, [page]);
 
   const handleScroll = () => {
     if (divRef.current) {

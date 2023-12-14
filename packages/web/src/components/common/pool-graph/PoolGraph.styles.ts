@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
 export const PoolGraphWrapper = styled.div`
   position: relative;
@@ -37,7 +38,7 @@ export const PoolGraphTooltipWrapper = styled.div`
   .tooltip-wrapper {
     display: flex;
     flex-direction: column;
-    width: 390px;
+    width: 357px;
     background-color: ${({ theme }) => theme.color.background02};
     align-items: flex-start;
     border-radius: 8px;
@@ -98,6 +99,9 @@ export const PoolGraphTooltipWrapper = styled.div`
 
     .price-range {
       width: 100%;
+    }
+    ${media.mobile} {
+      width: 336px;
     }
   }
 `;

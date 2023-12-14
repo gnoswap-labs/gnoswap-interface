@@ -21,6 +21,7 @@ export interface SelectPriceRangeCustomProps {
   priceRangeType: PriceRangeType | null;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
+  showDim: boolean;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -28,7 +29,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   tokenB,
   priceRangeType,
   selectPool,
-  changeStartingPrice
+  changeStartingPrice,
+  showDim,
 }) => {
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
@@ -265,43 +267,46 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     finishMove={finishMove}
                   />
                 </div>
-                <div className="range-controller-wrapper">
-                  <SelectPriceRangeCutomController
-                    title="Min Price"
-                    current={selectPool.minPrice}
-                    token0Symbol={currentTokenA.symbol}
-                    token1Symbol={currentTokenB.symbol}
-                    tickSpacing={selectPool.tickSpacing}
-                    feeTier={selectPool.feeTier || "NONE"}
-                    selectedFullRange={selectPool.selectedFullRange}
-                    onSelectCustomRange={onSelectCustomRangeByMin}
-                    changePrice={selectPool.setMinPosition}
-                    decrease={selectPool.decreaseMinTick}
-                    increase={selectPool.increaseMinTick}
-                  />
-                  <SelectPriceRangeCutomController
-                    title="Max Price"
-                    current={selectPool.maxPrice}
-                    token0Symbol={currentTokenA.symbol}
-                    token1Symbol={currentTokenB.symbol}
-                    tickSpacing={selectPool.tickSpacing}
-                    feeTier={selectPool.feeTier || "NONE"}
-                    selectedFullRange={selectPool.selectedFullRange}
-                    onSelectCustomRange={onSelectCustomRangeByMax}
-                    changePrice={selectPool.setMaxPosition}
-                    decrease={selectPool.decreaseMaxTick}
-                    increase={selectPool.increaseMaxTick}
-                  />
-                </div>
-                <div className="extra-wrapper">
-                  <div className="icon-button reset" onClick={() => resetRange()}>
-                    <IconRefresh />
-                    <span>Reset Range</span>
+                <div className="rangge-content-wrapper">
+                  <div className="range-controller-wrapper">
+                    <SelectPriceRangeCutomController
+                      title="Min Price"
+                      current={selectPool.minPrice}
+                      token0Symbol={currentTokenA.symbol}
+                      token1Symbol={currentTokenB.symbol}
+                      tickSpacing={selectPool.tickSpacing}
+                      feeTier={selectPool.feeTier || "NONE"}
+                      selectedFullRange={selectPool.selectedFullRange}
+                      onSelectCustomRange={onSelectCustomRangeByMin}
+                      changePrice={selectPool.setMinPosition}
+                      decrease={selectPool.decreaseMinTick}
+                      increase={selectPool.increaseMinTick}
+                    />
+                    <SelectPriceRangeCutomController
+                      title="Max Price"
+                      current={selectPool.maxPrice}
+                      token0Symbol={currentTokenA.symbol}
+                      token1Symbol={currentTokenB.symbol}
+                      tickSpacing={selectPool.tickSpacing}
+                      feeTier={selectPool.feeTier || "NONE"}
+                      selectedFullRange={selectPool.selectedFullRange}
+                      onSelectCustomRange={onSelectCustomRangeByMax}
+                      changePrice={selectPool.setMaxPosition}
+                      decrease={selectPool.decreaseMaxTick}
+                      increase={selectPool.increaseMaxTick}
+                    />
                   </div>
-                  <div className="icon-button full" onClick={selectFullRange}>
-                    <IconSwap />
-                    <span>Full Price Range</span>
+                  <div className="extra-wrapper">
+                    <div className="icon-button reset" onClick={() => resetRange()}>
+                      <IconRefresh />
+                      <span>Reset Range</span>
+                    </div>
+                    <div className="icon-button full" onClick={selectFullRange}>
+                      <IconSwap />
+                      <span>Full Price Range</span>
+                    </div>
                   </div>
+                  {showDim && <div className="dim-content-3" />}
                 </div>
               </React.Fragment>
             )}

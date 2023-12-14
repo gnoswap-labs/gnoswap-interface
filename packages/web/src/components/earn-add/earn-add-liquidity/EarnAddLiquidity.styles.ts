@@ -39,6 +39,7 @@ export const EarnAddLiquidityWrapper = styled.section`
         padding: 0;
       }
     }
+
     .dim-content {
       position: absolute;
       top: 116px;
@@ -108,6 +109,22 @@ export const EarnAddLiquidityWrapper = styled.section`
       border: 1px solid #233DBD;
       color: ${({ theme }) => theme.color.text26};
       background: ${({ theme }) => theme.color.background22};
+    }
+  }
+  .amount-input-wrapper {
+    position: relative;
+    .dim-content-4 {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      background: ${({ theme }) => theme.color.backgroundOpacity8};
+      border-radius: 8px;
+      ${media.mobile} {
+        top: 100px;
+        height: calc(100% - 100px);
+      }
     }
   }
 

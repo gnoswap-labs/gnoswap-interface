@@ -407,6 +407,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       openModal={openOneClickModal}
       selectPool={selectPool}
       changeStartingPrice={changeStartingPrice}
+      createOption={createOption}
     />
   );
 };

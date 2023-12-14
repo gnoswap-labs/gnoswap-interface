@@ -16,7 +16,8 @@ interface SelectPriceRangeProps {
   priceRange: AddLiquidityPriceRage | null;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
   changeStartingPrice: (price: string) => void;
-  selectPool: SelectPool
+  selectPool: SelectPool;
+  showDim: boolean;
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -26,7 +27,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   priceRange,
   changePriceRange,
   changeStartingPrice,
-  selectPool
+  selectPool,
+  showDim,
 }) => {
   const selectedTokenPair = true;
 
@@ -54,6 +56,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           selectPool={selectPool}
           changeStartingPrice={changeStartingPrice}
           priceRangeType={priceRange?.type || null}
+          showDim={showDim}
         />
       )}
     </SelectPriceRangeWrapper>

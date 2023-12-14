@@ -390,6 +390,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       selectPool={selectPool}
       handleClickOneStaking={() => null}
       changeStartingPrice={() => null}
+      createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
     />
   );
 };
