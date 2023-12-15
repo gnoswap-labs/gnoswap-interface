@@ -182,7 +182,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         exactType,
         `${routesQuery}`,
         `${quotes}`,
-        sendTokenAmount.toString(),
+        tokenAmountLimitRaw.toString(),
       ],
     });
     const response = await this.walletClient.sendTransaction({
