@@ -149,7 +149,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 300)}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -171,7 +171,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 140)}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">
@@ -236,7 +236,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index, loading }) 
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 300)}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -258,7 +258,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ item, index, loading }) 
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 140)}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">

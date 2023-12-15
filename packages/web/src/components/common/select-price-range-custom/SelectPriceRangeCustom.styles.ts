@@ -167,6 +167,9 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     align-items: flex-start;
     gap: 8px;
     align-self: stretch;
+    ${media.mobile} {
+      flex-direction: column;
+    }
   }
 
   .extra-wrapper {

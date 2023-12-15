@@ -12,7 +12,7 @@ const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
     <Link href={`/tokens/${item.symbol}?tokenB=${item.path}&direction=EXACT_IN`}>
       <div css={wrapper}>
         <div>
-          <img src={item.logoURI} alt="logo" />
+          {item.logoURI ? <img src={item.logoURI} alt="logo" /> : <div className="missing-logo">{item.symbol.slice(0,3)}</div>}
           <span className="name">{item.name}</span>
           <span className="symbol">{item.symbol}</span>
         </div>

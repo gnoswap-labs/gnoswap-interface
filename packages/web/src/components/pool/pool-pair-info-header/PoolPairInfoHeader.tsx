@@ -40,6 +40,8 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
         <DoubleLogo
           left={tokenA.logoURI}
           right={tokenB.logoURI}
+          leftSymbol={tokenA.symbol}
+          rightSymbol={tokenB.symbol}
         />
         <h3>
           {tokenA.symbol}/{tokenB.symbol}

@@ -124,6 +124,7 @@ interface Props {
 }
 
 export const SkeletonEarnDetailWrapper = styled.div<Props>`
+  max-width: 100%;
   width: ${({ width }) => {
     return width ? `${width}px` : "auto";
   }};
@@ -143,5 +144,7 @@ export const SkeletonEarnDetailWrapper = styled.div<Props>`
   }
   > span {
     display: block;
+    max-width: 100%;
+
   }
 `;

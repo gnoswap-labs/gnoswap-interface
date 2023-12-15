@@ -9,6 +9,7 @@ import { tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -384,7 +385,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       <div className="content">
         <div className="row">
           <span className="token">
-            {tooltipInfo.tokenA.logoURI ? <img className="logo" src={tooltipInfo.tokenA.logoURI} alt="logo" /> : <div className="missing-logo">{tooltipInfo.tokenA.symbol.slice(0,3)}</div>}
+            <MissingLogo symbol={tooltipInfo.tokenA.logoURI} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20}/>
             <span>{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount">
@@ -394,7 +395,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
         </div>
         <div className="row">
           <span className="token">
-            {tooltipInfo.tokenB.logoURI ? <img className="logo" src={tooltipInfo.tokenB.logoURI} alt="logo" /> : <div className="missing-logo">{tooltipInfo.tokenB.symbol.slice(0,3)}</div>}
+            <MissingLogo symbol={tooltipInfo.tokenB.logoURI} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20}/>
             <span>{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount">

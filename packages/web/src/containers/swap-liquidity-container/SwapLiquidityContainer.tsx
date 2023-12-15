@@ -16,6 +16,8 @@ export interface LiquidityInfo {
   liquidity: string;
   apr: string;
   feeTierType: SwapFeeTierType;
+  active: boolean;
+  id: string;
 }
 
 export const LIQUIDITY_HEAD = {
@@ -33,6 +35,8 @@ export const dummyLiquidityList: LiquidityInfo[] = [
     liquidity: "-",
     apr: "-",
     feeTierType: "FEE_100",
+    active: false,
+    id: "",
   },
   {
     feeTier: "0.05",
@@ -40,6 +44,8 @@ export const dummyLiquidityList: LiquidityInfo[] = [
     liquidity: "-",
     apr: "-",
     feeTierType: "FEE_500",
+    active: false,
+    id: "",
   },
   {
     feeTier: "0.3",
@@ -47,6 +53,8 @@ export const dummyLiquidityList: LiquidityInfo[] = [
     liquidity: "-",
     apr: "-",
     feeTierType: "FEE_3000",
+    active: false,
+    id: "",
   },
   {
     feeTier: "1",
@@ -54,6 +62,8 @@ export const dummyLiquidityList: LiquidityInfo[] = [
     liquidity: "-",
     apr: "-",
     feeTierType: "FEE_10000",
+    active: false,
+    id: "",
   },
 ];
 
@@ -84,6 +94,8 @@ const SwapLiquidityContainer: React.FC = () => {
           volume: `$${convertLargePrice(poolItem[0].volume.toString(), 6)}`,
           liquidity: `$${convertLargePrice(poolItem[0].tvl.toString(), 6)}`,
           apr: `${Number(poolItem[0].apr).toFixed(2)}%`,
+          active: true,
+          id: poolItem[0].id,
         };
       }
       return _;

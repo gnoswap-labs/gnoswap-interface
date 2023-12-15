@@ -20,6 +20,7 @@ import IconTriangleArrowUpV2 from "../icons/IconTriangleArrowUpV2";
 import { DEVICE_TYPE } from "@styles/media";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -160,7 +161,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           onClick={() => onClickItem(item)}
                         >
                           <div className="coin-info-wrapper">
-                            {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
+                            <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24}/>
                             <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListRecent[idx]} tokenNameWidthList={tokenNameRecentWidthList[idx]}>
                               <div>
                                 <span className="token-name" ref={tokenNameRecentsRef.current[idx]}>
@@ -199,6 +200,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
                               left={item.token.logoURI}
                               right={item?.tokenB?.logoURI || ""}
+                              leftSymbol={item.token.symbol}
+                              rightSymbol={item?.tokenB?.symbol}
                             />
                             <span className="token-name">
                               {item.token.symbol}/{item?.tokenB?.symbol}
@@ -227,8 +230,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       onClick={() => onClickItem(item)}
                     >
                       <div className="coin-info-wrapper">
-                        {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
-
+                        <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24}/>
                         <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListPopular[idx]} tokenNameWidthList={tokenNamePopularWidthList[idx]}>
                           <div>
                             <span className="token-name" ref={tokenNamePopularRef.current[idx]}>
@@ -274,6 +276,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
                           left={item.token.logoURI}
                           right={item?.tokenB?.logoURI || ""}
+                          leftSymbol={item.token.symbol}
+                          rightSymbol={item?.tokenB?.symbol}
                         />
                         <span className="token-name">
                           {item.token.symbol}/{item?.tokenB?.symbol}

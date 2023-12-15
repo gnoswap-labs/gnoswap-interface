@@ -4,6 +4,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { useTokenImage } from "@hooks/token/use-token-image";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface ContentProps {
   swapRouteInfos: SwapRouteInfo[];
@@ -41,7 +42,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
   swapRouteInfo,
   swapSummaryInfo,
 }) => {
-  const { getTokenImage } = useTokenImage();
+  const { getTokenImage, getTokenSymbol } = useTokenImage();
 
   const weightStr = useMemo(() => {
     return `${swapRouteInfo.weight}%`;
@@ -64,7 +65,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
 
   return (
     <div className="row">
-      <img src={swapSummaryInfo.tokenA.logoURI} alt="token logo" className="token-logo" />
+      <MissingLogo symbol={swapSummaryInfo.tokenA.symbol} url={swapSummaryInfo.tokenA.logoURI} className="token-logo" width={24} mobileWidth={24}/>
       <div className="left-box">
         <div className="left-badge">{swapRouteInfo.version}</div>
         <span>{weightStr}</span>
@@ -73,13 +74,19 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
       {routeInfos.map((routeInfo, index) => (
         <React.Fragment key={`pool-${index}`}>
           <div className="pair-fee">
-            <DoubleLogo left={getTokenImage(routeInfo.fromToken) || ""} right={getTokenImage(routeInfo.toToken) || ""} size={16} />
+            <DoubleLogo 
+              left={getTokenImage(routeInfo.fromToken) || ""}
+              right={getTokenImage(routeInfo.toToken) || ""}
+              size={16} 
+              leftSymbol={getTokenSymbol(routeInfo.fromToken) || ""}
+              rightSymbol={getTokenSymbol(routeInfo.toToken) || ""}
+            />
             <h1>{routeInfo.fee}</h1>
           </div>
           <DotLine />
         </React.Fragment>
       ))}
-      <img src={swapSummaryInfo.tokenB.logoURI} alt="token logo" className="token-logo" />
+      <MissingLogo symbol={swapSummaryInfo.tokenB.symbol} url={swapSummaryInfo.tokenB.logoURI} className="token-logo" width={24} mobileWidth={24}/>
     </div>
   );
 };

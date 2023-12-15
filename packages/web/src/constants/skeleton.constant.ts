@@ -69,7 +69,7 @@ export const skeletonTrendingStyle =
   `;
 
 export const skeletonTokenDetail =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) =>
+(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number, tabletWidth?: CSSProperties["width"], smallTableWidth?: CSSProperties["width"]) =>
 (theme: Theme) =>
   css`
     position: relative;
@@ -91,7 +91,20 @@ export const skeletonTokenDetail =
       background: ${theme.color.backgroundGradient6};
       animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
     }
+    ${media.tablet} {
+      width: ${tabletWidth ? `${tabletWidth}px` : typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    }
+    ${media.tabletMiddle} {
+      width: ${smallTableWidth ? `${smallTableWidth}px` : typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    }
     ${media.mobile} {
+      width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
       height: 18px;
     }
   `;

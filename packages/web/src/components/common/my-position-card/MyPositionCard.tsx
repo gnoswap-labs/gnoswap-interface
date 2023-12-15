@@ -127,6 +127,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <DoubleLogo
                 left={tokenA.logoURI}
                 right={tokenB.logoURI}
+                leftSymbol={tokenA.symbol}
+                rightSymbol={tokenB.symbol}
               />
               <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
             </div>
@@ -139,6 +141,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     size={16}
                     left={tokenA.logoURI}
                     right={tokenB.logoURI}
+                    leftSymbol={tokenA.symbol}
+                    rightSymbol={tokenB.symbol}
                   />
                 </>}
               />

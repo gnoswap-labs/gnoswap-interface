@@ -6,7 +6,6 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { DEVICE_TYPE } from "@styles/media";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ValuesType } from "utility-types";
@@ -36,16 +35,27 @@ const EarnMyPositionContainer: React.FC<
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { updateTokenPrices } = useTokenData();
   const { isFetchedPositions, updatePositions } = usePoolData();
-  const { breakpoint, width } = useWindowSize();
+  const { width } = useWindowSize();
   const divRef = useRef<HTMLDivElement | null>(null);
 
   const { openModal } = useConnectWalletModal();
   const { isError, getPositions } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const [mobile, setMobile] = useState(false);
+
+  const handleResize = () => {
+    if (typeof window !== "undefined") {
+      window.innerWidth < 1400 ? setMobile(true) : setMobile(false);
+    }
+  };
 
   useEffect(() => {
     updateTokenPrices();
     updatePositions();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -115,12 +125,12 @@ const EarnMyPositionContainer: React.FC<
       movePoolDetail={movePoolDetail}
       moveEarnStake={moveEarnStake}
       isSwitchNetwork={isSwitchNetwork}
-      mobile={breakpoint === DEVICE_TYPE.MOBILE}
+      mobile={mobile}
       onScroll={handleScroll}
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={breakpoint === DEVICE_TYPE.MOBILE}
+      showLoadMore={mobile}
       width={width}
       loadMore={page === 1}
       onClickLoadMore={handleClickLoadMore}

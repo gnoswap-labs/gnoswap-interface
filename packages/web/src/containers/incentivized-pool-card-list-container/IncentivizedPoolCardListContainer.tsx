@@ -36,10 +36,10 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
-
+  
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
+      window.innerWidth < 1400 ? setMobile(true) : setMobile(false);
     }
   };
 

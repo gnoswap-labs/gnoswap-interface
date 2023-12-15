@@ -16,6 +16,7 @@ import {
 import { TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 import { Global, css } from "@emotion/react";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface TokenInfoProps {
   item: Token;
@@ -75,7 +76,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
-          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
+          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
           <strong className="token-name">{token.name}</strong>
           <span className="token-symbol">{token.symbol}</span>
         </TableColumn>

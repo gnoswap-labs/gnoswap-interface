@@ -119,7 +119,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         >
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined, 140)}
             />
             </SkeletonEarnDetailWrapper>}
           {!loading && <strong className="has-tooltip">{liquidityValue}</strong>}
@@ -143,7 +143,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         {!loading &&<strong>{volumeValue}</strong>}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined, 140)}
             />
             </SkeletonEarnDetailWrapper>}
         <div className="section-info">
@@ -165,7 +165,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         {!loading && <strong><IconStar /> {aprValue}</strong>}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
         <span
-          css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined)}
         />
         </SkeletonEarnDetailWrapper>}
         <div className="apr-info">

@@ -29,6 +29,18 @@ export const MyLiquidityWrapper = styled.div`
       ${mixins.flexbox("row", "flex-start", "flex-start")};
       gap: 12px;
     }
+    .full-width {
+      width: 100%;
+      > div {
+        width: 100%;
+      }
+    }
+    .w-50 {
+      width: 100%;
+      > div {
+        width: 50%;
+      }
+    }
   }
   .box-indicator {
     ${mixins.flexbox("row", "center", "center")};

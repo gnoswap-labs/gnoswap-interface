@@ -24,7 +24,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers, loadingLose }) => {
         <Link href={`/tokens/${loser.symbol}?tokenB=${loser.path}&direction=EXACT_IN`} key={idx}>
           <div className="card-wrap">
             <div>
-              <img src={loser?.logoURI} alt="logo" />
+              {loser?.logoURI ? <img src={loser?.logoURI} alt="logo" /> : <div className="missing-logo">{loser?.symbol.slice(0,3)}</div>}
               <span className="name">{loser.name}</span>
               <span className="symbol">{loser.symbol}</span>
             </div>

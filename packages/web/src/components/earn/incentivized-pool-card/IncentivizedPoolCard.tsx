@@ -49,7 +49,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                     Incentivized
                     <DoubleLogo
                       size={16}
-                      left={pool.tokenA.logoURI}
+                      left={""}
                       right={pool.tokenB.logoURI}
                       leftSymbol={pool.tokenA.symbol}
                       rightSymbol={pool.tokenB.symbol}

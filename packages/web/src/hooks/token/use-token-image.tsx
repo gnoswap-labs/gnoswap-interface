@@ -9,7 +9,12 @@ export const useTokenImage = () => {
     return tokens.find(token => token.path === tokenId)?.logoURI || null;
   }, [tokens]);
 
+  const getTokenSymbol = useCallback((tokenId: string): string | null => {
+    return tokens.find(token => token.path === tokenId)?.symbol || null;
+  }, [tokens]);
+
   return {
-    getTokenImage
+    getTokenImage,
+    getTokenSymbol,
   };
 };

@@ -174,7 +174,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         )}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
-            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
           />
         </SkeletonEarnDetailWrapper>}
       </section>
@@ -196,7 +196,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         )}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
-            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
           />
         </SkeletonEarnDetailWrapper>}
       </section>
@@ -223,7 +223,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
                   <span
-                    css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+                    css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
                   />
                 </SkeletonEarnDetailWrapper>}
             </div>
@@ -260,7 +260,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               )}
               {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
                 <span
-                  css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE)}
+                  css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
                 />
               </SkeletonEarnDetailWrapper>}
               <Button

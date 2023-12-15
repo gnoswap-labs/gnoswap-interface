@@ -28,8 +28,8 @@ const getPathname = (liquidity: LiquidityInfo) => {
     };
   }
   return {
-    pathname: `/earn/pool/bar_foo_${10000 * Number(liquidity.feeTier)}`,
-    as: `/earn/pool/bar_foo_${10000 * Number(liquidity.feeTier)}`,
+    pathname: `/earn/pool/${liquidity.id}`,
+    as: `/earn/pool/${liquidity.id}`,
   };
 };
 
@@ -95,8 +95,8 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
           {liquiditys.map((liquidity, idx) => {
             const obj = getPathname(liquidity);
             return (
-              <Link href={obj.pathname} as={obj.as} key={idx}>
-                <div className="fee-info">
+              <Link href={obj.pathname} as={obj.as} key={idx} className={`${!liquidity.active ? "inacitve-liquidity" : ""}`}>
+                <div className={`fee-info ${!liquidity.active ? "inacitve-liquidity" : ""}`}>
                   <span className="badge-wrap">
                     <div className="badge">{liquidity.feeTier}%</div>
                   </span>

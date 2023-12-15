@@ -121,10 +121,6 @@ export const EarnAddLiquidityWrapper = styled.section`
       left: 0;
       background: ${({ theme }) => theme.color.backgroundOpacity8};
       border-radius: 8px;
-      ${media.mobile} {
-        top: 100px;
-        height: calc(100% - 100px);
-      }
     }
   }
 

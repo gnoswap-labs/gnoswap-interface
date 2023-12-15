@@ -133,21 +133,6 @@ export const ModalContainer = styled.div`
         height: 24px;
       }
     }
-    .missing-logo {
-      ${mixins.flexbox("row", "center", "center")};
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      color: ${({ theme }) => theme.color.text02};
-      background-color: ${({ theme }) => theme.color.text04};
-      ${fonts.p6}
-      ${media.mobile} {
-        width: 24px;
-        height: 24px;
-        font-size: 8px;
-        line-height: 10px;
-      }
-    }
     .coin-info-detail {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       gap: 2px;

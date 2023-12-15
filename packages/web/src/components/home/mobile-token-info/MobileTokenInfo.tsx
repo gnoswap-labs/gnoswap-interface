@@ -15,6 +15,7 @@ import {
 } from "./MobileTokenInfo.styles";
 import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface TokenInfoProps {
   item: Token;
@@ -47,7 +48,7 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.symbol, token.path)}>
         <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
-          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
+          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
           <div className="symbol-col">
             <strong className="token-name">{token.name}</strong>
             <span className="token-symbol">{token.symbol}</span>

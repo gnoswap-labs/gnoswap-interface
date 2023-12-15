@@ -97,16 +97,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     width: 24px;
     height: 24px;
   }
-  .missing-logo {
-    ${mixins.flexbox("row", "center", "center")};
-    min-width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    color: ${({ theme }) => theme.color.text02};
-    background-color: ${({ theme }) => theme.color.text04};
-    font-size: 8px;
-    line-height: 10px;
-  }
   .token-name {
     margin: 0px 8px;
     ${fonts.body11};
