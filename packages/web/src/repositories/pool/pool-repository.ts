@@ -4,6 +4,8 @@ import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
+import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
+import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 
 export interface PoolRepository {
   getPools: () => Promise<PoolModel[]>;
@@ -20,4 +22,11 @@ export interface PoolRepository {
 
   getPoolDetailByPath: (poolPath: string) => Promise<IPoolDetailResponse>;
 
+  createExternalIncentive: (
+    request: CreateExternalIncentiveRequest,
+  ) => Promise<string | null>;
+
+  removeExternalIncentive: (
+    request: RemoveExternalIncentiveRequest,
+  ) => Promise<string | null>;
 }

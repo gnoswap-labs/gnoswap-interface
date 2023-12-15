@@ -32,6 +32,9 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeDepositMessage } from "@common/clients/wallet-client/transaction-messages/token";
+import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
+import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
+import { makeCreateIncentiveMessage, makeRemoveIncentiveMessage, makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
@@ -264,6 +267,92 @@ export class PoolRepositoryImpl implements PoolRepository {
     return response.hash;
   };
 
+  getPoolDetailByPath = async (
+    poolPath: string,
+  ): Promise<IPoolDetailResponse> => {
+    const response = await this.networkClient.get<IPoolDetailResponse>({
+      url: "/pool_details/" + poolPath,
+    });
+    return response.data;
+  };
+
+  createExternalIncentive = async (request: CreateExternalIncentiveRequest): Promise<string | null> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const account = await this.walletClient.getAccount();
+    if (!account.data ) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const { address } = account.data;
+    const {
+      poolPath,
+      rewardToken,
+      rewardAmount,
+      startTime,
+      endTime
+    } = request;
+
+    const rewardAmountRaw = makeRawTokenAmount(rewardToken, rewardAmount) || "0";
+
+    const messages = [];
+    let tokenPath = rewardToken.path;
+    if (isNativeToken(rewardToken)) {
+      tokenPath = rewardToken.wrappedPath;
+      messages.push(
+        makeDepositMessage(tokenPath, rewardAmountRaw, "ugnot", address),
+      );
+    }
+    messages.push(makeStakerApproveMessage(tokenPath, rewardAmountRaw, address));
+    messages.push(makeCreateIncentiveMessage(poolPath, tokenPath, rewardAmountRaw, startTime, endTime, address));
+
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasWanted: 2000000,
+      gasFee: 1,
+      memo: "",
+    });
+    if (response.code !== 0 || !response.data) {
+      throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
+    }
+    const data = response?.data as SendTransactionSuccessResponse<string>;
+    return data?.hash || null;
+  };
+
+  removeExternalIncentive = async (request: RemoveExternalIncentiveRequest): Promise<string | null> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const account = await this.walletClient.getAccount();
+    if (!account.data ) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const { address } = account.data;
+    const {
+      poolPath,
+      rewardToken
+    } = request;
+
+    const messages = [];
+    let tokenPath = rewardToken.path;
+    if (isNativeToken(rewardToken)) {
+      tokenPath = rewardToken.wrappedPath;
+    }
+    messages.push(makeRemoveIncentiveMessage(poolPath, tokenPath, address));
+
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasWanted: 2000000,
+      gasFee: 1,
+      memo: "",
+    });
+    if (response.code !== 0 || !response.data) {
+      throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
+    }
+    const data = response?.data as SendTransactionSuccessResponse<string>;
+    return data?.hash || null;
+  };
+
   private static makeCreatePoolMessage(
     tokenA: TokenModel,
     tokenB: TokenModel,
@@ -271,8 +360,14 @@ export class PoolRepositoryImpl implements PoolRepository {
     startPrice: string,
     caller: string,
   ) {
-    const tokenAPath = tokenA.priceId;
-    const tokenBPath = tokenB.priceId;
+    let tokenAPath = tokenA.path;
+    let tokenBPath = tokenB.path;
+    if (isNativeToken(tokenA) ) {
+      tokenAPath = tokenA.wrappedPath;
+    }
+    if (isNativeToken(tokenB) ) {
+      tokenBPath = tokenB.wrappedPath;
+    }
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     const startPriceSqrt = tickToSqrtPriceX96(priceToNearTick(Number(startPrice), SwapFeeTierInfoMap[feeTier].tickSpacing));
 
@@ -314,19 +409,18 @@ export class PoolRepositoryImpl implements PoolRepository {
     slippage: string,
     caller: string,
   ) {
-    const tokenAPath = tokenA.priceId;
-    const tokenBPath = tokenB.priceId;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     const slippageRatio = 0;
     const deadline = "7282571140";
-    const sendItems = [];
-    if (tokenA.type === "native" && BigNumber(tokenAAmount).isGreaterThan(0) ) {
-      sendItems.push(`${tokenAAmount}ugnot`);
+    let tokenAPath = tokenA.path;
+    let tokenBPath = tokenB.path;
+    if (isNativeToken(tokenA) ) {
+      tokenAPath = tokenA.wrappedPath;
     }
-    if (tokenB.type === "native" && BigNumber(tokenAAmount).isGreaterThan(0)) {
-      sendItems.push(`${tokenBAmount}ugnot`);
+    if (isNativeToken(tokenB) ) {
+      tokenBPath = tokenB.wrappedPath;
     }
-    const sendAmount = sendItems.join(",");
+    const sendAmount = "";
     return {
       caller,
       send: sendAmount,
@@ -346,13 +440,4 @@ export class PoolRepositoryImpl implements PoolRepository {
       ],
     };
   }
-
-  getPoolDetailByPath = async (
-    poolPath: string,
-  ): Promise<IPoolDetailResponse> => {
-    const response = await this.networkClient.get<IPoolDetailResponse>({
-      url: "/pool_details/" + poolPath,
-    });
-    return response.data;
-  };
 }
