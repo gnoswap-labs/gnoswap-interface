@@ -19,9 +19,8 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
   footer,
 }) => {
   const router = useRouter();
-  const { path } = router.query;
   const onClickIncentivize = () => {
-    router.push(`/earn/pool/${router.query["pool-number"]}/incentivize?path=${path}`);
+    router.push(`/earn/pool/${router.query["pool-path"]}/incentivize`);
   };
   return (
     <PoolLayoutWrapper>

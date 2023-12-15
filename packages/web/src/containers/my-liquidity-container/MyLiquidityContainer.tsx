@@ -27,7 +27,7 @@ const MyLiquidityContainer: React.FC = () => {
   }, [connectedWallet, isSwitchNetwork, positions.length]);
 
   const handleClickAddPosition = useCallback(() => {
-    router.push("/earn/add?path=" + router.query.path);
+    router.push(`${router.asPath}/add`);
   }, [router]);
 
   const handleClickRemovePosition = useCallback(() => {

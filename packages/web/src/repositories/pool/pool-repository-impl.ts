@@ -6,7 +6,7 @@ import {
 } from ".";
 import { WalletClient } from "@common/clients/wallet-client";
 import { CreatePoolRequest } from "./request/create-pool-request";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
@@ -31,8 +31,8 @@ import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { makeDepositMessage } from "@common/clients/wallet-client/transaction-messages/token";
 
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
@@ -143,8 +143,18 @@ export class PoolRepositoryImpl implements PoolRepository {
     const gasWanted = 2000000;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
-
     const messages = [];
+    
+    let tokenAPath = tokenA.path;
+    let tokenBPath = tokenB.path;
+    if (isNativeToken(tokenA)) {
+      tokenAPath = tokenA.wrappedPath;
+      messages.push(makeDepositMessage(tokenAPath, tokenAAmountRaw, "ugnot", caller));
+    }
+    if (isNativeToken(tokenB)) {
+      tokenBPath = tokenB.wrappedPath;
+      messages.push(makeDepositMessage(tokenBPath, tokenBAmountRaw, "ugnot", caller));
+    }
     messages.push(PoolRepositoryImpl.makeApproveGnosTokenMessage(caller));
     messages.push(PoolRepositoryImpl.makeCreatePoolMessage(
       tokenA,
@@ -154,13 +164,11 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
     ));
 
-    const tokenAPath = tokenA.type === "grc20" ? tokenA.path : WRAPPED_GNOT_PATH;
     messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
       tokenAPath,
       tokenAAmountRaw,
       caller,
     ));
-    const tokenBPath = tokenB.type === "grc20" ? tokenB.path : WRAPPED_GNOT_PATH;
     messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
       tokenBPath,
       tokenBAmountRaw,
@@ -210,14 +218,23 @@ export class PoolRepositoryImpl implements PoolRepository {
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
     const messages = [];
+    
+    let tokenAPath = tokenA.path;
+    let tokenBPath = tokenB.path;
+    if (isNativeToken(tokenA)) {
+      tokenAPath = tokenA.wrappedPath;
+      messages.push(makeDepositMessage(tokenAPath, tokenAAmountRaw, "ugnot", caller));
+    }
+    if (isNativeToken(tokenB)) {
+      tokenBPath = tokenB.wrappedPath;
+      messages.push(makeDepositMessage(tokenBPath, tokenBAmountRaw, "ugnot", caller));
+    }
 
-    const tokenAPath = tokenA.type === "grc20" ? tokenA.path : WRAPPED_GNOT_PATH;
     messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
       tokenAPath,
       tokenAAmountRaw,
       caller,
     ));
-    const tokenBPath = tokenB.type === "grc20" ? tokenB.path : WRAPPED_GNOT_PATH;
     messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
       tokenBPath,
       tokenBAmountRaw,

@@ -12,7 +12,7 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
-  routeItem: (id: string, path: string) => void;
+  routeItem: (id: string) => void;
   themeKey: "dark" | "light";
 }
 
@@ -30,7 +30,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
       className={["special-card", ""][Math.floor(Math.random() * 2)]}
     >
       <div className="base-border">
-        <PoolCardWrapper onClick={() => routeItem(pool.poolId, pool.poolPath ?? "")}>
+        <PoolCardWrapper onClick={() => routeItem(pool.poolId)}>
           <div className="pool-container">
             <div className="title-container">
               <div className="box-header">

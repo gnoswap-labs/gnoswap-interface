@@ -265,8 +265,8 @@ function makeUniqueClaimableRewards(positions: PoolPositionModel[], tokenPrices:
   positions.flatMap(position => {
     const tokenA = position.pool.tokenA;
     const tokenB = position.pool.tokenB;
-    const tokenAUnclaimedBalance = makeDisplayTokenAmount(tokenA, position.unclaimedFee0Amount + position.tokensOwed0Amount) || 0;
-    const tokenBUnclaimedBalance = makeDisplayTokenAmount(tokenB, position.unclaimedFee1Amount + position.tokensOwed1Amount) || 0;
+    const tokenAUnclaimedBalance = makeDisplayTokenAmount(tokenA, position.unclaimedFee0Amount) || 0;
+    const tokenBUnclaimedBalance = makeDisplayTokenAmount(tokenB, position.unclaimedFee1Amount) || 0;
     return [{
       balance: tokenAUnclaimedBalance,
       balanceUSD: tokenAUnclaimedBalance * Number(tokenPrices[tokenA.priceId]?.usd || 0),

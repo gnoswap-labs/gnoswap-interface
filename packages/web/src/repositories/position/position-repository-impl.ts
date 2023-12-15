@@ -61,8 +61,10 @@ export class PositionRepositoryImpl implements PositionRepository {
       messages.push(
         PositionRepositoryImpl.makeCollectMessage(lpTokenId, receipient),
       );
+      console.log("message", messages);
       return messages;
     });
+    console.log("?lpTokenIds", lpTokenIds);
 
     // TODO: Need to check if a contract error occurred
     // messages.push(PositionRepositoryImpl.makeCollectRewardMessage(receipient));
