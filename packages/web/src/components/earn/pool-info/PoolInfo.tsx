@@ -8,6 +8,8 @@ import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import TokenLogo from "@components/common/token-logo/TokenLogo";
+import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -35,9 +37,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
       return <>-</>;
     }
     if (rewards.length === 1) {
-      return <img src={rewards[0].token.logoURI} className="icon-reward" alt="icon reward" />;
+      return <TokenLogo token={rewards[0].token} />;
     }
-    return <DoubleLogo left={rewards[0].token.logoURI} right={rewards[1].token.logoURI} size={20} />;
+    return <DoubleTokenLogo left={rewards[0].token} right={rewards[1].token} size={20} />;
   }, [rewards]);
 
   const resolvedBins = useMemo(() => {
@@ -58,9 +60,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
       onClick={() => routeItem(poolId)}
     >
       <TableColumn className="left" tdWidth={POOL_TD_WIDTH[0]}>
-        <DoubleLogo
-          left={tokenA.logoURI}
-          right={tokenB.logoURI}
+        <DoubleTokenLogo
+          left={tokenA}
+          right={tokenB}
           size={20}
         />
         <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>

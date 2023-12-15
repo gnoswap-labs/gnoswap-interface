@@ -1,12 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
 import { TokenState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { useGnoswapContext } from "./use-gnoswap-context";
 
 export const useBackground = () => {
+  const { accountRepository } = useGnoswapContext();
   const { account, initSession, connectAccount, updateWalletEvents } = useWallet();
   const [walletClient] = useAtom(WalletState.client);
   const [, setTokens] = useAtom(TokenState.tokens);
@@ -33,11 +35,12 @@ export const useBackground = () => {
     }
   }, [tokenPrices]);
 
-  useEffect(() => {
-    if (window.adena) {
+  useLayoutEffect(() => {
+    if (window?.adena?.version) {
+      console.log(window?.adena?.version);
       initSession();
     }
-  }, [window.adena]);
+  }, [window?.adena?.version, accountRepository]);
 
   useEffect(() => {
     if (walletClient) {
