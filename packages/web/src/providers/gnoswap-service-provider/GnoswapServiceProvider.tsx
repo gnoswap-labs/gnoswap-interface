@@ -21,6 +21,7 @@ import { PositionRepository } from "@repositories/position/position-repository";
 import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
 
 interface GnoswapContextProps {
+  initialized: boolean;
   rpcProvider: GnoProvider | null;
   accountRepository: AccountRepository;
   liquidityRepository: LiquidityRepository;
@@ -50,6 +51,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [network] = useAtom(CommonState.network);
 
   const [rpcProvider, setRPCProvider] = useState<GnoProvider | null>(null);
+
+  const initialized = useMemo(() => {
+    return rpcProvider !== null && window !== undefined;
+  }, [rpcProvider]);
 
   useEffect(() => {
     if (window) {
@@ -129,6 +134,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   return (
     <GnoswapContext.Provider
       value={{
+        initialized,
         rpcProvider,
         accountRepository,
         liquidityRepository,

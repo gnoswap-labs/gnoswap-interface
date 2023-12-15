@@ -9,6 +9,7 @@ import { tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
+import TokenLogo from "../token-logo/TokenLogo";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -376,7 +377,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       <div className="content">
         <div className="row">
           <span className="token">
-            <img className="logo" src={tooltipInfo.tokenA.logoURI} alt="logo" />
+            <TokenLogo token={tooltipInfo.tokenA} className="logo" />
             <span>{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount">
@@ -386,7 +387,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
         </div>
         <div className="row">
           <span className="token">
-            <img className="logo" src={tooltipInfo.tokenB.logoURI} alt="logo" />
+            <TokenLogo token={tooltipInfo.tokenB} className="logo" />
             <span>{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount">

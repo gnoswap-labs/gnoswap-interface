@@ -1,5 +1,4 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { POOL_CONTENT_TITLE } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import {
   PoolCardWrapper,
@@ -9,6 +8,7 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -34,9 +34,9 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
           <div className="pool-container">
             <div className="title-container">
               <div className="box-header">
-                <DoubleLogo
-                  left={pool.tokenA.logoURI}
-                  right={pool.tokenB.logoURI}
+                <DoubleTokenLogo
+                  left={pool.tokenA}
+                  right={pool.tokenB}
                 />
                 <span>{pairName}</span>
               </div>
@@ -45,10 +45,11 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   type={BADGE_TYPE.DARK_DEFAULT}
                   text={<>
                     Incentivized
-                    <DoubleLogo
+                    <DoubleTokenLogo
                       size={16}
-                      left={pool.tokenA.logoURI}
-                      right={pool.tokenB.logoURI}
+                      left={pool.tokenA}
+                      right={pool.tokenB}
+                      fontSize={6}
                     />
                   </>}
                 />
