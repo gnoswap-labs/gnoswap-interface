@@ -32,7 +32,7 @@ const PoolIncentivizeContainer: React.FC = () => {
   const tokenAmountInput = useTokenAmountInput(token);
   const { updateTokenPrices } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
-  
+
   useEffect(() => {
     setDataModal(tokenAmountInput);
   }, [tokenAmountInput.amount, token]);
@@ -57,7 +57,7 @@ const PoolIncentivizeContainer: React.FC = () => {
     if (pool) {
       setCurrentPool(pool);
     }
-  }, [setCurrentPool]);
+  }, [pools, setCurrentPool]);
 
   const selectToken = useCallback((path: string) => {
     const token = tokenBalances.find(token => token.path === path);

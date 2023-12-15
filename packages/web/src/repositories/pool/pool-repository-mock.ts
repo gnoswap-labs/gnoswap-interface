@@ -34,9 +34,19 @@ export class PoolRepositoryMock implements PoolRepository {
     return "hash";
   };
 
-  getPoolDetailByPath = async (poolPath: string): Promise<IPoolDetailResponse> => {
+  getPoolDetailByPath = async (
+    poolPath: string,
+  ): Promise<IPoolDetailResponse> => {
     console.log(poolPath);
-    
+
     return PoolDetailDataByPath as IPoolDetailResponse;
+  };
+
+  createExternalIncentive = async (): Promise<string> => {
+    return "hash";
+  };
+
+  removeExternalIncentive = async (): Promise<string> => {
+    return "hash";
   };
 }
