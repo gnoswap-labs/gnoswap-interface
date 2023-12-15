@@ -39,6 +39,9 @@ const IncentivizePoolModalContainer = () => {
       clearModal();
       router.back();
       return response;
+    }).catch(e => {
+      console.log(e);
+      return null;
     });
   }, [clearModal, dataModal, period, pool, poolRepository, router, startDate.date, startDate.month, startDate.year]);
 
