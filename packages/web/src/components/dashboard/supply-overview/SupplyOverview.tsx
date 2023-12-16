@@ -84,7 +84,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           </div>
           {!loading ? <div>{supplyOverviewInfo.circulatingSupply}</div> : <LoadingText />}
         </div>
-        {!loading ? <ProgressBar width={"60%"}>
+        {!loading ? <ProgressBar width={supplyOverviewInfo.progressBar}>
           <div className="progress-bar-rate" />
         </ProgressBar> : <LoadingProgress />}
       </div>
