@@ -75,7 +75,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
     setIsEarnAdd(false);
   }, []);
-  
+
   const {
     connected: connectedWallet,
     account,
@@ -200,19 +200,37 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, []);
 
   const changeTokenA = useCallback((token: TokenModel) => {
-    setSwapValue((prev) => ({
-      tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
-      tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
-      type: type,
-    }));
+    setSwapValue((prev) => {
+      if (token.wrappedPath === prev.tokenB?.wrappedPath) {
+        return {
+          tokenA: token,
+          tokenB: null,
+          type: type,
+        };
+      }
+      return {
+        tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+        tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+        type: type,
+      };
+    });
   }, [type]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
-    setSwapValue((prev) => ({
-      tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
-      tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
-      type: type,
-    }));
+    setSwapValue((prev) => {
+      if (token.wrappedPath === prev.tokenA?.wrappedPath) {
+        return {
+          tokenA: null,
+          tokenB: token,
+          type: type,
+        };
+      }
+      return {
+        tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
+        tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+        type: type,
+      };
+    });
   }, [type]);
 
   const changeStartingPrice = useCallback((price: string) => {
