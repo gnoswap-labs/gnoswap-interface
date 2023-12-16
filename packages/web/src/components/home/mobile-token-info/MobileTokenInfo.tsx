@@ -26,9 +26,9 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
   <>
     {status === MATH_NEGATIVE_TYPE.NEGATIVE ? (
       <IconTriangleArrowDown />
-    ) : (
+    ) : status === MATH_NEGATIVE_TYPE.POSITIVE ? (
       <IconTriangleArrowUp />
-    )}
+    ) : null}
     <span>{value}</span>
   </>
 );

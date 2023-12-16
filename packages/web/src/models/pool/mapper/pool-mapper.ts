@@ -30,7 +30,7 @@ export class PoolMapper {
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
-
+      
     const defaultReward: PoolRewardInfo = {
       token: {
         chainId: "dev",
@@ -53,7 +53,7 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: `${BigNumber(apr).toFormat(2)}%`,
+      apr: apr === "" ? "-" : `${BigNumber(apr).toFormat(2)}%`,
       liquidity: `$${Math.floor(Number(tvl || 0)).toLocaleString()}`,
       volume24h: `$${Math.floor(Number(volume || 0)).toLocaleString()}`,
       fees24h: `$${Math.floor(Number(feeVolume || 0)).toLocaleString()}`,
@@ -120,7 +120,7 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: `${BigNumber(apr).toFormat(2)}%`,
+      apr: apr === "" ? "-" : `${BigNumber(apr).toFormat(2)}%`,
       liquidity: toUnitFormat(tvl, true),
       volume24h: toUnitFormat(volume, true),
       fees24h: toUnitFormat(feeVolume, true),

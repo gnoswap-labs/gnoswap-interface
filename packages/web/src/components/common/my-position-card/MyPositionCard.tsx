@@ -48,7 +48,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
-    return `${numberToFormat(position.apr, 2)}%`;
+    return position.apr === "" ? "-" : `${numberToFormat(position.apr, 2)}%`;
   }, [position.apr]);
 
   const currentPrice = useMemo(() => {
@@ -99,14 +99,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
     const tokenAPriceStr = numberToFormat(tokenAPrice, 2);
-    return `${tokenAPriceStr} ${tokenA.symbol} per GNOT`;
-  }, [tokenA.path, tokenA.symbol, tokenPrices]);
+    return `1 ${tokenA.symbol} = ${tokenAPriceStr} ${tokenB.symbol}`;
+  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const maxPriceStr = useMemo(() => {
     const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
     const tokenBPriceStr = numberToFormat(tokenBPrice, 2);
-    return `${tokenBPriceStr} ${tokenB.symbol} per GNOT`;
-  }, [tokenB.path, tokenB.symbol, tokenPrices]);
+    return `1 ${tokenA.symbol} = ${tokenBPriceStr} ${tokenB.symbol}`;
+  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();

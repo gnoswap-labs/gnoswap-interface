@@ -54,12 +54,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minTickLabel = useMemo(() => {
     const minPrice = tickToPriceStr(position.tickLower, 2);
-    return `${minPrice} ${tokenB.symbol} per ${tokenA.symbol}`;
+    return `1 ${tokenA.symbol} = ${minPrice} ${tokenB.symbol}`;
   }, [position.tickLower, tokenA.symbol, tokenB.symbol]);
 
   const maxTickLabel = useMemo(() => {
     const maxPrice = tickToPriceStr(position.tickUpper, 2);
-    return `${maxPrice} ${tokenB.symbol} per ${tokenA.symbol}`;
+    return `1 ${tokenA.symbol} = ${maxPrice} ${tokenB.symbol}`;
   }, [position.tickUpper, tokenA.symbol, tokenB.symbol]);
 
   const tokenABalanceUSD = useMemo(() => {

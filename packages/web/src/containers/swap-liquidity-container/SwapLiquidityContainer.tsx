@@ -82,7 +82,7 @@ const SwapLiquidityContainer: React.FC = () => {
     const pools: PoolModel[] = poolList.filter((item: PoolModel) => (item.poolPath?.includes(`${tokenA}:${tokenB}`) || item.poolPath?.includes(`${tokenB}:${tokenA}`)));
     return pools;
   }, [poolList, tokenA, tokenB]);
-
+  
   const liquidityListRandom = useMemo(() => {
     let count = 0;
     const temp = dummyLiquidityList.map((_) => {
@@ -93,7 +93,7 @@ const SwapLiquidityContainer: React.FC = () => {
           ..._,
           volume: `$${convertLargePrice(poolItem[0].volume.toString(), 6)}`,
           liquidity: `$${convertLargePrice(poolItem[0].tvl.toString(), 6)}`,
-          apr: `${Number(poolItem[0].apr).toFixed(2)}%`,
+          apr: poolItem[0].apr === "" ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
           active: true,
           id: poolItem[0].id,
         };

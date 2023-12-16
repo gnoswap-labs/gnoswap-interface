@@ -41,9 +41,12 @@ export const GridWrapper = styled.div`
   }
 
   .card-skeleton {
-    height: 394px;
+    height: 278px;
     border-radius: 10px;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  }
+  ${media.tablet} {
+    grid-template-columns: repeat(3, 1fr);
   }
   ${media.mobile} {
     overflow-x: auto;

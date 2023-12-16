@@ -41,7 +41,7 @@ export const DoubleLogoWrapper = styled.div<DoubleLogoStyleProps>`
     color: ${({ theme }) => theme.color.text02};
     background-color: ${({ theme }) => theme.color.text04};
     font-size: ${({ size = 36 }) => {
-      return `${size === 36 ? "14" : size === 32 ? "12" : (size === 28 || size === 24) ? "10" : (size === 21 || size === 20) ? "8" : "6"}px`;
+      return `${size === 36 ? "13" : size === 32 ? "12" : size === 28 ? "10" : size === 24 ? "9" : size === 21 ? "8" : size === 20 ? "7" : "6"}px`;
     }};
   }
 `;

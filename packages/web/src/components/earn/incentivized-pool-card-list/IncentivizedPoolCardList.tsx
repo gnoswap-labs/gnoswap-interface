@@ -55,7 +55,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
           ))}
         {isFetched &&
           incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
-          (Array((incentivizedPools.length > 4 ? 8 : (width <= 1180 && width >= 1000) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
+          (Array(((incentivizedPools.length > 4 && width > 1180) ? 8 : (width <= 1180 && width >= 1000) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
             <BlankIncentivizedCard key={index}/>
           ))}
         {!isFetched &&

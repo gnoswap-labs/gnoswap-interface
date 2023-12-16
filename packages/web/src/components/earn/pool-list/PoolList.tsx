@@ -76,12 +76,12 @@ const PoolList: React.FC<TokenListProps> = ({
         routeItem={routeItem}
         themeKey={themeKey}
       />
-      <Pagination
+      {totalPage > 1 && <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
         siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-      />
+      />}
     </PoolListWrapper>
   );
 };

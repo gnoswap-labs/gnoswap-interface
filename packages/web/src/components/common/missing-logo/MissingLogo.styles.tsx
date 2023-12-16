@@ -26,13 +26,19 @@ export const LogoWrapper = styled.div<Props>`
     }};
     font-weight: 600;
     font-size: ${({ width }) => {
-        return `${width === 36 ? "14" : width === 32 ? "12" : (width === 28 || width === 24) ? "10" : (width === 21 || width === 20) ? "8" : "6"}px`;
+        return `${width === 36 ? "13" : width === 32 ? "12" : width === 28 ? "10" : width === 24 ? "9" : width === 21 ? "8" : width === 20 ? "7" : "6"}px`;
     }};
     ${media.mobile} {
         font-size: ${({ mobileWidth }) => {
-            return `${mobileWidth === 36 ? "14" : mobileWidth === 32 ? "12" : (mobileWidth === 28 || mobileWidth === 24) ? "10" : (mobileWidth === 21 || mobileWidth === 20) ? "8" : "6"}px`;
+        return `${mobileWidth === 36 ? "13" : mobileWidth === 32 ? "12" : mobileWidth === 28 ? "10" : mobileWidth === 24 ? "9" : mobileWidth === 21 ? "8" : mobileWidth === 20 ? "7" : "6"}px`;
         }};
         height: ${({ mobileWidth }) => {
+            return `${mobileWidth}px`;
+        }};
+        min-width: ${({ mobileWidth }) => {
+            return `${mobileWidth}px`;
+        }};
+        width: ${({ mobileWidth }) => {
             return `${mobileWidth}px`;
         }};
     }

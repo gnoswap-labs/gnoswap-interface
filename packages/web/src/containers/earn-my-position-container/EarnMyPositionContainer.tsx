@@ -34,10 +34,10 @@ const EarnMyPositionContainer: React.FC<
   const router = useRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { updateTokenPrices } = useTokenData();
-  const { isFetchedPositions, updatePositions } = usePoolData();
+  const { updatePositions } = usePoolData();
   const { width } = useWindowSize();
   const divRef = useRef<HTMLDivElement | null>(null);
-
+  const [isFetched, setIsFetched] = useState(true);
   const { openModal } = useConnectWalletModal();
   const { isError, getPositions } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
@@ -45,7 +45,7 @@ const EarnMyPositionContainer: React.FC<
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 1400 ? setMobile(true) : setMobile(false);
+      window.innerWidth < 930 ? setMobile(true) : setMobile(false);
     }
   };
 
@@ -59,9 +59,14 @@ const EarnMyPositionContainer: React.FC<
   }, []);
 
   useEffect(() => {
-    getPositions().then(setPositions);
+    setIsFetched(false);
+    getPositions().then((e) => {
+      setPositions(e);
+      setIsFetched(true);
+    }).catch(() => setIsFetched(false));
   }, [getPositions]);
-
+  console.log(isFetched);
+  
   const connect = useCallback(() => {
     if (!connected) {
       openModal();
@@ -91,19 +96,10 @@ const EarnMyPositionContainer: React.FC<
   };
 
   const showPagination = useMemo(() => {
-    if (width < 1400) {
-      if (width > 1000) {
-        const totalWidth = positions.length * 322 + 80 + 24 * positions.length;
-        return totalWidth > width;
-      } else if (width > 768) {
-        const totalWidth = positions.length * 322 + 80 + 12 * positions.length;
-        return totalWidth > width;
-      } else {
-        const totalWidth = positions.length * 290 + 32 + 12 * positions.length;
-        return totalWidth > width;
-      }
-    } else {
+    if (width >= 930) {
       return false;
+    } else {
+      return true;
     }
   }, [positions, width]);
 
@@ -114,13 +110,23 @@ const EarnMyPositionContainer: React.FC<
       setPage(1);
     }
   }, [page]);
+
+  const dataMapping = useMemo(() => {
+    if (page === 1) {
+      if (width > 1180) {
+        return positions.slice(0, 4);
+      } else if (width > 930) {
+        return positions.slice(0, 3);
+      } else return positions;
+    } else return positions;
+  }, [width, page, positions]);
   return (
     <EarnMyPositions
       connected={connected}
       connect={connect}
-      fetched={isFetchedPositions}
+      fetched={isFetched}
       isError={isError}
-      positions={page === 1 && width > 1000 ? positions.slice(0, 4) : positions}
+      positions={dataMapping}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
       moveEarnStake={moveEarnStake}

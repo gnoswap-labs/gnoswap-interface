@@ -212,8 +212,6 @@ const TokenChartContainer: React.FC = () => {
     if (currentToken) {
 
     const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
-      console.log(dataToday);
-      
       setTokenInfo(() => ({
         token: {
           name: currentToken.name,
