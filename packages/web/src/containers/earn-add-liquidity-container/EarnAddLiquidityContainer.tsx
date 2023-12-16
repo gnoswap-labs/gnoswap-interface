@@ -393,6 +393,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [selectPool.feeTier]);
 
+  useEffect(() => {
+    const isEarnAdd = swapValue.tokenA !== null && swapValue.tokenB !== null;
+    setIsEarnAdd(isEarnAdd);
+  }, [setIsEarnAdd, swapValue]);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}

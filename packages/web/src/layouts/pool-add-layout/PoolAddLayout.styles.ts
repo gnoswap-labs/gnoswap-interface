@@ -53,7 +53,7 @@ export const wrapper = (theme: Theme) => css`
       padding: 0 40px;
       ${mixins.flexbox("column", "flex-start", "center")};
     }
-    .wrapper-sub-content { {
+    .wrapper-sub-content {
       ${mixins.flexbox("column", "flex-start", "center")};
       width: 100%;
     }
