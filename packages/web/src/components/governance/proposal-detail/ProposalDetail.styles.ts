@@ -43,6 +43,7 @@ export const ProposalDetailWrapper = styled.div`
     gap: 12px;
     ${mixins.flexbox("row", "center", "center")};
     ${media.mobile} {
+      gap: 8px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
     }
   }
@@ -65,7 +66,7 @@ export const ProposalDetailWrapper = styled.div`
       fill: ${({ theme }) => theme.color.red01};
     }
     .passed-icon * {
-      fill: ${({ theme }) => theme.color.point};
+      fill: ${({ theme }) => theme.color.background04};
     }
     .cancelled-icon * {
       fill: ${({ theme }) => theme.color.icon03};
@@ -78,7 +79,7 @@ export const ProposalDetailWrapper = styled.div`
     color: ${({ theme }) => theme.color.red01};
   }
   .passed {
-    color: ${({ theme }) => theme.color.point};
+    color: ${({ theme }) => theme.color.background04};
   }
   .cancelled {
     color: ${({ theme }) => theme.color.icon03};

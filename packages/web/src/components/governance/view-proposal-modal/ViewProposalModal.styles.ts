@@ -109,13 +109,13 @@ export const ModalHeaderWrapper = styled.div`
         height: 16px;
       }
       .success-icon * {
-        fill: ${({ theme }) => theme.color.green02};
+        fill: ${({ theme }) => theme.color.green01};
       }
       .failed-icon * {
-        fill: ${({ theme }) => theme.color.red02};
+        fill: ${({ theme }) => theme.color.red01};
       }
       .passed-icon * {
-        fill: ${({ theme }) => theme.color.point};
+        fill: ${({ theme }) => theme.color.background04};
       }
       .cancelled-icon * {
         fill: ${({ theme }) => theme.color.icon03};
@@ -123,13 +123,13 @@ export const ModalHeaderWrapper = styled.div`
     }
 
     .success {
-      color: ${({ theme }) => theme.color.green02};
+      color: ${({ theme }) => theme.color.green01};
     }
     .failed {
-      color: ${({ theme }) => theme.color.red02};
+      color: ${({ theme }) => theme.color.red01};
     }
     .passed {
-      color: ${({ theme }) => theme.color.point};
+      color: ${({ theme }) => theme.color.background04};
     }
     .cancelled {
       color: ${({ theme }) => theme.color.icon03};
@@ -223,7 +223,7 @@ export const ProgressBar = styled.div<progressBarProps>`
     }};
     height: 100%;
     border-radius: 8px;
-    background-color: ${({ theme }) => theme.color.point};
+    background-color: ${({ theme }) => theme.color.background04};
   }
   .progress-bar-no-of-quorum {
     z-index: 2;

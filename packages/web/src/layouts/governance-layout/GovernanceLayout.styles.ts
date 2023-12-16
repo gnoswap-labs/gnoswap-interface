@@ -12,11 +12,11 @@ export const GovernanceLayoutWrapper = styled.div`
     ${mixins.flexbox("column", "center", "flex-start")};
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
     width: 100%;
-    padding: 100px 0px;
+    padding-top: 100px;
     gap: 36px;
     @media (max-width: 1180px) {
       max-width: ${ContainerWidth.TABLET_CONTAINER};
-      padding: 60px 0px;
+      padding-top: 60px;
       gap: 24px;
     }
     ${media.mobile} {
@@ -96,7 +96,30 @@ export const GovernanceLayoutWrapper = styled.div`
     }
   }
 
+  .list-wrapper {
+    margin-top: 60px;
+    width: 100%;
+    padding-top: 100px;
+    padding-bottom: 48px;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 26, 41, 0.5) 0%,
+      rgba(20, 26, 41, 0) 100%
+    );
+
+    ${media.tablet} {
+      padding-top: 63.5px;
+      margin-top: 40px;
+    }
+
+    ${media.mobile} {
+      padding-top: 24px;
+      margin-top: 24px;
+    }
+  }
+
   .summary-container {
+    margin: 0 auto;
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
@@ -105,6 +128,7 @@ export const GovernanceLayoutWrapper = styled.div`
     @media (max-width: 1180px) {
       gap: 16px;
     }
+
     ${media.mobile} {
       padding: 12px 0px 24px 0px;
     }

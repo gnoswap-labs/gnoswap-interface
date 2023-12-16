@@ -41,9 +41,11 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
               Click here <IconStrokeArrowRight className="link-icon" />
             </Link>
           </LinkButton>
-          {list}
         </div>
       </section>
+      <div className="list-wrapper">
+        <div className="summary-container">{list}</div>
+      </div>
       {footer}
       {isShowLearnMoreModal && (
         <LearnMoreModal setIsShowLearnMoreModal={setIsShowLearnMoreModal} />

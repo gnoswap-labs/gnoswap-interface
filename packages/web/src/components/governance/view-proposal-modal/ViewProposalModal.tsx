@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -34,6 +35,7 @@ import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import useLockedBody from "@hooks/common/use-lock-body";
 
 dayjs.extend(relative);
 
@@ -173,6 +175,7 @@ const ViewProposalModal: React.FC<Props> = ({
   const [optionVote, setOptionVote] = useState<OptionVote>("");
 
   const modalRef = useRef<HTMLDivElement | null>(null);
+  useLockedBody(true);
 
   const handleResize = () => {
     if (typeof window !== "undefined" && modalRef.current) {
@@ -199,6 +202,7 @@ const ViewProposalModal: React.FC<Props> = ({
 
   const handleSelectVoting = useCallback(() => {
     handleSelectVote();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionVote, handleSelectVote]);
 
   const disableButton = useMemo(() => {
@@ -209,7 +213,7 @@ const ViewProposalModal: React.FC<Props> = ({
       return false;
     }
     return optionVote === "";
-  },[isConnected, isSwitchNetwork, optionVote]);
+  }, [isConnected, isSwitchNetwork, optionVote]);
 
   const textButton = useMemo(() => {
     if (!isConnected) {
@@ -223,7 +227,7 @@ const ViewProposalModal: React.FC<Props> = ({
       : optionVote === ""
       ? "Select Voting Option"
       : "Vote";
-  },[isConnected, isSwitchNetwork, proposalDetail, optionVote]);
+  }, [isConnected, isSwitchNetwork, proposalDetail, optionVote]);
 
   if (!proposalDetail) return null;
 
@@ -328,11 +332,15 @@ const ViewProposalModal: React.FC<Props> = ({
                 style={{
                   fullWidth: true,
                   height: breakpoint !== DEVICE_TYPE.MOBILE ? 57 : 41,
-                  fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
+                  fontType:
+                    breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
                   textColor: "text09",
                   bgColor: "background17",
-                  width: breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
-                  hierarchy: disableButton ? undefined : ButtonHierarchy.Primary,
+                  width:
+                    breakpoint !== DEVICE_TYPE.MOBILE ? undefined : "304px",
+                  hierarchy: disableButton
+                    ? undefined
+                    : ButtonHierarchy.Primary,
                 }}
                 onClick={handleSelectVoting}
               />
@@ -341,7 +349,7 @@ const ViewProposalModal: React.FC<Props> = ({
           </div>
         </ViewProposalModalWrapper>
       </ViewProposalModalBackground>
-      <Overlay onClick={() => setIsShowProposalModal(false)}/>
+      <Overlay onClick={() => setIsShowProposalModal(false)} />
     </>
   );
 };
