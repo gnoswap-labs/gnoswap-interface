@@ -133,19 +133,6 @@ export const SelectTokenWrapper = styled.div`
           width: 24px;
           height: 24px;
         }
-        .missing-logo {
-          ${mixins.flexbox("row", "center", "center")};
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          color: ${({ theme }) => theme.color.text02};
-          background-color: ${({ theme }) => theme.color.text04};
-          ${fonts.p7}
-          ${media.mobile} {
-            font-size: 8px;
-            line-height: 10px;
-          }
-        }
         &.border-button-none {
           border-color: transparent;
         }
@@ -192,19 +179,6 @@ export const SelectTokenWrapper = styled.div`
         .token-logo {
           width: 32px;
           height: 32px;
-        }
-        .missing-logo {
-          ${mixins.flexbox("row", "center", "center")};
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          color: ${({ theme }) => theme.color.text02};
-          background-color: ${({ theme }) => theme.color.text04};
-          ${fonts.p6}
-          ${media.mobile} {
-            font-size: 8px;
-            line-height: 10px;
-          }
         }
         gap: 8px;
         .token-name {

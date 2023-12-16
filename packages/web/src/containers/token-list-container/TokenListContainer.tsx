@@ -199,8 +199,9 @@ const TokenListContainer: React.FC = () => {
   );
 
   const firstData = useMemo(() => {
-    const temp = tokens.map((item: TokenModel) => {
-      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === (item.path === "gnot" ? WRAPPED_GNOT_PATH : item.path))?.[0] ?? {};
+    const temp = tokens.filter(((token: TokenModel) => token.path !== WRAPPED_GNOT_PATH)).map((item: TokenModel) => {
+      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
+      const tempGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === WRAPPED_GNOT_PATH)?.[0] ?? {};
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
       const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
@@ -236,7 +237,7 @@ const TokenListContainer: React.FC = () => {
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
         },
         last7days: temp?.last7Days?.map(item => Number(item.price || 0)) || [],
-        marketCap: `$${Math.floor(Number((isGnot ? Number(temp.marketCap) * Number(temp.usd) : temp.marketCap) || 0)).toLocaleString()}`,
+        marketCap: `$${Math.floor(Number((isGnot ? Number(tempGnot.marketCap) * Number(tempGnot.usd) : temp.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(temp.liquidity || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(temp.volume || 0)).toLocaleString()}`,
         price: `$${convertLargePrice(temp.usd || "0", 6)}`,

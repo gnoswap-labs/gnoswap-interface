@@ -101,7 +101,7 @@ const PoolListContainer: React.FC = () => {
   }, [keyword, poolListInfos, poolType]);
 
   const totalPage = useMemo(() => {
-    return Math.floor(sortedPoolListInfos.length / 20) + 1;
+    return Math.ceil(sortedPoolListInfos.length / 15);
   }, [sortedPoolListInfos.length]);
 
   const routeItem = (id: string) => {
@@ -161,7 +161,7 @@ const PoolListContainer: React.FC = () => {
 
   return (
     <PoolList
-      pools={sortedPoolListInfos}
+      pools={sortedPoolListInfos.slice(page * 15, (page +1 ) * 15)}
       isFetched={isFetchedPools}
       poolType={poolType}
       changePoolType={changePoolType}

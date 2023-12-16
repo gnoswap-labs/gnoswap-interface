@@ -4,6 +4,7 @@ import { cx } from "@emotion/css";
 import { cardStyle, loadingWrapper } from "@components/token/gainer-and-loser/CardListCommonStyle.styles";
 import Link from "next/link";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface GainerCardListProps {
   gainers: any[];
@@ -24,7 +25,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain })
         <Link href={`/tokens/${gainer.symbol}?tokenB=${gainer.path}&direction=EXACT_IN`} key={idx}>
           <div className="card-wrap">
             <div>
-              {gainer?.logoURI ? <img src={gainer?.logoURI} alt="logo" /> : <div className="missing-logo">{gainer?.symbol.slice(0,3)}</div>}
+              <MissingLogo symbol={gainer.symbol} url={gainer.logoURI} className="token-image" width={20} mobileWidth={20}/>
               <span className="name">{gainer.name}</span>
               <span className="symbol">{gainer.symbol}</span>
             </div>

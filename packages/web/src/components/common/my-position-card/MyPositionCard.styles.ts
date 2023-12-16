@@ -82,9 +82,6 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
       .content {
         gap: 4px;
       }
-      .missing-logo {
-        
-      }
       .staking-icon {
         width: 16px;
         height: 16px;

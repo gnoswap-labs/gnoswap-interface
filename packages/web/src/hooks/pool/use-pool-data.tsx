@@ -22,12 +22,12 @@ export const usePoolData = () => {
     const sortedTokens = pools.sort((p1, p2) => {
       const p2Apr = p2.apr;
       const p1Apr = p1.apr;
-      return p2Apr - p1Apr;
+      return Number(p2Apr) - Number(p1Apr);
     }).filter((_, index) => index < 3);
     return sortedTokens?.map(pool => ({
       pool,
       upDown: "none",
-      content: `${pool.apr || 0}%`
+      content: pool.apr === "" ? "-" : `${pool.apr || 0}%`
     }));
   }, [pools]);
 

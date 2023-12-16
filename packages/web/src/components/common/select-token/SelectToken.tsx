@@ -9,6 +9,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -152,7 +153,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
               key={index}
               onClick={() => onClickToken(token)}
             >
-              {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
+              <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
               <span>{token.symbol}</span>
             </div>
           ))}
@@ -171,7 +172,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
+                <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={32} mobileWidth={32}/>
                 <TokenInfoWrapper className="token-info-detail" maxWidth={widthList[index]} tokenNameWidthList={tokenNameWidthList[index]}>
                   <div>
                     <span className="token-name" ref={tokenNameRef.current[index]}>{token.name.length > length ? `${token.name.slice(0, length)}...` : token.name}</span>

@@ -26,15 +26,6 @@ export const wrapper = (theme: Theme) => css`
     width: 20px;
     height: 20px;
   }
-  .missing-logo {
-    ${mixins.flexbox("row", "center", "center")};
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    color: ${theme.color.text02};
-    background-color: ${theme.color.text04};
-    ${fonts.p7}
-  }
   .name {
     margin: 0px 8px;
   }

@@ -19,6 +19,7 @@ import { numberToFormat } from "@utils/string-utils";
 import { usePositionModal } from "@hooks/common/use-position-modal";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -107,11 +108,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <div className="amount-container">
                         <span>{swapTokenInfo.tokenAAmount}</span>
                         <div className="button-wrapper">
-                          {swapSummaryInfo.tokenA.logoURI ? <img
-                            src={swapSummaryInfo.tokenA.logoURI}
-                            alt="logo"
-                            className="coin-logo"
-                          /> : <div className="missing-logo">{swapSummaryInfo.tokenA.symbol.slice(0,3)}</div>}
+                          <MissingLogo symbol={swapSummaryInfo.tokenA.symbol} url={swapSummaryInfo.tokenA.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
                           <span>{swapSummaryInfo.tokenA.symbol}</span>
                         </div>
                       </div>
@@ -128,11 +125,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <div className="amount-container">
                         <span>{swapTokenInfo.tokenBAmount}</span>
                         <div className="button-wrapper">
-                          {swapSummaryInfo.tokenB.logoURI ? <img
-                            src={swapSummaryInfo.tokenB.logoURI}
-                            alt="logo"
-                            className="coin-logo"
-                          /> : <div className="missing-logo">{swapSummaryInfo.tokenB.symbol.slice(0,3)}</div>}
+                          <MissingLogo symbol={swapSummaryInfo.tokenB.symbol} url={swapSummaryInfo.tokenB.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
                           <span>{swapSummaryInfo.tokenB.symbol}</span>
                         </div>
                       </div>

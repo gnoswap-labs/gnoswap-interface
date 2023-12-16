@@ -21,15 +21,6 @@ export const TokenChartInfoWrapper = styled.div`
         width: 36px;
         height: 36px;
       }
-      .missing-logo {
-        ${mixins.flexbox("row", "center", "center")};
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        color: ${({ theme }) => theme.color.text02};
-        background-color: ${({ theme }) => theme.color.text04};
-        ${fonts.p6}
-      }
       .token-name {
         color: ${({ theme }) => theme.color.text02};
         ${fonts.body3};

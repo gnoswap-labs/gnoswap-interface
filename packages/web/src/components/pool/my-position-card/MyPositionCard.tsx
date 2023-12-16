@@ -20,6 +20,7 @@ import { MyPositionAprContent } from "./MyPositionCardAprContent";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -194,16 +195,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   />
                 </SkeletonEarnDetailWrapper>}
                 {!loading && <div className="coin-info">
-                  {tokenA.logoURI ? <img
-                    src={tokenA.logoURI}
-                    className="token-logo"
-                    alt="token logo"
-                  /> : <div className="missing-logo">{tokenA.symbol.slice(0,3)}</div>}
-                  {tokenB.logoURI ? <img
-                    src={tokenB.logoURI}
-                    className="token-logo"
-                    alt="token logo"
-                  />: <div className="missing-logo">{tokenB.symbol.slice(0,3)}</div>}
+                  <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="token-logo" width={36} mobileWidth={24}/>
+                  <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="token-logo" width={36} mobileWidth={24}/>
                 </div>}
                 {!loading && <span className="product-id">ID #{position.id}</span>}
               </>
@@ -216,16 +209,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   />
                 </SkeletonEarnDetailWrapper>}
                   {!loading && <div className="coin-info">
-                    {tokenA.logoURI ? <img
-                      src={tokenA.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    /> : <div className="missing-logo">{tokenA.symbol.slice(0,3)}</div>}
-                    {tokenB.logoURI ? <img
-                      src={tokenB.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    /> : <div className="missing-logo">{tokenB.symbol.slice(0,3)}</div>}
+                    <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="token-logo" width={36} mobileWidth={24}/>
+                    <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="token-logo" width={36} mobileWidth={24}/>
                   </div>}
                   {!loading && <span className="product-id">ID {position.id}</span>}
                 </div>

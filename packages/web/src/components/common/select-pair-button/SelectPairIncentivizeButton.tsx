@@ -3,6 +3,7 @@ import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import { wrapper } from "./SelectPairButton.styles";
 import { TokenModel } from "@models/token/token-model";
 import { useSelectTokenIncentivizeModal } from "@hooks/token/use-select-token-incentivize-modal";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 interface SelectPairIncentivizeButtonProps {
   token: TokenModel | null;
@@ -13,12 +14,6 @@ interface SelectPairIncentivizeButtonProps {
   isHiddenArrow?: boolean;
   className?: string;
 }
-
-const Logo = ({ token }: { token: TokenModel }) => {
-  return <>
-    {token.logoURI ? <img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol}</div>}
-  </>;
-};
 
 const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = ({
   token,
@@ -47,7 +42,7 @@ const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = 
     >
       {token ? (
         <div className="token-pair-wrapper">
-          <Logo token={token}/>
+          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (

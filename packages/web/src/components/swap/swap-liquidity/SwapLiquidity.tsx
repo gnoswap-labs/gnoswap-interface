@@ -8,6 +8,7 @@ import {
 } from "@containers/swap-liquidity-container/SwapLiquidityContainer";
 import Link from "next/link";
 import { TokenModel } from "@models/token/token-model";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];
@@ -33,12 +34,6 @@ const getPathname = (liquidity: LiquidityInfo) => {
   };
 };
 
-const Logo = ({ token }: { token: TokenModel }) => {
-  return <>
-    {token.logoURI ? <img src={token.logoURI} alt="token-logo" className="coin-logo" /> : <div className="missing-logo">{token.symbol}</div>}
-  </>;
-};
-
 const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
   liquiditys,
   tokenA,
@@ -51,10 +46,10 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
       <div className="box-header">
         <div className="coin-pair">
           <div className="gnos-image-wrapper">
-            <Logo token={tokenA} />
+            <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
           </div>
           <div className="gnot-image-wrapper">
-            <Logo token={tokenB} />
+            <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
           </div>
         </div>
         <span>

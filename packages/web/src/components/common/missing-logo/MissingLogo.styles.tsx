@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
-import mixins from "@styles/mixins";
 
 interface Props {
     width: number;
@@ -8,7 +7,9 @@ interface Props {
 }
 
 export const LogoWrapper = styled.div<Props>`
-    ${mixins.flexbox("row", "center", "center")};
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
     min-width: ${({ width }) => {
         return `${width}px`;
     }};

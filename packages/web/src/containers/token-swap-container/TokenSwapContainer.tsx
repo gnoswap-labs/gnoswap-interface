@@ -69,10 +69,10 @@ const TokenSwapContainer: React.FC = () => {
   const {
     tokens,
     tokenPrices,
-    balances,
     updateTokens,
     updateTokenPrices,
     updateBalances,
+    displayBalanceMap,
   } = useTokenData();
   const {
     connected: connectedWallet,
@@ -183,25 +183,25 @@ const TokenSwapContainer: React.FC = () => {
 
   const checkBalance = useCallback(
     (token: TokenModel, amount: string) => {
-      const tokenBalance = balances[token.priceId] || 0;
+      const tokenBalance = displayBalanceMap[token.priceId] || 0;
       return BigNumber(tokenBalance).isGreaterThan(amount);
     },
-    [balances]
+    [displayBalanceMap]
   );
 
   const tokenABalance = useMemo(() => {
-    if (tokenA && !Number.isNaN(balances[tokenA.priceId])) {
-      return BigNumber(balances[tokenA.priceId] || 0).toFormat();
+    if (tokenA && !Number.isNaN(displayBalanceMap[tokenA.priceId])) {
+      return BigNumber(displayBalanceMap[tokenA.priceId] || 0).toFormat();
     }
     return "-";
-  }, [balances, tokenA]);
+  }, [displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (tokenB && !Number.isNaN(balances[tokenB.priceId])) {
-      return BigNumber(balances[tokenB.priceId] || 0).toFormat();
+    if (tokenB && !Number.isNaN(displayBalanceMap[tokenB.priceId])) {
+      return BigNumber(displayBalanceMap[tokenB.priceId] || 0).toFormat();
     }
     return "-";
-  }, [balances, tokenB]);
+  }, [displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[tokenA.priceId]) {
@@ -529,7 +529,8 @@ const TokenSwapContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-
+  console.log(swapTokenInfo, "swapTokenInfo");
+  
   return (
     <>
       <TokenSwap

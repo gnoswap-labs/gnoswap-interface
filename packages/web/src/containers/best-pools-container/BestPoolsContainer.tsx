@@ -77,7 +77,7 @@ const BestPoolsContainer: React.FC = () => {
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
         tvl: `$${convertLargePrice(item.tvl)}`,
-        apr: `${Number(item.apr).toFixed(2)}%`,
+        apr: `${item.apr === "" ? "-" : `${Number(item.apr).toFixed(2)}%`}`,
       };
     });
   }, [bestPools, pools.toString()]);

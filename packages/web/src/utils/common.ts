@@ -63,7 +63,7 @@ export const checkPositivePrice = (currentPrice: string, checkPrice: string, fix
     status: status,
     value: value.includes("Infinity") ? "0" : value,
     isEmpty: isEmpty,
-    percent: percent,
+    percent: percent.includes("Infinity") ? "0%" : percent,
     price: price,
   };
 };

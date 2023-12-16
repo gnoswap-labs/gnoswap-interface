@@ -175,19 +175,6 @@ export const SelectTokenIncentivizeWrapper = styled.div`
         width: 24px;
         height: 24px;
       }
-      .missing-logo {
-        ${mixins.flexbox("row", "center", "center")};
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        color: ${({ theme }) => theme.color.text02};
-        background-color: ${({ theme }) => theme.color.text04};
-        ${fonts.p6}
-        ${media.mobile} {
-          font-size: 8px;
-          line-height: 10px;
-        }
-      }
       .token-info {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;

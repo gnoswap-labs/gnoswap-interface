@@ -3,6 +3,7 @@ import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import { wrapper } from "./SelectPairButton.styles";
 import { useSelectTokenModal } from "@hooks/token/use-select-token-modal";
 import { TokenModel } from "@models/token/token-model";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 interface SelectPairButtonProps {
   token: TokenModel | null;
@@ -41,7 +42,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
     >
       {token ? (
         <div>
-          {token.logoURI ? <img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
+          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
           <span className="token-symbol">{token.symbol}</span>
         </div>
       ) : (
