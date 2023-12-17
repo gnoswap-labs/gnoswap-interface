@@ -26,16 +26,19 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 }) => (
   <WalletBalanceDetailWrapper>
     <WalletBalanceDetailInfo
+      loading={balanceDetailInfo.loadingBalance}
       title={"Available Balance"}
       value={balanceDetailInfo.availableBalance}
       tooltip={"Total sum of assets not deposited in liquidity pools."}
     />
     <WalletBalanceDetailInfo
+      loading={balanceDetailInfo.loadingPositions}
       title={"Staked Positions"}
       value={balanceDetailInfo.stakedLP}
       tooltip={"Total sum of staked positions."}
     />
     <WalletBalanceDetailInfo
+      loading={balanceDetailInfo.loadingPositions}
       title={"Total Claimed Rewards"}
       value={balanceDetailInfo.unstakingLP}
       tooltip={"The cumulative sum of claimed rewards."}
@@ -56,12 +59,17 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         <div className="button-wrapper">
           <ClaimAllButton
             onClick={claimAll}
-            disabled={connected === false || isSwitchNetwork}
+            disabled={
+              connected === false ||
+              isSwitchNetwork ||
+              Number(balanceDetailInfo.claimableRewards) === 0
+            }
           />
         </div>
       </InfoWrapper>
     ) : (
       <WalletBalanceDetailInfo
+        loading={balanceDetailInfo.loadingPositions}
         title={"Claimable Rewards"}
         value={balanceDetailInfo.claimableRewards}
         tooltip={"Total sum of unclaimed rewards."}
@@ -71,7 +79,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
             disabled={
               connected === false ||
               isSwitchNetwork ||
-              Number(balanceDetailInfo.claimableRewards.slice(1)) === 0
+              Number(balanceDetailInfo.claimableRewards) === 0
             }
           />
         }

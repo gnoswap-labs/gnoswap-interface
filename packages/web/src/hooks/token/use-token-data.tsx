@@ -2,7 +2,10 @@ import { GNOT_TOKEN } from "@common/values/token-constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
+import {
+  CardListTokenInfo,
+  UpDownType,
+} from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenState } from "@states/index";
@@ -24,7 +27,7 @@ export const useTokenData = () => {
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
   const { gnot } = useGnotToGnot();
-  
+
   const gnotToken = useMemo((): TokenModel => {
     const token = tokens.find(token => token.path === "gnot");
     if (token) {
@@ -39,98 +42,160 @@ export const useTokenData = () => {
       const balance = balances[key];
       const token = tokens.find(token => token.priceId === key);
       const exist = token && balance !== null && balance !== undefined;
-      tokenBalanceMap[key] = exist ? makeDisplayTokenAmount(token, balance) : null;
+      tokenBalanceMap[key] = exist
+        ? makeDisplayTokenAmount(token, balance)
+        : null;
     });
     return tokenBalanceMap;
   }, [balances, tokens]);
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
-    const sortedTokens = tokens.sort((t1, t2) => {
-      if (tokenPrices[t1.path] && tokenPrices[t2.path]) {
-        return BigNumber(tokenPrices[t2.path].volume).toNumber() - BigNumber(tokenPrices[t1.path].volume).toNumber();
-      }
-      if (tokenPrices[t2.path]) {
-        return 1;
-      }
-      if (tokenPrices[t1.path]) {
-        return -1;
-      }
-      return 0;
-    }).filter((_, index) => index < 3);
+    const sortedTokens = tokens
+      .sort((t1, t2) => {
+        if (tokenPrices[t1.path] && tokenPrices[t2.path]) {
+          return (
+            BigNumber(tokenPrices[t2.path].volume).toNumber() -
+            BigNumber(tokenPrices[t1.path].volume).toNumber()
+          );
+        }
+        if (tokenPrices[t2.path]) {
+          return 1;
+        }
+        if (tokenPrices[t1.path]) {
+          return -1;
+        }
+        return 0;
+      })
+      .filter((_, index) => index < 3);
     return sortedTokens.map(token => {
       const tokenPrice = tokenPrices[token.priceId];
-      if (!tokenPrice || BigNumber(tokenPrice.pricesBefore.latestPrice).isNaN() || BigNumber(tokenPrice.pricesBefore.priceToday).isNaN()) {
+      if (
+        !tokenPrice ||
+        BigNumber(tokenPrice.pricesBefore.latestPrice).isNaN() ||
+        BigNumber(tokenPrice.pricesBefore.priceToday).isNaN()
+      ) {
         return {
           token: {
             ...token,
-            symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-            name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-            logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
+            symbol:
+              token.path === WRAPPED_GNOT_PATH
+                ? gnot?.symbol || ""
+                : token.symbol,
+            name:
+              token.path === WRAPPED_GNOT_PATH ? gnot?.name || "" : token.name,
+            logoURI:
+              token.path === WRAPPED_GNOT_PATH
+                ? gnot?.logoURI || ""
+                : token.logoURI,
           },
           upDown: "none",
-          content: "-"
+          content: "-",
         };
       }
-      const data1D = checkPositivePrice(tokenPrice.pricesBefore.latestPrice, tokenPrice.pricesBefore.priceToday);
+      const data1D = checkPositivePrice(
+        tokenPrice.pricesBefore.latestPrice,
+        tokenPrice.pricesBefore.priceToday,
+      );
       return {
         token: {
           ...token,
-          symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-          name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-          logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
+          symbol:
+            token.path === WRAPPED_GNOT_PATH
+              ? gnot?.symbol || ""
+              : token.symbol,
+          name:
+            token.path === WRAPPED_GNOT_PATH ? gnot?.name || "" : token.name,
+          logoURI:
+            token.path === WRAPPED_GNOT_PATH
+              ? gnot?.logoURI || ""
+              : token.logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percent.replace(/[+-]/g, ""),
       };
     });
   }, [tokens, tokenPrices]);
-  
+
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {
-    const sortedTokens = tokens.sort((t1, t2) => {
-      const createTimeOfToken1 = new Date(t1.createdAt).getTime();
-      const createTimeOfToken2 = new Date(t2.createdAt).getTime();
-      return createTimeOfToken2 - createTimeOfToken1;
-    }).filter((_: TokenModel) => !!_.logoURI);
-    return sortedTokens.map(token => (
-      tokenPrices[token.path] ? {
-        token: {
-          ...token,
-          symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-          name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-          logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
-        },
-        upDown: "none" as UpDownType,
-        content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`
-      } : {
-        token: {
-          ...token,
-          symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-          name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-          logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
-        },
-        upDown: "none" as UpDownType,
-        content: "-"
-      })).slice(0,3);
+    const sortedTokens = tokens
+      .sort((t1, t2) => {
+        const createTimeOfToken1 = new Date(t1.createdAt).getTime();
+        const createTimeOfToken2 = new Date(t2.createdAt).getTime();
+        return createTimeOfToken2 - createTimeOfToken1;
+      })
+      .filter((_: TokenModel) => !!_.logoURI);
+    return sortedTokens
+      .map(token =>
+        tokenPrices[token.path]
+          ? {
+              token: {
+                ...token,
+                symbol:
+                  token.path === WRAPPED_GNOT_PATH
+                    ? gnot?.symbol || ""
+                    : token.symbol,
+                name:
+                  token.path === WRAPPED_GNOT_PATH
+                    ? gnot?.name || ""
+                    : token.name,
+                logoURI:
+                  token.path === WRAPPED_GNOT_PATH
+                    ? gnot?.logoURI || ""
+                    : token.logoURI,
+              },
+              upDown: "none" as UpDownType,
+              content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`,
+            }
+          : {
+              token: {
+                ...token,
+                symbol:
+                  token.path === WRAPPED_GNOT_PATH
+                    ? gnot?.symbol || ""
+                    : token.symbol,
+                name:
+                  token.path === WRAPPED_GNOT_PATH
+                    ? gnot?.name || ""
+                    : token.name,
+                logoURI:
+                  token.path === WRAPPED_GNOT_PATH
+                    ? gnot?.logoURI || ""
+                    : token.logoURI,
+              },
+              upDown: "none" as UpDownType,
+              content: "-",
+            },
+      )
+      .slice(0, 3);
   }, [tokenPrices, tokens]);
 
-  const getTokenUSDPrice = useCallback((tokenAId: string, amount: bigint | string | number) => {
-    const tokenUSDPrice = tokenPrices[tokenAId]?.usd || "0";
-    if (!tokenUSDPrice || Number.isNaN(amount)) {
-      return null;
-    }
-    return BigNumber(amount.toString()).multipliedBy(tokenUSDPrice).toNumber();
-  }, [tokenPrices]);
+  const getTokenUSDPrice = useCallback(
+    (tokenAId: string, amount: bigint | string | number) => {
+      const tokenUSDPrice = tokenPrices[tokenAId]?.usd || "0";
+      if (!tokenUSDPrice || Number.isNaN(amount)) {
+        return null;
+      }
+      return BigNumber(amount.toString())
+        .multipliedBy(tokenUSDPrice)
+        .toNumber();
+    },
+    [tokenPrices],
+  );
 
-  const getTokenPriceRate = useCallback((tokenAId: string, tokenBId: string) => {
-    const tokenAUSDPrice = tokenPrices[tokenAId]?.usd;
-    const tokenBUSDPrice = tokenPrices[tokenBId]?.usd;
-    if (!tokenAUSDPrice || !tokenBUSDPrice) {
-      return null;
-    }
-    return BigNumber(tokenBUSDPrice).dividedBy(tokenAUSDPrice).toNumber();
-  }, [tokenPrices]);
+  const getTokenPriceRate = useCallback(
+    (tokenAId: string, tokenBId: string) => {
+      const tokenAUSDPrice = tokenPrices[tokenAId]?.usd;
+      const tokenBUSDPrice = tokenPrices[tokenBId]?.usd;
+      if (!tokenAUSDPrice || !tokenBUSDPrice) {
+        return null;
+      }
+      return BigNumber(tokenBUSDPrice).dividedBy(tokenAUSDPrice).toNumber();
+    },
+    [tokenPrices],
+  );
 
   async function updateTokens() {
+    setLoading(true);
     const response = await tokenRepository.getTokens();
     setLoading(false);
     setTokens(response?.tokens || []);
@@ -138,10 +203,13 @@ export const useTokenData = () => {
 
   async function updateTokenPrices() {
     const response = await tokenRepository.getTokenPrices();
-    const priceMap = response.prices.reduce<Record<string, TokenPriceModel>>((prev, current) => {
-      prev[current.path] = current;
-      return prev;
-    }, {});
+    const priceMap = response.prices.reduce<Record<string, TokenPriceModel>>(
+      (prev, current) => {
+        prev[current.path] = current;
+        return prev;
+      },
+      {},
+    );
     setTokenPrices(priceMap);
   }
 
@@ -154,12 +222,13 @@ export const useTokenData = () => {
         return null;
       }
       if (token.type === "native") {
-        return rpcProvider.getBalance(account.address, token.denom || "ugnot")
+        return rpcProvider
+          .getBalance(account.address, token.denom || "ugnot")
           .catch(() => null);
-      }
-      else if (token.type === "grc20") {
+      } else if (token.type === "grc20") {
         const param = `BalanceOf("${account.address}")`;
-        return rpcProvider.evaluateExpression(token.path, param)
+        return rpcProvider
+          .evaluateExpression(token.path, param)
           .then(evaluateExpressionToNumber)
           .catch(() => null);
       }

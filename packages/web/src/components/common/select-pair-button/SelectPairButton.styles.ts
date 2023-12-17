@@ -22,13 +22,13 @@ export const wrapper = (hasToken: boolean, disabled?: boolean, isHiddenArrow?: b
     > div {
       ${mixins.flexbox("row", "center", "center")}
       gap: 8px;
+      ${isHiddenArrow && "padding-right: 6px;"}
     }
     span {
       ${fonts.body9};
       color: ${theme.color.text01};
-      ${isHiddenArrow && "margin-right: 8px;"}
       &.token-symbol {
-        height: 18px;
+        /* height: 18px; */
       }
     }
     .token-logo {

@@ -1,6 +1,10 @@
-import React from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import {
+  SHAPE_TYPES,
+  skeletonBalanceDetail,
+} from "@constants/skeleton.constant";
+import React from "react";
 import {
   WalletBalanceDetailInfoTooltipContent,
   WalletBalanceDetailInfoWrapper,
@@ -11,6 +15,7 @@ interface WalletBalanceDetailInfoProps {
   value: string;
   tooltip?: string;
   button?: React.ReactNode;
+  loading: boolean;
 }
 
 const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
@@ -18,6 +23,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   value,
   tooltip,
   button,
+  loading,
 }) => {
   return (
     <WalletBalanceDetailInfoWrapper>
@@ -28,7 +34,18 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
         )}
       </div>
       <div className="value-wrapper">
-        <span className="value">{value}</span>
+        {loading ? (
+          <span
+            css={skeletonBalanceDetail("100px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+        ) : (
+          <span className="value">
+            $
+            {Number(value).toLocaleString("en-US", {
+              maximumFractionDigits: 2,
+            })}
+          </span>
+        )}
         {button && <div className="button-wrapper">{button}</div>}
       </div>
     </WalletBalanceDetailInfoWrapper>

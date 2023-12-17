@@ -2,7 +2,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useAtom } from "jotai";
@@ -11,12 +11,13 @@ const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const usePositionData = () => {
   const { positionRepository } = useGnoswapContext();
-  const { account } = useWallet();
+  const { account, connected } = useWallet();
   const { pools } = usePoolData();
   const [isError, setIsError] = useState(false);
   const { gnot } = useGnotToGnot();
   const [isFetchedPosition, setIsFetchedPosition] = useState(false);
   const [positions, setPositions] = useAtom(PoolState.positions);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
@@ -130,12 +131,23 @@ export const usePositionData = () => {
     [account?.address, pools, positionRepository],
   );
 
+  useEffect(() => {
+    setLoading(true);
+    getPositions().then((res) => {
+      setPositions(res);
+    }).catch(() => {
+      setPositions([]);
+    }).finally(() => setLoading(false));
+  }, [connected, getPositions]);
+
   return {
     availableStake,
     isError,
+    positions,
     isStakedPool,
     getPositions,
     getPositionsByPoolId,
     isFetchedPosition,
+    loading
   };
 };

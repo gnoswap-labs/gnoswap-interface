@@ -10,7 +10,7 @@ export interface TokenModel {
 
   type: "native" | "grc20";
 
-  address: string;
+  address?: string;
 
   priceId: string;
 
@@ -25,6 +25,8 @@ export interface TokenModel {
   logoURI: string;
 
   createdAt: string;
+
+  createdat?: string;
 
   isWrappedGasToken?: boolean;
 

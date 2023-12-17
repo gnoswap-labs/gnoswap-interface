@@ -1,6 +1,6 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import DepositModal from "./DepositModal";
+import DepositModal, { DEFAULT_DEPOSIT_GNOT } from "./DepositModal";
 import { action } from "@storybook/addon-actions";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -16,46 +16,7 @@ const Template: ComponentStory<typeof DepositModal> = args => (
 export const Default = Template.bind({});
 Default.args = {
   breakpoint: DEVICE_TYPE.WEB,
-  depositInfo: {
-    chainId: "dev",
-    createdAt: "2023-10-10T08:48:46+09:00",
-    name: "Gnoswap",
-    address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-    path: "gno.land/r/gns",
-    decimals: 4,
-    symbol: "GNOT",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    type: "grc20",
-    priceId: "gno.land/r/gns",
-  },
-  fromToken: {
-    chainId: "dev",
-    createdAt: "2023-10-10T08:48:46+09:00",
-    name: "Gnoswap",
-    address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-    path: "gno.land/r/gns",
-    decimals: 4,
-    symbol: "GNOT",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    type: "grc20",
-    priceId: "gno.land/r/gns",
-  },
-  toToken: {
-    chainId: "dev",
-    createdAt: "2023-10-10T08:48:46+09:00",
-    name: "Gnoswap",
-    address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-    path: "gno.land/r/gns",
-    decimals: 4,
-    symbol: "GNOT",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    type: "grc20",
-    priceId: "gno.land/r/gns",
-  },
-  connected: true,
+  depositInfo: DEFAULT_DEPOSIT_GNOT,
   changeToken: action("changeToken"),
   close: action("close"),
 };
