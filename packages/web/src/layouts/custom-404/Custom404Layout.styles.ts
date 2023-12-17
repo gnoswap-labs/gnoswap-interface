@@ -48,7 +48,7 @@ export const wrapper = (theme: Theme) => css`
     .button-404 {
       height: 50px;
       span {
-        ${fonts.body7}
+        ${fonts.body9}
       }
       &:hover {
         background-color: ${theme.color.hover05};
@@ -99,5 +99,7 @@ export const wrapper = (theme: Theme) => css`
 
   .btn-arrow-icon {
     margin-right: 8px;
+    width: 20px;
+    height: 20px;
   }
 `;

@@ -24,8 +24,6 @@ export const wrapper = (theme: Theme) => css`
   .icon-404 {
     width: 380px;
     height: 320px;
-    opacity: 60%;
-    mix-blend-mode: hard-light;
     ${media.tablet} {
       width: 300px;
       height: 252px;
@@ -50,7 +48,7 @@ export const wrapper = (theme: Theme) => css`
     .button-404 {
       height: 50px;
       span {
-        ${fonts.body7}
+        ${fonts.body9}
       }
       &:hover {
         background-color: ${theme.color.hover05};;
