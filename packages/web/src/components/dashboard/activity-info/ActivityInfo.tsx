@@ -49,7 +49,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
                 })}
             <IconButton
               onClick={() => {
-                alert("open Link");
+                window.open(item.explorerUrl, "_blank");
               }}
             >
               <IconOpenLink className="action-icon" />

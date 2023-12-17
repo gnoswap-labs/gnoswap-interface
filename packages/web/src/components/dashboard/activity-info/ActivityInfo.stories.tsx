@@ -23,6 +23,8 @@ Default.args = {
     tokenAmountTwo: "19 GNOS",
     account: "g129kua...ndsu12",
     time: "less than a minute ago",
+    explorerUrl:
+      "https://gnoscan.io/transactions/details?txhash=hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
   },
 };
 

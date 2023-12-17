@@ -51,7 +51,7 @@ export const wrapper = (theme: Theme) => css`
         ${fonts.body9}
       }
       &:hover {
-        background-color: ${theme.color.hover05};
+        background-color: ${theme.color.hover05};;
       }
     }
     p {
@@ -70,7 +70,7 @@ export const wrapper = (theme: Theme) => css`
         margin: 4px 0px 24px;
       }
     }
-
+    
     ${media.mobile} {
       width: 250px;
       margin-left: 0;

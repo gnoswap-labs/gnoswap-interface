@@ -204,3 +204,9 @@ export function matchInputNumber(value: string) {
   const regexpOfStartWithZeroes = /^(?!00)/;
   return regexpOfNum.test(value) && regexpOfStartWithZeroes.test(value);
 }
+
+export function prettyNumber(val: string | number) {
+  return Number(val).toLocaleString("en", {
+    maximumFractionDigits: 18,
+  });
+}

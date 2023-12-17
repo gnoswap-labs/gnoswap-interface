@@ -1,9 +1,9 @@
 import Button from "@components/common/button/Button";
 import IconStrokeArrowLeft from "@components/common/icons/IconStrokeArrowLeft";
 import React from "react";
-import { wrapper } from "./Custom404Layout.styles";
+import { wrapper } from "./Custom500Layout.styles";
 
-interface Custom404LayoutProps {
+interface Custom500LayoutProps {
   header: React.ReactNode;
   icon404: React.ReactNode;
   goBackClick: () => void;
@@ -11,7 +11,7 @@ interface Custom404LayoutProps {
   themeKey: "dark" | "light";
 }
 
-const Custom404Layout: React.FC<Custom404LayoutProps> = ({
+const Custom500Layout: React.FC<Custom500LayoutProps> = ({
   header,
   icon404,
   goBackClick,
@@ -23,8 +23,11 @@ const Custom404Layout: React.FC<Custom404LayoutProps> = ({
     <main>
       {icon404}
       <div className="content-section">
-        <strong>404</strong>
-        <p>Page not found!</p>
+        <strong>We’ll be right back.</strong>
+        <p>
+          We’re currently experiencing technical issues. <br />
+          Please check back soon.
+        </p>
         <Button
           leftIcon={<IconStrokeArrowLeft className="btn-arrow-icon" />}
           text="Go back"
@@ -44,4 +47,4 @@ const Custom404Layout: React.FC<Custom404LayoutProps> = ({
   </div>
 );
 
-export default Custom404Layout;
+export default Custom500Layout;
