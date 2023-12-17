@@ -27,6 +27,24 @@ const parseDate = (dateString: string) => {
   return date.format("MMM D, YYYY");
 };
 
+const generateData = (chartType: CHART_TYPE) => {
+  const mappingLength: Record<CHART_TYPE, number> = {
+    [CHART_TYPE["7D"]]: 7,
+    [CHART_TYPE["1M"]]: 30,
+    [CHART_TYPE["1Y"]]: 365,
+    [CHART_TYPE["ALL"]]: 400,
+  };
+
+  return Array.from({ length: mappingLength[chartType] }, (_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - 1 * index);
+    return {
+      date: date.toISOString(),
+      price: `${Math.round(Math.random() * 5000000) + 100000000}`,
+    };
+  });
+};
+
 // const months = [
 //   "Jan",
 //   "Feb",
@@ -174,25 +192,8 @@ const TvlChartContainer: React.FC = () => {
         chartData = tvlData?.last_7d;
         break;
     }
-    console.log(chartData);
-    return [
-      {
-        date: "2023-12-14T00:00:00Z",
-        price: "10632100.900000",
-      },
-      {
-        date: "2023-12-15T00:00:00Z",
-        price: "10632100.000000",
-      },
-      {
-        date: "2023-12-16T00:00:00Z",
-        price: "12632100.900000",
-      },
-      {
-        date: "2023-12-17T00:00:00Z",
-        price: "16632100.000000",
-      },
-    ]?.reduce(
+
+    return generateData(tvlChartType ?? "7D")?.reduce(
       (pre, next) => {
         const time = parseDate(next.date);
         return {

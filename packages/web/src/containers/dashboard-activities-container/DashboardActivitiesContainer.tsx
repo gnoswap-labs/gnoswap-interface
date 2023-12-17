@@ -96,6 +96,11 @@ export const dummyTokenList: Activity[] = [
 //   );
 // }
 
+const replaceToken = (symbol : string) => {
+  if(symbol === "WGNOT") return "GNOT"
+  return symbol
+}
+
 const DashboardActivitiesContainer: React.FC = () => {
   const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
     ACTIVITY_TYPE.ALL,
@@ -171,14 +176,14 @@ const DashboardActivitiesContainer: React.FC = () => {
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res.txHash}`;
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${
-        res.token0.symbol
-      } and ${res.token1.symbol}`,
+        replaceToken(res.token0.symbol)
+      } and ${replaceToken(res.token1.symbol)}`,
       totalValue: `$${prettyNumber(res.totalUsdValue)}`,
       tokenAmountOne: `${prettyNumber(res.token0Amount)} ${
-        res.token0.symbol
+        replaceToken(res.token0.symbol)
       }`,
       tokenAmountTwo: `${prettyNumber(res.token1Amount)} ${
-        res.token1.symbol
+        replaceToken(res.token1.symbol)
       }`,
       account: formatAddress(res.account),
       time: dayjs(res.time).fromNow(),

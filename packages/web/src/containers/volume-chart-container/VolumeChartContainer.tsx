@@ -22,6 +22,24 @@ const parseDate = (dateString: string) => {
   return date.format("MMM D, YYYY");
 };
 
+const generateData = (chartType : CHART_TYPE) => {
+  const mappingLength : Record<CHART_TYPE, number> = {
+    [CHART_TYPE["7D"]]: 7,
+    [CHART_TYPE["1M"]]: 30,
+    [CHART_TYPE["1Y"]]: 365,
+    [CHART_TYPE["ALL"]]: 400,
+  }
+     
+   return Array.from({length : mappingLength[chartType] }, (_, index) => {
+     const date = new Date();
+     date.setDate(date.getDate() - 1 * index);
+     return  {
+         date: date.toISOString(),
+         price: `${Math.round(Math.random() * 5000000) + 100000000}`,
+       }
+   })
+ }
+
 // const initialVolumePriceInfo: VolumePriceInfo = {
 //   amount: "$994,120,000",
 //   fee: "$12,231",
@@ -167,7 +185,7 @@ const VolumeChartContainer: React.FC = () => {
         break;
     }
 
-    return chartData?.reduce(
+    return generateData(volumeChartType)?.reduce(
       (pre, next) => {
         const time = parseDate(next.date);
         return {
