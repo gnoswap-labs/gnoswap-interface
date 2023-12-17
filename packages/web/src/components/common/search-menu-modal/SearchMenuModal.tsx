@@ -177,7 +177,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           </div>
                           <div className="coin-infor-value" ref={recentPriceRef.current[idx]}>
                             <span className="token-price">{item.price}</span>
-                            {item.priceOf1d.status === "POSITIVE" ? (
+                            {item.priceOf1d.status !== "NEGATIVE" ? (
                               <span className="positive">
                                 <IconTriangleArrowUpV2 />
                                 {item.priceOf1d.value}
@@ -244,7 +244,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       </div>
                       <div className="coin-infor-value" ref={popularPriceRef.current[idx]}>
                         <span className="token-price">{item.price}</span>
-                        {item.priceOf1d.status === "POSITIVE" ? (
+                        {item.priceOf1d.status !== "NEGATIVE" ? (
                           <span className="positive">
                             <IconTriangleArrowUpV2 />
                             {item.priceOf1d.value}

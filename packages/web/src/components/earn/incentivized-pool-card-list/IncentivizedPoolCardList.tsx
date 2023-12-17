@@ -40,11 +40,15 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
 }) => {
   const data = useMemo(() => {
     if (page === 1) {
-      return incentivizedPools.slice(0, 8);
+      if (width > 1180) {
+        return incentivizedPools.slice(0, 8);
+      } else {
+        return incentivizedPools.slice(0, 6);
+      }
     } else {
       return incentivizedPools;
     }
-  }, [page, incentivizedPools]);
+  }, [page, incentivizedPools, width]);
   return (
     <IncentivizedWrapper>
       <PoolListWrapper ref={divRef} onScroll={onScroll}>
@@ -55,7 +59,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
           ))}
         {isFetched &&
           incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
-          (Array(((incentivizedPools.length > 4 && width > 1180) ? 8 : (width <= 1180 && width >= 1000) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
+          (Array(((incentivizedPools.length > 4 && width > 1180) ? 8 : (width <= 1180 && width >= 920) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
             <BlankIncentivizedCard key={index}/>
           ))}
         {!isFetched &&

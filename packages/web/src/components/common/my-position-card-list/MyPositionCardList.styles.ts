@@ -32,7 +32,7 @@ export const GridWrapper = styled.div`
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
   overflow-x: scroll;
-  @media (max-width: 1000px) {
+  @media (max-width: 920px) {
     overflow-x: auto;
     grid-gap: 12px;
     grid-template-columns: repeat(auto-fill, 322px);

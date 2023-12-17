@@ -20,7 +20,6 @@ export const SelectFeeTierWrapper = styled.div`
 export const SelectFeeTierItemWrapper = styled.div`
   ${mixins.flexbox("column", "center", "space-between")};
   width: 100%;
-  height: 100%;
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   padding: 11px 7px;

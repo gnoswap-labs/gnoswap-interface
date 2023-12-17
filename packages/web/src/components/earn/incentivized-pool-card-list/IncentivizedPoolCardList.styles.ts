@@ -32,7 +32,7 @@ export const PoolListWrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
   overflow-x: scroll;
 
-  @media (max-width: 1000px) {
+  @media (max-width: 920px) {
     grid-gap: 12px;
     grid-template-columns: repeat(auto-fill, 290px);
     grid-auto-flow: column;

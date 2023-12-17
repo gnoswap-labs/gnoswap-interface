@@ -8,7 +8,7 @@ const HighestAprsCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
   const { higestAPRs, loading } = usePoolData();
-  
+
   const movePoolDetails = useCallback((path: string) => {
     router.push("/earn/pool/" + path);
   }, [router]);

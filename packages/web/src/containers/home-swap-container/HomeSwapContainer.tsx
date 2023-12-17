@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
+const GNOS_PATH = process.env.NEXT_PUBLIC_GNOS_PATH || "";
 
 const TOKEN_A: TokenModel = {
   chainId: "dev",
@@ -30,12 +31,12 @@ const TOKEN_B: TokenModel = {
   createdAt: "2023-10-10T08:48:46+09:00",
   name: "Gnoswap",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gns",
+  path: GNOS_PATH,
   decimals: 4,
   symbol: "GNS",
   logoURI: "/gnos.svg",
   type: "grc20",
-  priceId: "gno.land/r/gns",
+  priceId: GNOS_PATH,
 };
 
 const HomeSwapContainer: React.FC = () => {

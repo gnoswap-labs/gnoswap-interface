@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { ThemeState } from "@states/index";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
 export interface Pool {
   poolId: string;
   tokenPair: TokenPairInfo;
@@ -79,26 +80,55 @@ const PoolListContainer: React.FC = () => {
     function filteredPoolType(poolType: POOL_TYPE, incentivizedType: IncentivizedOptions) {
       switch (poolType) {
         case "Incentivized":
-          return incentivizedType !== "INCENTIVIZED";
+          return incentivizedType === "INCENTIVIZED";
         case "Non-Incentivized":
-          return incentivizedType === "NON_INCENTIVIZED";
+          return incentivizedType !== "INCENTIVIZED";
         default:
           break;
       }
       return true;
     }
 
-    return poolListInfos.filter(info => {
+    const temp = poolListInfos.filter(info => {
       if (keyword !== "") {
         return info.tokenA.name.toLowerCase().includes(keyword.toLowerCase()) ||
           info.tokenB.name.toLowerCase().includes(keyword.toLowerCase()) ||
           info.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
           info.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase());
       }
-
       return filteredPoolType(poolType, info.incentivizedType);
     });
-  }, [keyword, poolListInfos, poolType]);
+    if (sortOption) {
+      if (sortOption.key === TABLE_HEAD.POOL_NAME) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => b.tokenA.name.localeCompare(a.tokenA.name));
+        } else {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => a.tokenA.name.localeCompare(b.tokenA.name));
+        }
+      } else if (sortOption.key === TABLE_HEAD.LIQUIDITY) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => Number(a.liquidity.replace(/,/g, "").slice(1)) - Number(b.liquidity.replace(/,/g, "").slice(1)));
+        } else {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.VOLUME) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => Number(a.volume24h.replace(/,/g, "").slice(1)) - Number(b.volume24h.replace(/,/g, "").slice(1)));
+        } else {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.volume24h.replace(/,/g, "").slice(1)) + Number(b.volume24h.replace(/,/g, "").slice(1)));
+        }
+      } else if (sortOption.key === TABLE_HEAD.FEES) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => Number(a.fees24h.replace(/,/g, "").slice(1)) - Number(b.fees24h.replace(/,/g, "").slice(1)));
+        } else {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.fees24h.replace(/,/g, "").slice(1)) + Number(b.fees24h.replace(/,/g, "").slice(1)));
+        }
+      }
+    } else {
+      temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
+    }
+    return temp;
+  }, [keyword, poolListInfos, poolType, sortOption]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPoolListInfos.length / 15);
@@ -130,6 +160,7 @@ const PoolListContainer: React.FC = () => {
 
   const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
+    setPage(0);
   }, []);
 
   const movePage = useCallback((newPage: number) => {
@@ -161,7 +192,7 @@ const PoolListContainer: React.FC = () => {
 
   return (
     <PoolList
-      pools={sortedPoolListInfos.slice(page * 15, (page +1 ) * 15)}
+      pools={sortedPoolListInfos.slice(page * 15, (page + 1) * 15)}
       isFetched={isFetchedPools}
       poolType={poolType}
       changePoolType={changePoolType}

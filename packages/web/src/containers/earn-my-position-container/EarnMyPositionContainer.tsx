@@ -45,7 +45,7 @@ const EarnMyPositionContainer: React.FC<
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 930 ? setMobile(true) : setMobile(false);
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
 
@@ -65,7 +65,6 @@ const EarnMyPositionContainer: React.FC<
       setIsFetched(true);
     }).catch(() => setIsFetched(false));
   }, [getPositions]);
-  console.log(isFetched);
   
   const connect = useCallback(() => {
     if (!connected) {
@@ -96,7 +95,7 @@ const EarnMyPositionContainer: React.FC<
   };
 
   const showPagination = useMemo(() => {
-    if (width >= 930) {
+    if (width >= 920) {
       return false;
     } else {
       return true;
@@ -115,7 +114,7 @@ const EarnMyPositionContainer: React.FC<
     if (page === 1) {
       if (width > 1180) {
         return positions.slice(0, 4);
-      } else if (width > 930) {
+      } else if (width > 920) {
         return positions.slice(0, 3);
       } else return positions;
     } else return positions;

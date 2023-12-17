@@ -54,12 +54,18 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     svg * {
       fill: ${({ theme }) => theme.color.green01};
     }
+    span {
+      font-weight: 500;
+    }
   }
   .negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.red01};
     svg * {
       fill: ${({ theme }) => theme.color.red01};
+    }
+    span {
+      font-weight: 500;
     }
   }
   .symbol-col {

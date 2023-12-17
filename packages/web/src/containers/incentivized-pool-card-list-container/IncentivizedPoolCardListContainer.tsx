@@ -39,7 +39,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 930 ? setMobile(true) : setMobile(false);
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
 
@@ -76,7 +76,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   };
 
   const showPagination = useMemo(() => {
-    if (width >= 930) {
+    if (width >= 920) {
       return false;
     } else {
       return true;
