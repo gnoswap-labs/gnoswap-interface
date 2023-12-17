@@ -27,7 +27,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
         </div>
         <div className="gnos-symbol">GNS</div>
       </GnosLogoWrapper>
-      <div>{dashboardTokenInfo.gnosAmount}</div>
+      <div className="amount-info">{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>
     {breakpoint !== DEVICE_TYPE.MOBILE && <TitleDivider />}
     <TokenWrapper>
@@ -37,7 +37,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
         </div>
         <div className="gnot-symbol">GNOT</div>
       </GnotLogoWrapper>
-      <div>{dashboardTokenInfo.gnotAmount}</div>
+      <div className="amount-info">{dashboardTokenInfo.gnotAmount}</div>
     </TokenWrapper>
   </DashboardInfoTitleWrapper>
 );

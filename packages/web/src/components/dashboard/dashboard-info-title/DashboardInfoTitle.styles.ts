@@ -20,6 +20,10 @@ export const DashboardInfoTitleWrapper = styled.div`
 export const TokenWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   gap: 8px;
+
+  .amount-info {
+    ${fonts.body5};
+  }
 `;
 
 export const GnosLogoWrapper = styled.div`

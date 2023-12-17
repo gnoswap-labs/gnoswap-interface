@@ -183,7 +183,7 @@ const TvlChartContainer: React.FC = () => {
             ...pre.datas,
             {
               amount: {
-                value: next.price,
+                value: Number(next.price).toLocaleString(),
                 denom: "USD",
               },
               time,

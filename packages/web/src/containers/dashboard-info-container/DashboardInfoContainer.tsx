@@ -75,13 +75,24 @@ const DashboardInfoContainer: React.FC = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const ratio = useMemo(() => {
-    if (!tokenData) return "-";
-
-    return (
-      Number(tokenData?.gnstotalStaked) / Number(tokenData?.gnsTotalSupply)
-    ).toFixed(2);
+  const progressBar = useMemo(() => {
+    if (!tokenData) return "0%";
+    const circSupply = Number(tokenData?.gnsCirculatingSupply);
+    const totalSupply = Number(tokenData?.gnsTotalSupply);
+    if (totalSupply === 0) return "0%";
+    const percent = Math.min((circSupply / totalSupply) * 100, 100);
+    return `${percent}%`;
   }, [tokenData]);
+
+  const stakingRatio = useMemo(() => {
+    if (!tokenData) return "-";
+    const circSupply = Number(tokenData?.gnsCirculatingSupply);
+    const totalStaked = Number(tokenData?.gnstotalStaked);
+    if (circSupply === 0) return "0%";
+    const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
+    return `${Number(ratio).toLocaleString()}%`;
+  }, [tokenData]);
+
   return (
     <DashboardInfo
       dashboardTokenInfo={{
@@ -96,8 +107,8 @@ const DashboardInfoContainer: React.FC = () => {
         ),
         totalSupply: formatPrice(tokenData?.gnsTotalSupply, "GNS"),
         totalStaked: formatPrice(tokenData?.gnstotalStaked, "GNS"),
-        progressBar: ratio === "-" ? "0%" : `${ratio}%`,
-        stakingRatio: ratio === "-" ? "-" : Number(ratio).toLocaleString(),
+        progressBar: progressBar,
+        stakingRatio: stakingRatio,
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}
