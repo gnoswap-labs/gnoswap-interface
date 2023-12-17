@@ -50,10 +50,9 @@ const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
         )}
       </div>
       {loading ? (
-        <div
-          className="value-wrapper-skeleton "
-          css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-        />
+        <div className="value-wrapper-skeleton">
+          <span css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)} />
+        </div>
       ) : (
         <div className="value-wrapper">
           <span className="value">{value}</span>

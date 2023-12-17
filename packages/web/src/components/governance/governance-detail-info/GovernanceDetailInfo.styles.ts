@@ -63,8 +63,18 @@ export const GovernanceDetailInfoWrapper = styled.div`
   }
 
   .value-wrapper-skeleton {
-    height: 20px;
-    width: 150px;
+    height: 40px;
+    width: 100%;
+    ${mixins.flexbox("column", "start", "center")};
+    ${media.tablet} {
+      height: 31px;
+    }
+
+    > span {
+      display: block;
+      height: 20px;
+      width: 150px;
+    }
   }
 
   .value-wrapper {
