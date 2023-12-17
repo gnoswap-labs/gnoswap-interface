@@ -174,8 +174,25 @@ const TvlChartContainer: React.FC = () => {
         chartData = tvlData?.last_7d;
         break;
     }
-
-    return chartData?.reduce(
+    console.log(chartData);
+    return [
+      {
+        date: "2023-12-14T00:00:00Z",
+        price: "10632100.900000",
+      },
+      {
+        date: "2023-12-15T00:00:00Z",
+        price: "10632100.000000",
+      },
+      {
+        date: "2023-12-16T00:00:00Z",
+        price: "12632100.900000",
+      },
+      {
+        date: "2023-12-17T00:00:00Z",
+        price: "16632100.000000",
+      },
+    ]?.reduce(
       (pre, next) => {
         const time = parseDate(next.date);
         return {
@@ -184,7 +201,7 @@ const TvlChartContainer: React.FC = () => {
             ...pre.datas,
             {
               amount: {
-                value: prettyNumber(next.price),
+                value: next.price,
                 denom: "USD",
               },
               time,
