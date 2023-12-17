@@ -22,6 +22,7 @@ ConnectionSucceeded.args = {
   balanceSummaryInfo: {
     amount: "1,000.00",
     changeRate: "+1.10%",
+    loading: false,
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
@@ -33,6 +34,7 @@ ConnectionFailed.args = {
   balanceSummaryInfo: {
     amount: "0.00",
     changeRate: "+0%",
+    loading: false,
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),

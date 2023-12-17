@@ -38,8 +38,22 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
+  .missing-logo {
+    ${mixins.flexbox("row", "center", "center")};
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.text04};
+    ${fonts.p7}
+    ${media.mobile} {
+      font-size: 8px;
+      line-height: 10px;
+    }
+    margin-left: 15px;
+  }
   .logo {
-    margin-left: 16px;
+    margin-left: 15px;
   }
   .name,
   .chain,

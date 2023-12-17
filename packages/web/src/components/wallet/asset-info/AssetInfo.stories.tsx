@@ -19,14 +19,19 @@ const Template: ComponentStory<typeof AssetInfo> = args => (
 export const Default = Template.bind({});
 Default.args = {
   asset: {
-    id: "BTC",
-    logoUri:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-    type: "GRC20",
-    name: "Bitcoin",
-    symbol: "BTC",
-    chain: "Gnoland",
-    balance: "0.000000",
+    type: "grc20",
+    chainId: "dev",
+    createdat: "2023-12-12 23:45:12",
+    name: "Bar",
+    path: "gno.land/r/bar",
+    decimals: 6,
+    symbol: "BAR",
+    logoURI:
+      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+    priceId: "gno.land/r/bar",
+    description: "this_is_desc_section",
+    websiteURL: "https://website~~~~",
+    balance: 0.0,
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),

@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  ComponentStory,
-  ComponentMeta
-} from "@storybook/react";
+import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import EnterAmounts from "./LiquidityEnterAmounts";
 import { action } from "@storybook/addon-actions";
@@ -18,20 +15,21 @@ const Template: ComponentStory<typeof EnterAmounts> = args => (
 );
 
 const token: TokenModel = {
-  "isWrappedGasToken": false,
-  "isGasToken": false,
-  "description": "",
-  "websiteURL": "",
+  isWrappedGasToken: false,
+  isGasToken: false,
+  description: "",
+  websiteURL: "",
   type: "grc20",
   chainId: "dev.gnoswap",
-  createdAt: "2023-12-08T03:57:43Z",
+  createdat: "2023-12-08T03:57:43Z",
   name: "Foo",
   path: "gno.land/r/foo",
   decimals: 4,
   symbol: "FOO",
-  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
   priceId: "gno.land/r/foo",
-  address: ""
+  address: "",
 };
 
 export const Default = Template.bind({});

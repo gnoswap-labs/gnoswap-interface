@@ -3,7 +3,7 @@ import { TokenModel } from "@models/token/token-model";
 export const GNOT_TOKEN: TokenModel = {
   type: "native",
   chainId: "",
-  createdAt: "0001-01-01T00:00:00Z",
+  createdat: "0001-01-01T00:00:00Z",
   name: "Gnoland",
   path: "gnot",
   decimals: 6,

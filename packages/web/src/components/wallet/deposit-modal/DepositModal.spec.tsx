@@ -1,62 +1,26 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import DepositModal from "./DepositModal";
+import DepositModal, { DEFAULT_DEPOSIT_GNOT } from "./DepositModal";
 import { DEVICE_TYPE } from "@styles/media";
-import { TokenModel } from "@models/token/token-model";
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 
 describe("DepositModal Component", () => {
   it("DepositModal render", () => {
     const mockProps = {
       breakpoint: DEVICE_TYPE.WEB,
-      depositInfo: {
-        chainId: "dev",
-        createdAt: "2023-10-10T08:48:46+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: "GNOT",
-        logoURI:
-          "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-        type: "grc20",
-        priceId: "gno.land/r/gns",
-      },
-      fromToken: {
-        chainId: "dev",
-        createdAt: "2023-10-10T08:48:46+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: "GNOT",
-        logoURI:
-          "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-        type: "grc20",
-        priceId: "gno.land/r/gns",
-      },
-      toToken: {
-        chainId: "dev",
-        createdAt: "2023-10-10T08:48:46+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: "GNOT",
-        logoURI:
-          "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-        type: "grc20",
-        priceId: "gno.land/r/gns",
-      },
-      connected: true,
+      depositInfo: DEFAULT_DEPOSIT_GNOT,
       changeToken: () => null,
       close: () => null,
+      callback: () => null,
     };
 
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <DepositModal {...mockProps} />
+          <GnoswapServiceProvider>
+            <DepositModal {...mockProps} />
+          </GnoswapServiceProvider>
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
