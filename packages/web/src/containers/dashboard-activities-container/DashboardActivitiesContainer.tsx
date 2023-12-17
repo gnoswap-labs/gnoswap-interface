@@ -96,10 +96,10 @@ export const dummyTokenList: Activity[] = [
 //   );
 // }
 
-const replaceToken = (symbol : string) => {
-  if(symbol === "WGNOT") return "GNOT"
-  return symbol
-}
+const replaceToken = (symbol: string) => {
+  if (symbol === "WGNOT") return "GNOT";
+  return symbol;
+};
 
 const DashboardActivitiesContainer: React.FC = () => {
   const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
@@ -175,16 +175,16 @@ const DashboardActivitiesContainer: React.FC = () => {
   const formatActivity = (res: OnchainActivityData): Activity => {
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res.txHash}`;
     return {
-      action: `${capitalizeFirstLetter(res.actionType)} ${
-        replaceToken(res.token0.symbol)
-      } and ${replaceToken(res.token1.symbol)}`,
+      action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
+        res.token0.symbol,
+      )} and ${replaceToken(res.token1.symbol)}`,
       totalValue: `$${prettyNumber(res.totalUsdValue)}`,
-      tokenAmountOne: `${prettyNumber(res.token0Amount)} ${
-        replaceToken(res.token0.symbol)
-      }`,
-      tokenAmountTwo: `${prettyNumber(res.token1Amount)} ${
-        replaceToken(res.token1.symbol)
-      }`,
+      tokenAmountOne: `${prettyNumber(res.token0Amount)} ${replaceToken(
+        res.token0.symbol,
+      )}`,
+      tokenAmountTwo: `${prettyNumber(res.token1Amount)} ${replaceToken(
+        res.token1.symbol,
+      )}`,
       account: formatAddress(res.account),
       time: dayjs(res.time).fromNow(),
       explorerUrl,
