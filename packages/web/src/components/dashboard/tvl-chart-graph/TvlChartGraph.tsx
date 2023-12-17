@@ -18,6 +18,33 @@ export interface TvlChartGraphProps {
   yAxisLabels?: string[];
 }
 
+const calculateMiddleIndices = (totalLabels = 0, countXAxis = 0) => {
+  const indices = new Set<number>();
+  // Helper function to add indices
+  const addIndices = (start: number, end: number) => {
+    const mid = Math.floor((start + end) / 2);
+    if (!indices.has(mid)) {
+      indices.add(mid);
+      if (indices.size < countXAxis) {
+        // Add midpoint of the left subarray
+        addIndices(start, mid - 1);
+        // Add midpoint of the right subarray
+        addIndices(mid + 1, end);
+      }
+    }
+  };
+
+  // Always include the first and last labels
+  indices.add(0);
+  indices.add(totalLabels - 1);
+
+  // Begin by adding the middle of the entire array
+  addIndices(0, totalLabels - 1);
+
+  // Convert to array and sort to ensure the correct order
+  return Array.from(indices).sort((a, b) => b - a);
+};
+
 const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
   datas,
   xAxisLabels,
@@ -32,12 +59,17 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       time: data.time,
     }));
   }, [datas]);
-  
+
   const countXAxis = useMemo(() => {
     if (breakpoint !== DEVICE_TYPE.MOBILE)
-      return Math.floor((((size.width || 0) + 20) - 25) / 100);
-    return Math.floor((((size.width || 0) + 20) - 8) / 80);
-    }, [size.width, breakpoint]);
+      return Math.floor(((size.width || 0) + 20 - 25) / 100);
+    return Math.floor(((size.width || 0) + 20 - 8) / 80);
+  }, [size.width, breakpoint]);
+
+  const labelIndicesToShow = useMemo(() => {
+    return calculateMiddleIndices(xAxisLabels.length, Math.min(countXAxis, 4));
+  }, [countXAxis, xAxisLabels.length]);
+
   return (
     <TvlChartGraphWrapper>
       <div className="data-wrapper">
@@ -58,9 +90,12 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
           />
         </div>
         <div className="xaxis-wrapper">
-          {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
-            <span key={index}>{label}</span>
+          {labelIndicesToShow.map((x, i) => (
+            <span key={i}>{xAxisLabels[x]}</span>
           ))}
+          {/* {xAxisLabels.slice(0, Math.min(countXAxis, 8)).map((label, index) => (
+            <span key={index}>{label}</span>
+          ))} */}
         </div>
       </div>
     </TvlChartGraphWrapper>

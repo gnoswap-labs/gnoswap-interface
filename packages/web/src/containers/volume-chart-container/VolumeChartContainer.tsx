@@ -162,12 +162,12 @@ const VolumeChartContainer: React.FC = () => {
   }, []);
 
   const chartData = useMemo(() => {
-    if (!volumeData?.all)
-      return {
-        xAxisLabels: [],
-        datas: [],
-        times: [],
-      } as VolumeChartInfo;
+    // if (!volumeData?.all)
+    //   return {
+    //     xAxisLabels: [],
+    //     datas: [],
+    //     times: [],
+    //   } as VolumeChartInfo;
     let chartData = volumeData?.last_7d;
 
     switch (volumeChartType) {

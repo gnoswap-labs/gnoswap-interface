@@ -171,11 +171,11 @@ const TvlChartContainer: React.FC = () => {
   }, []);
 
   const chartData = useMemo(() => {
-    if (!tvlData?.all)
-      return {
-        xAxisLabels: [],
-        datas: [],
-      };
+    // if (!tvlData?.all)
+    //   return {
+    //     xAxisLabels: [],
+    //     datas: [],
+    //   };
     let chartData = tvlData?.last_7d;
 
     switch (tvlChartType) {
