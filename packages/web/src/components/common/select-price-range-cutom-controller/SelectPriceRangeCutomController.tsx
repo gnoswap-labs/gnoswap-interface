@@ -2,7 +2,7 @@ import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.
 import { numberToFormat } from "@utils/string-utils";
 import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 
 export interface SelectPriceRangeCutomControllerProps {
@@ -32,9 +32,10 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   selectedFullRange,
   onSelectCustomRange,
 }) => {
+  const divRef = useRef<HTMLDivElement | null>(null);
   const [value, setValue] = useState("");
   const [changed, setChanged] = useState(false);
-
+  const [fontSize, setFontSize] = useState(24);
   const tokenInfo = useMemo(() => {
     return `${token0Symbol} per ${token1Symbol}`;
   }, [token0Symbol, token1Symbol]);
@@ -118,7 +119,13 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     }
     setValue(BigNumber(current).toFixed());
   }, [current, feeTier]);
-
+  useEffect(() => {
+    const divElement = divRef.current;
+    if (divElement) {
+      setFontSize(Math.min(110 * fontSize / divElement.offsetWidth, 24));
+    }
+  }, [value]);
+  
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
@@ -127,7 +134,8 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
           <span>-</span>
         </div>
         <div className="value-wrapper">
-          <input className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate} />
+          <input style={{ fontSize: `${fontSize}px` }} className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate}/>
+          <div style={{ fontSize: `${fontSize}px` }} className="fake-input" ref={divRef}>{value}</div>
         </div>
         <div className={disabledController ? "icon-wrapper increase disabled" : "icon-wrapper increase"} onClick={onClickIncrease}>
           <span>+</span>

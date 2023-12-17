@@ -56,7 +56,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volume]);
 
   const aprValue = useMemo((): string => {
-    return `${pool.apr || "0.00"}%`;
+    return pool.apr === "" ? "-" : `${Number(pool.apr).toFixed(2)}%`;
   }, [pool.apr]);
 
   const liquidityChangedStr = useMemo((): string => {
@@ -162,7 +162,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       </section>
       <section>
         <h4>APR</h4>
-        {!loading && <strong><IconStar /> {aprValue}</strong>}
+        {!loading && <strong> {Number(aprValue.slice(0, aprValue.length - 1)) >= 100 ? <IconStar /> : ""}{aprValue}</strong>}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
         <span
           css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined)}

@@ -39,6 +39,7 @@ export const MyLiquidityWrapper = styled.div`
       width: 100%;
       > div {
         width: 50%;
+        min-width: 290px;
       }
     }
   }

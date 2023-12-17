@@ -38,7 +38,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
 
   return (
     <SelectPriceRangeWrapper>
-      <div className="type-selector-wrapper">
+      {!selectPool.isCreate && !showDim && <div className="type-selector-wrapper">
         {priceRanges.map((item, index) => (
           <SelectPriceRangeItem
             key={index}
@@ -48,7 +48,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
             changePriceRange={changePriceRangeWithClear}
           />
         ))}
-      </div>
+      </div>}
       {(selectedTokenPair && tokenA && tokenB) && (
         <SelectPriceRangeCustom
           tokenA={tokenA}

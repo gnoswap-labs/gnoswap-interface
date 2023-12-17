@@ -4,6 +4,7 @@ import { RewardType } from "@constants/option.constant";
 import { numberToFormat } from "@utils/string-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 
 export interface MyPositionClaimContentProps {
@@ -92,11 +93,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={reward.token.logoURI}
-                  alt="token logo"
-                  className="token-logo"
-                />
+                <MissingLogo symbol={reward.token.symbol} url={reward.token.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                 <span className="position">
                   {reward.token.symbol}
                 </span>
@@ -108,6 +105,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           ))}
         </React.Fragment>
       )}
+      {swapFeeRewards && <TooltipDivider />}
 
       {stakingRewards && (
         <React.Fragment>
@@ -118,11 +116,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {stakingRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={reward.token.logoURI}
-                  alt="token logo"
-                  className="token-logo"
-                />
+                <MissingLogo symbol={reward.token.symbol} url={reward.token.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                 <span className="position">
                   {reward.token.symbol}
                 </span>
@@ -134,6 +128,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           ))}
         </React.Fragment>
       )}
+      {stakingRewards && <TooltipDivider />}
 
       {externalRewards && (
         <React.Fragment>
@@ -144,11 +139,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {externalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={reward.token.logoURI}
-                  alt="token logo"
-                  className="token-logo"
-                />
+                <MissingLogo symbol={reward.token.symbol} url={reward.token.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                 <span className="position">
                   {reward.token.symbol}
                 </span>
@@ -160,7 +151,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           ))}
         </React.Fragment>
       )}
-
+      {externalRewards && <TooltipDivider />}
       {unclaimedRewards && (
         <React.Fragment>
           <div className="list">
@@ -170,11 +161,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {unclaimedRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <img
-                  src={reward.token.logoURI}
-                  alt="token logo"
-                  className="token-logo"
-                />
+                <MissingLogo symbol={reward.token.symbol} url={reward.token.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                 <span className="position">
                   {reward.token.symbol}
                 </span>
@@ -186,7 +173,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           ))}
         </React.Fragment>
       )}
-      <TooltipDivider />
+      {unclaimedRewards && <TooltipDivider />}
       <p>
         *Swap Fees are only claimable when your
         <br />

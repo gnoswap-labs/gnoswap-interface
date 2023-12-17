@@ -310,7 +310,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <div><MyPositionAprContent rewardInfo={aprRewardInfo} /></div>
           }>
             <span className="content-text">
-              {Number(position.apr) >= 100 && <IconStar />}{position.apr || "0.00"}%
+              {Number(position.apr) >= 100 && <IconStar />}{position.apr === "" ? "-" : `${Number(position.apr).toFixed(2)}`}
             </span>
           </Tooltip>}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
