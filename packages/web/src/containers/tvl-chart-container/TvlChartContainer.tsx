@@ -5,6 +5,7 @@ import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
+import { prettyNumber } from "@utils/number-utils";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -183,7 +184,7 @@ const TvlChartContainer: React.FC = () => {
             ...pre.datas,
             {
               amount: {
-                value: Number(next.price).toLocaleString(),
+                value: prettyNumber(next.price),
                 denom: "USD",
               },
               time,
@@ -200,9 +201,7 @@ const TvlChartContainer: React.FC = () => {
       tvlChartType={tvlChartType}
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={{
-        amount: tvlData?.latest
-          ? `$${Number(tvlData?.latest).toLocaleString()}`
-          : "-",
+        amount: tvlData?.latest ? `$${prettyNumber(tvlData?.latest)}` : "-",
       }}
       tvlChartInfo={chartData}
       loading={loading || isFetching}

@@ -4,6 +4,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
 import { useQuery } from "@tanstack/react-query";
+import { prettyNumber } from "@utils/number-utils";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -90,7 +91,7 @@ const DashboardInfoContainer: React.FC = () => {
     const totalStaked = Number(tokenData?.gnstotalStaked);
     if (circSupply === 0) return "0%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
-    return `${Number(ratio).toLocaleString()}%`;
+    return `${prettyNumber(ratio)}%`;
   }, [tokenData]);
 
   return (
