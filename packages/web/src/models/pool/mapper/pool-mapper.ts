@@ -8,8 +8,8 @@ import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { IncentivizedOptions } from "@common/values";
 import { makeId } from "@utils/common";
-import { toUnitFormat } from "@utils/number-utils";
 import { PoolDetailModel } from "../pool-detail-model";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -121,9 +121,9 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr === "" ? "-" : `${BigNumber(apr).toFormat(2)}%`,
-      liquidity: toUnitFormat(tvl, true),
-      volume24h: toUnitFormat(volume, true),
-      fees24h: toUnitFormat(feeVolume, true),
+      liquidity: `${convertLargePrice(tvl.toString(), 2)}`,
+      volume24h: `${convertLargePrice(volume.toString(), 2)}`,
+      fees24h: `${convertLargePrice(feeVolume.toString(), 2)}`,
       rewards: [defaultReward],
       currentTick,
       price,

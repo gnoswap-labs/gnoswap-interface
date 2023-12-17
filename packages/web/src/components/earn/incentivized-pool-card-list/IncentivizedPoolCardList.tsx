@@ -42,8 +42,10 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
     if (page === 1) {
       if (width > 1180) {
         return incentivizedPools.slice(0, 8);
-      } else {
+      } else if (width > 920) {
         return incentivizedPools.slice(0, 6);
+      } else {
+        return incentivizedPools;
       }
     } else {
       return incentivizedPools;

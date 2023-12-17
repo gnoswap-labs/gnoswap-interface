@@ -64,11 +64,10 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   };
 
   const onClickPoolItem = (item: MostLiquidPool) => {
-    console.log(item, "item");
     
-    // if (item.tokenPair.tokenA.logoURI) {
-    //   location.href = `/earn/pool/${item.poolId}?path=${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path}:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
-    // }
+    if (item.tokenPair.tokenA.logoURI) {
+      location.href = `/earn/pool/1c550fbfa3149fd8da5a52055f16b1b34c00fe1c1f3f543dc5f2d669a4db55dc?path=${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path}:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
+    }
   }
 
   return (

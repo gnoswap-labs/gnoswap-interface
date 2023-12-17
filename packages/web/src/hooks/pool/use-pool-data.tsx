@@ -2,12 +2,12 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
+import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const usePoolData = () => {
   const { poolRepository } = useGnoswapContext();
@@ -15,11 +15,28 @@ export const usePoolData = () => {
   const [isFetchedPools, setIsFetchedPools] = useAtom(PoolState.isFetchedPools);
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(PoolState.isFetchedPositions);
   const [loading, setLoading] = useAtom(PoolState.isLoading);
-  const { gnot } = useGnotToGnot();
+  const { gnot, wugnotPath } = useGnotToGnot();
   
   const poolListInfos = useMemo(() => {
-    return pools?.map(PoolMapper.toListInfo);
-  }, [pools]);
+    const temp = pools?.map(PoolMapper.toListInfo);
+    return temp.map((item: PoolListInfo) => {
+      return {
+        ...item,
+        tokenA: item.tokenA ? {
+          ...item.tokenA,
+          symbol: item.tokenA.path === wugnotPath ? (gnot?.symbol || "") : item.tokenA.symbol,
+          logoURI: item.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenA.logoURI,
+          name: item.tokenA.path === wugnotPath ? (gnot?.name || "") : item.tokenA.name,
+        } : item.tokenA,
+        tokenB: item.tokenB ? {
+          ...item.tokenB,
+          symbol: item.tokenB.path === wugnotPath ? (gnot?.symbol || "") : item.tokenB.symbol,
+          logoURI: item.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenB.logoURI,
+          name: item.tokenB.path === wugnotPath ? (gnot?.name || "") : item.tokenB.name,
+        } : item.tokenB,
+      };
+    });
+  }, [pools, wugnotPath, gnot]);
   
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools.sort((p1, p2) => {
@@ -28,7 +45,21 @@ export const usePoolData = () => {
       return Number(p2Apr) - Number(p1Apr);
     }).filter((_, index) => index < 3);
     return sortedTokens?.map(pool => ({
-      pool,
+      pool : {
+        ...pool,
+        tokenA: {
+          ...pool.tokenA,
+          symbol: pool.tokenA.path === wugnotPath ? (gnot?.symbol || "") : pool.tokenA.symbol,
+          logoURI: pool.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : pool.tokenA.logoURI,
+          name: pool.tokenA.path === wugnotPath ? (gnot?.name || "") : pool.tokenA.name,
+        },
+        tokenB: {
+          ...pool.tokenB,
+          symbol: pool.tokenB.path === wugnotPath ? (gnot?.symbol || "") : pool.tokenB.symbol,
+          logoURI: pool.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : pool.tokenB.logoURI,
+          name: pool.tokenB.path === wugnotPath ? (gnot?.name || "") : pool.tokenB.name,
+        }
+      },
       upDown: "none",
       content: pool.apr === "" ? "-" : `${pool.apr || 0}%`
     }));
@@ -37,6 +68,7 @@ export const usePoolData = () => {
   async function updatePositions() {
     setIsFetchedPositions(true);
   }
+  
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     const temp = pools
       ?.map(PoolMapper.toCardInfo);
@@ -45,13 +77,15 @@ export const usePoolData = () => {
         ...item,
         tokenA: {
           ...item.tokenA,
-          symbol: item.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : item.tokenA.symbol,
-          logoURI: item.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : item.tokenA.logoURI,
+          symbol: item.tokenA.path === wugnotPath ? (gnot?.symbol || "") : item.tokenA.symbol,
+          logoURI: item.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenA.logoURI,
+          name: item.tokenA.path === wugnotPath ? (gnot?.name || "") : item.tokenA.name,
         },
         tokenB: {
           ...item.tokenB,
-          symbol: item.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : item.tokenB.symbol,
-          logoURI: item.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : item.tokenB.logoURI,
+          symbol: item.tokenB.path === wugnotPath ? (gnot?.symbol || "") : item.tokenB.symbol,
+          logoURI: item.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenB.logoURI,
+          name: item.tokenB.path === wugnotPath ? (gnot?.name || "") : item.tokenB.name,
         }
       };
     });
@@ -59,14 +93,6 @@ export const usePoolData = () => {
 
   async function updatePools() {
     const pools = await poolRepository.getPools();
-    // const mapPool = pools.map((item: PoolModel) => {
-    //   return {
-    //     ...item,
-    //     tokenA: {
-    //       ...
-    //     }
-    //   };
-    // });
     setPools(pools);
     setLoading(false);
     setIsFetchedPools(true);
@@ -93,5 +119,6 @@ export const usePoolData = () => {
     updatePositions,
     fetchPoolDatils,
     loading,
+    gnot,
   };
 };

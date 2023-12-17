@@ -25,6 +25,7 @@ import { useNotice } from "@hooks/common/use-notice";
 import { SwapResponse } from "@repositories/swap";
 import { TNoticeType } from "src/context/NoticeContext";
 import { useRouter } from "next/router";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 const TokenSwapContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(TokenState.swap);
@@ -43,6 +44,8 @@ const TokenSwapContainer: React.FC = () => {
   const { slippage, changeSlippage } = useSlippage();
   const [submitted, setSubmitted] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
+  const { gnot, wugnotPath } = useGnotToGnot();
+
 
   const [initialized, setInitialized] = useState(false);
   const [query, setQuery] = useState<{ [key in string]: string | null }>({});
@@ -492,12 +495,24 @@ const TokenSwapContainer: React.FC = () => {
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
-      tokenA,
+      tokenA: tokenA ? {
+        ...tokenA,
+        path: tokenA?.path === wugnotPath ? (gnot?.path || "") : (tokenA?.path || ""),
+        name: tokenA?.path === wugnotPath ? (gnot?.name || "") : (tokenA?.name || ""),
+        symbol: tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (tokenA?.symbol || ""),
+        logoURI: tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenA?.logoURI || ""),
+      } : tokenA,
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
       tokenAUSDStr: numberToUSD(tokenAUSD),
-      tokenB,
+      tokenB: tokenB ? {
+        ...tokenB,
+        path: tokenB?.path === wugnotPath ? (gnot?.path || "") : (tokenB?.path || ""),
+        name: tokenB?.path === wugnotPath ? (gnot?.name || "") : (tokenB?.name || ""),
+        symbol: tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (tokenB?.symbol || ""),
+        logoURI: tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenB?.logoURI || ""),
+      } : tokenA,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
@@ -505,7 +520,7 @@ const TokenSwapContainer: React.FC = () => {
       direction: type,
       slippage
     };
-  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD, gnot]);
   useEffect(() => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {
       return;
@@ -529,7 +544,6 @@ const TokenSwapContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-  console.log(swapTokenInfo, "swapTokenInfo");
   
   return (
     <>

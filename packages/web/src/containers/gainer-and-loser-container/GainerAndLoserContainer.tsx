@@ -5,6 +5,7 @@ import { useGetChainList, useGetTokensList } from "src/react-query/token";
 import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
 import { convertLargePrice } from "@utils/stake-position-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export const gainersInit = [
   {
@@ -85,15 +86,16 @@ export const losersInit = [
 const GainerAndLoserContainer: React.FC = () => {
   const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokensList();
   const { data: { gainers = [], losers = [] } = {}, isLoading } = useGetChainList();
+  const { gnot, wugnotPath } = useGnotToGnot();
 
   const gainersList = useMemo(() => {
     return gainers.map((item: IGainer) => {
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
-        path: item.tokenPath,
-        name: temp.name,
-        symbol: temp.symbol,
-        logoURI: temp.logoURI,
+        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
+        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
+        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
+        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
         price: `$${convertLargePrice(item.tokenPrice, 10)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
@@ -107,10 +109,10 @@ const GainerAndLoserContainer: React.FC = () => {
     return losers.map((item: IGainer) => {
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
-        path: item.tokenPath,
-        name: temp.name,
-        symbol: temp.symbol,
-        logoURI: temp.logoURI,
+        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
+        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
+        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
+        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
         price: `$${convertLargePrice(item.tokenPrice, 10)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,

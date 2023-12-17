@@ -43,6 +43,7 @@ export interface Token{
 export interface SortOption {
   key: TABLE_HEAD;
   direction: "asc" | "desc";
+  firstActive?: boolean;
 }
 
 export const TABLE_HEAD = {
@@ -134,6 +135,7 @@ const TokenListContainer: React.FC = () => {
   const [sortOption, setSortOption] = useState<SortOption>({
     key: TABLE_HEAD.INDEX,
     direction: "asc",
+    firstActive: true,
   });
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
@@ -195,6 +197,7 @@ const TokenListContainer: React.FC = () => {
       setSortOption({
         key,
         direction,
+        firstActive: false,
       });
     },
     [sortOption],

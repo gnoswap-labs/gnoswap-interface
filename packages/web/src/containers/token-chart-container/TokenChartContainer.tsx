@@ -13,6 +13,8 @@ import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice, countPoints, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenDetailByPath, useGetTokensList } from "../.././react-query/token";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
@@ -188,7 +190,7 @@ const TokenChartContainer: React.FC = () => {
   const [fromSelectToken, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
-
+  const { gnot } = useGnotToGnot();
 
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: () => {
@@ -204,7 +206,7 @@ const TokenChartContainer: React.FC = () => {
     prices1y = [],
     pricesBefore = priceChangeDetailInit,
     currentPrice = ""
-  } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? WRAPPED_GNOT_PATH : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
   const [componentRef, size] = useComponentSize(isLoading);
 
   useEffect(() => {
@@ -214,10 +216,10 @@ const TokenChartContainer: React.FC = () => {
     const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
       setTokenInfo(() => ({
         token: {
-          name: currentToken.name,
-          symbol: currentToken.symbol,
-          image: currentToken.logoURI,
-          pkg_path: currentToken.path,
+          name: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : currentToken.name,
+          symbol: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : currentToken.symbol,
+          image: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : currentToken.logoURI,
+          pkg_path: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.path || "") : currentToken.path,
           decimals: 1,
           description: currentToken.description || "",
           website_url: currentToken.websiteURL || "",
@@ -235,7 +237,7 @@ const TokenChartContainer: React.FC = () => {
         openTradingModal({ symbol: currentToken.symbol, path: currentToken.path });
       }
     }
-  }, [router.query, pricesBefore.toString(), currentPrice, tokens]);
+  }, [router.query, pricesBefore.toString(), currentPrice, tokens, gnot]);
   
   const changeTab = useCallback((tab: string) => {
     const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";

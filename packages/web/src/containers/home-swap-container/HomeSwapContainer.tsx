@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-const GNOS_PATH = process.env.NEXT_PUBLIC_GNOS_PATH || "";
+const GNOS_PATH = "gno.land/r/demo/gns" || "";
 
 const TOKEN_A: TokenModel = {
   chainId: "dev",

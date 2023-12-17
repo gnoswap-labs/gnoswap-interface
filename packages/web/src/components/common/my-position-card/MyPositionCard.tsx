@@ -13,6 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -44,9 +45,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    return `$${numberToFormat(position.positionUsdValue.toString(), 2)}`;
+    return `$${convertLargePrice(position.positionUsdValue, 2)}`;
   }, [position.positionUsdValue]);
-
+  
   const aprStr = useMemo(() => {
     return position.apr === "" ? "-" : `${numberToFormat(position.apr, 2)}%`;
   }, [position.apr]);

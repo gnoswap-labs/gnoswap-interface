@@ -44,14 +44,14 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return sortOption?.key === head && sortOption.direction === "asc";
+      return sortOption?.key === head && sortOption.direction === "asc" && !sortOption.firstActive;
     },
     [sortOption],
   );
 
   const isDescendingOption = useCallback(
     (head: TABLE_HEAD) => {
-      return sortOption?.key === head && sortOption.direction === "desc";
+      return sortOption?.key === head && sortOption.direction === "desc" && !sortOption.firstActive;
     },
     [sortOption],
   );

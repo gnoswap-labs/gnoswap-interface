@@ -8,5 +8,6 @@ export const useGnotToGnot = () => {
   return {
     gnot,
     wugnot,
+    wugnotPath: WRAPPED_GNOT_PATH,
   };
 };
