@@ -63,13 +63,8 @@ export const GovernanceDetailInfoWrapper = styled.div`
   }
 
   .value-wrapper-skeleton {
-    height: 40px;
-    width: 100%;
-    padding: 0 8px;
-
-    ${media.tablet} {
-      height: 31px;
-    }
+    height: 20px;
+    width: 150px;
   }
 
   .value-wrapper {

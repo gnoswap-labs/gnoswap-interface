@@ -48,7 +48,7 @@ export const CreateProposalModalWrapper = styled.div`
     padding: 24px 24px 5px 24px;
     overflow: scroll;
     gap: 16px;
-    height: 957px;
+    height: 800px;
     max-height: calc(100lvh - 100px);
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
