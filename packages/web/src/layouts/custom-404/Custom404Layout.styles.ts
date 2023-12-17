@@ -24,8 +24,6 @@ export const wrapper = (theme: Theme) => css`
   .icon-404 {
     width: 380px;
     height: 320px;
-    opacity: 60%;
-    mix-blend-mode: hard-light;
     ${media.tablet} {
       width: 300px;
       height: 252px;
@@ -48,11 +46,12 @@ export const wrapper = (theme: Theme) => css`
       width: 100%;
     }
     .button-404 {
+      height: 50px;
       span {
         ${fonts.body7}
       }
       &:hover {
-        background-color: ${theme.color.hover05};;
+        background-color: ${theme.color.hover05};
       }
     }
     p {
@@ -71,7 +70,7 @@ export const wrapper = (theme: Theme) => css`
         margin: 4px 0px 24px;
       }
     }
-    
+
     ${media.mobile} {
       width: 250px;
       margin-left: 0;
@@ -98,7 +97,7 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 
-  .arrow-icon {
+  .btn-arrow-icon {
     margin-right: 8px;
   }
 `;

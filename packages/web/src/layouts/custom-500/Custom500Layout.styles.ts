@@ -48,6 +48,7 @@ export const wrapper = (theme: Theme) => css`
       width: 100%;
     }
     .button-404 {
+      height: 50px;
       span {
         ${fonts.body7}
       }
@@ -98,7 +99,9 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 
-  .arrow-icon {
+  .btn-arrow-icon {
     margin-right: 8px;
+    width: 20px;
+    height: 20px;
   }
 `;

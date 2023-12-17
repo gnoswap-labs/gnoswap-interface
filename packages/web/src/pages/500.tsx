@@ -15,7 +15,7 @@ export default function Custom500() {
   return (
     <Custom500Layout
       header={<HeaderContainer />}
-      icon404={<IconGnoswap404 className="icon-404"/>}
+      icon404={<IconGnoswap404 themeKey={themeKey} className="icon-404" />}
       goBackClick={goBackClick}
       footer={<Footer />}
       themeKey={themeKey}

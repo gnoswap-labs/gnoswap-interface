@@ -29,7 +29,7 @@ const Custom500Layout: React.FC<Custom500LayoutProps> = ({
           Please check back soon.
         </p>
         <Button
-          leftIcon={<IconStrokeArrowLeft className="arrow-icon" />}
+          leftIcon={<IconStrokeArrowLeft className="btn-arrow-icon" />}
           text="Go back"
           onClick={goBackClick}
           style={{
