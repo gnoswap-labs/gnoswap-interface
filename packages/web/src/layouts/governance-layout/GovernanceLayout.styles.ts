@@ -22,7 +22,7 @@ export const GovernanceLayoutWrapper = styled.div`
     ${media.mobile} {
       max-width: ${ContainerWidth.MOBILE_CONTAINER};
       width: 100%;
-      padding: 24px 16px 48px 16px;
+      padding: 24px 16px 0px 16px;
       gap: 12px;
     }
   }
@@ -108,13 +108,29 @@ export const GovernanceLayoutWrapper = styled.div`
     );
 
     ${media.tablet} {
-      padding-top: 63.5px;
+      padding-top: 60px;
       margin-top: 40px;
     }
 
     ${media.mobile} {
       padding-top: 24px;
       margin-top: 24px;
+    }
+  }
+
+  .list-container {
+    margin: 0 auto;
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    max-width: ${ContainerWidth.WEB_CONTAINER};
+    width: 100%;
+    padding: 0px 40px;
+    gap: 22px;
+    @media (max-width: 1180px) {
+      gap: 16px;
+    }
+
+    ${media.mobile} {
+      padding: 0px 16px;
     }
   }
 
@@ -143,8 +159,10 @@ export const LinkButton = styled.div`
   color: ${({ theme }) => theme.color.text04};
   ${media.mobile} {
     ${fonts.p3};
+    flex-direction: column;
   }
   a {
+    display: block;
     ${mixins.flexbox("row", "center", "center")};
     color: ${({ theme }) => theme.color.text07};
     &:hover {

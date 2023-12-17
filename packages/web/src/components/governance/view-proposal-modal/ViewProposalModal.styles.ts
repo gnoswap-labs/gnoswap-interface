@@ -284,6 +284,10 @@ export const BoxQuorumWrapper = styled.div`
       > div {
         ${fonts.body11}
       }
+
+      > div:first-of-type {
+        ${fonts.body12}
+      }
     }
     &:hover {
       background-color: ${({ theme }) => theme.color.background05Hover};

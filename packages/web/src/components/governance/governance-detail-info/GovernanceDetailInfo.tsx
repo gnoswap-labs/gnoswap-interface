@@ -6,12 +6,14 @@ import {
   GovernanceDetailInfoWrapper,
 } from "./GovernanceDetailInfo.styles";
 import { Global, css, type Theme } from "@emotion/react";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 
 interface GovernanceDetailInfoProps {
   title: string;
-  value: string;
+  value?: string;
   tooltip?: string;
   currency?: string;
+  loading?: boolean;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -37,6 +39,7 @@ const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
   value,
   tooltip,
   currency,
+  loading,
 }) => {
   return (
     <GovernanceDetailInfoWrapper>
@@ -46,10 +49,17 @@ const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
           <GovernanceDetailInfoTooltip tooltip={tooltip} />
         )}
       </div>
-      <div className="value-wrapper">
-        <span className="value">{value}</span>
-        {currency && <span className="currency">{currency}</span>}
-      </div>
+      {loading ? (
+        <div
+          className="value-wrapper-skeleton "
+          css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+        />
+      ) : (
+        <div className="value-wrapper">
+          <span className="value">{value}</span>
+          {currency && <span className="currency">{currency}</span>}
+        </div>
+      )}
       <ToolTipGlobalStyle />
     </GovernanceDetailInfoWrapper>
   );

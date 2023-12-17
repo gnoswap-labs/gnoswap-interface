@@ -3,14 +3,16 @@ import { GovernanceDetailInfoProps } from "@containers/governance-container/Gove
 import GovernanceDetail from "../governance-detail/GovernanceDetail";
 
 interface GovernanceSummaryProps {
-  governanceDetailInfo: GovernanceDetailInfoProps;
+  governanceDetailInfo?: GovernanceDetailInfoProps;
+  loading?: boolean;
 }
 
 const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   governanceDetailInfo,
+  loading,
 }) => (
   <GovernanceSummaryWrapper>
-    <GovernanceDetail governanceDetailInfo={governanceDetailInfo} />
+    <GovernanceDetail loading={loading} governanceDetailInfo={governanceDetailInfo} />
   </GovernanceSummaryWrapper>
 );
 
