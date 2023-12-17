@@ -31,8 +31,8 @@ const generateData = (chartType: CHART_TYPE) => {
   const mappingLength: Record<CHART_TYPE, number> = {
     [CHART_TYPE["7D"]]: 7,
     [CHART_TYPE["1M"]]: 30,
-    [CHART_TYPE["1Y"]]: 365,
-    [CHART_TYPE["ALL"]]: 400,
+    [CHART_TYPE["1Y"]]: 90,
+    [CHART_TYPE["ALL"]]: 356,
   };
 
   return Array.from({ length: mappingLength[chartType] }, (_, index) => {

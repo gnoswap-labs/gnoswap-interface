@@ -22,15 +22,15 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({
   const { breakpoint } = useWindowSize();
 
   const countXAxis = useMemo(() => {
-  if (breakpoint !== DEVICE_TYPE.MOBILE)
-    return Math.floor((((size.width || 0) + 20) - 25) / 100);
-  return Math.floor((((size.width || 0) + 20) - 8) / 80);
+    if (breakpoint !== DEVICE_TYPE.MOBILE)
+      return Math.floor(((size.width || 0) + 20 - 25) / 100);
+    return Math.floor(((size.width || 0) + 20 - 8) / 80);
   }, [size.width, breakpoint]);
-  
+
   const minGap = useMemo(() => {
-    if (datas.length === 8) return 16;
-    if (datas.length === 31) return 6;
-    if (datas.length === 91) return 2;
+    if (datas.length < 8) return 16;
+    if (datas.length < 31) return 6;
+    return 2;
   }, [datas.length]);
 
   return (

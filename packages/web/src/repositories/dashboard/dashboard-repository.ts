@@ -1,4 +1,4 @@
-import { OnchainRequest } from "./request";
+import { OnchainAccountRequest, OnchainRequest } from "./request";
 import { TvlResponse } from "./response";
 import { OnchainActivityResponse } from "./response/onchain-response";
 import { DashboardTokenResponse } from "./response/token-response";
@@ -10,5 +10,8 @@ export interface DashboardRepository {
   getDashboardToken: () => Promise<DashboardTokenResponse>;
   getDashboardOnchainActivity: (
     req: OnchainRequest,
+  ) => Promise<OnchainActivityResponse>;  
+  getAccountOnchainActivity: (
+    req: OnchainAccountRequest,
   ) => Promise<OnchainActivityResponse>;
 }
