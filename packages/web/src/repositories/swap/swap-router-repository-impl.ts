@@ -176,8 +176,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       pkg_path: ROUTER_PACKAGE_PATH,
       func: "SwapRoute",
       args: [
-        inputToken.path,
-        outputToken.path,
+        inputTokenPath,
+        outputTokenPath,
         `${tokenAmountRaw || 0}`,
         exactType,
         `${routesQuery}`,

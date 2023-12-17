@@ -23,6 +23,7 @@ export const useSwap = ({
   const { poolRepository, swapRouterRepository } = useGnoswapContext();
   const [estimatedRoutes, setEstimatedRoutes] = useState<EstimatedRoute[]>([]);
   const [estimatedAmount, setEstimatedAmount] = useState<string | null>(null);
+  const [swapState, setSwapState] = useState<"NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS">("NONE");
   const { slippage } = useSlippage();
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
@@ -41,12 +42,16 @@ export const useSwap = ({
 
   const estimateSwapRoute = async (amount: string) => {
     if (!selectedTokenPair) {
+      setSwapState("NONE");
       return null;
     }
     if (Number.isNaN(amount)) {
+      setSwapState("NONE");
       return null;
     }
-    const pools = await poolRepository.getRPCPools();
+
+    setSwapState("LOADING");
+    const pools = await poolRepository.getRPCPools().catch(() => []);
     swapRouterRepository.updatePools(pools);
 
     return swapRouterRepository.estimateSwapRoute({
@@ -56,6 +61,11 @@ export const useSwap = ({
       tokenAmount: Number(amount)
     }).then(response => {
       console.log("response", response);
+      if (response.amount === "0" || response.amount === "") {
+        setSwapState("NO_LIQUIDITY");
+      } else {
+        setSwapState("SUCCESS");
+      }
       setEstimatedRoutes(response.estimatedRoutes);
       setEstimatedAmount(response.amount);
       return response;
@@ -63,6 +73,7 @@ export const useSwap = ({
       console.error(e);
       setEstimatedRoutes([]);
       setEstimatedAmount(null);
+      setSwapState("NONE");
       return null;
     });
   };
@@ -117,6 +128,7 @@ export const useSwap = ({
   return {
     tokenAmountLimit,
     estimatedRoutes,
+    swapState,
     swap,
     wrapToken,
     unwrapToken,

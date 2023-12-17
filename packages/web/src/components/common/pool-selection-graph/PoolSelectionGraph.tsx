@@ -257,10 +257,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
     return resolvedBins().map((bin) => {
       const x = bin.x + 1;
-      const y = scaleY(bin.y);
+      const y = bin.y > 0 ? scaleY(bin.y) : 0;
       const fill = fillByBin(bin);
       const width = bin.width - 1;
-      const height = boundsHeight - y;
+      const height = bin.y > 0 ? boundsHeight - y : 0;
 
       return {
         x,

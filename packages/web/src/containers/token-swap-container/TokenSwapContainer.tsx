@@ -80,7 +80,7 @@ const TokenSwapContainer: React.FC = () => {
     switchNetwork,
   } = useWallet();
 
-  const { swap, estimateSwapRoute, estimatedRoutes, tokenAmountLimit } = useSwap({
+  const { swap, estimateSwapRoute, swapState, estimatedRoutes, tokenAmountLimit } = useSwap({
     tokenA,
     tokenB,
     direction: type,
@@ -380,6 +380,9 @@ const TokenSwapContainer: React.FC = () => {
       (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT")
     ) {
       return "Amount Too Low";
+    }
+    if (swapState === "NO_LIQUIDITY") {
+      return "Insufficient Liquidity";
     }
 
     if (type === "EXACT_IN") {

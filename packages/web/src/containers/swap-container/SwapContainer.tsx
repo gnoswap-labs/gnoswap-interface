@@ -50,7 +50,7 @@ const SwapContainer: React.FC = () => {
 
   const { openModal } = useConnectWalletModal();
 
-  const { estimatedRoutes, tokenAmountLimit, swap, estimateSwapRoute, unwrapToken } = useSwap({
+  const { estimatedRoutes, tokenAmountLimit, swapState, swap, estimateSwapRoute, unwrapToken } = useSwap({
     tokenA,
     tokenB,
     direction: type,
@@ -128,6 +128,9 @@ const SwapContainer: React.FC = () => {
       (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT")
     ) {
       return "Amount Too Low";
+    }
+    if (swapState === "NO_LIQUIDITY") {
+      return "Insufficient Liquidity";
     }
 
     if (type === "EXACT_IN") {
