@@ -53,7 +53,7 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: `${BigNumber(apr).toFormat(2)}%`,
+      apr: apr ? `${BigNumber(apr).toFormat(2)}%` : "-",
       liquidity: toUnitFormat(tvl, true),
       volume24h: toUnitFormat(volume, true),
       fees24h: toUnitFormat(feeVolume, true),
@@ -71,7 +71,7 @@ export class PoolMapper {
 
     return {
       poolId: pool.id,
-      liquidityAmount: BigNumber(pool.price).toFixed(),
+      liquidityAmount: BigNumber(pool.tvl).toFixed(),
       feeRate,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
@@ -120,7 +120,7 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: `${BigNumber(apr).toFormat(2)}%`,
+      apr: apr ? `${BigNumber(apr).toFormat(2)}%` : "-",
       liquidity: toUnitFormat(tvl, true),
       volume24h: toUnitFormat(volume, true),
       fees24h: toUnitFormat(feeVolume, true),
@@ -137,20 +137,14 @@ export class PoolMapper {
       ...bin,
     }));
     const id = pool.id ?? makeId(pool.poolPath);
-    const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
-    const incentivizedType: IncentivizedOptions =
-      incentivizedTypeStr !== "INCENTIVIZED"
-        ? incentivizedTypeStr === "EXTERNAL_INCENTIVIZED"
-          ? "EXTERNAL_INCENTIVIZED"
-          : "INCENTIVIZED"
-        : "NON_INCENTIVIZED";
     return {
       ...pool,
       id,
       path: pool.poolPath,
-      incentivizedType,
+      incentivizedType: pool.incentiveType as IncentivizedOptions,
       bins,
       rewardTokens: pool.rewardTokens || [],
+      apr: pool.apr !== "" ? Number(pool.apr) : null,
     };
   }
 
@@ -159,20 +153,14 @@ export class PoolMapper {
       ...bin,
     }));
     const id = pool.id ?? makeId(pool.poolPath);
-    const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
-    const incentivizedType: IncentivizedOptions =
-      incentivizedTypeStr !== "INCENTIVIZED"
-        ? incentivizedTypeStr === "EXTERNAL_INCENTIVIZED"
-          ? "EXTERNAL_INCENTIVIZED"
-          : "INCENTIVIZED"
-        : "NON_INCENTIVIZED";
     return {
       ...pool,
       id,
       path: pool.poolPath,
-      incentivizedType,
+      incentivizedType: pool.incentiveType as IncentivizedOptions,
       bins,
       rewardTokens: pool.rewardTokens || [],
+      apr: pool.apr !== "" ? Number(pool.apr) : null,
     };
   }
 }

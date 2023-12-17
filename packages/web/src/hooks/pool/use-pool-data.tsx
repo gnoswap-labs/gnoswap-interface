@@ -17,11 +17,11 @@ export const usePoolData = () => {
   const poolListInfos = useMemo(() => {
     return pools?.map(PoolMapper.toListInfo);
   }, [pools]);
-  
+
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools.sort((p1, p2) => {
-      const p2Apr = p2.apr;
-      const p1Apr = p1.apr;
+      const p2Apr = p2.apr || 0;
+      const p1Apr = p1.apr || 0;
       return p2Apr - p1Apr;
     }).filter((_, index) => index < 3);
     return sortedTokens?.map(pool => ({
@@ -36,8 +36,8 @@ export const usePoolData = () => {
   }
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     return pools
-      ?.map(PoolMapper.toCardInfo)
-      .filter(info => info.incentivizedType !== "NON_INCENTIVIZED");
+      .filter(info => info.incentivizedType === "INCENTIVIZED")
+      .map(PoolMapper.toCardInfo);
   }, [pools]);
 
   async function updatePools() {

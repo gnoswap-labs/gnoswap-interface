@@ -35,7 +35,7 @@ export class PositionMapper {
     const id = position.lpTokenId;
     const incentivizedType: IncentivizedOptions = position.incentivized
       ? "INCENTIVIZED"
-      : "NON_INCENTIVIZED";
+      : "NONE_INCENTIVIZED";
 
     return {
       id,
@@ -58,7 +58,7 @@ export class PositionMapper {
       tokensOwed1Amount: BigInt(position.tokensOwed1Amount),
       tokensOwed0Usd: position.tokensOwed0Usd,
       tokensOwed1Usd: position.tokensOwed1Usd,
-      apr: "0",
+      apr: "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsdValue || "0",
       rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
@@ -73,7 +73,17 @@ export class PositionMapper {
 
   public static rewardFromResponse(reward: RewardResposne): RewardModel {
     return {
-      ...reward,
+      token: reward.rewardToken,
+      accumulatedRewardOf1d:
+        reward.accuReward1d !== "" ? reward.accuReward1d : null,
+      accumulatedRewardOf7d:
+        reward.accuReward7d !== "" ? reward.accuReward7d : null,
+      apr: reward.apr !== "" ? Number(reward.apr) : null,
+      aprOf7d: reward.apr7d !== "" ? Number(reward.apr7d) : null,
+      totalAmount: BigInt(reward.totalAmount),
+      claimableAmount: BigInt(reward.claimableAmount),
+      claimableUsdValue: reward.claimableUsdValue,
+      rewardType: reward.rewardType,
     };
   }
 

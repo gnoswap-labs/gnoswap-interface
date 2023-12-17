@@ -10,11 +10,13 @@ export interface RewardModel {
 
   claimableAmount: bigint;
 
-  accumulatedRewardOf1d: string;
+  claimableUsdValue: string;
 
-  accumulatedRewardOf7d: string;
+  accumulatedRewardOf1d: string | null;
 
-  apr: number;
+  accumulatedRewardOf7d: string | null;
 
-  aprOf7d: number;
+  apr: number | null;
+
+  aprOf7d: number | null;
 }

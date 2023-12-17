@@ -48,8 +48,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
-    return `${numberToFormat(position.apr, 2)}%`;
-  }, [position.apr]);
+    if (position.apr === "") {
+      return "-";
+    }
+    const apr = numberToFormat(position.apr, 2);
+    if (position.staked) {
+      return `${POSITION_CONTENT_LABEL}${apr}%`;
+    }
+    return `${apr}%`;
+  }, [position.apr, position.staked]);
 
   const currentPrice = useMemo(() => {
     return tickToPrice(pool.currentTick);
@@ -155,9 +162,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="list-content">
               <span>{positionUsdValueStr}</span>
-              {position.staked
-                ? `${POSITION_CONTENT_LABEL.STAR_TAG}${aprStr}`
-                : aprStr}
+              {aprStr}
             </div>
           </div>
           <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>

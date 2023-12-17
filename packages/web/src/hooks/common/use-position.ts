@@ -13,15 +13,16 @@ export const usePosition = (positions: PoolPositionModel[]) => {
       return null;
     }
 
-    const lpTokenIds = positions
-      .filter(
-        position =>
-          position.unclaimedFee0Amount + position.unclaimedFee1Amount > 0,
-      )
-      .map(position => position.lpTokenId);
+    const claimablePositions = positions.filter(
+      position =>
+        position.rewards.reduce(
+          (accum, current) => accum + Number(current.claimableAmount),
+          0,
+        ) > 0,
+    );
     return positionRepository
       .claimAll({
-        lpTokenIds,
+        positions: claimablePositions,
         receipient: address,
       })
       .catch(() => null);

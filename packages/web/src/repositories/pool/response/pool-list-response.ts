@@ -13,7 +13,7 @@ export interface PoolResponse {
 
   poolPath: string;
 
-  incentivizedType?: string;
+  incentiveType?: string;
 
   name: string;
 
@@ -49,7 +49,7 @@ export interface PoolResponse {
 
   feeChange: number;
 
-  apr: number;
+  apr: string;
 
   rewardTokens?: TokenModel[];
 }

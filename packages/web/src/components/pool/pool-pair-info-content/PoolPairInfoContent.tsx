@@ -51,7 +51,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return toLowerUnitFormat(pool.volume, true);
   }, [pool.volume]);
 
-  const aprValue = useMemo((): string => {
+  const aprValue = useMemo(() => {
+    if (pool.apr === null) {
+      return "-";
+    }
+    if (pool.apr >= 100) {
+      return <><IconStar />{`${pool.apr}%`}</>;
+    }
     return `${pool.apr}%`;
   }, [pool.apr]);
 
@@ -138,7 +144,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       </section>
       <section>
         <h4>APR</h4>
-        <strong><IconStar /> {aprValue}</strong>
+        <strong>{aprValue}</strong>
         <div className="apr-info">
           <div className="content-wrap">
             <span>Fees</span>

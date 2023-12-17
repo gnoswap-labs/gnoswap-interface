@@ -147,7 +147,18 @@ const SwapContainer: React.FC = () => {
       }
     }
     return "Swap";
-  }, [connectedWallet, tokenA, tokenB, isSwitchNetwork, tokenAAmount, tokenBAmount, type, tokenBBalance, tokenABalance]);
+  }, [
+    connectedWallet,
+    tokenA,
+    tokenB,
+    isSwitchNetwork,
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenBBalance,
+    tokenABalance,
+    swapState,
+  ]);
 
   const openConfirmModal = useCallback(() => {
     setOpenedConfirModal(true);

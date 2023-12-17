@@ -25,7 +25,6 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCResponse } from "./response/pool-rpc-response";
 import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
-import BigNumber from "bignumber.js";
 import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { makeRawTokenAmount } from "@utils/token-utils";
@@ -35,9 +34,9 @@ import { makeDepositMessage } from "@common/clients/wallet-client/transaction-me
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { makeCreateIncentiveMessage, makeRemoveIncentiveMessage, makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
+import { makePositionMintMessage } from "@common/clients/wallet-client/transaction-messages/position";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
-const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
 const GNS_TOKEN_PATH = process.env.NEXT_PUBLIC_GNS_TOKEN_PATH || "";
 const CREATE_POOL_FEE = process.env.NEXT_PUBLIC_CREATE_POOL_FEE || "";
@@ -178,7 +177,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
     ));
 
-    messages.push(PoolRepositoryImpl.makeAddLiquidityMessage(
+    messages.push(makePositionMintMessage(
       tokenA,
       tokenB,
       feeTier,
@@ -244,7 +243,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
     ));
 
-    messages.push(PoolRepositoryImpl.makeAddLiquidityMessage(
+    messages.push(makePositionMintMessage(
       tokenA,
       tokenB,
       feeTier,
@@ -395,49 +394,6 @@ export class PoolRepositoryImpl implements PoolRepository {
       pkg_path: tokenPath,
       func: "Approve",
       args: [POOL_ADDRESS, amount],
-    };
-  }
-
-  private static makeAddLiquidityMessage(
-    tokenA: TokenModel,
-    tokenB: TokenModel,
-    feeTier: SwapFeeTierType,
-    minTick: number,
-    maxTick: number,
-    tokenAAmount: string,
-    tokenBAmount: string,
-    slippage: string,
-    caller: string,
-  ) {
-    const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-    const slippageRatio = 0;
-    const deadline = "7282571140";
-    let tokenAPath = tokenA.path;
-    let tokenBPath = tokenB.path;
-    if (isNativeToken(tokenA) ) {
-      tokenAPath = tokenA.wrappedPath;
-    }
-    if (isNativeToken(tokenB) ) {
-      tokenBPath = tokenB.wrappedPath;
-    }
-    const sendAmount = "";
-    return {
-      caller,
-      send: sendAmount,
-      pkg_path: POSITION_PATH,
-      func: "Mint",
-      args: [
-        tokenAPath,
-        tokenBPath,
-        fee,
-        `${minTick}`,
-        `${maxTick}`,
-        tokenAAmount,
-        tokenBAmount,
-        BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
-        BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
-        deadline,
-      ],
     };
   }
 }
