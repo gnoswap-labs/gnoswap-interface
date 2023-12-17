@@ -49,11 +49,11 @@ export interface GovernenceOverviewInfo {
 }
 
 const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
-  totalXgnosIssued: "59,144,225 xGNOS",
-  holders: "14,072",
-  passedProposals: "125",
-  activeProposals: "2",
-  communityPool: "2,412,148 GNS",
+  totalXgnosIssued: "-",
+  holders: "-",
+  passedProposals: "-",
+  activeProposals: "-",
+  communityPool: "-",
 };
 
 const DashboardInfoContainer: React.FC = () => {

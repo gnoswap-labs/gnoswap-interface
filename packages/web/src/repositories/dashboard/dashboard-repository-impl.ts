@@ -5,6 +5,8 @@ import { DashboardRepository } from "./dashboard-repository";
 import { TvlResponse } from "./response";
 import { VolumeResponse } from "./response/volume-response";
 import { DashboardTokenResponse } from "./response/token-response";
+import { OnchainRequest } from "./request";
+import { OnchainActivityResponse } from "./response/onchain-response";
 
 export class DashboardRepositoryImpl implements DashboardRepository {
   private networkClient: NetworkClient;
@@ -33,6 +35,24 @@ export class DashboardRepositoryImpl implements DashboardRepository {
   public getDashboardToken = async (): Promise<DashboardTokenResponse> => {
     const { data } = await this.networkClient.get<DashboardTokenResponse>({
       url: "/dashboard_gns_gnot",
+    });
+    return data;
+  };
+
+  public getDashboardOnchainActivity = async (
+    request: OnchainRequest,
+  ): Promise<OnchainActivityResponse> => {
+    const urlMapper: Record<OnchainRequest["type"], string> = {
+      All: "/onchain_all",
+      Swaps: "/onchain_swap",
+      Adds: "/onchain_add",
+      Removes: "/onchain_remove",
+      Stakes: "/onchain_stake",
+      Unstakes: "/onchain_unstake",
+    };
+
+    const { data } = await this.networkClient.get<OnchainActivityResponse>({
+      url: urlMapper[request.type],
     });
     return data;
   };

@@ -3,6 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { ValuesType } from "utility-types";
 import ActivityList from "@components/dashboard/activity-list/ActivityList";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import {
+  OnchainActivityData,
+  OnchainActivityResponse,
+} from "@repositories/dashboard/response/onchain-response";
+import { formatAddress } from "@utils/string-utils";
+import dayjs from "dayjs";
+
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 export interface Activity {
   action: string;
@@ -11,6 +21,7 @@ export interface Activity {
   tokenAmountTwo: string;
   account: string;
   time: string;
+  explorerUrl: string;
 }
 
 export interface SortOption {
@@ -38,14 +49,14 @@ export const ACTIVITY_TYPE = {
 } as const;
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
-const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-  Action: "action",
-  "Total Value": "total_value",
-  "Token amount": "token_amount",
-  "Token amount ": "token_amount ",
-  Account: "Account",
-  Time: "Time",
-};
+// const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
+//   Action: "action",
+//   "Total Value": "total_value",
+//   "Token amount": "token_amount",
+//   "Token amount ": "token_amount ",
+//   Account: "Account",
+//   Time: "Time",
+// };
 
 export const dummyTokenList: Activity[] = [
   {
@@ -55,37 +66,40 @@ export const dummyTokenList: Activity[] = [
     tokenAmountTwo: "19 GNS",
     account: "g129kua...ndsu12",
     time: "less than a minute ago",
+    explorerUrl:
+      "https://gnoscan.io/transactions/details?txhash=hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
   },
 ];
 
-async function fetchActivities(
-  type: ACTIVITY_TYPE, // eslint-disable-line
-  page: number, // eslint-disable-line
-  sortKey?: string, // eslint-disable-line
-  direction?: string, // eslint-disable-line
-): Promise<Activity[]> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    Promise.resolve([
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-      ...dummyTokenList,
-    ]),
-  );
-}
+// async function fetchActivities(
+//   type: ACTIVITY_TYPE, // eslint-disable-line
+//   page: number, // eslint-disable-line
+//   sortKey?: string, // eslint-disable-line
+//   direction?: string, // eslint-disable-line
+// ): Promise<Activity[]> {
+//   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
+//     Promise.resolve([
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//       ...dummyTokenList,
+//     ]),
+//   );
+// }
 
 const DashboardActivitiesContainer: React.FC = () => {
   const [activityType, setActivityType] = useState<ACTIVITY_TYPE>(
     ACTIVITY_TYPE.ALL,
   );
+  const { dashboardRepository } = useGnoswapContext();
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
   const { breakpoint } = useWindowSize();
@@ -94,7 +108,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     isFetched,
     error,
     data: activities,
-  } = useQuery<Activity[], Error>({
+  } = useQuery<OnchainActivityResponse, Error>({
     queryKey: [
       "activities",
       activityType,
@@ -103,12 +117,7 @@ const DashboardActivitiesContainer: React.FC = () => {
       sortOption?.direction,
     ],
     queryFn: () =>
-      fetchActivities(
-        activityType,
-        page,
-        sortOption && SORT_PARAMS[sortOption.key],
-        sortOption?.direction,
-      ),
+      dashboardRepository.getDashboardOnchainActivity({ type: activityType }),
   });
 
   const changeActivityType = useCallback((newType: string) => {
@@ -152,9 +161,33 @@ const DashboardActivitiesContainer: React.FC = () => {
     [sortOption],
   );
 
+  const capitalizeFirstLetter = (input: string) => {
+    const str = input.toLowerCase();
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const formatActivity = (res: OnchainActivityData): Activity => {
+    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res.txHash}`;
+    return {
+      action: `${capitalizeFirstLetter(res.actionType)} ${
+        res.token0.symbol
+      } and ${res.token1.symbol}`,
+      totalValue: `$${Number(res.totalUsdValue).toLocaleString()}`,
+      tokenAmountOne: `${Number(res.token0Amount).toLocaleString()} ${
+        res.token0.symbol
+      }`,
+      tokenAmountTwo: `${Number(res.token1Amount).toLocaleString()} ${
+        res.token1.symbol
+      }`,
+      account: formatAddress(res.account),
+      time: dayjs(res.time).fromNow(),
+      explorerUrl,
+    };
+  };
+
   return (
     <ActivityList
-      activities={activities ?? []}
+      activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
       isFetched={isFetched}
       error={error}
       activityType={activityType}
