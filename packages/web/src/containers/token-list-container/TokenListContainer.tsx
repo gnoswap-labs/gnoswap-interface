@@ -205,9 +205,9 @@ const TokenListContainer: React.FC = () => {
 
   const firstData = useMemo(() => {
     const temp = tokens.filter(((token: TokenModel) => token.path !== WRAPPED_GNOT_PATH)).map((item: TokenModel) => {
-      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
-      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === WRAPPED_GNOT_PATH)?.[0] ?? {};
       const isGnot = item.path === "gnot";
+      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === (isGnot ? WRAPPED_GNOT_PATH : item.path))?.[0] ?? {};
+      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === WRAPPED_GNOT_PATH)?.[0] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
@@ -230,13 +230,13 @@ const TokenListContainer: React.FC = () => {
           poolId: Math.floor(Math.random() * 50 + 1).toString(),
           tokenPair: {
             tokenA: {
-              path: !tempTokenA ? "" : isWuGnotTokenA ? (gnot?.path || "") : tempTokenA?.[0]?.path,
+              path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
               name: isWuGnotTokenA ? (gnot?.name || "") : (tempTokenA?.[0]?.name || ""),
               symbol: isWuGnotTokenA ? (gnot?.symbol || "") : (tempTokenA?.[0]?.symbol || ""),
               logoURI: isWuGnotTokenA ? (gnot?.logoURI || "") : (tempTokenA?.[0]?.logoURI || ""),
             },
             tokenB: {
-              path: !tempTokenB ? "" : isWuGnotTokenB ? (gnot?.path || "") : tempTokenB?.[0]?.path,
+              path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
               name: isWuGnotTokenB ? (gnot?.name || "") : (tempTokenB?.[0]?.name || ""),
               symbol: isWuGnotTokenB ? (gnot?.symbol || "") : (tempTokenB?.[0]?.symbol || ""),
               logoURI: isWuGnotTokenB ? (gnot?.logoURI || "") : (tempTokenB?.[0]?.logoURI || ""),

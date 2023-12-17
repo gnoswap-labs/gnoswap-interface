@@ -56,7 +56,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volume]);
 
   const aprValue = useMemo((): string => {
-    return `${pool.apr}%`;
+    return `${pool.apr || "0.00"}%`;
   }, [pool.apr]);
 
   const liquidityChangedStr = useMemo((): string => {
@@ -132,9 +132,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             />
             </SkeletonEarnDetailWrapper>}
           {!loading && pool.tvlChange >= 0 ? (
-            <span className="positive">{liquidityChangedStr}</span>
+            <span className="positive">+{liquidityChangedStr}</span>
           ) : (!loading &&
-            <span className="negative">{liquidityChangedStr}</span>
+            <span className="negative">-{liquidityChangedStr}</span>
           )}
         </div>
       </section>
@@ -149,9 +149,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         <div className="section-info">
           <span>24h Change</span>
           {!loading && pool.volumeChange >= 0 ? (
-            <span className="positive">{volumeChangedStr}</span>
+            <span className="positive">+{volumeChangedStr}</span>
           ) : (!loading &&
-            <span className="negative">{volumeChangedStr}</span>
+            <span className="negative">-{volumeChangedStr}</span>
           )}
           {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span

@@ -48,7 +48,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       align-self: stretch;
       text-align: right;
       border-radius: 8px;
-      border: 1px solid ${({ theme }) => theme.color.border17};
+      border: 1px solid ${({ theme }) => theme.color.border02};
       background: ${({ theme }) => theme.color.backgroundOpacity};
       ${fonts.body12}
 
