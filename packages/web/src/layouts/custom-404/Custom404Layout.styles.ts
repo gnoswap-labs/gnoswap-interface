@@ -79,6 +79,7 @@ export const wrapper = (theme: Theme) => css`
         ${fonts.body5};
       }
       p {
+        width: 100%;
         text-align: center;
         ${fonts.body10};
         margin: 8px 0px 16px;
