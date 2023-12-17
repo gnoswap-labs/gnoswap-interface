@@ -4,17 +4,19 @@ import { TokenModel } from "@models/token/token-model";
 export interface RewardResposne {
   rewardType: RewardType;
 
-  token: TokenModel;
+  rewardToken: TokenModel;
 
-  totalAmount: bigint;
+  totalAmount: string;
 
-  claimableAmount: bigint;
+  claimableAmount: string;
 
-  accumulatedRewardOf1d: string;
+  claimableUsdValue: string;
 
-  accumulatedRewardOf7d: string;
+  accuReward1d: string;
 
-  apr: number;
+  accuReward7d: string;
 
-  aprOf7d: number;
+  apr: string;
+
+  apr7d: string;
 }

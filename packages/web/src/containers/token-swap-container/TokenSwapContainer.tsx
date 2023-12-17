@@ -412,6 +412,7 @@ const TokenSwapContainer: React.FC = () => {
     type,
     tokenBBalance,
     tokenABalance,
+    swapState,
   ]);
 
   const isAvailSwap = useMemo(() => {

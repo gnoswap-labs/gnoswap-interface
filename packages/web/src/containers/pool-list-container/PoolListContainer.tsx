@@ -45,7 +45,7 @@ export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 export const POOL_TYPE = {
   ALL: "All",
   INCENTIVIZED: "Incentivized",
-  NON_INCENTIVIZED: "Non-Incentivized",
+  NONE_INCENTIVIZED: "Non-Incentivized",
 } as const;
 
 export type POOL_TYPE = ValuesType<typeof POOL_TYPE>;
@@ -81,7 +81,7 @@ const PoolListContainer: React.FC = () => {
         case "Incentivized":
           return incentivizedType !== "INCENTIVIZED";
         case "Non-Incentivized":
-          return incentivizedType === "NON_INCENTIVIZED";
+          return incentivizedType === "NONE_INCENTIVIZED";
         default:
           break;
       }
@@ -120,8 +120,8 @@ const PoolListContainer: React.FC = () => {
       case POOL_TYPE.INCENTIVIZED:
         setPoolType(POOL_TYPE.INCENTIVIZED);
         break;
-      case POOL_TYPE.NON_INCENTIVIZED:
-        setPoolType(POOL_TYPE.NON_INCENTIVIZED);
+      case POOL_TYPE.NONE_INCENTIVIZED:
+        setPoolType(POOL_TYPE.NONE_INCENTIVIZED);
         break;
       default:
         setPoolType(POOL_TYPE.ALL);

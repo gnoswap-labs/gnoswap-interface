@@ -16,7 +16,6 @@ import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
-import { TokenPriceModel } from "@models/token/token-price-model";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -92,20 +91,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [allBalances]);
 
   const dailyEarningRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
-    if (!activated) {
-      return null;
-    }
-    // TODO: Not implements API
-    return {
-      SWAP_FEE: makeUniqueClaimableRewards(positions, tokenPrices),
-      STAKING: [],
-      EXTERNAL: []
-    };
-  }, [activated, positions, tokenPrices]);
+    return null;
+  }, []);
 
   const dailyEarning = useMemo(() => {
     if (!dailyEarningRewardInfo) {
-      return "$0";
+      return "-";
     }
     const usdValue = Object.values(dailyEarningRewardInfo)
       .flatMap(item => item)
@@ -119,10 +110,38 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!activated) {
       return null;
     }
+    const infoMap: { [key in RewardType]: { [key in string]: PositionClaimInfo } } = {
+      "SWAP_FEE": {},
+      "STAKING": {},
+      "EXTERNAL": {},
+    };
+    positions.flatMap(position => position.rewards)
+      .map(reward => ({
+        token: reward.token,
+        rewardType: reward.rewardType,
+        balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
+        balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
+        claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
+        claimableUSD: Number(reward.claimableUsdValue)
+      }))
+      .forEach((rewardInfo) => {
+        const existReward = infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
+        if (existReward) {
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
+            ...existReward,
+            balance: existReward.balance + rewardInfo.balance,
+            balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
+            claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
+            claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
+          };
+        } else {
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
+        }
+      });
     return {
-      SWAP_FEE: makeUniqueClaimableRewards(positions, tokenPrices),
-      STAKING: [],
-      EXTERNAL: [],
+      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
+      STAKING: Object.values(infoMap["STAKING"]),
+      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
   }, [activated, positions, tokenPrices]);
 
@@ -130,7 +149,33 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!activated) {
       return null;
     }
-    return makeUniqueClaimableRewards(positions, tokenPrices);
+    const infoMap: { [key in string]: PositionClaimInfo } = {};
+    positions.flatMap(position => position.rewards)
+      .map(reward => ({
+        token: reward.token,
+        rewardType: reward.rewardType,
+        balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
+        balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
+        claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
+        claimableUSD: Number(reward.claimableUsdValue)
+      }))
+      .forEach((rewardInfo) => {
+        if (rewardInfo.claimableAmount > 0) {
+          const existReward = infoMap[rewardInfo.token.priceId];
+          if (existReward) {
+            infoMap[rewardInfo.token.priceId] = {
+              ...existReward,
+              balance: existReward.balance + rewardInfo.balance,
+              balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
+              claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
+              claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
+            };
+          } else {
+            infoMap[rewardInfo.token.priceId] = rewardInfo;
+          }
+        }
+      });
+    return Object.values(infoMap);
   }, [activated, positions, tokenPrices]);
 
   const claimableUSD = useMemo(() => {
@@ -147,7 +192,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return false;
     }
     return unclaimedRewardInfo.reduce((accum, current) => {
-      return accum + current.balance;
+      return accum + current.claimableAmount;
     }, 0) > 0;
   }, [activated, unclaimedRewardInfo]);
 
@@ -260,33 +305,33 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
 export default MyLiquidityContent;
 
-function makeUniqueClaimableRewards(positions: PoolPositionModel[], tokenPrices: { [key in string]: TokenPriceModel | null }): PositionClaimInfo[] {
-  const infoMap: { [key in string]: PositionClaimInfo } = {};
-  positions.flatMap(position => {
-    const tokenA = position.pool.tokenA;
-    const tokenB = position.pool.tokenB;
-    const tokenAUnclaimedBalance = makeDisplayTokenAmount(tokenA, position.unclaimedFee0Amount) || 0;
-    const tokenBUnclaimedBalance = makeDisplayTokenAmount(tokenB, position.unclaimedFee1Amount) || 0;
-    return [{
-      balance: tokenAUnclaimedBalance,
-      balanceUSD: tokenAUnclaimedBalance * Number(tokenPrices[tokenA.priceId]?.usd || 0),
-      token: tokenA
-    }, {
-      balance: tokenBUnclaimedBalance,
-      balanceUSD: tokenBUnclaimedBalance * Number(tokenPrices[tokenB.priceId]?.usd || 0),
-      token: tokenB
-    }];
-  }).forEach(claimInfo => {
-    const currentInfo = infoMap[claimInfo.token.priceId];
-    if (currentInfo) {
-      infoMap[claimInfo.token.priceId] = {
-        ...claimInfo,
-        balance: currentInfo.balance + claimInfo.balance,
-        balanceUSD: currentInfo.balanceUSD + claimInfo.balanceUSD,
-      };
-    } else {
-      infoMap[claimInfo.token.priceId] = claimInfo;
-    }
-  });
-  return Object.values(infoMap);
-}
+// function makeUniqueClaimableRewards(positions: PoolPositionModel[], tokenPrices: { [key in string]: TokenPriceModel | null }): PositionClaimInfo[] {
+//   const infoMap: { [key in string]: PositionClaimInfo } = {};
+//   positions.flatMap(position => {
+//     const tokenA = position.pool.tokenA;
+//     const tokenB = position.pool.tokenB;
+//     const tokenAUnclaimedBalance = makeDisplayTokenAmount(tokenA, position.unclaimedFee0Amount) || 0;
+//     const tokenBUnclaimedBalance = makeDisplayTokenAmount(tokenB, position.unclaimedFee1Amount) || 0;
+//     return [{
+//       balance: tokenAUnclaimedBalance,
+//       balanceUSD: tokenAUnclaimedBalance * Number(tokenPrices[tokenA.priceId]?.usd || 0),
+//       token: tokenA
+//     }, {
+//       balance: tokenBUnclaimedBalance,
+//       balanceUSD: tokenBUnclaimedBalance * Number(tokenPrices[tokenB.priceId]?.usd || 0),
+//       token: tokenB
+//     }];
+//   }).forEach(claimInfo => {
+//     const currentInfo = infoMap[claimInfo.token.priceId];
+//     if (currentInfo) {
+//       infoMap[claimInfo.token.priceId] = {
+//         ...claimInfo,
+//         balance: currentInfo.balance + claimInfo.balance,
+//         balanceUSD: currentInfo.balanceUSD + claimInfo.balanceUSD,
+//       };
+//     } else {
+//       infoMap[claimInfo.token.priceId] = claimInfo;
+//     }
+//   });
+//   return Object.values(infoMap);
+// }
