@@ -185,6 +185,8 @@ const VolumeChartContainer: React.FC = () => {
         break;
     }
 
+    console.log(chartData);
+
     return generateData(volumeChartType)?.reduce(
       (pre, next) => {
         const time = parseDate(next.date);

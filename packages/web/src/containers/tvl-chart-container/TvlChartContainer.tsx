@@ -193,6 +193,7 @@ const TvlChartContainer: React.FC = () => {
         break;
     }
 
+    console.log(chartData);
     return generateData(tvlChartType ?? "7D")?.reduce(
       (pre, next) => {
         const time = parseDate(next.date);
