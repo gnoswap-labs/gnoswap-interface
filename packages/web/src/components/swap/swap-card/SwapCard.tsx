@@ -10,6 +10,8 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { FontsKey } from "@constants/font.constant";
+import { Route } from "@gnoswap-labs/swap-router";
+import SwapCardEstimateRouter from "../swap-card-auto-router/SwapCardEstimateRouter";
 
 interface SwapCardProps {
   connectedWallet: boolean;
@@ -17,6 +19,7 @@ interface SwapCardProps {
   swapTokenInfo: SwapTokenInfo;
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
+  allEstimatedRoutes: Route[];
   isAvailSwap: boolean;
   swapButtonText: string;
   submitted: boolean;
@@ -43,6 +46,7 @@ interface SwapCardProps {
 
 const SwapCard: React.FC<SwapCardProps> = ({
   connectedWallet,
+  allEstimatedRoutes,
   copied,
   swapTokenInfo,
   swapSummaryInfo,
@@ -72,35 +76,48 @@ const SwapCard: React.FC<SwapCardProps> = ({
   return (
     <>
       <SwapCardWrapper>
-        <SwapCardHeader
-          copied={copied}
-          copyURL={copyURL}
-          slippage={swapTokenInfo.slippage}
-          changeSlippage={changeSlippage}
-          themeKey={themeKey}
-        />
-        <SwapCardContent
-          swapTokenInfo={swapTokenInfo}
-          swapSummaryInfo={swapSummaryInfo}
-          swapRouteInfos={swapRouteInfos}
-          changeTokenA={changeTokenA}
-          changeTokenAAmount={changeTokenAAmount}
-          changeTokenB={changeTokenB}
-          changeTokenBAmount={changeTokenBAmount}
-          switchSwapDirection={switchSwapDirection}
-          connectedWallet={connectedWallet}
-          isLoading={isLoading}
-        />
-        <div className="footer">
-          <SwapButton
-            isSwitchNetwork={isSwitchNetwork}
-            connectedWallet={connectedWallet}
-            isAvailSwap={isAvailSwap}
-            openConfirmModal={openConfirmModal}
-            openConnectWallet={openConnectWallet}
-            text={swapButtonText}
-            switchNetwork={switchNetwork}
+        <div className="left">
+          <SwapCardHeader
+            copied={copied}
+            copyURL={copyURL}
+            slippage={swapTokenInfo.slippage}
+            changeSlippage={changeSlippage}
+            themeKey={themeKey}
           />
+          <SwapCardContent
+            swapTokenInfo={swapTokenInfo}
+            swapSummaryInfo={swapSummaryInfo}
+            swapRouteInfos={swapRouteInfos}
+            changeTokenA={changeTokenA}
+            changeTokenAAmount={changeTokenAAmount}
+            changeTokenB={changeTokenB}
+            changeTokenBAmount={changeTokenBAmount}
+            switchSwapDirection={switchSwapDirection}
+            connectedWallet={connectedWallet}
+            isLoading={isLoading}
+          />
+          <div className="footer">
+            <SwapButton
+              isSwitchNetwork={isSwitchNetwork}
+              connectedWallet={connectedWallet}
+              isAvailSwap={isAvailSwap}
+              openConfirmModal={openConfirmModal}
+              openConnectWallet={openConnectWallet}
+              text={swapButtonText}
+              switchNetwork={switchNetwork}
+            />
+          </div>
+        </div>
+        <div className="right">
+          <div className="route-list">
+            {allEstimatedRoutes.map((routeInfos, index) => (
+              <SwapCardEstimateRouter
+                key={index}
+                swapTokenInfo={swapTokenInfo}
+                route={routeInfos}
+              />
+            ))}
+          </div>
         </div>
       </SwapCardWrapper>
 

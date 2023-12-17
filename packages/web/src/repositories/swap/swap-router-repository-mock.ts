@@ -20,6 +20,9 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     };
   };
 
+  public getAllSwapRoute = () => {
+    throw new Error("Mock swapRoute");
+  };
   public swapRoute = async () => {
     throw new Error("Mock swapRoute");
   };

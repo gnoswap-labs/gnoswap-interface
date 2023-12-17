@@ -50,7 +50,7 @@ const SwapContainer: React.FC = () => {
 
   const { openModal } = useConnectWalletModal();
 
-  const { estimatedRoutes, tokenAmountLimit, swapState, swap, estimateSwapRoute, unwrapToken } = useSwap({
+  const { allEstimatedRoutes, estimatedRoutes, tokenAmountLimit, swapState, swap, estimateSwapRoute, unwrapToken } = useSwap({
     tokenA,
     tokenB,
     direction: type,
@@ -515,6 +515,7 @@ const SwapContainer: React.FC = () => {
 
   return (
     <SwapCard
+      allEstimatedRoutes={allEstimatedRoutes}
       connectedWallet={connectedWallet}
       copied={copied}
       swapTokenInfo={swapTokenInfo}

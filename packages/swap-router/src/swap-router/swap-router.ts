@@ -220,6 +220,7 @@ export class SwapRouter {
       {},
     );
 
+    console.log(quoteMap);
     /**
      * From the sum of the maximum percentages for each path,
      * find the maximum sum of 100% while sequentially reducing the percentages.
@@ -294,5 +295,79 @@ export class SwapRouter {
     return estimatedRoutes.sort(
       (route1, route2) => route2.quote - route1.quote,
     );
+  };
+
+  public getRouteWithQuotes = (
+    inputTokenPath: string,
+    outputTokenPath: string,
+    amount: bigint,
+    exactType: "EXACT_IN" | "EXACT_OUT",
+    distributionRatio: number = 5,
+    hopSize: number = 7,
+  ): { [key in string]: RouteWithQuote[] } => {
+    if (100 % distributionRatio !== 0) {
+      throw new Error("Not divided distributionRatio");
+    }
+    const routes = this.findCandidateRoutesBy(inputTokenPath, outputTokenPath);
+
+    const filteredRoutes = routes.filter((_, index) => index < hopSize);
+
+    const simulator = new SwapSimulator();
+
+    /**
+     * Store the results of the swap route by input token amount.
+     */
+    const routeWithQuotes: { [key in string]: RouteWithQuote[] } = {};
+    for (const route of filteredRoutes) {
+      const routeKey = makeRouteKey(route);
+      for (let ratio = 100; ratio >= 0; ratio -= distributionRatio) {
+        try {
+          let currentInputTokenPath = inputTokenPath;
+          let currentAmount = BigInt(
+            BigNumber(amount.toString())
+              .multipliedBy(ratio / 100.0)
+              .toFixed(0),
+          );
+          const amountIn = currentAmount;
+          for (const pool of route.pools) {
+            const { tokenAPath, tokenBPath } = pool;
+            const zeroForOne = currentInputTokenPath === tokenAPath;
+            const { amountA, amountB } = simulator.swap(
+              pool,
+              currentInputTokenPath,
+              currentAmount,
+              exactType,
+            );
+            currentInputTokenPath = zeroForOne ? tokenBPath : tokenAPath;
+            const changedAmountA = zeroForOne ? amountA : amountB;
+            const changedAmountB = zeroForOne ? amountB : amountA;
+            if (exactType === "EXACT_IN") {
+              currentAmount =
+                changedAmountB >= 0 ? changedAmountB : changedAmountB * -1n;
+            } else {
+              currentAmount =
+                changedAmountA >= 0 ? changedAmountA : changedAmountA * -1n;
+            }
+          }
+          const amountRatio =
+            exactType === "EXACT_IN"
+              ? Number(currentAmount) / Number(amountIn)
+              : Number(amountIn) / Number(currentAmount);
+          if (!routeWithQuotes[routeKey]) {
+            routeWithQuotes[routeKey] = [];
+          }
+          routeWithQuotes[routeKey].push({
+            routeKey,
+            route,
+            amountIn,
+            amountOut: currentAmount,
+            quote: ratio,
+            amountRatio,
+          });
+        } catch {}
+      }
+    }
+
+    return routeWithQuotes;
   };
 }

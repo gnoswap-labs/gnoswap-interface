@@ -5,6 +5,8 @@ import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
 import { SwapRouteResponse } from "./response/swap-route-response";
+import { Route } from "@gnoswap-labs/swap-router";
+import { TokenModel } from "@models/token/token-model";
 
 export interface SwapRouterRepository {
   updatePools: (pools: PoolRPCModel[]) => void;
@@ -12,6 +14,11 @@ export interface SwapRouterRepository {
   estimateSwapRoute: (
     request: EstimateSwapRouteRequest,
   ) => Promise<EstimateSwapRouteResponse>;
+
+  getAllSwapRoute: (request: {
+    inputToken: TokenModel;
+    outputToken: TokenModel;
+  }) => Route[];
 
   swapRoute: (request: SwapRouteRequest) => Promise<SwapRouteResponse>;
 

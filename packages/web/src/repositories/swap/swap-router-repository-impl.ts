@@ -8,12 +8,12 @@ import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { SwapRouter } from "@gnoswap-labs/swap-router";
+import { Route, SwapRouter } from "@gnoswap-labs/swap-router";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { MAX_UINT64 } from "@utils/math.utils";
-import { isNativeToken } from "@models/token/token-model";
+import { TokenModel, isNativeToken } from "@models/token/token-model";
 import {
   makeDepositMessage,
   makeWithdrawMessage,
@@ -44,6 +44,25 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public updatePools(pools: PoolRPCModel[]) {
     this.pools = pools;
   }
+
+  public getAllSwapRoute = (request: {
+    inputToken: TokenModel;
+    outputToken: TokenModel;
+  }): Route[] => {
+    if (!ROUTER_PACKAGE_PATH || !this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+    const { inputToken, outputToken } = request;
+
+    const inputTokenPath = isNativeToken(inputToken)
+      ? inputToken.wrappedPath
+      : inputToken.path;
+    const outputTokenPath = isNativeToken(outputToken)
+      ? outputToken.wrappedPath
+      : outputToken.path;
+    const swapRouter = new SwapRouter(this.pools);
+    return swapRouter.findCandidateRoutesBy(inputTokenPath, outputTokenPath, 3);
+  };
 
   public estimateSwapRoute = async (
     request: EstimateSwapRouteRequest,

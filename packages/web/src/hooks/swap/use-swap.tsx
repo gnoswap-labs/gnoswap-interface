@@ -1,5 +1,5 @@
 import { SwapDirectionType } from "@common/values";
-import { EstimatedRoute } from "@gnoswap-labs/swap-router";
+import { EstimatedRoute, Route } from "@gnoswap-labs/swap-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -22,6 +22,7 @@ export const useSwap = ({
   const { account } = useWallet();
   const { poolRepository, swapRouterRepository } = useGnoswapContext();
   const [estimatedRoutes, setEstimatedRoutes] = useState<EstimatedRoute[]>([]);
+  const [allEstimatedRoutes, setAllEstimatedRoutes] = useState<Route[]>([]);
   const [estimatedAmount, setEstimatedAmount] = useState<string | null>(null);
   const [swapState, setSwapState] = useState<"NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS">("NONE");
   const { slippage } = useSlippage();
@@ -54,6 +55,10 @@ export const useSwap = ({
     const pools = await poolRepository.getRPCPools().catch(() => []);
     swapRouterRepository.updatePools(pools);
 
+    setAllEstimatedRoutes(swapRouterRepository.getAllSwapRoute({
+      inputToken: tokenA,
+      outputToken: tokenB,
+    }));
     return swapRouterRepository.estimateSwapRoute({
       inputToken: tokenA,
       outputToken: tokenB,
@@ -129,6 +134,7 @@ export const useSwap = ({
     tokenAmountLimit,
     estimatedRoutes,
     swapState,
+    allEstimatedRoutes,
     swap,
     wrapToken,
     unwrapToken,
