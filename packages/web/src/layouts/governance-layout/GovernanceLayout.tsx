@@ -36,14 +36,16 @@ const GovernanceLayout: React.FC<GovernanceLayoutProps> = ({
         <div className="summary-container">
           {summary}
           <LinkButton>
-            <span>Stake GNS/GNOT Positions to earn xGNOS</span>
+            <div>Stake GNS/GNOT Positions to earn xGNOS</div>
             <Link href="/earn/pool/1">
               Click here <IconStrokeArrowRight className="link-icon" />
             </Link>
           </LinkButton>
-          {list}
         </div>
       </section>
+      <div className="list-wrapper">
+        <div className="list-container">{list}</div>
+      </div>
       {footer}
       {isShowLearnMoreModal && (
         <LearnMoreModal setIsShowLearnMoreModal={setIsShowLearnMoreModal} />

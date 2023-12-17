@@ -18,6 +18,7 @@ export const ProposalDetailWrapper = styled.div`
   }
   .header {
     ${mixins.flexbox("row", "center", "space-between")};
+    flex-wrap: nowrap;
     width: 100%;
     gap: 8px;
     span {
@@ -26,13 +27,20 @@ export const ProposalDetailWrapper = styled.div`
     .title {
       ${fonts.body5};
       color: ${({ theme }) => theme.color.text02};
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+    }
+
+    .content {
+      white-space: nowrap;
     }
   }
   ${media.mobile} {
-    padding: 12px 12px 24px 12px;
-    gap: 24px;
+    padding: 12px;
+    gap: 12px;
     .header {
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
       .title {
         ${fonts.body11};
       }
@@ -43,6 +51,7 @@ export const ProposalDetailWrapper = styled.div`
     gap: 12px;
     ${mixins.flexbox("row", "center", "center")};
     ${media.mobile} {
+      gap: 8px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
     }
   }
@@ -65,7 +74,7 @@ export const ProposalDetailWrapper = styled.div`
       fill: ${({ theme }) => theme.color.red01};
     }
     .passed-icon * {
-      fill: ${({ theme }) => theme.color.point};
+      fill: ${({ theme }) => theme.color.background04};
     }
     .cancelled-icon * {
       fill: ${({ theme }) => theme.color.icon03};
@@ -78,7 +87,7 @@ export const ProposalDetailWrapper = styled.div`
     color: ${({ theme }) => theme.color.red01};
   }
   .passed {
-    color: ${({ theme }) => theme.color.point};
+    color: ${({ theme }) => theme.color.background04};
   }
   .cancelled {
     color: ${({ theme }) => theme.color.icon03};
@@ -104,6 +113,7 @@ export const ProgressWrapper = styled.div`
     }
   }
   ${media.mobile} {
+    ${mixins.flexbox("column", "start", "start")};
     gap: 8px;
     .progress-value {
       ${fonts.p6};
@@ -158,7 +168,7 @@ export const ProgressBar = styled.div<progressBarProps>`
     background-color: ${({ theme }) => theme.color.background12};
   }
   ${media.mobile} {
-    min-width: calc(100% - 120px);
+    width: 100%;
     height: 10px;
   }
 `;
