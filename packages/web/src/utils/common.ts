@@ -36,6 +36,10 @@ export function makeId(value: string) {
   return CryptoJS.SHA256(value).toString();
 }
 
+export function makeRandomId() {
+  return Math.random() * 19999;
+}
+
 export const parseJson = (data: string) => {
   try {
     const jsonData = JSON.parse(data);
@@ -46,19 +50,39 @@ export const parseJson = (data: string) => {
   }
 };
 
-export const checkPositivePrice = (currentPrice: string, checkPrice: string, fixedPrice?: number) => {
+export const checkPositivePrice = (
+  currentPrice: string,
+  checkPrice: string,
+  fixedPrice?: number,
+) => {
   const currentToNumber = Number(currentPrice);
   const checkToNumber = Number(checkPrice);
-  
-  const value = checkPrice >= currentPrice ?
-    ((currentToNumber / checkToNumber - 1) * 100).toFixed(2) :
-    ((1 - currentToNumber / checkToNumber) * 100).toFixed(2);
-    const isEmpty = !currentPrice || !checkPrice;
-  const status = isEmpty ? MATH_NEGATIVE_TYPE.NONE :
-  currentToNumber >= checkToNumber ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE;
-  const percent = status === MATH_NEGATIVE_TYPE.NONE ? "-" : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(Number(value))}%`;
-  const price = status === MATH_NEGATIVE_TYPE.NONE ? "-" : 
-  `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" :"+"}$${convertLargePrice((Math.abs(checkToNumber - currentToNumber)).toString(), fixedPrice ?? 2)}`;
+
+  const value =
+    checkPrice >= currentPrice
+      ? ((currentToNumber / checkToNumber - 1) * 100).toFixed(2)
+      : ((1 - currentToNumber / checkToNumber) * 100).toFixed(2);
+  const isEmpty = !currentPrice || !checkPrice;
+  const status = isEmpty
+    ? MATH_NEGATIVE_TYPE.NONE
+    : currentToNumber >= checkToNumber
+    ? MATH_NEGATIVE_TYPE.POSITIVE
+    : MATH_NEGATIVE_TYPE.NEGATIVE;
+  const percent =
+    status === MATH_NEGATIVE_TYPE.NONE
+      ? "-"
+      : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
+          Number(value),
+        )}%`;
+  const price =
+    status === MATH_NEGATIVE_TYPE.NONE
+      ? "-"
+      : `${
+          status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"
+        }$${convertLargePrice(
+          Math.abs(checkToNumber - currentToNumber).toString(),
+          fixedPrice ?? 2,
+        )}`;
   return {
     status: status,
     value: value.includes("Infinity") ? "0" : value,
@@ -68,7 +92,10 @@ export const checkPositivePrice = (currentPrice: string, checkPrice: string, fix
   };
 };
 
-export function generateDateSequence(startDateString: string, endDateString: string) {
+export function generateDateSequence(
+  startDateString: string,
+  endDateString: string,
+) {
   const startDate = new Date(startDateString);
   const lastDate = new Date(endDateString);
   const temp = [];
@@ -83,10 +110,13 @@ export function generateDateSequence(startDateString: string, endDateString: str
     startDate.setHours(startDate.getHours() + 1);
   }
   return temp;
-  
 }
 
-export function countPoints(startDateTime: string, endDateTime: string, intervalMinutes: number): number {
+export function countPoints(
+  startDateTime: string,
+  endDateTime: string,
+  intervalMinutes: number,
+): number {
   const startDate = new Date(startDateTime);
   const endDate = new Date(endDateTime);
 
@@ -122,5 +152,4 @@ export function randomData() {
     startDate.setMinutes(startDate.getMinutes() + 10);
   }
   return temp;
-  
 }
