@@ -112,7 +112,7 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
     );
   }
 
-  if (swapResult.code === 4000) {
+  if (swapResult.code !== 4000) {
     return (
       <>
         <div className="animation">

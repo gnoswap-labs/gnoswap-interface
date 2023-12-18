@@ -292,7 +292,7 @@ const AssetListContainer: React.FC = () => {
         asset => invisibleZeroBalance === false || filterZeroBalance(asset),
       );
 
-    let sortedData = temp.sort((x, y) => customSortAll(x, y));
+    let sortedData = temp.sort(customSortAll);
 
     if (sortOption?.key === "Asset") {
       sortedData = sortedData.sort((x, y) => {

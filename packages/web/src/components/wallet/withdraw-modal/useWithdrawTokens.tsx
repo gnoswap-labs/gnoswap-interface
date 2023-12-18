@@ -4,7 +4,7 @@ import {
   TransferGRC20TokenRequest,
   TransferNativeTokenRequest,
 } from "@repositories/wallet/request";
-import { makeRandomId } from "@utils/common";
+import { makeRandomId, parseJson } from "@utils/common";
 import { useState } from "react";
 import { TNoticeType } from "src/context/NoticeContext";
 
@@ -27,13 +27,6 @@ const useWithdrawTokens = () => {
   const onSubmit = async (request: Request, type: "native" | "grc20") => {
     setLoading(true);
 
-    setNotice(null, {
-      timeout: 50000,
-      type: "pending",
-      closeable: true,
-      id: makeRandomId(),
-    });
-
     const callAction =
       type === "native"
         ? walletRepository.transferGNOTToken(request)
@@ -41,29 +34,50 @@ const useWithdrawTokens = () => {
 
     callAction
       .then(response => {
+        setNotice(null, {
+          timeout: 50000,
+          type: "pending",
+          closeable: true,
+          id: makeRandomId(),
+        });
         setResult({
           hash: response.hash,
           success: true,
         });
-        setNotice(null, {
-          timeout: 50000,
-          type: "success" as TNoticeType,
-          closeable: true,
-          id: makeRandomId(),
-        });
+        setTimeout(() => {
+          setNotice(null, {
+            timeout: 50000,
+            type: "success" as TNoticeType,
+            closeable: true,
+            id: makeRandomId(),
+          });
+        }, 1000);
       })
       .catch((error: Error) => {
-        const { code } = JSON.parse(error?.message);
+        
+        const { code } = parseJson(error?.message);
+        console.log(code, "code");
+        
         setResult({
-          success: false,
+          success: code === 0 ? true : false,
           code,
         });
-        setNotice(null, {
-          timeout: 50000,
-          type: "error" as TNoticeType,
-          closeable: true,
-          id: makeRandomId(),
-        });
+        if (code !== 4000) {
+          setNotice(null, {
+            timeout: 50000,
+            type: "pending",
+            closeable: true,
+            id: makeRandomId(),
+          });
+          setTimeout(() => {
+            setNotice(null, {
+              timeout: 50000,
+              type: code === 0 ? "success" as TNoticeType : "error" as TNoticeType,
+              closeable: true,
+              id: makeRandomId(),
+            });
+          }, 1000);
+        }
       })
       .finally(() => setLoading(false));
   };
