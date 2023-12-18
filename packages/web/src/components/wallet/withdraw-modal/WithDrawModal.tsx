@@ -7,10 +7,14 @@ import { Overlay } from "@components/common/modal/Modal.styles";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePositionModal } from "@hooks/common/use-postion-modal";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useCallback, useRef, useState } from "react";
+import WithdrawStatus from "./confirm-swap-modal/WithdrawStatusModal";
+import useWithdrawTokens from "./useWithdrawTokens";
 import {
   BoxDescription,
   WithDrawModalBackground,
@@ -64,6 +68,16 @@ const WithDrawModal: React.FC<Props> = ({
   const [amount, setAmount] = useState("0");
   const [address, setAddress] = useState("");
 
+  const {
+    isConfirm,
+    setIsConfirm,
+    onSubmit: handleSubmit,
+    result,
+    setResult,
+  } = useWithdrawTokens();
+
+  const { account } = useWallet();
+
   useEscCloseModal(close);
   usePositionModal(modalRef);
 
@@ -88,6 +102,33 @@ const WithDrawModal: React.FC<Props> = ({
     },
     [],
   );
+
+  const onSubmit = () => {
+    if (!withdrawInfo || !account?.address) return;
+
+    setIsConfirm(true);
+    handleSubmit(
+      {
+        fromAddress: account?.address,
+        toAddress: address,
+        token: withdrawInfo,
+        tokenAmount: Number(amount),
+      },
+      withdrawInfo.type,
+    );
+  };
+
+  const onCancelConfirm = useCallback(() => {
+    setIsConfirm(false);
+    setResult(null);
+  }, [setIsConfirm, setResult]);
+
+  const isDisabledWithdraw = !Number(amount ?? 0) || !address || !withdrawInfo;
+  const estimateFee = 0.000001;
+
+  if (isConfirm) {
+    return <WithdrawStatus swapResult={result} close={onCancelConfirm} />;
+  }
 
   return (
     <>
@@ -196,12 +237,13 @@ const WithDrawModal: React.FC<Props> = ({
             <WithdrawContent>
               <div className="withdraw">
                 <p className="estimate-fee">Estimated Network Fee</p>
-                <p className="tokens-fee">0.002451 GNOT ($0.12)</p>
+                <p className="tokens-fee">{estimateFee} GNOT ($0.12)</p>
               </div>
             </WithdrawContent>
 
             <Button
-              disabled={true}
+              disabled={isDisabledWithdraw}
+              onClick={onSubmit}
               text="Withdraw"
               className="btn-withdraw"
               style={{
@@ -209,13 +251,11 @@ const WithDrawModal: React.FC<Props> = ({
                 textColor: "text09",
                 fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
                 hierarchy:
-                  connected && !Number(amount || 0)
-                    ? undefined
-                    : ButtonHierarchy.Primary,
-                bgColor:
-                  connected && !Number(amount || 0)
-                    ? "background17"
+                  connected && !isDisabledWithdraw
+                    ? ButtonHierarchy.Primary
                     : undefined,
+                bgColor:
+                  !connected || isDisabledWithdraw ? "background17" : undefined,
               }}
             />
           </div>

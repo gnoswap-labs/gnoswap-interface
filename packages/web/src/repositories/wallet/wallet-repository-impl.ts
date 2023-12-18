@@ -45,9 +45,12 @@ export class WalletRepositoryImpl implements WalletRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
+
+    console.log({result});
+    
     const response = result.data as SendTransactionSuccessResponse;
     if (!response.hash) {
-      throw new Error(`${result}`);
+      throw new Error(JSON.stringify(result));
     }
     return { ...response };
   }
@@ -79,7 +82,7 @@ export class WalletRepositoryImpl implements WalletRepository {
     });
     const response = result.data as SendTransactionSuccessResponse;
     if (!response.hash) {
-      throw new Error(`${result}`);
+      throw new Error(JSON.stringify(result));
     }
     return { ...response };
   }
