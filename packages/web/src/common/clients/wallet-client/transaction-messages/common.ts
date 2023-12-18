@@ -21,6 +21,12 @@ export const PACKAGE_STAKER_ADDRESS =
 export const PACKAGE_GOVERNANCE_ADDRESS =
   process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_ADDRESS || "";
 
+export interface TransactionBankMessage {
+  from_address: string;
+  to_address: string;
+  amount: string;
+}
+
 export interface TransactionMessage {
   caller: string;
   send: string;
