@@ -12,7 +12,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice, countPoints, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenDetailByPath, useGetTokensList } from "../.././react-query/token";
+import { useGetTokenDetailByPath, useGetTokensList } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 

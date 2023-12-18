@@ -1,4 +1,4 @@
-import { useGetTokenByPath } from "src/react-query/token";
+import { useGetTokenByPath } from "@query/token";
 const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 const GNOT_PATH = "gnot";
 

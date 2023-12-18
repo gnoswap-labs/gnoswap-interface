@@ -3,7 +3,7 @@ import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useRouter } from "next/router";
-import { useGetTokenDetailByPath } from "src/react-query/token";
+import { useGetTokenDetailByPath } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { useGetPoolList } from "src/react-query/pools";

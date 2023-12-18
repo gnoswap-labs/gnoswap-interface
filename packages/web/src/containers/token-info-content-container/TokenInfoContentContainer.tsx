@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import TokenInfoContent from "@components/token/token-info-content/TokenInfoContent";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenDetailByPath } from "src/react-query/token";
+import { useGetTokenDetailByPath } from "@query/token";
 import { useRouter } from "next/router";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";

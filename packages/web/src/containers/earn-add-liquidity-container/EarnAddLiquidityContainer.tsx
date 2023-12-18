@@ -413,7 +413,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-
+  
   useEffect(() => {
     const isEarnAdd = swapValue.tokenA !== null && swapValue.tokenB !== null;
     setIsEarnAdd(isEarnAdd);

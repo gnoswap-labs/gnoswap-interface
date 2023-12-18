@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import GainerAndLoser from "@components/token/gainer-and-loser/GainerAndLoser";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetChainList, useGetTokensList } from "src/react-query/token";
+import { useGetChainList, useGetTokensList } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
 import { convertLargePrice } from "@utils/stake-position-utils";

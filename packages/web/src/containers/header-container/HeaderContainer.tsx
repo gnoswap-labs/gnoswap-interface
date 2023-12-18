@@ -15,7 +15,7 @@ import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetPoolList } from "src/react-query/pools";
-import { useGetTokenPrices, useGetTokensList } from "src/react-query/token";
+import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { PoolModel } from "@models/pool/pool-model";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
