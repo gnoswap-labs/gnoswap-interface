@@ -37,23 +37,7 @@ const pool: PoolCardInfo = {
   apr: "0.12%",
   volume24h: "$1,182,797",
   fees24h: "$131.937491",
-  rewards: [
-    {
-      token: {
-        chainId: "dev",
-        createdAt: "2023-10-12T06:56:12+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: "GNS",
-        logoURI: "/gnos.svg",
-        type: "grc20",
-        priceId: "gno.land/r/gns"
-      },
-      amount: 10
-    }
-  ],
+  rewardTokens: [],
   incentivizedType: "INCENTIVIZED",
   currentTick: 0,
   price: 0,

@@ -6,10 +6,11 @@ import {
 } from "./IncentivizedPoolCard.styles";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { INCENTIVIZED_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { usePositionData } from "@hooks/common/use-position-data";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -32,6 +33,10 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
 
+  const incentivizedLabel = useMemo(() => {
+    return INCENTIVIZED_TYPE[pool.incentivizedType];
+  }, [pool.incentivizedType]);
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -51,14 +56,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <Badge
                   type={BADGE_TYPE.DARK_DEFAULT}
                   text={<>
-                    Incentivized
-                    <DoubleLogo
-                      size={16}
-                      left={pool.tokenA.logoURI}
-                      right={pool.tokenB.logoURI}
-                      leftSymbol={pool.tokenA.symbol}
-                      rightSymbol={pool.tokenB.symbol}
-                    />
+                    {incentivizedLabel}
+                    <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
                   </>}
                 />
                 <Badge

@@ -1,4 +1,4 @@
-import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
+import { INCENTIVIZED_TYPE, RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { POSITION_CONTENT_LABEL } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -14,6 +14,7 @@ import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertLargePrice } from "@utils/stake-position-utils";
+import OverlapTokenLogo from "../overlap-token-logo/OverlapTokenLogo";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -114,6 +115,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     setIsHiddenStart(!isHiddenStart);
   };
 
+  const incentivizedLabel = useMemo(() => {
+    return INCENTIVIZED_TYPE[pool.incentivizedType];
+  }, [pool.incentivizedType]);
+
   return (
     <MyPositionCardWrapperBorder
     className={`${position.staked ? "special-card" : ""}`}
@@ -137,14 +142,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <Badge
                 type={BADGE_TYPE.DARK_DEFAULT}
                 text={<>
-                  Incentivized
-                  <DoubleLogo
-                    size={16}
-                    left={tokenA.logoURI}
-                    right={tokenB.logoURI}
-                    leftSymbol={tokenA.symbol}
-                    rightSymbol={tokenB.symbol}
-                  />
+                  {incentivizedLabel}
+                  <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
                 </>}
               />
               <Badge

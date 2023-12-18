@@ -2,7 +2,6 @@ import { IncentivizedOptions } from "@common/values";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "../pool-bin-model";
-import { PoolRewardInfo } from "./pool-reward-info";
 
 /**
  * Todo: Change data structure
@@ -26,7 +25,7 @@ export interface PoolCardInfo {
 
   fees24h: string;
 
-  rewards: PoolRewardInfo[];
+  rewardTokens: TokenModel[];
 
   price: number;
 
