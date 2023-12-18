@@ -34,7 +34,10 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
 
   const incentivizedLabel = useMemo(() => {
-    return INCENTIVIZED_TYPE[pool.incentivizedType];
+    if (pool.incentivizedType === "NONE_INCENTIVIZED") {
+      return null;
+    }
+    return INCENTIVIZED_TYPE["INCENTIVIZED"];
   }, [pool.incentivizedType]);
 
   return (
@@ -53,13 +56,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span>{pairName}</span>
               </div>
               <div className="box-group">
-                <Badge
-                  type={BADGE_TYPE.DARK_DEFAULT}
-                  text={<>
-                    {incentivizedLabel}
-                    <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
-                  </>}
-                />
+                {incentivizedLabel && (
+                  <Badge
+                    type={BADGE_TYPE.DARK_DEFAULT}
+                    text={<>
+                      {incentivizedLabel}
+                      <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
+                    </>}
+                  />
+                )}
                 <Badge
                   type={BADGE_TYPE.DARK_DEFAULT}
                   text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr} Fee`}
