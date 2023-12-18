@@ -63,6 +63,36 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     return symbol;
   };
 
+  private getNotificationMessage = (tx: AccountActivity) => {
+    const token0Amount = prettyNumber(tx?.token0Amount);
+    const token1Amount = prettyNumber(tx?.token1Amount);
+    const token0symbol = tx?.token0?.symbol;
+    const token1symbol = tx?.token1?.symbol;
+
+    switch (tx.actionType) {
+      case "SWAP":
+        return `Swapped ${token0Amount} ${token0symbol} for ${token1Amount} ${token1symbol}`;
+      case "ADD":
+        return `Added ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+      case "REMOVE":
+        return `Removed ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+      case "STAKE":
+        return `Staked ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+      case "UNSTAKE":
+        return `Unstaked ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+      case "CLAIM":
+        return `Claimed ${token0Amount} ${token0symbol}`;
+      case "WITHDRAW":
+        return `Sent ${token0Amount} ${token0symbol}`;
+      case "DEPOSIT":
+        return `Received ${token0Amount} ${token0symbol}`;
+      default:
+        return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumber(
+          tx.token0Amount,
+        )} ${this.replaceToken(tx.token0.symbol ?? tx.token1.symbol)}`;
+    }
+  };
+
   // Function to group the transactions by date
   groupTransactionsByDate = (
     transactions: AccountActivity[],
@@ -89,9 +119,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
         tokenInfo: { tokenA: tx.token0, tokenB: tx.token1 },
         status: "SUCCESS",
         createdAt: tx.time,
-        content: `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumber(
-          tx.token0Amount,
-        )} ${this.replaceToken(tx.token0.symbol ?? tx.token1.symbol)}`,
+        content: this.getNotificationMessage(tx),
         isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
       };
 

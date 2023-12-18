@@ -27,7 +27,11 @@ const NotificationList: React.FC<NotificationListProps> = ({
 
   return (
     <>
-      <NotificationListWrapper ref={listRef} width={window?.innerWidth}>
+      <NotificationListWrapper
+        emptyData={txsGroupsInformation.length === 0 || !txsGroupsInformation}
+        ref={listRef}
+        width={window?.innerWidth}
+      >
         <NotificationHeader>
           <span className="notification-title">Notification</span>
           <ClearButton

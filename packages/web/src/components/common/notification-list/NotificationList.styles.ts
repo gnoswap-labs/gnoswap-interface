@@ -6,6 +6,7 @@ import { Z_INDEX } from "@styles/zIndex";
 
 export interface NotificationProps {
   width?: number;
+  emptyData?: boolean;
 }
 
 export const NotificationListWrapper = styled.div<NotificationProps>`
@@ -39,8 +40,8 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;
     width: 100%;
-    height: 426px;
-    top: calc(100vh - 426px);
+    height: ${({ emptyData }) => (emptyData ? "360px" : "426px")};
+    top: calc(100vh - ${({ emptyData }) => (emptyData ? "360px" : "426px")});
     padding: 24px 0px;
     min-width: 360px;
   }
