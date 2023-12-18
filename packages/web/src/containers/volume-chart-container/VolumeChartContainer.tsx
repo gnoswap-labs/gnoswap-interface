@@ -31,13 +31,13 @@ const generateData = (chartType: CHART_TYPE) => {
   };
 
   return Array.from({ length: mappingLength[chartType] }, (_, index) => {
-    const date = new Date();
+    const date = new Date(Date.now());
     date.setDate(date.getDate() - 1 * index);
     return {
       date: date.toISOString(),
       price: `${Math.round(Math.random() * 5000000) + 100000000}`,
     };
-  });
+  }).reverse();
 };
 
 // const initialVolumePriceInfo: VolumePriceInfo = {

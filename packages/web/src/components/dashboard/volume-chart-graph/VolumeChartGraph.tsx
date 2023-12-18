@@ -36,7 +36,7 @@ const calculateMiddleIndices = (totalLabels = 0, countXAxis = 0) => {
   addIndices(0, totalLabels - 1);
 
   // Convert to array and sort to ensure the correct order
-  return Array.from(indices).sort((a, b) => b - a);
+  return Array.from(indices).sort((a, b) => a - b);
 };
 
 const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({

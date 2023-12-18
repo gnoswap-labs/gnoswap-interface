@@ -42,7 +42,7 @@ const generateData = (chartType: CHART_TYPE) => {
       date: date.toISOString(),
       price: `${Math.round(Math.random() * 5000000) + 100000000}`,
     };
-  });
+  }).reverse();
 };
 
 // const months = [
