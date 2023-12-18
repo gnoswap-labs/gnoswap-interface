@@ -12,6 +12,8 @@ import {
   ToolTipContentWrapper,
   TooltipDivider,
 } from "./StakingContentCard.styles";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { STAKING_PERIOD_INFO, StakingPeriodType } from "@constants/option.constant";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
@@ -27,6 +29,7 @@ interface StakingContentCardProps {
   positions: PoolPositionModel[];
   rewardTokens: TokenModel[];
   breakpoint: DEVICE_TYPE;
+  loading: boolean;
 }
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
@@ -78,6 +81,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   checkPoints,
   positions,
   breakpoint,
+  loading,
 }) => {
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
@@ -152,7 +156,12 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       </div>
       <div className="contents-wrap">
         <div className="contents">
-          <div className="price">
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 300)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="price">
             <span>
               <Tooltip
                 placement="top"
@@ -168,8 +177,13 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 <div className="badge">{positions.length} LP</div>
               </Tooltip>
             </span>
-          </div>
-          <div className="apr">
+          </div>}
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 140)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="apr">
             {/* Todo: Implements API
             <Tooltip
               placement="top"
@@ -186,7 +200,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             <div className="coin-info">
               <OverlapLogo logos={tokenLogos} />
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </StakingContentCardWrapper>
@@ -198,6 +212,7 @@ interface SummuryAprProps {
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
   rewardTokens: TokenModel[];
+  loading: boolean;
 }
 
 export const SummuryApr: React.FC<SummuryAprProps> = ({
@@ -205,6 +220,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   checkPoints,
   positions,
   rewardTokens,
+  loading,
 }) => {
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
@@ -269,7 +285,12 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       </div>
       <div className="contents-wrap">
         <div className="contents">
-          <div className="price">
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 300)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="price">
             <span>
               <Tooltip
                 placement="top"
@@ -285,8 +306,13 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                 <div className="badge">{positions.length} LP</div>
               </Tooltip>
             </span>
-          </div>
-          <div className="apr">
+          </div>}
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+            <span
+              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 140)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <div className="apr">
             {/* <Tooltip
               placement="top"
               FloatingContent={
@@ -301,7 +327,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
             <div className="coin-info">
               <OverlapLogo logos={tokenLogos} />
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </StakingContentCardWrapper>

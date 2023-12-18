@@ -36,10 +36,10 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
-
+  
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth < 1000 ? setMobile(true) : setMobile(false);
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
 
@@ -61,12 +61,12 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   };
 
   const handleClickLoadMore = useCallback(() => {
-    if (loadMore) {
+    if (page === 1) {
       setPage(prev => prev + 1);
     } else {
       setPage(1);
     }
-  }, [loadMore]);
+  }, [page]);
 
   const handleScroll = () => {
     if (divRef.current) {
@@ -76,19 +76,10 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   };
 
   const showPagination = useMemo(() => {
-    if (width < 1400) {
-      if (width > 1000) {
-        const totalWidth = incentivizedPools.length * 322 + 80 + 24 * incentivizedPools.length;
-        return totalWidth > width;
-      } else if (width > 768) {
-        const totalWidth = incentivizedPools.length * 322 + 80 + 12 * incentivizedPools.length;
-        return totalWidth > width;
-      } else {
-        const totalWidth = incentivizedPools.length * 290 + 32 + 12 * incentivizedPools.length;
-        return totalWidth > width;
-      }
-    } else {
+    if (width >= 920) {
       return false;
+    } else {
+      return true;
     }
   }, [incentivizedPools, width]);
 

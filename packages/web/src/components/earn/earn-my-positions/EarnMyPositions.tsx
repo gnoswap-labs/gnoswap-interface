@@ -21,6 +21,8 @@ export interface EarnMyPositionsProps {
   showPagination: boolean;
   showLoadMore: boolean;
   width: number;
+  loadMore: boolean;
+  onClickLoadMore?: () => void;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -40,6 +42,8 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   showPagination,
   showLoadMore,
   width,
+  loadMore,
+  onClickLoadMore,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -63,6 +67,8 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       showPagination={showPagination}
       showLoadMore={showLoadMore}
       width={width}
+      loadMore={loadMore}
+      onClickLoadMore={onClickLoadMore}
     />
   </EarnMyPositionswrapper>
 );

@@ -9,7 +9,6 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { FontsKey } from "@constants/font.constant";
 
 interface SwapCardProps {
   connectedWallet: boolean;
@@ -141,7 +140,6 @@ const SwapButton: React.FC<SwapButtonProps> = ({
 
   const defaultStyle = {
     fullWidth: true,
-    fontType: "body7" as FontsKey,
     hierarchy: ButtonHierarchy.Primary,
   };
 

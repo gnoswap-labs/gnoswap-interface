@@ -1,16 +1,23 @@
 import SwapLiquidity from "@components/swap/swap-liquidity/SwapLiquidity";
-import React from "react";
+import React, { useMemo } from "react";
 import { ValuesType } from "utility-types";
+import { SwapFeeTierType } from "@constants/option.constant";
+import { useGetPoolList } from "@query/pools";
+import { useRouter } from "next/router";
+import { PoolModel } from "@models/pool/pool-model";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import useNavigate from "@hooks/common/use-navigate";
-import { SwapFeeTierType } from "@constants/option.constant";
+import { convertLargePrice } from "@utils/stake-position-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+
 export interface LiquidityInfo {
   feeTier: string;
   volume: string;
   liquidity: string;
   apr: string;
   feeTierType: SwapFeeTierType;
+  active: boolean;
+  id: string;
 }
 
 export const LIQUIDITY_HEAD = {
@@ -24,17 +31,21 @@ export type LIQUIDITY_HEAD = ValuesType<typeof LIQUIDITY_HEAD>;
 export const dummyLiquidityList: LiquidityInfo[] = [
   {
     feeTier: "0.01",
-    volume: "$25.45M",
-    liquidity: "$25.45M",
-    apr: "245.24%",
+    volume: "-",
+    liquidity: "-",
+    apr: "-",
     feeTierType: "FEE_100",
+    active: false,
+    id: "",
   },
   {
     feeTier: "0.05",
-    volume: "$15.45M",
-    liquidity: "$225.45M",
-    apr: "245.24%",
+    volume: "-",
+    liquidity: "-",
+    apr: "-",
     feeTierType: "FEE_500",
+    active: false,
+    id: "",
   },
   {
     feeTier: "0.3",
@@ -42,6 +53,8 @@ export const dummyLiquidityList: LiquidityInfo[] = [
     liquidity: "-",
     apr: "-",
     feeTierType: "FEE_3000",
+    active: false,
+    id: "",
   },
   {
     feeTier: "1",
@@ -49,27 +62,80 @@ export const dummyLiquidityList: LiquidityInfo[] = [
     liquidity: "-",
     apr: "-",
     feeTierType: "FEE_10000",
+    active: false,
+    id: "",
   },
 ];
 
-const TEMP_DATA = [dummyLiquidityList, []];
-
 const SwapLiquidityContainer: React.FC = () => {
   const [swapValue] = useAtom(SwapState.swap);
-  const navigator = useNavigate();
-
+  const { data: poolList = [], isLoading } = useGetPoolList();
+  const { wugnotPath, gnot } = useGnotToGnot();
+  const { tokenA, tokenB } = swapValue;
+  const router = useRouter();
   const createPool = () => {
-    navigator.push("/earn/add");
+    router.push({ pathname: "/earn/add", query: { tokenA: tokenA?.path as string, tokenB: tokenB?.path as string }}, "/earn/add");
   };
-  const liquidityListRandom = TEMP_DATA[Math.floor(Math.random() * 2)];
+  
+  const poolDetail: PoolModel[]= useMemo(() => {
+    const tokenAPath = tokenA?.path === "gnot" ? wugnotPath : tokenA?.path;
+    const tokenBPath = tokenB?.path === "gnot" ? wugnotPath : tokenB?.path;
+    const pools: PoolModel[] = poolList.filter((item: PoolModel) => (item.poolPath?.includes(`${tokenAPath}:${tokenBPath}`) || item.poolPath?.includes(`${tokenBPath}:${tokenAPath}`)));
+    return pools;
+  }, [poolList, tokenA, tokenB, wugnotPath]);
+  
+  const liquidityListRandom = useMemo(() => {
+    let count = 0;
+    const temp = dummyLiquidityList.map((_) => {
+      const poolItem = poolDetail.filter((item: PoolModel) => Number(item.fee) === Number(_.feeTier) * 10000);
+      if (poolItem.length > 0) {
+        count++;
+        return {
+          ..._,
+          volume: `$${convertLargePrice(poolItem[0].volume.toString(), 6)}`,
+          liquidity: `$${convertLargePrice(poolItem[0].tvl.toString(), 2)}`,
+          apr: poolItem[0].apr === "" ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
+          active: true,
+          id: poolItem[0].id,
+        };
+      }
+      return _;
+    });
+    if (count === 0) {
+      return [];
+    }
+    return temp;
+  }, [poolDetail]);
+  
+  const tokenAData = useMemo(() => {
+    if (!tokenA) return null;
+    return {
+      ...tokenA,
+      path: tokenA?.path === wugnotPath ? (gnot?.path || "") : (tokenA?.path || ""),
+      name: tokenA?.path === wugnotPath ? (gnot?.name || "") : (tokenA?.name || ""),
+      symbol: tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (tokenA?.symbol || ""),
+      logoURI: tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenA?.logoURI || ""),
+    };
+  }, [swapValue.tokenA, gnot]);
 
-  if (!swapValue.tokenA || !swapValue.tokenB) return null;
+  const tokenBData = useMemo(() => {
+    if (!tokenB) return null;
+    return {
+      ...tokenB,
+      path: tokenB?.path === wugnotPath ? (gnot?.path || "") : (tokenB?.path || ""),
+      name: tokenB?.path === wugnotPath ? (gnot?.name || "") : (tokenB?.name || ""),
+      symbol: tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (tokenB?.symbol || ""),
+      logoURI: tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenB?.logoURI || ""),
+    };
+  }, [tokenB, gnot]);
 
+  if (!tokenAData || !tokenBData || isLoading) return null;
+  
   return (
     <SwapLiquidity
       liquiditys={liquidityListRandom}
-      tokenA={swapValue.tokenA}
-      tokenB={swapValue.tokenB}
+      tokenA={tokenAData}
+      tokenB={tokenBData}
       createPool={createPool}
     />
   );

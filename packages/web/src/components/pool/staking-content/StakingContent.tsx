@@ -7,6 +7,8 @@ import {
 } from "./StakingContent.styles";
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
@@ -19,6 +21,7 @@ interface StakingContentProps {
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   type: number;
+  loading: boolean;
 }
 
 const TEXT_BTN = [
@@ -37,6 +40,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   breakpoint,
   mobile,
   type,
+  loading,
 }) => {
   const rewardTokenLogos = useMemo(() => {
     return rewardTokens.map(token => token.logoURI);
@@ -80,14 +84,19 @@ const StakingContent: React.FC<StakingContentProps> = ({
   return (
     <StakingContentWrapper isMobile={mobile}>
       <div className="content-header">
-        <span>Stake your position to earn rewards up <span className="to-web">to</span></span>
-        <div className="header-wrap">
+        {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          <span
+            css={skeletonTokenDetail("600px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+        </SkeletonEarnDetailWrapper>}
+        {!loading && <span>Stake your position to earn rewards up <span className="to-web">to</span></span>}
+        {!loading && <div className="header-wrap">
           <span className="to-mobile">to</span>
           <span className="apr">{totalApr} APR </span>
           <div className="coin-info">
             <OverlapLogo logos={rewardTokenLogos} />
           </div>
-        </div>
+        </div>}
       </div>
       <div className="staking-wrap">
         <>
@@ -95,6 +104,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
           {STAKING_PERIOS.map((period, index) => {
             return period === "MAX" ? (
               <SummuryApr
+                loading={loading}
                 key={index}
                 rewardTokens={rewardTokens}
                 period={period}
@@ -108,6 +118,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 period={period}
                 positions={stakingPositionMap[period]}
                 breakpoint={breakpoint}
+                loading={loading}
                 checkPoints={checkPoints}
               />
             );
@@ -115,7 +126,12 @@ const StakingContent: React.FC<StakingContentProps> = ({
         </>
       </div>
       <div className="button-wrap">
-        <Button
+        {loading && <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
+          <span
+            css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+        </SkeletonEarnDetailWrapper>}
+        {!loading && <Button
           text={TEXT_BTN[type]}
           style={{
             width: `${breakpoint === DEVICE_TYPE.WEB
@@ -137,8 +153,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
             gap: "8px",
           }}
           className={type < 3 ? "change-weight" : "receive-button"}
-          onClick={() => { }}
-        />
+          onClick={() => {}}
+        />}
       </div>
     </StakingContentWrapper>
   );

@@ -3,6 +3,7 @@ import { cx } from "@emotion/css";
 import React from "react";
 import { wrapper } from "./TrendingCryptoCard.styles";
 import Link from "next/link";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 interface TrendingCryptoCardProps {
   item: any;
 }
@@ -12,7 +13,7 @@ const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
     <Link href={`/tokens/${item.symbol}?tokenB=${item.path}&direction=EXACT_IN`}>
       <div css={wrapper}>
         <div>
-          <img src={item.logoURI} alt="logo" />
+          <MissingLogo symbol={item.symbol} url={item.logoURI} className="logo" width={20} mobileWidth={20}/>
           <span className="name">{item.name}</span>
           <span className="symbol">{item.symbol}</span>
         </div>

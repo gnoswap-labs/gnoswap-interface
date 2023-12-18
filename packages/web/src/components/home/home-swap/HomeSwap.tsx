@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import BigNumber from "bignumber.js";
 
 interface HomeSwapProps {
   changeTokenAAmount: (value: string) => void;
@@ -74,7 +75,20 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
     }
   }, [swapTokenInfo.tokenBBalance, connected, setToAmount, changeTokenBAmount]);
 
+  const balanceADisplay = useMemo(() => {
+    if (connected && swapTokenInfo.tokenABalance !== "-") {
+      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(2);
+    }
+    return "-";
+  }, [swapTokenInfo.tokenABalance, connected]);
 
+  const balanceBDisplay = useMemo(() => {
+    if (connected && swapTokenInfo.tokenBBalance !== "-") {
+      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(2);
+    }
+    return "-";
+  }, [swapTokenInfo.tokenBBalance, connected]);
+  
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
       <div className="header">
@@ -96,7 +110,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenA}>
-              {`Balance: ${swapTokenInfo.tokenABalance}`}
+              {`Balance: ${balanceADisplay}`}
             </span>
           </div>
         </div>
@@ -115,7 +129,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, onSubmitSwa
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenB}>
-              Balance: {swapTokenInfo.tokenBBalance}
+              Balance: {balanceBDisplay}
             </span>
           </div>
         </div>

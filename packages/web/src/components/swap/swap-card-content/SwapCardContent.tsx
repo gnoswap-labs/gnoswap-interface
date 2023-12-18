@@ -8,6 +8,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import BigNumber from "bignumber.js";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -80,6 +81,20 @@ const SwapCardContent: React.FC<ContentProps> = ({
     return !!(swapSummaryInfo && !!Number(swapTokenInfo.tokenAAmount) && !!Number(swapTokenInfo.tokenBAmount)) || isLoading;
   }, [swapSummaryInfo, swapTokenInfo, isLoading]);
 
+  const balanceADisplay = useMemo(() => {
+    if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
+      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(2);
+    }
+    return "-";
+  }, [swapTokenInfo.tokenABalance, connectedWallet]);
+
+  const balanceBDisplay = useMemo(() => {
+    if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
+      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(2);
+    }
+    return "-";
+  }, [swapTokenInfo.tokenBBalance, connectedWallet]);
+  
   return (
     <ContentWrapper>
       <div className="first-section">
@@ -97,7 +112,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-info">
           <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
           <span className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
-            Balance: {connectedWallet ? swapTokenInfo.tokenABalance : "-"}
+            Balance: {balanceADisplay}
           </span>
         </div>
         <div className="arrow">
@@ -121,7 +136,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-info">
           <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
           <span className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
-            Balance: {connectedWallet ? swapTokenInfo.tokenBBalance : "-"}
+            Balance: {balanceBDisplay}
           </span>
         </div>
       </div>

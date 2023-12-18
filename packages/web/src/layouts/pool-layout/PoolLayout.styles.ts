@@ -116,3 +116,35 @@ export const PoolLayoutWrapper = styled.div`
     }
   }
 `;
+
+interface Props {
+  height: number;
+  mobileHeight: number;
+  width?: number;
+}
+
+export const SkeletonEarnDetailWrapper = styled.div<Props>`
+  max-width: 100%;
+  width: ${({ width }) => {
+    return width ? `${width}px` : "auto";
+  }};
+  ${mixins.flexbox("row", "center", "flex-start")}
+  height: ${({ height }) => {
+    return `${height}px`;
+  }};
+  ${media.tablet} {
+    height: ${({ height }) => {
+      return `${height}px`;
+    }};
+  }
+  ${media.mobile} {
+    height: ${({ mobileHeight }) => {
+      return `${mobileHeight}px`;
+    }};
+  }
+  > span {
+    display: block;
+    max-width: 100%;
+
+  }
+`;

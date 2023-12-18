@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 import TrendingCryptoCardList from "@components/token/trending-crypto-card-list/TrendingCryptoCardList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetChainList, useGetTokensList } from "src/react-query/token";
+import { useGetChainList, useGetTokensList } from "@query/token";
 import { ITrending } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
 import { convertLargePrice } from "@utils/stake-position-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 const trendingCryptoInit = [
   {
@@ -42,15 +43,16 @@ export const trendingCryptoListInit = [
 const TrendingCryptoCardListContainer: React.FC = () => {
   const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokensList();
   const { data: { trending = [] } = {}, isLoading } = useGetChainList();
+  const { gnot, wugnotPath } = useGnotToGnot();
   
   const trendingCryptoList = useMemo(() => {
     return trending.map((item: ITrending) => {
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
-        path: item.tokenPath,
-        name: temp.name,
-        symbol: temp.symbol,
-        logoURI: temp.logoURI,
+        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
+        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
+        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
+        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
         price: `$${convertLargePrice(item.tokenPrice, 10)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
@@ -58,7 +60,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
         }
       };
     }).slice(0, 5);
-  }, [tokens, trending]);
+  }, [tokens, trending, gnot, wugnotPath]);
 
   return <TrendingCryptoCardList list={trendingCryptoList} loading={isLoading || isLoadingListToken} />;
 };

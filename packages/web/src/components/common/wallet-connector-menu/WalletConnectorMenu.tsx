@@ -89,7 +89,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(account?.address || "");
       setCopied(true);
       setTimeout(() => {
         setCopied(false);

@@ -18,15 +18,20 @@ import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { MyPositionAprContent } from "./MyPositionCardAprContent";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
   breakpoint: DEVICE_TYPE;
+  loading: boolean;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
   position,
   breakpoint,
+  loading,
 }) => {
   const { tokenPrices } = useTokenData();
 
@@ -49,12 +54,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minTickLabel = useMemo(() => {
     const minPrice = tickToPriceStr(position.tickLower, 2);
-    return `${minPrice} ${tokenB.symbol} per ${tokenA.symbol}`;
+    return `1 ${tokenA.symbol} = ${minPrice} ${tokenB.symbol}`;
   }, [position.tickLower, tokenA.symbol, tokenB.symbol]);
 
   const maxTickLabel = useMemo(() => {
     const maxPrice = tickToPriceStr(position.tickUpper, 2);
-    return `${maxPrice} ${tokenB.symbol} per ${tokenA.symbol}`;
+    return `1 ${tokenA.symbol} = ${maxPrice} ${tokenB.symbol}`;
   }, [position.tickUpper, tokenA.symbol, tokenB.symbol]);
 
   const tokenABalanceUSD = useMemo(() => {
@@ -151,36 +156,30 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <div className="box-left">
             {breakpoint !== DEVICE_TYPE.MOBILE ? (
               <>
-                <div className="coin-info">
-                  <img
-                    src={tokenA.logoURI}
-                    className="token-logo"
-                    alt="token logo"
+                {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                  <span
+                    css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
                   />
-                  <img
-                    src={tokenB.logoURI}
-                    className="token-logo"
-                    alt="token logo"
-                  />
-                </div>
-                <span className="product-id">ID #{position.id}</span>
+                </SkeletonEarnDetailWrapper>}
+                {!loading && <div className="coin-info">
+                  <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="token-logo" width={36} mobileWidth={24}/>
+                  <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="token-logo" width={36} mobileWidth={24}/>
+                </div>}
+                {!loading && <span className="product-id">ID #{position.id}</span>}
               </>
             ) : (
               <>
                 <div className="mobile-container">
-                  <div className="coin-info">
-                    <img
-                      src={tokenA.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    />
-                    <img
-                      src={tokenB.logoURI}
-                      alt="token logo"
-                      className="token-logo"
-                    />
-                  </div>
-                  <span className="product-id">ID {position.id}</span>
+                {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                  <span
+                    css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+                  />
+                </SkeletonEarnDetailWrapper>}
+                  {!loading && <div className="coin-info">
+                    <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="token-logo" width={36} mobileWidth={24}/>
+                    <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="token-logo" width={36} mobileWidth={24}/>
+                  </div>}
+                  {!loading && <span className="product-id">ID {position.id}</span>}
                 </div>
               </>
             )}
@@ -202,7 +201,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
         </div>
         <div className="min-max">
-          {breakpoint !== DEVICE_TYPE.MOBILE ? (
+          {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+            <span
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && breakpoint !== DEVICE_TYPE.MOBILE ? (
             <>
               <span className="symbol-text">Min</span>
               <span className="token-text">
@@ -214,7 +218,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 {maxTickLabel}
               </span>
             </>
-          ) : (
+          ) : (!loading &&
             <>
               <div className="min-mobile">
                 <span className="symbol-text">Min</span>
@@ -235,13 +239,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="info-wrap">
         <div className="info-box">
           <span className="symbol-text">Balance</span>
-          <Tooltip placement="top" FloatingContent={<div><BalanceTooltipContent balances={balances} /></div>}>
+          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
+          {!loading && <Tooltip placement="top" FloatingContent={<div><BalanceTooltipContent balances={balances} /></div>}>
             <span className="content-text">{positionBalanceUSD}</span>
-          </Tooltip>
+          </Tooltip>}
         </div>
         <div className="info-box">
           <span className="symbol-text">Total Rewards</span>
-          {totalRewardInfo ? (
+          {!loading && totalRewardInfo ? (
             <Tooltip placement="top" FloatingContent={
               <div>
                 <MyPositionRewardContent rewardInfo={totalRewardInfo} />
@@ -251,15 +260,20 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 {totalRewardUSD}
               </span>
             </Tooltip>
-          ) : (
+          ) : (!loading &&
             <span className="content-text disabled">
               {totalRewardUSD}
             </span>
           )}
+          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
         </div>
         <div className="info-box">
           <span className="symbol-text">Estimated APR</span>
-          {aprRewardInfo ? (
+          {aprRewardInfo && !loading ? (
             <Tooltip placement="top" FloatingContent={
               <div><MyPositionAprContent rewardInfo={aprRewardInfo} /></div>
             }>
@@ -267,11 +281,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 {Number(position.apr) >= 100 && <IconStar />}{position.apr !== "" ? `${position.apr}%` : "-"}
               </span>
             </Tooltip>
-          ) : (
+          ) : (!loading &&
             <span className="content-text">
               {Number(position.apr) >= 100 && <IconStar />}{position.apr !== "" ? `${position.apr}%` : "-"}
             </span>
           )}
+          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
         </div>
       </div>
     </MyPositionCardWrapper>

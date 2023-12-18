@@ -60,10 +60,12 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
       onClick={() => routeItem(poolId)}
     >
       <TableColumn className="left" tdWidth={POOL_TD_WIDTH[0]}>
-        <DoubleTokenLogo
-          left={tokenA}
-          right={tokenB}
-          size={20}
+        <DoubleLogo
+          left={tokenA.logoURI}
+          right={tokenB.logoURI}
+          size={24}
+          leftSymbol={tokenA.symbol}
+          rightSymbol={tokenB.symbol}
         />
         <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
@@ -94,6 +96,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             bins={resolvedBins}
             mouseover
             themeKey={themeKey}
+            position="top"
           />
         </div>
       </TableColumn>

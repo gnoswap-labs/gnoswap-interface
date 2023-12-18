@@ -105,13 +105,19 @@ export const SwapLiquidityWrapper = styled.div`
       }
 
     }
-
+    .inacitve-liquidity {
+      cursor: default;
+      pointer-events: none;
+    }
     .fee-info {
       ${mixins.flexbox("row", "center", "flex-start")};
       width: 100%;
       padding: 7px 23px;
       gap: 8px;
       align-self: stretch;
+      &:hover {
+        background-color: ${({ theme }) => theme.color.background05Hover};
+      }
       ${media.mobile} {
         padding: 7px 15px;
         gap: 4px;
@@ -119,10 +125,6 @@ export const SwapLiquidityWrapper = styled.div`
           min-width: 83px;
         }
       }
-      &:hover {
-        background-color: ${({ theme }) => theme.color.background05Hover};
-      }
-
       .badge-wrap {
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         flex: 1 0 0;

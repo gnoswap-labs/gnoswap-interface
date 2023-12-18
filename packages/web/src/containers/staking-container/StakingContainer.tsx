@@ -20,6 +20,14 @@ const StakingContainer: React.FC = () => {
   const [type, setType] = useState(3);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -100,6 +108,7 @@ const StakingContainer: React.FC = () => {
       type={type}
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
+      loading={loading}
     />
   );
 };

@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 import TokenInfoContent from "@components/token/token-info-content/TokenInfoContent";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenDetailByPath } from "src/react-query/token";
+import { useGetTokenDetailByPath } from "@query/token";
 import { useRouter } from "next/router";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
+const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const performanceInit = [
   {
@@ -98,7 +99,7 @@ const priceChangeDetailInit = {
 
 const TokenInfoContentContainer: React.FC = () => {
   const router = useRouter();
-  const { data: { market = marketInformationInit, pricesBefore = priceChangeDetailInit } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  const { data: { market = marketInformationInit, pricesBefore = priceChangeDetailInit } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? WRAPPED_GNOT_PATH : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
 
   const marketInformation = useMemo(() => {
     return {

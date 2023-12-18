@@ -9,7 +9,7 @@ import { tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
-import TokenLogo from "../token-logo/TokenLogo";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -29,6 +29,8 @@ export interface PoolGraphProps {
   },
   themeKey: "dark" | "light";
   rectWidth?: number;
+  position?: FloatingPosition;
+  offset?: number;
 }
 
 interface TooltipInfo {
@@ -62,6 +64,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   },
   themeKey,
   rectWidth,
+  position,
+  offset = 20,
 }) => {
 
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
@@ -124,6 +128,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }
 
   const tooltipPosition = useMemo((): FloatingPosition => {
+    if (position) {
+      return position;
+    }
     if (!positionX || !positionY) {
       return "top-start";
     }
@@ -133,7 +140,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       return `top-${isStart ? "start" : "end"}`;
     }
     return `${isStart ? "right" : "left"}`;
-  }, [width, height, positionX, positionY]);
+  }, [width, height, positionX, positionY, position]);
 
   /** Update Chart by data */
   function updateChart() {
@@ -302,6 +309,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         className="chart-tooltip"
         isHiddenArrow
         position={tooltipPosition}
+        offset={offset}
         content={
           tooltipInfo ? (
             <PoolGraphTooltipWrapper ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow}`}>
@@ -377,7 +385,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       <div className="content">
         <div className="row">
           <span className="token">
-            <TokenLogo token={tooltipInfo.tokenA} className="logo" />
+            <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20}/>
             <span>{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount">
@@ -387,7 +395,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
         </div>
         <div className="row">
           <span className="token">
-            <TokenLogo token={tooltipInfo.tokenB} className="logo" />
+            <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20}/>
             <span>{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount">

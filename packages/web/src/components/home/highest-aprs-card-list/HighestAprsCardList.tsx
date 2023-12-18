@@ -28,7 +28,7 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
-
+  
   return visible ? (
     <HighestAprsCardListwrapper loading={loading}>
       {loading ? (

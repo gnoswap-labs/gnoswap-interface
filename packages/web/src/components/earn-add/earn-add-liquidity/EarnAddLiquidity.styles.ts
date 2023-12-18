@@ -31,6 +31,15 @@ export const EarnAddLiquidityWrapper = styled.section`
     gap: 4px;
     width: 100%;
     position: relative;
+    .change-select-pair-A,
+    .change-select-pair-B {
+      .missing-logo {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+      }
+    }
+
     .dim-content {
       position: absolute;
       top: 116px;
@@ -102,6 +111,18 @@ export const EarnAddLiquidityWrapper = styled.section`
       background: ${({ theme }) => theme.color.background22};
     }
   }
+  .amount-input-wrapper {
+    position: relative;
+    .dim-content-4 {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      background: ${({ theme }) => theme.color.backgroundOpacity8};
+      border-radius: 8px;
+    }
+  }
 
   .setting-button {
     width: 24px;
@@ -138,6 +159,7 @@ export const EarnAddLiquidityWrapper = styled.section`
   }
   ${media.mobile} {
     width: 100%;
+    margin: 0 auto;
     max-width: 500px;
     padding: 15px;
     gap: 12px;

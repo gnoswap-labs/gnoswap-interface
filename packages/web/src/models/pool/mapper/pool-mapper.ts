@@ -8,8 +8,8 @@ import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { IncentivizedOptions } from "@common/values";
 import { makeId } from "@utils/common";
-import { toUnitFormat } from "@utils/number-utils";
 import { PoolDetailModel } from "../pool-detail-model";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -30,7 +30,7 @@ export class PoolMapper {
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
-
+      
     const defaultReward: PoolRewardInfo = {
       token: {
         chainId: "dev",
@@ -53,10 +53,10 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: apr ? `${BigNumber(apr).toFormat(2)}%` : "-",
-      liquidity: toUnitFormat(tvl, true),
-      volume24h: toUnitFormat(volume, true),
-      fees24h: toUnitFormat(feeVolume, true),
+      apr: apr === "" ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
+      liquidity: `$${Math.floor(Number(tvl || 0)).toLocaleString()}`,
+      volume24h: `$${Math.floor(Number(volume || 0)).toLocaleString()}`,
+      fees24h: `$${Math.floor(Number(feeVolume || 0)).toLocaleString()}`,
       rewards: [defaultReward],
       currentTick,
       price,
@@ -120,10 +120,10 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: apr ? `${BigNumber(apr).toFormat(2)}%` : "-",
-      liquidity: toUnitFormat(tvl, true),
-      volume24h: toUnitFormat(volume, true),
-      fees24h: toUnitFormat(feeVolume, true),
+      apr: apr === "" ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
+      liquidity: `${convertLargePrice(tvl.toString(), 2)}`,
+      volume24h: `${convertLargePrice(volume.toString(), 2)}`,
+      fees24h: `${convertLargePrice(feeVolume.toString(), 2)}`,
       rewards: [defaultReward],
       currentTick,
       price,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   BlankIncentivizedCard,
   IncentivizedWrapper,
@@ -26,7 +26,6 @@ export interface IncentivizedPoolCardListProps {
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   incentivizedPools,
-  loadMore,
   isFetched,
   onClickLoadMore,
   currentIndex,
@@ -39,18 +38,31 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   showPagination,
   width,
 }) => {
+  const data = useMemo(() => {
+    if (page === 1) {
+      if (width > 1180) {
+        return incentivizedPools.slice(0, 8);
+      } else if (width > 920) {
+        return incentivizedPools.slice(0, 6);
+      } else {
+        return incentivizedPools;
+      }
+    } else {
+      return incentivizedPools;
+    }
+  }, [page, incentivizedPools, width]);
   return (
     <IncentivizedWrapper>
       <PoolListWrapper ref={divRef} onScroll={onScroll}>
-        {isFetched &&
+        {
           incentivizedPools.length > 0 &&
-          incentivizedPools.slice(0, page * 8).map((info, index) => (
-            <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey} />
+          data.map((info, index) => (
+            <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
           ))}
         {isFetched &&
           incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
-          (Array((incentivizedPools.length > 4 ? 8 : (width <= 1180 && width >= 1000) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
-            <BlankIncentivizedCard key={index} />
+          (Array(((incentivizedPools.length > 4 && width > 1180) ? 8 : (width <= 1180 && width >= 920) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
+            <BlankIncentivizedCard key={index}/>
           ))}
         {!isFetched &&
           Array.from({ length: 8 }).map((_, index) => (
@@ -64,7 +76,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
       {!mobile && (
         incentivizedPools.length > 8 &&
         onClickLoadMore && (
-          <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+          <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
         )
       )}
       {showPagination &&

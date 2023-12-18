@@ -60,7 +60,7 @@ export const useOneClickStakingModal = ({
     }
     const tokenASymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol : tokenB?.symbol;
     const tokenBSymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol : tokenA?.symbol;
-    return `${tokenASymbol} per ${tokenBSymbol}`;
+    return `1 ${tokenASymbol} = ${tokenBSymbol}`;
   }, [selectPool?.compareToken, tokenA, tokenB]);
 
   const priceRangeInfo = useMemo(() => {

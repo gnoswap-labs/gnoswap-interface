@@ -1,6 +1,7 @@
 import {
   IChainResponse,
   ITokenDetailResponse,
+  ITokenResponse,
   TokenListResponse,
   TokenPriceListResponse,
 } from "@repositories/token";
@@ -50,6 +51,18 @@ export const useGetChainList = (
   return useQuery<IChainResponse, Error>({
     queryKey: [QUERY_KEY.chain],
     queryFn: () => tokenRepository.getChain(),
+    ...option,
+  });
+};
+
+export const useGetTokenByPath = (
+  path: string,
+  option?: UseQueryOptions<ITokenResponse, Error>
+) => {
+  const { tokenRepository } = useGnoswapContext();
+  return useQuery<ITokenResponse, Error>({
+    queryKey: [QUERY_KEY.tokenByPath, path],
+    queryFn: () => tokenRepository.getTokenByPath(path),
     ...option,
   });
 };

@@ -4,14 +4,18 @@ import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useCallback, useState } from "react";
 import { useGnoswapContext } from "./use-gnoswap-context";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useAtom } from "jotai";
 import { PoolState } from "@states/index";
+const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const usePositionData = () => {
   const { positionRepository } = useGnoswapContext();
   const { account } = useWallet();
   const { pools } = usePoolData();
   const [isError, setIsError] = useState(false);
+  const { gnot } = useGnotToGnot();
+  const [isFetchedPosition, setIsFetchedPosition] = useState(false);
   const [positions, setPositions] = useAtom(PoolState.positions);
 
   const isStakedPool = useCallback(
@@ -45,14 +49,29 @@ export const usePositionData = () => {
         positions.forEach(position => {
           const pool = pools.find(pool => pool.path === position.poolPath);
           if (pool) {
-            poolPositions.push(PositionMapper.makePoolPosition(position, pool));
+            const temp = {
+              ...pool,
+              tokenA: {
+                ...pool.tokenA,
+                symbol: pool.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : pool.tokenA.symbol,
+                logoURI: pool.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : pool.tokenA.logoURI,
+              },
+              tokenB: {
+                ...pool.tokenB,
+                symbol: pool.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : pool.tokenB.symbol,
+                logoURI: pool.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : pool.tokenB.logoURI,
+              }
+            };
+            poolPositions.push(PositionMapper.makePoolPosition(position, temp));
           }
         });
         setPositions(positions);
         setIsError(false);
+        setIsFetchedPosition(true);
         return poolPositions;
       })
       .catch(() => {
+        setIsFetchedPosition(true);
         setPositions([]);
         setIsError(true);
         return [];
@@ -99,5 +118,6 @@ export const usePositionData = () => {
     isStakedPool,
     getPositions,
     getPositionsByPoolId,
+    isFetchedPosition,
   };
 };

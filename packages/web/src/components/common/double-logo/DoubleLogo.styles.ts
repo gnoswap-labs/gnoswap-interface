@@ -1,6 +1,4 @@
-import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
-import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export interface DoubleLogoStyleProps {
@@ -38,13 +36,12 @@ export const DoubleLogoWrapper = styled.div<DoubleLogoStyleProps>`
       if (size) return typeof size === "number" ? `${size}px` : size;
       return "36px";
     }};
+    font-weight: 600;
     border-radius: 50%;
     color: ${({ theme }) => theme.color.text02};
-    background-color: ${({ theme }) => theme.color.border02};
-    ${fonts.p6}
-    ${media.mobile} {
-      font-size: 8px;
-      line-height: 10px;
-    }
+    background-color: ${({ theme }) => theme.color.text04};
+    font-size: ${({ size = 36 }) => {
+      return `${size === 36 ? "13" : size === 32 ? "12" : size === 28 ? "10" : size === 24 ? "9" : size === 21 ? "8" : size === 20 ? "7" : "6"}px`;
+    }};
   }
 `;

@@ -44,12 +44,22 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
     }
 
     .value-wrapper {
+      height: 34px;
       ${fonts.body4}
-
+      position: relative;
       input {
-        max-width: 110px;
+        width: 110px;
         text-align: center;
+        display: block;
       }
+    }
+    .fake-input {
+      position: absolute;
+      z-index: -1;
+      opacity: 0;
+      top: 0;
+      pointer-events: none;
+      ${fonts.body4}
     }
   }
 

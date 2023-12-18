@@ -5,6 +5,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { CardListPoolInfo, CardListTokenInfo } from "@models/common/card-list-item-info";
 import { useCallback, useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface CardListProps {
   list: Array<CardListTokenInfo | CardListPoolInfo>;
@@ -72,7 +73,7 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClic
       left: pool.tokenA.logoURI,
       right: pool.tokenB.logoURI,
       leftSymbol: pool.tokenA.symbol,
-      rightSymbol: pool.tokenA.symbol,
+      rightSymbol: pool.tokenB.symbol,
     };
   }, [item]);
 
@@ -129,7 +130,7 @@ const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onCl
   return (
     <ListItem onClick={onClick} upDown={item.upDown}>
       {!isHiddenIndex && <span className="index">{index}</span>}
-      {item.token.logoURI ? <img src={item.token.logoURI} alt="logo" className="list-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0, 3)}</div>}
+      <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="list-logo" width={20} mobileWidth={20}/>
       <strong className="token-name">{item.token.name}</strong>
       <span className="list-content">{item.token.symbol}</span>
       {visibleUp && (

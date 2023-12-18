@@ -21,6 +21,7 @@ import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { useRouter } from "next/router";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -63,6 +64,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>("FEE_3000");
   const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Passive" });
+  const [initialized, setInitialized] = useState(false);
+  const router = useRouter();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
   useEffect(() => {
@@ -83,7 +86,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isSwitchNetwork,
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { updateBalances, updateTokenPrices } = useTokenData();
+  const { updateBalances, updateTokenPrices, tokens } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption.isCreate, startPrice: createOption.startPrice });
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
@@ -394,6 +397,24 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [selectPool.feeTier]);
 
   useEffect(() => {
+    if (tokens.length === 0 || Object.keys(router.query).length === 0) {
+      return;
+    }
+    if (!initialized) {
+      setInitialized(true);
+      const query = router.query;
+      const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
+      const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
+      setSwapValue({
+        tokenA: currentTokenA,
+        tokenB: currentTokenB,
+        type: "EXACT_IN",
+      });
+      return;
+    }
+  }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
+  
+  useEffect(() => {
     const isEarnAdd = swapValue.tokenA !== null && swapValue.tokenB !== null;
     setIsEarnAdd(isEarnAdd);
   }, [setIsEarnAdd, swapValue]);
@@ -430,6 +451,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       openModal={openOneClickModal}
       selectPool={selectPool}
       changeStartingPrice={changeStartingPrice}
+      createOption={createOption}
     />
   );
 };

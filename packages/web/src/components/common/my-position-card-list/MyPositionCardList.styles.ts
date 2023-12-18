@@ -31,17 +31,17 @@ export const GridWrapper = styled.div`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
-
-  @media (max-width: 1000px) {
+  overflow-x: scroll;
+  @media (max-width: 920px) {
     overflow-x: auto;
     grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 290px);
+    grid-template-columns: repeat(auto-fill, 322px);
     grid-auto-flow: column;
-    grid-auto-columns: 290px;
+    grid-auto-columns: 322px;
   }
 
   .card-skeleton {
-    height: 394px;
+    height: 348px;
     border-radius: 10px;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   }

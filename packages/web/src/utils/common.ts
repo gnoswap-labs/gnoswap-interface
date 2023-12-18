@@ -50,10 +50,11 @@ export const parseJson = (data: string) => {
   }
 };
 
+
 export const checkPositivePrice = (
   currentPrice: string,
   checkPrice: string,
-  fixedPrice?: number,
+  fixedPrice?: number
 ) => {
   const currentToNumber = Number(currentPrice);
   const checkToNumber = Number(checkPrice);
@@ -72,8 +73,8 @@ export const checkPositivePrice = (
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
       : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
-          Number(value),
-        )}%`;
+          Number(value)
+        ).toFixed(2)}%`;
   const price =
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
@@ -81,13 +82,13 @@ export const checkPositivePrice = (
           status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"
         }$${convertLargePrice(
           Math.abs(checkToNumber - currentToNumber).toString(),
-          fixedPrice ?? 2,
+          fixedPrice ?? 2
         )}`;
   return {
     status: status,
     value: value.includes("Infinity") ? "0" : value,
     isEmpty: isEmpty,
-    percent: percent,
+    percent: percent.includes("Infinity") ? "0.00%" : percent,
     price: price,
   };
 };

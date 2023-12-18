@@ -6,6 +6,8 @@ import BigNumber from "bignumber.js";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 
 function makeLeftBadge(
   refer: d3.Selection<any, unknown, null, undefined>,
@@ -189,6 +191,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const brushRef = useRef<SVGGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const labelHeight = displayLabels > 0 ? 20 : 0;
+  const themeKey = useAtomValue(ThemeState.themeKey);
 
   const paddingHeight = 0;
   const boundsWidth = width - margin.right - margin.left;
@@ -433,7 +436,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .attr("y1", boundsHeight + paddingHeight)
         .attr("y2", 0)
         .attr("stroke-dasharray", 4)
-        .attr("stroke", "#FFFFFF")
+        .attr("stroke", `${themeKey === "dark" ? "#FFFFFF": "#596782"}`)
         .attr("stroke-width", 1);
     }
 
@@ -476,10 +479,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   useEffect(() => {
     const svgElement = d3.select(svgRef.current)
-      .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
+      .attr("style", "height: 160px;");
 
     const defElement = svgElement.select("defs");
     const existClipPath = defElement.select("clipPath")

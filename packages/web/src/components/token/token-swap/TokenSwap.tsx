@@ -11,6 +11,7 @@ import { DataTokenInfo } from "@models/token/token-swap-model";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
+import BigNumber from "bignumber.js";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -114,6 +115,20 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
   }, [dataTokenInfo, isLoading]);
 
+  const balanceADisplay = useMemo(() => {
+    if (connected && dataTokenInfo.tokenABalance !== "-") {
+      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(2);
+    }
+    return "-";
+  }, [dataTokenInfo.tokenABalance, connected]);
+
+  const balanceBDisplay = useMemo(() => {
+    if (connected && dataTokenInfo.tokenBBalance !== "-") {
+      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(2);
+    }
+    return "-";
+  }, [dataTokenInfo.tokenBBalance, connected]);
+
   return (
     <div css={wrapper}>
       <div className="header">
@@ -151,7 +166,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           <div className="info">
             <span className="price-text">{dataTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
-              Balance: {connected ? dataTokenInfo.tokenABalance : "-"}
+              Balance: {balanceADisplay}
             </span>
           </div>
         </div>
@@ -170,7 +185,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           <div className="info">
             <span className="price-text">{dataTokenInfo.tokenBUSDStr}</span>
             <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
-              Balance: {connected ? dataTokenInfo.tokenBBalance : "-"}
+              Balance: {balanceBDisplay}
             </span>
           </div>
         </div>

@@ -4,6 +4,7 @@ import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { convertLargePrice } from "@utils/stake-position-utils";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 export interface TokenChartInfoProps {
   token: {
@@ -36,7 +37,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
     <TokenChartInfoWrapper>
       <div className="token-info-wrapper">
         <div className="token-info">
-          {token.image ? <img src={token.image} className="token-image" alt="token image" /> : <div className="missing-logo">{(token.symbol ?? "").slice(0,3)}</div>}
+          <MissingLogo symbol={token.symbol} url={token.image} className="token-image" width={36} mobileWidth={36}/>
           <div>
             <span className="token-name">{token.name}</span>
             <span className="token-symbol">{token.symbol}</span>

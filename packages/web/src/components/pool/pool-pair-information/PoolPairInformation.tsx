@@ -10,12 +10,15 @@ import {
   pathProps,
 } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
   menu: pathProps;
   feeStr: string | null;
   onClickPath: (path: string) => void;
+  loading: boolean;
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
@@ -23,6 +26,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   menu,
   feeStr,
   onClickPath,
+  loading,
 }) => {
   const tokenInfo = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol} (${feeStr || "0"})`;
@@ -41,14 +45,19 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
         </div>
       </BreadcrumbsWrapper>
       <div className="token-status">
-        <PoolPairInfoHeader
+        {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          <span
+            css={skeletonTokenDetail("300px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+          </SkeletonEarnDetailWrapper>}
+        {!loading && <PoolPairInfoHeader
           tokenA={pool.tokenA}
           tokenB={pool.tokenB}
           incentivizedType={pool.incentivizedType}
           rewardTokens={pool.rewardTokens}
           feeStr={feeStr || ""}
-        />
-        <PoolPairInfoContent pool={pool} />
+        />}
+        <PoolPairInfoContent pool={pool} loading={loading}/>
       </div>
     </PoolPairInformationWrapper>
   );

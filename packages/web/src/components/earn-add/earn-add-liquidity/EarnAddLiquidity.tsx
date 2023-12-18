@@ -1,6 +1,6 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { EarnAddLiquidityWrapper } from "./EarnAddLiquidity.styles";
 import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType } from "@constants/option.constant";
 import { AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
@@ -51,6 +51,7 @@ interface EarnAddLiquidityProps {
   openModal: () => void;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
+  createOption: { startPrice: number | null, isCreate: boolean };
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -79,13 +80,20 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   changeSlippage,
   openModal,
   selectPool,
-  changeStartingPrice
+  changeStartingPrice,
+  createOption,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openedSetting, setOpenedSetting] = useState(false);
 
+  useEffect(() => {
+    if (tokenA && tokenB) {
+      setOpenedFeeTier(true);
+      setOpenedPriceRange(true);
+    }
+  }, [tokenA, tokenB]);
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
@@ -187,6 +195,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     setOpenedSetting(() => false);
   }, []);
 
+  const showDim = useMemo(() => {
+    return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
+  }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
+  
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -199,6 +211,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
                 left={tokenALogo}
                 right={tokenBLogo}
                 size={30}
+                leftSymbol={tokenA?.symbol || ""}
+                rightSymbol={tokenB?.symbol || ""}
               />
             )}
           </div>
@@ -261,12 +275,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               changePriceRange={changePriceRange}
               changeStartingPrice={changeStartingPrice}
               selectPool={selectPool}
+              showDim={showDim}
             />
           )}
-          {selectedPriceRange && existTokenPair && selectedFeeRate && <SelectPriceRangeSummary {...priceRangeSummary} />}
+          {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
         </article>
 
-        <article className="selector-wrapper">
+        <article className="selector-wrapper amount-input-wrapper">
           <div className="header-wrapper default-cursor">
             <h5>4. Enter Amounts</h5>
             <button className="setting-button" onClick={openSetting}>
@@ -294,6 +309,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               connected={connected}
             />
           </div>
+          {showDim && <div className="dim-content-4" />}
         </article>
         {isEarnAdd && !existTokenPair && <div className="dim-content" />}
       </div>

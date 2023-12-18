@@ -10,12 +10,17 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { toLowerUnitFormat } from "@utils/number-utils";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
+  loading: boolean;
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
+  loading,
 }) => {
   const tokenABalance = useMemo(() => {
     return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
@@ -84,15 +89,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         <Tooltip
           placement="top"
           FloatingContent={
-            <TooltipContent>
+            !loading ? <TooltipContent>
               <span className="title">Composition</span>
               <div className="list">
                 <div className="coin-info">
-                  <img
-                    src={pool.tokenA.logoURI}
-                    alt="token logo"
-                    className="token-logo"
-                  />
+                  <MissingLogo symbol={pool.tokenA.symbol} url={pool.tokenA.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                   <span className="content">
                     {depositRatioStrOfTokenA}
                   </span>
@@ -103,11 +104,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </div>
               <div className="list">
                 <div className="coin-info">
-                  <img
-                    src={pool.tokenB.logoURI}
-                    alt="token logo"
-                    className="token-logo"
-                  />
+                  <MissingLogo symbol={pool.tokenB.symbol} url={pool.tokenB.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                   <span className="content">
                     {depositRatioStrOfTokenB}
                   </span>
@@ -116,44 +113,79 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   {numberToFormat(tokenBBalance, pool.tokenB.decimals)}
                 </span>
               </div>
-            </TooltipContent>
+            </TooltipContent> : null
           }
         >
-          <strong className="has-tooltip">{liquidityValue}</strong>
+          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined, 140)}
+            />
+            </SkeletonEarnDetailWrapper>}
+          {!loading && <strong className="has-tooltip">{liquidityValue}</strong>}
         </Tooltip>
         <div className="section-info">
           <span>24h Change</span>
-          {pool.tvlChange >= 0 ? (
-            <span className="positive">{liquidityChangedStr}</span>
-          ) : (
-            <span className="negative">{liquidityChangedStr}</span>
+          {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+            <span
+              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+            </SkeletonEarnDetailWrapper>}
+          {!loading && pool.tvlChange >= 0 ? (
+            <span className="positive">+{liquidityChangedStr}</span>
+          ) : (!loading &&
+            <span className="negative">-{liquidityChangedStr}</span>
           )}
         </div>
       </section>
       <section>
         <h4>Volume (24h)</h4>
-        <strong>{volumeValue}</strong>
+        {!loading &&<strong>{volumeValue}</strong>}
+        {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+            <span
+              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined, 140)}
+            />
+            </SkeletonEarnDetailWrapper>}
         <div className="section-info">
           <span>24h Change</span>
-          {pool.volumeChange >= 0 ? (
-            <span className="positive">{volumeChangedStr}</span>
-          ) : (
-            <span className="negative">{volumeChangedStr}</span>
+          {!loading && pool.volumeChange >= 0 ? (
+            <span className="positive">+{volumeChangedStr}</span>
+          ) : (!loading &&
+            <span className="negative">-{volumeChangedStr}</span>
           )}
+          {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+            <span
+              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+          </SkeletonEarnDetailWrapper>}
         </div>
       </section>
       <section>
         <h4>APR</h4>
-        <strong>{aprValue}</strong>
+        {!loading && <strong>{aprValue}</strong>}
+        {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+        <span
+          css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined)}
+        />
+        </SkeletonEarnDetailWrapper>}
         <div className="apr-info">
           <div className="content-wrap">
             <span>Fees</span>
-            <span className="apr-value">{feeChangedStr}</span>
+            {!loading && <span className="apr-value">{feeChangedStr}</span>}
+            {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+            <span
+              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+            </SkeletonEarnDetailWrapper>}
           </div>
           <AprDivider />
           <div className="content-wrap">
             <span>Rewards</span>
-            <span className="apr-value">{rewardChangedStr}</span>
+            {!loading && <span className="apr-value">{rewardChangedStr}</span>}
+            {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+            <span
+              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            />
+            </SkeletonEarnDetailWrapper>}
           </div>
         </div>
       </section>

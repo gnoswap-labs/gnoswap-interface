@@ -6,7 +6,6 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { DEVICE_TYPE } from "@styles/media";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ValuesType } from "utility-types";
@@ -30,27 +29,40 @@ const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
 > = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [page, setPage] = useState(1);
 
   const router = useRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
   const { updateTokenPrices } = useTokenData();
-  const { isFetchedPositions, updatePositions } = usePoolData();
-  const { breakpoint, width } = useWindowSize();
+  const { updatePositions } = usePoolData();
+  const { width } = useWindowSize();
   const divRef = useRef<HTMLDivElement | null>(null);
-
   const { openModal } = useConnectWalletModal();
-  const { isError, getPositions } = usePositionData();
+  const { isError, getPositions, isFetchedPosition } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const [mobile, setMobile] = useState(false);
 
+  const handleResize = () => {
+    if (typeof window !== "undefined") {
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+    }
+  };
   useEffect(() => {
     updateTokenPrices();
     updatePositions();
+    if (typeof window !== "undefined") {
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
     getPositions().then(setPositions);
   }, [getPositions]);
-
+  
   const connect = useCallback(() => {
     if (!connected) {
       openModal();
@@ -80,55 +92,51 @@ const EarnMyPositionContainer: React.FC<
   };
 
   const showPagination = useMemo(() => {
-    if (width < 1400) {
-      if (width > 1000) {
-        const totalWidth = positions.length * 322 + 80 + 24 * positions.length;
-        return totalWidth > width;
-      } else if (width > 768) {
-        const totalWidth = positions.length * 322 + 80 + 12 * positions.length;
-        return totalWidth > width;
-      } else {
-        const totalWidth = positions.length * 290 + 32 + 12 * positions.length;
-        return totalWidth > width;
-      }
-    } else {
+    if (width >= 920) {
       return false;
+    } else {
+      return true;
     }
   }, [positions, width]);
 
-  const showLoadMore = useMemo(() => {
-    if (width > 1000) {
-      if (width > 1180 && positions.length > 8) {
-        return true;
-      } else if (width < 1180 && positions.length > 6) {
-        return true;
-      } else {
-        return false;
-      }
+  const handleClickLoadMore = useCallback(() => {
+    if (page === 1) {
+      setPage(prev => prev + 1);
     } else {
-      return false;
+      setPage(1);
     }
-  }, [positions, width]);
+  }, [page]);
 
-
+  const dataMapping = useMemo(() => {
+    if (page === 1) {
+      if (width > 1180) {
+        return positions.slice(0, 4);
+      } else if (width > 920) {
+        return positions.slice(0, 3);
+      } else return positions;
+    } else return positions;
+  }, [width, page, positions]);
+  
   return (
     <EarnMyPositions
       connected={connected}
       connect={connect}
-      fetched={isFetchedPositions}
+      fetched={isFetchedPosition}
       isError={isError}
-      positions={positions}
+      positions={dataMapping}
       moveEarnAdd={moveEarnAdd}
       movePoolDetail={movePoolDetail}
       moveEarnStake={moveEarnStake}
       isSwitchNetwork={isSwitchNetwork}
-      mobile={breakpoint === DEVICE_TYPE.MOBILE}
+      mobile={mobile}
       onScroll={handleScroll}
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={showLoadMore}
+      showLoadMore={mobile}
       width={width}
+      loadMore={page === 1}
+      onClickLoadMore={handleClickLoadMore}
     />
   );
 };

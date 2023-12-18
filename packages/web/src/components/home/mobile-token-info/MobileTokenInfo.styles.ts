@@ -54,12 +54,18 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     svg * {
       fill: ${({ theme }) => theme.color.green01};
     }
+    span {
+      font-weight: 500;
+    }
   }
   .negative {
     padding-left: 0;
     color: ${({ theme }) => theme.color.red01};
     svg * {
       fill: ${({ theme }) => theme.color.red01};
+    }
+    span {
+      font-weight: 500;
     }
   }
   .symbol-col {
@@ -96,16 +102,6 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   .token-logo {
     width: 24px;
     height: 24px;
-  }
-  .missing-logo {
-    ${mixins.flexbox("row", "center", "center")};
-    min-width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    color: ${({ theme }) => theme.color.text02};
-    background-color: ${({ theme }) => theme.color.text04};
-    font-size: 8px;
-    line-height: 10px;
   }
   .token-name {
     margin: 0px 8px;

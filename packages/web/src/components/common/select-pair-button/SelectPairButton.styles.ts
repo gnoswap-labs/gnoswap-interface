@@ -36,16 +36,6 @@ export const wrapper = (hasToken: boolean, disabled?: boolean, isHiddenArrow?: b
       height: 24px;
       border-radius: 50%;
     }
-    .missing-logo {
-      ${mixins.flexbox("row", "center", "center")};
-      min-width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      color: ${theme.color.text02};
-      background-color: ${theme.color.text04};
-      font-size: 8px;
-      line-height: 10px;
-    }
     .arrow-icon {
       width: 16px;
       height: 16px;

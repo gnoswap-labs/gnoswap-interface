@@ -114,6 +114,13 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
   .button-wrap {
     ${mixins.flexbox("row", "center", "flex-end")};
     width: 100%;
+    .loading-button {
+      transform: translateX(-50%);
+      ${media.mobile} {
+        transform: translateX(0);
+        margin: auto;
+      }
+    }
     .change-weight {
       cursor: default;
       border: 1px solid ${({ theme }) => theme.color.border14};;

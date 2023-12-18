@@ -3,11 +3,12 @@ import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useRouter } from "next/router";
-import { useGetTokenDetailByPath } from "src/react-query/token";
+import { useGetTokenDetailByPath } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -50,8 +51,9 @@ export const bestPoolListInit: BestPool[] = [
 ];
 
 const BestPoolsContainer: React.FC = () => {
+  const { gnot, wugnotPath } = useGnotToGnot();
   const router = useRouter();
-  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? wugnotPath : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
   const { data: pools = [] } = useGetPoolList();
 
   const bestPoolList: BestPool[] = useMemo(() => {
@@ -61,26 +63,26 @@ const BestPoolsContainer: React.FC = () => {
       return {
         tokenPair: {
           tokenA: {
-            path: item.tokenA.path,
-            name: item.tokenA.name,
-            symbol: item.tokenA.symbol,
-            logoURI: item.tokenA.logoURI,
+            path: item.tokenA.path === wugnotPath ? (gnot?.path || "") : item.tokenA.path,
+            name: item.tokenA.path === wugnotPath ? (gnot?.name || "") : item.tokenA.name,
+            symbol: item.tokenA.path === wugnotPath ? (gnot?.symbol || "") : item.tokenA.symbol,
+            logoURI: item.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenA.logoURI,
           },
           tokenB: {
-            path: item.tokenB.path,
-            name: item.tokenB.name,
-            symbol: item.tokenB.symbol,
-            logoURI: item.tokenB.logoURI,
+            path: item.tokenB.path === wugnotPath ? (gnot?.path || "") : item.tokenB.path,
+            name: item.tokenB.path === wugnotPath ? (gnot?.name || "") : item.tokenB.name,
+            symbol: item.tokenB.path === wugnotPath ? (gnot?.symbol || "") : item.tokenB.symbol,
+            logoURI: item.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenB.logoURI,
           },
         },
         poolPath: temp?.poolPath || "", 
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
         tvl: `$${convertLargePrice(item.tvl)}`,
-        apr: `${Number(item.apr).toFixed(2)}%`,
+        apr: `${item.apr === "" ? "-" : `${Number(item.apr).toFixed(2)}%`}`,
       };
     });
-  }, [bestPools, pools.toString()]);
+  }, [bestPools, pools.toString(), gnot, wugnotPath]);
   
   return <BestPools titleSymbol={router?.query["token-path"] as string || ""} cardList={bestPoolList} loading={isLoading}/>;
 };

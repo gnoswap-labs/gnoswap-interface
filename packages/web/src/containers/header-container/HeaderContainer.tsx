@@ -15,12 +15,14 @@ import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetPoolList } from "src/react-query/pools";
-import { useGetTokenPrices, useGetTokensList } from "src/react-query/token";
+import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { PoolModel } from "@models/pool/pool-model";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -158,6 +160,7 @@ const HeaderContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
+  const { gnot } = useGnotToGnot();
   
 
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
@@ -184,8 +187,8 @@ const HeaderContainer: React.FC = () => {
         token: {
           path: item.tokenA.path,
           name: item.tokenA.name,
-          symbol: item.tokenA.symbol,
-          logoURI: item.tokenA.logoURI,
+          symbol: item.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : item.tokenA.symbol,
+          logoURI: item.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : item.tokenA.logoURI,
         },
         price: `$${convertLargePrice(priceItem.liquidity || "0")}`,
         priceOf1d: {
@@ -195,15 +198,15 @@ const HeaderContainer: React.FC = () => {
         tokenB: {
           path: item.tokenB.path,
           name: item.tokenB.name,
-          symbol: item.tokenB.symbol,
-          logoURI: item.tokenB.logoURI,
+          symbol: item.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : item.tokenB.symbol,
+          logoURI: item.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : item.tokenB.logoURI,
         },
         fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
         isLiquid: true,
-        apr: `${item.apr || 0}`,
+        apr: `${item.apr === "" ? "-" : Number(item.apr) > 10 ? `${item.apr}% APR` : `${Number(item.apr).toFixed(2)}% APR`}`,
       };
     });
-  }, [poolList, keyword, prices]);
+  }, [poolList, keyword, prices, gnot]);
   
   const popularTokens = useMemo(() => {
     let temp = listTokens;
@@ -215,8 +218,10 @@ const HeaderContainer: React.FC = () => {
     }
     return temp.slice(0, keyword ? 6 : 6 - recents.length).map((item: TokenModel) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
-      const dataToday = checkPositivePrice((temp.pricesBefore?.latestPrice), (temp.pricesBefore?.priceToday));
-
+      const isGnot = item.path === "gnot";
+      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === WRAPPED_GNOT_PATH)?.[0] ?? {};
+      const transferData = isGnot ? tempWuGnot : temp;
+      const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       return {
         path: "",
         searchType: "",
@@ -226,7 +231,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${convertLargePrice(temp.usd || "0", 6)}`,
+        price: `$${convertLargePrice(transferData.usd || "0", 6)}`,
         priceOf1d: {
           status: dataToday.status,
           value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",

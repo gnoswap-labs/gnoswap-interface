@@ -18,6 +18,8 @@ export interface EarnMyPositionContentProps {
   showPagination: boolean;
   showLoadMore: boolean;
   width: number;
+  loadMore: boolean;
+  onClickLoadMore?: () => void;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -35,6 +37,8 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   showPagination,
   showLoadMore,
   width,
+  loadMore,
+  onClickLoadMore,
 }) => {
   if (!connected || isSwitchNetwork) {
     return (
@@ -61,6 +65,8 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       showPagination={showPagination}
       showLoadMore={showLoadMore}
       width={width}
+      loadMore={loadMore}
+      onClickLoadMore={onClickLoadMore}
     />
   );
 };

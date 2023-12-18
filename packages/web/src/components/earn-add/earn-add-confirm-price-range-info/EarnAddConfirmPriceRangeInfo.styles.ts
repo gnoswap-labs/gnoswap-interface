@@ -70,6 +70,19 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
       padding: 11px 7px;
     }
   }
+  .swap-value {
+    ${mixins.flexbox("flex", "center", "flex-end")}
+    gap: 4px;
+    > div {
+      cursor: pointer;
+    }
+    svg * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
+    svg:hover * {
+      fill: ${({ theme }) => theme.color.icon07};
+    }
+  }
   
   .row {
     display: flex;

@@ -16,6 +16,8 @@ import {
 import { TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 import { Global, css } from "@emotion/react";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { makeId } from "@utils/common";
 
 interface TokenInfoProps {
   item: Token;
@@ -63,8 +65,9 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   };
 
   const onClickPoolItem = (item: MostLiquidPool) => {
+    const poolPath = `${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path}:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
     if (item.tokenPair.tokenA.logoURI) {
-      location.href = `/earn/pool/1c550fbfa3149fd8da5a52055f16b1b34c00fe1c1f3f543dc5f2d669a4db55dc?path=${item.tokenPair.tokenA.path}:${item.tokenPair.tokenB.path}:${Number(item.feeRate.slice(0, item.feeRate.length - 1)) * 10000}`;
+      location.href = `/earn/pool/${makeId(poolPath)}`;
     }
   }
 
@@ -75,7 +78,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
-          {token.logoURI ?<img src={token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
+          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
           <strong className="token-name">{token.name}</strong>
           <span className="token-symbol">{token.symbol}</span>
         </TableColumn>

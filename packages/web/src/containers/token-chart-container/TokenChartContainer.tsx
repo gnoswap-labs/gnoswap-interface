@@ -12,7 +12,9 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkPositivePrice, countPoints, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetTokenDetailByPath, useGetTokensList } from "../.././react-query/token";
+import { useGetTokenDetailByPath, useGetTokensList } from "@query/token";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
@@ -188,7 +190,7 @@ const TokenChartContainer: React.FC = () => {
   const [fromSelectToken, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
-
+  const { gnot } = useGnotToGnot();
 
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: () => {
@@ -204,7 +206,7 @@ const TokenChartContainer: React.FC = () => {
     prices1y = [],
     pricesBefore = priceChangeDetailInit,
     currentPrice = ""
-  } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? WRAPPED_GNOT_PATH : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
   const [componentRef, size] = useComponentSize(isLoading);
 
   useEffect(() => {
@@ -212,8 +214,6 @@ const TokenChartContainer: React.FC = () => {
     if (currentToken) {
 
     const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
-      console.log(dataToday);
-      
       setTokenInfo(() => ({
         token: {
           name: currentToken.name,
@@ -230,14 +230,14 @@ const TokenChartContainer: React.FC = () => {
             denom: "USD",
             status: dataToday.status,
           },
-          changedRate: Number(dataToday.value || 0),
+          changedRate: Math.abs(Number(dataToday.value || 0)),
         },
       }));
       if (!fromSelectToken && !currentToken.logoURI) {
         openTradingModal({ symbol: currentToken.symbol, path: currentToken.path });
       }
     }
-  }, [router.query, pricesBefore.toString(), currentPrice, tokens]);
+  }, [router.query, pricesBefore.toString(), currentPrice, tokens, gnot]);
   
   const changeTab = useCallback((tab: string) => {
     const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";

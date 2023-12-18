@@ -1,12 +1,14 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState} from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { EarnAddConfirmPriceRangeInfoSection, EarnAddConfirmPriceRangeInfoWrapper, ToolTipContentWrapper } from "./EarnAddConfirmPriceRangeInfo.styles";
 import { numberToFormat } from "@utils/string-utils";
+import { EarnAddConfirmAmountInfoProps } from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
+import IconSwap from "@components/common/icons/IconSwap";
 
-export interface EarnAddConfirmPriceRangeInfoProps {
+export interface EarnAddConfirmPriceRangeInfoProps extends EarnAddConfirmAmountInfoProps {
   currentPrice: string;
   inRange: boolean;
   minPrice: string;
@@ -28,15 +30,21 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   feeBoost,
   estimatedAPR,
   isShowStaking,
+  tokenA,
+  tokenB
 }) => {
+    const [swap, setSwap] = useState(false);
+  
     const currentPriceStr = useMemo(() => {
-      return `${numberToFormat(currentPrice, 4)} ${priceLabel}`;
-    }, [currentPrice, priceLabel]);
+      if (!swap) {
+        return `1 ${tokenA.info.symbol} = ${numberToFormat(currentPrice, 4)} ${tokenB.info.symbol}`;
+      }
+      return `1 ${tokenB.info.symbol} = ${numberToFormat(1 / Number(currentPrice), 4)} ${tokenA.info.symbol}`;
+    }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol, swap]);
 
     const rangeStatus = useMemo(() => {
       return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
     }, [inRange]);
-
     return (
       <EarnAddConfirmPriceRangeInfoWrapper>
         <div className="range-title">
@@ -60,7 +68,12 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
         <EarnAddConfirmPriceRangeInfoSection>
           <div className="row">
             <span className="key">Current Price:</span>
-            <span className="value">{currentPriceStr}</span>
+            <div className="swap-value">
+              <span className="value">{currentPriceStr}</span>
+              <div onClick={() => setSwap(!swap)}>
+                <IconSwap />
+              </div>
+            </div>
           </div>
           <div className="row">
             <div className="title-wrapper">

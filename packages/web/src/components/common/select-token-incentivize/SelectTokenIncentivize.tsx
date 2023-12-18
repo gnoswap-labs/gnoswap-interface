@@ -3,6 +3,7 @@ import { SelectTokenIncentivizeWrapper } from "./SelectTokenIncentivize.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
+import MissingLogo from "../missing-logo/MissingLogo";
 export interface SelectTokenIncentivizeProps {
   keyword: string;
   defaultTokens: TokenModel[];
@@ -60,7 +61,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                {token.logoURI ? <img src={token.logoURI} alt="logo" className="token-logo" /> : <div className="missing-logo">{token.symbol.slice(0,3)}</div>}
+                <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
                 <span className="token-name">{token.name}</span>
                 <span className="token-symbol">{token.symbol}</span>
               </div>

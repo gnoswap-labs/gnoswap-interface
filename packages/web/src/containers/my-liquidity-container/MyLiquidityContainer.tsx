@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePosition } from "@hooks/common/use-position";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 
 
@@ -18,6 +19,15 @@ const MyLiquidityContainer: React.FC = () => {
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const { getPositionsByPoolId } = usePositionData();
   const { claimAll } = usePosition(positions);
+  const [loading, setLoading] = useState(true);
+  const { gnot, wugnotPath } = useGnotToGnot();
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -55,10 +65,39 @@ const MyLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      getPositionsByPoolId(poolPath).then(setPositions);
+      getPositionsByPoolId(poolPath).then((list: PoolPositionModel[]) => {
+        if (list) {
+          const temp = list.map((e: PoolPositionModel) => {
+            const pool = e.pool;
+            return {
+              ...e,
+              pool: {
+                ...pool,
+                tokenA: {
+                  ...pool.tokenA,
+                  path: pool.tokenA?.path === wugnotPath ? (gnot?.path || "") : (pool.tokenA?.path || ""),
+                  name: pool.tokenA?.path === wugnotPath ? (gnot?.name || "") : (pool.tokenA?.name || ""),
+                  symbol: pool.tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (pool.tokenA?.symbol || ""),
+                  logoURI: pool.tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (pool.tokenA?.logoURI || ""),
+                },
+                tokenB: {
+                  ...pool.tokenB,
+                  path: pool.tokenB?.path === wugnotPath ? (gnot?.path || "") : (pool.tokenB?.path || ""),
+                  name: pool.tokenB?.path === wugnotPath ? (gnot?.name || "") : (pool.tokenB?.name || ""),
+                  symbol: pool.tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (pool.tokenB?.symbol || ""),
+                  logoURI: pool.tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (pool.tokenB?.logoURI || ""),
+                },
+              }
+            };
+          });
+          return setPositions(temp);
+        } else {
+          setPositions(list);
+        }
+      });
     }
-  }, [account?.address, getPositionsByPoolId, router.query]);
-
+  }, [account?.address, getPositionsByPoolId, router.query, gnot]);
+  
   return (
     <MyLiquidity
       positions={positions}
@@ -72,6 +111,7 @@ const MyLiquidityContainer: React.FC = () => {
       currentIndex={currentIndex}
       claimAll={claimAllReward}
       availableRemovePosition={availableRemovePosition}
+      loading={loading}
     />
   );
 };

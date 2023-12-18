@@ -8,6 +8,7 @@ import {
 } from "@containers/swap-liquidity-container/SwapLiquidityContainer";
 import Link from "next/link";
 import { TokenModel } from "@models/token/token-model";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];
@@ -23,13 +24,13 @@ const getPathname = (liquidity: LiquidityInfo) => {
     liquidity.apr === "-"
   ) {
     return {
-      pathname: `/earn/add?feeTier=${liquidity.feeTierType}`,
-      as: "/earn/add",
+      pathname: `/earn/pool/${liquidity.id}`,
+      as: `/earn/pool/${liquidity.id}`,
     };
   }
   return {
-    pathname: `/earn/pool/bar_foo_${10000 * Number(liquidity.feeTier)}`,
-    as: `/earn/pool/bar_foo_${10000 * Number(liquidity.feeTier)}`,
+    pathname: `/earn/pool/${liquidity.id}`,
+    as: `/earn/pool/${liquidity.id}`,
   };
 };
 
@@ -39,15 +40,16 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
   tokenB,
   createPool,
 }) => {
+  
   return (
     <SwapLiquidityWrapper>
       <div className="box-header">
         <div className="coin-pair">
           <div className="gnos-image-wrapper">
-            <img src={tokenA.logoURI} alt="token-logo" className="coin-logo" />
+            <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
           </div>
           <div className="gnot-image-wrapper">
-            <img src={tokenB.logoURI} alt="token-logo" className="coin-logo" />
+            <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
           </div>
         </div>
         <span>
@@ -88,8 +90,8 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
           {liquiditys.map((liquidity, idx) => {
             const obj = getPathname(liquidity);
             return (
-              <Link href={obj.pathname} as={obj.as} key={idx}>
-                <div className="fee-info">
+              <Link href={obj.pathname} as={obj.as} key={idx} className={`${!liquidity.active ? "inacitve-liquidity" : ""}`}>
+                <div className={`fee-info ${!liquidity.active ? "inacitve-liquidity" : ""}`}>
                   <span className="badge-wrap">
                     <div className="badge">{liquidity.feeTier}%</div>
                   </span>

@@ -6,7 +6,7 @@ import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCar
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface MyPositionCardListProps {
-  loadMore?: boolean;
+  loadMore: boolean;
   isFetched: boolean;
   onClickLoadMore?: () => void;
   positions: PoolPositionModel[];
@@ -31,23 +31,22 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   divRef,
   onScroll,
   showPagination,
-  showLoadMore,
   width,
 }) => (
   <CardListWrapper>
     <GridWrapper ref={divRef} onScroll={onScroll}>
-      {isFetched &&
+      {
         positions.length > 0 &&
         positions.map((position, idx) => (
           <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} />
         ))}
       {isFetched &&
         positions.length > 0 && positions.length < 4 &&
-        (Array((width <= 1180 && width >= 1000 ? 3 : 4) - positions.length).fill(1)).map((_, index) => (
+        (Array((width <= 1180 && width >= 920 ? 3 : 4) - positions.length).fill(1)).map((_, index) => (
           <BlankPositionCard key={index} />
         ))
       }
-      {!isFetched &&
+      {!isFetched && positions.length === 0 &&
         Array.from({ length: 4 }).map((_, idx) => (
           <span
             key={idx}
@@ -56,7 +55,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           />
         ))}
     </GridWrapper>
-    {(showLoadMore && loadMore && onClickLoadMore && (
+    {(!mobile && positions.length > 0 && onClickLoadMore && (
       <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
     )
     )}

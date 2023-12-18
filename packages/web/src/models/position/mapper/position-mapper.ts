@@ -58,7 +58,7 @@ export class PositionMapper {
       tokensOwed1Amount: BigInt(position.tokensOwed1Amount),
       tokensOwed0Usd: position.tokensOwed0Usd,
       tokensOwed1Usd: position.tokensOwed1Usd,
-      apr: "",
+      apr: `${position.apr}` ?? "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsdValue || "0",
       rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],

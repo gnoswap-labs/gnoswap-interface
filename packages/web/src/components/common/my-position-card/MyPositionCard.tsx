@@ -13,6 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
+import { convertLargePrice } from "@utils/stake-position-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -44,19 +45,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    return `$${numberToFormat(position.positionUsdValue.toString(), 2)}`;
+    return `$${convertLargePrice(position.positionUsdValue, 2)}`;
   }, [position.positionUsdValue]);
-
+  
   const aprStr = useMemo(() => {
-    if (position.apr === "") {
-      return "-";
-    }
-    const apr = numberToFormat(position.apr, 2);
-    if (position.staked) {
-      return `${POSITION_CONTENT_LABEL}${apr}%`;
-    }
-    return `${apr}%`;
-  }, [position.apr, position.staked]);
+    return position.apr === "" ? "-" : `${numberToFormat(position.apr, 2)}%`;
+  }, [position.apr]);
 
   const currentPrice = useMemo(() => {
     return tickToPrice(pool.currentTick);
@@ -106,14 +100,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
     const tokenAPriceStr = numberToFormat(tokenAPrice, 2);
-    return `${tokenAPriceStr} ${tokenA.symbol} per GNOT`;
-  }, [tokenA.path, tokenA.symbol, tokenPrices]);
+    return `1 ${tokenA.symbol} = ${tokenAPriceStr} ${tokenB.symbol}`;
+  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const maxPriceStr = useMemo(() => {
     const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
     const tokenBPriceStr = numberToFormat(tokenBPrice, 2);
-    return `${tokenBPriceStr} ${tokenB.symbol} per GNOT`;
-  }, [tokenB.path, tokenB.symbol, tokenPrices]);
+    return `1 ${tokenA.symbol} = ${tokenBPriceStr} ${tokenB.symbol}`;
+  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -122,7 +116,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   return (
     <MyPositionCardWrapperBorder
-      className={["special-card", ""][Math.floor(Math.random() * 2)]}
+    className={`${position.staked ? "special-card" : ""}`}
     >
       <div className="base-border">
         <MyPositionCardWrapper
@@ -134,6 +128,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <DoubleLogo
                 left={tokenA.logoURI}
                 right={tokenB.logoURI}
+                leftSymbol={tokenA.symbol}
+                rightSymbol={tokenB.symbol}
               />
               <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
             </div>
@@ -146,6 +142,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     size={16}
                     left={tokenA.logoURI}
                     right={tokenB.logoURI}
+                    leftSymbol={tokenA.symbol}
+                    rightSymbol={tokenB.symbol}
                   />
                 </>}
               />

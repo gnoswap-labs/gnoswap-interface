@@ -30,9 +30,9 @@ export const PoolListWrapper = styled.div`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
+  overflow-x: scroll;
 
-  @media (max-width: 1000px) {
-    overflow-x: auto;
+  @media (max-width: 920px) {
     grid-gap: 12px;
     grid-template-columns: repeat(auto-fill, 290px);
     grid-auto-flow: column;
@@ -40,7 +40,7 @@ export const PoolListWrapper = styled.div`
   }
 
   .card-skeleton {
-    height: 278px;
+    height: 348px;
     border-radius: 10px;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   }

@@ -115,15 +115,15 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
             }}
             className={floatClassName}
           >
-            <FloatingArrow
+            {FloatingContent && <FloatingArrow
               ref={arrowRef}
               context={context}
               fill={theme.color.background02}
               width={20}
               height={14}
               tipRadius={4}
-            />
-            <Content themeKey={themeKey}>{FloatingContent}</Content>
+            />}
+            {FloatingContent && <Content themeKey={themeKey}>{FloatingContent}</Content>}
           </div>
         )}
       </FloatingPortal>

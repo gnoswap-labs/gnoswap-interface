@@ -3,7 +3,7 @@ import IconRefresh from "../icons/IconRefresh";
 import IconSwap from "../icons/IconSwap";
 import SelectPriceRangeCutomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
 import SelectTab from "../select-tab/SelectTab";
-import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
+import { SelectPriceRangeCustomWrapper, StartingPriceWrapper } from "./SelectPriceRangeCustom.styles";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
@@ -21,6 +21,7 @@ export interface SelectPriceRangeCustomProps {
   priceRangeType: PriceRangeType | null;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
+  showDim: boolean;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -28,12 +29,12 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   tokenB,
   priceRangeType,
   selectPool,
-  changeStartingPrice
+  changeStartingPrice,
+  showDim,
 }) => {
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
   const [startingPriceValue, setStartingPriceValue] = useState<string>("");
-
   function getPriceRange(price?: number | null) {
     const currentPriceRangeType = priceRangeType;
     const currentPrice = price || selectPool.currentPrice || 1;
@@ -93,7 +94,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       return "-";
     }
     const currentPrice = toNumberFormat(selectPool.currentPrice, 4);
-    return `${currentPrice} ${currentTokenB.symbol} per ${currentTokenA.symbol}`;
+    return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
   const startingPriceDescription = useMemo(() => {
@@ -142,6 +143,13 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     const value = event.target.value;
     setStartingPriceValue(value);
   }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      changeStartingPrice(startingPriceValue);
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [startingPriceValue]);
 
   const updateStartingPrice = useCallback(() => {
     if (startingPriceValue === "" || !Number(startingPriceValue)) {
@@ -199,116 +207,125 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }
 
   return (
-    <SelectPriceRangeCustomWrapper>
-      {
-        selectPool.isCreate && (
-          <div className="starting-price-wrapper">
-            <div className="title-wrapper">
-              <span className="sub-title">Starting Price</span>
-              <span className="description">{startingPriceDescription}</span>
-            </div>
-            <input
-              className="starting-price-input"
-              value={startingPriceValue}
-              onChange={onChangeStartingPrice}
-              onBlur={updateStartingPrice}
-              placeholder="Enter price"
-            />
-          </div>
-        )
-      }
-      {
-        isCustom && (
-          <React.Fragment>
-            {availSelect && (
-              <div className="option-wrapper">
-                <SelectTab
-                  selectType={selectPool.compareToken?.symbol || ""}
-                  list={[tokenA.symbol, tokenB.symbol]}
-                  onClick={onClickTabItem}
-                />
-                <div className="graph-option-wrapper">
-                  <span className="graph-option-item decrease" onClick={selectPool.zoomIn}>-</span>
-                  <span className="graph-option-item increase" onClick={selectPool.zoomOut}>+</span>
-                </div>
+    <>
+        {
+          selectPool.isCreate && (
+            <StartingPriceWrapper className="starting-price-wrapper">
+              <div className="title-wrapper">
+                <span className="sub-title">Starting Price</span>
+                <span className="description">{startingPriceDescription}</span>
               </div>
-            )}
-
-            {isLoading && (
-              <div className="loading-wrapper">
-                <LoadingSpinner />
-              </div>
-            )}
-
-            {availSelect && (
-              <React.Fragment>
-                <div className="current-price-wrapper">
-                  <span>Current Price</span>
-                  <span>{currentPriceStr}</span>
-                </div>
-                <div className="range-graph-wrapper">
-                  <PoolSelectionGraph
-                    feeTier={selectPool.feeTier}
-                    scaleX={scaleX}
-                    scaleY={scaleY}
-                    selectedFullRange={selectPool.selectedFullRange}
-                    zoomLevel={selectPool.zoomLevel}
-                    minPrice={selectPool.minPrice}
-                    maxPrice={selectPool.maxPrice}
-                    setMinPrice={selectPool.setMinPosition}
-                    setMaxPrice={selectPool.setMaxPosition}
-                    liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
-                    currentPrice={selectPool.currentPrice}
-                    focusPosition={selectPool.focusPosition}
-                    width={GRAPH_WIDTH}
-                    height={GRAPH_HEIGHT}
-                    finishMove={finishMove}
+              <input
+                className="starting-price-input"
+                value={startingPriceValue}
+                onChange={onChangeStartingPrice}
+                onBlur={updateStartingPrice}
+                placeholder="Enter price"
+              />
+            </StartingPriceWrapper>
+          )
+        }
+      <SelectPriceRangeCustomWrapper>
+        {
+          (isCustom || selectPool.isCreate || showDim) && (
+            <React.Fragment>
+              {(availSelect || showDim) && (
+                <div className="option-wrapper">
+                  <SelectTab
+                    selectType={selectPool.compareToken?.symbol || ""}
+                    list={[tokenA.symbol, tokenB.symbol]}
+                    onClick={onClickTabItem}
                   />
-                </div>
-                <div className="range-controller-wrapper">
-                  <SelectPriceRangeCutomController
-                    title="Min Price"
-                    current={selectPool.minPrice}
-                    token0Symbol={currentTokenA.symbol}
-                    token1Symbol={currentTokenB.symbol}
-                    tickSpacing={selectPool.tickSpacing}
-                    feeTier={selectPool.feeTier || "NONE"}
-                    selectedFullRange={selectPool.selectedFullRange}
-                    onSelectCustomRange={onSelectCustomRangeByMin}
-                    changePrice={selectPool.setMinPosition}
-                    decrease={selectPool.decreaseMinTick}
-                    increase={selectPool.increaseMinTick}
-                  />
-                  <SelectPriceRangeCutomController
-                    title="Max Price"
-                    current={selectPool.maxPrice}
-                    token0Symbol={currentTokenA.symbol}
-                    token1Symbol={currentTokenB.symbol}
-                    tickSpacing={selectPool.tickSpacing}
-                    feeTier={selectPool.feeTier || "NONE"}
-                    selectedFullRange={selectPool.selectedFullRange}
-                    onSelectCustomRange={onSelectCustomRangeByMax}
-                    changePrice={selectPool.setMaxPosition}
-                    decrease={selectPool.decreaseMaxTick}
-                    increase={selectPool.increaseMaxTick}
-                  />
-                </div>
-                <div className="extra-wrapper">
-                  <div className="icon-button reset" onClick={() => resetRange()}>
-                    <IconRefresh />
-                    <span>Reset Range</span>
-                  </div>
-                  <div className="icon-button full" onClick={selectFullRange}>
-                    <IconSwap />
-                    <span>Full Price Range</span>
+                  <div className="graph-option-wrapper">
+                    <span className="graph-option-item decrease" onClick={selectPool.zoomIn}>-</span>
+                    <span className="graph-option-item increase" onClick={selectPool.zoomOut}>+</span>
                   </div>
                 </div>
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        )
-      }
-    </SelectPriceRangeCustomWrapper>
+              )}
+
+              {isLoading && (
+                <div className="loading-wrapper">
+                  <LoadingSpinner />
+                </div>
+              )}
+              
+              {(showDim || availSelect) && (
+                <React.Fragment>
+                  {!showDim && <div className="current-price-wrapper">
+                    <span>Current Price</span>
+                    <span>{currentPriceStr}</span>
+                  </div>}
+                  {showDim && <div className="pool-initialization">
+                    <span>Pool Initialization</span>
+                    <div>As the first person to Add Position to this pool, you must initialize it. <span>Enter a starting price</span> for the pool, then select the price range and the deposit amount for your liquidity. Please note that <span>gas fees will be higher</span> than usual due to the initialization transaction.</div>
+                  </div>}
+                  {!showDim && <div className="range-graph-wrapper">
+                    <PoolSelectionGraph
+                      feeTier={selectPool.feeTier}
+                      scaleX={scaleX}
+                      scaleY={scaleY}
+                      selectedFullRange={selectPool.selectedFullRange}
+                      zoomLevel={selectPool.zoomLevel}
+                      minPrice={selectPool.minPrice}
+                      maxPrice={selectPool.maxPrice}
+                      setMinPrice={selectPool.setMinPosition}
+                      setMaxPrice={selectPool.setMaxPosition}
+                      liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
+                      currentPrice={selectPool.currentPrice}
+                      focusPosition={selectPool.focusPosition}
+                      width={GRAPH_WIDTH}
+                      height={GRAPH_HEIGHT}
+                      finishMove={finishMove}
+                    />
+                  </div>}
+                  <div className="rangge-content-wrapper">
+                    <div className="range-controller-wrapper">
+                      <SelectPriceRangeCutomController
+                        title="Min Price"
+                        current={selectPool.minPrice}
+                        token0Symbol={currentTokenA.symbol}
+                        token1Symbol={currentTokenB.symbol}
+                        tickSpacing={selectPool.tickSpacing}
+                        feeTier={selectPool.feeTier || "NONE"}
+                        selectedFullRange={selectPool.selectedFullRange}
+                        onSelectCustomRange={onSelectCustomRangeByMin}
+                        changePrice={selectPool.setMinPosition}
+                        decrease={selectPool.decreaseMinTick}
+                        increase={selectPool.increaseMinTick}
+                      />
+                      <SelectPriceRangeCutomController
+                        title="Max Price"
+                        current={selectPool.maxPrice}
+                        token0Symbol={currentTokenA.symbol}
+                        token1Symbol={currentTokenB.symbol}
+                        tickSpacing={selectPool.tickSpacing}
+                        feeTier={selectPool.feeTier || "NONE"}
+                        selectedFullRange={selectPool.selectedFullRange}
+                        onSelectCustomRange={onSelectCustomRangeByMax}
+                        changePrice={selectPool.setMaxPosition}
+                        decrease={selectPool.decreaseMaxTick}
+                        increase={selectPool.increaseMaxTick}
+                      />
+                    </div>
+                    <div className="extra-wrapper">
+                      <div className="icon-button reset" onClick={() => resetRange()}>
+                        <IconRefresh />
+                        <span>Reset Range</span>
+                      </div>
+                      <div className="icon-button full" onClick={selectFullRange}>
+                        <IconSwap />
+                        <span>Full Price Range</span>
+                      </div>
+                    </div>
+                    {showDim && <div className="dim-content-3" />}
+                  </div>
+                </React.Fragment>
+              )}
+            </React.Fragment>
+          )
+        }
+      </SelectPriceRangeCustomWrapper>
+    </>
   );
 };
 

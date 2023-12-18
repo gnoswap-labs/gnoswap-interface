@@ -40,6 +40,8 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) =>
                   left={info.tokenPair.tokenA.logoURI}
                   right={info.tokenPair.tokenB.logoURI}
                   size={20}
+                  leftSymbol={info.tokenPair.tokenA.symbol}
+                  rightSymbol={info.tokenPair.tokenB.symbol}
                 />
                 <span className="symbol">
                   {tokenPairSymbolToOneCharacter(info.tokenPair)}

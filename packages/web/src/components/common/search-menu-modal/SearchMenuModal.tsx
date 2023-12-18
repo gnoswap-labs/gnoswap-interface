@@ -20,6 +20,8 @@ import IconTriangleArrowUpV2 from "../icons/IconTriangleArrowUpV2";
 import { DEVICE_TYPE } from "@styles/media";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
+import MissingLogo from "../missing-logo/MissingLogo";
+import { makeId } from "@utils/common";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -67,7 +69,12 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       });
     })));
     onSearchMenuToggle();
-    location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
+    if (item.isLiquid) {
+      const poolPath = `${item.token.path}:${item?.tokenB?.path}:${Number(item.fee.slice(0, item.fee.length - 1)) * 10000}`;
+      location.href = `/earn/pool/${makeId(poolPath)}`;
+    } else {
+      location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
+    }
   };
 
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
@@ -160,7 +167,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           onClick={() => onClickItem(item)}
                         >
                           <div className="coin-info-wrapper">
-                            {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
+                            <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24}/>
                             <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListRecent[idx]} tokenNameWidthList={tokenNameRecentWidthList[idx]}>
                               <div>
                                 <span className="token-name" ref={tokenNameRecentsRef.current[idx]}>
@@ -176,7 +183,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           </div>
                           <div className="coin-infor-value" ref={recentPriceRef.current[idx]}>
                             <span className="token-price">{item.price}</span>
-                            {item.priceOf1d.status === "POSITIVE" ? (
+                            {item.priceOf1d.status !== "NEGATIVE" ? (
                               <span className="positive">
                                 <IconTriangleArrowUpV2 />
                                 {item.priceOf1d.value}
@@ -199,6 +206,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
                               left={item.token.logoURI}
                               right={item?.tokenB?.logoURI || ""}
+                              leftSymbol={item.token.symbol}
+                              rightSymbol={item?.tokenB?.symbol}
                             />
                             <span className="token-name">
                               {item.token.symbol}/{item?.tokenB?.symbol}
@@ -207,9 +216,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           </div>
                           <div className="coin-infor-value">
                             <span className="token-price">{item.price}</span>
-                            <div className="token-price-apr">
-                              {item.priceOf1d.value}% {item.token.symbol}
-                            </div>
+                            <div className="token-price-apr">{item.apr}</div>
                           </div>
                         </li>
                       )
@@ -227,8 +234,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       onClick={() => onClickItem(item)}
                     >
                       <div className="coin-info-wrapper">
-                        {item.token.logoURI ? <img src={item.token.logoURI} alt="token logo" className="token-logo" /> : <div className="missing-logo">{item.token.symbol.slice(0,3)}</div>}
-
+                        <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24}/>
                         <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListPopular[idx]} tokenNameWidthList={tokenNamePopularWidthList[idx]}>
                           <div>
                             <span className="token-name" ref={tokenNamePopularRef.current[idx]}>
@@ -244,7 +250,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       </div>
                       <div className="coin-infor-value" ref={popularPriceRef.current[idx]}>
                         <span className="token-price">{item.price}</span>
-                        {item.priceOf1d.status === "POSITIVE" ? (
+                        {item.priceOf1d.status !== "NEGATIVE" ? (
                           <span className="positive">
                             <IconTriangleArrowUpV2 />
                             {item.priceOf1d.value}
@@ -274,6 +280,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
                           left={item.token.logoURI}
                           right={item?.tokenB?.logoURI || ""}
+                          leftSymbol={item.token.symbol}
+                          rightSymbol={item?.tokenB?.symbol}
                         />
                         <span className="token-name">
                           {item.token.symbol}/{item?.tokenB?.symbol}
@@ -282,7 +290,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       </div>
                       <div className="coin-infor-value">
                         <span className="token-price">{item.price}</span>
-                        <div className="token-price-apr">{Number(item.apr) >= 10 ? item.apr : Number(item.apr).toFixed(2)}% APR</div>
+                        <div className="token-price-apr">{item.apr}</div>
                       </div>
                     </li>
                   ))}

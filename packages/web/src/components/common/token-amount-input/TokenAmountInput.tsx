@@ -4,6 +4,7 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncentivizeButton";
+import BigNumber from "bignumber.js";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -39,6 +40,13 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     }
   }, [changeAmount, connected, balance]);
 
+  const balanceADisplay = useMemo(() => {
+    if (connected && balance !== "-") {
+      return BigNumber(balance.replace(/,/g, "")).toFormat(2);
+    }
+    return "-";
+  }, [balance, connected]);
+
   return (
     <TokenAmountInputWrapper>
       <div className="amount">
@@ -60,7 +68,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       </div>
       <div className="info">
         <span className="price-text disable-pointer ">{usdValue}</span>
-        <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>Balance: {connected ? balance : "-"}</span>
+        <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>Balance: {balanceADisplay}</span>
       </div>
     </TokenAmountInputWrapper>
   );

@@ -16,6 +16,8 @@ import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
+import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -23,6 +25,7 @@ interface MyLiquidityContentProps {
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
   claimAll: () => void;
+  loading: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
@@ -30,6 +33,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   positions,
   breakpoint,
   claimAll,
+  loading,
 }) => {
   const { tokenPrices } = useTokenData();
 
@@ -200,7 +204,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     <MyLiquidityContentWrapper>
       <section>
         <h4>Total Balance</h4>
-        {allBalances ? (
+        {!loading && allBalances ? (
           <Tooltip
             placement="top"
             FloatingContent={
@@ -210,13 +214,18 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             }>
             <span className="content-value">{totalBalance}</span>
           </Tooltip>
-        ) : (
+        ) : (!loading &&
           <span className="content-value disabled">{totalBalance}</span>
         )}
+        {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <span
+            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+          />
+        </SkeletonEarnDetailWrapper>}
       </section>
       <section>
         <h4>Daily Earnings</h4>
-        {dailyEarningRewardInfo ? (
+        {!loading && dailyEarningRewardInfo ? (
           <Tooltip
             placement="top"
             FloatingContent={
@@ -227,16 +236,21 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           >
             <span className="content-value">{dailyEarning}</span>
           </Tooltip>
-        ) : (
+        ) : (!loading &&
           <span className="content-value disabled">{dailyEarning}</span>
         )}
+        {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <span
+            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+          />
+        </SkeletonEarnDetailWrapper>}
       </section>
       <section>
         {breakpoint === DEVICE_TYPE.MOBILE ? (
           <div className="mobile-wrap">
             <div className="column-wrap">
               <h4>Claimable Rewards</h4>
-              <div className="claim-wrap">
+              {!loading && <div className="claim-wrap">
                 {claimableRewardInfo || unclaimedRewardInfo ? (
                   <Tooltip
                     placement="top"
@@ -251,7 +265,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     {claimableUSD}
                   </span>
                 )}
-              </div>
+              </div>}
+              {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+                  <span
+                    css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+                  />
+                </SkeletonEarnDetailWrapper>}
             </div>
             <Button
               disabled={!claimable}
@@ -270,7 +289,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <>
             <h4>Claimable Rewards</h4>
             <div className="claim-wrap">
-              {claimableRewardInfo || unclaimedRewardInfo ? (
+              {!loading && (claimableRewardInfo || unclaimedRewardInfo) ? (
                 <Tooltip
                   placement="top"
                   FloatingContent={<MyPositionClaimContent rewardInfo={claimableRewardInfo} unclaimedRewardInfo={unclaimedRewardInfo} />}
@@ -279,11 +298,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     {claimableUSD}
                   </span>
                 </Tooltip>
-              ) : (
+              ) : (!loading &&
                 <span className="content-value has-tooltip disabled">
                   {claimableUSD}
                 </span>
               )}
+              {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+                <span
+                  css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+                />
+              </SkeletonEarnDetailWrapper>}
               <Button
                 disabled={!claimable}
                 text="Claim All"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
 import { useRouter } from "next/router";
-import { useGetTokensList } from "src/react-query/token";
+import { useGetTokensList } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 
 export interface DescriptionInfo {
