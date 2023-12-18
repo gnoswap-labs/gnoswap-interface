@@ -7,18 +7,26 @@ import { WalletBalanceSummaryInfoWrapper } from "./WalletBalanceSummaryInfo.styl
 
 interface WalletBalanceSummaryInfoProps {
   balanceSummaryInfo: BalanceSummaryInfo;
+  connected: boolean;
 }
 const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
   balanceSummaryInfo,
+  connected,
 }) => {
   // const changeRate = Number(balanceSummaryInfo.changeRate.slice(0, -1)) || 0;
 
   return (
     <WalletBalanceSummaryInfoWrapper>
-      {balanceSummaryInfo.loading ? (
-        <span css={skeletonTotalBalance("150px", SHAPE_TYPES.ROUNDED_SQUARE)} />
+      {connected ? (
+        balanceSummaryInfo.loading ? (
+          <span
+            css={skeletonTotalBalance("300px", SHAPE_TYPES.ROUNDED_SQUARE)}
+          />
+        ) : (
+          <span className="amount">{balanceSummaryInfo.amount}</span>
+        )
       ) : (
-        <span className="amount">{balanceSummaryInfo.amount}</span>
+        <span className="amount">$0</span>
       )}
       {/* <span
         className={`${
@@ -36,11 +44,3 @@ const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
 };
 
 export default WalletBalanceSummaryInfo;
-
-// const LoadingText = () => {
-//   return (
-//     <LoadingTextWrapper className="loading-text-wrapper">
-//       <span css={skeletonTokenDetail("150px", SHAPE_TYPES.ROUNDED_SQUARE)} />
-//     </LoadingTextWrapper>
-//   );
-// };

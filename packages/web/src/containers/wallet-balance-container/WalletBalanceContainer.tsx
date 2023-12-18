@@ -10,7 +10,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useQuery } from "@tanstack/react-query";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -60,7 +60,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const claimAll = useCallback(() => {}, []);
 
-  const { displayBalanceMap, loading: loadingBalance } = useTokenData();
+  const { displayBalanceMap, loadingBalance } = useTokenData();
   const { positions, loading: loadingPositions } = usePositionData();
 
   const loadingTotalBalance = loadingBalance || loadingPositions;
