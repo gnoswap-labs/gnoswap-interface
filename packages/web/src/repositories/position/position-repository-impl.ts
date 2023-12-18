@@ -2,26 +2,26 @@ import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
-import {
-  DEFAULT_GAS_FEE,
-  DEFAULT_GAS_WANTED,
-  DEFAULT_TRANSACTION_DEADLINE,
-} from "@common/values";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PositionModel } from "@models/position/position-model";
-import { MAX_INT256 } from "@utils/math.utils";
 import { PositionRepository } from "./position-repository";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { RemoveLiquidityReqeust } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import { PositionListResponse } from "./response";
-
-const STAKER_PATH = process.env.NEXT_PUBLIC_PACKAGE_STAKER_PATH || "";
-const STAKER_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_STAKER_ADDRESS || "";
-const POSITION_PATH = process.env.NEXT_PUBLIC_PACKAGE_POSITION_PATH || "";
-const NFT_PATH = process.env.NEXT_PUBLIC_PACKAGE_NFT_PATH || "";
+import {
+  makeApporveStakeTokenMessage,
+  makeCollectRewardMessage,
+  makeStakeMessage,
+  makeUnstakeMessage,
+} from "@common/clients/wallet-client/transaction-messages/staker";
+import {
+  makePositionBurnMessage,
+  makePositionCollectFeeMessage,
+} from "@common/clients/wallet-client/transaction-messages/position";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -49,24 +49,27 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, receipient } = request;
-    const messages = lpTokenIds.flatMap(lpTokenId => {
+    const { positions, receipient } = request;
+    const messages = positions.flatMap(position => {
       const messages = [];
-      messages.push(
-        PositionRepositoryImpl.makeZeroDecreaseLiquidityMessage(
-          lpTokenId,
-          receipient,
-        ),
-      );
-      messages.push(
-        PositionRepositoryImpl.makeCollectMessage(lpTokenId, receipient),
-      );
+      const hasSwapFee =
+        position.rewards.findIndex(reward => reward.rewardType === "SWAP_FEE") >
+        -1;
+      const hasReward =
+        position.rewards.findIndex(
+          reward =>
+            reward.rewardType === "STAKING" || reward.rewardType === "EXTERNAL",
+        ) > -1;
+      if (hasSwapFee) {
+        messages.push(
+          makePositionCollectFeeMessage(position.lpTokenId, receipient),
+        );
+      }
+      if (hasReward) {
+        messages.push(makeCollectRewardMessage(position.lpTokenId, receipient));
+      }
       return messages;
     });
-
-    // TODO: Need to check if a contract error occurred
-    // messages.push(PositionRepositoryImpl.makeCollectRewardMessage(receipient));
-
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee: DEFAULT_GAS_FEE,
@@ -87,8 +90,8 @@ export class PositionRepositoryImpl implements PositionRepository {
     }
     const { lpTokenIds, caller } = request;
     const messages = lpTokenIds.flatMap(lpTokenId => [
-      PositionRepositoryImpl.makeApporveStakeTokenMessage(lpTokenId, caller),
-      PositionRepositoryImpl.makeStakeMessage(lpTokenId, caller),
+      makeApporveStakeTokenMessage(lpTokenId, caller),
+      makeStakeMessage(lpTokenId, caller),
     ]);
     const result = await this.walletClient.sendTransaction({
       messages,
@@ -110,7 +113,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     }
     const { lpTokenIds, caller } = request;
     const messages = lpTokenIds.map(lpTokenId =>
-      PositionRepositoryImpl.makeUnstakeMessage(lpTokenId, caller),
+      makeUnstakeMessage(lpTokenId, caller),
     );
     const result = await this.walletClient.sendTransaction({
       messages,
@@ -132,12 +135,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     }
     const { lpTokenIds, caller } = request;
     const messages = lpTokenIds.map(lpTokenId =>
-      PositionRepositoryImpl.makeDecreaseLiquidityMessage(
-        lpTokenId,
-        MAX_INT256.toString(),
-        DEFAULT_TRANSACTION_DEADLINE,
-        caller,
-      ),
+      makePositionBurnMessage(lpTokenId, caller),
     );
     const result = await this.walletClient.sendTransaction({
       messages,
@@ -150,88 +148,4 @@ export class PositionRepositoryImpl implements PositionRepository {
     }
     return hash;
   };
-
-  private static makeCollectMessage(lpTokenId: string, receipient: string) {
-    return {
-      caller: receipient,
-      send: "",
-      pkg_path: POSITION_PATH,
-      func: "Collect",
-      args: [
-        lpTokenId,
-        receipient,
-        MAX_INT256.toString(),
-        MAX_INT256.toString(),
-      ],
-    };
-  }
-
-  private static makeCollectRewardMessage(caller: string) {
-    return {
-      caller,
-      send: "",
-      pkg_path: STAKER_PATH,
-      func: "CollectReward",
-      args: [],
-    };
-  }
-  private static makeApporveStakeTokenMessage(
-    lpTokenId: string,
-    caller: string,
-  ) {
-    return {
-      caller,
-      send: "",
-      pkg_path: NFT_PATH,
-      func: "Approve",
-      args: [STAKER_ADDRESS, lpTokenId],
-    };
-  }
-
-  private static makeStakeMessage(lpTokenId: string, caller: string) {
-    return {
-      caller,
-      send: "",
-      pkg_path: STAKER_PATH,
-      func: "StakeToken",
-      args: [lpTokenId],
-    };
-  }
-
-  private static makeUnstakeMessage(lpTokenId: string, caller: string) {
-    return {
-      caller,
-      send: "",
-      pkg_path: STAKER_PATH,
-      func: "UnstakeToken",
-      args: [lpTokenId],
-    };
-  }
-
-  private static makeDecreaseLiquidityMessage(
-    lpTokenId: string,
-    liquidity: string,
-    deadeline: string,
-    caller: string,
-  ) {
-    return {
-      caller,
-      send: "",
-      pkg_path: POSITION_PATH,
-      func: "DecreaseLiquidity",
-      args: [lpTokenId, liquidity, deadeline],
-    };
-  }
-
-  private static makeZeroDecreaseLiquidityMessage(
-    lpTokenId: string,
-    caller: string,
-  ) {
-    return this.makeDecreaseLiquidityMessage(
-      lpTokenId,
-      "0",
-      DEFAULT_TRANSACTION_DEADLINE,
-      caller,
-    );
-  }
 }

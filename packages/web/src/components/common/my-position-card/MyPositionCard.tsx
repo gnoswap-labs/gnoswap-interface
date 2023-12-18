@@ -160,9 +160,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="list-content">
               <span>{positionUsdValueStr}</span>
-              {position.staked
-                ? `${POSITION_CONTENT_LABEL.STAR_TAG}${aprStr}`
-                : aprStr}
+              {aprStr}
             </div>
           </div>
           <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>

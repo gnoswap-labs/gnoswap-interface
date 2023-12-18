@@ -13,6 +13,7 @@ import {
 } from "../protocols/wallet-network";
 import { WalletClient } from "../wallet-client";
 import { Adena } from "./adena";
+import { parseTransactionResponse } from "./adena-client.util";
 
 export class AdenaClient implements WalletClient {
   private adena: Adena | null;
@@ -49,11 +50,11 @@ export class AdenaClient implements WalletClient {
   };
 
   public sendTransaction = (
-    transaction: SendTransactionRequestParam
-  ): Promise<WalletResponse<SendTransactionResponse>> => {
+    transaction: SendTransactionRequestParam,
+  ): Promise<WalletResponse<SendTransactionResponse<string | null>>> => {
     const request = {
       ...transaction,
-      messages: transaction.messages.map((message) => {
+      messages: transaction.messages.map(message => {
         if (isContractMessage(message)) {
           return {
             type: "/vm.m_call",
@@ -66,7 +67,16 @@ export class AdenaClient implements WalletClient {
         };
       }),
     };
-    return createTimeout(this.getAdena().DoContract(request));
+    return createTimeout<
+      WalletResponse<SendTransactionResponse<string | null>>
+    >(
+      this.getAdena()
+        .DoContract(request)
+        .then(response => {
+          console.log("Injection Response", response);
+          return parseTransactionResponse(response);
+        }),
+    );
   };
 
   public addEventChangedAccount = (callback: (accountId: string) => void) => {
@@ -85,13 +95,13 @@ export class AdenaClient implements WalletClient {
   }
 
   public switchNetwork = (
-    chainId: string
+    chainId: string,
   ): Promise<WalletResponse<SwitchNetworkResponse>> => {
     return createTimeout(this.getAdena().SwitchNetwork(chainId));
   };
 
   public addNetwork = (
-    network: AddNetworkRequestParam
+    network: AddNetworkRequestParam,
   ): Promise<WalletResponse<AddNetworkResponse>> => {
     return createTimeout(this.getAdena().AddNetwork(network));
   };

@@ -23,13 +23,10 @@ const Custom404Layout: React.FC<Custom404LayoutProps> = ({
     <main>
       {icon404}
       <div className="content-section">
-        <strong>We’ll be right back.</strong>
-        <p>
-          We’re currently experiencing technical issues. <br />
-          Please check back soon.
-        </p>
+        <strong>404</strong>
+        <p>Page not found!</p>
         <Button
-          leftIcon={<IconStrokeArrowLeft className="arrow-icon" />}
+          leftIcon={<IconStrokeArrowLeft className="btn-arrow-icon" />}
           text="Go back"
           onClick={goBackClick}
           style={{

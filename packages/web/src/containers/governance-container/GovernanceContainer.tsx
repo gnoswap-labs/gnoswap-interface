@@ -19,26 +19,27 @@ const initialGovernanceDetailInfo: GovernanceDetailInfoProps = {
 };
 
 async function fetchGovernanceDetailInfo(): Promise<GovernanceDetailInfoProps> {
-  return Promise.resolve({
-    totalXGnosIssued: "59,144,225",
-    communityPool: "2,412,148",
-    passedProposals: "42",
-    activeProposals: "2",
-  });
+  return new Promise(resolve => setTimeout(resolve, 2000)).then(
+    () => initialGovernanceDetailInfo,
+  );
 }
 
 const GovernanceContainer: React.FC = () => {
-  const {
-    data: governanceDetailInfo,
-  } = useQuery<GovernanceDetailInfoProps, Error>({
+  const { data: governanceDetailInfo, isFetching } = useQuery<
+    GovernanceDetailInfoProps,
+    Error
+  >({
     queryKey: ["governanceDetailInfo"],
     queryFn: () => {
       return fetchGovernanceDetailInfo();
     },
-    initialData: initialGovernanceDetailInfo,
   });
-
-  return <GovernanceSummary governanceDetailInfo={governanceDetailInfo} />;
+  return (
+    <GovernanceSummary
+      loading={isFetching}
+      governanceDetailInfo={governanceDetailInfo}
+    />
+  );
 };
 
 export default GovernanceContainer;

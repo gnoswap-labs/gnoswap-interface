@@ -12,8 +12,8 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 export default function EarnAdd() {
   const { breakpoint } = useWindowSize();
   const router = useRouter();
-  const { path } = router.query;
-  const { data } = useGetPoolDetailByPath(path as string, { enabled: !!path });
+  const poolPath = router.query["pool-path"] || "";
+  const { data } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
 
   const listBreadcrumb = useMemo(() => {
     return [
@@ -21,18 +21,15 @@ export default function EarnAdd() {
       {
         title:
           breakpoint === DEVICE_TYPE.WEB
-            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${
-                Number(data?.fee) / 10000
-              }%)`
+            ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${Number(data?.fee) / 10000
+            }%)`
             : "...",
-        path: `/earn/pool/${router.query["pool-number"]}?path=${router.query.path}`,
+        path: `/earn/pool/${router.query["pool-path"]}`,
       },
       { title: "Add Position", path: "" },
     ];
   }, [data]);
- if (!data) {
-  return null;
- }
+
   return (
     <PoolAddLayout
       header={<HeaderContainer />}

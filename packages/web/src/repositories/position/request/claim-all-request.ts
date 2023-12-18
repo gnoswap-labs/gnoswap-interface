@@ -1,5 +1,7 @@
+import { PositionModel } from "@models/position/position-model";
+
 export interface ClaimAllRequest {
-  lpTokenIds: string[];
+  positions: PositionModel[];
 
   receipient: string;
 }

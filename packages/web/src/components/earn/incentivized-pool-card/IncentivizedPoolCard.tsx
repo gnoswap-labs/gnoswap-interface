@@ -1,5 +1,4 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import { POOL_CONTENT_TITLE } from "@containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
 import {
   PoolCardWrapper,
@@ -9,10 +8,12 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
-  routeItem: (id: string, path: string) => void;
+  routeItem: (id: string) => void;
   themeKey: "dark" | "light";
 }
 
@@ -21,16 +22,20 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   routeItem,
   themeKey,
 }) => {
+  const { isStakedPool } = usePositionData();
+
+  const staked = useMemo(() => {
+    return isStakedPool(pool.poolPath || null);
+  }, [isStakedPool, pool.poolPath]);
+
   const pairName = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
 
   return (
-    <PoolCardWrapperWrapperBorder
-      className={`${pool.incentivizedType === "INCENTIVIZED" ? "special-card" : ""}`}
-    >
+    <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
-        <PoolCardWrapper onClick={() => routeItem(pool.poolId, pool.poolPath ?? "")}>
+        <PoolCardWrapper onClick={() => routeItem(pool.poolId)}>
           <div className="pool-container">
             <div className="title-container">
               <div className="box-header">
@@ -47,7 +52,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   type={BADGE_TYPE.DARK_DEFAULT}
                   text={<>
                     Incentivized
-                    <DoubleLogo
+                    <DoubleTokenLogo
                       size={16}
                       left={pool.tokenA.logoURI}
                       right={pool.tokenB.logoURI}

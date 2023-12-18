@@ -42,21 +42,21 @@ const BlockEmissions = () => {
       <div className="label">Liquidity Staking </div>
       <div className="value">
         <img src="/gnos.svg" alt="logo"/>
-        <div>123.44 / day</div>
+        <div>0 / day</div>
       </div>
     </div>
     <div className="content">
       <div className="label">DevOps </div>
       <div className="value">
         <img src="/gnos.svg" alt="logo"/>
-        <div>53.44 / day</div>
+        <div>0 / day</div>
       </div>
     </div>
     <div className="content">
       <div className="label">Community </div>
       <div className="value">
         <img src="/gnos.svg" alt="logo"/>
-        <div>12.44 / day</div>
+        <div>0 / day</div>
       </div>
     </div>
   </BlockEmissionsWrapper>);
@@ -84,7 +84,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           </div>
           {!loading ? <div>{supplyOverviewInfo.circulatingSupply}</div> : <LoadingText />}
         </div>
-        {!loading ? <ProgressBar width={"60%"}>
+        {!loading ? <ProgressBar width={supplyOverviewInfo.progressBar}>
           <div className="progress-bar-rate" />
         </ProgressBar> : <LoadingProgress />}
       </div>

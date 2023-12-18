@@ -30,6 +30,7 @@ import {
   CreateProposalModalWrapper,
   IconButton,
 } from "./CreateProposalModal.styles";
+import useLockedBody from "@hooks/common/use-lock-body";
 
 interface Props {
   breakpoint: DEVICE_TYPE;
@@ -101,6 +102,7 @@ const CreateProposalModal: React.FC<Props> = ({
     }
   };
 
+  useLockedBody(true);
   useEscCloseModal(() => setIsShowCreateProposal(false));
 
   useEffect(() => {
@@ -257,7 +259,8 @@ const CreateProposalModal: React.FC<Props> = ({
                             errors?.variable
                               ? (errors?.variable as any)[index]?.subspace
                                   ?.message ||
-                                (errors?.variable as any)[index]?.key?.message ||
+                                (errors?.variable as any)[index]?.key
+                                  ?.message ||
                                 (errors?.variable as any)[index]?.value?.message
                               : undefined
                           }
@@ -309,14 +312,16 @@ const CreateProposalModal: React.FC<Props> = ({
                 fullWidth: true,
                 textColor: "text09",
                 fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                hierarchy: isDisableSubmit ? undefined : ButtonHierarchy.Primary,
+                hierarchy: isDisableSubmit
+                  ? undefined
+                  : ButtonHierarchy.Primary,
                 bgColor: isDisableSubmit ? "background17" : undefined,
               }}
             />
           </CreateProposalModalWrapper>
         </FormProvider>
       </CreateProposalModalBackground>
-      <Overlay onClick={() => setIsShowCreateProposal(false)}/>
+      <Overlay onClick={() => setIsShowCreateProposal(false)} />
     </>
   );
 };

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css } from "@emotion/react";
+import { prettyNumber } from "@utils/number-utils";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -65,7 +66,7 @@ export interface LineGraphProps {
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
-  customData?: { height: number, locationTooltip: number};
+  customData?: { height: number; locationTooltip: number };
 }
 
 interface Point {
@@ -92,7 +93,10 @@ const ChartGlobalTooltip = () => {
 };
 function parseTimeTVL(time: string) {
   const dateObject = new Date(time);
-  const month = dateObject.toLocaleString("en-US", { month: "short", timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+  const month = dateObject.toLocaleString("en-US", {
+    month: "short",
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  });
   const day = dateObject.getDate();
   const year = dateObject.getFullYear();
   const hours = dateObject.getHours();
@@ -100,10 +104,10 @@ function parseTimeTVL(time: string) {
   const isPM = hours >= 12;
   const formattedHours = hours % 12 || 12;
   if (!month || !day || !year)
-  return {
-    date: "",
-    time: ""
-  };
+    return {
+      date: "",
+      time: "",
+    };
   return {
     date: `${month} ${day}, ${year}`,
     time: `${formattedHours.toString().padStart(2, "0")}:${minutes
@@ -125,7 +129,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
   firstPointColor,
-  customData = { height: 0, locationTooltip: 0},
+  customData = { height: 0, locationTooltip: 0 },
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -134,7 +138,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
   const { height: customHeight = 0, locationTooltip } = customData;
-  
+
   const isFocus = useCallback(() => {
     return activated && cursor;
   }, [activated, cursor]);
@@ -184,14 +188,24 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }));
     setPoints(points);
   };
-  
-  const onMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
+
+  const onMouseMove = (
+    event:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>,
+  ) => {
     event.preventDefault();
     event.stopPropagation();
     const isTouch = event.type.startsWith("touch");
-    const touch = isTouch ? (event as React.TouchEvent<HTMLDivElement>).touches[0] : null;
-    const clientX = isTouch ? touch?.clientX : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
-    const clientY = isTouch ? touch?.clientY : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
+    const touch = isTouch
+      ? (event as React.TouchEvent<HTMLDivElement>).touches[0]
+      : null;
+    const clientX = isTouch
+      ? touch?.clientX
+      : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientX;
+    const clientY = isTouch
+      ? touch?.clientY
+      : (event as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
     if (!isFocus) {
       setCurrentPointIndex(-1);
       return;
@@ -209,7 +223,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     let minDistance = -1;
 
     let currentPointIndex = -1;
-    
+
     for (const point of points) {
       const distance = Math.abs(xPosition - point.x);
       currentPointIndex += 1;
@@ -223,11 +237,11 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }
     }
     if (currentPoint) {
-      setChartPoint({ x: positionX, y: (clientY || 0) - top});
+      setChartPoint({ x: positionX, y: (clientY || 0) - top });
       setCurrentPoint(currentPoint);
     }
   };
-  
+
   const getGraphLine = useCallback(
     (smooth?: boolean, fill?: boolean) => {
       function mappedPoint(point: Point, index: number, points: Point[]) {
@@ -245,19 +259,19 @@ const LineGraph: React.FC<LineGraphProps> = ({
     [points],
   );
 
-  const getFillGraphLine = useCallback(
-    (smooth?: boolean) => {
-      return `M 0,${height} ${getGraphLine(
-        smooth,
-        true,
-      )} L ${width},${height}Z`;
-    },
-    [getGraphLine, height, width],
-  );
+  // const getFillGraphLine = useCallback(
+  //   (smooth?: boolean) => {
+  //     return `M 0,${height} ${getGraphLine(
+  //       smooth,
+  //       true,
+  //     )} L ${width},${height}Z`;
+  //   },
+  //   [getGraphLine, height, width],
+  // );
 
   const firstPoint = useMemo(() => {
     if (points.length === 0) {
-      return { x: 0, y: 0};
+      return { x: 0, y: 0 };
     }
     return points[0];
   }, [points]);
@@ -272,15 +286,54 @@ const LineGraph: React.FC<LineGraphProps> = ({
     if (width < (currentPoint?.x || 0) + locationTooltip) return "left";
     return "right";
   }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
-  
-  const onTouchMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
+
+  const onTouchMove = (
+    event:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>,
+  ) => {
     onMouseMove(event);
   };
-  
-  const onTouchStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
+
+  const onTouchStart = (
+    event:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>,
+  ) => {
     event.preventDefault();
     onMouseMove(event);
   };
+
+  const areaPath = useMemo(() => {
+    if (
+      !points ||
+      points.length === 0 ||
+      points.some(
+        point =>
+          point === undefined || point.x === undefined || point.y === undefined,
+      )
+    ) {
+      return undefined; // Or render some fallback UI
+    }
+    // Start at the first point of the line chart
+    let path = `M ${points[0].x},${points[0].y}`;
+
+    // Draw the line chart path
+    for (let i = 1; i < points.length; i++) {
+      path += ` L ${points[i].x},${points[i].y}`;
+    }
+
+    // Draw a line straight down to the bottom of the chart
+    path += ` L ${points[points.length - 1].x},${height}`;
+
+    // Draw a line straight across to the bottom left corner
+    path += ` L ${points[0].x},${height}`;
+
+    // Close the path by connecting back to the start point
+    path += "Z";
+
+    return path;
+  }, [height, points]);
 
   return (
     <LineGraphWrapper
@@ -291,21 +344,30 @@ const LineGraph: React.FC<LineGraphProps> = ({
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
     >
-      <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition} content={currentPointIndex > -1 ?
-        <LineGraphTooltipWrapper>
-          <div className="tooltip-body">
-            <span className="date">
-              {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
-            </span>
-            <span className="time">
-              {parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
-            </span>
-          </div>
-          <div className="tooltip-header">
-            <span className="value">{`$${datas[currentPointIndex]?.value || "0"}`}</span>
-          </div>
-        </LineGraphTooltipWrapper> : null
-      }>
+      <FloatingTooltip
+        className="chart-tooltip"
+        isHiddenArrow
+        position={locationTooltipPosition}
+        content={
+          currentPointIndex > -1 ? (
+            <LineGraphTooltipWrapper>
+              <div className="tooltip-body">
+                <span className="date">
+                  {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
+                </span>
+                <span className="time">
+                  {parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
+                </span>
+              </div>
+              <div className="tooltip-header">
+                <span className="value">{`$${prettyNumber(
+                  datas[currentPointIndex]?.value || "0",
+                )}`}</span>
+              </div>
+            </LineGraphTooltipWrapper>
+          ) : null
+        }
+      >
         <svg viewBox={`0 0 ${width} ${height + (customHeight || 0)}`}>
           <defs>
             <linearGradient
@@ -321,7 +383,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
               fill={`url(#gradient${COMPONENT_ID})`}
               stroke={color}
               strokeWidth={0}
-              d={getFillGraphLine(smooth)}
+              d={areaPath}
             />
             <path
               fill="none"
@@ -342,16 +404,18 @@ const LineGraph: React.FC<LineGraphProps> = ({
           </g>
           {
             <g>
-              {firstPointColor && <line
-                stroke={firstPointColor ? firstPointColor : color}
-                strokeWidth={1}
-                x1={0}
-                y1={firstPoint.y}
-                x2={width}
-                y2={firstPoint.y}
-                strokeDasharray={3}
-                className="first-line"
-                />}
+              {firstPointColor && (
+                <line
+                  stroke={firstPointColor ? firstPointColor : color}
+                  strokeWidth={1}
+                  x1={0}
+                  y1={firstPoint.y}
+                  x2={width}
+                  y2={firstPoint.y}
+                  strokeDasharray={3}
+                  className="first-line"
+                />
+              )}
               {isFocus() && currentPoint && (
                 <line
                   stroke={color}

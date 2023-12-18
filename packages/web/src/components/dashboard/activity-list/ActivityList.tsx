@@ -55,12 +55,12 @@ const ActivityList: React.FC<ActivityItem> = ({
         sort={sort}
         breakpoint={breakpoint}
       />
-      <Pagination
+      {/* <Pagination
         currentPage={currentPage}
         totalPage={totalPage}
         onPageChange={movePage}
         siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-      />
+      /> */}
     </ActivityListWrapper>
   );
 };

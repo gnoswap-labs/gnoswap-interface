@@ -20,7 +20,7 @@ function isTokenInfo(info: CardListTokenInfo | CardListPoolInfo): info is CardLi
   return false;
 }
 
-const CardList: React.FC<CardListProps> = ({ list, onClickItem, isHiddenIndex= false }) => {
+const CardList: React.FC<CardListProps> = ({ list, onClickItem, isHiddenIndex = false }) => {
 
   return (
     <CardListWrapper>
@@ -86,8 +86,8 @@ const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClic
   }, [item.upDown]);
 
   const onClick = useCallback(() => {
-    onClickItem(`${item.pool.id}?path=${item.pool.path}`);
-  }, [onClickItem, `${item.pool.id}?path=${item.pool.path}`]);
+    onClickItem(`${item.pool.id}`);
+  }, [onClickItem, `${item.pool.id}`]);
 
   return (
     <ListItem onClick={onClick} upDown={item.upDown}>

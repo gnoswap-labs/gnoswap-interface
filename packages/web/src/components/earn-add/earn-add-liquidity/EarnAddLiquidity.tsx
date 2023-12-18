@@ -78,7 +78,6 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   connected,
   slippage,
   changeSlippage,
-  handleClickOneStaking,
   openModal,
   selectPool,
   changeStartingPrice,
@@ -172,7 +171,6 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     if (tokenA && tokenA.symbol !== token.symbol) {
       setOpenedFeeTier(true);
       setOpenedPriceRange(true);
-      handleClickOneStaking?.();
     }
     changeTokenB(token);
   }, [changeTokenB, tokenA, tokenB]);
@@ -181,7 +179,6 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     if (tokenB && tokenB.symbol !== token.symbol) {
       setOpenedFeeTier(true);
       setOpenedPriceRange(true);
-      handleClickOneStaking?.();
     }
     changeTokenA(token);
   }, [changeTokenA, tokenA, tokenB]);

@@ -5,6 +5,8 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useCallback, useState } from "react";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useAtom } from "jotai";
+import { PoolState } from "@states/index";
 const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const usePositionData = () => {
@@ -14,12 +16,28 @@ export const usePositionData = () => {
   const [isError, setIsError] = useState(false);
   const { gnot } = useGnotToGnot();
   const [isFetchedPosition, setIsFetchedPosition] = useState(false);
+  const [positions, setPositions] = useAtom(PoolState.positions);
+
+  const isStakedPool = useCallback(
+    (poolPath: string | null) => {
+      if (!poolPath) {
+        return false;
+      }
+      const stakedPoolPaths = positions
+        .filter(position => position.staked)
+        .map(position => position.poolPath);
+      return stakedPoolPaths.includes(poolPath);
+    },
+    [positions],
+  );
 
   const getPositions = useCallback(async (): Promise<PoolPositionModel[]> => {
     if (!account?.address) {
+      setPositions([]);
       return [];
     }
     if (pools.length === 0) {
+      setPositions([]);
       return [];
     }
     setIsError(false);
@@ -47,16 +65,18 @@ export const usePositionData = () => {
             poolPositions.push(PositionMapper.makePoolPosition(position, temp));
           }
         });
+        setPositions(positions);
         setIsError(false);
         setIsFetchedPosition(true);
         return poolPositions;
       })
       .catch(() => {
         setIsFetchedPosition(true);
+        setPositions([]);
         setIsError(true);
         return [];
       });
-  }, [account?.address, pools, positionRepository, gnot]);
+  }, [account?.address, pools, positionRepository, setPositions]);
 
   const getPositionsByPoolId = useCallback(
     async (poolId: string): Promise<PoolPositionModel[]> => {
@@ -95,6 +115,7 @@ export const usePositionData = () => {
 
   return {
     isError,
+    isStakedPool,
     getPositions,
     getPositionsByPoolId,
     isFetchedPosition,

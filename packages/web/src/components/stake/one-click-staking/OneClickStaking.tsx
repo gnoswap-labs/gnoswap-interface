@@ -3,106 +3,114 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
+import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
+import { PositionModel } from "@models/position/position-model";
+import { useMemo } from "react";
+import { toNumberFormat } from "@utils/number-utils";
 interface Props {
+  stakedPositions: PositionModel[];
+  unstakedPositions: PositionModel[];
   handleClickGotoStaking: () => void;
 }
 
-const tempDATA = [
-  {
-    label: "Total APR",
-    value: 108.85,
-  },
-  {
-    label: "Fee APR",
-    value: 108.85,
-  },
-  {
-    label: "Staking APR",
-    value: 108.85,
-  },
-];
-
-const UNSTAKE_DATA = [
-  {
-    label: "ID #14450",
-    value: 65541.51,
-  },
-  {
-    label: "ID #14450",
-    value: 65541.51,
-  },
-  {
-    label: "ID #14450",
-    value: 65541.51,
-  },
-];
-
-const OneClickStaking: React.FC<Props> = ({ handleClickGotoStaking }) => {
+const OneClickStaking: React.FC<Props> = ({
+  stakedPositions,
+  unstakedPositions,
+  handleClickGotoStaking
+}) => {
   const [swapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null} = swapValue;
-  
+  const { tokenA = null, tokenB = null } = swapValue;
+
+  const isStakedPositions = useMemo(() => {
+    return stakedPositions.length > 0;
+  }, [stakedPositions]);
+
+  const isUnstakedPositions = useMemo(() => {
+    return unstakedPositions.length > 0;
+  }, [unstakedPositions]);
+
+  if (!tokenA || !tokenB) {
+    return <></>;
+  }
+
   return (
     <OneClickStakingWrapper>
       <div className="one-click-info">
-        {tempDATA.map((item, index) => {
-          return (
-            <div key={index}>
-              <div className="label">{item.label}</div>
-              <div className="value">{item.value}%</div>
-            </div>
-          );
-        })}
+        <div>
+          <div className="label">Total APR</div>
+          <div className="value">-</div>
+        </div>
+        <div>
+          <div className="label">Fee APR</div>
+          <div className="value">-</div>
+        </div>
+        <div>
+          <div className="label">Staking APR</div>
+          <div className="value">-</div>
+        </div>
         <div>
           <div className="label">Rewards</div>
           <div className="value">
-          <DoubleLogo
-            left={tokenA?.logoURI || ""}
-            right={tokenB?.logoURI || ""}
-            size={24}
-          />
+            <DoubleLogo
+              left={tokenA?.logoURI || ""}
+              right={tokenB?.logoURI || ""}
+              size={24}
+            />
           </div>
         </div>
       </div>
-      <Divider />
-      <div className="unstake-info">
-        <div className="title">
-          <div className="label">My Unstaked Positions</div>
-          <div className="value" onClick={handleClickGotoStaking}>
-            Go to Staking <IconStrokeArrowRight />
-          </div>
-        </div>
-        {UNSTAKE_DATA.map((item, index) => (
-          <div className="content" key={index}>
-            <div className="label">
-              <DoubleLogo
-                left={tokenA?.logoURI || ""}
-                right={tokenB?.logoURI || ""}
-                size={24}
-              />
-              {item.label}
+      {(isStakedPositions || isUnstakedPositions) && <Divider />}
+      {isUnstakedPositions && (
+        <div className="unstake-info">
+          <div className="title">
+            <div className="label">My Unstaked Positions</div>
+            <div className="value" onClick={handleClickGotoStaking}>
+              Go to Staking <IconStrokeArrowRight />
             </div>
-            <div className="value">${item.value.toLocaleString()}</div>
           </div>
-        ))}
-      </div>
-      <div className="stake-info">
-        <div className="title">
-          <div className="label">My Staked Positions</div>
-        </div>
-        {UNSTAKE_DATA.map((item, index) => (
-          <div className="content" key={index}>
-            <div className="label">
-              <DoubleLogo
-                left={tokenA?.logoURI || ""}
-                right={tokenB?.logoURI || ""}
-                size={24}
-              />
-              {item.label}
+          {unstakedPositions.map((item, index) => (
+            <div className="content" key={index}>
+              <div className="label">
+                <DoubleTokenLogo
+                  left={tokenA}
+                  right={tokenB}
+                  size={24}
+                  fontSize={8}
+                />
+                #{item.id}
+              </div>
+              <div className="value">${toNumberFormat(item.positionUsdValue)}</div>
             </div>
-            <div className="value">${item.value.toLocaleString()}</div>
+          ))}
+        </div>
+      )}
+
+      {isStakedPositions && (
+        <div className="stake-info">
+          <div className="title">
+            <div className="label">My Staked Positions</div>
+            {!isUnstakedPositions && (
+              <div className="value" onClick={handleClickGotoStaking}>
+                Go to Staking <IconStrokeArrowRight />
+              </div>
+            )}
           </div>
-        ))}
-      </div>
+          {stakedPositions.map((item, index) => (
+            <div className="content" key={index}>
+              <div className="label">
+                <DoubleTokenLogo
+                  left={tokenA}
+                  right={tokenB}
+                  size={24}
+                  fontSize={8}
+                />
+                #{item.id}
+              </div>
+              <div className="value">${toNumberFormat(item.positionUsdValue)}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </OneClickStakingWrapper>
   );
 };

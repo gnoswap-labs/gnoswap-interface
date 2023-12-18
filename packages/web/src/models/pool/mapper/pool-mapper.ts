@@ -71,7 +71,7 @@ export class PoolMapper {
 
     return {
       poolId: pool.id,
-      liquidityAmount: BigNumber(pool.price).toFixed(),
+      liquidityAmount: BigNumber(pool.tvl).toFixed(),
       feeRate,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
@@ -137,20 +137,14 @@ export class PoolMapper {
       ...bin,
     }));
     const id = pool.id ?? makeId(pool.poolPath);
-    const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
-    const incentivizedType: IncentivizedOptions =
-      incentivizedTypeStr !== "INCENTIVIZED"
-        ? incentivizedTypeStr === "EXTERNAL_INCENTIVIZED"
-          ? "EXTERNAL_INCENTIVIZED"
-          : "INCENTIVIZED"
-        : "NON_INCENTIVIZED";
     return {
       ...pool,
       id,
       path: pool.poolPath,
-      incentivizedType,
+      incentivizedType: pool.incentiveType as IncentivizedOptions,
       bins,
       rewardTokens: pool.rewardTokens || [],
+      apr: pool.apr !== "" ? Number(pool.apr) : null,
     };
   }
 
@@ -159,20 +153,14 @@ export class PoolMapper {
       ...bin,
     }));
     const id = pool.id ?? makeId(pool.poolPath);
-    const incentivizedTypeStr = pool.incentivizedType?.toUpperCase() || "";
-    const incentivizedType: IncentivizedOptions =
-      incentivizedTypeStr !== "INCENTIVIZED"
-        ? incentivizedTypeStr === "EXTERNAL_INCENTIVIZED"
-          ? "EXTERNAL_INCENTIVIZED"
-          : "INCENTIVIZED"
-        : "NON_INCENTIVIZED";
     return {
       ...pool,
       id,
       path: pool.poolPath,
-      incentivizedType,
+      incentivizedType: pool.incentiveType as IncentivizedOptions,
       bins,
       rewardTokens: pool.rewardTokens || [],
+      apr: pool.apr !== "" ? Number(pool.apr) : null,
     };
   }
 }

@@ -6,6 +6,7 @@ import ViewProposalModal from "../view-proposal-modal/ViewProposalModal";
 import { ProposalListWrapper } from "./ProposalList.styles";
 import { Dispatch, SetStateAction } from "react";
 import CreateProposalModal from "../create-proposal-modal/CreateProposalModal";
+import ProposalDetailSkeleton from "../proposal-detail/ProposalDetailSekeleton";
 interface ProposalListProps {
   proposalList: ProposalDetailProps[];
   isShowCancelled: boolean;
@@ -20,6 +21,7 @@ interface ProposalListProps {
   isConnected: boolean;
   isSwitchNetwork: boolean;
   handleSelectVote: () => void;
+  loading?: boolean;
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
@@ -36,6 +38,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   isConnected,
   isSwitchNetwork,
   handleSelectVote,
+  loading,
 }) => (
   <ProposalListWrapper>
     <ProposalHeader
@@ -45,13 +48,22 @@ const ProposalList: React.FC<ProposalListProps> = ({
       isConnected={isConnected}
       isSwitchNetwork={isSwitchNetwork}
     />
-    {proposalList.map((proposalDetail: ProposalDetailProps) => (
-      <ProposalDetail
-        key={proposalDetail.id}
-        proposalDetail={proposalDetail}
-        onClickProposalDetail={onClickProposalDetail}
-      />
-    ))}
+    {loading ? (
+      Array.from({ length: 3 }).map((_, idx) => (
+        <ProposalDetailSkeleton key={idx} />
+      ))
+    ) : (
+      <>
+        {proposalList.map((proposalDetail: ProposalDetailProps) => (
+          <ProposalDetail
+            key={proposalDetail.id}
+            proposalDetail={proposalDetail}
+            onClickProposalDetail={onClickProposalDetail}
+          />
+        ))}
+      </>
+    )}
+
     {isShowProposalModal && (
       <ViewProposalModal
         breakpoint={breakpoint}

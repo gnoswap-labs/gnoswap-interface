@@ -3,12 +3,14 @@ export interface Adena {
   GetAccount: () => Promise<Response<AccountInfo>>;
   DoContract: (
     mesasage: SendTransactionRequestParam,
-  ) => Promise<Response<SendTransactionResponse>>;
+  ) => Promise<Response<AdenaSendTransactionResponse>>;
   Sign: (mesasage: SendTransactionRequestParam) => Promise<Response>;
   AddNetwork: (
-    chain: AddNetworkRequestParam,
-  ) => Promise<Response<AddNetworkResponse>>;
-  SwitchNetwork: (chainId: string) => Promise<Response<SwitchNetworkResponse>>;
+    chain: AdenaAddNetworkRequestParam,
+  ) => Promise<Response<AdenaAddNetworkResponse>>;
+  SwitchNetwork: (
+    chainId: string,
+  ) => Promise<Response<AdenaSwitchNetworkResponse>>;
   On: (eventName: string, callback: (message: string) => void) => void;
 }
 
@@ -63,37 +65,52 @@ interface TransactionMessageOfContract {
   send: string;
   pkg_path: string;
   func: string;
-  args: (string | number | boolean)[];
+  args: (string | number | boolean)[] | null;
 }
 
 /**
  * Send Transaction Response
  */
-type SendTransactionResponse =
-  | SendTransactionSuccessResponse
-  | SendTransactionErrorResponse;
+export type AdenaSendTransactionResponse =
+  | AdenaSendTransactionSuccessResponse
+  | AdenaSendTransactionErrorResponse;
 
-interface SendTransactionSuccessResponse {
+export interface AdenaSendTransactionSuccessResponse {
   hash: string;
+  height: string;
+  check_tx: AdenaSendTransactionSuccessResponseTransaction;
+  deliver_tx: AdenaSendTransactionSuccessResponseTransaction;
 }
 
-interface SendTransactionErrorResponse {
+export interface AdenaSendTransactionSuccessResponseTransaction {
+  ResponseBase: {
+    Error: string | null;
+    Data: string | null;
+    Events: unknown[];
+    Log: string | null;
+    Info: string | null;
+  };
+  GasWanted: string;
+  GasUsed: string;
+}
+
+export interface AdenaSendTransactionErrorResponse {
   type: string;
   message: string;
 }
 
-interface AddNetworkRequestParam {
+export interface AdenaAddNetworkRequestParam {
   chainId: string;
   rpcUrl: string;
   chainName: string;
 }
 
-interface AddNetworkResponse {
+export interface AdenaAddNetworkResponse {
   chainId: string;
   rpcUrl: string;
   chainName: string;
 }
 
-interface SwitchNetworkResponse {
+export interface AdenaSwitchNetworkResponse {
   chainId: string;
 }

@@ -83,7 +83,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
     return `$${toNumberFormat(gasFeeUSD)}`;
   }, [swapSummaryInfo.gasFeeUSD]);
-  
+
   return (
     <>
       <ConfirmSwapModalBackground>
@@ -165,7 +165,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     <div className="gas-fee">
                       <span className="gray-text">Gas Fee</span>
                       <span className="white-text">
-                        {gasFeeStr} GNOT
+                        {gasFeeStr}
                         <span className="gray-text">
                           ({gasFeeUSDStr})
                         </span>
@@ -190,7 +190,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           </div>
         </ConfirmModal>
       </ConfirmSwapModalBackground>
-      <Overlay onClick={close}/>
+      <Overlay onClick={close} />
     </>
   );
 };
@@ -269,8 +269,8 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
           <span className="submitted">Broadcasting Failed</span>
           <div className="view-transaction">
             <span>
-            Your transcation has not been broadcasted. <br  className="br"/>
-            Please try again.
+              Your transcation has not been broadcasted. <br className="br" />
+              Please try again.
             </span>
           </div>
         </div>

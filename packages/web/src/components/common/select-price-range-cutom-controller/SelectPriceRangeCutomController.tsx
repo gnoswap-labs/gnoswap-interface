@@ -37,7 +37,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
   const tokenInfo = useMemo(() => {
-    return `${token0Symbol} per ${token1Symbol}`;
+    return `${token1Symbol} per ${token0Symbol}`;
   }, [token0Symbol, token1Symbol]);
 
   const disabledController = useMemo(() => {

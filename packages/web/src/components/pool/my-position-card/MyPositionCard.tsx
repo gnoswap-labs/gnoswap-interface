@@ -75,8 +75,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.token1Balance, tokenB, tokenPrices]);
 
   const positionBalanceUSD = useMemo(() => {
-    return toUnitFormat(tokenABalanceUSD + tokenBBalanceUSD, true);
-  }, [tokenABalanceUSD, tokenBBalanceUSD]);
+    return toUnitFormat(position.positionUsdValue, true);
+  }, [position.positionUsdValue]);
 
   const balances = useMemo((): { token: TokenModel; balance: number; balanceUSD: number }[] => {
     return [{
@@ -93,25 +93,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const totalRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
     const rewards = position.rewards;
     if (rewards.length === 0) {
-      // TODO: Not implements API
-      const tokenA = position.pool.tokenA;
-      const tokenB = position.pool.tokenB;
-      const tokenAUnclaimedBalance = makeDisplayTokenAmount(tokenA, position.unclaimedFee0Amount + position.tokensOwed0Amount) || 0;
-      const tokenBUnclaimedBalance = makeDisplayTokenAmount(tokenB, position.unclaimedFee1Amount + position.tokensOwed1Amount) || 0;
-      const swapFees = [{
-        balance: tokenAUnclaimedBalance,
-        balanceUSD: tokenAUnclaimedBalance * Number(tokenPrices[tokenA.priceId]?.usd || 0),
-        token: tokenA
-      }, {
-        balance: tokenBUnclaimedBalance,
-        balanceUSD: tokenBUnclaimedBalance * Number(tokenPrices[tokenB.priceId]?.usd || 0),
-        token: tokenB
-      }];
-      return {
-        SWAP_FEE: swapFees,
-        STAKING: [],
-        EXTERNAL: []
-      };
+      return null;
     }
 
     const totalRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionRewardInfo[] }>((accum, current) => {
@@ -121,7 +103,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       accum[current.rewardType].push({
         token: current.token,
         balance: Number(current.totalAmount),
-        balanceUSD: Number(current.totalAmount) * Number(tokenPrices[current.token.priceId].usd || 1)
+        balanceUSD: Number(current.totalAmount) * Number(tokenPrices[current.token.priceId]?.usd || 0)
       });
       return accum;
     }, {
@@ -130,7 +112,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       EXTERNAL: []
     });
     return totalRewardInfo;
-  }, [position.pool.tokenA, position.pool.tokenB, position.rewards, position.tokensOwed0Amount, position.tokensOwed1Amount, position.unclaimedFee0Amount, position.unclaimedFee1Amount, tokenPrices]);
+  }, [position.rewards, tokenPrices]);
 
   const totalRewardUSD = useMemo(() => {
     if (!totalRewardInfo) {
@@ -144,23 +126,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return toUnitFormat(usdValue, true);
   }, [totalRewardInfo]);
 
-  const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } = useMemo(() => {
-    const tokenA = position.pool.tokenA;
-    const tokenB = position.pool.tokenB;
-    const swapFees = [{
-      token: tokenA,
-      tokenAmountOf7d: 0,
-      aprOf7d: 0,
-    }, {
-      token: tokenB,
-      tokenAmountOf7d: 0,
-      aprOf7d: 0,
-    }];
-    return {
-      SWAP_FEE: swapFees,
-      STAKING: [],
-      EXTERNAL: []
-    };
+  const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null = useMemo(() => {
+    return null;
     /** TODO: Not implements API
      * const aprRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionAPRInfo[] }>((accum, current) => {
      *   if (!accum[current.rewardType]) {
@@ -179,7 +146,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
      * });
      * return aprRewardInfo;
      */
-  }, [position.rewards]);
+  }, []);
 
 
   return (
@@ -306,13 +273,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         </div>
         <div className="info-box">
           <span className="symbol-text">Estimated APR</span>
-          {!loading && <Tooltip placement="top" FloatingContent={
-            <div><MyPositionAprContent rewardInfo={aprRewardInfo} /></div>
-          }>
+          {aprRewardInfo && !loading ? (
+            <Tooltip placement="top" FloatingContent={
+              <div><MyPositionAprContent rewardInfo={aprRewardInfo} /></div>
+            }>
+              <span className="content-text">
+                {Number(position.apr) >= 100 && <IconStar />}{position.apr !== "" ? `${position.apr}%` : "-"}
+              </span>
+            </Tooltip>
+          ) : (!loading &&
             <span className="content-text">
-              {Number(position.apr) >= 100 && <IconStar />}{position.apr === "" ? "-" : `${Number(position.apr).toFixed(2)}`}
+              {Number(position.apr) >= 100 && <IconStar />}{position.apr !== "" ? `${position.apr}%` : "-"}
             </span>
-          </Tooltip>}
+          )}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
               css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
