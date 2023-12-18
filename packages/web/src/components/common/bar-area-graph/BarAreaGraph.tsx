@@ -4,6 +4,7 @@ import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useState } from "react";
 import PoolGraph from "../pool-graph/PoolGraph";
 import { BarAreaGraphLabel, BarAreaGraphWrapper } from "./BarAreaGraph.styles";
+import { useColorGraph } from "@hooks/common/use-color-graph";
 
 export interface BarAreaGraphData {
   value: string;
@@ -67,6 +68,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   const [selectedEnd, setSelectedEnd] = useState(existTickRage);
   const [selectedStartPosition, setSelectedStartPosition] = useState(minTick || 0);
   const [selectedEndPosition, setSelectedEndPosition] = useState(maxTick || 0);
+  const { redColor, greenColor } = useColorGraph();
 
   const getStartPosition = useCallback(() => {
     return selectedStartPosition > selectedEndPosition
@@ -198,6 +200,34 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
     return maxTick;
   }, [maxTick, width]);
 
+  const isMinTickGreen = useMemo(() => {
+    if (!minTickPosition) {
+      return true;
+    }
+    return BigNumber(minTickPosition).isGreaterThanOrEqualTo(width / 2);
+  }, [minTickPosition, width]);
+
+  const isMaxTickGreen = useMemo(() => {
+    if (!maxTickPosition) {
+      return true;
+    }
+    return BigNumber(maxTickPosition).isGreaterThanOrEqualTo(width / 2);
+  }, [maxTickPosition, width]);
+
+  const startColor = useMemo(() => {
+    if (!minTickPosition) {
+      return null;
+    }
+    return isMinTickGreen ? greenColor : redColor;
+  }, [minTickPosition, isMinTickGreen, redColor, greenColor]);
+
+  const endColor = useMemo(() => {
+    if (!maxTickPosition) {
+      return null;
+    }
+    return isMaxTickGreen ? greenColor : redColor;
+  }, [maxTickPosition, isMaxTickGreen, redColor, greenColor]);
+
   return (
     <BarAreaGraphWrapper
       className={className}
@@ -220,18 +250,18 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         position="top"
         offset={40}
       />
-      {minTickPosition && maxTickPosition && !isHiddenStart && (
+      {minTickPosition && maxTickPosition && startColor && endColor && !isHiddenStart && (
         <svg className="selector" viewBox={`0 0 ${width} ${height}`}>
           <defs>
-            <linearGradient id={"gradient-area"} gradientTransform="rotate(0)">
-              <stop offset="0%" stopColor={"rgba(255, 2, 2, 0.2)"} />
-              <stop offset="100%" stopColor={"rgba(0, 205, 46, 0.2)"} />
+            <linearGradient id="gradient-area" gradientTransform="rotate(0)">
+              <stop offset="0%" stopColor={startColor.gradient} />
+              <stop offset="100%" stopColor={endColor.gradient} />
             </linearGradient>
           </defs>
           <g onMouseDown={event => onMouseDownLine(event, "start")}>
             <line
               className="start-line"
-              stroke="rgb(255, 2, 2)"
+              stroke={startColor.start}
               strokeWidth={2}
               x1={minTickPosition}
               y1={0}
@@ -254,7 +284,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
           <g className="endline-wrapper" onMouseDown={event => onMouseDownLine(event, "end")}>
             <line
               className="end-line"
-              stroke="rgb(0, 205, 46)"
+              stroke={endColor.start}
               strokeWidth={2}
               x1={maxTickPosition}
               y1={0}
@@ -272,20 +302,22 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         </svg>
       )}
 
-      {minTickPosition && !isHiddenStart && (
+      {minTickPosition && startColor && !isHiddenStart && (
         <BarAreaGraphLabel
           className="min"
           x={minTickPosition}
           y={20}
+          backgroundColor={startColor.start}
         >
           {minLabel}
         </BarAreaGraphLabel>
       )}
-      {maxTickPosition && !isHiddenStart && (
+      {maxTickPosition && endColor && !isHiddenStart && (
         <BarAreaGraphLabel
           className="max"
           x={maxTickPosition}
           y={20}
+          backgroundColor={endColor.start}
         >
           {maxLabel}
         </BarAreaGraphLabel>
