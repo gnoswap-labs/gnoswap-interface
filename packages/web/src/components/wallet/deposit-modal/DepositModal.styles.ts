@@ -103,7 +103,7 @@ export const DepositBoxContent = styled.div`
     gap: 8px;
 
     .token {
-      height: 32px;
+      height: 34px;
     }
   }
 

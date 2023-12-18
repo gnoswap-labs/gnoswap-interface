@@ -7,7 +7,6 @@ import { Overlay } from "@components/common/modal/Modal.styles";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePositionModal } from "@hooks/common/use-postion-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -157,8 +156,6 @@ const WithDrawModal: React.FC<Props> = ({
                       token={withdrawInfo ?? null}
                       changeToken={changeToken}
                       callback={callback}
-                      // isHiddenArrow
-                      // disabled
                     />
                   </div>
                 </div>

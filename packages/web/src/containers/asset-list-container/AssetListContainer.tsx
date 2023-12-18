@@ -56,7 +56,7 @@ export const dummyAssetList: Asset[] = [
   {
     type: "grc20",
     chainId: "dev",
-    createdat: "2023-12-12 23:45:12",
+    createdAt: "2023-12-12 23:45:12",
     name: "Bar",
     path: "gno.land/r/bar",
     decimals: 6,
@@ -70,7 +70,7 @@ export const dummyAssetList: Asset[] = [
   {
     type: "grc20",
     chainId: "dev",
-    createdat: "2023-12-12 23:45:12",
+    createdAt: "2023-12-12 23:45:12",
     name: "Bar",
     path: "gno.land/r/bar",
     decimals: 6,
@@ -170,21 +170,32 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
   } else {
     const priceA = parseFloat((a?.price ?? "").replace(/,/g, ""));
     const priceB = parseFloat((b?.price ?? "").replace(/,/g, ""));
-
-    if (!isNaN(priceA) && !isNaN(priceB) && priceA > priceB) {
-      return -1;
-    } else if (!isNaN(priceA) || !isNaN(priceB)) {
+    
+    if (!isNaN(priceA) && !isNaN(priceB) && priceA < priceB) {
       return 1;
+    } else if (isNaN(priceA) && isNaN(priceB) ) {
+      const numberRegex = /\d+/;
+      const numberA = numberRegex.test(a.name);
+      const numberB = numberRegex.test(b.name);
+      if (numberA > numberB) {
+        return 1;
+      } else if (numberA > numberB) {
+        return -1;
+      } else {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      }
+    } else if (!isNaN(priceA) || isNaN(priceB) ) {
+      return -1;
     } else {
       const numberRegex = /\d+/;
       const numberA = numberRegex.test(a.name);
       const numberB = numberRegex.test(b.name);
       if (numberA > numberB) {
-        return -1;
-      } else if (numberA > numberB) {
         return 1;
+      } else if (numberA > numberB) {
+        return -1;
       } else {
-        return a.name.localeCompare(b.name);
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
     }
   }
@@ -281,7 +292,7 @@ const AssetListContainer: React.FC = () => {
         asset => invisibleZeroBalance === false || filterZeroBalance(asset),
       );
 
-    let sortedData = temp.sort(customSortAll);
+    let sortedData = temp.sort((x, y) => customSortAll(x, y));
 
     if (sortOption?.key === "Asset") {
       sortedData = sortedData.sort((x, y) => {
@@ -330,7 +341,8 @@ const AssetListContainer: React.FC = () => {
     assetType,
     keyword,
   ]);
-
+  console.log(filteredTokens, "filteredTokens");
+  
   const changeAssetType = useCallback((newType: string) => {
     switch (newType) {
       case ASSET_FILTER_TYPE.ALL:

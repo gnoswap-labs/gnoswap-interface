@@ -188,10 +188,17 @@ export const WithdrawContent = styled.div`
   }
 
   .token {
-    height: 32px;
+    height: 34px;
     cursor: default;
     span {
       ${fonts.body9}
+    }
+    .not-selected-token {
+      padding: 5px 10px 5px 12px;
+      gap: 8px;
+    }
+    .selected-token {
+      padding: 5px 10px 5px 6px;
     }
   }
 
