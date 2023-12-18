@@ -8,7 +8,7 @@ export const SelectTabWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background15};
   border: 1px solid ${({ theme }) => theme.color.border13};
   border-radius: 4px;
-  padding: 1px;
+  padding: 2px;
   flex-shrink: 0;
 `;
 
