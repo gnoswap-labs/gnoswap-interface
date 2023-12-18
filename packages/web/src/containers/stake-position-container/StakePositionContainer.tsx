@@ -10,7 +10,7 @@ const StakePositionContainer: React.FC = () => {
   const router = useRouter();
   const { account } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId } = usePositionData();
+  const { getPositions, getPositionsByPoolId } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useSubmitPositionModal({
     positions,
@@ -59,13 +59,15 @@ const StakePositionContainer: React.FC = () => {
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
+    if (!account?.address) {
       return;
     }
-    if (account?.address) {
-      getPositionsByPoolId(poolPath).then(setPositions);
+    if (!poolPath) {
+      getPositions().then(setPositions);
+      return;
     }
-  }, [account?.address, getPositionsByPoolId, router.query]);
+    getPositionsByPoolId(poolPath).then(setPositions);
+  }, [account?.address, getPositions, getPositionsByPoolId, router.query]);
 
   return (
     <StakePosition

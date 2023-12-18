@@ -5,6 +5,7 @@ import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 export interface EarnMyPositionsHeaderProps {
   connected: boolean;
   isSwitchNetwork: boolean;
+  availableStake: boolean;
   moveEarnAdd: () => void;
   moveEarnStake: () => void;
 }
@@ -12,13 +13,14 @@ export interface EarnMyPositionsHeaderProps {
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   connected,
   isSwitchNetwork,
+  availableStake,
   moveEarnAdd,
   moveEarnStake,
 }) => {
 
-  const disabledNewPosition = useMemo(() => {
-    return !connected || isSwitchNetwork;
-  }, [connected, isSwitchNetwork]);
+  const disabledStake = useMemo(() => {
+    return !connected || isSwitchNetwork || !availableStake;
+  }, [availableStake, connected, isSwitchNetwork]);
 
   const onClickNewPosition = useCallback(() => {
     moveEarnAdd();
@@ -36,7 +38,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
             height: 36,
             padding: "10px 16px",
           }}
-          disabled={disabledNewPosition}
+          disabled={disabledStake}
           onClick={moveEarnStake}
         />
         <Button

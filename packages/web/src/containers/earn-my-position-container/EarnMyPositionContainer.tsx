@@ -38,7 +38,7 @@ const EarnMyPositionContainer: React.FC<
   const { width } = useWindowSize();
   const divRef = useRef<HTMLDivElement | null>(null);
   const { openModal } = useConnectWalletModal();
-  const { isError, getPositions, isFetchedPosition } = usePositionData();
+  const { isError, availableStake, getPositions, isFetchedPosition } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const [mobile, setMobile] = useState(false);
 
@@ -62,7 +62,7 @@ const EarnMyPositionContainer: React.FC<
   useEffect(() => {
     getPositions().then(setPositions);
   }, [getPositions]);
-  
+
   const connect = useCallback(() => {
     if (!connected) {
       openModal();
@@ -116,10 +116,11 @@ const EarnMyPositionContainer: React.FC<
       } else return positions;
     } else return positions;
   }, [width, page, positions]);
-  
+
   return (
     <EarnMyPositions
       connected={connected}
+      availableStake={availableStake}
       connect={connect}
       fetched={isFetchedPosition}
       isError={isError}

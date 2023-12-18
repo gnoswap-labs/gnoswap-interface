@@ -2,7 +2,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useAtom } from "jotai";
@@ -17,6 +17,11 @@ export const usePositionData = () => {
   const { gnot } = useGnotToGnot();
   const [isFetchedPosition, setIsFetchedPosition] = useState(false);
   const [positions, setPositions] = useAtom(PoolState.positions);
+
+  const availableStake = useMemo(() => {
+    const unstakedPositions = positions.filter(position => !position.staked);
+    return unstakedPositions.length > 0;
+  }, [positions]);
 
   const isStakedPool = useCallback(
     (poolPath: string | null) => {
@@ -53,14 +58,26 @@ export const usePositionData = () => {
               ...pool,
               tokenA: {
                 ...pool.tokenA,
-                symbol: pool.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : pool.tokenA.symbol,
-                logoURI: pool.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : pool.tokenA.logoURI,
+                symbol:
+                  pool.tokenA.path === WRAPPED_GNOT_PATH
+                    ? gnot?.symbol || ""
+                    : pool.tokenA.symbol,
+                logoURI:
+                  pool.tokenA.path === WRAPPED_GNOT_PATH
+                    ? gnot?.logoURI || ""
+                    : pool.tokenA.logoURI,
               },
               tokenB: {
                 ...pool.tokenB,
-                symbol: pool.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : pool.tokenB.symbol,
-                logoURI: pool.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : pool.tokenB.logoURI,
-              }
+                symbol:
+                  pool.tokenB.path === WRAPPED_GNOT_PATH
+                    ? gnot?.symbol || ""
+                    : pool.tokenB.symbol,
+                logoURI:
+                  pool.tokenB.path === WRAPPED_GNOT_PATH
+                    ? gnot?.logoURI || ""
+                    : pool.tokenB.logoURI,
+              },
             };
             poolPositions.push(PositionMapper.makePoolPosition(position, temp));
           }
@@ -114,6 +131,7 @@ export const usePositionData = () => {
   );
 
   return {
+    availableStake,
     isError,
     isStakedPool,
     getPositions,
