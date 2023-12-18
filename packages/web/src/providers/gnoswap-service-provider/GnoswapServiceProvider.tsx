@@ -38,6 +38,8 @@ import {
   DashboardRepository,
   DashboardRepositoryImpl,
 } from "@repositories/dashboard";
+import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
+import { WalletRepository } from "@repositories/wallet/wallet-repository";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -51,6 +53,7 @@ interface GnoswapContextProps {
   tokenRepository: TokenRepository;
   positionRepository: PositionRepository;
   dashboardRepository: DashboardRepository;
+  walletRepository: WalletRepository;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -142,6 +145,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const dashboardRepository = useMemo(() => {
     return new DashboardRepositoryImpl(networkClient, localStorageClient);
   }, [localStorageClient, networkClient]);
+  const walletRepository = useMemo(() => {
+    return new WalletRepositoryImpl(walletClient);
+  }, [walletClient]);
 
   async function initNetwork() {
     const defaultChainId =
@@ -187,6 +193,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         swapRouterRepository,
         positionRepository,
         dashboardRepository,
+        walletRepository,
       }}
     >
       {rpcProvider && children}
