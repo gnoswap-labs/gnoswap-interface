@@ -8,8 +8,8 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 import { usePositionData } from "@hooks/common/use-position-data";
+import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -52,7 +52,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   type={BADGE_TYPE.DARK_DEFAULT}
                   text={<>
                     Incentivized
-                    <DoubleTokenLogo
+                    <DoubleLogo
                       size={16}
                       left={pool.tokenA.logoURI}
                       right={pool.tokenB.logoURI}

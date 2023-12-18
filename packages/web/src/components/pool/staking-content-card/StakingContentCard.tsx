@@ -29,7 +29,6 @@ interface StakingContentCardProps {
   positions: PoolPositionModel[];
   rewardTokens: TokenModel[];
   breakpoint: DEVICE_TYPE;
-  index: number;
   loading: boolean;
 }
 const DAY_TIME = 24 * 60 * 60 * 1000;
@@ -213,6 +212,7 @@ interface SummuryAprProps {
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
   rewardTokens: TokenModel[];
+  loading: boolean;
 }
 
 export const SummuryApr: React.FC<SummuryAprProps> = ({
@@ -220,6 +220,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   checkPoints,
   positions,
   rewardTokens,
+  loading,
 }) => {
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;

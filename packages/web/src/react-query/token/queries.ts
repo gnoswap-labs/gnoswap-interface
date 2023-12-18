@@ -1,6 +1,7 @@
 import {
   IChainResponse,
   ITokenDetailResponse,
+  ITokenResponse,
   TokenListResponse,
   TokenPriceListResponse,
 } from "@repositories/token";

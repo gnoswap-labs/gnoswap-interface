@@ -71,16 +71,15 @@ const SwapLiquidityContainer: React.FC = () => {
   const [swapValue] = useAtom(SwapState.swap);
   const { data: poolList = [], isLoading } = useGetPoolList();
   const { wugnotPath, gnot } = useGnotToGnot();
-
+  const { tokenA, tokenB } = swapValue;
   const router = useRouter();
-  const { tokenA, tokenB } = router.query;
   const createPool = () => {
-    router.push({ pathname: "/earn/add", query: { tokenA: tokenA as string, tokenB: tokenB as string }}, "/earn/add");
+    router.push({ pathname: "/earn/add", query: { tokenA: tokenA?.path as string, tokenB: tokenB?.path as string }}, "/earn/add");
   };
   
   const poolDetail: PoolModel[]= useMemo(() => {
-    const tokenAPath = tokenA === "gnot" ? wugnotPath : tokenA;
-    const tokenBPath = tokenB === "gnot" ? wugnotPath : tokenB;
+    const tokenAPath = tokenA?.path === "gnot" ? wugnotPath : tokenA?.path;
+    const tokenBPath = tokenB?.path === "gnot" ? wugnotPath : tokenB?.path;
     const pools: PoolModel[] = poolList.filter((item: PoolModel) => (item.poolPath?.includes(`${tokenAPath}:${tokenBPath}`) || item.poolPath?.includes(`${tokenBPath}:${tokenAPath}`)));
     return pools;
   }, [poolList, tokenA, tokenB, wugnotPath]);
@@ -109,26 +108,26 @@ const SwapLiquidityContainer: React.FC = () => {
   }, [poolDetail]);
   
   const tokenAData = useMemo(() => {
-    if (!swapValue.tokenA) return null;
+    if (!tokenA) return null;
     return {
-      ...swapValue.tokenA,
-      path: swapValue.tokenA?.path === wugnotPath ? (gnot?.path || "") : (swapValue.tokenA?.path || ""),
-      name: swapValue.tokenA?.path === wugnotPath ? (gnot?.name || "") : (swapValue.tokenA?.name || ""),
-      symbol: swapValue.tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (swapValue.tokenA?.symbol || ""),
-      logoURI: swapValue.tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (swapValue.tokenA?.logoURI || ""),
+      ...tokenA,
+      path: tokenA?.path === wugnotPath ? (gnot?.path || "") : (tokenA?.path || ""),
+      name: tokenA?.path === wugnotPath ? (gnot?.name || "") : (tokenA?.name || ""),
+      symbol: tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (tokenA?.symbol || ""),
+      logoURI: tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenA?.logoURI || ""),
     };
   }, [swapValue.tokenA, gnot]);
 
   const tokenBData = useMemo(() => {
-    if (!swapValue.tokenB) return null;
+    if (!tokenB) return null;
     return {
-      ...swapValue.tokenB,
-      path: swapValue.tokenB?.path === wugnotPath ? (gnot?.path || "") : (swapValue.tokenB?.path || ""),
-      name: swapValue.tokenB?.path === wugnotPath ? (gnot?.name || "") : (swapValue.tokenB?.name || ""),
-      symbol: swapValue.tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (swapValue.tokenB?.symbol || ""),
-      logoURI: swapValue.tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (swapValue.tokenB?.logoURI || ""),
+      ...tokenB,
+      path: tokenB?.path === wugnotPath ? (gnot?.path || "") : (tokenB?.path || ""),
+      name: tokenB?.path === wugnotPath ? (gnot?.name || "") : (tokenB?.name || ""),
+      symbol: tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (tokenB?.symbol || ""),
+      logoURI: tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenB?.logoURI || ""),
     };
-  }, [swapValue.tokenB, gnot]);
+  }, [tokenB, gnot]);
 
   if (!tokenAData || !tokenBData || isLoading) return null;
   
