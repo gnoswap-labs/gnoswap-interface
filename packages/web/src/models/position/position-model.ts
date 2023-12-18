@@ -44,7 +44,7 @@ export interface PositionModel {
 
   apr: string;
 
-  stakedAt: String;
+  stakedAt: string;
 
   stakedUsdValue: string;
 

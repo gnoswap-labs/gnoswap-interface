@@ -3,99 +3,22 @@ import Staking from "@components/pool/staking/Staking";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useRouter } from "next/router";
-
-export const rewardInfoInit = {
-  apr: "89",
-  tokenPair: {
-    tokenA: {
-      path: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "HEX",
-      symbol: "HEX",
-      logoURI:
-        "/gnos.svg",
-    },
-    tokenB: {
-      path: Math.floor(Math.random() * 50 + 1).toString(),
-      name: "USDCoin",
-      symbol: "USDC",
-      logoURI:
-        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    },
-  },
-};
-
-export const stakingInit = [
-  {
-    currentIndex: 2,
-    active: true,
-    title: "Staked less than 5 days",
-    total: "$241,210",
-    lp: "0",
-    staking: "$200",
-    beingUnstaked: "$41,210 (3 LPs)",
-    apr: "32%",
-    multiplier: "30% of Max Rewards",
-    logoURI: [
-      "/gnos.svg",
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    ],
-    tooltipContent: "During this staking period, you will only receive 30% of your maximum staking rewards. Keep your position staked to increase your rewards.",
-  },
-  {
-    currentIndex: 2,
-    active: false,
-    title: "Staked less than 10 days",
-    total: "$1",
-    lp: "1",
-    staking: "2",
-    beingUnstaked: "-",
-    apr: "50%",
-    multiplier: "50% of Max Rewards",
-    logoURI: [
-      "/gnos.svg",
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    ],
-    tooltipContent: "During this staking period, you will only receive 50% of your maximum staking rewards. Keep your position staked to increase your rewards.",
-  },
-  {
-    currentIndex: 2,
-    active: false,
-    title: "Staked less than 30 days",
-    total: "0",
-    lp: "0",
-    staking: "0",
-    beingUnstaked: "$810  (1 LPs)",
-    apr: "67%",
-    multiplier: "70% of Max Rewards",
-    logoURI: [
-      "/gnos.svg",
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    ],
-    tooltipContent: "During this staking period, you will only receive 70% of your maximum staking rewards. Keep your position staked to increase your rewards.",
-  },
-  {
-    currentIndex: 2,
-    active: false,
-    title: "Staked more than 30 days",
-    total: "0",
-    lp: "0",
-    staking: "$82.54",
-    beingUnstaked: "$810  (1 LPs)",
-    apr: "89%",
-    multiplier: "Receiving Max Rewards",
-    logoURI: [
-      "/gnos.svg",
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-    ],
-    tooltipContent: "During this staking period, you will receive maximum staking rewards. Keep your position staked to maintain your rewards.",
-  },
-];
+import { usePositionData } from "@hooks/common/use-position-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenModel } from "@models/token/token-model";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import { PoolModel } from "@models/pool/pool-model";
 
 const StakingContainer: React.FC = () => {
+  const { account } = useWallet();
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
+  const [pool, setPool] = useState<PoolModel | null>(null);
+  const { fetchPoolDatils } = usePoolData();
+  const { getPositionsByPoolId } = usePositionData();
   const [type, setType] = useState(3);
+  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const router = useRouter();
 
   const handleResize = () => {
@@ -105,6 +28,55 @@ const StakingContainer: React.FC = () => {
         : setMobile(false);
     }
   };
+
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    fetchPoolDatils(poolPath).then(setPool);
+    if (account?.address) {
+      getPositionsByPoolId(poolPath).then(positions => {
+        const stakedPositions = positions.filter(position => position.staked);
+        setPositions(stakedPositions);
+      });
+    }
+  }, [account?.address, router.query]);
+
+  const isDisabledButton = useMemo(() => {
+    return isSwitchNetwork || !connectedWallet;
+  }, [isSwitchNetwork, connectedWallet]);
+
+  const totalApr = useMemo(() => {
+    return "-";
+  }, []);
+
+  const rewardTokens = useMemo(() => {
+    const tokenPair: TokenModel[] = [];
+    if (pool) {
+      tokenPair.push(pool.tokenA);
+      tokenPair.push(pool.tokenB);
+    }
+    const rewardTokenMap = positions
+      .flatMap(position => position.rewards)
+      .reduce<{ [key in string]: TokenModel }>((accum, current) => {
+        if (tokenPair.findIndex(token => token.priceId === current.token.priceId) > -1) {
+          accum[current.token.priceId] = current.token;
+        }
+        return accum;
+      }, {});
+    const extraTokens = Object.values(rewardTokenMap);
+    return [...tokenPair, ...extraTokens];
+  }, [pool, positions]);
+
+  const handleClickStakeRedirect = useCallback(() => {
+    router.push(`/earn/pool/${router.query["pool-path"]}/stake`);
+  }, [router]);
+
+  const handleClickUnStakeRedirect = useCallback(() => {
+    router.push(`/earn/pool/${router.query["pool-path"]}/unstake`);
+  }, [router]);
+
   useEffect(() => {
     setType(Math.floor(Math.random() * 4));
   }, []);
@@ -117,23 +89,11 @@ const StakingContainer: React.FC = () => {
     };
   }, []);
 
-
-  const isDisabledButton = useMemo(() => {
-    return isSwitchNetwork || !connectedWallet;
-  }, [isSwitchNetwork, connectedWallet]);
-
-  const handleClickStakeRedirect = useCallback(() => {
-    router.push(`/earn/pool/${router.query["pool-path"]}/stake`);
-  }, [router]);
-
-  const handleClickUnStakeRedirect = useCallback(() => {
-    router.push(`/earn/pool/${router.query["pool-path"]}/unstake`);
-  }, [router]);
-
   return (
     <Staking
-      info={stakingInit}
-      rewardInfo={rewardInfoInit}
+      totalApr={totalApr}
+      positions={positions}
+      rewardTokens={rewardTokens}
       breakpoint={breakpoint}
       mobile={mobile}
       isDisabledButton={isDisabledButton}
