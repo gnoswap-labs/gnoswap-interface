@@ -479,10 +479,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   useEffect(() => {
     const svgElement = d3.select(svgRef.current)
-      .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
+      .attr("style", "height: 160px;");
 
     const defElement = svgElement.select("defs");
     const existClipPath = defElement.select("clipPath")

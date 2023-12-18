@@ -115,7 +115,13 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       background: ${({ theme }) => theme.color.backgroundOpacity8};
     }
   }
-
+  .range-graph-wrapper {
+    width: 100%;
+    overflow: hidden;
+    > div {
+      align-items: center;
+    }
+  }
   .range-controller-wrapper {
     display: flex;
     align-items: flex-start;
@@ -160,6 +166,14 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         color: ${({ theme }) => theme.color.text16};
       }
     }
+    ${media.mobile} {
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+  }
+  ${media.mobile} {
+    padding-bottom: 16px;
   }
 `;
 

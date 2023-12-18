@@ -216,10 +216,10 @@ const TokenChartContainer: React.FC = () => {
     const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
       setTokenInfo(() => ({
         token: {
-          name: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : currentToken.name,
-          symbol: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : currentToken.symbol,
-          image: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : currentToken.logoURI,
-          pkg_path: currentToken.path === WRAPPED_GNOT_PATH ? (gnot?.path || "") : currentToken.path,
+          name: currentToken.name,
+          symbol: currentToken.symbol,
+          image: currentToken.logoURI,
+          pkg_path: currentToken.path,
           decimals: 1,
           description: currentToken.description || "",
           website_url: currentToken.websiteURL || "",

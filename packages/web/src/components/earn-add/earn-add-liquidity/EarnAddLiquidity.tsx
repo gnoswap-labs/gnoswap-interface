@@ -275,7 +275,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               showDim={showDim}
             />
           )}
-          {selectedPriceRange && existTokenPair && selectedFeeRate && <SelectPriceRangeSummary {...priceRangeSummary} />}
+          {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
         </article>
 
         <article className="selector-wrapper amount-input-wrapper">

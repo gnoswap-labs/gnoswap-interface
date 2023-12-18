@@ -12,6 +12,7 @@ import { numberToFormat } from "@utils/string-utils";
 import { toLowerUnitFormat } from "@utils/number-utils";
 import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -86,11 +87,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <span className="title">Composition</span>
               <div className="list">
                 <div className="coin-info">
-                  <img
-                    src={pool.tokenA.logoURI}
-                    alt="token logo"
-                    className="token-logo"
-                  />
+                  <MissingLogo symbol={pool.tokenA.symbol} url={pool.tokenA.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                   <span className="content">
                     {depositRatioStrOfTokenA}
                   </span>
@@ -101,11 +98,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </div>
               <div className="list">
                 <div className="coin-info">
-                  <img
-                    src={pool.tokenB.logoURI}
-                    alt="token logo"
-                    className="token-logo"
-                  />
+                  <MissingLogo symbol={pool.tokenB.symbol} url={pool.tokenB.logoURI} className="token-logo" width={20} mobileWidth={20}/>
                   <span className="content">
                     {depositRatioStrOfTokenB}
                   </span>

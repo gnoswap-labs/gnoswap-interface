@@ -159,6 +159,7 @@ export const EarnAddLiquidityWrapper = styled.section`
   }
   ${media.mobile} {
     width: 100%;
+    margin: 0 auto;
     max-width: 500px;
     padding: 15px;
     gap: 12px;

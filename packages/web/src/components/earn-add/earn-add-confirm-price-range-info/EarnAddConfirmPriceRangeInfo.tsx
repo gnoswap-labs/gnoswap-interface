@@ -5,8 +5,9 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { EarnAddConfirmPriceRangeInfoSection, EarnAddConfirmPriceRangeInfoWrapper, ToolTipContentWrapper } from "./EarnAddConfirmPriceRangeInfo.styles";
 import { numberToFormat } from "@utils/string-utils";
+import { EarnAddConfirmAmountInfoProps } from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
 
-export interface EarnAddConfirmPriceRangeInfoProps {
+export interface EarnAddConfirmPriceRangeInfoProps extends EarnAddConfirmAmountInfoProps {
   currentPrice: string;
   inRange: boolean;
   minPrice: string;
@@ -28,15 +29,18 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   feeBoost,
   estimatedAPR,
   isShowStaking,
+  tokenA,
+  tokenB
 }) => {
     const currentPriceStr = useMemo(() => {
-      return `${numberToFormat(currentPrice, 4)} ${priceLabel}`;
-    }, [currentPrice, priceLabel]);
+      return `1 ${tokenA.info.symbol} = ${numberToFormat(currentPrice, 4)} ${tokenB.info.symbol}`;
+    }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol]);
 
     const rangeStatus = useMemo(() => {
       return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
     }, [inRange]);
-
+    console.log(tokenA, tokenB);
+    
     return (
       <EarnAddConfirmPriceRangeInfoWrapper>
         <div className="range-title">

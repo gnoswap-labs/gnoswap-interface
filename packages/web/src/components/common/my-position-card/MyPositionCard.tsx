@@ -116,7 +116,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   return (
     <MyPositionCardWrapperBorder
-      className={["special-card", ""][Math.floor(Math.random() * 2)]}
+      className={`${position.incentivizedType === "INCENTIVIZED" ? "special-card" : ""}`}
     >
       <div className="base-border">
         <MyPositionCardWrapper

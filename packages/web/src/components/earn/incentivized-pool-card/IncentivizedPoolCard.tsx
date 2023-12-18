@@ -27,7 +27,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
 
   return (
     <PoolCardWrapperWrapperBorder
-      className={["special-card", ""][Math.floor(Math.random() * 2)]}
+      className={`${pool.incentivizedType === "INCENTIVIZED" ? "special-card" : ""}`}
     >
       <div className="base-border">
         <PoolCardWrapper onClick={() => routeItem(pool.poolId, pool.poolPath ?? "")}>

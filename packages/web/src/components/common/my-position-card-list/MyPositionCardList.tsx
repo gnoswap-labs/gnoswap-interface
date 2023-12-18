@@ -35,7 +35,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
 }) => (
   <CardListWrapper>
     <GridWrapper ref={divRef} onScroll={onScroll}>
-      {isFetched &&
+      {
         positions.length > 0 &&
         positions.map((position, idx) => (
           <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} />
@@ -46,7 +46,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           <BlankPositionCard key={index} />
         ))
       }
-      {!isFetched &&
+      {!isFetched && positions.length === 0 &&
         Array.from({ length: 4 }).map((_, idx) => (
           <span
             key={idx}

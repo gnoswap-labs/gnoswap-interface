@@ -37,9 +37,8 @@ const EarnMyPositionContainer: React.FC<
   const { updatePositions } = usePoolData();
   const { width } = useWindowSize();
   const divRef = useRef<HTMLDivElement | null>(null);
-  const [isFetched, setIsFetched] = useState(true);
   const { openModal } = useConnectWalletModal();
-  const { isError, getPositions } = usePositionData();
+  const { isError, getPositions, isFetchedPosition } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const [mobile, setMobile] = useState(false);
 
@@ -59,11 +58,7 @@ const EarnMyPositionContainer: React.FC<
   }, []);
 
   useEffect(() => {
-    setIsFetched(false);
-    getPositions().then((e) => {
-      setPositions(e);
-      setIsFetched(true);
-    }).catch(() => setIsFetched(false));
+    getPositions().then(setPositions);
   }, [getPositions]);
   
   const connect = useCallback(() => {
@@ -123,7 +118,7 @@ const EarnMyPositionContainer: React.FC<
     <EarnMyPositions
       connected={connected}
       connect={connect}
-      fetched={isFetched}
+      fetched={isFetchedPosition}
       isError={isError}
       positions={dataMapping}
       moveEarnAdd={moveEarnAdd}

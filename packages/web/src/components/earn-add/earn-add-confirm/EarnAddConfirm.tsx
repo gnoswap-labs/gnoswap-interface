@@ -58,7 +58,7 @@ const EarnAddConfirm: React.FC<EarnAddConfirmProps> = ({
 
       <EarnAddConfirmAmountInfo {...amountInfo} />
 
-      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} />
+      <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} {...amountInfo}/>
 
       {isPoolCreation && (
         <EarnAddConfirmFeeInfo {...feeInfo} />

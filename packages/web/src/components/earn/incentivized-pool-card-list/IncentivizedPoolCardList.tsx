@@ -54,7 +54,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   return (
     <IncentivizedWrapper>
       <PoolListWrapper ref={divRef} onScroll={onScroll}>
-        {isFetched &&
+        {
           incentivizedPools.length > 0 &&
           data.map((info, index) => (
             <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>

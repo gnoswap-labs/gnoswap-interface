@@ -13,6 +13,7 @@ export const usePositionData = () => {
   const { pools } = usePoolData();
   const [isError, setIsError] = useState(false);
   const { gnot } = useGnotToGnot();
+  const [isFetchedPosition, setIsFetchedPosition] = useState(false);
 
   const getPositions = useCallback(async (): Promise<PoolPositionModel[]> => {
     if (!account?.address) {
@@ -47,9 +48,11 @@ export const usePositionData = () => {
           }
         });
         setIsError(false);
+        setIsFetchedPosition(true);
         return poolPositions;
       })
       .catch(() => {
+        setIsFetchedPosition(true);
         setIsError(true);
         return [];
       });
@@ -94,5 +97,6 @@ export const usePositionData = () => {
     isError,
     getPositions,
     getPositionsByPoolId,
+    isFetchedPosition,
   };
 };
