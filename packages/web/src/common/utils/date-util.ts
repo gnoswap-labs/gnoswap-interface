@@ -1,5 +1,10 @@
 import dayjs from "dayjs";
 
+const DAY_TIME = 24 * 60 * 60 * 1000;
+const HOUR_TIME = 60 * 60 * 1000;
+const MIN_TIME = 60 * 1000;
+const SEC_TIME = 1000;
+
 const getDateUtcToLocal = (d: any) => {
   const hasTimezone = `${d}`.includes("Z");
   const timezoneOffset = new Date().getTimezoneOffset();
@@ -45,4 +50,27 @@ export function formatTime(date: Date): string {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${hours}:${minutes}`;
+}
+
+export function timeToDateStr(time: number | string, measure = 1) {
+  const datetime = Number(time) * measure;
+  const date = dayjs(datetime);
+  return date.format("DD/MM/YYYY HH:mm:ss");
+}
+
+export function calculateRemainTime(time: number) {
+  let remainTime = time;
+  const day = Math.floor(remainTime / DAY_TIME);
+  remainTime = remainTime % DAY_TIME;
+  const hours = Math.floor(remainTime / HOUR_TIME);
+  remainTime = remainTime % HOUR_TIME;
+  const minutes = Math.floor(remainTime / MIN_TIME);
+  remainTime = remainTime % MIN_TIME;
+  const seconds = Math.floor(remainTime / SEC_TIME);
+  return {
+    day,
+    hours,
+    minutes,
+    seconds,
+  };
 }

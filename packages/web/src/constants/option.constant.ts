@@ -286,3 +286,45 @@ export type AddLiquiditySubmitType =
   | "AMOUNT_TOO_LOW";
 
 export type RewardType = "SWAP_FEE" | "STAKING" | "EXTERNAL";
+
+export type StakingPeriodType = "5D" | "10D" | "30D" | "MAX";
+
+export const STAKING_PERIOS: StakingPeriodType[] = ["5D", "10D", "30D", "MAX"];
+
+export const STAKING_PERIOD_INFO: {
+  [key in StakingPeriodType]: {
+    title: string;
+    description: string;
+    tooltipContent: string;
+    period: number;
+  };
+} = {
+  "5D": {
+    title: "Staked less than 5 days",
+    description: "30% of Max Rewards",
+    tooltipContent:
+      "During this staking period, you will only receive 30% of your maximum staking rewards. Keep your position staked to increase your rewards.",
+    period: 5,
+  },
+  "10D": {
+    title: "Staked less than 10 days",
+    description: "50% of Max Rewards",
+    tooltipContent:
+      "During this staking period, you will only receive 50% of your maximum staking rewards. Keep your position staked to increase your rewards.",
+    period: 10,
+  },
+  "30D": {
+    title: "Staked less than 30 days",
+    description: "70% of Max Rewards",
+    tooltipContent:
+      "During this staking period, you will only receive 70% of your maximum staking rewards. Keep your position staked to increase your rewards.",
+    period: 30,
+  },
+  MAX: {
+    title: "Staked more than 30 days",
+    description: "Receiving Max Rewards",
+    tooltipContent:
+      "During this staking period, you will receive maximum staking rewards. Keep your position staked to maintain your rewards.",
+    period: -1,
+  },
+} as const;

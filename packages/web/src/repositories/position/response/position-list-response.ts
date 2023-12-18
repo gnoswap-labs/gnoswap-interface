@@ -43,7 +43,7 @@ export interface PositionResponse {
 
   apr?: number;
 
-  stakedAt?: String;
+  stakedAt?: string;
 
   stakedUsdValue?: string;
 
