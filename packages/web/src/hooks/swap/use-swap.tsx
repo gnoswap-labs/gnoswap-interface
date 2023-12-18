@@ -3,7 +3,7 @@ import { EstimatedRoute } from "@gnoswap-labs/swap-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { TokenModel } from "@models/token/token-model";
+import { TokenModel, isNativeToken } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";
 
@@ -28,6 +28,19 @@ export const useSwap = ({
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
+  const isSameToken = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return false;
+    }
+    if (isNativeToken(tokenA)) {
+      return tokenA.wrappedPath === tokenB.path;
+    }
+    if (isNativeToken(tokenB)) {
+      return tokenA.path === tokenB.wrappedPath;
+    }
+    return false;
+  }, [tokenA, tokenB]);
+
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(Number(slippage))) {
       const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(Number(slippage) * 0.01);
@@ -49,6 +62,10 @@ export const useSwap = ({
       setSwapState("NONE");
       return null;
     }
+    if (isSameToken) {
+      setSwapState("NONE");
+      return null;
+    }
 
     setSwapState("LOADING");
     const pools = await poolRepository.getRPCPools().catch(() => []);
@@ -63,6 +80,9 @@ export const useSwap = ({
       console.log("response", response);
       if (response.amount === "0" || response.amount === "") {
         setSwapState("NO_LIQUIDITY");
+        setEstimatedRoutes([]);
+        setEstimatedAmount(null);
+        return null;
       } else {
         setSwapState("SUCCESS");
       }
@@ -126,6 +146,7 @@ export const useSwap = ({
   }, [account, selectedTokenPair, swapRouterRepository]);
 
   return {
+    isSameToken,
     tokenAmountLimit,
     estimatedRoutes,
     swapState,
