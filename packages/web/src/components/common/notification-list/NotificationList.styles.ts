@@ -21,7 +21,11 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
   border-radius: 8px;
   z-index: ${Z_INDEX.modal};
   right: ${({ width }) => {
-    return width && width > 1920 ? "-250px" : width && width > 1440 ? `-${(width-1440)/2 + 10}px` : "-10px";
+    return width && width > 1920
+      ? "-250px"
+      : width && width > 1440
+      ? `-${(width - 1440) / 2 + 10}px`
+      : "-10px";
   }};
   left: ${({ width }) => {
     return width && width < 768 && "0px";
@@ -73,6 +77,13 @@ export const ClearButton = styled.button`
   color: ${({ theme }) => theme.color.text04};
   &:hover {
     color: ${({ theme }) => theme.color.text03};
+  }
+  &:disabled {
+    &:hover {
+      cursor: not-allowed;
+      ${({ theme }) => theme.color.text04};
+    }
+    color: ${({ theme }) => theme.color.text04};
   }
 `;
 
@@ -139,6 +150,9 @@ export const DoubleLogoWrapperTest = styled.div`
   border-radius: 50%;
   img {
     border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1/1;
   }
   .right-logo {
     margin-left: -12px;
@@ -147,11 +161,12 @@ export const DoubleLogoWrapperTest = styled.div`
 
 export const NoDataText = styled.span`
   ${mixins.flexbox("row", "center", "center")};
-  ${fonts.body9};
+  ${fonts.body11};
   color: ${({ theme }) => theme.color.text04};
   padding: 0px 24px;
   width: 100%;
   height: 34px;
+  margin-top: 100px;
 `;
 
 export const TransactionItemsWrap = styled.div`
@@ -197,6 +212,9 @@ export const DoubleLogo = styled.div`
   border-radius: 50%;
   img {
     border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1/1;
   }
   .right-logo {
     margin-left: -12px;

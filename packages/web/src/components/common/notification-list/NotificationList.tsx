@@ -6,12 +6,13 @@ import {
   NotificationListWrapper,
   Overlay,
 } from "./NotificationList.styles";
-import TransactionItems from "./TransactionItems";
 import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 import { DEVICE_TYPE } from "@styles/media";
+import NotificationItem from "./NotificationItem";
 
 interface NotificationListProps {
   txsGroupsInformation: TransactionGroupsType[];
+  onClearAll: () => void;
   onListToggle: () => void;
   breakpoint: DEVICE_TYPE;
 }
@@ -20,6 +21,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   txsGroupsInformation,
   onListToggle,
   breakpoint,
+  onClearAll,
 }) => {
   const listRef = useRef<HTMLDivElement | null>(null);
 
@@ -28,15 +30,18 @@ const NotificationList: React.FC<NotificationListProps> = ({
       <NotificationListWrapper ref={listRef} width={window?.innerWidth}>
         <NotificationHeader>
           <span className="notification-title">Notification</span>
-          {txsGroupsInformation.length > 0 && (
-            <ClearButton>Clear All</ClearButton>
-          )}
+          <ClearButton
+            disabled={txsGroupsInformation.length === 0}
+            onClick={onClearAll}
+          >
+            Clear All
+          </ClearButton>
         </NotificationHeader>
-        {txsGroupsInformation && txsGroupsInformation.length > 0 ? (
+        {txsGroupsInformation.length > 0 ? (
           <div className="list-container">
             <div className="list-content">
               {txsGroupsInformation.map(groups => (
-                <TransactionItems
+                <NotificationItem
                   key={groups.title}
                   groups={groups}
                   breakpoint={breakpoint}
@@ -46,7 +51,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
           </div>
         ) : (
           <>
-            <NoDataText>No notifications found</NoDataText>
+            <NoDataText>No data</NoDataText>
           </>
         )}
       </NotificationListWrapper>

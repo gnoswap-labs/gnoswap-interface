@@ -38,6 +38,10 @@ import {
   DashboardRepository,
   DashboardRepositoryImpl,
 } from "@repositories/dashboard";
+import {
+  NotificationRepository,
+  NotificationRepositoryImpl,
+} from "@repositories/notification";
 import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
 
@@ -53,6 +57,7 @@ interface GnoswapContextProps {
   tokenRepository: TokenRepository;
   positionRepository: PositionRepository;
   dashboardRepository: DashboardRepository;
+  notificationRepository: NotificationRepository;
   walletRepository: WalletRepository;
 }
 
@@ -145,6 +150,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const dashboardRepository = useMemo(() => {
     return new DashboardRepositoryImpl(networkClient, localStorageClient);
   }, [localStorageClient, networkClient]);
+
+  const notificationRepository = useMemo(() => {
+    return new NotificationRepositoryImpl(networkClient, localStorageClient);
+  }, [localStorageClient, networkClient]);
   const walletRepository = useMemo(() => {
     return new WalletRepositoryImpl(walletClient);
   }, [walletClient]);
@@ -193,6 +202,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         swapRouterRepository,
         positionRepository,
         dashboardRepository,
+        notificationRepository,
         walletRepository,
       }}
     >
