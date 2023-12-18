@@ -16,7 +16,7 @@ export const usePoolData = () => {
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(PoolState.isFetchedPositions);
   const [loading, setLoading] = useAtom(PoolState.isLoading);
   const { gnot, wugnotPath } = useGnotToGnot();
-  
+
   const poolListInfos = useMemo(() => {
     const temp = pools?.map(PoolMapper.toListInfo);
     return temp.map((item: PoolListInfo) => {
@@ -37,7 +37,7 @@ export const usePoolData = () => {
       };
     });
   }, [pools, wugnotPath, gnot]);
-  
+
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools.sort((p1, p2) => {
       const p2Apr = p2.apr || 0;
@@ -45,7 +45,7 @@ export const usePoolData = () => {
       return Number(p2Apr) - Number(p1Apr);
     }).filter((_, index) => index < 3);
     return sortedTokens?.map(pool => ({
-      pool : {
+      pool: {
         ...pool,
         tokenA: {
           ...pool.tokenA,
@@ -64,16 +64,16 @@ export const usePoolData = () => {
       content: pool.apr === "" ? "-" : `${pool.apr || 0}%`
     }));
   }, [pools]);
-  
+
   async function updatePositions() {
     setIsFetchedPositions(true);
   }
-  
+
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
-    const temp = pools
-    ?.filter(info => info.incentivizedType === "INCENTIVIZED")
-    ?.map(PoolMapper.toCardInfo);
-    return temp.map((item: PoolCardInfo) => {
+    const mappedPools = pools
+      .filter(pool => pool.incentivizedType !== "NONE_INCENTIVIZED")
+      .map(PoolMapper.toCardInfo);
+    return mappedPools.map((item: PoolCardInfo) => {
       return {
         ...item,
         tokenA: {

@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { PoolListInfo } from "../info/pool-list-info";
 import { PoolModel } from "../pool-model";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { PoolRewardInfo } from "../info/pool-reward-info";
 import { PoolCardInfo } from "../info/pool-card-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
@@ -26,26 +25,11 @@ export class PoolMapper {
       feeVolume,
       apr,
       bins,
+      rewardTokens,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
-      
-    const defaultReward: PoolRewardInfo = {
-      token: {
-        chainId: "dev",
-        createdAt: "2023-10-12T06:56:12+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: "GNS",
-        logoURI: "/gnos.svg",
-        type: "grc20",
-        priceId: "gno.land/r/gns",
-      },
-      amount: 10,
-    };
 
     return {
       poolId: id,
@@ -57,7 +41,7 @@ export class PoolMapper {
       liquidity: `$${Math.floor(Number(tvl || 0)).toLocaleString()}`,
       volume24h: `$${Math.floor(Number(volume || 0)).toLocaleString()}`,
       fees24h: `$${Math.floor(Number(feeVolume || 0)).toLocaleString()}`,
-      rewards: [defaultReward],
+      rewardTokens,
       currentTick,
       price,
       bins,
@@ -93,26 +77,11 @@ export class PoolMapper {
       apr,
       bins,
       poolPath,
+      rewardTokens,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
-
-    const defaultReward: PoolRewardInfo = {
-      token: {
-        chainId: "dev",
-        createdAt: "2023-10-12T06:56:12+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: "GNS",
-        logoURI: "/gnos.svg",
-        type: "grc20",
-        priceId: "gno.land/r/gns",
-      },
-      amount: 10,
-    };
 
     return {
       poolId: id,
@@ -124,7 +93,7 @@ export class PoolMapper {
       liquidity: `${convertLargePrice(tvl.toString(), 2)}`,
       volume24h: `${convertLargePrice(volume.toString(), 2)}`,
       fees24h: `${convertLargePrice(feeVolume.toString(), 2)}`,
-      rewards: [defaultReward],
+      rewardTokens,
       currentTick,
       price,
       bins,

@@ -10,6 +10,7 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import TokenLogo from "@components/common/token-logo/TokenLogo";
 import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
+import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -27,20 +28,18 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
     apr,
     volume24h,
     fees24h,
-    rewards,
+    rewardTokens,
     currentTick,
     bins,
   } = pool;
 
   const rewardImage = useMemo(() => {
-    if (rewards.length === 0) {
+    if (rewardTokens.length === 0) {
       return <>-</>;
     }
-    if (rewards.length === 1) {
-      return <TokenLogo token={rewards[0].token} />;
-    }
-    return <DoubleTokenLogo left={rewards[0].token} right={rewards[1].token} size={20} />;
-  }, [rewards]);
+    const logos = rewardTokens.map(token => token.logoURI);
+    return <OverlapLogo logos={logos} size={20} />
+  }, [rewardTokens]);
 
   const resolvedBins = useMemo(() => {
     const length = 20;
