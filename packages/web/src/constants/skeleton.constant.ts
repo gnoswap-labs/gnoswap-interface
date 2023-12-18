@@ -117,7 +117,7 @@ export const skeletonTotalBalance =
     width: ${typeof skeletonWidth === "number"
       ? `${skeletonWidth}px`
       : skeletonWidth};
-    height: 44px;
+    height: 20px;
     overflow: hidden;
     border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
     z-index: 1;
@@ -145,7 +145,7 @@ export const skeletonBalanceDetail =
     width: ${typeof skeletonWidth === "number"
       ? `${skeletonWidth}px`
       : skeletonWidth};
-    height: 39px;
+    height: 20px;
     overflow: hidden;
     border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
     z-index: 1;

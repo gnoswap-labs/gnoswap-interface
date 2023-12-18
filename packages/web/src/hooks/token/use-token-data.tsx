@@ -26,6 +26,9 @@ export const useTokenData = () => {
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
+  const [loadingBalance, setLoadingBalance] = useAtom(
+    TokenState.isLoadingBalances,
+  );
   const { gnot } = useGnotToGnot();
 
   const gnotToken = useMemo((): TokenModel => {
@@ -217,6 +220,8 @@ export const useTokenData = () => {
     if (!rpcProvider) {
       return;
     }
+
+    setLoadingBalance(true);
     async function fetchTokenBalance(token: TokenModel) {
       if (!rpcProvider || !account) {
         return null;
@@ -242,6 +247,7 @@ export const useTokenData = () => {
       }
     });
     setBalances(balances);
+    setLoadingBalance(false);
   }
 
   return {
@@ -258,5 +264,6 @@ export const useTokenData = () => {
     updateTokenPrices,
     updateBalances,
     loading,
+    loadingBalance,
   };
 };

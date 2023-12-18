@@ -17,7 +17,7 @@ export const usePositionData = () => {
   const { gnot } = useGnotToGnot();
   const [isFetchedPosition, setIsFetchedPosition] = useState(false);
   const [positions, setPositions] = useAtom(PoolState.positions);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
@@ -38,6 +38,7 @@ export const usePositionData = () => {
   );
 
   const getPositions = useCallback(async (): Promise<PoolPositionModel[]> => {
+
     if (!account?.address) {
       setPositions([]);
       return [];
@@ -48,6 +49,7 @@ export const usePositionData = () => {
     }
     setIsError(false);
 
+    setLoading(true);
     return positionRepository
       .getPositionsByAddress(account.address)
       .then(positions => {
@@ -93,7 +95,7 @@ export const usePositionData = () => {
         setPositions([]);
         setIsError(true);
         return [];
-      });
+      }).finally(() => setLoading(false));
   }, [account?.address, pools, positionRepository, setPositions]);
 
   const getPositionsByPoolId = useCallback(
@@ -132,12 +134,7 @@ export const usePositionData = () => {
   );
 
   useEffect(() => {
-    setLoading(true);
-    getPositions().then((res) => {
-      setPositions(res);
-    }).catch(() => {
-      setPositions([]);
-    }).finally(() => setLoading(false));
+    getPositions();
   }, [connected, getPositions]);
 
   return {

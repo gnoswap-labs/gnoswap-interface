@@ -21,6 +21,8 @@ export const swap = atom<TokenSwapModel>({
 
 export const isLoading = atom<boolean>(true);
 
+export const isLoadingBalances = atom<boolean>(true);
+
 export const recents = atomWithStorage<string>(RECENT_KEY, "");
 
 export const fromSelectToken = atom<boolean>(false);
