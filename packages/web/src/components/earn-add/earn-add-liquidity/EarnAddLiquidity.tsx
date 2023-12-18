@@ -1,6 +1,6 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { EarnAddLiquidityWrapper } from "./EarnAddLiquidity.styles";
 import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType } from "@constants/option.constant";
 import { AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
@@ -89,6 +89,12 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openedSetting, setOpenedSetting] = useState(false);
 
+  useEffect(() => {
+    if (tokenA && tokenB) {
+      setOpenedFeeTier(true);
+      setOpenedPriceRange(true);
+    }
+  }, [tokenA, tokenB]);
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;

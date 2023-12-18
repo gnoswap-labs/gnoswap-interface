@@ -21,6 +21,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
+import { makeId } from "@utils/common";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -68,7 +69,12 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       });
     })));
     onSearchMenuToggle();
-    location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
+    if (item.isLiquid) {
+      const poolPath = `${item.token.path}:${item?.tokenB?.path}:${Number(item.fee.slice(0, item.fee.length - 1)) * 10000}`;
+      location.href = `/earn/pool/${makeId(poolPath)}`;
+    } else {
+      location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
+    }
   };
 
   const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {

@@ -1,7 +1,6 @@
 import SwapLiquidity from "@components/swap/swap-liquidity/SwapLiquidity";
 import React, { useMemo } from "react";
 import { ValuesType } from "utility-types";
-import useNavigate from "@hooks/common/use-navigate";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { useGetPoolList } from "@query/pools";
 import { useRouter } from "next/router";
@@ -9,6 +8,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { convertLargePrice } from "@utils/stake-position-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface LiquidityInfo {
   feeTier: string;
@@ -69,19 +69,21 @@ export const dummyLiquidityList: LiquidityInfo[] = [
 
 const SwapLiquidityContainer: React.FC = () => {
   const [swapValue] = useAtom(SwapState.swap);
-  const navigator = useNavigate();
   const { data: poolList = [], isLoading } = useGetPoolList();
+  const { wugnotPath, gnot } = useGnotToGnot();
 
-  const { query } = useRouter();
-  const { tokenA, tokenB } = query;
+  const router = useRouter();
+  const { tokenA, tokenB } = router.query;
   const createPool = () => {
-    navigator.push("/earn/add");
+    router.push({ pathname: "/earn/add", query: { tokenA: tokenA as string, tokenB: tokenB as string }}, "/earn/add");
   };
   
   const poolDetail: PoolModel[]= useMemo(() => {
-    const pools: PoolModel[] = poolList.filter((item: PoolModel) => (item.poolPath?.includes(`${tokenA}:${tokenB}`) || item.poolPath?.includes(`${tokenB}:${tokenA}`)));
+    const tokenAPath = tokenA === "gnot" ? wugnotPath : tokenA;
+    const tokenBPath = tokenB === "gnot" ? wugnotPath : tokenB;
+    const pools: PoolModel[] = poolList.filter((item: PoolModel) => (item.poolPath?.includes(`${tokenAPath}:${tokenBPath}`) || item.poolPath?.includes(`${tokenBPath}:${tokenAPath}`)));
     return pools;
-  }, [poolList, tokenA, tokenB]);
+  }, [poolList, tokenA, tokenB, wugnotPath]);
   
   const liquidityListRandom = useMemo(() => {
     let count = 0;
@@ -106,13 +108,35 @@ const SwapLiquidityContainer: React.FC = () => {
     return temp;
   }, [poolDetail]);
   
-  if (!swapValue.tokenA || !swapValue.tokenB || isLoading) return null;
+  const tokenAData = useMemo(() => {
+    if (!swapValue.tokenA) return null;
+    return {
+      ...swapValue.tokenA,
+      path: swapValue.tokenA?.path === wugnotPath ? (gnot?.path || "") : (swapValue.tokenA?.path || ""),
+      name: swapValue.tokenA?.path === wugnotPath ? (gnot?.name || "") : (swapValue.tokenA?.name || ""),
+      symbol: swapValue.tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (swapValue.tokenA?.symbol || ""),
+      logoURI: swapValue.tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (swapValue.tokenA?.logoURI || ""),
+    };
+  }, [swapValue.tokenA, gnot]);
+
+  const tokenBData = useMemo(() => {
+    if (!swapValue.tokenB) return null;
+    return {
+      ...swapValue.tokenB,
+      path: swapValue.tokenB?.path === wugnotPath ? (gnot?.path || "") : (swapValue.tokenB?.path || ""),
+      name: swapValue.tokenB?.path === wugnotPath ? (gnot?.name || "") : (swapValue.tokenB?.name || ""),
+      symbol: swapValue.tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (swapValue.tokenB?.symbol || ""),
+      logoURI: swapValue.tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (swapValue.tokenB?.logoURI || ""),
+    };
+  }, [swapValue.tokenB, gnot]);
+
+  if (!tokenAData || !tokenBData || isLoading) return null;
   
   return (
     <SwapLiquidity
       liquiditys={liquidityListRandom}
-      tokenA={swapValue.tokenA}
-      tokenB={swapValue.tokenB}
+      tokenA={tokenAData}
+      tokenB={tokenBData}
       createPool={createPool}
     />
   );

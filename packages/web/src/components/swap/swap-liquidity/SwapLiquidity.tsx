@@ -24,8 +24,8 @@ const getPathname = (liquidity: LiquidityInfo) => {
     liquidity.apr === "-"
   ) {
     return {
-      pathname: `/earn/add?feeTier=${liquidity.feeTierType}`,
-      as: "/earn/add",
+      pathname: `/earn/pool/${liquidity.id}`,
+      as: `/earn/pool/${liquidity.id}`,
     };
   }
   return {

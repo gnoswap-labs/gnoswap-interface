@@ -41,7 +41,7 @@ export const GridWrapper = styled.div`
   }
 
   .card-skeleton {
-    height: 278px;
+    height: 348px;
     border-radius: 10px;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   }

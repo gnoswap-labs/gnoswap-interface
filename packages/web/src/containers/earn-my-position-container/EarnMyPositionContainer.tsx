@@ -47,10 +47,12 @@ const EarnMyPositionContainer: React.FC<
       window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
-
   useEffect(() => {
     updateTokenPrices();
     updatePositions();
+    if (typeof window !== "undefined") {
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+    }
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -114,6 +116,7 @@ const EarnMyPositionContainer: React.FC<
       } else return positions;
     } else return positions;
   }, [width, page, positions]);
+  
   return (
     <EarnMyPositions
       connected={connected}
