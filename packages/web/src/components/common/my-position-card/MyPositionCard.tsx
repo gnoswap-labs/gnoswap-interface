@@ -48,7 +48,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const positionUsdValueStr = useMemo(() => {
     return `$${convertLargePrice(position.positionUsdValue, 2)}`;
   }, [position.positionUsdValue]);
-  
+
   const aprStr = useMemo(() => {
     return position.apr === "" ? "-" : `${numberToFormat(position.apr, 2)}%`;
   }, [position.apr]);
@@ -116,12 +116,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   };
 
   const incentivizedLabel = useMemo(() => {
-    return INCENTIVIZED_TYPE[pool.incentivizedType];
+    if (pool.incentivizedType === "NONE_INCENTIVIZED") {
+      return null;
+    }
+    return INCENTIVIZED_TYPE["INCENTIVIZED"];
   }, [pool.incentivizedType]);
 
   return (
     <MyPositionCardWrapperBorder
-    className={`${position.staked ? "special-card" : ""}`}
+      className={`${position.staked ? "special-card" : ""}`}
     >
       <div className="base-border">
         <MyPositionCardWrapper
@@ -139,13 +142,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
             </div>
             <div className="badge-group">
-              <Badge
-                type={BADGE_TYPE.DARK_DEFAULT}
-                text={<>
-                  {incentivizedLabel}
-                  <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
-                </>}
-              />
+              {incentivizedLabel && (
+                <Badge
+                  type={BADGE_TYPE.DARK_DEFAULT}
+                  text={<>
+                    {incentivizedLabel}
+                    <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
+                  </>}
+                />
+              )}
               <Badge
                 type={BADGE_TYPE.DARK_DEFAULT}
                 text={feeRateStr}
