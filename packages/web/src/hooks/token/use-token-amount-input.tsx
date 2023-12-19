@@ -2,6 +2,8 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
+import { convertLargePrice } from "@utils/stake-position-utils";
+import { checkGnotPath } from "@utils/common";
 
 export interface TokenAmountInputModel {
   token: TokenModel | null;
@@ -18,8 +20,8 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const { displayBalanceMap, tokenPrices } = useTokenData();
 
   useEffect(() => {
-    if (token && displayBalanceMap[token.priceId]) {
-      const balance = displayBalanceMap[token.priceId];
+    if (token && displayBalanceMap[checkGnotPath(token.priceId)]) {
+      const balance = displayBalanceMap[checkGnotPath(token.priceId)];
       setBalance(BigNumber(balance ?? 0).toFormat());
     } else {
       setBalance("0");
@@ -30,7 +32,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!usd) {
       return "-";
     }
-    return `$${usd.toLocaleString()}`;
+    return `$${convertLargePrice(usd.toString())}`;
   }, [usd]);
 
   const changeAmount = useCallback((value: string) => {
@@ -44,8 +46,8 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     }
     setAmount(amount.toString());
 
-    if (tokenPrices[token.priceId]) {
-      const usd = BigNumber(tokenPrices[token.priceId].usd).multipliedBy(value.toString()).toNumber();
+    if (tokenPrices[checkGnotPath(token.priceId)]) {
+      const usd = BigNumber(tokenPrices[checkGnotPath(token.priceId)].usd).multipliedBy(value.toString()).toNumber();
       setUSD(usd);
     }
   }, [token, tokenPrices]);

@@ -9,6 +9,8 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ValuesType } from "utility-types";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -41,6 +43,7 @@ const EarnMyPositionContainer: React.FC<
   const { isError, availableStake, getPositions, isFetchedPosition } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const [mobile, setMobile] = useState(false);
+  const themeKey = useAtomValue(ThemeState.themeKey);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -140,6 +143,7 @@ const EarnMyPositionContainer: React.FC<
       width={width}
       loadMore={page === 1}
       onClickLoadMore={handleClickLoadMore}
+      themeKey={themeKey}
     />
   );
 };

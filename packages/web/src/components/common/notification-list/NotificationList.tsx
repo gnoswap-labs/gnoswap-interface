@@ -24,7 +24,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onClearAll,
 }) => {
   const listRef = useRef<HTMLDivElement | null>(null);
-
+  console.log(txsGroupsInformation, "txsGroupsInformation");
+  
   return (
     <>
       <NotificationListWrapper

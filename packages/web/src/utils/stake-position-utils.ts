@@ -1,4 +1,5 @@
 export const convertLargePrice = (price: string, maximumFractionDigits?: number) => {
+  if (Number.isNaN(Number(price))) return "-";
   if (Math.floor(Number(price)).toString().length < 4) {
     return Number(price).toLocaleString("en-US", { maximumFractionDigits: maximumFractionDigits || 2, minimumFractionDigits: 2});
   } else {

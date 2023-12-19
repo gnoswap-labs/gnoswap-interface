@@ -92,7 +92,8 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
     return selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
   }, [selectedPool]);
-
+  console.log(selectedItem, "selectedItem");
+  
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
     return pools.map(PoolMapper.toPoolSelectItemInfo).map((item: PoolSelectItemInfo) => {
       return {
@@ -101,16 +102,19 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
           ...item.tokenA,
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
+          path: getGnotPath(item.tokenA).path,
         },
         tokenB: {
           ...item.tokenB,
           symbol: getGnotPath(item.tokenB).symbol,
           logoURI: getGnotPath(item.tokenB).logoURI,
+          path: getGnotPath(item.tokenB).path,
         },
       };
     }).sort(customSort);
   }, [pools]);
-
+  console.log(pools, "pools");
+  
   return (
     <PoolIncentivizeWrapper>
       <h3 className="title">Incentivize Pool</h3>

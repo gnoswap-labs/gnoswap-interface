@@ -7,7 +7,7 @@ import { AccountActivity } from "./response";
 import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 import { TransactionModel } from "@models/account/account-history-model";
 import dayjs from "dayjs";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumberFloatInteger } from "@utils/number-utils";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient;
@@ -83,10 +83,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   };
 
   private getNotificationMessage = (tx: AccountActivity) => {
-    const token0Amount = prettyNumber(tx?.token0Amount);
+    const token0Amount = prettyNumberFloatInteger(tx?.token0Amount);
     const token0symbol = this.replaceToken(tx?.token0?.symbol);
 
-    const token1Amount = prettyNumber(tx?.token1Amount);
+    const token1Amount = prettyNumberFloatInteger(tx?.token1Amount);
     const token1symbol = this.replaceToken(tx?.token1?.symbol);
 
     switch (tx.actionType) {
@@ -107,7 +107,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       case "DEPOSIT":
         return `Received ${token0Amount} ${token0symbol}`;
       default:
-        return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumber(
+        return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumberFloatInteger(
           tx.token0Amount,
         )} ${this.replaceToken(tx.token0.symbol ?? tx.token1.symbol)}`;
     }

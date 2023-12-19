@@ -67,7 +67,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
     <div className="row">
       <MissingLogo symbol={swapSummaryInfo.tokenA.symbol} url={swapSummaryInfo.tokenA.logoURI} className="token-logo" width={24} mobileWidth={24}/>
       <div className="left-box">
-        <div className="left-badge">{swapRouteInfo.version}</div>
+        {routeInfos.length < 3 && <div className="left-badge">{swapRouteInfo.version}</div>}
         <span>{weightStr}</span>
       </div>
       <DotLine />

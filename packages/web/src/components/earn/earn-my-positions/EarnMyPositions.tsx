@@ -24,6 +24,7 @@ export interface EarnMyPositionsProps {
   width: number;
   loadMore: boolean;
   onClickLoadMore?: () => void;
+  themeKey: "dark" | "light";
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -46,6 +47,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   width,
   loadMore,
   onClickLoadMore,
+  themeKey,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -72,6 +74,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       width={width}
       loadMore={loadMore}
       onClickLoadMore={onClickLoadMore}
+      themeKey={themeKey}
     />
   </EarnMyPositionswrapper>
 );

@@ -181,7 +181,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 4)
-        .attr("stroke", "#FFFFFF")
+        .attr("stroke", `${themeKey === "dark" ? "#FFFFFF": "#596782"}`)
         .attr("stroke-width", 0.5);
     }
   }

@@ -38,11 +38,12 @@ const PoolAddIncentivizeContainer: React.FC = () => {
   const { data: pools = [] } = useGetPoolList();
   const [currentPool, setCurrentPool] = useState(pools[0]);
   const { data: poolDetal } = useGetPoolDetailByPath(poolPath, { enabled: !!poolPath });
+  const [, setPool] = useAtom(EarnState.pool);
   
   useEffect(() => {
     const pool = pools.find(pool => pool.id === poolPath);
     if (pool) {
-      setCurrentPool({
+      const temp = {
         ...pool,
         tokenA: {
           ...pool.tokenA,
@@ -54,7 +55,9 @@ const PoolAddIncentivizeContainer: React.FC = () => {
           name: getGnotPath(pool.tokenB).name,
           symbol: getGnotPath(pool.tokenB).symbol,
         }
-      });
+      };
+      setCurrentPool(temp);
+      setPool(temp);
     }
   }, [poolDetal, pools, poolPath, getGnotPath]);
 

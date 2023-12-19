@@ -27,7 +27,8 @@ export interface BarAreaGraphProps {
   isHiddenStart?: boolean;
   currentIndex?: number;
   tokenA: TokenModel;
-  tokenB: TokenModel
+  tokenB: TokenModel;
+  themeKey: "dark" | "light";
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
@@ -59,6 +60,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   isHiddenStart,
   tokenA,
   tokenB,
+  themeKey,
 }) => {
   const existTickRage = (!minTick || !maxTick) === false;
   const [mouseDown, setMouseDown] = useState(false);
@@ -245,7 +247,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         bins={bins}
         tokenA={tokenA}
         tokenB={tokenB}
-        themeKey={"dark"}
+        themeKey={themeKey}
         mouseover
         position="top"
         offset={40}

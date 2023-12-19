@@ -207,6 +207,14 @@ export function matchInputNumber(value: string) {
 
 export function prettyNumber(val: string | number) {
   return Number(val).toLocaleString("en", {
-    maximumFractionDigits: 18,
+    maximumFractionDigits: 2,
   });
+}
+
+export function prettyNumberFloatInteger(val: string | number) {
+  if (Number.isInteger(Number(val))) {
+    return Number(val).toString();
+  } else {
+    return Number(val).toLocaleString("en", { maximumFractionDigits: 2});
+  }
 }
