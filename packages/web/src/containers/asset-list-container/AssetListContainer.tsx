@@ -156,6 +156,7 @@ const INIT_GNS = {
 interface SortedProps extends TokenModel {
   balance: string;
   price?: string;
+  tokenPrice: number;
 }
 
 const customSortAll = (a: SortedProps, b: SortedProps): number => {
@@ -184,8 +185,16 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
       } else {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
-    } else if (!isNaN(priceA) || isNaN(priceB)) {
-      return -1;
+    } else if (!isNaN(priceA) || isNaN(priceB) ) {
+      if (priceA === 0 && priceB === 0) {
+        if (a.tokenPrice < b.tokenPrice) {
+          return 1;
+        } else {
+          return -1;
+        }
+      } else {
+        return -1;
+      }
     } else {
       const numberRegex = /\d+/;
       const numberA = numberRegex.test(a.name);
@@ -277,6 +286,7 @@ const AssetListContainer: React.FC = () => {
             price: "-",
             balance: "0",
             ...item,
+            tokenPrice: tokenPrice || 0,
           };
         }
         return {
@@ -285,6 +295,7 @@ const AssetListContainer: React.FC = () => {
             .multipliedBy(tokenPrices[item?.path]?.usd || "0")
             .toFormat(),
           balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          tokenPrice: tokenPrice || 0,
         };
       })
       .filter(

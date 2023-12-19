@@ -19,6 +19,7 @@ interface SelectTokenContainerProps {
 
 export interface SortedProps extends TokenModel {
   price: string;
+  tokenPrice: number;
 }
 
 export const ORDER = ["GNOT", "GNS", "BAR", "BAZ"];
@@ -63,7 +64,15 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
     } else if (!isNaN(priceA) || isNaN(priceB) ) {
-      return -1;
+      if (priceA === 0 && priceB === 0) {
+        if (a.tokenPrice < b.tokenPrice) {
+          return 1;
+        } else {
+          return -1;
+        }
+      } else {
+        return -1;
+      }
     } else {
       const numberRegex = /\d+/;
       const numberA = numberRegex.test(a.name);
@@ -127,9 +136,10 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
         return {
           price: "-",
           ...item,
+          tokenPrice: tokenPrice || 0,
         };
       }
-      return {...item, price: BigNumber(tokenPrice).multipliedBy(tokenPrices[item?.path]?.usd || "0").toFormat()};
+      return {...item, price: BigNumber(tokenPrice).multipliedBy(tokenPrices[item?.path]?.usd || "0").toFormat(), tokenPrice: tokenPrice || 0};
     });
     const sortedData = temp.sort(customSortAll);
     return sortedData.filter(token =>
@@ -138,7 +148,8 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       token.path.toLowerCase().includes(lowerKeyword)
     );
   }, [keyword, tokens, balances, tokenPrices]);
-
+  console.log(filteredTokens, "filteredTokens");
+  
   const selectToken = useCallback((token: TokenModel) => {
     if (!changeToken) {
       return;
