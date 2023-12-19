@@ -5,6 +5,8 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { feeBoostRateByPrices, priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
+import { EarnState } from "@states/index";
+import { useAtom } from "jotai";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -60,6 +62,7 @@ export const useSelectPool = ({
   isCreate = false,
   startPrice = null,
 }: Props) => {
+  const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
   const [zoomLevel, setZoomLevel] = useState<number>(9);
@@ -72,8 +75,9 @@ export const useSelectPool = ({
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
 
   const poolPath = useMemo(() => {
+    setCurrentPoolPath(latestPoolPath);
     return latestPoolPath;
-  }, [latestPoolPath]);
+  }, [latestPoolPath, setCurrentPoolPath]);
 
   const renderState: RenderState = useMemo(() => {
     if (!tokenA || !tokenB || !feeTier) {
