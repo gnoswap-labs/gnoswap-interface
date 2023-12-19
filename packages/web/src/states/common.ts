@@ -15,7 +15,11 @@ export const headerToggle = atom<HeaderToggleProps>({
 
 export const openedModal = atom<boolean>(false);
 
+export const openedTransactionModal = atom<boolean>(false);
+
 export const modalContent = atom<React.ReactNode | null>(null);
+
+export const transactionModalContent = atom<React.ReactNode | null>(null);
 
 export const breakpoint = atom<DEVICE_TYPE>(DEVICE_TYPE.WEB);
 
@@ -24,3 +28,15 @@ export const currentWidth = atom<number>(0);
 export const network = atom<NetworkModel | null>(null);
 
 export const slippage = atom<string>(DEFAULT_SLIPPAGE);
+
+export type TransactionConfirmStatus =
+  | "loading"
+  | "rejected"
+  | "success"
+  | "error";
+
+export const transactionModalData = atom<{
+  status: TransactionConfirmStatus;
+  description: string | null;
+  scannerURL: string | null;
+} | null>(null);

@@ -60,7 +60,7 @@ const PendingContent: FC<{ content?: INoticeContent }> = ({ content }: { content
       <LoadingSpinner className="loading-icon" />
       <div>
         <h5>{content.title ? content.title : "Broadcasting Transaction"}</h5>
-        <p>{content.description ? content.description : "Waiting for Transaction Confirmation"}</p>
+        <p>Waiting for Transaction Confirmation</p>
         <a href={content.scannerUrl} target="_blank">
           View transaction <IconNewTab />
         </a>

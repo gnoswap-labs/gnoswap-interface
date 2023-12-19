@@ -13,8 +13,7 @@ import { useTokenData } from "./use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
-import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
-import { SCANNER_URL } from "@common/values";
+import { makeBroadcastAddLiquidityMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -61,7 +60,7 @@ export const useEarnAddLiquidityConfirmModal = ({
   createPool,
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
-  const { broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
+  const { broadcastLoading, broadcastRejected, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
   const { gnotToken } = useTokenData();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -214,7 +213,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       }
     }
 
-    broadcastPending();
+    broadcastLoading();
     const transaction = selectPool.isCreate ? createPool({
       tokenAAmount,
       tokenBAmount,
@@ -233,23 +232,31 @@ export const useEarnAddLiquidityConfirmModal = ({
     });
     transaction.then(result => {
       if (result) {
-        broadcastSuccess({
-          title: selectPool.isCreate ? "Create Pool" : "Add Position",
-          description: `Added position ${tokenA.symbol}/${tokenB.symbol}`,
-          scannerUrl: `${SCANNER_URL}/transactions/details?txhash=${result}`
-        });
-        moveToBack();
+        broadcastPending();
+        setTimeout(() => {
+          broadcastSuccess(makeBroadcastAddLiquidityMessage("success", {
+            tokenASymbol: tokenA.symbol,
+            tokenBSymbol: tokenB.symbol,
+            tokenAAmount: tokenAAmount,
+            tokenBAmount: tokenBAmount
+          }));
+          moveToBack();
+        }, 500);
       } else {
-        broadcastError({
-          title: selectPool.isCreate ? "Create Pool" : "Add Position",
-          description: "Failed to add a position",
-        });
+        broadcastError(makeBroadcastAddLiquidityMessage("error", {
+          tokenASymbol: tokenA.symbol,
+          tokenBSymbol: tokenB.symbol,
+          tokenAAmount: tokenAAmount,
+          tokenBAmount: tokenBAmount
+        }));
       }
-    }).catch((e) => {
-      broadcastError({
-        title: selectPool.isCreate ? "Create Pool" : "Add Position",
-        description: `${e}`,
-      });
+    }).catch(() => {
+      broadcastRejected(makeBroadcastAddLiquidityMessage("error", {
+        tokenASymbol: tokenA.symbol,
+        tokenBSymbol: tokenB.symbol,
+        tokenAAmount: tokenAAmount,
+        tokenBAmount: tokenBAmount
+      }));
     });
   }, [tokenA, tokenB, swapFeeTier, selectPool.tickSpacing, selectPool.minPrice, selectPool.maxPrice, selectPool.isCreate, selectPool.selectedFullRange, selectPool.startPrice, addLiquidity, tokenAAmount, tokenBAmount, slippage, createPool]);
 

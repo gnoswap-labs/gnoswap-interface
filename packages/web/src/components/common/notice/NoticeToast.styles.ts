@@ -32,7 +32,7 @@ export const NoticeUIList = styled.div`
   .toast-item {
     animation: ${toastInRight} 500ms;
   }
-  z-index: ${Z_INDEX.modalOverlay};
+  z-index: ${Z_INDEX.modalTooltip};
   ${media.tablet} {
     top: 70px;
     right: 30px;
@@ -43,7 +43,6 @@ export const NoticeUIList = styled.div`
     top: -16px;
   }
 `;
-
 
 export const NoticeUIWrapper = styled.div`
   box-shadow: ${({ theme }) => theme.color.shadow};
