@@ -4,9 +4,11 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { numberToUSD } from "@utils/number-utils";
 import React, { useCallback } from "react";
-import { Divider, UnstakePositionModalWrapper } from "./UnstakePositionModal.styles";
+import {
+  Divider,
+  UnstakePositionModalWrapper,
+} from "./UnstakePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface Props {
@@ -15,8 +17,13 @@ interface Props {
   onSubmit: () => void;
 }
 
-const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
+const UnstakePositionModal: React.FC<Props> = ({
+  positions,
+  close,
+  onSubmit,
+}) => {
   const { unclaimedRewards, totalLiquidityUSD } = useUnstakeData({ positions });
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -45,9 +52,15 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="unstake-bar" type={BADGE_TYPE.DARK_DEFAULT} text={`${Number(position.pool.fee) / 10000}%`} />
+                    <Badge
+                      className="unstake-bar"
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={`${Number(position.pool.fee) / 10000}%`}
+                    />
                   </div>
-                  <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
+                  <div className="value">
+                    {numberToUSD(Number(position.positionUsdValue))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -79,9 +92,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
           <div className="box-item">
             <div className="item-content">
               <div>
-                <div className="label-large">
-                  Total Amount
-                </div>
+                <div className="label-large">Total Amount</div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>
