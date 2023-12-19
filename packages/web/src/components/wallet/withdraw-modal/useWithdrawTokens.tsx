@@ -54,10 +54,7 @@ const useWithdrawTokens = () => {
         }, 1000);
       })
       .catch((error: Error) => {
-        
         const { code } = parseJson(error?.message);
-        console.log(code, "code");
-        
         setResult({
           success: code === 0 ? true : false,
           code,
@@ -72,7 +69,10 @@ const useWithdrawTokens = () => {
           setTimeout(() => {
             setNotice(null, {
               timeout: 50000,
-              type: code === 0 ? "success" as TNoticeType : "error" as TNoticeType,
+              type:
+                code === 0
+                  ? ("success" as TNoticeType)
+                  : ("error" as TNoticeType),
               closeable: true,
               id: makeRandomId(),
             });

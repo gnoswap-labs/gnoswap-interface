@@ -172,12 +172,16 @@ export const WithdrawContent = styled.div`
     }
   }
 
-  .address-input {
-    color: ${({ theme }) => theme.color.text01};
-
-    ::placeholder {
-      color: ${({ theme }) => theme.color.text04};
-      opacity: 1;
+  .withdraw-address {
+    width: 100%;
+    .address-input {
+      color: ${({ theme }) => theme.color.text01};
+      width: 100%;
+      
+      ::placeholder {
+        color: ${({ theme }) => theme.color.text04};
+        opacity: 1;
+      }
     }
   }
 

@@ -46,8 +46,6 @@ export class WalletRepositoryImpl implements WalletRepository {
       gasWanted: DEFAULT_GAS_WANTED,
     });
 
-    console.log({result});
-    
     const response = result.data as SendTransactionSuccessResponse;
     if (!response.hash) {
       throw new Error(JSON.stringify(result));

@@ -15,12 +15,12 @@ import {
 } from "./WithdrawStatusModal.styles";
 
 interface WithdrawStatusProps {
-  swapResult: WithdrawResponse;
+  withdrawResult: WithdrawResponse;
   close: () => void;
 }
 
 const WithdrawStatus: React.FC<WithdrawStatusProps> = ({
-  swapResult,
+  withdrawResult,
   close,
 }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -34,7 +34,7 @@ const WithdrawStatus: React.FC<WithdrawStatusProps> = ({
         <ConfirmModal ref={menuRef} className={"modal-body-wrapper"}>
           <div
             className={`modal-body ${
-              swapResult === null ? "modal-body-loading" : "submitted-modal"
+              withdrawResult === null ? "modal-body-loading" : "submitted-modal"
             }`}
           >
             <div className={"modal-header model-header-submitted"}>
@@ -43,7 +43,10 @@ const WithdrawStatus: React.FC<WithdrawStatusProps> = ({
                 <IconClose className="close-icon" />
               </div>
             </div>
-            <ConfirmWithdrawResult swapResult={swapResult} close={close} />
+            <ConfirmWithdrawResult
+              withdrawResult={withdrawResult}
+              close={close}
+            />
           </div>
         </ConfirmModal>
       </WithdrawStatusBackground>
@@ -53,15 +56,15 @@ const WithdrawStatus: React.FC<WithdrawStatusProps> = ({
 };
 
 interface ConfirmWithdrawResultProps {
-  swapResult: WithdrawResponse;
+  withdrawResult: WithdrawResponse;
   close: () => void;
 }
 
 const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
-  swapResult,
+  withdrawResult,
   close,
 }) => {
-  if (swapResult === null) {
+  if (withdrawResult === null) {
     return (
       <>
         <div className="animation">
@@ -77,7 +80,7 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
     );
   }
 
-  if (swapResult.success) {
+  if (withdrawResult.success) {
     return (
       <>
         <div className="animation">
@@ -90,7 +93,7 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
             <div
               className="open-link"
               onClick={() => {
-                window.open(swapResult?.hash, "_blank");
+                window.open(withdrawResult?.hash, "_blank");
               }}
             >
               <IconOpenLink className="open-logo" />
@@ -112,7 +115,7 @@ const ConfirmWithdrawResult: React.FC<ConfirmWithdrawResultProps> = ({
     );
   }
 
-  if (swapResult.code !== 4000) {
+  if (withdrawResult.code !== 4000) {
     return (
       <>
         <div className="animation">

@@ -170,10 +170,10 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
   } else {
     const priceA = parseFloat((a?.price ?? "").replace(/,/g, ""));
     const priceB = parseFloat((b?.price ?? "").replace(/,/g, ""));
-    
+
     if (!isNaN(priceA) && !isNaN(priceB) && priceA < priceB) {
       return 1;
-    } else if (isNaN(priceA) && isNaN(priceB) ) {
+    } else if (isNaN(priceA) && isNaN(priceB)) {
       const numberRegex = /\d+/;
       const numberA = numberRegex.test(a.name);
       const numberB = numberRegex.test(b.name);
@@ -184,7 +184,7 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
       } else {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
-    } else if (!isNaN(priceA) || isNaN(priceB) ) {
+    } else if (!isNaN(priceA) || isNaN(priceB)) {
       return -1;
     } else {
       const numberRegex = /\d+/;
@@ -210,9 +210,8 @@ const AssetListContainer: React.FC = () => {
   );
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [hasNext, setHasNext] = useState(false);
+  // const [hasNext, setHasNext] = useState(false);
   const [extended, setExtened] = useState(false);
-  const [filteredAssets, setFilteredAsset] = useState<Asset[]>([]);
   const [hasLoader, setHasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
   const { breakpoint } = useWindowSize();
@@ -341,8 +340,7 @@ const AssetListContainer: React.FC = () => {
     assetType,
     keyword,
   ]);
-  console.log(filteredTokens, "filteredTokens");
-  
+
   const changeAssetType = useCallback((newType: string) => {
     switch (newType) {
       case ASSET_FILTER_TYPE.ALL:

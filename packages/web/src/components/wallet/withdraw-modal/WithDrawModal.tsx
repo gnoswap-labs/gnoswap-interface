@@ -8,11 +8,13 @@ import SelectPairButton from "@components/common/select-pair-button/SelectPairBu
 import Tooltip from "@components/common/tooltip/Tooltip";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-postion-modal";
+import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { addressValidationCheck } from "@utils/validation-utils";
 import React, { useCallback, useRef, useState } from "react";
-import WithdrawStatus from "./confirm-swap-modal/WithdrawStatusModal";
+import WithdrawStatus from "./confirm-withdraw-modal/WithdrawStatusModal";
 import useWithdrawTokens from "./useWithdrawTokens";
 import {
   BoxDescription,
@@ -76,6 +78,7 @@ const WithDrawModal: React.FC<Props> = ({
   } = useWithdrawTokens();
 
   const { account } = useWallet();
+  const { tokens, tokenPrices } = useTokenData();
 
   useEscCloseModal(close);
   usePositionModal(modalRef);
@@ -86,10 +89,6 @@ const WithDrawModal: React.FC<Props> = ({
 
       if (value !== "" && !isAmount(value)) return;
       setAmount(value);
-      // TODO
-      // - mapT0AmountToT0Price
-      // - mapT0AmpuntT1Amount
-      // - mapT1AmpuntT1Price
     },
     [],
   );
@@ -117,16 +116,31 @@ const WithDrawModal: React.FC<Props> = ({
     );
   };
 
+  console.log(account?.address);
+
   const onCancelConfirm = useCallback(() => {
     setIsConfirm(false);
     setResult(null);
   }, [setIsConfirm, setResult]);
 
-  const isDisabledWithdraw = !Number(amount ?? 0) || !address || !withdrawInfo;
+  const getNativeToken = () => {
+    if (!tokens || tokens.length === 0) return null;
+    return tokens.find(token => token.type === "native");
+  };
+
+  const isDisabledWithdraw =
+    !Number(amount ?? 0) ||
+    !address ||
+    !withdrawInfo ||
+    !addressValidationCheck(address);
   const estimateFee = 0.000001;
+  const nativeToken = getNativeToken();
+  const estimateFeeUSD =
+    0.000001 *
+    (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0);
 
   if (isConfirm) {
-    return <WithdrawStatus swapResult={result} close={onCancelConfirm} />;
+    return <WithdrawStatus withdrawResult={result} close={onCancelConfirm} />;
   }
 
   return (
@@ -234,7 +248,9 @@ const WithDrawModal: React.FC<Props> = ({
             <WithdrawContent>
               <div className="withdraw">
                 <p className="estimate-fee">Estimated Network Fee</p>
-                <p className="tokens-fee">{estimateFee} GNOT ($0.12)</p>
+                <p className="tokens-fee">{`${estimateFee} GNOT${
+                  estimateFeeUSD !== 0 ? ` ($${estimateFeeUSD})` : ""
+                }`}</p>
               </div>
             </WithdrawContent>
 
