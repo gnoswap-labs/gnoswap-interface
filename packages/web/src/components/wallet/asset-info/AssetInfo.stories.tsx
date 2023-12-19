@@ -21,7 +21,7 @@ Default.args = {
   asset: {
     type: "grc20",
     chainId: "dev",
-    createdat: "2023-12-12 23:45:12",
+    createdAt: "2023-12-12 23:45:12",
     name: "Bar",
     path: "gno.land/r/bar",
     decimals: 6,

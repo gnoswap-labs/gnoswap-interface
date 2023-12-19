@@ -127,7 +127,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       token.path.toLowerCase().includes(lowerKeyword)
     );
   }, [keyword, tokens, balances, tokenPrices]);
-
   const selectToken = useCallback((token: TokenModel) => {
     if (!changeToken) {
       return;

@@ -47,7 +47,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
         ))
       }
       {!isFetched && positions.length === 0 &&
-        Array.from({ length: 4 }).map((_, idx) => (
+        Array.from({ length: width <= 1180 && width >= 920 ? 3 : 4 }).map((_, idx) => (
           <span
             key={idx}
             className="card-skeleton"
@@ -59,7 +59,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
       <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
     )
     )}
-    {(showPagination &&
+    {(showPagination && isFetched && positions.length !== 0 &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
         <span>/</span>

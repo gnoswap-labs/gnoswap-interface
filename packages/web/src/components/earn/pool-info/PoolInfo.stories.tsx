@@ -41,7 +41,8 @@ const pool: PoolCardInfo = {
   incentivizedType: "INCENTIVIZED",
   currentTick: 0,
   price: 0,
-  bins: []
+  bins: [],
+  tvl: 0,
 };
 
 export default {

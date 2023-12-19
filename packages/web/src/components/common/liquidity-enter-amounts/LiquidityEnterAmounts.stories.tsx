@@ -21,7 +21,7 @@ const token: TokenModel = {
   websiteURL: "",
   type: "grc20",
   chainId: "dev.gnoswap",
-  createdat: "2023-12-08T03:57:43Z",
+  createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",
   path: "gno.land/r/foo",
   decimals: 4,

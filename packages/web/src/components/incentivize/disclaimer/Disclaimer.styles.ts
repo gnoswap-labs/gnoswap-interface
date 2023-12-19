@@ -18,7 +18,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .desc {
     height: auto;
-    word-break: break-all;
+    word-break: break-word;
     color: ${theme.color.text10};
     ${fonts.body12}
   }

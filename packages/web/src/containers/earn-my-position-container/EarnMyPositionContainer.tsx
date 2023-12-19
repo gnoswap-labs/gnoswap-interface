@@ -60,7 +60,9 @@ const EarnMyPositionContainer: React.FC<
   }, []);
 
   useEffect(() => {
-    getPositions().then(setPositions);
+    getPositions().then((e) => {
+      setPositions(e.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue)));
+    });
   }, [getPositions]);
 
   const connect = useCallback(() => {

@@ -117,6 +117,7 @@ export const usePoolData = () => {
     const mappedPools = pools
       .filter(pool => pool.incentivizedType !== "NONE_INCENTIVIZED")
       .map(PoolMapper.toCardInfo);
+    mappedPools.sort((x,y) => Number(y.tvl) - Number(x.tvl));
     return mappedPools.map((item: PoolCardInfo) => {
       return {
         ...item,
