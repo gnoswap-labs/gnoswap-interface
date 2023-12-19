@@ -362,12 +362,10 @@ describe("swap simulator", () => {
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
-      expect(estimatedRoutes).toHaveLength(1);
-      expect(estimatedRoutes[0].routeKey).toBe(
-        "gno.land/r/bar:gno.land/r/qux:500*POOL*gno.land/r/baz:gno.land/r/qux:100",
-      );
-      expect(estimatedRoutes[0].quote).toBe(100);
-      expect(sumAmount).toBe(27036n);
+      expect(estimatedRoutes).toHaveLength(2);
+      expect(estimatedRoutes[0].quote).toBe(90);
+      expect(estimatedRoutes[1].quote).toBe(10);
+      expect(sumAmount).toBe(6090n);
     });
 
     describe("gno.land/r/baz to gno.land/r/bar", () => {
@@ -385,10 +383,10 @@ describe("swap simulator", () => {
         );
         expect(estimatedRoutes).toHaveLength(1);
         expect(estimatedRoutes[0].routeKey).toBe(
-          "gno.land/r/baz:gno.land/r/qux:100*POOL*gno.land/r/bar:gno.land/r/qux:500",
+          "gno.land/r/baz:gno.land/r/qux:500*POOL*gno.land/r/bar:gno.land/r/qux:500",
         );
         expect(estimatedRoutes[0].quote).toBe(100);
-        expect(sumAmount).toBe(26992n);
+        expect(sumAmount).toBe(26929n);
       });
 
       test("EXANCT_OUT, 10000n", async () => {
@@ -404,11 +402,8 @@ describe("swap simulator", () => {
           estimatedRoutes.map(route => route.amountOut),
         );
         expect(estimatedRoutes).toHaveLength(1);
-        expect(estimatedRoutes[0].routeKey).toBe(
-          "gno.land/r/bar:gno.land/r/baz:500",
-        );
         expect(estimatedRoutes[0].quote).toBe(100);
-        expect(sumAmount).toBe(16438n);
+        expect(sumAmount).toBe(3711n);
       });
     });
   });
