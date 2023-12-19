@@ -10,4 +10,6 @@ export interface PoolSelectItemInfo {
   tokenA: TokenModel;
 
   tokenB: TokenModel;
+
+  fee: string;
 }

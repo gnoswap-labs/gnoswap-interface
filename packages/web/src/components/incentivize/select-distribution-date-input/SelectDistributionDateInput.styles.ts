@@ -76,9 +76,9 @@ export const SelectDistributionDateInputWrapper = styled.div`
     }
     & .open {
       display: block;
-      height: 273px;
+      height: 305px;
       ${media.mobile} {
-      height: 273px;
+      height: 305px;
       }
     }
   }

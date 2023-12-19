@@ -10,33 +10,27 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
-import { checkPositivePrice, countPoints, generateDateSequence } from "@utils/common";
+import {
+  checkPositivePrice,
+  countPoints,
+  generateDateSequence,
+} from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenDetailByPath, useGetTokensList } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
-export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
+export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
 
-// function max(a: Date, b: Date): Date {
-//   return a > b ? a : b;
-// }
-
-// function min(a: Date, b: Date): Date {
-//   return a < b ? a : b;
-// }
-
-
-const getXaxis1Day = (data: Date[], numberAxis: number) : string[] => {
+const getXaxis1Day = (data: Date[], numberAxis: number): string[] => {
   console.log(numberAxis);
-  
+
   const rs: string[] = [];
-  // const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000);
-  // const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  // const expectFirstPoint = (max(new Date(data[0].date), oneDayAgo));
-  // const expectLastPoint = (min(new Date(data[data.length - 1].date), tenMinutesAgo));
-  const formatOptions: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric", timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, };
+  const formatOptions: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
   for (const entry of data) {
     const data = new Date(entry).toLocaleTimeString("en-US", formatOptions);
     rs.push(data);
@@ -44,15 +38,15 @@ const getXaxis1Day = (data: Date[], numberAxis: number) : string[] => {
   return rs;
 };
 
-const getXaxis1M = (data: IPrices1d[], numberAxis: number) : string[] => {
+const getXaxis1M = (data: IPrices1d[], numberAxis: number): string[] => {
   if (data.length > 0) {
     const lastDate = new Date(data[0].date);
     const firstDate = new Date(data[data.length - 1].date);
     const timeDifference = lastDate.getTime() - firstDate.getTime();
     const interval = timeDifference / numberAxis;
-  
+
     const points: string[] = [];
-  
+
     for (let i = 0; i <= numberAxis - 1; i++) {
       const pointTime = firstDate.getTime() + i * interval;
       const pointDate = new Date(pointTime);
@@ -73,10 +67,10 @@ export interface TokenInfo {
     name: string;
     symbol: string;
     image: string;
-    pkg_path: string
-    decimals: number
-    description: string
-    website_url: string
+    pkg_path: string;
+    decimals: number;
+    description: string;
+    website_url: string;
   };
   priceInfo: {
     amount: {
@@ -88,7 +82,18 @@ export interface TokenInfo {
   };
 }
 const months = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 export interface ChartInfo {
   xAxisLabels: string[];
@@ -124,45 +129,69 @@ const dummyTokenInfo: TokenInfo = {
   },
 };
 
-function createXAxisDatas(currentTab: TokenChartGraphPeriodType, chartData: IPrices1d[], numberAxis: number, date: Date[]) {
+function createXAxisDatas(
+  currentTab: TokenChartGraphPeriodType,
+  chartData: IPrices1d[],
+  numberAxis: number,
+  date: Date[],
+) {
   const now = Date.now();
-  const uniqueDates = [...new Set(chartData.map(entry => entry.date.split(" ")[0]))];
-  const uniqueMonths = [...new Set(chartData.map(item => new Date(item.date).toLocaleString("default", { month: "long" })))];
-  const uniqueYears = [...new Set(chartData.map(item => new Date(item.date).getFullYear()))];
+  const uniqueDates = [
+    ...new Set(chartData.map(entry => entry.date.split(" ")[0])),
+  ];
+  const uniqueMonths = [
+    ...new Set(
+      chartData.map(item =>
+        new Date(item.date).toLocaleString("default", { month: "long" }),
+      ),
+    ),
+  ];
+  const uniqueYears = [
+    ...new Set(chartData.map(item => new Date(item.date).getFullYear())),
+  ];
 
   switch (currentTab) {
     case "1D":
       return getXaxis1Day(date, numberAxis - 2);
     case "7D":
-      return Array.from({ length: Math.min(numberAxis, uniqueDates.length) }, (_, index) => {
-        const date = new Date(now);
-        date.setDate(date.getDate() - 1 * index);
-        const monthStr = months[date.getMonth()];
-        const dayStr = `${date.getDate()}`.padStart(2, "0");
-        const yearStr = date.getFullYear();
-        return `${monthStr} ${dayStr}, ${yearStr}`;
-      }).reverse();
+      return Array.from(
+        { length: Math.min(numberAxis, uniqueDates.length) },
+        (_, index) => {
+          const date = new Date(now);
+          date.setDate(date.getDate() - 1 * index);
+          const monthStr = months[date.getMonth()];
+          const dayStr = `${date.getDate()}`.padStart(2, "0");
+          const yearStr = date.getFullYear();
+          return `${monthStr} ${dayStr}, ${yearStr}`;
+        },
+      ).reverse();
     case "1M":
       return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
     case "1Y":
-      return Array.from({ length: Math.min(uniqueMonths.length, numberAxis) }, (_, index) => {
-        const date = new Date(now);
-        date.setMonth(date.getMonth() - 1 * index);
-        const monthStr = months[date.getMonth()];
-        const dayStr = `${date.getDate()}`.padStart(2, "0");
-        const yearStr = date.getFullYear();
-        return `${monthStr} ${dayStr}, ${yearStr}`;
-      }).reverse();
+      return Array.from(
+        { length: Math.min(uniqueMonths.length, numberAxis) },
+        (_, index) => {
+          const date = new Date(now);
+          date.setMonth(date.getMonth() - 1 * index);
+          const monthStr = months[date.getMonth()];
+          const dayStr = `${date.getDate()}`.padStart(2, "0");
+          const yearStr = date.getFullYear();
+          return `${monthStr} ${dayStr}, ${yearStr}`;
+        },
+      ).reverse();
     case "ALL":
     default:
-      return Array.from({ length: Math.min(uniqueYears.length, numberAxis) }, (_, index) => {
-        const date = new Date(now);
-        date.setFullYear(date.getFullYear() - 1 * index);
-        const monthStr = months[date.getMonth()];
-        const dayStr = `${date.getDate()}`.padStart(2, "0");
-        const yearStr = date.getFullYear();
-        return `${monthStr} ${dayStr}, ${yearStr}`;
-      }).reverse();
+      return Array.from(
+        { length: Math.min(uniqueYears.length, numberAxis) },
+        (_, index) => {
+          const date = new Date(now);
+          date.setFullYear(date.getFullYear() - 1 * index);
+          const monthStr = months[date.getMonth()];
+          const dayStr = `${date.getDate()}`.padStart(2, "0");
+          const yearStr = date.getFullYear();
+          return `${monthStr} ${dayStr}, ${yearStr}`;
+        },
+      ).reverse();
   }
 }
 
@@ -180,40 +209,55 @@ const priceChangeDetailInit = {
   price60d: "",
   price61d: "",
   price90d: "",
-  price91d: ""
+  price91d: "",
 };
 
 const TokenChartContainer: React.FC = () => {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
   const router = useRouter();
-  const [fromSelectToken, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
+  const [fromSelectToken, setFromSelectToken] = useAtom(
+    TokenState.fromSelectToken,
+  );
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
-  const { gnot } = useGnotToGnot();
+  const { gnot, wugnotPath } = useGnotToGnot();
 
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: () => {
       setFromSelectToken(false);
       clearModal();
-    }
+    },
   });
   const { data: { tokens = [] } = {} } = useGetTokensList();
-  const { data: { 
-    prices1d = [], 
-    prices7d = [],
-    prices1m = [],
-    prices1y = [],
-    pricesBefore = priceChangeDetailInit,
-    currentPrice = ""
-  } = {}, isLoading} = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? WRAPPED_GNOT_PATH : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  const {
+    data: {
+      prices1d = [],
+      prices7d = [],
+      prices1m = [],
+      prices1y = [],
+      pricesBefore = priceChangeDetailInit,
+      currentPrice = "",
+    } = {},
+    isLoading,
+  } = useGetTokenDetailByPath(
+    router.query["tokenB"] === "gnot"
+      ? wugnotPath
+      : (router.query["tokenB"] as string),
+    { enabled: !!router.query["tokenB"] },
+  );
   const [componentRef, size] = useComponentSize(isLoading);
 
   useEffect(() => {
-    const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
+    const currentToken: TokenModel = tokens.filter(
+      (item: TokenModel) => item.symbol === router.query["token-path"],
+    )[0];
     if (currentToken) {
-
-    const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 19);
+      const dataToday = checkPositivePrice(
+        pricesBefore.latestPrice,
+        pricesBefore.priceToday,
+        19,
+      );
       setTokenInfo(() => ({
         token: {
           name: currentToken.name,
@@ -234,22 +278,29 @@ const TokenChartContainer: React.FC = () => {
         },
       }));
       if (!fromSelectToken && !currentToken.logoURI) {
-        openTradingModal({ symbol: currentToken.symbol, path: currentToken.path });
+        openTradingModal({
+          symbol: currentToken.symbol,
+          path: currentToken.path,
+        });
       }
     }
   }, [router.query, pricesBefore.toString(), currentPrice, tokens, gnot]);
-  
+
   const changeTab = useCallback((tab: string) => {
-    const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";
+    const currentTab =
+      TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";
     setCurrentTab(currentTab);
   }, []);
 
   const countXAxis = useMemo(() => {
     if (breakpoint !== DEVICE_TYPE.MOBILE)
-      return Math.floor((((size.width || 0) + 20) - 25) / (currentTab === TokenChartGraphPeriods[0] ? 60: 100));
-    return Math.floor((((size.width || 0) + 20) - 8) / 80);
+      return Math.floor(
+        ((size.width || 0) + 20 - 25) /
+          (currentTab === TokenChartGraphPeriods[0] ? 60 : 100),
+      );
+    return Math.floor(((size.width || 0) + 20 - 8) / 80);
   }, [size.width, breakpoint, currentTab]);
-  
+
   const chartData = useMemo(() => {
     if (currentTab === TokenChartGraphPeriods[0]) {
       return prices1d || [];
@@ -264,32 +315,66 @@ const TokenChartContainer: React.FC = () => {
       return prices1y || [];
     }
     return prices1y || [];
-  }, [prices1d?.toString(), prices7d?.toString, prices1m?.toString(), prices1y?.toString(), currentTab]);
+  }, [
+    prices1d?.toString(),
+    prices7d?.toString,
+    prices1m?.toString(),
+    prices1y?.toString(),
+    currentTab,
+  ]);
 
   const getChartInfo = useCallback(() => {
-    const temp = generateDateSequence(chartData?.[0]?.date, chartData[chartData?.length - 1]?.date);
+    const temp = generateDateSequence(
+      chartData?.[0]?.date,
+      chartData[chartData?.length - 1]?.date,
+    );
     let left = 0;
     let right = 0;
-    if (temp.length > 1 && chartData.length > 1 && currentTab === TokenChartGraphPeriods[0]) {
+    if (
+      temp.length > 1 &&
+      chartData.length > 1 &&
+      currentTab === TokenChartGraphPeriods[0]
+    ) {
       left = countPoints(chartData[0].date, temp[0].toLocaleString(), 10) - 1;
-      right = countPoints(temp[temp.length - 1].toLocaleString(), chartData[chartData.length - 1].date, 10);
+      right = countPoints(
+        temp[temp.length - 1].toLocaleString(),
+        chartData[chartData.length - 1].date,
+        10,
+      );
     }
-    const xAxisLabels = createXAxisDatas(currentTab, chartData, countXAxis, temp);
-    
-    const length = currentTab === TokenChartGraphPeriods[0] ? 144 : currentTab === TokenChartGraphPeriods[1] ? 168 :
-    currentTab === TokenChartGraphPeriods[2] ? 180 : currentTab === TokenChartGraphPeriods[3] ? 365 : 144;
- 
+    const xAxisLabels = createXAxisDatas(
+      currentTab,
+      chartData,
+      countXAxis,
+      temp,
+    );
 
-    const datas = chartData?.length > 0 ? chartData.slice(0, length).map((item: IPriceResponse) => {
-      return {
-        amount: {
-          value: `${item.price}`,
-          denom: "",
-        },
-        time: item.date,
-      };
-    }) : [];
-    const yAxisLabels = getYAxisLabels(datas.map((item) => Number(item.amount.value).toFixed(2)));
+    const length =
+      currentTab === TokenChartGraphPeriods[0]
+        ? 144
+        : currentTab === TokenChartGraphPeriods[1]
+        ? 168
+        : currentTab === TokenChartGraphPeriods[2]
+        ? 180
+        : currentTab === TokenChartGraphPeriods[3]
+        ? 365
+        : 144;
+
+    const datas =
+      chartData?.length > 0
+        ? chartData.slice(0, length).map((item: IPriceResponse) => {
+            return {
+              amount: {
+                value: `${item.price}`,
+                denom: "",
+              },
+              time: item.date,
+            };
+          })
+        : [];
+    const yAxisLabels = getYAxisLabels(
+      datas.map(item => Number(item.amount.value).toFixed(2)),
+    );
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
@@ -300,15 +385,15 @@ const TokenChartContainer: React.FC = () => {
 
     return chartInfo;
   }, [currentTab, chartData?.toString(), countXAxis]);
-  
+
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));
     const minPoint = Math.min(...convertNumber);
     const maxPoint = Math.max(...convertNumber);
     const temp = [minPoint.toString()];
     const space = Number(Number((maxPoint - minPoint) / 6).toFixed(2));
-    for(let i = 0; i < 5; i++) {
-      temp.push(`${(Number(temp[0]) + space * (i+1)).toFixed(2)}`);
+    for (let i = 0; i < 5; i++) {
+      temp.push(`${(Number(temp[0]) + space * (i + 1)).toFixed(2)}`);
     }
     temp.push(maxPoint.toString());
     return temp;

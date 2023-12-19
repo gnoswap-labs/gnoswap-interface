@@ -1,5 +1,4 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import * as CryptoJS from "crypto-js";
 import { convertLargePrice } from "./stake-position-utils";
 
 export function wait<T>(
@@ -33,7 +32,12 @@ export function wait<T>(
 }
 
 export function makeId(value: string) {
-  return CryptoJS.SHA256(value).toString();
+  // return CryptoJS.SHA256(value, "gnot").toString();
+  return value.replace(/\//g, "_");
+}
+
+export function encriptId(value: string) {
+  return (value || "").replace(/_/g, "/");
 }
 
 export function makeRandomId() {

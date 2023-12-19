@@ -30,14 +30,14 @@ export class PoolMapper {
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
-
+      
     return {
       poolId: id,
       incentivizedType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: apr === "" ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
+      apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
       liquidity: `$${Math.floor(Number(tvl || 0)).toLocaleString()}`,
       volume24h: `$${Math.floor(Number(volume || 0)).toLocaleString()}`,
       fees24h: `$${Math.floor(Number(feeVolume || 0)).toLocaleString()}`,
@@ -59,6 +59,7 @@ export class PoolMapper {
       feeRate,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
+      fee: pool.fee,
     };
   }
 
@@ -89,7 +90,7 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: apr === "" ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
+      apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
       liquidity: `${convertLargePrice(tvl.toString(), 2)}`,
       volume24h: `${convertLargePrice(volume.toString(), 2)}`,
       fees24h: `${convertLargePrice(feeVolume.toString(), 2)}`,
@@ -98,6 +99,7 @@ export class PoolMapper {
       price,
       bins,
       poolPath: poolPath,
+      tvl: tvl,
     };
   }
 
@@ -113,7 +115,7 @@ export class PoolMapper {
       incentivizedType: pool.incentiveType as IncentivizedOptions,
       bins,
       rewardTokens: pool.rewardTokens || [],
-      apr: pool.apr !== "" ? Number(pool.apr) : null,
+      apr: !pool.apr ? Number(pool.apr) : null,
     };
   }
 
@@ -129,7 +131,7 @@ export class PoolMapper {
       incentivizedType: pool.incentiveType as IncentivizedOptions,
       bins,
       rewardTokens: pool.rewardTokens || [],
-      apr: pool.apr !== "" ? Number(pool.apr) : null,
+      apr: !pool.apr ? Number(pool.apr) : null,
     };
   }
 }

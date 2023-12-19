@@ -21,7 +21,7 @@ const PoolPairInformationContainer = () => {
   const router = useRouter();
   const [pool, setPool] = useState<PoolDetailModel | null>(null);
   const [loading, setLoading] = useState(true);
-  const { gnot, wugnotPath } = useGnotToGnot();
+  const { gnot, getGnotPath } = useGnotToGnot();
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoading(false);
@@ -54,17 +54,17 @@ const PoolPairInformationContainer = () => {
           ...e,
           tokenA: {
             ...e.tokenA,
-            path: e.tokenA?.path === wugnotPath ? (gnot?.path || "") : (e.tokenA?.path || ""),
-            name: e.tokenA?.path === wugnotPath ? (gnot?.name || "") : (e.tokenA?.name || ""),
-            symbol: e.tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (e.tokenA?.symbol || ""),
-            logoURI: e.tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (e.tokenA?.logoURI || ""),
+            path: getGnotPath(e.tokenA).path,
+            name: getGnotPath(e.tokenA).name,
+            symbol: getGnotPath(e.tokenA).symbol,
+            logoURI: getGnotPath(e.tokenA).logoURI,
           },
           tokenB: {
             ...e.tokenB,
-            path: e.tokenB?.path === wugnotPath ? (gnot?.path || "") : (e.tokenB?.path || ""),
-            name: e.tokenB?.path === wugnotPath ? (gnot?.name || "") : (e.tokenB?.name || ""),
-            symbol: e.tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (e.tokenB?.symbol || ""),
-            logoURI: e.tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (e.tokenB?.logoURI || ""),
+            path: getGnotPath(e.tokenB).path,
+            name: getGnotPath(e.tokenB).name,
+            symbol: getGnotPath(e.tokenB).symbol,
+            logoURI: getGnotPath(e.tokenB).logoURI,
           },
         };
         setPool(poolMap);
