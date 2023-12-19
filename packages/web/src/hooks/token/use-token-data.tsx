@@ -17,7 +17,6 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const useTokenData = () => {
   const { account } = useWallet();
@@ -29,7 +28,7 @@ export const useTokenData = () => {
   const [loadingBalance, setLoadingBalance] = useAtom(
     TokenState.isLoadingBalances,
   );
-  const { gnot } = useGnotToGnot();
+  const { getGnotPath } = useGnotToGnot();
 
   const gnotToken = useMemo((): TokenModel => {
     const token = tokens.find(token => token.path === "gnot");
@@ -80,16 +79,9 @@ export const useTokenData = () => {
         return {
           token: {
             ...token,
-            symbol:
-              token.path === WRAPPED_GNOT_PATH
-                ? gnot?.symbol || ""
-                : token.symbol,
-            name:
-              token.path === WRAPPED_GNOT_PATH ? gnot?.name || "" : token.name,
-            logoURI:
-              token.path === WRAPPED_GNOT_PATH
-                ? gnot?.logoURI || ""
-                : token.logoURI,
+            symbol: getGnotPath(token).symbol,
+            name: getGnotPath(token).name,
+            logoURI: getGnotPath(token).logoURI,
           },
           upDown: "none",
           content: "-",
@@ -102,16 +94,9 @@ export const useTokenData = () => {
       return {
         token: {
           ...token,
-          symbol:
-            token.path === WRAPPED_GNOT_PATH
-              ? gnot?.symbol || ""
-              : token.symbol,
-          name:
-            token.path === WRAPPED_GNOT_PATH ? gnot?.name || "" : token.name,
-          logoURI:
-            token.path === WRAPPED_GNOT_PATH
-              ? gnot?.logoURI || ""
-              : token.logoURI,
+          symbol: getGnotPath(token).symbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percent.replace(/[+-]/g, ""),
@@ -133,18 +118,9 @@ export const useTokenData = () => {
           ? {
               token: {
                 ...token,
-                symbol:
-                  token.path === WRAPPED_GNOT_PATH
-                    ? gnot?.symbol || ""
-                    : token.symbol,
-                name:
-                  token.path === WRAPPED_GNOT_PATH
-                    ? gnot?.name || ""
-                    : token.name,
-                logoURI:
-                  token.path === WRAPPED_GNOT_PATH
-                    ? gnot?.logoURI || ""
-                    : token.logoURI,
+                symbol: getGnotPath(token).symbol,
+                name: getGnotPath(token).name,
+                logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
               content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`,
@@ -152,18 +128,9 @@ export const useTokenData = () => {
           : {
               token: {
                 ...token,
-                symbol:
-                  token.path === WRAPPED_GNOT_PATH
-                    ? gnot?.symbol || ""
-                    : token.symbol,
-                name:
-                  token.path === WRAPPED_GNOT_PATH
-                    ? gnot?.name || ""
-                    : token.name,
-                logoURI:
-                  token.path === WRAPPED_GNOT_PATH
-                    ? gnot?.logoURI || ""
-                    : token.logoURI,
+                symbol: getGnotPath(token).symbol,
+                name: getGnotPath(token).name,
+                logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
               content: "-",

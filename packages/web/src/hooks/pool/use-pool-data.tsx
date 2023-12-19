@@ -17,7 +17,7 @@ export const usePoolData = () => {
     PoolState.isFetchedPositions,
   );
   const [loading, setLoading] = useAtom(PoolState.isLoading);
-  const { gnot, wugnotPath } = useGnotToGnot();
+  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
   const poolListInfos = useMemo(() => {
     const temp = pools?.map(PoolMapper.toListInfo);
@@ -27,35 +27,17 @@ export const usePoolData = () => {
         tokenA: item.tokenA
           ? {
               ...item.tokenA,
-              symbol:
-                item.tokenA.path === wugnotPath
-                  ? gnot?.symbol || ""
-                  : item.tokenA.symbol,
-              logoURI:
-                item.tokenA.path === wugnotPath
-                  ? gnot?.logoURI || ""
-                  : item.tokenA.logoURI,
-              name:
-                item.tokenA.path === wugnotPath
-                  ? gnot?.name || ""
-                  : item.tokenA.name,
+              symbol: getGnotPath(item.tokenA).symbol,
+              logoURI: getGnotPath(item.tokenA).logoURI,
+              name: getGnotPath(item.tokenA).name,
             }
           : item.tokenA,
         tokenB: item.tokenB
           ? {
               ...item.tokenB,
-              symbol:
-                item.tokenB.path === wugnotPath
-                  ? gnot?.symbol || ""
-                  : item.tokenB.symbol,
-              logoURI:
-                item.tokenB.path === wugnotPath
-                  ? gnot?.logoURI || ""
-                  : item.tokenB.logoURI,
-              name:
-                item.tokenB.path === wugnotPath
-                  ? gnot?.name || ""
-                  : item.tokenB.name,
+              symbol: getGnotPath(item.tokenB).symbol,
+              logoURI: getGnotPath(item.tokenB).logoURI,
+              name: getGnotPath(item.tokenB).name,
             }
           : item.tokenB,
       };
@@ -75,33 +57,15 @@ export const usePoolData = () => {
         ...pool,
         tokenA: {
           ...pool.tokenA,
-          symbol:
-            pool.tokenA.path === wugnotPath
-              ? gnot?.symbol || ""
-              : pool.tokenA.symbol,
-          logoURI:
-            pool.tokenA.path === wugnotPath
-              ? gnot?.logoURI || ""
-              : pool.tokenA.logoURI,
-          name:
-            pool.tokenA.path === wugnotPath
-              ? gnot?.name || ""
-              : pool.tokenA.name,
+          symbol: getGnotPath(pool.tokenA).symbol,
+          logoURI: getGnotPath(pool.tokenA).logoURI,
+          name: getGnotPath(pool.tokenA).name,
         },
         tokenB: {
           ...pool.tokenB,
-          symbol:
-            pool.tokenB.path === wugnotPath
-              ? gnot?.symbol || ""
-              : pool.tokenB.symbol,
-          logoURI:
-            pool.tokenB.path === wugnotPath
-              ? gnot?.logoURI || ""
-              : pool.tokenB.logoURI,
-          name:
-            pool.tokenB.path === wugnotPath
-              ? gnot?.name || ""
-              : pool.tokenB.name,
+          symbol: getGnotPath(pool.tokenB).symbol,
+          logoURI: getGnotPath(pool.tokenB).logoURI,
+          name: getGnotPath(pool.tokenB).name,
         },
       },
       upDown: "none",

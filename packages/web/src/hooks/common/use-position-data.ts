@@ -7,14 +7,13 @@ import { useGnoswapContext } from "./use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useAtom } from "jotai";
 import { PoolState } from "@states/index";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const usePositionData = () => {
   const { positionRepository } = useGnoswapContext();
   const { account, connected } = useWallet();
   const { pools } = usePoolData();
   const [isError, setIsError] = useState(false);
-  const { gnot } = useGnotToGnot();
+  const { getGnotPath } = useGnotToGnot();
   const [isFetchedPosition, setIsFetchedPosition] = useState(false);
   const [positions, setPositions] = useAtom(PoolState.positions);
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,25 +60,13 @@ export const usePositionData = () => {
               ...pool,
               tokenA: {
                 ...pool.tokenA,
-                symbol:
-                  pool.tokenA.path === WRAPPED_GNOT_PATH
-                    ? gnot?.symbol || ""
-                    : pool.tokenA.symbol,
-                logoURI:
-                  pool.tokenA.path === WRAPPED_GNOT_PATH
-                    ? gnot?.logoURI || ""
-                    : pool.tokenA.logoURI,
+                symbol: getGnotPath(pool.tokenA).symbol,
+                logoURI: getGnotPath(pool.tokenA).logoURI,
               },
               tokenB: {
                 ...pool.tokenB,
-                symbol:
-                  pool.tokenB.path === WRAPPED_GNOT_PATH
-                    ? gnot?.symbol || ""
-                    : pool.tokenB.symbol,
-                logoURI:
-                  pool.tokenB.path === WRAPPED_GNOT_PATH
-                    ? gnot?.logoURI || ""
-                    : pool.tokenB.logoURI,
+                symbol: getGnotPath(pool.tokenB).symbol,
+                logoURI: getGnotPath(pool.tokenB).logoURI,
               },
             };
             poolPositions.push(PositionMapper.makePoolPosition(position, temp));

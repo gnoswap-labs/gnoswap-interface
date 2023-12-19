@@ -51,7 +51,7 @@ export const bestPoolListInit: BestPool[] = [
 ];
 
 const BestPoolsContainer: React.FC = () => {
-  const { gnot, wugnotPath } = useGnotToGnot();
+  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   const router = useRouter();
   const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? wugnotPath : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
   const { data: pools = [] } = useGetPoolList();
@@ -63,16 +63,16 @@ const BestPoolsContainer: React.FC = () => {
       return {
         tokenPair: {
           tokenA: {
-            path: item.tokenA.path === wugnotPath ? (gnot?.path || "") : item.tokenA.path,
-            name: item.tokenA.path === wugnotPath ? (gnot?.name || "") : item.tokenA.name,
-            symbol: item.tokenA.path === wugnotPath ? (gnot?.symbol || "") : item.tokenA.symbol,
-            logoURI: item.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenA.logoURI,
+            path: getGnotPath(item.tokenA).path,
+            name: getGnotPath(item.tokenA).name,
+            symbol: getGnotPath(item.tokenA).symbol,
+            logoURI: getGnotPath(item.tokenA).logoURI,
           },
           tokenB: {
-            path: item.tokenB.path === wugnotPath ? (gnot?.path || "") : item.tokenB.path,
-            name: item.tokenB.path === wugnotPath ? (gnot?.name || "") : item.tokenB.name,
-            symbol: item.tokenB.path === wugnotPath ? (gnot?.symbol || "") : item.tokenB.symbol,
-            logoURI: item.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenB.logoURI,
+            path: getGnotPath(item.tokenB).path,
+            name: getGnotPath(item.tokenB).name,
+            symbol: getGnotPath(item.tokenB).symbol,
+            logoURI: getGnotPath(item.tokenB).logoURI,
           },
         },
         poolPath: temp?.poolPath || "", 

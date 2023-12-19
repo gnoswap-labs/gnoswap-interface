@@ -38,6 +38,8 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
           <DoubleLogo
             left={details.tokenA.logoURI}
             right={details.tokenB.logoURI}
+            leftSymbol={details.tokenA.symbol}
+            rightSymbol={details.tokenB.symbol}
             size={24}
           />
           <span className="pair-symbol">

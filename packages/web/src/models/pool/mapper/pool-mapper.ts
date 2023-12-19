@@ -59,6 +59,7 @@ export class PoolMapper {
       feeRate,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
+      fee: pool.fee,
     };
   }
 

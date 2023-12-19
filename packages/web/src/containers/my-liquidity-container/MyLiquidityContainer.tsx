@@ -20,7 +20,7 @@ const MyLiquidityContainer: React.FC = () => {
   const { getPositionsByPoolId } = usePositionData();
   const { claimAll } = usePosition(positions);
   const [loading, setLoading] = useState(true);
-  const { gnot, wugnotPath } = useGnotToGnot();
+  const { gnot, getGnotPath } = useGnotToGnot();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -75,17 +75,17 @@ const MyLiquidityContainer: React.FC = () => {
                 ...pool,
                 tokenA: {
                   ...pool.tokenA,
-                  path: pool.tokenA?.path === wugnotPath ? (gnot?.path || "") : (pool.tokenA?.path || ""),
-                  name: pool.tokenA?.path === wugnotPath ? (gnot?.name || "") : (pool.tokenA?.name || ""),
-                  symbol: pool.tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (pool.tokenA?.symbol || ""),
-                  logoURI: pool.tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (pool.tokenA?.logoURI || ""),
+                  path: getGnotPath(pool.tokenA).path,
+                  name: getGnotPath(pool.tokenA).name,
+                  symbol: getGnotPath(pool.tokenA).symbol,
+                  logoURI: getGnotPath(pool.tokenA).logoURI,
                 },
                 tokenB: {
                   ...pool.tokenB,
-                  path: pool.tokenB?.path === wugnotPath ? (gnot?.path || "") : (pool.tokenB?.path || ""),
-                  name: pool.tokenB?.path === wugnotPath ? (gnot?.name || "") : (pool.tokenB?.name || ""),
-                  symbol: pool.tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (pool.tokenB?.symbol || ""),
-                  logoURI: pool.tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (pool.tokenB?.logoURI || ""),
+                  path: getGnotPath(pool.tokenB).path,
+                  name: getGnotPath(pool.tokenB).name,
+                  symbol: getGnotPath(pool.tokenB).symbol,
+                  logoURI: getGnotPath(pool.tokenB).logoURI,
                 },
               }
             };

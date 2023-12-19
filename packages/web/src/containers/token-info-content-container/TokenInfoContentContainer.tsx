@@ -94,29 +94,54 @@ const priceChangeDetailInit = {
   price60d: "",
   price61d: "",
   price90d: "",
-  price91d: ""
+  price91d: "",
 };
 
 const TokenInfoContentContainer: React.FC = () => {
   const router = useRouter();
-  const { data: { market = marketInformationInit, pricesBefore = priceChangeDetailInit } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? WRAPPED_GNOT_PATH : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
+  const {
+    data: {
+      market = marketInformationInit,
+      pricesBefore = priceChangeDetailInit,
+    } = {},
+    isLoading,
+  } = useGetTokenDetailByPath(
+    router.query["tokenB"] === "gnot"
+      ? WRAPPED_GNOT_PATH
+      : (router.query["tokenB"] as string),
+    { enabled: !!router.query["tokenB"] },
+  );
 
   const marketInformation = useMemo(() => {
     return {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
       tvl: market.tvl ? `$${convertLargePrice(market.tvl)}` : "-",
-      volume24h: market.volume24h ? `$${convertLargePrice(market.volume24h)}` : "-",
+      volume24h: market.volume24h
+        ? `$${convertLargePrice(market.volume24h)}`
+        : "-",
       fees24h: market.fees24h ? `$${convertLargePrice(market.fees24h)}` : "-",
     };
   }, [market]);
 
   const priceInfomation = useMemo(() => {
-    const data1H = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price1h);
-    const data1D = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price1d);
-    const data7D = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price7d);
-    const data30D = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price30d);
+    const data1H = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.price1h,
+    );
+    const data1D = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.price1d,
+    );
+    const data7D = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.price7d,
+    );
+    const data30D = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.price30d,
+    );
 
-    return { 
+    return {
       priceChange1h: {
         status: data1H.status,
         value: data1H.percent,
@@ -132,15 +157,31 @@ const TokenInfoContentContainer: React.FC = () => {
       priceChange30d: {
         status: data30D.status,
         value: data30D.percent,
-      }
+      },
     };
   }, [pricesBefore]);
 
   const pricePerformance = useMemo(() => {
-    const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, 6);
-    const data30day = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price30d, 6);
-    const data60day = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price60d, 6);
-    const data90day = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price90d, 6);
+    const dataToday = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.priceToday,
+      6,
+    );
+    const data30day = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.price30d,
+      6,
+    );
+    const data60day = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.price60d,
+      6,
+    );
+    const data90day = checkPositivePrice(
+      pricesBefore.latestPrice,
+      pricesBefore.price90d,
+      6,
+    );
     return [
       {
         createdAt: "Today",

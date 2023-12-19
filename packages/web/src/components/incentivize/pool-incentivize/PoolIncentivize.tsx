@@ -14,6 +14,7 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface DistributionPeriodDate {
   year: number;
@@ -44,6 +45,30 @@ interface PoolIncentivizeProps {
   isDisabledSelect?: boolean;
 }
 
+const customSort = (a: PoolSelectItemInfo, b: PoolSelectItemInfo) => {
+  const isAGnotGns = a.tokenA.symbol?.includes("GNS") && a.tokenB.symbol?.includes("GNOT");
+  const isBGnotGns = b.tokenA.symbol?.includes("GNS") && b.tokenB.symbol?.includes("GNOT");
+  
+  if (isAGnotGns && !isBGnotGns) {
+    return -1;
+  } else if (!isAGnotGns && isBGnotGns) {
+    return 1;
+  } else {
+    if (isAGnotGns && isBGnotGns) {
+      const feeOrder = [100, 500, 3000, 10000];
+      const feeA = parseInt(a.fee, 10);
+      const feeB = parseInt(b.fee, 10);
+      const indexA = feeOrder.indexOf(feeA);
+      const indexB = feeOrder.indexOf(feeB);
+      return indexA - indexB;
+    } else {
+      const liquidityA = parseFloat(a.liquidityAmount);
+      const liquidityB = parseFloat(b.liquidityAmount);
+      return liquidityB - liquidityA;
+    }
+  }
+};
+
 const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   pools,
   selectedPool,
@@ -62,13 +87,28 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   connected,
   isDisabledSelect,
 }) => {
+  const { getGnotPath } = useGnotToGnot();
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
     return selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
   }, [selectedPool]);
 
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
-    return pools.map(PoolMapper.toPoolSelectItemInfo);
+    return pools.map(PoolMapper.toPoolSelectItemInfo).map((item: PoolSelectItemInfo) => {
+      return {
+        ...item,
+        tokenA: {
+          ...item.tokenA,
+          symbol: getGnotPath(item.tokenA).symbol,
+          logoURI: getGnotPath(item.tokenA).logoURI,
+        },
+        tokenB: {
+          ...item.tokenB,
+          symbol: getGnotPath(item.tokenB).symbol,
+          logoURI: getGnotPath(item.tokenB).logoURI,
+        },
+      };
+    }).sort(customSort);
   }, [pools]);
 
   return (
