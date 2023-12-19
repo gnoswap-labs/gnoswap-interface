@@ -56,9 +56,14 @@ const SwapContainer: React.FC = () => {
       return;
     }
     const query = router.query;
-    const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
-    const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
-    const direction: SwapDirectionType = query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
+    const currentTokenA =
+      tokens.find(token => token.path === query.tokenA) || null;
+    const currentTokenB =
+      tokens.find(token => token.path === query.tokenB) || null;
+    const direction: SwapDirectionType =
+      query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
+    if (!currentTokenA || !currentTokenB) return;
+
     setSwapValue({
       tokenA: currentTokenA,
       tokenB: currentTokenB,
