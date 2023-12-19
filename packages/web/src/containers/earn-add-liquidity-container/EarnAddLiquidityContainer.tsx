@@ -21,6 +21,7 @@ import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
 import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
+import { PoolModel } from "@models/pool/pool-model";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -218,6 +219,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         type: type,
       };
     });
+    selectSwapFeeTier("NONE");
   }, [type]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
@@ -235,6 +237,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         type: type,
       };
     });
+    selectSwapFeeTier("NONE");
   }, [type]);
 
   const changeStartingPrice = useCallback((price: string) => {
@@ -410,9 +413,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }
         return false;
       }) === 1;
-      const prices = pools.map(pool => pool.price);
-      const maxPrice = reverse ? 1 / Math.min(...prices) : Math.max(...prices);
-      setDefaultPrice(maxPrice);
+      const priceOfMaxLiquidity = pools.sort((pool1: PoolModel, pool2: PoolModel) => pool2.tvl - pool1.tvl).at(0)?.price || null;
+      if (priceOfMaxLiquidity) {
+        const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
+        setDefaultPrice(maxPrice);
+      } else {
+        setDefaultPrice(null);
+      }
     } else {
       setDefaultPrice(null);
     }
@@ -424,6 +431,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenB: null,
       type: "EXACT_IN",
     });
+    selectSwapFeeTier("NONE");
     setIsEarnAdd(false);
   }, []);
 

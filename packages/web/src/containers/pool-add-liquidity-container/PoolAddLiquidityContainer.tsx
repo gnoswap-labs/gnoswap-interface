@@ -383,9 +383,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }
         return false;
       }) === 1;
-      const prices = pools.map(pool => pool.price);
-      const maxPrice = reverse ? 1 / Math.min(...prices) : Math.max(...prices);
-      setDefaultPrice(maxPrice);
+      const priceOfMaxLiquidity = pools.sort((p1, p2) => p2.tvl - p1.tvl).at(0)?.price || null;
+      if (priceOfMaxLiquidity) {
+        const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
+        setDefaultPrice(maxPrice);
+      } else {
+        setDefaultPrice(null);
+      }
     } else {
       setDefaultPrice(null);
     }

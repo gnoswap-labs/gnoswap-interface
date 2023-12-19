@@ -160,7 +160,7 @@ export const usePool = ({
         const feetierOfLiquidityMap: { [key in string]: number } = {};
         const totalLiquidities = infos.map(info => info.liquidity).reduce((total, cur) => total + cur, 0n);
         for (const info of infos) {
-          const liquidityRate = Number(info.liquidity) * 100 / Number(totalLiquidities);
+          const liquidityRate = totalLiquidities === 0n ? 0 : Number(info.liquidity) * 100 / Number(totalLiquidities);
           const feeTier = currentPools.find(pool => pool.path === info.poolPath)?.fee;
           if (feeTier) {
             feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
@@ -169,7 +169,7 @@ export const usePool = ({
         return feetierOfLiquidityMap;
       })
       .then(setFeetierOfLiquidityMap);
-  }, [currentPools]);
+  }, [currentPools, tokenA, tokenB]);
 
   useEffect(() => {
     if (feetierOfLiquidityMap) {
