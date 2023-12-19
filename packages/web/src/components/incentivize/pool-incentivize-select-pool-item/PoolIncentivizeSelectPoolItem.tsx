@@ -27,6 +27,8 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
     return {
       left: poolSelectItem.tokenA.logoURI,
       right: poolSelectItem.tokenB.logoURI,
+      leftSymbol: poolSelectItem.tokenA.symbol,
+      rightSymbol: poolSelectItem.tokenB.symbol,
     };
   }, [poolSelectItem, selected]);
 
@@ -68,7 +70,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
         />
         <span className="token-pair-name">{tokenPairName}</span>
         <Badge
-          text={"0.3%"}
+          text={poolSelectItem.feeRate}
           type={BADGE_TYPE.DARK_DEFAULT}
         />
       </div>

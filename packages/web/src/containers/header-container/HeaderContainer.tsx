@@ -22,7 +22,6 @@ import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -160,7 +159,7 @@ const HeaderContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
-  const { gnot } = useGnotToGnot();
+  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   
 
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
@@ -187,8 +186,8 @@ const HeaderContainer: React.FC = () => {
         token: {
           path: item.tokenA.path,
           name: item.tokenA.name,
-          symbol: item.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : item.tokenA.symbol,
-          logoURI: item.tokenA.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : item.tokenA.logoURI,
+          symbol: getGnotPath(item.tokenA).symbol,
+          logoURI: getGnotPath(item.tokenA).logoURI,
         },
         price: `$${convertLargePrice(priceItem.liquidity || "0")}`,
         priceOf1d: {
@@ -198,8 +197,8 @@ const HeaderContainer: React.FC = () => {
         tokenB: {
           path: item.tokenB.path,
           name: item.tokenB.name,
-          symbol: item.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : item.tokenB.symbol,
-          logoURI: item.tokenB.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : item.tokenB.logoURI,
+          symbol: getGnotPath(item.tokenB).symbol,
+          logoURI: getGnotPath(item.tokenB).logoURI,
         },
         fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
         isLiquid: true,
@@ -219,7 +218,7 @@ const HeaderContainer: React.FC = () => {
     return temp.slice(0, keyword ? 6 : 6 - recents.length).map((item: TokenModel) => {
       const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
       const isGnot = item.path === "gnot";
-      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === WRAPPED_GNOT_PATH)?.[0] ?? {};
+      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === wugnotPath)?.[0] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       return {

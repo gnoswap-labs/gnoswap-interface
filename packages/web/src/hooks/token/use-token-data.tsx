@@ -14,7 +14,6 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const useTokenData = () => {
   const { account } = useWallet();
@@ -23,8 +22,8 @@ export const useTokenData = () => {
   const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loading, setLoading] = useAtom(TokenState.isLoading);
-  const { gnot } = useGnotToGnot();
-  
+  const { getGnotPath } = useGnotToGnot();
+
   const gnotToken = useMemo((): TokenModel => {
     const token = tokens.find(token => token.path === "gnot");
     if (token) {
@@ -63,28 +62,28 @@ export const useTokenData = () => {
         return {
           token: {
             ...token,
-            symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-            name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-            logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
+            symbol: getGnotPath(token).symbol,
+            name: getGnotPath(token).name,
+            logoURI: getGnotPath(token).logoURI,
           },
           upDown: "none",
-          content: "-"
+          content: "-",
         };
       }
       const data1D = checkPositivePrice(tokenPrice.pricesBefore.latestPrice, tokenPrice.pricesBefore.priceToday);
       return {
         token: {
           ...token,
-          symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-          name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-          logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
+          symbol: getGnotPath(token).symbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percent.replace(/[+-]/g, ""),
       };
     });
   }, [tokens, tokenPrices]);
-  
+
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens.sort((t1, t2) => {
       const createTimeOfToken1 = new Date(t1.createdAt).getTime();
@@ -95,18 +94,18 @@ export const useTokenData = () => {
       tokenPrices[token.path] ? {
         token: {
           ...token,
-          symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-          name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-          logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
+          symbol: getGnotPath(token).symbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: "none" as UpDownType,
         content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`
       } : {
         token: {
           ...token,
-          symbol: token.path === WRAPPED_GNOT_PATH ? (gnot?.symbol || "") : token.symbol,
-          name: token.path === WRAPPED_GNOT_PATH ? (gnot?.name || "") : token.name,
-          logoURI: token.path === WRAPPED_GNOT_PATH ? (gnot?.logoURI || "") : token.logoURI,
+          symbol: getGnotPath(token).symbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: "none" as UpDownType,
         content: "-"

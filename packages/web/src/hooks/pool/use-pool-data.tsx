@@ -7,58 +7,66 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export const usePoolData = () => {
   const { poolRepository } = useGnoswapContext();
   const [pools, setPools] = useAtom(PoolState.pools);
   const [isFetchedPools, setIsFetchedPools] = useAtom(PoolState.isFetchedPools);
-  const [isFetchedPositions, setIsFetchedPositions] = useAtom(PoolState.isFetchedPositions);
+  const [isFetchedPositions, setIsFetchedPositions] = useAtom(
+    PoolState.isFetchedPositions,
+  );
   const [loading, setLoading] = useAtom(PoolState.isLoading);
-  const { gnot, wugnotPath } = useGnotToGnot();
+  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
   const poolListInfos = useMemo(() => {
     const temp = pools?.map(PoolMapper.toListInfo);
     return temp.map((item: PoolListInfo) => {
       return {
         ...item,
-        tokenA: item.tokenA ? {
-          ...item.tokenA,
-          symbol: item.tokenA.path === wugnotPath ? (gnot?.symbol || "") : item.tokenA.symbol,
-          logoURI: item.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenA.logoURI,
-          name: item.tokenA.path === wugnotPath ? (gnot?.name || "") : item.tokenA.name,
-        } : item.tokenA,
-        tokenB: item.tokenB ? {
-          ...item.tokenB,
-          symbol: item.tokenB.path === wugnotPath ? (gnot?.symbol || "") : item.tokenB.symbol,
-          logoURI: item.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenB.logoURI,
-          name: item.tokenB.path === wugnotPath ? (gnot?.name || "") : item.tokenB.name,
-        } : item.tokenB,
+        tokenA: item.tokenA
+          ? {
+              ...item.tokenA,
+              symbol: getGnotPath(item.tokenA).symbol,
+              logoURI: getGnotPath(item.tokenA).logoURI,
+              name: getGnotPath(item.tokenA).name,
+            }
+          : item.tokenA,
+        tokenB: item.tokenB
+          ? {
+              ...item.tokenB,
+              symbol: getGnotPath(item.tokenB).symbol,
+              logoURI: getGnotPath(item.tokenB).logoURI,
+              name: getGnotPath(item.tokenB).name,
+            }
+          : item.tokenB,
       };
     });
   }, [pools, wugnotPath, gnot]);
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
-    const sortedTokens = pools.sort((p1, p2) => {
-      const p2Apr = p2.apr || 0;
-      const p1Apr = p1.apr || 0;
-      return Number(p2Apr) - Number(p1Apr);
-    }).filter((_, index) => index < 3);
+    const sortedTokens = pools
+      .sort((p1, p2) => {
+        const p2Apr = p2.apr || 0;
+        const p1Apr = p1.apr || 0;
+        return Number(p2Apr) - Number(p1Apr);
+      })
+      .filter((_, index) => index < 3);
     return sortedTokens?.map(pool => ({
       pool: {
         ...pool,
         tokenA: {
           ...pool.tokenA,
-          symbol: pool.tokenA.path === wugnotPath ? (gnot?.symbol || "") : pool.tokenA.symbol,
-          logoURI: pool.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : pool.tokenA.logoURI,
-          name: pool.tokenA.path === wugnotPath ? (gnot?.name || "") : pool.tokenA.name,
+          symbol: getGnotPath(pool.tokenA).symbol,
+          logoURI: getGnotPath(pool.tokenA).logoURI,
+          name: getGnotPath(pool.tokenA).name,
         },
         tokenB: {
           ...pool.tokenB,
-          symbol: pool.tokenB.path === wugnotPath ? (gnot?.symbol || "") : pool.tokenB.symbol,
-          logoURI: pool.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : pool.tokenB.logoURI,
-          name: pool.tokenB.path === wugnotPath ? (gnot?.name || "") : pool.tokenB.name,
-        }
+          symbol: getGnotPath(pool.tokenB).symbol,
+          logoURI: getGnotPath(pool.tokenB).logoURI,
+          name: getGnotPath(pool.tokenB).name,
+        },
       },
       upDown: "none",
       content: !pool.apr ? "-" : `${pool.apr || 0}%`
@@ -73,21 +81,22 @@ export const usePoolData = () => {
     const mappedPools = pools
       .filter(pool => pool.incentivizedType !== "NONE_INCENTIVIZED")
       .map(PoolMapper.toCardInfo);
+    mappedPools.sort((x,y) => Number(y.tvl) - Number(x.tvl));
     return mappedPools.map((item: PoolCardInfo) => {
       return {
         ...item,
         tokenA: {
           ...item.tokenA,
-          symbol: item.tokenA.path === wugnotPath ? (gnot?.symbol || "") : item.tokenA.symbol,
-          logoURI: item.tokenA.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenA.logoURI,
-          name: item.tokenA.path === wugnotPath ? (gnot?.name || "") : item.tokenA.name,
+          symbol: getGnotPath(item.tokenA).symbol,
+          logoURI: getGnotPath(item.tokenA).logoURI,
+          name: getGnotPath(item.tokenA).name,
         },
         tokenB: {
           ...item.tokenB,
-          symbol: item.tokenB.path === wugnotPath ? (gnot?.symbol || "") : item.tokenB.symbol,
-          logoURI: item.tokenB.path === wugnotPath ? (gnot?.logoURI || "") : item.tokenB.logoURI,
-          name: item.tokenB.path === wugnotPath ? (gnot?.name || "") : item.tokenB.name,
-        }
+          symbol: getGnotPath(item.tokenB).symbol,
+          logoURI: getGnotPath(item.tokenB).logoURI,
+          name: getGnotPath(item.tokenB).name,
+        },
       };
     });
   }, [pools, gnot]);
@@ -100,7 +109,9 @@ export const usePoolData = () => {
     return pools;
   }
 
-  async function fetchPoolDatils(poolId: string): Promise<PoolDetailModel | null> {
+  async function fetchPoolDatils(
+    poolId: string,
+  ): Promise<PoolDetailModel | null> {
     const currentPools = pools.length === 0 ? await updatePools() : pools;
     const pool = currentPools.find(pool => pool.id === poolId);
     if (!pool) {
@@ -108,6 +119,10 @@ export const usePoolData = () => {
     }
     return poolRepository.getPoolDetailByPoolPath(pool.path).catch(() => null);
   }
+
+  useEffect(() => {
+    updatePools();
+  }, []);
 
   return {
     isFetchedPools,

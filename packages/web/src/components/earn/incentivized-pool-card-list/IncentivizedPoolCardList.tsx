@@ -79,7 +79,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
           <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
         )
       )}
-      {showPagination &&
+      {showPagination && isFetched && incentivizedPools.length > 0 &&
         <div className="box-indicator">
           <span className="current-page">{currentIndex}</span>
           <span>/</span>

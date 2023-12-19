@@ -2,21 +2,21 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useAtom } from "jotai";
 import { PoolState } from "@states/index";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const usePositionData = () => {
   const { positionRepository } = useGnoswapContext();
-  const { account } = useWallet();
+  const { account, connected } = useWallet();
   const { pools } = usePoolData();
   const [isError, setIsError] = useState(false);
-  const { gnot } = useGnotToGnot();
+  const { getGnotPath } = useGnotToGnot();
   const [isFetchedPosition, setIsFetchedPosition] = useState(false);
   const [positions, setPositions] = useAtom(PoolState.positions);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
@@ -37,6 +37,7 @@ export const usePositionData = () => {
   );
 
   const getPositions = useCallback(async (): Promise<PoolPositionModel[]> => {
+
     if (!account?.address) {
       setPositions([]);
       return [];
@@ -47,6 +48,7 @@ export const usePositionData = () => {
     }
     setIsError(false);
 
+    setLoading(true);
     return positionRepository
       .getPositionsByAddress(account.address)
       .then(positions => {
@@ -58,25 +60,13 @@ export const usePositionData = () => {
               ...pool,
               tokenA: {
                 ...pool.tokenA,
-                symbol:
-                  pool.tokenA.path === WRAPPED_GNOT_PATH
-                    ? gnot?.symbol || ""
-                    : pool.tokenA.symbol,
-                logoURI:
-                  pool.tokenA.path === WRAPPED_GNOT_PATH
-                    ? gnot?.logoURI || ""
-                    : pool.tokenA.logoURI,
+                symbol: getGnotPath(pool.tokenA).symbol,
+                logoURI: getGnotPath(pool.tokenA).logoURI,
               },
               tokenB: {
                 ...pool.tokenB,
-                symbol:
-                  pool.tokenB.path === WRAPPED_GNOT_PATH
-                    ? gnot?.symbol || ""
-                    : pool.tokenB.symbol,
-                logoURI:
-                  pool.tokenB.path === WRAPPED_GNOT_PATH
-                    ? gnot?.logoURI || ""
-                    : pool.tokenB.logoURI,
+                symbol: getGnotPath(pool.tokenB).symbol,
+                logoURI: getGnotPath(pool.tokenB).logoURI,
               },
             };
             poolPositions.push(PositionMapper.makePoolPosition(position, temp));
@@ -92,7 +82,7 @@ export const usePositionData = () => {
         setPositions([]);
         setIsError(true);
         return [];
-      });
+      }).finally(() => setLoading(false));
   }, [account?.address, pools, positionRepository, setPositions]);
 
   const getPositionsByPoolId = useCallback(
@@ -130,12 +120,18 @@ export const usePositionData = () => {
     [account?.address, pools, positionRepository],
   );
 
+  useEffect(() => {
+    getPositions();
+  }, [connected, getPositions]);
+
   return {
     availableStake,
     isError,
+    positions,
     isStakedPool,
     getPositions,
     getPositionsByPoolId,
     isFetchedPosition,
+    loading
   };
 };

@@ -75,7 +75,7 @@ const PoolListContainer: React.FC = () => {
       }
     }
   }, [isClickOutside, keyword]);
-
+  
   const sortedPoolListInfos = useMemo(() => {
     function filteredPoolType(poolType: POOL_TYPE, incentivizedType: IncentivizedOptions) {
       switch (poolType) {
@@ -96,7 +96,7 @@ const PoolListContainer: React.FC = () => {
           info.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
           info.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase());
       }
-      return filteredPoolType(poolType, info.incentivizedType);
+      return true;
     });
     if (sortOption) {
       if (sortOption.key === TABLE_HEAD.POOL_NAME) {
@@ -127,13 +127,13 @@ const PoolListContainer: React.FC = () => {
     } else {
       temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
     }
-    return temp;
+    return temp.filter((info) => filteredPoolType(poolType, info.incentivizedType));
   }, [keyword, poolListInfos, poolType, sortOption]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPoolListInfos.length / 15);
   }, [sortedPoolListInfos.length]);
-
+  
   const routeItem = (id: string) => {
     router.push(`/earn/pool/${id}`);
   };

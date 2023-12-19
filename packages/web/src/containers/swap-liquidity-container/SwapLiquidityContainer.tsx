@@ -70,7 +70,7 @@ export const dummyLiquidityList: LiquidityInfo[] = [
 const SwapLiquidityContainer: React.FC = () => {
   const [swapValue] = useAtom(SwapState.swap);
   const { data: poolList = [], isLoading } = useGetPoolList();
-  const { wugnotPath, gnot } = useGnotToGnot();
+  const { wugnotPath, gnot, getGnotPath } = useGnotToGnot();
   const { tokenA, tokenB } = swapValue;
   const router = useRouter();
   const createPool = () => {
@@ -111,10 +111,10 @@ const SwapLiquidityContainer: React.FC = () => {
     if (!tokenA) return null;
     return {
       ...tokenA,
-      path: tokenA?.path === wugnotPath ? (gnot?.path || "") : (tokenA?.path || ""),
-      name: tokenA?.path === wugnotPath ? (gnot?.name || "") : (tokenA?.name || ""),
-      symbol: tokenA?.path === wugnotPath ? (gnot?.symbol || "") : (tokenA?.symbol || ""),
-      logoURI: tokenA?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenA?.logoURI || ""),
+      path: getGnotPath(tokenA).path,
+      name: getGnotPath(tokenA).name,
+      symbol: getGnotPath(tokenA).symbol,
+      logoURI: getGnotPath(tokenA).logoURI,
     };
   }, [swapValue.tokenA, gnot]);
 
@@ -122,10 +122,10 @@ const SwapLiquidityContainer: React.FC = () => {
     if (!tokenB) return null;
     return {
       ...tokenB,
-      path: tokenB?.path === wugnotPath ? (gnot?.path || "") : (tokenB?.path || ""),
-      name: tokenB?.path === wugnotPath ? (gnot?.name || "") : (tokenB?.name || ""),
-      symbol: tokenB?.path === wugnotPath ? (gnot?.symbol || "") : (tokenB?.symbol || ""),
-      logoURI: tokenB?.path === wugnotPath ? (gnot?.logoURI || "") : (tokenB?.logoURI || ""),
+      path: getGnotPath(tokenB).path,
+      name: getGnotPath(tokenB).name,
+      symbol: getGnotPath(tokenB).symbol,
+      logoURI: getGnotPath(tokenB).logoURI,
     };
   }, [tokenB, gnot]);
 

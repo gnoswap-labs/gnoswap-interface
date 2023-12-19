@@ -13,7 +13,6 @@ import { convertLargePrice } from "@utils/stake-position-utils";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
   value: string;
@@ -140,7 +139,7 @@ const TokenListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
-  const { gnot } = useGnotToGnot();
+  const { wugnotPath, getGnotPath } = useGnotToGnot();
 
   useEffect(() => {
     if (!keyword) {
@@ -204,10 +203,10 @@ const TokenListContainer: React.FC = () => {
   );
 
   const firstData = useMemo(() => {
-    const temp = tokens.filter(((token: TokenModel) => token.path !== WRAPPED_GNOT_PATH)).map((item: TokenModel) => {
+    const temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
       const isGnot = item.path === "gnot";
-      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === (isGnot ? WRAPPED_GNOT_PATH : item.path))?.[0] ?? {};
-      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === WRAPPED_GNOT_PATH)?.[0] ?? {};
+      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === (isGnot ? wugnotPath : item.path))?.[0] ?? {};
+      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === wugnotPath)?.[0] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
@@ -216,8 +215,6 @@ const TokenListContainer: React.FC = () => {
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
-      const isWuGnotTokenA = tempTokenA?.[0]?.path === WRAPPED_GNOT_PATH;
-      const isWuGnotTokenB = tempTokenB?.[0]?.path === WRAPPED_GNOT_PATH;
       return {
         ...transferData,
         token: {
@@ -231,15 +228,15 @@ const TokenListContainer: React.FC = () => {
           tokenPair: {
             tokenA: {
               path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
-              name: isWuGnotTokenA ? (gnot?.name || "") : (tempTokenA?.[0]?.name || ""),
-              symbol: isWuGnotTokenA ? (gnot?.symbol || "") : (tempTokenA?.[0]?.symbol || ""),
-              logoURI: isWuGnotTokenA ? (gnot?.logoURI || "") : (tempTokenA?.[0]?.logoURI || ""),
+              name: getGnotPath(tempTokenA?.[0]).name,
+              symbol: getGnotPath(tempTokenA?.[0]).symbol,
+              logoURI: getGnotPath(tempTokenA?.[0]).logoURI,
             },
             tokenB: {
               path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
-              name: isWuGnotTokenB ? (gnot?.name || "") : (tempTokenB?.[0]?.name || ""),
-              symbol: isWuGnotTokenB ? (gnot?.symbol || "") : (tempTokenB?.[0]?.symbol || ""),
-              logoURI: isWuGnotTokenB ? (gnot?.logoURI || "") : (tempTokenB?.[0]?.logoURI || ""),
+              name: getGnotPath(tempTokenB?.[0]).name,
+              symbol:  getGnotPath(tempTokenB?.[0]).symbol,
+              logoURI:  getGnotPath(tempTokenB?.[0]).logoURI,
             },
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
@@ -257,7 +254,7 @@ const TokenListContainer: React.FC = () => {
     });
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
     return temp.map((item: Token, i: number) => ({...item, idx: i}));
-  }, [tokens, prices, gnot]);
+  }, [tokens, prices]);
     
   const getDatas = useCallback(() => {
     const temp = firstData;
