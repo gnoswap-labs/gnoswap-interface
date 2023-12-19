@@ -33,15 +33,15 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
   }};
   ${media.tablet} {
     top: 42px;
-    right: -10px;
+    right: 0;
     height: calc(100vh - 112px);
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;
     width: 100%;
-    height: ${({ emptyData }) => (emptyData ? "360px" : "426px")};
-    top: calc(100vh - ${({ emptyData }) => (emptyData ? "360px" : "426px")});
+    height: ${({ emptyData }) => (emptyData ? "157px" : "426px")};
+    top: calc(100vh - ${({ emptyData }) => (emptyData ? "157px" : "426px")});
     padding: 24px 0px;
     min-width: 360px;
   }
@@ -169,6 +169,10 @@ export const NoDataText = styled.span`
   width: 100%;
   height: 34px;
   margin-top: 100px;
+
+  ${media.tablet} {
+    margin-top: 25px;
+  }
 `;
 
 export const TransactionItemsWrap = styled.div`
