@@ -1,6 +1,5 @@
 import EarnAddConfirm from "@components/earn-add/earn-add-confirm/EarnAddConfirm";
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
-import useNavigate from "@hooks/common/use-navigate";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
@@ -14,6 +13,7 @@ import { useNotice } from "@hooks/common/use-notice";
 import { useTokenData } from "./use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
+import { useRouter } from "next/router";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -63,7 +63,7 @@ export const useEarnAddLiquidityConfirmModal = ({
   const { gnotToken } = useTokenData();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
-  const navigator = useNavigate();
+  const router = useRouter();
   const { setNotice } = useNotice();
 
   const tokenAAmount = useMemo(() => {
@@ -191,10 +191,10 @@ export const useEarnAddLiquidityConfirmModal = ({
     setModalContent(null);
   }, [setModalContent, setOpenedModal]);
 
-  const moveEarn = useCallback(() => {
+  const moveToBack = useCallback(() => {
     close();
-    navigator.push("/earn");
-  }, [close, navigator]);
+    router.back();
+  }, [close, router]);
 
   const confirm = useCallback(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -223,7 +223,7 @@ export const useEarnAddLiquidityConfirmModal = ({
         slippage,
         startPrice: `${selectPool.startPrice || 1}`,
         swapFeeTier,
-      }).then(result => result && moveEarn());
+      }).then(result => result && moveToBack());
       return;
     }
     addLiquidity({
@@ -233,7 +233,7 @@ export const useEarnAddLiquidityConfirmModal = ({
       maxTick,
       slippage,
       swapFeeTier,
-    }).then(result => result && moveEarn());
+    }).then(result => result && moveToBack());
   }, [tokenA, tokenB, swapFeeTier, selectPool.tickSpacing, selectPool.minPrice, selectPool.maxPrice, selectPool.isCreate, selectPool.selectedFullRange, selectPool.startPrice, addLiquidity, tokenAAmount, tokenBAmount, slippage, createPool]);
 
   const openModal = useCallback(() => {
