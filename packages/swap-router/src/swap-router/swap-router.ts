@@ -10,12 +10,12 @@ import { EstimatedRoute, Route, RouteWithQuote } from "./swap-router.types";
 import { makeRouteKey } from "./utility/route.util";
 import { MAX_UINT64 } from "../constants";
 
-export const TOP_N = 10;
+export const TOP_N = 2;
 export const TOP_N_DIRECT_SWAPS = 2;
-export const TOP_N_TOKEN_IN_OUT = 2;
+export const TOP_N_TOKEN_IN_OUT = 3;
 export const TOP_N_SECOND_HOP = 1;
 export const TOP_N_WITH_EACH_BASE_TOKEN = 3;
-export const TOP_N_WITH_BASE_TOKEN = 3;
+export const TOP_N_WITH_BASE_TOKEN = 5;
 
 export class SwapRouter {
   private _pools: Pool[];
