@@ -193,10 +193,10 @@ export class PoolRepositoryImpl implements PoolRepository {
       gasFee,
       gasWanted,
     });
-    const response = result.data as SendTransactionSuccessResponse;
-    if (!response.hash) {
+    if (result.code !== 0) {
       throw new Error(`${result}`);
     }
+    const response = result.data as SendTransactionSuccessResponse;
     return response.hash;
   };
 
@@ -259,10 +259,10 @@ export class PoolRepositoryImpl implements PoolRepository {
       gasFee,
       gasWanted,
     });
-    const response = result.data as SendTransactionSuccessResponse;
-    if (!response.hash) {
+    if (result.code !== 0) {
       throw new Error(`${result}`);
     }
+    const response = result.data as SendTransactionSuccessResponse;
     return response.hash;
   };
 

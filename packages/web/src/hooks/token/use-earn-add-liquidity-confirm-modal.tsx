@@ -9,11 +9,12 @@ import { priceToNearTick } from "@utils/swap-utils";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import { numberToFormat } from "@utils/string-utils";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
-import { useNotice } from "@hooks/common/use-notice";
 import { useTokenData } from "./use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { SCANNER_URL } from "@common/values";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -60,11 +61,11 @@ export const useEarnAddLiquidityConfirmModal = ({
   createPool,
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
+  const { broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
   const { gnotToken } = useTokenData();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const router = useRouter();
-  const { setNotice } = useNotice();
 
   const tokenAAmount = useMemo(() => {
     const depositRatio = selectPool.depositRatio;
@@ -213,27 +214,43 @@ export const useEarnAddLiquidityConfirmModal = ({
       }
     }
 
-    setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: Math.random() * 19999 });
-    if (selectPool.isCreate) {
-      createPool({
-        tokenAAmount,
-        tokenBAmount,
-        minTick,
-        maxTick,
-        slippage,
-        startPrice: `${selectPool.startPrice || 1}`,
-        swapFeeTier,
-      }).then(result => result && moveToBack());
-      return;
-    }
-    addLiquidity({
+    broadcastPending();
+    const transaction = selectPool.isCreate ? createPool({
+      tokenAAmount,
+      tokenBAmount,
+      minTick,
+      maxTick,
+      slippage,
+      startPrice: `${selectPool.startPrice || 1}`,
+      swapFeeTier,
+    }) : addLiquidity({
       tokenAAmount,
       tokenBAmount,
       minTick,
       maxTick,
       slippage,
       swapFeeTier,
-    }).then(result => result && moveToBack());
+    });
+    transaction.then(result => {
+      if (result) {
+        broadcastSuccess({
+          title: selectPool.isCreate ? "Create Pool" : "Add Position",
+          description: `Added position ${tokenA.symbol}/${tokenB.symbol}`,
+          scannerUrl: `${SCANNER_URL}/transactions/details?txhash=${result}`
+        });
+        moveToBack();
+      } else {
+        broadcastError({
+          title: selectPool.isCreate ? "Create Pool" : "Add Position",
+          description: "Failed to add a position",
+        });
+      }
+    }).catch((e) => {
+      broadcastError({
+        title: selectPool.isCreate ? "Create Pool" : "Add Position",
+        description: `${e}`,
+      });
+    });
   }, [tokenA, tokenB, swapFeeTier, selectPool.tickSpacing, selectPool.minPrice, selectPool.maxPrice, selectPool.isCreate, selectPool.selectedFullRange, selectPool.startPrice, addLiquidity, tokenAAmount, tokenBAmount, slippage, createPool]);
 
   const openModal = useCallback(() => {
