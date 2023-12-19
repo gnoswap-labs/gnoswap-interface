@@ -11,6 +11,7 @@ import Link from "next/link";
 import React, { useCallback, useState } from "react";
 import IconDownload from "../icons/IconDownload";
 import IconHeaderLogo from "../icons/IconHeaderLogo";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
 import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import {
@@ -52,6 +53,8 @@ interface HeaderProps {
   popularTokens: Token[];
   recents: Token[];
   movePage: (path: string) => void;
+  faucet: () => void;
+  faucetLoading: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -77,6 +80,8 @@ const Header: React.FC<HeaderProps> = ({
   popularTokens,
   recents,
   movePage,
+  faucet,
+  faucetLoading,
 }) => {
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
 
@@ -136,9 +141,17 @@ const Header: React.FC<HeaderProps> = ({
                 <IconSearch className="search-icon" />
               </SearchButton>
               {connected && breakpoint !== DEVICE_TYPE.MOBILE && (
-                <DepositButton onClick={() => changeTokenDeposit()}>
-                  <IconDownload />
-                  <span>Deposit</span>
+                <DepositButton className={faucetLoading ? "disabled" : ""} onClick={faucet}>
+                  {faucetLoading ? (
+                    <div className="loading-wrapper">
+                      <LoadingSpinner className="loading-button" />
+                    </div>
+                  ) : (
+                    <>
+                      <IconDownload />
+                      <span>Faucet</span>
+                    </>
+                  )}
                 </DepositButton>
               )}
               <WalletConnectorButton

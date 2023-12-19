@@ -176,20 +176,49 @@ export const SearchButton = styled.button`
 `;
 
 export const DepositButton = styled.button`
+  @keyframes rotate {
+    from {
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
   ${mixins.flexbox("row", "center", "center")};
-  color: #E0E8F4;
+  color: #e0e8f4;
   gap: 8px;
   ${fonts.p1}
-  padding: 10px 16px 10px 14px;
+  padding: 6px 16px 6px 14px;
   background-color: ${({ theme }) => theme.color.background04};
   border-radius: 8px;
   width: 101px;
-  svg {
-    width: 15px;
-    height: 15px;
-    * {
-    fill: #E0E8F4;
+
+  & .loading-wrapper {
+    .loading-button {
+      width: 20px;
+      height: 20px;
+      background: conic-gradient(
+        from 0deg at 50% 50.63%,
+        #ffffff 0deg,
+        #233dbd 360deg
+      );
+      margin: auto;
+      &::before {
+        width: 14px;
+        height: 14px;
+        background-color: ${({ theme }) => theme.color.background04Hover};
+      }
     }
+  }
+  &.disabled {
+    padding: 0 16px 0 14px;
+    height: 36px;
+    overflow: hidden;
   }
   &:hover {
     background-color: ${({ theme }) => theme.color.background04Hover};

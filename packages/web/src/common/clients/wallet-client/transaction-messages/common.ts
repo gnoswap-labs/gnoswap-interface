@@ -20,6 +20,8 @@ export const PACKAGE_STAKER_ADDRESS =
   process.env.NEXT_PUBLIC_PACKAGE_STAKER_ADDRESS || "";
 export const PACKAGE_GOVERNANCE_ADDRESS =
   process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_ADDRESS || "";
+export const PACKAGE_FAUCET_PATH =
+  process.env.NEXT_PUBLIC_PACKAGE_FAUCET_PATH || "";
 
 export interface TransactionBankMessage {
   from_address: string;
