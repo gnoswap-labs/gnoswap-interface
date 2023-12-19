@@ -61,7 +61,7 @@ export const usePoolData = () => {
         }
       },
       upDown: "none",
-      content: pool.apr === "" ? "-" : `${pool.apr || 0}%`
+      content: !pool.apr ? "-" : `${pool.apr || 0}%`
     }));
   }, [pools]);
 

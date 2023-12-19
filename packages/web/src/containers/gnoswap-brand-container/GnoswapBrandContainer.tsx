@@ -9,6 +9,7 @@ const SNS_URL: {
   [SNS_TYPE.GITHUB]: "https://github.com/gnoswap-labs",
   [SNS_TYPE.GITBOOK]: "https://docs.gnoswap.io/",
   [SNS_TYPE.DISCODE]: "https://discord.gg/3YbdqVP8Tb",
+  [SNS_TYPE.TELEGRAM]: "https://t.me/gnoswap",
   [SNS_TYPE.MEDIUM]: "https://medium.com/@gnoswaplabs",
   [SNS_TYPE.TWITTER]: "https://twitter.com/gnoswaplabs",
 };

@@ -27,23 +27,23 @@ const parseDate = (dateString: string) => {
   return date.format("MMM D, YYYY");
 };
 
-const generateData = (chartType: CHART_TYPE) => {
-  const mappingLength: Record<CHART_TYPE, number> = {
-    [CHART_TYPE["7D"]]: 7,
-    [CHART_TYPE["1M"]]: 30,
-    [CHART_TYPE["1Y"]]: 90,
-    [CHART_TYPE["ALL"]]: 356,
-  };
+// const generateData = (chartType: CHART_TYPE) => {
+//   const mappingLength: Record<CHART_TYPE, number> = {
+//     [CHART_TYPE["7D"]]: 7,
+//     [CHART_TYPE["1M"]]: 30,
+//     [CHART_TYPE["1Y"]]: 90,
+//     [CHART_TYPE["ALL"]]: 356,
+//   };
 
-  return Array.from({ length: mappingLength[chartType] }, (_, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() - 1 * index);
-    return {
-      date: date.toISOString(),
-      price: `${Math.round(Math.random() * 5000000) + 100000000}`,
-    };
-  });
-};
+//   return Array.from({ length: mappingLength[chartType] }, (_, index) => {
+//     const date = new Date();
+//     date.setDate(date.getDate() - 1 * index);
+//     return {
+//       date: date.toISOString(),
+//       price: `${Math.round(Math.random() * 5000000) + 100000000}`,
+//     };
+//   }).reverse();
+// };
 
 // const months = [
 //   "Jan",
@@ -171,11 +171,11 @@ const TvlChartContainer: React.FC = () => {
   }, []);
 
   const chartData = useMemo(() => {
-    // if (!tvlData?.all)
-    //   return {
-    //     xAxisLabels: [],
-    //     datas: [],
-    //   };
+    if (!tvlData?.all)
+      return {
+        xAxisLabels: [],
+        datas: [],
+      };
     let chartData = tvlData?.last_7d;
 
     switch (tvlChartType) {
@@ -193,8 +193,7 @@ const TvlChartContainer: React.FC = () => {
         break;
     }
 
-    console.log(chartData);
-    return generateData(tvlChartType ?? "7D")?.reduce(
+    return chartData?.reduce(
       (pre, next) => {
         const time = parseDate(next.date);
         return {
