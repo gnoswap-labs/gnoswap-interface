@@ -40,8 +40,8 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;
     width: 100%;
-    height: ${({ emptyData }) => (emptyData ? "157px" : "426px")};
-    top: calc(100vh - ${({ emptyData }) => (emptyData ? "157px" : "426px")});
+    height: ${({ emptyData }) => (emptyData ? "360px" : "426px")};
+    top: calc(100vh - ${({ emptyData }) => (emptyData ? "360px" : "426px")});
     padding: 24px 0px;
     min-width: 360px;
   }
@@ -132,7 +132,7 @@ export const TxsSummaryItem = styled.div`
     padding: 0px 10px 0px 44px;
   }
   .status-icon {
-    margin-left: auto;
+    margin-left: 8px;
   }
   .success-icon * {
     fill: ${({ theme }) => theme.color.green01};
@@ -168,10 +168,6 @@ export const NoDataText = styled.span`
   width: 100%;
   height: 34px;
   margin-top: 100px;
-
-  ${media.tablet} {
-    margin-top: 50px;
-  }
 `;
 
 export const TransactionItemsWrap = styled.div`
@@ -181,6 +177,11 @@ export const TransactionItemsWrap = styled.div`
   width: 100%;
   cursor: pointer;
   padding: 0px 12px;
+
+  ${media.mobile} {
+    margin-top: 4px;
+    min-height: 40px;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.color.hover02};
   }
@@ -194,8 +195,16 @@ export const TransactionItemsWrap = styled.div`
       .content-wrap {
         ${mixins.flexbox("row", "center", "flex-start")};
         margin-left: 44px;
+
+        ${media.mobile} {
+          margin-left: 56px;
+        }
       }
     }
+  }
+
+  .status-icon {
+    margin-left: 8px;
   }
   .success-icon * {
     fill: ${({ theme }) => theme.color.green01};
@@ -205,9 +214,6 @@ export const TransactionItemsWrap = styled.div`
   }
   .pending-icon * {
     fill: ${({ theme }) => theme.color.text24};
-  }
-  ${media.mobile} {
-    margin-top: 4px;
   }
 `;
 

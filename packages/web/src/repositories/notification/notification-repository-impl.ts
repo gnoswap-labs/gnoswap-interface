@@ -44,13 +44,26 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   public appendRemovedTx = (txs: string[]) => {
     const oldTx = this.getRemovedTx();
     oldTx.push(...txs);
-    this.storage.set("notification-removed-tx", JSON.stringify(oldTx));
+
+    /**
+     * Use set to make it don't have duplicate tx ( reduce storage size )
+     */
+    this.storage.set(
+      "notification-removed-tx",
+      JSON.stringify([...new Set(oldTx)]),
+    );
   };
 
   public appendSeenTx = (txs: string[]) => {
     const oldTx = this.getSeenTx();
     oldTx.push(...txs);
-    this.storage.set("notification-seen-tx", JSON.stringify(oldTx));
+    /**
+     * Use set to make it don't have duplicate tx ( reduce storage size )
+     */
+    this.storage.set(
+      "notification-seen-tx",
+      JSON.stringify([...new Set(oldTx)]),
+    );
   };
 
   private capitalizeFirstLetter = (input: string) => {
