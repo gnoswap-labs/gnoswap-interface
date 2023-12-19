@@ -19,7 +19,8 @@ export const BarAreaGraphWrapper = styled.div<{
     width: 100%;
     height: 100%;
     pointer-events: none;
-    > g, > polygon {
+    > g,
+    > polygon {
       pointer-events: initial;
     }
     .area {
@@ -70,6 +71,7 @@ export const BarAreaGraphTooltipWrapper = styled.div<
 export interface BarAreaGraphLabelProps {
   x: number;
   y: number;
+  backgroundColor: string;
 }
 
 export const BarAreaGraphLabel = styled.span<BarAreaGraphLabelProps>`
@@ -86,13 +88,13 @@ export const BarAreaGraphLabel = styled.span<BarAreaGraphLabelProps>`
 
   &.min {
     left: ${({ x }) => (x < 45 ? `${x}px` : `${x - 45}px`)};
-    background-color: #ff503f99;
+    background-color: ${({ backgroundColor }) => backgroundColor};
     color: ${({ theme }) => theme.color.text20};
   }
 
   &.max {
     left: ${({ x }) => `${x}px`};
-    background-color: #60e66a99;
+    background-color: ${({ backgroundColor }) => backgroundColor};
     color: ${({ theme }) => theme.color.text20};
   }
 `;
