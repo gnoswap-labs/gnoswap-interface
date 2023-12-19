@@ -2,9 +2,20 @@ import BigNumber from "bignumber.js";
 import { Queue } from "../common";
 import { sum } from "../common/array.util";
 import { SwapSimulator } from "../swap-simulator";
-import { Pool } from "../swap-simulator/swap-simulator.types";
+import {
+  CandidatePoolsSelections,
+  Pool,
+} from "../swap-simulator/swap-simulator.types";
 import { EstimatedRoute, Route, RouteWithQuote } from "./swap-router.types";
 import { makeRouteKey } from "./utility/route.util";
+import { MAX_UINT64 } from "../constants";
+
+export const TOP_N = 2;
+export const TOP_N_DIRECT_SWAPS = 2;
+export const TOP_N_TOKEN_IN_OUT = 3;
+export const TOP_N_SECOND_HOP = 1;
+export const TOP_N_WITH_EACH_BASE_TOKEN = 3;
+export const TOP_N_WITH_BASE_TOKEN = 5;
 
 export class SwapRouter {
   private _pools: Pool[];
@@ -21,7 +32,63 @@ export class SwapRouter {
     this._pools = pools;
   }
 
+  public filteredCandidatePools(
+    pools: Pool[],
+    inputTokenPath: string,
+    outputTokenPath: string,
+  ): CandidatePoolsSelections {
+    const availPools = pools.filter(pool => pool.liquidity > 0);
+    const topN = 10;
+
+    const topByBaseWithTokenIn = availPools
+      .filter(
+        p => p.tokenAPath === inputTokenPath || p.tokenBPath === inputTokenPath,
+      )
+      .sort((p1, p2) => {
+        const priceOfP1 =
+          p1.tokenAPath === inputTokenPath ? p1.price : 1 / p1.price;
+        const priceOfP2 =
+          p2.tokenAPath === inputTokenPath ? p2.price : 1 / p2.price;
+        return priceOfP2 - priceOfP1;
+      })
+      .filter((_, index) => index < TOP_N_WITH_EACH_BASE_TOKEN);
+
+    const topByBaseWithTokenOut = availPools
+      .filter(
+        p =>
+          p.tokenAPath === outputTokenPath || p.tokenBPath === outputTokenPath,
+      )
+      .sort((p1, p2) => {
+        const priceOfP1 =
+          p1.tokenAPath === outputTokenPath ? 1 / p1.price : p1.price;
+        const priceOfP2 =
+          p2.tokenAPath === outputTokenPath ? 1 / p2.price : p2.price;
+        return priceOfP2 - priceOfP1;
+      })
+      .filter((_, index) => index < TOP_N_WITH_EACH_BASE_TOKEN);
+
+    const topByDirectSwapPool = availPools
+      .filter(
+        p =>
+          [inputTokenPath, outputTokenPath].includes(p.tokenAPath) ||
+          [inputTokenPath, outputTokenPath].includes(p.tokenBPath),
+      )
+      .filter((_, index) => index < TOP_N_DIRECT_SWAPS);
+
+    const topByTVL = availPools
+      .sort((p1, p2) => Number(p2.liquidity - p1.liquidity))
+      .filter((_, index) => index < TOP_N);
+
+    return {
+      topByBaseWithTokenIn,
+      topByBaseWithTokenOut,
+      topByDirectSwapPool,
+      topByTVL,
+    };
+  }
+
   public findCandidateRoutesBy(
+    pools: Pool[],
     inputTokenPath: string,
     outputTokenPath: string,
     routeSize = 3,
@@ -36,8 +103,22 @@ export class SwapRouter {
 
     const routes: Route[] = [];
 
+    const {
+      topByBaseWithTokenIn,
+      topByBaseWithTokenOut,
+      topByDirectSwapPool,
+      topByTVL,
+    } = this.filteredCandidatePools(pools, inputTokenPath, outputTokenPath);
+
+    const candidatePools = [
+      ...topByBaseWithTokenIn,
+      ...topByBaseWithTokenOut,
+      ...topByDirectSwapPool,
+      ...topByTVL,
+    ];
+
     // Pool list of tokens
-    const tokenPoolsMap = this.pools.reduce<{ [key in string]: Pool[] }>(
+    const tokenPoolsMap = candidatePools.reduce<{ [key in string]: Pool[] }>(
       (result, current) => {
         const tokenAPath = current.tokenAPath;
         const tokenBPath = current.tokenBPath;
@@ -117,16 +198,55 @@ export class SwapRouter {
       }
     }
 
-    const sortedRoutes = routes.sort((route1, route2) => {
-      if (route2.pools[0].sqrtPriceX96 - route1.pools[0].sqrtPriceX96 > 0) {
-        if (route2.pools[0].liquidity - route1.pools[0].liquidity > 0) {
-          return 1;
+    function getResultPriceRate(pools: Pool[]) {
+      let input = inputTokenPath;
+      let price = 1;
+      pools.forEach(pool => {
+        const ordered = pool.tokenAPath === input;
+        price *= ordered ? pool.price : 1 / pool.price;
+        input = ordered ? pool.tokenBPath : pool.tokenAPath;
+      });
+      return price;
+    }
+
+    function getResultMinLiquidity(pools: Pool[]) {
+      let minLiquidity: bigint = MAX_UINT64;
+      pools.forEach(pool => {
+        if (pool.liquidity < minLiquidity) {
+          minLiquidity = pool.liquidity;
+        }
+      });
+      return minLiquidity;
+    }
+
+    const sortedRoutes = routes
+      .filter(route => getResultMinLiquidity(route.pools) > 0)
+      .sort((route1, route2) => {
+        const route1Rate = getResultPriceRate(route1.pools);
+        const route2Rate = getResultPriceRate(route2.pools);
+        const route1Liuquidity = getResultMinLiquidity(route1.pools);
+        const route2Liquidity = getResultMinLiquidity(route2.pools);
+
+        if (route1Liuquidity < route2Liquidity) {
+          if (route1Rate < route2Rate) {
+            return 1;
+          }
+          if (route2.pools.length < route1.pools.length) {
+            return 1;
+          }
+          return 0;
         }
         return -1;
-      }
-      return -1;
+      });
+
+    const poolPathSet = new Set<string>([]);
+    const uniqueSortedRoutes = sortedRoutes.filter(route1 => {
+      const exists =
+        route1.pools.findIndex(pool => poolPathSet.has(pool.poolPath)) > -1;
+      route1.pools.forEach(pool => poolPathSet.add(pool.poolPath));
+      return !exists;
     });
-    return sortedRoutes;
+    return uniqueSortedRoutes;
   }
 
   public estimateSwapRoute = (
@@ -140,8 +260,11 @@ export class SwapRouter {
     if (100 % distributionRatio !== 0) {
       throw new Error("Not divided distributionRatio");
     }
-    const routes = this.findCandidateRoutesBy(inputTokenPath, outputTokenPath);
-
+    const routes = this.findCandidateRoutesBy(
+      this.pools,
+      inputTokenPath,
+      outputTokenPath,
+    );
     const filteredRoutes = routes.filter((_, index) => index < hopSize);
 
     const simulator = new SwapSimulator();
@@ -227,7 +350,7 @@ export class SwapRouter {
     let quoteSum = sum(Object.values(quoteMap).map(({ quote }) => quote));
     while (quoteSum > 100) {
       let decreaseTargetKey: string | null = null;
-      let maxSum: bigint | null = null;
+      let sumAmount: bigint | null = null;
 
       for (const routeKey of Object.keys(quoteMap)) {
         if (quoteMap[routeKey].quote <= 0) {
@@ -248,9 +371,18 @@ export class SwapRouter {
           },
           0n,
         );
-        if (maxSum === null || maxSum < currentSumOfAmmountOut) {
+        if (sumAmount === null) {
           decreaseTargetKey = nextRoute.routeKey;
-          maxSum = currentSumOfAmmountOut;
+          sumAmount = currentSumOfAmmountOut;
+        } else {
+          if (exactType === "EXACT_IN" && sumAmount < currentSumOfAmmountOut) {
+            decreaseTargetKey = nextRoute.routeKey;
+            sumAmount = currentSumOfAmmountOut;
+          }
+          if (exactType === "EXACT_OUT" && sumAmount > currentSumOfAmmountOut) {
+            decreaseTargetKey = nextRoute.routeKey;
+            sumAmount = currentSumOfAmmountOut;
+          }
         }
       }
 

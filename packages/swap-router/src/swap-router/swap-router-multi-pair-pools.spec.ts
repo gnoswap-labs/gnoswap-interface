@@ -171,10 +171,10 @@ describe("swap router of multi pair pools", () => {
       );
       expect(estimatedRoutes).toHaveLength(1);
       expect(estimatedRoutes[0].routeKey).toBe(
-        "gno.land/r/bar:gno.land/r/baz:500*POOL*gno.land/r/baz:gno.land/r/qux:500",
+        "gno.land/r/bar:gno.land/r/foo:500*POOL*gno.land/r/foo:gno.land/r/qux:500",
       );
       expect(estimatedRoutes[0].quote).toBe(100);
-      expect(sumAmount).toBe(2503n);
+      expect(sumAmount).toBe(778n);
     });
   });
 
@@ -211,17 +211,12 @@ describe("swap router of multi pair pools", () => {
       const sumAmount = sumBigInts(
         estimatedRoutes.map(route => route.amountOut),
       );
-      expect(estimatedRoutes).toHaveLength(2);
+      expect(estimatedRoutes).toHaveLength(1);
       expect(estimatedRoutes[0].routeKey).toBe(
-        "gno.land/r/baz:gno.land/r/qux:500*POOL*gno.land/r/bar:gno.land/r/baz:500",
-      );
-      expect(estimatedRoutes[0].quote).toBe(95);
-
-      expect(estimatedRoutes[1].routeKey).toBe(
         "gno.land/r/foo:gno.land/r/qux:500*POOL*gno.land/r/bar:gno.land/r/foo:500",
       );
-      expect(estimatedRoutes[1].quote).toBe(5);
-      expect(sumAmount).toBe(44878n);
+      expect(estimatedRoutes[0].quote).toBe(100);
+      expect(sumAmount).toBe(5527n);
     });
   });
 });
