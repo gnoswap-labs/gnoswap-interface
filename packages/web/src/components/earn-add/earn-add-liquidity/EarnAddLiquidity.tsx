@@ -123,6 +123,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     return `${priceRange.type}`;
   }, [priceRange]);
 
+  const visiblePriceRangeLabel = useMemo(() => {
+    return selectedFeeRate && existTokenPair && selectPool.isCreate === false;
+  }, [existTokenPair, selectPool.isCreate, selectedFeeRate]);
+
   const toggleFeeTier = useCallback(() => {
     if (isEarnAdd) {
       tokenA && tokenB && setOpenedFeeTier(!openedFeeTier);
@@ -260,7 +264,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               <h5>3. Select Price Range</h5>
               {existTokenPair && (!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />)}
             </div>
-            {selectedPriceRange && existTokenPair && (
+            {visiblePriceRangeLabel && (
               <Badge
                 text={selectedPriceRange}
                 type={BADGE_TYPE.LINE}
