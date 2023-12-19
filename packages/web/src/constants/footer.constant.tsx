@@ -1,6 +1,6 @@
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
-import IconDiscode from "@components/common/icons/social/IconDiscode";
+import IconTelegram from "@components/common/icons/social/IconTelegram";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
 
@@ -16,22 +16,22 @@ export const FOOTER_LEFT_NAV = {
     {
       title: "gitbook",
       icon: <IconGitbook />,
-      path: "docs.gnoswap.io",
+      path: "https://docs.gnoswap.io/",
     },
     {
-      title: "discode",
-      icon: <IconDiscode />,
-      path: "/",
+      title: "telegram",
+      icon: <IconTelegram />,
+      path: "https://t.me/gnoswap",
     },
     {
       title: "medium",
       icon: <IconMedium />,
-      path: "/",
+      path: "https://medium.com/@gnoswaplabs",
     },
     {
       title: "twitter",
       icon: <IconTwitter />,
-      path: "/",
+      path: "https://twitter.com/gnoswaplabs",
     },
   ],
 };
@@ -52,7 +52,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "Stake Position",
-        path: "/earn/pool/bar_foo_500",
+        path: "/earn/stake",
         newTab: false,
       },
       {
@@ -97,7 +97,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "Docs",
-        path: "docs.gnoswap.io",
+        path: "https://docs.gnoswap.io/",
         newTab: true,
       },
       {
