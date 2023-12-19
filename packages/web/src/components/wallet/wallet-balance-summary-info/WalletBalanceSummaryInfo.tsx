@@ -20,7 +20,7 @@ const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
       {connected ? (
         balanceSummaryInfo.loading ? (
           <span
-            css={skeletonTotalBalance("300px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={skeletonTotalBalance("300px", SHAPE_TYPES.ROUNDED_SQUARE, 2)}
           />
         ) : (
           <span className="amount">{balanceSummaryInfo.amount}</span>

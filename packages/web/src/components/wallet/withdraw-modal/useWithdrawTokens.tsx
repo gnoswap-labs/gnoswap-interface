@@ -7,6 +7,7 @@ import {
 import { makeRandomId, parseJson } from "@utils/common";
 import { useState } from "react";
 import { TNoticeType } from "@context/NoticeContext";
+import BigNumber from "bignumber.js";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -26,6 +27,13 @@ const useWithdrawTokens = () => {
 
   const onSubmit = async (request: Request, type: "native" | "grc20") => {
     setLoading(true);
+
+    const descriptionFail = `Failed to Send ${BigNumber(
+      request?.tokenAmount,
+    ).div(1000000)} ${request?.token?.symbol}`;
+    const descriptionSuccess = `Sent ${BigNumber(request?.tokenAmount).div(
+      1000000,
+    )} ${request?.token?.symbol}`;
 
     const callAction =
       type === "native"
@@ -47,16 +55,20 @@ const useWithdrawTokens = () => {
         setTimeout(() => {
           setNotice(null, {
             timeout: 50000,
-            type: "success" as TNoticeType,
+            type: "withdraw-success" as TNoticeType,
             closeable: true,
             id: makeRandomId(),
+            data: {
+              description: descriptionSuccess,
+            },
           });
         }, 1000);
       })
       .catch((error: Error) => {
         const { code } = parseJson(error?.message);
+        const isSuccess = code === 0;
         setResult({
-          success: code === 0 ? true : false,
+          success: isSuccess,
           code,
         });
         if (code !== 4000) {
@@ -69,12 +81,14 @@ const useWithdrawTokens = () => {
           setTimeout(() => {
             setNotice(null, {
               timeout: 50000,
-              type:
-                code === 0
-                  ? ("success" as TNoticeType)
-                  : ("error" as TNoticeType),
+              type: isSuccess
+                ? ("withdraw-success" as TNoticeType)
+                : ("withdraw-error" as TNoticeType),
               closeable: true,
               id: makeRandomId(),
+              data: {
+                description: isSuccess ? descriptionSuccess : descriptionFail,
+              },
             });
           }, 1000);
         }

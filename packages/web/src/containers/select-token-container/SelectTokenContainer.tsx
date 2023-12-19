@@ -49,10 +49,10 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
   } else {
     const priceA = parseFloat(a.price.replace(/,/g, ""));
     const priceB = parseFloat(b.price.replace(/,/g, ""));
-    
+
     if (!isNaN(priceA) && !isNaN(priceB) && priceA < priceB) {
       return 1;
-    } else if (isNaN(priceA) && isNaN(priceB) ) {
+    } else if (isNaN(priceA) && isNaN(priceB)) {
       const numberRegex = /\d+/;
       const numberA = numberRegex.test(a.name);
       const numberB = numberRegex.test(b.name);
@@ -63,7 +63,7 @@ const customSortAll = (a: SortedProps, b: SortedProps): number => {
       } else {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
-    } else if (!isNaN(priceA) || isNaN(priceB) ) {
+    } else if (!isNaN(priceA) || isNaN(priceB)) {
       if (priceA === 0 && priceB === 0) {
         if (a.tokenPrice < b.tokenPrice) {
           return 1;
@@ -94,7 +94,14 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   modalRef,
 }) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, balances, updateTokens, updateBalances, tokenPrices, displayBalanceMap } = useTokenData();
+  const {
+    tokens,
+    balances,
+    updateTokens,
+    updateBalances,
+    tokenPrices,
+    displayBalanceMap,
+  } = useTokenData();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -110,16 +117,15 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       setFromSelectToken(true);
       changeToken?.(value);
       close();
-    }
+    },
   });
-  
+
   useEffect(() => {
     updateTokens();
   }, []);
 
   useEffect(() => {
-    if (tokens.length > 0)
-      updateBalances();
+    if (tokens.length > 0) updateBalances();
   }, [tokens]);
 
   const defaultTokens = useMemo(() => {
@@ -127,7 +133,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     const sortedTokenList = temp.sort(customSort);
     return sortedTokenList.slice(0, 4);
   }, [tokens]);
-  
+
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
     const temp: SortedProps[] = tokens.map((item: TokenModel) => {
@@ -139,28 +145,37 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
           tokenPrice: tokenPrice || 0,
         };
       }
-      return {...item, price: BigNumber(tokenPrice).multipliedBy(tokenPrices[item?.path]?.usd || "0").toFormat(), tokenPrice: tokenPrice || 0};
+      return {
+        ...item,
+        price: BigNumber(tokenPrice)
+          .multipliedBy(tokenPrices[item?.path]?.usd || "0")
+          .toFormat(),
+        tokenPrice: tokenPrice || 0,
+      };
     });
     const sortedData = temp.sort(customSortAll);
-    return sortedData.filter(token =>
-      token.name.toLowerCase().includes(lowerKeyword) ||
-      token.symbol.toLowerCase().includes(lowerKeyword) ||
-      token.path.toLowerCase().includes(lowerKeyword)
+    return sortedData.filter(
+      token =>
+        token.name.toLowerCase().includes(lowerKeyword) ||
+        token.symbol.toLowerCase().includes(lowerKeyword) ||
+        token.path.toLowerCase().includes(lowerKeyword),
     );
   }, [keyword, tokens, balances, tokenPrices]);
-  console.log(filteredTokens, "filteredTokens");
-  
-  const selectToken = useCallback((token: TokenModel) => {
-    if (!changeToken) {
-      return;
-    }
-    if (token.logoURI) {
-      changeToken(token);
-      close();
-    } else {
-      openTradingModal(token);
-    }
-  }, [changeToken, openTradingModal]);
+
+  const selectToken = useCallback(
+    (token: TokenModel) => {
+      if (!changeToken) {
+        return;
+      }
+      if (token.logoURI) {
+        changeToken(token);
+        close();
+      } else {
+        openTradingModal(token);
+      }
+    },
+    [changeToken, openTradingModal],
+  );
 
   const changeKeyword = useCallback((keyword: string) => {
     setKeyword(keyword);
@@ -178,8 +193,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   }, []);
 
   useEffect(() => {
-    if (tokens.length > 0)
-      updateBalances();
+    if (tokens.length > 0) updateBalances();
   }, [tokens]);
 
   return (

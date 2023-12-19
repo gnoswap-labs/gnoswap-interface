@@ -102,7 +102,7 @@ export const WithdrawContent = styled.div`
       font-size: 14px;
       font-style: normal;
       font-weight: 400;
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text10};
     }
 
     path {
@@ -113,7 +113,7 @@ export const WithdrawContent = styled.div`
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text10};
     margin-bottom: 8px;
   }
 
@@ -147,6 +147,11 @@ export const WithdrawContent = styled.div`
       font-style: normal;
       font-weight: 500;
       line-height: 130%;
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     .approximately {
@@ -172,11 +177,28 @@ export const WithdrawContent = styled.div`
     }
   }
 
+  .estimate-box {
+    ${mixins.flexbox("row", "center", "space-between")};
+    flex-wrap: wrap;
+
+    width: 100%;
+    padding: 15px;
+    height: 60px;
+
+    background-color: ${({ theme }) => theme.color.background01};
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    border-radius: 8px;
+    ${media.mobile} {
+      padding: 11px;
+    }
+  }
+
   .withdraw-address {
     width: 100%;
     .address-input {
       color: ${({ theme }) => theme.color.text01};
       width: 100%;
+      font-size: 14px;
       
       ::placeholder {
         color: ${({ theme }) => theme.color.text04};
@@ -232,6 +254,10 @@ export const WithdrawContent = styled.div`
     ${media.mobile} {
       ${fonts.p2}
     }
+  }
+
+  .balance-text {
+    cursor: pointer;
   }
 `;
 

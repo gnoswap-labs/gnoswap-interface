@@ -4,6 +4,7 @@ import WalletConnectorButton from "@components/common/wallet-connector-button/Wa
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import { HEADER_NAV } from "@constants/header.constant";
 import { Token } from "@containers/header-container/HeaderContainer";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { AccountModel } from "@models/account/account-model";
 import { DEVICE_TYPE } from "@styles/media";
 import Link from "next/link";
@@ -88,6 +89,8 @@ const Header: React.FC<HeaderProps> = ({
   const callbackDeposit = (value: boolean) => {
     setIsShowDepositModal(value);
   };
+
+  usePreventScroll(isShowDepositModal);
 
   return (
     <>

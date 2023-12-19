@@ -4,6 +4,7 @@ import {
   SHAPE_TYPES,
   skeletonBalanceDetail,
 } from "@constants/skeleton.constant";
+import BigNumber from "bignumber.js";
 import React from "react";
 import {
   WalletBalanceDetailInfoTooltipContent,
@@ -40,15 +41,16 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
           loading ? (
             <div className="value">
               <span
-                css={skeletonBalanceDetail("120px", SHAPE_TYPES.ROUNDED_SQUARE)}
+                css={skeletonBalanceDetail(
+                  "120px",
+                  SHAPE_TYPES.ROUNDED_SQUARE,
+                  2,
+                )}
               />
             </div>
           ) : (
             <span className="value">
-              $
-              {Number(value).toLocaleString("en-US", {
-                maximumFractionDigits: 2,
-              })}
+              ${BigNumber(value).decimalPlaces(2).toFormat()}
             </span>
           )
         ) : (

@@ -12,6 +12,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { convertLargePrice } from "@utils/stake-position-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState } from "react";
@@ -111,7 +112,7 @@ const WithDrawModal: React.FC<Props> = ({
         fromAddress: account?.address,
         toAddress: address,
         token: withdrawInfo,
-        tokenAmount: Number(amount),
+        tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
       },
       withdrawInfo.type,
     );
@@ -137,9 +138,25 @@ const WithDrawModal: React.FC<Props> = ({
   const estimateFeeUSD =
     0.000001 *
     (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0);
+  const estimatePrice =
+    withdrawInfo?.wrappedPath && !!amount && amount !== "0"
+      ? convertLargePrice(
+          BigNumber(+amount)
+            .multipliedBy(
+              Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
+            )
+            .toString(),
+        )
+      : undefined;
 
   const currentAvailableBalance =
     displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null;
+
+  const handleEnterAllBalanceAvailable = () => {
+    if (currentAvailableBalance) {
+      setAmount(`${currentAvailableBalance}`);
+    }
+  };
 
   if (isConfirm) {
     return <WithdrawStatus withdrawResult={result} close={onCancelConfirm} />;
@@ -177,11 +194,16 @@ const WithDrawModal: React.FC<Props> = ({
                 </div>
                 <div className="info">
                   <span className="price-text">
-                    {!Number(amount) ? "-" : `$${amount}`}
+                    {estimatePrice ? `$${estimatePrice}` : "-"}
                   </span>
-                  <span className="balance-text">{`Available: ${
+                  <span
+                    className="balance-text"
+                    onClick={handleEnterAllBalanceAvailable}
+                  >{`Available: ${
                     currentAvailableBalance
-                      ? BigNumber(currentAvailableBalance).toFormat()
+                      ? BigNumber(currentAvailableBalance)
+                          .decimalPlaces(2)
+                          .toFormat()
                       : "-"
                   }`}</span>
                 </div>
@@ -252,7 +274,7 @@ const WithDrawModal: React.FC<Props> = ({
             </BoxDescription>
 
             <WithdrawContent>
-              <div className="withdraw">
+              <div className="estimate-box">
                 <p className="estimate-fee">Estimated Network Fee</p>
                 <p className="tokens-fee">{`${estimateFee} GNOT${
                   estimateFeeUSD !== 0 ? ` ($${estimateFeeUSD})` : ""

@@ -9,7 +9,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { useQuery } from "@tanstack/react-query";
+import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useState } from "react";
 
 export interface BalanceSummaryInfo {
@@ -75,21 +75,39 @@ const WalletBalanceContainer: React.FC = () => {
 
   const availableBalance: number = Object.keys(displayBalanceMap ?? {})
     .map(x => displayBalanceMap[x] ?? 0)
-    .reduce((acc: number, cur: number) => acc + cur, 0);
+    .reduce(
+      (acc: number, cur: number) => BigNumber(acc).plus(cur).toNumber(),
+      0,
+    );
 
   const { stakedBalance, unStakedBalance, claimableRewards } = positions.reduce(
     (acc, cur) => {
       if (cur.staked) {
-        acc.stakedBalance + +cur.stakedUsdValue;
+        acc.stakedBalance = BigNumber(acc.stakedBalance)
+          .plus(cur.stakedUsdValue ?? "0")
+          .toNumber();
       } else {
-        acc.unStakedBalance + +cur.stakedUsdValue;
+        acc.unStakedBalance = BigNumber(acc.unStakedBalance)
+          .plus(cur.stakedUsdValue ?? "0")
+          .toNumber();
       }
 
-      cur.rewards.forEach(x => (acc.claimableRewards += +x.claimableUsdValue));
+      cur.rewards.forEach(x => {
+        acc.claimableRewards = BigNumber(acc.claimableRewards)
+          .plus(x.claimableUsdValue ?? "0")
+          .toNumber();
+      });
       return acc;
     },
     { stakedBalance: 0, unStakedBalance: 0, claimableRewards: 0 },
   );
+
+  const sumTotalBalance = BigNumber(availableBalance)
+    .plus(unStakedBalance)
+    .plus(stakedBalance)
+    .plus(claimableRewards)
+    .decimalPlaces(2)
+    .toFormat();
 
   const closeDeposit = () => {
     setIsShowDepositModal(false);
@@ -114,13 +132,7 @@ const WalletBalanceContainer: React.FC = () => {
       <WalletBalance
         connected={connected}
         balanceSummaryInfo={{
-          amount: `$${(
-            availableBalance +
-            unStakedBalance +
-            stakedBalance
-          ).toLocaleString("en-US", {
-            maximumFractionDigits: 2,
-          })}`,
+          amount: `$${sumTotalBalance}`,
           changeRate: "0.0%",
           loading: loadingTotalBalance,
         }}

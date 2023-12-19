@@ -12,6 +12,7 @@ import {
   SHAPE_TYPES,
   skeletonBalanceDetail,
 } from "@constants/skeleton.constant";
+import BigNumber from "bignumber.js";
 
 interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
@@ -67,18 +68,15 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
                     css={skeletonBalanceDetail(
                       "120px",
                       SHAPE_TYPES.ROUNDED_SQUARE,
+                      2,
                     )}
                   />
                 </div>
               ) : (
                 <span className="value">
-                  $
-                  {Number(balanceDetailInfo.claimableRewards).toLocaleString(
-                    "en-US",
-                    {
-                      maximumFractionDigits: 2,
-                    },
-                  )}
+                  {BigNumber(balanceDetailInfo.claimableRewards)
+                    .decimalPlaces(2)
+                    .toFormat()}
                 </span>
               )
             ) : (

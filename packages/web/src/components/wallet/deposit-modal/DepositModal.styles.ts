@@ -168,7 +168,7 @@ export const DepositLabel = styled.div`
       font-size: 14px;
       font-style: normal;
       font-weight: 400;
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text10};
     }
 
     path {
