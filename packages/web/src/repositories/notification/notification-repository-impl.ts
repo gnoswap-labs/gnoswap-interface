@@ -76,6 +76,12 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     return symbol;
   };
 
+  private replaceUri = (symbol: string, uri: string) => {
+    if (symbol === "WGNOT")
+      return "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg";
+    return uri;
+  };
+
   private getNotificationMessage = (tx: AccountActivity) => {
     const token0Amount = prettyNumber(tx?.token0Amount);
     const token0symbol = this.replaceToken(tx?.token0?.symbol);
@@ -126,10 +132,16 @@ export class NotificationRepositoryImpl implements NotificationRepository {
        **/
       if (removedTxs.includes(tx.txHash)) continue;
 
-      const tokenA = tx.token0;
-      tokenA.symbol = this.replaceToken(tokenA?.symbol);
-      const tokenB = tx.token1;
-      tokenB.symbol = this.replaceToken(tokenB?.symbol);
+      const tokenA = {
+        ...tx.token0,
+        symbol: this.replaceToken(tx.token0?.symbol),
+        logoURI: this.replaceUri(tx.token0?.symbol, tx.token0?.logoURI),
+      };
+      const tokenB = {
+        ...tx.token1,
+        symbol: this.replaceToken(tx.token1?.symbol),
+        logoURI: this.replaceUri(tx.token1?.symbol, tx.token1?.logoURI),
+      };
 
       const transactionDate = dayjs(tx.time);
       const txModel: TransactionModel = {
