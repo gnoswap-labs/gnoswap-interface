@@ -4,5 +4,5 @@ export interface DashboardTokenResponse {
   gnsTotalSupply: string;
   gnsCirculatingSupply: string;
   gnsDailyBlockEmissions: string;
-  gnstotalStaked: string;
+  gnsTotalStaked: string;
 }
