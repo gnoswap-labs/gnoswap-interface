@@ -34,22 +34,18 @@ const SubmitPositionModalContainer = ({
 
   const close = useCallback(() => {
     clearModal();
+    setPositionResult(null);
+    setIsConfirm(false);
   }, [clearModal]);
 
   const onSubmit = useCallback(async () => {
-    setIsConfirm(true);
     const address = account?.address;
     if (!address) {
       return null;
     }
     const lpTokenIds = positions.map(position => position.id);
-
-    setNotice(null, {
-      timeout: 50000,
-      type: "pending",
-      closeable: true,
-      id: makeRandomId(),
-    });
+    setIsConfirm(true);
+    setPositionResult(null);
 
     try {
       const result = await positionRepository.stakePositions({
@@ -63,10 +59,19 @@ const SubmitPositionModalContainer = ({
 
       setNotice(null, {
         timeout: 50000,
-        type: "success" as TNoticeType,
+        type: "pending",
         closeable: true,
         id: makeRandomId(),
       });
+
+      setTimeout(() => {
+        setNotice(null, {
+          timeout: 50000,
+          type: "success" as TNoticeType,
+          closeable: true,
+          id: makeRandomId(),
+        });
+      }, 1000);
     } catch (error) {
       if (error instanceof Error) {
         const { code } = parseJson(error?.message);
@@ -78,13 +83,22 @@ const SubmitPositionModalContainer = ({
         if (code !== 4000) {
           setNotice(null, {
             timeout: 50000,
-            type:
-              code === 0
-                ? ("success" as TNoticeType)
-                : ("error" as TNoticeType),
+            type: "pending",
             closeable: true,
             id: makeRandomId(),
           });
+
+          setTimeout(() => {
+            setNotice(null, {
+              timeout: 50000,
+              type:
+                code === 0
+                  ? ("success" as TNoticeType)
+                  : ("error" as TNoticeType),
+              closeable: true,
+              id: makeRandomId(),
+            });
+          }, 1000);
         }
       }
     }
