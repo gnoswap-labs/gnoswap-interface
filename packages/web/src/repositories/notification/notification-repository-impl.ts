@@ -79,8 +79,8 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   private getNotificationMessage = (tx: AccountActivity) => {
     const token0Amount = prettyNumber(tx?.token0Amount);
     const token1Amount = prettyNumber(tx?.token1Amount);
-    const token0symbol = tx?.token0?.symbol;
-    const token1symbol = tx?.token1?.symbol;
+    const token0symbol = this.replaceToken(tx?.token0?.symbol);
+    const token1symbol = this.replaceToken(tx?.token1?.symbol);
 
     switch (tx.actionType) {
       case "SWAP":
@@ -125,11 +125,16 @@ export class NotificationRepositoryImpl implements NotificationRepository {
        **/
       if (removedTxs.includes(tx.txHash)) continue;
 
+      const tokenA = tx.token0;
+      tokenA.symbol = this.replaceToken(tokenA?.symbol);
+      const tokenB = tx.token1;
+      tokenA.symbol = this.replaceToken(tokenB?.symbol);
+
       const transactionDate = dayjs(tx.time);
       const txModel: TransactionModel = {
         txType: tx.token1.name ? 1 : 0,
         txHash: tx.txHash,
-        tokenInfo: { tokenA: tx.token0, tokenB: tx.token1 },
+        tokenInfo: { tokenA, tokenB },
         status: "SUCCESS",
         createdAt: tx.time,
         content: this.getNotificationMessage(tx),

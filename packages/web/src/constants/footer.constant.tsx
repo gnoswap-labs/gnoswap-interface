@@ -57,7 +57,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "Incentivize Pool",
-        path: "/earn/pool/1/incentivize",
+        path: "/earn/incentivize",
         newTab: false,
       },
     ],

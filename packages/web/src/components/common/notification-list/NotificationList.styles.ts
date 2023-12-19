@@ -149,7 +149,8 @@ export const DoubleLogoWrapperTest = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   ${mixins.posTopCenterLeft("24px")};
   border-radius: 50%;
-  img {
+  img,
+  div {
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -221,7 +222,8 @@ export const DoubleLogo = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   ${mixins.posTopCenterLeft("12px")};
   border-radius: 50%;
-  img {
+  img,
+  div {
     border-radius: 50%;
     width: 24px;
     height: 24px;

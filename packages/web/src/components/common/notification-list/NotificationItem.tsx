@@ -14,6 +14,7 @@ import {
 } from "./NotificationList.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import React from "react";
+import MissingLogo from "../missing-logo/MissingLogo";
 
 interface ItemProps {
   groups: TransactionGroupsType;
@@ -40,28 +41,28 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
               <div className="coin-info">
                 {item.txType === 1 ? (
                   <DoubleLogo>
-                    <img
-                      src={
-                        item?.tokenInfo?.tokenA?.logoURI || "/fallback-logo.svg"
-                      }
-                      alt={item?.tokenInfo?.tokenB?.symbol}
+                    <MissingLogo
+                      symbol={item?.tokenInfo?.tokenA?.symbol}
+                      url={item?.tokenInfo?.tokenA?.logoURI}
+                      width={24}
+                      mobileWidth={24}
                     />
-                    <img
-                      src={
-                        item?.tokenInfo?.tokenB?.logoURI || "/fallback-logo.svg"
-                      }
-                      alt={item?.tokenInfo?.tokenA?.symbol}
-                      className="right-logo"
-                    />
+                    <div className="right-logo">
+                      <MissingLogo
+                        symbol={item?.tokenInfo?.tokenB?.symbol}
+                        url={item?.tokenInfo?.tokenB?.logoURI}
+                        width={24}
+                        mobileWidth={24}
+                      />
+                    </div>
                   </DoubleLogo>
                 ) : (
                   <DoubleLogo>
-                    <img
-                      src={
-                        item?.tokenInfo?.tokenA?.logoURI || "/fallback-logo.svg"
-                      }
-                      alt="logo"
-                      className="summary-logo-test"
+                    <MissingLogo
+                      symbol={item?.tokenInfo?.tokenA?.symbol}
+                      url={item?.tokenInfo?.tokenA?.logoURI}
+                      width={24}
+                      mobileWidth={24}
                     />
                   </DoubleLogo>
                 )}
@@ -90,22 +91,28 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
           >
             {item.txType === 1 ? (
               <DoubleLogoWrapperTest>
-                <img
-                  src={item?.tokenInfo?.tokenA?.logoURI || "/fallback-logo.svg"}
-                  alt={item?.tokenInfo?.tokenA?.symbol}
+                <MissingLogo
+                  symbol={item?.tokenInfo?.tokenA?.symbol}
+                  url={item?.tokenInfo?.tokenA?.logoURI}
+                  width={24}
+                  mobileWidth={24}
                 />
-                <img
-                  src={item?.tokenInfo?.tokenB?.logoURI || "/fallback-logo.svg"}
-                  alt={item?.tokenInfo?.tokenB?.symbol}
-                  className="right-logo"
-                />
+                <div className="right-logo">
+                  <MissingLogo
+                    symbol={item?.tokenInfo?.tokenB?.symbol}
+                    url={item?.tokenInfo?.tokenB?.logoURI}
+                    width={24}
+                    mobileWidth={24}
+                  />
+                </div>
               </DoubleLogoWrapperTest>
             ) : (
               <DoubleLogoWrapperTest>
-                <img
-                  src={item?.tokenInfo?.tokenA?.logoURI || "/fallback-logo.svg"}
-                  alt="logo"
-                  className="summary-logo-test"
+                <MissingLogo
+                  symbol={item?.tokenInfo?.tokenA?.symbol}
+                  url={item?.tokenInfo?.tokenA?.logoURI}
+                  width={24}
+                  mobileWidth={24}
                 />
               </DoubleLogoWrapperTest>
             )}
