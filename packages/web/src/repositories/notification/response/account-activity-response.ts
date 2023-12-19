@@ -1,6 +1,16 @@
+type TxType =
+  | "SWAP"
+  | "ADD"
+  | "REMOVE"
+  | "STAKE"
+  | "UNSTAKE"
+  | "CLAIM"
+  | "WITHDRAW"
+  | "DEPOSIT";
+
 export interface AccountActivity {
   txHash: string;
-  actionType: string;
+  actionType: TxType | (string & {});
   token0: OnchainToken;
   token1: OnchainToken;
   token0Amount: string;

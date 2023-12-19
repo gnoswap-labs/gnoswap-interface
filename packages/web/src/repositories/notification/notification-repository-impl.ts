@@ -78,8 +78,9 @@ export class NotificationRepositoryImpl implements NotificationRepository {
 
   private getNotificationMessage = (tx: AccountActivity) => {
     const token0Amount = prettyNumber(tx?.token0Amount);
-    const token1Amount = prettyNumber(tx?.token1Amount);
     const token0symbol = this.replaceToken(tx?.token0?.symbol);
+
+    const token1Amount = prettyNumber(tx?.token1Amount);
     const token1symbol = this.replaceToken(tx?.token1?.symbol);
 
     switch (tx.actionType) {
@@ -128,7 +129,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       const tokenA = tx.token0;
       tokenA.symbol = this.replaceToken(tokenA?.symbol);
       const tokenB = tx.token1;
-      tokenA.symbol = this.replaceToken(tokenB?.symbol);
+      tokenB.symbol = this.replaceToken(tokenB?.symbol);
 
       const transactionDate = dayjs(tx.time);
       const txModel: TransactionModel = {
