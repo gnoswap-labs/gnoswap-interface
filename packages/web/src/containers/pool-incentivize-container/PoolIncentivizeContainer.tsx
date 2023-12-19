@@ -11,6 +11,7 @@ import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useGetPoolList } from "src/react-query/pools";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export const dummyDisclaimer =
   "This feature enables you to provide incentives as staking rewards for a specific liquidity pool. Before you proceed, ensure that you understand the mechanics of external incentives and acknowledge that you cannot withdraw the rewards once you complete this step.<br /><br />The incentives you add will be automatically distributed by the contract and may draw more liquidity providers.";
@@ -32,7 +33,7 @@ const PoolIncentivizeContainer: React.FC = () => {
   const tokenAmountInput = useTokenAmountInput(token);
   const { updateTokenPrices } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
-  console.log(pools, "poolspools");
+  const { getGnotPath } = useGnotToGnot();
   
   useEffect(() => {
     setDataModal(tokenAmountInput);
@@ -56,7 +57,21 @@ const PoolIncentivizeContainer: React.FC = () => {
   const selectPool = useCallback((poolId: string) => {
     const pool = pools.find(pool => pool.id === poolId);
     if (pool) {
-      setCurrentPool(pool);
+      setCurrentPool({
+        ...pool,
+        tokenA: {
+          ...pool.tokenA,
+          path: getGnotPath(pool.tokenA).path,
+          symbol: getGnotPath(pool.tokenA).symbol,
+          logoURI: getGnotPath(pool.tokenA).logoURI,
+        },
+        tokenB: {
+          ...pool.tokenB,
+          path: getGnotPath(pool.tokenB).path,
+          symbol: getGnotPath(pool.tokenB).symbol,
+          logoURI: getGnotPath(pool.tokenB).logoURI,
+        },
+      });
     }
   }, [pools, setCurrentPool]);
 

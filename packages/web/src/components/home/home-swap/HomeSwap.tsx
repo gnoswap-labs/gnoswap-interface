@@ -75,6 +75,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
         swapTokenInfo.tokenABalance.replace(/,/g, ""),
       ).toString();
       setFromAmount(formatValue);
+      changeTokenAAmount(formatValue);
     }
   }, [swapTokenInfo.tokenABalance, connected, setFromAmount]);
 

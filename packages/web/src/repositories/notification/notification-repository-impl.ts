@@ -91,21 +91,21 @@ export class NotificationRepositoryImpl implements NotificationRepository {
 
     switch (tx.actionType) {
       case "SWAP":
-        return `Swapped ${token0Amount} ${token0symbol} for ${token1Amount} ${token1symbol}`;
+        return `Swapped <span>${token0Amount}</span> <span>${token0symbol}</span> for <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "ADD":
-        return `Added ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Added <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "REMOVE":
-        return `Removed ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Removed <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "STAKE":
-        return `Staked ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Staked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "UNSTAKE":
-        return `Unstaked ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Unstaked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "CLAIM":
-        return `Claimed ${token0Amount} ${token0symbol}`;
+        return `Claimed <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       case "WITHDRAW":
-        return `Sent ${token0Amount} ${token0symbol}`;
+        return `Sent <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       case "DEPOSIT":
-        return `Received ${token0Amount} ${token0symbol}`;
+        return `Received <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       default:
         return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumberFloatInteger(
           tx.token0Amount,

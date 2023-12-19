@@ -81,7 +81,8 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   const { getGnotPath } = useGnotToGnot();
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
-    return selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
+    const temp = selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
+    return temp;
   }, [selectedPool]);
   console.log(selectedItem, "selectedItem");
   

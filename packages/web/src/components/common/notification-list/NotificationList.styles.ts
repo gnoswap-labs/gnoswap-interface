@@ -119,7 +119,7 @@ export const TxsSummaryItem = styled.div`
   position: relative;
   width: 100%;
   min-height: 40px;
-  padding: 8px 24px;
+  padding: 12px 24px;
   height: auto;
   cursor: pointer;
   ${fonts.body12};
@@ -130,6 +130,9 @@ export const TxsSummaryItem = styled.div`
   .summary-content {
     width: 100%;
     padding: 0px 10px 0px 44px;
+    span {
+      font-weight: 500;
+    }
   }
   .status-icon {
     margin-left: 8px;

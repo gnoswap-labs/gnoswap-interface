@@ -72,6 +72,8 @@ export const useWallet = () => {
     const adena = AdenaClient.createAdenaClient();
     if (adena !== null) {
       adena.initAdena();
+    } else {
+      window.open("https://adena.app/");
     }
     setWalletClient(adena);
   }, [setWalletClient, setLoadingConnect, accountRepository]);

@@ -79,7 +79,6 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[tokenA.priceId].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
-  console.log(tokenAUSD, "tokenAUSD");
   
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
