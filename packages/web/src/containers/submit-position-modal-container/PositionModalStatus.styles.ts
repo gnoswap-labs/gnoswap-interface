@@ -32,12 +32,12 @@ export const ConfirmModal = styled.div`
   &.modal-body-wrapper {
     gap: 24px;
     ${media.mobile} {
-      padding: 12px 0px;
+      /* padding: 12px 0px; */
     }
   }
   ${media.mobile} {
     width: 328px;
-    padding: 15px 0px;
+    padding: 16px 0px;
   }
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -45,7 +45,7 @@ export const ConfirmModal = styled.div`
     padding: 0px 23px;
     gap: 16px;
     ${media.mobile} {
-      padding: 0px 15px;
+      padding: 0px 12px;
     }
     .modal-header {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -176,7 +176,7 @@ export const ConfirmModal = styled.div`
       padding-bottom: 36px;
     }
     ${media.mobile} {
-      gap: 12px;
+      gap: 24px;
       .view-transaction {
         padding-bottom: 12px;
       }
