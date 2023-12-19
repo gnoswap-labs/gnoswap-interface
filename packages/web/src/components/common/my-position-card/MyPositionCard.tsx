@@ -21,6 +21,7 @@ interface MyPositionCardProps {
   movePoolDetail: (id: string) => void;
   mobile: boolean;
   currentIndex?: number;
+  themeKey: "dark" | "light";
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
@@ -28,6 +29,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   movePoolDetail,
   mobile,
   currentIndex,
+  themeKey,
 }) => {
   const GRAPH_WIDTH = mobile ? 226 : 258;
   const GRAPH_HEIGHT = 80;
@@ -194,6 +196,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 tokenB={tokenB}
                 isHiddenStart={isHiddenStart}
                 currentIndex={currentIndex}
+                themeKey={themeKey}
               />
             </div>
             <div className="min-max-price">

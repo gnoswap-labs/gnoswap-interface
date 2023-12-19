@@ -14,11 +14,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSwap } from "./use-swap";
 import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 import { TNoticeType } from "src/context/NoticeContext";
-import { makeRandomId } from "@utils/common";
-import { matchInputNumber, numberToUSD } from "@utils/number-utils";
+import { checkGnotPath, makeRandomId } from "@utils/common";
+import { matchInputNumber } from "@utils/number-utils";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { formatUsdNumber } from "@utils/stake-position-utils";
 
 export const useSwapHandler = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -111,20 +112,20 @@ export const useSwapHandler = () => {
   }, [displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
-    if (!tokenA || !tokenPrices[tokenA.path]) {
+    if (!tokenA || !tokenPrices[checkGnotPath(tokenA.path)]) {
       return Number.NaN;
     }
     return BigNumber(tokenAAmount)
-      .multipliedBy(tokenPrices[tokenA.path].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenA.path)].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (!tokenB || !tokenPrices[tokenB.path]) {
+    if (!tokenB || !tokenPrices[checkGnotPath(tokenB.path)]) {
       return Number.NaN;
     }
     return BigNumber(tokenBAmount)
-      .multipliedBy(tokenPrices[tokenB.path].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenB.path)].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
 
@@ -193,12 +194,12 @@ export const useSwapHandler = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: numberToUSD(tokenAUSD),
+      tokenAUSDStr: formatUsdNumber(tokenAUSD.toString()),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: numberToUSD(tokenBUSD),
+      tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
       direction: type,
       slippage,
     };

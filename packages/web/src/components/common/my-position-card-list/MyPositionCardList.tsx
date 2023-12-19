@@ -18,6 +18,7 @@ interface MyPositionCardListProps {
   showPagination: boolean;
   showLoadMore: boolean;
   width: number;
+  themeKey: "dark" | "light";
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -32,13 +33,14 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   onScroll,
   showPagination,
   width,
+  themeKey,
 }) => (
   <CardListWrapper>
     <GridWrapper ref={divRef} onScroll={onScroll}>
       {
         positions.length > 0 &&
         positions.map((position, idx) => (
-          <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} />
+          <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} themeKey={themeKey}/>
         ))}
       {isFetched &&
         positions.length > 0 && positions.length < 4 &&

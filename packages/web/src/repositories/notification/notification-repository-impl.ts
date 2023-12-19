@@ -7,7 +7,7 @@ import { AccountActivity } from "./response";
 import { TransactionGroupsType } from "@components/common/notification-button/NotificationButton";
 import { TransactionModel } from "@models/account/account-history-model";
 import dayjs from "dayjs";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumberFloatInteger } from "@utils/number-utils";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient;
@@ -83,31 +83,31 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   };
 
   private getNotificationMessage = (tx: AccountActivity) => {
-    const token0Amount = prettyNumber(tx?.token0Amount);
+    const token0Amount = prettyNumberFloatInteger(tx?.token0Amount);
     const token0symbol = this.replaceToken(tx?.token0?.symbol);
 
-    const token1Amount = prettyNumber(tx?.token1Amount);
+    const token1Amount = prettyNumberFloatInteger(tx?.token1Amount);
     const token1symbol = this.replaceToken(tx?.token1?.symbol);
 
     switch (tx.actionType) {
       case "SWAP":
-        return `Swapped ${token0Amount} ${token0symbol} for ${token1Amount} ${token1symbol}`;
+        return `Swapped <span>${token0Amount}</span> <span>${token0symbol}</span> for <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "ADD":
-        return `Added ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Added <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "REMOVE":
-        return `Removed ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Removed <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "STAKE":
-        return `Staked ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Staked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "UNSTAKE":
-        return `Unstaked ${token0Amount} ${token0symbol} and ${token1Amount} ${token1symbol}`;
+        return `Unstaked <span>${token0Amount}</span> <span>${token0symbol}</span> and <span>${token1Amount}</span> <span>${token1symbol}</span>`;
       case "CLAIM":
-        return `Claimed ${token0Amount} ${token0symbol}`;
+        return `Claimed <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       case "WITHDRAW":
-        return `Sent ${token0Amount} ${token0symbol}`;
+        return `Sent <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       case "DEPOSIT":
-        return `Received ${token0Amount} ${token0symbol}`;
+        return `Received <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       default:
-        return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumber(
+        return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumberFloatInteger(
           tx.token0Amount,
         )} ${this.replaceToken(tx.token0.symbol ?? tx.token1.symbol)}`;
     }

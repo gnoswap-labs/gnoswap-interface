@@ -5,12 +5,13 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
-import { numberToUSD } from "@utils/number-utils";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
+import { formatUsdNumber } from "@utils/stake-position-utils";
+import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 const GNOS_PATH = "gno.land/r/demo/gns" || "";
 
 const TOKEN_A: TokenModel = {
@@ -24,7 +25,7 @@ const TOKEN_A: TokenModel = {
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "native",
-  priceId: "gnot",
+  priceId: WRAPPED_GNOT_PATH,
 };
 const TOKEN_B: TokenModel = {
   chainId: "dev",
@@ -43,7 +44,7 @@ const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, displayBalanceMap } = useTokenData();
   const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
-  const [tokenAAmount, setTokenAAmount] = useState<string>("1000");
+  const [tokenAAmount, setTokenAAmount] = useState<string>("");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
   const [tokenBAmount, setTokenBAmount] = useState<string>("0");
   const [swapDirection, setSwapDirection] =
@@ -69,7 +70,7 @@ const HomeSwapContainer: React.FC = () => {
     }
     return "0";
   }, [connected, displayBalanceMap, tokenB]);
-
+  
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[tokenA.priceId]) {
       return Number.NaN;
@@ -78,7 +79,7 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[tokenA.priceId].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
-
+  
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
       return Number.NaN;
@@ -94,12 +95,12 @@ const HomeSwapContainer: React.FC = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: numberToUSD(tokenAUSD),
+      tokenAUSDStr: formatUsdNumber(tokenAUSD.toString()),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: numberToUSD(tokenBUSD),
+      tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
       direction: swapDirection,
       slippage,
     };

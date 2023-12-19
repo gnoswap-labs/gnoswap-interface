@@ -7,8 +7,8 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
-import { useRouter } from "next/router";
-import { encriptId } from "@utils/common";
+import { useAtom } from "jotai";
+import { EarnState } from "@states/index";
 
 interface SelectTokenIncentivizeContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -34,9 +34,7 @@ const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerP
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const router = useRouter();
-  const poolPath = router.query["pool-path"];
-  const currentPath = encriptId(poolPath as string);
+  const [currentPool] = useAtom(EarnState.pool);
   
   useEffect(() => {
     updateTokens();
@@ -53,11 +51,10 @@ const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerP
 
   const filteredTokens = useMemo(() => {
     const temp = tokens.sort(customSort);
-    const splitPath: string[] = currentPath?.split(":") || [];
-    const token1 = tokens.filter(item => item.path === splitPath[0] && !item.symbol.includes("GNOT") && item.symbol !== "GNS");
-    const token2 = tokens.filter(item => item.path === splitPath[1] && !item.symbol.includes("GNOT") && item.symbol !== "GNS");
+    const token1 = tokens.filter(item => item.path === currentPool?.tokenA.path && !item.symbol.includes("GNOT") && item.symbol !== "GNS");
+    const token2 = tokens.filter(item => item.path === currentPool?.tokenB.path && !item.symbol.includes("GNOT") && item.symbol !== "GNS");
     return [...temp.slice(0, 2), ...token1, ...token2];
-  }, [tokens, currentPath]);
+  }, [tokens, currentPool]);
 
   const selectToken = useCallback((token: TokenModel) => {
     if (!changeToken) {

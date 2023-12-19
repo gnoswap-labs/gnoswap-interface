@@ -67,7 +67,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
     <div className="row">
       <MissingLogo symbol={swapSummaryInfo.tokenA.symbol} url={swapSummaryInfo.tokenA.logoURI} className="token-logo" width={24} mobileWidth={24}/>
       <div className="left-box">
-        <div className="left-badge">{swapRouteInfo.version}</div>
+        {/* {routeInfos.length < 3 && <div className="left-badge">{swapRouteInfo.version}</div>} */}
         <span>{weightStr}</span>
       </div>
       <DotLine />
@@ -83,7 +83,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
             />
             <h1>{routeInfo.fee}</h1>
           </div>
-          <DotLine />
+          {index < 2 && <DotLine />}
         </React.Fragment>
       ))}
       <MissingLogo symbol={swapSummaryInfo.tokenB.symbol} url={swapSummaryInfo.tokenB.logoURI} className="token-logo" width={24} mobileWidth={24}/>

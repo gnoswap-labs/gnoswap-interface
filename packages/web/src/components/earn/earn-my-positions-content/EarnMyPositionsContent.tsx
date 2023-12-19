@@ -20,6 +20,7 @@ export interface EarnMyPositionContentProps {
   width: number;
   loadMore: boolean;
   onClickLoadMore?: () => void;
+  themeKey: "dark" | "light";
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -39,6 +40,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   width,
   loadMore,
   onClickLoadMore,
+  themeKey,
 }) => {
   if (!connected || isSwitchNetwork) {
     return (
@@ -67,6 +69,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       width={width}
       loadMore={loadMore}
       onClickLoadMore={onClickLoadMore}
+      themeKey={themeKey}
     />
   );
 };

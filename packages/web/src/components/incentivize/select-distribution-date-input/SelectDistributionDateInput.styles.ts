@@ -55,15 +55,15 @@ export const SelectDistributionDateInputWrapper = styled.div`
 
     & .calendar-wrapper {
       position: absolute;
-      height: 0;
+      max-height: 0;
       top: 5px;
       width: 100%;
       min-width: 315px;
       z-index: 10;
-      height: 0;
+      max-height: 0;
       display: none;
       ${media.mobile} {
-        transition: height 0.5s ease;
+        transition: max-height 0.5s ease;
         position: fixed;
         top: auto;
         bottom: 0;
@@ -76,9 +76,9 @@ export const SelectDistributionDateInputWrapper = styled.div`
     }
     & .open {
       display: block;
-      height: 305px;
+      max-height: 305px;
       ${media.mobile} {
-      height: 305px;
+      max-height: 305px;
       }
     }
   }

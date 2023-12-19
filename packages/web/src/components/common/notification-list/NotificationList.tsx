@@ -24,7 +24,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onClearAll,
 }) => {
   const listRef = useRef<HTMLDivElement | null>(null);
-
+  
   return (
     <>
       <NotificationListWrapper

@@ -54,18 +54,9 @@ const customSort = (a: PoolSelectItemInfo, b: PoolSelectItemInfo) => {
   } else if (!isAGnotGns && isBGnotGns) {
     return 1;
   } else {
-    if (isAGnotGns && isBGnotGns) {
-      const feeOrder = [100, 500, 3000, 10000];
-      const feeA = parseInt(a.fee, 10);
-      const feeB = parseInt(b.fee, 10);
-      const indexA = feeOrder.indexOf(feeA);
-      const indexB = feeOrder.indexOf(feeB);
-      return indexA - indexB;
-    } else {
-      const liquidityA = parseFloat(a.liquidityAmount);
-      const liquidityB = parseFloat(b.liquidityAmount);
-      return liquidityB - liquidityA;
-    }
+    const liquidityA = parseFloat(a.liquidityAmount);
+    const liquidityB = parseFloat(b.liquidityAmount);
+    return liquidityB - liquidityA;
   }
 };
 
@@ -90,9 +81,11 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   const { getGnotPath } = useGnotToGnot();
 
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
-    return selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
+    const temp = selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
+    return temp;
   }, [selectedPool]);
-
+  console.log(selectedItem, "selectedItem");
+  
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
     return pools.map(PoolMapper.toPoolSelectItemInfo).map((item: PoolSelectItemInfo) => {
       return {
@@ -101,16 +94,19 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
           ...item.tokenA,
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
+          path: getGnotPath(item.tokenA).path,
         },
         tokenB: {
           ...item.tokenB,
           symbol: getGnotPath(item.tokenB).symbol,
           logoURI: getGnotPath(item.tokenB).logoURI,
+          path: getGnotPath(item.tokenB).path,
         },
       };
     }).sort(customSort);
   }, [pools]);
-
+  console.log(pools, "pools");
+  
   return (
     <PoolIncentivizeWrapper>
       <h3 className="title">Incentivize Pool</h3>

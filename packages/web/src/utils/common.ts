@@ -1,5 +1,6 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { convertLargePrice } from "./stake-position-utils";
+import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 
 export function wait<T>(
   runner: () => Promise<T>,
@@ -158,3 +159,11 @@ export function randomData() {
   }
   return temp;
 }
+
+export const checkGnotPath = (path: string) => {
+  if (path === "gnot") {
+    return WRAPPED_GNOT_PATH;
+  } else {
+    return path;
+  }
+};
