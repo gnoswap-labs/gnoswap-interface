@@ -6,7 +6,7 @@ import {
 } from "@repositories/wallet/request";
 import { makeRandomId, parseJson } from "@utils/common";
 import { useState } from "react";
-import { TNoticeType } from "src/context/NoticeContext";
+import { TNoticeType } from "@context/NoticeContext";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {

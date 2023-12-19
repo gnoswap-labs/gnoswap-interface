@@ -26,8 +26,6 @@ export interface TokenModel {
 
   createdAt: string;
 
-  createdat?: string;
-
   isWrappedGasToken?: boolean;
 
   isGasToken?: boolean;

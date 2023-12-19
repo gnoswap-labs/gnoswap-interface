@@ -3,7 +3,7 @@ import {
   INoticeContext,
   NoticeContext,
   TNoticeType,
-} from "src/context/NoticeContext";
+} from "@context/NoticeContext";
 import IconClose from "../icons/IconCancel";
 import IconFailed from "../icons/IconFailed";
 import IconNewTab from "../icons/IconNewTab";
