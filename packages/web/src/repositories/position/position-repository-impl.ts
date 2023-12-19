@@ -100,7 +100,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
     const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
     if (!hash) {
-      throw new Error(`${result}`);
+      throw new Error(JSON.stringify(result));
     }
     return hash;
   };

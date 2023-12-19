@@ -9,10 +9,7 @@ export interface Props {
   selectedIds: string[];
 }
 
-export const useSubmitPositionModal = ({
-  positions,
-  selectedIds,
-}: Props) => {
+export const useSubmitPositionModal = ({ positions, selectedIds }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -23,7 +20,7 @@ export const useSubmitPositionModal = ({
   const openModal = useCallback(() => {
     setOpenedModal(true);
     setModalContent(
-      <SubmitPositionModalContainer positions={selectedPositions} />
+      <SubmitPositionModalContainer positions={selectedPositions} />,
     );
   }, [selectedPositions, setModalContent, setOpenedModal]);
 

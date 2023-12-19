@@ -7,7 +7,11 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { numberToUSD } from "@utils/number-utils";
 import React, { useCallback, useMemo } from "react";
-import { Divider, SubmitPositionModalWrapper, ToolTipContentWrapper } from "./SubmitPositionModal.styles";
+import {
+  Divider,
+  SubmitPositionModalWrapper,
+  ToolTipContentWrapper,
+} from "./SubmitPositionModal.styles";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -15,9 +19,16 @@ interface Props {
   onSubmit: () => void;
 }
 
-const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
+const SubmitPositionModal: React.FC<Props> = ({
+  positions,
+  close,
+  onSubmit,
+}) => {
   const totalLiquidityUSD = useMemo(() => {
-    const totalLiquidity = positions.reduce((accum, position) => accum + Number(position.positionUsdValue), 0);
+    const totalLiquidity = positions.reduce(
+      (accum, position) => accum + Number(position.positionUsdValue),
+      0,
+    );
     return numberToUSD(totalLiquidity);
   }, [positions]);
 
@@ -43,9 +54,13 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                   Staking APR
                   <Tooltip
                     placement="top"
-                    FloatingContent={<ToolTipContentWrapper>
-                      The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration.
-                    </ToolTipContentWrapper>}
+                    FloatingContent={
+                      <ToolTipContentWrapper>
+                        The estimated APR range is calculated by applying a
+                        dynamic multiplier to your staked position, based on the
+                        staking duration.
+                      </ToolTipContentWrapper>
+                    }
                   >
                     <IconInfo />
                   </Tooltip>
@@ -68,9 +83,15 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="position-bar" text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
+                    <Badge
+                      className="position-bar"
+                      text={`${Number(position.pool.fee) / 10000}%`}
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                    />
                   </div>
-                  <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
+                  <div className="value">
+                    {numberToUSD(Number(position.positionUsdValue))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -79,9 +100,7 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
           <div className="box-item">
             <div className="item-content">
               <div>
-                <div className="label-large">
-                  Total Amount
-                </div>
+                <div className="label-large">Total Amount</div>
                 <div className="value-large">{totalLiquidityUSD}</div>
               </div>
             </div>
