@@ -35,6 +35,7 @@ const WalletBalanceContainer: React.FC = () => {
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
+  const [loadingBalance, setLoadingBalance] = useState(false);
 
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
@@ -60,8 +61,15 @@ const WalletBalanceContainer: React.FC = () => {
 
   const claimAll = useCallback(() => {}, []);
 
-  const { displayBalanceMap, loadingBalance } = useTokenData();
+  const { displayBalanceMap, updateBalances } = useTokenData();
   const { positions, loading: loadingPositions } = usePositionData();
+
+  useEffect(() => {
+    setLoadingBalance(true);
+    updateBalances().finally(() => {
+      setLoadingBalance(false);
+    });
+  }, [connected]);
 
   const loadingTotalBalance = loadingBalance || loadingPositions;
 

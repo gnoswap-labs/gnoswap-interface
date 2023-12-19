@@ -13,6 +13,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { addressValidationCheck } from "@utils/validation-utils";
+import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState } from "react";
 import WithdrawStatus from "./confirm-withdraw-modal/WithdrawStatusModal";
 import useWithdrawTokens from "./useWithdrawTokens";
@@ -78,7 +79,7 @@ const WithDrawModal: React.FC<Props> = ({
   } = useWithdrawTokens();
 
   const { account } = useWallet();
-  const { tokens, tokenPrices } = useTokenData();
+  const { tokens, tokenPrices, displayBalanceMap } = useTokenData();
 
   useEscCloseModal(close);
   usePositionModal(modalRef);
@@ -116,8 +117,6 @@ const WithDrawModal: React.FC<Props> = ({
     );
   };
 
-  console.log(account?.address);
-
   const onCancelConfirm = useCallback(() => {
     setIsConfirm(false);
     setResult(null);
@@ -138,6 +137,9 @@ const WithDrawModal: React.FC<Props> = ({
   const estimateFeeUSD =
     0.000001 *
     (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0);
+
+  const currentAvailableBalance =
+    displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null;
 
   if (isConfirm) {
     return <WithdrawStatus withdrawResult={result} close={onCancelConfirm} />;
@@ -177,7 +179,11 @@ const WithDrawModal: React.FC<Props> = ({
                   <span className="price-text">
                     {!Number(amount) ? "-" : `$${amount}`}
                   </span>
-                  <span className="balance-text">Available: -</span>
+                  <span className="balance-text">{`Available: ${
+                    currentAvailableBalance
+                      ? BigNumber(currentAvailableBalance).toFormat()
+                      : "-"
+                  }`}</span>
                 </div>
               </div>
             </WithdrawContent>

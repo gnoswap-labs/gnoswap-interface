@@ -205,6 +205,7 @@ const DepositModal: React.FC<Props> = ({
             </BoxDescription>
 
             <Button
+              onClick={close}
               text="Close"
               className="btn-deposit"
               style={{
