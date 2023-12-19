@@ -6,6 +6,7 @@ import { Z_INDEX } from "@styles/zIndex";
 
 export interface NotificationProps {
   width?: number;
+  emptyData?: boolean;
 }
 
 export const NotificationListWrapper = styled.div<NotificationProps>`
@@ -21,22 +22,26 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
   border-radius: 8px;
   z-index: ${Z_INDEX.modal};
   right: ${({ width }) => {
-    return width && width > 1920 ? "-250px" : width && width > 1440 ? `-${(width-1440)/2 + 10}px` : "-10px";
+    return width && width > 1920
+      ? "-250px"
+      : width && width > 1440
+      ? `-${(width - 1440) / 2 + 10}px`
+      : "-10px";
   }};
   left: ${({ width }) => {
     return width && width < 768 && "0px";
   }};
   ${media.tablet} {
     top: 42px;
-    right: -10px;
+    right: 0;
     height: calc(100vh - 112px);
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;
     width: 100%;
-    height: 426px;
-    top: calc(100vh - 426px);
+    height: ${({ emptyData }) => (emptyData ? "157px" : "426px")};
+    top: calc(100vh - ${({ emptyData }) => (emptyData ? "157px" : "426px")});
     padding: 24px 0px;
     min-width: 360px;
   }
@@ -73,6 +78,13 @@ export const ClearButton = styled.button`
   color: ${({ theme }) => theme.color.text04};
   &:hover {
     color: ${({ theme }) => theme.color.text03};
+  }
+  &:disabled {
+    &:hover {
+      cursor: not-allowed;
+      ${({ theme }) => theme.color.text04};
+    }
+    color: ${({ theme }) => theme.color.text04};
   }
 `;
 
@@ -120,7 +132,7 @@ export const TxsSummaryItem = styled.div`
     padding: 0px 10px 0px 44px;
   }
   .status-icon {
-    margin-left: auto;
+    margin-left: 8px;
   }
   .success-icon * {
     fill: ${({ theme }) => theme.color.green01};
@@ -137,8 +149,12 @@ export const DoubleLogoWrapperTest = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   ${mixins.posTopCenterLeft("24px")};
   border-radius: 50%;
-  img {
+  img,
+  div {
     border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1/1;
   }
   .right-logo {
     margin-left: -12px;
@@ -147,11 +163,16 @@ export const DoubleLogoWrapperTest = styled.div`
 
 export const NoDataText = styled.span`
   ${mixins.flexbox("row", "center", "center")};
-  ${fonts.body9};
+  ${fonts.body11};
   color: ${({ theme }) => theme.color.text04};
   padding: 0px 24px;
   width: 100%;
   height: 34px;
+  margin-top: 100px;
+
+  ${media.tablet} {
+    margin-top: 25px;
+  }
 `;
 
 export const TransactionItemsWrap = styled.div`
@@ -161,6 +182,11 @@ export const TransactionItemsWrap = styled.div`
   width: 100%;
   cursor: pointer;
   padding: 0px 12px;
+
+  ${media.mobile} {
+    margin-top: 4px;
+    min-height: 40px;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.color.hover02};
   }
@@ -174,8 +200,16 @@ export const TransactionItemsWrap = styled.div`
       .content-wrap {
         ${mixins.flexbox("row", "center", "flex-start")};
         margin-left: 44px;
+
+        ${media.mobile} {
+          margin-left: 56px;
+        }
       }
     }
+  }
+
+  .status-icon {
+    margin-left: 8px;
   }
   .success-icon * {
     fill: ${({ theme }) => theme.color.green01};
@@ -186,17 +220,18 @@ export const TransactionItemsWrap = styled.div`
   .pending-icon * {
     fill: ${({ theme }) => theme.color.text24};
   }
-  ${media.mobile} {
-    margin-top: 4px;
-  }
 `;
 
 export const DoubleLogo = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   ${mixins.posTopCenterLeft("12px")};
   border-radius: 50%;
-  img {
+  img,
+  div {
     border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1/1;
   }
   .right-logo {
     margin-left: -12px;

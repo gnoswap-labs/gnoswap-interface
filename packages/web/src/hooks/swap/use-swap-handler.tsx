@@ -22,23 +22,42 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 
 export const useSwapHandler = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null, type = "EXACT_IN", tokenAAmount: defaultTokenAAmount } = swapValue;
+  const {
+    tokenA = null,
+    tokenB = null,
+    type = "EXACT_IN",
+    tokenAAmount: defaultTokenAAmount,
+  } = swapValue;
 
-  const [tokenAAmount, setTokenAAmount] = useState<string>(defaultTokenAAmount ?? "");
+  const [tokenAAmount, setTokenAAmount] = useState<string>(
+    defaultTokenAAmount ?? "",
+  );
   const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
   const [gasFeeAmount] = useState<AmountModel>({
     amount: 0.000001,
-    currency: "GNOT"
+    currency: "GNOT",
   });
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const { setNotice } = useNotice();
-  const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokenPrices, displayBalanceMap, updateTokens, updateTokenPrices, updateBalances, getTokenUSDPrice, getTokenPriceRate } = useTokenData();
+  const {
+    connected: connectedWallet,
+    isSwitchNetwork,
+    switchNetwork,
+  } = useWallet();
+  const {
+    tokenPrices,
+    displayBalanceMap,
+    updateTokens,
+    updateTokenPrices,
+    updateBalances,
+    getTokenUSDPrice,
+    getTokenPriceRate,
+  } = useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const {
@@ -49,12 +68,12 @@ export const useSwapHandler = () => {
     swap,
     estimateSwapRoute,
     wrapToken,
-    unwrapToken
+    unwrapToken,
   } = useSwap({
     tokenA,
     tokenB,
     direction: type,
-    slippage
+    slippage,
   });
 
   usePreventScroll(openedConfirmModal || submitted);
@@ -71,9 +90,9 @@ export const useSwapHandler = () => {
       weight: route.quote,
       gasFee: {
         amount: 1,
-        currency: "ugnot"
+        currency: "ugnot",
       },
-      gasFeeUSD: 1
+      gasFeeUSD: 1,
     }));
   }, [estimatedRoutes, tokenA, tokenB]);
 
@@ -95,14 +114,18 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenPrices[tokenA.path]) {
       return Number.NaN;
     }
-    return BigNumber(tokenAAmount).multipliedBy(tokenPrices[tokenA.path].usd).toNumber();
+    return BigNumber(tokenAAmount)
+      .multipliedBy(tokenPrices[tokenA.path].usd)
+      .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
     if (!tokenB || !tokenPrices[tokenB.path]) {
       return Number.NaN;
     }
-    return BigNumber(tokenBAmount).multipliedBy(tokenPrices[tokenB.path].usd).toNumber();
+    return BigNumber(tokenBAmount)
+      .multipliedBy(tokenPrices[tokenB.path].usd)
+      .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
 
   const swapButtonText = useMemo(() => {
@@ -130,13 +153,15 @@ export const useSwapHandler = () => {
 
     if (type === "EXACT_IN") {
       if (
-        Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+        Number(tokenAAmount) >
+        Number(parseFloat(tokenABalance.replace(/,/g, "")))
       ) {
         return "Insufficient Balance";
       }
     } else {
       if (
-        Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
+        Number(tokenBAmount) >
+        Number(parseFloat(tokenBBalance.replace(/,/g, "")))
       ) {
         return "Insufficient Balance";
       }
@@ -148,8 +173,19 @@ export const useSwapHandler = () => {
       return "Unwrap";
     }
     return "Swap";
-  }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmount, isSameToken, type, tokenBAmount, swapState, tokenABalance, tokenBBalance]);
-
+  }, [
+    connectedWallet,
+    isSwitchNetwork,
+    tokenA,
+    tokenB,
+    tokenAAmount,
+    isSameToken,
+    type,
+    tokenBAmount,
+    swapState,
+    tokenABalance,
+    tokenBBalance,
+  ]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
@@ -164,9 +200,20 @@ export const useSwapHandler = () => {
       tokenBUSD,
       tokenBUSDStr: numberToUSD(tokenBUSD),
       direction: type,
-      slippage
+      slippage,
     };
-  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  }, [
+    slippage,
+    type,
+    tokenA,
+    tokenAAmount,
+    tokenABalance,
+    tokenAUSD,
+    tokenB,
+    tokenBAmount,
+    tokenBBalance,
+    tokenBUSD,
+  ]);
 
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -194,14 +241,23 @@ export const useSwapHandler = () => {
     const outputAmount = type === "EXACT_IN" ? tokenBAmount : tokenAAmount;
 
     const tokenAUSDPrice = getTokenUSDPrice(tokenA.priceId, 1);
-    const tokenPairPriceRate = getTokenPriceRate(targetTokenA.priceId, targetTokenB.priceId);
+    const tokenPairPriceRate = getTokenPriceRate(
+      targetTokenA.priceId,
+      targetTokenB.priceId,
+    );
     const swapRate = tokenPairPriceRate ? tokenPairPriceRate : 0;
-    const swapRateUSD = tokenAUSDPrice ? Number((Number(tokenAAmount) * tokenAUSDPrice).toFixed(4)) : 0;
-    const priceImpactNum = BigNumber(swapRate * Number(inputAmount) - Number(outputAmount))
+    const swapRateUSD = tokenAUSDPrice
+      ? Number((Number(tokenAAmount) * tokenAUSDPrice).toFixed(4))
+      : 0;
+    const priceImpactNum = BigNumber(
+      swapRate * Number(inputAmount) - Number(outputAmount),
+    )
       .multipliedBy(100)
       .dividedBy(swapRate * Number(inputAmount))
       .abs();
-    const priceImpact = priceImpactNum.isGreaterThan(100) ? 100 : Number(priceImpactNum.toFixed(2));
+    const priceImpact = priceImpactNum.isGreaterThan(100)
+      ? 100
+      : Number(priceImpactNum.toFixed(2));
     const gasFeeUSD = BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber();
 
     return {
@@ -218,7 +274,16 @@ export const useSwapHandler = () => {
       gasFee: gasFeeAmount,
       gasFeeUSD,
     };
-  }, [tokenA, tokenB, isSameToken, type, tokenAAmount, tokenBAmount, gasFeeAmount, tokenAmountLimit]);
+  }, [
+    tokenA,
+    tokenB,
+    isSameToken,
+    type,
+    tokenAAmount,
+    tokenBAmount,
+    gasFeeAmount,
+    tokenAmountLimit,
+  ]);
 
   const isAvailSwap = useMemo(() => {
     if (isLoading) return false;
@@ -234,26 +299,48 @@ export const useSwapHandler = () => {
     if (!tokenAAmount && !tokenAAmount) {
       return false;
     }
-    if (Number(tokenAAmount) !== 0 && Number(tokenAAmount) < 0.000001 || Number(tokenBAmount) < 0.000001) {
+    if (
+      (Number(tokenAAmount) !== 0 && Number(tokenAAmount) < 0.000001) ||
+      Number(tokenBAmount) < 0.000001
+    ) {
       return false;
     }
     if (type === "EXACT_IN") {
-      if (Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))) {
+      if (
+        Number(tokenAAmount) >
+        Number(parseFloat(tokenABalance.replace(/,/g, "")))
+      ) {
         return false;
       }
     } else {
-      if (Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))) {
+      if (
+        Number(tokenBAmount) >
+        Number(parseFloat(tokenBBalance.replace(/,/g, "")))
+      ) {
         return false;
       }
     }
     return true;
-  }, [isLoading, connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmount, tokenBAmount, type, tokenABalance, tokenBBalance]);
+  }, [
+    isLoading,
+    connectedWallet,
+    isSwitchNetwork,
+    tokenA,
+    tokenB,
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenABalance,
+    tokenBBalance,
+  ]);
 
-
-  const checkBalance = useCallback((token: TokenModel, amount: string) => {
-    const tokenBalance = displayBalanceMap[token.priceId] || 0;
-    return BigNumber(tokenBalance).isGreaterThan(amount);
-  }, [displayBalanceMap]);
+  const checkBalance = useCallback(
+    (token: TokenModel, amount: string) => {
+      const tokenBalance = displayBalanceMap[token.priceId] || 0;
+      return BigNumber(tokenBalance).isGreaterThan(amount);
+    },
+    [displayBalanceMap],
+  );
 
   const openConfirmModal = useCallback(() => {
     setOpenedConfirModal(true);
@@ -270,95 +357,118 @@ export const useSwapHandler = () => {
     updateBalances();
   }, [updateBalances]);
 
-  const changeTokenAAmount = useCallback((value: string, none?: boolean) => {
-    if (isSameToken) {
-      setTokenAAmount(value);
-      setTokenBAmount(value);
-      setSwapValue((prev) => ({
+  const changeTokenAAmount = useCallback(
+    (value: string, none?: boolean) => {
+      if (isSameToken) {
+        setTokenAAmount(value);
+        setTokenBAmount(value);
+
+        setSwapValue(prev => ({
+          ...prev,
+          tokenAAmount: value,
+          tokenBAmount: value,
+          type: "EXACT_IN",
+        }));
+        return;
+      }
+      if (none) {
+        setIsLoading(false);
+        return;
+      }
+      if (!matchInputNumber(value)) {
+        return;
+      }
+      if (!!Number(value)) {
+        setIsLoading(true);
+      } else {
+        setTokenBAmount("0");
+      }
+      setSwapValue(prev => ({
         ...prev,
-        tokenAAmount: value,
-        tokenBAmount: value,
         type: "EXACT_IN",
       }));
-      return;
-    }
-    if (none) {
-      setIsLoading(false);
-      return;
-    }
-    if (!matchInputNumber(value)) {
-      return;
-    }
-    if (!!Number(value)) {
-      setIsLoading(true);
-    } else {
-      setTokenBAmount("0");
-    }
-    setSwapValue((prev) => ({
-      ...prev,
-      type: "EXACT_IN",
-    }));
-    setTokenAAmount(value);
-  }, [isSameToken]);
-
-  const changeTokenBAmount = useCallback((value: string, none?: boolean) => {
-    if (isSameToken) {
       setTokenAAmount(value);
-      setTokenBAmount(value);
-      setSwapValue((prev) => ({
-        ...prev,
-        tokenAAmount: value,
-        tokenBAmount: value,
-        type: "EXACT_IN",
-      }));
-      return;
-    }
-    if (none) {
-      setIsLoading(false);
-      return;
-    }
-    if (!matchInputNumber(value)) {
-      return;
-    }
-    if (!!Number(value)) {
-      setIsLoading(true);
-    } else {
-      setTokenAAmount("0");
-    }
-    setSwapValue((prev) => ({
+    },
+    [isSameToken],
+  );
+
+  useEffect(() => {
+    setSwapValue(prev => ({
       ...prev,
-      type: "EXACT_OUT",
+      tokenAAmount,
+      tokenBAmount,
     }));
-    setTokenBAmount(value);
-  }, [isSameToken]);
+  }, [setSwapValue, tokenAAmount, tokenBAmount]);
 
-  const changeTokenA = useCallback((token: TokenModel) => {
-    let changedSwapDirection = type;
-    if (tokenB?.symbol === token.symbol) {
-      changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
-      setTokenAAmount(tokenBAmount);
-      setTokenBAmount(tokenAAmount);
-    }
-    setSwapValue((prev) => ({
-      tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
-      tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
-      type: changedSwapDirection,
-    }));
-  }, [tokenA, tokenB, type, tokenBAmount, tokenAAmount]);
+  const changeTokenBAmount = useCallback(
+    (value: string, none?: boolean) => {
+      if (isSameToken) {
+        setTokenAAmount(value);
+        setTokenBAmount(value);
+        setSwapValue(prev => ({
+          ...prev,
+          tokenAAmount: value,
+          tokenBAmount: value,
+          type: "EXACT_IN",
+        }));
+        return;
+      }
+      if (none) {
+        setIsLoading(false);
+        return;
+      }
+      if (!matchInputNumber(value)) {
+        return;
+      }
+      if (!!Number(value)) {
+        setIsLoading(true);
+      } else {
+        setTokenAAmount("0");
+      }
+      setSwapValue(prev => ({
+        ...prev,
+        type: "EXACT_OUT",
+      }));
+      setTokenBAmount(value);
+    },
+    [isSameToken],
+  );
 
-  const changeTokenB = useCallback((token: TokenModel) => {
-    let changedSwapDirection = type;
-    if (tokenA?.symbol === token.symbol) {
-      changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
-      setTokenAAmount(tokenBAmount);
-      setTokenBAmount(tokenAAmount);
-    }
-    setSwapValue((prev) => ({
-      tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
-      tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
-      type: changedSwapDirection,
-    }));
-  }, [tokenA, type, tokenBAmount, tokenAAmount]);
+  const changeTokenA = useCallback(
+    (token: TokenModel) => {
+      let changedSwapDirection = type;
+      if (tokenB?.symbol === token.symbol) {
+        changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+        setTokenAAmount(tokenBAmount);
+        setTokenBAmount(tokenAAmount);
+      }
+      setSwapValue(prev => ({
+        tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
+        tokenB:
+          prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+        type: changedSwapDirection,
+      }));
+    },
+    [tokenA, tokenB, type, tokenBAmount, tokenAAmount],
+  );
+
+  const changeTokenB = useCallback(
+    (token: TokenModel) => {
+      let changedSwapDirection = type;
+      if (tokenA?.symbol === token.symbol) {
+        changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+        setTokenAAmount(tokenBAmount);
+        setTokenBAmount(tokenAAmount);
+      }
+      setSwapValue(prev => ({
+        tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
+        tokenA:
+          prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+        type: changedSwapDirection,
+      }));
+    },
+    [tokenA, type, tokenBAmount, tokenAAmount],
+  );
 
   const switchSwapDirection = useCallback(() => {
     if (isSameToken) {
@@ -431,14 +541,31 @@ export const useSwapHandler = () => {
     }
     setSubmitted(true);
     if (isSameToken) {
-      setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: makeRandomId() });
-      const nativeProcess = isNativeToken(tokenA) ? wrapToken(tokenA, tokenAAmount) : unwrapToken(tokenA, tokenAAmount);
+      setNotice(null, {
+        timeout: 50000,
+        type: "pending",
+        closeable: true,
+        id: makeRandomId(),
+      });
+      const nativeProcess = isNativeToken(tokenA)
+        ? wrapToken(tokenA, tokenAAmount)
+        : unwrapToken(tokenA, tokenAAmount);
       nativeProcess.then(response => {
         setTimeout(() => {
           if (response === false) {
-            setNotice(null, { timeout: 50000, type: "error" as TNoticeType, closeable: true, id: makeRandomId() });
+            setNotice(null, {
+              timeout: 50000,
+              type: "error" as TNoticeType,
+              closeable: true,
+              id: makeRandomId(),
+            });
           } else {
-            setNotice(null, { timeout: 50000, type: "success" as TNoticeType, closeable: true, id: makeRandomId() });
+            setNotice(null, {
+              timeout: 50000,
+              type: "success" as TNoticeType,
+              closeable: true,
+              id: makeRandomId(),
+            });
           }
         }, 1000);
         if (response !== false) {
@@ -456,40 +583,57 @@ export const useSwapHandler = () => {
       return;
     }
     const swapAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
-    swap(estimatedRoutes, swapAmount).then(result => {
-      if (result !== false) {
-        setNotice(null, { timeout: 50000, type: "pending", closeable: true, id: makeRandomId() });
-        setTimeout(() => {
-          if (!!result) {
-            if (typeof result !== "boolean") {
-              unwrapBySwapResposne(result);
+    swap(estimatedRoutes, swapAmount)
+      .then(result => {
+        if (result !== false) {
+          setNotice(null, {
+            timeout: 50000,
+            type: "pending",
+            closeable: true,
+            id: makeRandomId(),
+          });
+          setTimeout(() => {
+            if (!!result) {
+              if (typeof result !== "boolean") {
+                unwrapBySwapResposne(result);
+              }
+              setNotice(null, {
+                timeout: 50000,
+                type: "success" as TNoticeType,
+                closeable: true,
+                id: makeRandomId(),
+              });
+            } else {
+              setNotice(null, {
+                timeout: 50000,
+                type: "error" as TNoticeType,
+                closeable: true,
+                id: makeRandomId(),
+              });
             }
-            setNotice(null, { timeout: 50000, type: "success" as TNoticeType, closeable: true, id: makeRandomId() });
-          } else {
-            setNotice(null, { timeout: 50000, type: "error" as TNoticeType, closeable: true, id: makeRandomId() });
-          }
-        }, 1000);
-      }
-      setSwapResult({
-        success: !!result,
-        hash: (result as unknown as SwapRouteResponse)?.hash || "",
+          }, 1000);
+        }
+        setSwapResult({
+          success: !!result,
+          hash: (result as unknown as SwapRouteResponse)?.hash || "",
+        });
+      })
+      .catch(() => {
+        setSwapResult({
+          success: false,
+          hash: "",
+        });
       });
-    }).catch(() => {
-      setSwapResult({
-        success: false,
-        hash: "",
-      });
-    });
   }
 
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
-    setSwapValue({
-      tokenA: null,
-      tokenB: null,
-      type: "EXACT_IN",
-    });
+    // setSwapValue({
+    //   tokenA: null,
+    //   tokenB: null,
+    //   type: "EXACT_IN",
+    // });
   }, []);
 
   useEffect(() => {
@@ -497,7 +641,6 @@ export const useSwapHandler = () => {
       setIsLoading(true);
     }
   }, [defaultTokenAAmount]);
-
 
   useEffect(() => {
     if (!tokenA || !tokenB) {
@@ -510,7 +653,10 @@ export const useSwapHandler = () => {
     const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
 
-    if (Number.isNaN(changedAmount) || BigNumber(changedAmount).isLessThanOrEqualTo(0)) {
+    if (
+      Number.isNaN(changedAmount) ||
+      BigNumber(changedAmount).isLessThanOrEqualTo(0)
+    ) {
       return;
     }
 
@@ -525,8 +671,10 @@ export const useSwapHandler = () => {
             setTokenAAmount("0");
           }
         } else {
-          if (!checkBalance(tokenA, tokenAAmount) ||
-            !checkBalance(tokenB, tokenBAmount)) {
+          if (
+            !checkBalance(tokenA, tokenAAmount) ||
+            !checkBalance(tokenB, tokenBAmount)
+          ) {
           }
 
           if (isExactIn) {
@@ -567,6 +715,10 @@ export const useSwapHandler = () => {
     isSwitchNetwork,
     switchNetwork,
     isLoading,
-    setSwapValue
+    setSwapValue,
+    tokenA,
+    tokenB,
+    tokenAAmount,
+    tokenBAmount,
   };
 };

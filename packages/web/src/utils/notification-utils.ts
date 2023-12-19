@@ -7,10 +7,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 0,
     txHash: "0",
     tokenInfo: {
-      path: "1",
-      name: "test1",
-      symbol: "TEST1",
-      logoURI: "",
+      tokenA: {
+        path: "1",
+        name: "test1",
+        symbol: "TEST1",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "1",
+        name: "test1",
+        symbol: "TEST1",
+        logoURI: "",
+      },
     },
     status: "SUCCESS",
     createdAt: new Date(
@@ -23,10 +31,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 1,
     txHash: "1",
     tokenInfo: {
-      path: "2",
-      name: "test2",
-      symbol: "TEST2",
-      logoURI: "",
+      tokenA: {
+        path: "2",
+        name: "test2",
+        symbol: "TEST2",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "2",
+        name: "test2",
+        symbol: "TEST2",
+        logoURI: "",
+      },
     },
     status: "PENDING",
     createdAt: new Date(
@@ -39,10 +55,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 2,
     txHash: "2",
     tokenInfo: {
-      path: "3",
-      name: "test3",
-      symbol: "TEST3",
-      logoURI: "",
+      tokenA: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
     },
     status: "FAILED",
     createdAt: new Date(
@@ -55,10 +79,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 1,
     txHash: "3",
     tokenInfo: {
-      path: "3",
-      name: "test3",
-      symbol: "TEST3",
-      logoURI: "",
+      tokenA: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
     },
     status: "FAILED",
     createdAt: new Date(
@@ -71,10 +103,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 4,
     txHash: "4",
     tokenInfo: {
-      path: "3",
-      name: "test3",
-      symbol: "TEST3",
-      logoURI: "",
+      tokenA: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
     },
     status: "SUCCESS",
     createdAt: new Date(
@@ -87,10 +127,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 5,
     txHash: "5",
     tokenInfo: {
-      path: "3",
-      name: "test3",
-      symbol: "TEST3",
-      logoURI: "",
+      tokenA: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
     },
     status: "PENDING",
     createdAt: new Date(
@@ -103,10 +151,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 1,
     txHash: "6",
     tokenInfo: {
-      path: "3",
-      name: "test3",
-      symbol: "TEST3",
-      logoURI: "",
+      tokenA: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
     },
     status: "SUCCESS",
     createdAt: new Date(
@@ -119,10 +175,18 @@ export const notificationDummyList: Array<TransactionModel> = [
     txType: 7,
     txHash: "7",
     tokenInfo: {
-      path: "3",
-      name: "test3",
-      symbol: "TEST3",
-      logoURI: "",
+      tokenA: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
+      tokenB: {
+        path: "3",
+        name: "test3",
+        symbol: "TEST3",
+        logoURI: "",
+      },
     },
     status: "SUCCESS",
     createdAt: new Date().toString(),
