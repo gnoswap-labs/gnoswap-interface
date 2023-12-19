@@ -32,13 +32,11 @@ export const ConfirmModal = styled.div`
   &.modal-body-wrapper {
     gap: 24px;
     ${media.mobile} {
-      ${mixins.positionCenter}
       padding: 12px 0px;
     }
   }
   ${media.mobile} {
     width: 328px;
-    ${mixins.positionCenter}
     padding: 15px 0px;
   }
   .modal-body {
