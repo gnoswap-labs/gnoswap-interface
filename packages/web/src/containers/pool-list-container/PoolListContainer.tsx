@@ -80,7 +80,7 @@ const PoolListContainer: React.FC = () => {
     function filteredPoolType(poolType: POOL_TYPE, incentivizedType: IncentivizedOptions) {
       switch (poolType) {
         case "Incentivized":
-          return incentivizedType === "INCENTIVIZED";
+          return incentivizedType !== "NONE_INCENTIVIZED";
         case "Non-Incentivized":
           return incentivizedType === "NONE_INCENTIVIZED";
         default:

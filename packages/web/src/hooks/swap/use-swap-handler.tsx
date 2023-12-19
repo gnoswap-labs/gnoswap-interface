@@ -19,7 +19,7 @@ import { matchInputNumber } from "@utils/number-utils";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { formatUsdNumber } from "@utils/stake-position-utils";
 
 export const useSwapHandler = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -194,12 +194,12 @@ export const useSwapHandler = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: convertLargePrice(tokenAUSD.toString()),
+      tokenAUSDStr: formatUsdNumber(tokenAUSD.toString()),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: convertLargePrice(tokenBUSD.toString()),
+      tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
       direction: type,
       slippage,
     };

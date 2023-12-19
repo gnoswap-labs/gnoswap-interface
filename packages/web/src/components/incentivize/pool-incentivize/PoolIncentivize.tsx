@@ -54,18 +54,9 @@ const customSort = (a: PoolSelectItemInfo, b: PoolSelectItemInfo) => {
   } else if (!isAGnotGns && isBGnotGns) {
     return 1;
   } else {
-    if (isAGnotGns && isBGnotGns) {
-      const feeOrder = [100, 500, 3000, 10000];
-      const feeA = parseInt(a.fee, 10);
-      const feeB = parseInt(b.fee, 10);
-      const indexA = feeOrder.indexOf(feeA);
-      const indexB = feeOrder.indexOf(feeB);
-      return indexA - indexB;
-    } else {
-      const liquidityA = parseFloat(a.liquidityAmount);
-      const liquidityB = parseFloat(b.liquidityAmount);
-      return liquidityB - liquidityA;
-    }
+    const liquidityA = parseFloat(a.liquidityAmount);
+    const liquidityB = parseFloat(b.liquidityAmount);
+    return liquidityB - liquidityA;
   }
 };
 

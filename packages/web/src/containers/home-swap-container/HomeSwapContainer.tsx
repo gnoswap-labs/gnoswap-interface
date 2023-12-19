@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { formatUsdNumber } from "@utils/stake-position-utils";
 import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 const GNOS_PATH = "gno.land/r/demo/gns" || "";
 
@@ -44,7 +44,7 @@ const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, displayBalanceMap } = useTokenData();
   const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
-  const [tokenAAmount, setTokenAAmount] = useState<string>("1000");
+  const [tokenAAmount, setTokenAAmount] = useState<string>("");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
   const [tokenBAmount, setTokenBAmount] = useState<string>("0");
   const [swapDirection, setSwapDirection] =
@@ -79,7 +79,8 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[tokenA.priceId].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
-
+  console.log(tokenAUSD, "tokenAUSD");
+  
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
       return Number.NaN;
@@ -95,12 +96,12 @@ const HomeSwapContainer: React.FC = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: convertLargePrice(tokenAUSD.toString()),
+      tokenAUSDStr: formatUsdNumber(tokenAUSD.toString()),
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
-      tokenBUSDStr: convertLargePrice(tokenBUSD.toString()),
+      tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
       direction: swapDirection,
       slippage,
     };

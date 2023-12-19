@@ -29,12 +29,12 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {
-    if (!usd) {
+    if (!usd || !(Number(amount))) {
       return "-";
     }
     return `$${convertLargePrice(usd.toString())}`;
-  }, [usd]);
-
+  }, [usd, amount]);
+  
   const changeAmount = useCallback((value: string) => {
     if (!token) {
       return;
