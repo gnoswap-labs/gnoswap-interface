@@ -69,3 +69,10 @@ export interface SwapResult {
     rate: number;
   }[];
 }
+
+export type CandidatePoolsSelections = {
+  topByBaseWithTokenIn: Pool[];
+  topByBaseWithTokenOut: Pool[];
+  topByDirectSwapPool: Pool[];
+  topByTVL: Pool[];
+};
