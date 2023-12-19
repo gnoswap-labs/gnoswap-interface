@@ -19,8 +19,9 @@ export const usePool = ({
 }: Props) => {
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
+  const [fetching, setFetching] = useState(false);
   const { pools, updatePools } = usePoolData();
-  const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<{ [key in string]: number }>({});
+  const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<{ [key in string]: number } | null>(null);
 
   const currentPools: PoolModel[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -149,6 +150,11 @@ export const usePool = ({
   }, []);
 
   useEffect(() => {
+    setFetching(false);
+    setFeetierOfLiquidityMap(null);
+    if (!tokenA || !tokenB) {
+      return;
+    }
     fetchPoolInfos(currentPools)
       .then(infos => {
         const feetierOfLiquidityMap: { [key in string]: number } = {};
@@ -165,9 +171,16 @@ export const usePool = ({
       .then(setFeetierOfLiquidityMap);
   }, [currentPools]);
 
+  useEffect(() => {
+    if (feetierOfLiquidityMap) {
+      setFetching(true);
+    }
+  }, [feetierOfLiquidityMap]);
+
   return {
+    fetching,
     pools: currentPools,
-    feetierOfLiquidityMap,
+    feetierOfLiquidityMap: feetierOfLiquidityMap || {},
     createPool,
     addLiquidity,
   };

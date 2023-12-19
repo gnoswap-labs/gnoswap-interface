@@ -3,7 +3,6 @@ import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiq
 import {
   AddLiquiditySubmitType,
   PriceRangeType,
-  SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
@@ -171,9 +170,20 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, []);
 
   const selectSwapFeeTier = useCallback((swapFeeTier: SwapFeeTierType) => {
-    setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
     setSwapFeeTier(swapFeeTier);
-  }, [priceRanges]);
+    const existsSwapFeeTiers = pools.map(pool => makeSwapFeeTier(pool.fee));
+    const existPool = existsSwapFeeTiers.includes(swapFeeTier);
+
+    setCreateOption((prev) => ({
+      isCreate: !existPool,
+      startPrice: existPool ? null : prev.startPrice
+    }));
+    if (existPool) {
+      setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
+    } else {
+      setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
+    }
+  }, [pools, priceRanges]);
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
@@ -288,27 +298,27 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback((price: string) => {
     if (price === "") {
-      setCreateOption({
-        ...createOption,
+      setCreateOption((prev) => ({
+        ...prev,
         startPrice: null
-      });
+      }));
       return;
     }
     const priceNum = BigNumber(price).toNumber();
     if (BigNumber(Number(priceNum)).isNaN()) {
-      setCreateOption({
-        ...createOption,
+      setCreateOption((prev) => ({
+        ...prev,
         startPrice: null
-      });
+      }));
       return;
     }
     const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
     const nearStartPrice = tickToPrice(tick);
-    setCreateOption({
-      isCreate: true,
+    setCreateOption((prev) => ({
+      ...prev,
       startPrice: nearStartPrice
-    });
-  }, [createOption, selectPool.tickSpacing]);
+    }));
+  }, [selectPool.tickSpacing]);
 
   useEffect(() => {
     updatePools();
@@ -360,28 +370,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       updateTokenAAmountByTokenB(tokenBAmountInput.amount);
     }
   }, [selectPool.currentPrice, selectPool.minPrice, selectPool.maxPosition, exactType]);
-
-  useEffect(() => {
-    if (!selectPool.feeTier) {
-      setCreateOption({
-        isCreate: true,
-        startPrice: null
-      });
-      return;
-    }
-    const fee = SwapFeeTierInfoMap[selectPool.feeTier].fee;
-    if (feetierOfLiquidityMap[fee] === undefined) {
-      setCreateOption({
-        isCreate: true,
-        startPrice: null
-      });
-    } else {
-      setCreateOption({
-        isCreate: false,
-        startPrice: null
-      });
-    }
-  }, [feetierOfLiquidityMap, selectPool.feeTier]);
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {

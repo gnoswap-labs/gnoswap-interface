@@ -189,7 +189,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   useEffect(() => {
     resetRange(priceRangeType);
-  }, [selectPool.poolPath, priceRangeType, selectPool.startPrice]);
+  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice]);
 
   useEffect(() => {
     if (!selectPool.poolPath) {
