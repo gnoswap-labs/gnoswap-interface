@@ -319,8 +319,14 @@ export const useSelectPool = ({
       const tokenBPoolPath = isNativeToken(tokenB) ? tokenB.wrappedPath : tokenB.path;
       const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
       const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
-      const reverse = [tokenAPoolPath, tokenBPoolPath].sort().findIndex(path => path === compareToken?.path) === 1;
-
+      const reverse = tokenPair.findIndex(path => {
+        if (compareToken) {
+          return isNativeToken(compareToken) ?
+            compareToken.wrappedPath === path :
+            compareToken.path === path;
+        }
+        return false;
+      }) === 1;
       poolRepository.getPoolDetailRPCByPoolPath(poolPath).then(poolInfo => {
         const changedPoolInfo = reverse === false ? poolInfo : {
           ...poolInfo,

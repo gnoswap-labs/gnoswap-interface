@@ -7,7 +7,7 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import { TokenModel } from "@models/token/token-model";
+import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 // import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
@@ -65,6 +65,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Passive" });
   const [initialized, setInitialized] = useState(false);
+  const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
   const router = useRouter();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
@@ -413,15 +414,36 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
-  
+
   useEffect(() => {
     const isEarnAdd = swapValue.tokenA !== null && swapValue.tokenB !== null;
     setIsEarnAdd(isEarnAdd);
   }, [setIsEarnAdd, swapValue]);
 
+  useEffect(() => {
+    if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
+      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort();
+      const compareToken = selectPool.compareToken;
+      const reverse = tokenPair.findIndex(path => {
+        if (compareToken) {
+          return isNativeToken(compareToken) ?
+            compareToken.wrappedPath === path :
+            compareToken.path === path;
+        }
+        return false;
+      }) === 1;
+      const prices = pools.map(pool => pool.price);
+      const maxPrice = reverse ? 1 / Math.min(...prices) : Math.max(...prices);
+      setDefaultPrice(maxPrice);
+    } else {
+      setDefaultPrice(null);
+    }
+  }, [pools, selectPool.compareToken, tokenA, tokenB]);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
+      defaultPrice={defaultPrice}
       tokenA={tokenA}
       tokenB={tokenB}
       tokenAInput={tokenAAmountInput}

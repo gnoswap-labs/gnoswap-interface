@@ -22,6 +22,7 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
+  defaultPrice: number | null;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   changeTokenA: (token: TokenModel) => void;
@@ -55,6 +56,7 @@ interface EarnAddLiquidityProps {
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
+  defaultPrice,
   tokenA,
   tokenB,
   changeTokenA,
@@ -198,7 +200,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const showDim = useMemo(() => {
     return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
   }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
-  
+
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -268,6 +270,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           </div>
           {openedPriceRange && (
             <SelectPriceRange
+              defaultPrice={defaultPrice}
               tokenA={tokenA}
               tokenB={tokenB}
               priceRanges={priceRanges}
