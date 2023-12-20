@@ -154,6 +154,15 @@ export const PoolCardWrapper = styled.div`
     }
   }
 
+  .price-section {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 4px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .label-text {
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body12};

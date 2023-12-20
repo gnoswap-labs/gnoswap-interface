@@ -212,6 +212,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 isHiddenStart={isHiddenStart}
                 currentIndex={currentIndex}
                 themeKey={themeKey}
+                minTickRate={minTickRate}
+                maxTickRate={maxTickRate}
               />
             </div>
             <div className="min-max-price">

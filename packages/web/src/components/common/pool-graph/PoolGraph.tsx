@@ -181,7 +181,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 4)
-        .attr("stroke", `${themeKey === "dark" ? "#FFFFFF": "#596782"}`)
+        .attr("stroke", `${themeKey === "dark" ? "#FFFFFF" : "#596782"}`)
         .attr("stroke-width", 0.5);
     }
   }
@@ -196,6 +196,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       const minX = scaleX(bin.minTick);
       const maxX = scaleX(bin.maxTick + 1);
       if (mouseY < 1 || mouseY >= height - 1) {
+        return false;
+      }
+      if (bin.liquidity <= 0) {
         return false;
       }
       return mouseX >= minX && mouseX <= maxX;
@@ -385,7 +388,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       <div className="content">
         <div className="row">
           <span className="token">
-            <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20}/>
+            <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20} />
             <span>{tooltipInfo.tokenA.symbol}</span>
           </span>
           <span className="amount">
@@ -395,7 +398,7 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
         </div>
         <div className="row">
           <span className="token">
-            <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20}/>
+            <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20} />
             <span>{tooltipInfo.tokenB.symbol}</span>
           </span>
           <span className="amount">

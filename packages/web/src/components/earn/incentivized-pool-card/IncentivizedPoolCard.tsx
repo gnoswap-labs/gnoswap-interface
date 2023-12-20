@@ -11,6 +11,7 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { usePositionData } from "@hooks/common/use-position-data";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
+import { numberToFormat } from "@utils/string-utils";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -109,6 +110,13 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 offset={40}
               />
             </div>
+          </div>
+
+          <div className="price-section">
+            <span className="label-text">
+              {"Current Price"}
+            </span>
+            <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, 2)} ${pool.tokenB.symbol}`}</span>
           </div>
         </PoolCardWrapper>
       </div>
