@@ -166,12 +166,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
     //   return "INSUFFICIENT_BALANCE";
     // }
-    if (!account?.balances || account.balances.length === 0) {
-      return "INSUFFICIENT_BALANCE";
-    }
-    if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
-      return "INSUFFICIENT_BALANCE";
-    }
     const ordered = selectPool.compareToken?.path === tokenA?.path;
     const checkTokenA = ordered ? selectPool.depositRatio !== 0 : selectPool.depositRatio !== 100;
     const checkTokenB = ordered ? selectPool.depositRatio !== 100 : selectPool.depositRatio !== 0;
@@ -182,7 +176,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return "ENTER_AMOUNT";
     }
     return "CREATE_POOL";
-  }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice, selectPool.compareToken?.path, selectPool.depositRatio, account?.balances]);
+  }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice, selectPool.compareToken?.path, selectPool.depositRatio]);
 
   const selectSwapFeeTier = useCallback((swapFeeTier: SwapFeeTierType) => {
     setSwapFeeTier(swapFeeTier);
