@@ -49,10 +49,20 @@ export const useWallet = () => {
     }
   }, [setNetwork, walletAccount]);
 
-  function initSession() {
-    const connectedBySession = sessionId;
-    if (connectedBySession && walletClient === null) {
-      connectAdenaClient();
+  async function initSession() {
+    try {
+      const connectedBySession = sessionId;
+      if (!connectedBySession) return;
+
+      const adena = AdenaClient.createAdenaClient();
+      const data = await adena?.getAccount();
+      if (data?.status === "failure") return;
+
+      if (walletClient === null) {
+        connectAdenaClient();
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
