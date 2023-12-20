@@ -7,6 +7,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { numberToUSD } from "@utils/number-utils";
 import React, { useCallback } from "react";
 import { Divider, RemovePositionModalWrapper } from "./RemovePositionModal.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -40,9 +41,11 @@ const RemovePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                       left={position.pool.tokenA.logoURI}
                       right={position.pool.tokenB.logoURI}
                       size={24}
+                      leftSymbol={position.pool.tokenA.symbol}
+                      rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+                    <Badge className="position-bar" text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
                   </div>
                   <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
                 </div>
@@ -55,7 +58,13 @@ const RemovePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                   <div key={index}>
                     <div>
                       <div className="label-logo">
-                        <img className="image-logo" src={rewardInfo.token.logoURI} alt="logo" />
+                        <MissingLogo
+                          symbol={rewardInfo.token.symbol}
+                          url={rewardInfo.token.logoURI}
+                          width={24}
+                          mobileWidth={24}
+                          className="image-logo"
+                        />
                         <div>{rewardInfo.token.symbol}</div>
                       </div>
                       <div className="value">{rewardInfo.amount}</div>

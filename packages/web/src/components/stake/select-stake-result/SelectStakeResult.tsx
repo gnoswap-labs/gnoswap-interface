@@ -7,6 +7,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { numberToUSD } from "@utils/number-utils";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
@@ -64,7 +65,12 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({
         {pooledTokenInfos.map((pooledTokenInfo, index) => (
           <li key={index}>
             <div className="main-info">
-              <img src={pooledTokenInfo.token.logoURI} alt="pooled token logo" />
+              <MissingLogo
+                symbol={pooledTokenInfo.token.symbol}
+                url={pooledTokenInfo.token.logoURI}
+                width={24}
+                mobileWidth={24}
+              />
               <p>Pooled {pooledTokenInfo.token.symbol}</p>
               <strong>{pooledTokenInfo.amount}</strong>
             </div>

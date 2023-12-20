@@ -7,6 +7,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { numberToUSD } from "@utils/number-utils";
 import React, { useCallback } from "react";
 import { Divider, UnstakePositionModalWrapper } from "./UnstakePositionModal.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -40,9 +41,11 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                       left={position.pool.tokenA.logoURI}
                       right={position.pool.tokenB.logoURI}
                       size={24}
+                      leftSymbol={position.pool.tokenA.symbol}
+                      rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="unstake-bar" type={BADGE_TYPE.DARK_DEFAULT} text="0.3%" />
+                    <Badge className="unstake-bar" type={BADGE_TYPE.DARK_DEFAULT} text={`${Number(position.pool.fee) / 10000}%`} />
                   </div>
                   <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
                 </div>
@@ -56,7 +59,13 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                 <div key={index}>
                   <div>
                     <div className="label-logo">
-                      <img className="image-logo" src={rewardInfo.token.logoURI} alt="logo" />
+                      <MissingLogo
+                        className="image-logo"
+                        symbol={rewardInfo.token.symbol}
+                        url={rewardInfo.token.logoURI}
+                        width={24}
+                        mobileWidth={24}
+                      />
                       <div>{rewardInfo.token.symbol}</div>
                     </div>
                     <div className="value">{rewardInfo.amount}</div>

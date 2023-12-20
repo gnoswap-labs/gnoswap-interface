@@ -54,6 +54,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             disabled
           />
         ))}
+        {unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
       </ul>
     </RemoveLiquiditySelectListWrapper>
   );

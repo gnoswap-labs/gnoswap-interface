@@ -64,9 +64,11 @@ const SubmitPositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =>
                       left={position.pool.tokenA.logoURI}
                       right={position.pool.tokenB.logoURI}
                       size={24}
+                      leftSymbol={position.pool.tokenA.symbol}
+                      rightSymbol={position.pool.tokenB.symbol}
                     />
                     <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
-                    <Badge className="position-bar" text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+                    <Badge className="position-bar" text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
                   </div>
                   <div className="value">{numberToUSD(Number(position.positionUsdValue))}</div>
                 </div>

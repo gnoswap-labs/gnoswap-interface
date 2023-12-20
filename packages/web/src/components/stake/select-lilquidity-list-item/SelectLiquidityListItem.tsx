@@ -78,7 +78,7 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
           onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
-        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} />
+        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
         <Tooltip
           placement="top"
           FloatingContent={<TooltipContent position={position} disabled={disabled}/>}
