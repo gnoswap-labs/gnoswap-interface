@@ -15,6 +15,7 @@ import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertLargePrice } from "@utils/stake-position-utils";
 import OverlapTokenLogo from "../overlap-token-logo/OverlapTokenLogo";
+import { isMaxTick, isMinTick } from "@utils/pool-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -60,11 +61,17 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.currentTick]);
 
   const minTickRate = useMemo(() => {
+    if (isMinTick(position.tickLower)) {
+      return 0;
+    }
     const minPrice = tickToPrice(position.tickLower);
-    return Math.round(((minPrice - currentPrice) / currentPrice) * 100);
+    return Math.round(((currentPrice - minPrice) / currentPrice) * 100);
   }, [currentPrice, position.tickLower]);
 
   const maxTickRate = useMemo(() => {
+    if (isMaxTick(position.tickUpper)) {
+      return Infinity;
+    }
     const maxPrice = tickToPrice(position.tickUpper);
     return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
   }, [currentPrice, position.tickUpper]);
@@ -86,19 +93,27 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minTickPosition = useMemo(() => {
     const [min, max] = tickRange;
-    const rangeRate = GRAPH_WIDTH / (max - min);
-    const centerPosition = (pool.currentTick - min) * rangeRate;
-    const amount = centerPosition * minTickRate / 100;
-    return centerPosition + amount;
-  }, [GRAPH_WIDTH, minTickRate, pool.currentTick, tickRange]);
+    const currentTick = position.pool.currentTick;
+    if (position.tickLower === currentTick) {
+      return 0;
+    }
+    if (position.tickLower < currentTick) {
+      return (position.tickLower - min) / (currentTick - min) * (GRAPH_WIDTH / 2);
+    }
+    return (position.tickLower - currentTick) / (max - currentTick) * (GRAPH_WIDTH / 2) + (GRAPH_WIDTH / 2);
+  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
 
   const maxTickPosition = useMemo(() => {
     const [min, max] = tickRange;
-    const rangeRate = GRAPH_WIDTH / (max - min);
-    const centerPosition = (pool.currentTick - min) * rangeRate;
-    const amount = centerPosition * maxTickRate / 100;
-    return centerPosition + amount;
-  }, [GRAPH_WIDTH, maxTickRate, pool.currentTick, tickRange]);
+    const currentTick = position.pool.currentTick;
+    if (position.tickUpper === currentTick) {
+      return 0;
+    }
+    if (position.tickUpper < currentTick) {
+      return (position.tickUpper - min) / (currentTick - min) * (GRAPH_WIDTH / 2);
+    }
+    return (position.tickUpper - currentTick) / (max - currentTick) * (GRAPH_WIDTH / 2) + (GRAPH_WIDTH / 2);
+  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
 
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
