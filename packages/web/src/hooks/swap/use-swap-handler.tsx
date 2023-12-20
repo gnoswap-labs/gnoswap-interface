@@ -57,7 +57,6 @@ export const useSwapHandler = () => {
     updateTokenPrices,
     updateBalances,
     getTokenUSDPrice,
-    getTokenPriceRate,
   } = useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
@@ -236,26 +235,22 @@ export const useSwapHandler = () => {
         gasFeeUSD: BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber(),
       };
     }
-    const targetTokenA = type === "EXACT_IN" ? tokenA : tokenB;
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
     const inputAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
-    const outputAmount = type === "EXACT_IN" ? tokenBAmount : tokenAAmount;
+    const tokenAUSDValue = tokenPrices[tokenA.priceId]?.usd || 1;
+    const tokenBUSDValue = tokenPrices[tokenB.priceId]?.usd || 1;
 
-    const tokenAUSDPrice = getTokenUSDPrice(tokenA.priceId, 1);
-    const tokenPairPriceRate = getTokenPriceRate(
-      targetTokenA.priceId,
-      targetTokenB.priceId,
-    );
-    const swapRate = tokenPairPriceRate ? tokenPairPriceRate : 0;
-    const swapRateUSD = tokenAUSDPrice
-      ? Number((Number(tokenAAmount) * tokenAUSDPrice).toFixed(4))
-      : 0;
+    const swapRate = tokenAAmount ? BigNumber(tokenBAmount).dividedBy(tokenAAmount).toNumber() : 0;
+    const swapRateUSD = type === "EXACT_IN" ?
+      BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber() :
+      BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
+    const tokenRate = BigNumber(tokenBUSDValue).dividedBy(tokenAUSDValue).toNumber();
+    const expectedAmount = tokenRate * Number(inputAmount);
     const priceImpactNum = BigNumber(
-      swapRate * Number(inputAmount) - Number(outputAmount),
+      expectedAmount - Number(tokenBAmount),
     )
       .multipliedBy(100)
-      .dividedBy(swapRate * Number(inputAmount))
-      .abs();
+      .dividedBy(expectedAmount);
     const priceImpact = priceImpactNum.isGreaterThan(100)
       ? 100
       : Number(priceImpactNum.toFixed(2));
@@ -269,7 +264,7 @@ export const useSwapHandler = () => {
       swapRateUSD,
       priceImpact,
       guaranteedAmount: {
-        amount: tokenAmountLimit,
+        amount: (tokenAmountLimit),
         currency: targetTokenB.symbol,
       },
       gasFee: gasFeeAmount,
