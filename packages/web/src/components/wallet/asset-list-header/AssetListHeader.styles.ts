@@ -22,7 +22,7 @@ export const AssetListHeaderWrapper = styled.div`
     gap: 36px;
     ${media.tabletMiddle} {
       gap: 24px;
-      height: 24px;
+      // height: 24px;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
     }
     ${media.mobile} {

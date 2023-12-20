@@ -3,7 +3,7 @@ import {
   INoticeContext,
   NoticeContext,
   TNoticeType,
-} from "src/context/NoticeContext";
+} from "@context/NoticeContext";
 import IconClose from "../icons/IconCancel";
 import IconFailed from "../icons/IconFailed";
 import IconNewTab from "../icons/IconNewTab";
@@ -16,6 +16,9 @@ interface NoticeProps {
   onClose?: (id: number) => void;
   type: TNoticeType;
   id: number;
+  data?: {
+    [key: string]: string;
+  };
 }
 
 const TEMP_URL =
@@ -28,6 +31,24 @@ const SuccessContent: FC = () => {
       <div>
         <h5>Swap - Success!</h5>
         <p>Swapped 1541.5 GNOT for 1090.55 GNS</p>
+        <a href={TEMP_URL} target="_blank">
+          View transaction <IconNewTab />
+        </a>
+      </div>
+    </div>
+  );
+};
+
+const SuccessNormalContent: FC<{ title: string; description?: string }> = ({
+  title,
+  description,
+}) => {
+  return (
+    <div className="notice-body">
+      <IconSuccess className="icon-success" />
+      <div>
+        <h5>{title}</h5>
+        {description && <p>{description}</p>}
         <a href={TEMP_URL} target="_blank">
           View transaction <IconNewTab />
         </a>
@@ -66,7 +87,30 @@ const FailContent: FC = () => {
   );
 };
 
-const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id }) => {
+const FailNormalContent: FC<{ title: string; description?: string }> = ({
+  title,
+  description,
+}) => {
+  return (
+    <div className="notice-body">
+      <IconFailed className="icon-success" />
+      <div>
+        <h5>{title}</h5>
+        {description && <p>{description}</p>}
+        <a href={TEMP_URL} target="_blank">
+          View transaction <IconNewTab />
+        </a>
+      </div>
+    </div>
+  );
+};
+
+const NoticeUIItem: FC<NoticeProps> = ({
+  onClose,
+  type = "success",
+  id,
+  data,
+}) => {
   const [typeAnimation, setTypeAnimation] = useState<
     "toast-item" | "closing" | ""
   >("toast-item");
@@ -97,7 +141,15 @@ const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id }) => {
   return (
     <NoticeUIWrapper className={`${typeAnimation}`}>
       {type === "success" && <SuccessContent />}
+      {type === "withdraw-success" && (
+        <SuccessNormalContent title="Withdraw - Success!" {...data} />
+      )}
+
       {type === "error" && <FailContent />}
+      {type === "withdraw-error" && (
+        <FailNormalContent title="Withdraw - Failure!" {...data} />
+      )}
+
       {type === "pending" && <PendingContent />}
       <div className="icon-close" onClick={handleClose}>
         <IconClose />
@@ -117,7 +169,14 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
       setCurrentNotice({
         ...options,
       });
-      setList(prev => [...prev, { type: options.type, id: options.id }]);
+      setList(prev => [
+        ...prev,
+        {
+          ...options,
+          type: options.type,
+          id: options.id,
+        },
+      ]);
     },
     [list],
   );
@@ -161,12 +220,7 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
         <NoticeUIList>
           {list.map(item_ => {
             return (
-              <NoticeUIItem
-                key={item_.id}
-                type={item_.type}
-                id={item_.id}
-                onClose={handleClose}
-              />
+              <NoticeUIItem {...item_} key={item_.id} onClose={handleClose} />
             );
           })}
         </NoticeUIList>

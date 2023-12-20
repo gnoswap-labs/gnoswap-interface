@@ -3,7 +3,9 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import WithDrawModal from "./WithDrawModal";
 import { DEVICE_TYPE } from "@styles/media";
-import { TokenModel } from "@models/token/token-model";
+import Notice from "@components/common/notice/NoticeToast";
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 describe("WithDrawModal Component", () => {
   it("WithDrawModal render", () => {
@@ -51,14 +53,28 @@ describe("WithDrawModal Component", () => {
       connected: true,
       changeToken: () => null,
       close: () => null,
-    };
-
+    } as const;
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          refetchOnMount: false,
+          refetchOnReconnect: false,
+          refetchOnWindowFocus: false,
+        },
+      },
+    });
     render(
-      <JotaiProvider>
-        <GnoswapThemeProvider>
-          <WithDrawModal {...mockProps} />
-        </GnoswapThemeProvider>
-      </JotaiProvider>,
+      <QueryClientProvider client={queryClient}>
+        <JotaiProvider>
+          <GnoswapServiceProvider>
+            <GnoswapThemeProvider>
+              <Notice>
+                <WithDrawModal {...mockProps} />
+              </Notice>
+            </GnoswapThemeProvider>
+          </GnoswapServiceProvider>
+        </JotaiProvider>
+      </QueryClientProvider>
     );
   });
 });

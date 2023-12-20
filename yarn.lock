@@ -2198,6 +2198,7 @@ __metadata:
     lint-staged: "npm:13.1.2"
     next: "npm:13.2.3"
     prettier: "npm:2.8.4"
+    qrcode.react: "npm:^3.1.0"
     react: "npm:18.2.0"
     react-docgen-typescript-loader: "npm:3.7.2"
     react-dom: "npm:18.2.0"
@@ -16247,6 +16248,15 @@ __metadata:
   version: 2.3.0
   resolution: "punycode@npm:2.3.0"
   checksum: d4e7fbb96f570c57d64b09a35a1182c879ac32833de7c6926a2c10619632c1377865af3dab5479f59d51da18bcd5035a20a5ef6ceb74020082a3e78025d9a9ca
+  languageName: node
+  linkType: hard
+
+"qrcode.react@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "qrcode.react@npm:3.1.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 71953241f151ca5ad4013c034cb13033e1ebad56a1db77297a7ddd7fd4d5f137f37f3be51133aeef0b54dc52d6c76630429d2269bd72e6858c3209fe42310498
   languageName: node
   linkType: hard
 
