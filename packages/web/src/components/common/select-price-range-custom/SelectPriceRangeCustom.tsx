@@ -246,8 +246,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     onClick={onClickTabItem}
                   />
                   <div className="graph-option-wrapper">
-                    <span className="graph-option-item decrease" onClick={selectPool.zoomIn}>-</span>
-                    <span className="graph-option-item increase" onClick={selectPool.zoomOut}>+</span>
+                    <span className={`graph-option-item decrease ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>-</span>
+                    <span className={`graph-option-item increase ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>+</span>
                   </div>
                 </div>
               )}

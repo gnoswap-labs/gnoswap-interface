@@ -276,7 +276,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
 export const RewardsContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 8px;
-  width: 300px;
+  width: 268px;
   ${fonts.body12};
   ${media.mobile} {
     gap: 4px;

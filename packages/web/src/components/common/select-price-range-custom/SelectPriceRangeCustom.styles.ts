@@ -49,6 +49,19 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         &:hover {
           background: ${({ theme }) => theme.color.backgroundOpacity};
         }
+        position: relative;
+      }
+      .disabled-option {
+        &::before {
+          position: absolute;
+          content: "";
+          width: 100%;
+          border-radius: 4px;
+          height: 100%;
+          top: 0;
+          background: ${({ theme }) => theme.color.backgroundOpacity8};
+          left: 0;
+        }
       }
     }
   }

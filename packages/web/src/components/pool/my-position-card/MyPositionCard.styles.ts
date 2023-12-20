@@ -169,7 +169,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
 export const TooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 8px;
-  width: 268px;
+  min-width: 268px;
   ${fonts.body12};
   ${media.mobile} {
     gap: 4px;
@@ -202,7 +202,7 @@ export const TooltipContent = styled.div`
 export const RewardsContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 8px;
-  width: 300px;
+  width: 268px;
   ${fonts.body12};
   ${media.mobile} {
     gap: 4px;

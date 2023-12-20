@@ -33,6 +33,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   onSelectCustomRange,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [value, setValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
@@ -121,8 +122,10 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   }, [current, feeTier]);
   useEffect(() => {
     const divElement = divRef.current;
-    if (divElement) {
-      setFontSize(Math.min(110 * fontSize / divElement.offsetWidth, 24));
+    const inputElement = inputRef.current;
+    
+    if (divElement && inputElement) {
+      setFontSize(Math.min(inputElement.offsetWidth * fontSize / divElement.offsetWidth, 24));
     }
   }, [value]);
   
@@ -134,7 +137,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
           <span>-</span>
         </div>
         <div className="value-wrapper">
-          <input style={{ fontSize: `${fontSize}px` }} className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate}/>
+          <input style={{ fontSize: `${fontSize}px` }} className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate} ref={inputRef}/>
           <div style={{ fontSize: `${fontSize}px` }} className="fake-input" ref={divRef}>{value}</div>
         </div>
         <div className={disabledController ? "icon-wrapper increase disabled" : "icon-wrapper increase"} onClick={onClickIncrease}>

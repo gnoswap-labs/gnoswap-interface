@@ -46,8 +46,8 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
           <div className="value">{makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance)}</div>
         </div>
       </div>
-      {!disabled && <div className="divider"></div>}
-      {!disabled && (
+      {disabled && <div className="divider"></div>}
+      {disabled && (
         <div className="unstake-description">
           *You need to unstake your position first.
         </div>

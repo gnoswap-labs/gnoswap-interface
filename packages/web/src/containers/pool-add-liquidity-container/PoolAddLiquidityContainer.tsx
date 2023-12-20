@@ -21,6 +21,8 @@ import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
 import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { encriptId } from "@utils/common";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -58,7 +60,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
   const router = useRouter();
-
+  const { getGnotPath } = useGnotToGnot();
+  
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">("EXACT_IN");
@@ -81,7 +84,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
-  const { pools: poolInfos, updatePools } = usePoolData();
+  const { updatePools } = usePoolData();
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
   const { openModal: openOneClickModal } = useOneClickStakingModal({
     tokenA,
@@ -296,30 +299,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     switchNetwork,
   ]);
 
-  const changeStartingPrice = useCallback((price: string) => {
-    if (price === "") {
-      setCreateOption((prev) => ({
-        ...prev,
-        startPrice: null
-      }));
-      return;
-    }
-    const priceNum = BigNumber(price).toNumber();
-    if (BigNumber(Number(priceNum)).isNaN()) {
-      setCreateOption((prev) => ({
-        ...prev,
-        startPrice: null
-      }));
-      return;
-    }
-    const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
-    const nearStartPrice = tickToPrice(tick);
-    setCreateOption((prev) => ({
-      ...prev,
-      startPrice: nearStartPrice
-    }));
-  }, [selectPool.tickSpacing]);
-
   useEffect(() => {
     updatePools();
     updateTokenPrices();
@@ -332,31 +311,33 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [account?.address]);
 
   useEffect(() => {
-    const poolId = router.query["pool-path"];
-    const pool = poolInfos.find(pool => pool.id === poolId);
-    if (pool) {
-      const feeTier = makeSwapFeeTier(pool.fee);
-      setSwapFeeTier(feeTier);
-      setPriceRange({ type: "Passive" });
-      setSwapValue({
-        tokenA: pool.tokenA,
-        tokenB: pool.tokenB,
-        type: "EXACT_IN",
-      });
-    }
-  }, [pools, router.query]);
-
-  useEffect(() => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {
       return;
     }
     if (!initialized) {
-      const currentTokenA = tokens.find(token => token.path === router.query.tokenA) || null;
-      const currentTokenB = tokens.find(token => token.path === router.query.tokenB) || null;
+      const convertPath = encriptId(router.query["pool-path"] as string);
+      const splitPath: string[] = convertPath.split(":") || [];
+      const currentTokenA = tokens.find(token => token.path === splitPath[0]) || null;
+      const currentTokenB = tokens.find(token => token.path === splitPath[1]) || null;
+      const feeTier = makeSwapFeeTier(splitPath[2]);
+      setSwapFeeTier(feeTier);
+      setPriceRange({ type: "Passive" });
       setSwapValue(prev => ({
         ...prev,
-        tokenA: currentTokenA,
-        tokenB: currentTokenB,
+        tokenA: currentTokenA ? {
+          ...currentTokenA,
+          path: getGnotPath(currentTokenA).path,
+          name: getGnotPath(currentTokenA).name,
+          symbol: getGnotPath(currentTokenA).symbol,
+          logoURI: getGnotPath(currentTokenA).logoURI,
+        } : null,
+        tokenB: currentTokenB ? {
+          ...currentTokenB,
+          path: getGnotPath(currentTokenB).path,
+          name: getGnotPath(currentTokenB).name,
+          symbol: getGnotPath(currentTokenB).symbol,
+          logoURI: getGnotPath(currentTokenB).logoURI,
+        } : null,
       }));
       setInitialized(true);
       return;
@@ -394,6 +375,32 @@ const EarnAddLiquidityContainer: React.FC = () => {
       setDefaultPrice(null);
     }
   }, [pools, selectPool.compareToken, tokenA, tokenB]);
+
+  const changeStartingPrice = useCallback((price: string) => {
+    if (price === "") {
+      setCreateOption({
+        ...createOption,
+        startPrice: null,
+        isCreate: createOption?.isCreate ? true : false,
+      });
+      return;
+    }
+    const priceNum = BigNumber(price).toNumber();
+    if (BigNumber(Number(priceNum)).isNaN()) {
+      setCreateOption({
+        ...createOption,
+        startPrice: null,
+        isCreate: createOption?.isCreate ? true : false,
+      });
+      return;
+    }
+    const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
+    const nearStartPrice = tickToPrice(tick);
+    setCreateOption({
+      isCreate: true,
+      startPrice: nearStartPrice
+    });
+  }, [createOption, selectPool.tickSpacing]);
 
   return (
     <EarnAddLiquidity
