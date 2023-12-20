@@ -1,18 +1,21 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
-import React, { useCallback, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { useWallet } from "@hooks/wallet/use-wallet";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
-import { TokenModel } from "@models/token/token-model";
+import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { TokenModel } from "@models/token/token-model";
+import BigNumber from "bignumber.js";
+import React, { useCallback, useEffect, useState } from "react";
 
 export interface BalanceSummaryInfo {
   amount: string;
   changeRate: string;
+  loading: boolean;
 }
 
 export interface BalanceDetailInfo {
@@ -20,80 +23,9 @@ export interface BalanceDetailInfo {
   stakedLP: string;
   unstakingLP: string;
   claimableRewards: string;
+  loadingBalance: boolean;
+  loadingPositions: boolean;
 }
-
-const initialBalanceSummaryInfo: BalanceSummaryInfo = {
-  amount: "$0.00",
-  changeRate: "+0.0%",
-};
-
-async function fetchBalanceSummaryInfo(
-  address: string,
-): Promise<BalanceSummaryInfo> {
-  console.debug("fetchBalanceSummaryInfo", address);
-  return Promise.resolve({ amount: "$1,324.40", changeRate: "+14.3%" });
-}
-
-const initialBalanceDetailInfo: BalanceDetailInfo = {
-  availableBalance: "$0.00",
-  stakedLP: "$0.00",
-  unstakingLP: "$0.00",
-  claimableRewards: "$0.00",
-};
-
-async function fetchBalanceDetailInfo(
-  address: string,
-): Promise<BalanceDetailInfo> {
-  console.debug("fetchBalanceDetailInfo", address);
-  return Promise.resolve({
-    availableBalance: "$1,234.1",
-    stakedLP: "$1,234.2",
-    unstakingLP: "$1,234.3",
-    claimableRewards: "$1,234.4",
-  });
-}
-
-
-const DEPOSIT_TO: TokenModel = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gns",
-  decimals: 4,
-  symbol: "Cosmos",
-  logoURI:
-    "/cosmos.svg",
-  type: "grc20",
-  priceId: "gno.land/r/gns",
-};
-
-const DEPOSIT_FROM: TokenModel = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gns",
-  decimals: 4,
-  symbol: "Gnoland",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-  type: "grc20",
-  priceId: "gno.land/r/gns",
-};
-const DEPOSIT_INFO: TokenModel = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "ATOM",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gns",
-  decimals: 4,
-  symbol: "ATOM",
-  logoURI:
-    "/atom.svg",
-  type: "grc20",
-  priceId: "gno.land/r/gns",
-};
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork } = useWallet();
@@ -101,10 +33,11 @@ const WalletBalanceContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
-  const [depositInfo, setDepositInfo] = useState(DEPOSIT_INFO);
-  const [withdrawInfo, setWithDrawInfo] = useState(DEPOSIT_INFO);
+  const [depositInfo, setDepositInfo] = useState<TokenModel>();
+  const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
+  const [loadingBalance, setLoadingBalance] = useState(false);
 
-  const changeTokenDeposit = useCallback((token: TokenModel) => {
+  const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
   }, []);
@@ -116,9 +49,9 @@ const WalletBalanceContainer: React.FC = () => {
 
   const deposit = useCallback(() => {
     if (!connected) return;
-    setIsShowDepositModal(true);
+    changeTokenDeposit(undefined);
     if (!address) return;
-  }, [connected, address]);
+  }, [connected, address, changeTokenDeposit]);
 
   const withdraw = useCallback(() => {
     if (!connected) return;
@@ -126,49 +59,71 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
 
-  const claimAll = useCallback(() => { }, []);
+  const claimAll = useCallback(() => {}, []);
 
-  const {
-    isLoading: isBalanceSummaryInfoLoading,
-    error: balanceSummaryInfoError,
-    data: balanceSummaryInfo,
-  } = useQuery<BalanceSummaryInfo, Error>({
-    queryKey: ["balanceSummaryInfo", connected, address],
-    queryFn: () => {
-      if (!connected) return initialBalanceSummaryInfo;
-      return fetchBalanceSummaryInfo(address);
-    },
-    initialData: initialBalanceSummaryInfo,
-  });
+  const { displayBalanceMap, updateBalances } = useTokenData();
+  const { positions, loading: loadingPositions } = usePositionData();
 
-  const {
-    isLoading: isBalanceDetailInfoLoading,
-    error: balanceDetailInfoError,
-    data: balanceDetailInfo,
-  } = useQuery<BalanceDetailInfo, Error>({
-    queryKey: ["balanceDetailInfo", connected, address],
-    queryFn: () => {
-      if (!connected) return initialBalanceDetailInfo;
-      return fetchBalanceDetailInfo(address);
+  useEffect(() => {
+    setLoadingBalance(true);
+    updateBalances().finally(() => {
+      setLoadingBalance(false);
+    });
+  }, [connected]);
+
+  const loadingTotalBalance = loadingBalance || loadingPositions;
+
+  const availableBalance: number = Object.keys(displayBalanceMap ?? {})
+    .map(x => displayBalanceMap[x] ?? 0)
+    .reduce(
+      (acc: number, cur: number) => BigNumber(acc).plus(cur).toNumber(),
+      0,
+    );
+
+  const { stakedBalance, unStakedBalance, claimableRewards } = positions.reduce(
+    (acc, cur) => {
+      if (cur.staked) {
+        acc.stakedBalance = BigNumber(acc.stakedBalance)
+          .plus(cur.stakedUsdValue ?? "0")
+          .toNumber();
+      } else {
+        acc.unStakedBalance = BigNumber(acc.unStakedBalance)
+          .plus(cur.stakedUsdValue ?? "0")
+          .toNumber();
+      }
+
+      cur.rewards.forEach(x => {
+        acc.claimableRewards = BigNumber(acc.claimableRewards)
+          .plus(x.claimableUsdValue ?? "0")
+          .toNumber();
+      });
+      return acc;
     },
-    initialData: initialBalanceDetailInfo,
-  });
+    { stakedBalance: 0, unStakedBalance: 0, claimableRewards: 0 },
+  );
+
+  const sumTotalBalance = BigNumber(availableBalance)
+    .plus(unStakedBalance)
+    .plus(stakedBalance)
+    .plus(claimableRewards)
+    .decimalPlaces(2)
+    .toFormat();
 
   const closeDeposit = () => {
-    setIsShowDepositModal(false)
-  }
+    setIsShowDepositModal(false);
+  };
 
   const closeWithdraw = () => {
-    setIsShowWithDrawModal(false)
-  }
+    setIsShowWithDrawModal(false);
+  };
 
   const callbackDeposit = (value: boolean) => {
     setIsShowDepositModal(value);
-  }
+  };
 
   const callbackWithdraw = (value: boolean) => {
     setIsShowWithDrawModal(value);
-  }
+  };
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
 
@@ -176,8 +131,19 @@ const WalletBalanceContainer: React.FC = () => {
     <>
       <WalletBalance
         connected={connected}
-        balanceSummaryInfo={balanceSummaryInfo}
-        balanceDetailInfo={balanceDetailInfo}
+        balanceSummaryInfo={{
+          amount: `$${sumTotalBalance}`,
+          changeRate: "0.0%",
+          loading: loadingTotalBalance,
+        }}
+        balanceDetailInfo={{
+          availableBalance: `${availableBalance}`,
+          claimableRewards: `${claimableRewards}`,
+          stakedLP: `${stakedBalance}`,
+          unstakingLP: `${unStakedBalance}`,
+          loadingBalance,
+          loadingPositions,
+        }}
         deposit={deposit}
         withdraw={withdraw}
         claimAll={claimAll}
@@ -189,9 +155,6 @@ const WalletBalanceContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={depositInfo}
-          fromToken={DEPOSIT_TO}
-          toToken={DEPOSIT_FROM}
-          connected={connected}
           changeToken={changeTokenDeposit}
           callback={callbackDeposit}
         />
@@ -201,8 +164,6 @@ const WalletBalanceContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}
-          fromToken={DEPOSIT_FROM}
-          toToken={DEPOSIT_TO}
           connected={connected}
           changeToken={changeTokenWithdraw}
           callback={callbackWithdraw}

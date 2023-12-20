@@ -12,7 +12,10 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconFailed from "@components/common/icons/IconFailed";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { SwapSummaryInfo, swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
+import {
+  SwapSummaryInfo,
+  swapDirectionToGuaranteedType,
+} from "@models/swap/swap-summary-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { numberToUSD, toNumberFormat } from "@utils/number-utils";
 import { numberToFormat } from "@utils/string-utils";
@@ -87,19 +90,31 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   return (
     <>
       <ConfirmSwapModalBackground>
-        <ConfirmModal ref={menuRef} className={submitted ? "modal-body-wrapper" : ""}>
-          <div className={`modal-body ${swapResult === null && submitted ? "modal-body-loading" : submitted ? "submitted-modal" : ""}`}>
-            <div className={`modal-header ${submitted ? "model-header-submitted" : ""}`}>
+        <ConfirmModal
+          ref={menuRef}
+          className={submitted ? "modal-body-wrapper" : ""}
+        >
+          <div
+            className={`modal-body ${
+              swapResult === null && submitted
+                ? "modal-body-loading"
+                : submitted
+                ? "submitted-modal"
+                : ""
+            }`}
+          >
+            <div
+              className={`modal-header ${
+                submitted ? "model-header-submitted" : ""
+              }`}
+            >
               {!submitted && <span>Confirm Swap</span>}
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>
             </div>
             {submitted ? (
-              <ConfirmSwapResult
-                swapResult={swapResult}
-                close={close}
-              />
+              <ConfirmSwapResult swapResult={swapResult} close={close} />
             ) : (
               <>
                 <div className="modal-receipt">
@@ -108,12 +123,20 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <div className="amount-container">
                         <span>{swapTokenInfo.tokenAAmount}</span>
                         <div className="button-wrapper">
-                          <MissingLogo symbol={swapSummaryInfo.tokenA.symbol} url={swapSummaryInfo.tokenA.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
+                          <MissingLogo
+                            symbol={swapSummaryInfo.tokenA.symbol}
+                            url={swapSummaryInfo.tokenA.logoURI}
+                            className="coin-logo"
+                            width={24}
+                            mobileWidth={24}
+                          />
                           <span>{swapSummaryInfo.tokenA.symbol}</span>
                         </div>
                       </div>
                       <div className="amount-info">
-                        <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
+                        <span className="price-text">
+                          {swapTokenInfo.tokenAUSDStr}
+                        </span>
                       </div>
                       <div className="arrow">
                         <div className="shape">
@@ -125,31 +148,33 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <div className="amount-container">
                         <span>{swapTokenInfo.tokenBAmount}</span>
                         <div className="button-wrapper">
-                          <MissingLogo symbol={swapSummaryInfo.tokenB.symbol} url={swapSummaryInfo.tokenB.logoURI} className="coin-logo" width={24} mobileWidth={24}/>
+                          <MissingLogo
+                            symbol={swapSummaryInfo.tokenB.symbol}
+                            url={swapSummaryInfo.tokenB.logoURI}
+                            className="coin-logo"
+                            width={24}
+                            mobileWidth={24}
+                          />
                           <span>{swapSummaryInfo.tokenB.symbol}</span>
                         </div>
                       </div>
                       <div className="amount-info">
-                        <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
+                        <span className="price-text">
+                          {swapTokenInfo.tokenBUSDStr}
+                        </span>
                       </div>
                     </div>
                   </div>
                   <div className="swap-info">
                     <div className="coin-info">
-                      <span className="gnos-price">
-                        {swapRateDescription}
-                      </span>
-                      <span className="exchange-price">
-                        {swapRateUSDStr}
-                      </span>
+                      <span className="gnos-price">{swapRateDescription}</span>
+                      <span className="exchange-price">{swapRateUSDStr}</span>
                     </div>
                   </div>
                   <div className="gas-info">
                     <div className="price-impact">
                       <span className="gray-text">Price Impact</span>
-                      <span className="white-text">
-                        {priceImpactStr}
-                      </span>
+                      <span className="white-text">{priceImpactStr}</span>
                     </div>
                     <div className="slippage">
                       <span className="gray-text">Max. Slippage</span>
@@ -158,17 +183,13 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     <SwapDivider />
                     <div className="received">
                       <span className="gray-text">{guaranteedTypeStr}</span>
-                      <span className="white-text">
-                        {guaranteedStr}
-                      </span>
+                      <span className="white-text">{guaranteedStr}</span>
                     </div>
                     <div className="gas-fee">
                       <span className="gray-text">Gas Fee</span>
                       <span className="white-text">
                         {gasFeeStr}
-                        <span className="gray-text">
-                          ({gasFeeUSDStr})
-                        </span>
+                        <span className="gray-text">({gasFeeUSDStr})</span>
                       </span>
                     </div>
                   </div>
@@ -204,7 +225,6 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
   swapResult,
   close,
 }) => {
-
   if (swapResult === null) {
     return (
       <>
@@ -213,9 +233,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         </div>
         <div className="transaction-state">
           <span className="submitted">Waiting for Confirmation</span>
-          <span className="swap-message">
-            Swapping 0.1 GNS for 0.12 GNOT
-          </span>
+          <span className="swap-message">Swapping 0.1 GNS for 0.12 GNOT</span>
           <div className="view-transaction">
             <span>Confirm this transaction in your wallet</span>
           </div>
@@ -299,7 +317,8 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         <span className="submitted">Transaction Rejected</span>
         <div className="view-transaction">
           <span>
-            Your transaction has been rejected.<br /> Please try again.
+            Your transaction has been rejected.
+            <br /> Please try again.
           </span>
         </div>
       </div>

@@ -20,8 +20,8 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const { displayBalanceMap, tokenPrices } = useTokenData();
   
   useEffect(() => {
-    if (token && displayBalanceMap[checkGnotPath(token.priceId)]) {
-      const balance = displayBalanceMap[checkGnotPath(token.priceId)];
+    if (token && displayBalanceMap[token.priceId]) {
+      const balance = displayBalanceMap[token.priceId];
       setBalance(BigNumber(balance ?? 0).toFormat());
     } else {
       setBalance("0");
@@ -34,7 +34,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     }
     return `$${convertLargePrice(usd.toString())}`;
   }, [usd, amount]);
-  
+
   const changeAmount = useCallback((value: string) => {
     if (!token) {
       return;

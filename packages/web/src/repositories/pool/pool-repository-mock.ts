@@ -26,12 +26,12 @@ export class PoolRepositoryMock implements PoolRepository {
     return PoolDetailData.pool as PoolDetailModel;
   };
 
-  createPool = async (): Promise<string> => {
-    return "hash";
+  createPool = async () => {
+    throw new Error("Not implements");
   };
 
-  addLiquidity = async (): Promise<string> => {
-    return "hash";
+  addLiquidity = async () => {
+    throw new Error("Not implements");
   };
 
   getPoolDetailByPath = async (

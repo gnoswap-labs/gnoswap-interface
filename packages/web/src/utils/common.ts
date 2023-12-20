@@ -1,6 +1,7 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { convertLargePrice } from "./stake-position-utils";
 import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
+import { TokenModel } from "@models/token/token-model";
 
 export function wait<T>(
   runner: () => Promise<T>,
@@ -167,3 +168,15 @@ export const checkGnotPath = (path: string) => {
     return path;
   }
 };
+
+export function removeDuplicatesByWrappedPath(arr: TokenModel[]) {
+  const seen = new Set();
+  return arr.filter(obj => {
+    const path = obj.path;
+    if (!seen.has(path)) {
+      seen.add(path);
+      return true;
+    }
+    return false;
+  });
+}

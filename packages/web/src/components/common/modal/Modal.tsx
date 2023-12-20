@@ -24,9 +24,9 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const cloneChildren = () =>
-  React.Children.map(children, (child) =>
-    cloneElement(child as React.ReactElement, { modalRef })
-  );
+    React.Children.map(children, (child) =>
+      cloneElement(child as React.ReactElement, { modalRef })
+    );
   usePositionModal(modalRef);
   return (
     <>

@@ -20,6 +20,8 @@ Default.args = {
     stakedLP: "$1.20",
     unstakingLP: "$1.30",
     claimableRewards: "$1.40",
+    loadingBalance: false,
+    loadingPositions: false,
   },
   connected: true,
   claimAll: action("claimAll"),

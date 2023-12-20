@@ -69,7 +69,7 @@ export const usePoolData = () => {
         },
       },
       upDown: "none",
-      content: !pool.apr ? "-" : `${pool.apr || 0}%`
+      content: !pool.apr ? "-" : `${pool.apr || 0}%`,
     }));
   }, [pools]);
 
@@ -81,7 +81,7 @@ export const usePoolData = () => {
     const mappedPools = pools
       .filter(pool => pool.incentivizedType !== "NONE_INCENTIVIZED")
       .map(PoolMapper.toCardInfo);
-    mappedPools.sort((x,y) => Number(y.tvl) - Number(x.tvl));
+    mappedPools.sort((x, y) => Number(y.tvl) - Number(x.tvl));
     return mappedPools.map((item: PoolCardInfo) => {
       return {
         ...item,

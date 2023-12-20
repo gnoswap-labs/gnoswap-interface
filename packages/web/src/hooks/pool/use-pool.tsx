@@ -19,8 +19,9 @@ export const usePool = ({
 }: Props) => {
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
+  const [fetching, setFetching] = useState(false);
   const { pools, updatePools } = usePoolData();
-  const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<{ [key in string]: number }>({});
+  const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<{ [key in string]: number } | null>(null);
 
   const currentPools: PoolModel[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -87,7 +88,7 @@ export const usePool = ({
     if (!currentTokenData) {
       return null;
     }
-    const hash = await poolRepository.createPool({
+    return poolRepository.createPool({
       tokenA: currentTokenData.tokenA,
       tokenB: currentTokenData.tokenB,
       tokenAAmount: currentTokenData.tokenAAmount,
@@ -102,7 +103,6 @@ export const usePool = ({
       console.error(e);
       return null;
     });
-    return hash;
   }, [account, poolRepository, tokenA, tokenB, compareToken]);
 
   const addLiquidity = useCallback(async ({
@@ -127,7 +127,7 @@ export const usePool = ({
     if (!currentTokenData) {
       return null;
     }
-    const hash = await poolRepository.addLiquidity({
+    return poolRepository.addLiquidity({
       tokenA: currentTokenData.tokenA,
       tokenB: currentTokenData.tokenB,
       tokenAAmount: currentTokenData.tokenAAmount,
@@ -141,7 +141,6 @@ export const usePool = ({
       console.error(e);
       return null;
     });
-    return hash;
   }, [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository]);
 
   useEffect(() => {
@@ -149,12 +148,17 @@ export const usePool = ({
   }, []);
 
   useEffect(() => {
+    setFetching(false);
+    setFeetierOfLiquidityMap(null);
+    if (!tokenA || !tokenB) {
+      return;
+    }
     fetchPoolInfos(currentPools)
       .then(infos => {
         const feetierOfLiquidityMap: { [key in string]: number } = {};
         const totalLiquidities = infos.map(info => info.liquidity).reduce((total, cur) => total + cur, 0n);
         for (const info of infos) {
-          const liquidityRate = Number(info.liquidity) * 100 / Number(totalLiquidities);
+          const liquidityRate = totalLiquidities === 0n ? 0 : Number(info.liquidity) * 100 / Number(totalLiquidities);
           const feeTier = currentPools.find(pool => pool.path === info.poolPath)?.fee;
           if (feeTier) {
             feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
@@ -163,11 +167,18 @@ export const usePool = ({
         return feetierOfLiquidityMap;
       })
       .then(setFeetierOfLiquidityMap);
-  }, [currentPools]);
+  }, [currentPools, tokenA, tokenB]);
+
+  useEffect(() => {
+    if (feetierOfLiquidityMap) {
+      setFetching(true);
+    }
+  }, [feetierOfLiquidityMap]);
 
   return {
+    fetching,
     pools: currentPools,
-    feetierOfLiquidityMap,
+    feetierOfLiquidityMap: feetierOfLiquidityMap || {},
     createPool,
     addLiquidity,
   };

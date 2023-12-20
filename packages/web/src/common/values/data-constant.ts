@@ -25,5 +25,8 @@ export enum NotificationType {
 export type MathSymbolType = "NEGATIVE" | "POSITIVE" | "NAN";
 
 export const DEFAULT_TRANSACTION_DEADLINE = "7282571140" as const;
+export const DEFAULT_CONTRACT_USE_FEE = 1000000 as const;
 export const DEFAULT_GAS_FEE = 1 as const;
 export const DEFAULT_GAS_WANTED = 2000000 as const;
+
+export const SCANNER_URL = "https://gnoscan.io";

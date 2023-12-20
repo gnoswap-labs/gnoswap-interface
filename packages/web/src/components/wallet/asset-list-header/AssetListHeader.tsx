@@ -53,7 +53,9 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               />
             )}
             {searchIcon ? (
-              <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+              <div
+                ref={searchRef as unknown as React.RefObject<HTMLDivElement>}
+              >
                 <SearchInput
                   width={200}
                   height={40}

@@ -8,6 +8,11 @@ import WalletBalanceDetailInfo, {
 } from "@components/wallet/wallet-balance-detail-info/WalletBalanceDetailInfo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
+import {
+  SHAPE_TYPES,
+  skeletonBalanceDetail,
+} from "@constants/skeleton.constant";
+import BigNumber from "bignumber.js";
 
 interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
@@ -26,19 +31,25 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 }) => (
   <WalletBalanceDetailWrapper>
     <WalletBalanceDetailInfo
+      loading={balanceDetailInfo.loadingBalance}
       title={"Available Balance"}
       value={balanceDetailInfo.availableBalance}
       tooltip={"Total sum of assets not deposited in liquidity pools."}
+      connected={connected}
     />
     <WalletBalanceDetailInfo
+      loading={balanceDetailInfo.loadingPositions}
       title={"Staked Positions"}
       value={balanceDetailInfo.stakedLP}
       tooltip={"Total sum of staked positions."}
+      connected={connected}
     />
     <WalletBalanceDetailInfo
+      loading={balanceDetailInfo.loadingPositions}
       title={"Total Claimed Rewards"}
       value={balanceDetailInfo.unstakingLP}
       tooltip={"The cumulative sum of claimed rewards."}
+      connected={connected}
     />
     {breakpoint === DEVICE_TYPE.MOBILE ? (
       <InfoWrapper>
@@ -50,28 +61,54 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
             />
           </div>
           <div className="value-wrapper">
-            <span className="value">{balanceDetailInfo.claimableRewards}</span>
+            {connected ? (
+              balanceDetailInfo.loadingPositions ? (
+                <div className="value">
+                  <span
+                    css={skeletonBalanceDetail(
+                      "120px",
+                      SHAPE_TYPES.ROUNDED_SQUARE,
+                      2,
+                    )}
+                  />
+                </div>
+              ) : (
+                <span className="value">
+                  {BigNumber(balanceDetailInfo.claimableRewards)
+                    .decimalPlaces(2)
+                    .toFormat()}
+                </span>
+              )
+            ) : (
+              <span className="value">$0</span>
+            )}
           </div>
         </div>
         <div className="button-wrapper">
           <ClaimAllButton
             onClick={claimAll}
-            disabled={connected === false || isSwitchNetwork}
+            disabled={
+              connected === false ||
+              isSwitchNetwork ||
+              Number(balanceDetailInfo.claimableRewards) === 0
+            }
           />
         </div>
       </InfoWrapper>
     ) : (
       <WalletBalanceDetailInfo
+        loading={balanceDetailInfo.loadingPositions}
         title={"Claimable Rewards"}
         value={balanceDetailInfo.claimableRewards}
         tooltip={"Total sum of unclaimed rewards."}
+        connected={connected}
         button={
           <ClaimAllButton
             onClick={claimAll}
             disabled={
               connected === false ||
               isSwitchNetwork ||
-              Number(balanceDetailInfo.claimableRewards.slice(1)) === 0
+              Number(balanceDetailInfo.claimableRewards) === 0
             }
           />
         }

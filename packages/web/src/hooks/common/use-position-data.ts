@@ -7,6 +7,7 @@ import { useGnoswapContext } from "./use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useAtom } from "jotai";
 import { PoolState } from "@states/index";
+import { makeId } from "@utils/common";
 
 export const usePositionData = () => {
   const { positionRepository } = useGnoswapContext();
@@ -37,7 +38,6 @@ export const usePositionData = () => {
   );
 
   const getPositions = useCallback(async (): Promise<PoolPositionModel[]> => {
-
     if (!account?.address) {
       setPositions([]);
       return [];
@@ -82,7 +82,8 @@ export const usePositionData = () => {
         setPositions([]);
         setIsError(true);
         return [];
-      }).finally(() => setLoading(false));
+      })
+      .finally(() => setLoading(false));
   }, [account?.address, pools, positionRepository, setPositions]);
 
   const getPositionsByPoolId = useCallback(
@@ -133,6 +134,14 @@ export const usePositionData = () => {
     [account?.address, pools, positionRepository],
   );
 
+  const getPositionsByPoolPath = useCallback(
+    async (poolPath: string): Promise<PoolPositionModel[]> => {
+      const poolId = makeId(poolPath);
+      return getPositionsByPoolId(poolId);
+    },
+    [getPositionsByPoolId],
+  );
+
   useEffect(() => {
     getPositions();
   }, [connected, getPositions]);
@@ -144,6 +153,7 @@ export const usePositionData = () => {
     isStakedPool,
     getPositions,
     getPositionsByPoolId,
+    getPositionsByPoolPath,
     isFetchedPosition,
     loading,
     setLoading,

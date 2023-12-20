@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export type TNoticeType = "success" | "error" | "pending";
+export type TNoticeType = "success" | "error" | "pending" | "withdraw-success" | "withdraw-error";
 
 export interface INoticeOptions {
   type: TNoticeType;
@@ -8,6 +8,9 @@ export interface INoticeOptions {
   timeout: number;
   closeable?: boolean;
   onClose?: () => void;
+  data?: {
+    [key: string]: string;
+  };
 }
 
 export interface INoticeContext {

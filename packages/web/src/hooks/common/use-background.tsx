@@ -1,19 +1,18 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
-import { TokenState, WalletState } from "@states/index";
+import { CommonState, TokenState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { useGnoswapContext } from "./use-gnoswap-context";
 
 export const useBackground = () => {
-  const { accountRepository } = useGnoswapContext();
   const { account, initSession, connectAccount, updateWalletEvents } = useWallet();
   const [walletClient] = useAtom(WalletState.client);
   const [, setTokens] = useAtom(TokenState.tokens);
   const [, setTokenPrices] = useAtom(TokenState.tokenPrices);
   const [, setBalances] = useAtom(TokenState.balances);
+  const [sessionId] = useAtom(CommonState.sessionId);
   const { updateBalances } = useTokenData();
 
   const { data: tokens } = useGetTokensList();
@@ -35,12 +34,26 @@ export const useBackground = () => {
     }
   }, [tokenPrices]);
 
-  useLayoutEffect(() => {
-    if (window?.adena?.version) {
-      console.log(window?.adena?.version);
-      initSession();
+  useEffect(() => {
+    if (walletClient) {
+      return;
     }
-  }, [window?.adena?.version, accountRepository]);
+    function initWalletBySession() {
+      if (window?.adena?.version) {
+        initSession();
+      }
+    }
+
+    let count = 0;
+    const interval = setInterval(() => {
+      initWalletBySession();
+      count += 1;
+      if (count > 5 || walletClient || !sessionId) {
+        clearInterval(interval);
+      }
+    }, 200);
+    return () => { clearInterval(interval); };
+  }, [walletClient]);
 
   useEffect(() => {
     if (walletClient) {

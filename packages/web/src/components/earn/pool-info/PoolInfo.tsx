@@ -49,7 +49,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
     const resolvedRate = pool.bins.length / length;
     return Array.from({ length }, (_, index) => {
       const pickIndex = Math.round((index + 1) * resolvedRate) - 1;
-      console.log(pickIndex)
       return pool.bins[pickIndex];
     })
   }, [pool.bins]);

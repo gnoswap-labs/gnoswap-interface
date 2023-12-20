@@ -194,12 +194,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     if (response.code !== 0 || !response.data) {
       throw new SwapError("SWAP_FAILED");
     }
-    const data = response.data as SendTransactionSuccessResponse<string>;
-    if (BigNumber(data.data).isNaN()) {
+    const data = response.data as SendTransactionSuccessResponse<string[]>;
+    if (data.data === null || data.data.length === 0) {
       throw new SwapError("SWAP_FAILED");
     }
     const resultAmount =
-      makeDisplayTokenAmount(resultToken, data.data)?.toString() || "0";
+      makeDisplayTokenAmount(resultToken, data.data[0])?.toString() || "0";
     const slippageAmount =
       makeDisplayTokenAmount(
         resultToken,

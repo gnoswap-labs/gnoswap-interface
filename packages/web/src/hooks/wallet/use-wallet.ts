@@ -7,11 +7,14 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import NetworkData from "@resources/chains.json";
 import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
+import * as uuid from "uuid";
+import { GNOSWAP_SESSION_ID_KEY } from "@states/common";
 
 const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
+  const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [, setNetwork] = useAtom(CommonState.network);
@@ -47,7 +50,7 @@ export const useWallet = () => {
   }, [setNetwork, walletAccount]);
 
   function initSession() {
-    const connectedBySession = accountRepository.isConnectedWalletBySession();
+    const connectedBySession = sessionId;
     if (connectedBySession && walletClient === null) {
       connectAdenaClient();
     }
@@ -65,7 +68,7 @@ export const useWallet = () => {
   }, [accountRepository, setWalletAccount]);
 
   const connectAdenaClient = useCallback(() => {
-    const connectedBySession = accountRepository.isConnectedWalletBySession();
+    const connectedBySession = sessionId;
     if (!connectedBySession) {
       setLoadingConnect("loading");
     }
@@ -76,9 +79,9 @@ export const useWallet = () => {
       window.open("https://adena.app/");
     }
     setWalletClient(adena);
-  }, [setWalletClient, setLoadingConnect, accountRepository]);
+  }, [sessionId, setWalletClient, setLoadingConnect]);
 
-  const connectAccount = useCallback(async () => {
+  const connectAccount = async () => {
     const established = await accountRepository
       .addEstablishedSite()
       .catch(() => null);
@@ -100,10 +103,12 @@ export const useWallet = () => {
       accountRepository.setConnectedWallet(false);
       setLoadingConnect("error");
     }
-  }, [accountRepository, setWalletAccount, setLoadingConnect]);
+  };
 
   const disconnectWallet = useCallback(() => {
     setWalletAccount(null);
+    setSessionId("");
+    sessionStorage.removeItem(GNOSWAP_SESSION_ID_KEY);
     accountRepository.setConnectedWallet(false);
   }, [accountRepository, setWalletAccount]);
 
@@ -122,6 +127,14 @@ export const useWallet = () => {
     const network = walletAccount.chainId === CHAIN_ID;
     return network ? false : true;
   }, [walletAccount]);
+
+  useEffect(() => {
+    if (!sessionId) {
+      const sessionId = uuid.v4();
+      setSessionId(sessionId);
+      sessionStorage.setItem(GNOSWAP_SESSION_ID_KEY, sessionId);
+    }
+  }, [walletClient]);
 
   return {
     wallet,
