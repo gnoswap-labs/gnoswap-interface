@@ -4,6 +4,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";
 
@@ -43,15 +44,19 @@ export const useSwap = ({
 
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(Number(slippage))) {
+      const shift = tokenA?.decimals || 6;
       const slippageAmountNumber = BigNumber(estimatedAmount).multipliedBy(Number(slippage) * 0.01);
       const tokenAmountLimit = direction === "EXACT_IN" ?
-        BigNumber(estimatedAmount).minus(slippageAmountNumber).toNumber() :
-        BigNumber(estimatedAmount).plus(slippageAmountNumber).toNumber();
+        BigNumber(estimatedAmount).minus(slippageAmountNumber).shiftedBy(shift).toNumber() :
+        BigNumber(estimatedAmount).plus(slippageAmountNumber).shiftedBy(shift).toNumber();
 
-      return tokenAmountLimit > 0 ? tokenAmountLimit : 0;
+      if (tokenAmountLimit <= 0) {
+        return 0;
+      }
+      return tokenA ? makeDisplayTokenAmount(tokenA, tokenAmountLimit) || 0 : 0;
     }
     return 0;
-  }, [direction, estimatedAmount, slippage]);
+  }, [direction, estimatedAmount, slippage, tokenA]);
 
   const estimateSwapRoute = async (amount: string) => {
     if (!selectedTokenPair) {
