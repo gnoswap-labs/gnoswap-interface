@@ -1,7 +1,7 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import PoolGraph from "../pool-graph/PoolGraph";
 import { BarAreaGraphLabel, BarAreaGraphWrapper } from "./BarAreaGraph.styles";
 import { useColorGraph } from "@hooks/common/use-color-graph";
@@ -29,25 +29,16 @@ export interface BarAreaGraphProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   themeKey: "dark" | "light";
+  minTickRate?: number;
+  maxTickRate?: number;
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
 
-function getPositionByMouseEvent(
-  event: React.MouseEvent<HTMLElement | SVGElement, MouseEvent>,
-  width: number,
-) {
-  const { clientX, currentTarget } = event;
-  const { left, width: clientWidth } = currentTarget.getBoundingClientRect();
-  return BigNumber(clientX - left)
-    .multipliedBy(width)
-    .dividedBy(clientWidth)
-    .toNumber();
-}
-
 const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   className = "",
+  isHiddenStart,
   bins,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
@@ -56,125 +47,24 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   maxLabel,
   minTick,
   maxTick,
-  editable,
-  isHiddenStart,
   tokenA,
   tokenB,
   themeKey,
+  minTickRate,
+  maxTickRate,
 }) => {
-  const existTickRage = (!minTick || !maxTick) === false;
-  const [mouseDown, setMouseDown] = useState(false);
-  const [mouseDownStartLine, setMouseDownStartLine] = useState(false);
-  const [mouseDownEndLine, setMouseDownEndLine] = useState(false);
-  const [selectedStart, setSelectedStart] = useState(existTickRage);
-  const [selectedEnd, setSelectedEnd] = useState(existTickRage);
-  const [selectedStartPosition, setSelectedStartPosition] = useState(minTick || 0);
-  const [selectedEndPosition, setSelectedEndPosition] = useState(maxTick || 0);
   const { redColor, greenColor } = useColorGraph();
 
-  const getStartPosition = useCallback(() => {
-    return selectedStartPosition > selectedEndPosition
-      ? selectedEndPosition
-      : selectedStartPosition;
-  }, [selectedEndPosition, selectedStartPosition]);
-
-  const getEndPosition = useCallback(() => {
-    return selectedStartPosition > selectedEndPosition
-      ? selectedStartPosition
-      : selectedEndPosition;
-  }, [selectedEndPosition, selectedStartPosition]);
-
   const getSelectorPoints = useCallback(() => {
-    return `${minTick},0 ${minTick},${height} ${maxTick},${height} ${maxTick},0`;
-  }, [minTick, height, maxTick]);
-
-  const onMouseDownArea = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
-  ) => {
-    if (!editable) {
-      return;
+    function estimateTick(tick: number) {
+      if (tick < 0) return 0;
+      if (tick > width) return width;
+      return tick;
     }
-    event.preventDefault();
-    const positionX = getPositionByMouseEvent(event, width);
-
-    if (selectedStart) {
-      if (
-        positionX < getStartPosition() - 10 ||
-        positionX > getEndPosition() + 10
-      ) {
-        setSelectedStart(false);
-        setSelectedEnd(false);
-        setSelectedStartPosition(0);
-        setSelectedEndPosition(0);
-        return;
-      } else {
-        return;
-      }
-    }
-    setSelectedStart(true);
-    setMouseDown(true);
-    setSelectedStartPosition(positionX);
-    setSelectedEndPosition(positionX);
-  };
-
-  const onMouseUpArea = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    event.preventDefault();
-    const isMouseDown = mouseDown || mouseDownStartLine || mouseDownEndLine;
-    if (!isMouseDown) {
-      return;
-    }
-    setMouseDownStartLine(false);
-    setMouseDownEndLine(false);
-    setMouseDown(false);
-    if (selectedStart) {
-      setSelectedEnd(true);
-    }
-  };
-
-  const onMouseMoveArea = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
-  ) => {
-    event.preventDefault();
-    const isMouseDown = mouseDown || mouseDownStartLine || mouseDownEndLine;
-    if (!isMouseDown) {
-      return;
-    }
-    const positionX = getPositionByMouseEvent(event, width);
-    if (mouseDownStartLine) {
-      moveLine("start", positionX);
-      return;
-    }
-    if (mouseDownEndLine) {
-      moveLine("end", positionX);
-      return;
-    }
-    if (!selectedEnd) {
-      setSelectedEndPosition(positionX);
-    }
-  };
-
-  const onMouseDownLine = (
-    event: React.MouseEvent<SVGGElement, MouseEvent>,
-    lineType: "start" | "end",
-  ) => {
-    if (!editable) {
-      return;
-    }
-    event.preventDefault();
-    if (lineType === "start") {
-      setMouseDownStartLine(true);
-    } else {
-      setMouseDownEndLine(true);
-    }
-  };
-
-  const moveLine = (lineType: "start" | "end", positionX: number) => {
-    if (lineType === "start") {
-      setSelectedStartPosition(positionX);
-    } else {
-      setSelectedEndPosition(positionX);
-    }
-  };
+    const currentMinTick = estimateTick(minTick || 0);
+    const currentMaxTick = estimateTick(maxTick || 0);
+    return `${currentMinTick},0 ${currentMinTick},${height} ${currentMaxTick},${height} ${currentMaxTick},0`;
+  }, [minTick, maxTick, height, width]);
 
   const minTickPosition = useMemo(() => {
     if (!minTick) {
@@ -217,28 +107,42 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   }, [maxTickPosition, width]);
 
   const startColor = useMemo(() => {
-    if (!minTickPosition) {
+    if (minTickPosition === null) {
       return null;
     }
     return isMinTickGreen ? greenColor : redColor;
   }, [minTickPosition, isMinTickGreen, redColor, greenColor]);
 
   const endColor = useMemo(() => {
-    if (!maxTickPosition) {
+    if (maxTickPosition === null) {
       return null;
     }
     return isMaxTickGreen ? greenColor : redColor;
   }, [maxTickPosition, isMaxTickGreen, redColor, greenColor]);
+
+  function isAvailRange(rate: number) {
+    if (rate < -90) {
+      return false;
+    }
+    if (rate > 1000) {
+      return false;
+    }
+    return true;
+  }
+
+  const visibleArea = minTickPosition !== null && maxTickPosition !== null && startColor && endColor && !isHiddenStart;
+
+  const visiblieMinLabel =
+    visibleArea && minTickRate && isAvailRange(minTickRate);
+
+  const visiblieMaxLabel =
+    visibleArea && maxTickRate && isAvailRange(maxTickRate);
 
   return (
     <BarAreaGraphWrapper
       className={className}
       width={width}
       height={height}
-      onMouseDown={onMouseDownArea}
-      onMouseUp={onMouseUpArea}
-      onMouseLeave={onMouseUpArea}
-      onMouseMove={onMouseMoveArea}
     >
       <PoolGraph
         currentTick={currentTick !== undefined ? currentTick : null}
@@ -252,7 +156,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         position="top"
         offset={40}
       />
-      {minTickPosition && maxTickPosition && startColor && endColor && !isHiddenStart && (
+      {visibleArea && (
         <svg className="selector" viewBox={`0 0 ${width} ${height}`}>
           <defs>
             <linearGradient id="gradient-area" gradientTransform="rotate(0)">
@@ -260,7 +164,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
               <stop offset="100%" stopColor={endColor.gradient} />
             </linearGradient>
           </defs>
-          <g onMouseDown={event => onMouseDownLine(event, "start")}>
+          <g>
             <line
               className="start-line"
               stroke={startColor.start}
@@ -270,20 +174,13 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
               x2={minTickPosition}
               y2={height}
             />
-            {editable && (
-              <svg x={minTickPosition - 12}>
-                <rect width="11" height="32" rx="2" fill="#596782" />
-                <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
-                <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
-              </svg>
-            )}
           </g>
           <polygon
             className="area"
             fill={"url(#gradient-area)"}
             points={getSelectorPoints()}
           />
-          <g className="endline-wrapper" onMouseDown={event => onMouseDownLine(event, "end")}>
+          <g className="endline-wrapper">
             <line
               className="end-line"
               stroke={endColor.start}
@@ -293,18 +190,11 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
               x2={maxTickPosition}
               y2={height}
             />
-            {editable && (
-              <svg x={maxTickPosition + 1}>
-                <rect width="11" height="32" rx="2" fill="#596782" />
-                <rect x="3.5" y="2" width="1" height="28" fill="#90A2C0" />
-                <rect x="6.5" y="2" width="1" height="28" fill="#90A2C0" />
-              </svg>
-            )}
           </g>
         </svg>
       )}
 
-      {minTickPosition && startColor && !isHiddenStart && (
+      {visiblieMinLabel && (
         <BarAreaGraphLabel
           className="min"
           x={minTickPosition}
@@ -314,7 +204,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
           {minLabel}
         </BarAreaGraphLabel>
       )}
-      {maxTickPosition && endColor && !isHiddenStart && (
+      {visiblieMaxLabel && (
         <BarAreaGraphLabel
           className="max"
           x={maxTickPosition}
