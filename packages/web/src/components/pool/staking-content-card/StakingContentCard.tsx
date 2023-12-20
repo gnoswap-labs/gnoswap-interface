@@ -13,7 +13,6 @@ import {
   TooltipDivider,
 } from "./StakingContentCard.styles";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { STAKING_PERIOD_INFO, StakingPeriodType } from "@constants/option.constant";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
@@ -22,6 +21,7 @@ import { numberToUSD } from "@utils/number-utils";
 import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -158,7 +158,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 300)}
+              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth: 300 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -180,7 +180,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 140)}
+              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth: 140 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">
@@ -287,7 +287,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 300)}
+              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth:  300 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -309,7 +309,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 140)}
+              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth:  140 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">

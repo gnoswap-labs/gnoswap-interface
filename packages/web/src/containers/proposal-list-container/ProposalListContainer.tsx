@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProposalList from "@components/governance/proposals-list/ProposalList";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -78,15 +78,6 @@ const ProposalListContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { openModal } = useConnectWalletModal();
 
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
-
   const { data: proposalList = [] } = useQuery<ProposalDetailProps[], Error>({
     queryKey: ["proposalList", isShowCancelled],
     queryFn: async () => {
@@ -94,7 +85,7 @@ const ProposalListContainer: React.FC = () => {
     },
   });
 
-  const { data: proposalDetail } = useQuery<ProposalDetailProps, Error>({
+  const { data: proposalDetail, isFetching } = useQuery<ProposalDetailProps, Error>({
     queryKey: ["proposalDetail"],
     queryFn: async () => {
       return await fetchProposalDetail();
@@ -133,7 +124,7 @@ const ProposalListContainer: React.FC = () => {
 
   return (
     <ProposalList
-      loading={loading}
+      loading={isFetching}
       isConnected={connected}
       proposalList={proposalList}
       isShowCancelled={isShowCancelled}

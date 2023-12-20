@@ -7,6 +7,7 @@ export const CardListWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
   gap: 24px;
+  min-height: 390px;
   ${media.mobile} {
     gap: 16px;
   }
@@ -22,6 +23,11 @@ export const CardListWrapper = styled.div`
       color: ${({ theme }) => theme.color.text05};
     }
   }
+
+  .load-more-skeleton {
+    width: 100%; 
+    height: 18px;
+  }
 `;
 
 export const GridWrapper = styled.div`
@@ -31,7 +37,7 @@ export const GridWrapper = styled.div`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
-  overflow-x: scroll;
+  /* overflow-x: hidden; */
   @media (max-width: 920px) {
     overflow-x: auto;
     grid-gap: 12px;

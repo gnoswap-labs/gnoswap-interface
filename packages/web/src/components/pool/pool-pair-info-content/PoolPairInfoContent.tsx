@@ -10,9 +10,9 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { toLowerUnitFormat } from "@utils/number-utils";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -60,7 +60,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     if (!pool.apr) {
       return "-";
     }
-    if (pool.apr >= 100) {
+    if (Number(pool.apr) >= 100) {
       return <><IconStar />{`${pool.apr}%`}</>;
     }
     return `${pool.apr}%`;
@@ -118,7 +118,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         >
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined, 140)}
+              css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140} )}
             />
             </SkeletonEarnDetailWrapper>}
           {!loading && <strong className="has-tooltip">{liquidityValue}</strong>}
@@ -127,7 +127,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <span>24h Change</span>
           {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span
-              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ h: 22, w:"50px"})}
             />
             </SkeletonEarnDetailWrapper>}
           {!loading && pool.tvlChange >= 0 ? (
@@ -142,7 +142,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         {!loading &&<strong>{volumeValue}</strong>}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined, 140)}
+              css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140})}
             />
             </SkeletonEarnDetailWrapper>}
         <div className="section-info">
@@ -154,7 +154,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           )}
           {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span
-              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ h: 22, w:"50px"})}
             />
           </SkeletonEarnDetailWrapper>}
         </div>
@@ -164,7 +164,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         {!loading && <strong>{aprValue}</strong>}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
         <span
-          css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, undefined)}
+          css={pulseSkeletonStyle({ h: 22, w:"170px"})}
         />
         </SkeletonEarnDetailWrapper>}
         <div className="apr-info">
@@ -173,7 +173,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             {!loading && <span className="apr-value">{feeChangedStr}</span>}
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span
-              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ h: 22, w:"50px"})}
             />
             </SkeletonEarnDetailWrapper>}
           </div>
@@ -183,7 +183,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             {!loading && <span className="apr-value">{rewardChangedStr}</span>}
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span
-              css={skeletonTokenDetail("50px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ h: 22, w:"50px"})}
             />
             </SkeletonEarnDetailWrapper>}
           </div>

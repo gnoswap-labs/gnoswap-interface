@@ -9,6 +9,91 @@ const skeletonAni = keyframes`
   }
 `;
 
+const pulseAnim = keyframes`
+    0% {
+        opacity: 1
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 1;
+    }
+`;
+
+export interface PulseSkeletonParams {
+  w?: CSSProperties["width"];
+  h?: CSSProperties["height"];
+  tabletWidth?: CSSProperties["width"];
+  smallTableWidth?: CSSProperties["width"];
+  type?: SHAPE_TYPES;
+  tone?: "200" | "300" | "400" | "500" | "600";
+}
+
+const getPulseBackground = (
+  tone: PulseSkeletonParams["tone"],
+  theme: Theme,
+) => {
+  switch (tone) {
+    case "200":
+      return theme.color.skeleton02;
+    case "300":
+      return theme.color.skeleton03;
+    case "400":
+      theme.color.skeleton04;
+
+    case "500":
+      return theme.color.skeleton05;
+    default:
+      return theme.color.skeleton06;
+  }
+};
+
+export const pulseSkeletonStyle =
+  ({
+    w = "100%",
+    h = "18px",
+    tone = "200",
+    type = "rounded-square",
+    tabletWidth,
+    smallTableWidth,
+  }: PulseSkeletonParams) =>
+  (theme: Theme) => {
+    const width = typeof w === "number" ? `${w}px` : w;
+    const height = typeof h === "number" ? `${h}px` : h;
+
+    return css`
+      position: relative;
+      width: ${width};
+      height: ${type === SHAPE_TYPES.CIRCLE ? `${width}px` : `${height}`};
+      /* background: ${theme.color.background05}; */
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: ${getPulseBackground(tone, theme)};
+        animation: 1.5s ease-in-out 0.5s infinite normal none running
+          ${pulseAnim};
+      }
+
+      ${media.tablet} {
+        width: ${tabletWidth ? `${tabletWidth}px` : w};
+      }
+      ${media.tabletMiddle} {
+        width: ${smallTableWidth ? `${smallTableWidth}px` : w};
+      }
+      ${media.mobile} {
+        width: ${w};
+        height: ${typeof height === "number" && height === 22 ? "22px" : h};
+      }
+    `;
+  };
+
 export const skeletonStyle =
   (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
   (theme: Theme) =>
@@ -38,132 +123,153 @@ export const skeletonStyle =
       }
     `;
 
-
 export const skeletonTrendingStyle =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) =>
-(theme: Theme) =>
-  css`
-    position: relative;
-    width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    height: 25px;
-    background: ${theme.color.background23};
-    overflow: hidden;
-    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0%;
-      top: 0;
-      transform: translateX(-100%);
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        0,
-        ${theme.color.backgroundGradient} 0%,
-        ${theme.color.backgroundGradient} 100%
-      );
-      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-    }
-  `;
+  (
+    skeletonWidth: CSSProperties["width"],
+    type: SHAPE_TYPES,
+    seconds?: number,
+  ) =>
+  (theme: Theme) =>
+    css`
+      position: relative;
+      width: ${typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+      height: 25px;
+      background: ${theme.color.background23};
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transform: translateX(-100%);
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          0,
+          ${theme.color.backgroundGradient} 0%,
+          ${theme.color.backgroundGradient} 100%
+        );
+        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+      }
+    `;
 
 export const skeletonTokenDetail =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number, tabletWidth?: CSSProperties["width"], smallTableWidth?: CSSProperties["width"]) =>
-(theme: Theme) =>
-  css`
-    position: relative;
-    width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    height: 22px;
-    overflow: hidden;
-    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-    z-index: 1;
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0%;
-      top: 0;
-      transform: translateX(-100%);
-      width: 100%;
-      height: 100%;
-      background: ${theme.color.backgroundGradient6};
-      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-    }
-    ${media.tablet} {
-      width: ${tabletWidth ? `${tabletWidth}px` : typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    }
-    ${media.tabletMiddle} {
-      width: ${smallTableWidth ? `${smallTableWidth}px` : typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    }
-    ${media.mobile} {
+  (
+    skeletonWidth: CSSProperties["width"],
+    type: SHAPE_TYPES,
+    seconds?: number,
+    tabletWidth?: CSSProperties["width"],
+    smallTableWidth?: CSSProperties["width"],
+  ) =>
+  (theme: Theme) =>
+    css`
+      position: relative;
       width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-      height: 18px;
-    }
-  `;
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+      height: 22px;
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      z-index: 1;
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transform: translateX(-100%);
+        width: 100%;
+        height: 100%;
+        background: ${theme.color.backgroundGradient6};
+        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+      }
+      ${media.tablet} {
+        width: ${tabletWidth
+          ? `${tabletWidth}px`
+          : typeof skeletonWidth === "number"
+          ? `${skeletonWidth}px`
+          : skeletonWidth};
+      }
+      ${media.tabletMiddle} {
+        width: ${smallTableWidth
+          ? `${smallTableWidth}px`
+          : typeof skeletonWidth === "number"
+          ? `${skeletonWidth}px`
+          : skeletonWidth};
+      }
+      ${media.mobile} {
+        width: ${typeof skeletonWidth === "number"
+          ? `${skeletonWidth}px`
+          : skeletonWidth};
+        height: 18px;
+      }
+    `;
 
 export const skeletonTotalBalance =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) =>
-(theme: Theme) =>
-  css`
-    position: relative;
-    width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    height: 20px;
-    overflow: hidden;
-    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-    z-index: 1;
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0%;
-      top: 0;
-      transform: translateX(-100%);
-      width: 100%;
-      height: 100%;
-      background: ${theme.color.backgroundGradient6};
-      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-    }
-    ${media.mobile} {
-      height: 18px;
-    }
-  `;
+  (
+    skeletonWidth: CSSProperties["width"],
+    type: SHAPE_TYPES,
+    seconds?: number,
+  ) =>
+  (theme: Theme) =>
+    css`
+      position: relative;
+      width: ${typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+      height: 20px;
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      z-index: 1;
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transform: translateX(-100%);
+        width: 100%;
+        height: 100%;
+        background: ${theme.color.backgroundGradient6};
+        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+      }
+      ${media.mobile} {
+        height: 18px;
+      }
+    `;
 
 export const skeletonBalanceDetail =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) =>
-(theme: Theme) =>
-  css`
-    position: relative;
-    width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    height: 20px;
-    overflow: hidden;
-    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-    z-index: 1;
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0%;
-      top: 0;
-      transform: translateX(-100%);
-      width: 100%;
-      height: 100%;
-      background: ${theme.color.backgroundGradient6};
-      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-    }
-    ${media.mobile} {
-      height: 18px;
-    }
-  `;
+  (
+    skeletonWidth: CSSProperties["width"],
+    type: SHAPE_TYPES,
+    seconds?: number,
+  ) =>
+  (theme: Theme) =>
+    css`
+      position: relative;
+      width: ${typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+      height: 20px;
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      z-index: 1;
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transform: translateX(-100%);
+        width: 100%;
+        height: 100%;
+        background: ${theme.color.backgroundGradient6};
+        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+      }
+      ${media.mobile} {
+        height: 18px;
+      }
+    `;
 
 export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const TOKEN_SEARCH_WIDTH = [400];
@@ -230,16 +336,66 @@ export const TOKEN_INFO = {
   tdWidth: TOKEN_TD_WIDTH,
   list: [
     { width: 10, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
-    { width: 199, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "left-padding" },
-    { width: 105, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
-    { width: 85, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
-    { width: 85, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
-    { width: 85, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-16" },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
-    { width: 138, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
-    { width: 201, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
-    { width: 124, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right-padding-12" },
+    {
+      width: 199,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "left-padding",
+    },
+    {
+      width: 105,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-16",
+    },
+    {
+      width: 85,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-16",
+    },
+    {
+      width: 85,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-16",
+    },
+    {
+      width: 85,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-16",
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-16",
+    },
+    {
+      width: 140,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-12",
+    },
+    {
+      width: 138,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-12",
+    },
+    {
+      width: 201,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-12",
+    },
+    {
+      width: 124,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right-padding-12",
+    },
   ],
 };
 

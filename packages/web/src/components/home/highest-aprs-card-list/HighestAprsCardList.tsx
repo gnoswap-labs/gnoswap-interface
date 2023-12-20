@@ -7,10 +7,7 @@ import {
 import IconDiamond from "@components/common/icons/IconDiamond";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
-import {
-  SHAPE_TYPES,
-  skeletonTrendingStyle,
-} from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface HighestAprsCardListProps {
   list: Array<CardListPoolInfo>;
@@ -28,14 +25,11 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
-  
   return visible ? (
     <HighestAprsCardListwrapper loading={loading}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
-          <span
-            css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-          />
+          <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
         </SkeletonItem>
       ) : (
         <div>
@@ -47,19 +41,13 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
       {loading ? (
         <>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
         </>
       ) : (

@@ -10,7 +10,7 @@ import {
   pathProps,
 } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 
 interface PoolPairInformationProps {
@@ -46,9 +46,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
       </BreadcrumbsWrapper>
       <div className="token-status">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-          <span
-            css={skeletonTokenDetail("300px", SHAPE_TYPES.ROUNDED_SQUARE)}
-          />
+          <span css={pulseSkeletonStyle({ w: "300px", h: 22 })} />
           </SkeletonEarnDetailWrapper>}
         {!loading && <PoolPairInfoHeader
           tokenA={pool.tokenA}

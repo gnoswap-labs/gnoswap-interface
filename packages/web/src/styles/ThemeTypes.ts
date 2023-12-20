@@ -122,6 +122,11 @@ export interface ThemeColorType {
   shadow01: string;
   shadow02: string;
   shadow03: string;
+  skeleton02: string;
+  skeleton03: string;
+  skeleton04: string;
+  skeleton05: string;
+  skeleton06: string;
 }
 
 export type ThemeColorKeyTypes = keyof ThemeColorType;

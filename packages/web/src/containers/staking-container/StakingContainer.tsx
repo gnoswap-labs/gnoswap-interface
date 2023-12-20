@@ -16,20 +16,13 @@ const StakingContainer: React.FC = () => {
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
   const [pool, setPool] = useState<PoolModel | null>(null);
-  const { fetchPoolDatils } = usePoolData();
-  const { getPositionsByPoolId } = usePositionData();
+  const { fetchPoolDatils, loading: loadingPool } = usePoolData();
+  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData();
   const [type, setType] = useState(3);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
   const { getGnotPath } = useGnotToGnot();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -90,7 +83,11 @@ const StakingContainer: React.FC = () => {
     const rewardTokenMap = positions
       .flatMap(position => position.rewards)
       .reduce<{ [key in string]: TokenModel }>((accum, current) => {
-        if (tokenPair.findIndex(token => token.priceId === current.token.priceId) > -1) {
+        if (
+          tokenPair.findIndex(
+            token => token.priceId === current.token.priceId,
+          ) > -1
+        ) {
           accum[current.token.priceId] = current.token;
         }
         return accum;
@@ -130,7 +127,7 @@ const StakingContainer: React.FC = () => {
       type={type}
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-      loading={loading}
+      loading={loadingPool || loadingPosition}
     />
   );
 };

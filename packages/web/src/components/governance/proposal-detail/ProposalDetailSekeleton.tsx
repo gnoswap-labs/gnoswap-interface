@@ -1,28 +1,19 @@
 import { ProposalDetailWrapper } from "./ProposalDetail.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 const ProposalDetailSkeleton = () => {
   return (
     <ProposalDetailWrapper>
       <div className="header">
-        <div
-          className="title"
-          css={skeletonTokenDetail("60%", SHAPE_TYPES.ROUNDED_SQUARE)}
-        />
-        <div
-          className="status success"
-          css={skeletonTokenDetail("7%", SHAPE_TYPES.ROUNDED_SQUARE)}
-        />
+        <div className="title" css={pulseSkeletonStyle({ w: "60%" })} />
+        <div className="status success" css={pulseSkeletonStyle({ w: "7%" })} />
       </div>
-      <div
-        className="active-wrapper"
-        css={skeletonTokenDetail("30%", SHAPE_TYPES.ROUNDED_SQUARE)}
-      />
+      <div className="active-wrapper" css={pulseSkeletonStyle({ w: "30%" })} />
       <div className="header">
-        <div css={skeletonTokenDetail("70%", SHAPE_TYPES.ROUNDED_SQUARE)} />
+        <div css={pulseSkeletonStyle({ w: "70%" })} />
         <div
           className="status success"
-          css={skeletonTokenDetail("10%", SHAPE_TYPES.ROUNDED_SQUARE)}
+          css={pulseSkeletonStyle({ w: "10%" })}
         />
       </div>
     </ProposalDetailWrapper>

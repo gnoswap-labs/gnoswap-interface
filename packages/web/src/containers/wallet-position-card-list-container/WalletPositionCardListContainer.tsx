@@ -33,6 +33,7 @@ const WalletPositionCardListContainer: React.FC = () => {
       positions={[]}
       loadMore={false}
       isFetched={true}
+      isLoading={false}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}

@@ -5,7 +5,7 @@ import {
   PoolListWrapper,
 } from "./IncentivizedPoolCardList.styles";
 import IncentivizedPoolCard from "@components/earn/incentivized-pool-card/IncentivizedPoolCard";
-import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 export interface IncentivizedPoolCardListProps {
@@ -69,7 +69,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
             <span
               key={index}
               className="card-skeleton"
-              css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
             />
           ))}
       </PoolListWrapper>

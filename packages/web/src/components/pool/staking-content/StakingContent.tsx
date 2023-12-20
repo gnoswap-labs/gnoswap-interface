@@ -8,7 +8,7 @@ import {
 import Button from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
@@ -86,7 +86,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       <div className="content-header">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
           <span
-            css={skeletonTokenDetail("600px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={pulseSkeletonStyle({ h: 22, w: "600px" })}
           />
         </SkeletonEarnDetailWrapper>}
         {!loading && <span>Stake your position to earn rewards up <span className="to-web">to</span></span>}
@@ -128,7 +128,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       <div className="button-wrap">
         {loading && <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
           <span
-            css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={pulseSkeletonStyle({ h: 22, w: "400px" })}
           />
         </SkeletonEarnDetailWrapper>}
         {!loading && <Button

@@ -1,13 +1,14 @@
 import React from "react";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
-import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface MyPositionCardListProps {
   loadMore: boolean;
   isFetched: boolean;
+  isLoading: boolean;
   onClickLoadMore?: () => void;
   positions: PoolPositionModel[];
   currentIndex: number;
@@ -24,6 +25,7 @@ interface MyPositionCardListProps {
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   loadMore,
   isFetched,
+  isLoading,
   onClickLoadMore,
   positions,
   currentIndex,
@@ -33,7 +35,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   onScroll,
   showPagination,
   width,
-  themeKey,
+  themeKey
 }) => (
   <CardListWrapper>
     <GridWrapper ref={divRef} onScroll={onScroll}>
@@ -48,19 +50,24 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           <BlankPositionCard key={index} />
         ))
       }
-      {!isFetched && positions.length === 0 &&
-        Array.from({ length: width <= 1180 && width >= 920 ? 3 : 4 }).map((_, idx) => (
-          <span
-            key={idx}
-            className="card-skeleton"
-            css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-          />
-        ))}
+      {(!isFetched && positions.length === 0) || isLoading
+        ? Array.from({ length: width <= 1180 && width >= 920 ? 3 : 4 }).map(
+            (_, idx) => (
+              <span
+                key={idx}
+                className="card-skeleton"
+                css={pulseSkeletonStyle({ w: "100%", tone: "600" })}
+              />
+            ),
+          )
+        : null}
     </GridWrapper>
-    {(!mobile && positions.length > 0 && onClickLoadMore && (
-      <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
-    )
-    )}
+    {!mobile &&
+      positions?.length > 4 &&
+      onClickLoadMore && (
+        <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
+      )}
+
     {(showPagination && isFetched && positions.length !== 0 &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>

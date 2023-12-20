@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VolumeChart from "@components/dashboard/volume-chart/VolumeChart";
 import { CHART_TYPE } from "@constants/option.constant";
@@ -135,15 +135,7 @@ const parseDate = (dateString: string) => {
 // }
 
 const VolumeChartContainer: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const { dashboardRepository } = useGnoswapContext();
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   const [volumeChartType, setVolumeChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
@@ -211,7 +203,7 @@ const VolumeChartContainer: React.FC = () => {
           : "-",
       }}
       volumeChartInfo={chartData}
-      loading={loading || isFetching}
+      loading={isFetching}
     />
   );
 };

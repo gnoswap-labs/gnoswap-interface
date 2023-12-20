@@ -53,6 +53,7 @@ const MyPositionCardListContainer: React.FC<
     <MyPositionCardList
       loadMore={true}
       isFetched={true}
+      isLoading={false}
       onClickLoadMore={onClickLoadMore}
       positions={[]}
       movePoolDetail={movePoolDetail}

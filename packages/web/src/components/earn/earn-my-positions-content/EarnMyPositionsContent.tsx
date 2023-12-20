@@ -6,6 +6,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 export interface EarnMyPositionContentProps {
   connected: boolean;
   fetched: boolean;
+  loading: boolean;
   isError: boolean;
   positions: PoolPositionModel[];
   connect: () => void;
@@ -26,6 +27,7 @@ export interface EarnMyPositionContentProps {
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   connected,
   fetched,
+  loading,
   isError,
   positions,
   connect,
@@ -42,7 +44,8 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   onClickLoadMore,
   themeKey,
 }) => {
-  if (!connected || isSwitchNetwork) {
+
+  if ((!connected || isSwitchNetwork) && !loading) {
     return (
       <EarnMyPositionsUnconnected
         connect={connect}
@@ -51,7 +54,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     );
   }
 
-  if (isError) {
+  if (isError && !loading) {
     return <EarnMyPositionNoLiquidity />;
   }
 
@@ -59,6 +62,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     <MyPositionCardList
       positions={positions}
       isFetched={fetched}
+      isLoading={loading}
       currentIndex={currentIndex}
       movePoolDetail={movePoolDetail}
       mobile={mobile}

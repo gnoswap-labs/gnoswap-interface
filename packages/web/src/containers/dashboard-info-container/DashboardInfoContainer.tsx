@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import DashboardInfo from "@components/dashboard/dashboard-info/DashboardInfo";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -59,7 +59,6 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
 
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
-  const [loading, setLoading] = useState(true);
   const { dashboardRepository } = useGnoswapContext();
 
   const { data: tokenData, isFetching } = useQuery<
@@ -69,12 +68,6 @@ const DashboardInfoContainer: React.FC = () => {
     queryKey: ["dashboardToken"],
     queryFn: dashboardRepository.getDashboardToken,
   });
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   const progressBar = useMemo(() => {
     if (!tokenData) return "0%";
@@ -113,7 +106,7 @@ const DashboardInfoContainer: React.FC = () => {
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}
-      loading={loading || isFetching}
+      loading={isFetching}
     />
   );
 };

@@ -7,6 +7,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 export interface EarnMyPositionsProps {
   connected: boolean;
   fetched: boolean;
+  loading: boolean;
   isError: boolean;
   positions: PoolPositionModel[];
   isSwitchNetwork: boolean;
@@ -32,6 +33,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   availableStake,
   connect,
   fetched,
+  loading,
   isError,
   positions,
   moveEarnAdd,
@@ -61,6 +63,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       connected={connected}
       connect={connect}
       fetched={fetched}
+      loading={loading}
       isError={isError}
       positions={positions}
       movePoolDetail={movePoolDetail}

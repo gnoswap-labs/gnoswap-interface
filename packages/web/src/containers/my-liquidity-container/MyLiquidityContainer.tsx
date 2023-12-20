@@ -17,17 +17,10 @@ const MyLiquidityContainer: React.FC = () => {
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId } = usePositionData();
+  const { getPositionsByPoolId, loading } = usePositionData();
   const { claimAll } = usePosition(positions);
-  const [loading, setLoading] = useState(true);
   const { gnot, getGnotPath } = useGnotToGnot();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {

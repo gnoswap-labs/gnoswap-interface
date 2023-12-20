@@ -6,7 +6,7 @@ import {
   GovernanceDetailInfoWrapper,
 } from "./GovernanceDetailInfo.styles";
 import { Global, css, type Theme } from "@emotion/react";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface GovernanceDetailInfoProps {
   title: string;
@@ -51,7 +51,7 @@ const GovernanceDetailInfo: React.FC<GovernanceDetailInfoProps> = ({
       </div>
       {loading ? (
         <div className="value-wrapper-skeleton">
-          <span css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)} />
+          <span css={pulseSkeletonStyle({ w: "100%" })} />
         </div>
       ) : (
         <div className="value-wrapper">

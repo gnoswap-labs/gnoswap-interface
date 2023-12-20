@@ -8,10 +8,7 @@ import WalletBalanceDetailInfo, {
 } from "@components/wallet/wallet-balance-detail-info/WalletBalanceDetailInfo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
-import {
-  SHAPE_TYPES,
-  skeletonBalanceDetail,
-} from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import BigNumber from "bignumber.js";
 
 interface WalletBalanceDetailProps {
@@ -64,13 +61,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
             {connected ? (
               balanceDetailInfo.loadingPositions ? (
                 <div className="value">
-                  <span
-                    css={skeletonBalanceDetail(
-                      "120px",
-                      SHAPE_TYPES.ROUNDED_SQUARE,
-                      2,
-                    )}
-                  />
+                  <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
                 </div>
               ) : (
                 <span className="value">

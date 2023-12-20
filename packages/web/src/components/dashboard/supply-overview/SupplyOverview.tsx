@@ -8,7 +8,7 @@ import {
   LoadingProgressWrapper,
   BlockEmissionsWrapper,
 } from "./SupplyOverview.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface SupplyOverviewInfoProps {
   supplyOverviewInfo: SupplyOverviewInfo;
@@ -18,9 +18,7 @@ interface SupplyOverviewInfoProps {
 const LoadingText = () => {
   return (
     <LoadingTextWrapper className="loading-text-wrapper">
-      <span
-        css={skeletonTokenDetail("150px", SHAPE_TYPES.ROUNDED_SQUARE)}
-      />
+      <span css={pulseSkeletonStyle({ w: "150px" })} />
     </LoadingTextWrapper>
   );
 };
@@ -28,38 +26,38 @@ const LoadingText = () => {
 const LoadingProgress = () => {
   return (
     <LoadingProgressWrapper className="loading-text-wrapper">
-      <span
-        css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-      />
+      <span css={pulseSkeletonStyle({ w: "100%" })} />
     </LoadingProgressWrapper>
   );
 };
 
 const BlockEmissions = () => {
-  return (<BlockEmissionsWrapper>
-    <h5>Block Emissions</h5>
-    <div className="content">
-      <div className="label">Liquidity Staking </div>
-      <div className="value">
-        <img src="/gnos.svg" alt="logo"/>
-        <div>0 / day</div>
+  return (
+    <BlockEmissionsWrapper>
+      <h5>Block Emissions</h5>
+      <div className="content">
+        <div className="label">Liquidity Staking </div>
+        <div className="value">
+          <img src="/gnos.svg" alt="logo" />
+          <div>0 / day</div>
+        </div>
       </div>
-    </div>
-    <div className="content">
-      <div className="label">DevOps </div>
-      <div className="value">
-        <img src="/gnos.svg" alt="logo"/>
-        <div>0 / day</div>
+      <div className="content">
+        <div className="label">DevOps </div>
+        <div className="value">
+          <img src="/gnos.svg" alt="logo" />
+          <div>0 / day</div>
+        </div>
       </div>
-    </div>
-    <div className="content">
-      <div className="label">Community </div>
-      <div className="value">
-        <img src="/gnos.svg" alt="logo"/>
-        <div>0 / day</div>
+      <div className="content">
+        <div className="label">Community </div>
+        <div className="value">
+          <img src="/gnos.svg" alt="logo" />
+          <div>0 / day</div>
+        </div>
       </div>
-    </div>
-  </BlockEmissionsWrapper>);
+    </BlockEmissionsWrapper>
+  );
 };
 
 const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
@@ -74,7 +72,11 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           Total Supply
           <DashboardLabel tooltip="The total supply of GNS tokens is 1,000,000,000 GNS." />
         </div>
-        {!loading ? <div>{supplyOverviewInfo.totalSupply}</div> : <LoadingText />}
+        {!loading ? (
+          <div>{supplyOverviewInfo.totalSupply}</div>
+        ) : (
+          <LoadingText />
+        )}
       </div>
       <div className="circulating-supply">
         <div className="circulating-info">
@@ -82,11 +84,19 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
             <div>Circulating Supply</div>
             <DashboardLabel tooltip="The sum of liquid GNS tokens including released vesting allocations and cumulative block emissions." />
           </div>
-          {!loading ? <div>{supplyOverviewInfo.circulatingSupply}</div> : <LoadingText />}
+          {!loading ? (
+            <div>{supplyOverviewInfo.circulatingSupply}</div>
+          ) : (
+            <LoadingText />
+          )}
         </div>
-        {!loading ? <ProgressBar width={supplyOverviewInfo.progressBar}>
-          <div className="progress-bar-rate" />
-        </ProgressBar> : <LoadingProgress />}
+        {!loading ? (
+          <ProgressBar width={supplyOverviewInfo.progressBar}>
+            <div className="progress-bar-rate" />
+          </ProgressBar>
+        ) : (
+          <LoadingProgress />
+        )}
       </div>
       <div className="daily-block-emissions">
         <div className="label-title">
@@ -94,7 +104,11 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           <DashboardLabel tooltip="Number of newly minted GNS tokens per block." />
         </div>
         <div className="daily-block-emissions-tooltip">
-          {!loading ? <div>{supplyOverviewInfo.dailyBlockEmissions}</div> : <LoadingText />}
+          {!loading ? (
+            <div>{supplyOverviewInfo.dailyBlockEmissions}</div>
+          ) : (
+            <LoadingText />
+          )}
           {!loading && <DashboardLabel tooltip={<BlockEmissions />} />}
         </div>
       </div>
@@ -104,10 +118,18 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           <DashboardLabel tooltip="Amount of GNS in LPs being staked." />
         </div>
         <div className="staked-info">
-          {!loading ? <div>{supplyOverviewInfo.totalStaked}</div> : <LoadingText />}
-          {!loading ? <div className="staked-ratio-title">
-            Staking Ratio: {supplyOverviewInfo.stakingRatio}
-          </div> : <LoadingText />}
+          {!loading ? (
+            <div>{supplyOverviewInfo.totalStaked}</div>
+          ) : (
+            <LoadingText />
+          )}
+          {!loading ? (
+            <div className="staked-ratio-title">
+              Staking Ratio: {supplyOverviewInfo.stakingRatio}
+            </div>
+          ) : (
+            <LoadingText />
+          )}
         </div>
       </div>
     </SupplyInfoWrapper>

@@ -45,7 +45,8 @@ const palette = {
   gradient4: "linear-gradient(to left, #536CD7, #A7B9F8)",
   gradient5: "linear-gradient(to right, #59678240, #59678200)",
   gradient6: "linear-gradient(0, #E0E8F4 0%, #E0E8F4 100%)",
-  gradient7: "linear-gradient(90deg, rgba(89, 103, 130, 0.25) 0%, rgba(89, 103, 130, 0) 99.91%)",
+  gradient7:
+    "linear-gradient(90deg, rgba(89, 103, 130, 0.25) 0%, rgba(89, 103, 130, 0) 99.91%)",
   gradient8: "linear-gradient(90deg, #E0E8F4 0%, rgba(224, 232, 244, 0) 100%)",
   whiteGradient4: "linear-gradient(to left, #536CD7, #233DBD)",
   redDark: "#ff2e2e66",
@@ -262,6 +263,11 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   shadow01: colors.global.shadowDark1,
   shadow02: colors.global.shadowDark,
   shadow03: colors.global.shadowDark1,
+  skeleton02: "#59678214",
+  skeleton03: colors.global.gray300Opacity06,
+  skeleton04: colors.global.gray600Opacity,
+  skeleton05: colors.global.gray500,
+  skeleton06: colors.global.gray600Opacity,
 };
 
 export const LIGHT_THEME_COLORS: ThemeColorType = {
@@ -388,4 +394,9 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   shadow01: colors.global.shadowLight,
   shadow02: colors.global.none,
   shadow03: colors.global.shadowLight2,
+  skeleton02: colors.global.gray100Opacity,
+  skeleton03: colors.global.gray300Opacity06,
+  skeleton04: colors.global.gray600Opacity,
+  skeleton05: colors.global.gray500,
+  skeleton06: colors.global.gray100Opacity06,
 };

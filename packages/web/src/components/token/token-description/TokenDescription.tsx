@@ -2,7 +2,7 @@ import React from "react";
 import TokenDescriptionContent from "@components/token/token-description-content/TokenDescriptionContent";
 import TokenDescriptionLinks from "@components/token/token-description-links/TokenDescriptionLinks";
 import { wrapper } from "./TokenDescription.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 interface TokenDescriptionProps {
   tokenName: string;
   tokenSymbol: string;
@@ -31,11 +31,11 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
       {loading && <>
         <span
           className="loading-value"
-          css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+          css={pulseSkeletonStyle({ h: 22 })}
         />
         <span
           className="loading-value"
-          css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+          css={pulseSkeletonStyle({ h: 22 })}
         />
       </>}
 

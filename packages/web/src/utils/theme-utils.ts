@@ -13,5 +13,6 @@ export const getTheme = (themeKey: ThemeKeys): Theme => {
   return {
     color,
     windowSize,
+    themeKey
   };
 };

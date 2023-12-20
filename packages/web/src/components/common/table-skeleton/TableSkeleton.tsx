@@ -3,7 +3,7 @@ import {
   ASSET_TD_WIDTH,
   emptyArrayInit,
   type SHAPE_TYPES,
-  skeletonStyle,
+  pulseSkeletonStyle,
   TABLE_TITLE,
 } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
@@ -41,10 +41,15 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({ info }) => {
           {info.list.map((item, idx) => (
             <SkeletonItem
               key={idx}
-              className={cx({ left: item.left, [item.className as string]: true })}
+              className={cx({
+                left: item.left,
+                [item.className as string]: true,
+              })}
               tdWidth={info.tdWidth[idx]}
             >
-              <span css={skeletonStyle(item.width, item.type)} />
+              <span
+                css={pulseSkeletonStyle({ w: item.width, type: item.type })}
+              />
             </SkeletonItem>
           ))}
           {info.title === TABLE_TITLE.ASSET_TABLE && (

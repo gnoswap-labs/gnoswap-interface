@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import TvlChart from "@components/dashboard/tvl-chart/TvlChart";
 import { CHART_TYPE } from "@constants/option.constant";
@@ -144,15 +144,7 @@ const parseDate = (dateString: string) => {
 // }
 
 const TvlChartContainer: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const { dashboardRepository } = useGnoswapContext();
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
 
   const [tvlChartType, setTvlChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
@@ -222,7 +214,7 @@ const TvlChartContainer: React.FC = () => {
         amount: tvlData?.latest ? `$${prettyNumber(tvlData?.latest)}` : "-",
       }}
       tvlChartInfo={chartData}
-      loading={loading || isFetching}
+      loading={isFetching}
     />
   );
 };
