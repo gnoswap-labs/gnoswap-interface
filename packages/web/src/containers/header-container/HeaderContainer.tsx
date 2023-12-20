@@ -22,6 +22,7 @@ import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -155,12 +156,14 @@ const HeaderContainer: React.FC = () => {
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [faucetLoading, setFaucetLoading] = useState(false);
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
+  const { faucetRepository } = useGnoswapContext();
 
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
   const { data: { tokens: listTokens = [] } = {} } = useGetTokensList({ enabled: !!searchMenuToggle });
@@ -287,6 +290,18 @@ const HeaderContainer: React.FC = () => {
     push(path);
   }, [])
 
+  const faucet = () => {
+    if (!account?.address || faucetLoading) {
+      return;
+    }
+    setFaucetLoading(true);
+    faucetRepository.faucetGNOT(account.address)
+      .then(() =>
+        setTimeout(() => faucetRepository.faucetTokens(account.address)
+          .finally(() => setFaucetLoading(false)), 1000))
+
+  };
+
   return (
     <Header
       account={account}
@@ -312,6 +327,8 @@ const HeaderContainer: React.FC = () => {
       popularTokens={popularTokens}
       recents={recents}
       movePage={movePage}
+      faucet={faucet}
+      faucetLoading={faucetLoading}
     />
   );
 };

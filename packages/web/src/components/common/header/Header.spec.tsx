@@ -25,13 +25,15 @@ describe("Header Component", () => {
       search: () => null,
       keyword: "",
       breakpoint: DEVICE_TYPE.WEB,
-      themeKey: "dark",
+      themeKey: "dark" as const,
       switchNetwork: () => null,
       isSwitchNetwork: false,
-      loadingConnect: false,
+      loadingConnect: "",
       mostLiquidity: [],
       popularTokens: [],
       recents: [],
+      faucet: () => null,
+      faucetLoading: false,
     };
 
     const queryClient = new QueryClient({
