@@ -4,7 +4,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const CardListWrapper = styled.div`
-  ${mixins.flexbox("column", "center", "center")};
+  ${mixins.flexbox("column", "center", "start")};
   width: 100%;
   gap: 24px;
   min-height: 390px;

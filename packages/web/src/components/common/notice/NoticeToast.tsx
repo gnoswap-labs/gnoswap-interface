@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   INoticeContext,
   NoticeContext,
@@ -107,6 +107,7 @@ const FailContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: 
 };
 
 const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id, content }) => {
+  const isClosed = useRef(false);
   const [typeAnimation, setTypeAnimation] = useState<
     "toast-item" | "closing" | ""
   >("toast-item");
@@ -116,6 +117,7 @@ const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id, content 
     const timeout = setTimeout(() => {
       onClose?.(id);
       setTypeAnimation("");
+      isClosed.current = true;
     }, 500);
     return () => clearTimeout(timeout);
   }, [onClose]);
@@ -124,7 +126,7 @@ const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id, content 
     const autoCloseTimeout = setTimeout(() => {
       setTypeAnimation("closing");
       const animationTimeout = setTimeout(() => {
-        onClose?.(id);
+        if (isClosed.current === false) onClose?.(id);
       }, 500);
       return () => clearTimeout(animationTimeout);
     }, 6000);
