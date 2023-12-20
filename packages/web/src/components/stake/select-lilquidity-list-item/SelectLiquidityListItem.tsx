@@ -14,7 +14,7 @@ interface SelectLiquidityListItemProps {
   onCheckedItem: (checked: boolean, path: string) => void;
 }
 
-const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({ position }) => {
+const TooltipContent: React.FC<{ position: PoolPositionModel, disabled: boolean }> = ({ position, disabled }) => {
   return (
     <div css={tooltipWrapper()}>
       <div>
@@ -35,6 +35,12 @@ const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({ position })
         </div>
         <div className="value">{makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance)}</div>
       </div>
+      {disabled && <div className="divider"></div>}
+      {disabled && (
+          <div className="unstake-description">
+            *You need to unstake your position first.
+          </div>
+        )}
     </div>
   );
 };
@@ -75,11 +81,11 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
         <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} />
         <Tooltip
           placement="top"
-          FloatingContent={<TooltipContent position={position} />}
+          FloatingContent={<TooltipContent position={position} disabled={disabled}/>}
         >
           <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
         </Tooltip>
-        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+        <Badge text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
       <span className="liquidity-value" >{liquidityUSD}</span>
     </li>
