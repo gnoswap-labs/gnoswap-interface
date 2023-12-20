@@ -3,11 +3,10 @@ import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiq
 import {
   AddLiquiditySubmitType,
   PriceRangeType,
-  SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import { TokenModel } from "@models/token/token-model";
+import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
@@ -20,7 +19,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 
 export interface AddLiquidityPriceRage {
@@ -68,6 +67,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
     null
   );
+  const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
@@ -79,7 +79,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
   const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
-  const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean } | null>(null);
+  const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
   const { pools: poolInfos, updatePools } = usePoolData();
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
@@ -170,9 +170,20 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, []);
 
   const selectSwapFeeTier = useCallback((swapFeeTier: SwapFeeTierType) => {
-    setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
     setSwapFeeTier(swapFeeTier);
-  }, [priceRanges]);
+    const existsSwapFeeTiers = pools.map(pool => makeSwapFeeTier(pool.fee));
+    const existPool = existsSwapFeeTiers.includes(swapFeeTier);
+
+    setCreateOption((prev) => ({
+      isCreate: !existPool,
+      startPrice: existPool ? null : prev.startPrice
+    }));
+    if (existPool) {
+      setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
+    } else {
+      setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
+    }
+  }, [pools, priceRanges]);
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
@@ -285,6 +296,30 @@ const EarnAddLiquidityContainer: React.FC = () => {
     switchNetwork,
   ]);
 
+  const changeStartingPrice = useCallback((price: string) => {
+    if (price === "") {
+      setCreateOption((prev) => ({
+        ...prev,
+        startPrice: null
+      }));
+      return;
+    }
+    const priceNum = BigNumber(price).toNumber();
+    if (BigNumber(Number(priceNum)).isNaN()) {
+      setCreateOption((prev) => ({
+        ...prev,
+        startPrice: null
+      }));
+      return;
+    }
+    const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
+    const nearStartPrice = tickToPrice(tick);
+    setCreateOption((prev) => ({
+      ...prev,
+      startPrice: nearStartPrice
+    }));
+  }, [selectPool.tickSpacing]);
+
   useEffect(() => {
     updatePools();
     updateTokenPrices();
@@ -337,30 +372,33 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [selectPool.currentPrice, selectPool.minPrice, selectPool.maxPosition, exactType]);
 
   useEffect(() => {
-    if (!selectPool.feeTier) {
-      setCreateOption({
-        isCreate: true,
-        startPrice: null
-      });
-      return;
-    }
-    const fee = SwapFeeTierInfoMap[selectPool.feeTier].fee;
-    if (feetierOfLiquidityMap[fee] === undefined) {
-      setCreateOption({
-        isCreate: true,
-        startPrice: null
-      });
+    if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
+      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort();
+      const compareToken = selectPool.compareToken;
+      const reverse = tokenPair.findIndex(path => {
+        if (compareToken) {
+          return isNativeToken(compareToken) ?
+            compareToken.wrappedPath === path :
+            compareToken.path === path;
+        }
+        return false;
+      }) === 1;
+      const priceOfMaxLiquidity = pools.sort((p1, p2) => p2.tvl - p1.tvl).at(0)?.price || null;
+      if (priceOfMaxLiquidity) {
+        const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
+        setDefaultPrice(maxPrice);
+      } else {
+        setDefaultPrice(null);
+      }
     } else {
-      setCreateOption({
-        isCreate: false,
-        startPrice: null
-      });
+      setDefaultPrice(null);
     }
-  }, [feetierOfLiquidityMap, selectPool.feeTier]);
+  }, [pools, selectPool.compareToken, tokenA, tokenB]);
 
   return (
     <EarnAddLiquidity
       mode={"POOL"}
+      defaultPrice={defaultPrice}
       tokenA={tokenA}
       tokenB={tokenB}
       tokenAInput={tokenAAmountInput}
@@ -389,7 +427,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       openModal={openOneClickModal}
       selectPool={selectPool}
       handleClickOneStaking={() => null}
-      changeStartingPrice={() => null}
+      changeStartingPrice={changeStartingPrice}
       createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
     />
   );

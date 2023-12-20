@@ -27,7 +27,7 @@ import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import { makeRawTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeDepositMessage } from "@common/clients/wallet-client/transaction-messages/token";
@@ -35,6 +35,8 @@ import { CreateExternalIncentiveRequest } from "./request/create-external-incent
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { makeCreateIncentiveMessage, makeRemoveIncentiveMessage, makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
 import { makePositionMintMessage } from "@common/clients/wallet-client/transaction-messages/position";
+import { AddLiquidityResponse } from "./response/add-liquidity-response";
+import { CreatePoolResponse } from "./response/create-pool-response";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
@@ -125,7 +127,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     return response;
   };
 
-  createPool = async (request: CreatePoolRequest): Promise<string | null> => {
+  createPool = async (request: CreatePoolRequest): Promise<CreatePoolResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -193,14 +195,33 @@ export class PoolRepositoryImpl implements PoolRepository {
       gasFee,
       gasWanted,
     });
-    const response = result.data as SendTransactionSuccessResponse;
-    if (!response.hash) {
+    if (result.code !== 0) {
       throw new Error(`${result}`);
     }
-    return response.hash;
+    const data = result.data as SendTransactionSuccessResponse<string[]>;
+    if (data.data === null || !Array.isArray(data.data) || data.data.length < 4) {
+      return {
+        code: result.code,
+        hash: data.hash,
+        tokenA,
+        tokenB,
+        tokenAAmount: "0",
+        tokenBAmount: "0",
+      };
+    }
+    const resultTokenAAmount = makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
+    const resultTokenBAmount = makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
+    return {
+      code: result.code,
+      hash: data.hash,
+      tokenA,
+      tokenB,
+      tokenAAmount: resultTokenAAmount.toString(),
+      tokenBAmount: resultTokenBAmount.toString(),
+    };
   };
 
-  addLiquidity = async (request: AddLiquidityRequest): Promise<string> => {
+  addLiquidity = async (request: AddLiquidityRequest): Promise<AddLiquidityResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -259,11 +280,27 @@ export class PoolRepositoryImpl implements PoolRepository {
       gasFee,
       gasWanted,
     });
-    const response = result.data as SendTransactionSuccessResponse;
-    if (!response.hash) {
-      throw new Error(`${result}`);
+    const data = result.data as SendTransactionSuccessResponse<string[]>;
+    if (data.data === null || !Array.isArray(data.data) || data.data.length < 4) {
+      return {
+        code: result.code,
+        hash: data.hash,
+        tokenA,
+        tokenB,
+        tokenAAmount: "0",
+        tokenBAmount: "0",
+      };
     }
-    return response.hash;
+    const resultTokenAAmount = makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
+    const resultTokenBAmount = makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
+    return {
+      code: result.code,
+      hash: data.hash,
+      tokenA,
+      tokenB,
+      tokenAAmount: resultTokenAAmount.toString(),
+      tokenBAmount: resultTokenBAmount.toString(),
+    };
   };
 
   getPoolDetailByPath = async (
@@ -314,7 +351,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     if (response.code !== 0 || !response.data) {
       throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
     }
-    const data = response?.data as SendTransactionSuccessResponse<string>;
+    const data = response?.data as SendTransactionSuccessResponse<string[]>;
     return data?.hash || null;
   };
 
@@ -348,7 +385,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     if (response.code !== 0 || !response.data) {
       throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
     }
-    const data = response?.data as SendTransactionSuccessResponse<string>;
+    const data = response?.data as SendTransactionSuccessResponse<string[]>;
     return data?.hash || null;
   };
 

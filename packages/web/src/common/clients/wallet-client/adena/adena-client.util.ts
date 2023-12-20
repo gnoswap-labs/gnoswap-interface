@@ -27,7 +27,7 @@ export function isTransactionSuccessResponse(
 
 export function parseTransactionResponse(
   walletResponse: WalletResponse<AdenaSendTransactionResponse>,
-): WalletResponse<SendTransactionResponse<string | null>> {
+): WalletResponse<SendTransactionResponse<string[] | null>> {
   if (!isTransactionSuccessResponse(walletResponse)) {
     return {
       ...walletResponse,
@@ -36,16 +36,20 @@ export function parseTransactionResponse(
         height: "",
         data: null,
       },
-    } as WalletResponse<SendTransactionResponse<string | null>>;
+    } as WalletResponse<SendTransactionResponse<string[] | null>>;
   }
 
-  let data: string | null = null;
+  let data: string | string[] | null = null;
   const encodedData = walletResponse.data?.deliver_tx.ResponseBase.Data || null;
   if (encodedData) {
     const decodedData = window.atob(encodedData);
     try {
       const result = matchValues(decodedData);
-      data = parseABCIValue(result[0]);
+      if (result.length === 0) {
+        data = null;
+      } else {
+        data = result.map(parseABCIValue);
+      }
     } catch {
       data = null;
     }
@@ -60,5 +64,5 @@ export function parseTransactionResponse(
       height: walletResponse.data?.height || "",
       data,
     },
-  } as WalletResponse<SendTransactionResponse<string | null>>;
+  } as WalletResponse<SendTransactionResponse<string[] | null>>;
 }

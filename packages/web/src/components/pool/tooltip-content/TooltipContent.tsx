@@ -26,7 +26,6 @@ const CLAIM_CONTENT =
   "*Swap Fees are only claimable when liquidity is unstaked. If you want to claim the swap fees, please unstake your liquidity first.";
 
 const TooltipContent: React.FC<TooltipContentProps> = ({ info }) => {
-  console.log(info);
   return (
     <div css={wrapper}>
       {info.content.map((item: any, idx: number) => (

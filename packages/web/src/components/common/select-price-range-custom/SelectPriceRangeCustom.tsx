@@ -14,6 +14,7 @@ import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
+import { numberToFormat } from "@utils/string-utils";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -22,6 +23,7 @@ export interface SelectPriceRangeCustomProps {
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
   showDim: boolean;
+  defaultPrice: number | null;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -31,6 +33,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   selectPool,
   changeStartingPrice,
   showDim,
+  defaultPrice,
 }) => {
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
@@ -98,11 +101,17 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
   const startingPriceDescription = useMemo(() => {
-    if (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN() || !currentTokenA || !currentTokenB) {
+    if (!currentTokenA || !currentTokenB) {
       return "";
     }
+    if (startingPriceValue === "" || BigNumber(startingPriceValue).isNaN()) {
+      if (!defaultPrice || !selectPool.isCreate) {
+        return "";
+      }
+      return `1 ${currentTokenA.symbol} = ${numberToFormat(defaultPrice, 4)} ${currentTokenB.symbol}`;
+    }
     return `1 ${currentTokenA.symbol} = ${startingPriceValue} ${currentTokenB.symbol}`;
-  }, [currentTokenA, currentTokenB, startingPriceValue]);
+  }, [currentTokenA, currentTokenB, defaultPrice, selectPool.isCreate, startingPriceValue]);
 
   const onClickTabItem = useCallback((symbol: string) => {
     const compareToken = tokenA.symbol === symbol ? tokenA : tokenB;
@@ -180,7 +189,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   useEffect(() => {
     resetRange(priceRangeType);
-  }, [selectPool.poolPath, priceRangeType, selectPool.startPrice]);
+  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice]);
 
   useEffect(() => {
     if (!selectPool.poolPath) {
@@ -208,23 +217,23 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   return (
     <>
-        {
-          selectPool.isCreate && (
-            <StartingPriceWrapper className="starting-price-wrapper">
-              <div className="title-wrapper">
-                <span className="sub-title">Starting Price</span>
-                <span className="description">{startingPriceDescription}</span>
-              </div>
-              <input
-                className="starting-price-input"
-                value={startingPriceValue}
-                onChange={onChangeStartingPrice}
-                onBlur={updateStartingPrice}
-                placeholder="Enter price"
-              />
-            </StartingPriceWrapper>
-          )
-        }
+      {
+        selectPool.isCreate && (
+          <StartingPriceWrapper className="starting-price-wrapper">
+            <div className="title-wrapper">
+              <span className="sub-title">Starting Price</span>
+              <span className="description">{startingPriceDescription}</span>
+            </div>
+            <input
+              className="starting-price-input"
+              value={startingPriceValue}
+              onChange={onChangeStartingPrice}
+              onBlur={updateStartingPrice}
+              placeholder="Enter price"
+            />
+          </StartingPriceWrapper>
+        )
+      }
       <SelectPriceRangeCustomWrapper>
         {
           (isCustom || selectPool.isCreate || showDim) && (
@@ -248,7 +257,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   <LoadingSpinner />
                 </div>
               )}
-              
+
               {(showDim || availSelect) && (
                 <React.Fragment>
                   {!showDim && <div className="current-price-wrapper">

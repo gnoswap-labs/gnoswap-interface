@@ -2180,6 +2180,7 @@ __metadata:
     "@types/node": "npm:18.14.6"
     "@types/react": "npm:18.0.28"
     "@types/react-dom": "npm:18.0.11"
+    "@types/uuid": "npm:^9.0.7"
     "@typescript-eslint/eslint-plugin": "npm:5.60.1"
     "@typescript-eslint/parser": "npm:5.55.0"
     axios: "npm:1.3.4"
@@ -2208,6 +2209,7 @@ __metadata:
     typescript: "npm:4.9.5"
     url-loader: "npm:4.1.1"
     utility-types: "npm:3.10.0"
+    uuid: "npm:^9.0.1"
     webpack-merge: "npm:5.8.0"
     ws: "npm:8.14.2"
     yup: "npm:1.3.2"
@@ -5409,6 +5411,13 @@ __metadata:
   version: 9.0.4
   resolution: "@types/uuid@npm:9.0.4"
   checksum: 356e2504456eaebbc43a5af5ca6c07d71f5ae5520b5767cb1c62cd0ec55475fc4ee3d16a2874f4a5fce78e40e8583025afd3a7d9ba41f82939de310665f53f0e
+  languageName: node
+  linkType: hard
+
+"@types/uuid@npm:^9.0.7":
+  version: 9.0.7
+  resolution: "@types/uuid@npm:9.0.7"
+  checksum: c7321194aeba9ea173efd1e721403bdf4e7ae6945f8f8cdbc87c791f4b505ccf3dbc4a8883d90b394ef13b7c2dc778045792b05dbb23b3c746f8ea347804d448
   languageName: node
   linkType: hard
 

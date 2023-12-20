@@ -15,6 +15,7 @@ const DefaultDate = {
 };
 
 export const isOneClick = atom<boolean>(false);
+export const currentPoolPath = atom<string | null>(null);
 export const period = atom<number>(90);
 export const dataModal = atom<TokenAmountInputModel | null>(null);
 export const date = atom<DistributionPeriodDate>(DefaultDate);

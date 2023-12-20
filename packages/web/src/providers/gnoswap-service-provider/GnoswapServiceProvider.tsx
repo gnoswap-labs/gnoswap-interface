@@ -44,6 +44,8 @@ import {
 } from "@repositories/notification";
 import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
+import * as uuid from "uuid";
+import { GNOSWAP_SESSION_ID_KEY } from "@states/common";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -63,11 +65,24 @@ interface GnoswapContextProps {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+const getInitialSessionId = () => {
+  const sessionId = sessionStorage.getItem(GNOSWAP_SESSION_ID_KEY);
+  const storedSessionId = localStorage.getItem(GNOSWAP_SESSION_ID_KEY);
+  if (storedSessionId === sessionId) {
+    if (sessionId !== null && sessionId !== "") {
+      return sessionId;
+    }
+  }
+  return uuid.v4();
+};
+
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
 
 const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
+  const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
+
   const [networkClient] = useState(new AxiosClient(API_URL));
 
   const [localStorageClient, setLocalStorageClient] = useState(
@@ -88,12 +103,22 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return rpcProvider !== null && window !== undefined;
   }, [rpcProvider]);
 
+
+  useEffect(() => {
+    const initSessionId = getInitialSessionId();
+    if (initSessionId !== sessionId) {
+      sessionStorage.setItem(GNOSWAP_SESSION_ID_KEY, initSessionId);
+      localStorage.setItem(GNOSWAP_SESSION_ID_KEY, initSessionId);
+      setSessionId(sessionId);
+    }
+  }, []);
+
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
       setSessionStorageClient(WebStorageClient.createSessionStorageClient());
     }
-  }, []);
+  }, [sessionId]);
 
   useEffect(() => {
     const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";

@@ -49,9 +49,9 @@ export class AdenaClient implements WalletClient {
     return createTimeout(this.getAdena().AddEstablish(sitename));
   };
 
-  public sendTransaction = (
+  public sendTransaction = <T = string[]>(
     transaction: SendTransactionRequestParam,
-  ): Promise<WalletResponse<SendTransactionResponse<string | null>>> => {
+  ): Promise<WalletResponse<SendTransactionResponse<T | null>>> => {
     const request = {
       ...transaction,
       messages: transaction.messages.map(message => {
@@ -67,14 +67,14 @@ export class AdenaClient implements WalletClient {
         };
       }),
     };
-    return createTimeout<
-      WalletResponse<SendTransactionResponse<string | null>>
-    >(
+    return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.getAdena()
         .DoContract(request)
         .then(response => {
           console.log("Injection Response", response);
-          return parseTransactionResponse(response);
+          return parseTransactionResponse(response) as WalletResponse<
+            SendTransactionResponse<T | null>
+          >;
         }),
     );
   };

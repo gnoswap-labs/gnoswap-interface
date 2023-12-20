@@ -88,7 +88,7 @@ const DashboardInfoContainer: React.FC = () => {
   const stakingRatio = useMemo(() => {
     if (!tokenData) return "-";
     const circSupply = Number(tokenData?.gnsCirculatingSupply);
-    const totalStaked = Number(tokenData?.gnstotalStaked);
+    const totalStaked = Number(tokenData?.gnsTotalStaked);
     if (circSupply === 0) return "0%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
     return `${prettyNumber(ratio)}%`;
@@ -107,7 +107,7 @@ const DashboardInfoContainer: React.FC = () => {
           "GNS",
         ),
         totalSupply: formatPrice(tokenData?.gnsTotalSupply, "GNS"),
-        totalStaked: formatPrice(tokenData?.gnstotalStaked, "GNS"),
+        totalStaked: formatPrice(tokenData?.gnsTotalStaked, "GNS"),
         progressBar: progressBar,
         stakingRatio: stakingRatio,
       }}
