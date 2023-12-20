@@ -1,12 +1,14 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import Modal from "@components/common/modal/Modal";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { Z_INDEX } from "@styles/zIndex";
+import { useRouter } from "next/router";
 
 const ModalContainer: React.FC = () => {
+  const router = useRouter();
   const [openedModal, setOpendModal] = useAtom(CommonState.openedModal);
   const [modalContent, setModalContent] = useAtom(CommonState.modalContent);
   const [openedTransactionModal, setOpendTransactionModal] = useAtom(CommonState.openedTransactionModal);
@@ -27,6 +29,7 @@ const ModalContainer: React.FC = () => {
   const closeModal = useCallback(() => {
     setOpendModal(false);
     setModalContent(null);
+    setTransactionModalContent(null);
     setWalletAccount("initial");
   }, []);
 
@@ -37,6 +40,10 @@ const ModalContainer: React.FC = () => {
   }, []);
 
   useEscCloseModal(closeTransactionModal);
+
+  useEffect(() => {
+    closeTransactionModal();
+  }, [router.pathname]);
 
   return (
     <React.Fragment>
@@ -53,11 +60,8 @@ const ModalContainer: React.FC = () => {
       {visibleTransactionModal && (
         <Modal
           style={{
-            width: 460,
-            height: 317,
             zIndex: Z_INDEX.secondModal
           }}
-          exitClick={closeTransactionModal}
         >
           {transactionModalContent}
         </Modal>

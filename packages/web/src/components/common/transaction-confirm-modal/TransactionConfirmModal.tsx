@@ -14,6 +14,7 @@ interface TransactionConfirmModalProps {
   status: TransactionConfirmStatus;
   description: string | null;
   scannerURL: string | null;
+  confirm: () => void;
   close: () => void;
 }
 
@@ -21,6 +22,7 @@ const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
   status,
   description,
   scannerURL,
+  confirm,
   close,
 }) => {
   useEscCloseModal(close);
@@ -34,7 +36,7 @@ const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
           </div>
         </div>
         {status === "loading" && <TransactionConfirmLoading description={description} />}
-        {status === "success" && <TransactionConfirmSubmitted scannerURL={scannerURL} close={close} />}
+        {status === "success" && <TransactionConfirmSubmitted confirm={confirm} scannerURL={scannerURL} close={close} />}
         {status === "error" && <TransactionConfirmFailed close={close} />}
         {status === "rejected" && <TransactionConfirmRejected close={close} />}
       </div>
@@ -67,10 +69,12 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({
 
 interface TransactionConfirmSubmittedProps {
   scannerURL: string | null;
+  confirm: () => void;
   close: () => void;
 }
 const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = ({
   scannerURL,
+  confirm,
   close,
 }) => {
   const moveScanner = useCallback(() => {
@@ -106,7 +110,7 @@ const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = 
             fontType: "body7",
             hierarchy: ButtonHierarchy.Primary,
           }}
-          onClick={close}
+          onClick={confirm}
         />
       </div>
     </React.Fragment>

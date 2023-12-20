@@ -213,7 +213,12 @@ export const useEarnAddLiquidityConfirmModal = ({
       }
     }
 
-    broadcastLoading();
+    broadcastLoading(makeBroadcastAddLiquidityMessage("pending", {
+      tokenASymbol: tokenA.symbol,
+      tokenBSymbol: tokenB.symbol,
+      tokenAAmount: tokenAAmount,
+      tokenBAmount: tokenBAmount
+    }));
     const transaction = selectPool.isCreate ? createPool({
       tokenAAmount,
       tokenBAmount,
@@ -239,8 +244,7 @@ export const useEarnAddLiquidityConfirmModal = ({
             tokenBSymbol: tokenB.symbol,
             tokenAAmount: tokenAAmount,
             tokenBAmount: tokenBAmount
-          }));
-          moveToBack();
+          }), moveToBack);
         }, 500);
       } else {
         broadcastError(makeBroadcastAddLiquidityMessage("error", {

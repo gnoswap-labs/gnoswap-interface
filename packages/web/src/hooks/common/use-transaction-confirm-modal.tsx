@@ -17,7 +17,14 @@ export const useTransactionConfirmModal = (): TransactionConfirmModalResponse =>
     setOpenedModal(false);
     setModalContent(null);
     setTransactionModalData(null);
-  }, [setModalContent, setOpenedModal, setTransactionModalData]);
+  }, [setModalContent, setOpenedModal, setTransactionModalData, transactionModalData]);
+
+  const confirm = useCallback(() => {
+    closeModal();
+    if (transactionModalData?.callback) {
+      transactionModalData?.callback();
+    }
+  }, [closeModal, transactionModalData]);
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
@@ -30,6 +37,7 @@ export const useTransactionConfirmModal = (): TransactionConfirmModalResponse =>
           status={transactionModalData.status}
           description={transactionModalData.description}
           scannerURL={transactionModalData.scannerURL}
+          confirm={confirm}
           close={closeModal}
         />
       );

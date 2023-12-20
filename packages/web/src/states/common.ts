@@ -39,4 +39,5 @@ export const transactionModalData = atom<{
   status: TransactionConfirmStatus;
   description: string | null;
   scannerURL: string | null;
+  callback?: () => void;
 } | null>(null);

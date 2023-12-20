@@ -129,11 +129,12 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastSuccess = useCallback(
-    (content?: INoticeContent) => {
+    (content?: INoticeContent, callback?: () => void) => {
       setTransactionModalData({
         status: "success",
         description: content?.description || null,
         scannerURL: content?.scannerUrl || null,
+        callback,
       });
       setNotice(content, makeNoticeConfig("success"));
     },
@@ -148,11 +149,12 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastError = useCallback(
-    (content?: INoticeContent) => {
+    (content?: INoticeContent, callback?: () => void) => {
       setTransactionModalData({
         status: "error",
         description: content?.description || null,
         scannerURL: content?.scannerUrl || null,
+        callback,
       });
       setNotice(content, makeNoticeConfig("error"));
     },
@@ -160,11 +162,12 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastRejected = useCallback(
-    (content?: INoticeContent) => {
+    (content?: INoticeContent, callback?: () => void) => {
       setTransactionModalData({
         status: "rejected",
         description: content?.description || null,
         scannerURL: content?.scannerUrl || null,
+        callback,
       });
       setNotice(content, makeNoticeConfig("error"));
     },
