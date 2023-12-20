@@ -79,7 +79,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
               </div>
               <div className="list-content">
-                <span className="value-text">{pool.liquidity}</span>
+                <span className="value-text">${pool.liquidity}</span>
                 <span className="value-text">{pool.apr}</span>
               </div>
             </div>
