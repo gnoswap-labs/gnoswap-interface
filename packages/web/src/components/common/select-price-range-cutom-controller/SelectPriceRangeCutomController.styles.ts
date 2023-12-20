@@ -53,8 +53,7 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
         text-align: center;
         display: block;
         ${media.mobile} {
-          width: 100%;
-          min-width: 110px;
+          width: calc(100vw - 220px);
         }
       }
     }
@@ -65,10 +64,6 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
       top: 0;
       pointer-events: none;
       ${fonts.body4}
-      ${media.mobile} {
-        width: auto;
-        max-width: 100%;
-      }
     }
   }
 

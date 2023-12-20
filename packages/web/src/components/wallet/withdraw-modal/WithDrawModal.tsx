@@ -267,10 +267,10 @@ const WithDrawModal: React.FC<Props> = ({
                 <li>The transaction CANNOT be cancelled once sent.</li>
               </ul>
 
-              <div className="learn-more-box">
+              <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
                 <p>Learn More</p>
                 <IconNewTab color="#788feb" />
-              </div>
+              </a>
             </BoxDescription>
 
             <WithdrawContent>
