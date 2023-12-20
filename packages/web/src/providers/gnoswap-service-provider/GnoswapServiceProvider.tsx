@@ -44,7 +44,7 @@ import {
 } from "@repositories/notification";
 import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
-import { v4 } from "uuid";
+import * as uuid from "uuid";
 import { GNOSWAP_SESSION_ID_KEY } from "@states/common";
 
 interface GnoswapContextProps {
@@ -73,7 +73,7 @@ const getInitialSessionId = () => {
       return sessionId;
     }
   }
-  return v4();
+  return uuid.v4();
 };
 
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
