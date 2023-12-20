@@ -28,7 +28,6 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   connected,
   fetched,
   loading,
-  isError,
   positions,
   connect,
   movePoolDetail,
@@ -54,7 +53,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     );
   }
 
-  if (isError && !loading) {
+  if (connected && positions.length === 0 && !loading) {
     return <EarnMyPositionNoLiquidity />;
   }
 
