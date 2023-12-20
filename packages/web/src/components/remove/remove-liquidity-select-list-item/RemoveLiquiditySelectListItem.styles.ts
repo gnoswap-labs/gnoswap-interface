@@ -77,7 +77,7 @@ export const TooltipWrapperContent = styled.div`
       padding: 4px 0;
     }
     width: 100%;
-    ${mixins.flexbox("row", "center", "space-between")};
+    ${mixins.flexbox("column", "center", "space-between")};
     .title {
       color: ${({ theme }) => theme.color.text04};
     }
@@ -99,5 +99,8 @@ export const TooltipWrapperContent = styled.div`
   .unstake-description {
     color: ${({ theme }) => theme.color.text04};
     ${fonts.p4}
+    padding: 0 !important;
+    text-align: left;
+    align-items: start;
   }
 `;

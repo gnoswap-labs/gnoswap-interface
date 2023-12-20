@@ -89,7 +89,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const [openedSetting, setOpenedSetting] = useState(false);
 
   useEffect(() => {
-    if (tokenA && tokenB) {
+    if (tokenA && tokenB && isEarnAdd) {
       setOpenedFeeTier(true);
       setOpenedPriceRange(true);
     }
@@ -198,6 +198,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const showDim = useMemo(() => {
     return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
   }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
+  console.log(tokenA, tokenB, createOption.startPrice, selectPool.isCreate);
   
   return (
     <EarnAddLiquidityWrapper>

@@ -31,6 +31,8 @@ const Staking: React.FC<StakingProps> = ({
   handleClickUnStakeRedirect,
   loading,
 }) => {
+  console.log(positions, "positions");
+  
   return (
     <StakingWrapper>
       <StakingHeader
@@ -38,6 +40,7 @@ const Staking: React.FC<StakingProps> = ({
         isDisabledButton={isDisabledButton}
         handleClickStakeRedirect={handleClickStakeRedirect}
         handleClickUnStakeRedirect={handleClickUnStakeRedirect}
+        isUnstake={positions.length > 0}
       />
       <StakingContent
         totalApr={totalApr}

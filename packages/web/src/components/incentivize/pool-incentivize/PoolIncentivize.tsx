@@ -84,7 +84,6 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
     const temp = selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
     return temp;
   }, [selectedPool]);
-  console.log(selectedItem, "selectedItem");
   
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
     return pools.map(PoolMapper.toPoolSelectItemInfo).map((item: PoolSelectItemInfo) => {
@@ -105,7 +104,6 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
       };
     }).sort(customSort);
   }, [pools]);
-  console.log(pools, "pools");
   
   return (
     <PoolIncentivizeWrapper>

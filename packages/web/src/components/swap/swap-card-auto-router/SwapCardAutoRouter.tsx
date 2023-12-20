@@ -43,7 +43,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({
   swapSummaryInfo,
 }) => {
   const { getTokenImage, getTokenSymbol } = useTokenImage();
-
+  
   const weightStr = useMemo(() => {
     return `${swapRouteInfo.weight}%`;
   }, [swapRouteInfo.weight]);

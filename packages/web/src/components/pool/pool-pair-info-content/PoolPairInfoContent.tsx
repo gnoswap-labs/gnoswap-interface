@@ -57,7 +57,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volume]);
 
   const aprValue = useMemo(() => {
-    if (pool.apr === null) {
+    if (!pool.apr) {
       return "-";
     }
     if (pool.apr >= 100) {

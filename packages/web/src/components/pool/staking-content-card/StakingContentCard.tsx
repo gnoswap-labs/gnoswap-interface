@@ -87,7 +87,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   const hasPosition = positions.length > 0;
 
   const tokenLogos = useMemo(() => {
-    return rewardTokens.map(token => token.logoURI);
+    return [...new Set(rewardTokens.map(token => token.logoURI))];
   }, [rewardTokens]);
 
   const checkedStep = useMemo(() => {
@@ -226,9 +226,9 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   const hasPosition = positions.length > 0;
 
   const tokenLogos = useMemo(() => {
-    return rewardTokens.map(token => token.logoURI);
+    return [...new Set(rewardTokens.map(token => token.logoURI))];
   }, [rewardTokens]);
-
+  
   const checkedStep = useMemo(() => {
     return checkPoints.includes(period);
   }, [checkPoints, period]);

@@ -33,7 +33,7 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) =>
       </div>}
       {!loading && <ul>
         {list.map((info, idx) => (
-          <Link href={`/earn/pool/${info.id}?path=${info.poolPath}`} key={idx}>
+          <Link href={`/earn/pool/${info.id}`} key={idx}>
             <li>
               <div>
                 <DoubleLogo

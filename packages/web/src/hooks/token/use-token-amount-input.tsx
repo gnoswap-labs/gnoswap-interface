@@ -18,7 +18,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const [balance, setBalance] = useState<string>("0");
   const [usd, setUSD] = useState<number>();
   const { displayBalanceMap, tokenPrices } = useTokenData();
-
+  
   useEffect(() => {
     if (token && displayBalanceMap[checkGnotPath(token.priceId)]) {
       const balance = displayBalanceMap[checkGnotPath(token.priceId)];

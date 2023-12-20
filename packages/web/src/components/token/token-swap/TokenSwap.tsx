@@ -64,6 +64,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 }) => {
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
+  console.log(tokenB, "tokenB");
 
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
