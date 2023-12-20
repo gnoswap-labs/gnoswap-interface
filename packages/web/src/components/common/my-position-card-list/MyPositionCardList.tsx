@@ -42,7 +42,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
       {
         positions.length > 0 &&
         positions.map((position, idx) => (
-          <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} themeKey={themeKey}/>
+          <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} themeKey={themeKey} />
         ))}
       {isFetched &&
         positions.length > 0 && positions.length < 4 &&
@@ -52,18 +52,18 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
       }
       {(!isFetched && positions.length === 0) || isLoading
         ? Array.from({ length: width <= 1180 && width >= 920 ? 3 : 4 }).map(
-            (_, idx) => (
-              <span
-                key={idx}
-                className="card-skeleton"
-                css={pulseSkeletonStyle({ w: "100%", tone: "600" })}
-              />
-            ),
-          )
+          (_, idx) => (
+            <span
+              key={idx}
+              className="card-skeleton"
+              css={pulseSkeletonStyle({ w: "100%", tone: "600" })}
+            />
+          ),
+        )
         : null}
     </GridWrapper>
     {!mobile &&
-      positions?.length > 4 &&
+      positions?.length > 0 &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )}
