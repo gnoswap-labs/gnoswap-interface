@@ -17,7 +17,7 @@ export const usePositionData = () => {
   const { getGnotPath } = useGnotToGnot();
   const [isFetchedPosition, setIsFetchedPosition] = useState(false);
   const [positions, setPositions] = useAtom(PoolState.positions);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
