@@ -2,7 +2,6 @@ import { NetworkModel } from "@models/common/network-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { atom } from "jotai";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
-import { atomWithStorage } from "jotai/utils";
 
 interface HeaderToggleProps {
   walletConnect: boolean;
@@ -45,4 +44,4 @@ export const transactionModalData = atom<{
 
 export const GNOSWAP_SESSION_ID_KEY = "session_id";
 
-export const sessionId = atomWithStorage<string>(GNOSWAP_SESSION_ID_KEY, "");
+export const sessionId = atom<string>("");

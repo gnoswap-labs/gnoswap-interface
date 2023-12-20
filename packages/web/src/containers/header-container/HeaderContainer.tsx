@@ -146,12 +146,12 @@ const getStatus = (value: string) => {
   if (Number(value ?? 0) < 0) {
     return MATH_NEGATIVE_TYPE.NEGATIVE;
   }
-  
+
   return MATH_NEGATIVE_TYPE.POSITIVE;
 };
 
 const HeaderContainer: React.FC = () => {
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
@@ -160,12 +160,12 @@ const HeaderContainer: React.FC = () => {
   const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
-  
+
 
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
-  const { data: { tokens: listTokens = []  } = {} } = useGetTokensList({ enabled: !!searchMenuToggle });
+  const { data: { tokens: listTokens = [] } = {} } = useGetTokensList({ enabled: !!searchMenuToggle });
   const { data: { prices = [] } = {} } = useGetTokenPrices({ enabled: !!searchMenuToggle });
-  
+
   const recents = useMemo(() => {
     return parseJson(recentsData ? recentsData : "[]");
   }, [recentsData]);
@@ -174,12 +174,12 @@ const HeaderContainer: React.FC = () => {
     let temp = poolList;
     if (keyword) {
       temp = poolList.filter((item: PoolModel) => (item.tokenA.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenA.symbol.toLowerCase()).includes(keyword.toLowerCase())
-      || (item.tokenB.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenB.symbol.toLowerCase()).includes(keyword.toLowerCase())
+        || (item.tokenB.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenB.symbol.toLowerCase()).includes(keyword.toLowerCase())
       );
     }
     return temp.slice(0, 3).map((item: PoolModel) => {
       const priceItem: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.mostLiquidityPool === item.poolPath)?.[0] ?? {};
-      
+
       return {
         path: "",
         searchType: "popular",
@@ -206,13 +206,13 @@ const HeaderContainer: React.FC = () => {
       };
     });
   }, [poolList, keyword, prices, gnot]);
-  
+
   const popularTokens = useMemo(() => {
     let temp = listTokens;
     if (keyword) {
-      temp = listTokens.filter((item: TokenModel) => (item.name.toLowerCase()).includes(keyword.toLowerCase()) 
-      || (item.symbol.toLowerCase()).includes(keyword.toLowerCase())
-      || (item.path.toLowerCase()).includes(keyword.toLowerCase())
+      temp = listTokens.filter((item: TokenModel) => (item.name.toLowerCase()).includes(keyword.toLowerCase())
+        || (item.symbol.toLowerCase()).includes(keyword.toLowerCase())
+        || (item.path.toLowerCase()).includes(keyword.toLowerCase())
       );
     }
     return temp.slice(0, keyword ? 6 : 6 - recents.length).map((item: TokenModel) => {
@@ -246,7 +246,7 @@ const HeaderContainer: React.FC = () => {
       };
     });
   }, [listTokens, recents.length, keyword, prices]);
-  
+
   const { openModal } = useConnectWalletModal();
 
   const handleESC = () => {
@@ -283,6 +283,10 @@ const HeaderContainer: React.FC = () => {
     openModal();
   }, [openModal])
 
+  const movePage = useCallback((path: string) => {
+    push(path);
+  }, [])
+
   return (
     <Header
       account={account}
@@ -307,6 +311,7 @@ const HeaderContainer: React.FC = () => {
       mostLiquidity={mostLiquidity}
       popularTokens={popularTokens}
       recents={recents}
+      movePage={movePage}
     />
   );
 };
