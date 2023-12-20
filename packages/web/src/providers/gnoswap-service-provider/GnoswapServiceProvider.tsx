@@ -44,7 +44,6 @@ import {
 } from "@repositories/notification";
 import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
-import * as uuid from "uuid";
 import { GNOSWAP_SESSION_ID_KEY } from "@states/common";
 
 interface GnoswapContextProps {
@@ -65,15 +64,12 @@ interface GnoswapContextProps {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const getInitialSessionId = () => {
+const getSessionId = () => {
   const sessionId = sessionStorage.getItem(GNOSWAP_SESSION_ID_KEY);
-  const storedSessionId = localStorage.getItem(GNOSWAP_SESSION_ID_KEY);
-  if (storedSessionId === sessionId) {
-    if (sessionId !== null && sessionId !== "") {
-      return sessionId;
-    }
+  if (sessionId) {
+    return sessionId;
   }
-  return uuid.v4();
+  return null;
 };
 
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
@@ -103,14 +99,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return rpcProvider !== null && window !== undefined;
   }, [rpcProvider]);
 
-
   useEffect(() => {
-    const initSessionId = getInitialSessionId();
-    if (initSessionId !== sessionId) {
-      sessionStorage.setItem(GNOSWAP_SESSION_ID_KEY, initSessionId);
-      localStorage.setItem(GNOSWAP_SESSION_ID_KEY, initSessionId);
-      setSessionId(sessionId);
-    }
+    const sessionId = getSessionId();
+    setSessionId(sessionId || "");
   }, []);
 
   useEffect(() => {
