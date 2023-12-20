@@ -1,3 +1,4 @@
+import { StakePositions } from "@hooks/earn/use-submit-position-modal";
 import { PositionModel } from "@models/position/position-model";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { RemoveLiquidityReqeust } from "./request/remove-liquidity-request";
@@ -9,11 +10,11 @@ export interface PositionRepository {
 
   claimAll: (request: ClaimAllRequest) => Promise<string | null>;
 
-  stakePositions: (request: StakePositionsRequest) => Promise<string | null>;
+  stakePositions: (request: StakePositionsRequest) => Promise<StakePositions | null>;
 
   unstakePositions: (
     request: UnstakePositionsRequest,
-  ) => Promise<string | null>;
+  ) => Promise<StakePositions | null>;
 
-  removeLiquidity: (request: RemoveLiquidityReqeust) => Promise<string | null>;
+  removeLiquidity: (request: RemoveLiquidityReqeust) => Promise<StakePositions | null>;
 }

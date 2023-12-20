@@ -31,8 +31,6 @@ const Staking: React.FC<StakingProps> = ({
   handleClickUnStakeRedirect,
   loading,
 }) => {
-  console.log(positions, "positions");
-  
   return (
     <StakingWrapper>
       <StakingHeader

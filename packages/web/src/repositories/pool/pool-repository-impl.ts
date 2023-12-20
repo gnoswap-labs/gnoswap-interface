@@ -37,6 +37,7 @@ import { makeCreateIncentiveMessage, makeRemoveIncentiveMessage, makeStakerAppro
 import { makePositionMintMessage } from "@common/clients/wallet-client/transaction-messages/position";
 import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
+import { StakePositions } from "@hooks/earn/use-submit-position-modal";
 
 const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
@@ -312,7 +313,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     return response.data;
   };
 
-  createExternalIncentive = async (request: CreateExternalIncentiveRequest): Promise<string | null> => {
+  createExternalIncentive = async (request: CreateExternalIncentiveRequest): Promise<StakePositions | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -352,7 +353,10 @@ export class PoolRepositoryImpl implements PoolRepository {
       throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
     }
     const data = response?.data as SendTransactionSuccessResponse<string[]>;
-    return data?.hash || null;
+    return {
+      code: response.code,
+      hash: data.hash,
+    };
   };
 
   removeExternalIncentive = async (request: RemoveExternalIncentiveRequest): Promise<string | null> => {

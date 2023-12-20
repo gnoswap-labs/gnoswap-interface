@@ -60,11 +60,11 @@ export function makeBroadcastSwapMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Swapping ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Swapping ${data.tokenAAmount} ${data.tokenASymbol} for ${data.tokenBAmount} ${data.tokenBSymbol}`;
       case "success":
-        return `Swapped ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Swapped ${data.tokenAAmount} ${data.tokenASymbol} for ${data.tokenBAmount} ${data.tokenBSymbol}`;
       case "error":
-        return `Failed to swap ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Failed to swap ${data.tokenAAmount} ${data.tokenASymbol} for ${data.tokenBAmount} ${data.tokenBSymbol}`;
     }
   }
   return {
@@ -112,15 +112,121 @@ export function makeBroadcastAddLiquidityMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Adding ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Swapping ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
       case "success":
-        return `Added ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Swapped ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
       case "error":
-        return `Failed to add ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Failed to Swap ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
     }
   }
   return {
     title: "Add Liquidity",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastStakeMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return `Staking ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "success":
+        return `Staked ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "error":
+        return `Failed to stake ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+    }
+  }
+  return {
+    title: "Stake Position",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastUnstakeMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return `Unstaking ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "success":
+        return `Unstaked ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "error":
+        return `Failed to unstake ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+    }
+  }
+  return {
+    title: "Unstake Position",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastIncentivizeMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenAAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return `Adding ${data.tokenAAmount} ${data.tokenASymbol}`;
+      case "success":
+        return `Added ${data.tokenAAmount} ${data.tokenASymbol}`;
+      case "error":
+        return `Failed to add ${data.tokenAAmount} ${data.tokenASymbol}`;
+    }
+  }
+  return {
+    title: "Incentivize Pool",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastRemovePositionMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return `Removing ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "success":
+        return `Removed ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "error":
+        return `Failed to remove ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+    }
+  }
+  return {
+    title: "Remove Position",
     description: description(),
     scannerUrl: hash ? makeScannerURL(hash) : "",
   };

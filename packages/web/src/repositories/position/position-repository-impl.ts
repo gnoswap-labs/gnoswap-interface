@@ -22,6 +22,7 @@ import {
   makePositionBurnMessage,
   makePositionCollectFeeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
+import { StakePositions } from "@hooks/earn/use-submit-position-modal";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -84,7 +85,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   stakePositions = async (
     request: StakePositionsRequest,
-  ): Promise<string | null> => {
+  ): Promise<StakePositions | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -98,16 +99,17 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
-    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
-    if (!hash) {
-      throw new Error(`${result}`);
-    }
-    return hash;
+
+    const data = result.data as SendTransactionSuccessResponse<string[]>;
+    return {
+      code: result.code,
+      hash: data.hash,
+    };
   };
 
   unstakePositions = async (
     request: UnstakePositionsRequest,
-  ): Promise<string | null> => {
+  ): Promise<StakePositions | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -120,16 +122,16 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
-    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
-    if (!hash) {
-      throw new Error(`${result}`);
-    }
-    return hash;
+    const data = result.data as SendTransactionSuccessResponse<string[]>;
+    return {
+      code: result.code,
+      hash: data.hash,
+    };
   };
 
   removeLiquidity = async (
     request: RemoveLiquidityReqeust,
-  ): Promise<string | null> => {
+  ): Promise<StakePositions | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -142,10 +144,10 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
-    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
-    if (!hash) {
-      throw new Error(`${result}`);
-    }
-    return hash;
+    const data = result.data as SendTransactionSuccessResponse<string[]>;
+    return {
+      code: result.code,
+      hash: data.hash,
+    };
   };
 }

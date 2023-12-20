@@ -9,6 +9,7 @@ import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { StakePositions } from "@hooks/earn/use-submit-position-modal";
 export class PoolRepositoryMock implements PoolRepository {
   getPools = async (): Promise<PoolModel[]> => {
     return [];
@@ -42,8 +43,11 @@ export class PoolRepositoryMock implements PoolRepository {
     return PoolDetailDataByPath as IPoolDetailResponse;
   };
 
-  createExternalIncentive = async (): Promise<string> => {
-    return "hash";
+  createExternalIncentive = async (): Promise<StakePositions> => {
+    return {
+      code: 0,
+      hash: "0x000"
+    };
   };
 
   removeExternalIncentive = async (): Promise<string> => {
