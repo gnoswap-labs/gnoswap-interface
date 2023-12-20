@@ -7,6 +7,7 @@ export const CardListWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
   gap: 24px;
+  min-height: 390px;
   ${media.mobile} {
     gap: 16px;
   }

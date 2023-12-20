@@ -68,8 +68,6 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )}
 
-    {!mobile && isLoading && <div className="load-more-skeleton" />}
-
     {(showPagination && isFetched && positions.length !== 0 &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
