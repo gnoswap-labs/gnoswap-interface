@@ -51,6 +51,7 @@ interface HeaderProps {
   mostLiquidity: Token[];
   popularTokens: Token[];
   recents: Token[];
+  movePage: (path: string) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -75,6 +76,7 @@ const Header: React.FC<HeaderProps> = ({
   mostLiquidity,
   popularTokens,
   recents,
+  movePage,
 }) => {
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
 
@@ -111,7 +113,7 @@ const Header: React.FC<HeaderProps> = ({
                         key={item.title}
                         className={
                           pathname === item.path ||
-                          (item.subPath || []).some(_ => pathname.includes(_))
+                            (item.subPath || []).some(_ => pathname.includes(_))
                             ? "selected"
                             : ""
                         }
@@ -161,7 +163,7 @@ const Header: React.FC<HeaderProps> = ({
                   key={item.title}
                   className={
                     pathname === item.path ||
-                    (item.subPath || []).some(_ => pathname.includes(_))
+                      (item.subPath || []).some(_ => pathname.includes(_))
                       ? "selected"
                       : ""
                   }
@@ -188,6 +190,7 @@ const Header: React.FC<HeaderProps> = ({
             popularTokens={popularTokens}
             recents={recents}
             placeholder="Search by Name, Symbol, or Path"
+            movePage={movePage}
           />
         )}
       </HeaderWrapper>

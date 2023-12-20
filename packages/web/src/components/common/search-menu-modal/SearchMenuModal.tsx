@@ -27,6 +27,7 @@ import { useRouter } from "next/router";
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  movePage: (path: string) => void;
   keyword: string;
   tokens: Token[];
   isFetched: boolean;
@@ -40,6 +41,7 @@ interface SearchMenuModalProps {
 const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   onSearchMenuToggle,
   search,
+  movePage,
   keyword,
   isFetched,
   placeholder = "Search",
@@ -48,7 +50,6 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   popularTokens,
   recents,
 }) => {
-  const router = useRouter();
   const [, setRecentsData] = useAtom(TokenState.recents);
   const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => (0)));
   const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => (0)));
@@ -73,10 +74,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     onSearchMenuToggle();
     if (item.isLiquid) {
       const poolPath = `${item.token.path}:${item?.tokenB?.path}:${Number(item.fee.slice(0, item.fee.length - 1)) * 10000}`;
-      router.push(`/earn/pool/${makeId(poolPath)}`);
+      movePage(`/earn/pool/${makeId(poolPath)}`);
     } else {
       const routePath = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
-      router.push(routePath);
+      movePage(routePath);
     }
   };
 

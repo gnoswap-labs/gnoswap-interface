@@ -14,6 +14,7 @@ describe("SearchMenuModal Component", () => {
       onSideMenuToggle: () => null,
       onSearchMenuToggle: () => null,
       search: () => null,
+      movePage: () => null,
       keyword: "",
       isFetched: true,
       placeholder: "Search",
