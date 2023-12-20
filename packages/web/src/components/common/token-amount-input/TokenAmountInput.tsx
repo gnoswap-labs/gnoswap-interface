@@ -1,10 +1,12 @@
 import React, { useCallback, useMemo } from "react";
 import { TokenAmountInputWrapper } from "./TokenAmountInput.styles";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncentivizeButton";
 import BigNumber from "bignumber.js";
+import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -36,9 +38,14 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   const handleFillBalance = useCallback(() => {
     if (connected) {
       const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
-      changeAmount(formatValue);
+      if (token && isNativeToken(token)) {
+        const nativeFullBalance = BigNumber(formatValue).minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0).toString();
+        changeAmount(nativeFullBalance);
+      } else {
+        changeAmount(formatValue);
+      }
     }
-  }, [changeAmount, connected, balance]);
+  }, [connected, balance, token, changeAmount]);
 
   const balanceADisplay = useMemo(() => {
     if (connected && balance !== "-") {

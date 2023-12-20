@@ -38,23 +38,28 @@ const PoolAddIncentivizeContainer: React.FC = () => {
   const { data: pools = [] } = useGetPoolList();
   const [currentPool, setCurrentPool] = useState(pools[0]);
   const { data: poolDetal } = useGetPoolDetailByPath(poolPath, { enabled: !!poolPath });
+  const [, setPool] = useAtom(EarnState.pool);
   
   useEffect(() => {
     const pool = pools.find(pool => pool.id === poolPath);
     if (pool) {
-      setCurrentPool({
+      const temp = {
         ...pool,
         tokenA: {
           ...pool.tokenA,
           name: getGnotPath(pool.tokenA).name,
           symbol: getGnotPath(pool.tokenA).symbol,
+          logoURI: getGnotPath(pool.tokenA).logoURI,
         },
         tokenB: {
           ...pool.tokenB,
           name: getGnotPath(pool.tokenB).name,
           symbol: getGnotPath(pool.tokenB).symbol,
+          logoURI: getGnotPath(pool.tokenB).logoURI,
         }
-      });
+      };
+      setCurrentPool(temp);
+      setPool(temp);
     }
   }, [poolDetal, pools, poolPath, getGnotPath]);
 
@@ -79,7 +84,21 @@ const PoolAddIncentivizeContainer: React.FC = () => {
   const selectPool = useCallback((poolId: string) => {
     const pool = pools.find(pool => pool.id === poolId);
     if (pool) {
-      setCurrentPool(pool);
+      setCurrentPool({
+        ...pool,
+        tokenA: {
+          ...pool.tokenA,
+          path: getGnotPath(pool.tokenA).path,
+          symbol: getGnotPath(pool.tokenA).symbol,
+          logoURI: getGnotPath(pool.tokenA).logoURI,
+        },
+        tokenB: {
+          ...pool.tokenB,
+          path: getGnotPath(pool.tokenB).path,
+          symbol: getGnotPath(pool.tokenB).symbol,
+          logoURI: getGnotPath(pool.tokenB).logoURI,
+        },
+      });
     }
   }, [setCurrentPool]);
 

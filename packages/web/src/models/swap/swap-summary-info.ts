@@ -1,7 +1,7 @@
 import { SwapDirectionType } from "@common/values";
 import { AmountModel } from "@models/common/amount-model";
 import { TokenModel } from "@models/token/token-model";
-import { toNumberFormat } from "@utils/number-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface SwapSummaryInfo {
   tokenA: TokenModel;
@@ -37,8 +37,8 @@ export function getMinReceivedBy(swapSummaryInfo: SwapSummaryInfo) {
   if (swapDirection === "EXACT_OUT") {
     return "-";
   }
-  return `${toNumberFormat(
+  return `${makeDisplayTokenAmount(
+    swapSummaryInfo.tokenB,
     guaranteedAmount.amount,
-    swapSummaryInfo.tokenB.decimals,
   )} ${guaranteedAmount.currency}`;
 }

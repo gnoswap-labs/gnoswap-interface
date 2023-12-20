@@ -7,6 +7,7 @@ import { useGnoswapContext } from "./use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useAtom } from "jotai";
 import { PoolState } from "@states/index";
+import { makeId } from "@utils/common";
 
 export const usePositionData = () => {
   const { positionRepository } = useGnoswapContext();
@@ -37,7 +38,6 @@ export const usePositionData = () => {
   );
 
   const getPositions = useCallback(async (): Promise<PoolPositionModel[]> => {
-
     if (!account?.address) {
       setPositions([]);
       return [];
@@ -82,7 +82,8 @@ export const usePositionData = () => {
         setPositions([]);
         setIsError(true);
         return [];
-      }).finally(() => setLoading(false));
+      })
+      .finally(() => setLoading(false));
   }, [account?.address, pools, positionRepository, setPositions]);
 
   const getPositionsByPoolId = useCallback(
@@ -104,8 +105,21 @@ export const usePositionData = () => {
               pool => pool.path === position.poolPath && pool.id === poolId,
             );
             if (pool) {
+              const temp = {
+                ...pool,
+                tokenA: {
+                  ...pool.tokenA,
+                  symbol: getGnotPath(pool.tokenA).symbol,
+                  logoURI: getGnotPath(pool.tokenA).logoURI,
+                },
+                tokenB: {
+                  ...pool.tokenB,
+                  symbol: getGnotPath(pool.tokenB).symbol,
+                  logoURI: getGnotPath(pool.tokenB).logoURI,
+                },
+              };
               poolPositions.push(
-                PositionMapper.makePoolPosition(position, pool),
+                PositionMapper.makePoolPosition(position, temp),
               );
             }
           });
@@ -120,6 +134,14 @@ export const usePositionData = () => {
     [account?.address, pools, positionRepository],
   );
 
+  const getPositionsByPoolPath = useCallback(
+    async (poolPath: string): Promise<PoolPositionModel[]> => {
+      const poolId = makeId(poolPath);
+      return getPositionsByPoolId(poolId);
+    },
+    [getPositionsByPoolId],
+  );
+
   useEffect(() => {
     getPositions();
   }, [connected, getPositions]);
@@ -131,7 +153,9 @@ export const usePositionData = () => {
     isStakedPool,
     getPositions,
     getPositionsByPoolId,
+    getPositionsByPoolPath,
     isFetchedPosition,
-    loading
+    loading,
+    setLoading,
   };
 };

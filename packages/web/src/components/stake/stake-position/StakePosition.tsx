@@ -15,6 +15,7 @@ interface StakePositionProps {
   checkedAll: boolean;
   submitPosition: () => void;
   isUnstake?: boolean;
+  isEmpty: boolean;
 }
 
 export const CONTENT_TITLE = {
@@ -33,6 +34,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
   onCheckedAll,
   checkedAll,
   submitPosition,
+  isEmpty,
 }) => {
   const isEmptyCheckList = useMemo(() => {
     return checkedList.length === 0;
@@ -53,6 +55,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
         isHiddenTitle
+        isEmpty={isEmpty}
       />
       <SelectStakeResult
         positions={selectedPositions}

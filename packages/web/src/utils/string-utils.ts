@@ -50,7 +50,7 @@ export function displayTickNumber(range: number[], tick: number) {
     const fixedPosition = rangeGapSplit[0].length;
     return BigNumber(tick)
       .shiftedBy(fixedPosition)
-      .multipliedBy(10 ** fixedPosition)
+      .shiftedBy(-fixedPosition)
       .toFormat(0);
   }
   if (rangeGapSplit.length < 2) {

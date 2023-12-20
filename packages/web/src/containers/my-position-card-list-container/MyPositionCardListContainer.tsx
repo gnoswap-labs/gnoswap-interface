@@ -61,6 +61,7 @@ const MyPositionCardListContainer: React.FC<
       width={width}
       showPagination={false}
       showLoadMore={false}
+      themeKey="dark"
     />
   );
 };

@@ -19,4 +19,6 @@ export interface RewardResposne {
   apr: string;
 
   apr7d: string;
+
+  aprOf7d: number;
 }

@@ -4,7 +4,7 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
 export const OneClickStakingWrapper = styled.div`
-  ${mixins.flexbox("column", "center", "center")};
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
   background-color: ${({ theme }) => theme.color.background01};
   width: 430px;
   padding: 23px;

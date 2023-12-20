@@ -4,14 +4,19 @@ import { useRouter } from "next/router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useAtom } from "jotai";
+import { EarnState } from "@states/index";
+import { makeId } from "@utils/common";
 
 const OneClickStakingContainer: React.FC = () => {
   const router = useRouter();
   const { account } = useWallet();
-  const { getPositionsByPoolId } = usePositionData();
+  const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
+  const { getPositionsByPoolId, getPositionsByPoolPath } = usePositionData();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
 
-  const poolPath = `${router.query?.["pool-path"]}`;
+  const poolId = router.query?.["pool-path"] === undefined ? null : `${router.query?.["pool-path"]}`;
+  const poolPath = currentPoolPath;
 
   const stakedPositions = useMemo(() => {
     return positions.filter(position => position.staked);
@@ -22,14 +27,29 @@ const OneClickStakingContainer: React.FC = () => {
   }, [positions]);
 
   const handleClickGotoStaking = useCallback(() => {
-    router.push(`/earn/pool/${router.query?.["pool-path"]}/stake`);
-  }, [router]);
+    if (poolId) {
+      router.push(`/earn/pool/${poolId}/stake`);
+      return;
+    }
+    if (poolPath) {
+      const poolId = makeId(poolPath);
+      router.push(`/earn/pool/${poolId}/stake`);
+    }
+  }, [poolId, poolPath, router]);
 
   useEffect(() => {
-    if (account?.address) {
-      getPositionsByPoolId(poolPath).then(setPositions);
+    if (!account?.address) {
+      return;
     }
-  }, [account?.address, getPositionsByPoolId, poolPath]);
+    if (poolId) {
+      getPositionsByPoolId(poolId).then(setPositions);
+      return;
+    }
+
+    if (poolPath) {
+      getPositionsByPoolPath(poolPath).then(setPositions);
+    }
+  }, [account?.address, poolId, poolPath]);
 
   return (
     <OneClickStaking

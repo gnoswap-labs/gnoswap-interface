@@ -94,7 +94,7 @@ const SwapLiquidityContainer: React.FC = () => {
           ..._,
           volume: `$${convertLargePrice(poolItem[0].volume.toString(), 6)}`,
           liquidity: `$${convertLargePrice(poolItem[0].tvl.toString(), 2)}`,
-          apr: poolItem[0].apr === "" ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
+          apr: !poolItem[0].apr ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
           active: true,
           id: poolItem[0].id,
         };

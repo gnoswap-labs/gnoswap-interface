@@ -72,6 +72,7 @@ const TokenSwapContainer: React.FC = () => {
   useEffect(() => {
     setInitialized(false);
   }, [router.query?.["token-path"]]);
+  
   return (
     <>
       <TokenSwap

@@ -26,7 +26,7 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
     align-items: center;
 
     .token-pair-name {
-      color: ${({ theme }) => theme.color.text03};
+      color: ${({ theme }) => theme.color.text02};
       ${fonts.body9}
       ${media.mobile} {
         ${fonts.body11}
@@ -43,7 +43,7 @@ export const PoolIncentivizeSelectPoolItemWrapper = styled.div<Props>`
 
     .liquidity {
       height: 14px;
-      color: ${({ theme }) => theme.color.text03};
+      color: ${({ theme }) => theme.color.text02};
       ${fonts.body9}
       line-height: 100%;
       ${media.mobile} {

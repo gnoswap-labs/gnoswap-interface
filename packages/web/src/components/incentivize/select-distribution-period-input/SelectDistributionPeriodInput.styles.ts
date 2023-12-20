@@ -55,7 +55,7 @@ export const PoolIncentivizeSelectPeriodBoxItem = styled.div`
   flex-direction: row;
   width: 100%;
   padding: 8px 24px;
-  color: ${({ theme }) => theme.color.text03};
+  color: ${({ theme }) => theme.color.text02};
   ${fonts.body12}
   align-items: center;
   justify-content: center;

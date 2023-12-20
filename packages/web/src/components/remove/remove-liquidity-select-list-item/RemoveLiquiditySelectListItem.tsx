@@ -46,8 +46,8 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
           <div className="value">{makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance)}</div>
         </div>
       </div>
-      {!disabled && <div className="divider"></div>}
-      {!disabled && (
+      {disabled && <div className="divider"></div>}
+      {disabled && (
         <div className="unstake-description">
           *You need to unstake your position first.
         </div>
@@ -93,7 +93,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
           onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
-        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} />
+        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
         <Tooltip
           placement="top"
           FloatingContent={<TooltipContent position={position} disabled={disabled} />}

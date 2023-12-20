@@ -148,9 +148,6 @@ export const SelectTokenIncentivizeWrapper = styled.div`
     &.token-list-wrapper-auto-height {
       height: auto;
     }
-    ${media.mobile} {
-      height: 248px;
-    }
     overflow-y: auto;
     .no-data-found {
       ${mixins.flexbox("row", "center", "center")};

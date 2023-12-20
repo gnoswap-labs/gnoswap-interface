@@ -1,23 +1,18 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { ValuesType } from "utility-types";
-import { useQuery } from "@tanstack/react-query";
 import AssetList from "@components/wallet/asset-list/AssetList";
-import BigNumber from "bignumber.js";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import useClickOutside from "@hooks/common/use-click-outside";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
-import { TokenModel } from "@models/token/token-model";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import useClickOutside from "@hooks/common/use-click-outside";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
-
-interface AssetListResponse {
-  hasNext: boolean;
-  currentPage: number;
-  assets: Asset[];
-}
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useTokenData } from "@hooks/token/use-token-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { TokenModel } from "@models/token/token-model";
+import { useGetTokensList } from "@query/token";
+import BigNumber from "bignumber.js";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ValuesType } from "utility-types";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -33,27 +28,19 @@ export const ASSET_HEAD = {
 } as const;
 export type ASSET_HEAD = ValuesType<typeof ASSET_HEAD>;
 
-const SORT_PARAMS: { [key in ASSET_HEAD]: string } = {
-  Asset: "asset",
-  Chain: "chain",
-  Balance: "balance",
-  Deposit: "deposit",
-  Withdraw: "withdraw",
-};
-
-export interface Asset {
-  id: string;
-  logoUri: string;
-  type: ASSET_TYPE;
-  name: string;
-  symbol: string;
-  chain: string;
-  balance: string;
+export interface Asset extends TokenModel {
+  // id: string;
+  // logoUri: string;
+  // type: ASSET_TYPE;
+  // name: string;
+  // symbol: string;
+  // chain: string;
+  balance?: number | string | null;
 }
 
 export const ASSET_TYPE = {
-  NATIVE: "NATIVE",
-  GRC20: "GRC20",
+  NATIVE: "native",
+  GRC20: "grc20",
 } as const;
 
 export type ASSET_TYPE = ValuesType<typeof ASSET_TYPE>;
@@ -67,53 +54,37 @@ export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 
 export const dummyAssetList: Asset[] = [
   {
-    id: "BTC",
-    logoUri:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-    type: ASSET_TYPE.NATIVE,
-    name: "Bitcoin",
-    symbol: "BTC",
-    chain: "Gnoland",
-    balance: "0.1",
+    type: "grc20",
+    chainId: "dev",
+    createdAt: "2023-12-12 23:45:12",
+    name: "Bar",
+    path: "gno.land/r/bar",
+    decimals: 6,
+    symbol: "BAR",
+    logoURI:
+      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+    priceId: "gno.land/r/bar",
+    description: "this_is_desc_section",
+    websiteURL: "https://website~~~~",
   },
   {
-    id: "GNS",
-    logoUri:
-      "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xB98d4C97425d9908E66E53A6fDf673ACcA0BE986/logo.png",
-    type: ASSET_TYPE.GRC20,
-    name: "Gnoswap",
-    symbol: "GNS",
-    chain: "Gnoland",
-    balance: "0.000000",
+    type: "grc20",
+    chainId: "dev",
+    createdAt: "2023-12-12 23:45:12",
+    name: "Bar",
+    path: "gno.land/r/bar",
+    decimals: 6,
+    symbol: "BAR",
+    logoURI:
+      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+    priceId: "gno.land/r/bar",
+    description: "this_is_desc_section",
+    websiteURL: "https://website~~~~",
   },
 ];
 
-async function fetchAssets(
-  address: string,
-  sortKey?: string, // eslint-disable-line
-  direction?: string, // eslint-disable-line
-): Promise<Asset[]> {
-  return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    Promise.resolve([
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-      ...dummyAssetList,
-    ]),
-  );
-}
-
 function filterZeroBalance(asset: Asset) {
-  const balance = BigNumber(asset.balance);
+  const balance = BigNumber(asset?.balance ?? 0);
   return balance.isGreaterThan(0);
 }
 
@@ -127,38 +98,11 @@ function filterKeyword(asset: Asset, keyword: string) {
   if (searchKeyword === "") return true;
   return (
     asset.name.toLowerCase().includes(searchKeyword) ||
-    asset.chain.toLowerCase().includes(searchKeyword) ||
-    asset.symbol.toLowerCase().includes(searchKeyword)
+    asset.symbol.toLowerCase().includes(searchKeyword) ||
+    asset.path.toLowerCase().includes(searchKeyword)
   );
 }
 
-const DEPOSIT_TO: TokenModel = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gns",
-  decimals: 4,
-  symbol: "Cosmos",
-  logoURI:
-    "/cosmos.svg",
-  type: "grc20",
-  priceId: "gno.land/r/gns",
-};
-
-const DEPOSIT_FROM: TokenModel = {
-  chainId: "dev",
-  createdAt: "2023-10-10T08:48:46+09:00",
-  name: "Gnoswap",
-  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-  path: "gno.land/r/gns",
-  decimals: 4,
-  symbol: "Gnoland",
-  logoURI:
-    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-  type: "grc20",
-  priceId: "gno.land/r/gns",
-};
 const DEPOSIT_INFO: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
@@ -167,12 +111,104 @@ const DEPOSIT_INFO: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "ATOM",
-  logoURI:
-    "/atom.svg",
+  logoURI: "/atom.svg",
   type: "grc20",
   priceId: "gno.land/r/gns",
 };
 
+const INIT_GNOT = {
+  type: "native",
+  chainId: "dev.gnoswap",
+  createdAt: "0001-01-01T00:00:00Z",
+  name: "Gnoland",
+  path: "gnot",
+  decimals: 6,
+  symbol: "GNOT",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  priceId: "gnot",
+  description:
+    "Gno.land is a platform to write smart contracts in Gnolang (Gno). Using an interpreted version of the general-purpose programming language Golang (Go), developers can write smart contracts and other blockchain apps without having to learn a language that’s exclusive to a single ecosystem. Web2 developers can easily contribute to web3 and start building a more transparent, accountable world.\n\nThe Gno transaction token, GNOT, and the contributor memberships power the platform, which runs on a variation of Proof of Stake. Proof of Contribution rewards contributors from technical and non-technical backgrounds, fairly and for life with GNOT. This consensus mechanism also achieves higher security with fewer validators, optimizing resources for a greener, more sustainable, and enduring blockchain ecosystem.\n\nAny blockchain using Gnolang achieves succinctness, composability, expressivity, and completeness not found in any other smart contract platform. By observing a minimal structure, the design can endure over time and challenge the regime of information censorship we’re living in today.",
+  websiteURL: "https://gno.land/",
+  displayPath: "Native",
+  wrappedPath: "gno.land/r/demo/wugnot",
+  balance: "0",
+} as const;
+
+const INIT_GNS = {
+  type: "grc20",
+  chainId: "dev.gnoswap",
+  createdAt: "2023-12-16T17:27:10Z",
+  name: "Gnoswap",
+  path: "gno.land/r/demo/gns",
+  decimals: 6,
+  symbol: "GNS",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  priceId: "gno.land/r/demo/gns",
+  description: "GNS is a GRC20 token issued solely for testing purposes.",
+  websiteURL: "https://beta.gnoswap.io",
+  displayPath: "gno.land/r/demo/gns",
+  wrappedPath: "gno.land/r/demo/gns",
+  balance: "0",
+} as const;
+
+interface SortedProps extends TokenModel {
+  balance: string;
+  price?: string;
+  tokenPrice: number;
+}
+
+const customSortAll = (a: SortedProps, b: SortedProps): number => {
+  if (a.symbol === "GNOT" && b.symbol !== "GNOT") {
+    return -1;
+  } else if (a.symbol !== "GNOT" && b.symbol === "GNOT") {
+    return 1;
+  } else if (a.symbol === "GNS" && b.symbol !== "GNS") {
+    return -1;
+  } else if (a.symbol !== "GNS" && b.symbol === "GNS") {
+    return 1;
+  } else {
+    const priceA = parseFloat((a?.price ?? "").replace(/,/g, ""));
+    const priceB = parseFloat((b?.price ?? "").replace(/,/g, ""));
+
+    if (!isNaN(priceA) && !isNaN(priceB) && priceA < priceB) {
+      return 1;
+    } else if (isNaN(priceA) && isNaN(priceB)) {
+      const numberRegex = /\d+/;
+      const numberA = numberRegex.test(a.name);
+      const numberB = numberRegex.test(b.name);
+      if (numberA > numberB) {
+        return 1;
+      } else if (numberA > numberB) {
+        return -1;
+      } else {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      }
+    } else if (!isNaN(priceA) || isNaN(priceB) ) {
+      if (priceA === 0 && priceB === 0) {
+        if (a.tokenPrice < b.tokenPrice) {
+          return 1;
+        } else {
+          return -1;
+        }
+      } else {
+        return -1;
+      }
+    } else {
+      const numberRegex = /\d+/;
+      const numberA = numberRegex.test(a.name);
+      const numberB = numberRegex.test(b.name);
+      if (numberA > numberB) {
+        return 1;
+      } else if (numberA > numberB) {
+        return -1;
+      } else {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      }
+    }
+  }
+};
 
 const AssetListContainer: React.FC = () => {
   const { connected } = useWallet();
@@ -183,9 +219,8 @@ const AssetListContainer: React.FC = () => {
   );
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [hasNext, setHasNext] = useState(false);
+  // const [hasNext, setHasNext] = useState(false);
   const [extended, setExtened] = useState(false);
-  const [filteredAssets, setFilteredAsset] = useState<Asset[]>([]);
   const [hasLoader, setHasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
   const { breakpoint } = useWindowSize();
@@ -219,41 +254,103 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const {
-    isFetched,
-    error,
-    data: assets,
-  } = useQuery<Asset[], Error>({
-    queryKey: ["assets", address, sortOption?.key, sortOption?.direction],
-    queryFn: () =>
-      fetchAssets(
-        address,
-        sortOption && SORT_PARAMS[sortOption.key],
-        sortOption?.direction,
-      ),
-  });
+  const { isFetched } = useGetTokensList();
+  const { tokens, displayBalanceMap, balances, updateTokens, tokenPrices } =
+    useTokenData();
 
   useEffect(() => {
-    if (assets && assets.length > 0) {
-      const COLLAPSED_LENGTH = 15;
-      const filteredAssets = assets
-        .filter(
-          asset => invisibleZeroBalance === false || filterZeroBalance(asset),
-        )
-        .filter(asset => filterType(asset, assetType))
-        .filter(asset => filterKeyword(asset, keyword));
-      const hasLoader = filteredAssets.length > COLLAPSED_LENGTH;
-      const resultFilteredAssets = extended
-        ? filteredAssets
-        : filteredAssets.slice(
-          0,
-          Math.min(filteredAssets.length, COLLAPSED_LENGTH),
-        );
+    updateTokens();
+  }, [connected]);
 
-      setHasLoader(hasLoader);
-      setFilteredAsset(resultFilteredAssets);
+  useEffect(() => {
+    if (!tokens) return;
+
+    if (tokens?.length === 0) {
+      setTokenSortOption({
+        key: "Asset",
+        direction: "asc",
+      });
+    } else {
+      setTokenSortOption(undefined);
     }
-  }, [assets, assetType, invisibleZeroBalance, extended, keyword]);
+  }, [tokens]);
+
+  const filteredTokens = useMemo(() => {
+    const COLLAPSED_LENGTH = 15;
+
+    const temp: SortedProps[] = tokens
+      .map(item => {
+        const tokenPrice = balances[item.priceId];
+        if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+          return {
+            price: "-",
+            balance: "0",
+            ...item,
+            tokenPrice: tokenPrice || 0,
+          };
+        }
+        return {
+          ...item,
+          price: BigNumber(tokenPrice)
+            .multipliedBy(tokenPrices[item?.path]?.usd || "0")
+            .toFormat(),
+          balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          tokenPrice: tokenPrice || 0,
+        };
+      })
+      .filter(
+        asset => invisibleZeroBalance === false || filterZeroBalance(asset),
+      );
+
+    let sortedData = temp.sort(customSortAll);
+
+    if (sortOption?.key === "Asset") {
+      sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "asc"
+          ? x.name.localeCompare(y.name)
+          : y.name.localeCompare(x.name);
+      });
+    }
+
+    if (sortOption?.key === "Balance") {
+      sortedData = sortedData.sort((x, y) => {
+        if (
+          x.balance === undefined ||
+          y.balance === undefined ||
+          x.balance === null ||
+          y.balance === null
+        )
+          return 0;
+
+        return sortOption?.direction === "desc"
+          ? Number(y.balance) - Number(x.balance)
+          : Number(x.balance) - Number(y.balance);
+      });
+    }
+
+    sortedData = sortedData
+      .filter(asset => filterType(asset, assetType))
+      .filter(asset => filterKeyword(asset, keyword));
+
+    const hasLoader = sortedData.length > COLLAPSED_LENGTH;
+    const resultFilteredAssets = extended
+      ? sortedData
+      : sortedData.slice(0, Math.min(sortedData.length, COLLAPSED_LENGTH));
+    setHasLoader(hasLoader);
+
+    return resultFilteredAssets;
+  }, [
+    tokens,
+    sortOption?.key,
+    sortOption?.direction,
+    extended,
+    balances,
+    tokenPrices,
+    displayBalanceMap,
+    invisibleZeroBalance,
+    assetType,
+    keyword,
+  ]);
 
   const changeAssetType = useCallback((newType: string) => {
     switch (newType) {
@@ -284,19 +381,7 @@ const AssetListContainer: React.FC = () => {
     (asset: Asset) => {
       if (!connected) return;
       setIsShowDepositModal(true);
-      setDepositInfo({
-        chainId: "dev",
-        createdAt: "2023-10-10T08:48:46+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: asset.symbol,
-        logoURI: asset.logoUri,
-        type: "grc20",
-        priceId: "gno.land/r/gns",
-      });
-      // console.debug("deposit", `address: ${address}`, `assetId: ${assetId}`);
+      setDepositInfo(asset);
       if (!address) return;
     },
     [address, connected],
@@ -306,19 +391,7 @@ const AssetListContainer: React.FC = () => {
     (asset: Asset) => {
       if (!connected) return;
       setIsShowWithDrawModal(true);
-      setWithDrawInfo({
-        chainId: "dev",
-        createdAt: "2023-10-10T08:48:46+09:00",
-        name: "Gnoswap",
-        address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-        path: "gno.land/r/gns",
-        decimals: 4,
-        symbol: asset.symbol,
-        logoURI: asset.logoUri,
-        type: "grc20",
-        priceId: "gno.land/r/gns",
-      });
-      // console.debug("withdraw", `address: ${address}`, `assetId: ${assetId}`);
+      setWithDrawInfo(asset);
       if (!address) return;
     },
     [address, connected],
@@ -331,8 +404,8 @@ const AssetListContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-            ? "desc"
-            : "asc";
+          ? "desc"
+          : "asc";
 
       setTokenSortOption({
         key,
@@ -347,30 +420,28 @@ const AssetListContainer: React.FC = () => {
     return !disableItems.includes(head);
   }, []);
 
-
   const closeDeposit = () => {
-    setIsShowDepositModal(false)
-  }
+    setIsShowDepositModal(false);
+  };
 
   const closeWithdraw = () => {
-    setIsShowWithDrawModal(false)
-  }
+    setIsShowWithDrawModal(false);
+  };
 
   const callbackDeposit = (value: boolean) => {
     setIsShowDepositModal(value);
-  }
+  };
 
   const callbackWithdraw = (value: boolean) => {
     setIsShowWithDrawModal(value);
-  }
+  };
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
-
 
   return (
     <>
       <AssetList
-        assets={filteredAssets}
+        assets={filteredTokens}
         isFetched={isFetched}
         assetType={assetType}
         invisibleZeroBalance={invisibleZeroBalance}
@@ -396,9 +467,6 @@ const AssetListContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeDeposit}
           depositInfo={depositInfo}
-          fromToken={DEPOSIT_TO}
-          toToken={DEPOSIT_FROM}
-          connected={connected}
           changeToken={changeTokenDeposit}
           callback={callbackDeposit}
         />
@@ -408,8 +476,6 @@ const AssetListContainer: React.FC = () => {
           breakpoint={breakpoint}
           close={closeWithdraw}
           withdrawInfo={withdrawInfo}
-          fromToken={DEPOSIT_FROM}
-          toToken={DEPOSIT_TO}
           connected={connected}
           changeToken={changeTokenWithdraw}
           callback={callbackWithdraw}

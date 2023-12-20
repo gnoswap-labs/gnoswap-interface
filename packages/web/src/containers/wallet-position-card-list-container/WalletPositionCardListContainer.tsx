@@ -39,6 +39,7 @@ const WalletPositionCardListContainer: React.FC = () => {
       width={width}
       showPagination={false}
       showLoadMore={false}
+      themeKey="dark"
     />
   );
 };

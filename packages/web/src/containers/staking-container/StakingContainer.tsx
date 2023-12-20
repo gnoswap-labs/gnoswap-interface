@@ -8,6 +8,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { PoolModel } from "@models/pool/pool-model";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 const StakingContainer: React.FC = () => {
   const { account } = useWallet();
@@ -21,6 +22,7 @@ const StakingContainer: React.FC = () => {
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const { getGnotPath } = useGnotToGnot();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -42,7 +44,27 @@ const StakingContainer: React.FC = () => {
     if (!poolPath) {
       return;
     }
-    fetchPoolDatils(poolPath).then(setPool);
+    fetchPoolDatils(poolPath).then((e) => {
+      if (e) {
+        setPool({
+          ...e,
+          tokenA: {
+            ...e.tokenA,
+            name: getGnotPath(e.tokenA).name,
+            symbol: getGnotPath(e.tokenA).symbol,
+            logoURI: getGnotPath(e.tokenA).logoURI,
+          },
+          tokenB: {
+            ...e.tokenB,
+            name: getGnotPath(e.tokenB).name,
+            symbol: getGnotPath(e.tokenB).symbol,
+            logoURI: getGnotPath(e.tokenB).logoURI,
+          }
+        });
+      } else {
+        setPool(e);
+      }
+    });
     if (account?.address) {
       getPositionsByPoolId(poolPath).then(positions => {
         const stakedPositions = positions.filter(position => position.staked);
@@ -53,7 +75,7 @@ const StakingContainer: React.FC = () => {
 
   const isDisabledButton = useMemo(() => {
     return isSwitchNetwork || !connectedWallet;
-  }, [isSwitchNetwork, connectedWallet]);
+  }, [isSwitchNetwork, connectedWallet, positions]);
 
   const totalApr = useMemo(() => {
     return "-";

@@ -43,7 +43,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
     if (swapRateAction === "ATOB") {
       return numberToFormat(swapRateUSD);
     } else {
-      return numberToFormat(swapRateUSD / 100);
+      return numberToFormat(swapRateUSD);
     }
   }, [swapSummaryInfo.swapRateUSD, swapRateAction]);
 
@@ -63,7 +63,7 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const handleSwapRate = useCallback(() => {
     setSwapRateAction((prev) => (prev === "ATOB" ? "BTOA" : "ATOB"));
   }, [swapRateAction]);
-  
+
   return (
     <>
       <DetailWrapper opened={openedDetailInfo}>

@@ -9,6 +9,7 @@ import {
   TABLET_ASSET_TD_WIDTH,
 } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
+import BigNumber from "bignumber.js";
 
 interface AssetInfoProps {
   asset: Asset;
@@ -23,7 +24,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   withdraw,
   breakpoint,
 }) => {
-  const { logoUri, name, symbol, chain, balance } = asset;
+  const { logoURI, name, symbol, balance, type } = asset;
 
   const onClickItem = useCallback((symbol: string) => {
     location.href = "/tokens/" + symbol;
@@ -37,6 +38,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
+  const convertBalance = BigNumber((balance ?? "").toString()).toFormat();
+
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
@@ -44,15 +47,21 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         tdWidth={ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >
-        <img className="logo" src={logoUri} alt="logo" />
+        {logoURI ? (
+          <img src={logoURI} alt="logo" className="logo" />
+        ) : (
+          <div className="missing-logo">{symbol.slice(0, 3)}</div>
+        )}
         <span className="name">{name}</span>
         <span className="symbol">{symbol}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[1]}>
-        <span className="chain">{chain}</span>
+        <span className="chain">
+          {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
+        </span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[2]}>
-        <span className="balance">{balance}</span>
+        <span className="balance">{convertBalance}</span>
       </TableColumn>
       <TableColumn tdWidth={ASSET_TD_WIDTH[3]}>
         <DepositButton onClick={onClickDeposit} />
@@ -68,15 +77,17 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         tdWidth={TABLET_ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >
-        <img className="logo" src={logoUri} alt="logo" />
+        <img className="logo" src={logoURI} alt="logo" />
         <span className="name">{name}</span>
         <span className="symbol">{symbol}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[1]}>
-        <span className="chain">{chain}</span>
+        <span className="chain">
+          {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
+        </span>
       </TableColumn>
       <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[2]}>
-        <span className="balance">{balance}</span>
+        <span className="balance">{convertBalance}</span>
       </TableColumn>
       <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
         <DepositButton onClick={onClickDeposit} />
@@ -92,15 +103,17 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         tdWidth={MOBILE_ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >
-        <img className="logo" src={logoUri} alt="logo" />
+        <img className="logo" src={logoURI} alt="logo" />
         <span className="name">{name}</span>
         <span className="symbol">{symbol}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[1]}>
-        <span className="chain">{chain}</span>
+        <span className="chain">
+          {type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}
+        </span>
       </TableColumn>
       <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[2]}>
-        <span className="balance">{balance}</span>
+        <span className="balance">{convertBalance}</span>
       </TableColumn>
       <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
         <DepositButton onClick={onClickDeposit} />

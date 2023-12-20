@@ -102,5 +102,8 @@ export const wrapper = (theme: Theme) => css`
     .content-wrap {
       padding: 0 16px;
     }
+    .add-liquidity-section {
+      width: 100%;
+    }
   }
 `;

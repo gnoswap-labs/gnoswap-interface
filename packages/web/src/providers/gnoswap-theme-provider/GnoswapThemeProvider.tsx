@@ -41,7 +41,7 @@ const GnoswapThemeProvider: React.FC<React.PropsWithChildren> = ({
 
   useEffect(() => {
     const initialTheme = getInitialThemeValue();
-    
+
     setCurrentTheme(initialTheme);
   }, []);
 

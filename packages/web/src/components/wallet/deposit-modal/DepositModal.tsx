@@ -1,68 +1,86 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconFailed from "@components/common/icons/IconFailed";
-import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import IconInfo from "@components/common/icons/IconInfo";
+import IconNewTab from "@components/common/icons/IconNewTab";
 import { Overlay } from "@components/common/modal/Modal.styles";
+import { QRCodeGenerator } from "@components/common/qr-code/QRCode";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { useCopy } from "@hooks/common/use-copy";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePositionModal } from "@hooks/common/use-postion-modal";
+import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatAddress } from "@utils/string-utils";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   BoxDescription,
-  BoxFromTo,
-  DepositContent,
+  DepositBoxContent,
+  DepositLabel,
   DepositModalBackground,
   DepositModalWrapper,
-  IconButton,
+  DepositTooltipContent,
 } from "./DepositModal.styles";
+
+export const DEFAULT_DEPOSIT_GNOT = {
+  type: "native",
+  chainId: "dev.gnoswap",
+  createdAt: "0001-01-01T00:00:00Z",
+  name: "Gnoland",
+  path: "gnot",
+  decimals: 6,
+  symbol: "GNOT",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  priceId: "gnot",
+  description:
+    "Gno.land is a platform to write smart contracts in Gnolang (Gno). Using an interpreted version of the general-purpose programming language Golang (Go), developers can write smart contracts and other blockchain apps without having to learn a language that’s exclusive to a single ecosystem. Web2 developers can easily contribute to web3 and start building a more transparent, accountable world.\n\nThe Gno transaction token, GNOT, and the contributor memberships power the platform, which runs on a variation of Proof of Stake. Proof of Contribution rewards contributors from technical and non-technical backgrounds, fairly and for life with GNOT. This consensus mechanism also achieves higher security with fewer validators, optimizing resources for a greener, more sustainable, and enduring blockchain ecosystem.\n\nAny blockchain using Gnolang achieves succinctness, composability, expressivity, and completeness not found in any other smart contract platform. By observing a minimal structure, the design can endure over time and challenge the regime of information censorship we’re living in today.",
+  websiteURL: "https://gno.land/",
+  displayPath: "Native",
+  wrappedPath: "gno.land/r/demo/wugnot",
+  balance: 9989743.152257,
+} as const;
+
+const DEFAULT_DEPOSIT_GRC20s = {
+  type: "native",
+  chainId: "dev.gnoswap",
+  createdAt: "0001-01-01T00:00:00Z",
+  name: "Gnoland",
+  path: "gnot",
+  decimals: 6,
+  symbol: "GRC20s",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  priceId: "gnot",
+  description:
+    "Gno.land is a platform to write smart contracts in Gnolang (Gno). Using an interpreted version of the general-purpose programming language Golang (Go), developers can write smart contracts and other blockchain apps without having to learn a language that’s exclusive to a single ecosystem. Web2 developers can easily contribute to web3 and start building a more transparent, accountable world.\n\nThe Gno transaction token, GNOT, and the contributor memberships power the platform, which runs on a variation of Proof of Stake. Proof of Contribution rewards contributors from technical and non-technical backgrounds, fairly and for life with GNOT. This consensus mechanism also achieves higher security with fewer validators, optimizing resources for a greener, more sustainable, and enduring blockchain ecosystem.\n\nAny blockchain using Gnolang achieves succinctness, composability, expressivity, and completeness not found in any other smart contract platform. By observing a minimal structure, the design can endure over time and challenge the regime of information censorship we’re living in today.",
+  websiteURL: "https://gno.land/",
+  displayPath: "Native",
+  wrappedPath: "gno.land/r/demo/wugnot",
+  balance: 9989743.152257,
+} as const;
 
 interface Props {
   close: () => void;
   breakpoint: DEVICE_TYPE;
-  depositInfo: TokenModel;
-  fromToken: TokenModel;
-  toToken: TokenModel;
-  connected: boolean;
+  depositInfo?: TokenModel;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
-}
-
-function isAmount(str: string) {
-  const regex = /^\d+(\.\d*)?$/;
-  return regex.test(str);
 }
 
 const DepositModal: React.FC<Props> = ({
   close,
   breakpoint,
-  depositInfo,
-  fromToken,
-  toToken,
-  connected,
   changeToken,
   callback,
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const [amount, setAmount] = useState("0");
+  const { account } = useWallet();
+  const [copied, copy] = useCopy();
 
   useEscCloseModal(close);
   usePositionModal(modalRef);
-  const onChangeAmount = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-
-      if (value !== "" && !isAmount(value)) return;
-      setAmount(value);
-      // TODO
-      // - mapT0AmountToT0Price
-      // - mapT0AmpuntT1Amount
-      // - mapT1AmpuntT1Price
-    },
-    [],
-  );
 
   return (
     <>
@@ -70,23 +88,32 @@ const DepositModal: React.FC<Props> = ({
         <DepositModalWrapper ref={modalRef}>
           <div className="modal-body">
             <div className="header">
-              <h6>IBC Deposit</h6>
+              <h6>Deposit</h6>
               <div className="close-wrap" onClick={close}>
                 <IconClose className="close-icon" />
               </div>
             </div>
-            <DepositContent>
-              <div className="deposit">
-                <div className="amount">
-                  <input
-                    className="amount-text"
-                    value={amount}
-                    onChange={onChangeAmount}
-                    placeholder="0"
-                  />
+
+            <DepositLabel>
+              <div className="title">
+                <label>Supported Tokens</label>
+                <DepositTooltip tooltip="The only types of tokens that are available for deposits." />
+              </div>
+
+              <DepositBoxContent>
+                <div className="supported-tokens-box">
                   <div className="token">
                     <SelectPairButton
-                      token={depositInfo}
+                      token={DEFAULT_DEPOSIT_GNOT}
+                      changeToken={changeToken}
+                      callback={callback}
+                      isHiddenArrow
+                      disabled
+                    />
+                  </div>
+                  <div className="token">
+                    <SelectPairButton
+                      token={DEFAULT_DEPOSIT_GRC20s}
                       changeToken={changeToken}
                       callback={callback}
                       isHiddenArrow
@@ -94,67 +121,117 @@ const DepositModal: React.FC<Props> = ({
                     />
                   </div>
                 </div>
-                <div className="info">
-                  <span className="price-text">{!Number(amount) ? "-" : `$${amount}`}</span>
-                  <span className="balance-text">Available: -</span>
-                </div>
+              </DepositBoxContent>
+            </DepositLabel>
+
+            <DepositLabel>
+              <div className="title">
+                <label>Deposit Network</label>
+                <DepositTooltip tooltip="The network of the token to be deposited." />
               </div>
-            </DepositContent>
-            <BoxFromTo>
-              <div className="from">
-                <h5>From</h5>
-                <div>
-                  <img
-                    src={fromToken.logoURI}
-                    alt="token logo"
-                    className="token-logo"
-                  />
-                  <strong className="token-name">{fromToken.symbol}</strong>
+
+              <DepositBoxContent>
+                <div className="normal-box">
+                  <div className="network">
+                    <img
+                      src={DEFAULT_DEPOSIT_GNOT.logoURI}
+                      alt="token logo"
+                      className="token-logo"
+                    />
+                    <span className="token-symbol">Gnoland (GRC20)</span>
+                  </div>
+
+                  <div className="approximately">≈ 4 seconds</div>
                 </div>
-                <p>{formatAddress(fromToken.address)}</p>
+              </DepositBoxContent>
+            </DepositLabel>
+
+            <DepositLabel>
+              <div className="title">
+                <label>Deposit Address</label>
+                <DepositTooltip tooltip="The address that is retrieved from your connected wallet for deposits. " />
               </div>
-              <IconButton>
-                <IconStrokeArrowRight />
-              </IconButton>
-              <div className="to">
-                <h5>To</h5>
-                <div>
-                  <img
-                    src={toToken.logoURI}
-                    alt="token logo"
-                    className="token-logo"
-                  />
-                  <strong className="token-name">{toToken.symbol}</strong>
+
+              <DepositBoxContent>
+                <div className="normal-box">
+                  <div className="address-box">
+                    <QRCodeGenerator
+                      text={account?.address ?? ""}
+                      size={93}
+                      logo={DEFAULT_DEPOSIT_GNOT.logoURI}
+                    />
+                    <div className="address">
+                      <p>{account?.address}</p>
+                      <Button
+                        text={copied ? "Copied!" : "Copy"}
+                        className="btn-copy"
+                        style={{
+                          textColor: "text09",
+                          hierarchy: copied
+                            ? undefined
+                            : ButtonHierarchy.Primary,
+                          bgColor: copied ? "background17" : undefined,
+                        }}
+                        disabled={copied}
+                        onClick={() => copy(account?.address)}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <p>{formatAddress(toToken.address)}</p>
-              </div>
-            </BoxFromTo>
+              </DepositBoxContent>
+            </DepositLabel>
+
             <BoxDescription>
-              <IconFailed className="fail-icon" />
-              <p>This feature will be available once Gnoland enables IBC.</p>
+              <div className="title">
+                <IconFailed className="fail-icon" />
+                <p>Important Notes</p>
+              </div>
+              <ul>
+                <li>
+                  Double-check to confirm that your deposit address above
+                  matches the address in your connected wallet.
+                </li>
+                <li>
+                  Only send supported tokens to this deposit address. Depositing
+                  any other cryptocurrencies to this address will result in the
+                  loss of your funds.
+                </li>
+              </ul>
+
+              <div className="learn-more-box">
+                <p>Learn More</p>
+                <IconNewTab color="#788feb" />
+              </div>
             </BoxDescription>
+
             <Button
-              disabled={true}
-              text="Deposit"
+              onClick={close}
+              text="Close"
               className="btn-deposit"
               style={{
                 fullWidth: true,
                 textColor: "text09",
                 fontType: breakpoint !== DEVICE_TYPE.MOBILE ? "body7" : "body9",
-                hierarchy:
-                  connected && !Number(amount || 0)
-                    ? undefined
-                    : ButtonHierarchy.Primary,
-                bgColor:
-                  connected && !Number(amount || 0) ? "background17" : undefined,
               }}
             />
           </div>
         </DepositModalWrapper>
       </DepositModalBackground>
-      <Overlay onClick={close}/>
+      <Overlay onClick={close} />
     </>
   );
 };
 
 export default DepositModal;
+
+export const DepositTooltip: React.FC<{ tooltip: string }> = ({ tooltip }) => {
+  const TooltipFloatingContent = (
+    <DepositTooltipContent>{tooltip}</DepositTooltipContent>
+  );
+
+  return (
+    <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>
+      <IconInfo size={16} />
+    </Tooltip>
+  );
+};

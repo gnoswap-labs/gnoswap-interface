@@ -27,7 +27,10 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
   <WalletBalanceSummaryWrapper>
     <span className="total-balance-title">Total Balance</span>
     <div className="container">
-      <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} />
+      <WalletBalanceSummaryInfo
+        balanceSummaryInfo={balanceSummaryInfo}
+        connected={connected}
+      />
       <div className="button-group">
         <Button
           leftIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconDownload />}

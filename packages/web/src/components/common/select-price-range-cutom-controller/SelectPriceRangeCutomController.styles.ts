@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import { media } from "@styles/media";
 
 export const SelectPriceRangeCutomControllerWrapper = styled.div`
   display: flex;
@@ -51,6 +52,10 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
         width: 110px;
         text-align: center;
         display: block;
+        ${media.mobile} {
+          width: 100%;
+          min-width: 110px;
+        }
       }
     }
     .fake-input {
@@ -60,11 +65,18 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
       top: 0;
       pointer-events: none;
       ${fonts.body4}
+      ${media.mobile} {
+        width: auto;
+        max-width: 100%;
+      }
     }
   }
 
   .token-info-wrapper {
     color: ${({ theme }) => theme.color.text04};
     ${fonts.p4}
+  }
+  ${media.mobile} {
+    padding: 12px;
   }
 `;

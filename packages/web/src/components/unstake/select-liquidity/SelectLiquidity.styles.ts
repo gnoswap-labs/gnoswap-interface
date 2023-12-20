@@ -33,4 +33,15 @@ export const wrapper = (theme: Theme) => css`
     gap: 4px;
     width: 100%;
   }
+  .no-position {
+    ${mixins.flexbox("row", "center", "center")};
+    height: 176px;
+    margin-top: 12px;
+    color: ${theme.color.text04};
+    ${fonts.body12}
+    background-color: ${theme.color.background20};
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid ${theme.color.border02};
+  }
 `;

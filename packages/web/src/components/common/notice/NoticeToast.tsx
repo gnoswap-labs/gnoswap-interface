@@ -3,7 +3,7 @@ import {
   INoticeContext,
   NoticeContext,
   TNoticeType,
-} from "src/context/NoticeContext";
+} from "@context/NoticeContext";
 import IconClose from "../icons/IconCancel";
 import IconFailed from "../icons/IconFailed";
 import IconNewTab from "../icons/IconNewTab";
@@ -11,18 +11,36 @@ import IconSuccess from "../icons/IconSuccess";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { NoticeUIList, NoticeUIWrapper } from "./NoticeToast.styles";
 
+export interface INoticeContent {
+  title?: string;
+  description?: string;
+  scannerUrl?: string;
+}
+
 interface NoticeProps {
   closeable?: boolean;
   onClose?: (id: number) => void;
   type: TNoticeType;
   id: number;
+  content?: INoticeContent;
 }
 
 const TEMP_URL =
   "https://gnoscan.io/transactions/details?txhash=nYtu28RzUIovNjldGq+e8m8S1mVZHsGFYAHyawaWn54=";
 
-const SuccessContent: FC = () => {
-  return (
+const SuccessContent: FC<{ content?: INoticeContent }> = ({ content }) => {
+  return content ? (
+    <div className="notice-body">
+      <IconSuccess className="icon-success" />
+      <div>
+        <h5>{content.title} - Success!</h5>
+        <p>{content.description}</p>
+        <a href={content.scannerUrl} target="_blank">
+          View transaction <IconNewTab />
+        </a>
+      </div>
+    </div>
+  ) : (
     <div className="notice-body">
       <IconSuccess className="icon-success" />
       <div>
@@ -36,8 +54,19 @@ const SuccessContent: FC = () => {
   );
 };
 
-const PendingContent: FC = () => {
-  return (
+const PendingContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: INoticeContent }) => {
+  return content ? (
+    <div className="notice-body">
+      <LoadingSpinner className="loading-icon" />
+      <div>
+        <h5>{content.title ? content.title : "Broadcasting Transaction"}</h5>
+        <p>Waiting for Transaction Confirmation</p>
+        <a href={content.scannerUrl} target="_blank">
+          View transaction <IconNewTab />
+        </a>
+      </div>
+    </div>
+  ) : (
     <div className="notice-body">
       <LoadingSpinner className="loading-icon" />
       <div>
@@ -51,8 +80,19 @@ const PendingContent: FC = () => {
   );
 };
 
-const FailContent: FC = () => {
-  return (
+const FailContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: INoticeContent }) => {
+  return content ? (
+    <div className="notice-body">
+      <IconFailed className="icon-success" />
+      <div>
+        <h5>{content.title} - Failure!</h5>
+        <p>{content.description}</p>
+        <a href={content.scannerUrl} target="_blank">
+          View transaction <IconNewTab />
+        </a>
+      </div>
+    </div>
+  ) : (
     <div className="notice-body">
       <IconFailed className="icon-success" />
       <div>
@@ -66,7 +106,7 @@ const FailContent: FC = () => {
   );
 };
 
-const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id }) => {
+const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id, content }) => {
   const [typeAnimation, setTypeAnimation] = useState<
     "toast-item" | "closing" | ""
   >("toast-item");
@@ -96,9 +136,9 @@ const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id }) => {
 
   return (
     <NoticeUIWrapper className={`${typeAnimation}`}>
-      {type === "success" && <SuccessContent />}
-      {type === "error" && <FailContent />}
-      {type === "pending" && <PendingContent />}
+      {type === "success" && <SuccessContent content={content} />}
+      {type === "error" && <FailContent content={content} />}
+      {type === "pending" && <PendingContent content={content} />}
       <div className="icon-close" onClick={handleClose}>
         <IconClose />
       </div>
@@ -110,14 +150,14 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentNotice, setCurrentNotice] = useState<
     (NoticeProps & { timeout: number }) | null
   >(null);
-  const [list, setList] = useState<{ type: TNoticeType; id: number }[]>([]);
+  const [list, setList] = useState<{ type: TNoticeType; id: number; content?: INoticeContent; }[]>([]);
 
   const setNotice = useCallback<INoticeContext["setNotice"]>(
-    (_, options) => {
+    (content, options) => {
       setCurrentNotice({
         ...options,
       });
-      setList(prev => [...prev, { type: options.type, id: options.id }]);
+      setList(prev => [...prev, { type: options.type, id: options.id, content }]);
     },
     [list],
   );
@@ -166,6 +206,7 @@ const Notice: FC<{ children: React.ReactNode }> = ({ children }) => {
                 type={item_.type}
                 id={item_.id}
                 onClose={handleClose}
+                content={item_.content}
               />
             );
           })}

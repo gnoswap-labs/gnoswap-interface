@@ -10,7 +10,7 @@ export interface TokenModel {
 
   type: "native" | "grc20";
 
-  address: string;
+  address?: string;
 
   priceId: string;
 

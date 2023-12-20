@@ -260,6 +260,17 @@ export class SwapRouter {
     if (100 % distributionRatio !== 0) {
       throw new Error("Not divided distributionRatio");
     }
+    let currentDistributionRatio = distributionRatio;
+    if ((Number(amount) / 100) * distributionRatio < 1) {
+      const distrubutionRatios = [5, 10, 20, 50, 100];
+      currentDistributionRatio =
+        distrubutionRatios.find(ratio => {
+          const calculatedMin = (ratio / 100) * (Number(amount) / 100);
+          if (calculatedMin > 1) {
+            return true;
+          }
+        }) || 100;
+    }
     const routes = this.findCandidateRoutesBy(
       this.pools,
       inputTokenPath,
@@ -275,7 +286,7 @@ export class SwapRouter {
     const routeWithQuotes: { [key in string]: RouteWithQuote[] } = {};
     for (const route of filteredRoutes) {
       const routeKey = makeRouteKey(route);
-      for (let ratio = 100; ratio >= 0; ratio -= distributionRatio) {
+      for (let ratio = 100; ratio >= 0; ratio -= currentDistributionRatio) {
         try {
           let currentInputTokenPath = inputTokenPath;
           let currentAmount = BigInt(
@@ -357,7 +368,8 @@ export class SwapRouter {
           continue;
         }
         const nextRoute = routeWithQuotes[routeKey].find(
-          route => route.quote === quoteMap[routeKey].quote - distributionRatio,
+          route =>
+            route.quote === quoteMap[routeKey].quote - currentDistributionRatio,
         );
         if (!nextRoute) {
           continue;
@@ -388,7 +400,7 @@ export class SwapRouter {
 
       if (decreaseTargetKey && quoteMap[decreaseTargetKey]) {
         const changedQuote =
-          quoteMap[decreaseTargetKey].quote - distributionRatio;
+          quoteMap[decreaseTargetKey].quote - currentDistributionRatio;
         const amountOut = routeWithQuotes[decreaseTargetKey].find(
           route =>
             route.routeKey === decreaseTargetKey &&

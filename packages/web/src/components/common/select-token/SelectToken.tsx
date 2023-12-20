@@ -1,5 +1,15 @@
-import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
-import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
+import React, {
+  useCallback,
+  useRef,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
+import {
+  Divider,
+  SelectTokenWrapper,
+  TokenInfoWrapper,
+} from "./SelectToken.styles";
 import IconSearch from "@components/common/icons/IconSearch";
 import IconClose from "@components/common/icons/IconCancel";
 import { TokenModel } from "@models/token/token-model";
@@ -10,6 +20,7 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
 import MissingLogo from "../missing-logo/MissingLogo";
+import { removeDuplicatesByWrappedPath } from "@utils/common";
 
 export interface SelectTokenProps {
   keyword: string;
@@ -39,41 +50,68 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   recents = [],
 }) => {
   const myElementRef = useRef<HTMLDivElement | null>(null);
-  const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
-  const tokenNameRef = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
-  const [widthList, setWidthList] = useState<number[]>(tokens.map(() => (0)));
-  const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => (0)));
+  const priceRefs = useRef(
+    tokens.map(() => React.createRef<HTMLSpanElement>()),
+  );
+  const tokenNameRef = useRef(
+    tokens.map(() => React.createRef<HTMLSpanElement>()),
+  );
+  const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
+  const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(
+    tokens.map(() => 0),
+  );
   const [positionTop, setPositionTop] = useState(0);
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
 
-  const getTokenPrice = useCallback((token: TokenModel) => {
-    const tokenPrice = tokenPrices[token.priceId];
-    if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
-      return "-";
-    }
-    return BigNumber(tokenPrice).toFormat();
-  }, [tokenPrices]);
+  const getTokenPrice = useCallback(
+    (token: TokenModel) => {
+      const tokenPrice = tokenPrices[token.priceId];
+      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+        return "-";
+      }
+      return BigNumber(tokenPrice).toFormat();
+    },
+    [tokenPrices],
+  );
 
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
 
-  const onClickToken = useCallback((token: TokenModel) => {
-    const current = [...recents, token,].filter((item) => !ORDER.includes(item.symbol));
-    const filterData = current.filter((_item, index) => {
-      const _value = JSON.stringify(_item);
-      return index === current.findIndex(obj => {
-        return JSON.stringify(obj) === _value;
+  const onClickToken = useCallback(
+    (token: TokenModel) => {
+      const current = [...recents, token].filter(
+        item => !ORDER.includes(item.symbol),
+      );
+      const filterData = current.filter((_item, index) => {
+        const _value = JSON.stringify(_item);
+        return (
+          index ===
+          current.findIndex(obj => {
+            return JSON.stringify(obj) === _value;
+          })
+        );
       });
-    });
-    setRecentsData(JSON.stringify(filterData.slice(filterData.length <= 4 ? 0 : 1, filterData.length <= 4 ? 4 : 5)));
-    changeToken(token);
-  }, [changeToken, close]);
-  
-  const onChangeSearchKeyword = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchKeyword = event.target.value;
-    changeKeyword(searchKeyword);
-  }, [changeKeyword]);
+      setRecentsData(
+        JSON.stringify(
+          filterData.slice(
+            filterData.length <= 4 ? 0 : 1,
+            filterData.length <= 4 ? 4 : 5,
+          ),
+        ),
+      );
+      changeToken(token);
+    },
+    [changeToken, close],
+  );
+
+  const onChangeSearchKeyword = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const searchKeyword = event.target.value;
+      changeKeyword(searchKeyword);
+    },
+    [changeKeyword],
+  );
 
   useEffect(() => {
     const getPositionTop = () => {
@@ -86,7 +124,6 @@ const SelectToken: React.FC<SelectTokenProps> = ({
           modalRef.current.style.transform = "translate(-50%, 0)";
         }
         setPositionTop(temp);
-
       }
     };
     getPositionTop();
@@ -94,7 +131,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   useEffect(() => {
     const temp: number[] = [];
-    priceRefs.current.forEach((ref) => {
+    priceRefs.current.forEach(ref => {
       if (ref.current) {
         const width = ref.current.getBoundingClientRect().width;
         temp.push(width);
@@ -105,7 +142,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   useEffect(() => {
     const temp: number[] = [];
-    tokenNameRef.current.forEach((ref) => {
+    tokenNameRef.current.forEach(ref => {
       if (ref.current) {
         const width = ref.current.getBoundingClientRect().width;
         temp.push(width);
@@ -114,18 +151,26 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     setTokenNameWidthList(temp);
   }, [tokenNameRef, keyword, tokens.toString()]);
 
-  const onClickPath = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
-    e.stopPropagation();
-    if (path === "gnot") {
-      window.open("https://gnoscan.io/", "_blank");
-    } else {
-      window.open("https://gnoscan.io/tokens/" + path, "_blank");
-    }
-  }, []);
+  const onClickPath = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+      e.stopPropagation();
+      if (path === "gnot") {
+        window.open("https://gnoscan.io/", "_blank");
+      } else {
+        window.open("https://gnoscan.io/tokens/" + path, "_blank");
+      }
+    },
+    [],
+  );
 
   const length = useMemo(() => {
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
+
+  const getTokensRecent = removeDuplicatesByWrappedPath([
+    ...defaultTokens,
+    ...recents,
+  ]);
 
   return (
     <SelectTokenWrapper ref={myElementRef}>
@@ -146,14 +191,21 @@ const SelectToken: React.FC<SelectTokenProps> = ({
           <IconSearch className="search-icon" />
         </div>
         <div className="token-select">
-          {[...defaultTokens, ...recents].map((token, index) => (
+          {getTokensRecent.map((token, index) => (
             <div
-              className={`token-button ${themeKey === "dark" && "border-button-none"
-                }`}
+              className={`token-button ${
+                themeKey === "dark" && "border-button-none"
+              }`}
               key={index}
               onClick={() => onClickToken(token)}
             >
-              <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
+              <MissingLogo
+                symbol={token.symbol}
+                url={token.logoURI}
+                className="token-logo"
+                width={24}
+                mobileWidth={24}
+              />
               <span>{token.symbol}</span>
             </div>
           ))}
@@ -161,8 +213,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       </div>
       <Divider />
       <div
-        className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-          }`}
+        className={`token-list-wrapper ${
+          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+        }`}
       >
         {tokens.length > 0 &&
           tokens.map((token, index) => (
@@ -172,11 +225,33 @@ const SelectToken: React.FC<SelectTokenProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={32} mobileWidth={32}/>
-                <TokenInfoWrapper className="token-info-detail" maxWidth={widthList[index]} tokenNameWidthList={tokenNameWidthList[index]}>
+                <MissingLogo
+                  symbol={token.symbol}
+                  url={token.logoURI}
+                  className="token-logo"
+                  width={32}
+                  mobileWidth={32}
+                />
+                <TokenInfoWrapper
+                  className="token-info-detail"
+                  maxWidth={widthList[index]}
+                  tokenNameWidthList={tokenNameWidthList[index]}
+                >
                   <div>
-                    <span className="token-name" ref={tokenNameRef.current[index]}>{token.name.length > length ? `${token.name.slice(0, length)}...` : token.name}</span>
-                    <div className="token-path" onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}>
+                    <span
+                      className="token-name"
+                      ref={tokenNameRef.current[index]}
+                    >
+                      {token.name.length > length
+                        ? `${token.name.slice(0, length)}...`
+                        : token.name}
+                    </span>
+                    <div
+                      className="token-path"
+                      onClick={(
+                        e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+                      ) => onClickPath(e, token.path)}
+                    >
                       <div>{token.path}</div>
                       <IconNewTab />
                     </div>
@@ -184,7 +259,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                   <span className="token-symbol">{token.symbol}</span>
                 </TokenInfoWrapper>
               </div>
-              <span className="token-balance" ref={priceRefs.current[index]}>{getTokenPrice(token)}</span>
+              <span className="token-balance" ref={priceRefs.current[index]}>
+                {getTokenPrice(token)}
+              </span>
             </div>
           ))}
         {tokens.length === 0 && (

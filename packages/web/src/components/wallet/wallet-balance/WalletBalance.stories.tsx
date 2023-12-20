@@ -19,12 +19,15 @@ ConnectionSucceeded.args = {
   balanceSummaryInfo: {
     amount: "$1,000.00",
     changeRate: "+1.1%",
+    loading: false,
   },
   balanceDetailInfo: {
     availableBalance: "$1.10",
     stakedLP: "$1.20",
     unstakingLP: "$1.30",
     claimableRewards: "$1.40",
+    loadingBalance: false,
+    loadingPositions: false,
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
@@ -38,12 +41,15 @@ ConnectionFailed.args = {
   balanceSummaryInfo: {
     amount: "$0.00",
     changeRate: "+0%",
+    loading: false,
   },
   balanceDetailInfo: {
     availableBalance: "$0.00",
     stakedLP: "$0.00",
     unstakingLP: "$0.00",
     claimableRewards: "$0.00",
+    loadingBalance: false,
+    loadingPositions: false,
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),
@@ -55,12 +61,15 @@ LoadingData.args = {
   balanceSummaryInfo: {
     amount: "$0.00",
     changeRate: "+0%",
+    loading: false,
   },
   balanceDetailInfo: {
     availableBalance: "$0.00",
     stakedLP: "$0.00",
     unstakingLP: "$0.00",
     claimableRewards: "$0.00",
+    loadingBalance: false,
+    loadingPositions: false,
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),

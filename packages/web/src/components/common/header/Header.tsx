@@ -1,30 +1,32 @@
-import React from "react";
-import IconHeaderLogo from "../icons/IconHeaderLogo";
-import Link from "next/link";
 import IconSearch from "@components/common/icons/IconSearch";
+import NotificationButton from "@components/common/notification-button/NotificationButton";
+import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
+import DepositModal from "@components/wallet/deposit-modal/DepositModal";
+import { HEADER_NAV } from "@constants/header.constant";
+import { Token } from "@containers/header-container/HeaderContainer";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { AccountModel } from "@models/account/account-model";
+import { DEVICE_TYPE } from "@styles/media";
+import Link from "next/link";
+import React, { useCallback, useState } from "react";
+import IconDownload from "../icons/IconDownload";
+import IconHeaderLogo from "../icons/IconHeaderLogo";
+import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
+import SubMenuButton from "../sub-menu-button/SubMenuButton";
 import {
-  HeaderWrapper,
-  HeaderContainer,
-  LeftSection,
-  Navigation,
-  RightSection,
-  LogoLink,
-  SearchContainer,
-  SearchButton,
-  BottomNavWrapper,
   BottomNavContainer,
   BottomNavItem,
+  BottomNavWrapper,
   DepositButton,
+  HeaderContainer,
+  HeaderWrapper,
+  LeftSection,
+  LogoLink,
+  Navigation,
+  RightSection,
+  SearchButton,
+  SearchContainer,
 } from "./Header.styles";
-import NotificationButton from "@components/common/notification-button/NotificationButton";
-import { HEADER_NAV } from "@constants/header.constant";
-import WalletConnectorButton from "@components/common/wallet-connector-button/WalletConnectorButton";
-import { Token } from "@containers/header-container/HeaderContainer";
-import { DEVICE_TYPE } from "@styles/media";
-import SubMenuButton from "../sub-menu-button/SubMenuButton";
-import SearchMenuModal from "../search-menu-modal/SearchMenuModal";
-import { AccountModel } from "@models/account/account-model";
-import IconDownload from "../icons/IconDownload";
 
 interface HeaderProps {
   pathname?: string;
@@ -49,6 +51,7 @@ interface HeaderProps {
   mostLiquidity: Token[];
   popularTokens: Token[];
   recents: Token[];
+  movePage: (path: string) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -73,7 +76,24 @@ const Header: React.FC<HeaderProps> = ({
   mostLiquidity,
   popularTokens,
   recents,
+  movePage,
 }) => {
+  const [isShowDepositModal, setIsShowDepositModal] = useState(false);
+
+  const changeTokenDeposit = useCallback(() => {
+    setIsShowDepositModal(true);
+  }, []);
+
+  const closeDeposit = () => {
+    setIsShowDepositModal(false);
+  };
+
+  const callbackDeposit = (value: boolean) => {
+    setIsShowDepositModal(value);
+  };
+
+  usePreventScroll(isShowDepositModal);
+
   return (
     <>
       <HeaderWrapper>
@@ -115,10 +135,12 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
-              {connected && breakpoint !== DEVICE_TYPE.MOBILE && <DepositButton>
-                <IconDownload />
-                <span>Deposit</span>
-              </DepositButton>}
+              {connected && breakpoint !== DEVICE_TYPE.MOBILE && (
+                <DepositButton onClick={() => changeTokenDeposit()}>
+                  <IconDownload />
+                  <span>Deposit</span>
+                </DepositButton>
+              )}
               <WalletConnectorButton
                 account={account}
                 connected={connected}
@@ -139,7 +161,12 @@ const Header: React.FC<HeaderProps> = ({
               {HEADER_NAV.map(item => (
                 <BottomNavItem
                   key={item.title}
-                  className={pathname === item.path || (item.subPath || []).some(_ => pathname.includes(_)) ? "selected" : ""}
+                  className={
+                    pathname === item.path ||
+                      (item.subPath || []).some(_ => pathname.includes(_))
+                      ? "selected"
+                      : ""
+                  }
                 >
                   <Link href={item.path}>{item.title}</Link>
                 </BottomNavItem>
@@ -163,9 +190,20 @@ const Header: React.FC<HeaderProps> = ({
             popularTokens={popularTokens}
             recents={recents}
             placeholder="Search by Name, Symbol, or Path"
+            movePage={movePage}
           />
         )}
       </HeaderWrapper>
+
+      {isShowDepositModal && (
+        <DepositModal
+          breakpoint={breakpoint}
+          close={closeDeposit}
+          depositInfo={undefined}
+          changeToken={changeTokenDeposit}
+          callback={callbackDeposit}
+        />
+      )}
     </>
   );
 };
