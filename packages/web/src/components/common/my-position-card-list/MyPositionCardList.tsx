@@ -1,7 +1,7 @@
 import React from "react";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import MyPositionCard from "@components/common/my-position-card/MyPositionCard";
-import { SHAPE_TYPES, skeletonStyle } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
@@ -53,7 +53,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           <span
             key={idx}
             className="card-skeleton"
-            css={skeletonStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={pulseSkeletonStyle({ w: "100%" })}
           />
         ))}
     </GridWrapper>

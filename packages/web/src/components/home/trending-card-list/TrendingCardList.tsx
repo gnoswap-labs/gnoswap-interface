@@ -7,10 +7,7 @@ import {
 import IconFlame from "@components/common/icons/IconFlame";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
-import {
-  SHAPE_TYPES,
-  skeletonTrendingStyle,
-} from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 interface TrendingCardListProps {
   list: Array<CardListTokenInfo>;
   device: DEVICE_TYPE;
@@ -24,7 +21,6 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
   onClickItem,
   loading,
 }) => {
-
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
@@ -33,9 +29,7 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
     <TrendingCardListwrapper loading={loading}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
-          <span
-            css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-          />
+          <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
         </SkeletonItem>
       ) : (
         <div>
@@ -48,19 +42,13 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
       {loading ? (
         <>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
         </>
       ) : (

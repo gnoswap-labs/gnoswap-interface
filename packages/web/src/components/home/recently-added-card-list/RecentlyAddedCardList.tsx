@@ -7,10 +7,7 @@ import {
 import IconClock from "@components/common/icons/IconClock";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
-import {
-  SHAPE_TYPES,
-  skeletonTrendingStyle,
-} from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 interface RecentlyAddedCardListProps {
   list: Array<CardListTokenInfo>;
   device: DEVICE_TYPE;
@@ -32,9 +29,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
     <RecentlyAddedCardListwrapper loading={loading}>
       {loading ? (
         <SkeletonItem tdWidth="100%">
-          <span
-            css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-          />
+          <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
         </SkeletonItem>
       ) : (
         <div>
@@ -46,19 +41,13 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
       {loading ? (
         <>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
           <SkeletonItem tdWidth="100%">
-            <span
-              css={skeletonTrendingStyle("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />
+            <span css={pulseSkeletonStyle({ w: "100%", h: 25 })} />
           </SkeletonItem>
         </>
       ) : (

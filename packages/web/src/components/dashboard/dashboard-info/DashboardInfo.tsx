@@ -7,7 +7,7 @@ import {
   SupplyOverviewInfo,
 } from "@containers/dashboard-info-container/DashboardInfoContainer";
 import { DEVICE_TYPE } from "@styles/media";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface DashboardInfoProps {
   dashboardTokenInfo: DashboardTokenInfo;
@@ -25,15 +25,17 @@ const DashboardInfo: React.FC<DashboardInfoProps> = ({
   loading,
 }) => (
   <DashboardInfoWrapper>
-    {!loading && <DashboardInfoTitle
-      dashboardTokenInfo={dashboardTokenInfo}
-      breakpoint={breakpoint}
-    />}
-    {loading && <div className="loading-spining">
-      <span
-        css={skeletonTokenDetail("400px", SHAPE_TYPES.ROUNDED_SQUARE)}
+    {!loading && (
+      <DashboardInfoTitle
+        dashboardTokenInfo={dashboardTokenInfo}
+        breakpoint={breakpoint}
       />
-    </div>}
+    )}
+    {loading && (
+      <div className="loading-spining">
+        <span css={pulseSkeletonStyle({ w: "400px" })} />
+      </div>
+    )}
     <DashboardOverview
       supplyOverviewInfo={supplyOverviewInfo}
       governenceOverviewInfo={governenceOverviewInfo}

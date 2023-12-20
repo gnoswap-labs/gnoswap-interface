@@ -6,7 +6,7 @@ import {
   LoadingTextWrapper,
 } from "./GovernanceOverview.styles";
 import { GovernenceOverviewInfo } from "@containers/dashboard-info-container/DashboardInfoContainer";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface GovernanceOverviewProps {
   governenceOverviewInfo: GovernenceOverviewInfo;
@@ -16,7 +16,7 @@ interface GovernanceOverviewProps {
 const LoadingText = () => {
   return (
     <LoadingTextWrapper className="loading-text-wrapper">
-      <span css={skeletonTokenDetail("150px", SHAPE_TYPES.ROUNDED_SQUARE)} />
+      <span css={pulseSkeletonStyle({ w: "150px" })} />
     </LoadingTextWrapper>
   );
 };
