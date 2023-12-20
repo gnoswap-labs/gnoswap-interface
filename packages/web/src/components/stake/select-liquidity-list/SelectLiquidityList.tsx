@@ -10,6 +10,7 @@ interface SelectLiquidityProps {
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  isEmpty: boolean;
 }
 
 const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
@@ -19,6 +20,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  isEmpty,
 }) => {
   return (
     <div css={wrapper}>
@@ -53,6 +55,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             disabled
           />
         ))}
+        {isEmpty && <div className="no-position">No Position</div>}
       </ul>
     </div>
   );

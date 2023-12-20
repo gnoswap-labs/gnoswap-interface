@@ -2,6 +2,7 @@ import React from "react";
 import { RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResult.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
@@ -22,7 +23,12 @@ const RemoveLiquiditySelectResult: React.FC<
           {pooledTokenInfos.map((pooledTokenInfo, index) => (
             <li key={index}>
               <div className="main-info">
-                <img src={pooledTokenInfo.token.logoURI} alt="pooled token logo" />
+                <MissingLogo
+                  symbol={pooledTokenInfo.token.symbol}
+                  url={pooledTokenInfo.token.logoURI}
+                  width={24}
+                  mobileWidth={24}
+                />
                 <p>Pooled {pooledTokenInfo.token.symbol}</p>
                 <strong>{pooledTokenInfo.amount}</strong>
               </div>
@@ -32,7 +38,12 @@ const RemoveLiquiditySelectResult: React.FC<
           {unclaimedRewards.map((pooledTokenInfo, index) => (
             <li key={index}>
               <div className="main-info">
-                <img src={pooledTokenInfo.token.logoURI} alt="pooled token logo" />
+                <MissingLogo
+                  symbol={pooledTokenInfo.token.symbol}
+                  url={pooledTokenInfo.token.logoURI}
+                  width={24}
+                  mobileWidth={24}
+                />
                 <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
                 <strong>{pooledTokenInfo.amount}</strong>
               </div>

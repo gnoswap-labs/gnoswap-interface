@@ -53,6 +53,7 @@ export const wrapper = (theme: Theme) => css`
     a {
       ${mixins.flexbox("rpw", "center", "flex-start")};
       gap: 4px;
+      font-weight: 600;
     }
   }
   .button-confirm {

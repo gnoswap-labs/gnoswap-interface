@@ -104,8 +104,21 @@ export const usePositionData = () => {
               pool => pool.path === position.poolPath && pool.id === poolId,
             );
             if (pool) {
+              const temp = {
+                ...pool,
+                tokenA: {
+                  ...pool.tokenA,
+                  symbol: getGnotPath(pool.tokenA).symbol,
+                  logoURI: getGnotPath(pool.tokenA).logoURI,
+                },
+                tokenB: {
+                  ...pool.tokenB,
+                  symbol: getGnotPath(pool.tokenB).symbol,
+                  logoURI: getGnotPath(pool.tokenB).logoURI,
+                },
+              };
               poolPositions.push(
-                PositionMapper.makePoolPosition(position, pool),
+                PositionMapper.makePoolPosition(position, temp),
               );
             }
           });
@@ -132,6 +145,7 @@ export const usePositionData = () => {
     getPositions,
     getPositionsByPoolId,
     isFetchedPosition,
-    loading
+    loading,
+    setLoading,
   };
 };

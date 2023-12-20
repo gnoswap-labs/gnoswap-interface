@@ -88,4 +88,15 @@ export const tooltipWrapper = () => (theme: Theme) =>
       }
     }
   }
+  .divider {
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid ${theme.color.border01};
+    padding: 0 !important;
+  }
+  .unstake-description {
+    color: ${theme.color.text04};
+    padding: 0 !important;
+    ${fonts.p4}
+  }
 `;

@@ -64,6 +64,8 @@ const RemoveLiquidityContainer: React.FC = () => {
     }
     if (account?.address) {
       getPositionsByPoolId(poolPath).then(setPositions);
+    } else {
+      setPositions([]);
     }
   }, [account?.address, getPositionsByPoolId, router.query]);
 

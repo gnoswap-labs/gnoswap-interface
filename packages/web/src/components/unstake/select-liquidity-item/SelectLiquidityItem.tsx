@@ -72,14 +72,14 @@ const SelectLiquidityItem: React.FC<SelectLiquidityItemProps> = ({
           onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
-        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} />
+        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
         <Tooltip
           placement="top"
           FloatingContent={<TooltipContent position={position} />}
         >
           <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
         </Tooltip>
-        <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+        <Badge text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
       <span className="liquidity-value" >{liquidityUSD}</span>
     </li>
