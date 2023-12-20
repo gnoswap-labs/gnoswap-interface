@@ -74,6 +74,31 @@ export function makeBroadcastSwapMessage(
   };
 }
 
+export function makeBroadcastWithdrawMessage(
+  type: TNoticeType,
+  data: {
+    tokenSymbol: string;
+    tokenAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return `Sending ${data.tokenAmount} ${data.tokenSymbol}`;
+      case "success":
+        return `Sent ${data.tokenAmount} ${data.tokenSymbol}`;
+      case "error":
+        return `Failed to Send ${data.tokenAmount} ${data.tokenSymbol}`;
+    }
+  }
+  return {
+    title: "Withdraw",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
 export function makeBroadcastAddLiquidityMessage(
   type: TNoticeType,
   data: {

@@ -1,13 +1,13 @@
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useNotice } from "@hooks/common/use-notice";
 import {
   TransferGRC20TokenRequest,
   TransferNativeTokenRequest,
 } from "@repositories/wallet/request";
-import { makeRandomId, parseJson } from "@utils/common";
-import { useState } from "react";
-import { TNoticeType } from "@context/NoticeContext";
-import BigNumber from "bignumber.js";
+import { useEffect, useState } from "react";
+import { makeBroadcastWithdrawMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { useAtom } from "jotai";
+import { CommonState } from "@states/index";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -17,84 +17,66 @@ export type WithdrawResponse = {
 } | null;
 
 const useWithdrawTokens = () => {
+  const { broadcastLoading, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
   const { walletRepository } = useGnoswapContext();
 
   const [loading, setLoading] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
   const [result, setResult] = useState<WithdrawResponse>(null);
-
-  const { setNotice } = useNotice();
+  const [openedTransactionModal] = useAtom(CommonState.openedTransactionModal);
 
   const onSubmit = async (request: Request, type: "native" | "grc20") => {
     setLoading(true);
-
-    const descriptionFail = `Failed to Send ${BigNumber(
-      request?.tokenAmount,
-    ).div(1000000)} ${request?.token?.symbol}`;
-    const descriptionSuccess = `Sent ${BigNumber(request?.tokenAmount).div(
-      1000000,
-    )} ${request?.token?.symbol}`;
 
     const callAction =
       type === "native"
         ? walletRepository.transferGNOTToken(request)
         : walletRepository.transferGRC20Token(request);
 
+    const tokenSymbol = request?.token?.symbol || "";
+    const tokenAmount = makeDisplayTokenAmount(request.token, request.tokenAmount)?.toString() || "0";
+
+    broadcastLoading(makeBroadcastWithdrawMessage("pending", {
+      tokenSymbol,
+      tokenAmount
+    }));
     callAction
       .then(response => {
-        setNotice(null, {
-          timeout: 50000,
-          type: "pending",
-          closeable: true,
-          id: makeRandomId(),
-        });
-        setResult({
-          hash: response.hash,
-          success: true,
-        });
-        setTimeout(() => {
-          setNotice(null, {
-            timeout: 50000,
-            type: "withdraw-success" as TNoticeType,
-            closeable: true,
-            id: makeRandomId(),
-            data: {
-              description: descriptionSuccess,
-            },
-          });
-        }, 1000);
-      })
-      .catch((error: Error) => {
-        const { code } = parseJson(error?.message);
-        const isSuccess = code === 0;
-        setResult({
-          success: isSuccess,
-          code,
-        });
-        if (code !== 4000) {
-          setNotice(null, {
-            timeout: 50000,
-            type: "pending",
-            closeable: true,
-            id: makeRandomId(),
-          });
+        if (response) {
+          broadcastPending(makeBroadcastWithdrawMessage("pending", {
+            tokenSymbol,
+            tokenAmount
+          }));
           setTimeout(() => {
-            setNotice(null, {
-              timeout: 50000,
-              type: isSuccess
-                ? ("withdraw-success" as TNoticeType)
-                : ("withdraw-error" as TNoticeType),
-              closeable: true,
-              id: makeRandomId(),
-              data: {
-                description: isSuccess ? descriptionSuccess : descriptionFail,
-              },
-            });
-          }, 1000);
+            broadcastSuccess(makeBroadcastWithdrawMessage("success", {
+              tokenSymbol,
+              tokenAmount
+            }));
+          }, 500);
+          return true;
         }
+        broadcastError(makeBroadcastWithdrawMessage("error", {
+          tokenSymbol,
+          tokenAmount
+        }));
+        return false;
       })
-      .finally(() => setLoading(false));
+      .catch(() => {
+        broadcastError(makeBroadcastWithdrawMessage("error", {
+          tokenSymbol,
+          tokenAmount
+        }));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
+  useEffect(() => {
+    if (!openedTransactionModal) {
+      setIsConfirm(false);
+    }
+  }, [openedTransactionModal]);
 
   return {
     onSubmit,
