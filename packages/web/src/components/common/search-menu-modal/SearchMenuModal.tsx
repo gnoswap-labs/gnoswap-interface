@@ -22,6 +22,7 @@ import { useAtom } from "jotai";
 import { TokenState } from "@states/index";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
+import { useRouter } from "next/router";
 
 interface SearchMenuModalProps {
   onSearchMenuToggle: () => void;
@@ -47,6 +48,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   popularTokens,
   recents,
 }) => {
+  const router = useRouter();
   const [, setRecentsData] = useAtom(TokenState.recents);
   const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => (0)));
   const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => (0)));
@@ -57,7 +59,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const tokenNameRecentsRef = useRef(recents.map(() => React.createRef<HTMLSpanElement>()));
   const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
   const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
-  
+
   const menuRef = useRef<HTMLDivElement | null>(null);
   const onClickItem = (item: Token) => {
     const current = recents.length > 0 ? [item, recents[0]] : [item];
@@ -71,9 +73,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     onSearchMenuToggle();
     if (item.isLiquid) {
       const poolPath = `${item.token.path}:${item?.tokenB?.path}:${Number(item.fee.slice(0, item.fee.length - 1)) * 10000}`;
-      location.href = `/earn/pool/${makeId(poolPath)}`;
+      router.push(`/earn/pool/${makeId(poolPath)}`);
     } else {
-      location.href = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
+      const routePath = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
+      router.push(routePath);
     }
   };
 
@@ -85,7 +88,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       window.open("https://gnoscan.io/tokens/" + path, "_blank");
     }
   }, []);
-  
+
   useEffect(() => {
     let temp: number[] = [];
     popularPriceRef.current.forEach((ref) => {
@@ -130,11 +133,11 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     });
     setTokenNamePopularWidthList(temp);
   }, [tokenNamePopularRef, keyword, popularTokens.toString()]);
-  
+
   const length = useMemo(() => {
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
-  
+
   return (
     <>
       <SearchModalBackground>
@@ -151,7 +154,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
           </SearchContainer>
           <ModalContainer>
             <ul>
-              {(popularTokens.length === 0 && mostLiquidity.length === 0)  &&
+              {(popularTokens.length === 0 && mostLiquidity.length === 0) &&
                 isFetched && <div className="no-data-found">No data found</div>}
               {!keyword && recents.length > 0 && isFetched && (
                 <>
@@ -159,7 +162,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                     {!keyword ? "Recent Searches" : "Tokens"}
                   </div>
                   {recents
-                    
+
                     .map((item, idx) =>
                       !item.isLiquid ? (
                         <li
@@ -167,7 +170,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           onClick={() => onClickItem(item)}
                         >
                           <div className="coin-info-wrapper">
-                            <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24}/>
+                            <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24} />
                             <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListRecent[idx]} tokenNameWidthList={tokenNameRecentWidthList[idx]}>
                               <div>
                                 <span className="token-name" ref={tokenNameRecentsRef.current[idx]}>
@@ -212,7 +215,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             <span className="token-name">
                               {item.token.symbol}/{item?.tokenB?.symbol}
                             </span>
-                            <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT}/>
+                            <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                           </div>
                           <div className="coin-infor-value">
                             <span className="token-price">{item.price}</span>
@@ -234,7 +237,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                       onClick={() => onClickItem(item)}
                     >
                       <div className="coin-info-wrapper">
-                        <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24}/>
+                        <MissingLogo symbol={item.token.symbol} url={item.token.logoURI} className="token-logo" width={32} mobileWidth={24} />
                         <TokenInfoWrapper className="coin-info-detail" maxWidth={widthListPopular[idx]} tokenNameWidthList={tokenNamePopularWidthList[idx]}>
                           <div>
                             <span className="token-name" ref={tokenNamePopularRef.current[idx]}>
