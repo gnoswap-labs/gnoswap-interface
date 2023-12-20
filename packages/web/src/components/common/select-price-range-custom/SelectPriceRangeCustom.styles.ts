@@ -42,7 +42,9 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         justify-content: center;
         align-items: center;
         background: ${({ theme }) => theme.color.background02};
-        color: ${({ theme }) => theme.color.icon05};
+        svg * {
+          fill: ${({ theme }) => theme.color.icon05};
+        }
         ${fonts.body6}
         line-height: 22px;
         cursor: pointer;
@@ -52,6 +54,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         position: relative;
       }
       .disabled-option {
+        pointer-events: none;
         &::before {
           position: absolute;
           content: "";

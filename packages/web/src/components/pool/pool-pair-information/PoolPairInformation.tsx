@@ -31,7 +31,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   const tokenInfo = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol} (${feeStr || "0"})`;
   }, [feeStr, pool.tokenA.symbol, pool.tokenB.symbol]);
-
+  
   return (
     <PoolPairInformationWrapper>
       <BreadcrumbsWrapper>

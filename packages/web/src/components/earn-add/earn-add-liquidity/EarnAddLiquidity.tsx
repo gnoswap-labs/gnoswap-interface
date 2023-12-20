@@ -95,6 +95,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       setOpenedFeeTier(true);
       setOpenedPriceRange(true);
     }
+    return () => {
+      setOpenedFeeTier(false);
+      setOpenedPriceRange(false);
+    };
   }, [tokenA, tokenB]);
 
   const existTokenPair = useMemo(() => {

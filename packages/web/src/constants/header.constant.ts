@@ -22,18 +22,18 @@ export const HEADER_NAV = [
 export const SIDE_MENU_NAV = {
   GOVERNENCE: {
     title: "Governance",
-    path: "/governance",
+    path: "/",
   },
   HELPCENTER: {
     title: "Help Center",
-    path: "/helpcenter",
+    path: "https://t.me/gnoswap",
   },
   DOCUMENTATION: {
     title: "Documentation",
-    path: "/documentation",
+    path: "https://docs.gnoswap.io/",
   },
   LEGALPRIVACY: {
     title: "Legal & Privacy",
-    path: "/legal",
+    path: "/",
   },
 };

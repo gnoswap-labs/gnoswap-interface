@@ -52,7 +52,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           loading={loading}
         />
       </div>
-      <PoolDivider />
+      {positions.length > 0 && <PoolDivider />}
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
         positions.map((position: PoolPositionModel, index: number) => (
           <MyPositionCard position={position} key={index} breakpoint={breakpoint} loading={loading}/>

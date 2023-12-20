@@ -15,6 +15,8 @@ import { tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
 import { numberToFormat } from "@utils/string-utils";
+import IconRemove from "../icons/IconRemove";
+import IconAdd from "../icons/IconAdd";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -246,8 +248,12 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     onClick={onClickTabItem}
                   />
                   <div className="graph-option-wrapper">
-                    <span className={`graph-option-item decrease ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>-</span>
-                    <span className={`graph-option-item increase ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>+</span>
+                    <span className={`graph-option-item decrease ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                      <IconRemove />
+                    </span>
+                    <span className={`graph-option-item increase ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                      <IconAdd />
+                    </span>
                   </div>
                 </div>
               )}

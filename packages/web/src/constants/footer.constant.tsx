@@ -67,7 +67,7 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "About Us",
-        path: "docs.gnoswap.io",
+        path: "https://docs.gnoswap.io/welcome",
         newTab: true,
       },
       {
@@ -77,7 +77,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "Twitter (X)",
-        path: "/",
+        path: "https://twitter.com/gnoswaplabs",
         newTab: true,
       },
       {
@@ -97,7 +97,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "Docs",
-        path: "https://docs.gnoswap.io/",
+        path: "https://docs.gnoswap.io/contracts/",
         newTab: true,
       },
       {
@@ -137,12 +137,12 @@ export const FOOTER_RIGHT_NAV = [
     menu: [
       {
         title: "Terms of Use",
-        path: "gnoswap.io/terms-of-use",
+        path: "/",
         newTab: true,
       },
       {
         title: "Privacy Policy",
-        path: "gnoswap.io/privacy-policy",
+        path: "/",
         newTab: true,
       },
     ],

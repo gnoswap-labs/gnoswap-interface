@@ -24,8 +24,7 @@ import { AccountModel } from "@models/account/account-model";
 import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
 
-const URL_REDIRECT =
-  "https://gnoscan.io/accounts/g14qvahvnnllzwl9ehn3mkph248uapsehwgfe4pt";
+const URL_REDIRECT = "https://gnoscan.io/accounts";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -99,7 +98,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     }
   };
   const openLinkClick = () => {
-    window.open(URL_REDIRECT, "_blank");
+    window.open(`${URL_REDIRECT + account?.address}`, "_blank");
   };
 
   const menuRef = useRef<HTMLDivElement | null>(null);

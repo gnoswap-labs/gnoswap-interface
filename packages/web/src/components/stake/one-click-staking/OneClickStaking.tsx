@@ -35,7 +35,7 @@ const OneClickStaking: React.FC<Props> = ({
 
   return (
     <OneClickStakingWrapper>
-      <div>
+      <div className="token-pair">
         <DoubleLogo
           left={tokenA?.logoURI || ""}
           right={tokenB?.logoURI || ""}
@@ -43,9 +43,9 @@ const OneClickStaking: React.FC<Props> = ({
           leftSymbol={tokenA?.symbol || ""}
           rightSymbol={tokenB?.symbol || ""}
         />
+        <span className="token-name">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
       </div>
       <div className="one-click-info">
-
         <div>
           <div className="label">Total APR</div>
           <div className="value">-</div>

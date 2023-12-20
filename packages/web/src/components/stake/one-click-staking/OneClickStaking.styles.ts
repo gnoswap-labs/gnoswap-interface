@@ -27,6 +27,14 @@ export const OneClickStakingWrapper = styled.div`
       }
     }
   }
+  .token-pair {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
+    .token-name {
+      color: ${({ theme }) => theme.color.text02};
+      ${fonts.body7};
+    }
+  }
   .one-click-info {
     > div {
       height: 34px;
