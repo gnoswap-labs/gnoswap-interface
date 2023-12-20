@@ -299,30 +299,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     switchNetwork,
   ]);
 
-  const changeStartingPrice = useCallback((price: string) => {
-    if (price === "") {
-      setCreateOption((prev) => ({
-        ...prev,
-        startPrice: null
-      }));
-      return;
-    }
-    const priceNum = BigNumber(price).toNumber();
-    if (BigNumber(Number(priceNum)).isNaN()) {
-      setCreateOption((prev) => ({
-        ...prev,
-        startPrice: null
-      }));
-      return;
-    }
-    const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
-    const nearStartPrice = tickToPrice(tick);
-    setCreateOption((prev) => ({
-      ...prev,
-      startPrice: nearStartPrice
-    }));
-  }, [selectPool.tickSpacing]);
-
   useEffect(() => {
     updatePools();
     updateTokenPrices();
@@ -425,7 +401,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       startPrice: nearStartPrice
     });
   }, [createOption, selectPool.tickSpacing]);
-
 
   return (
     <EarnAddLiquidity
