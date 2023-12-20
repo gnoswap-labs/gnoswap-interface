@@ -8,6 +8,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 interface MyPositionCardListProps {
   loadMore: boolean;
   isFetched: boolean;
+  isLoading: boolean;
   onClickLoadMore?: () => void;
   positions: PoolPositionModel[];
   currentIndex: number;
@@ -24,6 +25,7 @@ interface MyPositionCardListProps {
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   loadMore,
   isFetched,
+  isLoading,
   onClickLoadMore,
   positions,
   currentIndex,
@@ -48,18 +50,22 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           <BlankPositionCard key={index} />
         ))
       }
-      {!isFetched && positions.length === 0 &&
-        Array.from({ length: width <= 1180 && width >= 920 ? 3 : 4 }).map((_, idx) => (
-          <span
-            key={idx}
-            className="card-skeleton"
-            css={pulseSkeletonStyle({ w: "100%", tone: "600" })}
-          />
-        ))}
+      {(!isFetched && positions.length === 0) || isLoading
+        ? Array.from({ length: width <= 1180 && width >= 920 ? 3 : 4 }).map(
+            (_, idx) => (
+              <span
+                key={idx}
+                className="card-skeleton"
+                css={pulseSkeletonStyle({ w: "100%", tone: "600" })}
+              />
+            ),
+          )
+        : null}
     </GridWrapper>
-    {(!mobile && positions.length > 0 && onClickLoadMore && (
+    {!mobile && positions.length > 0 && onClickLoadMore ? (
       <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
-    )
+    ) : (
+      <div className="load-more-skeleton" />
     )}
     {(showPagination && isFetched && positions.length !== 0 &&
       <div className="box-indicator">

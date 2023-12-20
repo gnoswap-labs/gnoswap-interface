@@ -22,6 +22,11 @@ export const CardListWrapper = styled.div`
       color: ${({ theme }) => theme.color.text05};
     }
   }
+
+  .load-more-skeleton {
+    width: 100%; 
+    height: 18px;
+  }
 `;
 
 export const GridWrapper = styled.div`
