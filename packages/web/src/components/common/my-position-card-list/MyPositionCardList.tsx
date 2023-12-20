@@ -53,7 +53,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           <span
             key={idx}
             className="card-skeleton"
-            css={pulseSkeletonStyle({ w: "100%" })}
+            css={pulseSkeletonStyle({ w: "100%", tone: "600" })}
           />
         ))}
     </GridWrapper>

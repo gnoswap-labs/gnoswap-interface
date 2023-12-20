@@ -1,7 +1,7 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { cx } from "@emotion/css";
 import { wrapper } from "./PriceInformationList.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface PriceInformationListProps {
   list: any;
@@ -46,7 +46,7 @@ const PriceInformationList: React.FC<PriceInformationListProps> = ({
           </span>}
           {loading && <span
             className="loading-value"
-            css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={pulseSkeletonStyle({ h: 22, w : "100%"})}
           />}
         </div>
       ))}

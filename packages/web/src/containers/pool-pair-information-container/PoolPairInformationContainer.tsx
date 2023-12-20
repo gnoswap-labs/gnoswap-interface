@@ -20,15 +20,9 @@ export const menu = {
 const PoolPairInformationContainer = () => {
   const router = useRouter();
   const [pool, setPool] = useState<PoolDetailModel | null>(null);
-  const [loading, setLoading] = useState(true);
   const { gnot, getGnotPath } = useGnotToGnot();
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timeout);
-  }, []);
-  const { fetchPoolDatils } = usePoolData();
+
+  const { fetchPoolDatils, loading } = usePoolData();
 
 
   const feeStr = useMemo(() => {

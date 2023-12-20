@@ -1,4 +1,4 @@
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { wrapper } from "./MarketInformationList.styles";
 
 interface MarketInformationListProps {
@@ -20,7 +20,7 @@ const MarketInformationList: React.FC<MarketInformationListProps> = ({
           {!loading && <span className="market-info-value">{item}</span>}
           {loading && <span
             className="loading-value"
-            css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
+            css={pulseSkeletonStyle({ h: 22, w : "100%"})}
           />}
         </div>
       ))}

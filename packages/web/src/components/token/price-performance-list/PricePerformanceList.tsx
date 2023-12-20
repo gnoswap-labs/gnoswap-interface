@@ -2,7 +2,7 @@ import React from "react";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { cx } from "@emotion/css";
 import { wrapper } from "./PricePerformanceList.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface PricePerformanceListProps {
   list: any[];
@@ -36,12 +36,8 @@ const PricePerformanceList: React.FC<PricePerformanceListProps> = ({
             >
               {item.amount.value}
             </span>}
-            {loading && <span
-              css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />}
-            {loading && <span
-              css={skeletonTokenDetail("100%", SHAPE_TYPES.ROUNDED_SQUARE)}
-            />}
+            {loading && <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />}
+            {loading && <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />}
             {!loading && <span
               className={cx({
                 negative: item.change.status === MATH_NEGATIVE_TYPE.NEGATIVE,

@@ -19,7 +19,7 @@ import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { MyPositionAprContent } from "./MyPositionCardAprContent";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle} from "@constants/skeleton.constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface MyPositionCardProps {
@@ -158,7 +158,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <>
                 {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
                   <span
-                    css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+                    css={pulseSkeletonStyle({ w: "170px", h: 22 })}
                   />
                 </SkeletonEarnDetailWrapper>}
                 {!loading && <div className="coin-info">
@@ -172,7 +172,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 <div className="mobile-container">
                 {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
                   <span
-                    css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+                    css={pulseSkeletonStyle({ w: "170px", h: 22 })}
                   />
                 </SkeletonEarnDetailWrapper>}
                   {!loading && <div className="coin-info">
@@ -203,7 +203,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         <div className="min-max">
           {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && breakpoint !== DEVICE_TYPE.MOBILE ? (
@@ -241,7 +241,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <span className="symbol-text">Balance</span>
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <Tooltip placement="top" FloatingContent={<div><BalanceTooltipContent balances={balances} /></div>}>
@@ -267,7 +267,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           )}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
             />
           </SkeletonEarnDetailWrapper>}
         </div>
@@ -288,7 +288,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           )}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={skeletonTokenDetail("170px", SHAPE_TYPES.ROUNDED_SQUARE)}
+              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
             />
           </SkeletonEarnDetailWrapper>}
         </div>

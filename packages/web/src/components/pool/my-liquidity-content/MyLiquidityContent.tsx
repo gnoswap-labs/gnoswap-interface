@@ -17,7 +17,7 @@ import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimC
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { SHAPE_TYPES, skeletonTokenDetail } from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -219,7 +219,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         )}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
-            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+            css={pulseSkeletonStyle({h:22, w:"200px",  tabletWidth: 160, smallTableWidth: 140})}
           />
         </SkeletonEarnDetailWrapper>}
       </section>
@@ -241,7 +241,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         )}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
-            css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+            css={pulseSkeletonStyle({h:22, w:"200px",  tabletWidth: 160, smallTableWidth: 140})}
           />
         </SkeletonEarnDetailWrapper>}
       </section>
@@ -268,7 +268,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
                   <span
-                    css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+                    css={pulseSkeletonStyle({h:22, w:"200px",  tabletWidth: 160, smallTableWidth: 140})}
                   />
                 </SkeletonEarnDetailWrapper>}
             </div>
@@ -305,7 +305,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               )}
               {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
                 <span
-                  css={skeletonTokenDetail("200px", SHAPE_TYPES.ROUNDED_SQUARE, undefined, 160, 140)}
+                  css={pulseSkeletonStyle({h:22, w:"200px",  tabletWidth: 160, smallTableWidth: 140})}
                 />
               </SkeletonEarnDetailWrapper>}
               <Button

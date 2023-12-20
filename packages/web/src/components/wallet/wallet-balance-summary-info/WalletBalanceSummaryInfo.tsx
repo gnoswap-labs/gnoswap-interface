@@ -1,7 +1,4 @@
-import {
-  SHAPE_TYPES,
-  skeletonTotalBalance,
-} from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { BalanceSummaryInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
 import { WalletBalanceSummaryInfoWrapper } from "./WalletBalanceSummaryInfo.styles";
 
@@ -19,9 +16,7 @@ const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
     <WalletBalanceSummaryInfoWrapper>
       {connected ? (
         balanceSummaryInfo.loading ? (
-          <span
-            css={skeletonTotalBalance("300px", SHAPE_TYPES.ROUNDED_SQUARE, 2)}
-          />
+          <span css={pulseSkeletonStyle({ h: 20, w: "300px" })} />
         ) : (
           <span className="amount">{balanceSummaryInfo.amount}</span>
         )

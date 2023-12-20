@@ -1,9 +1,6 @@
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import {
-  SHAPE_TYPES,
-  skeletonBalanceDetail,
-} from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import BigNumber from "bignumber.js";
 import React from "react";
 import {
@@ -40,13 +37,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
         {connected ? (
           loading ? (
             <div className="value">
-              <span
-                css={skeletonBalanceDetail(
-                  "120px",
-                  SHAPE_TYPES.ROUNDED_SQUARE,
-                  2,
-                )}
-              />
+              <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
             </div>
           ) : (
             <span className="value">

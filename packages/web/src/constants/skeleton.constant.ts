@@ -24,8 +24,10 @@ const pulseAnim = keyframes`
 export interface PulseSkeletonParams {
   w?: CSSProperties["width"];
   h?: CSSProperties["height"];
+  tabletWidth?: CSSProperties["width"];
+  smallTableWidth?: CSSProperties["width"];
   type?: SHAPE_TYPES;
-  tone?: "100" | "200" | "300" | "400" | "500" | "600";
+  tone?: "200" | "300" | "400" | "500" | "600";
 }
 
 const getPulseBackground = (
@@ -33,22 +35,17 @@ const getPulseBackground = (
   theme: Theme,
 ) => {
   switch (tone) {
-    case "100":
-      return theme.color.backgroundOpacity;
     case "200":
-      return theme.color.backgroundOpacity2;
+      return theme.color.skeleton02;
     case "300":
-      return theme.color.backgroundOpacity3;
+      return theme.color.skeleton03;
     case "400":
-      return theme.themeKey === "dark"
-        ? theme.color.backgroundOpacity4
-        : theme.color.background04;
+      theme.color.skeleton04;
+
     case "500":
-      return theme.color.backgroundOpacity5;
-    case "600":
-      return theme.color.backgroundOpacity6;
+      return theme.color.skeleton05;
     default:
-      return theme.color.backgroundOpacity7;
+      return theme.color.skeleton06;
   }
 };
 
@@ -56,8 +53,10 @@ export const pulseSkeletonStyle =
   ({
     w = "100%",
     h = "18px",
-    tone = "600",
+    tone = "200",
     type = "rounded-square",
+    tabletWidth,
+    smallTableWidth,
   }: PulseSkeletonParams) =>
   (theme: Theme) => {
     const width = typeof w === "number" ? `${w}px` : w;
@@ -80,6 +79,17 @@ export const pulseSkeletonStyle =
         background: ${getPulseBackground(tone, theme)};
         animation: 1.5s ease-in-out 0.5s infinite normal none running
           ${pulseAnim};
+      }
+
+      ${media.tablet} {
+        width: ${tabletWidth ? `${tabletWidth}px` : w};
+      }
+      ${media.tabletMiddle} {
+        width: ${smallTableWidth ? `${smallTableWidth}px` : w};
+      }
+      ${media.mobile} {
+        width: ${w};
+        height: ${typeof height === "number" && height === 22 ? "22px" : h};
       }
     `;
   };
@@ -198,60 +208,68 @@ export const skeletonTokenDetail =
     `;
 
 export const skeletonTotalBalance =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) =>
-(theme: Theme) =>
-  css`
-    position: relative;
-    width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    height: 20px;
-    overflow: hidden;
-    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-    z-index: 1;
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0%;
-      top: 0;
-      transform: translateX(-100%);
-      width: 100%;
-      height: 100%;
-      background: ${theme.color.backgroundGradient6};
-      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-    }
-    ${media.mobile} {
-      height: 18px;
-    }
-  `;
+  (
+    skeletonWidth: CSSProperties["width"],
+    type: SHAPE_TYPES,
+    seconds?: number,
+  ) =>
+  (theme: Theme) =>
+    css`
+      position: relative;
+      width: ${typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+      height: 20px;
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      z-index: 1;
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transform: translateX(-100%);
+        width: 100%;
+        height: 100%;
+        background: ${theme.color.backgroundGradient6};
+        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+      }
+      ${media.mobile} {
+        height: 18px;
+      }
+    `;
 
 export const skeletonBalanceDetail =
-(skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES, seconds?: number) =>
-(theme: Theme) =>
-  css`
-    position: relative;
-    width: ${typeof skeletonWidth === "number"
-      ? `${skeletonWidth}px`
-      : skeletonWidth};
-    height: 20px;
-    overflow: hidden;
-    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-    z-index: 1;
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0%;
-      top: 0;
-      transform: translateX(-100%);
-      width: 100%;
-      height: 100%;
-      background: ${theme.color.backgroundGradient6};
-      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-    }
-    ${media.mobile} {
-      height: 18px;
-    }
-  `;
+  (
+    skeletonWidth: CSSProperties["width"],
+    type: SHAPE_TYPES,
+    seconds?: number,
+  ) =>
+  (theme: Theme) =>
+    css`
+      position: relative;
+      width: ${typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+      height: 20px;
+      overflow: hidden;
+      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+      z-index: 1;
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transform: translateX(-100%);
+        width: 100%;
+        height: 100%;
+        background: ${theme.color.backgroundGradient6};
+        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+      }
+      ${media.mobile} {
+        height: 18px;
+      }
+    `;
 
 export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const TOKEN_SEARCH_WIDTH = [400];
