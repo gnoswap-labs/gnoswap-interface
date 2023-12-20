@@ -3,7 +3,7 @@ import { WalletResponse } from "./wallet-response";
 export interface WalletTransactionMethod {
   sendTransaction: (
     transaction: SendTransactionRequestParam,
-  ) => Promise<WalletResponse<SendTransactionResponse<string | null>>>;
+  ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 }
 
 export interface SendTransactionRequestParam {

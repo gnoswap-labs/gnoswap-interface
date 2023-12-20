@@ -88,7 +88,7 @@ export const usePool = ({
     if (!currentTokenData) {
       return null;
     }
-    const hash = await poolRepository.createPool({
+    return poolRepository.createPool({
       tokenA: currentTokenData.tokenA,
       tokenB: currentTokenData.tokenB,
       tokenAAmount: currentTokenData.tokenAAmount,
@@ -103,7 +103,6 @@ export const usePool = ({
       console.error(e);
       return null;
     });
-    return hash;
   }, [account, poolRepository, tokenA, tokenB, compareToken]);
 
   const addLiquidity = useCallback(async ({
@@ -128,7 +127,7 @@ export const usePool = ({
     if (!currentTokenData) {
       return null;
     }
-    const hash = await poolRepository.addLiquidity({
+    return poolRepository.addLiquidity({
       tokenA: currentTokenData.tokenA,
       tokenB: currentTokenData.tokenB,
       tokenAAmount: currentTokenData.tokenAAmount,
@@ -142,7 +141,6 @@ export const usePool = ({
       console.error(e);
       return null;
     });
-    return hash;
   }, [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository]);
 
   useEffect(() => {

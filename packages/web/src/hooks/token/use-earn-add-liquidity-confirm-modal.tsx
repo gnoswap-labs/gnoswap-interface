@@ -14,6 +14,8 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { makeBroadcastAddLiquidityMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { CreatePoolResponse } from "@repositories/pool/response/create-pool-response";
+import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -33,7 +35,7 @@ export interface EarnAddLiquidityConfirmModalProps {
       maxTick: number;
       slippage: string;
     }
-  ) => Promise<string | null>;
+  ) => Promise<CreatePoolResponse | null>;
   addLiquidity: (
     params: {
       tokenAAmount: string;
@@ -43,7 +45,7 @@ export interface EarnAddLiquidityConfirmModalProps {
       maxTick: number;
       slippage: string;
     }
-  ) => Promise<string | null>;
+  ) => Promise<AddLiquidityResponse | null>;
 }
 export interface SelectTokenModalModel {
   openModal: () => void;
@@ -237,31 +239,40 @@ export const useEarnAddLiquidityConfirmModal = ({
     });
     transaction.then(result => {
       if (result) {
-        broadcastPending();
-        setTimeout(() => {
-          broadcastSuccess(makeBroadcastAddLiquidityMessage("success", {
+        if (result.code === 0) {
+          broadcastPending();
+          setTimeout(() => {
+            broadcastSuccess(makeBroadcastAddLiquidityMessage("success", {
+              tokenASymbol: result.tokenA.symbol,
+              tokenBSymbol: result.tokenA.symbol,
+              tokenAAmount: result.tokenAAmount,
+              tokenBAmount: result.tokenBAmount,
+            }), moveToBack);
+          }, 500);
+          return true;
+        } else if (result.code === 4000) {
+          broadcastRejected(makeBroadcastAddLiquidityMessage("error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
             tokenAAmount: tokenAAmount,
             tokenBAmount: tokenBAmount
-          }), moveToBack);
-        }, 500);
-      } else {
+          }));
+          return true;
+        }
+      }
+      return false;
+    }).catch(() => false)
+      .then(broadcasted => {
+        if (broadcasted) {
+          return;
+        }
         broadcastError(makeBroadcastAddLiquidityMessage("error", {
           tokenASymbol: tokenA.symbol,
           tokenBSymbol: tokenB.symbol,
           tokenAAmount: tokenAAmount,
           tokenBAmount: tokenBAmount
         }));
-      }
-    }).catch(() => {
-      broadcastRejected(makeBroadcastAddLiquidityMessage("error", {
-        tokenASymbol: tokenA.symbol,
-        tokenBSymbol: tokenB.symbol,
-        tokenAAmount: tokenAAmount,
-        tokenBAmount: tokenBAmount
-      }));
-    });
+      });
   }, [tokenA, tokenB, swapFeeTier, selectPool.tickSpacing, selectPool.minPrice, selectPool.maxPrice, selectPool.isCreate, selectPool.selectedFullRange, selectPool.startPrice, addLiquidity, tokenAAmount, tokenBAmount, slippage, createPool]);
 
   const openModal = useCallback(() => {
