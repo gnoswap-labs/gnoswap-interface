@@ -64,7 +64,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
     </GridWrapper>
     {!mobile &&
       positions.length > 0 &&
-      positions?.length < 5 &&
+      positions?.length > 4 &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )}
