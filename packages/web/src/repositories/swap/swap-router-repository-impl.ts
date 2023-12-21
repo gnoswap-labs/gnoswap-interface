@@ -1,29 +1,29 @@
 import { WalletClient } from "@common/clients/wallet-client";
-import { SwapRouterRepository } from "./swap-router-repository";
-import { makeRoutesQuery } from "@utils/swap-route-utils";
-import { GnoProvider } from "@gnolang/gno-js-client";
-import { CommonError } from "@common/errors";
-import { SwapError } from "@common/errors/swap";
-import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
-import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
-import { SwapRouteRequest } from "./request/swap-route-request";
-import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { SwapRouter } from "@gnoswap-labs/swap-router";
-import { PoolRPCModel } from "@models/pool/pool-rpc-model";
-import BigNumber from "bignumber.js";
-import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { MAX_UINT64 } from "@utils/math.utils";
-import { isNativeToken } from "@models/token/token-model";
+import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
+import { makePoolTokenApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
 import {
   makeDepositMessage,
-  makeWithdrawMessage,
+  makeWithdrawMessage
 } from "@common/clients/wallet-client/transaction-messages/token";
-import { makePoolTokenApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
-import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
-import { WrapTokenRequest } from "./request/wrap-token-request";
+import { CommonError } from "@common/errors";
+import { SwapError } from "@common/errors/swap";
 import { TokenError } from "@common/errors/token";
+import { GnoProvider } from "@gnolang/gno-js-client";
+import { SwapRouter } from "@gnoswap-labs/swap-router";
+import { StakePositions } from "@hooks/earn/use-submit-position-modal";
+import { PoolRPCModel } from "@models/pool/pool-rpc-model";
+import { isNativeToken } from "@models/token/token-model";
+import { MAX_UINT64 } from "@utils/math.utils";
+import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
+import { makeRoutesQuery } from "@utils/swap-route-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
+import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
+import { SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
-import { SwapRouteResponse } from "./response/swap-route-response";
+import { WrapTokenRequest } from "./request/wrap-token-request";
+import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
+import { SwapRouterRepository } from "./swap-router-repository";
 
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
 
@@ -117,7 +117,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
   public swapRoute = async (
     request: SwapRouteRequest,
-  ): Promise<SwapRouteResponse> => {
+  ): Promise<StakePositions> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -198,23 +198,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     if (data.data === null || data.data.length === 0) {
       throw new SwapError("SWAP_FAILED");
     }
-    const resultAmount =
-      makeDisplayTokenAmount(resultToken, data.data[0])?.toString() || "0";
-    const slippageAmount =
-      makeDisplayTokenAmount(
-        resultToken,
-        sendTokenAmount.toString(),
-      )?.toString() || "0";
+    const responseData = response.data as SendTransactionSuccessResponse<string[]>;
     return {
-      hash: data.hash,
-      height: data.height,
-      resultToken,
-      resultAmount: resultAmount,
-      slippageAmount,
+      code: response.code,
+      hash: responseData.hash,
     };
   };
 
-  public wrapToken = async (request: WrapTokenRequest): Promise<string> => {
+  public wrapToken = async (request: WrapTokenRequest): Promise<StakePositions> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -240,13 +231,15 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       gasFee: 1,
       memo: "",
     });
-    if (response.code !== 0) {
-      throw new SwapError("SWAP_FAILED");
-    }
-    return response.status;
+
+    const data = response.data as SendTransactionSuccessResponse<string[]>;
+    return {
+      code: response.code,
+      hash: data.hash,
+    };
   };
 
-  public unwrapToken = async (request: UnwrapTokenRequest): Promise<string> => {
+  public unwrapToken = async (request: UnwrapTokenRequest): Promise<StakePositions> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -268,9 +261,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       gasFee: 1,
       memo: "",
     });
-    if (response.code !== 0) {
-      throw new SwapError("SWAP_FAILED");
-    }
-    return response.status;
+
+    const data = response.data as SendTransactionSuccessResponse<string[]>;
+    return {
+      code: response.code,
+      hash: data.hash,
+    };
   };
 }

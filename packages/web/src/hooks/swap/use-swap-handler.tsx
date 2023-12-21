@@ -1,4 +1,7 @@
-import { useNotice } from "@hooks/common/use-notice";
+import {
+  makeBroadcastSwapMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -6,22 +9,27 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { AmountModel } from "@models/common/amount-model";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
+import { checkGnotPath } from "@utils/common";
+import { matchInputNumber } from "@utils/number-utils";
+import { formatUsdNumber } from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSwap } from "./use-swap";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
-import { TNoticeType } from "src/context/NoticeContext";
-import { checkGnotPath, makeRandomId } from "@utils/common";
-import { matchInputNumber } from "@utils/number-utils";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
-import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import { formatUsdNumber } from "@utils/stake-position-utils";
 
 export const useSwapHandler = () => {
+  const {
+    broadcastLoading,
+    broadcastRejected,
+    broadcastSuccess,
+    broadcastPending,
+    broadcastError,
+  } = useBroadcastHandler();
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const {
     tokenA = null,
@@ -44,7 +52,6 @@ export const useSwapHandler = () => {
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { setNotice } = useNotice();
   const {
     connected: connectedWallet,
     isSwitchNetwork,
@@ -240,15 +247,18 @@ export const useSwapHandler = () => {
     const tokenAUSDValue = tokenPrices[tokenA.priceId]?.usd || 1;
     const tokenBUSDValue = tokenPrices[tokenB.priceId]?.usd || 1;
 
-    const swapRate = tokenAAmount ? BigNumber(tokenBAmount).dividedBy(tokenAAmount).toNumber() : 0;
-    const swapRateUSD = type === "EXACT_IN" ?
-      BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber() :
-      BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const tokenRate = BigNumber(tokenBUSDValue).dividedBy(tokenAUSDValue).toNumber();
+    const swapRate = tokenAAmount
+      ? BigNumber(tokenBAmount).dividedBy(tokenAAmount).toNumber()
+      : 0;
+    const swapRateUSD =
+      type === "EXACT_IN"
+        ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
+        : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
+    const tokenRate = BigNumber(tokenBUSDValue)
+      .dividedBy(tokenAUSDValue)
+      .toNumber();
     const expectedAmount = tokenRate * Number(inputAmount);
-    const priceImpactNum = BigNumber(
-      expectedAmount - Number(tokenBAmount),
-    )
+    const priceImpactNum = BigNumber(expectedAmount - Number(tokenBAmount))
       .multipliedBy(100)
       .dividedBy(expectedAmount);
     const priceImpact = priceImpactNum.isGreaterThan(100)
@@ -264,7 +274,7 @@ export const useSwapHandler = () => {
       swapRateUSD,
       priceImpact,
       guaranteedAmount: {
-        amount: (tokenAmountLimit),
+        amount: tokenAmountLimit,
         currency: targetTokenB.symbol,
       },
       gasFee: gasFeeAmount,
@@ -339,6 +349,9 @@ export const useSwapHandler = () => {
   );
 
   const openConfirmModal = useCallback(() => {
+    console.log(1);
+
+    setSubmitted(false);
     setOpenedConfirModal(true);
   }, []);
 
@@ -515,110 +528,83 @@ export const useSwapHandler = () => {
     }
   };
 
-  function unwrapBySwapResposne(swapReponse: SwapRouteResponse) {
-    if (!tokenA || !tokenB) {
-      return;
-    }
-    const { resultToken, resultAmount, slippageAmount } = swapReponse;
-    if (isNativeToken(tokenB) && type === "EXACT_IN") {
-      unwrapToken(resultToken, BigNumber(resultAmount).toString());
-    }
-    if (isNativeToken(tokenA) && type === "EXACT_OUT") {
-      const difference = BigNumber(slippageAmount).minus(resultAmount);
-      if (difference.isGreaterThan(0)) {
-        unwrapToken(resultToken, difference.toString());
-      }
-    }
-  }
-
   function executeSwap() {
     if (!tokenA || !tokenB) {
       return;
     }
+
+    setOpenedConfirModal(false);
     setSubmitted(true);
+
+    const broadcastPayload = {
+      tokenASymbol: tokenA.symbol,
+      tokenBSymbol: tokenB.symbol,
+      tokenAAmount: `${tokenAAmount}`,
+      tokenBAmount: `${tokenBAmount}`,
+    };
+    broadcastLoading(makeBroadcastSwapMessage("pending", broadcastPayload));
+
     if (isSameToken) {
-      setNotice(null, {
-        timeout: 50000,
-        type: "pending",
-        closeable: true,
-        id: makeRandomId(),
-      });
       const nativeProcess = isNativeToken(tokenA)
         ? wrapToken(tokenA, tokenAAmount)
         : unwrapToken(tokenA, tokenAAmount);
-      nativeProcess.then(response => {
-        setTimeout(() => {
-          if (response === false) {
-            setNotice(null, {
-              timeout: 50000,
-              type: "error" as TNoticeType,
-              closeable: true,
-              id: makeRandomId(),
-            });
-          } else {
-            setNotice(null, {
-              timeout: 50000,
-              type: "success" as TNoticeType,
-              closeable: true,
-              id: makeRandomId(),
-            });
+
+      nativeProcess
+        .then(result => {
+          if (result) {
+            if (result.code === 0) {
+              broadcastPending();
+              setTimeout(() => {
+                broadcastSuccess(
+                  makeBroadcastSwapMessage("success", broadcastPayload),
+                );
+              }, 500);
+              return true;
+            } else if (result.code === 4000) {
+              broadcastRejected(
+                makeBroadcastSwapMessage("error", broadcastPayload),
+              );
+              return true;
+            }
           }
-        }, 1000);
-        if (response !== false) {
-          setSwapResult({
-            success: true,
-            hash: (response as unknown as SwapRouteResponse)?.hash || "",
-          });
-        } else {
-          setSwapResult({
-            success: false,
-            hash: "",
-          });
-        }
-      });
+          return false;
+        })
+        .catch(() => false)
+        .then(broadcasted => {
+          if (broadcasted) {
+            return;
+          }
+          broadcastError(makeBroadcastSwapMessage("error", broadcastPayload));
+        });
       return;
     }
     const swapAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     swap(estimatedRoutes, swapAmount)
       .then(result => {
-        if (result !== false) {
-          setNotice(null, {
-            timeout: 50000,
-            type: "pending",
-            closeable: true,
-            id: makeRandomId(),
-          });
-          setTimeout(() => {
-            if (!!result) {
-              if (typeof result !== "boolean") {
-                unwrapBySwapResposne(result);
-              }
-              setNotice(null, {
-                timeout: 50000,
-                type: "success" as TNoticeType,
-                closeable: true,
-                id: makeRandomId(),
-              });
-            } else {
-              setNotice(null, {
-                timeout: 50000,
-                type: "error" as TNoticeType,
-                closeable: true,
-                id: makeRandomId(),
-              });
-            }
-          }, 1000);
+        if (result) {
+          if (result.code === 0) {
+            broadcastPending();
+            setTimeout(() => {
+              broadcastSuccess(
+                makeBroadcastSwapMessage("success", broadcastPayload),
+              );
+            }, 500);
+            return true;
+          } else if (result.code === 4000) {
+            broadcastRejected(
+              makeBroadcastSwapMessage("error", broadcastPayload),
+            );
+            return true;
+          }
         }
-        setSwapResult({
-          success: !!result,
-          hash: (result as unknown as SwapRouteResponse)?.hash || "",
-        });
+        return false;
       })
-      .catch(() => {
-        setSwapResult({
-          success: false,
-          hash: "",
-        });
+      .catch(() => false)
+      .then(broadcasted => {
+        if (broadcasted) {
+          return;
+        }
+        broadcastError(makeBroadcastSwapMessage("error", broadcastPayload));
       });
   }
 
