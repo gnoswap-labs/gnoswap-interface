@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import {
-  BlankIncentivizedCard,
   IncentivizedWrapper,
   PoolListWrapper,
 } from "./IncentivizedPoolCardList.styles";
@@ -57,13 +56,14 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
         {
           incentivizedPools.length > 0 &&
           data.map((info, index) => (
-            <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
+            <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey} />
           ))}
+        {/* TODO: Mobile loading errors need to be fixed.
         {isFetched &&
           incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
           (Array(((incentivizedPools.length > 4 && width > 1180) ? 8 : (width <= 1180 && width >= 920) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
             <BlankIncentivizedCard key={index}/>
-          ))}
+          ))} */}
         {!isFetched &&
           Array.from({ length: 8 }).map((_, index) => (
             <span
