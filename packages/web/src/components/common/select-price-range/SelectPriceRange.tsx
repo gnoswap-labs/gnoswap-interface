@@ -10,6 +10,7 @@ import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 
 interface SelectPriceRangeProps {
+  opened: boolean;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   priceRanges: AddLiquidityPriceRage[];
@@ -22,6 +23,7 @@ interface SelectPriceRangeProps {
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
+  opened,
   tokenA,
   tokenB,
   priceRanges,
@@ -39,7 +41,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   }, [changePriceRange]);
 
   return (
-    <SelectPriceRangeWrapper>
+    <SelectPriceRangeWrapper opened={opened}>
       {!selectPool.isCreate && !showDim && <div className="type-selector-wrapper">
         {priceRanges.map((item, index) => (
           <SelectPriceRangeItem

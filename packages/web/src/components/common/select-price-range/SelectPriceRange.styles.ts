@@ -3,10 +3,16 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const SelectPriceRangeWrapper = styled.div`
+interface SelectPriceRangeWrapperProps {
+  opened: boolean;
+}
+
+export const SelectPriceRangeWrapper = styled.div<SelectPriceRangeWrapperProps>`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
   gap: 8px;
+
+  ${({ opened }) => opened === false && "display: none;"}
 
   .type-selector-wrapper {
     ${mixins.flexbox("column", "center", "center")};

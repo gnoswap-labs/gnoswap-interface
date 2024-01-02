@@ -275,19 +275,18 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               />
             )}
           </div>
-          {openedPriceRange && (
-            <SelectPriceRange
-              defaultPrice={defaultPrice}
-              tokenA={tokenA}
-              tokenB={tokenB}
-              priceRanges={priceRanges}
-              priceRange={priceRange}
-              changePriceRange={changePriceRange}
-              changeStartingPrice={changeStartingPrice}
-              selectPool={selectPool}
-              showDim={showDim}
-            />
-          )}
+          <SelectPriceRange
+            opened={openedPriceRange}
+            defaultPrice={defaultPrice}
+            tokenA={tokenA}
+            tokenB={tokenB}
+            priceRanges={priceRanges}
+            priceRange={priceRange}
+            changePriceRange={changePriceRange}
+            changeStartingPrice={changeStartingPrice}
+            selectPool={selectPool}
+            showDim={showDim}
+          />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
         </article>
 
