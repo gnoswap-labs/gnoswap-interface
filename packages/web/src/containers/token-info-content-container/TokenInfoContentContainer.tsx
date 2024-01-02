@@ -3,7 +3,7 @@ import TokenInfoContent from "@components/token/token-info-content/TokenInfoCont
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenDetailByPath } from "@query/token";
 import { useRouter } from "next/router";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
 const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
@@ -115,11 +115,11 @@ const TokenInfoContentContainer: React.FC = () => {
   const marketInformation = useMemo(() => {
     return {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
-      tvl: market.tvl ? `$${convertLargePrice(market.tvl)}` : "-",
+      tvl: market.tvl ? `$${convertToMB(market.tvl)}` : "-",
       volume24h: market.volume24h
-        ? `$${convertLargePrice(market.volume24h)}`
+        ? `$${convertToMB(market.volume24h)}`
         : "-",
-      fees24h: market.fees24h ? `$${convertLargePrice(market.fees24h)}` : "-",
+      fees24h: market.fees24h ? `$${convertToMB(market.fees24h)}` : "-",
     };
   }, [market]);
 

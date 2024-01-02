@@ -2,7 +2,7 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { checkGnotPath } from "@utils/common";
 
 export interface TokenAmountInputModel {
@@ -32,7 +32,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!usd || !(Number(amount))) {
       return "-";
     }
-    return `$${convertLargePrice(usd.toString())}`;
+    return `$${convertToMB(usd.toString())}`;
   }, [usd, amount]);
 
   const changeAmount = useCallback((value: string) => {

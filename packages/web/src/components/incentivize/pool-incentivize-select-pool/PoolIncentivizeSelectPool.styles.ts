@@ -33,7 +33,6 @@ export const PoolIncentivizeSelectPoolWrapper = styled.div<Props>`
     width: 100%;
     height: 48px;
     padding: 0 15px;
-    background-color: #fff;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
     background: ${({ theme }) => theme.color.background20};

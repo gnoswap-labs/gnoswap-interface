@@ -4,7 +4,7 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetChainList, useGetTokensList } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export const gainersInit = [
@@ -96,7 +96,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertLargePrice(item.tokenPrice, 10)}`,
+        price: `$${convertToMB(item.tokenPrice, 10)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
@@ -113,7 +113,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertLargePrice(item.tokenPrice, 10)}`,
+        price: `$${convertToMB(item.tokenPrice, 10)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,

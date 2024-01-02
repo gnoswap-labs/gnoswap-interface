@@ -11,7 +11,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
@@ -123,7 +123,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`,
+              content: `$${convertToMB(tokenPrices[token.path].usd, 10)}`,
             }
           : {
               token: {

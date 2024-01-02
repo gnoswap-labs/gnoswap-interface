@@ -177,7 +177,7 @@ export const SearchButton = styled.button`
 
 export const DepositButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
-  color: #E0E8F4;
+  color: ${({ theme }) => theme.color.text27};
   gap: 8px;
   ${fonts.p1}
   padding: 10px 16px 10px 14px;
@@ -188,7 +188,7 @@ export const DepositButton = styled.button`
     width: 15px;
     height: 15px;
     * {
-    fill: #E0E8F4;
+      fill: ${({ theme }) => theme.color.icon19} !important;
     }
   }
   &:hover {

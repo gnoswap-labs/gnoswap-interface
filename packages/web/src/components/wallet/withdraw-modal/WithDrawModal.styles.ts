@@ -335,7 +335,7 @@ export const BoxDescription = styled.div`
 
   .fail-icon {
     * {
-      fill: #788feb;
+      fill: ${({ theme }) => theme.color.icon14};
     }
   }
   background: ${({ theme }) => theme.color.background19};

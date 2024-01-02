@@ -17,7 +17,7 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetPoolList } from "src/react-query/pools";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { PoolModel } from "@models/pool/pool-model";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
@@ -189,7 +189,7 @@ const HeaderContainer: React.FC = () => {
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
         },
-        price: `$${convertLargePrice(priceItem.liquidity || "0")}`,
+        price: `$${convertToMB(priceItem.liquidity || "0")}`,
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",
@@ -230,7 +230,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${convertLargePrice(transferData.usd || "0", 6)}`,
+        price: `$${convertToMB(transferData.usd || "0", 6)}`,
         priceOf1d: {
           status: dataToday.status,
           value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",

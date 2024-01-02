@@ -61,14 +61,14 @@ export const BannerContent = styled.div`
       height: 20px;
     }
     svg * {
-      fill: ${({ theme }) => theme.color.border07};
+      fill: ${({ theme }) => theme.color.icon19} !important;
     }
     &:hover {
       span {
-        color: #C3D2EA;
+        color: ${({ theme }) => theme.color.text28};
       }
       svg * {
-        fill: #C3D2EA !important;
+        fill: ${({ theme }) => theme.color.icon20} !important;
       }
       background-color: ${({ theme }) => theme.color.background04Hover};
     }

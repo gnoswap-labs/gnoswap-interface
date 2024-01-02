@@ -3,7 +3,7 @@ import { PoolIncentivizeSelectPoolItemWrapper, PoolIncentivizeSelectPoolItemDefa
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 
 export interface PoolIncentivizeSelectPoolItemProps {
   poolSelectItem: PoolSelectItemInfo | null;
@@ -44,7 +44,7 @@ const PoolIncentivizeSelectPoolItem: React.FC<PoolIncentivizeSelectPoolItemProps
     if (!poolSelectItem) {
       return "-";
     }
-    return `$${convertLargePrice(poolSelectItem.liquidityAmount)}`;
+    return `$${convertToMB(poolSelectItem.liquidityAmount)}`;
   }, [poolSelectItem]);
 
   const onClickItem = useCallback(() => {

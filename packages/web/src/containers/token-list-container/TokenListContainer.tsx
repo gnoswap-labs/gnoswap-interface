@@ -9,7 +9,7 @@ import useClickOutside from "@hooks/common/use-click-outside";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
@@ -245,7 +245,7 @@ const TokenListContainer: React.FC = () => {
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(transferData.liquidity || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(transferData.volume || 0)).toLocaleString()}`,
-        price: `$${convertLargePrice((transferData.usd || "0"), 6)}`,
+        price: `$${convertToMB((transferData.usd || "0"), 6)}`,
         priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
         priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
         priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },

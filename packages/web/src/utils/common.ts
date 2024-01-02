@@ -1,5 +1,5 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { convertLargePrice } from "./stake-position-utils";
+import { convertToMB } from "./stake-position-utils";
 import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import { TokenModel } from "@models/token/token-model";
 
@@ -86,7 +86,7 @@ export const checkPositivePrice = (
       ? "-"
       : `${
           status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"
-        }$${convertLargePrice(
+        }$${convertToMB(
           Math.abs(checkToNumber - currentToNumber).toString(),
           fixedPrice ?? 2
         )}`;

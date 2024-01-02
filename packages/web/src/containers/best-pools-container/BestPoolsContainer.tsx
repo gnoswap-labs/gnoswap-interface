@@ -5,7 +5,7 @@ import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useRouter } from "next/router";
 import { useGetTokenDetailByPath } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -78,7 +78,7 @@ const BestPoolsContainer: React.FC = () => {
         poolPath: temp?.poolPath || "", 
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
-        tvl: `$${convertLargePrice(item.tvl)}`,
+        tvl: `$${convertToMB(item.tvl)}`,
         apr: `${item.apr === "" ? "-" : `${Number(item.apr).toFixed(2)}%`}`,
       };
     });

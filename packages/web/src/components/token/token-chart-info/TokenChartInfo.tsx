@@ -3,7 +3,7 @@ import { TokenChartInfoWrapper } from "./TokenChartInfo.styles";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 export interface TokenChartInfoProps {
@@ -44,7 +44,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
           </div>
         </div>
         <div className="price-info">
-          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${priceInfo.amount.value === 0 ? "0.00" : convertLargePrice(priceInfo.amount.value.toString(), 6)}`}</span>}
+          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${priceInfo.amount.value === 0 ? "0.00" : convertToMB(priceInfo.amount.value.toString(), 6)}`}</span>}
           {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?
