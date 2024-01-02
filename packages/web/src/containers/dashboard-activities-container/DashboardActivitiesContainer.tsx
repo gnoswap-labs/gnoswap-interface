@@ -12,7 +12,7 @@ import { formatAddress } from "@utils/string-utils";
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -179,10 +179,10 @@ const DashboardActivitiesContainer: React.FC = () => {
         res.token0.symbol,
       )} and ${replaceToken(res.token1.symbol)}`,
       totalValue: `$${prettyNumber(res.totalUsdValue)}`,
-      tokenAmountOne: `${prettyNumber(res.token0Amount)} ${replaceToken(
+      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount)} ${replaceToken(
         res.token0.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumber(res.token1Amount)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount)} ${replaceToken(
         res.token1.symbol,
       )}`,
       account: formatAddress(res.account),

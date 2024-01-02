@@ -3,11 +3,11 @@ import {
   ITokenDetailResponse,
   ITokenResponse,
   TokenListResponse,
-  TokenPriceListResponse,
 } from "@repositories/token";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { QUERY_KEY } from "./types";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { TokenPriceModel } from "@models/token/token-price-model";
 
 export const useGetTokensList = (
   options?: UseQueryOptions<TokenListResponse, Error>,
@@ -22,12 +22,22 @@ export const useGetTokensList = (
 };
 
 export const useGetTokenPrices = (
-  options?: UseQueryOptions<TokenPriceListResponse, Error>,
+  options?: UseQueryOptions<Record<string, TokenPriceModel>, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
-  return useQuery<TokenPriceListResponse, Error>({
+  return useQuery<Record<string, TokenPriceModel>, Error>({
     queryKey: [QUERY_KEY.tokenPrices],
-    queryFn: () => tokenRepository.getTokenPrices(),
+    queryFn: async () => {
+      const res = await tokenRepository.getTokenPrices();
+      const priceMap = res.prices.reduce<Record<string, TokenPriceModel>>(
+        (prev, current) => {
+          prev[current.path] = current;
+          return prev;
+        },
+        {},
+      );
+      return priceMap;
+    },
     ...options,
   });
 };

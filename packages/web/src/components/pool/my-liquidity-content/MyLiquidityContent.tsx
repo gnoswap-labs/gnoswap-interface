@@ -8,7 +8,6 @@ import { DEVICE_TYPE } from "@styles/media";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { toLowerUnitFormat } from "@utils/number-utils";
 import { BalanceTooltipContent } from "../my-position-card/MyPositionCardBalanceContent";
 import { RewardType } from "@constants/option.constant";
 import { MyPositionRewardContent } from "../my-position-card/MyPositionCardRewardContent";
@@ -18,6 +17,7 @@ import { PositionBalanceInfo } from "@models/position/info/position-balance-info
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { formatUsdNumber } from "@utils/stake-position-utils";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -91,7 +91,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return "$0";
     }
     const balance = Object.values(allBalances).reduce((acc, current) => acc += current.balanceUSD, 0);
-    return toLowerUnitFormat(balance, true);
+    return formatUsdNumber(String(balance), undefined, true);
   }, [allBalances]);
 
   const dailyEarningRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
@@ -107,7 +107,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .reduce((accum, current) => {
         return accum + current.balanceUSD;
       }, 0);
-    return toLowerUnitFormat(usdValue, true);
+    return formatUsdNumber(String(usdValue), undefined, true);
   }, [dailyEarningRewardInfo]);
 
   const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
@@ -188,7 +188,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .reduce((accum, current) => {
         return accum + current.balanceUSD;
       }, 0) : 0;
-    return toLowerUnitFormat(claimableUsdValue, true);
+    
+    return formatUsdNumber(String(claimableUsdValue), undefined, true);
   }, [claimableRewardInfo]);
 
   const claimable = useMemo(() => {

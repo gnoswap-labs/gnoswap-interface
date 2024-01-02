@@ -13,7 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import OverlapTokenLogo from "../overlap-token-logo/OverlapTokenLogo";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 
@@ -49,7 +49,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    return `$${convertToMB(position.positionUsdValue, 2)}`;
+    return `$${convertToKMB(position.positionUsdValue, 2)}`;
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {

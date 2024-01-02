@@ -8,7 +8,7 @@ import { PoolResponse } from "@repositories/pool";
 import { IncentivizedOptions } from "@common/values";
 import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
-import { convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -91,7 +91,7 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
-      liquidity: `${convertToMB(tvl.toString(), 2)}`,
+      liquidity: `${convertToKMB(tvl.toString(), 2)}`,
       volume24h: `${convertToMB(volume.toString(), 2)}`,
       fees24h: `${convertToMB(feeVolume.toString(), 2)}`,
       rewardTokens,

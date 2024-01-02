@@ -9,10 +9,10 @@ import IconStar from "@components/common/icons/IconStar";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { numberToFormat } from "@utils/string-utils";
-import { toLowerUnitFormat } from "@utils/number-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { formatUsdNumber } from "@utils/stake-position-utils";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -49,11 +49,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [depositRatio, pool.tokenB.symbol]);
 
   const liquidityValue = useMemo((): string => {
-    return toLowerUnitFormat(pool.tvl, true);
+    return formatUsdNumber(pool.tvl.toString(), undefined, true);
   }, [pool.tvl]);
-
+  
   const volumeValue = useMemo((): string => {
-    return toLowerUnitFormat(pool.volume, true);
+    return formatUsdNumber(pool.volume.toString(), undefined, true);
   }, [pool.volume]);
 
   const aprValue = useMemo(() => {

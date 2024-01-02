@@ -22,7 +22,7 @@ const PoolPairInformationContainer = () => {
   const [pool, setPool] = useState<PoolDetailModel | null>(null);
   const { gnot, getGnotPath } = useGnotToGnot();
 
-  const { fetchPoolDatils, loading } = usePoolData();
+  const { fetchPoolDetail, loading } = usePoolData();
 
 
   const feeStr = useMemo(() => {
@@ -42,7 +42,7 @@ const PoolPairInformationContainer = () => {
     if (!poolPath) {
       return;
     }
-    fetchPoolDatils(poolPath).then((e) => {
+    fetchPoolDetail(poolPath).then((e) => {
       if (e) {
         const poolMap = {
           ...e,

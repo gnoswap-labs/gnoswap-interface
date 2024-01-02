@@ -1,22 +1,24 @@
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { QUERY_KEY, useGetPoolList } from "@query/pools";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 export const usePoolData = () => {
+  const { data: pools = [], isLoading: loading, isFetched: isFetchedPools } = useGetPoolList();
+  const forceRefect = useForceRefetchQuery();
+
   const { poolRepository } = useGnoswapContext();
-  const [pools, setPools] = useAtom(PoolState.pools);
-  const [isFetchedPools, setIsFetchedPools] = useAtom(PoolState.isFetchedPools);
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(
     PoolState.isFetchedPositions,
   );
-  const [loading, setLoading] = useAtom(PoolState.isLoading);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
   const poolListInfos = useMemo(() => {
@@ -102,27 +104,21 @@ export const usePoolData = () => {
   }, [pools, gnot]);
 
   async function updatePools() {
-    const pools = await poolRepository.getPools();
-    setPools(pools);
-    setLoading(false);
-    setIsFetchedPools(true);
-    return pools;
+    forceRefect({queryKey: [QUERY_KEY.pools]});
   }
 
-  async function fetchPoolDatils(
+  async function fetchPoolDetail(
     poolId: string,
   ): Promise<PoolDetailModel | null> {
-    const currentPools = pools.length === 0 ? await updatePools() : pools;
-    const pool = currentPools.find(pool => pool.id === poolId);
+    if (pools.length === 0) {
+      await updatePools();
+    }
+    const pool = pools.find(pool => pool.id === poolId);
     if (!pool) {
       return null;
     }
     return poolRepository.getPoolDetailByPoolPath(pool.path).catch(() => null);
   }
-
-  useEffect(() => {
-    updatePools();
-  }, []);
 
   return {
     isFetchedPools,
@@ -133,7 +129,7 @@ export const usePoolData = () => {
     incentivizedPools,
     updatePools,
     updatePositions,
-    fetchPoolDatils,
+    fetchPoolDetail,
     loading,
     gnot,
   };

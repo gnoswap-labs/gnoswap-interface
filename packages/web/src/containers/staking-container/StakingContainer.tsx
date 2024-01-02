@@ -16,7 +16,7 @@ const StakingContainer: React.FC = () => {
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
   const [pool, setPool] = useState<PoolModel | null>(null);
-  const { fetchPoolDatils, loading: loadingPool } = usePoolData();
+  const { fetchPoolDetail, loading: loadingPool } = usePoolData();
   const { getPositionsByPoolId, loading: loadingPosition } = usePositionData();
   const [type, setType] = useState(3);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
@@ -37,7 +37,7 @@ const StakingContainer: React.FC = () => {
     if (!poolPath) {
       return;
     }
-    fetchPoolDatils(poolPath).then((e) => {
+    fetchPoolDetail(poolPath).then((e) => {
       if (e) {
         setPool({
           ...e,

@@ -5,23 +5,21 @@ import { useRouter } from "next/router";
 import React, { useState, useCallback, useMemo } from "react";
 import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { type TokenInfo } from "@models/token/token-info";
-import { useQuery } from "@tanstack/react-query";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtomValue } from "jotai";
-import { CommonState, ThemeState, TokenState } from "@states/index";
-import { useAtom } from "jotai";
+import { ThemeState, TokenState } from "@states/index";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetPoolList } from "src/react-query/pools";
-import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { PoolModel } from "@models/pool/pool-model";
 import { convertToMB } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetTokenPrices, useGetTokensList } from "@query/token";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -128,26 +126,9 @@ export const PopulardummyToken: Token[] = [
   },
 ];
 
-async function fetchTokens(
-  keyword: string, // eslint-disable-line
-): Promise<Token[]> {
-  return new Promise(resolve => setTimeout(resolve, 1500)).then(() => {
-    const data = [
-      ...RecentdummyToken,
-      ...PopulardummyToken,
-      ...PopulardummyToken,
-    ];
-    if (!keyword) return Promise.resolve(data);
-    return Promise.resolve(data.filter(item => item.token.name === keyword));
-  });
-}
-
-const getStatus = (value: string) => {
-  if (Number(value ?? 0) < 0) {
-    return MATH_NEGATIVE_TYPE.NEGATIVE;
-  }
-
-  return MATH_NEGATIVE_TYPE.POSITIVE;
+const filterByLiquidityPool = (data: Record<string, TokenPriceModel>, targetLiquidityPool?: string): TokenPriceModel | null => {
+  const filteredItem = Object.entries(data).find(([key, value]) => value.mostLiquidityPool === targetLiquidityPool);
+  return filteredItem ? filteredItem[1] : null;
 };
 
 const HeaderContainer: React.FC = () => {
@@ -161,10 +142,9 @@ const HeaderContainer: React.FC = () => {
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
-
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
-  const { data: { tokens: listTokens = [] } = {} } = useGetTokensList({ enabled: !!searchMenuToggle });
-  const { data: { prices = [] } = {} } = useGetTokenPrices({ enabled: !!searchMenuToggle });
+  const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokensList({ enabled: !!searchMenuToggle });
+  const { data: tokenPrices = {} } = useGetTokenPrices({ enabled: !!searchMenuToggle });
 
   const recents = useMemo(() => {
     return parseJson(recentsData ? recentsData : "[]");
@@ -178,7 +158,7 @@ const HeaderContainer: React.FC = () => {
       );
     }
     return temp.slice(0, 3).map((item: PoolModel) => {
-      const priceItem: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.mostLiquidityPool === item.poolPath)?.[0] ?? {};
+      const filteredItem: TokenPriceModel | null = filterByLiquidityPool(tokenPrices, item.poolPath);
 
       return {
         path: "",
@@ -189,7 +169,7 @@ const HeaderContainer: React.FC = () => {
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
         },
-        price: `$${convertToMB(priceItem.liquidity || "0")}`,
+        price: `$${convertToMB(filteredItem ? filteredItem.liquidity : "0")}`,
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",
@@ -205,7 +185,7 @@ const HeaderContainer: React.FC = () => {
         apr: `${!item.apr ? "-" : Number(item.apr) > 10 ? `${item.apr}% APR` : `${Number(item.apr).toFixed(2)}% APR`}`,
       };
     });
-  }, [poolList, keyword, prices, gnot]);
+  }, [poolList, keyword, tokenPrices, gnot]);
 
   const popularTokens = useMemo(() => {
     let temp = listTokens;
@@ -216,9 +196,9 @@ const HeaderContainer: React.FC = () => {
       );
     }
     return temp.slice(0, keyword ? 6 : 6 - recents.length).map((item: TokenModel) => {
-      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === item.path)?.[0] ?? {};
+      const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
       const isGnot = item.path === "gnot";
-      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === wugnotPath)?.[0] ?? {};
+      const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       return {
@@ -245,7 +225,7 @@ const HeaderContainer: React.FC = () => {
         isLiquid: false,
       };
     });
-  }, [listTokens, recents.length, keyword, prices]);
+  }, [listTokens, recents.length, keyword, tokenPrices]);
 
   const { openModal } = useConnectWalletModal();
 
@@ -254,15 +234,6 @@ const HeaderContainer: React.FC = () => {
     setSearchMenuToggle(false);
   }
   useEscCloseModal(handleESC);
-
-  const {
-    isFetched,
-    error,
-    data: tokens,
-  } = useQuery<Token[], Error>({
-    queryKey: ["tokens", keyword],
-    queryFn: () => fetchTokens(keyword),
-  });
 
   const onSideMenuToggle = () => {
     setSideMenuToggle(prev => !prev);
