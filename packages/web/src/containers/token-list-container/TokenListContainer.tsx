@@ -257,12 +257,10 @@ const TokenListContainer: React.FC = () => {
   }, [tokens, prices]);
     
   const getDatas = useCallback(() => {
-    const temp = firstData;
+    const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
+    const temp = firstData.filter((item: Token) => ((item.token.path.includes(grc20))));
     if (keyword) {
       return temp.filter((item: Token) => (item.token.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.token.symbol.toLowerCase()).includes(keyword.toLowerCase()));
-    }
-    if (tokenType !== TOKEN_TYPE.ALL) {
-      return temp.filter((item: Token) => ((item.token.path.includes("gno.land/r/"))));
     }
     if (sortOption) {
       if(sortOption.key === TABLE_HEAD.NAME) {

@@ -78,10 +78,7 @@ export const useWallet = () => {
   }, [accountRepository, setWalletAccount]);
 
   const connectAdenaClient = useCallback(() => {
-    const connectedBySession = sessionId;
-    if (!connectedBySession) {
-      setLoadingConnect("loading");
-    }
+    setLoadingConnect("loading");
     const adena = AdenaClient.createAdenaClient();
     if (adena !== null) {
       adena.initAdena();
@@ -145,7 +142,7 @@ export const useWallet = () => {
       sessionStorage.setItem(GNOSWAP_SESSION_ID_KEY, sessionId);
     }
   }, [walletClient]);
-
+  
   return {
     wallet,
     account: walletAccount,
