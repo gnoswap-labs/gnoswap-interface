@@ -18,6 +18,9 @@ export const LineGraphWrapper = styled.div`
     width: 100%;
     height: 321px;
     overflow: visible;
+    .center-line {
+      transform: translateY(50%) !important;
+    }
     ${media.mobile} {
       height: 252px;
     }

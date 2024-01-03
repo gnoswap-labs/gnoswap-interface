@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import LineGraph from "../line-graph/LineGraph";
 
 export interface SimpleLineGraphProps {
@@ -14,6 +14,10 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
   height
 }) => {
   const theme = useTheme();
+
+  const checkSameData = useMemo(() => {
+    return datas.length > 0 && datas.every(element => element === datas[0]);
+  }, [datas]);
 
   const getChartDatas = useCallback(() => {
     return datas.map((data, index) => ({
@@ -66,6 +70,7 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
       gradientEndColor={getGradientColor().end}
       width={width}
       height={height}
+      centerLineColor={checkSameData ? theme.color.green01 : undefined}
     />
   );
 };

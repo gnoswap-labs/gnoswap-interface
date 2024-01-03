@@ -101,7 +101,7 @@ export const EarnAddConfirmPriceRangeInfoSection = styled(
     cursor: pointer;
     &:hover {
       svg * {
-        fill: ${({ theme }) => theme.color.icon16};
+        fill: ${({ theme }) => theme.color.icon15};
       }
     }
   }

@@ -93,7 +93,7 @@ export const EarnAddLiquidityWrapper = styled.section`
           width: 16px;
           height: 16px;
           * {
-            fill: ${({ theme }) => theme.color.icon16};
+            fill: ${({ theme }) => theme.color.icon15};
           }
         }
       }

@@ -35,6 +35,7 @@ export interface Token {
   isLiquid?: boolean;
   fee: string;
   apr?: string;
+  volume?: string;
 }
 
 export const RecentdummyToken: Token[] = [
@@ -186,7 +187,7 @@ const HeaderContainer: React.FC = () => {
       };
     });
   }, [poolList, keyword, tokenPrices, gnot]);
-
+  
   const popularTokens = useMemo(() => {
     let temp = listTokens;
     if (keyword) {
@@ -195,7 +196,7 @@ const HeaderContainer: React.FC = () => {
         || (item.path.toLowerCase()).includes(keyword.toLowerCase())
       );
     }
-    return temp.slice(0, keyword ? 6 : 6 - recents.length).map((item: TokenModel) => {
+    return temp.map((item: TokenModel) => {
       const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
       const isGnot = item.path === "gnot";
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
@@ -223,10 +224,11 @@ const HeaderContainer: React.FC = () => {
         },
         fee: "",
         isLiquid: false,
+        volume: transferData.volume ?? "0",
       };
-    });
+    }).sort((a, b) => Number(b.volume) - Number(a.volume)).slice(0, keyword ? 6 : 6 - recents.length);
   }, [listTokens, recents.length, keyword, tokenPrices]);
-
+  
   const { openModal } = useConnectWalletModal();
 
   const handleESC = () => {

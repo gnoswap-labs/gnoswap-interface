@@ -94,7 +94,7 @@ export const TokenTradingModalWrapper = styled.div`
           height: 14px;
           flex: 1 0 0;
           * {
-            fill: ${({ theme }) => theme.color.icon16};
+            fill: ${({ theme }) => theme.color.icon15};
           }
         }
         .icon-wrapper {

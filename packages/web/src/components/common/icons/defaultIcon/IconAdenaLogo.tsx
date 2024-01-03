@@ -7,7 +7,7 @@ const IconAdenaLogo = ({ className }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
-    <ellipse cx="8" cy="8.5" rx="8" ry="8" fill="#0059FF" />
+    <ellipse cx="8" cy="8.5" rx="8" ry="8" fill="#233DBD" />
     <path
       d="M9.09687 4.91596C8.75055 4.31136 7.98091 4.10554 7.37804 4.45287C6.77516 4.80019 6.56992 5.57202 6.91625 6.17662L10.2641 11.991C10.6105 12.5956 11.3801 12.8015 11.983 12.4541C12.5859 12.1068 12.7911 11.335 12.4448 10.7304L9.09687 4.91596Z"
       fill="url(#paint0_linear_3569_55913)"

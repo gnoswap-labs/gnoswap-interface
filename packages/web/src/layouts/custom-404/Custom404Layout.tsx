@@ -34,7 +34,7 @@ const Custom404Layout: React.FC<Custom404LayoutProps> = ({
             textColor: "text20",
             width: 240,
             height: 57,
-            arrowColor: "icon15",
+            arrowColor: "icon16",
           }}
           className="button-404"
         />
