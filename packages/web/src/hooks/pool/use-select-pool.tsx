@@ -318,33 +318,34 @@ export const useSelectPool = ({
         positions: []
       };
       setPoolInfo(poolInfo);
-    } else {
-      const tokenAPoolPath = isNativeToken(tokenA) ? tokenA.wrappedPath : tokenA.path;
-      const tokenBPoolPath = isNativeToken(tokenB) ? tokenB.wrappedPath : tokenB.path;
-      const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
-      const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
-      const reverse = tokenPair.findIndex(path => {
-        if (compareToken) {
-          return isNativeToken(compareToken) ?
-            compareToken.wrappedPath === path :
-            compareToken.path === path;
-        }
-        return false;
-      }) === 1;
-      poolRepository.getPoolDetailRPCByPoolPath(poolPath).then(poolInfo => {
-        const changedPoolInfo = reverse === false ? poolInfo : {
-          ...poolInfo,
-          price: 1 / poolInfo.price,
-          ticks: poolInfo.ticks.map(tick => tick * -1),
-          positions: poolInfo.positions.map(position => ({
-            ...position,
-            tickLower: position.tickUpper * -1,
-            tickUpper: position.tickLower * -1,
-          }))
-        };
-        setPoolInfo(changedPoolInfo);
-      }).catch(() => setPoolInfo(null));
+      return;
     }
+
+    const tokenAPoolPath = tokenA.wrappedPath || tokenA.path;
+    const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
+    const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
+    const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
+    const reverse = tokenPair.findIndex(path => {
+      if (compareToken) {
+        return isNativeToken(compareToken) ?
+          compareToken.wrappedPath === path :
+          compareToken.path === path;
+      }
+      return false;
+    }) === 1;
+    poolRepository.getPoolDetailRPCByPoolPath(poolPath).then(poolInfo => {
+      const changedPoolInfo = reverse === false ? poolInfo : {
+        ...poolInfo,
+        price: 1 / poolInfo.price,
+        ticks: poolInfo.ticks.map(tick => tick * -1),
+        positions: poolInfo.positions.map(position => ({
+          ...position,
+          tickLower: position.tickUpper * -1,
+          tickUpper: position.tickLower * -1,
+        }))
+      };
+      setPoolInfo(changedPoolInfo);
+    }).catch(() => setPoolInfo(null));
   }, [feeTier, tokenA, tokenB, compareToken, isCreate, startPrice, poolRepository]);
 
   useEffect(() => {
