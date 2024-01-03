@@ -11,6 +11,8 @@ import {
 import { FloatContent } from "./Tooltip.styles";
 import { Z_INDEX } from "@styles/zIndex";
 import { useTheme } from "@emotion/react";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface TooltipProps {
   offset?: number;
@@ -42,6 +44,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
     const theme = useTheme();
 
     const targetRef = useMergedRef(boundaryRef, (children as any).ref, ref);
+    const { breakpoint} = useWindowSize();
 
     const onMouseEnter = (event: React.MouseEvent<unknown, MouseEvent> | React.TouchEvent<unknown>) => {
       children.props.onMouseEnter?.(event);
@@ -62,13 +65,15 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
 
     useEffect(() => {
       const handleScroll = () => {
-        setOpened(false);
+        if (breakpoint !== DEVICE_TYPE.WEB) {
+          setOpened(false);
+        }
       };
       document.addEventListener("scroll", handleScroll);
       return () => {
         document.removeEventListener("scroll", handleScroll);
       };
-    }, []);
+    }, [breakpoint]);
 
     return (
       <>

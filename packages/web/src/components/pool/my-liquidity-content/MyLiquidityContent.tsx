@@ -91,7 +91,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return "$0";
     }
     const balance = Object.values(allBalances).reduce((acc, current) => acc += current.balanceUSD, 0);
-    return formatUsdNumber(String(balance), undefined, true);
+    return formatUsdNumber(String(balance), 2, true);
   }, [allBalances]);
 
   const dailyEarningRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
@@ -107,7 +107,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .reduce((accum, current) => {
         return accum + current.balanceUSD;
       }, 0);
-    return formatUsdNumber(String(usdValue), undefined, true);
+    return formatUsdNumber(String(usdValue), 2, true);
   }, [dailyEarningRewardInfo]);
 
   const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
@@ -189,7 +189,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         return accum + current.balanceUSD;
       }, 0) : 0;
     
-    return formatUsdNumber(String(claimableUsdValue), undefined, true);
+    return formatUsdNumber(String(claimableUsdValue), 2, true);
   }, [claimableRewardInfo]);
 
   const claimable = useMemo(() => {

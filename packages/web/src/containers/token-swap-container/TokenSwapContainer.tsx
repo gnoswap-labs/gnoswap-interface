@@ -4,18 +4,17 @@ import React, { useState, useEffect } from "react";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuModal";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { SwapDirectionType } from "@common/values";
 import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
+import { useGetTokenByPath } from "@query/token";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
-  const [initialized, setInitialized] = useState(false);
   const [openedSlippage, setOpenedSlippage] = useState(false);
-  const { tokens, updateTokens } = useTokenData();
-
+  const path = router.query["tokenB"] as string;
+  const { data: tokenB = null } = useGetTokenByPath(path, { enabled: !!path});
+  
   const {
     connectedWallet,
     copied,
@@ -45,34 +44,13 @@ const TokenSwapContainer: React.FC = () => {
   } = useSwapHandler();
 
   useEffect(() => {
-    updateTokens();
-  }, []);
-
-  useEffect(() => {
-    if (!initialized && tokens.length > 0) {
-      setInitialized(true);
-    }
-  }, [tokens]);
-
-  useEffect(() => {
-    if (!initialized) {
-      return;
-    }
-    const query = router.query;
-    const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
-    const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
-    const direction: SwapDirectionType = query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
     setSwapValue({
-      tokenA: currentTokenA,
-      tokenB: currentTokenB,
-      type: direction,
+      tokenA: null,
+      tokenB: tokenB,
+      type: "EXACT_IN",
     });
-  }, [initialized]);
+  }, [tokenB]);
 
-  useEffect(() => {
-    setInitialized(false);
-  }, [router.query?.["token-path"]]);
-  
   return (
     <>
       <TokenSwap
