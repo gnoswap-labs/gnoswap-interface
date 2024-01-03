@@ -4,6 +4,7 @@ import {
   unitsUpperCase,
 } from "@common/values/global-initial-value";
 import BigNumber from "bignumber.js";
+import { convertToMB } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
@@ -213,8 +214,8 @@ export function prettyNumber(val: string | number) {
 
 export function prettyNumberFloatInteger(val: string | number) {
   if (Number.isInteger(Number(val))) {
-    return Number(val).toString();
+    return convertToMB(val.toString(), 0);
   } else {
-    return Number(val).toLocaleString("en", { maximumFractionDigits: 2});
+    return convertToMB(val.toString());
   }
 }

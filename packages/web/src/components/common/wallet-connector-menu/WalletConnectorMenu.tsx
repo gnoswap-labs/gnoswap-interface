@@ -24,7 +24,7 @@ import { AccountModel } from "@models/account/account-model";
 import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
 
-const URL_REDIRECT = "https://gnoscan.io/accounts";
+const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;

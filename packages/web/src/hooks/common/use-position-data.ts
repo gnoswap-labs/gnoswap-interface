@@ -2,22 +2,41 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useState, useEffect } from "react";
-import { useGnoswapContext } from "./use-gnoswap-context";
+import { useCallback, useMemo} from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useAtom } from "jotai";
-import { PoolState } from "@states/index";
 import { makeId } from "@utils/common";
+import { useGetPositionsByAddress } from "@query/positions";
 
 export const usePositionData = () => {
-  const { positionRepository } = useGnoswapContext();
   const { account, connected } = useWallet();
   const { pools } = usePoolData();
-  const [isError, setIsError] = useState(false);
+  const { data = [], isError, isLoading: loading, isFetched: isFetchedPosition } = useGetPositionsByAddress(account?.address as string, { enabled: !!account?.address && pools.length > 0 && connected });
+  
   const { getGnotPath } = useGnotToGnot();
-  const [isFetchedPosition, setIsFetchedPosition] = useState(false);
-  const [positions, setPositions] = useAtom(PoolState.positions);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const positions = useMemo(() => {
+    const poolPositions: PoolPositionModel[] = [];
+    data.forEach(position => {
+      const pool = pools.find(pool => pool.path === position.poolPath);
+      if (pool) {
+        const temp = {
+          ...pool,
+          tokenA: {
+            ...pool.tokenA,
+            symbol: getGnotPath(pool.tokenA).symbol,
+            logoURI: getGnotPath(pool.tokenA).logoURI,
+          },
+          tokenB: {
+            ...pool.tokenB,
+            symbol: getGnotPath(pool.tokenB).symbol,
+            logoURI: getGnotPath(pool.tokenB).logoURI,
+          },
+        };
+        poolPositions.push(PositionMapper.makePoolPosition(position, temp));
+      }
+    });
+    return poolPositions;
+  }, [data]);
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
@@ -37,115 +56,58 @@ export const usePositionData = () => {
     [positions],
   );
 
-  const getPositions = useCallback(async (): Promise<PoolPositionModel[]> => {
-    if (!account?.address) {
-      setPositions([]);
-      return [];
-    }
-    if (pools.length === 0) {
-      setPositions([]);
-      return [];
-    }
-    setIsError(false);
-
-    setLoading(true);
-    return positionRepository
-      .getPositionsByAddress(account.address)
-      .then(positions => {
-        const poolPositions: PoolPositionModel[] = [];
-        positions.forEach(position => {
-          const pool = pools.find(pool => pool.path === position.poolPath);
-          if (pool) {
-            const temp = {
-              ...pool,
-              tokenA: {
-                ...pool.tokenA,
-                symbol: getGnotPath(pool.tokenA).symbol,
-                logoURI: getGnotPath(pool.tokenA).logoURI,
-              },
-              tokenB: {
-                ...pool.tokenB,
-                symbol: getGnotPath(pool.tokenB).symbol,
-                logoURI: getGnotPath(pool.tokenB).logoURI,
-              },
-            };
-            poolPositions.push(PositionMapper.makePoolPosition(position, temp));
-          }
-        });
-        setPositions(positions);
-        setIsError(false);
-        setIsFetchedPosition(true);
-        return poolPositions;
-      })
-      .catch(() => {
-        setIsFetchedPosition(true);
-        setPositions([]);
-        setIsError(true);
-        return [];
-      })
-      .finally(() => setLoading(false));
-  }, [account?.address, pools, positionRepository, setPositions]);
+  const getPositions = useCallback(()=> {
+    return positions;
+  }, [positions]);
 
   const getPositionsByPoolId = useCallback(
-    async (poolId: string): Promise<PoolPositionModel[]> => {
+    (poolId: string): PoolPositionModel[] => {
       if (!account?.address) {
         return [];
       }
       if (pools.length === 0) {
         return [];
       }
-      setIsError(false);
-
-      return positionRepository
-        .getPositionsByAddress(account.address)
-        .then(positions => {
-          const poolPositions: PoolPositionModel[] = [];
-          positions.forEach(position => {
-            const pool = pools.find(
-              pool => pool.path === position.poolPath && pool.id === poolId,
-            );
-            if (pool) {
-              const temp = {
-                ...pool,
-                tokenA: {
-                  ...pool.tokenA,
-                  symbol: getGnotPath(pool.tokenA).symbol,
-                  logoURI: getGnotPath(pool.tokenA).logoURI,
-                },
-                tokenB: {
-                  ...pool.tokenB,
-                  symbol: getGnotPath(pool.tokenB).symbol,
-                  logoURI: getGnotPath(pool.tokenB).logoURI,
-                },
-              };
-              poolPositions.push(
-                PositionMapper.makePoolPosition(position, temp),
-              );
-            }
-          });
-          setIsError(false);
-          return poolPositions;
-        })
-        .catch(() => {
-          setIsError(true);
-          return [];
-        });
+      const poolPositions: PoolPositionModel[] = [];
+      data.forEach(position => {
+        const pool = pools.find(
+          pool => pool.path === position.poolPath && pool.id === poolId,
+        );
+        if (pool) {
+          const temp = {
+            ...pool,
+            tokenA: {
+              ...pool.tokenA,
+              path: getGnotPath(pool.tokenA).path,
+              name: getGnotPath(pool.tokenA).name,
+              symbol: getGnotPath(pool.tokenA).symbol,
+              logoURI: getGnotPath(pool.tokenA).logoURI,
+            },
+            tokenB: {
+              ...pool.tokenB,
+              path: getGnotPath(pool.tokenB).path,
+              name: getGnotPath(pool.tokenB).name,
+              symbol: getGnotPath(pool.tokenB).symbol,
+              logoURI: getGnotPath(pool.tokenB).logoURI,
+            },
+          };
+          poolPositions.push(
+            PositionMapper.makePoolPosition(position, temp),
+          );
+        }
+      });
+      return poolPositions;
     },
-    [account?.address, pools, positionRepository],
+    [account?.address, pools, data],
   );
 
   const getPositionsByPoolPath = useCallback(
-    async (poolPath: string): Promise<PoolPositionModel[]> => {
+    (poolPath: string): PoolPositionModel[] => {
       const poolId = makeId(poolPath);
       return getPositionsByPoolId(poolId);
     },
     [getPositionsByPoolId],
   );
-
-  useEffect(() => {
-    getPositions();
-  }, [connected, getPositions]);
-
   return {
     availableStake,
     isError,
@@ -156,6 +118,5 @@ export const usePositionData = () => {
     getPositionsByPoolPath,
     isFetchedPosition,
     loading,
-    setLoading,
   };
 };

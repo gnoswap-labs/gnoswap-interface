@@ -7,24 +7,28 @@ import {
   UpDownType,
 } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
+import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
+import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 
 export const useTokenData = () => {
+  const { data: { tokens = [] } = {}, isLoading: loading, isFetched, error } = useGetTokensList();
+  const { data: tokenPrices = {} } = useGetTokenPrices();
+
+  const forceRefect = useForceRefetchQuery();
+
+
   const { account } = useWallet();
-  const { rpcProvider, tokenRepository } = useGnoswapContext();
-  const [tokens, setTokens] = useAtom(TokenState.tokens);
-  const [tokenPrices, setTokenPrices] = useAtom(TokenState.tokenPrices);
+  const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
-  const [loading, setLoading] = useAtom(TokenState.isLoading);
   const [loadingBalance, setLoadingBalance] = useAtom(
     TokenState.isLoadingBalances,
   );
@@ -123,7 +127,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertLargePrice(tokenPrices[token.path].usd, 10)}`,
+              content: `$${convertToMB(tokenPrices[token.path].usd, 10)}`,
             }
           : {
               token: {
@@ -165,24 +169,13 @@ export const useTokenData = () => {
   );
 
   async function updateTokens() {
-    setLoading(true);
-    const response = await tokenRepository.getTokens();
-    setLoading(false);
-    setTokens(response?.tokens || []);
+    forceRefect({queryKey: [QUERY_KEY.tokens]});
   }
 
   async function updateTokenPrices() {
-    const response = await tokenRepository.getTokenPrices();
-    const priceMap = response.prices.reduce<Record<string, TokenPriceModel>>(
-      (prev, current) => {
-        prev[current.path] = current;
-        return prev;
-      },
-      {},
-    );
-    setTokenPrices(priceMap);
+    forceRefect({queryKey: [QUERY_KEY.tokenPrices]});
   }
-
+  
   async function updateBalances() {
     if (!rpcProvider) {
       return;
@@ -232,5 +225,7 @@ export const useTokenData = () => {
     updateBalances,
     loading,
     loadingBalance,
+    isFetched,
+    error
   };
 };

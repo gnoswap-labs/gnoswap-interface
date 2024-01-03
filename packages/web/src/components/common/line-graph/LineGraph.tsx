@@ -67,6 +67,7 @@ export interface LineGraphProps {
   firstPointColor?: string;
   typeOfChart?: string;
   customData?: { height: number; locationTooltip: number };
+  centerLineColor?: string;
 }
 
 interface Point {
@@ -129,6 +130,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
   firstPointColor,
+  centerLineColor,
   customData = { height: 0, locationTooltip: 0 },
 }) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
@@ -414,6 +416,18 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   y2={firstPoint.y}
                   strokeDasharray={3}
                   className="first-line"
+                />
+              )}
+              {centerLineColor && (
+                <line
+                  stroke={centerLineColor}
+                  strokeWidth={1}
+                  x1={0}
+                  y1={firstPoint.y}
+                  x2={width}
+                  y2={firstPoint.y}
+                  strokeDasharray={0}
+                  className="center-line"
                 />
               )}
               {isFocus() && currentPoint && (

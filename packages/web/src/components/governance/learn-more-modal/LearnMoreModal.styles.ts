@@ -58,7 +58,7 @@ export const LearnMoreModalWrapper = styled.div`
   }
   .active-btn {
     span {
-      color: #E0E8F4;
+      color: ${({ theme }) => theme.color.text27};
     }
     background-color: ${({ theme }) => theme.color.background04};
     &:hover {

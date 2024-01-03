@@ -59,7 +59,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      getPositionsByPoolId(poolPath).then(setPositions);
+      setPositions(getPositionsByPoolId(poolPath));
     }
   }, [account?.address, getPositionsByPoolId, router.query]);
 

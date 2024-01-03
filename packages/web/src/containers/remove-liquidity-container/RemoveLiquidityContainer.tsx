@@ -63,7 +63,7 @@ const RemoveLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      getPositionsByPoolId(poolPath).then(setPositions);
+      setPositions(getPositionsByPoolId(poolPath));
     } else {
       setPositions([]);
     }

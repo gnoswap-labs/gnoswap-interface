@@ -5,7 +5,7 @@ export interface TokenListResponse {
 }
 
 export interface ITokenResponse {
-  type: string;
+  type: "native" | "grc20";
   chainId: string;
   createdAt: string;
   name: string;

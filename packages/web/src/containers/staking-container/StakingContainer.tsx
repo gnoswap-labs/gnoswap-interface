@@ -7,22 +7,43 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { usePoolData } from "@hooks/pool/use-pool-data";
-import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetPoolDetailByPath } from "@query/pools";
 
 const StakingContainer: React.FC = () => {
   const { account } = useWallet();
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
-  const [pool, setPool] = useState<PoolModel | null>(null);
-  const { fetchPoolDatils, loading: loadingPool } = usePoolData();
+  const { loading: loadingPool } = usePoolData();
   const { getPositionsByPoolId, loading: loadingPosition } = usePositionData();
   const [type, setType] = useState(3);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
+  const poolPath = router.query["pool-path"] || "";
+  const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
 
+  const pool = useMemo(() => {
+    if (!data) return null;
+    return {
+      ...data,
+      tokenA: {
+        ...data.tokenA,
+        path: getGnotPath(data.tokenA).path,
+        name: getGnotPath(data.tokenA).name,
+        symbol: getGnotPath(data.tokenA).symbol,
+        logoURI: getGnotPath(data.tokenA).logoURI,
+      },
+      tokenB: {
+        ...data.tokenB,
+        path: getGnotPath(data.tokenB).path,
+        name: getGnotPath(data.tokenB).name,
+        symbol: getGnotPath(data.tokenB).symbol,
+        logoURI: getGnotPath(data.tokenB).logoURI,
+      },
+    };
+  }, [data]);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -37,32 +58,10 @@ const StakingContainer: React.FC = () => {
     if (!poolPath) {
       return;
     }
-    fetchPoolDatils(poolPath).then((e) => {
-      if (e) {
-        setPool({
-          ...e,
-          tokenA: {
-            ...e.tokenA,
-            name: getGnotPath(e.tokenA).name,
-            symbol: getGnotPath(e.tokenA).symbol,
-            logoURI: getGnotPath(e.tokenA).logoURI,
-          },
-          tokenB: {
-            ...e.tokenB,
-            name: getGnotPath(e.tokenB).name,
-            symbol: getGnotPath(e.tokenB).symbol,
-            logoURI: getGnotPath(e.tokenB).logoURI,
-          }
-        });
-      } else {
-        setPool(e);
-      }
-    });
     if (account?.address) {
-      getPositionsByPoolId(poolPath).then(positions => {
-        const stakedPositions = positions.filter(position => position.staked);
-        setPositions(stakedPositions);
-      });
+      const temp = getPositionsByPoolId(poolPath);
+      const stakedPositions = temp.filter(position => position.staked);
+      setPositions(stakedPositions);
     }
   }, [account?.address, router.query]);
 

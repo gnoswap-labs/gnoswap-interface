@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface LiquidityInfo {
@@ -92,8 +92,8 @@ const SwapLiquidityContainer: React.FC = () => {
         count++;
         return {
           ..._,
-          volume: `$${convertLargePrice(poolItem[0].volume.toString(), 6)}`,
-          liquidity: `$${convertLargePrice(poolItem[0].tvl.toString(), 2)}`,
+          volume: `$${convertToMB(poolItem[0].volume.toString(), 6)}`,
+          liquidity: `$${convertToKMB(poolItem[0].tvl.toString(), 2)}`,
           apr: !poolItem[0].apr ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
           active: true,
           id: poolItem[0].id,

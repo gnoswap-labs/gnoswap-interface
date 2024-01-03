@@ -9,9 +9,9 @@ import useClickOutside from "@hooks/common/use-click-outside";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
-import { convertLargePrice } from "@utils/stake-position-utils";
-import { useGetTokenPrices, useGetTokensList } from "@query/token";
+import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/use-token-data";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -154,8 +154,7 @@ const TokenListContainer: React.FC = () => {
     setIsInside(true);
   };
 
-  const { data: { tokens = [] } = {}, isFetched, error } = useGetTokensList();
-  const { data: { prices = [] } = {} } = useGetTokenPrices();
+  const { tokens, isFetched, error, tokenPrices } = useTokenData();
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -205,8 +204,8 @@ const TokenListContainer: React.FC = () => {
   const firstData = useMemo(() => {
     const temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
       const isGnot = item.path === "gnot";
-      const temp: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === (isGnot ? wugnotPath : item.path))?.[0] ?? {};
-      const tempWuGnot: TokenPriceModel = prices.filter((price: TokenPriceModel) => price.path === wugnotPath)?.[0] ?? {};
+      const temp: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
+      const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
@@ -245,7 +244,7 @@ const TokenListContainer: React.FC = () => {
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(transferData.liquidity || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(transferData.volume || 0)).toLocaleString()}`,
-        price: `$${convertLargePrice((transferData.usd || "0"), 6)}`,
+        price: `$${convertToMB((transferData.usd || "0"), 6)}`,
         priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
         priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
         priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
@@ -254,15 +253,13 @@ const TokenListContainer: React.FC = () => {
     });
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
     return temp.map((item: Token, i: number) => ({...item, idx: i}));
-  }, [tokens, prices]);
+  }, [tokens, tokenPrices]);
     
   const getDatas = useCallback(() => {
-    const temp = firstData;
+    const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
+    const temp = firstData.filter((item: Token) => ((item.token.path.includes(grc20))));
     if (keyword) {
       return temp.filter((item: Token) => (item.token.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.token.symbol.toLowerCase()).includes(keyword.toLowerCase()));
-    }
-    if (tokenType !== TOKEN_TYPE.ALL) {
-      return temp.filter((item: Token) => ((item.token.path.includes("gno.land/r/"))));
     }
     if (sortOption) {
       if(sortOption.key === TABLE_HEAD.NAME) {

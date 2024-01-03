@@ -44,7 +44,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   themeKey,
 }) => {
 
-  if ((!connected || isSwitchNetwork) && !loading) {
+  if ((!connected || isSwitchNetwork)) {
     return (
       <EarnMyPositionsUnconnected
         connect={connect}

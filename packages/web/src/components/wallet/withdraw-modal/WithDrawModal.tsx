@@ -12,7 +12,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { convertLargePrice } from "@utils/stake-position-utils";
+import { convertToMB } from "@utils/stake-position-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState } from "react";
@@ -140,7 +140,7 @@ const WithDrawModal: React.FC<Props> = ({
     (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0);
   const estimatePrice =
     withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-      ? convertLargePrice(
+      ? convertToMB(
           BigNumber(+amount)
             .multipliedBy(
               Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),

@@ -46,7 +46,7 @@ export const FeeWrapper = styled.div`
         fill: ${({ theme }) => theme.color.point};
       }
       h1 {
-        background: linear-gradient(90deg, #0059FF -27.22%, #8C8DFC 137.97%);
+        background: linear-gradient(90deg, #233DBD -27.22%, #8C8DFC 137.97%);
         -webkit-background-clip: text;
         color: transparent;
       }

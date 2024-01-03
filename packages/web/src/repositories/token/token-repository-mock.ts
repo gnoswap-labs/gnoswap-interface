@@ -29,7 +29,7 @@ export class TokenRepositoryMock implements TokenRepository {
   public getTokenByPath = async (path: string): Promise<ITokenResponse> => {
     console.log(path);
     
-    return TokenByPath;
+    return TokenByPath as ITokenResponse;
   };
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {

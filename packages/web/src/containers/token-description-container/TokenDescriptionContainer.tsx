@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
 import { useRouter } from "next/router";
-import { useGetTokensList } from "@query/token";
-import { TokenModel } from "@models/token/token-model";
+import { useGetTokenByPath } from "@query/token";
 
 export interface DescriptionInfo {
   token: {
@@ -38,10 +37,10 @@ export const descriptionInit: DescriptionInfo = {
 
 const TokenDescriptionContainer: React.FC = () => {
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
-  const { data: { tokens = [] } = {}, isLoading } = useGetTokensList();
   const [copied, setCopied] = useState(false);
   const router = useRouter();
-
+  const path = router.query["tokenB"] as string;
+  const { data: tokenB, isLoading } = useGetTokenByPath(path, { enabled: !!path });
   const copyClick = async () => {
     try {
       await navigator.clipboard.writeText(descriptionInfo.token.pkg_path);
@@ -54,25 +53,24 @@ const TokenDescriptionContainer: React.FC = () => {
     }
   };
   useEffect(() => {
-    const currentToken: TokenModel = tokens.filter((item: TokenModel) => item.symbol === router.query["token-path"])[0];
-    if (currentToken) {
+    if (tokenB) {
       setDescriptionInfo(() => ({
         token: {
-          name: currentToken.name,
-          symbol: currentToken.symbol,
-          image: currentToken.logoURI,
-          pkg_path: currentToken.path,
+          name: tokenB.name,
+          symbol: tokenB.symbol,
+          image: tokenB.logoURI,
+          pkg_path: tokenB.path,
           decimals: 1,
-          description: currentToken.description || "",
-          website_url: currentToken.websiteURL || "",
+          description: tokenB.description || "",
+          website_url: tokenB.websiteURL || "",
         },
         links: {
-          Website: currentToken.websiteURL || "",
-          Gnoscan: `https://gnoscan.io/tokens/${currentToken.path}`,
+          Website: tokenB.websiteURL || "",
+          Gnoscan: `https://gnoscan.io/tokens/${tokenB.path}`,
         }
       }));
     }
-  }, [router.query, tokens]);
+  }, [router.query, tokenB]);
 
   return (
     <TokenDescription

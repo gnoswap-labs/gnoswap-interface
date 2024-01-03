@@ -138,7 +138,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       background: ${({ theme }) => theme.color.background21};
       border: 1px solid ${({ theme }) => theme.color.border16};
       span {
-        color: #e0e8f4;
+        color: ${({ theme }) => theme.color.text27};
       }
     }
   }

@@ -1,5 +1,5 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { convertLargePrice } from "./stake-position-utils";
+import { convertToMB } from "./stake-position-utils";
 import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import { TokenModel } from "@models/token/token-model";
 
@@ -86,7 +86,7 @@ export const checkPositivePrice = (
       ? "-"
       : `${
           status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"
-        }$${convertLargePrice(
+        }$${convertToMB(
           Math.abs(checkToNumber - currentToNumber).toString(),
           fixedPrice ?? 2
         )}`;
@@ -102,19 +102,19 @@ export const checkPositivePrice = (
 export function generateDateSequence(
   startDateString: string,
   endDateString: string,
+  space: number,
 ) {
   const startDate = new Date(startDateString);
+  if (startDate.getMinutes() !== 0) {
+    startDate.setMinutes(0);
+  }
+  startDate.setHours(startDate.getHours() + 2);
+
   const lastDate = new Date(endDateString);
   const temp = [];
   while (startDate <= lastDate) {
-    if (startDate.getMinutes() === 0) {
-      if (startDate.getHours() % 2 === 0) {
-        temp.push(new Date(startDate.toLocaleString("en-US")));
-      }
-    } else {
-      startDate.setMinutes(0);
-    }
-    startDate.setHours(startDate.getHours() + 1);
+    temp.push(new Date(startDate.toLocaleString("en-US")));
+    startDate.setHours(startDate.getHours() + space);
   }
   return temp;
 }
@@ -133,8 +133,6 @@ export function countPoints(
 
   while (currentDateTime <= endDate) {
     count++;
-
-    // Tăng thêm số phút
     currentDateTime.setMinutes(currentDateTime.getMinutes() + intervalMinutes);
   }
 

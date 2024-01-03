@@ -254,8 +254,7 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { isFetched } = useGetTokensList();
-  const { tokens, displayBalanceMap, balances, updateTokens, tokenPrices } =
+  const { tokens, displayBalanceMap, balances, updateTokens, tokenPrices, isFetched } =
     useTokenData();
 
   useEffect(() => {
