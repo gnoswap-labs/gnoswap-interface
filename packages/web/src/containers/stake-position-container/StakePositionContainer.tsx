@@ -10,9 +10,8 @@ const StakePositionContainer: React.FC = () => {
   const router = useRouter();
   const { account } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositions, getPositionsByPoolId } = usePositionData();
+  const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [isFetched, setIsFetched] = useState(false);
   const { openModal } = useSubmitPositionModal({
     positions,
     selectedIds: checkedList
@@ -60,26 +59,16 @@ const StakePositionContainer: React.FC = () => {
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
-    console.log(account?.address, "account?.address", poolPath, account);
     if (!account?.address) {
         setPositions([]);
-        setIsFetched(true);
         return;
     }
     if (!poolPath) {
-        getPositions().then((e) => {
-        
-        setPositions(e);
-        setIsFetched(true);
-      });
-      setIsFetched(true);
+      setPositions(positionData);
       return;
     }
-    getPositionsByPoolId(poolPath).then((e) => {
-      setPositions(e);
-      setIsFetched(true);
-    });
-  }, [account?.address, getPositions, getPositionsByPoolId, router.query]);
+    setPositions(getPositionsByPoolId(poolPath));
+  }, [account?.address, getPositionsByPoolId, router.query]);
   const isEmpty = useMemo(() => {
     return stakedPositions.length === 0 && unstakedPositions.length === 0 && isFetched;
   }, [stakedPositions.length, unstakedPositions.length, isFetched]);

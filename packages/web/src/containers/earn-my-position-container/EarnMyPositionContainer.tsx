@@ -5,7 +5,6 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { ValuesType } from "utility-types";
@@ -40,8 +39,7 @@ const EarnMyPositionContainer: React.FC<
   const { width } = useWindowSize();
   const divRef = useRef<HTMLDivElement | null>(null);
   const { openModal } = useConnectWalletModal();
-  const { isError, availableStake, getPositions, isFetchedPosition, loading : loadingPosition } = usePositionData();
-  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { isError, availableStake, isFetchedPosition, loading : loadingPosition, positions } = usePositionData();
   const [mobile, setMobile] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
 
@@ -61,12 +59,6 @@ const EarnMyPositionContainer: React.FC<
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    getPositions().then((e) => {
-      setPositions(e.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue)));
-    });
-  }, [getPositions]);
 
   const connect = useCallback(() => {
     if (!connected) {
@@ -113,13 +105,15 @@ const EarnMyPositionContainer: React.FC<
   }, [page]);
 
   const dataMapping = useMemo(() => {
+    const temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+
     if (page === 1) {
       if (width > 1180) {
-        return positions.slice(0, 4);
+        return temp.slice(0, 4);
       } else if (width > 920) {
-        return positions.slice(0, 3);
-      } else return positions;
-    } else return positions;
+        return temp.slice(0, 3);
+      } else return temp;
+    } else return temp;
   }, [width, page, positions]);
 
   return (

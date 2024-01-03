@@ -19,7 +19,7 @@ const MyLiquidityContainer: React.FC = () => {
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const { getPositionsByPoolId, loading } = usePositionData();
   const { claimAll } = usePosition(positions);
-  const { gnot, getGnotPath } = useGnotToGnot();
+  const { gnot } = useGnotToGnot();
 
 
   const availableRemovePosition = useMemo(() => {
@@ -58,36 +58,7 @@ const MyLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      getPositionsByPoolId(poolPath).then((list: PoolPositionModel[]) => {
-        if (list) {
-          const temp = list.map((e: PoolPositionModel) => {
-            const pool = e.pool;
-            return {
-              ...e,
-              pool: {
-                ...pool,
-                tokenA: {
-                  ...pool.tokenA,
-                  path: getGnotPath(pool.tokenA).path,
-                  name: getGnotPath(pool.tokenA).name,
-                  symbol: getGnotPath(pool.tokenA).symbol,
-                  logoURI: getGnotPath(pool.tokenA).logoURI,
-                },
-                tokenB: {
-                  ...pool.tokenB,
-                  path: getGnotPath(pool.tokenB).path,
-                  name: getGnotPath(pool.tokenB).name,
-                  symbol: getGnotPath(pool.tokenB).symbol,
-                  logoURI: getGnotPath(pool.tokenB).logoURI,
-                },
-              }
-            };
-          });
-          return setPositions(temp);
-        } else {
-          setPositions(list);
-        }
-      });
+      setPositions(getPositionsByPoolId(poolPath));
     }
   }, [account?.address, getPositionsByPoolId, router.query, gnot]);
   

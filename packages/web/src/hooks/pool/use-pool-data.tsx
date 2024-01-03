@@ -1,11 +1,9 @@
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { QUERY_KEY, useGetPoolList } from "@query/pools";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
@@ -15,7 +13,6 @@ export const usePoolData = () => {
   const { data: pools = [], isLoading: loading, isFetched: isFetchedPools } = useGetPoolList();
   const forceRefect = useForceRefetchQuery();
 
-  const { poolRepository } = useGnoswapContext();
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(
     PoolState.isFetchedPositions,
   );
@@ -107,19 +104,6 @@ export const usePoolData = () => {
     forceRefect({queryKey: [QUERY_KEY.pools]});
   }
 
-  async function fetchPoolDetail(
-    poolId: string,
-  ): Promise<PoolDetailModel | null> {
-    if (pools.length === 0) {
-      await updatePools();
-    }
-    const pool = pools.find(pool => pool.id === poolId);
-    if (!pool) {
-      return null;
-    }
-    return poolRepository.getPoolDetailByPoolPath(pool.path).catch(() => null);
-  }
-
   return {
     isFetchedPools,
     higestAPRs,
@@ -129,7 +113,6 @@ export const usePoolData = () => {
     incentivizedPools,
     updatePools,
     updatePositions,
-    fetchPoolDetail,
     loading,
     gnot,
   };

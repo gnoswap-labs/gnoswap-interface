@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
-import { usePoolData } from "@hooks/pool/use-pool-data";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetPoolDetailByPath } from "@query/pools";
 
 export interface pathProps {
   title: string;
@@ -19,11 +18,33 @@ export const menu = {
 
 const PoolPairInformationContainer = () => {
   const router = useRouter();
-  const [pool, setPool] = useState<PoolDetailModel | null>(null);
-  const { gnot, getGnotPath } = useGnotToGnot();
+  const { getGnotPath } = useGnotToGnot();
+  const poolPath = router.query["pool-path"] || "";
+  const { data = null, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const onClickPath = (path: string) => {
+    router.push(path);
+  };
 
-  const { fetchPoolDetail, loading } = usePoolData();
-
+  const pool = useMemo(() => {
+    if (!data) return null;
+    return {
+      ...data,
+      tokenA: {
+        ...data.tokenA,
+        path: getGnotPath(data.tokenA).path,
+        name: getGnotPath(data.tokenA).name,
+        symbol: getGnotPath(data.tokenA).symbol,
+        logoURI: getGnotPath(data.tokenA).logoURI,
+      },
+      tokenB: {
+        ...data.tokenB,
+        path: getGnotPath(data.tokenB).path,
+        name: getGnotPath(data.tokenB).name,
+        symbol: getGnotPath(data.tokenB).symbol,
+        logoURI: getGnotPath(data.tokenB).logoURI,
+      },
+    };
+  }, [data]);
 
   const feeStr = useMemo(() => {
     if (!pool?.fee) {
@@ -32,42 +53,6 @@ const PoolPairInformationContainer = () => {
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
-  const onClickPath = (path: string) => {
-    router.push(path);
-  };
-
-  useEffect(() => {
-    
-    const poolPath = router.query["pool-path"] as string;
-    if (!poolPath) {
-      return;
-    }
-    fetchPoolDetail(poolPath).then((e) => {
-      if (e) {
-        const poolMap = {
-          ...e,
-          tokenA: {
-            ...e.tokenA,
-            path: getGnotPath(e.tokenA).path,
-            name: getGnotPath(e.tokenA).name,
-            symbol: getGnotPath(e.tokenA).symbol,
-            logoURI: getGnotPath(e.tokenA).logoURI,
-          },
-          tokenB: {
-            ...e.tokenB,
-            path: getGnotPath(e.tokenB).path,
-            name: getGnotPath(e.tokenB).name,
-            symbol: getGnotPath(e.tokenB).symbol,
-            logoURI: getGnotPath(e.tokenB).logoURI,
-          },
-        };
-        setPool(poolMap);
-      } else {
-        setPool(e);
-      }
-    });
-  }, [router.query, gnot]);
-  
   return pool && (
     <PoolPairInformation
       pool={pool}

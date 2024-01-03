@@ -42,12 +42,12 @@ const OneClickStakingContainer: React.FC = () => {
       return;
     }
     if (poolId) {
-      getPositionsByPoolId(poolId).then(setPositions);
+      setPositions(getPositionsByPoolId(poolId));
       return;
     }
 
     if (poolPath) {
-      getPositionsByPoolPath(poolPath).then(setPositions);
+      setPositions(getPositionsByPoolPath(poolPath));
     }
   }, [account?.address, poolId, poolPath]);
 
