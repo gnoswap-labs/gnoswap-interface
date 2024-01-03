@@ -3,7 +3,11 @@ import BestPools from "@components/token/best-pools/BestPools";
 import { SwapFeeTierType } from "@constants/option.constant";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useRouter } from "next/router";
-import { useGetTokenDetailByPath } from "@query/token";
+import {
+  useGetChainList,
+  useGetTokenDetailByPath,
+  useGetTokensList,
+} from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { useGetPoolList } from "src/react-query/pools";
@@ -53,13 +57,23 @@ export const bestPoolListInit: BestPool[] = [
 const BestPoolsContainer: React.FC = () => {
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   const router = useRouter();
-  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(router.query["tokenB"] === "gnot" ? wugnotPath : router.query["tokenB"] as string, { enabled: !!router.query["tokenB"]});
-  const { data: pools = [] } = useGetPoolList();
+  const path = router.query["tokenB"] as string;
+  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(
+    path === "gnot" ? wugnotPath : path,
+    { enabled: !!path },
+  );
+  const { data: pools = [], isLoading: isLoadingGetPoolList } =
+    useGetPoolList();
+  const { isLoading: isLoadingChainList } = useGetChainList();
+  const { isLoading: isLoadingListToken } = useGetTokensList();
 
   const bestPoolList: BestPool[] = useMemo(() => {
     return bestPools.map((item: IBestPoolResponse) => {
-      const temp = pools.filter((_item: PoolModel) => _item.poolPath === item.poolPath)?.[0] || {};
-      
+      const temp =
+        pools.filter(
+          (_item: PoolModel) => _item.poolPath === item.poolPath,
+        )?.[0] || {};
+
       return {
         tokenPair: {
           tokenA: {
@@ -75,7 +89,7 @@ const BestPoolsContainer: React.FC = () => {
             logoURI: getGnotPath(item.tokenB).logoURI,
           },
         },
-        poolPath: temp?.poolPath || "", 
+        poolPath: temp?.poolPath || "",
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
         tvl: `$${convertToKMB(item.tvl)}`,
@@ -83,8 +97,19 @@ const BestPoolsContainer: React.FC = () => {
       };
     });
   }, [bestPools, pools.toString(), gnot, wugnotPath]);
-  
-  return <BestPools titleSymbol={router?.query["token-path"] as string || ""} cardList={bestPoolList} loading={isLoading}/>;
+
+  return (
+    <BestPools
+      titleSymbol={(router?.query["token-path"] as string) || ""}
+      cardList={bestPoolList}
+      loading={
+        isLoading ||
+        isLoadingGetPoolList ||
+        isLoadingChainList ||
+        isLoadingListToken
+      }
+    />
+  );
 };
 
 export default BestPoolsContainer;

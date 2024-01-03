@@ -1,11 +1,17 @@
 import React, { useMemo } from "react";
 import TrendingCryptoCardList from "@components/token/trending-crypto-card-list/TrendingCryptoCardList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetChainList, useGetTokensList } from "@query/token";
+import {
+  useGetChainList,
+  useGetTokenDetailByPath,
+  useGetTokensList,
+} from "@query/token";
 import { ITrending } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
 import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useRouter } from "next/router";
+import { useGetPoolList } from "@query/pools";
 
 const trendingCryptoInit = [
   {
@@ -41,10 +47,18 @@ export const trendingCryptoListInit = [
 ];
 
 const TrendingCryptoCardListContainer: React.FC = () => {
-  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokensList();
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } =
+    useGetTokensList();
   const { data: { trending = [] } = {}, isLoading } = useGetChainList();
   const { gnot, wugnotPath } = useGnotToGnot();
-  
+  const router = useRouter();
+  const path = router.query["tokenB"] as string;
+  const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
+    path === "gnot" ? wugnotPath : path,
+    { enabled: !!path },
+  );
+  const { isLoading: isLoadingGetPoolList } = useGetPoolList();
+
   const trendingCryptoList = useMemo(() => {
     return trending.map((item: ITrending) => {
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
@@ -62,7 +76,17 @@ const TrendingCryptoCardListContainer: React.FC = () => {
     }).slice(0, 5);
   }, [tokens, trending, gnot, wugnotPath]);
 
-  return <TrendingCryptoCardList list={trendingCryptoList} loading={isLoading || isLoadingListToken} />;
+  return (
+    <TrendingCryptoCardList
+      list={trendingCryptoList}
+      loading={
+        isLoading ||
+        isLoadingListToken ||
+        isLoadingTokenDetail ||
+        isLoadingGetPoolList
+      }
+    />
+  );
 };
 
 export default TrendingCryptoCardListContainer;

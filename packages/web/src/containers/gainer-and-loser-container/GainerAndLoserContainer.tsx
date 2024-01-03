@@ -1,11 +1,17 @@
 import React, { useMemo } from "react";
 import GainerAndLoser from "@components/token/gainer-and-loser/GainerAndLoser";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetChainList, useGetTokensList } from "@query/token";
+import {
+  useGetChainList,
+  useGetTokenDetailByPath,
+  useGetTokensList,
+} from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
 import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGetPoolList } from "@query/pools";
+import { useRouter } from "next/router";
 
 export const gainersInit = [
   {
@@ -84,9 +90,20 @@ export const losersInit = [
 ];
 
 const GainerAndLoserContainer: React.FC = () => {
-  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokensList();
-  const { data: { gainers = [], losers = [] } = {}, isLoading } = useGetChainList();
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } =
+    useGetTokensList();
+  const { data: { gainers = [], losers = [] } = {}, isLoading } =
+    useGetChainList();
   const { gnot, wugnotPath } = useGnotToGnot();
+  const router = useRouter();
+  const path = router.query["tokenB"] as string;
+  const { isLoading: isLoadingGetPoolList } = useGetPoolList();
+  const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
+    path === "gnot" ? wugnotPath : path,
+    {
+      enabled: !!path,
+    },
+  );
 
   const gainersList = useMemo(() => {
     return gainers.map((item: IGainer) => {
@@ -122,12 +139,24 @@ const GainerAndLoserContainer: React.FC = () => {
     }).slice(0, 3);
   }, [tokens, losers]);
 
-  return <GainerAndLoser
+  return (
+    <GainerAndLoser
       gainers={gainersList}
       losers={loserList}
-      loadingLose={isLoading || isLoadingListToken}
-      loadingGain={isLoading || isLoadingListToken}
-    />;
+      loadingLose={
+        isLoading ||
+        isLoadingListToken ||
+        isLoadingGetPoolList ||
+        isLoadingTokenDetail
+      }
+      loadingGain={
+        isLoading ||
+        isLoadingListToken ||
+        isLoadingGetPoolList ||
+        isLoadingTokenDetail
+      }
+    />
+  );
 };
 
 export default GainerAndLoserContainer;
