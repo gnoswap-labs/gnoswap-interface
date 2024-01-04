@@ -179,7 +179,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="token-logo" width={36} mobileWidth={24}/>
                     <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="token-logo" width={36} mobileWidth={24}/>
                   </div>}
-                  {!loading && <span className="product-id">ID {position.id}</span>}
+                  {!loading && <span className="product-id">ID #{position.id}</span>}
                 </div>
               </>
             )}

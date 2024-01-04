@@ -18,6 +18,7 @@ import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
+import { formatUsdNumber } from "@utils/number-utils";
 
 export const useTokenData = () => {
   const { data: { tokens = [] } = {}, isLoading: loading, isFetched, error } = useGetTokensList();
@@ -127,7 +128,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertToMB(tokenPrices[token.path].usd, 10)}`,
+              content: `$${convertToMB(formatUsdNumber(tokenPrices[token.path].usd), 3)}`,
             }
           : {
               token: {

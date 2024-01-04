@@ -20,6 +20,7 @@ import {
   useGetTokenDetailByPath,
 } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatUsdNumber } from "@utils/number-utils";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -265,7 +266,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice ? Number(currentPrice) : "",
+            value: currentPrice ? Number(formatUsdNumber(currentPrice)) : "",
             denom: "USD",
             status: dataToday.status,
           },

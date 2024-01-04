@@ -20,6 +20,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
+import { formatUsdNumber } from "@utils/number-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -202,6 +203,8 @@ const HeaderContainer: React.FC = () => {
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
+      const usdFormat = formatUsdNumber(transferData.usd);
+      
       return {
         path: "",
         searchType: "",
@@ -211,7 +214,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${convertToMB(transferData.usd || "0", 6)}`,
+        price: `$${convertToMB(usdFormat || "0", 3)}`,
         priceOf1d: {
           status: dataToday.status,
           value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",

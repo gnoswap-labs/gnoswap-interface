@@ -12,6 +12,7 @@ import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
 import { useRouter } from "next/router";
+import { formatUsdNumber } from "@utils/number-utils";
 
 export const gainersInit = [
   {
@@ -113,7 +114,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertToMB(item.tokenPrice, 10)}`,
+        price: `$${convertToMB(formatUsdNumber(item.tokenPrice), 3)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
@@ -130,7 +131,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertToMB(item.tokenPrice, 10)}`,
+        price: `$${convertToMB(formatUsdNumber(item.tokenPrice), 3)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,

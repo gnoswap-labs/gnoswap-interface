@@ -219,3 +219,11 @@ export function prettyNumberFloatInteger(val: string | number) {
     return convertToMB(val.toString());
   }
 }
+
+export function formatUsdNumber(val: string | number) {
+  const temp = Number(val);
+  if (!Number.isNaN(temp) && temp < 1) {
+    return (Math.floor(temp * 1000) / 1000).toString();
+  }
+  return !Number.isNaN(temp) ? temp.toFixed(2) : String(val);
+}

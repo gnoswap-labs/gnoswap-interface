@@ -128,7 +128,7 @@ export const wrapper = (theme: Theme) => css`
         gap: 16px;
         .swap-tablet {
           position: relative;
-          display: initial;
+          display: none;
           width: 100%;
           .inputs {
             .amount-text {
