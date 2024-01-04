@@ -42,9 +42,9 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
 
   const getColor = useCallback(() => {
     if (getStatus() === "UP") {
-      return theme.color.green01;
+      return theme.color.greenOpacity;
     }
-    return theme.color.red01;
+    return theme.color.redOpacity;
   }, [getStatus, theme]);
 
   const getGradientColor = useCallback(() => {
@@ -70,7 +70,7 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
       gradientEndColor={getGradientColor().end}
       width={width}
       height={height}
-      centerLineColor={checkSameData ? theme.color.green01 : undefined}
+      centerLineColor={checkSameData ? theme.color.greenOpacity : undefined}
     />
   );
 };

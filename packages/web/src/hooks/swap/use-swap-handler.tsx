@@ -20,6 +20,7 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { formatUsdNumber } from "@utils/stake-position-utils";
+import { useRouter } from "next/router";
 
 export const useSwapHandler = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -29,6 +30,7 @@ export const useSwapHandler = () => {
     type = "EXACT_IN",
     tokenAAmount: defaultTokenAAmount,
   } = swapValue;
+  const router = useRouter();
 
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
@@ -456,14 +458,17 @@ export const useSwapHandler = () => {
         setTokenAAmount(tokenBAmount);
         setTokenBAmount(tokenAAmount);
       }
+      const tokenBTemp = swapValue.tokenA?.symbol === token.symbol ? swapValue.tokenA : token;
       setSwapValue(prev => ({
-        tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
+        ...prev,
         tokenA:
           prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
         type: changedSwapDirection,
       }));
+      router.push(`/tokens/${tokenBTemp.symbol}?tokenB=${tokenBTemp.path}&direction=${changedSwapDirection}`);
+      
     },
-    [tokenA, type, tokenBAmount, tokenAAmount],
+    [tokenA, type, tokenBAmount, tokenAAmount, swapValue],
   );
 
   const switchSwapDirection = useCallback(() => {
@@ -502,9 +507,7 @@ export const useSwapHandler = () => {
 
   const copyURL = async () => {
     try {
-      const protocol = window?.location?.protocol || "";
-      const host = window?.location?.host || "";
-      const url = `${protocol}://${host}/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}`;
+      const url = window?.location?.href;
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => {

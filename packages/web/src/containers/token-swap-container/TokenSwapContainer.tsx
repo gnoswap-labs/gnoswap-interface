@@ -13,7 +13,7 @@ const TokenSwapContainer: React.FC = () => {
   const router = useRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const path = router.query["tokenB"] as string;
-  const { data: tokenB = null } = useGetTokenByPath(path, { enabled: !!path});
+  const { data: tokenB = null, isFetched } = useGetTokenByPath(path, { enabled: !!path});
   
   const {
     connectedWallet,
@@ -44,13 +44,15 @@ const TokenSwapContainer: React.FC = () => {
   } = useSwapHandler();
 
   useEffect(() => {
-    setSwapValue({
-      tokenA: null,
-      tokenB: tokenB,
-      type: "EXACT_IN",
-    });
-  }, [tokenB]);
-
+    if (isFetched) {
+      setSwapValue({
+        tokenA: null,
+        tokenB: tokenB,
+        type: "EXACT_IN",
+      });
+    }
+  }, [tokenB, isFetched]);
+  
   return (
     <>
       <TokenSwap

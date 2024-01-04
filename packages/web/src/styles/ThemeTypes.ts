@@ -117,8 +117,10 @@ export interface ThemeColorType {
   point: string;
   green01: string;
   green02: string;
+  greenOpacity: string;
   red01: string;
   red02: string;
+  redOpacity: string;
   select: string;
   redDark: string;
   greenDark: string;
