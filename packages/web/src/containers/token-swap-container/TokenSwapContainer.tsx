@@ -7,6 +7,7 @@ import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuMod
 import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { useGetTokenByPath } from "@query/token";
+import { TokenModel } from "@models/token/token-model";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -41,6 +42,7 @@ const TokenSwapContainer: React.FC = () => {
     executeSwap,
     isSwitchNetwork,
     isLoading,
+    swapValue,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -54,6 +56,12 @@ const TokenSwapContainer: React.FC = () => {
     }
   }, [tokenB, isFetched]);
   
+  const handleChangeTokenB = (token: TokenModel) => {
+    const tokenBTemp = swapValue.tokenA?.symbol === token.symbol ? swapValue.tokenA : token;
+    router.push(`/tokens/${tokenBTemp.symbol}?tokenB=${tokenBTemp.path}&direction=EXACT_IN`);
+    changeTokenB(token);
+  };
+
   return (
     <>
       <TokenSwap
@@ -68,7 +76,7 @@ const TokenSwapContainer: React.FC = () => {
         isSwitchNetwork={isSwitchNetwork}
         dataTokenInfo={swapTokenInfo}
         changeTokenA={changeTokenA}
-        changeTokenB={changeTokenB}
+        changeTokenB={handleChangeTokenB}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenBAmount={changeTokenBAmount}
         isLoading={isLoading}
