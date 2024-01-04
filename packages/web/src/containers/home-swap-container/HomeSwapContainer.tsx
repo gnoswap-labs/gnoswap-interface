@@ -11,7 +11,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { formatUsdNumber } from "@utils/stake-position-utils";
-import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 const GNOS_PATH = "gno.land/r/demo/gns" || "";
 
 const TOKEN_A: TokenModel = {
@@ -25,7 +24,7 @@ const TOKEN_A: TokenModel = {
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "native",
-  priceId: WRAPPED_GNOT_PATH,
+  priceId: "gnot",
 };
 const TOKEN_B: TokenModel = {
   chainId: "dev",

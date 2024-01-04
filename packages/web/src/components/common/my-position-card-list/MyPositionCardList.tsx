@@ -35,7 +35,8 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   onScroll,
   showPagination,
   width,
-  themeKey
+  themeKey,
+  showLoadMore,
 }) => (
   <CardListWrapper>
     <GridWrapper ref={divRef} onScroll={onScroll}>
@@ -63,7 +64,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
         : null}
     </GridWrapper>
     {!mobile &&
-      positions?.length > 4 &&
+      showLoadMore &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )}

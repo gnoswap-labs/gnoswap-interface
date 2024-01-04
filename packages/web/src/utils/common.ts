@@ -2,6 +2,7 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { convertToMB } from "./stake-position-utils";
 import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import { TokenModel } from "@models/token/token-model";
+import { formatUsdNumber3Digits } from "./number-utils";
 
 export function wait<T>(
   runner: () => Promise<T>,
@@ -87,7 +88,7 @@ export const checkPositivePrice = (
       : `${
           status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"
         }$${convertToMB(
-          Math.abs(checkToNumber - currentToNumber).toString(),
+          formatUsdNumber3Digits(Math.abs(checkToNumber - currentToNumber).toString()),
           fixedPrice ?? 2
         )}`;
   return {

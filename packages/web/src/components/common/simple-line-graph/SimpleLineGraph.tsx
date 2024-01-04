@@ -1,17 +1,20 @@
 import { useTheme } from "@emotion/react";
 import React, { useCallback, useMemo } from "react";
 import LineGraph from "../line-graph/LineGraph";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
 export interface SimpleLineGraphProps {
   datas: number[];
   width?: number;
   height?: number;
+  status: MATH_NEGATIVE_TYPE
 }
 
 const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
   datas,
   width,
-  height
+  height,
+  status,
 }) => {
   const theme = useTheme();
 
@@ -31,10 +34,7 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
       return "UP";
     }
 
-    const result = datas.reduce((sum, current) => sum + current, 0);
-    const average = result / datas.length;
-
-    if (datas[datas.length - 1] > average) {
+    if (status === MATH_NEGATIVE_TYPE.POSITIVE) {
       return "UP";
     }
     return "DOWN";
@@ -70,7 +70,7 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
       gradientEndColor={getGradientColor().end}
       width={width}
       height={height}
-      centerLineColor={checkSameData ? theme.color.greenOpacity : undefined}
+      centerLineColor={checkSameData ? getColor() : undefined}
     />
   );
 };

@@ -134,7 +134,7 @@ const EarnMyPositionContainer: React.FC<
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={mobile}
+      showLoadMore={positions.length > 4}
       width={width}
       loadMore={page === 1}
       onClickLoadMore={handleClickLoadMore}
