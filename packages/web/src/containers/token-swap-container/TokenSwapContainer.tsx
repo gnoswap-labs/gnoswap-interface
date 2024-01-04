@@ -45,10 +45,11 @@ const TokenSwapContainer: React.FC = () => {
 
   useEffect(() => {
     if (isFetched) {
-      setSwapValue({
-        tokenA: null,
-        tokenB: tokenB,
-        type: "EXACT_IN",
+      setSwapValue(prev => {
+        return {
+          ...prev,
+          tokenB: tokenB,
+        };
       });
     }
   }, [tokenB, isFetched]);

@@ -4,7 +4,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
 import { useQuery } from "@tanstack/react-query";
-import { formatUsdNumber, prettyNumber } from "@utils/number-utils";
+import { formatUsdNumber3Digits, prettyNumber } from "@utils/number-utils";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -38,7 +38,10 @@ const formatPrice = (price?: string, unit?: string) => {
   if (unit) {
     return price ? `${Number(price).toLocaleString()} ${unit}` : "-";
   }
-  return price ? `$${formatUsdNumber(price).toLocaleString()}` : "-";
+  if (price && Number(price) < 1) {
+    return formatUsdNumber3Digits(price);
+  }
+  return price ? `$${Number(formatUsdNumber3Digits(price)).toLocaleString("en", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}` : "-";
 };
 
 export interface GovernenceOverviewInfo {

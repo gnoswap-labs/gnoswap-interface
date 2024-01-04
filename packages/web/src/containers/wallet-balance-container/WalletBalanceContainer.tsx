@@ -141,8 +141,8 @@ const WalletBalanceContainer: React.FC = () => {
           claimableRewards: `${claimableRewards}`,
           stakedLP: `${stakedBalance}`,
           unstakingLP: `${unStakedBalance}`,
-          loadingBalance,
-          loadingPositions,
+          loadingBalance: loadingTotalBalance,
+          loadingPositions: loadingTotalBalance,
         }}
         deposit={deposit}
         withdraw={withdraw}
