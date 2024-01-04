@@ -5,6 +5,7 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 export interface pathProps {
   title: string;
@@ -16,17 +17,65 @@ export const menu = {
   path: "/earn",
 };
 
+const initialPool: PoolDetailModel = {
+  name: "",
+  path: "",
+  tokenA: {
+    chainId: "",
+    createdAt: "",
+    name: "",
+    address: "",
+    path: "",
+    decimals: 4,
+    symbol: "",
+    logoURI: "",
+    type: "native",
+    priceId: "",
+  },
+  tokenB: {
+    chainId: "",
+    createdAt: "",
+    name: "",
+    address: "",
+    path: "",
+    decimals: 4,
+    symbol: "",
+    logoURI: "",
+    type: "native",
+    priceId: "",
+  },
+  incentivizedType: "INCENTIVIZED",
+  tvl: 0,
+  tvlChange: 0,
+  volume: 0,
+  volumeChange: 0,
+  totalVolume: 0,
+  id: "",
+  apr: 0,
+  fee: "",
+  feeVolume: 0,
+  feeChange: 0,
+  currentTick: 0,
+  price: 0,
+  tokenABalance: 0,
+  tokenBBalance: 0,
+  tickSpacing: 0,
+  bins: [],
+  rewardTokens: [],
+  poolPath: ""
+};
+
+
 const PoolPairInformationContainer = () => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
-  const { data = null, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { data = initialPool as PoolDetailModel, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const onClickPath = (path: string) => {
     router.push(path);
   };
-
+  
   const pool = useMemo(() => {
-    if (!data) return null;
     return {
       ...data,
       tokenA: {
@@ -53,7 +102,7 @@ const PoolPairInformationContainer = () => {
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
-  return pool && (
+  return (
     <PoolPairInformation
       pool={pool}
       menu={menu}
