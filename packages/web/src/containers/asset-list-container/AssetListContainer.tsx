@@ -330,11 +330,9 @@ const AssetListContainer: React.FC = () => {
       .filter(asset => filterType(asset, assetType))
       .filter(asset => filterKeyword(asset, keyword));
 
-    // const hasLoader = sortedData.length > COLLAPSED_LENGTH;
     const resultFilteredAssets = extended
       ? sortedData
       : sortedData.slice(0, Math.min(sortedData.length, COLLAPSED_LENGTH));
-    // setHasLoader(sortedData);
 
     return resultFilteredAssets;
   }, [
