@@ -1,11 +1,18 @@
 import React, { useMemo } from "react";
 import TrendingCryptoCardList from "@components/token/trending-crypto-card-list/TrendingCryptoCardList";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { useGetChainList, useGetTokensList } from "@query/token";
+import {
+  useGetChainList,
+  useGetTokenDetailByPath,
+  useGetTokensList,
+} from "@query/token";
 import { ITrending } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
 import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useRouter } from "next/router";
+import { useGetPoolList } from "@query/pools";
+import { formatUsdNumber3Digits } from "@utils/number-utils";
 
 const trendingCryptoInit = [
   {
@@ -41,10 +48,18 @@ export const trendingCryptoListInit = [
 ];
 
 const TrendingCryptoCardListContainer: React.FC = () => {
-  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokensList();
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } =
+    useGetTokensList();
   const { data: { trending = [] } = {}, isLoading } = useGetChainList();
   const { gnot, wugnotPath } = useGnotToGnot();
-  
+  const router = useRouter();
+  const path = router.query["tokenB"] as string;
+  const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
+    path === "gnot" ? wugnotPath : path,
+    { enabled: !!path },
+  );
+  const { isLoading: isLoadingGetPoolList } = useGetPoolList();
+
   const trendingCryptoList = useMemo(() => {
     return trending.map((item: ITrending) => {
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
@@ -53,7 +68,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertToMB(item.tokenPrice, 10)}`,
+        price: `$${convertToMB(formatUsdNumber3Digits(item.tokenPrice), 3)}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
@@ -62,7 +77,17 @@ const TrendingCryptoCardListContainer: React.FC = () => {
     }).slice(0, 5);
   }, [tokens, trending, gnot, wugnotPath]);
 
-  return <TrendingCryptoCardList list={trendingCryptoList} loading={isLoading || isLoadingListToken} />;
+  return (
+    <TrendingCryptoCardList
+      list={trendingCryptoList}
+      loading={
+        isLoading ||
+        isLoadingListToken ||
+        isLoadingTokenDetail ||
+        isLoadingGetPoolList
+      }
+    />
+  );
 };
 
 export default TrendingCryptoCardListContainer;

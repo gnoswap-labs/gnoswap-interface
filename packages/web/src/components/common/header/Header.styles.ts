@@ -74,7 +74,7 @@ export const LeftSection = styled.div`
     gap: 32px;
   }
   ${media.mobile} {
-    max-width: 21px;
+    max-width: 28px;
   }
 `;
 
@@ -86,8 +86,8 @@ export const LogoLink = styled.a`
     height: 32px;
   }
   ${media.mobile} {
-    width: 21px;
-    height: 24px;
+    width: 28px;
+    height: 32px;
   }
   .header-main-logo {
     width: 31.501px;
@@ -97,8 +97,8 @@ export const LogoLink = styled.a`
       height: 32px;
     }
     ${media.mobile} {
-      width: 21px;
-      height: 24px;
+      width: 28px;
+      height: 32px;
     }
   }
 `;

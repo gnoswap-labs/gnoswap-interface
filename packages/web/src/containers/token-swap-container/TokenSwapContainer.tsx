@@ -7,13 +7,14 @@ import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuMod
 import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { useGetTokenByPath } from "@query/token";
+import { TokenModel } from "@models/token/token-model";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const path = router.query["tokenB"] as string;
-  const { data: tokenB = null } = useGetTokenByPath(path, { enabled: !!path});
+  const { data: tokenB = null, isFetched } = useGetTokenByPath(path, { enabled: !!path});
   
   const {
     connectedWallet,
@@ -41,15 +42,25 @@ const TokenSwapContainer: React.FC = () => {
     executeSwap,
     isSwitchNetwork,
     isLoading,
+    swapValue,
   } = useSwapHandler();
 
   useEffect(() => {
-    setSwapValue({
-      tokenA: null,
-      tokenB: tokenB,
-      type: "EXACT_IN",
-    });
-  }, [tokenB]);
+    if (isFetched) {
+      setSwapValue(prev => {
+        return {
+          ...prev,
+          tokenB: tokenB,
+        };
+      });
+    }
+  }, [tokenB, isFetched]);
+  
+  const handleChangeTokenB = (token: TokenModel) => {
+    const tokenBTemp = swapValue.tokenA?.symbol === token.symbol ? swapValue.tokenA : token;
+    router.push(`/tokens/${tokenBTemp.symbol}?tokenB=${tokenBTemp.path}&direction=EXACT_IN`);
+    changeTokenB(token);
+  };
 
   return (
     <>
@@ -65,7 +76,7 @@ const TokenSwapContainer: React.FC = () => {
         isSwitchNetwork={isSwitchNetwork}
         dataTokenInfo={swapTokenInfo}
         changeTokenA={changeTokenA}
-        changeTokenB={changeTokenB}
+        changeTokenB={handleChangeTokenB}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenBAmount={changeTokenBAmount}
         isLoading={isLoading}

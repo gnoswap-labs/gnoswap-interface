@@ -23,6 +23,9 @@ export const TokenWrapper = styled.div`
 
   .amount-info {
     ${fonts.body5};
+    ${media.mobile} {
+      ${fonts.body7};
+    }
   }
 `;
 

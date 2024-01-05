@@ -20,6 +20,7 @@ import {
   useGetTokenDetailByPath,
 } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { formatUsdNumber3Digits } from "@utils/number-utils";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -111,21 +112,21 @@ export interface ChartInfo {
 
 const dummyTokenInfo: TokenInfo = {
   token: {
-    name: "Gnoswap",
-    symbol: "GNS",
-    image: "/gnos.svg",
-    pkg_path: "string",
+    name: "",
+    symbol: "",
+    image: "",
+    pkg_path: "",
     decimals: 1,
-    description: "string",
-    website_url: "string",
+    description: "",
+    website_url: "",
   },
   priceInfo: {
     amount: {
-      value: 0.9844,
-      denom: "USD",
+      value: "",
+      denom: "",
       status: MATH_NEGATIVE_TYPE.NONE,
     },
-    changedRate: 7.43,
+    changedRate: 0,
   },
 };
 
@@ -265,7 +266,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice ? Number(currentPrice) : "",
+            value: currentPrice ? Number(formatUsdNumber3Digits(currentPrice)) : "",
             denom: "USD",
             status: dataToday.status,
           },

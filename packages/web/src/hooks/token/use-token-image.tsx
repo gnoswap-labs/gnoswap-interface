@@ -1,19 +1,14 @@
-import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
-import { TokenState } from "@states/index";
-import { useAtom } from "jotai";
+import { useGetTokensList } from "@query/token";
 import { useCallback } from "react";
 
 export const useTokenImage = () => {
-  const [tokens] = useAtom(TokenState.tokens);
-
+  const { data: { tokens = [] } = {} } = useGetTokensList();
   const getTokenImage = useCallback((tokenId: string): string | null => {
-    const temp = tokenId === WRAPPED_GNOT_PATH ? "gnot" : tokenId;
-    return tokens.find(token => token.path === temp)?.logoURI || null;
+    return tokens.find(token => token.path === tokenId)?.logoURI || null;
   }, [tokens]);
 
   const getTokenSymbol = useCallback((tokenId: string): string | null => {
-    const temp = tokenId === WRAPPED_GNOT_PATH ? "gnot" : tokenId;
-    return tokens.find(token => token.path === temp)?.symbol || null;
+    return tokens.find(token => token.path === tokenId)?.symbol || null;
   }, [tokens]);
 
   return {

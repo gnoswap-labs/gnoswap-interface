@@ -219,3 +219,19 @@ export function prettyNumberFloatInteger(val: string | number) {
     return convertToMB(val.toString());
   }
 }
+
+export function formatUsdNumber3Digits(val: string | number) {
+  if (Number.isNaN(Number(val))) {
+    return String(val);
+  }
+  if (Number(val) >= 1) {
+    return (Math.floor(Number(val) * 100) / 100).toString();
+  }
+  const stringVal = val.toString();
+  for (let index = 0; index < stringVal.length; index++) {
+    if ((stringVal[index] !== "0" && stringVal[index] !== ".")) {
+      return stringVal.slice(0, index + 3);
+    }
+  }
+  return stringVal;
+}

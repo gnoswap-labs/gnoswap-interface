@@ -18,6 +18,7 @@ import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
+import { formatUsdNumber3Digits } from "@utils/number-utils";
 
 export const useTokenData = () => {
   const { data: { tokens = [] } = {}, isLoading: loading, isFetched, error } = useGetTokensList();
@@ -113,7 +114,7 @@ export const useTokenData = () => {
       .sort((t1, t2) => {
         const createTimeOfToken1 = new Date(t1.createdAt).getTime();
         const createTimeOfToken2 = new Date(t2.createdAt).getTime();
-        return createTimeOfToken2 - createTimeOfToken1;
+        return createTimeOfToken2 + createTimeOfToken1;
       })
       .filter((_: TokenModel) => !!_.logoURI);
     return sortedTokens
@@ -127,7 +128,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertToMB(tokenPrices[token.path].usd, 10)}`,
+              content: `$${convertToMB(formatUsdNumber3Digits(tokenPrices[token.path].usd), 10)}`,
             }
           : {
               token: {
@@ -140,6 +141,7 @@ export const useTokenData = () => {
               content: "-",
             },
       )
+      .filter((_: CardListTokenInfo) => _.content !== "-")
       .slice(0, 3);
   }, [tokenPrices, tokens]);
 

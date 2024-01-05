@@ -14,12 +14,13 @@ import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
-import { convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
+import { formatUsdNumber3Digits } from "@utils/number-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -36,6 +37,7 @@ export interface Token {
   fee: string;
   apr?: string;
   volume?: string;
+  liquidity: number;
 }
 
 export const RecentdummyToken: Token[] = [
@@ -61,6 +63,7 @@ export const RecentdummyToken: Token[] = [
     },
     fee: "0.03%",
     isLiquid: true,
+    liquidity: 0,
   },
   {
     path: Math.floor(Math.random() * 50 + 1).toString(),
@@ -82,6 +85,7 @@ export const RecentdummyToken: Token[] = [
       symbol: "GNOT",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
+    liquidity: 0,
     fee: "0.03%"
   },
   {
@@ -104,7 +108,8 @@ export const RecentdummyToken: Token[] = [
       symbol: "GNOT",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
-    fee: "0.03%"
+    fee: "0.03%",
+    liquidity: 0,
   },
 ];
 
@@ -123,7 +128,8 @@ export const PopulardummyToken: Token[] = [
       status: MATH_NEGATIVE_TYPE.POSITIVE,
       value: "12.08%",
     },
-    fee: "0.03%"
+    fee: "0.03%",
+    liquidity: 0,
   },
 ];
 
@@ -158,7 +164,7 @@ const HeaderContainer: React.FC = () => {
         || (item.tokenB.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenB.symbol.toLowerCase()).includes(keyword.toLowerCase())
       );
     }
-    return temp.slice(0, 3).map((item: PoolModel) => {
+    return temp.map((item: PoolModel) => {
       const filteredItem: TokenPriceModel | null = filterByLiquidityPool(tokenPrices, item.poolPath);
 
       return {
@@ -170,7 +176,7 @@ const HeaderContainer: React.FC = () => {
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
         },
-        price: `$${convertToMB(filteredItem ? filteredItem.liquidity : "0")}`,
+        price: `$${convertToKMB(filteredItem ? filteredItem.liquidity : "0")}`,
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",
@@ -184,8 +190,11 @@ const HeaderContainer: React.FC = () => {
         fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
         isLiquid: true,
         apr: `${!item.apr ? "-" : Number(item.apr) > 10 ? `${item.apr}% APR` : `${Number(item.apr).toFixed(2)}% APR`}`,
+        liquidity: Number(filteredItem ? filteredItem.liquidity : "0"),
       };
-    });
+    })
+    .sort((a, b) => b.liquidity - a.liquidity)
+    .slice(0, 3);
   }, [poolList, keyword, tokenPrices, gnot]);
   
   const popularTokens = useMemo(() => {
@@ -202,6 +211,8 @@ const HeaderContainer: React.FC = () => {
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
+      const usdFormat = formatUsdNumber3Digits(transferData.usd);
+      
       return {
         path: "",
         searchType: "",
@@ -211,7 +222,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${convertToMB(transferData.usd || "0", 6)}`,
+        price: `$${convertToMB(usdFormat || "0", 10)}`,
         priceOf1d: {
           status: dataToday.status,
           value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
@@ -225,6 +236,7 @@ const HeaderContainer: React.FC = () => {
         fee: "",
         isLiquid: false,
         volume: transferData.volume ?? "0",
+        liquidity: 0,
       };
     }).sort((a, b) => Number(b.volume) - Number(a.volume)).slice(0, keyword ? 6 : 6 - recents.length);
   }, [listTokens, recents.length, keyword, tokenPrices]);

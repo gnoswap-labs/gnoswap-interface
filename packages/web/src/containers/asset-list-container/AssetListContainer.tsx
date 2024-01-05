@@ -9,7 +9,6 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { useGetTokensList } from "@query/token";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
@@ -220,7 +219,7 @@ const AssetListContainer: React.FC = () => {
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [keyword, setKeyword] = useState("");
   // const [hasNext, setHasNext] = useState(false);
-  const [extended, setExtened] = useState(false);
+  const [extended, setExtened] = useState(true);
   const [hasLoader, setHasLoader] = useState(false);
   const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
   const { breakpoint } = useWindowSize();
@@ -331,11 +330,9 @@ const AssetListContainer: React.FC = () => {
       .filter(asset => filterType(asset, assetType))
       .filter(asset => filterKeyword(asset, keyword));
 
-    const hasLoader = sortedData.length > COLLAPSED_LENGTH;
     const resultFilteredAssets = extended
       ? sortedData
       : sortedData.slice(0, Math.min(sortedData.length, COLLAPSED_LENGTH));
-    setHasLoader(hasLoader);
 
     return resultFilteredAssets;
   }, [

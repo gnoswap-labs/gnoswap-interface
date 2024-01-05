@@ -275,7 +275,7 @@ export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];
 export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];
-export const MOBILE_ASSET_TD_WIDTH = [178, 178, 178, 80, 120];
+export const MOBILE_ASSET_TD_WIDTH = [230, 210, 210, 80, 120];
 export const TOKEN_TD_WIDTH = [
   56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124,
 ];

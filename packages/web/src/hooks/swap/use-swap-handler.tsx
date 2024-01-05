@@ -463,7 +463,7 @@ export const useSwapHandler = () => {
         type: changedSwapDirection,
       }));
     },
-    [tokenA, type, tokenBAmount, tokenAAmount],
+    [tokenA, type, tokenBAmount, tokenAAmount, swapValue],
   );
 
   const switchSwapDirection = useCallback(() => {
@@ -502,9 +502,7 @@ export const useSwapHandler = () => {
 
   const copyURL = async () => {
     try {
-      const protocol = window?.location?.protocol || "";
-      const host = window?.location?.host || "";
-      const url = `${protocol}://${host}/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}`;
+      const url = window?.location?.href;
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => {
@@ -716,5 +714,6 @@ export const useSwapHandler = () => {
     tokenB,
     tokenAAmount,
     tokenBAmount,
+    swapValue,
   };
 };

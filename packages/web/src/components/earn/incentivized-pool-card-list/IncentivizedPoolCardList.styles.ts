@@ -43,7 +43,6 @@ export const PoolListWrapper = styled.div`
     height: 348px;
     border-radius: 10px;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
-    border : 1px solid ${({theme}) => theme.color.border01}
   }
 
   ${media.tablet} {

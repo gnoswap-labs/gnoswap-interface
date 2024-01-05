@@ -32,7 +32,7 @@ export const wrapper = (theme: Theme) => css`
   .inputs {
     ${mixins.flexbox("column", "center", "space-between")};
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 2px;
     width: 100%;
     height: 100%;
     position: relative;
