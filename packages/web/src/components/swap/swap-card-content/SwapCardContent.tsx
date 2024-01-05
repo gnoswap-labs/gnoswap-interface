@@ -21,6 +21,7 @@ interface ContentProps {
   switchSwapDirection: () => void;
   connectedWallet: boolean;
   isLoading: boolean;
+  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -34,6 +35,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   switchSwapDirection,
   connectedWallet,
   isLoading,
+  setSwapRateAction,
 }) => {
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
@@ -169,6 +171,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}
           isLoading={isLoading}
+          setSwapRateAction={setSwapRateAction}
         />
       )}
     </ContentWrapper>

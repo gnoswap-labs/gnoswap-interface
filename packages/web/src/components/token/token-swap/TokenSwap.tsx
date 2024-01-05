@@ -34,6 +34,7 @@ export interface TokenSwapProps {
   changeTokenB: (token: TokenModel) => void;
   changeTokenBAmount: (value: string, none?: boolean) => void;
   switchSwapDirection: () => void;
+  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
 }
 
 function isAmount(str: string) {
@@ -61,6 +62,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   isAvailSwap,
   swapSummaryInfo,
   swapRouteInfos,
+  setSwapRateAction,
 }) => {
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
@@ -200,6 +202,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}
           isLoading={isLoading}
+          setSwapRateAction={setSwapRateAction}
         />
       )}
       <div className="footer">

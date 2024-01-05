@@ -30,6 +30,7 @@ export const useSwapHandler = () => {
     tokenAAmount: defaultTokenAAmount,
   } = swapValue;
 
+  const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("ATOB");
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
   );
@@ -58,6 +59,7 @@ export const useSwapHandler = () => {
     updateBalances,
     getTokenUSDPrice,
   } = useTokenData();
+  
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const {
@@ -219,6 +221,7 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenB) {
       return null;
     }
+    const swapRate1USD = swapRateAction === "ATOB" ? (getTokenUSDPrice(tokenB.priceId, 1) || 1) : (getTokenUSDPrice(tokenA.priceId, 1) || 1);
     if (isSameToken) {
       return {
         tokenA,
@@ -233,13 +236,15 @@ export const useSwapHandler = () => {
         },
         gasFee: gasFeeAmount,
         gasFeeUSD: BigNumber(gasFeeAmount.amount).multipliedBy(1).toNumber(),
+        swapRateAction,
+        swapRate1USD,
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
     const inputAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     const tokenAUSDValue = tokenPrices[tokenA.priceId]?.usd || 1;
     const tokenBUSDValue = tokenPrices[tokenB.priceId]?.usd || 1;
-
+    
     const swapRate = tokenAAmount ? BigNumber(tokenBAmount).dividedBy(tokenAAmount).toNumber() : 0;
     const swapRateUSD = type === "EXACT_IN" ?
       BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber() :
@@ -269,6 +274,8 @@ export const useSwapHandler = () => {
       },
       gasFee: gasFeeAmount,
       gasFeeUSD,
+      swapRateAction,
+      swapRate1USD,
     };
   }, [
     tokenA,
@@ -279,6 +286,7 @@ export const useSwapHandler = () => {
     tokenBAmount,
     gasFeeAmount,
     tokenAmountLimit,
+    swapRateAction,
   ]);
 
   const isAvailSwap = useMemo(() => {
@@ -715,5 +723,6 @@ export const useSwapHandler = () => {
     tokenAAmount,
     tokenBAmount,
     swapValue,
+    setSwapRateAction,
   };
 };

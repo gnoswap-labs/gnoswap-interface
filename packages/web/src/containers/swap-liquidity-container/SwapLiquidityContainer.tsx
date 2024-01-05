@@ -129,7 +129,9 @@ const SwapLiquidityContainer: React.FC = () => {
     };
   }, [tokenB, gnot]);
 
-  if (!tokenAData || !tokenBData || isLoading) return null;
+  const checkDoubleGnot = (tokenAData?.path === "gnot" && tokenBData?.path === "gnot") || (tokenBData?.path === "gnot" && tokenAData?.path === "gnot");
+  
+  if (!tokenAData || !tokenBData || isLoading || checkDoubleGnot) return null;
   
   return (
     <SwapLiquidity

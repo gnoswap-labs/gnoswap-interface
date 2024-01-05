@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SwapCard from "@components/swap/swap-card/SwapCard";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { SwapDirectionType } from "@common/values";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
-import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
-
+import { TokenModel } from "@models/token/token-model";
+const TOKEN_A: TokenModel = {
+  chainId: "dev",
+  createdAt: "2023-10-10T08:48:46+09:00",
+  name: "Gnoswap",
+  address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+  path: "gnot",
+  decimals: 6,
+  symbol: "GNOT",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+  type: "native",
+  priceId: "gnot",
+};
 const SwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const router = useRouter();
-  const [initialized, setInitialized] = useState(false);
-  const { tokens, updateTokens } = useTokenData();
 
   const {
     connectedWallet,
@@ -39,37 +46,16 @@ const SwapContainer: React.FC = () => {
     switchNetwork,
     isLoading,
     setSwapValue,
+    setSwapRateAction,
   } = useSwapHandler();
 
   useEffect(() => {
-    updateTokens();
-  }, []);
-
-  useEffect(() => {
-    if (!initialized && tokens.length > 0) {
-      setInitialized(true);
-    }
-  }, [tokens]);
-
-  useEffect(() => {
-    if (!initialized) {
-      return;
-    }
-    const query = router.query;
-    const currentTokenA =
-      tokens.find(token => token.path === query.tokenA) || null;
-    const currentTokenB =
-      tokens.find(token => token.path === query.tokenB) || null;
-    const direction: SwapDirectionType =
-      query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
-    if (!currentTokenA || !currentTokenB) return;
-
     setSwapValue({
-      tokenA: currentTokenA,
-      tokenB: currentTokenB,
-      type: direction,
+      tokenA: TOKEN_A,
+      tokenB: null,
+      type: "EXACT_IN",
     });
-  }, [initialized]);
+  }, []);
 
   return (
     <SwapCard
@@ -98,6 +84,7 @@ const SwapContainer: React.FC = () => {
       isSwitchNetwork={isSwitchNetwork}
       switchNetwork={switchNetwork}
       isLoading={isLoading}
+      setSwapRateAction={setSwapRateAction}
     />
   );
 };

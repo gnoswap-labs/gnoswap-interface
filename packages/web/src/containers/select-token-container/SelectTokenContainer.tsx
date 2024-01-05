@@ -37,55 +37,21 @@ const customSort = (a: TokenModel, b: TokenModel) => {
   return indexA - indexB;
 };
 
-const customSortAll = (a: SortedProps, b: SortedProps): number => {
-  if (a.symbol === "GNOT" && b.symbol !== "GNOT") {
-    return -1;
-  } else if (a.symbol !== "GNOT" && b.symbol === "GNOT") {
-    return 1;
-  } else if (a.symbol === "GNS" && b.symbol !== "GNS") {
-    return -1;
-  } else if (a.symbol !== "GNS" && b.symbol === "GNS") {
-    return 1;
-  } else {
+
+const handleSort = (list: SortedProps[]) => {
+  const gnot = list.find(a => a.symbol === "GNOT");
+  const gnos = list.find(a => a.symbol === "GNS");
+  const valueOfBalance = list.filter(a => a.price !== "-" && a.symbol !== "GNOT" && a.symbol !== "GNS").sort((a, b) => {
     const priceA = parseFloat(a.price.replace(/,/g, ""));
     const priceB = parseFloat(b.price.replace(/,/g, ""));
-
-    if (!isNaN(priceA) && !isNaN(priceB) && priceA < priceB) {
-      return 1;
-    } else if (isNaN(priceA) && isNaN(priceB)) {
-      const numberRegex = /\d+/;
-      const numberA = numberRegex.test(a.name);
-      const numberB = numberRegex.test(b.name);
-      if (numberA > numberB) {
-        return 1;
-      } else if (numberA > numberB) {
-        return -1;
-      } else {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      }
-    } else if (!isNaN(priceA) || isNaN(priceB)) {
-      if (priceA === 0 && priceB === 0) {
-        if (a.tokenPrice < b.tokenPrice) {
-          return 1;
-        } else {
-          return -1;
-        }
-      } else {
-        return -1;
-      }
-    } else {
-      const numberRegex = /\d+/;
-      const numberA = numberRegex.test(a.name);
-      const numberB = numberRegex.test(b.name);
-      if (numberA > numberB) {
-        return 1;
-      } else if (numberA > numberB) {
-        return -1;
-      } else {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      }
-    }
-  }
+    return priceB - priceA;
+  });
+  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== "GNOT" && a.symbol !== "GNS" && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a,b) => b.tokenPrice - a.tokenPrice);
+  const alphabest = list.filter(a => !amountOfBalance.includes(a) && a.symbol !== "GNOT" && a.symbol !== "GNS" && !valueOfBalance.includes(a)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  const rs = [];
+  gnot && rs.push(gnot);
+  gnos && rs.push(gnos);
+  return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
 };
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
@@ -153,7 +119,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
         tokenPrice: tokenPrice || 0,
       };
     });
-    const sortedData = temp.sort(customSortAll);
+    const sortedData = handleSort(temp);
     return sortedData.filter(
       token =>
         token.name.toLowerCase().includes(lowerKeyword) ||
