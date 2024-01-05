@@ -314,7 +314,7 @@ export const LIGHT_THEME_COLORS: ThemeColorType = {
   backgroundOpacity2: colors.white.whiteOpacity07BG,
   backgroundOpacity3: colors.white.gray100Opacity05BG, // backgroundOpacity04 in fima
   backgroundOpacity4: colors.white.brand300Opacity03BG,
-  backgroundOpacity5: colors.white.whiteBG,
+  backgroundOpacity5: colors.white.whiteOpacity05BG,
   backgroundOpacity6: colors.white.linkBg,
   backgroundOpacity7: colors.global.gray20Opacity25,
   backgroundOpacity8: colors.white.whiteOpacity05BG,

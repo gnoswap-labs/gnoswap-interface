@@ -11,6 +11,7 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import TokenLogo from "@components/common/token-logo/TokenLogo";
 import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -32,12 +33,18 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
     currentTick,
     bins,
   } = pool;
-
+  const { getGnotPath } = useGnotToGnot();
   const rewardImage = useMemo(() => {
     if (rewardTokens.length === 0) {
       return <>-</>;
     }
-    const logos = rewardTokens.map(token => token.logoURI);
+    const tempRewardTokens = rewardTokens.map((item) => {
+      return {
+        ...item,
+        logoURI: getGnotPath(item).logoURI,
+      }
+    });
+    const logos = tempRewardTokens.map(token => token.logoURI);
     return <OverlapLogo logos={logos} size={20} />
   }, [rewardTokens]);
 

@@ -37,11 +37,11 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
     <TokenChartInfoWrapper>
       <div className="token-info-wrapper">
         <div className="token-info">
-          <MissingLogo symbol={token.symbol} url={token.image} className="token-image" width={36} mobileWidth={36}/>
-          <div>
+          {!loading && <MissingLogo symbol={token.symbol} url={token.image} className="token-image" width={36} mobileWidth={36}/>}
+          {!loading && <div>
             <span className="token-name">{token.name}</span>
             <span className="token-symbol">{token.symbol}</span>
-          </div>
+          </div>}
         </div>
         <div className="price-info">
           {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${priceInfo.amount.value === 0 ? "0.00" : convertToMB(priceInfo.amount.value.toString(), 6)}`}</span>}

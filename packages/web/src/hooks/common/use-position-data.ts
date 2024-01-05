@@ -117,6 +117,6 @@ export const usePositionData = () => {
     getPositionsByPoolId,
     getPositionsByPoolPath,
     isFetchedPosition,
-    loading,
+    loading: loading && connected,
   };
 };

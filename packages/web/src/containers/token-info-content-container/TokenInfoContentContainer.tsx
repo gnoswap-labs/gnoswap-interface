@@ -229,7 +229,6 @@ const TokenInfoContentContainer: React.FC = () => {
       },
     ];
   }, [pricesBefore]);
-  console.log(pricePerformance, "pricePerformance");
   
   return (
     <TokenInfoContent

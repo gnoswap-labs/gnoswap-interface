@@ -64,7 +64,7 @@ export const wrapper = (theme: Theme) => css`
         margin-right: 0;
       }
       > div {
-        padding: 5px 12px 5px 6px;
+        padding: 5px 6px 5px 6px;
         height: 34px;
       }
       span {

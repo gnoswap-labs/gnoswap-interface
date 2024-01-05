@@ -190,7 +190,7 @@ const HeaderContainer: React.FC = () => {
         fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
         isLiquid: true,
         apr: `${!item.apr ? "-" : Number(item.apr) > 10 ? `${item.apr}% APR` : `${Number(item.apr).toFixed(2)}% APR`}`,
-        liquidity: Number(filteredItem ? filteredItem.liquidity : "0"),
+        liquidity: Number(item ? item.tvl : "0"),
       };
     })
     .sort((a, b) => b.liquidity - a.liquidity)
