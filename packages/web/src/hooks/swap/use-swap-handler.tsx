@@ -30,7 +30,7 @@ export const useSwapHandler = () => {
     tokenAAmount: defaultTokenAAmount,
   } = swapValue;
 
-  const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("ATOB");
+  const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
   );
@@ -59,7 +59,7 @@ export const useSwapHandler = () => {
     updateBalances,
     getTokenUSDPrice,
   } = useTokenData();
-  
+
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const {
@@ -221,14 +221,17 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenB) {
       return null;
     }
-    const swapRate1USD = swapRateAction === "ATOB" ? (getTokenUSDPrice(tokenB.priceId, 1) || 1) : (getTokenUSDPrice(tokenA.priceId, 1) || 1);
+    const swapRate1USD =
+      swapRateAction === "ATOB"
+        ? getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1
+        : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
     if (isSameToken) {
       return {
         tokenA,
         tokenB,
         swapDirection: "EXACT_IN",
         swapRate: 1,
-        swapRateUSD: getTokenUSDPrice(tokenA.priceId, 1) || 1,
+        swapRateUSD: getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1,
         priceImpact: 0,
         guaranteedAmount: {
           amount: Number(tokenAAmount),
@@ -242,18 +245,24 @@ export const useSwapHandler = () => {
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
     const inputAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
-    const tokenAUSDValue = tokenPrices[tokenA.priceId]?.usd || 1;
-    const tokenBUSDValue = tokenPrices[tokenB.priceId]?.usd || 1;
+    const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
+    const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
     
-    const swapRate = tokenAAmount ? BigNumber(tokenBAmount).dividedBy(tokenAAmount).toNumber() : 0;
-    const swapRateUSD = type === "EXACT_IN" ?
-      BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber() :
-      BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const tokenRate = BigNumber(tokenBUSDValue).dividedBy(tokenAUSDValue).toNumber();
+    const swapRate =
+      swapRateAction === "ATOB"
+        ? (getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1) /
+          (getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1)
+        : (getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1) /
+          (getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1);
+    const swapRateUSD =
+      type === "EXACT_IN"
+        ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
+        : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
+    const tokenRate = BigNumber(tokenBUSDValue)
+      .dividedBy(tokenAUSDValue)
+      .toNumber();
     const expectedAmount = tokenRate * Number(inputAmount);
-    const priceImpactNum = BigNumber(
-      expectedAmount - Number(tokenBAmount),
-    )
+    const priceImpactNum = BigNumber(expectedAmount - Number(tokenBAmount))
       .multipliedBy(100)
       .dividedBy(expectedAmount);
     const priceImpact = priceImpactNum.isGreaterThan(100)
@@ -269,7 +278,7 @@ export const useSwapHandler = () => {
       swapRateUSD,
       priceImpact,
       guaranteedAmount: {
-        amount: (tokenAmountLimit),
+        amount: tokenAmountLimit,
         currency: targetTokenB.symbol,
       },
       gasFee: gasFeeAmount,

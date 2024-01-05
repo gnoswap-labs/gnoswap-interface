@@ -92,7 +92,7 @@ const SwapLiquidityContainer: React.FC = () => {
         count++;
         return {
           ..._,
-          volume: `$${convertToMB(poolItem[0].volume.toString(), 6)}`,
+          volume: `$${convertToKMB(Number(poolItem[0].volume).toString(), 2)}`,
           liquidity: `$${convertToKMB(poolItem[0].tvl.toString(), 2)}`,
           apr: !poolItem[0].apr ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
           active: true,

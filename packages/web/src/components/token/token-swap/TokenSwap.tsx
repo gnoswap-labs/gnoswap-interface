@@ -119,6 +119,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 
   const balanceADisplay = useMemo(() => {
     if (connected && dataTokenInfo.tokenABalance !== "-") {
+      if (dataTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(2);
     }
     return "-";
@@ -126,6 +127,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 
   const balanceBDisplay = useMemo(() => {
     if (connected && dataTokenInfo.tokenBBalance !== "-") {
+      if (dataTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(2);
     }
     return "-";

@@ -40,19 +40,13 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
     if (swapRateAction === "ATOB") {
       return `1 ${tokenA.symbol} = ${convertSwapRate(swapRate)} ${tokenB.symbol}`;
     } else {
-      return `1 ${tokenB.symbol} = ${convertSwapRate(1 / swapRate)} ${tokenA.symbol}`;
+      return `1 ${tokenB.symbol} = ${convertSwapRate(swapRate)} ${tokenA.symbol}`;
     }
   }, [swapSummaryInfo]);
 
   const swapRate1USD = useMemo(() => {
     const swapRate1USD = swapSummaryInfo.swapRate1USD;
-    
-    const swapRateAction = swapSummaryInfo.swapRateAction;
-    if (swapRateAction === "ATOB") {
-      return convertToMB(formatUsdNumber3Digits(swapRate1USD));
-    } else {
-      return convertToMB(formatUsdNumber3Digits(swapRate1USD));
-    }
+    return convertToMB(formatUsdNumber3Digits(swapRate1USD));
   }, [swapSummaryInfo.swapRate1USD, swapSummaryInfo.swapRateAction]);
   
   const gasFeeUSDStr = useMemo(() => {

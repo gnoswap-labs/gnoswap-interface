@@ -94,6 +94,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   const balanceADisplay = useMemo(() => {
     if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
+      if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(
         2,
       );
@@ -103,6 +104,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   const balanceBDisplay = useMemo(() => {
     if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
+      if (swapTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(
         2,
       );
