@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
-import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface LiquidityInfo {
