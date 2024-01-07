@@ -20,6 +20,13 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     };
   };
 
+  public estimateAlphaSwapRoute = async () => {
+    return {
+      estimatedRoutes: [],
+      amount: "0",
+    };
+  };
+
   public swapRoute = async () => {
     throw new Error("Mock swapRoute");
   };

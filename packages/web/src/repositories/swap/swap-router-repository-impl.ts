@@ -8,12 +8,16 @@ import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { SwapRouter } from "@gnoswap-labs/swap-router";
+import {
+  AlphaRouter,
+  EstimatedRoute,
+  SwapRouter,
+} from "@gnoswap-labs/swap-router";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { MAX_UINT64 } from "@utils/math.utils";
-import { isNativeToken } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import {
   makeDepositMessage,
   makeWithdrawMessage,
@@ -24,8 +28,35 @@ import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { SwapRouteResponse } from "./response/swap-route-response";
+import {
+  OnChainGasPriceProvider,
+  OnChainQuoteProvider,
+  V3PoolProvider,
+} from "@gnoswap-labs/swap-router/build/alpha-router/providers";
+import { PortionProvider } from "@gnoswap-labs/swap-router/build/alpha-router/providers/portion-provider";
+import {
+  ChainId,
+  CurrencyAmount,
+  Token,
+} from "@gnoswap-labs/swap-router/build/alpha-router/core";
 
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
+
+const ROUTING_CONFIG = {
+  v3PoolSelection: {
+    topN: 2,
+    topNDirectSwaps: 2,
+    topNTokenInOut: 3,
+    topNSecondHop: 1,
+    topNWithEachBaseToken: 3,
+    topNWithBaseToken: 5,
+  },
+  maxSwapsPerPath: 3,
+  minSplits: 1,
+  maxSplits: 7,
+  distributionPercent: 5,
+  forceCrossProtocol: false,
+};
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -44,6 +75,99 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public updatePools(pools: PoolRPCModel[]) {
     this.pools = pools;
   }
+
+  public estimateAlphaSwapRoute = async (
+    request: EstimateSwapRouteRequest,
+  ): Promise<EstimateSwapRouteResponse> => {
+    if (!ROUTER_PACKAGE_PATH || !this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+    const { inputToken, outputToken, exactType, tokenAmount } = request;
+
+    if (BigNumber(tokenAmount).isNaN()) {
+      throw new SwapError("INVALID_PARAMS");
+    }
+
+    const chainId = ChainId.DEV_GNOSWAP;
+
+    const tokenA = makeTokenByModel(chainId, inputToken);
+    const tokenB = makeTokenByModel(chainId, outputToken);
+    const tokenAmountRaw = makeRawTokenAmount(
+      exactType === "EXACT_IN" ? inputToken : outputToken,
+      tokenAmount,
+    );
+
+    console.log("estimateRouteParams", [
+      tokenA.address,
+      tokenB.address,
+      tokenAmountRaw || "0",
+      exactType,
+    ]);
+
+    const alphaRouter = SwapRouterRepositoryImpl.createAlphaRouter(
+      chainId,
+      this.rpcProvider,
+    );
+    const swap = await alphaRouter.route(
+      CurrencyAmount.fromRawAmount(tokenA, tokenAmountRaw || "0"),
+      tokenB,
+      exactType === "EXACT_IN" ? 0 : 1,
+      undefined,
+      { ...ROUTING_CONFIG },
+    );
+
+    if (swap === null) {
+      throw new SwapError("NOT_FOUND_SWAP_POOL");
+    }
+
+    const amount = makeDisplayTokenAmount(
+      exactType === "EXACT_IN" ? outputToken : inputToken,
+      swap.quote.quotient.toString(),
+    );
+    const estimatedRoutes: EstimatedRoute[] = swap.route.map(route => {
+      let inputPath = tokenA.address;
+      const orderedPoolPaths = route.route.pools.map(pool => {
+        const currentTokenPair =
+          inputPath === pool.token0.address
+            ? [pool.token0.address, pool.token1.address]
+            : [pool.token1.address, pool.token0.address];
+        inputPath = currentTokenPair[1];
+        return `${currentTokenPair.join(":")}:${pool.fee.toString()}`;
+      });
+      const routeKey = orderedPoolPaths.join("*POOL*");
+      const pools = route.route.pools.map(pool => ({
+        poolPath: pool.path,
+        tokenAPath: pool.token0.address,
+        tokenBPath: pool.token1.address,
+        fee: Number(pool.fee.toString()),
+        tokenABalance: 0n,
+        tokenBBalance: 0n,
+        tickSpacing: 0,
+        maxLiquidityPerTick: 0,
+        price: 0,
+        sqrtPriceX96: BigInt(pool.sqrtRatioX96.toString()),
+        tick: 0,
+        feeProtocol: 0,
+        tokenAProtocolFee: 0,
+        tokenBProtocolFee: 0,
+        liquidity: BigInt(pool.liquidity.toString()),
+        ticks: [],
+        tickBitmaps: {},
+        positions: [],
+      }));
+      return {
+        routeKey,
+        amountIn: BigInt(route.amount.quotient.toString()),
+        amountOut: BigInt(route.quote.quotient.toString()),
+        quote: route.percent,
+        pools,
+      };
+    });
+    return {
+      amount: `${amount || 0}`,
+      estimatedRoutes,
+    };
+  };
 
   public estimateSwapRoute = async (
     request: EstimateSwapRouteRequest,
@@ -273,4 +397,26 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
     return response.status;
   };
+
+  private static createAlphaRouter(chainId: number, provider: GnoProvider) {
+    const onChainQuoteProvider = new OnChainQuoteProvider(chainId, provider);
+    const gasPriceProvider = new OnChainGasPriceProvider();
+    const portionProvider = new PortionProvider();
+    const poolProvider = new V3PoolProvider(chainId);
+
+    return new AlphaRouter({
+      chainId,
+      provider,
+      onChainQuoteProvider,
+      gasPriceProvider,
+      portionProvider,
+      v3PoolProvider: poolProvider,
+    });
+  }
+}
+
+function makeTokenByModel(chainId: number, tokenModel: TokenModel): Token {
+  const tokenPath = tokenModel.wrappedPath || tokenModel.path;
+  const symbol = tokenModel.type === "native" ? "WGNOT" : tokenModel.symbol;
+  return new Token(chainId, tokenPath, tokenModel.decimals, symbol, symbol);
 }

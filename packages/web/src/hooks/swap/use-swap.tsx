@@ -76,7 +76,7 @@ export const useSwap = ({
     const pools = await poolRepository.getRPCPools().catch(() => []);
     swapRouterRepository.updatePools(pools);
 
-    return swapRouterRepository.estimateSwapRoute({
+    return swapRouterRepository.estimateAlphaSwapRoute({
       inputToken: tokenA,
       outputToken: tokenB,
       exactType: direction,

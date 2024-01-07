@@ -5,7 +5,6 @@ import { ChainId, CurrencyAmount, TradeType } from "./core";
 import {
   OnChainGasPriceProvider,
   OnChainQuoteProvider,
-  TokenProvider,
   V3PoolProvider,
 } from "./providers";
 import { PortionProvider } from "./providers/portion-provider";
