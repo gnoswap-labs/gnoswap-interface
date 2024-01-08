@@ -43,7 +43,16 @@ const TokenSwapContainer: React.FC = () => {
     isSwitchNetwork,
     isLoading,
     swapValue,
+    setSwapRateAction,
   } = useSwapHandler();
+
+  useEffect(() => {
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
+  }, []);
 
   useEffect(() => {
     if (isFetched) {
@@ -84,6 +93,7 @@ const TokenSwapContainer: React.FC = () => {
         swapButtonText={swapButtonText}
         swapSummaryInfo={swapSummaryInfo}
         swapRouteInfos={swapRouteInfos}
+        setSwapRateAction={setSwapRateAction}
       />
       {openedConfirmModal && swapSummaryInfo && (
         <ConfirmSwapModal

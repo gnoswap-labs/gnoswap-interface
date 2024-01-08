@@ -22,6 +22,7 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
 export const convertToKMB = (price: string, maximumFractionDigits?: number) => {
   if (Number.isNaN(Number(price))) return "-";
   if (Math.floor(Number(price)).toString().length < 4) {
+    if (Number(price) < 1) return price;
     return Number(price).toLocaleString("en-US", { maximumFractionDigits: maximumFractionDigits || 2, minimumFractionDigits: 2});
   } else {
     const temp = Math.floor(Number(price));
