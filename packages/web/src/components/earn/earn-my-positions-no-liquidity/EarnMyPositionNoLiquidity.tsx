@@ -1,6 +1,7 @@
+import IconNoPosition from "@components/common/icons/IconNoPosition";
 import { NoLiquidityWrapper } from "./EarnMyPositionNoLiquidity.styles";
 
-interface EarnMyPositionNoLiquidityProps { }
+interface EarnMyPositionNoLiquidityProps {}
 
 const EarnMyPositionNoLiquidity: React.FC<
   EarnMyPositionNoLiquidityProps
@@ -11,14 +12,14 @@ const EarnMyPositionNoLiquidity: React.FC<
 
   return (
     <NoLiquidityWrapper>
+      <IconNoPosition className="icon-no-position"/>
       <p>
-        You have<span className="emphasis-text">&nbsp;{value}&nbsp;</span>in
-        your wallet available to earn.
-        <br /> Provide liquidity now to start earning rewards up to
-        <span className="emphasis-text">&nbsp;{apr}&nbsp;</span>APR.
+        You have <span className="emphasis-text">&nbsp;{value}&nbsp;</span> in
+        your wallet available to earn rewards up to{" "}
+        <span className="emphasis-text">&nbsp;{apr}&nbsp;</span> APR.
       </p>
       <span className="description">
-        Create positions to earn trading fees on every swap. You may also stake your positions to earn staking rewards.
+        Create new positions to earn trading fees and stake your positions to earn staking rewards.
       </span>
     </NoLiquidityWrapper>
   );

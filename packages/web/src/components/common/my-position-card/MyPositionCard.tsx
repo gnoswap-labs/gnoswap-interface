@@ -16,6 +16,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { convertToKMB } from "@utils/stake-position-utils";
 import OverlapTokenLogo from "../overlap-token-logo/OverlapTokenLogo";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -38,6 +39,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const { tokenA, tokenB } = pool;
   const [isHiddenStart, setIsHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
+  const { getGnotPath } = useGnotToGnot();
 
   const inRange = useMemo(() => {
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
@@ -139,6 +141,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return INCENTIVIZED_TYPE["INCENTIVIZED"];
   }, [pool.incentivizedType]);
 
+  const rewardTokensInfo = useMemo(() => {
+    return pool.rewardTokens.map((item) => {
+      return {
+        ...item,
+        logoURI: getGnotPath(item).logoURI,
+      };
+    });
+  }, [pool.rewardTokens]);
+
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked ? "special-card" : ""}`}
@@ -164,7 +175,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   type={BADGE_TYPE.DARK_DEFAULT}
                   text={<>
                     {incentivizedLabel}
-                    <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
+                    <OverlapTokenLogo tokens={rewardTokensInfo} size={16} />
                   </>}
                 />
               )}

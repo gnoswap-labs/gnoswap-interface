@@ -194,7 +194,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         </svg>
       )}
 
-      {visiblieMinLabel && (
+      {visiblieMinLabel ? (
         <BarAreaGraphLabel
           className="min"
           x={minTickPosition}
@@ -203,8 +203,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         >
           {minLabel}
         </BarAreaGraphLabel>
-      )}
-      {visiblieMaxLabel && (
+      ): null}
+      {visiblieMaxLabel ? (
         <BarAreaGraphLabel
           className="max"
           x={maxTickPosition}
@@ -213,7 +213,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         >
           {maxLabel}
         </BarAreaGraphLabel>
-      )}
+      ): null}
 
     </BarAreaGraphWrapper>
   );

@@ -12,6 +12,7 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { numberToFormat } from "@utils/string-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -25,6 +26,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   themeKey,
 }) => {
   const { isStakedPool } = usePositionData();
+  const { getGnotPath } = useGnotToGnot();
 
   const staked = useMemo(() => {
     return isStakedPool(pool.poolPath || null);
@@ -40,6 +42,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     }
     return INCENTIVIZED_TYPE["INCENTIVIZED"];
   }, [pool.incentivizedType]);
+
+  const rewardTokensInfo = useMemo(() => {
+    return pool.rewardTokens.map((item) => {
+      return {
+        ...item,
+        logoURI: getGnotPath(item).logoURI,
+      };
+    });
+  }, [pool.rewardTokens]);
 
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
@@ -62,7 +73,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                     type={BADGE_TYPE.DARK_DEFAULT}
                     text={<>
                       {incentivizedLabel}
-                      <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
+                      <OverlapTokenLogo tokens={rewardTokensInfo} size={16} />
                     </>}
                   />
                 )}
