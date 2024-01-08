@@ -38,6 +38,7 @@ interface SwapCardProps {
   copyURL: () => void;
   swap: () => void;
   switchNetwork: () => void;
+  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -66,6 +67,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   isSwitchNetwork,
   switchNetwork,
   isLoading,
+  setSwapRateAction,
 }) => {
 
   return (
@@ -89,6 +91,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           switchSwapDirection={switchSwapDirection}
           connectedWallet={connectedWallet}
           isLoading={isLoading}
+          setSwapRateAction={setSwapRateAction}
         />
         <div className="footer">
           <SwapButton

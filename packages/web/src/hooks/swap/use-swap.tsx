@@ -82,7 +82,6 @@ export const useSwap = ({
       exactType: direction,
       tokenAmount: Number(amount)
     }).then(response => {
-      console.log("response", response);
       if (response.amount === "0" || response.amount === "") {
         setSwapState("NO_LIQUIDITY");
         setEstimatedRoutes([]);

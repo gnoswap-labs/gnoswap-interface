@@ -6,12 +6,13 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
+import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
 
 const SwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
   const [initialized, setInitialized] = useState(false);
-  const { tokens, updateTokens } = useTokenData();
+  const { tokens } = useTokenData();
 
   const {
     connectedWallet,
@@ -39,17 +40,22 @@ const SwapContainer: React.FC = () => {
     switchNetwork,
     isLoading,
     setSwapValue,
+    setSwapRateAction,
   } = useSwapHandler();
-
-  useEffect(() => {
-    updateTokens();
-  }, []);
 
   useEffect(() => {
     if (!initialized && tokens.length > 0) {
       setInitialized(true);
     }
   }, [tokens]);
+
+  useEffect(() => {
+    setSwapValue({
+      tokenA: GNOT_TOKEN_DEFAULT,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
+  }, []);
 
   useEffect(() => {
     if (!initialized) {
@@ -98,6 +104,7 @@ const SwapContainer: React.FC = () => {
       isSwitchNetwork={isSwitchNetwork}
       switchNetwork={switchNetwork}
       isLoading={isLoading}
+      setSwapRateAction={setSwapRateAction}
     />
   );
 };

@@ -49,6 +49,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
 
   const balanceADisplay = useMemo(() => {
     if (connected && balance !== "-") {
+      if (balance === "0") return 0;
       return BigNumber(balance.replace(/,/g, "")).toFormat(2);
     }
     return "-";

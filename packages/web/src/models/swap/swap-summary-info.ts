@@ -21,6 +21,10 @@ export interface SwapSummaryInfo {
   gasFee: AmountModel;
 
   gasFeeUSD: number;
+
+  swapRateAction: "ATOB" | "BTOA";
+
+  swapRate1USD: number;
 }
 
 export function swapDirectionToGuaranteedType(

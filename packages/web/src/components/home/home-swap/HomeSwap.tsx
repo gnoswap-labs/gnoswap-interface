@@ -91,6 +91,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
   const balanceADisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenABalance !== "-") {
+      if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(
         2,
       );
@@ -100,6 +101,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
   const balanceBDisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenBBalance !== "-") {
+      if (swapTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(
         2,
       );

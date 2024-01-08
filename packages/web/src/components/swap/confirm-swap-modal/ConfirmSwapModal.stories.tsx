@@ -81,7 +81,9 @@ const swapSummaryInfo: SwapSummaryInfo = {
     amount: 0.000001,
     currency: "GNOT"
   },
-  gasFeeUSD: 0.1
+  gasFeeUSD: 0.1,
+  swapRateAction: "ATOB",
+  swapRate1USD: 1,
 };
 
 export default {

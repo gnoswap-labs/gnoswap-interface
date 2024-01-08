@@ -10,3 +10,5 @@ export const swap = atom<SwapValue>({
   tokenBAmount: "",
   tokenAAmount: "",
 });
+
+export const memoryzeTokenSwap = atom<Record<string, string>>({});
