@@ -374,8 +374,8 @@ export const useSwapHandler = () => {
     setSwapResult(null);
     setOpenedConfirModal(false);
     updateBalances();
-    setTokenAAmount("");
-    setTokenBAmount("");
+    setTokenAAmount("0");
+    setTokenBAmount("0");
   }, [updateBalances]);
 
   const changeTokenAAmount = useCallback(
@@ -426,13 +426,13 @@ export const useSwapHandler = () => {
       tokenBAmount,
     }));
   }, [setSwapValue, tokenAAmount, tokenBAmount]);
-
+  
   const changeTokenBAmount = useCallback(
     (value: string, none?: boolean) => {
-      const memoryzeTokenA = memoryzeTokenSwap?.[`${tokenA?.symbol}:${value}`];
+      const memoryzeTokenA = memoryzeTokenSwap?.[`${tokenB?.symbol}:${value}`];
       if (memoryzeTokenA) {
-        setTokenAAmount(value);
-        setTokenBAmount(memoryzeTokenA.split(":")[1]);
+        setTokenBAmount(value);
+        setTokenAAmount(memoryzeTokenA.split(":")[1]);
         return;
       }
       if (isSameToken) {
@@ -464,7 +464,7 @@ export const useSwapHandler = () => {
       }));
       setTokenBAmount(value);
     },
-    [isSameToken],
+    [isSameToken, memoryzeTokenSwap, tokenB],
   );
 
   const changeTokenA = useCallback(
@@ -692,14 +692,19 @@ export const useSwapHandler = () => {
   }, []);
 
   useEffect(() => {
-    if (memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`]) {
+    if (memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] && type === "EXACT_IN") {
       setIsLoading(false);
       return;
     }
-    if (defaultTokenAAmount) {
+    if (memoryzeTokenSwap?.[`${tokenB?.symbol}:${tokenBAmount}`] && type === "EXACT_OUT") {
+      setIsLoading(false);
+      return;
+    }
+
+    if (defaultTokenAAmount && !!Number(tokenAAmount) && !!Number(tokenBAmount)) {
       setIsLoading(true);
     }
-  }, [defaultTokenAAmount, memoryzeTokenSwap, tokenA, tokenAAmount]);
+  }, [defaultTokenAAmount, memoryzeTokenSwap, tokenA?.symbol, tokenAAmount, tokenBAmount, type, tokenB?.symbol]);
 
   useEffect(() => {
     if (!tokenA || !tokenB) {
@@ -749,6 +754,7 @@ export const useSwapHandler = () => {
       setMemoryzeTokenSwap(prev => ({
         ...prev,
         [`${tokenA?.symbol}:${tokenAAmount}`]: `${tokenB?.symbol}:${tokenBAmount}`,
+        [`${tokenB?.symbol}:${tokenBAmount}`]: `${tokenA?.symbol}:${tokenAAmount}`,
       }));
     }
     return () => clearTimeout(timeout);
