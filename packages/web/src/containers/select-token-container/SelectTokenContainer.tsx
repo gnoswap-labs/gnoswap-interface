@@ -10,6 +10,7 @@ import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
 import { parseJson } from "@utils/common";
+import { BAR_SYMBOL, BAZ_SYMBOL, GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -22,7 +23,7 @@ export interface SortedProps extends TokenModel {
   tokenPrice: number;
 }
 
-export const ORDER = ["GNOT", "GNS", "BAR", "BAZ"];
+export const ORDER = [GNOT_SYMBOL, GNS_SYMBOL, BAR_SYMBOL, BAZ_SYMBOL];
 
 const customSort = (a: TokenModel, b: TokenModel) => {
   const symbolA = a.symbol.toUpperCase();
@@ -39,15 +40,15 @@ const customSort = (a: TokenModel, b: TokenModel) => {
 
 
 const handleSort = (list: SortedProps[]) => {
-  const gnot = list.find(a => a.symbol === "GNOT");
-  const gnos = list.find(a => a.symbol === "GNS");
-  const valueOfBalance = list.filter(a => a.price !== "-" && a.symbol !== "GNOT" && a.symbol !== "GNS").sort((a, b) => {
+  const gnot = list.find(a => a.symbol === GNOT_SYMBOL);
+  const gnos = list.find(a => a.symbol === GNS_SYMBOL);
+  const valueOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL).sort((a, b) => {
     const priceA = parseFloat(a.price.replace(/,/g, ""));
     const priceB = parseFloat(b.price.replace(/,/g, ""));
     return priceB - priceA;
   });
-  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== "GNOT" && a.symbol !== "GNS" && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a,b) => b.tokenPrice - a.tokenPrice);
-  const alphabest = list.filter(a => !amountOfBalance.includes(a) && a.symbol !== "GNOT" && a.symbol !== "GNS" && !valueOfBalance.includes(a)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a,b) => b.tokenPrice - a.tokenPrice);
+  const alphabest = list.filter(a => !amountOfBalance.includes(a) && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
   const rs = [];
   gnot && rs.push(gnot);
   gnos && rs.push(gnos);
