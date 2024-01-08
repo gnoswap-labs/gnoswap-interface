@@ -246,7 +246,7 @@ const TokenChartContainer: React.FC = () => {
     enabled: !!path,
   });
   const [componentRef, size] = useComponentSize(isLoading);
-
+  
   useEffect(() => {
     if (tokenB) {
       const dataToday = checkPositivePrice(
@@ -301,6 +301,7 @@ const TokenChartContainer: React.FC = () => {
   }, [size.width, breakpoint, currentTab]);
 
   const chartData = useMemo(() => {
+    
     if (currentTab === TokenChartGraphPeriods[0]) {
       return prices1d || [];
     }
@@ -315,10 +316,10 @@ const TokenChartContainer: React.FC = () => {
     }
     return prices1y || [];
   }, [
-    prices1d?.toString(),
-    prices7d?.toString,
-    prices1m?.toString(),
-    prices1y?.toString(),
+    prices1d,
+    prices7d,
+    prices1m,
+    prices1y,
     currentTab,
   ]);
 
@@ -381,7 +382,7 @@ const TokenChartContainer: React.FC = () => {
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),
-    );
+    );    
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
@@ -389,9 +390,8 @@ const TokenChartContainer: React.FC = () => {
       left: left,
       right: right,
     };
-
     return chartInfo;
-  }, [currentTab, chartData?.toString(), countXAxis]);
+  }, [currentTab, chartData, countXAxis]);
 
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));
@@ -405,7 +405,7 @@ const TokenChartContainer: React.FC = () => {
     temp.push(maxPoint.toString());
     return temp;
   };
-
+  
   return (
     <TokenChart
       tokenInfo={tokenInfo}

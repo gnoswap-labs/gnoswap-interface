@@ -167,7 +167,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
           <g>
             <line
               className="start-line"
-              stroke={startColor.start}
+              stroke={startColor.startLine}
               strokeWidth={2}
               x1={minTickPosition}
               y1={0}
@@ -183,7 +183,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
           <g className="endline-wrapper">
             <line
               className="end-line"
-              stroke={endColor.start}
+              stroke={endColor.startLine}
               strokeWidth={2}
               x1={maxTickPosition}
               y1={0}

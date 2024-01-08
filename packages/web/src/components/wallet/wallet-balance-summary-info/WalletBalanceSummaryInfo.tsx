@@ -8,20 +8,15 @@ interface WalletBalanceSummaryInfoProps {
 }
 const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
   balanceSummaryInfo,
-  connected,
 }) => {
   // const changeRate = Number(balanceSummaryInfo.changeRate.slice(0, -1)) || 0;
 
   return (
     <WalletBalanceSummaryInfoWrapper>
-      {connected ? (
-        balanceSummaryInfo.loading ? (
-          <span css={pulseSkeletonStyle({ h: 20, w: "300px" })} />
-        ) : (
-          <span className="amount">{balanceSummaryInfo.amount}</span>
-        )
+      {balanceSummaryInfo.loading ? (
+        <span css={pulseSkeletonStyle({ h: 20, w: "300px" })} />
       ) : (
-        <span className="amount">$0</span>
+        <span className="amount">{balanceSummaryInfo.amount}</span>
       )}
       {/* <span
         className={`${

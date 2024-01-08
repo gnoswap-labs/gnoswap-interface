@@ -14,7 +14,6 @@ interface WalletBalanceDetailInfoProps {
   tooltip?: string;
   button?: React.ReactNode;
   loading: boolean;
-  connected: boolean;
 }
 
 const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
@@ -23,7 +22,6 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   tooltip,
   button,
   loading,
-  connected,
 }) => {
   return (
     <WalletBalanceDetailInfoWrapper>
@@ -34,18 +32,14 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
         )}
       </div>
       <div className="value-wrapper">
-        {connected ? (
-          loading ? (
-            <div className="value">
-              <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
-            </div>
-          ) : (
-            <span className="value">
-              ${BigNumber(value).decimalPlaces(2).toFormat()}
-            </span>
-          )
+        {loading ? (
+          <div className="value">
+            <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
+          </div>
         ) : (
-          <span className="value">$0</span>
+          <span className="value">
+            ${BigNumber(value).decimalPlaces(2).toFormat()}
+          </span>
         )}
         {button && <div className="button-wrapper">{button}</div>}
       </div>

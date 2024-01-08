@@ -32,21 +32,18 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       title={"Available Balance"}
       value={balanceDetailInfo.availableBalance}
       tooltip={"Total sum of assets not deposited in liquidity pools."}
-      connected={connected}
     />
     <WalletBalanceDetailInfo
       loading={balanceDetailInfo.loadingPositions}
       title={"Staked Positions"}
       value={balanceDetailInfo.stakedLP}
       tooltip={"Total sum of staked positions."}
-      connected={connected}
     />
     <WalletBalanceDetailInfo
       loading={balanceDetailInfo.loadingPositions}
       title={"Total Claimed Rewards"}
       value={balanceDetailInfo.unstakingLP}
       tooltip={"The cumulative sum of claimed rewards."}
-      connected={connected}
     />
     {breakpoint === DEVICE_TYPE.MOBILE ? (
       <InfoWrapper>
@@ -58,20 +55,16 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
             />
           </div>
           <div className="value-wrapper">
-            {connected ? (
-              balanceDetailInfo.loadingPositions ? (
-                <div className="value">
-                  <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
-                </div>
-              ) : (
-                <span className="value">
-                  {BigNumber(balanceDetailInfo.claimableRewards)
-                    .decimalPlaces(2)
-                    .toFormat()}
-                </span>
-              )
+            {balanceDetailInfo.loadingPositions ? (
+              <div className="value">
+                <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
+              </div>
             ) : (
-              <span className="value">$0</span>
+              <span className="value">
+                {BigNumber(balanceDetailInfo.claimableRewards)
+                  .decimalPlaces(2)
+                  .toFormat()}
+              </span>
             )}
           </div>
         </div>
@@ -92,7 +85,6 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={"Claimable Rewards"}
         value={balanceDetailInfo.claimableRewards}
         tooltip={"Total sum of unclaimed rewards."}
-        connected={connected}
         button={
           <ClaimAllButton
             onClick={claimAll}

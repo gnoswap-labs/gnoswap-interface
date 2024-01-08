@@ -7,13 +7,13 @@ export const UnconnectedWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   ${fonts.body8}
   width: 100%;
-  padding: 35px;
+  padding: 19px 19px 22px 19px;
   ${media.tablet} {
-    padding: 23px 36px;
+    padding: 19px 19px 24px 19px;
     ${fonts.body10}
   }
   ${media.mobile} {
-    padding: 15px 12px;
+    padding: 29.5px 11px;
     ${fonts.body12}
     color: ${({ theme }) => theme.color.text05};
   }
@@ -22,8 +22,8 @@ export const UnconnectedWrapper = styled.div`
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   .unconnected-icon {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     * {
       fill: ${({ theme }) => theme.color.icon03};
     }
@@ -35,10 +35,7 @@ export const UnconnectedWrapper = styled.div`
   p {
     color: ${({ theme }) => theme.color.text22};
     text-align: center;
-    margin: 24px 0px;
-    ${media.tablet} {
-      margin: 16px 0;
-    }
+    margin: 18px 0px;
     ${media.mobile} {
       margin: 12px 0;
     }
@@ -52,10 +49,8 @@ export const UnconnectedWrapper = styled.div`
   .button-connect-wallet {
     width: 200px;
     height: 46px;
-    ${media.tablet} {
-      height: 41px;
-    }
     ${media.mobile} {
+      height: 41px;
       width: 100%;
     }
   }
