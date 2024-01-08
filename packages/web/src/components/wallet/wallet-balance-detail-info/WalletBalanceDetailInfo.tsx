@@ -1,12 +1,12 @@
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import BigNumber from "bignumber.js";
 import React from "react";
 import {
   WalletBalanceDetailInfoTooltipContent,
   WalletBalanceDetailInfoWrapper,
 } from "./WalletBalanceDetailInfo.styles";
+import PulseSkeleton from "@components/common/pulse-skeleton/PulseSkeleton";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
@@ -32,7 +32,13 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
         )}
       </div>
       <div className="value-wrapper">
-        {loading ? (
+        <PulseSkeleton loading={loading} w={120} h={20} className="pule-skeleton">
+          <span className="value">
+            ${BigNumber(value).decimalPlaces(2).toFormat()}
+          </span>
+        </PulseSkeleton>
+
+        {/* {loading ? (
           <div className="value">
             <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
           </div>
@@ -40,7 +46,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
           <span className="value">
             ${BigNumber(value).decimalPlaces(2).toFormat()}
           </span>
-        )}
+        )} */}
         {button && <div className="button-wrapper">{button}</div>}
       </div>
     </WalletBalanceDetailInfoWrapper>

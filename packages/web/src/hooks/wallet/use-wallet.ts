@@ -24,7 +24,7 @@ export const useWallet = () => {
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
   }, [walletAccount]);
-
+  
   const wallet = useMemo(() => {
     if (!connected) {
       return null;
@@ -52,8 +52,9 @@ export const useWallet = () => {
   async function initSession() {
     try {
       const connectedBySession = sessionId;
-      if (!connectedBySession) return;
-
+      if (!connectedBySession) {
+        setLoadingConnect("loading");
+      }
       const adena = AdenaClient.createAdenaClient();
       const data = await adena?.getAccount();
       if (data?.status === "failure") return;

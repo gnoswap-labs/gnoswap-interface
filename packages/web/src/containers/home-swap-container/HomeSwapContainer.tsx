@@ -11,6 +11,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { formatUsdNumber } from "@utils/stake-position-utils";
+import { isEmptyObject } from "@utils/validation-utils";
 const GNOS_PATH = "gno.land/r/demo/gns" || "";
 
 const TOKEN_A: TokenModel = {
@@ -58,6 +59,9 @@ const HomeSwapContainer: React.FC = () => {
       const balance = displayBalanceMap[tokenA.priceId] || 0;
       return BigNumber(balance).toFormat(tokenA.decimals);
     }
+    if (isEmptyObject(displayBalanceMap)) {
+      return "-";
+    }
     return "0";
   }, [connected, displayBalanceMap, tokenA]);
 
@@ -66,6 +70,9 @@ const HomeSwapContainer: React.FC = () => {
     if (tokenB && displayBalanceMap[tokenB.priceId]) {
       const balance = displayBalanceMap[tokenB.priceId] || 0;
       return BigNumber(balance).toFormat(tokenB.decimals);
+    }
+    if (isEmptyObject(displayBalanceMap)) {
+      return "-";
     }
     return "0";
   }, [connected, displayBalanceMap, tokenB]);

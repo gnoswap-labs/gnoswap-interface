@@ -55,9 +55,8 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
       fill: ${({ theme }) => theme.color.icon03};
     }
   }
-
   .value-wrapper {
-    ${mixins.flexbox("row", "center", "center")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     width: 100%;
     @media (max-width: 968px) {
       width: auto;
@@ -65,6 +64,9 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     }
     ${media.mobile} {
       gap: 8px;
+    }
+    .pule-skeleton {
+      display: inline-flex;
     }
     .value {
       display: inline-flex;
