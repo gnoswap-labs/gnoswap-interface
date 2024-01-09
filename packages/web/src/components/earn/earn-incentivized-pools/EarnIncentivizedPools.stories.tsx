@@ -36,5 +36,6 @@ Default.args = {
     onScroll={action("onScroll")}
     width={1440}
     showPagination={false}
+    isLoading={false}
   />
 };

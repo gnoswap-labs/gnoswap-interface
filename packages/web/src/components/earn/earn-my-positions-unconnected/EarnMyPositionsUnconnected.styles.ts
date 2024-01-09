@@ -6,6 +6,7 @@ import mixins from "@styles/mixins";
 export const UnconnectedWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   ${fonts.body8}
+  line-height: 23px;
   width: 100%;
   padding: 19px 19px 22px 19px;
   ${media.tablet} {
@@ -36,6 +37,7 @@ export const UnconnectedWrapper = styled.div`
     color: ${({ theme }) => theme.color.text22};
     text-align: center;
     margin: 18px 0px;
+
     ${media.mobile} {
       margin: 12px 0;
     }

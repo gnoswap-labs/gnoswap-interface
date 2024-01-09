@@ -57,6 +57,9 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
   }
   .value-wrapper {
     ${mixins.flexbox("row", "center", "flex-start")};
+    &:last-of-type {
+      ${mixins.flexbox("row", "center", "space-between")};
+    }
     width: 100%;
     @media (max-width: 968px) {
       width: auto;

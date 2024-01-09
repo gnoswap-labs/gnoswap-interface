@@ -5,7 +5,7 @@ export const useLoading = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsLoadingCommon(false);
-    }, 1000);
+    }, 1500);
     return () => clearTimeout(timeout);
   }, []);
   return {

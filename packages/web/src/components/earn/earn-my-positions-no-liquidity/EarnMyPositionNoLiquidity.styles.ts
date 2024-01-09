@@ -24,7 +24,7 @@ export const NoLiquidityWrapper = styled.div`
     margin-bottom: 10px;
     font-size: 20px;
     line-height: 26px;
-    font-weight: 700;
+    font-weight: 500;
   }
   ${media.tablet} {
     padding: 25px 0 30px 20px;
@@ -52,6 +52,7 @@ export const NoLiquidityWrapper = styled.div`
     ${media.mobile} {
       ${fonts.body9};
     }
+    font-weight: 700;
   }
   .description {
     text-align: center;

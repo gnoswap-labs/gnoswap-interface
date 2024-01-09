@@ -10,8 +10,8 @@ interface LoadMoreProps {
 }
 
 export const TEXT_TYPE = {
-  LOAD: ["Load more", "View less"],
-  SHOW: ["Show more", "View less"],
+  LOAD: ["View more", "View less"],
+  SHOW: ["View more", "View less"],
 } as const;
 
 export type TEXT_TYPE = ValuesType<typeof TEXT_TYPE>;

@@ -22,6 +22,7 @@ export interface IncentivizedPoolCardListProps {
   onScroll: () => void;
   showPagination: boolean;
   width: number;
+  isLoading: boolean;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -37,6 +38,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   onScroll,
   showPagination,
   width,
+  isLoading,
 }) => {
   const data = useMemo(() => {
     if (page === 1) {
@@ -54,17 +56,17 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   return (
     <IncentivizedWrapper>
       <PoolListWrapper ref={divRef} onScroll={onScroll}>
-        {
+        {!isLoading &&
           incentivizedPools.length > 0 &&
           data.map((info, index) => (
             <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
           ))}
-        {isFetched &&
+        {isFetched && !isLoading &&
           incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
           (Array(((incentivizedPools.length > 4 && width > 1180) ? 8 : (width <= 1180 && width >= 920) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
             <BlankIncentivizedCard key={index}/>
           ))}
-        {!isFetched &&
+        {(!isFetched || isLoading) &&
           Array.from({ length: 8 }).map((_, index) => (
             <span
               key={index}

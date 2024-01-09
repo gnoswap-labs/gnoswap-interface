@@ -12,7 +12,7 @@ interface Props extends PulseSkeletonParams {
   delay?: number;
 }
 
-const DELAY_LOADING = 500;
+const DELAY_LOADING = 1500;
 
 const PulseSkeleton: FC<PropsWithChildren<Props>> = ({
   loading: loadingProp = false,

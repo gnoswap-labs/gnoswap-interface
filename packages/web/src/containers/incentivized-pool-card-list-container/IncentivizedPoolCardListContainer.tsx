@@ -7,6 +7,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useLoading } from "@hooks/common/use-loading";
 export interface PoolListProps {
   logo: string[];
   name: string[];
@@ -36,6 +37,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
+  const { isLoadingCommon } = useLoading();
   
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -98,6 +100,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       onScroll={handleScroll}
       showPagination={showPagination}
       width={width}
+      isLoading={isLoadingCommon}
     />
   );
 };
