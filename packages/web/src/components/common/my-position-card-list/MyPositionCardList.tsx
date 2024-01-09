@@ -40,12 +40,12 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
 }) => (
   <CardListWrapper>
     <GridWrapper ref={divRef} onScroll={onScroll}>
-      {
+      {!isLoading &&
         positions.length > 0 &&
         positions.map((position, idx) => (
           <MyPositionCard currentIndex={idx} position={position} key={idx} movePoolDetail={movePoolDetail} mobile={mobile} themeKey={themeKey} />
         ))}
-      {isFetched &&
+      {isFetched && !isLoading &&
         positions.length > 0 && positions.length < 4 &&
         (Array((width <= 1180 && width >= 920 ? 3 : 4) - positions.length).fill(1)).map((_, index) => (
           <BlankPositionCard key={index} />

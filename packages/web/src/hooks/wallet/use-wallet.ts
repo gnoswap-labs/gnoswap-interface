@@ -49,11 +49,24 @@ export const useWallet = () => {
     }
   }, [setNetwork, walletAccount]);
 
+  const disconnectWallet = useCallback(() => {
+    setWalletAccount(null);
+    setSessionId("");
+    sessionStorage.removeItem(GNOSWAP_SESSION_ID_KEY);
+    sessionStorage.removeItem(ACCOUNT_SESSION_INFO_KEY);
+    sessionStorage.removeItem(GNOWSWAP_CONNECTED_KEY);
+    accountRepository.setConnectedWallet(false);
+    setLoadingConnect("initial");
+  }, [accountRepository, setWalletAccount]);
+
   async function initSession() {
     try {
       const adena = AdenaClient.createAdenaClient();
       const data = await adena?.getAccount();
-      if (data?.status === "failure") return;
+      if (data?.status === "failure") {
+        disconnectWallet();
+        return;
+      }
 
       if (walletClient === null) {
         connectAdenaClient(true);
@@ -113,23 +126,13 @@ export const useWallet = () => {
     }
   };
 
-  const disconnectWallet = useCallback(() => {
-    setWalletAccount(null);
-    setSessionId("");
-    sessionStorage.removeItem(GNOSWAP_SESSION_ID_KEY);
-    sessionStorage.removeItem(ACCOUNT_SESSION_INFO_KEY);
-    sessionStorage.removeItem(GNOWSWAP_CONNECTED_KEY);
-    accountRepository.setConnectedWallet(false);
-    setLoadingConnect("initial");
-  }, [accountRepository, setWalletAccount]);
-
   function updateWalletEvents(walletClient: WalletClient | null) {
     if (!walletClient) {
       return;
     }
     try {
-      walletClient.addEventChangedAccount(connectAdenaClient);
-      walletClient.addEventChangedNetwork(connectAdenaClient);
+      walletClient.addEventChangedAccount(() => connectAdenaClient());
+      walletClient.addEventChangedNetwork(() => connectAdenaClient());
     } catch {}
   }
 

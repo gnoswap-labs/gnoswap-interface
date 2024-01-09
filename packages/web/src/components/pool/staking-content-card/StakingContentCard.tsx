@@ -103,7 +103,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     const usdValue = positions.reduce((accum, current) => {
       return Number(current.positionUsdValue) + accum;
     }, 0);
-    return `${formatUsdNumber(usdValue)}`;
+    return `${formatUsdNumber(usdValue.toString())}`;
   }, [positions]);
 
   const positionRewards = useMemo(() => {
@@ -246,7 +246,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
     const usdValue = positions.reduce((accum, current) => {
       return Number(current.positionUsdValue) + accum;
     }, 0);
-    return `${formatUsdNumber(usdValue)}`;
+    return `${formatUsdNumber(usdValue.toString())}`;
   }, [positions]);
 
   const totalStakedRewardUSD = useMemo(() => {
