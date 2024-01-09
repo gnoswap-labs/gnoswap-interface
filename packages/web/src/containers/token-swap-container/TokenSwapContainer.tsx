@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { useGetTokenByPath } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
+import { useLoading } from "@hooks/common/use-loading";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -15,6 +16,7 @@ const TokenSwapContainer: React.FC = () => {
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const path = router.query["tokenB"] as string;
   const { data: tokenB = null, isFetched } = useGetTokenByPath(path, { enabled: !!path});
+  const { isLoadingCommon } = useLoading();
   
   const {
     connectedWallet,
@@ -88,7 +90,7 @@ const TokenSwapContainer: React.FC = () => {
         changeTokenB={handleChangeTokenB}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenBAmount={changeTokenBAmount}
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingCommon}
         isAvailSwap={isAvailSwap}
         swapButtonText={swapButtonText}
         swapSummaryInfo={swapSummaryInfo}

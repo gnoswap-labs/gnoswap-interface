@@ -13,6 +13,7 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -66,6 +67,7 @@ const BestPoolsContainer: React.FC = () => {
     useGetPoolList();
   const { isLoading: isLoadingChainList } = useGetChainList();
   const { isLoading: isLoadingListToken } = useGetTokensList();
+  const { isLoadingCommon } = useLoading();
 
   const bestPoolList: BestPool[] = useMemo(() => {
     return bestPools.map((item: IBestPoolResponse) => {
@@ -106,7 +108,8 @@ const BestPoolsContainer: React.FC = () => {
         isLoading ||
         isLoadingGetPoolList ||
         isLoadingChainList ||
-        isLoadingListToken
+        isLoadingListToken ||
+        isLoadingCommon
       }
     />
   );

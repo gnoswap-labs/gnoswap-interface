@@ -64,24 +64,23 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   right={pool.tokenB.logoURI}
                   leftSymbol={pool.tokenA.symbol}
                   rightSymbol={pool.tokenB.symbol}
+                  size={32}
                 />
                 <span>{pairName}</span>
-              </div>
-              <div className="box-group">
-                {incentivizedLabel && (
+                <div className="box-group">
                   <Badge
                     type={BADGE_TYPE.DARK_DEFAULT}
-                    text={<>
-                      {incentivizedLabel}
-                      <OverlapTokenLogo tokens={rewardTokensInfo} size={16} />
-                    </>}
+                    text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr}`}
                   />
-                )}
-                <Badge
-                  type={BADGE_TYPE.DARK_DEFAULT}
-                  text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr} Fee`}
-                />
+                  {incentivizedLabel && (
+                    <Badge
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={<OverlapTokenLogo tokens={rewardTokensInfo} size={16} />}
+                    />
+                  )}
+                </div>
               </div>
+             
             </div>
             <div className="list-wrapper">
               <div className="list-header">
@@ -120,15 +119,16 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 position="top"
                 offset={40}
               />
+              <div className="price-section">
+                <span className="label-text">
+                  {"Current Price"}
+                </span>
+                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, 2)} ${pool.tokenB.symbol}`}</span>
+              </div>
             </div>
           </div>
 
-          <div className="price-section">
-            <span className="label-text">
-              {"Current Price"}
-            </span>
-            <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, 2)} ${pool.tokenB.symbol}`}</span>
-          </div>
+          
         </PoolCardWrapper>
       </div>
     </PoolCardWrapperWrapperBorder>

@@ -3,6 +3,10 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
+interface Props {
+  loading: boolean;
+}
+
 export const IncentivizedWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
@@ -24,7 +28,7 @@ export const IncentivizedWrapper = styled.div`
   }
 `;
 
-export const PoolListWrapper = styled.div`
+export const PoolListWrapper = styled.div<Props>`
   width: 100%;
   display: grid;
   grid-template-rows: auto;
@@ -40,7 +44,7 @@ export const PoolListWrapper = styled.div`
   }
 
   .card-skeleton {
-    height: 348px;
+    height: 321px;
     border-radius: 10px;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
   }
@@ -51,9 +55,9 @@ export const PoolListWrapper = styled.div`
   ${media.mobile} {
     overflow-x: auto;
     grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 290px);
+    grid-template-columns: repeat(auto-fill, 100%);
     grid-auto-flow: column;
-    grid-auto-columns: 290px;
+    grid-auto-columns: 100%;
   }
 `;
 

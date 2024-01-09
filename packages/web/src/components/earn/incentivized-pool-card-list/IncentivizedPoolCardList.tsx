@@ -55,7 +55,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   }, [page, incentivizedPools, width]);
   return (
     <IncentivizedWrapper>
-      <PoolListWrapper ref={divRef} onScroll={onScroll}>
+      <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
         {!isLoading &&
           incentivizedPools.length > 0 &&
           data.map((info, index) => (
@@ -75,13 +75,13 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
             />
           ))}
       </PoolListWrapper>
-      {!mobile && (
+      {!mobile && !isLoading && (
         incentivizedPools.length > 8 &&
         onClickLoadMore && (
           <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
         )
       )}
-      {showPagination && isFetched && incentivizedPools.length > 0 &&
+      {showPagination && isFetched && incentivizedPools.length > 0 && !isLoading &&
         <div className="box-indicator">
           <span className="current-page">{currentIndex}</span>
           <span>/</span>

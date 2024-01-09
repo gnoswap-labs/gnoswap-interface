@@ -71,12 +71,18 @@ export const PoolCardWrapper = styled.div`
     gap: 4px;
     align-self: stretch;
     .box-header {
-      ${mixins.flexbox("row", "center", "space-between")};
+      ${mixins.flexbox("row", "center", "flex-start")};
       width: 100%;
+      gap: 8px;
+      span {
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 500;
+      }
     }
     .box-group {
       ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 3px;
+      gap: 4px;
       .content {
         gap: 4px;
       }
@@ -90,6 +96,9 @@ export const PoolCardWrapper = styled.div`
     .list-header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .label-text {
+        ${fonts.body12}
+      }
     }
     .list-content {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -112,6 +121,9 @@ export const PoolCardWrapper = styled.div`
     .volume-title {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .label-text {
+        ${fonts.body12}
+      }
     }
     .volume-content {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -125,8 +137,8 @@ export const PoolCardWrapper = styled.div`
     ${fonts.body8};
     background-color: ${({ theme }) => theme.color.backgroundOpacity};
     border-radius: 8px;
-    padding: 16px;
-    gap: 24px;
+    padding: 16px 16px 8px 16px;
+    gap: 12px;
     justify-content: center;
     align-items: center;
     cursor: default;
@@ -158,15 +170,13 @@ export const PoolCardWrapper = styled.div`
     display: flex;
     flex-direction: row;
     width: 100%;
-    padding: 4px;
     justify-content: space-between;
     align-items: center;
   }
 
   .label-text {
     color: ${({ theme }) => theme.color.text04};
-    ${fonts.body12};
-    height: 18px;
+    ${fonts.p4};
   }
   .value-text {
     ${fonts.body10};

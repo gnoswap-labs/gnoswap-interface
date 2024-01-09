@@ -21,6 +21,7 @@ import {
 } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -223,6 +224,7 @@ const TokenChartContainer: React.FC = () => {
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
   const { gnot, wugnotPath } = useGnotToGnot();
+  const { isLoadingCommon } = useLoading();
 
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: () => {
@@ -412,7 +414,7 @@ const TokenChartContainer: React.FC = () => {
       chartInfo={getChartInfo()}
       currentTab={currentTab}
       changeTab={changeTab}
-      loading={isLoading}
+      loading={isLoading || isLoadingCommon}
       componentRef={componentRef}
       size={size}
       breakpoint={breakpoint}

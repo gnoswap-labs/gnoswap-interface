@@ -38,8 +38,8 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   themeKey,
   showLoadMore,
 }) => (
-  <CardListWrapper>
-    <GridWrapper ref={divRef} onScroll={onScroll}>
+  <CardListWrapper loading={isLoading}>
+    <GridWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
       {!isLoading &&
         positions.length > 0 &&
         positions.map((position, idx) => (
@@ -63,13 +63,13 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
         )
         : null}
     </GridWrapper>
-    {!mobile &&
+    {!mobile && !isLoading &&
       showLoadMore &&
       onClickLoadMore && (
         <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
       )}
 
-    {(showPagination && isFetched && positions.length !== 0 &&
+    {(showPagination && isFetched && positions.length !== 0 && !isLoading &&
       <div className="box-indicator">
         <span className="current-page">{currentIndex}</span>
         <span>/</span>

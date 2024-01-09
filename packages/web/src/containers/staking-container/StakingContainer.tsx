@@ -9,6 +9,7 @@ import { TokenModel } from "@models/token/token-model";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
+import { useLoading } from "@hooks/common/use-loading";
 
 const StakingContainer: React.FC = () => {
   const { account } = useWallet();
@@ -23,6 +24,7 @@ const StakingContainer: React.FC = () => {
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
   const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { isLoadingCommon } = useLoading();
 
   const pool = useMemo(() => {
     if (!data) return null;
@@ -126,7 +128,7 @@ const StakingContainer: React.FC = () => {
       type={type}
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-      loading={loadingPool || loadingPosition}
+      loading={loadingPool || loadingPosition || isLoadingCommon}
     />
   );
 };

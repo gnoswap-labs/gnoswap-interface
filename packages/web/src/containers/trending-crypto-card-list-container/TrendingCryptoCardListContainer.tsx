@@ -13,6 +13,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useRouter } from "next/router";
 import { useGetPoolList } from "@query/pools";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 const trendingCryptoInit = [
   {
@@ -59,6 +60,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
     { enabled: !!path },
   );
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();
+  const { isLoadingCommon } = useLoading();
 
   const trendingCryptoList = useMemo(() => {
     return trending.map((item: ITrending) => {
@@ -84,7 +86,8 @@ const TrendingCryptoCardListContainer: React.FC = () => {
         isLoading ||
         isLoadingListToken ||
         isLoadingTokenDetail ||
-        isLoadingGetPoolList
+        isLoadingGetPoolList ||
+        isLoadingCommon
       }
     />
   );

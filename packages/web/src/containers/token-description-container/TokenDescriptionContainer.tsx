@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import TokenDescription from "@components/token/token-description/TokenDescription";
 import { useRouter } from "next/router";
 import { useGetTokenByPath } from "@query/token";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface DescriptionInfo {
   token: {
@@ -41,6 +42,8 @@ const TokenDescriptionContainer: React.FC = () => {
   const router = useRouter();
   const path = router.query["tokenB"] as string;
   const { data: tokenB, isLoading } = useGetTokenByPath(path, { enabled: !!path });
+  const { isLoadingCommon } = useLoading();
+
   const copyClick = async () => {
     try {
       await navigator.clipboard.writeText(descriptionInfo.token.pkg_path);
@@ -79,7 +82,7 @@ const TokenDescriptionContainer: React.FC = () => {
       content={descriptionInfo.token.description}
       links={descriptionInfo.links}
       path={descriptionInfo.token.pkg_path}
-      loading={isLoading}
+      loading={isLoading || isLoadingCommon}
       copyClick={copyClick}
       copied={copied}
     />

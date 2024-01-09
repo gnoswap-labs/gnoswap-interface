@@ -67,14 +67,18 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
   }
   .title-wrapper {
-    ${mixins.flexbox("column", "flex-end", "space-between")};
+    ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     gap: 4px;
     ${fonts.body5}
 
     .box-header {
-      ${mixins.flexbox("row", "center", "space-between")};
+      ${mixins.flexbox("row", "center", "flex-start")};
       align-self: stretch;
+      gap: 8px;
+      > span {
+        ${fonts.body7}
+      }
     }
     .badge-group {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -102,6 +106,12 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     .list-header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .label-text {
+        ${fonts.body12}
+      }
+      &.mt-4 {
+        margin-top: 4px;
+      }
     }
     .list-content {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -118,7 +128,16 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     ${fonts.body12};
     height: 18px;
   }
-
+  .view-my-range {
+    width: 100%;
+    ${mixins.flexbox("row", "center", "center")};
+    span {
+      ${fonts.p4}
+      color: ${({ theme }) => theme.color.text10};
+      text-align: center;
+      cursor: pointer;
+    }
+  }
   .pool-price-graph {
     width: 100%;
     padding: 16px;

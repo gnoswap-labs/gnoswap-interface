@@ -5,6 +5,7 @@ import { useGetTokenDetailByPath } from "@query/token";
 import { useRouter } from "next/router";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
+import { useLoading } from "@hooks/common/use-loading";
 const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
 
 export const performanceInit = [
@@ -111,6 +112,7 @@ const TokenInfoContentContainer: React.FC = () => {
       : (router.query["tokenB"] as string),
     { enabled: !!router.query["tokenB"] },
   );
+  const { isLoadingCommon } = useLoading();
 
   const marketInformation = useMemo(() => {
     return {
@@ -235,9 +237,9 @@ const TokenInfoContentContainer: React.FC = () => {
       performance={pricePerformance}
       priceInfo={priceInfomation}
       marketInfo={marketInformation}
-      loadingPricePerform={isLoading}
-      loadingPriceInfo={isLoading}
-      loadingMarketInfo={isLoading}
+      loadingPricePerform={isLoading || isLoadingCommon}
+      loadingPriceInfo={isLoading || isLoadingCommon}
+      loadingMarketInfo={isLoading || isLoadingCommon}
     />
   );
 };
