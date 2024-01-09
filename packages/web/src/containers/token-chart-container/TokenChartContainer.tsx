@@ -223,7 +223,7 @@ const TokenChartContainer: React.FC = () => {
   );
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
-  const { gnot, wugnotPath } = useGnotToGnot();
+  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   const { isLoadingCommon } = useLoading();
 
   const { openModal: openTradingModal } = useTokenTradingModal({
@@ -247,7 +247,7 @@ const TokenChartContainer: React.FC = () => {
   } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
   });
-  const [componentRef, size] = useComponentSize(isLoading);
+  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
   
   useEffect(() => {
     if (tokenB) {
@@ -258,10 +258,10 @@ const TokenChartContainer: React.FC = () => {
       );
       setTokenInfo(() => ({
         token: {
-          name: tokenB.name,
-          symbol: tokenB.symbol,
-          image: tokenB.logoURI,
-          pkg_path: tokenB.path,
+          name: getGnotPath(tokenB).name,
+          symbol: getGnotPath(tokenB).symbol,
+          image: getGnotPath(tokenB).logoURI,
+          pkg_path: getGnotPath(tokenB).path,
           decimals: 1,
           description: tokenB.description || "",
           website_url: tokenB.websiteURL || "",

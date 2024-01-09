@@ -5,7 +5,7 @@ import { CommonState, TokenState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 
 export const useBackground = () => {
-  const { account, initSession, updateWalletEvents } = useWallet();
+  const { account, initSession, updateWalletEvents, connectAccount } = useWallet();
   const [walletClient] = useAtom(WalletState.client);
   const [, setBalances] = useAtom(TokenState.balances);
   const [sessionId] = useAtom(CommonState.sessionId);
@@ -34,9 +34,12 @@ export const useBackground = () => {
 
   useEffect(() => {
     if (walletClient) {
+      if (account) {
+        connectAccount();
+      }
       updateWalletEvents(walletClient);
     }
-  }, [walletClient]);
+  }, [walletClient, String(account)]);
 
   useEffect(() => {
     setBalances({});

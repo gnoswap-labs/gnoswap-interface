@@ -9,10 +9,15 @@ export const TokenChartInfoWrapper = styled.div`
   .token-info-wrapper {
     ${mixins.flexbox("row", "flex-start", "space-between")};
     width: 100%;
-
+    margin-bottom: 5px;
+    height: 63px;
     .token-info {
+
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 8px;
+      .loading-skeleton {
+        margin-top: 10px;
+      }
       > div {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
@@ -40,7 +45,9 @@ export const TokenChartInfoWrapper = styled.div`
       }
     }
     ${media.mobile} {
-      .token-info {
+        height: auto;
+        .token-info {
+        
         ${mixins.flexbox("row", "flex-start", "flex-start")};
         gap: 6px;
         > div {

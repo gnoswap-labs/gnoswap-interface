@@ -34,7 +34,7 @@ const EarnMyPositionContainer: React.FC<
   const [page, setPage] = useState(1);
 
   const router = useRouter();
-  const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, loadingConnect, account } = useWallet();
+  const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
   const { updateTokenPrices } = useTokenData();
   const { updatePositions, isFetchedPools, loading } = usePoolData();
   const { width } = useWindowSize();
@@ -123,7 +123,7 @@ const EarnMyPositionContainer: React.FC<
       connected={connected}
       availableStake={availableStake}
       connect={connect}
-      loading={loading || loadingPosition || isLoadingCommon || loadingConnect === "loading"}
+      loading={loading || loadingPosition || isLoadingCommon}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
       positions={dataMapping}

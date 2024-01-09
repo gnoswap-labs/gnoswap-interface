@@ -15,6 +15,8 @@ import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
+import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
+import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -31,11 +33,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   currentIndex,
   themeKey,
 }) => {
-  const GRAPH_WIDTH = mobile ? 226 : 258;
-  const GRAPH_HEIGHT = 80;
+  const GRAPH_WIDTH = mobile ? 226 : 290;
+  const GRAPH_HEIGHT = 74;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
-  const [isHiddenStart, setIsHiddenStart] = useState(false);
+  const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
 
@@ -114,23 +116,24 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (position.tickUpper - currentTick) / (max - currentTick) * (GRAPH_WIDTH / 2) + (GRAPH_WIDTH / 2);
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
-
+  console.log(minTickPosition, maxTickPosition);
+  
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
-    const tokenAPriceStr = numberToFormat(tokenAPrice, 2);
-    return `1 ${tokenA.symbol} = ${tokenAPriceStr} ${tokenB.symbol}`;
+    const tokenAPriceStr = numberToFormat(tokenAPrice, 6);
+    return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const maxPriceStr = useMemo(() => {
     const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
-    const tokenBPriceStr = numberToFormat(tokenBPrice, 2);
-    return `1 ${tokenA.symbol} = ${tokenBPriceStr} ${tokenB.symbol}`;
+    const tokenBPriceStr = numberToFormat(tokenBPrice, 6);
+    return `${tokenBPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
-  const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    setIsHiddenStart(!isHiddenStart);
-  };
+  // const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   e.stopPropagation();
+  //   setIsHiddenStart(!isHiddenStart);
+  // };
 
   const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -172,7 +175,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               }
             />
           </div>
-          {!viewMyRange && <div className="list-wrapper">
+          <div className="list-wrapper">
             <div className="list-header">
               <span className="label-text">{POSITION_CONTENT_LABEL.BALANCE}</span>
               <span className="label-text">{POSITION_CONTENT_LABEL.APR}</span>
@@ -189,22 +192,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span>$200</span>
               $1.50K
             </div>
-          </div>}
-          <div className="view-my-range">
-            <span onClick={onClickViewRange}>View my range</span>
           </div>
-          {false && <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
-            <div className="price-range-info">
-              <div className="current-price" onClick={handleClickShowRange}>
-                <span>{isHiddenStart ? "Show Range" : "Hide Range"}</span>
-              </div>
-              <RangeBadge
-                status={
-                  inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
-                }
-              />
+          <div className="view-my-range">
+            <span onClick={onClickViewRange}>View my range <IconStrokeArrowUp /></span>
+          </div>
+          {viewMyRange && <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+            <div className="view-my-range">
+              <span onClick={onClickViewRange}>Hide my range <IconStrokeArrowDown /></span>
             </div>
             <div className="chart-wrapper">
               <BarAreaGraph
@@ -213,8 +207,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 currentTick={pool.currentTick}
                 minLabel={minTickLabel}
                 maxLabel={maxTickLabel}
-                minTick={minTickPosition}
-                maxTick={maxTickPosition}
+                minTick={undefined}
+                maxTick={undefined}
                 bins={pool.bins}
                 tokenA={tokenA}
                 tokenB={tokenB}
@@ -226,18 +220,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="min-max-price">
-              <div className="price-section">
-                <span className="label-text">
-                  {POSITION_CONTENT_LABEL.MIN_PRICE}
-                </span>
-                <span className="label-text">{minPriceStr}</span>
-              </div>
-              <div className="price-section">
-                <span className="label-text">
-                  {POSITION_CONTENT_LABEL.MAX_PRICE}
-                </span>
-                <span className="label-text">{maxPriceStr}</span>
-              </div>
+                <p className="label-text">{minPriceStr}(<span>-14%</span>) ~</p>
+                <p className="label-text">{maxPriceStr}(<span>+5%</span>){tokenB.symbol}</p>
             </div>
           </div>}
         </MyPositionCardWrapper>
