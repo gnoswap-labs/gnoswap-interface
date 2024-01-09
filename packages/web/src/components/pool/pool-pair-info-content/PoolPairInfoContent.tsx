@@ -49,11 +49,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [depositRatio, pool.tokenB.symbol]);
 
   const liquidityValue = useMemo((): string => {
-    return formatUsdNumber(pool.tvl.toString(), undefined, true);
+    return formatUsdNumber(Number(pool.tvl).toString(), undefined, true);
   }, [pool.tvl]);
   
   const volumeValue = useMemo((): string => {
-    return formatUsdNumber(pool.volume.toString(), undefined, true);
+    return formatUsdNumber(Number(pool.volume).toString(), undefined, true);
   }, [pool.volume]);
 
   const aprValue = useMemo(() => {

@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import NetworkData from "@resources/chains.json";
 import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
 import * as uuid from "uuid";
-import { GNOSWAP_SESSION_ID_KEY } from "@states/common";
+import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY } from "@states/common";
 
 const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
 
@@ -100,6 +100,7 @@ export const useWallet = () => {
 
     if (established.code === 0 || established.code === 4001) {
       const account = await accountRepository.getAccount();
+      sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
       const network = account.chainId === CHAIN_ID;
       if (!network) {
         switchNetwork();

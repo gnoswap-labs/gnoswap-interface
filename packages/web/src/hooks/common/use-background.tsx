@@ -44,6 +44,6 @@ export const useBackground = () => {
     if (account?.address && account?.chainId) {
       updateBalances();
     }
-  }, [account?.address, account?.chainId]);
+  }, [account]);
 
 };

@@ -52,7 +52,7 @@ export const NoLiquidityWrapper = styled.div`
     ${media.mobile} {
       ${fonts.body9};
     }
-    font-weight: 700;
+    font-weight: 700 !important;
   }
   .description {
     text-align: center;
