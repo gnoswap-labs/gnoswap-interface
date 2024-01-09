@@ -6,7 +6,7 @@ import React, { useCallback, useEffect } from "react";
 
 const ConnectWalletContainer = () => {
   const clearModal = useClearModal();
-  const { connectAdenaClient, loadingConnect } = useWallet();
+  const { connectAdenaClient, loadingConnect, connectAccount, walletClient } = useWallet();
 
   const { openModal } = useConnectWalletStatusModal();
 
@@ -23,8 +23,12 @@ const ConnectWalletContainer = () => {
   }, [loadingConnect, close, openModal]);
 
   const connect = useCallback(() => {
-    connectAdenaClient();
-  }, [connectAdenaClient, close]);
+    if (walletClient) {
+      connectAccount();
+    } else {
+      connectAdenaClient();
+    }
+  }, [connectAdenaClient, close, walletClient]);
   
   return <ConnectWalletModal close={close} connect={connect} loadingConnect={loadingConnect} />;
 };

@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
 import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 dayjs.extend(relativeTime);
 
 export interface Activity {
@@ -109,6 +110,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState<SortOption>();
   const { breakpoint } = useWindowSize();
+  const { isLoadingCommon } = useLoading();
 
   const {
     isFetched,
@@ -194,7 +196,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   return (
     <ActivityList
       activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
-      isFetched={isFetched}
+      isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}
       sortOption={sortOption}

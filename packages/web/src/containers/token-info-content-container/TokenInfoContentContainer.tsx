@@ -117,7 +117,7 @@ const TokenInfoContentContainer: React.FC = () => {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
       tvl: market.tvl ? `$${convertToKMB(market.tvl)}` : "-",
       volume24h: market.volume24h
-        ? `$${convertToKMB(market.volume24h)}`
+        ? `$${convertToKMB(Number(market.volume24h).toString())}`
         : "-",
       fees24h: market.fees24h ? `$${convertToKMB(market.fees24h)}` : "-",
     };

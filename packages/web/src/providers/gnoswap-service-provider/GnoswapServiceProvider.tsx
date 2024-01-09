@@ -44,7 +44,7 @@ import {
 } from "@repositories/notification";
 import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
-import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY } from "@states/common";
+import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KEY } from "@states/common";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -80,6 +80,14 @@ const getAccountInfo = () => {
   return null;
 };
 
+const getStatus = () => {
+  const status = sessionStorage.getItem(GNOWSWAP_CONNECTED_KEY);
+  if (status) {
+    return status;
+  }
+  return null;
+};
+
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
 
 const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
@@ -87,6 +95,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [, setWalletAccount] = useAtom(WalletState.account);
+  const [, setStatus] = useAtom(WalletState.status);
 
   const [networkClient] = useState(new AxiosClient(API_URL));
 
@@ -111,8 +120,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   useEffect(() => {
     const sessionId = getSessionId();
     const accountInfo = getAccountInfo();
+    const status = getStatus();
     setSessionId(sessionId || "");
     setWalletAccount(accountInfo);
+    setStatus(status);
   }, []);
 
   useEffect(() => {

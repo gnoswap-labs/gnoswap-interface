@@ -13,6 +13,7 @@ import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -141,6 +142,7 @@ const TokenListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { wugnotPath, getGnotPath } = useGnotToGnot();
+  const { isLoadingCommon } = useLoading();
 
   useEffect(() => {
     if (!keyword) {
@@ -327,7 +329,7 @@ const TokenListContainer: React.FC = () => {
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={isFetched}
+      isFetched={isFetched && !isLoadingCommon}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}

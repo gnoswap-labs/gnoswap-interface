@@ -13,6 +13,7 @@ import { AccountMapper } from "@models/account/mapper/account-mapper";
 import { NetworkClient } from "@common/clients/network-client";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
 import { CommonError } from "@common/errors";
+import { GNOWSWAP_CONNECTED_KEY } from "@states/common";
 
 export class AccountRepositoryImpl implements AccountRepository {
   private walletClient: WalletClient | null;
@@ -33,16 +34,16 @@ export class AccountRepositoryImpl implements AccountRepository {
   }
 
   public isConnectedWalletBySession = () => {
-    const response = this.sessionStorageClient.get("connected-wallet");
+    const response = this.sessionStorageClient.get(GNOWSWAP_CONNECTED_KEY);
     return response === "connected";
   };
 
   public setConnectedWallet = (connected: boolean) => {
     if (connected) {
-      this.sessionStorageClient.set("connected-wallet", "connected");
+      this.sessionStorageClient.set(GNOWSWAP_CONNECTED_KEY, "connected");
       return;
     }
-    this.sessionStorageClient.remove("connected-wallet");
+    this.sessionStorageClient.remove(GNOWSWAP_CONNECTED_KEY);
   };
 
   public getAccount = async () => {

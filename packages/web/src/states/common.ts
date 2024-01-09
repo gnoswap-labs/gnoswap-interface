@@ -44,5 +44,6 @@ export const transactionModalData = atom<{
 
 export const GNOSWAP_SESSION_ID_KEY = "session_id";
 export const ACCOUNT_SESSION_INFO_KEY = "account_info";
+export const GNOWSWAP_CONNECTED_KEY = "connected-wallet";
 
 export const sessionId = atom<string>("");

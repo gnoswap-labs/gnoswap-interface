@@ -5,6 +5,7 @@ import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { VolumeResponse } from "@repositories/dashboard/response/volume-response";
 import dayjs from "dayjs";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface VolumePriceInfo {
   amount: string;
@@ -136,6 +137,7 @@ const parseDate = (dateString: string) => {
 
 const VolumeChartContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
+  const { isLoadingCommon } = useLoading();
 
   const [volumeChartType, setVolumeChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
@@ -203,7 +205,7 @@ const VolumeChartContainer: React.FC = () => {
           : "-",
       }}
       volumeChartInfo={chartData}
-      loading={isFetching}
+      loading={isFetching || isLoadingCommon}
     />
   );
 };
