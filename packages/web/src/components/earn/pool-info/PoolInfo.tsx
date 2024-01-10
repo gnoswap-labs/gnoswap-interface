@@ -44,10 +44,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
     const temp = tempRewardTokens.map(token => token.logoURI);
     
     if (!temp.includes(getGnotPath(tokenA).logoURI)) {
-      temp.push(getGnotPath(tokenA).logoURI);
+      temp.unshift(getGnotPath(tokenA).logoURI);
     }
     if (!temp.includes(getGnotPath(tokenB).logoURI)) {
-      temp.push(getGnotPath(tokenB).logoURI);
+      temp.unshift(getGnotPath(tokenB).logoURI);
     }
     const logos = [...new Set(temp)];
     return <OverlapLogo logos={logos} size={20} />

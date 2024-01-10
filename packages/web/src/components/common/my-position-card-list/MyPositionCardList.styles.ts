@@ -74,6 +74,6 @@ export const BlankPositionCard = styled.div`
   }
   border-radius: 10px;
   background: ${({ theme }) => theme.color.background08};
-  box-shadow: ${({ theme }) => theme.color.shadow};
+  box-shadow: ${({ theme }) => theme.color.shadow02};
   border: 1px solid ${({ theme }) => theme.color.border14};
 `;
