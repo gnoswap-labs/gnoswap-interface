@@ -5,6 +5,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { DashboardTokenResponse } from "@repositories/dashboard/response/token-response";
 import { useQuery } from "@tanstack/react-query";
 import { formatUsdNumber3Digits, prettyNumber } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface DashboardTokenInfo {
   gnosAmount: string;
@@ -63,6 +64,7 @@ const initialGovernenceOverviewInfo: GovernenceOverviewInfo = {
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { dashboardRepository } = useGnoswapContext();
+  const { isLoadingCommon } = useLoading();
 
   const { data: tokenData, isFetching } = useQuery<
     DashboardTokenResponse,
@@ -109,7 +111,7 @@ const DashboardInfoContainer: React.FC = () => {
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}
-      loading={isFetching}
+      loading={isFetching || isLoadingCommon}
     />
   );
 };

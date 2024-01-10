@@ -4,6 +4,7 @@ import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useClickOutside from "@hooks/common/use-click-outside";
+import { useLoading } from "@hooks/common/use-loading";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -229,6 +230,7 @@ const AssetListContainer: React.FC = () => {
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
+  const { isLoadingCommon } = useLoading();
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -438,7 +440,7 @@ const AssetListContainer: React.FC = () => {
     <>
       <AssetList
         assets={filteredTokens}
-        isFetched={isFetched}
+        isFetched={isFetched && !isLoadingCommon}
         assetType={assetType}
         invisibleZeroBalance={invisibleZeroBalance}
         keyword={keyword}

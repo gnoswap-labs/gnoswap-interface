@@ -13,6 +13,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
 import { useRouter } from "next/router";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 export const gainersInit = [
   {
@@ -105,6 +106,7 @@ const GainerAndLoserContainer: React.FC = () => {
       enabled: !!path,
     },
   );
+  const { isLoadingCommon } = useLoading();
 
   const gainersList = useMemo(() => {
     return gainers.map((item: IGainer) => {
@@ -148,13 +150,15 @@ const GainerAndLoserContainer: React.FC = () => {
         isLoading ||
         isLoadingListToken ||
         isLoadingGetPoolList ||
-        isLoadingTokenDetail
+        isLoadingTokenDetail ||
+        isLoadingCommon
       }
       loadingGain={
         isLoading ||
         isLoadingListToken ||
         isLoadingGetPoolList ||
-        isLoadingTokenDetail
+        isLoadingTokenDetail ||
+        isLoadingCommon
       }
     />
   );

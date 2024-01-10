@@ -165,8 +165,6 @@ const HeaderContainer: React.FC = () => {
       );
     }
     return temp.map((item: PoolModel) => {
-      const filteredItem: TokenPriceModel | null = filterByLiquidityPool(tokenPrices, item.poolPath);
-
       return {
         path: "",
         searchType: "popular",
@@ -176,7 +174,7 @@ const HeaderContainer: React.FC = () => {
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
         },
-        price: `$${convertToKMB(filteredItem ? filteredItem.liquidity : "0")}`,
+        price: `$${convertToKMB((item.tvl || 0).toString())}`,
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",
@@ -190,7 +188,7 @@ const HeaderContainer: React.FC = () => {
         fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
         isLiquid: true,
         apr: `${!item.apr ? "-" : Number(item.apr) > 10 ? `${item.apr}% APR` : `${Number(item.apr).toFixed(2)}% APR`}`,
-        liquidity: Number(filteredItem ? filteredItem.liquidity : "0"),
+        liquidity: Number(item ? item.tvl : "0"),
       };
     })
     .sort((a, b) => b.liquidity - a.liquidity)

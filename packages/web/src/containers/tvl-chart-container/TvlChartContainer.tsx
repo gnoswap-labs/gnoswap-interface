@@ -6,6 +6,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
 import { prettyNumber } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -145,16 +146,17 @@ const parseDate = (dateString: string) => {
 
 const TvlChartContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
+  const { isLoadingCommon } = useLoading();
 
   const [tvlChartType, setTvlChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
   );
 
-  const { data: tvlData, isFetching } = useQuery<TvlResponse, Error>({
+  const { data: tvlData, isLoading } = useQuery<TvlResponse, Error>({
     queryKey: ["dashboardTvl"],
     queryFn: dashboardRepository.getDashboardTvl,
   });
-
+  
   const changeTvlChartType = useCallback((newType: string) => {
     const tvlChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
@@ -214,7 +216,7 @@ const TvlChartContainer: React.FC = () => {
         amount: tvlData?.latest ? `$${prettyNumber(tvlData?.latest)}` : "-",
       }}
       tvlChartInfo={chartData}
-      loading={isFetching}
+      loading={isLoading || isLoadingCommon}
     />
   );
 };

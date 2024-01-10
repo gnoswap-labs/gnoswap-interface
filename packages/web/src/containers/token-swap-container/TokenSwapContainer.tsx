@@ -8,13 +8,17 @@ import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { useGetTokenByPath } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
+import { useLoading } from "@hooks/common/use-loading";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
+  const { getGnotPath } = useGnotToGnot();
   const path = router.query["tokenB"] as string;
   const { data: tokenB = null, isFetched } = useGetTokenByPath(path, { enabled: !!path});
+  const { isLoadingCommon } = useLoading();
   
   const {
     connectedWallet,
@@ -55,11 +59,17 @@ const TokenSwapContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isFetched) {
+    if (isFetched && tokenB) {
       setSwapValue(prev => {
         return {
           ...prev,
-          tokenB: tokenB,
+          tokenB: {
+            ...tokenB,
+            path: getGnotPath(tokenB).path,
+            symbol: getGnotPath(tokenB).symbol,
+            logoURI: getGnotPath(tokenB).logoURI,
+            name: getGnotPath(tokenB).name,
+          },
         };
       });
     }
@@ -70,7 +80,7 @@ const TokenSwapContainer: React.FC = () => {
     router.push(`/tokens/${tokenBTemp.symbol}?tokenB=${tokenBTemp.path}&direction=EXACT_IN`);
     changeTokenB(token);
   };
-
+  
   return (
     <>
       <TokenSwap
@@ -88,7 +98,7 @@ const TokenSwapContainer: React.FC = () => {
         changeTokenB={handleChangeTokenB}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenBAmount={changeTokenBAmount}
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingCommon}
         isAvailSwap={isAvailSwap}
         swapButtonText={swapButtonText}
         swapSummaryInfo={swapSummaryInfo}

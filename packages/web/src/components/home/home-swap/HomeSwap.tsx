@@ -35,7 +35,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   const { breakpoint } = useWindowSize();
   const [fromAmount, setFromAmount] = useState(swapValue?.tokenAAmount ?? "0");
   const [toAmount, setToAmount] = useState("0");
-
+  
   const onChangeFromAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;

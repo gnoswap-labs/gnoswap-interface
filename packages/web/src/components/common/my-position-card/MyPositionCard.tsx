@@ -1,4 +1,4 @@
-import { INCENTIVIZED_TYPE, RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
+import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { POSITION_CONTENT_LABEL } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -14,8 +14,9 @@ import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertToKMB } from "@utils/stake-position-utils";
-import OverlapTokenLogo from "../overlap-token-logo/OverlapTokenLogo";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
+import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
+import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -32,12 +33,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   currentIndex,
   themeKey,
 }) => {
-  const GRAPH_WIDTH = mobile ? 226 : 258;
-  const GRAPH_HEIGHT = 80;
+  const GRAPH_WIDTH = mobile ? 226 : 290;
+  const GRAPH_HEIGHT = 74;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
-  const [isHiddenStart, setIsHiddenStart] = useState(false);
+  const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
+  const [viewMyRange, setViewMyRange] = useState(false);
 
   const inRange = useMemo(() => {
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
@@ -45,7 +47,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const feeRateStr = useMemo(() => {
     const rateStr = SwapFeeTierInfoMap[makeSwapFeeTierByTickSpacing(pool.tickSpacing)].rateStr;
-    return `${rateStr} Fee`;
+    return `${rateStr}`;
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
@@ -114,30 +116,29 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (position.tickUpper - currentTick) / (max - currentTick) * (GRAPH_WIDTH / 2) + (GRAPH_WIDTH / 2);
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
-
+  console.log(minTickPosition, maxTickPosition);
+  
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
-    const tokenAPriceStr = numberToFormat(tokenAPrice, 2);
-    return `1 ${tokenA.symbol} = ${tokenAPriceStr} ${tokenB.symbol}`;
+    const tokenAPriceStr = numberToFormat(tokenAPrice, 6);
+    return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const maxPriceStr = useMemo(() => {
     const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
-    const tokenBPriceStr = numberToFormat(tokenBPrice, 2);
-    return `1 ${tokenA.symbol} = ${tokenBPriceStr} ${tokenB.symbol}`;
+    const tokenBPriceStr = numberToFormat(tokenBPrice, 6);
+    return `${tokenBPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
-  const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    setIsHiddenStart(!isHiddenStart);
-  };
+  // const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   e.stopPropagation();
+  //   setIsHiddenStart(!isHiddenStart);
+  // };
 
-  const incentivizedLabel = useMemo(() => {
-    if (pool.incentivizedType === "NONE_INCENTIVIZED") {
-      return null;
-    }
-    return INCENTIVIZED_TYPE["INCENTIVIZED"];
-  }, [pool.incentivizedType]);
+  const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setViewMyRange(!viewMyRange);
+  };
 
   return (
     <MyPositionCardWrapperBorder
@@ -155,47 +156,49 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 right={tokenB.logoURI}
                 leftSymbol={tokenA.symbol}
                 rightSymbol={tokenB.symbol}
+                size={24}
               />
               <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
-            </div>
-            <div className="badge-group">
-              {incentivizedLabel && (
+              <div className="badge-group">
                 <Badge
                   type={BADGE_TYPE.DARK_DEFAULT}
-                  text={<>
-                    {incentivizedLabel}
-                    <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
-                  </>}
+                  text={feeRateStr}
                 />
-              )}
-              <Badge
-                type={BADGE_TYPE.DARK_DEFAULT}
-                text={feeRateStr}
-              />
+                
+              </div>
             </div>
+            <RangeBadge
+              status={
+                inRange
+                  ? RANGE_STATUS_OPTION.IN
+                  : RANGE_STATUS_OPTION.OUT
+              }
+            />
           </div>
           <div className="list-wrapper">
             <div className="list-header">
-              <span className="label-text">{POSITION_CONTENT_LABEL.VALUE}</span>
+              <span className="label-text">{POSITION_CONTENT_LABEL.BALANCE}</span>
               <span className="label-text">{POSITION_CONTENT_LABEL.APR}</span>
             </div>
             <div className="list-content">
               <span>{positionUsdValueStr}</span>
               {aprStr}
             </div>
+            <div className="list-header mt-4">
+              <span className="label-text">{POSITION_CONTENT_LABEL.DAILY}</span>
+              <span className="label-text">{POSITION_CONTENT_LABEL.CLAIMABLE}</span>
+            </div>
+            <div className="list-content">
+              <span>$200</span>
+              $1.50K
+            </div>
           </div>
-          <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
-            <div className="price-range-info">
-              <div className="current-price" onClick={handleClickShowRange}>
-                <span>{isHiddenStart ? "Show Range" : "Hide Range"}</span>
-              </div>
-              <RangeBadge
-                status={
-                  inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
-                }
-              />
+          <div className="view-my-range">
+            <span onClick={onClickViewRange}>View my range <IconStrokeArrowUp /></span>
+          </div>
+          {viewMyRange && <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+            <div className="view-my-range">
+              <span onClick={onClickViewRange}>Hide my range <IconStrokeArrowDown /></span>
             </div>
             <div className="chart-wrapper">
               <BarAreaGraph
@@ -204,8 +207,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 currentTick={pool.currentTick}
                 minLabel={minTickLabel}
                 maxLabel={maxTickLabel}
-                minTick={minTickPosition}
-                maxTick={maxTickPosition}
+                minTick={undefined}
+                maxTick={undefined}
                 bins={pool.bins}
                 tokenA={tokenA}
                 tokenB={tokenB}
@@ -217,20 +220,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="min-max-price">
-              <div className="price-section">
-                <span className="label-text">
-                  {POSITION_CONTENT_LABEL.MIN_PRICE}
-                </span>
-                <span className="label-text">{minPriceStr}</span>
-              </div>
-              <div className="price-section">
-                <span className="label-text">
-                  {POSITION_CONTENT_LABEL.MAX_PRICE}
-                </span>
-                <span className="label-text">{maxPriceStr}</span>
-              </div>
+                <p className="label-text">{minPriceStr}(<span>-14%</span>) ~</p>
+                <p className="label-text">{maxPriceStr}(<span>+5%</span>){tokenB.symbol}</p>
             </div>
-          </div>
+          </div>}
         </MyPositionCardWrapper>
       </div>
     </MyPositionCardWrapperBorder>

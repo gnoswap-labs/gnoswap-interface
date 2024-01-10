@@ -26,7 +26,11 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
 }) => {
   return (
     <div css={wrapper}>
-      <h2>{`About ${tokenName} (${tokenSymbol})`}</h2>
+      {!loading && <h2>{`About ${tokenName} (${tokenSymbol})`}</h2>}
+      {loading && <span
+          className="loading-value"
+          css={pulseSkeletonStyle({ h: 25, w: 195 })}
+        />}
       {!loading && <TokenDescriptionContent content={content}/>}
       {loading && <>
         <span

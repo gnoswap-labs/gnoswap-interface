@@ -5,7 +5,7 @@ import React, { useCallback, useEffect } from "react";
 
 const ConnectWalletStatusModalContainer = () => {
   const clearModal = useClearModal();
-  const { connectAdenaClient, loadingConnect } = useWallet();
+  const { connectAdenaClient, loadingConnect, connectAccount, walletClient } = useWallet();
 
   const close = useCallback(() => {
     clearModal();
@@ -18,8 +18,12 @@ const ConnectWalletStatusModalContainer = () => {
   }, [loadingConnect, close]);
 
   const connect = useCallback(() => {
-    connectAdenaClient();
-  }, [connectAdenaClient, close]);
+    if (walletClient) {
+      connectAccount();
+    } else {
+      connectAdenaClient();
+    }
+  }, [connectAdenaClient, close, walletClient]);
   
   return <ConnectWalletStatusModal close={close} connect={connect} />;
 };

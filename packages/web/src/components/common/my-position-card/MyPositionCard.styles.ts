@@ -8,6 +8,8 @@ interface CardProps {
 }
 
 export const MyPositionCardWrapperBorder = styled.div`
+  position: relative;
+  z-index: 1;
   &.special-card {
     min-width: 322px;
     background: ${({ theme }) => theme.color.backgroundGradient4};
@@ -67,14 +69,19 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
   }
   .title-wrapper {
-    ${mixins.flexbox("column", "flex-end", "space-between")};
+    ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     gap: 4px;
     ${fonts.body5}
 
     .box-header {
-      ${mixins.flexbox("row", "center", "space-between")};
+      ${mixins.flexbox("row", "center", "flex-start")};
       align-self: stretch;
+      gap: 8px;
+      > span {
+        ${fonts.body7}
+
+      }
     }
     .badge-group {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -102,6 +109,12 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     .list-header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .label-text {
+        ${fonts.body12}
+      }
+      &.mt-4 {
+        margin-top: 4px;
+      }
     }
     .list-content {
       ${mixins.flexbox("row", "center", "space-between")};
@@ -118,13 +131,35 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     ${fonts.body12};
     height: 18px;
   }
-
-  .pool-price-graph {
+  .view-my-range {
     width: 100%;
+    ${mixins.flexbox("row", "center", "center")};
+    span {
+      ${mixins.flexbox("row", "center", "center")};
+      ${fonts.p4}
+      color: ${({ theme }) => theme.color.text10};
+      text-align: center;
+      cursor: pointer;
+      > svg {
+        width: 18px;
+        height: 16px;
+  
+        * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
+    }
+  }
+  .pool-price-graph {
+    position: absolute;
     padding: 16px;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity};
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #141A29;
     border-radius: 8px;
     cursor: default;
+    box-shadow: 0px -4px 4px 0px #00000040;
   }
   .price-range-info {
     ${mixins.flexbox("row", "flex-start", "space-between")};
@@ -160,17 +195,14 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   .chart-wrapper {
     width: 100%;
     cursor: default;
+    margin-top: 16px;
   }
 
   .min-max-price {
-    ${mixins.flexbox("column", "center", "space-between")};
+    ${mixins.flexbox("row", "center", "center")};
     width: 100%;
     gap: 4px;
     margin-top: 12px;
-  }
-  .price-section {
-    ${mixins.flexbox("row", "center", "space-between")};
-    width: 100%;
     .label-text {
       ${fonts.p4};
       height: auto;

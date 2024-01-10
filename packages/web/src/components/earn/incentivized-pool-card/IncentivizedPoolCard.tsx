@@ -12,6 +12,7 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { numberToFormat } from "@utils/string-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -25,6 +26,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   themeKey,
 }) => {
   const { isStakedPool } = usePositionData();
+  const { getGnotPath } = useGnotToGnot();
 
   const staked = useMemo(() => {
     return isStakedPool(pool.poolPath || null);
@@ -41,6 +43,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     return INCENTIVIZED_TYPE["INCENTIVIZED"];
   }, [pool.incentivizedType]);
 
+  const rewardTokensInfo = useMemo(() => {
+    return pool.rewardTokens.map((item) => {
+      return {
+        ...item,
+        logoURI: getGnotPath(item).logoURI,
+      };
+    });
+  }, [pool.rewardTokens]);
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -53,24 +64,23 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   right={pool.tokenB.logoURI}
                   leftSymbol={pool.tokenA.symbol}
                   rightSymbol={pool.tokenB.symbol}
+                  size={32}
                 />
                 <span>{pairName}</span>
-              </div>
-              <div className="box-group">
-                {incentivizedLabel && (
+                <div className="box-group">
                   <Badge
                     type={BADGE_TYPE.DARK_DEFAULT}
-                    text={<>
-                      {incentivizedLabel}
-                      <OverlapTokenLogo tokens={pool.rewardTokens} size={16} />
-                    </>}
+                    text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr}`}
                   />
-                )}
-                <Badge
-                  type={BADGE_TYPE.DARK_DEFAULT}
-                  text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr} Fee`}
-                />
+                  {incentivizedLabel && (
+                    <Badge
+                      type={BADGE_TYPE.DARK_DEFAULT}
+                      text={<OverlapTokenLogo tokens={rewardTokensInfo} size={16} />}
+                    />
+                  )}
+                </div>
               </div>
+             
             </div>
             <div className="list-wrapper">
               <div className="list-header">
@@ -92,8 +102,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">{POOL_CONTENT_TITLE.FEE}</span>
               </div>
               <div className="volume-content">
-                <span className="value-text">{pool.volume24h}</span>
-                <span className="value-text">{pool.fees24h}</span>
+                <span className="value-text">${pool.volume24h}</span>
+                <span className="value-text">${pool.fees24h}</span>
               </div>
             </div>
             <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
@@ -109,15 +119,16 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 position="top"
                 offset={40}
               />
+              <div className="price-section">
+                <span className="label-text">
+                  {"Current Price"}
+                </span>
+                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, 2)} ${pool.tokenB.symbol}`}</span>
+              </div>
             </div>
           </div>
 
-          <div className="price-section">
-            <span className="label-text">
-              {"Current Price"}
-            </span>
-            <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, 2)} ${pool.tokenB.symbol}`}</span>
-          </div>
+          
         </PoolCardWrapper>
       </div>
     </PoolCardWrapperWrapperBorder>

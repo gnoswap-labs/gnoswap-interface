@@ -67,7 +67,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   position,
   offset = 20,
 }) => {
-
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
@@ -176,8 +175,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     // Create a line of current tick.
     if (currentTick) {
       rects.append("line")
-        .attr("x1", centerPosition + tickSpacing / 2)
-        .attr("x2", centerPosition + tickSpacing / 2)
+        .attr("x1", centerPosition + tickSpacing)
+        .attr("x2", centerPosition + tickSpacing)
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 4)
@@ -205,7 +204,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     });
 
     if (!bin) {
-      setTooltipInfo(null);
       setPositionX(null);
       setPositionY(null);
       return;
@@ -235,7 +233,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }
 
   function onMouseoutChartBin() {
-    setTooltipInfo(null);
     setPositionX(null);
     setPositionY(null);
   }
@@ -254,7 +251,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       setTooltipInfo(null);
     }
   }
-
   useEffect(() => {
     if (bins.length > 0) {
       new Promise<{ [key in number]: string }>(resolve => {

@@ -1,12 +1,12 @@
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import BigNumber from "bignumber.js";
 import React from "react";
 import {
   WalletBalanceDetailInfoTooltipContent,
   WalletBalanceDetailInfoWrapper,
 } from "./WalletBalanceDetailInfo.styles";
+import PulseSkeleton from "@components/common/pulse-skeleton/PulseSkeleton";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
@@ -14,7 +14,6 @@ interface WalletBalanceDetailInfoProps {
   tooltip?: string;
   button?: React.ReactNode;
   loading: boolean;
-  connected: boolean;
 }
 
 const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
@@ -23,7 +22,6 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   tooltip,
   button,
   loading,
-  connected,
 }) => {
   return (
     <WalletBalanceDetailInfoWrapper>
@@ -34,19 +32,11 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
         )}
       </div>
       <div className="value-wrapper">
-        {connected ? (
-          loading ? (
-            <div className="value">
-              <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
-            </div>
-          ) : (
-            <span className="value">
-              ${BigNumber(value).decimalPlaces(2).toFormat()}
-            </span>
-          )
-        ) : (
-          <span className="value">$0</span>
-        )}
+        <PulseSkeleton loading={loading} w={120} h={20} className="pule-skeleton">
+          <span className="value">
+            ${BigNumber(value).decimalPlaces(2).toFormat()}
+          </span>
+        </PulseSkeleton>
         {button && <div className="button-wrapper">{button}</div>}
       </div>
     </WalletBalanceDetailInfoWrapper>

@@ -3,6 +3,7 @@ import EarnMyPositionsHeader from "../earn-my-positions-header/EarnMyPositionsHe
 import { EarnMyPositionswrapper } from "./EarnMyPositions.styles";
 import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { AccountModel } from "@models/account/account-model";
 
 export interface EarnMyPositionsProps {
   connected: boolean;
@@ -26,6 +27,7 @@ export interface EarnMyPositionsProps {
   loadMore: boolean;
   onClickLoadMore?: () => void;
   themeKey: "dark" | "light";
+  account: AccountModel | null;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -50,6 +52,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   loadMore,
   onClickLoadMore,
   themeKey,
+  account,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -78,6 +81,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       loadMore={loadMore}
       onClickLoadMore={onClickLoadMore}
       themeKey={themeKey}
+      account={account}
     />
   </EarnMyPositionswrapper>
 );

@@ -3,6 +3,7 @@ import EarnMyPositionNoLiquidity from "../earn-my-positions-no-liquidity/EarnMyP
 import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyPositionsUnconnected";
 import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { AccountModel } from "@models/account/account-model";
 export interface EarnMyPositionContentProps {
   connected: boolean;
   fetched: boolean;
@@ -22,6 +23,7 @@ export interface EarnMyPositionContentProps {
   loadMore: boolean;
   onClickLoadMore?: () => void;
   themeKey: "dark" | "light";
+  account: AccountModel | null;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -42,9 +44,10 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   loadMore,
   onClickLoadMore,
   themeKey,
+  account,
 }) => {
 
-  if ((!connected || isSwitchNetwork)) {
+  if (((!connected || isSwitchNetwork) && !loading)) {
     return (
       <EarnMyPositionsUnconnected
         connect={connect}
@@ -54,7 +57,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   }
 
   if (connected && positions.length === 0 && !loading) {
-    return <EarnMyPositionNoLiquidity />;
+    return <EarnMyPositionNoLiquidity account={account}/>;
   }
 
   return (

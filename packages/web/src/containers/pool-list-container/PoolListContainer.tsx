@@ -10,6 +10,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { ThemeState } from "@states/index";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
+import { useLoading } from "@hooks/common/use-loading";
 export interface Pool {
   poolId: string;
   tokenPair: TokenPairInfo;
@@ -61,6 +62,7 @@ const PoolListContainer: React.FC = () => {
   const router = useRouter();
   const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
+  const { isLoadingCommon } = useLoading();
 
   const themeKey = useAtomValue(ThemeState.themeKey);
 
@@ -193,7 +195,7 @@ const PoolListContainer: React.FC = () => {
   return (
     <PoolList
       pools={sortedPoolListInfos.slice(page * 15, (page + 1) * 15)}
-      isFetched={isFetchedPools}
+      isFetched={isFetchedPools && !isLoadingCommon}
       poolType={poolType}
       changePoolType={changePoolType}
       search={search}

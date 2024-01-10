@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
 import { useRouter } from "next/router";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 export interface Steps {
   title: string;
@@ -27,9 +28,10 @@ const getMapping: any = (router: any) => {
 
 interface Props {
   listBreadcrumb?: { title: string, path: string } [];
+  isLoading?: boolean;
 }
 
-const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb }) => {
+const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading }) => {
   const router = useRouter();
 
   const removePoolSteps = useMemo(() => {
@@ -53,6 +55,11 @@ const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb }) => {
   const onClickPath = (path: string) => {
     router.push(path);
   };
+
+  if (isLoading) {
+    return <div css={pulseSkeletonStyle({ w: "200px", h: 26 })}/>;
+  }
+
   return <Breadcrumbs steps={removePoolSteps} onClickPath={onClickPath} />;
 };
 

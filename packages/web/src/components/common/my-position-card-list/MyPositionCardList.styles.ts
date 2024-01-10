@@ -3,11 +3,15 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const CardListWrapper = styled.div`
+interface Props {
+  loading: boolean;
+}
+
+export const CardListWrapper = styled.div<Props>`
   ${mixins.flexbox("column", "center", "start")};
   width: 100%;
   gap: 24px;
-  min-height: 390px;
+  min-height: 240px;
   ${media.mobile} {
     gap: 16px;
   }
@@ -30,7 +34,7 @@ export const CardListWrapper = styled.div`
   }
 `;
 
-export const GridWrapper = styled.div`
+export const GridWrapper = styled.div<Props>`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
@@ -47,7 +51,7 @@ export const GridWrapper = styled.div`
   }
 
   .card-skeleton {
-    height: 348px;
+    height: 198px;
     border-radius: 10px;
     box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
   }
@@ -57,9 +61,9 @@ export const GridWrapper = styled.div`
   ${media.mobile} {
     overflow-x: auto;
     grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 290px);
+    grid-template-columns: repeat(auto-fill, 100%);
     grid-auto-flow: column;
-    grid-auto-columns: 290px;
+    grid-auto-columns: 100%;
   }
 `;
 

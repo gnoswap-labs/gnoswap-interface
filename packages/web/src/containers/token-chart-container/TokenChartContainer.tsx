@@ -21,6 +21,7 @@ import {
 } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -222,7 +223,8 @@ const TokenChartContainer: React.FC = () => {
   );
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
-  const { gnot, wugnotPath } = useGnotToGnot();
+  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
+  const { isLoadingCommon } = useLoading();
 
   const { openModal: openTradingModal } = useTokenTradingModal({
     onClickConfirm: () => {
@@ -245,8 +247,8 @@ const TokenChartContainer: React.FC = () => {
   } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
   });
-  const [componentRef, size] = useComponentSize(isLoading);
-
+  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
+  
   useEffect(() => {
     if (tokenB) {
       const dataToday = checkPositivePrice(
@@ -256,10 +258,10 @@ const TokenChartContainer: React.FC = () => {
       );
       setTokenInfo(() => ({
         token: {
-          name: tokenB.name,
-          symbol: tokenB.symbol,
-          image: tokenB.logoURI,
-          pkg_path: tokenB.path,
+          name: getGnotPath(tokenB).name,
+          symbol: getGnotPath(tokenB).symbol,
+          image: getGnotPath(tokenB).logoURI,
+          pkg_path: getGnotPath(tokenB).path,
           decimals: 1,
           description: tokenB.description || "",
           website_url: tokenB.websiteURL || "",
@@ -301,6 +303,7 @@ const TokenChartContainer: React.FC = () => {
   }, [size.width, breakpoint, currentTab]);
 
   const chartData = useMemo(() => {
+    
     if (currentTab === TokenChartGraphPeriods[0]) {
       return prices1d || [];
     }
@@ -315,10 +318,10 @@ const TokenChartContainer: React.FC = () => {
     }
     return prices1y || [];
   }, [
-    prices1d?.toString(),
-    prices7d?.toString,
-    prices1m?.toString(),
-    prices1y?.toString(),
+    prices1d,
+    prices7d,
+    prices1m,
+    prices1y,
     currentTab,
   ]);
 
@@ -381,7 +384,7 @@ const TokenChartContainer: React.FC = () => {
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),
-    );
+    );    
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
@@ -389,9 +392,8 @@ const TokenChartContainer: React.FC = () => {
       left: left,
       right: right,
     };
-
     return chartInfo;
-  }, [currentTab, chartData?.toString(), countXAxis]);
+  }, [currentTab, chartData, countXAxis]);
 
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));
@@ -405,14 +407,14 @@ const TokenChartContainer: React.FC = () => {
     temp.push(maxPoint.toString());
     return temp;
   };
-
+  
   return (
     <TokenChart
       tokenInfo={tokenInfo}
       chartInfo={getChartInfo()}
       currentTab={currentTab}
       changeTab={changeTab}
-      loading={isLoading}
+      loading={isLoading || isLoadingCommon}
       componentRef={componentRef}
       size={size}
       breakpoint={breakpoint}

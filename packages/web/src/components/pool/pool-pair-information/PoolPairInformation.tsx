@@ -36,13 +36,14 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
     <PoolPairInformationWrapper>
       <BreadcrumbsWrapper>
         <div className="page-name">Earn</div>
-        <div className="location">
+        {!loading && <div className="location">
           <span onClick={() => onClickPath(menu.path)}>{menu.title}</span>
           <IconStrokeArrowRight className="step-icon" />
           <span className="token">
             {tokenInfo}
           </span>
-        </div>
+        </div>}
+        {loading && <div css={pulseSkeletonStyle({ w: "190px", h: 26 })} className="pulse-skeleton"/>}
       </BreadcrumbsWrapper>
       <div className="token-status">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>

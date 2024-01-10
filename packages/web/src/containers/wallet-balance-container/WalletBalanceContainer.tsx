@@ -28,7 +28,7 @@ export interface BalanceDetailInfo {
 }
 
 const WalletBalanceContainer: React.FC = () => {
-  const { connected, isSwitchNetwork } = useWallet();
+  const { connected, isSwitchNetwork, loadingConnect } = useWallet();
   const [address, setAddress] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -71,7 +71,7 @@ const WalletBalanceContainer: React.FC = () => {
     });
   }, [connected]);
 
-  const loadingTotalBalance = loadingBalance || loadingPositions;
+  const loadingTotalBalance = loadingBalance || loadingPositions || loadingConnect === "loading";
 
   const availableBalance: number = Object.keys(displayBalanceMap ?? {})
     .map(x => displayBalanceMap[x] ?? 0)

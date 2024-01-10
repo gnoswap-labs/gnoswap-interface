@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useRef, useState, useMemo } from "react"
 import { ValuesType } from "utility-types";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
+import { useLoading } from "@hooks/common/use-loading";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -33,7 +34,7 @@ const EarnMyPositionContainer: React.FC<
   const [page, setPage] = useState(1);
 
   const router = useRouter();
-  const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork } = useWallet();
+  const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
   const { updateTokenPrices } = useTokenData();
   const { updatePositions, isFetchedPools, loading } = usePoolData();
   const { width } = useWindowSize();
@@ -42,6 +43,7 @@ const EarnMyPositionContainer: React.FC<
   const { isError, availableStake, isFetchedPosition, loading : loadingPosition, positions } = usePositionData();
   const [mobile, setMobile] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const { isLoadingCommon } = useLoading();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -121,7 +123,7 @@ const EarnMyPositionContainer: React.FC<
       connected={connected}
       availableStake={availableStake}
       connect={connect}
-      loading={loading || loadingPosition}
+      loading={loading || loadingPosition || isLoadingCommon}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
       positions={dataMapping}
@@ -139,6 +141,7 @@ const EarnMyPositionContainer: React.FC<
       loadMore={page === 1}
       onClickLoadMore={handleClickLoadMore}
       themeKey={themeKey}
+      account={account}
     />
   );
 };

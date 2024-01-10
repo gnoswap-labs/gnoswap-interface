@@ -5,12 +5,12 @@ import { CommonState, TokenState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 
 export const useBackground = () => {
-  const { account, initSession, connectAccount, updateWalletEvents } = useWallet();
+  const { account, initSession, updateWalletEvents, connectAccount } = useWallet();
   const [walletClient] = useAtom(WalletState.client);
   const [, setBalances] = useAtom(TokenState.balances);
   const [sessionId] = useAtom(CommonState.sessionId);
-  const { updateBalances } = useTokenData();
-
+  const { updateBalances, tokens } = useTokenData();
+  
   useEffect(() => {
     if (walletClient) {
       return;
@@ -34,16 +34,18 @@ export const useBackground = () => {
 
   useEffect(() => {
     if (walletClient) {
-      connectAccount();
+      if (account) {
+        connectAccount();
+      }
       updateWalletEvents(walletClient);
     }
-  }, [walletClient]);
+  }, [walletClient, String(account)]);
 
   useEffect(() => {
     setBalances({});
     if (account?.address && account?.chainId) {
       updateBalances();
     }
-  }, [account?.address, account?.chainId]);
+  }, [account, tokens.toString()]);
 
 };

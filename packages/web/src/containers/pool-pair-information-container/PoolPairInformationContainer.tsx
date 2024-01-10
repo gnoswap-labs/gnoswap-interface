@@ -6,6 +6,7 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface pathProps {
   title: string;
@@ -71,6 +72,7 @@ const PoolPairInformationContainer = () => {
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
   const { data = initialPool as PoolDetailModel, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { isLoadingCommon } = useLoading();
   const onClickPath = (path: string) => {
     router.push(path);
   };
@@ -108,7 +110,7 @@ const PoolPairInformationContainer = () => {
       menu={menu}
       onClickPath={onClickPath}
       feeStr={feeStr}
-      loading={loading}
+      loading={loading || isLoadingCommon}
     />
   );
 };
