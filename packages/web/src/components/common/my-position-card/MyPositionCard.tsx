@@ -40,7 +40,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
-
+  if (viewMyRange) {
+    console.log(pool?.bins);
+  }
+  
   const inRange = useMemo(() => {
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
   }, [pool.currentTick, position.tickLower, position.tickUpper]);
@@ -173,7 +176,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <div className="list-wrapper">
             <div className="list-header">
-              <span className="label-text">{POSITION_CONTENT_LABEL.BALANCE}</span>
+              <span className="label-text">{POSITION_CONTENT_LABEL.VALUE}</span>
               <span className="label-text">{POSITION_CONTENT_LABEL.APR}</span>
             </div>
             <div className="list-content">

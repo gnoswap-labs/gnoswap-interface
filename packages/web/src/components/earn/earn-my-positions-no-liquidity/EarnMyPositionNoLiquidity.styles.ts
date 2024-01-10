@@ -57,7 +57,7 @@ export const NoLiquidityWrapper = styled.div`
   .description {
     text-align: center;
     ${fonts.body12};
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text22};
     ${media.tablet} {
       ${fonts.p2};
     }

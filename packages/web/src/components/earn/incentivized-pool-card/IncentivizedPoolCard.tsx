@@ -44,13 +44,23 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [pool.incentivizedType]);
 
   const rewardTokensInfo = useMemo(() => {
-    return pool.rewardTokens.map((item) => {
+    const allRewardTokens = [...pool.rewardTokens, pool.tokenA, pool.tokenB];
+    const temp = allRewardTokens.map((item) => {
       return {
         ...item,
         logoURI: getGnotPath(item).logoURI,
       };
     });
-  }, [pool.rewardTokens]);
+    const uniqueLogoURIs = new Set();
+    const filteredArray = temp.filter(obj => {
+      if (!uniqueLogoURIs.has(obj.logoURI)) {
+        uniqueLogoURIs.add(obj.logoURI);
+        return true;
+      }
+      return false;
+    });
+    return filteredArray;
+  }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
 
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
@@ -85,7 +95,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
             <div className="list-wrapper">
               <div className="list-header">
                 <span className="label-text">
-                  {POOL_CONTENT_TITLE.LIQUIDITY}
+                  {POOL_CONTENT_TITLE.TVL}
                 </span>
                 <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
               </div>

@@ -68,7 +68,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   gap: 16px;
   padding: 15px;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.color.background03};
+  background-color: ${({ theme }) => theme.color.background06};
   ${media.tablet} {
     min-width: 322px;
   }
@@ -179,9 +179,9 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   .pool-price-graph {
     position: absolute;
     padding: 16px;
-    left: 0;
-    bottom: 2px;
-    width: 100%;
+    left: 1px;
+    bottom: 1px;
+    width: calc(100% - 2px);
     background-color: ${({ theme }) => theme.color.background06};;
     border-radius: 8px;
     cursor: default;

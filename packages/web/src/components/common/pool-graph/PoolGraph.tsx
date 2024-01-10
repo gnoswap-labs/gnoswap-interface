@@ -156,7 +156,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     // Clean child elements.
     d3.select(chartRef.current).selectChildren().remove();
-
+    if (tokenA?.symbol === "QUX" && tokenB?.symbol === "GNOT") {
+      console.log(resolvedBins, "resolvedBins", boundsHeight, maxHeight);
+    }
+    
     // Create a chart bar.
     const rects = d3.select(chartRef.current);
     rects.attr("clip-path", "url(#clip)");
@@ -202,10 +205,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }
       return mouseX >= minX && mouseX <= maxX;
     });
-
+    console.log(bin, mouseX, mouseY);
+    
     if (!bin) {
       setPositionX(null);
       setPositionY(null);
+      setTooltipInfo(null);
       return;
     }
     const minTick = bin.minTick + defaultMinX;
@@ -220,6 +225,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     };
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
     const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
+    
     setTooltipInfo({
       tokenA: tokenA,
       tokenB: tokenB,
@@ -310,7 +316,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         position={tooltipPosition}
         offset={offset}
         content={
-          tooltipInfo ? (
+          tooltipInfo && positionX && positionY ? (
             <PoolGraphTooltipWrapper ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow}`}>
               <PoolGraphBinTooptip tooltipInfo={tooltipInfo} />
             </PoolGraphTooltipWrapper>

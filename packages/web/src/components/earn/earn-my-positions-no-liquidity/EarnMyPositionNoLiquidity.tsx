@@ -14,14 +14,13 @@ const EarnMyPositionNoLiquidity: React.FC<
   const balanceText = `$${makeDisplayTokenAmount(GNOT_TOKEN, account?.balances[0].amount || 0)}`;
   // TODO : Added Recoil OR Props
   const apr = "999%";
-  console.log(balanceText, "balanceText");
   
   return (
     <NoLiquidityWrapper>
       <IconNoPosition className="icon-no-position"/>
       <p>
         You have <span className="emphasis-text">&nbsp;{balanceText}&nbsp;</span> in
-        your wallet available to earn rewards up to{" "}
+        your wallet available to earn rewards up to
         <span className="emphasis-text">&nbsp;{apr}&nbsp;</span> APR.
       </p>
       <span className="description">

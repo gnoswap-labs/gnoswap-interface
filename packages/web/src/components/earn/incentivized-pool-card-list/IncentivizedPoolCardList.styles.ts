@@ -46,7 +46,7 @@ export const PoolListWrapper = styled.div<Props>`
   .card-skeleton {
     height: 321px;
     border-radius: 10px;
-    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
+    box-shadow: ${({ theme }) => theme.color.shadow02};
   }
 
   ${media.tablet} {

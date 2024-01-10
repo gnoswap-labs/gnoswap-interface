@@ -20,6 +20,7 @@ export interface PoolListProps {
 }
 
 export const POOL_CONTENT_TITLE = {
+  TVL: "TVL",
   LIQUIDITY: "Liquidity",
   APR: "APR",
   VOLUME: "Trading Volume (24h)",
