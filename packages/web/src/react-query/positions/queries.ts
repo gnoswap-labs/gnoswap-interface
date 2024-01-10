@@ -16,5 +16,6 @@ export const useGetPositionsByAddress = (
       return data;
     },
     ...options,
+    retry: false,
   });
 };
