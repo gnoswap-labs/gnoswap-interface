@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePosition } from "@hooks/common/use-position";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 
 
@@ -21,8 +20,6 @@ const MyLiquidityContainer: React.FC = () => {
   const { getPositionsByPoolId, loading } = usePositionData();
   const { isLoadingCommon } = useLoading();
   const { claimAll } = usePosition(positions);
-  const { gnot } = useGnotToGnot();
-
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -62,7 +59,7 @@ const MyLiquidityContainer: React.FC = () => {
     if (account?.address) {
       setPositions(getPositionsByPoolId(poolPath));
     }
-  }, [account?.address, getPositionsByPoolId, router.query, gnot]);
+  }, [account?.address, router.query]);
   
   return (
     <MyLiquidity

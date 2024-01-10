@@ -16,8 +16,6 @@ export const GNOT_TOKEN: TokenModel = {
 
 export const GNOT_SYMBOL = "GNOT";
 export const GNS_SYMBOL = "GNS";
-export const BAR_SYMBOL = "BAR";
-export const BAZ_SYMBOL = "BAZ";
 
 export const GNOT_TOKEN_DEFAULT: TokenModel = {
   type: "native",

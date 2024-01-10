@@ -10,7 +10,7 @@ import { useTokenTradingModal } from "@hooks/swap/use-token-trading-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
 import { parseJson } from "@utils/common";
-import { BAR_SYMBOL, BAZ_SYMBOL, GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
+import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -23,7 +23,7 @@ export interface SortedProps extends TokenModel {
   tokenPrice: number;
 }
 
-export const ORDER = [GNOT_SYMBOL, GNS_SYMBOL, BAR_SYMBOL, BAZ_SYMBOL];
+export const ORDER = [GNOT_SYMBOL, GNS_SYMBOL, "BAR", "BAZ"];
 
 const customSort = (a: TokenModel, b: TokenModel) => {
   const symbolA = a.symbol.toUpperCase();

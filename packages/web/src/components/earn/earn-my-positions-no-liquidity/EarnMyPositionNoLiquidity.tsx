@@ -1,9 +1,8 @@
 import IconNoPosition from "@components/common/icons/IconNoPosition";
-import React, {
-  useMemo
-} from "react";
 import { NoLiquidityWrapper } from "./EarnMyPositionNoLiquidity.styles";
 import { AccountModel } from "@models/account/account-model";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 interface EarnMyPositionNoLiquidityProps {
   account: AccountModel | null;
@@ -12,10 +11,11 @@ interface EarnMyPositionNoLiquidityProps {
 const EarnMyPositionNoLiquidity: React.FC<
   EarnMyPositionNoLiquidityProps
 > = ({ account }) => {
-  const balanceText = useMemo(() => `$${(Number((account?.balances[0].amount || 0)) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 5 })}` || "$0", [account?.balances]);
+  const balanceText = `$${makeDisplayTokenAmount(GNOT_TOKEN, account?.balances[0].amount || 0)}`;
   // TODO : Added Recoil OR Props
   const apr = "999%";
-
+  console.log(balanceText, "balanceText");
+  
   return (
     <NoLiquidityWrapper>
       <IconNoPosition className="icon-no-position"/>

@@ -37,16 +37,6 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
             ${BigNumber(value).decimalPlaces(2).toFormat()}
           </span>
         </PulseSkeleton>
-
-        {/* {loading ? (
-          <div className="value">
-            <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
-          </div>
-        ) : (
-          <span className="value">
-            ${BigNumber(value).decimalPlaces(2).toFormat()}
-          </span>
-        )} */}
         {button && <div className="button-wrapper">{button}</div>}
       </div>
     </WalletBalanceDetailInfoWrapper>
