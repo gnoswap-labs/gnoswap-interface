@@ -7,7 +7,11 @@ interface CardProps {
   staked: boolean;
 }
 
-export const MyPositionCardWrapperBorder = styled.div`
+interface MyPositionCardWrapperBorderProps {
+  viewMyRange: boolean;
+}
+
+export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorderProps>`
   position: relative;
   z-index: 1;
   &.special-card {
@@ -41,6 +45,19 @@ export const MyPositionCardWrapperBorder = styled.div`
         }
       }
     }
+  }
+  &::before {
+    display: ${({ viewMyRange }) => {
+      return !viewMyRange ? "none" : "block";
+    }};
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    content: '';
+    border-radius: 10px;
+    background: ${({ theme }) => theme.color.backgroundOpacity8};
   }
 `;
 
@@ -140,12 +157,21 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
       color: ${({ theme }) => theme.color.text10};
       text-align: center;
       cursor: pointer;
+      gap: 4px;
       > svg {
         width: 18px;
         height: 16px;
   
         * {
-          fill: ${({ theme }) => theme.color.icon07};
+          fill: ${({ theme }) => theme.color.icon15};
+        }
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.text16};
+        > svg {
+          * {
+            fill: ${({ theme }) => theme.color.icon10};
+          }
         }
       }
     }
@@ -154,9 +180,9 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     position: absolute;
     padding: 16px;
     left: 0;
-    bottom: 0;
+    bottom: 2px;
     width: 100%;
-    background-color: #141A29;
+    background-color: ${({ theme }) => theme.color.background06};;
     border-radius: 8px;
     cursor: default;
     box-shadow: 0px -4px 4px 0px #00000040;
@@ -206,6 +232,16 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     .label-text {
       ${fonts.p4};
       height: auto;
+      &.positive {
+        > span {
+          color: ${({ theme }) => theme.color.green01};
+        }
+      }
+      &.negative {
+        > span {
+          color: ${({ theme }) => theme.color.red01};
+        }
+      }
     }
   }
 `;

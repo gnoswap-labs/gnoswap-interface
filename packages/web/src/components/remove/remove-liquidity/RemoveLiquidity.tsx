@@ -13,6 +13,7 @@ interface RemoveLiquidityProps {
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   removeLiquidity: () => void;
+  isLoading: boolean;
 }
 
 const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
@@ -23,6 +24,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   onCheckedAll,
   checkedAll,
   removeLiquidity,
+  isLoading,
 }) => {
 
   const disabledRemoveLiquidity = useMemo(() => {
@@ -43,6 +45,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
+        isLoading={isLoading}
       />
       <RemoveLiquiditySelectResult positions={selectedPositions} />
       <Button

@@ -9,7 +9,7 @@ import { useGetPositionsByAddress } from "@query/positions";
 
 export const usePositionData = () => {
   const { account, connected } = useWallet();
-  const { pools } = usePoolData();
+  const { pools, loading: isLoadingPool } = usePoolData();
   const { data = [], isError, isLoading: loading, isFetched: isFetchedPosition } = useGetPositionsByAddress(account?.address as string, { enabled: !!account?.address && pools.length > 0 && connected });
   
   const { getGnotPath } = useGnotToGnot();
@@ -118,5 +118,6 @@ export const usePositionData = () => {
     getPositionsByPoolPath,
     isFetchedPosition,
     loading: loading && connected,
+    loadingPositionById: isLoadingPool || loading,
   };
 };

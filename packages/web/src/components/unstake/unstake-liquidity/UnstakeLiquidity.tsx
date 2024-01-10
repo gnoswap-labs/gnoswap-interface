@@ -14,6 +14,7 @@ interface UnstakeLiquidityProps {
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   handleConfirmUnstake: () => void;
+  isLoading: boolean;
 }
 
 const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
@@ -24,6 +25,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
   onCheckedAll,
   checkedAll,
   handleConfirmUnstake,
+  isLoading,
 }) => {
 
   const selectedPositions = useMemo(() => {
@@ -40,6 +42,7 @@ const UnstakeLiquidity: React.FC<UnstakeLiquidityProps> = ({
         onCheckedItem={onCheckedItem}
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
+        isLoading={isLoading}
       />
       <SelectUnstakeResult positions={selectedPositions} />
       {selectedPositions.length > 0 && <div className="unstake-des">

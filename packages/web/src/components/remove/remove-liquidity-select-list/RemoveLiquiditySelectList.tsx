@@ -2,6 +2,8 @@ import React from "react";
 import { RemoveLiquiditySelectListWrapper } from "./RemoveLiquiditySelectList.styles";
 import RemoveLiquiditySelectListItem from "../remove-liquidity-select-list-item/RemoveLiquiditySelectListItem";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { loadingWrapper } from "../remove-liquidity/RemoveLiquidity.styles";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface RemoveLiquiditySelectListProps {
   stakedPositions: PoolPositionModel[];
@@ -10,6 +12,7 @@ interface RemoveLiquiditySelectListProps {
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  isLoading: boolean;
 }
 
 const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
@@ -19,6 +22,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  isLoading,
 }) => {
 
   return (
@@ -37,7 +41,10 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
         <span>Liquidity</span>
       </div>
       <ul>
-        {unstakedPositions.map((position, index) => (
+        {isLoading && <div css={loadingWrapper}>
+          <LoadingSpinner />
+        </div>}
+        {!isLoading && unstakedPositions.map((position, index) => (
           <RemoveLiquiditySelectListItem
             position={position}
             checkedList={checkedList}
@@ -45,7 +52,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             key={index}
           />
         ))}
-        {stakedPositions.map((position, index) => (
+        {!isLoading && stakedPositions.map((position, index) => (
           <RemoveLiquiditySelectListItem
             position={position}
             checkedList={checkedList}
@@ -54,7 +61,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             disabled
           />
         ))}
-        {unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
+        {!isLoading && unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
       </ul>
     </RemoveLiquiditySelectListWrapper>
   );

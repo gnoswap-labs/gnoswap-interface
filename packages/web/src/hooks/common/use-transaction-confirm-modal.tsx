@@ -2,6 +2,9 @@ import TransactionConfirmModal from "@components/common/transaction-confirm-moda
 import { CommonState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect } from "react";
+import { useForceRefetchQuery } from "./useForceRefetchQuery";
+import { QUERY_KEY } from "@query/positions";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 export interface TransactionConfirmModalResponse {
   openModal: () => void;
@@ -12,6 +15,8 @@ export const useTransactionConfirmModal = (): TransactionConfirmModalResponse =>
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
   const [transactionModalData, setTransactionModalData] = useAtom(CommonState.transactionModalData);
+  const forceRefect = useForceRefetchQuery();
+  const { account } = useWallet();
 
   const closeModal = useCallback(() => {
     setOpenedModal(false);
@@ -21,10 +26,11 @@ export const useTransactionConfirmModal = (): TransactionConfirmModalResponse =>
 
   const confirm = useCallback(() => {
     closeModal();
+    forceRefect({queryKey: [QUERY_KEY.positions, account]});
     if (transactionModalData?.callback) {
       transactionModalData?.callback();
     }
-  }, [closeModal, transactionModalData]);
+  }, [closeModal, transactionModalData, account]);
 
   const openModal = useCallback(() => {
     setOpenedModal(true);

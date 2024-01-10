@@ -144,7 +144,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = rectWidth ? rectWidth : getTickSpacing();
-    const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
+    const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing;
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
@@ -375,6 +375,28 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
   return tooltipInfo ? (
     <div className="tooltip-wrapper">
       <div className="header">
+        <div className="row">
+          <span className="token">Quote</span>
+          <span className="price-range">Current Price</span>
+        </div>
+      </div>
+      <div className="content">
+        <div className="row">
+          <span className="token">
+            <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20} />
+            <span>{tooltipInfo.tokenA.symbol} Price</span>
+          </span>
+          <span className="price-range">{tokenAPriceRangeStr}</span>
+        </div>
+        <div className="row">
+          <span className="token">
+            <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20} />
+            <span>{tooltipInfo.tokenB.symbol} Price</span>
+          </span>
+          <span className="price-range">{tokenBPriceRangeStr}</span>
+        </div>
+      </div>
+      <div className="header mt-8">
         <div className="row">
           <span className="token">Token</span>
           <span className="amount">Amount</span>

@@ -10,7 +10,9 @@ export const RemoveLiquiditySelectListWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
   gap: 4px;
-
+  background-color: ${({ theme }) => theme.color.backgroundOpacity};
+  padding: 16px;
+  border-radius: 8px;
   .checked-all-wrap {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;

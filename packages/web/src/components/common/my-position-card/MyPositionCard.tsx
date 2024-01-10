@@ -130,11 +130,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return `${tokenBPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
-  // const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
-  //   e.stopPropagation();
-  //   setIsHiddenStart(!isHiddenStart);
-  // };
-
   const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setViewMyRange(!viewMyRange);
@@ -143,6 +138,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked ? "special-card" : ""}`}
+      viewMyRange={viewMyRange}
     >
       <div className="base-border">
         <MyPositionCardWrapper
@@ -220,8 +216,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="min-max-price">
-                <p className="label-text">{minPriceStr}(<span>-14%</span>) ~</p>
-                <p className="label-text">{maxPriceStr}(<span>+5%</span>){tokenB.symbol}</p>
+                <p className="label-text positive">{minPriceStr}(<span>-14%</span>) ~</p>
+                <p className="label-text negative">{maxPriceStr}(<span>+5%</span>){tokenB.symbol}</p>
             </div>
           </div>}
         </MyPositionCardWrapper>

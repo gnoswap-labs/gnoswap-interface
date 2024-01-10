@@ -12,6 +12,7 @@ interface SelectLiquidityProps {
   checkedAll: boolean;
   isHiddenTitle?: boolean;
   isEmpty: boolean;
+  isLoading: boolean;
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
@@ -23,6 +24,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   checkedAll,
   isHiddenTitle = false,
   isEmpty,
+  isLoading,
 }) => {
   return (
     <section css={wrapper}>
@@ -35,6 +37,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
         onCheckedAll={onCheckedAll}
         checkedAll={checkedAll}
         isEmpty={isEmpty}
+        isLoading={isLoading}
       />
     </section>
   );
