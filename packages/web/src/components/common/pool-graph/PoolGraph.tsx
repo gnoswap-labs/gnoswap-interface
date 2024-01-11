@@ -216,7 +216,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       setPositionY(null);
       return;
     }
-    if (Math.abs(height - mouseY)> boundsHeight - scaleY(bin.liquidity)) {
+    if (Math.abs(height - mouseY - 0.5)> boundsHeight - scaleY(bin.liquidity)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);

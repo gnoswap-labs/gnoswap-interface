@@ -175,7 +175,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     border-radius: 8px;
     cursor: default;
     box-shadow: 0px -4px 4px 0px #00000040;
-    transition: height 1s ease;
+    transition: height 0.5s ease;
   }
   .open {
     bottom: 1px;
