@@ -26,7 +26,7 @@ export const useTransactionConfirmModal = (): TransactionConfirmModalResponse =>
 
   const confirm = useCallback(() => {
     closeModal();
-    forceRefect({queryKey: [QUERY_KEY.positions, account]});
+    forceRefect({queryKey: [QUERY_KEY.positions, account?.address || ""]});
     if (transactionModalData?.callback) {
       transactionModalData?.callback();
     }
