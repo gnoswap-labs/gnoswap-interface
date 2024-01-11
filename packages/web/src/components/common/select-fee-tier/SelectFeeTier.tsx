@@ -61,7 +61,7 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
     if (liquidityRange === null || liquidityRange === undefined) {
       return "Not created";
     }
-    return `${Math.round(liquidityRange)}% Select`;
+    return `${Math.round(liquidityRange)}% selected`;
   }, [liquidityRange]);
 
   const description = useMemo(() => {

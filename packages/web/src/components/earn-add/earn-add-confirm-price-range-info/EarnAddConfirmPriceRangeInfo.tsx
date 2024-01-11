@@ -77,8 +77,8 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
           </div>
           <div className="row">
             <div className="title-wrapper">
-              <span className="key">Fee Boost</span>
-              <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>An indication of the additional swap fees you can receive for your selected price range compared to a full-range position.</ToolTipContentWrapper>}>
+              <span className="key">Capital Efficiency</span>
+              <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.</ToolTipContentWrapper>}>
                 <IconInfo />
               </Tooltip>
             </div>

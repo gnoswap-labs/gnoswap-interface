@@ -6,7 +6,7 @@ import { SwapState } from "@states/index";
 import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 import { PositionModel } from "@models/position/position-model";
 import { useMemo } from "react";
-import { toNumberFormat } from "@utils/number-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -89,9 +89,9 @@ const OneClickStaking: React.FC<Props> = ({
                   size={24}
                   fontSize={8}
                 />
-                #{item.id}
+                ID #{item.id}
               </div>
-              <div className="value">${toNumberFormat(item.positionUsdValue)}</div>
+              <div className="value">${convertToKMB(item.positionUsdValue)}</div>
             </div>
           ))}
         </div>
@@ -118,7 +118,7 @@ const OneClickStaking: React.FC<Props> = ({
                 />
                 #{item.id}
               </div>
-              <div className="value">${toNumberFormat(item.positionUsdValue)}</div>
+              <div className="value">${convertToKMB(item.positionUsdValue)}</div>
             </div>
           ))}
         </div>
