@@ -28,7 +28,7 @@ export interface PoolGraphProps {
     bottom: number;
   },
   themeKey: "dark" | "light";
-  rectWidth?: number;
+  nextSpacing?: boolean;
   position?: FloatingPosition;
   offset?: number;
   maxTickPosition?: number | null;
@@ -48,6 +48,8 @@ interface TooltipInfo {
     min: string | null;
     max: string | null;
   };
+  tokenAPrice: string;
+  tokenBPrice: string;
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
@@ -65,7 +67,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     bottom: 0,
   },
   themeKey,
-  rectWidth,
+  nextSpacing = false,
   position,
   offset = 20,
   maxTickPosition = 0,
@@ -147,13 +149,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   /** Update Chart by data */
   function updateChart() {
-    const tickSpacing = rectWidth ? rectWidth : getTickSpacing();
-    const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing;
+    const tickSpacing = getTickSpacing();
+    const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
       if (maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition)) 
-        return "#1C2230";
+        return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
         return "url(#gradient-bar-green)";
       }
@@ -181,8 +183,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     // Create a line of current tick.
     if (currentTick) {
       rects.append("line")
-        .attr("x1", centerPosition + tickSpacing)
-        .attr("x2", centerPosition + tickSpacing)
+        .attr("x1", centerPosition + (!nextSpacing ? tickSpacing / 2 : tickSpacing))
+        .attr("x2", centerPosition + (!nextSpacing ? tickSpacing / 2 : tickSpacing))
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 4)
@@ -214,7 +216,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       setPositionY(null);
       return;
     }
-    if (Math.abs(height - mouseY - 0.62)> boundsHeight - scaleY(bin.liquidity)) {
+    if (Math.abs(height - mouseY)> boundsHeight - scaleY(bin.liquidity)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);
@@ -240,6 +242,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tokenBAmount: tokenBAmountStr ? toUnitFormat(tokenBAmountStr) : "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
+      tokenAPrice: tickOfPrices[currentTick || 0],
+      tokenBPrice: tickOfPrices[-(currentTick || 0)],
     });
     setPositionX(mouseX);
     setPositionY(mouseY);
@@ -362,6 +366,27 @@ interface PoolGraphBinTooptipProps {
 const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
   tooltipInfo,
 }) => {
+  const tokenAPriceString = useMemo(() => {
+    if (tooltipInfo === null) {
+      return "-";
+    }
+    const { tokenAPrice, tokenB } = tooltipInfo;
+    if (!tokenAPrice) {
+      return "-";
+    }
+    return `${tokenAPrice} ${tokenB.symbol}`;
+  }, [tooltipInfo]);
+
+  const tokenBPriceString = useMemo(() => {
+    if (tooltipInfo === null) {
+      return "-";
+    }
+    const { tokenBPrice, tokenA } = tooltipInfo;
+    if (!tokenBPrice) {
+      return "-";
+    }
+    return `${tokenBPrice} ${tokenA.symbol}`;
+  }, [tooltipInfo]);
 
   const tokenAPriceRangeStr = useMemo(() => {
     if (tooltipInfo === null) {
@@ -399,14 +424,14 @@ const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20} />
             <span>{tooltipInfo.tokenA.symbol} Price</span>
           </span>
-          <span className="price-range">{tokenAPriceRangeStr}</span>
+          <span className="price-range">{tokenAPriceString}</span>
         </div>
         <div className="row">
           <span className="token">
             <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20} />
             <span>{tooltipInfo.tokenB.symbol} Price</span>
           </span>
-          <span className="price-range">{tokenBPriceRangeStr}</span>
+          <span className="price-range">{tokenBPriceString}</span>
         </div>
       </div>
       <div className="header mt-8">

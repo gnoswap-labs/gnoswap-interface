@@ -123,7 +123,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 bins={pool.bins}
                 currentTick={pool.currentTick}
                 width={258}
-                height={80.62}
+                height={80}
                 mouseover
                 themeKey={themeKey}
                 position="top"

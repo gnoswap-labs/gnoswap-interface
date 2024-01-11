@@ -13,7 +13,8 @@ interface MyPositionCardWrapperBorderProps {
 
 export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorderProps>`
   position: relative;
-  z-index: 1;
+  z-index: 0;
+  overflow: hidden;
   &.special-card {
     min-width: 322px;
     background: ${({ theme }) => theme.color.backgroundGradient4};
@@ -45,19 +46,6 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
         }
       }
     }
-  }
-  &::before {
-    display: ${({ viewMyRange }) => {
-      return !viewMyRange ? "none" : "block";
-    }};
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    content: '';
-    border-radius: 10px;
-    background: ${({ theme }) => theme.color.backgroundOpacity8};
   }
 `;
 
@@ -177,15 +165,21 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     }
   }
   .pool-price-graph {
+    height: 0;
     position: absolute;
-    padding: 16px;
+    padding: 16px 16px 0 16px;
     left: 1px;
-    bottom: 1px;
+    bottom: -17px;
     width: calc(100% - 2px);
     background-color: ${({ theme }) => theme.color.background06};;
     border-radius: 8px;
     cursor: default;
     box-shadow: 0px -4px 4px 0px #00000040;
+    transition: height 1s ease;
+  }
+  .open {
+    bottom: 1px;
+    height: 165px;
   }
   .price-range-info {
     ${mixins.flexbox("row", "flex-start", "space-between")};

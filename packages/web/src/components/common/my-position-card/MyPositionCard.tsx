@@ -35,7 +35,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   themeKey,
 }) => {
   const GRAPH_WIDTH = mobile ? 226 : 290;
-  const GRAPH_HEIGHT = 74;
+  const GRAPH_HEIGHT = 80;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
@@ -245,7 +245,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <div className="view-my-range">
             <span onClick={onClickViewRange}>View my range <IconStrokeArrowUp /></span>
           </div>
-          {viewMyRange && <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+          <div className={`pool-price-graph ${viewMyRange ? "open" : ""}`} onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
             <div className="view-my-range">
               <span onClick={onClickViewRange}>Hide my range <IconStrokeArrowDown /></span>
             </div>
@@ -272,7 +272,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 <p className={`label-text ${startClass}`}>{minPriceStr}(<span>{startClass === "positive" ? "+" : "-"}{minTickLabel}</span>) ~</p>
                 <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{endClass === "positive" ? "+" : "-"}{maxTickLabel}</span>){tokenB.symbol}</p>
             </div>
-          </div>}
+          </div>
         </MyPositionCardWrapper>
       </div>
     </MyPositionCardWrapperBorder>

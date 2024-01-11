@@ -106,6 +106,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             mouseover
             themeKey={themeKey}
             position="top"
+            nextSpacing
           />
         </div>
       </TableColumn>
