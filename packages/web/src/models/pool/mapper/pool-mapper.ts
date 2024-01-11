@@ -83,7 +83,7 @@ export class PoolMapper {
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
     );
-
+    const customVolume = convertToMB(Number(volume).toString(), 2);
     return {
       poolId: id,
       incentivizedType,
@@ -92,7 +92,7 @@ export class PoolMapper {
       feeTier: feeTierInfo?.type || "NONE",
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
       liquidity: `${convertToKMB(tvl.toString(), 2)}`,
-      volume24h: `${convertToMB(Number(volume).toString(), 2)}`,
+      volume24h: `${customVolume.replace(/\.00|(\.\d*?)0+$/g, "$1")}`,
       fees24h: `${convertToMB(Number(feeVolume).toString(), 2)}`,
       rewardTokens,
       currentTick,

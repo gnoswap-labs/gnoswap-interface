@@ -52,7 +52,7 @@ const useWithdrawTokens = () => {
               tokenSymbol,
               tokenAmount
             }));
-          }, 500);
+          }, 1000);
           return true;
         }
         broadcastError(makeBroadcastWithdrawMessage("error", {

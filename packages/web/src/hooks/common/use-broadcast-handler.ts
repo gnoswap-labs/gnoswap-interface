@@ -74,6 +74,69 @@ export function makeBroadcastSwapMessage(
   };
 }
 
+export function makeBroadcastStakingMessage(
+  type: TNoticeType,
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return "Staking pending";
+      case "success":
+        return "Staked succcessfully";
+      case "error":
+        return "Failed to stake";
+    }
+  }
+  return {
+    title: "Stake",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastRemoveMessage(
+  type: TNoticeType,
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return "Remove pending";
+      case "success":
+        return "Remove succcessfully";
+      case "error":
+        return "Failed to remove";
+    }
+  }
+  return {
+    title: "Remove",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastIncentivizeMessage(
+  type: TNoticeType,
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return "Incentivize pending";
+      case "success":
+        return "Incentivize succcessfully";
+      case "error":
+        return "Failed to incentivize";
+    }
+  }
+  return {
+    title: "Incentivize",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
 export function makeBroadcastWithdrawMessage(
   type: TNoticeType,
   data: {

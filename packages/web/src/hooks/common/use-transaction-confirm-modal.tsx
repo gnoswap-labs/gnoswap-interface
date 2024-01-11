@@ -44,7 +44,7 @@ export const useTransactionConfirmModal = (): TransactionConfirmModalResponse =>
           description={transactionModalData.description}
           scannerURL={transactionModalData.scannerURL}
           confirm={confirm}
-          close={closeModal}
+          close={confirm}
         />
       );
     }

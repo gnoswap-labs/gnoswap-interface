@@ -31,6 +31,8 @@ export interface PoolGraphProps {
   rectWidth?: number;
   position?: FloatingPosition;
   offset?: number;
+  maxTickPosition?: number | null;
+  minTickPosition?: number | null;
 }
 
 interface TooltipInfo {
@@ -66,6 +68,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   rectWidth,
   position,
   offset = 20,
+  maxTickPosition = 0,
+  minTickPosition = 0,
 }) => {
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
@@ -148,6 +152,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
+      if (maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition)) 
+        return "#1C2230";
       if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
         return "url(#gradient-bar-green)";
       }
@@ -156,9 +162,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     // Clean child elements.
     d3.select(chartRef.current).selectChildren().remove();
-    if (tokenA?.symbol === "QUX" && tokenB?.symbol === "GNOT") {
-      console.log(resolvedBins, "resolvedBins", boundsHeight, maxHeight);
-    }
     
     // Create a chart bar.
     const rects = d3.select(chartRef.current);
@@ -192,6 +195,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (!mouseover) {
       return;
     }
+    
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const bin = resolvedBins.find(bin => {
@@ -210,7 +214,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       setPositionY(null);
       return;
     }
-    if (height - mouseY > bin?.liquidity) {
+    if (Math.abs(height - mouseY - 0.62)> boundsHeight - scaleY(bin.liquidity)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);
@@ -319,7 +323,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         position={tooltipPosition}
         offset={offset}
         content={
-          tooltipInfo ? (
+          tooltipInfo && positionX && positionY ? (
             <PoolGraphTooltipWrapper ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow}`}>
               <PoolGraphBinTooptip tooltipInfo={tooltipInfo} />
             </PoolGraphTooltipWrapper>

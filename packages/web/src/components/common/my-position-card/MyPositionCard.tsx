@@ -17,6 +17,7 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
+import BigNumber from "bignumber.js";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -40,9 +41,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
-  if (viewMyRange) {
-    console.log(pool?.bins);
-  }
   
   const inRange = useMemo(() => {
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
@@ -82,7 +80,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickUpper]);
 
   const minTickLabel = useMemo(() => {
-    return `${minTickRate * -1}%`;
+    return `${minTickRate}%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
@@ -119,7 +117,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (position.tickUpper - currentTick) / (max - currentTick) * (GRAPH_WIDTH / 2) + (GRAPH_WIDTH / 2);
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
-  console.log(minTickPosition, maxTickPosition);
   
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
@@ -137,6 +134,59 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     e.stopPropagation();
     setViewMyRange(!viewMyRange);
   };
+  const getMinTick = useMemo(() => {
+    if (!minTickPosition) {
+      return null;
+    }
+    if (minTickPosition < 0) {
+      return 0;
+    }
+    if (minTickPosition > GRAPH_WIDTH) {
+      return GRAPH_WIDTH;
+    }
+    return minTickPosition;
+  }, [minTickPosition]);
+
+  const getMaxTick = useMemo(() => {
+    if (!maxTickPosition) {
+      return null;
+    }
+    if (maxTickPosition < 0) {
+      return 0;
+    }
+    if (maxTickPosition > GRAPH_WIDTH) {
+      return GRAPH_WIDTH;
+    }
+    return maxTickPosition;
+  }, [maxTickPosition]);
+
+  const isMinTickGreen = useMemo(() => {
+    if (!getMinTick) {
+      return true;
+    }
+    return BigNumber(getMinTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
+  }, [getMinTick, GRAPH_WIDTH]);
+
+  const isMaxTickGreen = useMemo(() => {
+    if (!getMaxTick) {
+      return true;
+    }
+    return BigNumber(getMaxTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
+  }, [getMaxTick]);
+
+  const startClass = useMemo(() => {
+    if (getMinTick === null) {
+      return null;
+    }
+    return isMinTickGreen ? "positive" : "negative";
+  }, [getMinTick, isMinTickGreen]);
+
+  const endClass = useMemo(() => {
+    if (getMaxTick === null) {
+      return "";
+    }
+    return isMaxTickGreen ? "positive" : "negative";
+  }, [getMaxTick, isMaxTickGreen]);
 
   return (
     <MyPositionCardWrapperBorder
@@ -206,8 +256,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 currentTick={pool.currentTick}
                 minLabel={minTickLabel}
                 maxLabel={maxTickLabel}
-                minTick={undefined}
-                maxTick={undefined}
+                minTick={minTickPosition}
+                maxTick={maxTickPosition}
                 bins={pool.bins}
                 tokenA={tokenA}
                 tokenB={tokenB}
@@ -219,8 +269,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="min-max-price">
-                <p className="label-text positive">{minPriceStr}(<span>-14%</span>) ~</p>
-                <p className="label-text negative">{maxPriceStr}(<span>+5%</span>){tokenB.symbol}</p>
+                <p className={`label-text ${startClass}`}>{minPriceStr}(<span>{startClass === "positive" ? "+" : "-"}{minTickLabel}</span>) ~</p>
+                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{endClass === "positive" ? "+" : "-"}{maxTickLabel}</span>){tokenB.symbol}</p>
             </div>
           </div>}
         </MyPositionCardWrapper>

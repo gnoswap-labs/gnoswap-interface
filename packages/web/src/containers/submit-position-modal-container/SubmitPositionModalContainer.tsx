@@ -5,6 +5,8 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useRouter } from "next/router";
+import { makeBroadcastStakingMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { ERROR_VALUE } from "@common/errors/adena";
 
 interface SubmitPositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -14,6 +16,7 @@ const SubmitPositionModalContainer = ({
   positions
 }: SubmitPositionModalContainerProps) => {
   const { account } = useWallet();
+  const { broadcastRejected, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
   const { positionRepository } = useGnoswapContext();
   const router = useRouter();
   const clearModal = useClearModal();
@@ -33,8 +36,17 @@ const SubmitPositionModalContainer = ({
       caller: address
     }).catch(() => null);
     if (result) {
-      clearModal();
-      router.back();
+      if (result.code === 0) {
+        broadcastPending();
+        setTimeout(() => {
+          broadcastSuccess(makeBroadcastStakingMessage("success"));
+          router.back();
+        }, 1000);
+      } else if (result.code === 4000 && result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
+        broadcastError(makeBroadcastStakingMessage("error"));
+      } else {
+        broadcastRejected(makeBroadcastStakingMessage("error"));
+      }
     }
     return result;
   }, [account?.address, clearModal, positionRepository, positions, router]);

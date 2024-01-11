@@ -5,10 +5,13 @@ import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useRouter } from "next/router";
+import { makeBroadcastIncentivizeMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { ERROR_VALUE } from "@common/errors/adena";
 
 const DAY_TIME = 24 * 60 * 60;
 
 const IncentivizePoolModalContainer = () => {
+  const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
   const router = useRouter();
   const clearModal = useClearModal();
   const { poolRepository } = useGnoswapContext();
@@ -36,8 +39,23 @@ const IncentivizePoolModalContainer = () => {
       startTime,
       endTime
     }).then(response => {
-      clearModal();
-      router.back();
+      if (response) {
+        if (response.code === 0) {
+          broadcastPending();
+          setTimeout(() => {
+            broadcastSuccess(makeBroadcastIncentivizeMessage("success"));
+            clearModal();
+          }, 1000);
+        } else if (response.code === 4000 && response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
+          broadcastPending();
+          setTimeout(() => {
+            broadcastError(makeBroadcastIncentivizeMessage("error"));
+            clearModal();
+          }, 1000);
+        } else {
+          broadcastRejected(makeBroadcastIncentivizeMessage("error"));
+        }
+      }
       return response;
     }).catch(e => {
       console.log(e);

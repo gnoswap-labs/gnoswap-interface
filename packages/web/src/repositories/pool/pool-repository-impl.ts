@@ -11,7 +11,7 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, SendTransactionSuccessResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import {
@@ -312,7 +312,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     return response.data;
   };
 
-  createExternalIncentive = async (request: CreateExternalIncentiveRequest): Promise<string | null> => {
+  createExternalIncentive = async (request: CreateExternalIncentiveRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -348,11 +348,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       gasFee: 1,
       memo: "",
     });
-    if (response.code !== 0 || !response.data) {
-      throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
-    }
-    const data = response?.data as SendTransactionSuccessResponse<string[]>;
-    return data?.hash || null;
+    return response;
   };
 
   removeExternalIncentive = async (request: RemoveExternalIncentiveRequest): Promise<string | null> => {
