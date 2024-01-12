@@ -9,6 +9,7 @@ import { IncentivizedOptions } from "@common/values";
 import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
 import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
+import { REGEX_NUMBER_FORMAT } from "@utils/regex";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -92,7 +93,7 @@ export class PoolMapper {
       feeTier: feeTierInfo?.type || "NONE",
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
       liquidity: `${convertToKMB(tvl.toString(), 2)}`,
-      volume24h: `${customVolume.replace(/\.00|(\.\d*?)0+$/g, "$1")}`,
+      volume24h: `${customVolume.replace(REGEX_NUMBER_FORMAT, "$1")}`,
       fees24h: `${convertToMB(Number(feeVolume).toString(), 2)}`,
       rewardTokens,
       currentTick,
