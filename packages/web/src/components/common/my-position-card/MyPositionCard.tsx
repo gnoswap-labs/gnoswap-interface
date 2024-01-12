@@ -17,6 +17,7 @@ import { convertToKMB } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
+import BigNumber from "bignumber.js";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -34,13 +35,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   themeKey,
 }) => {
   const GRAPH_WIDTH = mobile ? 226 : 290;
-  const GRAPH_HEIGHT = 74;
+  const GRAPH_HEIGHT = 80;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
-
+  
   const inRange = useMemo(() => {
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
   }, [pool.currentTick, position.tickLower, position.tickUpper]);
@@ -79,7 +80,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickUpper]);
 
   const minTickLabel = useMemo(() => {
-    return `${minTickRate * -1}%`;
+    return `${minTickRate}%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
@@ -116,7 +117,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (position.tickUpper - currentTick) / (max - currentTick) * (GRAPH_WIDTH / 2) + (GRAPH_WIDTH / 2);
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
-  console.log(minTickPosition, maxTickPosition);
   
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
@@ -130,19 +130,68 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return `${tokenBPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
-  // const handleClickShowRange = (e: React.MouseEvent<HTMLDivElement>) => {
-  //   e.stopPropagation();
-  //   setIsHiddenStart(!isHiddenStart);
-  // };
-
   const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setViewMyRange(!viewMyRange);
   };
+  const getMinTick = useMemo(() => {
+    if (!minTickPosition) {
+      return null;
+    }
+    if (minTickPosition < 0) {
+      return 0;
+    }
+    if (minTickPosition > GRAPH_WIDTH) {
+      return GRAPH_WIDTH;
+    }
+    return minTickPosition;
+  }, [minTickPosition]);
+
+  const getMaxTick = useMemo(() => {
+    if (!maxTickPosition) {
+      return null;
+    }
+    if (maxTickPosition < 0) {
+      return 0;
+    }
+    if (maxTickPosition > GRAPH_WIDTH) {
+      return GRAPH_WIDTH;
+    }
+    return maxTickPosition;
+  }, [maxTickPosition]);
+
+  const isMinTickGreen = useMemo(() => {
+    if (!getMinTick) {
+      return true;
+    }
+    return BigNumber(getMinTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
+  }, [getMinTick, GRAPH_WIDTH]);
+
+  const isMaxTickGreen = useMemo(() => {
+    if (!getMaxTick) {
+      return true;
+    }
+    return BigNumber(getMaxTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
+  }, [getMaxTick]);
+
+  const startClass = useMemo(() => {
+    if (getMinTick === null) {
+      return null;
+    }
+    return isMinTickGreen ? "positive" : "negative";
+  }, [getMinTick, isMinTickGreen]);
+
+  const endClass = useMemo(() => {
+    if (getMaxTick === null) {
+      return "";
+    }
+    return isMaxTickGreen ? "positive" : "negative";
+  }, [getMaxTick, isMaxTickGreen]);
 
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked ? "special-card" : ""}`}
+      viewMyRange={viewMyRange}
     >
       <div className="base-border">
         <MyPositionCardWrapper
@@ -177,7 +226,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <div className="list-wrapper">
             <div className="list-header">
-              <span className="label-text">{POSITION_CONTENT_LABEL.BALANCE}</span>
+              <span className="label-text">{POSITION_CONTENT_LABEL.VALUE}</span>
               <span className="label-text">{POSITION_CONTENT_LABEL.APR}</span>
             </div>
             <div className="list-content">
@@ -196,7 +245,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <div className="view-my-range">
             <span onClick={onClickViewRange}>View my range <IconStrokeArrowUp /></span>
           </div>
-          {viewMyRange && <div className="pool-price-graph" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+          <div className={`pool-price-graph ${viewMyRange ? "open" : ""}`} onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
             <div className="view-my-range">
               <span onClick={onClickViewRange}>Hide my range <IconStrokeArrowDown /></span>
             </div>
@@ -207,8 +256,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 currentTick={pool.currentTick}
                 minLabel={minTickLabel}
                 maxLabel={maxTickLabel}
-                minTick={undefined}
-                maxTick={undefined}
+                minTick={minTickPosition}
+                maxTick={maxTickPosition}
                 bins={pool.bins}
                 tokenA={tokenA}
                 tokenB={tokenB}
@@ -220,10 +269,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="min-max-price">
-                <p className="label-text">{minPriceStr}(<span>-14%</span>) ~</p>
-                <p className="label-text">{maxPriceStr}(<span>+5%</span>){tokenB.symbol}</p>
+                <p className={`label-text ${startClass}`}>{minPriceStr}(<span>{startClass === "positive" ? "+" : "-"}{minTickLabel}</span>) ~</p>
+                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{endClass === "positive" ? "+" : "-"}{maxTickLabel}</span>){tokenB.symbol}</p>
             </div>
-          </div>}
+          </div>
         </MyPositionCardWrapper>
       </div>
     </MyPositionCardWrapperBorder>

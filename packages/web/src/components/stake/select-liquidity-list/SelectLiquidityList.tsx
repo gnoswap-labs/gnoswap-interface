@@ -1,7 +1,8 @@
 import React from "react";
 import SelectLiquidityListItem from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem";
-import { wrapper } from "./SelectLiquidityList.styles";
+import { loadingWrapper, wrapper } from "./SelectLiquidityList.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface SelectLiquidityProps {
   stakedPositions: PoolPositionModel[];
@@ -11,6 +12,7 @@ interface SelectLiquidityProps {
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
   isEmpty: boolean;
+  isLoading: boolean;
 }
 
 const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
@@ -21,6 +23,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
   onCheckedAll,
   checkedAll,
   isEmpty,
+  isLoading,
 }) => {
   return (
     <div css={wrapper}>
@@ -38,7 +41,10 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
         <span>Liquidity</span>
       </div>
       <ul>
-        {unstakedPositions.map((position, index) => (
+        {isLoading && <div css={loadingWrapper}>
+          <LoadingSpinner />
+        </div>}
+        {!isLoading && unstakedPositions.map((position, index) => (
           <SelectLiquidityListItem
             position={position}
             checkedList={checkedList}
@@ -46,7 +52,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             key={index}
           />
         ))}
-        {stakedPositions.map((position, index) => (
+        {!isLoading && stakedPositions.map((position, index) => (
           <SelectLiquidityListItem
             position={position}
             checkedList={checkedList}
@@ -55,7 +61,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             disabled
           />
         ))}
-        {isEmpty && <div className="no-position">No Position</div>}
+        {!isLoading && isEmpty && <div className="no-position">No Position</div>}
       </ul>
     </div>
   );

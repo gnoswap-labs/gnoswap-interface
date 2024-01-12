@@ -5,17 +5,19 @@ import { useRouter } from "next/router";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useLoading } from "@hooks/common/use-loading";
 
 const UnstakeLiquidityContainer: React.FC = () => {
   const router = useRouter();
   const { account } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId } = usePositionData();
+  const { getPositionsByPoolId, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useUnstakePositionModal({
     positions,
     selectedIds: checkedList
   });
+  const { isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
     return positions.filter(position => position.staked);
@@ -76,6 +78,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       onCheckedAll={onCheckedAll}
       checkedAll={checkedAll}
       handleConfirmUnstake={handleConfirmUnstake}
+      isLoading={isLoadingCommon || loadingPositionById}
     />
   );
 };

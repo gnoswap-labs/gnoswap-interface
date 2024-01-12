@@ -248,7 +248,7 @@ export const useEarnAddLiquidityConfirmModal = ({
               tokenAAmount: result.tokenAAmount,
               tokenBAmount: result.tokenBAmount,
             }), moveToBack);
-          }, 500);
+          }, 1000);
           return true;
         } else if (result.code === 4000) {
           broadcastRejected(makeBroadcastAddLiquidityMessage("error", {
