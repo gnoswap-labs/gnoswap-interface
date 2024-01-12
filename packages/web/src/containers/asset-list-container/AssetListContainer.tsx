@@ -10,6 +10,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { useGetTokensList } from "@query/token";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
@@ -231,6 +232,7 @@ const AssetListContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingCommon } = useLoading();
+  const { data: { tokens = [] } = {}, } = useGetTokensList({ refetchInterval: 15 * 1000, });
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -255,7 +257,7 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { tokens, displayBalanceMap, balances, updateTokens, tokenPrices, isFetched } =
+  const { displayBalanceMap, balances, updateTokens, tokenPrices, isFetched } =
     useTokenData();
 
   useEffect(() => {

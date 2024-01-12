@@ -6,11 +6,19 @@ import { useCallback, useMemo} from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeId } from "@utils/common";
 import { useGetPositionsByAddress } from "@query/positions";
+import { useRouter } from "next/router";
+
+const PATH = [
+  "/earn/pool/[pool-path]",
+  "/earn",
+  "/wallet",
+];
 
 export const usePositionData = () => {
+  const router = useRouter();
   const { account, connected } = useWallet();
   const { pools, loading: isLoadingPool } = usePoolData();
-  const { data = [], isError, isLoading: loading, isFetched: isFetchedPosition } = useGetPositionsByAddress(account?.address as string, { enabled: !!account?.address && pools.length > 0 && connected });
+  const { data = [], isError, isLoading: loading, isFetched: isFetchedPosition } = useGetPositionsByAddress(account?.address as string, { enabled: !!account?.address && pools.length > 0 && connected, refetchInterval: PATH.includes(router.pathname) ? 15 * 1000 : false });
   
   const { getGnotPath } = useGnotToGnot();
 

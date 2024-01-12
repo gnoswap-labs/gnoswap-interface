@@ -19,13 +19,18 @@ import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { useRouter } from "next/router";
+
+const PATH = [
+  "/tokens/[token-path]",
+  "/swap",
+];
 
 export const useTokenData = () => {
-  const { data: { tokens = [] } = {}, isLoading: loading, isFetched, error } = useGetTokensList();
+  const router = useRouter();
+  const { data: { tokens = [] } = {}, isLoading: loading, isFetched, error } = useGetTokensList({ refetchInterval: PATH.includes(router.pathname) ? 15 * 1000 : false });
   const { data: tokenPrices = {} } = useGetTokenPrices();
-
   const forceRefect = useForceRefetchQuery();
-
 
   const { account } = useWallet();
   const { rpcProvider } = useGnoswapContext();
