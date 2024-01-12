@@ -50,19 +50,29 @@ export const PoolGraphTooltipWrapper = styled.div`
       flex-direction: row;
       width: 100%;
       gap: 16px;
-
       & > span {
         display: flex;
         flex-direction: row;
         align-items: center;
+        &.price-range {
+          justify-content: flex-end;
+        }
       }
+      
     }
 
     .header {
       display: flex;
       flex-direction: column;
       color: ${({ theme }) => theme.color.text04};
-      margin-bottom: 5px;
+      justify-content: space-between;
+      width: 100%;
+      &.mt-8 {
+        margin-top: 8px;
+      }
+      .row {
+        padding: 3px 0;
+      }
     }
 
     .content {
@@ -70,11 +80,15 @@ export const PoolGraphTooltipWrapper = styled.div`
       flex-direction: column;
       color: ${({ theme }) => theme.color.text02};
       gap: 8px;
+      width: 100%;
+      .row {
+        padding: 4px 0;
+      }
     }
 
     .token {
       flex-shrink: 0;
-      width: 80px;
+      min-width: 80px;
       gap: 8px;
 
       img {

@@ -19,7 +19,7 @@ export const UnconnectedWrapper = styled.div`
     color: ${({ theme }) => theme.color.text05};
   }
   color: ${({ theme }) => theme.color.text10};
-  background-color: ${({ theme }) => theme.color.background11};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity9};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   .unconnected-icon {

@@ -35,6 +35,9 @@ export const PoolListWrapper = styled.div<Props>`
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
   overflow-x: scroll;
+  @media (min-width: 1440px) {
+    overflow-x: visible;
+  }
 
   @media (max-width: 920px) {
     grid-gap: 12px;
@@ -46,7 +49,7 @@ export const PoolListWrapper = styled.div<Props>`
   .card-skeleton {
     height: 321px;
     border-radius: 10px;
-    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.08);
+    box-shadow: ${({ theme }) => theme.color.shadow02};
   }
 
   ${media.tablet} {
@@ -68,6 +71,6 @@ export const BlankIncentivizedCard = styled.div`
   }
   border-radius: 10px;
   background: ${({ theme }) => theme.color.background08};
-  box-shadow: ${({ theme }) => theme.color.shadow};
+  box-shadow: ${({ theme }) => theme.color.shadow02};
   border: 1px solid ${({ theme }) => theme.color.border14};
 `;

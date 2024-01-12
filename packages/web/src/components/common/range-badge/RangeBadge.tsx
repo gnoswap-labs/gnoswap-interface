@@ -13,7 +13,7 @@ const RangeBadge: React.FC<RangeBadgeProps> = ({ status }) => (
   <RangeBadgeWrapper>
     <RangeDot status={status} />
     <RangeBadgeText status={status}>
-      {status === RANGE_STATUS_OPTION.IN ? "In range" : "Out of range"}
+      {status === RANGE_STATUS_OPTION.IN ? "In-range" : "Out-range"}
     </RangeBadgeText>
   </RangeBadgeWrapper>
 );

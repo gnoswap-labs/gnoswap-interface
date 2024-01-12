@@ -35,19 +35,23 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
   } = pool;
   const { getGnotPath } = useGnotToGnot();
   const rewardImage = useMemo(() => {
-    if (rewardTokens.length === 0) {
-      return <>-</>;
-    }
     const tempRewardTokens = rewardTokens.map((item) => {
       return {
         ...item,
         logoURI: getGnotPath(item).logoURI,
       }
     });
-    const logos = tempRewardTokens.map(token => token.logoURI);
+    const temp = tempRewardTokens.map(token => token.logoURI);
+    if (!temp.includes(getGnotPath(tokenB).logoURI)) {
+      temp.unshift(getGnotPath(tokenB).logoURI);
+    }
+    if (!temp.includes(getGnotPath(tokenA).logoURI)) {
+      temp.unshift(getGnotPath(tokenA).logoURI);
+    }
+    const logos = [...new Set(temp)];
     return <OverlapLogo logos={logos} size={20} />
-  }, [rewardTokens]);
-
+  }, [rewardTokens, tokenA, tokenB]);
+  
   const resolvedBins = useMemo(() => {
     const length = 20;
     if (pool.bins.length <= length) {
@@ -102,6 +106,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             mouseover
             themeKey={themeKey}
             position="top"
+            nextSpacing
           />
         </div>
       </TableColumn>

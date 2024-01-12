@@ -1,4 +1,5 @@
 import StakePosition from "@components/stake/stake-position/StakePosition";
+import { useLoading } from "@hooks/common/use-loading";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useSubmitPositionModal } from "@hooks/earn/use-submit-position-modal";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -10,12 +11,13 @@ const StakePositionContainer: React.FC = () => {
   const router = useRouter();
   const { account } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched } = usePositionData();
+  const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useSubmitPositionModal({
     positions,
     selectedIds: checkedList
   });
+  const { isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
     return positions.filter(position => position.staked);
@@ -83,6 +85,7 @@ const StakePositionContainer: React.FC = () => {
       checkedAll={checkedAll}
       submitPosition={submitPosition}
       isEmpty={isEmpty}
+      isLoading={isLoadingCommon || loadingPositionById}
     />
   );
 };

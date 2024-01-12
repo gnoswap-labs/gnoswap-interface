@@ -7,9 +7,14 @@ interface CardProps {
   staked: boolean;
 }
 
-export const MyPositionCardWrapperBorder = styled.div`
+interface MyPositionCardWrapperBorderProps {
+  viewMyRange: boolean;
+}
+
+export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorderProps>`
   position: relative;
-  z-index: 1;
+  z-index: 0;
+  overflow: hidden;
   &.special-card {
     min-width: 322px;
     background: ${({ theme }) => theme.color.backgroundGradient4};
@@ -51,7 +56,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   gap: 16px;
   padding: 15px;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.color.background03};
+  background-color: ${({ theme }) => theme.color.background06};
   ${media.tablet} {
     min-width: 322px;
   }
@@ -140,26 +145,41 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
       color: ${({ theme }) => theme.color.text10};
       text-align: center;
       cursor: pointer;
+      gap: 4px;
       > svg {
         width: 18px;
         height: 16px;
   
         * {
-          fill: ${({ theme }) => theme.color.icon07};
+          fill: ${({ theme }) => theme.color.icon15};
+        }
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.text16};
+        > svg {
+          * {
+            fill: ${({ theme }) => theme.color.icon10};
+          }
         }
       }
     }
   }
   .pool-price-graph {
+    height: 0;
     position: absolute;
-    padding: 16px;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: #141A29;
+    padding: 16px 16px 0 16px;
+    left: 1px;
+    bottom: -17px;
+    width: calc(100% - 2px);
+    background-color: ${({ theme }) => theme.color.background06};;
     border-radius: 8px;
     cursor: default;
     box-shadow: 0px -4px 4px 0px #00000040;
+    transition: height 0.5s ease;
+  }
+  .open {
+    bottom: 1px;
+    height: 165px;
   }
   .price-range-info {
     ${mixins.flexbox("row", "flex-start", "space-between")};
@@ -206,6 +226,16 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     .label-text {
       ${fonts.p4};
       height: auto;
+      &.positive {
+        > span {
+          color: ${({ theme }) => theme.color.green01};
+        }
+      }
+      &.negative {
+        > span {
+          color: ${({ theme }) => theme.color.red01};
+        }
+      }
     }
   }
 `;

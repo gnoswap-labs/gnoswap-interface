@@ -34,7 +34,7 @@ export interface PoolSortOption {
 
 export const TABLE_HEAD = {
   POOL_NAME: "Pool Name",
-  LIQUIDITY: "Liquidity",
+  LIQUIDITY: "TVL",
   VOLUME: "Volume (24h)",
   FEES: "Fees (24h)",
   APR: "APR",

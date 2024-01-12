@@ -7,7 +7,7 @@ export const NoLiquidityWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
   color: ${({ theme }) => theme.color.text02};
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme }) => theme.color.backgroundOpacity9};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   padding: 20px 20px 30px 20px;
@@ -57,7 +57,7 @@ export const NoLiquidityWrapper = styled.div`
   .description {
     text-align: center;
     ${fonts.body12};
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => theme.color.text22};
     ${media.tablet} {
       ${fonts.p2};
     }

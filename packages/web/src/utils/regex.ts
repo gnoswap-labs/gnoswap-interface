@@ -1,0 +1,1 @@
+export const REGEX_NUMBER_FORMAT = /\.00|(\.\d*?)0+$/g;

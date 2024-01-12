@@ -68,3 +68,27 @@ export const inputStyle = (theme: Theme) => css`
     cursor: default;
   }
 `;
+
+export const loadingWrapper = (theme: Theme) => css`
+  ${mixins.flexbox("row", "center", "center")}
+  width: 100%;
+  height: 188px;
+  border-radius: 8px;
+  > span {
+    color: ${theme.color.text04};
+    ${fonts.body11}
+    margin-top: 18px;
+  }
+  > div {
+    width: 48px;
+    height: 48px;
+    &::before {
+      background-color: ${theme.color.background01};
+      width: 38px;
+      height: 38px;
+    }
+  }
+  ${media.mobile} {
+    height: 177px;
+  }
+`;

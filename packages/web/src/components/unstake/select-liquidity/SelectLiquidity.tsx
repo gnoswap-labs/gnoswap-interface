@@ -1,7 +1,8 @@
 import React from "react";
 import SelectLiquidityItem from "@components/unstake/select-liquidity-item/SelectLiquidityItem";
-import { wrapper } from "./SelectLiquidity.styles";
+import { loadingWrapper, wrapper } from "./SelectLiquidity.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface SelectLiquidityProps {
   stakedPositions: PoolPositionModel[];
@@ -10,6 +11,7 @@ interface SelectLiquidityProps {
   onCheckedItem: (checked: boolean, path: string) => void;
   onCheckedAll: (checked: boolean) => void;
   checkedAll: boolean;
+  isLoading: boolean;
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
@@ -19,6 +21,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
   onCheckedItem,
   onCheckedAll,
   checkedAll,
+  isLoading,
 }) => {
   return (
     <div css={wrapper}>
@@ -34,7 +37,10 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
         <span className="liquidity-label">Liquidity</span>
       </div>
       <ul>
-        {stakedPositions.map((position, index) => (
+        {isLoading && <div css={loadingWrapper}>
+          <LoadingSpinner />
+        </div>}
+        {!isLoading && stakedPositions.map((position, index) => (
           <SelectLiquidityItem
             position={position}
             checkedList={checkedList}
@@ -42,7 +48,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
             key={index}
           />
         ))}
-        {unstakedPositions.map((position, index) => (
+        {!isLoading && unstakedPositions.map((position, index) => (
           <SelectLiquidityItem
             position={position}
             checkedList={checkedList}
@@ -51,7 +57,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
             disabled
           />
         ))}
-        {unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
+        {!isLoading && unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
       </ul>
     </div>
   );

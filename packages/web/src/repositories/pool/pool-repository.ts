@@ -8,6 +8,7 @@ import { CreateExternalIncentiveRequest } from "./request/create-external-incent
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
+import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 
 export interface PoolRepository {
   getPools: () => Promise<PoolModel[]>;
@@ -26,7 +27,7 @@ export interface PoolRepository {
 
   createExternalIncentive: (
     request: CreateExternalIncentiveRequest,
-  ) => Promise<string | null>;
+  ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null>;
 
   removeExternalIncentive: (
     request: RemoveExternalIncentiveRequest,

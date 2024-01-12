@@ -1,6 +1,6 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, SendTransactionSuccessResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
@@ -84,7 +84,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   stakePositions = async (
     request: StakePositionsRequest,
-  ): Promise<string | null> => {
+  ): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -98,11 +98,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
-    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
-    if (!hash) {
-      throw new Error(`${result}`);
-    }
-    return hash;
+    return result as WalletResponse<SendTransactionResponse<string[] | null>>;
   };
 
   unstakePositions = async (
@@ -129,7 +125,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   removeLiquidity = async (
     request: RemoveLiquidityReqeust,
-  ): Promise<string | null> => {
+  ): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -142,10 +138,6 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
-    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
-    if (!hash) {
-      throw new Error(`${result}`);
-    }
-    return hash;
+    return result as WalletResponse<SendTransactionResponse<string[] | null>>;
   };
 }
