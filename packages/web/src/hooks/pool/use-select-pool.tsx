@@ -52,6 +52,8 @@ export interface SelectPool {
   zoomOut: () => void;
   liquidityOfTickPoints: [number, number][];
   setInteractionType: (type: "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH") => void;
+  isChangeMinMax: boolean;
+  setIsChangeMinMax: (value: boolean) => void;
 }
 
 
@@ -73,7 +75,9 @@ export const useSelectPool = ({
   const [poolInfo, setPoolInfo] = useState<PoolDetailRPCModel | null>(null);
   const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
-
+  const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
+  console.log(isChangeMinMax, "isChangeMinMax");
+  
   const poolPath = useMemo(() => {
     setCurrentPoolPath(latestPoolPath);
     return latestPoolPath;
@@ -403,6 +407,8 @@ export const useSelectPool = ({
     zoomOut,
     liquidityOfTickPoints,
     isCreate,
-    setInteractionType
+    setInteractionType,
+    isChangeMinMax,
+    setIsChangeMinMax,
   };
 };

@@ -53,6 +53,7 @@ interface EarnAddLiquidityProps {
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
   createOption: { startPrice: number | null, isCreate: boolean };
+  fetching: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -84,6 +85,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   selectPool,
   changeStartingPrice,
   createOption,
+  fetching,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -257,6 +259,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               feeTier={feeTier}
               pools={pools}
               selectFeeTier={handleSelectFeeTier}
+              fetching={fetching}
             />
           )}
         </article>

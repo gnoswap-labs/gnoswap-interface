@@ -7,6 +7,7 @@ import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLog
 import { PositionModel } from "@models/position/position-model";
 import { useMemo } from "react";
 import { convertToKMB } from "@utils/stake-position-utils";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -19,7 +20,23 @@ const OneClickStaking: React.FC<Props> = ({
   handleClickGotoStaking
 }) => {
   const [swapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null } = swapValue;
+  const { getGnotPath } = useGnotToGnot();
+  const { tokenA: tokenAInfo = null, tokenB: tokenBInfo = null } = swapValue;
+  const tokenA = tokenAInfo ? {
+    ...tokenAInfo,
+    logoURI: getGnotPath(tokenAInfo).logoURI,
+    path: getGnotPath(tokenAInfo).path,
+    name: getGnotPath(tokenAInfo).name,
+    symbol: getGnotPath(tokenAInfo).symbol,
+  } : null;
+
+  const tokenB = tokenBInfo ? {
+    ...tokenBInfo,
+    logoURI: getGnotPath(tokenBInfo).logoURI,
+    path: getGnotPath(tokenBInfo).path,
+    name: getGnotPath(tokenBInfo).name,
+    symbol: getGnotPath(tokenBInfo).symbol,
+  } : null;
 
   const isStakedPositions = useMemo(() => {
     return stakedPositions.length > 0;

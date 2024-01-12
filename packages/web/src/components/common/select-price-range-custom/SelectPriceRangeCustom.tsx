@@ -78,7 +78,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     .domain(getHeightRange())
     .range([GRAPH_HEIGHT, 0]);
 
-  const isCustom = priceRangeType === "Custom";
+  const isCustom = true;
 
   const isLoading = useMemo(() => selectPool.renderState === "LOADING", [selectPool.renderState]);
 
@@ -291,6 +291,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}
                       finishMove={finishMove}
+                      setIsChangeMinMax={selectPool.setIsChangeMinMax}
                     />
                   </div>}
                   <div className="rangge-content-wrapper">

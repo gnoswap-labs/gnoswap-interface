@@ -46,6 +46,7 @@ export const SelectFeeTierItemWrapper = styled.div`
     padding: 0 15px;
   }
   .selected-fee-rate {
+    width: 100%;
     ${mixins.flexbox("row", "center", "center")};
     ${fonts.p6};
     color: ${({ theme }) => theme.color.text03};
@@ -53,6 +54,15 @@ export const SelectFeeTierItemWrapper = styled.div`
     border-radius: 25px;
     height: 20px;
     padding: 0px 8px;
+    div {
+      width: 12px;
+      height: 12px;
+      &::before {
+        background-color: ${({ theme }) => theme.color.background05};
+        width: 9px;
+        height: 9px;
+      }
+    }
   }
   ${media.mobile} {
     ${mixins.flexbox("row", "flex-start", "space-between")};

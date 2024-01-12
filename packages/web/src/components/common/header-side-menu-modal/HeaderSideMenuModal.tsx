@@ -12,6 +12,7 @@ import {
 } from "./HeaderSideMenuModal.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconAccountUser from "../icons/IconAccountUser";
+import { useRouter } from "next/router";
 
 interface HeaderSideMenuModalProps {
   onSideMenuToggle: () => void;
@@ -21,6 +22,7 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
   onSideMenuToggle,
 }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const closeMenu = (e: MouseEvent) => {
@@ -41,10 +43,10 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
     <HeaderSideMenuModalWrapper ref={menuRef}>
       <Navigation>
         <ul>
-          <li>
+          <li onClick={() => router.push(SIDE_MENU_NAV.GOVERNENCE.path)}>
             <Link href={SIDE_MENU_NAV.GOVERNENCE.path}>
               <LeftIconMenu>
-                <LeftIcon onClick={() => {}}>
+                <LeftIcon>
                   <IconAccountUser className="left-icon" />
                 </LeftIcon>
                 {SIDE_MENU_NAV.GOVERNENCE.title}
@@ -54,31 +56,31 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
         </ul>
         <MenuDivider />
         <ul>
-          <li>
+          <li onClick={() => router.push(SIDE_MENU_NAV.HELPCENTER.path)}>
             <Link href={SIDE_MENU_NAV.HELPCENTER.path}>
               <RightIconMenu>
                 {SIDE_MENU_NAV.HELPCENTER.title}
-                <LinkIconButton onClick={() => {}}>
+                <LinkIconButton >
                   <IconOpenLink className="right-icon" />
                 </LinkIconButton>
               </RightIconMenu>
             </Link>
           </li>
-          <li>
+          <li onClick={() => router.push(SIDE_MENU_NAV.DOCUMENTATION.path)}>
             <Link href={SIDE_MENU_NAV.DOCUMENTATION.path}>
               <RightIconMenu>
                 {SIDE_MENU_NAV.DOCUMENTATION.title}
-                <LinkIconButton onClick={() => {}}>
+                <LinkIconButton>
                   <IconOpenLink className="right-icon" />
                 </LinkIconButton>
               </RightIconMenu>
             </Link>
           </li>
-          <li className="last-side-menu">
+          <li className="last-side-menu" onClick={() => router.push(SIDE_MENU_NAV.LEGALPRIVACY.path)}>
             <Link href={SIDE_MENU_NAV.LEGALPRIVACY.path}>
               <RightIconMenu>
                 {SIDE_MENU_NAV.LEGALPRIVACY.title}
-                <LinkIconButton onClick={() => {}}>
+                <LinkIconButton>
                   <IconOpenLink className="right-icon" />
                 </LinkIconButton>
               </RightIconMenu>

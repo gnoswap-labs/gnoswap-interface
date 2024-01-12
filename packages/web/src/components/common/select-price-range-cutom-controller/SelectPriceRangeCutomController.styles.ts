@@ -28,20 +28,32 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
       display: flex;
       flex-shrink: 0;
       padding: 2px;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 4px;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       color: ${({ theme }) => theme.color.icon05};
       ${fonts.body6}
       line-height: 22px;
       cursor: pointer;
-
+      span {
+        height: 24px;
+      }
       &.disabled {
+        pointer-events: none;
         cursor: default;
         color: ${({ theme }) => theme.color.icon08};
+        background: ${({ theme }) => theme.color.backgroundOpacity8};
       }
+      &:hover {
+        background: ${({ theme }) => theme.color.backgroundOpacity};
+      }
+      background: ${({ theme }) => theme.color.background02};
+      svg * {
+        fill: ${({ theme }) => theme.color.icon05};
+      }
+
     }
 
     .value-wrapper {
@@ -49,7 +61,7 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
       ${fonts.body4}
       position: relative;
       input {
-        width: 110px;
+        width: 100px;
         text-align: center;
         display: block;
         ${media.mobile} {

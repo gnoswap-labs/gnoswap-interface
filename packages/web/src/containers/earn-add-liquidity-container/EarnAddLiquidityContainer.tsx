@@ -196,7 +196,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
+    if (priceRange.type !== "Custom") {
+      selectPool.setIsChangeMinMax(false);
+    }
   }, []);
+
+  useEffect(() => {
+    if (selectPool.isChangeMinMax) {
+      setPriceRange({ type: "Custom" });
+    }
+  }, [selectPool.isChangeMinMax]);
 
   const changeTokenA = useCallback((token: TokenModel) => {
     setSwapValue((prev) => {
@@ -474,6 +483,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       selectPool={selectPool}
       changeStartingPrice={changeStartingPrice}
       createOption={createOption}
+      fetching={fetching}
     />
   );
 };

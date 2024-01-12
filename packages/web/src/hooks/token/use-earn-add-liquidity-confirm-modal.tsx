@@ -67,7 +67,6 @@ export const useEarnAddLiquidityConfirmModal = ({
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const router = useRouter();
-
   const tokenAAmount = useMemo(() => {
     const depositRatio = selectPool.depositRatio;
     const compareTokenPath = selectPool.compareToken?.path;
@@ -195,7 +194,7 @@ export const useEarnAddLiquidityConfirmModal = ({
 
   const moveToBack = useCallback(() => {
     close();
-    router.back();
+    router.push("/earn");
   }, [close, router]);
 
   const confirm = useCallback(() => {

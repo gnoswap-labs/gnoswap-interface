@@ -169,7 +169,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     position: absolute;
     padding: 16px 16px 0 16px;
     left: 1px;
-    bottom: -17px;
+    bottom: -25px;
     width: calc(100% - 2px);
     background-color: ${({ theme }) => theme.color.background06};;
     border-radius: 8px;

@@ -22,7 +22,7 @@ export const HEADER_NAV = [
 export const SIDE_MENU_NAV = {
   GOVERNENCE: {
     title: "Governance",
-    path: "/",
+    path: "/governance",
   },
   HELPCENTER: {
     title: "Help Center",

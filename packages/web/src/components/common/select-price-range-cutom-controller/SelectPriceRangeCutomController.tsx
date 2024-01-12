@@ -4,6 +4,8 @@ import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
+import IconAdd from "../icons/IconAdd";
+import IconRemove from "../icons/IconRemove";
 
 export interface SelectPriceRangeCutomControllerProps {
   title: string;
@@ -134,14 +136,18 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       <span className="title">{title}</span>
       <div className="controller-wrapper">
         <div className={disabledController ? "icon-wrapper decrease disabled" : "icon-wrapper decrease"} onClick={onClickDecrease}>
-          <span>-</span>
+          <span>
+            <IconRemove />
+          </span>
         </div>
         <div className="value-wrapper">
           <input style={{ fontSize: `${fontSize}px` }} className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate} ref={inputRef}/>
           <div style={{ fontSize: `${fontSize}px` }} className="fake-input" ref={divRef}>{value}</div>
         </div>
         <div className={disabledController ? "icon-wrapper increase disabled" : "icon-wrapper increase"} onClick={onClickIncrease}>
-          <span>+</span>
+          <span>
+            <IconAdd />
+          </span>
         </div>
       </div>
 
