@@ -45,7 +45,7 @@ export const usePositionData = () => {
     });
     return poolPositions;
   }, [data]);
-
+  
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
     return unstakedPositions.length > 0;

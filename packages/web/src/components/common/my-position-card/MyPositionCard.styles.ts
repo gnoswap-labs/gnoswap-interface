@@ -5,6 +5,7 @@ import mixins from "@styles/mixins";
 
 interface CardProps {
   staked: boolean;
+  viewMyRange: boolean;
 }
 
 interface MyPositionCardWrapperBorderProps {
@@ -69,8 +70,12 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   color: ${({ theme }) => theme.color.text02};
   cursor: pointer;
   &:hover {
-    background-color: ${({ theme }) => theme.color.background02};
-    border: 1px solid ${({ theme }) => theme.color.border14};
+    background-color: ${({ viewMyRange, theme }) => {
+      return viewMyRange ? "none" : theme.color.background02;
+    }};
+    border: 1px solid ${({ viewMyRange, theme }) => {
+      return viewMyRange ? "none" : theme.color.border14;
+    }};;
     box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
   }
   .title-wrapper {

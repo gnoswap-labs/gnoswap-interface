@@ -157,9 +157,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition)) 
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
-        return "url(#gradient-bar-green)";
+        return "url(#gradient-bar-red)";
       }
-      return "url(#gradient-bar-red)";
+      return "url(#gradient-bar-green)";
     }
 
     // Clean child elements.
@@ -187,9 +187,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("x2", centerPosition + (!nextSpacing ? tickSpacing / 2 : tickSpacing))
         .attr("y1", 0)
         .attr("y2", boundsHeight)
-        .attr("stroke-dasharray", 4)
-        .attr("stroke", `${themeKey === "dark" ? "#FFFFFF" : "#596782"}`)
-        .attr("stroke-width", 0.5);
+        .attr("stroke-dasharray", 3)
+        .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
+        .attr("stroke-width", 1);
     }
   }
 

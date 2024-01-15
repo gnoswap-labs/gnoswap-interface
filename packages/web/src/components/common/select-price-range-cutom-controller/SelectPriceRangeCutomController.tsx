@@ -19,12 +19,11 @@ export interface SelectPriceRangeCutomControllerProps {
   changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
+  currentPriceStr: string;
 }
 
 const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerProps> = ({
   title,
-  token0Symbol,
-  token1Symbol,
   current,
   feeTier,
   tickSpacing = 2,
@@ -33,15 +32,13 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   increase,
   selectedFullRange,
   onSelectCustomRange,
+  currentPriceStr,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [value, setValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
-  const tokenInfo = useMemo(() => {
-    return `${token1Symbol} per ${token0Symbol}`;
-  }, [token0Symbol, token1Symbol]);
 
   const disabledController = useMemo(() => {
     return value === "" ||
@@ -152,7 +149,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       </div>
 
       <div className="token-info-wrapper">
-        <span className="token-info">{tokenInfo}</span>
+        <span className="token-info">{currentPriceStr}</span>
       </div>
     </SelectPriceRangeCutomControllerWrapper>
   );

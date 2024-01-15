@@ -439,7 +439,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .attr("y1", boundsHeight + paddingHeight)
         .attr("y2", 0)
         .attr("stroke-dasharray", 4)
-        .attr("stroke", `${themeKey === "dark" ? "#FFFFFF": "#596782"}`)
+        .attr("stroke", `${themeKey === "dark" ? "#E0E8F4": "#596782"}`)
         .attr("stroke-width", 1);
     }
 

@@ -13,7 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
@@ -36,11 +36,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 }) => {
   const GRAPH_WIDTH = mobile ? 226 : 290;
   const GRAPH_HEIGHT = 80;
-  const { pool } = position;
+  const { pool, rewards } = position;
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
+  
+  const claimableRewardInfo = useMemo(() => {
+    const claimableUsdValue = rewards.reduce((accumulator, current) => accumulator + Number(current.claimableUsdValue), 0);
+    return formatUsdNumber(String(claimableUsdValue), 2, true);
+  }, [rewards]);
   
   const inRange = useMemo(() => {
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
@@ -68,12 +73,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return 0;
     }
     const minPrice = tickToPrice(position.tickLower);
-    return Math.round(((currentPrice - minPrice) / currentPrice) * 100);
+    return Math.abs(Math.round(((currentPrice - minPrice) / currentPrice) * 100));
   }, [currentPrice, position.tickLower]);
 
   const maxTickRate = useMemo(() => {
     if (isMaxTick(position.tickUpper)) {
-      return Infinity;
+      return 0;
     }
     const maxPrice = tickToPrice(position.tickUpper);
     return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
@@ -197,6 +202,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         <MyPositionCardWrapper
           staked={position.staked}
           onClick={() => movePoolDetail(pool.id)}
+          viewMyRange={viewMyRange}
         >
           <div className="title-wrapper">
             <div className="box-header">
@@ -239,7 +245,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="list-content">
               <span>$200</span>
-              $1.50K
+              {claimableRewardInfo}
             </div>
           </div>
           <div className="view-my-range">

@@ -102,6 +102,14 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
+  const currentPriceStrReverse = useMemo(() => {
+    if (!selectPool.currentPrice) {
+      return "-";
+    }
+    const currentPrice = toNumberFormat(1 / selectPool.currentPrice, 4);
+    return `1 ${currentTokenB.symbol} = ${currentPrice} ${currentTokenA.symbol}`;
+  }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
+
   const startingPriceDescription = useMemo(() => {
     if (!currentTokenA || !currentTokenB) {
       return "";
@@ -308,6 +316,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                         changePrice={selectPool.setMinPosition}
                         decrease={selectPool.decreaseMinTick}
                         increase={selectPool.increaseMinTick}
+                        currentPriceStr={currentPriceStr}
                       />
                       <SelectPriceRangeCutomController
                         title="Max Price"
@@ -321,6 +330,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                         changePrice={selectPool.setMaxPosition}
                         decrease={selectPool.decreaseMaxTick}
                         increase={selectPool.increaseMaxTick}
+                        currentPriceStr={currentPriceStrReverse}
                       />
                     </div>
                     <div className="extra-wrapper">
