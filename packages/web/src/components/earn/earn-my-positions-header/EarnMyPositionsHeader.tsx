@@ -9,6 +9,8 @@ export interface EarnMyPositionsHeaderProps {
   availableStake: boolean;
   moveEarnAdd: () => void;
   moveEarnStake: () => void;
+  isClosed: boolean;
+  handleChangeClosed: () => void;
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
@@ -17,6 +19,8 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   availableStake,
   moveEarnAdd,
   moveEarnStake,
+  isClosed,
+  handleChangeClosed,
 }) => {
 
   const disabledStake = useMemo(() => {
@@ -32,16 +36,16 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
       <div className="header-content">
         <h2>My Positions</h2>
         <Switch
-          checked={true}
-          onChange={() => {}}
+          checked={!isClosed}
+          onChange={handleChangeClosed}
           hasLabel={true}
           labelText="Hide closed positions"
         />
       </div>
       <div className="button-wrapper">
         <Switch
-          checked={true}
-          onChange={() => {}}
+          checked={!isClosed}
+          onChange={handleChangeClosed}
           hasLabel={true}
           labelText="Hide closed positions"
         />

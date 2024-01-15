@@ -44,7 +44,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   
   const claimableRewardInfo = useMemo(() => {
     const claimableUsdValue = rewards.reduce((accumulator, current) => accumulator + Number(current.claimableUsdValue), 0);
-    return formatUsdNumber(String(claimableUsdValue), 2, true);
+    return formatUsdNumber(`${Number(Number(claimableUsdValue).toFixed(6))}`, 2, true);
   }, [rewards]);
   
   // fake close

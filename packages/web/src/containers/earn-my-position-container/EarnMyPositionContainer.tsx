@@ -42,6 +42,7 @@ const EarnMyPositionContainer: React.FC<
   const { isError, availableStake, isFetchedPosition, loading : loadingPosition, positions } = usePositionData();
   const [mobile, setMobile] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const [isClosed, setIsClosed] = useState(false);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -105,7 +106,7 @@ const EarnMyPositionContainer: React.FC<
   }, [page]);
 
   const dataMapping = useMemo(() => {
-    const temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+    const temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue)).filter(_x => _x.status === isClosed);
 
     if (page === 1) {
       if (width > 1180) {
@@ -114,7 +115,11 @@ const EarnMyPositionContainer: React.FC<
         return temp.slice(0, 3);
       } else return temp;
     } else return temp;
-  }, [width, page, positions]);
+  }, [width, page, positions, isClosed]);
+
+  const handleChangeClosed = () => {
+    setIsClosed(!isClosed);
+  };
 
   return (
     <EarnMyPositions
@@ -140,6 +145,8 @@ const EarnMyPositionContainer: React.FC<
       onClickLoadMore={handleClickLoadMore}
       themeKey={themeKey}
       account={account}
+      isClosed={isClosed}
+      handleChangeClosed={handleChangeClosed}
     />
   );
 };
