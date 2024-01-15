@@ -183,8 +183,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     // Create a line of current tick.
     if (currentTick) {
       rects.append("line")
-        .attr("x1", centerPosition + (!nextSpacing ? tickSpacing / 2 : tickSpacing))
-        .attr("x2", centerPosition + (!nextSpacing ? tickSpacing / 2 : tickSpacing))
+        .attr("x1", centerPosition + (!nextSpacing ? tickSpacing / 2 + 1 : tickSpacing))
+        .attr("x2", centerPosition + (!nextSpacing ? tickSpacing / 2 + 1 : tickSpacing))
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 3)

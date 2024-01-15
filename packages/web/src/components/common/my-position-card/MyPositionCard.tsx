@@ -47,9 +47,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return formatUsdNumber(String(claimableUsdValue), 2, true);
   }, [rewards]);
   
-  const inRange = useMemo(() => {
+  // fake close
+  const inRange: boolean | null = useMemo(() => {
+    if (position.status === true) return null;
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
-  }, [pool.currentTick, position.tickLower, position.tickUpper]);
+  }, [pool.currentTick, position.tickLower, position.tickUpper, position.status]);
 
   const feeRateStr = useMemo(() => {
     const rateStr = SwapFeeTierInfoMap[makeSwapFeeTierByTickSpacing(pool.tickSpacing)].rateStr;
@@ -125,13 +127,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
-    const tokenAPriceStr = numberToFormat(tokenAPrice, 6);
+    const tokenAPriceStr = formatUsdNumber(tokenAPrice, 6);
     return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const maxPriceStr = useMemo(() => {
     const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
-    const tokenBPriceStr = numberToFormat(tokenBPrice, 6);
+    const tokenBPriceStr = formatUsdNumber(tokenBPrice, 6);
     return `${tokenBPriceStr}`;
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
@@ -224,8 +226,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <RangeBadge
               status={
-                inRange
-                  ? RANGE_STATUS_OPTION.IN
+                inRange === null ? RANGE_STATUS_OPTION.NONE :
+                inRange ? RANGE_STATUS_OPTION.IN
                   : RANGE_STATUS_OPTION.OUT
               }
             />
@@ -276,7 +278,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="min-max-price">
                 <p className={`label-text ${startClass}`}>{minPriceStr}(<span>{startClass === "positive" ? "+" : "-"}{minTickLabel}</span>) ~</p>
-                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{endClass === "positive" ? "+" : "-"}{maxTickLabel}</span>){tokenB.symbol}</p>
+                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{endClass === "positive" ? "+" : "-"}{maxTickLabel}</span>) {tokenB.symbol}</p>
             </div>
           </div>
         </MyPositionCardWrapper>

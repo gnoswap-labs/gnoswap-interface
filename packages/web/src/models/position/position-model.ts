@@ -51,4 +51,7 @@ export interface PositionModel {
   rewards: RewardModel[];
 
   dailyRewards: RewardModel[];
+  
+  // fake status
+  status: boolean;
 }

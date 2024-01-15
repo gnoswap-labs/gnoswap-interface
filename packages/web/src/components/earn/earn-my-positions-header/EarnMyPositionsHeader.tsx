@@ -1,6 +1,7 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useCallback, useMemo } from "react";
 import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
+import Switch from "@components/common/switch/Switch";
 
 export interface EarnMyPositionsHeaderProps {
   connected: boolean;
@@ -28,8 +29,22 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
 
   return (
     <PositionsWrapper>
-      <h2>My Positions</h2>
+      <div className="header-content">
+        <h2>My Positions</h2>
+        <Switch
+          checked={true}
+          onChange={() => {}}
+          hasLabel={true}
+          labelText="Hide closed positions"
+        />
+      </div>
       <div className="button-wrapper">
+        <Switch
+          checked={true}
+          onChange={() => {}}
+          hasLabel={true}
+          labelText="Hide closed positions"
+        />
         <Button
           text="Stake Position"
           style={{

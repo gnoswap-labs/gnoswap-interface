@@ -194,7 +194,7 @@ export const useEarnAddLiquidityConfirmModal = ({
 
   const moveToBack = useCallback(() => {
     close();
-    router.push("/earn");
+    router.push("/earn?back=q");
   }, [close, router]);
 
   const confirm = useCallback(() => {

@@ -48,6 +48,18 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
       }
     }
   }
+  &:before {
+    display: ${({ viewMyRange }) => {
+      return !viewMyRange ? "none" : "block";
+    }};
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: ${({ theme }) => theme.color.backgroundOpacity}
+  }
 `;
 
 export const MyPositionCardWrapper = styled.div<CardProps>`
@@ -225,9 +237,10 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
 
   .min-max-price {
     ${mixins.flexbox("row", "center", "center")};
-    width: 100%;
+    width: calc(100% + 32px);
     gap: 4px;
     margin-top: 12px;
+    margin-left: -16px;
     .label-text {
       ${fonts.p4};
       height: auto;
