@@ -36,7 +36,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
       <div className="header-content">
         <h2>My Positions</h2>
         <Switch
-          checked={!isClosed}
+          checked={isClosed}
           onChange={handleChangeClosed}
           hasLabel={true}
           labelText="Hide closed positions"
@@ -44,7 +44,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
       </div>
       <div className="button-wrapper">
         <Switch
-          checked={!isClosed}
+          checked={isClosed}
           onChange={handleChangeClosed}
           hasLabel={true}
           labelText="Hide closed positions"

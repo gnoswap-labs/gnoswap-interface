@@ -76,7 +76,6 @@ export const useSelectPool = ({
   const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
-  console.log(isChangeMinMax, "isChangeMinMax");
   
   const poolPath = useMemo(() => {
     setCurrentPoolPath(latestPoolPath);

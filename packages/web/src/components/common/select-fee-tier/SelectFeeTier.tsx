@@ -11,6 +11,7 @@ interface SelectFeeTierProps {
   pools: PoolModel[],
   selectFeeTier: (feeTier: SwapFeeTierType) => void;
   fetching: boolean;
+  openedFeeTier: boolean;
 }
 
 const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
@@ -20,6 +21,7 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   pools,
   selectFeeTier,
   fetching,
+  openedFeeTier,
 }) => {
 
   const onClickFeeTierItem = useCallback((feeTier: SwapFeeTierType) => {
@@ -27,7 +29,7 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   }, [selectFeeTier]);
 
   return (
-    <SelectFeeTierWrapper>
+    <SelectFeeTierWrapper className={openedFeeTier ? "open" : ""}>
       {feeTiers.map((item, index) => (
         <SelectFeeTierItem
           key={index}

@@ -20,6 +20,7 @@ export interface SelectPriceRangeCutomControllerProps {
   decrease: () => void;
   increase: () => void;
   currentPriceStr: string;
+  setIsChangeMinMax: (value: boolean) => void;
 }
 
 const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerProps> = ({
@@ -33,6 +34,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   selectedFullRange,
   onSelectCustomRange,
   currentPriceStr,
+  setIsChangeMinMax,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -51,11 +53,13 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
 
   const onClickDecrease = useCallback(() => {
     decrease();
-  }, [decrease]);
+    setIsChangeMinMax(true);
+  }, [decrease, setIsChangeMinMax]);
 
   const onClickIncrease = useCallback(() => {
     increase();
-  }, [increase]);
+    setIsChangeMinMax(true);
+  }, [increase, setIsChangeMinMax]);
 
   const onChangeValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -84,6 +88,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     }
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
     changePrice(nearPrice);
+    setIsChangeMinMax(true);
     if (nearPrice > 1) {
       setValue(numberToFormat(nearPrice, 4));
     } else {

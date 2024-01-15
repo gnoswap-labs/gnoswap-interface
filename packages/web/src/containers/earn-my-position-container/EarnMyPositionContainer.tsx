@@ -106,8 +106,10 @@ const EarnMyPositionContainer: React.FC<
   }, [page]);
 
   const dataMapping = useMemo(() => {
-    const temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue)).filter(_x => _x.status === isClosed);
-
+    let temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+    if (isClosed) {
+      temp = temp.filter(_x => _x.status !== isClosed);
+    }
     if (page === 1) {
       if (width > 1180) {
         return temp.slice(0, 4);

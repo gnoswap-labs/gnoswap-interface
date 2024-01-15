@@ -3,17 +3,21 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-interface SelectPriceRangeWrapperProps {
-  opened: boolean;
-}
-
-export const SelectPriceRangeWrapper = styled.div<SelectPriceRangeWrapperProps>`
+export const SelectPriceRangeWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
   gap: 8px;
-
-  ${({ opened }) => opened === false && "display: none;"}
-
+  height: 0;
+  transition: height 0.5s ease;
+  visibility: hidden;
+  overflow: hidden;
+  &.open {
+    height: 700px;
+    visibility: visible;
+    ${media.mobile} {
+      height: 828px;
+    }
+  }
   .type-selector-wrapper {
     ${mixins.flexbox("column", "center", "center")};
     width: 100%;
