@@ -27,6 +27,12 @@ interface MyPositionCardProps {
   themeKey: "dark" | "light";
 }
 
+function estimateTick(tick: number, width: number) {
+  if (tick < 0) return 0;
+  if (tick > width) return width;
+  return tick;
+}
+
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
   position,
   movePoolDetail,
@@ -87,11 +93,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickUpper]);
 
   const minTickLabel = useMemo(() => {
-    return `${minTickRate}%`;
+    return `${minTickRate * -1}%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
-    return `${maxTickRate}%`;
+    return maxTickRate === 999 ? `>${maxTickRate}%` : `+${maxTickRate}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -125,20 +131,21 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return (position.tickUpper - currentTick) / (max - currentTick) * (GRAPH_WIDTH / 2) + (GRAPH_WIDTH / 2);
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
   
+  const isFullRange = useMemo(() => {
+    return estimateTick(minTickPosition, GRAPH_WIDTH) === 0 && estimateTick(maxTickPosition, GRAPH_WIDTH) === GRAPH_WIDTH;
+  }, [minTickPosition, maxTickPosition]);
+
   const minPriceStr = useMemo(() => {
     const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
-    const tokenAPriceStr = formatUsdNumber(tokenAPrice, 6);
+    const tokenAPriceStr = isFullRange ? "0 " : convertToKMB(tokenAPrice, 6);
     return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
-  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
+  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol, isFullRange]);
 
   const maxPriceStr = useMemo(() => {
-    if (maxTickRate === 999) {
-      return "∞";
-    }
     const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
-    const tokenBPriceStr = formatUsdNumber(tokenBPrice, 6);
+    const tokenBPriceStr = isFullRange ? "∞ " : convertToKMB(tokenBPrice, 6);
     return `${tokenBPriceStr}`;
-  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol, maxTickRate]);
+  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol, maxTickRate, isFullRange]);
 
   const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -188,8 +195,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (getMinTick === null) {
       return null;
     }
-    return isMinTickGreen ? "positive" : "negative";
-  }, [getMinTick, isMinTickGreen]);
+    return !isMinTickGreen || isFullRange ? "negative" : "positive";
+  }, [getMinTick, isMinTickGreen, isFullRange]);
 
   const endClass = useMemo(() => {
     if (getMaxTick === null) {
@@ -198,12 +205,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return isMaxTickGreen ? "positive" : "negative";
   }, [getMaxTick, isMaxTickGreen, maxTickRate]);
 
-  const maxTickSign = useMemo(() => {
-    if (maxTickRate === 999) {
-      return ">";
-    }
-    return endClass === "positive" ? "+" : "-";
-  }, [maxTickRate, endClass]);
 
   return (
     <MyPositionCardWrapperBorder
@@ -289,8 +290,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="min-max-price">
-                <p className={`label-text ${startClass}`}>{minPriceStr}(<span>{startClass === "positive" ? "+" : "-"}{minTickLabel}</span>) ~</p>
-                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{maxTickSign}{maxTickLabel}</span>) {tokenB.symbol}</p>
+                <p className={`label-text ${startClass}`}>{minPriceStr}(<span>{minTickLabel}</span>) ~</p>
+                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{maxTickLabel}</span>) {tokenB.symbol}</p>
             </div>
           </div>
         </MyPositionCardWrapper>

@@ -67,6 +67,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       isSwitchNetwork={isSwitchNetwork}
       isClosed={isClosed}
       handleChangeClosed={handleChangeClosed}
+      positions={positions}
     />
     <EarnMyPositionsContent
       connected={connected}

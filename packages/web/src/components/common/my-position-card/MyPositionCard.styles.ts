@@ -17,6 +17,8 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
   position: relative;
   z-index: 0;
   overflow: hidden;
+  min-width: 322px;
+  border-radius: 10px;
   &.special-card {
     min-width: 322px;
     background: ${({ theme }) => theme.color.backgroundGradient4};
@@ -42,12 +44,15 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
         }
       }
     }
-    &:hover {
-      box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
-      .base-border {
-        > div {
-          background-color: ${({ theme }) => theme.color.background02};
-        }
+
+  }
+  &:hover {
+    box-shadow: ${({ viewMyRange }) => {
+      return !viewMyRange ? "8px 8px 20px rgba(0, 0, 0, 0.08)" : "none";
+    }};
+    .base-border {
+      > div {
+        background-color: ${({ theme }) => theme.color.background02};
       }
     }
   }
@@ -62,7 +67,7 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
     width: 100%;
     height: 100%;
     border-radius: 10px;
-    background-color: ${({ theme }) => theme.color.backgroundOpacity}
+    background-color: ${({ theme }) => theme.color.backgroundOpacity8}
   }
 `;
 
@@ -96,7 +101,6 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     border: 1px solid ${({ viewMyRange, theme }) => {
       return viewMyRange ? "none" : theme.color.border14;
     }};;
-    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
   }
   .title-wrapper {
     ${mixins.flexbox("row", "center", "space-between")};
