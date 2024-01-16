@@ -6,6 +6,7 @@ import mixins from "@styles/mixins";
 interface CardProps {
   staked: boolean;
   viewMyRange: boolean;
+  disabled: boolean;
 }
 
 interface MyPositionCardWrapperBorderProps {
@@ -33,9 +34,11 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
       background: ${({ theme }) => theme.color.background01};
       > div {
         min-width: auto;
+        max-width: 322px;
         border: 0;
         ${media.mobile} {
           min-width: auto;
+          max-width: 322px;
         }
       }
     }
@@ -58,6 +61,7 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
     left: 0;
     width: 100%;
     height: 100%;
+    border-radius: 10px;
     background-color: ${({ theme }) => theme.color.backgroundOpacity}
   }
 `;
@@ -69,7 +73,9 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   gap: 16px;
   padding: 15px;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme, disabled }) => {
+    return disabled ? theme.color.backgroundOpacity3 : theme.color.background06;
+  }};
   ${media.tablet} {
     min-width: 322px;
   }
@@ -79,7 +85,9 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   border: 1px solid ${({ theme }) => theme.color.border14};
 
   transition: all 0.3s ease;
-  color: ${({ theme }) => theme.color.text02};
+  color: ${({ theme, disabled }) => {
+    return disabled ? theme.color.text10 : theme.color.text02;
+  }};
   cursor: pointer;
   &:hover {
     background-color: ${({ viewMyRange, theme }) => {
@@ -95,7 +103,11 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     width: 100%;
     gap: 4px;
     ${fonts.body5}
-
+    .disabled-range {
+      > span {
+        color: ${({ theme }) => theme.color.text05};
+      }
+    }
     .box-header {
       ${mixins.flexbox("row", "center", "flex-start")};
       align-self: stretch;
@@ -104,6 +116,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
         ${fonts.body7}
 
       }
+
     }
     .badge-group {
       ${mixins.flexbox("row", "center", "flex-start")};

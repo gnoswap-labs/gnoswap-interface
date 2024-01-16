@@ -197,26 +197,27 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (!mouseover) {
       return;
     }
-    
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const bin = resolvedBins.find(bin => {
       const minX = scaleX(bin.minTick);
       const maxX = scaleX(bin.maxTick + 1);
-      if (mouseY < 0.001 || mouseY >= height - 0.001) {
+      if (mouseY < 0.000001 || mouseY > height) {
         return false;
       }
-      if (bin.liquidity <= 0) {
+      if (bin.liquidity < 0) {
         return false;
       }
       return mouseX >= minX && mouseX <= maxX;
     });
+    
     if (!bin) {
       setPositionX(null);
       setPositionY(null);
+      !nextSpacing && setTooltipInfo(null);
       return;
     }
-    if (Math.abs(height - mouseY - 0.5)> boundsHeight - scaleY(bin.liquidity)) {
+    if (Math.abs(height - mouseY - 0.0001)> boundsHeight - scaleY(bin.liquidity)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);
@@ -327,7 +328,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         position={tooltipPosition}
         offset={offset}
         content={
-          tooltipInfo && positionX && positionY ? (
+          tooltipInfo ? (
             <PoolGraphTooltipWrapper ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow}`}>
               <PoolGraphBinTooptip tooltipInfo={tooltipInfo} />
             </PoolGraphTooltipWrapper>

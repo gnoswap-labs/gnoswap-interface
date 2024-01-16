@@ -75,12 +75,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return 0;
     }
     const minPrice = tickToPrice(position.tickLower);
-    return Math.abs(Math.round(((currentPrice - minPrice) / currentPrice) * 100));
+    return Math.round(((currentPrice - minPrice) / currentPrice) * 100);
   }, [currentPrice, position.tickLower]);
 
   const maxTickRate = useMemo(() => {
     if (isMaxTick(position.tickUpper)) {
-      return 0;
+      return 999;
     }
     const maxPrice = tickToPrice(position.tickUpper);
     return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
@@ -132,10 +132,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
 
   const maxPriceStr = useMemo(() => {
+    if (maxTickRate === 999) {
+      return "∞";
+    }
     const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
     const tokenBPriceStr = formatUsdNumber(tokenBPrice, 6);
     return `${tokenBPriceStr}`;
-  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol]);
+  }, [tokenB.path, tokenB.symbol, tokenPrices, tokenA.path, tokenA.symbol, maxTickRate]);
 
   const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -193,11 +196,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return "";
     }
     return isMaxTickGreen ? "positive" : "negative";
-  }, [getMaxTick, isMaxTickGreen]);
+  }, [getMaxTick, isMaxTickGreen, maxTickRate]);
+
+  const maxTickSign = useMemo(() => {
+    if (maxTickRate === 999) {
+      return ">";
+    }
+    return endClass === "positive" ? "+" : "-";
+  }, [maxTickRate, endClass]);
 
   return (
     <MyPositionCardWrapperBorder
-      className={`${position.staked ? "special-card" : ""}`}
+      className={`${position.staked && inRange !== null ? "special-card" : ""}`}
       viewMyRange={viewMyRange}
     >
       <div className="base-border">
@@ -205,6 +215,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           staked={position.staked}
           onClick={() => movePoolDetail(pool.id)}
           viewMyRange={viewMyRange}
+          disabled={inRange === null}
         >
           <div className="title-wrapper">
             <div className="box-header">
@@ -225,6 +236,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </div>
             </div>
             <RangeBadge
+              className={inRange === null ? "disabled-range" : ""}
               status={
                 inRange === null ? RANGE_STATUS_OPTION.NONE :
                 inRange ? RANGE_STATUS_OPTION.IN
@@ -278,7 +290,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="min-max-price">
                 <p className={`label-text ${startClass}`}>{minPriceStr}(<span>{startClass === "positive" ? "+" : "-"}{minTickLabel}</span>) ~</p>
-                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{endClass === "positive" ? "+" : "-"}{maxTickLabel}</span>) {tokenB.symbol}</p>
+                <p className={`label-text ${endClass}`}>{maxPriceStr}(<span>{maxTickSign}{maxTickLabel}</span>) {tokenB.symbol}</p>
             </div>
           </div>
         </MyPositionCardWrapper>

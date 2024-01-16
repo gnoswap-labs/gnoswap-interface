@@ -18,7 +18,7 @@ export const RangeDot = styled.i<RangeBadgeProps>`
     status === RANGE_STATUS_OPTION.IN
       ? theme.color.green01
       : status === RANGE_STATUS_OPTION.OUT ? 
-      theme.color.red01 : theme.color.text10};
+      theme.color.red01 : theme.color.text05};
 `;
 
 export const RangeBadgeText = styled.span<RangeBadgeProps>`

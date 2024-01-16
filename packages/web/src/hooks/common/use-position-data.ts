@@ -67,7 +67,7 @@ export const usePositionData = () => {
     }
   }, [initialData.loadingCall, data.length, isFetchedPosition, loading]);
   
-  const { isLoadingCommon } = useLoading({ isLoading: loading, isFetching: isFetching, isBack: !!back, status: initialData.status});
+  const { isLoadingCommon } = useLoading({ connected: connected && PATH.includes(router.pathname), isLoading: loading, isFetching: isFetching, isBack: !!back, status: initialData.status});
   
   const { getGnotPath } = useGnotToGnot();
 
@@ -92,13 +92,6 @@ export const usePositionData = () => {
         poolPositions.push(PositionMapper.makePoolPosition(position, temp));
       }
     });
-    if (poolPositions.length > 0) {
-      const fake = {
-        ...poolPositions[0],
-        status: true,
-      };
-    return [...poolPositions, fake, fake];
-  }
     return poolPositions;
   }, [data]);
 

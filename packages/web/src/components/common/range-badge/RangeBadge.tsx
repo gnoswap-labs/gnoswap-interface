@@ -7,10 +7,11 @@ import {
 
 export interface RangeBadgeProps {
   status: RANGE_STATUS_OPTION;
+  className?: string;
 }
 
-const RangeBadge: React.FC<RangeBadgeProps> = ({ status }) => (
-  <RangeBadgeWrapper>
+const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className }) => (
+  <RangeBadgeWrapper className={className}>
     <RangeDot status={status} />
     <RangeBadgeText status={status}>
       {status === RANGE_STATUS_OPTION.IN ? "In-range" : status === RANGE_STATUS_OPTION.OUT ? "Out-range" : "Closed"}
