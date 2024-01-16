@@ -79,7 +79,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   padding: 15px;
   border-radius: 10px;
   background-color: ${({ theme, disabled }) => {
-    return disabled ? theme.color.backgroundOpacity3 : theme.color.background06;
+    return disabled ? theme.color.background03 : theme.color.background06;
   }};
   ${media.tablet} {
     min-width: 322px;

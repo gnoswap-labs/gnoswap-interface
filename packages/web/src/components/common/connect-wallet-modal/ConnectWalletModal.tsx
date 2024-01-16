@@ -29,7 +29,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
         <div className="content">
           <div>
             <Button
-              text={loadingConnect === "loading" ? "" : "Adena"}
+              text={(loadingConnect === "loading" || loadingConnect === "done") ? "" : "Adena"}
               leftIcon={(loadingConnect === "loading" || loadingConnect === "done") ? <LoadingSpinner className="loading-button"/> : <IconAdenaLogo />}
               onClick={connect}
               style={{
