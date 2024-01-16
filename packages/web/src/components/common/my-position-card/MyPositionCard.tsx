@@ -93,11 +93,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickUpper]);
 
   const minTickLabel = useMemo(() => {
-    return `${minTickRate * -1}%`;
+    return minTickRate > 1000 ? ">999%" : `${minTickRate * -1}%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
-    return maxTickRate === 999 ? `>${maxTickRate}%` : `+${maxTickRate}%`;
+    return maxTickRate === 999 ? `>${maxTickRate}%` : maxTickRate > 1000 ? ">999%" : `+${maxTickRate}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {

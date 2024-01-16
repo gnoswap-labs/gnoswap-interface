@@ -86,7 +86,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const minX = d3.min(bins, (bin) => bin.minTick - defaultMinX) || 0;
   const maxX = d3.max(bins, (bin) => bin.maxTick - defaultMinX) || 0;
 
-  const resolvedBins = useMemo(() => {
+  const resolvedBinsTemp = useMemo(() => {
     const maxHeight = d3.max(bins, (bin) => bin.liquidity) || 0;
     return bins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => ({
       ...bin,
@@ -95,6 +95,16 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       liquidity: bin.liquidity * boundsHeight / maxHeight
     }));
   }, [bins, boundsHeight, defaultMinX]);
+
+  const resolvedBins = useMemo(() => {
+    const temp = [...resolvedBinsTemp].map(item => item.liquidity).reverse();
+    return resolvedBinsTemp.map((item, index) => {
+      return {
+        ...item,
+        liquidity: temp[index],
+      };
+    });
+  }, [resolvedBinsTemp]);
   const maxHeight = d3.max(resolvedBins, (bin) => bin.liquidity) || 0;
 
   const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
