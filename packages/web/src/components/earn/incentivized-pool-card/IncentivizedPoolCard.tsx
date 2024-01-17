@@ -27,7 +27,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
 }) => {
   const { isStakedPool } = usePositionData();
   const { getGnotPath } = useGnotToGnot();
-
+  
   const staked = useMemo(() => {
     return isStakedPool(pool.poolPath || null);
   }, [isStakedPool, pool.poolPath]);
@@ -128,6 +128,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 themeKey={themeKey}
                 position="top"
                 offset={40}
+                poolPrice={pool?.price || 1}
               />
               <div className="price-section">
                 <span className="label-text">

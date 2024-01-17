@@ -53,9 +53,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
-
+  
   const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
-
+    
     const infoMap: { [key in RewardType]: { [key in string]: PositionClaimInfo } } = {
       "SWAP_FEE": {},
       "STAKING": {},
@@ -385,6 +385,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 themeKey={themeKey}
                 minTickRate={minTickRate}
                 maxTickRate={maxTickRate}
+                pool={pool}
               />
             </div>
             <div className="min-max-price">

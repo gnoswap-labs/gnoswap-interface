@@ -33,6 +33,7 @@ export interface PoolGraphProps {
   offset?: number;
   maxTickPosition?: number | null;
   minTickPosition?: number | null;
+  poolPrice: number;
 }
 
 interface TooltipInfo {
@@ -72,6 +73,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   offset = 20,
   maxTickPosition = 0,
   minTickPosition = 0,
+  poolPrice,
 }) => {
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
@@ -87,16 +89,27 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const maxX = d3.max(bins, (bin) => bin.maxTick - defaultMinX) || 0;
   
   const resolvedBins = useMemo(() => {
-    const maxHeight = d3.max(bins, (bin) => bin.liquidity) || 0;
-    return bins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => ({
-      ...bin,
-      minTick: bin.minTick - defaultMinX,
-      maxTick: bin.maxTick - defaultMinX,
-      liquidity: bin.liquidity * boundsHeight / maxHeight
-    }));
-  }, [bins, boundsHeight, defaultMinX]);
-
-  const maxHeight = d3.max(resolvedBins, (bin) => bin.liquidity) || 0;
+    const convertReserveBins = bins.map((item, index) => {
+      const reserveTokenAMap = Number(item.reserveTokenB) / (Number(poolPrice) || 1);
+      const reserveTokenBMap = Number(item.reserveTokenA);
+      return {
+        ...item,
+        reserveTokenAMap: index <= 19 ? reserveTokenAMap : reserveTokenBMap,
+      };
+    });
+    
+    const maxHeight = d3.max(convertReserveBins, (bin) => bin.reserveTokenAMap) || 0;
+    return convertReserveBins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => {
+      return {
+        ...bin,
+        minTick: bin.minTick - defaultMinX,
+        maxTick: bin.maxTick - defaultMinX,
+        reserveTokenMap: bin.reserveTokenAMap * boundsHeight / maxHeight,
+      };
+    });
+  }, [bins, boundsHeight, defaultMinX, poolPrice]);
+  
+  const maxHeight = d3.max(resolvedBins, (bin) => bin.reserveTokenMap) || 0;
 
   const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
@@ -177,9 +190,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .style("stroke-width", "1")
       .attr("class", "rects")
       .attr("x", bin => scaleX(bin.minTick))
-      .attr("y", bin => scaleY(bin.liquidity))
+      .attr("y", bin => scaleY(bin.reserveTokenMap) - (scaleY(bin.reserveTokenMap) === 80 ? 0 : 3))
       .attr("width", tickSpacing)
-      .attr("height", bin => boundsHeight - scaleY(bin.liquidity));
+      .attr("height", bin => boundsHeight - scaleY(bin.reserveTokenMap) + (scaleY(bin.reserveTokenMap) === 80 ? 0 : 3));
 
     // Create a line of current tick.
     if (currentTick) {
@@ -198,6 +211,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (!mouseover) {
       return;
     }
+    
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const bin = resolvedBins.find(bin => {
@@ -206,7 +220,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (mouseY < 0.000001 || mouseY > height) {
         return false;
       }
-      if (bin.liquidity < 0) {
+      if (bin.reserveTokenMap < 0) {
         return false;
       }
       return mouseX >= minX && mouseX <= maxX;
@@ -218,7 +232,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       !nextSpacing && setTooltipInfo(null);
       return;
     }
-    if (Math.abs(height - mouseY - 0.0001)> boundsHeight - scaleY(bin.liquidity)) {
+    if (Math.abs(height - mouseY - 0.0001) > boundsHeight - scaleY(bin.reserveTokenMap)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);
