@@ -19,13 +19,10 @@ export const useLoading = (params?: Props) => {
       timeout = setTimeout(() => {
         setIsLoadingCommon(false);
       }, 1500);
-      return;
-    }
-    if (params?.isLoading || isEmptyObject(params || {}) || !params?.isBack) {
+    } else if (params?.isLoading || isEmptyObject(params || {}) || !params?.isBack) {
       timeout = setTimeout(() => {
         setIsLoadingCommon(false);
       }, 1500);
-      return;
     } else {
       if (!isEmptyObject(params || {})) {
         if (params?.isBack || params?.status) {
@@ -35,7 +32,6 @@ export const useLoading = (params?: Props) => {
           }, 1500);
         }
       }
-      return;
     }
     return () => clearTimeout(timeout);
   }, [params?.isBack, params?.isLoading, params?.status, params?.connected]);

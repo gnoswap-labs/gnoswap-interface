@@ -2,7 +2,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useEffect } from "react";
+import { useCallback, useMemo, useEffect, useState } from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeId } from "@utils/common";
 import { useGetPositionsByAddress } from "@query/positions";
@@ -19,18 +19,26 @@ export const usePositionData = () => {
   const { back } = router.query;
   const { account, connected } = useWallet();
   const { pools, loading: isLoadingPool } = usePoolData();
+  const [first404, setFirst404] = useState(false);
+
   const {
     data = [],
     isError,
     isLoading: loading,
     isFetched: isFetchedPosition,
-    isFetching
+    isFetching,
   } = useGetPositionsByAddress(account?.address as string, {
     enabled: !!account?.address && pools.length > 0 && connected,
-    refetchInterval: PATH.includes(router.pathname)
+    refetchInterval: first404 ? false : PATH.includes(router.pathname) && first404
       ? (((back && !initialData.status) ? 3 : 15) * 1000)
       : false,
   });
+
+  useEffect(() => {
+    if (isError) {
+      setFirst404(true);
+    }
+  }, [isError]);
 
   useEffect(() => {
     if (loading) {
@@ -67,7 +75,7 @@ export const usePositionData = () => {
     }
   }, [initialData.loadingCall, data.length, isFetchedPosition, loading]);
   
-  const { isLoadingCommon } = useLoading({ connected: connected && PATH.includes(router.pathname), isLoading: loading, isFetching: isFetching, isBack: !!back, status: initialData.status});
+  const { isLoadingCommon } = useLoading({ connected: connected && PATH.includes(router.pathname) || first404, isLoading: loading && !first404, isFetching: isFetching, isBack: !!back, status: initialData.status});
   
   const { getGnotPath } = useGnotToGnot();
 
@@ -163,6 +171,8 @@ export const usePositionData = () => {
     },
     [getPositionsByPoolId],
   );
+  console.log(isLoadingCommon, "isLoadingCommon", isFetching, loading, first404);
+  
   return {
     availableStake,
     isError,

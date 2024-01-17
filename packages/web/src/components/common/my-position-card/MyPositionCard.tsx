@@ -14,7 +14,7 @@ import {
 import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
 import { useMemo, useState } from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { makeSwapFeeTierByTickSpacing, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTierByTickSpacing, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
@@ -123,7 +123,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const currentPrice = useMemo(() => {
     return tickToPrice(pool.currentTick);
   }, [pool.currentTick]);
-
   const minTickRate = useMemo(() => {
     if (isMinTick(position.tickLower)) {
       return 0;
@@ -203,8 +202,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickPosition, maxTickPosition]);
 
   const minPriceStr = useMemo(() => {
-    const tokenAPrice = tokenPrices[tokenA.path]?.usd || "0";
-    const tokenAPriceStr = isFullRange ? "0 " : convertToKMB(tokenAPrice, 6);
+    const minPrice = tickToPriceStr(position.tickLower, 6);
+    const tokenAPriceStr = isFullRange ? "0 " : minPrice;
     return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [
     tokenB.path,
@@ -216,8 +215,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const maxPriceStr = useMemo(() => {
-    const tokenBPrice = tokenPrices[tokenB.path]?.usd || "0";
-    const tokenBPriceStr = isFullRange ? "∞ " : convertToKMB(tokenBPrice, 6);
+    const maxPrice = tickToPriceStr(position.tickUpper, 6);
+    const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
     return `${tokenBPriceStr}`;
   }, [
     tokenB.path,

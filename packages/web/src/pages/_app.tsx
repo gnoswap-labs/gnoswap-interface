@@ -23,6 +23,8 @@ export default function App({ Component, pageProps }: AppProps) {
             refetchOnReconnect: false,
             refetchOnWindowFocus: false,
             refetchInterval: 60 * 1000,
+            staleTime: 1000 * 5,
+            retry: false,
           },
         },
       }),

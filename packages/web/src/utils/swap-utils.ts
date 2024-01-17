@@ -6,6 +6,7 @@ import {
 import { MAX_TICK, MIN_TICK, Q96 } from "@constants/swap.constant";
 import BigNumber from "bignumber.js";
 import { tickToSqrtPriceX96 } from "./math.utils";
+import { convertToKMB } from "./stake-position-utils";
 
 const LOG10001 = Math.log(1.0001);
 
@@ -124,7 +125,7 @@ export function tickToPriceStr(tick: number, decimals?: number) {
   if (result === "0") {
     return "";
   }
-  return result;
+  return convertToKMB(result.replace(/,/g, ""));
 }
 
 export function feeBoostRateByPrices(
