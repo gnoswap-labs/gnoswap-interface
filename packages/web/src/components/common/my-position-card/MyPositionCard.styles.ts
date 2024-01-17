@@ -52,7 +52,9 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
     }};
     .base-border {
       > div {
-        background-color: ${({ theme }) => theme.color.background02};
+        background-color: ${({ theme, viewMyRange }) => {
+          return viewMyRange ? "none" : theme.color.background02;
+        }};
       }
     }
   }

@@ -29,16 +29,19 @@ export const usePositionData = () => {
     isFetching,
   } = useGetPositionsByAddress(account?.address as string, {
     enabled: !!account?.address && pools.length > 0 && connected,
-    refetchInterval: first404 ? false : PATH.includes(router.pathname) && first404
+    refetchInterval: first404 ? false : PATH.includes(router.pathname)
       ? (((back && !initialData.status) ? 3 : 15) * 1000)
       : false,
   });
 
   useEffect(() => {
+    if (data.length > 0) {
+      setFirst404(false);
+    } else
     if (isError) {
       setFirst404(true);
     }
-  }, [isError]);
+  }, [isError, data.length, account?.address]);
 
   useEffect(() => {
     if (loading) {
@@ -171,8 +174,6 @@ export const usePositionData = () => {
     },
     [getPositionsByPoolId],
   );
-  console.log(isLoadingCommon, "isLoadingCommon", isFetching, loading, first404);
-  
   return {
     availableStake,
     isError,
