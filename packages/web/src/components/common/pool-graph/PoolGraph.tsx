@@ -190,9 +190,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .style("stroke-width", "1")
       .attr("class", "rects")
       .attr("x", bin => scaleX(bin.minTick))
-      .attr("y", bin => scaleY(bin.reserveTokenMap) - (scaleY(bin.reserveTokenMap) === 80 ? 0 : 3))
+      .attr("y", bin => scaleY(bin.reserveTokenMap) - (scaleY(bin.reserveTokenMap) === 80 ? 0 : 5))
       .attr("width", tickSpacing)
-      .attr("height", bin => boundsHeight - scaleY(bin.reserveTokenMap) + (scaleY(bin.reserveTokenMap) === 80 ? 0 : 3));
+      .attr("height", bin => boundsHeight - scaleY(bin.reserveTokenMap) + (scaleY(bin.reserveTokenMap) === 80 ? 0 : 5));
 
     // Create a line of current tick.
     if (currentTick) {
@@ -232,7 +232,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       !nextSpacing && setTooltipInfo(null);
       return;
     }
-    if (Math.abs(height - mouseY - 0.0001) > boundsHeight - scaleY(bin.reserveTokenMap)) {
+
+    if (Math.abs(height - mouseY - 0.0001) > boundsHeight - scaleY(bin.reserveTokenMap) + (scaleY(bin.reserveTokenMap) === 80 ? 0 : 5)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);

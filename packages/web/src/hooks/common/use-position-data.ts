@@ -29,9 +29,9 @@ export const usePositionData = () => {
     isFetching,
   } = useGetPositionsByAddress(account?.address as string, {
     enabled: !!account?.address && pools.length > 0 && connected,
-    // refetchInterval: first404 ? false : PATH.includes(router.pathname)
-    //   ? (((back && !initialData.status) ? 3 : 15) * 1000)
-    //   : false,
+    refetchInterval: first404 ? false : PATH.includes(router.pathname)
+      ? (((back && !initialData.status) ? 3 : 15) * 1000)
+      : false,
   });
 
   useEffect(() => {
