@@ -59,13 +59,32 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
         {!isLoading &&
           incentivizedPools.length > 0 &&
           data.map((info, index) => (
-            <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey}/>
+            <IncentivizedPoolCard
+              pool={info}
+              key={index}
+              routeItem={routeItem}
+              themeKey={themeKey}
+            />
           ))}
-        {isFetched && !isLoading &&
-          incentivizedPools.length > 0 && incentivizedPools.length < 8 && incentivizedPools.length % 4 !== 0 &&
-          (Array(((incentivizedPools.length > 4 && width > 1180) ? 8 : (width <= 1180 && width >= 920) ? 3 : 4) - incentivizedPools.length).fill(1)).map((_, index) => (
-            <BlankIncentivizedCard key={index}/>
-          ))}
+        {isFetched &&
+          !isLoading &&
+          incentivizedPools.length > 0 &&
+          incentivizedPools.length < 8 &&
+          incentivizedPools.length % 4 !== 0 &&
+          Array(
+            (incentivizedPools.length > 4 && width > 1180
+              ? 8
+              : width <= 1180 && width >= 920
+              ? 3
+              : 4) -
+              (incentivizedPools.length > 4 && width > 1180
+                ? incentivizedPools.length
+                : width <= 1180 && width >= 920
+                ? incentivizedPools.length % 3
+                : incentivizedPools.length % 4),
+          )
+            .fill(1)
+            .map((_, index) => <BlankIncentivizedCard key={index} />)}
         {(!isFetched || isLoading) &&
           Array.from({ length: 8 }).map((_, index) => (
             <span
@@ -75,18 +94,22 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
             />
           ))}
       </PoolListWrapper>
-      {!mobile && !isLoading && (
+      {!mobile &&
+        !isLoading &&
         incentivizedPools.length > 8 &&
         onClickLoadMore && (
           <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
-        )
-      )}
-      {showPagination && isFetched && incentivizedPools.length > 0 && !isLoading &&
-        <div className="box-indicator">
-          <span className="current-page">{currentIndex}</span>
-          <span>/</span>
-          <span>{incentivizedPools.length}</span>
-        </div>}
+        )}
+      {showPagination &&
+        isFetched &&
+        incentivizedPools.length > 0 &&
+        !isLoading && (
+          <div className="box-indicator">
+            <span className="current-page">{currentIndex}</span>
+            <span>/</span>
+            <span>{incentivizedPools.length}</span>
+          </div>
+        )}
     </IncentivizedWrapper>
   );
 };

@@ -22,6 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
             refetchOnMount: false,
             refetchOnReconnect: false,
             refetchOnWindowFocus: false,
+            refetchInterval: 60 * 1000,
           },
         },
       }),

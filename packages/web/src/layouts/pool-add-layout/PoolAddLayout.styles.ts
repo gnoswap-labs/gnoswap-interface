@@ -34,7 +34,7 @@ export const wrapper = (theme: Theme) => css`
   }
 
   .add-liquidity-section {
-    margin: auto;
+    margin: 0 auto;
     height: 100%;
   }
   .one-click-staking {

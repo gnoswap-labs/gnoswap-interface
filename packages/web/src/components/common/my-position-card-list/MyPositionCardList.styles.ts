@@ -41,7 +41,10 @@ export const GridWrapper = styled.div<Props>`
   grid-template-rows: auto;
   grid-gap: 24px;
   grid-template-columns: repeat(4, 1fr);
-  /* overflow-x: hidden; */
+  overflow: visible;
+  @media (max-width: 1430px) {
+    overflow-x: scroll;
+  }
   @media (max-width: 920px) {
     overflow-x: auto;
     grid-gap: 12px;
@@ -61,9 +64,9 @@ export const GridWrapper = styled.div<Props>`
   ${media.mobile} {
     overflow-x: auto;
     grid-gap: 12px;
-    grid-template-columns: repeat(auto-fill, 100%);
+    grid-template-columns: repeat(auto-fill, 322px);
     grid-auto-flow: column;
-    grid-auto-columns: 100%;
+    grid-auto-columns: 322px;
   }
 `;
 

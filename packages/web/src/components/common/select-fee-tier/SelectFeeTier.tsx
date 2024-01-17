@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { SelectFeeTierItemWrapper, SelectFeeTierWrapper } from "./SelectFeeTier.styles";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { PoolModel } from "@models/pool/pool-model";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 
 interface SelectFeeTierProps {
   feetierOfLiquidityMap: { [key in string]: number };
@@ -9,6 +10,8 @@ interface SelectFeeTierProps {
   feeTier: SwapFeeTierType | null;
   pools: PoolModel[],
   selectFeeTier: (feeTier: SwapFeeTierType) => void;
+  fetching: boolean;
+  openedFeeTier: boolean;
 }
 
 const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
@@ -17,6 +20,8 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   feeTier,
   pools,
   selectFeeTier,
+  fetching,
+  openedFeeTier,
 }) => {
 
   const onClickFeeTierItem = useCallback((feeTier: SwapFeeTierType) => {
@@ -24,7 +29,7 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   }, [selectFeeTier]);
 
   return (
-    <SelectFeeTierWrapper>
+    <SelectFeeTierWrapper className={openedFeeTier ? "open" : ""}>
       {feeTiers.map((item, index) => (
         <SelectFeeTierItem
           key={index}
@@ -33,6 +38,7 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
           pools={pools}
           liquidityRange={feetierOfLiquidityMap[SwapFeeTierInfoMap[item].fee]}
           onClick={() => onClickFeeTierItem(item)}
+          fetching={fetching}
         />
       ))}
     </SelectFeeTierWrapper>
@@ -45,6 +51,7 @@ interface SelectFeeTierItemProps {
   pools: PoolModel[];
   liquidityRange: number | undefined | null;
   onClick: () => void;
+  fetching: boolean;
 }
 
 const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
@@ -52,6 +59,7 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
   feeTier,
   liquidityRange,
   onClick,
+  fetching,
 }) => {
   const feeRateStr = useMemo(() => {
     return SwapFeeTierInfoMap[feeTier].rateStr;
@@ -61,7 +69,7 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
     if (liquidityRange === null || liquidityRange === undefined) {
       return "Not created";
     }
-    return `${Math.round(liquidityRange)}% Select`;
+    return `${Math.round(liquidityRange)}% Selected`;
   }, [liquidityRange]);
 
   const description = useMemo(() => {
@@ -74,7 +82,7 @@ const SelectFeeTierItem: React.FC<SelectFeeTierItemProps> = ({
         <strong className="fee-rate">{feeRateStr}</strong>
         <p className="desc">{description}</p>
       </div>
-      <span className="selected-fee-rate">{rangeStr}</span>
+      <span className="selected-fee-rate">{fetching ? <LoadingSpinner /> : rangeStr}</span>
     </SelectFeeTierItemWrapper>
   );
 };

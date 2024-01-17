@@ -41,7 +41,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   }, [changePriceRange]);
 
   return (
-    <SelectPriceRangeWrapper opened={opened}>
+    <SelectPriceRangeWrapper className={opened ? "open" : ""}>
       {!selectPool.isCreate && !showDim && <div className="type-selector-wrapper">
         {priceRanges.map((item, index) => (
           <SelectPriceRangeItem

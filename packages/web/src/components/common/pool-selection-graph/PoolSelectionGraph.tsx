@@ -161,6 +161,7 @@ export interface PoolSelectionGraphProps {
     top: number;
     bottom: number;
   },
+  setIsChangeMinMax: (value: boolean) => void;
 }
 
 const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
@@ -185,6 +186,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     top: 0,
     bottom: 0,
   },
+  setIsChangeMinMax,
 }) => {
   const svgRef = useRef(null);
   const chartRef = useRef<SVGGElement | null>(null);
@@ -348,6 +350,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const maxPrice = !BigNumber(scaleX.invert(endPosition)).isNaN() ? tickToPrice(priceToNearTick(scaleX.invert(endPosition), feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2)) : 0;
       setMinPrice(minPrice);
       setMaxPrice(maxPrice);
+      setIsChangeMinMax(true);
     }
   }
 
@@ -436,7 +439,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .attr("y1", boundsHeight + paddingHeight)
         .attr("y2", 0)
         .attr("stroke-dasharray", 4)
-        .attr("stroke", `${themeKey === "dark" ? "#FFFFFF": "#596782"}`)
+        .attr("stroke", `${themeKey === "dark" ? "#E0E8F4": "#596782"}`)
         .attr("stroke-width", 1);
     }
 

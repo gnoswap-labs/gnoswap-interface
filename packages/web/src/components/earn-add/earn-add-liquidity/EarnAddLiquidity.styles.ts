@@ -110,6 +110,12 @@ export const EarnAddLiquidityWrapper = styled.section`
       color: ${({ theme }) => theme.color.text26};
       background: ${({ theme }) => theme.color.background22};
     }
+    &-fee-tier {
+      padding-bottom: 0;
+    }
+    &-price-range {
+      gap: 7.5px;
+    }
   }
   .amount-input-wrapper {
     position: relative;

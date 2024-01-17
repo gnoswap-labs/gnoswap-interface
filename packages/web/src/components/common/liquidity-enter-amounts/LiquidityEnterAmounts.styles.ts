@@ -35,7 +35,7 @@ export const LiquidityEnterAmountsWrapper = styled.div`
   }
   .amount {
     .token {
-      > div {
+      .not-selected-token {
 
         padding-top: 4px;
         padding-bottom: 4px;
@@ -46,7 +46,6 @@ export const LiquidityEnterAmountsWrapper = styled.div`
       }
       .token-symbol {
         ${fonts.body9}
-        margin-right: 6px;
         height: auto;
         margin-left: 0;
       }

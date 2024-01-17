@@ -1,6 +1,8 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useCallback, useMemo } from "react";
 import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
+import Switch from "@components/common/switch/Switch";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 export interface EarnMyPositionsHeaderProps {
   connected: boolean;
@@ -8,6 +10,9 @@ export interface EarnMyPositionsHeaderProps {
   availableStake: boolean;
   moveEarnAdd: () => void;
   moveEarnStake: () => void;
+  isClosed: boolean;
+  handleChangeClosed: () => void;
+  positions: PoolPositionModel[];
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
@@ -16,6 +21,9 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   availableStake,
   moveEarnAdd,
   moveEarnStake,
+  isClosed,
+  handleChangeClosed,
+  positions,
 }) => {
 
   const disabledStake = useMemo(() => {
@@ -28,8 +36,22 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
 
   return (
     <PositionsWrapper>
-      <h2>My Positions</h2>
+      <div className="header-content">
+        <h2>My Positions</h2>
+        {positions.length > 0 && connected && <Switch
+          checked={isClosed}
+          onChange={handleChangeClosed}
+          hasLabel={true}
+          labelText="Hide closed positions"
+        />}
+      </div>
       <div className="button-wrapper">
+        {positions.length > 0 && connected && <Switch
+          checked={isClosed}
+          onChange={handleChangeClosed}
+          hasLabel={true}
+          labelText="Hide closed positions"
+        />}
         <Button
           text="Stake Position"
           style={{

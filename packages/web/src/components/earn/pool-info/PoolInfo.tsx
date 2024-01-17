@@ -32,6 +32,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
     rewardTokens,
     currentTick,
     bins,
+    price,
   } = pool;
   const { getGnotPath } = useGnotToGnot();
   const rewardImage = useMemo(() => {
@@ -107,6 +108,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             themeKey={themeKey}
             position="top"
             nextSpacing
+            poolPrice={Number(price)}
           />
         </div>
       </TableColumn>

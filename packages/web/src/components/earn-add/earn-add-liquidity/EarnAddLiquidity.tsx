@@ -53,6 +53,7 @@ interface EarnAddLiquidityProps {
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
   createOption: { startPrice: number | null, isCreate: boolean };
+  fetching: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -84,6 +85,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   selectPool,
   changeStartingPrice,
   createOption,
+  fetching,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -235,7 +237,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           )}
         </article>
 
-        <article className="selector-wrapper">
+        <article className="selector-wrapper selector-wrapper-fee-tier">
           <div className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""} ${!isEarnAdd && "disable-text"}`} onClick={toggleFeeTier}>
             <div className="header-wrapper-title">
               <h5>2. Select Fee Tier</h5>
@@ -250,18 +252,18 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             )}
           </div>
 
-          {openedFeeTier && (
-            <SelectFeeTier
-              feetierOfLiquidityMap={feetierOfLiquidityMap}
-              feeTiers={feeTiers}
-              feeTier={feeTier}
-              pools={pools}
-              selectFeeTier={handleSelectFeeTier}
-            />
-          )}
+          <SelectFeeTier
+            feetierOfLiquidityMap={feetierOfLiquidityMap}
+            feeTiers={feeTiers}
+            feeTier={feeTier}
+            pools={pools}
+            selectFeeTier={handleSelectFeeTier}
+            fetching={fetching}
+            openedFeeTier={openedFeeTier}
+          />
         </article>
 
-        <article className="selector-wrapper">
+        <article className={`selector-wrapper ${!openedPriceRange ? "selector-wrapper-price-range" : ""}`}>
           <div className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""}`} onClick={togglePriceRange}>
             <div className="header-wrapper-title">
               <h5>3. Select Price Range</h5>

@@ -4,6 +4,8 @@ import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
+import IconAdd from "../icons/IconAdd";
+import IconRemove from "../icons/IconRemove";
 
 export interface SelectPriceRangeCutomControllerProps {
   title: string;
@@ -17,12 +19,12 @@ export interface SelectPriceRangeCutomControllerProps {
   changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
+  currentPriceStr: string;
+  setIsChangeMinMax: (value: boolean) => void;
 }
 
 const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerProps> = ({
   title,
-  token0Symbol,
-  token1Symbol,
   current,
   feeTier,
   tickSpacing = 2,
@@ -31,15 +33,14 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   increase,
   selectedFullRange,
   onSelectCustomRange,
+  currentPriceStr,
+  setIsChangeMinMax,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [value, setValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
-  const tokenInfo = useMemo(() => {
-    return `${token1Symbol} per ${token0Symbol}`;
-  }, [token0Symbol, token1Symbol]);
 
   const disabledController = useMemo(() => {
     return value === "" ||
@@ -52,11 +53,13 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
 
   const onClickDecrease = useCallback(() => {
     decrease();
-  }, [decrease]);
+    setIsChangeMinMax(true);
+  }, [decrease, setIsChangeMinMax]);
 
   const onClickIncrease = useCallback(() => {
     increase();
-  }, [increase]);
+    setIsChangeMinMax(true);
+  }, [increase, setIsChangeMinMax]);
 
   const onChangeValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -85,6 +88,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     }
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
     changePrice(nearPrice);
+    setIsChangeMinMax(true);
     if (nearPrice > 1) {
       setValue(numberToFormat(nearPrice, 4));
     } else {
@@ -134,19 +138,23 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       <span className="title">{title}</span>
       <div className="controller-wrapper">
         <div className={disabledController ? "icon-wrapper decrease disabled" : "icon-wrapper decrease"} onClick={onClickDecrease}>
-          <span>-</span>
+          <span>
+            <IconRemove />
+          </span>
         </div>
         <div className="value-wrapper">
           <input style={{ fontSize: `${fontSize}px` }} className="value" value={value === "NaN" ? "-" : value} onChange={onChangeValue} onBlur={onBlurUpdate} ref={inputRef}/>
           <div style={{ fontSize: `${fontSize}px` }} className="fake-input" ref={divRef}>{value}</div>
         </div>
         <div className={disabledController ? "icon-wrapper increase disabled" : "icon-wrapper increase"} onClick={onClickIncrease}>
-          <span>+</span>
+          <span>
+            <IconAdd />
+          </span>
         </div>
       </div>
 
       <div className="token-info-wrapper">
-        <span className="token-info">{tokenInfo}</span>
+        <span className="token-info">{currentPriceStr}</span>
       </div>
     </SelectPriceRangeCutomControllerWrapper>
   );

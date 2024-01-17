@@ -5,6 +5,8 @@ import mixins from "@styles/mixins";
 
 interface CardProps {
   staked: boolean;
+  viewMyRange: boolean;
+  disabled: boolean;
 }
 
 interface MyPositionCardWrapperBorderProps {
@@ -15,6 +17,8 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
   position: relative;
   z-index: 0;
   overflow: hidden;
+  min-width: 322px;
+  border-radius: 10px;
   &.special-card {
     min-width: 322px;
     background: ${({ theme }) => theme.color.backgroundGradient4};
@@ -32,20 +36,40 @@ export const MyPositionCardWrapperBorder = styled.div<MyPositionCardWrapperBorde
       background: ${({ theme }) => theme.color.background01};
       > div {
         min-width: auto;
+        max-width: 322px;
         border: 0;
         ${media.mobile} {
           min-width: auto;
+          max-width: 322px;
         }
       }
     }
-    &:hover {
-      box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
-      .base-border {
-        > div {
-          background-color: ${({ theme }) => theme.color.background02};
-        }
+
+  }
+  &:hover {
+    box-shadow: ${({ viewMyRange }) => {
+      return !viewMyRange ? "8px 8px 20px rgba(0, 0, 0, 0.08)" : "none";
+    }};
+    .base-border {
+      > div {
+        background-color: ${({ theme, viewMyRange }) => {
+          return viewMyRange ? "none" : theme.color.background02;
+        }};
       }
     }
+  }
+  &:before {
+    display: ${({ viewMyRange }) => {
+      return !viewMyRange ? "none" : "block";
+    }};
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: ${({ theme }) => theme.color.backgroundOpacity8}
   }
 `;
 
@@ -56,7 +80,9 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   gap: 16px;
   padding: 15px;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.color.background06};
+  background-color: ${({ theme, disabled }) => {
+    return disabled ? theme.color.background03 : theme.color.background06;
+  }};
   ${media.tablet} {
     min-width: 322px;
   }
@@ -66,19 +92,28 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
   border: 1px solid ${({ theme }) => theme.color.border14};
 
   transition: all 0.3s ease;
-  color: ${({ theme }) => theme.color.text02};
+  color: ${({ theme, disabled }) => {
+    return disabled ? theme.color.text10 : theme.color.text02;
+  }};
   cursor: pointer;
   &:hover {
-    background-color: ${({ theme }) => theme.color.background02};
-    border: 1px solid ${({ theme }) => theme.color.border14};
-    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08);
+    background-color: ${({ viewMyRange, theme }) => {
+      return viewMyRange ? "none" : theme.color.background02;
+    }};
+    border: 1px solid ${({ viewMyRange, theme }) => {
+      return viewMyRange ? "none" : theme.color.border14;
+    }};;
   }
   .title-wrapper {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     gap: 4px;
     ${fonts.body5}
-
+    .disabled-range {
+      > span {
+        color: ${({ theme }) => theme.color.text05};
+      }
+    }
     .box-header {
       ${mixins.flexbox("row", "center", "flex-start")};
       align-self: stretch;
@@ -87,6 +122,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
         ${fonts.body7}
 
       }
+
     }
     .badge-group {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -169,7 +205,7 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
     position: absolute;
     padding: 16px 16px 0 16px;
     left: 1px;
-    bottom: -17px;
+    bottom: -25px;
     width: calc(100% - 2px);
     background-color: ${({ theme }) => theme.color.background06};;
     border-radius: 8px;
@@ -220,9 +256,10 @@ export const MyPositionCardWrapper = styled.div<CardProps>`
 
   .min-max-price {
     ${mixins.flexbox("row", "center", "center")};
-    width: 100%;
+    width: calc(100% + 32px);
     gap: 4px;
     margin-top: 12px;
+    margin-left: -16px;
     .label-text {
       ${fonts.p4};
       height: auto;

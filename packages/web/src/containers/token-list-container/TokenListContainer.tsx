@@ -55,7 +55,7 @@ export const TABLE_HEAD = {
   PRICE_OF_7D: "7d",
   PRICE_OF_30D: "30d",
   MARKET_CAP: "Market Cap",
-  LIQUIDITY: "Liquidity",
+  LIQUIDITY: "TVL",
   VOLUME: "Volume (24h)",
   MOST_LIQUID_POOL: "Most Liquid Pool",
   LAST_7_DAYS: "Last 7 days",

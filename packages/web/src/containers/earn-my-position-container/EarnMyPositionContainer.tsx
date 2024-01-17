@@ -10,7 +10,6 @@ import React, { useCallback, useEffect, useRef, useState, useMemo } from "react"
 import { ValuesType } from "utility-types";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
-import { useLoading } from "@hooks/common/use-loading";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -43,7 +42,7 @@ const EarnMyPositionContainer: React.FC<
   const { isError, availableStake, isFetchedPosition, loading : loadingPosition, positions } = usePositionData();
   const [mobile, setMobile] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { isLoadingCommon } = useLoading();
+  const [isClosed, setIsClosed] = useState(false);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -107,8 +106,17 @@ const EarnMyPositionContainer: React.FC<
   }, [page]);
 
   const dataMapping = useMemo(() => {
-    const temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-
+    let temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+    if (positions.length > 0) {
+      const fake = {
+        ...positions[0],
+        status: true,
+      };
+      temp = [...positions, fake, fake];
+    }
+    if (isClosed) {
+      temp = temp.filter(_x => _x.status !== isClosed);
+    }
     if (page === 1) {
       if (width > 1180) {
         return temp.slice(0, 4);
@@ -116,14 +124,18 @@ const EarnMyPositionContainer: React.FC<
         return temp.slice(0, 3);
       } else return temp;
     } else return temp;
-  }, [width, page, positions]);
+  }, [width, page, positions, isClosed]);
+
+  const handleChangeClosed = () => {
+    setIsClosed(!isClosed);
+  };
 
   return (
     <EarnMyPositions
       connected={connected}
       availableStake={availableStake}
       connect={connect}
-      loading={loading || loadingPosition || isLoadingCommon}
+      loading={loading || loadingPosition}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
       positions={dataMapping}
@@ -142,6 +154,8 @@ const EarnMyPositionContainer: React.FC<
       onClickLoadMore={handleClickLoadMore}
       themeKey={themeKey}
       account={account}
+      isClosed={isClosed}
+      handleChangeClosed={handleChangeClosed}
     />
   );
 };

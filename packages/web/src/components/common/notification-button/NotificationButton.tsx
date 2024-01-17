@@ -29,7 +29,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   };
   useEscCloseModal(handleESC);
 
-  const { data: txsGroupsInformation, refetch } = useQuery<
+  const { data: txsGroupsInformation, refetch, isFetched } = useQuery<
     TransactionGroupsType[],
     Error
   >({
@@ -61,7 +61,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     <NotificationWrapper>
       <AlertButton onClick={onListToggle}>
         <IconAlert className="notification-icon" />
-        {txsGroupsInformation?.length !== 0 ? (
+        {isFetched && txsGroupsInformation?.length !== 0 ? (
           <div className="point-unread" />
         ) : null}
       </AlertButton>

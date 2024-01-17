@@ -64,6 +64,7 @@ export class PositionMapper {
       rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
       dailyRewards:
         position.dailyRewards?.map(PositionMapper.rewardFromResponse) || [],
+      status: false,
     };
   }
 
@@ -94,6 +95,7 @@ export class PositionMapper {
     return {
       ...positionModel,
       pool: poolModel,
+      status: false,
     };
   }
 }

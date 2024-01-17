@@ -10,7 +10,7 @@ export interface SelectPriceRangeSummaryProps {
 }
 
 const ModalContent = <ToolTipContentWrapper>
-  An indication of the additional swap fees you can receive for your selected price range compared to a full-range position.
+  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
 </ToolTipContentWrapper>;
 
 const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
@@ -32,7 +32,7 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
 
       <div className="row">
         <div className="title-wrapper">
-          <span className="title">Fee Boost</span>
+          <span className="title">Capital Efficiency</span>
           <Tooltip placement="top" FloatingContent={ModalContent}>
             <IconInfo />
           </Tooltip>

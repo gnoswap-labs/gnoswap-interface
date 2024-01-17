@@ -85,7 +85,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
   const { updatePools } = usePoolData();
-  const { pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
+  const { pools, feetierOfLiquidityMap, createPool, addLiquidity, fetching } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
   const { openModal: openOneClickModal } = useOneClickStakingModal({
     tokenA,
     tokenB,
@@ -436,6 +436,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       handleClickOneStaking={() => null}
       changeStartingPrice={changeStartingPrice}
       createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
+      fetching={fetching}
     />
   );
 };

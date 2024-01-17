@@ -7,10 +7,13 @@ describe("EarnMyPositionsHeader Component", () => {
   it("EarnMyPositionsHeader render", () => {
     const args: EarnMyPositionsHeaderProps = {
       connected: false,
-      availableStake: false,
       isSwitchNetwork: false,
+      availableStake: false,
+      moveEarnAdd: () => { return; },
       moveEarnStake: () => { return; },
-      moveEarnAdd: () => { return; }
+      isClosed: false,
+      handleChangeClosed: () => { return; },
+      positions: [],
     };
 
     render(

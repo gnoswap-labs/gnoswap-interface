@@ -164,6 +164,11 @@ export const PoolCardWrapper = styled.div`
         }
       }
     }
+    svg {
+      rect {
+        stroke: ${({ theme }) => theme.color.backgroundOpacity};
+      }
+    }
   }
 
   .price-section {

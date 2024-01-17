@@ -148,11 +148,11 @@ export const usePool = ({
   }, []);
 
   useEffect(() => {
-    setFetching(false);
     setFeetierOfLiquidityMap(null);
     if (!tokenA || !tokenB) {
       return;
     }
+    setFetching(true);
     fetchPoolInfos(currentPools)
       .then(infos => {
         const feetierOfLiquidityMap: { [key in string]: number } = {};
@@ -166,14 +166,13 @@ export const usePool = ({
         }
         return feetierOfLiquidityMap;
       })
-      .then(setFeetierOfLiquidityMap);
+      .then((e) => {
+        setFeetierOfLiquidityMap(e);
+        setTimeout(() => {
+          setFetching(false);
+        }, 1000);
+      });
   }, [currentPools, tokenA, tokenB]);
-
-  useEffect(() => {
-    if (feetierOfLiquidityMap) {
-      setFetching(true);
-    }
-  }, [feetierOfLiquidityMap]);
 
   return {
     fetching,

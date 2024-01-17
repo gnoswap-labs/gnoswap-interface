@@ -149,16 +149,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
     const messages = [];
     
-    let tokenAPath = tokenA.path;
-    let tokenBPath = tokenB.path;
-    if (isNativeToken(tokenA)) {
-      tokenAPath = tokenA.wrappedPath;
-      messages.push(makeDepositMessage(tokenAPath, tokenAAmountRaw, "ugnot", caller));
-    }
-    if (isNativeToken(tokenB)) {
-      tokenBPath = tokenB.wrappedPath;
-      messages.push(makeDepositMessage(tokenBPath, tokenBAmountRaw, "ugnot", caller));
-    }
+    const tokenAPath = tokenA.wrappedPath || tokenA.path;
+    const tokenBPath = tokenB.wrappedPath || tokenB.path;
     messages.push(PoolRepositoryImpl.makeApproveGnosTokenMessage(caller));
     messages.push(PoolRepositoryImpl.makeCreatePoolMessage(
       tokenA,
@@ -242,16 +234,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
     const messages = [];
     
-    let tokenAPath = tokenA.path;
-    let tokenBPath = tokenB.path;
-    if (isNativeToken(tokenA)) {
-      tokenAPath = tokenA.wrappedPath;
-      messages.push(makeDepositMessage(tokenAPath, tokenAAmountRaw, "ugnot", caller));
-    }
-    if (isNativeToken(tokenB)) {
-      tokenBPath = tokenB.wrappedPath;
-      messages.push(makeDepositMessage(tokenBPath, tokenBAmountRaw, "ugnot", caller));
-    }
+    const tokenAPath = tokenA.wrappedPath || tokenA.path;
+    const tokenBPath = tokenB.wrappedPath || tokenB.path;
 
     messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
       tokenAPath,
@@ -392,14 +376,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     startPrice: string,
     caller: string,
   ) {
-    let tokenAPath = tokenA.path;
-    let tokenBPath = tokenB.path;
-    if (isNativeToken(tokenA) ) {
-      tokenAPath = tokenA.wrappedPath;
-    }
-    if (isNativeToken(tokenB) ) {
-      tokenBPath = tokenB.wrappedPath;
-    }
+    const tokenAPath = tokenA.wrappedPath || tokenA.path;
+    const tokenBPath = tokenB.wrappedPath || tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
     const startPriceSqrt = tickToSqrtPriceX96(priceToNearTick(Number(startPrice), SwapFeeTierInfoMap[feeTier].tickSpacing));
 

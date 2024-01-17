@@ -28,6 +28,8 @@ export interface EarnMyPositionsProps {
   onClickLoadMore?: () => void;
   themeKey: "dark" | "light";
   account: AccountModel | null;
+  isClosed: boolean;
+  handleChangeClosed: () => void;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -53,6 +55,8 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   onClickLoadMore,
   themeKey,
   account,
+  isClosed,
+  handleChangeClosed,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -61,6 +65,9 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       moveEarnAdd={moveEarnAdd}
       moveEarnStake={moveEarnStake}
       isSwitchNetwork={isSwitchNetwork}
+      isClosed={isClosed}
+      handleChangeClosed={handleChangeClosed}
+      positions={positions}
     />
     <EarnMyPositionsContent
       connected={connected}

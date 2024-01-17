@@ -13,13 +13,32 @@ export const PositionsWrapper = styled.div`
     ${fonts.h6}
     gap: 12px;
   }
+  .header-content {
+    width: auto;
+    ${mixins.flexbox("row", "center", "space-between")};
+    .switch-button {
+      display: none;
+    }
+    ${media.mobile} {
+      width: 100%;
+      .switch-button {
+        display: inline-flex;
+      }
+    }
+  }
   .button-wrapper {
     ${mixins.flexbox("row", "center", "flex-end")};
     gap: 8px;
+    .switch-button {
+      margin-right: 28px;
+    }
     ${media.mobile} {
       width: 100%;
       button {
         width: 50%;
+      }
+      .switch-button {
+        display: none;
       }
     }
   }

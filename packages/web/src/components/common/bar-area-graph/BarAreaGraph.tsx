@@ -3,6 +3,7 @@ import { TokenModel } from "@models/token/token-model";
 import React, { useMemo } from "react";
 import PoolGraph from "../pool-graph/PoolGraph";
 import { BarAreaGraphWrapper } from "./BarAreaGraph.styles";
+import { PoolModel } from "@models/pool/pool-model";
 
 export interface BarAreaGraphData {
   value: string;
@@ -29,6 +30,7 @@ export interface BarAreaGraphProps {
   themeKey: "dark" | "light";
   minTickRate?: number;
   maxTickRate?: number;
+  pool: PoolModel;
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
@@ -45,6 +47,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   tokenA,
   tokenB,
   themeKey,
+  pool
 }) => {
 
   const minTickPosition = useMemo(() => {
@@ -92,6 +95,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         offset={40}
         maxTickPosition={maxTickPosition}
         minTickPosition={minTickPosition}
+        poolPrice={pool?.price || 1}
       />
     </BarAreaGraphWrapper>
   );

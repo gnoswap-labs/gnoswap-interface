@@ -78,7 +78,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     .domain(getHeightRange())
     .range([GRAPH_HEIGHT, 0]);
 
-  const isCustom = priceRangeType === "Custom";
+  const isCustom = true;
 
   const isLoading = useMemo(() => selectPool.renderState === "LOADING", [selectPool.renderState]);
 
@@ -100,6 +100,14 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     }
     const currentPrice = toNumberFormat(selectPool.currentPrice, 4);
     return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
+  }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
+
+  const currentPriceStrReverse = useMemo(() => {
+    if (!selectPool.currentPrice) {
+      return "-";
+    }
+    const currentPrice = toNumberFormat(1 / selectPool.currentPrice, 4);
+    return `1 ${currentTokenB.symbol} = ${currentPrice} ${currentTokenA.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
   const startingPriceDescription = useMemo(() => {
@@ -248,10 +256,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     onClick={onClickTabItem}
                   />
                   <div className="graph-option-wrapper">
-                    <span className={`graph-option-item decrease ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                    <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
                       <IconRemove />
                     </span>
-                    <span className={`graph-option-item increase ${!isLoading ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                    <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
                       <IconAdd />
                     </span>
                   </div>
@@ -291,6 +299,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}
                       finishMove={finishMove}
+                      setIsChangeMinMax={selectPool.setIsChangeMinMax}
                     />
                   </div>}
                   <div className="rangge-content-wrapper">
@@ -307,6 +316,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                         changePrice={selectPool.setMinPosition}
                         decrease={selectPool.decreaseMinTick}
                         increase={selectPool.increaseMinTick}
+                        currentPriceStr={currentPriceStr}
+                        setIsChangeMinMax={selectPool.setIsChangeMinMax}
                       />
                       <SelectPriceRangeCutomController
                         title="Max Price"
@@ -320,6 +331,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                         changePrice={selectPool.setMaxPosition}
                         decrease={selectPool.decreaseMaxTick}
                         increase={selectPool.increaseMaxTick}
+                        currentPriceStr={currentPriceStrReverse}
+                        setIsChangeMinMax={selectPool.setIsChangeMinMax}
                       />
                     </div>
                     <div className="extra-wrapper">
