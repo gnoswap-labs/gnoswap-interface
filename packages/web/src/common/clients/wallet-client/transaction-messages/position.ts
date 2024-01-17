@@ -1,4 +1,4 @@
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenModel } from "@models/token/token-model";
 import { makeTransactionMessage, PACKAGE_POSITION_PATH } from "./common";
 import {
   SwapFeeTierInfoMap,
@@ -21,14 +21,8 @@ export function makePositionMintMessage(
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = 0;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
-  let tokenAPath = tokenA.path;
-  let tokenBPath = tokenB.path;
-  if (isNativeToken(tokenA)) {
-    tokenAPath = tokenA.wrappedPath;
-  }
-  if (isNativeToken(tokenB)) {
-    tokenBPath = tokenB.wrappedPath;
-  }
+  const tokenAPath = tokenA.wrappedPath || tokenA.path;
+  const tokenBPath = tokenB.wrappedPath || tokenB.path;
   const sendAmount = "";
   return makeTransactionMessage({
     caller,
