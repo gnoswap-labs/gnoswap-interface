@@ -21,7 +21,6 @@ import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 
@@ -146,7 +145,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999
       ? `>${maxTickRate}%`
-      : maxTickRate > 1000
+      : maxTickRate >= 1000
       ? ">999%"
       : `${maxTickRate > 0 ? "+" : ""}${maxTickRate}%`;
   }, [maxTickRate]);
@@ -258,33 +257,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return maxTickPosition;
   }, [maxTickPosition]);
 
-  const isMinTickGreen = useMemo(() => {
-    if (!getMinTick) {
-      return true;
-    }
-    return BigNumber(getMinTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
-  }, [getMinTick, GRAPH_WIDTH]);
-
-  const isMaxTickGreen = useMemo(() => {
-    if (!getMaxTick) {
-      return true;
-    }
-    return BigNumber(getMaxTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
-  }, [getMaxTick]);
-
   const startClass = useMemo(() => {
     if (getMinTick === null) {
-      return null;
+      return "";
     }
-    return !isMinTickGreen || isFullRange ? "negative" : "positive";
-  }, [getMinTick, isMinTickGreen, isFullRange]);
+    return (minTickRate > 0 || isFullRange) ? "negative" : "positive";
+  }, [getMinTick, minTickRate, isFullRange]);
 
   const endClass = useMemo(() => {
     if (getMaxTick === null) {
       return "";
     }
-    return isMaxTickGreen ? "positive" : "negative";
-  }, [getMaxTick, isMaxTickGreen, maxTickRate]);
+    return maxTickRate > 0 ? "positive" : "negative";
+  }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
     const claimableUsdValue = claimableRewardInfo ? Object.values(claimableRewardInfo)
