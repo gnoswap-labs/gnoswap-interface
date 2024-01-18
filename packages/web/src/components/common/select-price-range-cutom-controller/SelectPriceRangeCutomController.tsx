@@ -1,4 +1,4 @@
-import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
+import { PriceRangeType, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { numberToFormat } from "@utils/string-utils";
 import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
@@ -21,6 +21,7 @@ export interface SelectPriceRangeCutomControllerProps {
   increase: () => void;
   currentPriceStr: string;
   setIsChangeMinMax: (value: boolean) => void;
+  priceRangeType: PriceRangeType | null;
 }
 
 const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerProps> = ({
@@ -35,6 +36,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   onSelectCustomRange,
   currentPriceStr,
   setIsChangeMinMax,
+  priceRangeType,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -88,7 +90,9 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     }
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
     changePrice(nearPrice);
-    setIsChangeMinMax(true);
+    if (priceRangeType !== "Active") {
+      setIsChangeMinMax(true);
+    }
     if (nearPrice > 1) {
       setValue(numberToFormat(nearPrice, 4));
     } else {
@@ -97,7 +101,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     if (selectedFullRange) {
       onSelectCustomRange();
     }
-  }, [changed, value, tickSpacing, selectedFullRange]);
+  }, [changed, value, tickSpacing, selectedFullRange, priceRangeType]);
 
   useEffect(() => {
     if (current === null || BigNumber(Number(current)).isNaN()) {
@@ -154,7 +158,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       </div>
 
       <div className="token-info-wrapper">
-        <span className="token-info">{currentPriceStr}</span>
+        <span className="token-info">{currentPriceStr.replace(/(\d+\.\d+)/, Number(value).toFixed(4))}</span>
       </div>
     </SelectPriceRangeCutomControllerWrapper>
   );

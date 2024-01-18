@@ -20,6 +20,7 @@ interface SelectPriceRangeProps {
   selectPool: SelectPool;
   showDim: boolean;
   defaultPrice: number | null;
+  handleSwapValue: () => void;
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -33,6 +34,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   selectPool,
   showDim,
   defaultPrice,
+  handleSwapValue,
 }) => {
   const selectedTokenPair = true;
 
@@ -62,6 +64,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           priceRangeType={priceRange?.type || null}
           showDim={showDim}
           defaultPrice={defaultPrice}
+          handleSwapValue={handleSwapValue}
         />
       )}
     </SelectPriceRangeWrapper>

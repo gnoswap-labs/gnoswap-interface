@@ -449,6 +449,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [fetching]);
 
+  const handleSwapValue = useCallback(() => {
+    const tempTokenA = swapValue.tokenA;
+    const tempTokenB = swapValue.tokenB;
+    setSwapValue({
+      ...swapValue,
+      tokenA: tempTokenB,
+      tokenB: tempTokenA,
+    });
+  }, [swapValue, setSwapValue]);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -484,6 +494,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       changeStartingPrice={changeStartingPrice}
       createOption={createOption}
       fetching={fetching}
+      handleSwapValue={handleSwapValue}
     />
   );
 };

@@ -9,7 +9,6 @@ import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import * as d3 from "d3";
 import { PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
-import { toNumberFormat } from "@utils/number-utils";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
@@ -17,6 +16,7 @@ import BigNumber from "bignumber.js";
 import { numberToFormat } from "@utils/string-utils";
 import IconRemove from "../icons/IconRemove";
 import IconAdd from "../icons/IconAdd";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -26,6 +26,7 @@ export interface SelectPriceRangeCustomProps {
   changeStartingPrice: (price: string) => void;
   showDim: boolean;
   defaultPrice: number | null;
+  handleSwapValue: () => void;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -36,7 +37,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   changeStartingPrice,
   showDim,
   defaultPrice,
+  handleSwapValue,
 }) => {
+  const [isRevert, setIsRevert] = useState(false);
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
   const [startingPriceValue, setStartingPriceValue] = useState<string>("");
@@ -98,7 +101,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = toNumberFormat(selectPool.currentPrice, 4);
+    const currentPrice = convertToKMB(selectPool.currentPrice.toFixed(4), 4);
     return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
@@ -106,7 +109,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = toNumberFormat(1 / selectPool.currentPrice, 4);
+    const currentPrice = convertToKMB((1 / selectPool.currentPrice).toString(), 4);
     return `1 ${currentTokenB.symbol} = ${currentPrice} ${currentTokenA.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
@@ -133,7 +136,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (maxPosition !== null) {
       selectPool.setMinPosition(1 / maxPosition);
     }
-  }, [selectPool, tokenA, tokenB]);
+    handleSwapValue();
+    setIsRevert(prev => !prev);
+  }, [selectPool, tokenA, tokenB, handleSwapValue, setIsRevert]);
 
   const selectFullRange = useCallback(() => {
     selectPool.selectFullRange();
@@ -252,7 +257,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="option-wrapper">
                   <SelectTab
                     selectType={selectPool.compareToken?.symbol || ""}
-                    list={[tokenA.symbol, tokenB.symbol]}
+                    list={[isRevert ? tokenA.symbol : tokenB.symbol, !isRevert ? tokenA.symbol : tokenB.symbol]}
                     onClick={onClickTabItem}
                   />
                   <div className="graph-option-wrapper">
@@ -318,6 +323,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                         increase={selectPool.increaseMinTick}
                         currentPriceStr={currentPriceStr}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
+                        priceRangeType={priceRangeType}
                       />
                       <SelectPriceRangeCutomController
                         title="Max Price"
@@ -333,6 +339,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                         increase={selectPool.increaseMaxTick}
                         currentPriceStr={currentPriceStrReverse}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
+                        priceRangeType={priceRangeType}
                       />
                     </div>
                     <div className="extra-wrapper">
