@@ -111,12 +111,13 @@ export function tickToPrice(tick: number) {
   return rawBySqrtX96(sqrtPriceX96);
 }
 
-export function tickToPriceStr(tick: number, decimals?: number) {
-  if (tick === MIN_TICK + 1) {
-    return "0.00";
-  }
-  if (tick === MAX_TICK - 1) {
-    return "∞";
+export function tickToPriceStr(
+  tick: number,
+  decimals?: number,
+  isEnd?: boolean,
+) {
+  if (isEnd) {
+    return tick < 0 ? "0.00" : "∞";
   }
   const decimalsLimit = decimals || 4;
   const result = BigNumber(tickToPrice(tick).toString())
@@ -147,4 +148,21 @@ export function feeBoostRateByPrices(
 export function sqrtPriceX96ToTick(priceX96: number | BigInt) {
   const price = rawBySqrtX96(priceX96.toString());
   return priceToTick(price);
+}
+
+/**
+ * This function checks to determine if it is the end tick of the range.
+ *
+ * @param tick
+ * @param fee
+ * @returns
+ */
+export function isEndTickBy(tick: number, fee: string): boolean {
+  const feeTier = makeSwapFeeTier(fee);
+  const priceRangeMap = SwapFeeTierMaxPriceRangeMap[feeTier];
+  if (!priceRangeMap) {
+    return tick === MAX_TICK || tick === MIN_TICK;
+  }
+  const { maxTick, minTick } = priceRangeMap;
+  return tick === maxTick || tick === minTick;
 }
