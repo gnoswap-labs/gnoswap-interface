@@ -1,6 +1,7 @@
 import { tickToSqrtPriceX96 } from "./math.utils";
 import {
   feeBoostRateByPrices,
+  isEndTickBy,
   priceToNearTick,
   priceToTick,
   tickToPrice,
@@ -132,5 +133,79 @@ describe("fee boost by prices", () => {
   test("0.8976, 1.1041 to 19.82", () => {
     const feeBoost = feeBoostRateByPrices(0.8976, 1.1041);
     expect(feeBoost).toBe("19.82");
+  });
+});
+
+describe("determine end tick", () => {
+  test("tick -887272 and fee 100 is end tick", () => {
+    const tick = -887272;
+    const fee = "100";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 887272 and fee 100 is end tick", () => {
+    const tick = 887272;
+    const fee = "100";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 0 and fee 100 is not end tick", () => {
+    const tick = 0;
+    const fee = "100";
+    expect(isEndTickBy(tick, fee)).toBeFalsy();
+  });
+
+  test("tick -887270 and fee 500 is end tick", () => {
+    const tick = -887270;
+    const fee = "500";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 887270 and fee 500 is end tick", () => {
+    const tick = 887270;
+    const fee = "500";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 0 and fee 500 is not end tick", () => {
+    const tick = 0;
+    const fee = "500";
+    expect(isEndTickBy(tick, fee)).toBeFalsy();
+  });
+
+  test("tick -887220 and fee 3000 is end tick", () => {
+    const tick = -887220;
+    const fee = "3000";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 887220 and fee 3000 is end tick", () => {
+    const tick = 887220;
+    const fee = "3000";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 0 and fee 3000 is not end tick", () => {
+    const tick = 0;
+    const fee = "3000";
+    expect(isEndTickBy(tick, fee)).toBeFalsy();
+  });
+
+  test("tick -887200 and fee 10000 is end tick", () => {
+    const tick = -887200;
+    const fee = "10000";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 887200 and fee 10000 is end tick", () => {
+    const tick = 887200;
+    const fee = "10000";
+    expect(isEndTickBy(tick, fee)).toBeTruthy();
+  });
+
+  test("tick 0 and fee 10000 is not end tick", () => {
+    const tick = 0;
+    const fee = "10000";
+    expect(isEndTickBy(tick, fee)).toBeFalsy();
   });
 });
