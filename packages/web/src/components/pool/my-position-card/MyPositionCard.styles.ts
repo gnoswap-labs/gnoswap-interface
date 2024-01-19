@@ -21,7 +21,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    width: 290px;
+    min-width: calc(100vw - 32px);
     padding: 12px;
     gap: 12px;
   }
@@ -41,11 +41,6 @@ export const MyPositionCardWrapper = styled.div<Props>`
       .box-left {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
-        ${media.mobile} {
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-start;
-        }
         .visible-badge {
           visibility: hidden; 
         }
@@ -161,6 +156,62 @@ export const MyPositionCardWrapper = styled.div<Props>`
           color: ${({ theme }) => theme.color.text07};
         }
         color: ${({ theme }) => theme.color.text02};
+      }
+    }
+  }
+  .position-wrapper-chart {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    background-color: ${({ theme }) => theme.color.background20};
+    border-radius: 10px;
+    padding: 16px 48px;
+
+    gap: 16px;
+    .position-header {
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
+    }
+    .swap-price {
+      ${mixins.flexbox("row", "center", "center")};
+      ${fonts.body12}
+      gap: 6px;
+      text-align: center;
+      color: ${({ theme }) => theme.color.text10};
+      svg {
+        cursor: pointer;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+      svg:hover * {
+        fill: ${({ theme }) => theme.color.icon07};
+      }
+    }
+    .convert-price {
+      ${mixins.flexbox("row", "center", "center")};
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12}
+      svg {
+        width: 16px;
+        height: 16px;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+      > div {
+        ${mixins.flexbox("row", "center", "center")};
+      }
+      ${media.mobile} {
+        ${mixins.flexbox("column", "center", "center")};
+        > div {
+
+        }
+      }
+    }
+    @media (max-width: 767px) {
+      padding: 16px 24px;
+      .position-header {
+        ${mixins.flexbox("column", "center", "center")};
+        gap: 8px;
       }
     }
   }

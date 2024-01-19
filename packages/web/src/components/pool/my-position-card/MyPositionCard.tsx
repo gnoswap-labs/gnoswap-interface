@@ -1,13 +1,11 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconStaking from "@components/common/icons/IconStaking";
 import IconStar from "@components/common/icons/IconStar";
-import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { tickToPriceStr } from "@utils/swap-utils";
 import React, { useMemo } from "react";
 import { MyPositionCardWrapper } from "./MyPositionCard.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -21,6 +19,13 @@ import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle} from "@constants/skeleton.constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import { ThemeState } from "@states/index";
+import { useAtomValue } from "jotai";
+import IconSwap from "@components/common/icons/IconSwap";
+import IconInfo from "@components/common/icons/IconInfo";
+import RangeBadge from "@components/common/range-badge/RangeBadge";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -33,7 +38,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   breakpoint,
   loading,
 }) => {
+  const { width } = useWindowSize();
   const { tokenPrices } = useTokenData();
+  const themeKey = useAtomValue(ThemeState.themeKey);
 
   const tokenA = useMemo(() => {
     return position.pool.tokenA;
@@ -43,6 +50,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return position.pool.tokenB;
   }, [position.pool.tokenB]);
 
+  const bins = useMemo(() => {
+    return position.pool.bins || [];
+  }, [position.pool.bins]);
+
+  const currentTick = useMemo(() => {
+    return position.pool.currentTick || null;
+  }, [position.pool.currentTick]);
+
+  const price = useMemo(() => {
+    return position.pool.price || 1;
+  }, [position.pool.price]);
+
   const inRange = useMemo(() => {
     const { tickLower, tickUpper, pool } = position;
     const currentTick = pool.currentTick;
@@ -51,16 +70,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return true;
   }, [position]);
-
-  const minTickLabel = useMemo(() => {
-    const minPrice = tickToPriceStr(position.tickLower, 2);
-    return `1 ${tokenA.symbol} = ${minPrice} ${tokenB.symbol}`;
-  }, [position.tickLower, tokenA.symbol, tokenB.symbol]);
-
-  const maxTickLabel = useMemo(() => {
-    const maxPrice = tickToPriceStr(position.tickUpper, 2);
-    return `1 ${tokenA.symbol} = ${maxPrice} ${tokenB.symbol}`;
-  }, [position.tickUpper, tokenA.symbol, tokenB.symbol]);
 
   const tokenABalanceUSD = useMemo(() => {
     const tokenAUSD = Number(tokenPrices[tokenA.priceId]?.usd || "1");
@@ -148,7 +157,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
      */
   }, []);
 
-
+  console.log(width - (width > 767 ? 102 : 224), width, width > 767 ? 102 : 224);
+  
   return (
     <MyPositionCardWrapper type={inRange}>
       <div className="box-title">
@@ -190,50 +200,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               className={!position.staked ? "visible-badge" : ""}
             />
           </div>
-          <div className="mobile-wrap">
-            <RangeBadge
-              status={
-                inRange
-                  ? RANGE_STATUS_OPTION.IN
-                  : RANGE_STATUS_OPTION.OUT
-              }
-            />
-          </div>
-        </div>
-        <div className="min-max">
-          {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-            <span
-              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
-            />
-          </SkeletonEarnDetailWrapper>}
-          {!loading && breakpoint !== DEVICE_TYPE.MOBILE ? (
-            <>
-              <span className="symbol-text">Min</span>
-              <span className="token-text">
-                {minTickLabel}
-              </span>
-              <span className="symbol-text">{"<->"}</span>
-              <span className="symbol-text">Max</span>
-              <span className="token-text">
-                {maxTickLabel}
-              </span>
-            </>
-          ) : (!loading &&
-            <>
-              <div className="min-mobile">
-                <span className="symbol-text">Min</span>
-                <span className="token-text">
-                  {minTickLabel} {"<->"}
-                </span>
-              </div>
-              <div className="max-mobile">
-                <span className="symbol-text">Max</span>
-                <span className="token-text">
-                  {maxTickLabel}
-                </span>
-              </div>
-            </>
-          )}
         </div>
       </div>
       <div className="info-wrap">
@@ -249,7 +215,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </Tooltip>}
         </div>
         <div className="info-box">
-          <span className="symbol-text">Total Rewards</span>
+          <span className="symbol-text">Daily Earnings</span>
           {!loading && totalRewardInfo ? (
             <Tooltip placement="top" FloatingContent={
               <div>
@@ -272,7 +238,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </SkeletonEarnDetailWrapper>}
         </div>
         <div className="info-box">
-          <span className="symbol-text">Estimated APR</span>
+          <span className="symbol-text">Claimable Rewards</span>
           {aprRewardInfo && !loading ? (
             <Tooltip placement="top" FloatingContent={
               <div><MyPositionAprContent rewardInfo={aprRewardInfo} /></div>
@@ -291,6 +257,47 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               css={pulseSkeletonStyle({ w: "170px", h: 22 })}
             />
           </SkeletonEarnDetailWrapper>}
+        </div>
+      </div>
+      <div className="position-wrapper-chart">
+        <div className="position-header">
+          <div></div>
+          <div className="swap-price">
+            1 GNS = 0.956937 GNOT
+            <div>
+              <IconSwap />
+            </div>
+          </div>
+          <div className="range-badge">
+            <RangeBadge
+              status={
+                inRange
+                  ? RANGE_STATUS_OPTION.IN
+                  : RANGE_STATUS_OPTION.OUT
+              }
+            />
+          </div>
+        </div>
+        <PoolGraph
+          tokenA={tokenA}
+          tokenB={tokenB}
+          bins={bins}
+          currentTick={currentTick}
+          width={Math.min(width - (width > 767 ? 224 : 102), 1216)}
+          height={150}
+          mouseover
+          themeKey={themeKey}
+          position="top"
+          offset={40}
+          poolPrice={price}
+        />
+        <div className="convert-price">
+          <div>
+            1 GNS = 0.956937(<span>-20%</span>)&nbsp;<IconInfo />&nbsp;
+          </div>
+          <div>
+          ~ 1.097929(<span>+14%</span>)&nbsp;<IconInfo />&nbsp;GNOT
+          </div>
         </div>
       </div>
     </MyPositionCardWrapper>

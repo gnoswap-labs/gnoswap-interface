@@ -19,10 +19,52 @@ export const PoolPairInfoContentWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 24px 36px;
-    gap: 16px;
+    gap: 10px;
     flex: 1 0 0;
     &:not(:first-of-type) {
       border-left: 1px solid ${({ theme }) => theme.color.border02};
+    }
+    .image-logo {
+      width: 20px;
+      height: 20px;
+    }
+    .section-image {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 4px;
+      color: ${({ theme }) => theme.color.text10};
+      > span {
+        > span {
+          display: inline;
+          ${media.tablet} {
+            display: none;
+          }
+          ${media.tabletMiddle} {
+            display: inline;
+          }
+        }
+      }
+    }
+    .divider {
+      height: 12px;
+      border-left: 1px solid ${({ theme }) => theme.color.border02};
+      ${media.tabletMiddle} {
+        display: none;
+      }
+    }
+    .wrapper-value {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 8px;
+      > div {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        margin-top: 8px;
+        gap: 4px;
+        span {
+          font-weight: 700;
+        }
+        svg {
+          width: 6px;
+        }
+      }
     }
     ${media.tablet} {
       padding: 24px;
@@ -37,26 +79,38 @@ export const PoolPairInfoContentWrapper = styled.div`
     }
   }
 
+  .negative {
+    color: ${({ theme }) => theme.color.red01};
+  }
+  .positive {
+    color: ${({ theme }) => theme.color.green01};
+  }
   .section-info {
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 16px;
-    @media (min-width: 769px) and (max-width: 800px) {
-      gap: 8px;
+    gap: 10px;
+    ${media.tabletMiddle} {
+      ${mixins.flexbox("column", "center", "flex-start")};
+      &.flex-row {
+        ${mixins.flexbox("row", "center", "flex-start")};
+      }
     }
-    .negative {
-      color: ${({ theme }) => theme.color.red01};
-    }
-    .positive {
-      color: ${({ theme }) => theme.color.green01};
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "flex-start")};
     }
   }
 
   .apr-info {
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 24px;
-    .content-wrap {
+    gap: 10px;
+    ${media.tabletMiddle} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+    }
+    ${media.mobile} {
       ${mixins.flexbox("row", "center", "flex-start")};
-      gap: 16px;
+    }
+    .content-wrap {
+      ${mixins.flexbox("", "center", "flex-start")};
+      gap: 8px;
       .apr-value {
         color: ${({ theme }) => theme.color.text10};
       }
@@ -125,4 +179,10 @@ export const AprDivider = styled.div`
   width: 1px;
   height: 12px;
   background: ${({ theme }) => theme.color.background12};
+  ${media.tabletMiddle} {
+    display: none;
+  }
+  ${media.mobile} {
+    ${mixins.flexbox("column", "center", "flex-start")};
+  }
 `;

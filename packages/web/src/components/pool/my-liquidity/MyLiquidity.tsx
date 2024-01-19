@@ -63,7 +63,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
       ) : (
         <>
           <div className="slider-wrap" ref={divRef} onScroll={onScroll}>
-            <div className={`box-slider ${positions.length === 1 ? "full-width" : positions.length === 2 ? "w-50" : ""}`}>
+            <div className={"box-slider full-width"}>
               {positions.map((position: PoolPositionModel, index: number) => (
                 <MyPositionCard
                   position={position}

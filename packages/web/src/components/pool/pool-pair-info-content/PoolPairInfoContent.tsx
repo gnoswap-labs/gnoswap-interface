@@ -9,6 +9,8 @@ import { numberToFormat } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatUsdNumber } from "@utils/stake-position-utils";
+import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -36,14 +38,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return `${pool.apr}%`;
   }, [pool.apr]);
 
-  const liquidityChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.tvlChange, 2)}%`;
-  }, [pool.tvlChange]);
-
-  const volumeChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.volumeChange, 2)}%`;
-  }, [pool.volumeChange]);
-
   const feeChangedStr = useMemo((): string => {
     return `${numberToFormat(pool.feeChange, 2)}%`;
   }, [pool.feeChange]);
@@ -61,36 +55,58 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140} )}
           />
           </SkeletonEarnDetailWrapper>}
-        {!loading && <strong>{liquidityValue}</strong>}
+        {!loading && <div className="wrapper-value">
+          <strong>{liquidityValue}</strong>
+          <div>
+            <IconTriangleArrowUpV2 />  <span className="positive"> 3.52%</span>
+          </div>
+        </div>}
         <div className="section-info">
-          <span>24h Change</span>
+          <div className="section-image">
+            <MissingLogo
+              symbol={pool?.tokenA?.symbol}
+              url={pool?.tokenA?.logoURI}
+              width={20}
+              className="image-logo"
+            />
+            <span>4.14K <span>GNS</span> (25%)</span>
+          </div>
+          <div className="divider"></div>
+          <div className="section-image">
+            <MissingLogo
+              symbol={pool?.tokenB?.symbol}
+              url={pool?.tokenB?.logoURI}
+              width={20}
+              className="image-logo"
+            />
+            <span>4.14K <span>GNS</span> (25%)</span>
+          </div>
           {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span
               css={pulseSkeletonStyle({ h: 22, w:"50px"})}
             />
             </SkeletonEarnDetailWrapper>}
-          {!loading && pool.tvlChange >= 0 ? (
-            <span className="positive">+{liquidityChangedStr}</span>
-          ) : (!loading &&
-            <span className="negative">-{liquidityChangedStr}</span>
-          )}
         </div>
       </section>
       <section>
         <h4>Volume (24h)</h4>
-        {!loading &&<strong>{volumeValue}</strong>}
+        {!loading && <div className="wrapper-value">
+          <strong>{volumeValue}</strong>
+          <div>
+            <IconTriangleArrowUpV2 />  <span className="positive"> 3.52%</span>
+          </div>
+        </div>}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
               css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140})}
             />
             </SkeletonEarnDetailWrapper>}
-        <div className="section-info">
-          <span>24h Change</span>
-          {!loading && pool.volumeChange >= 0 ? (
-            <span className="positive">+{volumeChangedStr}</span>
-          ) : (!loading &&
-            <span className="negative">-{volumeChangedStr}</span>
-          )}
+        <div className="section-info flex-row">
+          <span>All-Time Volume</span>
+          <div className="section-image">
+            <span>12.34M</span>
+          </div>
+
           {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
             <span
               css={pulseSkeletonStyle({ h: 22, w:"50px"})}

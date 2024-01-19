@@ -40,7 +40,7 @@ const MyLiquidityContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.floor(currentScrollX / 240) + 1);
+      setCurrentIndex(Math.floor(currentScrollX / divRef.current.offsetWidth) + 1);
     }
   };
 

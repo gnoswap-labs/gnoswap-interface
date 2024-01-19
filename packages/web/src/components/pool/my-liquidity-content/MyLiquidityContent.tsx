@@ -216,7 +216,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         </SkeletonEarnDetailWrapper>}
       </section>
       <section>
-        <h4>Daily Earnings</h4>
+        <h4>Total Daily Earnings</h4>
         {!loading && dailyEarningRewardInfo ? (
           <Tooltip
             placement="top"
@@ -241,7 +241,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         {breakpoint === DEVICE_TYPE.MOBILE ? (
           <div className="mobile-wrap">
             <div className="column-wrap">
-              <h4>Claimable Rewards</h4>
+              <h4>Total Claimable Rewards</h4>
               {!loading && <div className="claim-wrap">
                 {claimableRewardInfo || unclaimedRewardInfo ? (
                   <span className="content-value">
@@ -276,7 +276,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           </div>
         ) : (
           <>
-            <h4>Claimable Rewards</h4>
+            <h4>Total Claimable Rewards</h4>
             <div className="claim-wrap">
               {!loading && (claimableRewardInfo || unclaimedRewardInfo) ? (
                 <span className="content-value disabled">
