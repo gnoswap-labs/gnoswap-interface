@@ -32,7 +32,7 @@ describe("alpha router", () => {
 
   beforeEach(() => {
     provider = new GnoJSONRPCProvider(GNO_PROVIDER_RPC[chainId]);
-    onChainQuoteProvider = new OnChainQuoteProvider(chainId, provider);
+    onChainQuoteProvider = new OnChainQuoteProvider(chainId, provider, "");
     gasPriceProvider = new OnChainGasPriceProvider();
     portionProvider = new PortionProvider();
     poolProvider = new V3PoolProvider(ChainId.DEV_GNOSWAP);
@@ -97,7 +97,11 @@ describe("alpha router", () => {
 
   test("swap bar to wgnot, EXACT_OUT 100_000_000", async () => {
     const provider = new GnoJSONRPCProvider(GNO_PROVIDER_RPC[chainId]);
-    const onChainQuoteProvider = new OnChainQuoteProvider(chainId, provider);
+    const onChainQuoteProvider = new OnChainQuoteProvider(
+      chainId,
+      provider,
+      "",
+    );
     const gasPriceProvider = new OnChainGasPriceProvider();
     const portionProvider = new PortionProvider();
     const poolProvider = new V3PoolProvider(ChainId.DEV_GNOSWAP);
@@ -141,7 +145,11 @@ describe("alpha router", () => {
 
   test("swap bar to baz, EXACT_OUT 100_000_000", async () => {
     const provider = new GnoJSONRPCProvider(GNO_PROVIDER_RPC[chainId]);
-    const onChainQuoteProvider = new OnChainQuoteProvider(chainId, provider);
+    const onChainQuoteProvider = new OnChainQuoteProvider(
+      chainId,
+      provider,
+      "",
+    );
     const gasPriceProvider = new OnChainGasPriceProvider();
     const portionProvider = new PortionProvider();
     const poolProvider = new V3PoolProvider(ChainId.DEV_GNOSWAP);

@@ -207,8 +207,6 @@ const DEFAULT_BATCH_RETRIES = 2;
  * @class OnChainQuoteProvider
  */
 
-const PACKAGE_ROUTER_PATH = "gno.land/r/demo/router";
-
 export class OnChainQuoteProvider implements IOnChainQuoteProvider {
   /**
    * Creates an instance of OnChainQuoteProvider.
@@ -224,7 +222,11 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
    * @param blockNumberConfig Parameters for adjusting which block we get quotes from, and how to handle block header not found errors.
    * @param [quoterAddressOverride] Overrides the address of the quoter contract to use.
    */
-  constructor(protected chainId: ChainId, protected provider: GnoProvider) {}
+  constructor(
+    protected chainId: ChainId,
+    protected provider: GnoProvider,
+    private swapEndpoint: string,
+  ) {}
 
   public async getQuotesManyExactIn<TRoute extends V3Route>(
     inputToken: Currency,
@@ -295,19 +297,37 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
         .multipliedBy(percent)
         .dividedBy(100)
         .toFixed(0);
-      const params = makeABCIParams("DrySwapRoute", [
-        inputToken.address || "",
-        outputToken.address || "",
-        adjustAmountRaw,
-        exactType,
-        routesQuery,
-        "100",
-      ]);
 
-      const result = await this.provider
-        .evaluateExpression(PACKAGE_ROUTER_PATH, params)
-        .then(evaluateExpressionToNumber)
-        .catch(() => 0);
+      const url = this.swapEndpoint;
+      const params = [
+        "routeArr=" + routesQuery,
+        "swapType=" + exactType,
+        "amountSpecified=" + adjustAmountRaw,
+      ];
+      const paramStr = params.join("&");
+
+      if (url === "") {
+        return {
+          amount: CurrencyAmount.fromRawAmount(inputToken, amountRaw),
+          quote: BigNumber(0),
+          sqrtPriceX96AfterList: [BigNumber(1)],
+          initializedTicksCrossedList: [1],
+          gasEstimate: BigNumber(1),
+        };
+      }
+
+      const result = await fetch(url + "?" + paramStr)
+        .then(async response => {
+          const json = await response.json();
+          if (json.error === undefined || json.error === true) {
+            return 0;
+          }
+          return BigNumber(json["resultAmount"] || 0).toNumber();
+        })
+        .catch(e => {
+          console.log("err: ", e);
+          return 0;
+        });
 
       return {
         amount: CurrencyAmount.fromRawAmount(inputToken, amountRaw),

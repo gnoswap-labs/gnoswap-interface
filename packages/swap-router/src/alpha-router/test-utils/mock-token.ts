@@ -30,6 +30,22 @@ export const BAZ_DEV = new Token(
   "BAZ",
 );
 
+export const GNS_DEV = new Token(
+  ChainId.DEV_GNOSWAP,
+  "gno.land/r/demo/gns",
+  6,
+  "GNS",
+  "GNS",
+);
+
+export const QUX_DEV = new Token(
+  ChainId.DEV_GNOSWAP,
+  "gno.land/r/demo/qux",
+  6,
+  "QUX",
+  "QUX",
+);
+
 const tokens = [
   {
     type: "grc20",

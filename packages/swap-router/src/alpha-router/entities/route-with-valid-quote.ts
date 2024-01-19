@@ -108,7 +108,14 @@ export class V3RouteWithValidQuote implements IV3RouteWithValidQuote {
     this.sqrtPriceX96AfterList = sqrtPriceX96AfterList;
     this.initializedTicksCrossedList = initializedTicksCrossedList;
     this.quoterGasEstimate = quoterGasEstimate;
-    this.quote = CurrencyAmount.fromRawAmount(quoteToken, rawQuote.toString());
+    try {
+      this.quote = CurrencyAmount.fromRawAmount(
+        quoteToken,
+        Number(rawQuote.toString()),
+      );
+    } catch (e) {
+      this.quote = CurrencyAmount.fromRawAmount(quoteToken, 0);
+    }
     this.percent = percent;
     this.route = route;
     this.gasModel = gasModel;

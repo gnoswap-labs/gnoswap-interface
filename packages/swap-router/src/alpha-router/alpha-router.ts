@@ -222,7 +222,7 @@ export class AlphaRouter
     onChainQuoteProvider,
     gasPriceProvider,
     portionProvider,
-    v3PoolProvider
+    v3PoolProvider,
   }: AlphaRouterParams) {
     this.chainId = chainId;
     this.provider = provider || new GnoJSONRPCProvider(GNO_PROVIDER_RPC[this.chainId]);
@@ -231,7 +231,7 @@ export class AlphaRouter
     if (onChainQuoteProvider) {
       this.onChainQuoteProvider = onChainQuoteProvider;
     } else {
-      this.onChainQuoteProvider = new OnChainQuoteProvider(this.chainId, this.provider);
+      this.onChainQuoteProvider = new OnChainQuoteProvider(this.chainId, this.provider, "");
     }
     
     this.tokenProvider = new TokenProvider(this.chainId);

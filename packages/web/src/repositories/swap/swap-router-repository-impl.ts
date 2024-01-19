@@ -41,6 +41,7 @@ import {
 } from "@gnoswap-labs/swap-router/build/alpha-router/core";
 
 const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
+const SWAP_API_URI = "https://dev.simulate.gnoswap.io/v1/dry_swap_route";
 
 const ROUTING_CONFIG = {
   v3PoolSelection: {
@@ -163,6 +164,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         pools,
       };
     });
+    console.log("estimatedRoutes", estimatedRoutes);
     return {
       amount: `${amount || 0}`,
       estimatedRoutes,
@@ -399,7 +401,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   };
 
   private static createAlphaRouter(chainId: number, provider: GnoProvider) {
-    const onChainQuoteProvider = new OnChainQuoteProvider(chainId, provider);
+    const onChainQuoteProvider = new OnChainQuoteProvider(
+      chainId,
+      provider,
+      SWAP_API_URI,
+    );
     const gasPriceProvider = new OnChainGasPriceProvider();
     const portionProvider = new PortionProvider();
     const poolProvider = new V3PoolProvider(chainId);
