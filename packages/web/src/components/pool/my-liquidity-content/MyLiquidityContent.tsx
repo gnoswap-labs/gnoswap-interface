@@ -8,16 +8,15 @@ import { DEVICE_TYPE } from "@styles/media";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { BalanceTooltipContent } from "../my-position-card/MyPositionCardBalanceContent";
 import { RewardType } from "@constants/option.constant";
 import { MyPositionRewardContent } from "../my-position-card/MyPositionCardRewardContent";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
-import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatUsdNumber } from "@utils/stake-position-utils";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -26,6 +25,7 @@ interface MyLiquidityContentProps {
   isDisabledButton: boolean;
   claimAll: () => void;
   loading: boolean;
+  loadngTransactionClaim: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
@@ -34,6 +34,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   breakpoint,
   claimAll,
   loading,
+  loadngTransactionClaim,
 }) => {
   const { tokenPrices } = useTokenData();
 
@@ -205,19 +206,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     <MyLiquidityContentWrapper>
       <section>
         <h4>Total Balance</h4>
-        {!loading && allBalances ? (
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <div>
-                <BalanceTooltipContent balances={Object.values(allBalances)} />
-              </div>
-            }>
-            <span className="content-value">{totalBalance}</span>
-          </Tooltip>
-        ) : (!loading &&
+        {!loading &&
           <span className="content-value disabled">{totalBalance}</span>
-        )}
+        }
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
             css={pulseSkeletonStyle({h:22, w:"200px",  tabletWidth: 160, smallTableWidth: 140})}
@@ -253,16 +244,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <h4>Claimable Rewards</h4>
               {!loading && <div className="claim-wrap">
                 {claimableRewardInfo || unclaimedRewardInfo ? (
-                  <Tooltip
-                    placement="top"
-                    FloatingContent={<MyPositionClaimContent rewardInfo={claimableRewardInfo} unclaimedRewardInfo={unclaimedRewardInfo} />}
-                  >
-                    <span className="content-value has-tooltip">
-                      {claimableUSD}
-                    </span>
-                  </Tooltip>
+                  <span className="content-value">
+                    {claimableUSD}
+                  </span>
                 ) : (
-                  <span className="content-value has-tooltip disabled">
+                  <span className="content-value disabled">
                     {claimableUSD}
                   </span>
                 )}
@@ -273,9 +259,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   />
                 </SkeletonEarnDetailWrapper>}
             </div>
-            <Button
+            {claimable && <Button
+              className="button-claim"
               disabled={!claimable}
-              text="Claim All"
+              text={loadngTransactionClaim ? "" : "Claim All"}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 width: 86,
@@ -283,24 +270,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 padding: "10px 16px",
                 fontType: "p1",
               }}
+              leftIcon={loadngTransactionClaim ? <LoadingSpinner className="loading-button"/> : undefined}
               onClick={claimAll}
-            />
+            />}
           </div>
         ) : (
           <>
             <h4>Claimable Rewards</h4>
             <div className="claim-wrap">
               {!loading && (claimableRewardInfo || unclaimedRewardInfo) ? (
-                <Tooltip
-                  placement="top"
-                  FloatingContent={<MyPositionClaimContent rewardInfo={claimableRewardInfo} unclaimedRewardInfo={unclaimedRewardInfo} />}
-                >
-                  <span className="content-value has-tooltip">
-                    {claimableUSD}
-                  </span>
-                </Tooltip>
+                <span className="content-value disabled">
+                  {claimableUSD}
+                </span>
               ) : (!loading &&
-                <span className="content-value has-tooltip disabled">
+                <span className="content-value disabled">
                   {claimableUSD}
                 </span>
               )}
@@ -309,9 +292,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   css={pulseSkeletonStyle({h:22, w:"200px",  tabletWidth: 160, smallTableWidth: 140})}
                 />
               </SkeletonEarnDetailWrapper>}
-              <Button
+              {claimable && <Button
+                className="button-claim"
                 disabled={!claimable}
-                text="Claim All"
+                text={loadngTransactionClaim ? "" : "Claim All"}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   height: 36,
@@ -319,7 +303,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   fontType: "p1",
                 }}
                 onClick={claimAll}
-              />
+                leftIcon={loadngTransactionClaim ? <LoadingSpinner className="loading-button"/> : undefined}
+              />}
             </div>
           </>
         )}

@@ -4,7 +4,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconClose from "@components/common/icons/IconCancel";
 import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { numberToUSD } from "@utils/number-utils";
+import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import React, { useCallback } from "react";
 import { Divider, UnstakePositionModalWrapper } from "./UnstakePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -68,7 +68,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                       />
                       <div>{rewardInfo.token.symbol}</div>
                     </div>
-                    <div className="value">{rewardInfo.amount}</div>
+                    <div className="value">{formatNumberToLocaleString(rewardInfo.amount)}</div>
                   </div>
                   <div className="sub-value">{rewardInfo.amountUSD}</div>
                 </div>

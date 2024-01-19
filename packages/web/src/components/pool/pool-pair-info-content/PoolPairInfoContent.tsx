@@ -2,15 +2,11 @@ import React, { useMemo } from "react";
 import {
   AprDivider,
   PoolPairInfoContentWrapper,
-  TooltipContent,
 } from "./PoolPairInfoContent.styles";
-import Tooltip from "@components/common/tooltip/Tooltip";
 import IconStar from "@components/common/icons/IconStar";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 interface PoolPairInfoContentProps {
@@ -22,32 +18,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
 }) => {
-  const tokenABalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
-  }, [pool.tokenA, pool.tokenABalance]);
-
-  const tokenBBalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenB, pool.tokenBBalance) || 0;
-  }, [pool.tokenB, pool.tokenBBalance]);
-
-  const depositRatio = useMemo(() => {
-    const sumOfBalances = tokenABalance + tokenBBalance;
-    if (sumOfBalances === 0) {
-      return 0.5;
-    }
-    return tokenABalance / sumOfBalances;
-  }, [tokenABalance, tokenBBalance]);
-
-  const depositRatioStrOfTokenA = useMemo(() => {
-    const depositStr = `${Math.round(depositRatio * 100)}%`;
-    return `${pool.tokenA.symbol} (${depositStr})`;
-  }, [depositRatio, pool.tokenA.symbol]);
-
-  const depositRatioStrOfTokenB = useMemo(() => {
-    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
-    return `${pool.tokenB.symbol} (${depositStr})`;
-  }, [depositRatio, pool.tokenB.symbol]);
-
   const liquidityValue = useMemo((): string => {
     return formatUsdNumber(Number(pool.tvl).toString(), undefined, true);
   }, [pool.tvl]);
@@ -85,44 +55,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   return (
     <PoolPairInfoContentWrapper>
       <section>
-        <h4>Liquidity</h4>
-        <Tooltip
-          placement="top"
-          FloatingContent={
-            !loading ? <TooltipContent>
-              <span className="title">Composition</span>
-              <div className="list">
-                <div className="coin-info">
-                  <MissingLogo symbol={pool.tokenA.symbol} url={pool.tokenA.logoURI} className="token-logo" width={20} mobileWidth={20}/>
-                  <span className="content">
-                    {depositRatioStrOfTokenA}
-                  </span>
-                </div>
-                <span className="content">
-                  {numberToFormat(tokenABalance, pool.tokenA.decimals)}
-                </span>
-              </div>
-              <div className="list">
-                <div className="coin-info">
-                  <MissingLogo symbol={pool.tokenB.symbol} url={pool.tokenB.logoURI} className="token-logo" width={20} mobileWidth={20}/>
-                  <span className="content">
-                    {depositRatioStrOfTokenB}
-                  </span>
-                </div>
-                <span className="content">
-                  {numberToFormat(tokenBBalance, pool.tokenB.decimals)}
-                </span>
-              </div>
-            </TooltipContent> : null
-          }
-        >
-          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140} )}
-            />
-            </SkeletonEarnDetailWrapper>}
-          {!loading && <strong className="has-tooltip">{liquidityValue}</strong>}
-        </Tooltip>
+        <h4>TVL</h4>
+        {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+          <span
+            css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140} )}
+          />
+          </SkeletonEarnDetailWrapper>}
+        {!loading && <strong>{liquidityValue}</strong>}
         <div className="section-info">
           <span>24h Change</span>
           {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>

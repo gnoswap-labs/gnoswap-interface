@@ -19,6 +19,7 @@ interface MyLiquidityProps {
   claimAll: () => void;
   availableRemovePosition: boolean;
   loading: boolean;
+  loadngTransactionClaim: boolean;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -34,6 +35,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   claimAll,
   availableRemovePosition,
   loading,
+  loadngTransactionClaim,
 }) => {
   return (
     <MyLiquidityWrapper>
@@ -50,6 +52,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           isDisabledButton={isSwitchNetwork || !connected}
           claimAll={claimAll}
           loading={loading}
+          loadngTransactionClaim={loadngTransactionClaim}
         />
       </div>
       {positions.length > 0 && <PoolDivider />}

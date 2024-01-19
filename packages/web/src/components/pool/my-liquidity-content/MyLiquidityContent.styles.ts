@@ -38,6 +38,19 @@ export const MyLiquidityContentWrapper = styled.div`
         min-width: 300px;
       }
     }
+    .button-claim {
+      min-width: 86px;
+    }
+    .loading-button {
+      width: 20px;
+      height: 20px;
+      background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
+      &::before {
+        width: 14.8px;
+        height: 14.8px;
+        background-color: ${({ theme }) => theme.color.background04Hover};
+      }
+    }
   }
 
   h4 {

@@ -20,6 +20,7 @@ const MyLiquidityContainer: React.FC = () => {
   const { getPositionsByPoolId, loading } = usePositionData();
   const { isLoadingCommon } = useLoading();
   const { claimAll } = usePosition(positions);
+  const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -44,12 +45,16 @@ const MyLiquidityContainer: React.FC = () => {
   };
 
   const claimAllReward = useCallback(() => {
+    setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response !== null) {
+        setLoadingTransactionClaim(false);
         router.reload();
+      } else {
+        setLoadingTransactionClaim(false);
       }
     });
-  }, [claimAll, router]);
+  }, [claimAll, router, setLoadingTransactionClaim]);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
@@ -75,6 +80,7 @@ const MyLiquidityContainer: React.FC = () => {
       claimAll={claimAllReward}
       availableRemovePosition={availableRemovePosition}
       loading={loading || isLoadingCommon}
+      loadngTransactionClaim={loadngTransactionClaim}
     />
   );
 };

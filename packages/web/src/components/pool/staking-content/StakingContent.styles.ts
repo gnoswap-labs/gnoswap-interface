@@ -24,12 +24,13 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     gap: 5px;
     position: relative;
     color: ${({ theme }) => theme.color.text01};
-    ${fonts.body4}
+    ${fonts.body6}
     ${media.tablet} {
       ${fonts.body8}
+      font-size: 17px;
     }
     ${media.mobile} {
-      ${fonts.body10}
+      ${fonts.body12}
       align-items: flex-start;
       flex-wrap: wrap;
     }
