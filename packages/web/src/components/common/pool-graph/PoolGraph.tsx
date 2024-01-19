@@ -3,13 +3,13 @@ import { PoolGraphTooltipWrapper, PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
-import { toUnitFormat } from "@utils/number-utils";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -252,12 +252,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     };
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
     const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
+    console.log(bin, tickOfPrices[minTick], tokenARange);
     
     setTooltipInfo({
       tokenA: tokenA,
       tokenB: tokenB,
-      tokenAAmount: tokenAAmountStr ? toUnitFormat(tokenAAmountStr) : "-",
-      tokenBAmount: tokenBAmountStr ? toUnitFormat(tokenBAmountStr) : "-",
+      tokenAAmount: tokenAAmountStr ? convertToKMB(`${tokenAAmountStr}`) : "-",
+      tokenBAmount: tokenBAmountStr ? convertToKMB(`${tokenBAmountStr}`) : "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: tickOfPrices[currentTick || 0],
@@ -289,7 +290,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   useEffect(() => {
     if (bins.length > 0) {
       new Promise<{ [key in number]: string }>(resolve => {
-        const tickOfPrices = bins.slice(10, 30).flatMap(bin => {
+        const tickOfPrices = bins.flatMap(bin => {
           const minTick = bin.minTick;
           const maxTick = bin.maxTick;
           return [minTick, maxTick, -minTick, -maxTick];
@@ -381,7 +382,7 @@ interface PoolGraphBinTooptipProps {
   tooltipInfo: TooltipInfo | null;
 }
 
-const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
+export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
   tooltipInfo,
 }) => {
   const tokenAPriceString = useMemo(() => {

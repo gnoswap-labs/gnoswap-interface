@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
 import IconRemove from "../icons/IconRemove";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 export interface SelectPriceRangeCutomControllerProps {
   title: string;
@@ -34,9 +35,10 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
   increase,
   selectedFullRange,
   onSelectCustomRange,
-  currentPriceStr,
   setIsChangeMinMax,
   priceRangeType,
+  token0Symbol,
+  token1Symbol,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -90,7 +92,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     }
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
     changePrice(nearPrice);
-    if (priceRangeType !== "Active") {
+    if (priceRangeType !== "Active" && priceRangeType !== "Passive") {
       setIsChangeMinMax(true);
     }
     if (nearPrice > 1) {
@@ -137,6 +139,8 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     }
   }, [value]);
   
+  const priceValueString = `1 ${token0Symbol} = ${value === "∞" ? value : convertToKMB(Number(value).toFixed(4), 4)} ${token1Symbol}`;
+
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
@@ -158,7 +162,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
       </div>
 
       <div className="token-info-wrapper">
-        <span className="token-info">{currentPriceStr.replace(/(\d+\.\d+)/, Number(value).toFixed(4))}</span>
+        <span className="token-info">{priceValueString}</span>
       </div>
     </SelectPriceRangeCutomControllerWrapper>
   );
