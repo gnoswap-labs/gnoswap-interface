@@ -306,7 +306,7 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       ];
       const paramStr = params.join("&");
 
-      if (url === "") {
+      if (amountRaw === "0" || url === "") {
         return {
           amount: CurrencyAmount.fromRawAmount(inputToken, amountRaw),
           quote: BigNumber(0),
@@ -362,18 +362,18 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       return routeWithQuotes;
     };
 
-    const routesWithQuotes: RouteWithQuotes<TRoute>[] = await Promise.all(
-      routes.map(route =>
-        callRouteResultsPromise(
-          inputToken,
-          outputToken,
-          amount.toFixed(),
-          functionName === "quoteExactInput" ? "EXACT_IN" : "EXACT_OUT",
-          route,
-          percents,
-        ),
-      ),
-    );
+    const routesWithQuotes: RouteWithQuotes<TRoute>[] = [];
+    for (const route of routes) {
+      const result = await callRouteResultsPromise(
+        inputToken,
+        outputToken,
+        amount.toFixed(),
+        functionName === "quoteExactInput" ? "EXACT_IN" : "EXACT_OUT",
+        route,
+        percents,
+      );
+      routesWithQuotes.push(result);
+    }
 
     return { routesWithQuotes, blockNumber: BigNumber(0) };
   }
