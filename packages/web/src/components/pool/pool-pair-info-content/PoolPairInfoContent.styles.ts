@@ -23,8 +23,8 @@ export const ContentWrapper = styled.div`
     }
     .swap-price {
       ${mixins.flexbox("row", "center", "center")};
-      ${fonts.body12}
-      gap: 6px;
+      ${fonts.body11}
+      gap: 4px;
       text-align: center;
       color: ${({ theme }) => theme.color.text10};
       svg {
@@ -57,6 +57,12 @@ export const ContentWrapper = styled.div`
 
         }
       }
+    }
+    .image-logo {
+      width: 20px;
+    }
+    .divider {
+      margin: 0 6px;
     }
     @media (max-width: 767px) {
       padding: 16px 24px;
@@ -97,7 +103,9 @@ export const PoolPairInfoContentWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
       color: ${({ theme }) => theme.color.text10};
+      
       > span {
+        ${fonts.body11}
         > span {
           display: inline;
           ${media.tablet} {
@@ -123,6 +131,9 @@ export const PoolPairInfoContentWrapper = styled.div`
         ${mixins.flexbox("row", "center", "flex-start")};
         margin-top: 8px;
         gap: 4px;
+        strong {
+          font-weight: 700;
+        }
         span {
           font-weight: 700;
         }
@@ -177,6 +188,7 @@ export const PoolPairInfoContentWrapper = styled.div`
       ${mixins.flexbox("", "center", "flex-start")};
       gap: 8px;
       .apr-value {
+        ${fonts.body11}
         color: ${({ theme }) => theme.color.text10};
       }
     }
@@ -193,6 +205,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   strong {
     ${mixins.flexbox("row", "center", "flex-start")};
     ${fonts.body2};
+    font-weight: 700;
     ${media.tablet} {
       ${fonts.body4};
     }

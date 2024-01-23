@@ -12,7 +12,6 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import IconSwap from "@components/common/icons/IconSwap";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
@@ -161,10 +160,21 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="position-header">
             <div>Current Price</div>
             <div className="swap-price">
+              <MissingLogo
+                symbol={pool?.tokenA?.symbol}
+                url={pool?.tokenA?.logoURI}
+                width={20}
+                className="image-logo"
+              />
               1 GNS = 0.956937 GNOT
-              <div>
-                <IconSwap />
-              </div>
+              <AprDivider className="divider"/>
+              <MissingLogo
+                symbol={pool?.tokenB?.symbol}
+                url={pool?.tokenB?.logoURI}
+                width={20}
+                className="image-logo"
+              />
+              1 GNOT = 0.07 GNS
             </div>
           </div>
           <PoolGraph

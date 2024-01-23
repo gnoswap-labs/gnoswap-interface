@@ -15,8 +15,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ availableRemovePo
     <HeaderWrapper>
       <h2>My Positions</h2>
       <div className="button-wrap">
-        <Button
-          disabled={!availableRemovePosition}
+        {availableRemovePosition && <Button
           text="Remove Position"
           onClick={handleClickRemovePosition}
           style={{
@@ -25,7 +24,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ availableRemovePo
             padding: "10px 16px",
             fontType: "p1",
           }}
-        />
+        />}
         <Button
           text="Add Position"
           onClick={handleClickAddPosition}
