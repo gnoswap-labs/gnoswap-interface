@@ -40,7 +40,7 @@ const RemovePositionModalContainer = ({
         broadcastPending();
         setTimeout(() => {
           broadcastSuccess(makeBroadcastRemoveMessage("success"));
-          router.back();
+          router.push(router.asPath.replace("/remove", ""));
           clearModal();
         }, 1000);
       } else if (result.code === 4000 && result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {

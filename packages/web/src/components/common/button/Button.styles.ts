@@ -92,6 +92,7 @@ export const ButtonWrapper = styled.button<ButtonStyleProps>`
 `;
 
 export const StyledText = styled.span<ButtonStyleProps>`
+  white-space: nowrap;
   ${({ fontType }) => fonts[fontType ?? "body9"]};
   color: ${({ theme, textColor, hierarchy }) => {
     if (hierarchy === ButtonHierarchy.Primary) return theme.color.text09;

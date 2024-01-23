@@ -17,6 +17,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     align-self: stretch;
   }
   .left {
+    width: 320px;
     ${mixins.flexbox("row", "center", "flex-start")};
     ${media.tabletMiddle} {
       justify-content: space-between;
@@ -60,7 +61,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         height: 55px;
         border-left: 1px solid ${({ theme }) => theme.color.border08};
         ${media.tabletMiddle} {
-          height: 150px;
+          height: 100px;
         }
       }
       &-not-active {
@@ -124,6 +125,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     }
   }
   .contents-wrap {
+    flex: 1;
     ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
@@ -132,17 +134,15 @@ export const StakingContentCardWrapper = styled.div<Props>`
   }
 
   .contents {
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
     ${mixins.flexbox("row", "center", "space-between")};
-    width: 800px;
     padding: 12px 16px;
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border12};
     background-color: ${({ theme }) => theme.color.backgroundOpacity2};
-    ${media.tablet} {
-      width: 600px;
-    }
     ${media.tabletMiddle} {
-      width: 100%;
       padding: 11px 16px;
       gap: 12px;
     }

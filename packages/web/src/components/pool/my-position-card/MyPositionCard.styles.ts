@@ -140,6 +140,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
       .content-text {
         ${mixins.flexbox("row", "center", "flex-start")};
         ${fonts.body2};
+        font-weight: 700;
         ${media.tablet} {
           ${fonts.body4};
           svg {
@@ -193,6 +194,10 @@ export const MyPositionCardWrapper = styled.div<Props>`
       }
       svg:hover * {
         fill: ${({ theme }) => theme.color.icon07};
+      }
+      .image-logo {
+        width: 20px;
+        height: 20px;
       }
     }
     .convert-price {
@@ -309,4 +314,10 @@ export const TooltipDivider = styled.div`
   height: 1px;
   width: 100%;
   background: ${({ theme }) => theme.color.border01};
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 251px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

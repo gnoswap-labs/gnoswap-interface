@@ -20,11 +20,11 @@ export const ContentWrapper = styled.div`
       gap: 8px;
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body12}
+      position: relative;
     }
     .swap-price {
       ${mixins.flexbox("row", "center", "center")};
       ${fonts.body11}
-      gap: 4px;
       text-align: center;
       color: ${({ theme }) => theme.color.text10};
       svg {
@@ -35,6 +35,19 @@ export const ContentWrapper = styled.div`
       }
       svg:hover * {
         fill: ${({ theme }) => theme.color.icon07};
+      }
+      .left {
+        gap: 4px;
+        position: absolute;
+        ${mixins.flexbox("row", "center", "center")};
+        transform: translateX(calc(-100% - 10px));
+        left: 50%;
+      }
+      .right {
+        gap: 4px;
+        position: absolute;
+        ${mixins.flexbox("row", "center", "center")};
+        left: calc(50% + 10px);
       }
     }
     .convert-price {
@@ -164,6 +177,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   .section-info {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
+    height: 20px;
     ${media.tabletMiddle} {
       ${mixins.flexbox("column", "center", "flex-start")};
       &.flex-row {
@@ -178,6 +192,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   .apr-info {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
+    height: 20px;
     ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
     }

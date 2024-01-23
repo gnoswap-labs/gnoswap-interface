@@ -68,7 +68,7 @@ const StakingContainer: React.FC = () => {
   }, [account?.address, router.query]);
 
   const isDisabledButton = useMemo(() => {
-    return isSwitchNetwork || !connectedWallet;
+    return isSwitchNetwork || !connectedWallet || positions.length == 0;
   }, [isSwitchNetwork, connectedWallet, positions]);
 
   const totalApr = useMemo(() => {

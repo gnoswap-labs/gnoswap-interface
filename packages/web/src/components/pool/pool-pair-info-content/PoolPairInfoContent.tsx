@@ -16,7 +16,6 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import IconInfo from "@components/common/icons/IconInfo";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -99,7 +98,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           </div>
         </section>
         <section>
-          <h4>Volume (24h)</h4>
+          <h4>Volume 24h</h4>
           {!loading && <div className="wrapper-value">
             <strong>{volumeValue}</strong>
             <div>
@@ -160,21 +159,25 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="position-header">
             <div>Current Price</div>
             <div className="swap-price">
-              <MissingLogo
-                symbol={pool?.tokenA?.symbol}
-                url={pool?.tokenA?.logoURI}
-                width={20}
-                className="image-logo"
-              />
-              1 GNS = 0.956937 GNOT
+              <div className="left">
+                <MissingLogo
+                  symbol={pool?.tokenA?.symbol}
+                  url={pool?.tokenA?.logoURI}
+                  width={20}
+                  className="image-logo"
+                />
+                1 GNS = 0.956937 GNOT
+              </div>
               <AprDivider className="divider"/>
-              <MissingLogo
-                symbol={pool?.tokenB?.symbol}
-                url={pool?.tokenB?.logoURI}
-                width={20}
-                className="image-logo"
-              />
-              1 GNOT = 0.07 GNS
+              <div className="right">
+                <MissingLogo
+                  symbol={pool?.tokenB?.symbol}
+                  url={pool?.tokenB?.logoURI}
+                  width={20}
+                  className="image-logo"
+                />
+                1 GNOT = 0.07 GNS
+              </div>
             </div>
           </div>
           <PoolGraph
@@ -190,14 +193,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             offset={40}
             poolPrice={pool?.price || 1}
           />
-          <div className="convert-price">
-            <div>
-              1 GNS = 0.956937(<span>-20%</span>)&nbsp;<IconInfo />&nbsp;
-            </div>
-            <div>
-            ~ 1.097929(<span>+14%</span>)&nbsp;<IconInfo />&nbsp;GNOT
-            </div>
-          </div>
         </div>
       </section>
     </ContentWrapper>

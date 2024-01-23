@@ -112,6 +112,13 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       }
     }
   }
+  .empty-content {
+    min-width: 320px;
+    flex: 1;
+    ${media.tabletMiddle} {
+      min-width: 32px;
+    }
+  }
   .button-wrap {
     ${mixins.flexbox("row", "center", "flex-end")};
     width: 100%;
@@ -123,6 +130,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       }
     }
     .change-weight {
+      max-width: 800px;
       cursor: default;
       border: 1px solid ${({ theme }) => theme.color.border14};;
       span {
@@ -135,6 +143,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       gap: 20px;
     }
     .receive-button {
+      max-width: 800px;
       cursor: default;
       background: ${({ theme }) => theme.color.background21};
       border: 1px solid ${({ theme }) => theme.color.border16};

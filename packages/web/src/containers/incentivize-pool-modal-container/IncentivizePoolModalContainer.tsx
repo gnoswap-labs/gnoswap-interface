@@ -46,6 +46,12 @@ const IncentivizePoolModalContainer = () => {
             broadcastSuccess(makeBroadcastIncentivizeMessage("success"));
             clearModal();
           }, 1000);
+          const pathName = router.pathname;
+          if (pathName === "/earn/incentivize") {
+            router.push("/earn?back=q");
+          } else {
+            router.push(router.asPath.replace("/incentivize", ""));
+          }
         } else if (response.code === 4000 && response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
           broadcastPending();
           setTimeout(() => {

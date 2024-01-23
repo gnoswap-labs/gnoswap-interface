@@ -131,15 +131,11 @@ const StakingContent: React.FC<StakingContentProps> = ({
             css={pulseSkeletonStyle({ h: 22, w: "400px" })}
           />
         </SkeletonEarnDetailWrapper>}
+        {!loading && <div className="empty-content"></div>}
         {!loading && <Button
           text={TEXT_BTN[type]}
           style={{
-            width: `${breakpoint === DEVICE_TYPE.WEB
-              ? "800px"
-              : breakpoint === DEVICE_TYPE.TABLET
-                ? "600px"
-                : "calc(100% - 32px)"
-              }`,
+            width: "100%",
             height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
             fontType: `${breakpoint === DEVICE_TYPE.WEB
               ? "body7"

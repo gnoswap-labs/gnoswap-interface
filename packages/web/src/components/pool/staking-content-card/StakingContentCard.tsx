@@ -15,7 +15,6 @@ import {
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { STAKING_PERIOD_INFO, StakingPeriodType } from "@constants/option.constant";
-import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { TokenModel } from "@models/token/token-model";
 import { numberToUSD } from "@utils/number-utils";
 import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
@@ -78,7 +77,6 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
 
 const StakingContentCard: React.FC<StakingContentCardProps> = ({
   period,
-  rewardTokens,
   checkPoints,
   positions,
   breakpoint,
@@ -86,10 +84,6 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 }) => {
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
-
-  const tokenLogos = useMemo(() => {
-    return [...new Set(rewardTokens.map(token => token.logoURI))];
-  }, [rewardTokens]);
 
   const checkedStep = useMemo(() => {
     return checkPoints.includes(period);
@@ -100,6 +94,9 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [period]);
 
   const totalUSD = useMemo(() => {
+    if (positions.length === 0) {
+      return "-";
+    }
     const usdValue = positions.reduce((accum, current) => {
       return Number(current.positionUsdValue) + accum;
     }, 0);
@@ -175,7 +172,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 <span>{totalUSD}</span>
                 {checkedStep && "+ "}
                 {checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
-                <div className="badge">{positions.length} LP</div>
+                {positions.length >0 && <div className="badge">{positions.length} LP</div>}
               </Tooltip>
             </span>
           </div>}
@@ -185,22 +182,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">
-            {/* Todo: Implements API
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <div>
-                  <TotalRewardsContent />
-                </div>
-              }
-            >
-              <span className="apr-text">{aprStr} APR</span>
-            </Tooltip> 
-            */}
             <span className="apr-text">{aprStr}</span>
-            <div className="coin-info">
-              <OverlapLogo logos={tokenLogos} size={17}/>
-            </div>
           </div>}
         </div>
       </div>
@@ -220,16 +202,11 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   period,
   checkPoints,
   positions,
-  rewardTokens,
   loading,
 }) => {
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
 
-  const tokenLogos = useMemo(() => {
-    return [...new Set(rewardTokens.map(token => token.logoURI))];
-  }, [rewardTokens]);
-  
   const checkedStep = useMemo(() => {
     return checkPoints.includes(period);
   }, [checkPoints, period]);
@@ -243,6 +220,9 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [positions]);
 
   const totalUSD = useMemo(() => {
+    if (positions.length === 0) {
+      return "-";
+    }
     const usdValue = positions.reduce((accum, current) => {
       return Number(current.positionUsdValue) + accum;
     }, 0);
@@ -304,7 +284,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                 <span>{totalUSD}</span>
                 {checkedStep && "+ "}
                 {checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
-                <div className="badge">{positions.length} LP</div>
+                {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
               </Tooltip>
             </span>
           </div>}
@@ -314,20 +294,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">
-            {/* <Tooltip
-              placement="top"
-              FloatingContent={
-                <div>
-                  <TotalRewardsContent />
-                </div>
-              }
-            >
-              <span className="apr-gd-text">{item.apr} APR</span>
-            </Tooltip> */}
             <span className="apr-gd-text">{aprStr}</span>
-            <div className="coin-info">
-              <OverlapLogo logos={tokenLogos} size={17}/>
-            </div>
           </div>}
         </div>
       </div>

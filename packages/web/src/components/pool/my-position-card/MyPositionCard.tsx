@@ -7,7 +7,10 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useMemo } from "react";
-import { MyPositionCardWrapper } from "./MyPositionCard.styles";
+import {
+  MyPositionCardWrapper,
+  ToolTipContentWrapper,
+} from "./MyPositionCard.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { TokenModel } from "@models/token/token-model";
 import { toUnitFormat } from "@utils/number-utils";
@@ -17,7 +20,7 @@ import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { MyPositionAprContent } from "./MyPositionCardAprContent";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { pulseSkeletonStyle} from "@constants/skeleton.constant";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { ThemeState } from "@states/index";
@@ -73,13 +76,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const tokenABalanceUSD = useMemo(() => {
     const tokenAUSD = Number(tokenPrices[tokenA.priceId]?.usd || "1");
-    const tokenABalance = makeDisplayTokenAmount(tokenA, position.token0Balance) || 0;
+    const tokenABalance =
+      makeDisplayTokenAmount(tokenA, position.token0Balance) || 0;
     return tokenAUSD * tokenABalance;
   }, [position.token0Balance, tokenA, tokenPrices]);
 
   const tokenBBalanceUSD = useMemo(() => {
     const tokenBUSD = Number(tokenPrices[tokenB.priceId]?.usd || "1");
-    const tokenBBalance = makeDisplayTokenAmount(tokenB, position.token1Balance) || 0;
+    const tokenBBalance =
+      makeDisplayTokenAmount(tokenB, position.token1Balance) || 0;
     return tokenBUSD * tokenBBalance;
   }, [position.token1Balance, tokenB, tokenPrices]);
 
@@ -87,39 +92,62 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return toUnitFormat(position.positionUsdValue, true);
   }, [position.positionUsdValue]);
 
-  const balances = useMemo((): { token: TokenModel; balance: number; balanceUSD: number }[] => {
-    return [{
-      token: tokenA,
-      balance: Number(position.token0Balance),
-      balanceUSD: tokenABalanceUSD,
-    }, {
-      token: tokenB,
-      balance: Number(position.token1Balance),
-      balanceUSD: tokenBBalanceUSD,
-    }];
-  }, [position.token0Balance, position.token1Balance, tokenA, tokenABalanceUSD, tokenB, tokenBBalanceUSD]);
+  const balances = useMemo((): {
+    token: TokenModel;
+    balance: number;
+    balanceUSD: number;
+  }[] => {
+    return [
+      {
+        token: tokenA,
+        balance: Number(position.token0Balance),
+        balanceUSD: tokenABalanceUSD,
+      },
+      {
+        token: tokenB,
+        balance: Number(position.token1Balance),
+        balanceUSD: tokenBBalanceUSD,
+      },
+    ];
+  }, [
+    position.token0Balance,
+    position.token1Balance,
+    tokenA,
+    tokenABalanceUSD,
+    tokenB,
+    tokenBBalanceUSD,
+  ]);
 
-  const totalRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
+  const totalRewardInfo = useMemo(():
+    | { [key in RewardType]: PositionRewardInfo[] }
+    | null => {
     const rewards = position.rewards;
     if (rewards.length === 0) {
       return null;
     }
 
-    const totalRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionRewardInfo[] }>((accum, current) => {
-      if (!accum[current.rewardType]) {
-        accum[current.rewardType] = [];
-      }
-      accum[current.rewardType].push({
-        token: current.token,
-        balance: Number(current.totalAmount),
-        balanceUSD: Number(current.totalAmount) * Number(tokenPrices[current.token.priceId]?.usd || 0)
-      });
-      return accum;
-    }, {
-      SWAP_FEE: [],
-      STAKING: [],
-      EXTERNAL: []
-    });
+    const totalRewardInfo = position.rewards.reduce<{
+      [key in RewardType]: PositionRewardInfo[];
+    }>(
+      (accum, current) => {
+        if (!accum[current.rewardType]) {
+          accum[current.rewardType] = [];
+        }
+        accum[current.rewardType].push({
+          token: current.token,
+          balance: Number(current.totalAmount),
+          balanceUSD:
+            Number(current.totalAmount) *
+            Number(tokenPrices[current.token.priceId]?.usd || 0),
+        });
+        return accum;
+      },
+      {
+        SWAP_FEE: [],
+        STAKING: [],
+        EXTERNAL: [],
+      },
+    );
     return totalRewardInfo;
   }, [position.rewards, tokenPrices]);
 
@@ -135,27 +163,28 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return toUnitFormat(usdValue, true);
   }, [totalRewardInfo]);
 
-  const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null = useMemo(() => {
-    return null;
-    /** TODO: Not implements API
-     * const aprRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionAPRInfo[] }>((accum, current) => {
-     *   if (!accum[current.rewardType]) {
-     *     accum[current.rewardType] = [];
-     *   }
-     *   accum[current.rewardType].push({
-     *     token: current.token,
-     *     tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
-     *     aprOf7d: Number(current.aprOf7d),
-     *   });
-     *   return accum;
-     * }, {
-     *   SWAP_FEE: [],
-     *   STAKING: [],
-     *   EXTERNAL: []
-     * });
-     * return aprRewardInfo;
-     */
-  }, []);
+  const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
+    useMemo(() => {
+      return null;
+      /** TODO: Not implements API
+       * const aprRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionAPRInfo[] }>((accum, current) => {
+       *   if (!accum[current.rewardType]) {
+       *     accum[current.rewardType] = [];
+       *   }
+       *   accum[current.rewardType].push({
+       *     token: current.token,
+       *     tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
+       *     aprOf7d: Number(current.aprOf7d),
+       *   });
+       *   return accum;
+       * }, {
+       *   SWAP_FEE: [],
+       *   STAKING: [],
+       *   EXTERNAL: []
+       * });
+       * return aprRewardInfo;
+       */
+    }, []);
 
   return (
     <MyPositionCardWrapper type={inRange}>
@@ -164,30 +193,62 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <div className="box-left">
             {breakpoint !== DEVICE_TYPE.MOBILE ? (
               <>
-                {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-                  <span
-                    css={pulseSkeletonStyle({ w: "170px", h: 22 })}
-                  />
-                </SkeletonEarnDetailWrapper>}
-                {!loading && <div className="coin-info">
-                  <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="token-logo" width={36} mobileWidth={24}/>
-                  <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="token-logo" width={36} mobileWidth={24}/>
-                </div>}
-                {!loading && <span className="product-id">ID #{position.id}</span>}
+                {loading && (
+                  <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                    <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+                  </SkeletonEarnDetailWrapper>
+                )}
+                {!loading && (
+                  <div className="coin-info">
+                    <MissingLogo
+                      symbol={tokenA.symbol}
+                      url={tokenA.logoURI}
+                      className="token-logo"
+                      width={36}
+                      mobileWidth={24}
+                    />
+                    <MissingLogo
+                      symbol={tokenB.symbol}
+                      url={tokenB.logoURI}
+                      className="token-logo"
+                      width={36}
+                      mobileWidth={24}
+                    />
+                  </div>
+                )}
+                {!loading && (
+                  <span className="product-id">ID #{position.id}</span>
+                )}
               </>
             ) : (
               <>
                 <div className="mobile-container">
-                {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-                  <span
-                    css={pulseSkeletonStyle({ w: "170px", h: 22 })}
-                  />
-                </SkeletonEarnDetailWrapper>}
-                  {!loading && <div className="coin-info">
-                    <MissingLogo symbol={tokenA.symbol} url={tokenA.logoURI} className="token-logo" width={36} mobileWidth={24}/>
-                    <MissingLogo symbol={tokenB.symbol} url={tokenB.logoURI} className="token-logo" width={36} mobileWidth={24}/>
-                  </div>}
-                  {!loading && <span className="product-id">ID #{position.id}</span>}
+                  {loading && (
+                    <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                      <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+                    </SkeletonEarnDetailWrapper>
+                  )}
+                  {!loading && (
+                    <div className="coin-info">
+                      <MissingLogo
+                        symbol={tokenA.symbol}
+                        url={tokenA.logoURI}
+                        className="token-logo"
+                        width={36}
+                        mobileWidth={24}
+                      />
+                      <MissingLogo
+                        symbol={tokenB.symbol}
+                        url={tokenB.logoURI}
+                        className="token-logo"
+                        width={36}
+                        mobileWidth={24}
+                      />
+                    </div>
+                  )}
+                  {!loading && (
+                    <span className="product-id">ID #{position.id}</span>
+                  )}
                 </div>
               </>
             )}
@@ -203,64 +264,89 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="info-wrap">
         <div className="info-box">
           <span className="symbol-text">Balance</span>
-          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
-            />
-          </SkeletonEarnDetailWrapper>}
-          {!loading && <Tooltip placement="top" FloatingContent={<div><BalanceTooltipContent balances={balances} /></div>}>
-            <span className="content-text">{positionBalanceUSD}</span>
-          </Tooltip>}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+            </SkeletonEarnDetailWrapper>
+          )}
+          {!loading && (
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <div>
+                  <BalanceTooltipContent balances={balances} />
+                </div>
+              }
+            >
+              <span className="content-text">{positionBalanceUSD}</span>
+            </Tooltip>
+          )}
         </div>
         <div className="info-box">
           <span className="symbol-text">Daily Earnings</span>
           {!loading && totalRewardInfo ? (
-            <Tooltip placement="top" FloatingContent={
-              <div>
-                <MyPositionRewardContent rewardInfo={totalRewardInfo} />
-              </div>}
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <div>
+                  <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+                </div>
+              }
             >
-              <span className="content-text">
-                {totalRewardUSD}
-              </span>
+              <span className="content-text">{totalRewardUSD}</span>
             </Tooltip>
-          ) : (!loading &&
-            <span className="content-text disabled">
-              {totalRewardUSD}
-            </span>
+          ) : (
+            !loading && (
+              <span className="content-text disabled">{totalRewardUSD}</span>
+            )
           )}
-          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
-            />
-          </SkeletonEarnDetailWrapper>}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+            </SkeletonEarnDetailWrapper>
+          )}
         </div>
         <div className="info-box">
           <span className="symbol-text">Claimable Rewards</span>
           {aprRewardInfo && !loading ? (
-            <Tooltip placement="top" FloatingContent={
-              <div><MyPositionAprContent rewardInfo={aprRewardInfo} /></div>
-            }>
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <div>
+                  <MyPositionAprContent rewardInfo={aprRewardInfo} />
+                </div>
+              }
+            >
               <span className="content-text">
-                {Number(position.apr) >= 100 && <IconStar />}{position.apr !== "" ? `${position.apr}%` : "-"}
+                {Number(position.apr) >= 100 && <IconStar />}
+                {position.apr !== "" ? `${position.apr}%` : "-"}
               </span>
             </Tooltip>
-          ) : (!loading &&
-            <span className="content-text">
-              {Number(position.apr) >= 100 && <IconStar />}{position.apr !== "" ? `${position.apr}%` : "-"}
-            </span>
+          ) : (
+            !loading && (
+              <span className="content-text">
+                {Number(position.apr) >= 100 && <IconStar />}
+                {position.apr !== "" ? `${position.apr}%` : "-"}
+              </span>
+            )
           )}
-          {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-            <span
-              css={pulseSkeletonStyle({ w: "170px", h: 22 })}
-            />
-          </SkeletonEarnDetailWrapper>}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+            </SkeletonEarnDetailWrapper>
+          )}
         </div>
       </div>
       <div className="position-wrapper-chart">
         <div className="position-header">
           <div>Current Price</div>
           <div className="swap-price">
+            <MissingLogo
+              symbol={tokenA?.symbol}
+              url={tokenA?.logoURI}
+              width={20}
+              className="image-logo"
+            />
             1 GNS = 0.956937 GNOT
             <div>
               <IconSwap />
@@ -269,9 +355,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <div className="range-badge">
             <RangeBadge
               status={
-                inRange
-                  ? RANGE_STATUS_OPTION.IN
-                  : RANGE_STATUS_OPTION.OUT
+                inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>
@@ -288,13 +372,38 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           position="top"
           offset={40}
           poolPrice={price}
+          isPosition
         />
         <div className="convert-price">
           <div>
-            1 GNS = 0.956937(<span className="negative">-20%</span>)&nbsp;<IconInfo />&nbsp;
+            1 GNS = 0.956937(<span className="negative">-20%</span>)&nbsp;
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>
+                  The price at which the position will be converted entirely to
+                  GNS.
+                </ToolTipContentWrapper>
+              }
+            >
+              <IconInfo />
+            </Tooltip>
+            &nbsp;
           </div>
           <div>
-          ~ 1.097929(<span className="positive">+14%</span>)&nbsp;<IconInfo />&nbsp;GNOT
+            ~ 1.097929(<span className="positive">+14%</span>)&nbsp;
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>
+                  The price at which the position will be converted entirely to
+                  GNOT.
+                </ToolTipContentWrapper>
+              }
+            >
+              <IconInfo />
+            </Tooltip>
+            &nbsp;GNOT
           </div>
         </div>
       </div>

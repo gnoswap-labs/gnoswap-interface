@@ -29,7 +29,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
       <div className="button-wrap">
         {isUnstake && <Button
           disabled={isDisabledButton || !isUnstake}
-          text="Unstake"
+          text="Unstake Position"
           onClick={handleClickUnStakeRedirect}
           style={{
             hierarchy: ButtonHierarchy.Primary,

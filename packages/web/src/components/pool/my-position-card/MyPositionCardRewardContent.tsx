@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { numberToFormat } from "@utils/string-utils";
-import { toLowerUnitFormat } from "@utils/number-utils";
+import { prettyNumberFloatInteger, toLowerUnitFormat } from "@utils/number-utils";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 
 export interface MyPositionRewardContentProps {
@@ -67,7 +66,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.balance, reward.token.decimals)}
+                {prettyNumberFloatInteger(reward.balance)}
               </span>
             </div>
           ))}
@@ -93,7 +92,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.balance, reward.token.decimals)}
+                {prettyNumberFloatInteger(reward.balance)}
               </span>
             </div>
           ))}
@@ -119,7 +118,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.balance, reward.token.decimals)}
+                {prettyNumberFloatInteger(reward.balance)}
               </span>
             </div>
           ))}

@@ -40,8 +40,14 @@ const SubmitPositionModalContainer = ({
         broadcastPending();
         setTimeout(() => {
           broadcastSuccess(makeBroadcastStakingMessage("success"));
-          router.back();
+          
         }, 1000);
+        const pathName = router.pathname;
+        if (pathName === "/earn/stake") {
+          router.push("/earn?back=q");
+        } else {
+          router.push(router.asPath.replace("/stake", ""));
+        }
       } else if (result.code === 4000 && result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
         broadcastError(makeBroadcastStakingMessage("error"));
       } else {
