@@ -96,6 +96,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         maxTickPosition={maxTickPosition}
         minTickPosition={minTickPosition}
         poolPrice={pool?.price || 1}
+        isPosition
       />
     </BarAreaGraphWrapper>
   );

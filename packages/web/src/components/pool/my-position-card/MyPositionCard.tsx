@@ -157,8 +157,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
      */
   }, []);
 
-  console.log(width - (width > 767 ? 102 : 224), width, width > 767 ? 102 : 224);
-  
   return (
     <MyPositionCardWrapper type={inRange}>
       <div className="box-title">
@@ -290,6 +288,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           position="top"
           offset={40}
           poolPrice={price}
+          isPosition
         />
         <div className="convert-price">
           <div>

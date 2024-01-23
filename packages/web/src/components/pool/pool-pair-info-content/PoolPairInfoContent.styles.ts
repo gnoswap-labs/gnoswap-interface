@@ -3,14 +3,79 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
+export const ContentWrapper = styled.div`
+  background-color: ${({ theme }) => theme.color.backgroundOpacity9};
+  width: 100%;
+  border-radius: 8px;
+  .position-wrapper-chart {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    background-color: ${({ theme }) => theme.color.backgroundOpacity12};
+    border-radius: 10px;
+    padding: 16px 48px;
+    margin: 24px;
+    gap: 16px;
+    .position-header {
+      ${mixins.flexbox("column", "center", "space-between")};
+      width: 100%;
+      gap: 8px;
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12}
+    }
+    .swap-price {
+      ${mixins.flexbox("row", "center", "center")};
+      ${fonts.body12}
+      gap: 6px;
+      text-align: center;
+      color: ${({ theme }) => theme.color.text10};
+      svg {
+        cursor: pointer;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+      svg:hover * {
+        fill: ${({ theme }) => theme.color.icon07};
+      }
+    }
+    .convert-price {
+      ${mixins.flexbox("row", "center", "center")};
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12}
+      svg {
+        width: 16px;
+        height: 16px;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+      > div {
+        ${mixins.flexbox("row", "center", "center")};
+      }
+      ${media.mobile} {
+        ${mixins.flexbox("column", "center", "center")};
+        > div {
+
+        }
+      }
+    }
+    @media (max-width: 767px) {
+      padding: 16px 24px;
+      .position-header {
+        ${mixins.flexbox("column", "center", "center")};
+        gap: 8px;
+      }
+    }
+  }
+`;
+
 export const PoolPairInfoContentWrapper = styled.div`
   ${mixins.flexbox("row", "flex-start", "flex-start")};
   width: 100%;
   ${fonts.body12};
-  border-radius: 8px;
   color: ${({ theme }) => theme.color.text04};
   border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ theme }) => theme.color.background11};
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
   ${media.mobile} {
     flex-direction: column;
   }
