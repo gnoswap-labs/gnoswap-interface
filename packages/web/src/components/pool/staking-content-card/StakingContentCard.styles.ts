@@ -143,10 +143,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     }
     ${media.tabletMiddle} {
       width: 100%;
-      padding: 12px 16px;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-end;
+      padding: 11px 16px;
       gap: 12px;
     }
     .price {
@@ -253,7 +250,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
       .coin-info {
         ${mixins.flexbox("row", "center", "flex-start")};
-        .token-logo {
+        img {
           width: 36px;
           height: 36px;
           ${media.tablet} {
@@ -291,7 +288,7 @@ export const RewardsContent = styled.div`
       width: 170px;
       gap: 8px;
       flex-shrink: 0;
-      .token-logo {
+      img {
         width: 20px;
         height: 20px;
       }

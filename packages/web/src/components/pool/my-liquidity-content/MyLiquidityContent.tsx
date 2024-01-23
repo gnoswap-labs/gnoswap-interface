@@ -88,20 +88,26 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [activated, positions, tokenPrices]);
 
   const totalBalance = useMemo(() => {
+    if (!connected) {
+      return "-";
+    }
     if (!allBalances) {
       return "$0";
     }
     const balance = Object.values(allBalances).reduce((acc, current) => acc += current.balanceUSD, 0);
     return formatUsdNumber(String(balance), 2, true);
-  }, [allBalances]);
+  }, [allBalances, connected]);
 
   const dailyEarningRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
     return null;
   }, []);
 
   const dailyEarning = useMemo(() => {
-    if (!dailyEarningRewardInfo) {
+    if (!connected) {
       return "-";
+    }
+    if (!dailyEarningRewardInfo) {
+      return "$0";
     }
     const usdValue = Object.values(dailyEarningRewardInfo)
       .flatMap(item => item)
@@ -109,7 +115,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         return accum + current.balanceUSD;
       }, 0);
     return formatUsdNumber(String(usdValue), 2, true);
-  }, [dailyEarningRewardInfo]);
+  }, [dailyEarningRewardInfo, connected]);
 
   const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
     if (!activated) {
@@ -184,6 +190,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [activated, positions, tokenPrices]);
 
   const claimableUSD = useMemo(() => {
+    if (!connected) {
+      return "-";
+    }
     const claimableUsdValue = claimableRewardInfo ? Object.values(claimableRewardInfo)
       .flatMap(item => item)
       .reduce((accum, current) => {
@@ -191,7 +200,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       }, 0) : 0;
     
     return formatUsdNumber(String(claimableUsdValue), 2, true);
-  }, [claimableRewardInfo]);
+  }, [claimableRewardInfo, connected]);
 
   const claimable = useMemo(() => {
     if (!activated || unclaimedRewardInfo === null) {

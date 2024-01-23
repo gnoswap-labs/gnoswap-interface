@@ -259,7 +259,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       </div>
       <div className="position-wrapper-chart">
         <div className="position-header">
-          <div></div>
+          <div>Current Price</div>
           <div className="swap-price">
             1 GNS = 0.956937 GNOT
             <div>
@@ -281,21 +281,20 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           tokenB={tokenB}
           bins={bins}
           currentTick={currentTick}
-          width={Math.min(width - (width > 767 ? 224 : 102), 1216)}
+          width={Math.min(width - (width > 767 ? 224 : 80), 1216)}
           height={150}
           mouseover
           themeKey={themeKey}
           position="top"
           offset={40}
           poolPrice={price}
-          isPosition
         />
         <div className="convert-price">
           <div>
-            1 GNS = 0.956937(<span>-20%</span>)&nbsp;<IconInfo />&nbsp;
+            1 GNS = 0.956937(<span className="negative">-20%</span>)&nbsp;<IconInfo />&nbsp;
           </div>
           <div>
-          ~ 1.097929(<span>+14%</span>)&nbsp;<IconInfo />&nbsp;GNOT
+          ~ 1.097929(<span className="positive">+14%</span>)&nbsp;<IconInfo />&nbsp;GNOT
           </div>
         </div>
       </div>

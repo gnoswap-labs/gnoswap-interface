@@ -41,7 +41,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
         />}
         <Button
           disabled={isDisabledButton}
-          text="Stake"
+          text="Stake Position"
           onClick={handleClickStakeRedirect}
           style={{
             hierarchy: ButtonHierarchy.Primary,

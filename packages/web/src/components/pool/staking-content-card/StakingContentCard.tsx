@@ -199,7 +199,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
             */}
             <span className="apr-text">{aprStr}</span>
             <div className="coin-info">
-              <OverlapLogo logos={tokenLogos} />
+              <OverlapLogo logos={tokenLogos} size={17}/>
             </div>
           </div>}
         </div>
@@ -326,7 +326,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
             </Tooltip> */}
             <span className="apr-gd-text">{aprStr}</span>
             <div className="coin-info">
-              <OverlapLogo logos={tokenLogos} />
+              <OverlapLogo logos={tokenLogos} size={17}/>
             </div>
           </div>}
         </div>

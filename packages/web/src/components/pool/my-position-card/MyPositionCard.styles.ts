@@ -115,7 +115,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
       padding: 16px;
-      gap: 24px;
+      gap: 16px;
       &:not(:first-of-type) {
         border-left: 1px solid ${({ theme }) => theme.color.border02};
       }
@@ -164,11 +164,20 @@ export const MyPositionCardWrapper = styled.div<Props>`
     background-color: ${({ theme }) => theme.color.background20};
     border-radius: 10px;
     padding: 16px 48px;
-
+    width: 100%;
     gap: 16px;
     .position-header {
-      ${mixins.flexbox("row", "center", "space-between")};
+      ${mixins.flexbox("column", "center", "center")};
       width: 100%;
+      gap: 8px;
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12}
+      position: relative;
+      .range-badge {
+        position: absolute;
+        top: 14.5px;
+        right: 0;
+      }
     }
     .swap-price {
       ${mixins.flexbox("row", "center", "center")};
@@ -200,6 +209,12 @@ export const MyPositionCardWrapper = styled.div<Props>`
       > div {
         ${mixins.flexbox("row", "center", "center")};
       }
+      .positive {
+        color: ${({ theme }) => theme.color.green01};
+      }
+      .negative {
+        color: ${({ theme }) => theme.color.red01};
+      }
       ${media.mobile} {
         ${mixins.flexbox("column", "center", "center")};
         > div {
@@ -207,11 +222,14 @@ export const MyPositionCardWrapper = styled.div<Props>`
         }
       }
     }
-    @media (max-width: 767px) {
-      padding: 16px 24px;
+    ${media.mobile} {
+      padding: 12px;
       .position-header {
         ${mixins.flexbox("column", "center", "center")};
         gap: 8px;
+        .range-badge {
+          top: 0;
+        }
       }
     }
   }

@@ -25,9 +25,9 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
       return "Incentivized";
     }
     if (incentivizedType === "EXTERNAL_INCENTIVIZED") {
-      return "External-Incentivized";
+      return "";
     }
-    return "Non-Incentivized";
+    return "";
   }, [incentivizedType]);
 
   const rewardTokenLogos = useMemo(() => {
@@ -49,7 +49,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
       </div>
       <div className="badge-wrap">
         <div className="badge">{feeStr}</div>
-        <div className="badge">
+        {incentivezedStr && <div className="badge">
           {incentivezedStr}
           {rewardTokens.length > 0 && (
             <OverlapLogo
@@ -57,7 +57,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
               logos={rewardTokenLogos}
             />
           )}
-        </div>
+        </div>}
       </div>
     </PoolInfoHeaderWrapper>
   );

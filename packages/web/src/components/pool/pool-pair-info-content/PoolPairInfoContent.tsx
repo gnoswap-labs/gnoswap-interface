@@ -179,7 +179,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             position="top"
             offset={40}
             poolPrice={pool?.price || 1}
-            isPosition
           />
           <div className="convert-price">
             <div>

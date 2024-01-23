@@ -84,7 +84,7 @@ export const PoolPairInfoContentWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
     padding: 24px 36px;
-    gap: 10px;
+    gap: 16px;
     flex: 1 0 0;
     &:not(:first-of-type) {
       border-left: 1px solid ${({ theme }) => theme.color.border02};
