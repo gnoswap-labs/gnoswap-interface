@@ -3,13 +3,13 @@ import { PoolGraphTooltipWrapper, PoolGraphWrapper } from "./PoolGraph.styles";
 import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
-import { toUnitFormat } from "@utils/number-utils";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -94,12 +94,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const maxX = d3.max(bins, (bin) => bin.maxTick - defaultMinX) || 0;
   
   const resolvedBins = useMemo(() => {
+    const length = bins.length / 2;
     const convertReserveBins = bins.map((item, index) => {
       const reserveTokenAMap = Number(item.reserveTokenB) / (Number(poolPrice) || 1);
       const reserveTokenBMap = Number(item.reserveTokenA);
       return {
         ...item,
-        reserveTokenAMap: index <= 19 ? reserveTokenAMap : reserveTokenBMap,
+        reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
       };
     });
     
@@ -193,18 +194,18 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .enter()
       .append("rect")
       .style("fill", bin => fillByBin(bin))
-      .style("stroke-width", "1")
+      .style("stroke-width", "0")
       .attr("class", "rects")
       .attr("x", bin => scaleX(bin.minTick))
-      .attr("y", bin => scaleY(bin.reserveTokenMap) - (scaleY(bin.reserveTokenMap) === 80 ? 0 : 5))
-      .attr("width", tickSpacing)
-      .attr("height", bin => boundsHeight - scaleY(bin.reserveTokenMap) + (scaleY(bin.reserveTokenMap) === 80 ? 0 : 5));
+      .attr("y", bin => (scaleY(bin.reserveTokenMap)) - ((scaleY(bin.reserveTokenMap)) === height ? 0 : 5))
+      .attr("width", tickSpacing - 1)
+      .attr("height", bin => boundsHeight - (scaleY(bin.reserveTokenMap)) + ((scaleY(bin.reserveTokenMap)) === height ? 0 : 5));
 
     // Create a line of current tick.
     if (currentTick) {
       rects.append("line")
-        .attr("x1", centerPosition + (!nextSpacing ? tickSpacing / 2 + 1 : tickSpacing))
-        .attr("x2", centerPosition + (!nextSpacing ? tickSpacing / 2 + 1 : tickSpacing))
+        .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
+        .attr("x2", centerPosition + tickSpacing / 2 - 0.5)
         .attr("y1", 0)
         .attr("y2", boundsHeight)
         .attr("stroke-dasharray", 3)
@@ -226,7 +227,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (mouseY < 0.000001 || mouseY > height) {
         return false;
       }
-      if (bin.reserveTokenMap < 0) {
+      if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
       return mouseX >= minX && mouseX <= maxX;
@@ -239,7 +240,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       return;
     }
 
-    if (Math.abs(height - mouseY - 0.0001) > boundsHeight - scaleY(bin.reserveTokenMap) + (scaleY(bin.reserveTokenMap) === 80 ? 0 : 5)) {
+    if (Math.abs(height - mouseY - 0.0001) > boundsHeight - (scaleY(bin.reserveTokenMap)) + ((scaleY(bin.reserveTokenMap)) === height ? 0 : 5)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);
@@ -266,10 +267,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     setTooltipInfo({
       tokenA: tokenA,
       tokenB: tokenB,
-      tokenAAmount: tokenAAmountStr ? toUnitFormat(tokenAAmountStr) : "-",
-      tokenBAmount: tokenBAmountStr ? toUnitFormat(tokenBAmountStr) : "-",
-      myTokenAAmount: myTokenAAmountStr ? toUnitFormat(myTokenAAmountStr) : "-",
-      myTokenBAmount: myTokenBAmountStr ? toUnitFormat(myTokenBAmountStr) : "-",
+      tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr) : "-",
+      tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr) : "-",
+      myTokenAAmount: myTokenAAmountStr ? convertToKMB(myTokenAAmountStr) : "-",
+      myTokenBAmount: myTokenBAmountStr ? convertToKMB(myTokenBAmountStr) : "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: tickOfPrices[currentTick || 0],
@@ -317,7 +318,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }).then(setTickOfPrices);
     }
   }, [bins]);
-
+  
   useEffect(() => {
     const svgElement = d3.select(svgRef.current)
       .attr("width", width)
@@ -395,7 +396,7 @@ interface PoolGraphBinTooptipProps {
   isPosition: boolean;
 }
 
-const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
+export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
   tooltipInfo,
   isPosition,
 }) => {

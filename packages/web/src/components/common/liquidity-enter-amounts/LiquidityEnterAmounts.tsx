@@ -48,7 +48,7 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
     }
     return isSelectTokenA ? depositRatio >= 100 : depositRatio <= 0;
   }, [depositRatio, isSelectTokenA]);
-
+  
   return (
     <LiquidityEnterAmountsWrapper>
       {

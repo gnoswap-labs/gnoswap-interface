@@ -7,15 +7,15 @@ export const SelectPriceRangeWrapper = styled.div`
   ${mixins.flexbox("column", "center", "center")};
   width: 100%;
   gap: 8px;
-  height: 0;
-  transition: height 0.5s ease;
+  max-height: 0;
+  transition: max-height 0.5s ease;
   visibility: hidden;
   overflow: hidden;
   &.open {
-    height: 700px;
+    max-height: 700px;
     visibility: visible;
     ${media.mobile} {
-      height: 828px;
+      max-height: 828px;
     }
   }
   .type-selector-wrapper {

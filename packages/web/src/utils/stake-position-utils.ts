@@ -46,6 +46,7 @@ export const convertToKMB = (
   } else {
     const temp = Math.floor(Number(price));
     if (temp >= 1e9) {
+      if (temp > 999.99 * 1e9) return "999.99B";
       return (
         (temp / 1e9).toLocaleString("en-US", {
           maximumFractionDigits: maximumFractionDigits ?? 2,
