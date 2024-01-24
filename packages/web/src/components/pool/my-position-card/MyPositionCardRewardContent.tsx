@@ -72,7 +72,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
           ))}
         </React.Fragment>
       )}
-
+      {stakingRewards && <div className="divider" />}
       {stakingRewards && (
         <React.Fragment>
           <div className="list">
@@ -98,11 +98,11 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
           ))}
         </React.Fragment>
       )}
-
+      {externalRewards && <div className="divider" />}
       {externalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">External Fees</span>
+            <span className="title">External Rewards</span>
             <span className="title">{externalRewardUSD}</span>
           </div>
           {externalRewards.map((reward, index) => (

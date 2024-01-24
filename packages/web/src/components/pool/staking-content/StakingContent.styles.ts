@@ -61,17 +61,25 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     }
     .coin-info {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
-      .token-logo {
-        width: 36px;
-        height: 36px;
+      .overlap-logo-wrapper {
+        img {
+          width: 36px;
+          height: 36px;
+          
+          &:not(:first-of-type) {
+            margin-left: -6px;
+          }
+        }
         ${media.mobile} {
           width: 20px;
           height: 20px;
-        }
-        &:not(:first-of-type) {
-          margin-left: -6px;
+          img {
+            width: 20px;
+            height: 20px;
+          }
         }
       }
+      
     }
     .apr {
       ${fonts.body3}

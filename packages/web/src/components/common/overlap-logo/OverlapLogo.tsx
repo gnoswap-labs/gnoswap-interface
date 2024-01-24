@@ -12,6 +12,7 @@ const OverlapLogo = ({ logos, size = 36 }: OverlapLogoProps) => {
           key={index}
           overlap={index > 0 ? (size / 3) : 0}
           size={size}
+          className="overlap-logo-wrapper"
         >
           <img src={logo} alt="logo-image" />
         </OverlapLogoImageWrapper>

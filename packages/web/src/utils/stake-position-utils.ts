@@ -38,6 +38,7 @@ export const convertToKMB = (
 ) => {
   if (Number.isNaN(Number(price))) return "-";
   if (Math.floor(Number(price)).toString().length < 4) {
+    if (Number(price) < 0.00000000001 && Number(price) !== 0) return "∞";
     if (Number(price) < 1) return price;
     return Number(price).toLocaleString("en-US", {
       maximumFractionDigits: maximumFractionDigits ?? 2,

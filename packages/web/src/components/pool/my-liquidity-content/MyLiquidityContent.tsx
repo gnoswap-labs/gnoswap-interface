@@ -17,6 +17,7 @@ import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.style
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -238,7 +239,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <span className="content-value">{dailyEarning}</span>
           </Tooltip>
         ) : (!loading &&
-          <span className="content-value disabled">{dailyEarning}</span>
+          <span className="content-value">{dailyEarning}</span>
         )}
         {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
@@ -288,11 +289,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <h4>Total Claimable Rewards</h4>
             <div className="claim-wrap">
               {!loading && (claimableRewardInfo || unclaimedRewardInfo) ? (
-                <span className="content-value disabled">
-                  {claimableUSD}
-                </span>
+                <Tooltip
+                  placement="top"
+                  FloatingContent={<MyPositionClaimContent rewardInfo={claimableRewardInfo} unclaimedRewardInfo={unclaimedRewardInfo} />}
+                >
+                  <span className="content-value has-tooltip">
+                    {claimableUSD}
+                  </span>
+                </Tooltip>
               ) : (!loading &&
-                <span className="content-value disabled">
+                <span className="content-value has-tooltip disabled">
                   {claimableUSD}
                 </span>
               )}

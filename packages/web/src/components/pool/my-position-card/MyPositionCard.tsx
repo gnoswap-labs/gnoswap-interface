@@ -8,6 +8,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useMemo, useState } from "react";
 import {
+  ManageItem,
   MyPositionCardWrapper,
   ToolTipContentWrapper,
 } from "./MyPositionCard.styles";
@@ -30,6 +31,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { numberToFormat } from "@utils/string-utils";
+import SelectBox from "@components/common/select-box/SelectBox";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -268,6 +270,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               className={!position.staked ? "visible-badge" : ""}
             />
           </div>
+          <SelectBox
+            current={"Manage"}
+            items={["Manage", "Reposition", "Increase Liquidity", "Decrease Liquidity"]}
+            select={() => {}}
+            render={(period) => <ManageItem>{period}</ManageItem>}
+            className={!inRange ? "out-range" : ""}
+          />
         </div>
       </div>
       <div className="info-wrap">
@@ -293,30 +302,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         </div>
         <div className="info-box">
           <span className="symbol-text">Daily Earnings</span>
-          {!loading && totalRewardInfo ? (
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <div>
-                  <MyPositionRewardContent rewardInfo={totalRewardInfo} />
-                </div>
-              }
-            >
-              <span className="content-text">{totalRewardUSD}</span>
-            </Tooltip>
-          ) : (
-            !loading && (
-              <span className="content-text disabled">{totalRewardUSD}</span>
-            )
-          )}
-          {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-            </SkeletonEarnDetailWrapper>
-          )}
-        </div>
-        <div className="info-box">
-          <span className="symbol-text">Claimable Rewards</span>
           {aprRewardInfo && !loading ? (
             <Tooltip
               placement="top"
@@ -345,14 +330,38 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </SkeletonEarnDetailWrapper>
           )}
         </div>
+        <div className="info-box">
+          <span className="symbol-text">Claimable Rewards</span>
+          {!loading && totalRewardInfo ? (
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <div>
+                  <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+                </div>
+              }
+            >
+              <span className="content-text">{totalRewardUSD}</span>
+            </Tooltip>
+          ) : (
+            !loading && (
+              <span className="content-text disabled">{totalRewardUSD}</span>
+            )
+          )}
+          {loading && (
+            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+            </SkeletonEarnDetailWrapper>
+          )}
+        </div>
       </div>
       <div className="position-wrapper-chart">
         <div className="position-header">
           <div>Current Price</div>
           <div className="swap-price">
             <MissingLogo
-              symbol={tokenA?.symbol}
-              url={tokenA?.logoURI}
+              symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
+              url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
               width={20}
               className="image-logo"
             />
@@ -390,7 +399,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The price at which the position will be converted entirely to
+                  The price at which the position will be converted entirely to&nbsp;
                   {tokenA?.symbol}.
                 </ToolTipContentWrapper>
               }
@@ -405,7 +414,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The price at which the position will be converted entirely to
+                  The price at which the position will be converted entirely to&nbsp;
                   {tokenB?.symbol}.
                 </ToolTipContentWrapper>
               }

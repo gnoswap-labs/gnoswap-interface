@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import {
   AprDivider,
   ContentWrapper,
+  LoadingChart,
   PoolPairInfoContentWrapper,
 } from "./PoolPairInfoContent.styles";
 import IconStar from "@components/common/icons/IconStar";
@@ -17,6 +18,7 @@ import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import IconSwap from "@components/common/icons/IconSwap";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -53,7 +55,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.feeChange]);
 
   const rewardChangedStr = useMemo((): string => {
-    return "$1.23k";
+    return "$1.23K";
   }, []);
 
   const stringPrice = useMemo(() => {
@@ -69,7 +71,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <h4>TVL</h4>
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140} )}
+              css={pulseSkeletonStyle({ h: 20, w:"170px" ,smallTableWidth : 140} )}
             />
             </SkeletonEarnDetailWrapper>}
           {!loading && <div className="wrapper-value">
@@ -79,28 +81,30 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </div>
           </div>}
           <div className="section-info">
-            <div className="section-image">
-              <MissingLogo
-                symbol={pool?.tokenA?.symbol}
-                url={pool?.tokenA?.logoURI}
-                width={20}
-                className="image-logo"
-              />
-              <span>4.14K <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">(25%)</span></span>
-            </div>
-            <div className="divider"></div>
-            <div className="section-image">
-              <MissingLogo
-                symbol={pool?.tokenB?.symbol}
-                url={pool?.tokenB?.logoURI}
-                width={20}
-                className="image-logo"
-              />
-              <span>4.14K <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">(25%)</span></span>
-            </div>
+            {!loading &&<>
+              <div className="section-image">
+                <MissingLogo
+                  symbol={pool?.tokenA?.symbol}
+                  url={pool?.tokenA?.logoURI}
+                  width={20}
+                  className="image-logo"
+                />
+                <span>4.14K <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">(25%)</span></span>
+              </div>
+              <div className="divider"></div>
+              <div className="section-image">
+                <MissingLogo
+                  symbol={pool?.tokenB?.symbol}
+                  url={pool?.tokenB?.logoURI}
+                  width={20}
+                  className="image-logo"
+                />
+                <span>4.14K <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">(25%)</span></span>
+              </div>
+            </>}
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
-                css={pulseSkeletonStyle({ h: 22, w:"50px"})}
+                css={pulseSkeletonStyle({ h: 20, w:"250px"})}
               />
               </SkeletonEarnDetailWrapper>}
           </div>
@@ -115,7 +119,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
               <span
-                css={pulseSkeletonStyle({ h: 22, w:"170px" ,smallTableWidth : 140})}
+                css={pulseSkeletonStyle({ h: 20, w:"170px" ,smallTableWidth : 140})}
               />
               </SkeletonEarnDetailWrapper>}
           <div className="section-info flex-row">
@@ -126,7 +130,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
-                css={pulseSkeletonStyle({ h: 22, w:"50px"})}
+                css={pulseSkeletonStyle({ h: 20, w:"50px"})}
               />
             </SkeletonEarnDetailWrapper>}
           </div>
@@ -136,7 +140,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && <strong>{aprValue}</strong>}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
-            css={pulseSkeletonStyle({ h: 22, w:"170px"})}
+            css={pulseSkeletonStyle({ h: 20, w:"170px"})}
           />
           </SkeletonEarnDetailWrapper>}
           <div className="apr-info">
@@ -145,7 +149,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               {!loading && <span className="apr-value">{feeChangedStr}</span>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
-                css={pulseSkeletonStyle({ h: 22, w:"50px"})}
+                css={pulseSkeletonStyle({ h: 20, w:"50px"})}
               />
               </SkeletonEarnDetailWrapper>}
             </div>
@@ -155,7 +159,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               {!loading && <span className="apr-value">{rewardChangedStr}</span>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
-                css={pulseSkeletonStyle({ h: 22, w:"50px"})}
+                css={pulseSkeletonStyle({ h: 20, w:"50px"})}
               />
               </SkeletonEarnDetailWrapper>}
             </div>
@@ -167,25 +171,35 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="position-header">
             <div>Current Price</div>
             <div className="swap-price">
-              <div className="left">
+              {!loading && <div className="left">
                 <MissingLogo
                   symbol={pool?.tokenA?.symbol}
                   url={pool?.tokenA?.logoURI}
                   width={20}
                   className="image-logo"
                 />
-                1 {pool?.tokenA?.symbol} = {numberToFormat(pool.price, 6)} {pool?.tokenB?.symbol}
-              </div>
+                1 {pool?.tokenA?.symbol} = {convertToKMB(`${pool.price}`, 6)} {pool?.tokenB?.symbol}
+              </div>}
+              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <span
+                css={pulseSkeletonStyle({ h: 20, w:"80px"})}
+              />
+            </SkeletonEarnDetailWrapper>}
               <AprDivider className="divider"/>
-              <div className="right">
+              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <span
+                css={pulseSkeletonStyle({ h: 20, w:"80px"})}
+              />
+            </SkeletonEarnDetailWrapper>}
+              {!loading && <div className="right">
                 <MissingLogo
                   symbol={pool?.tokenB?.symbol}
                   url={pool?.tokenB?.logoURI}
                   width={20}
                   className="image-logo"
                 />
-                1 {pool?.tokenB?.symbol} = {numberToFormat(1 / pool.price, 6)} {pool?.tokenA?.symbol}
-              </div>
+                1 {pool?.tokenB?.symbol} = {convertToKMB(`${1 / pool.price}`, 6)} {pool?.tokenA?.symbol}
+              </div>}
             </div>
             <div className="swap-price-mobile">
               <MissingLogo
@@ -200,7 +214,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </div>
             </div>
           </div>
-          <PoolGraph
+          {!loading && <PoolGraph
             tokenA={pool?.tokenA}
             tokenB={pool?.tokenB}
             bins={pool?.bins}
@@ -212,7 +226,10 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             position="top"
             offset={40}
             poolPrice={pool?.price || 1}
-          />
+          />}
+          {loading && <LoadingChart>
+            <LoadingSpinner />
+          </LoadingChart>}
         </div>
       </section>
     </ContentWrapper>

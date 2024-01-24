@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 import { RewardsContent, TooltipDivider } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
-import { numberToFormat } from "@utils/string-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 
 export interface MyPositionClaimContentProps {
@@ -12,7 +12,7 @@ export interface MyPositionClaimContentProps {
   unclaimedRewardInfo: PositionClaimInfo[] | null;
 }
 
-export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ rewardInfo, unclaimedRewardInfo }) => {
+export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ rewardInfo }) => {
   const swapFeeRewards = useMemo(() => {
     if (!rewardInfo) {
       return null;
@@ -33,22 +33,22 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
     return rewardInfo.STAKING;
   }, [rewardInfo]);
 
-  const externalRewards = useMemo(() => {
-    if (!rewardInfo) {
-      return null;
-    }
-    if (rewardInfo.EXTERNAL.length === 0) {
-      return null;
-    }
-    return rewardInfo.EXTERNAL;
-  }, [rewardInfo]);
+  // const externalRewards = useMemo(() => {
+  //   if (!rewardInfo) {
+  //     return null;
+  //   }
+  //   if (rewardInfo.EXTERNAL.length === 0) {
+  //     return null;
+  //   }
+  //   return rewardInfo.EXTERNAL;
+  // }, [rewardInfo]);
 
-  const unclaimedRewards = useMemo(() => {
-    if (!unclaimedRewardInfo || unclaimedRewardInfo.length === 0) {
-      return null;
-    }
-    return unclaimedRewardInfo;
-  }, [unclaimedRewardInfo]);
+  // const unclaimedRewards = useMemo(() => {
+  //   if (!unclaimedRewardInfo || unclaimedRewardInfo.length === 0) {
+  //     return null;
+  //   }
+  //   return unclaimedRewardInfo;
+  // }, [unclaimedRewardInfo]);
 
   const swapFeeRewardUSD = useMemo(() => {
     if (!rewardInfo) {
@@ -66,21 +66,21 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
     return toUnitFormat(sumUSD, true);
   }, [rewardInfo]);
 
-  const externalRewardUSD = useMemo(() => {
-    if (!rewardInfo) {
-      return 0;
-    }
-    const sumUSD = rewardInfo.EXTERNAL.reduce((accum, current) => accum + current.balanceUSD, 0);
-    return toUnitFormat(sumUSD, true);
-  }, [rewardInfo]);
+  // const externalRewardUSD = useMemo(() => {
+  //   if (!rewardInfo) {
+  //     return 0;
+  //   }
+  //   const sumUSD = rewardInfo.EXTERNAL.reduce((accum, current) => accum + current.balanceUSD, 0);
+  //   return toUnitFormat(sumUSD, true);
+  // }, [rewardInfo]);
 
-  const unclaimedRewardUSD = useMemo(() => {
-    if (!unclaimedRewardInfo) {
-      return "$0";
-    }
-    const sumUSD = unclaimedRewardInfo.reduce((accum, current) => accum + current.balanceUSD, 0);
-    return toUnitFormat(sumUSD, true);
-  }, [unclaimedRewardInfo]);
+  // const unclaimedRewardUSD = useMemo(() => {
+  //   if (!unclaimedRewardInfo) {
+  //     return "$0";
+  //   }
+  //   const sumUSD = unclaimedRewardInfo.reduce((accum, current) => accum + current.balanceUSD, 0);
+  //   return toUnitFormat(sumUSD, true);
+  // }, [unclaimedRewardInfo]);
 
   return (
     <RewardsContent>
@@ -99,13 +99,13 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.balance, reward.token.decimals)}
+                {convertToKMB(`${Number(reward.balance)}`)}
               </span>
             </div>
           ))}
         </React.Fragment>
       )}
-      {swapFeeRewards && <TooltipDivider />}
+      {stakingRewards && <TooltipDivider />}
 
       {stakingRewards && (
         <React.Fragment>
@@ -122,13 +122,13 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.balance, reward.token.decimals)}
+                {convertToKMB(`${Number(reward.balance)}`)}
               </span>
             </div>
           ))}
         </React.Fragment>
       )}
-      {stakingRewards && <TooltipDivider />}
+      {/* {externalRewards && <TooltipDivider />}
 
       {externalRewards && (
         <React.Fragment>
@@ -150,8 +150,8 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
             </div>
           ))}
         </React.Fragment>
-      )}
-      {externalRewards && <TooltipDivider />}
+      )} */}
+      {/* {unclaimedRewards && <TooltipDivider />}
       {unclaimedRewards && (
         <React.Fragment>
           <div className="list">
@@ -172,15 +172,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
             </div>
           ))}
         </React.Fragment>
-      )}
-      {unclaimedRewards && <TooltipDivider />}
-      <p>
-        *Swap Fees are only claimable when your
-        <br />
-        position is unstaked. If you want to claim the
-        <br />
-        swap fees, please unstake your position first.
-      </p>
+      )} */}
     </RewardsContent>
   );
 };

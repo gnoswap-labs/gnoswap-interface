@@ -57,7 +57,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
           ))}
         </React.Fragment>
       )}
-
+      {stakingRewards && <div className="divider" />}
       {stakingRewards && (
         <React.Fragment>
           <div className="list">
@@ -83,7 +83,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
           ))}
         </React.Fragment>
       )}
-
+      {externalRewards && <div className="divider" />}
       {externalRewards && (
         <React.Fragment>
           <div className="list">

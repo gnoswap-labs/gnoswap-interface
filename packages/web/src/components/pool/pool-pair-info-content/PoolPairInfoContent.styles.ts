@@ -12,7 +12,7 @@ export const ContentWrapper = styled.div`
     background-color: ${({ theme }) => theme.color.backgroundOpacity12};
     border-radius: 10px;
     padding: 16px 48px;
-    margin: 16px;
+    margin: 16px 24px 24px 24px;
     gap: 16px;
     .position-header {
       ${mixins.flexbox("column", "center", "space-between")};
@@ -326,10 +326,33 @@ export const AprDivider = styled.div`
   width: 1px;
   height: 12px;
   background: ${({ theme }) => theme.color.background12};
-  ${media.tabletMiddle} {
-    display: none;
-  }
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "flex-start")};
+  }
+`;
+
+export const LoadingChart = styled.div`
+  ${mixins.flexbox("row", "center", "center")}
+  width: 100%;
+  height: 150px;
+  background-color: transparent;
+  border-radius: 8px;
+  > div {
+    width: 48px;
+    height: 48px;
+    &::before {
+      background-color: ${({ theme }) => theme.color.background01};
+      width: 38px;
+      height: 38px;
+      box-shadow: none;
+    }
+    &::after {
+      ${mixins.positionCenter()};
+      content: "";
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      background-color: ${({ theme }) => theme.color.background15};
+    }
   }
 `;

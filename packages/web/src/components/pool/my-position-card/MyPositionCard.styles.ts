@@ -35,9 +35,6 @@ export const MyPositionCardWrapper = styled.div<Props>`
     .box-header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
-      ${media.mobile} {
-        align-items: flex-start;
-      }
       .box-left {
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 8px;
@@ -70,6 +67,75 @@ export const MyPositionCardWrapper = styled.div<Props>`
           ${fonts.body7};
         }
         color: ${({ theme }) => theme.color.text02};
+      }
+      
+      .select-box {
+        width: auto;
+        height: 36px;
+        background: ${({ theme }) => theme.color.background13};
+
+        .current {
+          color: ${({ theme }) => theme.color.text14};
+          ${fonts.p1}
+          margin-right: 8px;
+        }
+        .select-item {
+          left: auto;
+          right: 0;
+          top: 46px;
+          width: 165px;
+          cursor: default;
+          background: ${({ theme }) => theme.color.background01};
+          .item-wrapper {
+            padding: 10px 16px;
+            height: 37px;
+            &:hover {
+              background: ${({ theme }) => theme.color.background11};
+            }
+            &:first-of-type {
+              border-top-right-radius: 8px;
+              border-top-left-radius: 8px;
+            }
+            &:last-of-type {
+              border-bottom-right-radius: 8px;
+              border-bottom-left-radius: 8px;
+            }
+          }
+        }
+        &.out-range {
+          background: linear-gradient(
+            270deg,
+            #536CD7 0%,
+            #233DBD 100%
+          );
+          .current {
+            color: ${({ theme }) => theme.color.text27};
+          }
+        }
+      }
+      @media (max-width: 360px){
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        gap: 16px;
+        .select-box {
+          position: relative;
+          width: 100%;
+          .selected-wrapper {
+            ${mixins.flexbox("row", "center", "center")};
+          }
+          .select-item {
+            position: absolute;
+            height: fit-content;
+            display: none;
+            width: 100%;
+            max-width: 297px;
+            min-width: auto;
+            left: 0;
+            right: auto;
+          }
+          .open {
+            display: block;
+          }
+        }
       }
     }
     .min-max {
@@ -307,6 +373,10 @@ export const RewardsContent = styled.div`
     ${fonts.p4};
     color: ${({ theme }) => theme.color.text04};
   }
+  .divider {
+    width: 100%;
+    border-top: 1px solid ${({ theme }) => theme.color.border01};
+  }
 `;
 
 export const TooltipDivider = styled.div`
@@ -320,4 +390,10 @@ export const ToolTipContentWrapper = styled.div`
   width: 251px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
+`;
+
+export const ManageItem = styled.div`
+  ${mixins.flexbox("row", "center", "flex-start")};
+  ${fonts.p2}
+  color: ${({ theme }) => theme.color.text22};
 `;
