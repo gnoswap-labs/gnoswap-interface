@@ -12,7 +12,7 @@ export const ContentWrapper = styled.div`
     background-color: ${({ theme }) => theme.color.backgroundOpacity12};
     border-radius: 10px;
     padding: 16px 48px;
-    margin: 24px;
+    margin: 16px;
     gap: 16px;
     .position-header {
       ${mixins.flexbox("column", "center", "space-between")};
@@ -23,6 +23,7 @@ export const ContentWrapper = styled.div`
       position: relative;
     }
     .swap-price {
+      height: 20px;
       ${mixins.flexbox("row", "center", "center")};
       ${fonts.body11}
       text-align: center;
@@ -48,6 +49,25 @@ export const ContentWrapper = styled.div`
         position: absolute;
         ${mixins.flexbox("row", "center", "center")};
         left: calc(50% + 10px);
+      }
+      ${media.mobile} {
+        display: none;
+      }
+    }
+    .swap-price-mobile {
+      display: none;
+      ${media.mobile} {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+      }
+      svg {
+        cursor: pointer;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+      svg:hover * {
+        fill: ${({ theme }) => theme.color.icon07};
       }
     }
     .convert-price {
@@ -119,13 +139,28 @@ export const PoolPairInfoContentWrapper = styled.div`
       
       > span {
         ${fonts.body11}
-        > span {
+        .token-symbol {
           display: inline;
           ${media.tablet} {
             display: none;
           }
           ${media.tabletMiddle} {
+            display: none;
+          }
+          ${media.mobile} {
             display: inline;
+          }
+        }
+        .token-percent {
+          display: inline;
+          ${media.tablet} {
+            display: none;
+          }
+          ${media.tabletMiddle} {
+            display: none;
+          }
+          ${media.mobile} {
+            display: none;
           }
         }
       }
@@ -133,9 +168,6 @@ export const PoolPairInfoContentWrapper = styled.div`
     .divider {
       height: 12px;
       border-left: 1px solid ${({ theme }) => theme.color.border02};
-      ${media.tabletMiddle} {
-        display: none;
-      }
     }
     .wrapper-value {
       ${mixins.flexbox("row", "center", "flex-start")};
@@ -152,6 +184,9 @@ export const PoolPairInfoContentWrapper = styled.div`
         }
         svg {
           width: 6px;
+        }
+        ${media.mobile} {
+          margin-top: 6px;
         }
       }
     }
@@ -177,9 +212,9 @@ export const PoolPairInfoContentWrapper = styled.div`
   .section-info {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
-    height: 20px;
+    min-height: 20px;
     ${media.tabletMiddle} {
-      ${mixins.flexbox("column", "center", "flex-start")};
+      ${mixins.flexbox("row", "center", "flex-start")};
       &.flex-row {
         ${mixins.flexbox("row", "center", "flex-start")};
       }
@@ -193,18 +228,37 @@ export const PoolPairInfoContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 10px;
     height: 20px;
-    ${media.tabletMiddle} {
-      ${mixins.flexbox("column", "flex-start", "flex-start")};
-    }
-    ${media.mobile} {
-      ${mixins.flexbox("row", "center", "flex-start")};
-    }
+    
     .content-wrap {
       ${mixins.flexbox("", "center", "flex-start")};
       gap: 8px;
       .apr-value {
         ${fonts.body11}
         color: ${({ theme }) => theme.color.text10};
+      }
+    }
+    ${media.tablet} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: none;
+        }
+      }
+    }
+    ${media.tabletMiddle} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: none;
+        }
+      }
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      .content-wrap {
+        &.content-reward {
+          display: flex;
+        }
       }
     }
   }

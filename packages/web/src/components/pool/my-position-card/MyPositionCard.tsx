@@ -6,7 +6,7 @@ import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   MyPositionCardWrapper,
   ToolTipContentWrapper,
@@ -29,6 +29,7 @@ import IconSwap from "@components/common/icons/IconSwap";
 import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { numberToFormat } from "@utils/string-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -43,6 +44,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 }) => {
   const { width } = useWindowSize();
   const { tokenPrices } = useTokenData();
+  const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
 
   const tokenA = useMemo(() => {
@@ -185,6 +187,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
        * return aprRewardInfo;
        */
     }, []);
+
+  const stringPrice = useMemo(() => {
+    if (isSwap) {
+      return `1 ${tokenB?.symbol} = ${numberToFormat(1 / position?.pool?.price, 6)} ${tokenA?.symbol}`;
+    }
+    return `1 ${tokenA?.symbol} = ${numberToFormat(position?.pool?.price, 6)} ${tokenB?.symbol}`;
+  }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
 
   return (
     <MyPositionCardWrapper type={inRange}>
@@ -347,8 +356,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               width={20}
               className="image-logo"
             />
-            1 GNS = 0.956937 GNOT
-            <div>
+            {stringPrice}
+            <div onClick={() => setIsSwap(!isSwap)}>
               <IconSwap />
             </div>
           </div>
@@ -376,13 +385,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         />
         <div className="convert-price">
           <div>
-            1 GNS = 0.956937(<span className="negative">-20%</span>)&nbsp;
+            1 {tokenA?.symbol} = 0.956937(<span className="negative">-20%</span>)&nbsp;
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
                   The price at which the position will be converted entirely to
-                  GNS.
+                  {tokenA?.symbol}.
                 </ToolTipContentWrapper>
               }
             >
@@ -397,13 +406,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               FloatingContent={
                 <ToolTipContentWrapper>
                   The price at which the position will be converted entirely to
-                  GNOT.
+                  {tokenB?.symbol}.
                 </ToolTipContentWrapper>
               }
             >
               <IconInfo />
             </Tooltip>
-            &nbsp;GNOT
+            &nbsp;{tokenB?.symbol}
           </div>
         </div>
       </div>

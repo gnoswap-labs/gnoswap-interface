@@ -140,7 +140,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     ${mixins.flexbox("row", "center", "space-between")};
     padding: 12px 16px;
     border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.color.border12};
+    border: 1px solid ${({ theme }) => theme.color.border14};
     background-color: ${({ theme }) => theme.color.backgroundOpacity2};
     ${media.tabletMiddle} {
       padding: 11px 16px;

@@ -43,7 +43,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
   loading,
 }) => {
   const rewardTokenLogos = useMemo(() => {
-    return rewardTokens.map(token => token.logoURI);
+    const temp = rewardTokens.map(token => token.logoURI);
+    return [...new Set(temp)];
   }, [rewardTokens]);
 
   const stakingPositionMap = useMemo(() => {
