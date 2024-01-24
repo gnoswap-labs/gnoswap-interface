@@ -9,6 +9,7 @@ export const ContentWrapper = styled.div`
   border-radius: 8px;
   .position-wrapper-chart {
     ${mixins.flexbox("column", "center", "flex-start")};
+    border: 1px solid ${({ theme }) => theme.color.border14};
     background-color: ${({ theme }) => theme.color.backgroundOpacity12};
     border-radius: 10px;
     padding: 16px 48px;
@@ -177,10 +178,10 @@ export const PoolPairInfoContentWrapper = styled.div`
         margin-top: 8px;
         gap: 4px;
         strong {
-          font-weight: 700;
+          font-weight: 700 !important;
         }
         span {
-          font-weight: 700;
+          font-weight: 700 !important;;
         }
         svg {
           width: 6px;
@@ -274,7 +275,7 @@ export const PoolPairInfoContentWrapper = styled.div`
   strong {
     ${mixins.flexbox("row", "center", "flex-start")};
     ${fonts.body2};
-    font-weight: 700;
+    font-weight: 700 !important;;
     ${media.tablet} {
       ${fonts.body4};
     }

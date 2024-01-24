@@ -19,6 +19,7 @@ import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import IconSwap from "@components/common/icons/IconSwap";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -31,6 +32,32 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
+
+  const tokenABalance = useMemo(() => {
+    return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
+  }, [pool.tokenA, pool.tokenABalance]);
+
+  const tokenBBalance = useMemo(() => {
+    return makeDisplayTokenAmount(pool.tokenB, pool.tokenBBalance) || 0;
+  }, [pool.tokenB, pool.tokenBBalance]);
+
+  const depositRatio = useMemo(() => {
+    const sumOfBalances = tokenABalance + tokenBBalance;
+    if (sumOfBalances === 0) {
+      return 0.5;
+    }
+    return tokenABalance / sumOfBalances;
+  }, [tokenABalance, tokenBBalance]);
+
+  const depositRatioStrOfTokenA = useMemo(() => {
+    const depositStr = `${Math.round(depositRatio * 100)}%`;
+    return `(${depositStr})`;
+  }, [depositRatio]);
+
+  const depositRatioStrOfTokenB = useMemo(() => {
+    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
+    return `(${depositStr})`;
+  }, [depositRatio]);
 
   const liquidityValue = useMemo((): string => {
     return formatUsdNumber(Number(pool.tvl).toString(), undefined, true);
@@ -49,6 +76,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     }
     return `${pool.apr}%`;
   }, [pool.apr]);
+
+  const liquidityChangedStr = useMemo((): string => {
+    return `${numberToFormat(pool.tvlChange, 2)}%`;
+  }, [pool.tvlChange]);
+
+  const volumeChangedStr = useMemo((): string => {
+    return `${numberToFormat(pool.volumeChange, 2)}%`;
+  }, [pool.volumeChange]);
 
   const feeChangedStr = useMemo((): string => {
     return `$${convertToKMB(`${Number(pool.feeChange)}`, 2)}`;
@@ -77,7 +112,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && <div className="wrapper-value">
             <strong>{liquidityValue}</strong>
             <div>
-              <IconTriangleArrowUpV2 />  <span className="positive"> 3.52%</span>
+              {pool.tvlChange >=0 ? <IconTriangleArrowUpV2 /> : ""}  <span className={pool.tvlChange >= 0 ? "positive" : "negative"}> {liquidityChangedStr}</span>
             </div>
           </div>}
           <div className="section-info">
@@ -89,7 +124,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                <span>4.14K <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">(25%)</span></span>
+                <span>{convertToKMB(`${tokenABalance}`)} <span className="token-symbol">{pool?.tokenA?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenA}</span></span>
               </div>
               <div className="divider"></div>
               <div className="section-image">
@@ -99,7 +134,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                <span>4.14K <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">(25%)</span></span>
+                <span>{convertToKMB(`${tokenBBalance}`)} <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenB}</span></span>
               </div>
             </>}
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
@@ -114,7 +149,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && <div className="wrapper-value">
             <strong>{volumeValue}</strong>
             <div>
-              <IconTriangleArrowUpV2 />  <span className="positive"> 3.52%</span>
+              <IconTriangleArrowUpV2 />  <span className="positive"> {volumeChangedStr}</span>
             </div>
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
@@ -124,9 +159,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </SkeletonEarnDetailWrapper>}
           <div className="section-info flex-row">
             <span>All-Time Volume</span>
-            <div className="section-image">
+            {!loading && <div className="section-image">
               <span>12.34M</span>
-            </div>
+            </div>}
 
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
@@ -198,7 +233,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                1 {pool?.tokenB?.symbol} = {convertToKMB(`${1 / pool.price}`, 6)} {pool?.tokenA?.symbol}
+                1 {pool?.tokenB?.symbol} = {convertToKMB(`${(1 / pool.price).toFixed(6)}`, 6)} {pool?.tokenA?.symbol}
               </div>}
             </div>
             <div className="swap-price-mobile">

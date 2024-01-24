@@ -13,6 +13,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { numberToFormat } from "@utils/string-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
@@ -100,7 +101,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
               </div>
               <div className="list-content">
-                <span className="value-text">${pool.liquidity}</span>
+                <span className="value-text">${convertToKMB(`${Number(pool.liquidity)}`)}</span>
                 <span className="value-text">{pool.apr}</span>
               </div>
             </div>

@@ -30,8 +30,8 @@ import IconSwap from "@components/common/icons/IconSwap";
 import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { numberToFormat } from "@utils/string-utils";
 import SelectBox from "@components/common/select-box/SelectBox";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -192,9 +192,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const stringPrice = useMemo(() => {
     if (isSwap) {
-      return `1 ${tokenB?.symbol} = ${numberToFormat(1 / position?.pool?.price, 6)} ${tokenA?.symbol}`;
+      return `1 ${tokenB?.symbol} = ${convertToKMB(`${1 / position?.pool?.price}`, 6)} ${tokenA?.symbol}`;
     }
-    return `1 ${tokenA?.symbol} = ${numberToFormat(position?.pool?.price, 6)} ${tokenB?.symbol}`;
+    return `1 ${tokenA?.symbol} = ${convertToKMB(`${position?.pool?.price}`, 6)} ${tokenB?.symbol}`;
   }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
 
   return (
@@ -272,7 +272,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <SelectBox
             current={"Manage"}
-            items={["Manage", "Reposition", "Increase Liquidity", "Decrease Liquidity"]}
+            items={["Reposition", "Increase Liquidity", "Decrease Liquidity"]}
             select={() => {}}
             render={(period) => <ManageItem>{period}</ManageItem>}
             className={!inRange ? "out-range" : ""}

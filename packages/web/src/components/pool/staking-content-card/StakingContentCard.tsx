@@ -170,9 +170,9 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 }
               >
                 <span>{totalUSD}</span>
-                {checkedStep && "+ "}
-                {checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
-                {positions.length >0 && <div className="badge">{positions.length} LP</div>}
+                {totalStakedRewardUSD > 0 && checkedStep && "+ "}
+                {totalStakedRewardUSD > 0 && checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
+                {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
               </Tooltip>
             </span>
           </div>}
@@ -282,8 +282,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                 }
               >
                 <span>{totalUSD}</span>
-                {checkedStep && "+ "}
-                {checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
+                {checkedStep && totalStakedRewardUSD > 0 && "+ "}
+                {totalStakedRewardUSD > 0 && checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
                 {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
               </Tooltip>
             </span>

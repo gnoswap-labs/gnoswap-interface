@@ -52,6 +52,10 @@ export const MyPositionCardWrapper = styled.div<Props>`
         .token-logo {
           width: 36px;
           height: 36px;
+          ${media.tablet} {
+            width: 30px;
+            height: 30px;
+          }
           ${media.mobile} {
             width: 24px;
             height: 24px;
@@ -81,16 +85,21 @@ export const MyPositionCardWrapper = styled.div<Props>`
         }
         .select-item {
           left: auto;
-          right: 0;
+          right: -1px;
           top: 46px;
           width: 165px;
           cursor: default;
           background: ${({ theme }) => theme.color.background01};
+          box-shadow: ${({ theme }) => theme.color.shadow};
           .item-wrapper {
+            margin-bottom: 4px;
             padding: 10px 16px;
             height: 37px;
             &:hover {
               background: ${({ theme }) => theme.color.background11};
+              > div {
+                color: ${({ theme }) => theme.color.text16};
+              }
             }
             &:first-of-type {
               border-top-right-radius: 8px;
@@ -99,6 +108,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
             &:last-of-type {
               border-bottom-right-radius: 8px;
               border-bottom-left-radius: 8px;
+              margin-bottom: 0;
             }
           }
         }
@@ -110,6 +120,25 @@ export const MyPositionCardWrapper = styled.div<Props>`
           );
           .current {
             color: ${({ theme }) => theme.color.text27};
+          }
+          .item-wrapper {
+            &:first-of-type {
+              > div {
+                color: ${({ theme }) => theme.color.text29};
+              }
+            }
+          }
+        }
+      }
+      ${media.mobile} {
+        .select-box {
+          .select-item {
+            position: absolute;
+            height: fit-content;
+            display: none;
+          }
+          .open {
+            display: block;
           }
         }
       }
@@ -206,7 +235,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
       .content-text {
         ${mixins.flexbox("row", "center", "flex-start")};
         ${fonts.body2};
-        font-weight: 700;
+        font-weight: 700 !important;
         ${media.tablet} {
           ${fonts.body4};
           svg {
@@ -229,6 +258,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
   .position-wrapper-chart {
     ${mixins.flexbox("column", "center", "flex-start")};
     background-color: ${({ theme }) => theme.color.background20};
+    border: 1px solid ${({ theme }) => theme.color.border14};
     border-radius: 10px;
     padding: 16px 48px;
     width: 100%;

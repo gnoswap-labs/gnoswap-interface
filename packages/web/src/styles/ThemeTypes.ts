@@ -92,6 +92,7 @@ export interface ThemeColorType {
   text26: string;
   text27: string;
   text28: string;
+  text29: string;
   icon01: string;
   icon02: string;
   icon03: string;

@@ -70,6 +70,17 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
             margin-left: -6px;
           }
         }
+        ${media.tablet} {
+          &:not(:first-of-type) {
+            margin-left: -4px;
+          }
+          width: 24px;
+          height: 24px;
+          img {
+            width: 24px;
+            height: 24px;
+          }
+        }
         ${media.mobile} {
           width: 20px;
           height: 20px;
