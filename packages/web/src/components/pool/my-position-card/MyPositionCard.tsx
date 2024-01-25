@@ -1,6 +1,5 @@
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconStaking from "@components/common/icons/IconStaking";
-import IconStar from "@components/common/icons/IconStar";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION, RewardType } from "@constants/option.constant";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -14,7 +13,6 @@ import {
 } from "./MyPositionCard.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { TokenModel } from "@models/token/token-model";
-import { toUnitFormat } from "@utils/number-utils";
 import { BalanceTooltipContent } from "./MyPositionCardBalanceContent";
 import { MyPositionRewardContent } from "./MyPositionCardRewardContent";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
@@ -31,7 +29,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -93,7 +91,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.token1Balance, tokenB, tokenPrices]);
 
   const positionBalanceUSD = useMemo(() => {
-    return toUnitFormat(position.positionUsdValue, true);
+    return formatUsdNumber(position.positionUsdValue, 2, true);
   }, [position.positionUsdValue]);
 
   const balances = useMemo((): {
@@ -138,8 +136,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           accum[current.rewardType] = [];
         }
         accum[current.rewardType].push({
+          claimableAmount: makeDisplayTokenAmount(current.token, current.claimableAmount) || 0,
           token: current.token,
-          balance: Number(current.totalAmount),
+          balance: makeDisplayTokenAmount(current.token, current.totalAmount) || 0,
           balanceUSD:
             Number(current.totalAmount) *
             Number(tokenPrices[current.token.priceId]?.usd || 0),
@@ -159,42 +158,64 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (!totalRewardInfo) {
       return "$0";
     }
+
     const usdValue = Object.values(totalRewardInfo)
       .flatMap(item => item)
       .reduce((accum, current) => {
-        return accum + current.balanceUSD;
+        return accum + current.claimableAmount;
       }, 0);
-    return toUnitFormat(usdValue, true);
+    return formatUsdNumber(`${usdValue}`, 2, true);
+  }, [totalRewardInfo]);
+
+  const totalDailyEarning = useMemo(() => {
+    if (!totalRewardInfo) {
+      return "$0";
+    }
+
+    const usdValue = Object.values(totalRewardInfo)
+      .flatMap(item => item)
+      .reduce((accum, current) => {
+        return accum + current.balance;
+      }, 0);
+    return formatUsdNumber(`${usdValue}`, 2, true);
   }, [totalRewardInfo]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {
-      return null;
-      /** TODO: Not implements API
-       * const aprRewardInfo = position.rewards.reduce<{ [key in RewardType]: PositionAPRInfo[] }>((accum, current) => {
-       *   if (!accum[current.rewardType]) {
-       *     accum[current.rewardType] = [];
-       *   }
-       *   accum[current.rewardType].push({
-       *     token: current.token,
-       *     tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
-       *     aprOf7d: Number(current.aprOf7d),
-       *   });
-       *   return accum;
-       * }, {
-       *   SWAP_FEE: [],
-       *   STAKING: [],
-       *   EXTERNAL: []
-       * });
-       * return aprRewardInfo;
-       */
+      const aprRewardInfo = position.rewards.reduce<{
+        [key in RewardType]: PositionAPRInfo[];
+      }>(
+        (accum, current) => {
+          if (!accum[current.rewardType]) {
+            accum[current.rewardType] = [];
+          }
+          accum[current.rewardType].push({
+            token: current.token,
+            tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
+            aprOf7d: Number(current.aprOf7d),
+          });
+          return accum;
+        },
+        {
+          SWAP_FEE: [],
+          STAKING: [],
+          EXTERNAL: [],
+        },
+      );
+      return aprRewardInfo;
     }, []);
 
   const stringPrice = useMemo(() => {
     if (isSwap) {
-      return `1 ${tokenB?.symbol} = ${convertToKMB(`${1 / position?.pool?.price}`, 6)} ${tokenA?.symbol}`;
+      return `1 ${tokenB?.symbol} = ${convertToKMB(
+        `${Number(1 / position?.pool?.price)}`,
+        6,
+      )} ${tokenA?.symbol}`;
     }
-    return `1 ${tokenA?.symbol} = ${convertToKMB(`${position?.pool?.price}`, 6)} ${tokenB?.symbol}`;
+    return `1 ${tokenA?.symbol} = ${convertToKMB(
+      `${Number(position?.pool?.price)}`,
+      6,
+    )} ${tokenB?.symbol}`;
   }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
 
   return (
@@ -274,7 +295,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             current={"Manage"}
             items={["Reposition", "Increase Liquidity", "Decrease Liquidity"]}
             select={() => {}}
-            render={(period) => <ManageItem>{period}</ManageItem>}
+            render={period => <ManageItem>{period}</ManageItem>}
             className={!inRange ? "out-range" : ""}
           />
         </div>
@@ -312,15 +333,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               }
             >
               <span className="content-text">
-                {Number(position.apr) >= 100 && <IconStar />}
-                {position.apr !== "" ? `${position.apr}%` : "-"}
+                {totalDailyEarning}
               </span>
             </Tooltip>
           ) : (
             !loading && (
               <span className="content-text">
-                {Number(position.apr) >= 100 && <IconStar />}
-                {position.apr !== "" ? `${position.apr}%` : "-"}
+                {totalDailyEarning}
               </span>
             )
           )}
@@ -366,7 +385,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               className="image-logo"
             />
             {stringPrice}
-            <div onClick={() => setIsSwap(!isSwap)}>
+            <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
               <IconSwap />
             </div>
           </div>
@@ -394,12 +413,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         />
         <div className="convert-price">
           <div>
-            1 {tokenA?.symbol} = 0.956937(<span className="negative">-20%</span>)&nbsp;
+            1 {tokenA?.symbol} = 0.956937(<span className="negative">-20%</span>
+            )&nbsp;
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The price at which the position will be converted entirely to&nbsp;
+                  The price at which the position will be converted entirely
+                  to&nbsp;
                   {tokenA?.symbol}.
                 </ToolTipContentWrapper>
               }
@@ -414,7 +435,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The price at which the position will be converted entirely to&nbsp;
+                  The price at which the position will be converted entirely
+                  to&nbsp;
                   {tokenB?.symbol}.
                 </ToolTipContentWrapper>
               }

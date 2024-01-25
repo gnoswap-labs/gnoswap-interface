@@ -7,6 +7,13 @@ export const ContentWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.backgroundOpacity9};
   width: 100%;
   border-radius: 8px;
+  .chart-chart-container {
+    border-width: 0 1px 1px 1px; 
+    border-style: solid;
+    border-color: ${({ theme }) => theme.color.border14};
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
   .position-wrapper-chart {
     ${mixins.flexbox("column", "center", "flex-start")};
     border: 1px solid ${({ theme }) => theme.color.border14};
@@ -57,9 +64,13 @@ export const ContentWrapper = styled.div`
     }
     .swap-price-mobile {
       display: none;
+      color: ${({ theme }) => theme.color.text10};
       ${media.mobile} {
         ${mixins.flexbox("row", "center", "center")};
         gap: 4px;
+      }
+      .icon-wrapper {
+        ${mixins.flexbox("row", "center", "center")};
       }
       svg {
         cursor: pointer;
@@ -99,10 +110,14 @@ export const ContentWrapper = styled.div`
       margin: 0 6px;
     }
     @media (max-width: 767px) {
-      padding: 16px 24px;
+      margin: 16px 12px;
+      padding: 16px 12px;
       .position-header {
         ${mixins.flexbox("column", "center", "center")};
         gap: 8px;
+        > div:first-of-type {
+          
+        }
       }
     }
   }
@@ -142,6 +157,9 @@ export const PoolPairInfoContentWrapper = styled.div`
         ${fonts.body11}
         .token-symbol {
           display: inline;
+          @media (max-width: 1222px) {
+            display: none;
+          }
           ${media.tablet} {
             display: none;
           }
@@ -149,7 +167,7 @@ export const PoolPairInfoContentWrapper = styled.div`
             display: none;
           }
           ${media.mobile} {
-            display: inline;
+            display: none;
           }
         }
         .token-percent {

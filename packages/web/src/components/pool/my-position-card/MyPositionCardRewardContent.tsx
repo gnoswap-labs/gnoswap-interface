@@ -3,12 +3,15 @@ import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
 import { prettyNumberFloatInteger, toLowerUnitFormat } from "@utils/number-utils";
 import { PositionRewardInfo } from "@models/position/info/position-reward-info";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface MyPositionRewardContentProps {
   rewardInfo: { [key in RewardType]: PositionRewardInfo[] };
 }
 
 export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = ({ rewardInfo }) => {
+  const { getGnotPath } = useGnotToGnot();
+
   const swapFeeRewards = useMemo(() => {
     if (rewardInfo.SWAP_FEE.length === 0) {
       return null;
@@ -57,7 +60,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
             <div key={index} className="list">
               <div className="coin-info">
                 <img
-                  src={reward.token.logoURI}
+                  src={getGnotPath(reward.token).logoURI}
                   alt="token logo"
                   className="token-logo"
                 />
@@ -83,7 +86,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
             <div key={index} className="list">
               <div className="coin-info">
                 <img
-                  src={reward.token.logoURI}
+                  src={getGnotPath(reward.token).logoURI}
                   alt="token logo"
                   className="token-logo"
                 />
@@ -109,7 +112,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
             <div key={index} className="list">
               <div className="coin-info">
                 <img
-                  src={reward.token.logoURI}
+                  src={getGnotPath(reward.token).logoURI}
                   alt="token logo"
                   className="token-logo"
                 />

@@ -51,5 +51,7 @@ export interface PoolResponse {
 
   apr: string;
 
+  totalApr: string | number | null;
+
   rewardTokens?: TokenModel[];
 }

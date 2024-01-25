@@ -62,20 +62,20 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const liquidityValue = useMemo((): string => {
     return formatUsdNumber(Number(pool.tvl).toString(), undefined, true);
   }, [pool.tvl]);
-  
+
   const volumeValue = useMemo((): string => {
     return formatUsdNumber(Number(pool.volume).toString(), undefined, true);
   }, [pool.volume]);
 
   const aprValue = useMemo(() => {
-    if (!pool.apr) {
+    if (!pool.totalApr) {
       return "-";
     }
-    if (Number(pool.apr) >= 100) {
-      return <><IconStar />{`${pool.apr}%`}</>;
+    if (Number(pool.totalApr) >= 100) {
+      return <><IconStar />{`${pool.totalApr}%`}</>;
     }
-    return `${pool.apr}%`;
-  }, [pool.apr]);
+    return `${pool.totalApr}%`;
+  }, [pool.totalApr]);
 
   const liquidityChangedStr = useMemo((): string => {
     return `${numberToFormat(pool.tvlChange, 2)}%`;
@@ -160,7 +160,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="section-info flex-row">
             <span>All-Time Volume</span>
             {!loading && <div className="section-image">
-              <span>12.34M</span>
+              <span>${convertToKMB(`${Number(pool.totalVolume)}`)}</span>
             </div>}
 
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
@@ -201,7 +201,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           </div>
         </section>
       </PoolPairInfoContentWrapper>
-      <section>
+      <section className="chart-chart-container">
         <div className="position-wrapper-chart">
           <div className="position-header">
             <div>Current Price</div>
@@ -213,7 +213,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                1 {pool?.tokenA?.symbol} = {convertToKMB(`${pool.price}`, 6)} {pool?.tokenB?.symbol}
+                1 {pool?.tokenA?.symbol} = {convertToKMB(`${Number(pool.price)}`, 6)} {pool?.tokenB?.symbol}
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
@@ -233,7 +233,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                1 {pool?.tokenB?.symbol} = {convertToKMB(`${(1 / pool.price).toFixed(6)}`, 6)} {pool?.tokenA?.symbol}
+                1 {pool?.tokenB?.symbol} = {convertToKMB(`${(Number(1 / pool.price)).toFixed(6)}`, 6)} {pool?.tokenA?.symbol}
               </div>}
             </div>
             <div className="swap-price-mobile">
@@ -244,7 +244,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 className="image-logo"
               />
               {stringPrice}
-              <div onClick={() => setIsSwap(!isSwap)}>
+              <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
                 <IconSwap />
               </div>
             </div>
@@ -254,7 +254,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             tokenB={pool?.tokenB}
             bins={pool?.bins}
             currentTick={pool?.currentTick}
-            width={Math.min(width - (width > 767 ? 224 : 102), 1216)}
+            width={Math.min(width - (width > 767 ? 224 : 80), 1216)}
             height={150}
             mouseover
             themeKey={themeKey}

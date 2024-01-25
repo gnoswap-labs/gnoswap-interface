@@ -12,7 +12,6 @@ import { RewardType } from "@constants/option.constant";
 import { MyPositionRewardContent } from "../my-position-card/MyPositionCardRewardContent";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
-import { PositionRewardInfo } from "@models/position/info/position-reward-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { formatUsdNumber } from "@utils/stake-position-utils";
@@ -99,25 +98,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return formatUsdNumber(String(balance), 2, true);
   }, [allBalances, connected]);
 
-  const dailyEarningRewardInfo = useMemo((): { [key in RewardType]: PositionRewardInfo[] } | null => {
-    return null;
-  }, []);
-
-  const dailyEarning = useMemo(() => {
-    if (!connected) {
-      return "-";
-    }
-    if (!dailyEarningRewardInfo) {
-      return "$0";
-    }
-    const usdValue = Object.values(dailyEarningRewardInfo)
-      .flatMap(item => item)
-      .reduce((accum, current) => {
-        return accum + current.balanceUSD;
-      }, 0);
-    return formatUsdNumber(String(usdValue), 2, true);
-  }, [dailyEarningRewardInfo, connected]);
-
   const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
     if (!activated) {
       return null;
@@ -132,7 +112,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         token: reward.token,
         rewardType: reward.rewardType,
         balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
-        balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
+        balanceUSD: makeDisplayTokenAmount(reward.token, Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd))  || 0,
         claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsdValue)
       }))
@@ -142,7 +122,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
             ...existReward,
             balance: existReward.balance + rewardInfo.balance,
-            balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
+            balanceUSD: existReward.balanceUSD + (rewardInfo.balanceUSD),
             claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
           };
@@ -156,6 +136,22 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
   }, [activated, positions, tokenPrices]);
+  
+  const dailyEarning = useMemo(() => {
+    if (!connected) {
+      return "-";
+    }
+    if (positions.length ===0) {
+      return "$0";
+    }
+    const claimableUsdValue = claimableRewardInfo ? Object.values(claimableRewardInfo)
+      .flatMap(item => item)
+      .reduce((accum, current) => {
+        return accum + Number(current.claimableAmount);
+      }, 0) : 0;
+    
+    return formatUsdNumber(String(claimableUsdValue), 2, true);
+  }, [positions, connected]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
     if (!activated) {
@@ -179,7 +175,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               ...existReward,
               balance: existReward.balance + rewardInfo.balance,
               balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
-              claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
               claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
             };
           } else {
@@ -197,7 +192,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const claimableUsdValue = claimableRewardInfo ? Object.values(claimableRewardInfo)
       .flatMap(item => item)
       .reduce((accum, current) => {
-        return accum + current.balanceUSD;
+        return accum + Number(current.claimableAmount);
       }, 0) : 0;
     
     return formatUsdNumber(String(claimableUsdValue), 2, true);
@@ -227,12 +222,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       </section>
       <section>
         <h4>Total Daily Earnings</h4>
-        {!loading && dailyEarningRewardInfo ? (
+        {!loading && claimableRewardInfo ? (
           <Tooltip
             placement="top"
             FloatingContent={
               <div>
-                <MyPositionRewardContent rewardInfo={dailyEarningRewardInfo} />
+                <MyPositionRewardContent rewardInfo={claimableRewardInfo} />
               </div>
             }
           >

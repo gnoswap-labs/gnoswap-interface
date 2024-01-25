@@ -201,6 +201,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         background-color: ${({ theme }) => theme.color.background08};
         ${fonts.body7}
         ${media.tablet} {
+          margin-left: 0px;
           ${fonts.body9}
         }
         ${media.mobile} {

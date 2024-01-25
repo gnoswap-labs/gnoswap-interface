@@ -76,8 +76,11 @@ export const MyPositionCardWrapper = styled.div<Props>`
       .select-box {
         width: auto;
         height: 36px;
+        cursor: pointer;
         background: ${({ theme }) => theme.color.background13};
-
+        &:hover {
+          background: ${({ theme }) => theme.color.backgroundGradient};
+        }
         .current {
           color: ${({ theme }) => theme.color.text14};
           ${fonts.p1}
@@ -86,7 +89,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         .select-item {
           left: auto;
           right: -1px;
-          top: 46px;
+          top: 43px;
           width: 165px;
           cursor: default;
           background: ${({ theme }) => theme.color.background01};
@@ -95,6 +98,9 @@ export const MyPositionCardWrapper = styled.div<Props>`
             margin-bottom: 4px;
             padding: 10px 16px;
             height: 37px;
+            > div {
+              font-weight: 500;
+            }
             &:hover {
               background: ${({ theme }) => theme.color.background11};
               > div {
@@ -282,6 +288,9 @@ export const MyPositionCardWrapper = styled.div<Props>`
       gap: 6px;
       text-align: center;
       color: ${({ theme }) => theme.color.text10};
+      .icon-wrapper {
+        ${mixins.flexbox("row", "center", "center")};
+      }
       svg {
         cursor: pointer;
         * {

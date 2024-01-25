@@ -44,6 +44,7 @@ export interface PoolModel {
   feeChange: number;
 
   apr: number | string | null;
+  totalApr: number | string | null;
 
   poolPath?: string;
 

@@ -63,6 +63,7 @@ const initialPool: PoolDetailModel = {
   tickSpacing: 0,
   bins: [],
   rewardTokens: [],
+  totalApr: 0,
   poolPath: ""
 };
 

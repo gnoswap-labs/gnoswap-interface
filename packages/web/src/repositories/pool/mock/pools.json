@@ -48,7 +48,8 @@
       "tokenBBalance": 2777571,
       "tickSpacing": 10,
       "bins": [],
-      "rewardTokens": []
+      "rewardTokens": [],
+      "totalApr": 0
     }
   ]
 }

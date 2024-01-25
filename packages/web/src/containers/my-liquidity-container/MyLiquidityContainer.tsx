@@ -64,7 +64,7 @@ const MyLiquidityContainer: React.FC = () => {
     if (account?.address) {
       setPositions(getPositionsByPoolId(poolPath));
     }
-  }, [account?.address, router.query]);
+  }, [account?.address, router.query, setPositions, getPositionsByPoolId]);
   
   return (
     <MyLiquidity

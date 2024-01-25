@@ -46,7 +46,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
     const temp = rewardTokens.map(token => token.logoURI);
     return [...new Set(temp)];
   }, [rewardTokens]);
-
+  
   const stakingPositionMap = useMemo(() => {
     return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
       const stakedTime = Number(current.stakedAt) * 1000;
