@@ -151,6 +151,17 @@ export class PoolRepositoryImpl implements PoolRepository {
     
     const tokenAPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPath = tokenB.wrappedPath || tokenB.path;
+    if (isNativeToken(tokenA)) {
+      messages.push(
+        makeDepositMessage(tokenA.wrappedPath, tokenAAmountRaw, "ugnot", request.caller),
+      );
+    }
+    if (isNativeToken(tokenB)) {
+      messages.push(
+        makeDepositMessage(tokenB.wrappedPath, tokenBAmountRaw, "ugnot", request.caller),
+      );
+    }
+
     messages.push(PoolRepositoryImpl.makeApproveGnosTokenMessage(caller));
     messages.push(PoolRepositoryImpl.makeCreatePoolMessage(
       tokenA,
@@ -236,6 +247,16 @@ export class PoolRepositoryImpl implements PoolRepository {
     
     const tokenAPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPath = tokenB.wrappedPath || tokenB.path;
+    if (isNativeToken(tokenA)) {
+      messages.push(
+        makeDepositMessage(tokenA.wrappedPath, tokenAAmountRaw, "ugnot", request.caller),
+      );
+    }
+    if (isNativeToken(tokenB)) {
+      messages.push(
+        makeDepositMessage(tokenB.wrappedPath, tokenBAmountRaw, "ugnot", request.caller),
+      );
+    }
 
     messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
       tokenAPath,
