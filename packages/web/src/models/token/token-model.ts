@@ -44,5 +44,5 @@ export interface NativeTokenModel extends TokenModel {
 }
 
 export function isNativeToken(token: TokenModel): token is NativeTokenModel {
-  return token.type === "native";
+  return token.type.toLowerCase() === "native";
 }
