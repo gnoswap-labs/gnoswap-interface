@@ -136,6 +136,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
   }, [activated, positions, tokenPrices]);
+  console.log(claimableRewardInfo, "claimableRewardInfo", positions);
   
   const dailyEarning = useMemo(() => {
     if (!connected) {
@@ -163,7 +164,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         token: reward.token,
         rewardType: reward.rewardType,
         balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
-        balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
+        balanceUSD: makeDisplayTokenAmount(reward.token, Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0)) || 0,
         claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsdValue)
       }))
@@ -249,9 +250,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <h4>Total Claimable Rewards</h4>
               {!loading && <div className="claim-wrap">
                 {claimableRewardInfo || unclaimedRewardInfo ? (
-                  <span className="content-value">
-                    {claimableUSD}
-                  </span>
+                  <Tooltip
+                    placement="top"
+                    FloatingContent={<MyPositionClaimContent rewardInfo={claimableRewardInfo} unclaimedRewardInfo={unclaimedRewardInfo} />}
+                  >
+                    <span className="content-value">
+                      {claimableUSD}
+                    </span>
+                  </Tooltip>
                 ) : (
                   <span className="content-value disabled">
                     {claimableUSD}

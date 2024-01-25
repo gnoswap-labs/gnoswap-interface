@@ -256,10 +256,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       min: tickOfPrices[-minTick] || null,
       max: tickOfPrices[-maxTick] || null,
     };
-    const myTokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
-    const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
-    const tokenAAmountStr = makeDisplayTokenAmount(tokenA, resolvedBins.reduce((acc, current) => Number(current.reserveTokenA) + acc, 0));
-    const tokenBAmountStr = makeDisplayTokenAmount(tokenB, resolvedBins.reduce((acc, current) => Number(current.reserveTokenB) + acc, 0));
+    const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
+    const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
+    const myTokenAAmountStr = makeDisplayTokenAmount(tokenA, resolvedBins.reduce((acc, current) => Number(current.reserveTokenA) + acc, 0));
+    const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, resolvedBins.reduce((acc, current) => Number(current.reserveTokenB) + acc, 0));
     
     const tickSpacing = getTickSpacing();
     const isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));

@@ -99,6 +99,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     }
     return `1 ${pool?.tokenA?.symbol} = ${numberToFormat(pool?.price, 6)} ${pool?.tokenB?.symbol}`;
   }, [isSwap, pool?.tokenB?.symbol, pool?.tokenA?.symbol, pool?.price]);
+
+  const isWrapText = useMemo(() => {
+    return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
+  }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
+
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
@@ -124,7 +129,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                <span>{convertToKMB(`${tokenABalance}`)} <span className="token-symbol">{pool?.tokenA?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenA}</span></span>
+                <span>{convertToKMB(`${tokenABalance}`)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenA?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenA}</span></span>
               </div>
               <div className="divider"></div>
               <div className="section-image">
@@ -134,7 +139,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                <span>{convertToKMB(`${tokenBBalance}`)} <span className="token-symbol">{pool?.tokenB?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenB}</span></span>
+                <span>{convertToKMB(`${tokenBBalance}`)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenB?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenB}</span></span>
               </div>
             </>}
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>

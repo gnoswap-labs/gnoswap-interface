@@ -26,27 +26,27 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
     return rewardInfo.STAKING;
   }, [rewardInfo.STAKING]);
 
-  const externalRewards = useMemo(() => {
-    if (rewardInfo.EXTERNAL.length === 0) {
-      return null;
-    }
-    return rewardInfo.EXTERNAL;
-  }, [rewardInfo.EXTERNAL]);
+  // const externalRewards = useMemo(() => {
+  //   if (rewardInfo.EXTERNAL.length === 0) {
+  //     return null;
+  //   }
+  //   return rewardInfo.EXTERNAL;
+  // }, [rewardInfo.EXTERNAL]);
 
   const swapFeeRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.SWAP_FEE.reduce((accum, current) => accum + current.balanceUSD, 0);
+    const sumUSD = rewardInfo.SWAP_FEE.reduce((accum, current) => accum + current.claimableUSD, 0);
     return toLowerUnitFormat(sumUSD, true);
   }, [rewardInfo.SWAP_FEE]);
 
   const stakingRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.balanceUSD, 0);
+    const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.claimableUSD, 0);
     return toLowerUnitFormat(sumUSD, true);
   }, [rewardInfo.STAKING]);
 
-  const externalRewardUSD = useMemo(() => {
-    const sumUSD = rewardInfo.EXTERNAL.reduce((accum, current) => accum + current.balanceUSD, 0);
-    return toLowerUnitFormat(sumUSD, true);
-  }, [rewardInfo.EXTERNAL]);
+  // const externalRewardUSD = useMemo(() => {
+  //   const sumUSD = rewardInfo.EXTERNAL.reduce((accum, current) => accum + current.claimableUSD, 0);
+  //   return toLowerUnitFormat(sumUSD, true);
+  // }, [rewardInfo.EXTERNAL]);
 
   return (
     <RewardsContent>
@@ -65,7 +65,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                   className="token-logo"
                 />
                 <span className="position">
-                  {reward.token.symbol}
+                  {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">
@@ -91,7 +91,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                   className="token-logo"
                 />
                 <span className="position">
-                  {reward.token.symbol}
+                  {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">
@@ -101,7 +101,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
           ))}
         </React.Fragment>
       )}
-      {externalRewards && <div className="divider" />}
+      {/* {externalRewards && <div className="divider" />}
       {externalRewards && (
         <React.Fragment>
           <div className="list">
@@ -117,7 +117,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                   className="token-logo"
                 />
                 <span className="position">
-                  {reward.token.symbol}
+                  {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">
@@ -126,7 +126,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
             </div>
           ))}
         </React.Fragment>
-      )}
+      )} */}
     </RewardsContent>
   );
 };

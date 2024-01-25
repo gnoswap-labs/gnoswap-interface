@@ -5,4 +5,5 @@ export interface PositionRewardInfo {
   token: TokenModel;
   balance: number;
   balanceUSD: number;
+  claimableUSD: number;
 }

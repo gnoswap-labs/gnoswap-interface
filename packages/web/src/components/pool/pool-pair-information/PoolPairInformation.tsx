@@ -47,7 +47,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
       </BreadcrumbsWrapper>
       <div className="token-status">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-          <span css={pulseSkeletonStyle({ w: "300px", h: 22 })} />
+          <span css={pulseSkeletonStyle({ w: "200px", h: 20 })} />
           </SkeletonEarnDetailWrapper>}
         {!loading && <PoolPairInfoHeader
           tokenA={pool.tokenA}

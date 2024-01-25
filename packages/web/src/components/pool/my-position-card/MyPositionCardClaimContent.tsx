@@ -7,13 +7,14 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
-
 export interface MyPositionClaimContentProps {
   rewardInfo: { [key in RewardType]: PositionClaimInfo[] } | null;
   unclaimedRewardInfo: PositionClaimInfo[] | null;
 }
 
-export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ rewardInfo }) => {
+export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
+  rewardInfo,
+}) => {
   const { getGnotPath } = useGnotToGnot();
   const swapFeeRewards = useMemo(() => {
     if (!rewardInfo) {
@@ -56,7 +57,10 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
     if (!rewardInfo) {
       return 0;
     }
-    const sumUSD = rewardInfo.SWAP_FEE.reduce((accum, current) => accum + current.balanceUSD, 0);
+    const sumUSD = rewardInfo.SWAP_FEE.reduce(
+      (accum, current) => accum + current.balanceUSD,
+      0,
+    );
     return toUnitFormat(sumUSD, true);
   }, [rewardInfo]);
 
@@ -64,7 +68,10 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
     if (!rewardInfo) {
       return 0;
     }
-    const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.balanceUSD, 0);
+    const sumUSD = rewardInfo.STAKING.reduce(
+      (accum, current) => accum + current.balanceUSD,
+      0,
+    );
     return toUnitFormat(sumUSD, true);
   }, [rewardInfo]);
 
@@ -95,9 +102,15 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <MissingLogo symbol={reward.token.symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
+                  className="token-logo"
+                  width={20}
+                  mobileWidth={20}
+                />
                 <span className="position">
-                  {reward.token.symbol}
+                  {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">
@@ -118,9 +131,15 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {stakingRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <MissingLogo symbol={reward.token.symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
+                <MissingLogo
+                  symbol={getGnotPath(reward.token).symbol}
+                  url={getGnotPath(reward.token).logoURI}
+                  className="token-logo"
+                  width={20}
+                  mobileWidth={20}
+                />
                 <span className="position">
-                  {reward.token.symbol}
+                  {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">
@@ -141,9 +160,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {externalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <MissingLogo symbol={reward.token.symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
+                <MissingLogo symbol={getGnotPath(reward.token).symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
                 <span className="position">
-                  {reward.token.symbol}
+                  {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">
@@ -163,9 +182,9 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({ 
           {unclaimedRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <MissingLogo symbol={reward.token.symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
+                <MissingLogo symbol={getGnotPath(reward.token).symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
                 <span className="position">
-                  {reward.token.symbol}
+                  {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">

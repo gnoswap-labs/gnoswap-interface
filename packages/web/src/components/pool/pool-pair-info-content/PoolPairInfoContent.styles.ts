@@ -17,7 +17,7 @@ export const ContentWrapper = styled.div`
   .position-wrapper-chart {
     ${mixins.flexbox("column", "center", "flex-start")};
     border: 1px solid ${({ theme }) => theme.color.border14};
-    background-color: ${({ theme }) => theme.color.backgroundOpacity12};
+    background-color: ${({ theme }) => theme.color.background28};
     border-radius: 10px;
     padding: 16px 48px;
     margin: 16px 24px 24px 24px;
@@ -167,6 +167,11 @@ export const PoolPairInfoContentWrapper = styled.div`
             display: none;
           }
           ${media.mobile} {
+            display: none;
+          }
+        }
+        .wrap-text {
+          @media (max-width: 1343px) {
             display: none;
           }
         }

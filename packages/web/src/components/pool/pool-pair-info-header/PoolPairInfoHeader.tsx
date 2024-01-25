@@ -27,7 +27,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
       return "Incentivized";
     }
     if (incentivizedType === "EXTERNAL_INCENTIVIZED") {
-      return "";
+      return "Incentivized";
     }
     return "";
   }, [incentivizedType]);

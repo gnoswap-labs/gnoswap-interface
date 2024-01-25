@@ -10,7 +10,7 @@ interface Props {
 export const MyPositionCardWrapper = styled.div<Props>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  padding: 24px 36px;
+  padding: 24px 24px;
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
@@ -285,7 +285,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
     .swap-price {
       ${mixins.flexbox("row", "center", "center")};
       ${fonts.body12}
-      gap: 6px;
+      gap: 4px;
       text-align: center;
       color: ${({ theme }) => theme.color.text10};
       .icon-wrapper {

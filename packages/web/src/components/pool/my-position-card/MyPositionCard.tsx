@@ -30,6 +30,8 @@ import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
+import { tickToPrice } from "@utils/swap-utils";
+import { isMaxTick, isMinTick } from "@utils/pool-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -136,12 +138,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           accum[current.rewardType] = [];
         }
         accum[current.rewardType].push({
-          claimableAmount: makeDisplayTokenAmount(current.token, current.claimableAmount) || 0,
+          claimableAmount:
+            makeDisplayTokenAmount(current.token, current.claimableAmount) || 0,
           token: current.token,
-          balance: makeDisplayTokenAmount(current.token, current.totalAmount) || 0,
+          balance:
+            makeDisplayTokenAmount(current.token, current.totalAmount) || 0,
           balanceUSD:
             Number(current.totalAmount) *
             Number(tokenPrices[current.token.priceId]?.usd || 0),
+          claimableUSD: Number(current.claimableUsdValue),
         });
         return accum;
       },
@@ -217,6 +222,46 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       6,
     )} ${tokenB?.symbol}`;
   }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
+
+  const currentPrice = useMemo(() => {
+    return tickToPrice(position?.pool.currentTick);
+  }, [position?.pool.currentTick]);
+
+  const minTickRate = useMemo(() => {
+    if (isMinTick(position.tickLower)) {
+      return 0;
+    }
+    const minPrice = tickToPrice(position.tickLower);
+    return Math.round(((currentPrice - minPrice) / currentPrice) * 100);
+  }, [currentPrice, position.tickLower]);
+
+  const maxTickRate = useMemo(() => {
+    if (isMaxTick(position.tickUpper)) {
+      return 999;
+    }
+    const maxPrice = tickToPrice(position.tickUpper);
+    return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
+  }, [currentPrice, position.tickUpper]);
+
+  const minTickLabel = useMemo(() => {
+    return minTickRate > 1000 ? ">999%" : `${minTickRate < 0 ? "+" : ""}${minTickRate * -1}%`;
+  }, [minTickRate]);
+
+  const maxTickLabel = useMemo(() => {
+    return maxTickRate === 999
+      ? `>${maxTickRate}%`
+      : maxTickRate >= 1000
+      ? ">999%"
+      : `${maxTickRate > 0 ? "+" : ""}${maxTickRate}%`;
+  }, [maxTickRate]);
+
+  const startClass = useMemo(() => {
+    return (minTickRate > 0) ? "negative" : "positive";
+  }, [minTickRate]);
+
+  const endClass = useMemo(() => {
+    return maxTickRate > 0 ? "positive" : "negative";
+  }, [maxTickRate]);
 
   return (
     <MyPositionCardWrapper type={inRange}>
@@ -332,15 +377,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 </div>
               }
             >
-              <span className="content-text">
-                {totalDailyEarning}
-              </span>
+              <span className="content-text">{totalDailyEarning}</span>
             </Tooltip>
           ) : (
             !loading && (
-              <span className="content-text">
-                {totalDailyEarning}
-              </span>
+              <span className="content-text">{totalDailyEarning}</span>
             )
           )}
           {loading && (
@@ -413,7 +454,17 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         />
         <div className="convert-price">
           <div>
-            1 {tokenA?.symbol} = 0.956937(<span className="negative">-20%</span>
+            1 {(!isSwap ? tokenA : tokenB)?.symbol} ={" "}
+            {convertToKMB(
+              `${
+                !isSwap
+                  ? Number(position?.pool?.price)
+                  : Number(1 / position?.pool?.price)
+              }`,
+              6,
+            )}{" "}
+            {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+            <span className={startClass}>{minTickLabel}</span>
             )&nbsp;
             <Tooltip
               placement="top"
@@ -421,7 +472,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 <ToolTipContentWrapper>
                   The price at which the position will be converted entirely
                   to&nbsp;
-                  {tokenA?.symbol}.
+                  {(!isSwap ? tokenA : tokenB)?.symbol}.
                 </ToolTipContentWrapper>
               }
             >
@@ -430,20 +481,29 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             &nbsp;
           </div>
           <div>
-            ~ 1.097929(<span className="positive">+14%</span>)&nbsp;
+            ~{" "}
+            {convertToKMB(
+              `${
+                !isSwap
+                  ? Number(1 / position?.pool?.price)
+                  : Number(position?.pool?.price)
+              }`,
+              6,
+            )}{" "}
+            {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+            <span className={endClass}>{maxTickLabel}</span>)&nbsp;
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
                   The price at which the position will be converted entirely
                   to&nbsp;
-                  {tokenB?.symbol}.
+                  {(!isSwap ? tokenB : tokenA)?.symbol}.
                 </ToolTipContentWrapper>
               }
             >
               <IconInfo />
             </Tooltip>
-            &nbsp;{tokenB?.symbol}
           </div>
         </div>
       </div>

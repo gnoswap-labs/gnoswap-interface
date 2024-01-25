@@ -152,9 +152,6 @@ export const StakingContentCardWrapper = styled.div<Props>`
         div {
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 6px;
-          ${media.mobile} {
-            gap: 8px;
-          }
           color: ${({ theme }) => theme.color.text02};
           span {
             color: ${({ theme }) => theme.color.text02};
@@ -201,8 +198,10 @@ export const StakingContentCardWrapper = styled.div<Props>`
         background-color: ${({ theme }) => theme.color.background08};
         ${fonts.body7}
         ${media.tablet} {
-          margin-left: 0px;
           ${fonts.body9}
+        }
+        ${media.tabletMiddle} {
+          margin-left: 2px;
         }
         ${media.mobile} {
           ${fonts.p4}
