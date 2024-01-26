@@ -51,7 +51,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
-  const [viewMyRange, setViewMyRange] = useState(true);
+  const [viewMyRange, setViewMyRange] = useState(false);
   
   const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
     
@@ -67,7 +67,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
         balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
         claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
-        claimableUSD: Number(reward.claimableUsdValue)
+        claimableUSD: Number(reward.claimableUsdValue),
+        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
       }))
       .forEach((rewardInfo) => {
         const existReward = infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
@@ -78,6 +79,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
             claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
+            accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;

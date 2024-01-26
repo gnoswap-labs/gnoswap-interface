@@ -58,29 +58,6 @@ export const ContentWrapper = styled.div`
         ${mixins.flexbox("row", "center", "center")};
         left: calc(50% + 10px);
       }
-      ${media.mobile} {
-        display: none;
-      }
-    }
-    .swap-price-mobile {
-      display: none;
-      color: ${({ theme }) => theme.color.text10};
-      ${media.mobile} {
-        ${mixins.flexbox("row", "center", "center")};
-        gap: 4px;
-      }
-      .icon-wrapper {
-        ${mixins.flexbox("row", "center", "center")};
-      }
-      svg {
-        cursor: pointer;
-        * {
-          fill: ${({ theme }) => theme.color.icon03};
-        }
-      }
-      svg:hover * {
-        fill: ${({ theme }) => theme.color.icon07};
-      }
     }
     .convert-price {
       ${mixins.flexbox("row", "center", "center")};

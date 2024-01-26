@@ -152,6 +152,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableAmount:
           makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsdValue),
+        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
       }))
       .forEach(rewardInfo => {
         const existReward =
@@ -164,6 +165,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             claimableAmount:
               existReward.claimableAmount + rewardInfo.claimableAmount,
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
+            accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
@@ -175,7 +177,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
   }, [activated, positions, tokenPrices]);
-
+  
   const dailyEarning = useMemo(() => {
     if (!connected) {
       return "-";
@@ -187,7 +189,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ? Object.values(claimableRewardInfo)
           .flatMap(item => item)
           .reduce((accum, current) => {
-            return accum + Number(current.claimableAmount);
+            return accum + Number(current.accumulatedRewardOf1d);
           }, 0)
       : 0;
 
@@ -214,6 +216,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableAmount:
           makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsdValue),
+        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
       }))
       .forEach(rewardInfo => {
         if (rewardInfo.claimableAmount > 0) {
@@ -224,6 +227,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               balance: existReward.balance + rewardInfo.balance,
               balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
               claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
+              accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
             };
           } else {
             infoMap[rewardInfo.token.priceId] = rewardInfo;
@@ -458,15 +462,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               />}
                <span className="apr-value">{feeDaily}</span>
             </div>
-            {logoReward.length > 0 && <div className="divider"></div>}
-            {logoReward.length > 0 && <div className="content-wrap content-reward">
+            <div className="divider"></div>
+             <div className="content-wrap content-reward">
               <span>Rewards</span>
-              {breakpoint === DEVICE_TYPE.WEB &&<OverlapLogo
+              {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB &&<OverlapLogo
                 logos={logoReward}
                 size={20}
               />}
               <span className="apr-value">{rewardDaily}</span>
-            </div>}
+            </div>
           </div>
         )}
       </section>
@@ -597,15 +601,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   />}
                   <span className="apr-value">{feeClaim}</span>
                 </div>
-                {logoReward.length > 0 && <div className="divider"></div>}
-                {logoReward.length > 0 && <div className="content-wrap content-reward">
+                <div className="divider"></div>
+                <div className="content-wrap content-reward">
                   <span>Rewards</span>
-                  {breakpoint === DEVICE_TYPE.WEB && <OverlapLogo
+                  {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && <OverlapLogo
                     logos={logoReward}
                     size={20}
                   />}
                   <span className="apr-value">{rewardClaim}</span>
-                </div>}
+                </div>
               </div>
             )}
           </>

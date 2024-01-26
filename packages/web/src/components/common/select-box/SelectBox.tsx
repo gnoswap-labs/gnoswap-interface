@@ -33,8 +33,8 @@ const SelectBox: <ItemType>(p: SelectBoxProps<ItemType>) => JSX.Element = ({
   }, [current]);
 
   return (
-    <SelectBoxWrapper ref={boxRef} className={`select-box ${className}`}>
-      <div className="selected-wrapper" onClick={toggleModal}>
+    <SelectBoxWrapper ref={boxRef} className={`select-box ${className}`} onClick={toggleModal}>
+      <div className="selected-wrapper">
         <span className="current">{selectedItemName}</span>
         {opened ?
           <IconArrowUp className="icon-arrow" /> :

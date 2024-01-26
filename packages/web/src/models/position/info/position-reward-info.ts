@@ -6,4 +6,5 @@ export interface PositionRewardInfo {
   balance: number;
   balanceUSD: number;
   claimableUSD: number;
+  accumulatedRewardOf1d: number;
 }

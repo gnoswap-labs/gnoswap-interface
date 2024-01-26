@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   AprDivider,
   ContentWrapper,
@@ -17,7 +17,6 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import IconSwap from "@components/common/icons/IconSwap";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 interface PoolPairInfoContentProps {
@@ -29,7 +28,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
 }) => {
-  const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
 
@@ -92,13 +90,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const rewardChangedStr = useMemo((): string => {
     return "$1.23K";
   }, []);
-
-  const stringPrice = useMemo(() => {
-    if (isSwap) {
-      return `1 ${pool?.tokenB?.symbol} = ${numberToFormat(1 / pool?.price, 6)} ${pool?.tokenA?.symbol}`;
-    }
-    return `1 ${pool?.tokenA?.symbol} = ${numberToFormat(pool?.price, 6)} ${pool?.tokenB?.symbol}`;
-  }, [isSwap, pool?.tokenB?.symbol, pool?.tokenA?.symbol, pool?.price]);
 
   const isWrapText = useMemo(() => {
     return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
@@ -218,7 +209,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                1 {pool?.tokenA?.symbol} = {convertToKMB(`${Number(pool.price)}`, 6)} {pool?.tokenB?.symbol}
+                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {convertToKMB(`${Number(pool.price).toFixed(width > 400 ? 6 : 2 )}`, 6)} {pool?.tokenB?.symbol}
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
@@ -238,33 +229,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                1 {pool?.tokenB?.symbol} = {convertToKMB(`${(Number(1 / pool.price)).toFixed(6)}`, 6)} {pool?.tokenA?.symbol}
+                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = {convertToKMB(`${(Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 )}`, 6)} {pool?.tokenA?.symbol}
               </div>}
             </div>
-            <div className="swap-price-mobile">
-              {!loading && <MissingLogo
-                symbol={pool?.tokenA?.symbol}
-                url={pool?.tokenA?.logoURI}
-                width={20}
-                className="image-logo"
-              />}
-              {!loading && stringPrice}
-              {!loading && <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
-                <IconSwap />
-              </div>}
-              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-              <span
-                css={pulseSkeletonStyle({ h: 20, w:"80px"})}
-              />
-              </SkeletonEarnDetailWrapper>}
-              {loading && <AprDivider className="divider"/>}
-              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span
-                  css={pulseSkeletonStyle({ h: 20, w:"80px"})}
-                />
-              </SkeletonEarnDetailWrapper>}
-            </div>
-           
           </div>
           {!loading && <PoolGraph
             tokenA={pool?.tokenA}
