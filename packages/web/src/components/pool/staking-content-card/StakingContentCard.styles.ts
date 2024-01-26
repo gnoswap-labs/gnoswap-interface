@@ -17,7 +17,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     align-self: stretch;
   }
   .left {
-    width: 320px;
+    width: 350px;
     ${mixins.flexbox("row", "center", "flex-start")};
     ${media.tabletMiddle} {
       justify-content: space-between;
@@ -135,7 +135,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
 
   .contents {
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     margin-left: auto;
     ${mixins.flexbox("row", "center", "space-between")};
     padding: 12px 16px;

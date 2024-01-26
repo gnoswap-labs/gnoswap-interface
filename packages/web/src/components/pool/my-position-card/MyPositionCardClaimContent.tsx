@@ -114,7 +114,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.balance)}`)}
+                {convertToKMB(`${Number(reward.claimableAmount)}`)}
               </span>
             </div>
           ))}
@@ -143,7 +143,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
                 </span>
               </div>
               <span className="position">
-                {convertToKMB(`${Number(reward.balance)}`)}
+                {convertToKMB(`${Number(reward.claimableAmount)}`)}
               </span>
             </div>
           ))}

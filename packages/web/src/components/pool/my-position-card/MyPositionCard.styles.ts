@@ -305,6 +305,9 @@ export const MyPositionCardWrapper = styled.div<Props>`
         height: 20px;
       }
     }
+    .divider {
+      margin: 0 6px;
+    }
     .convert-price {
       ${mixins.flexbox("row", "center", "center")};
       color: ${({ theme }) => theme.color.text04};

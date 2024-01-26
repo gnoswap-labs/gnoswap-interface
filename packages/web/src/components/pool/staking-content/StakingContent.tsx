@@ -87,7 +87,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       <div className="content-header">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
           <span
-            css={pulseSkeletonStyle({ h: 22, w: "600px" })}
+            css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })}
           />
         </SkeletonEarnDetailWrapper>}
         {!loading && <span>Stake your position to earn rewards up <span className="to-web">to</span></span>}
@@ -128,12 +128,14 @@ const StakingContent: React.FC<StakingContentProps> = ({
         </>
       </div>
       <div className="button-wrap">
-        {loading && <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
-          <span
-            css={pulseSkeletonStyle({ h: 22, w: "400px" })}
-          />
-        </SkeletonEarnDetailWrapper>}
-        {!loading && <div className="empty-content"></div>}
+        <div className="empty-content"></div>
+        {loading && <div className="loading-wrapper">
+            <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
+            <span
+              css={pulseSkeletonStyle({ h: 22, w: "400px", mobileWidth: 150 })}
+            />
+          </SkeletonEarnDetailWrapper>
+        </div>}
         {!loading && <Button
           text={TEXT_BTN[type]}
           style={{

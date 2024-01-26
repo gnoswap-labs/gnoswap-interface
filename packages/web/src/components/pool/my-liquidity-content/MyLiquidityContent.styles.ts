@@ -51,6 +51,107 @@ export const MyLiquidityContentWrapper = styled.div`
         background-color: ${({ theme }) => theme.color.background04Hover};
       }
     }
+    .sub-content {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 10px;
+      min-height: 20px;
+      ${media.tabletMiddle} {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        &.flex-row {
+          ${mixins.flexbox("row", "center", "flex-start")};
+        }
+      }
+      ${media.mobile} {
+        ${mixins.flexbox("row", "center", "flex-start")};
+      }
+    }
+    .sub-content-detail {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 4px;
+      color: ${({ theme }) => theme.color.text10};
+      .image-logo {
+        width: 20px;
+        height: 20px;
+      }
+      > span {
+        ${fonts.body11}
+        .token-symbol {
+          display: inline;
+          @media (max-width: 1250px) {
+            display: none;
+          }
+          ${media.tablet} {
+            display: none;
+          }
+          ${media.tabletMiddle} {
+            display: none;
+          }
+          ${media.mobile} {
+            display: none;
+          }
+        }
+        .wrap-text {
+          @media (max-width: 1343px) {
+            display: none;
+          }
+        }
+        .token-percent {
+          display: inline;
+          ${media.tablet} {
+            display: none;
+          }
+          ${media.tabletMiddle} {
+            display: none;
+          }
+          ${media.mobile} {
+            display: none;
+          }
+        }
+      }
+    }
+    .divider {
+      height: 12px;
+      border-left: 1px solid ${({ theme }) => theme.color.border02};
+    }
+    .total-daily {
+      color: ${({ theme }) => theme.color.text04};
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 10px;
+      height: 20px;
+      ${fonts.body12}
+      .content-wrap {
+        ${mixins.flexbox("", "center", "flex-start")};
+        gap: 8px;
+        .apr-value {
+          ${fonts.body11}
+          color: ${({ theme }) => theme.color.text10};
+        }
+      }
+      ${media.tablet} {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        .content-wrap {
+          &.content-reward {
+            display: none;
+          }
+        }
+      }
+      ${media.tabletMiddle} {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        .content-wrap {
+          &.content-reward {
+            display: none;
+          }
+        }
+      }
+      ${media.mobile} {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        .content-wrap {
+          &.content-reward {
+            display: flex;
+          }
+        }
+      }
+    }
   }
 
   h4 {

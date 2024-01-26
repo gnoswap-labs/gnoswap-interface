@@ -156,7 +156,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth: 300 })}
+              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth: 300, mobileWidth: 100 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -176,9 +176,9 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
               </Tooltip>
             </span>
           </div>}
-          {breakpoint !== DEVICE_TYPE.MOBILE && loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth: 140 })}
+              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth: 140, mobileWidth: 50 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">
@@ -204,7 +204,6 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   checkPoints,
   positions,
   loading,
-  breakpoint,
 }) => {
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
@@ -270,7 +269,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth:  300 })}
+              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth:  300, mobileWidth: 100 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -290,9 +289,9 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
               </Tooltip>
             </span>
           </div>}
-          {loading && breakpoint !== DEVICE_TYPE.MOBILE && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth:  140 })}
+              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth:  140, mobileWidth: 50 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">

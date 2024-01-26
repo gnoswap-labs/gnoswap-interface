@@ -242,17 +242,29 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </div>}
             </div>
             <div className="swap-price-mobile">
-              <MissingLogo
+              {!loading && <MissingLogo
                 symbol={pool?.tokenA?.symbol}
                 url={pool?.tokenA?.logoURI}
                 width={20}
                 className="image-logo"
-              />
-              {stringPrice}
-              <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
+              />}
+              {!loading && stringPrice}
+              {!loading && <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
                 <IconSwap />
-              </div>
+              </div>}
+              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <span
+                css={pulseSkeletonStyle({ h: 20, w:"80px"})}
+              />
+              </SkeletonEarnDetailWrapper>}
+              {loading && <AprDivider className="divider"/>}
+              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <span
+                  css={pulseSkeletonStyle({ h: 20, w:"80px"})}
+                />
+              </SkeletonEarnDetailWrapper>}
             </div>
+           
           </div>
           {!loading && <PoolGraph
             tokenA={pool?.tokenA}

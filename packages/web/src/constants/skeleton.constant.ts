@@ -26,6 +26,7 @@ export interface PulseSkeletonParams {
   h?: CSSProperties["height"];
   tabletWidth?: CSSProperties["width"];
   smallTableWidth?: CSSProperties["width"];
+  mobileWidth?: CSSProperties["width"];
   type?: SHAPE_TYPES;
   tone?: "200" | "300" | "400" | "500" | "600";
 }
@@ -57,6 +58,7 @@ export const pulseSkeletonStyle =
     type = "rounded-square",
     tabletWidth,
     smallTableWidth,
+    mobileWidth,
   }: PulseSkeletonParams) =>
   (theme: Theme) => {
     const width = typeof w === "number" ? `${w}px` : w;
@@ -82,13 +84,14 @@ export const pulseSkeletonStyle =
       }
 
       ${media.tablet} {
-        width: ${tabletWidth ? `${tabletWidth}px` : w};
+        width: ${tabletWidth ? `${tabletWidth}px` : tabletWidth};
       }
       ${media.tabletMiddle} {
-        width: ${smallTableWidth ? `${smallTableWidth}px` : w};
+        width: ${smallTableWidth ? `${smallTableWidth}px` : smallTableWidth};
       }
       ${media.mobile} {
         width: ${w};
+        width: ${mobileWidth ? `${mobileWidth}px` : mobileWidth};
         height: ${typeof height === "number" && height === 22 ? "22px" : h};
       }
     `;

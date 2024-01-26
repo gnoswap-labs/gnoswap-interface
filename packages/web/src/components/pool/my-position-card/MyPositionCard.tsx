@@ -33,6 +33,8 @@ import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
+import { AprDivider, LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -500,26 +502,37 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         <div className="position-header">
           <div>Current Price</div>
           <div className="swap-price">
-            <MissingLogo
+            {!loading && <MissingLogo
               symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
               url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
               width={20}
               className="image-logo"
-            />
-            {stringPrice}
-            <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
+            />}
+            {!loading && stringPrice}
+            {!loading && <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
               <IconSwap />
-            </div>
+            </div>}
+            {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+              <span
+                css={pulseSkeletonStyle({ h: 20, w:"80px"})}
+              />
+              </SkeletonEarnDetailWrapper>}
+              <AprDivider className="divider"/>
+              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <span
+                  css={pulseSkeletonStyle({ h: 20, w:"80px"})}
+                />
+              </SkeletonEarnDetailWrapper>}
           </div>
-          <div className="range-badge">
+          {!loading && <div className="range-badge">
             <RangeBadge
               status={
                 inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT
               }
             />
-          </div>
+          </div>}
         </div>
-        <PoolGraph
+        {!loading && <PoolGraph
           tokenA={tokenA}
           tokenB={tokenB}
           bins={bins}
@@ -532,8 +545,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           offset={40}
           poolPrice={price}
           isPosition
-        />
-        <div className="convert-price">
+        />}
+          {loading && <LoadingChart>
+            <LoadingSpinner />
+          </LoadingChart>}
+        {!loading && <div className="convert-price">
           <div>
             1 {(!isSwap ? tokenA : tokenB)?.symbol} ={" "}
             {!isSwap ? minPriceStr : maxPriceStr}{" "}
@@ -572,7 +588,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <IconInfo />
             </Tooltip>
           </div>
-        </div>
+        </div>}
       </div>
     </MyPositionCardWrapper>
   );
