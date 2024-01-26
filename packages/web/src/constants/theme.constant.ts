@@ -172,7 +172,7 @@ export const DARK_THEME_COLORS: ThemeColorType = {
   background25: colors.dark.blackBG,
   background26: colors.dark.headerBg,
   background27: colors.dark.whiteBG,
-  background28: colors.global.none,
+  background28: colors.dark.blackOpacity07BG,
   bgLoading: colors.global.black2,
   backgroundOpacity: colors.dark.blackOpacity07BG,
   backgroundOpacity2: colors.dark.blackOpacity07BG,

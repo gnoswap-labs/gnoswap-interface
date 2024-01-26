@@ -176,7 +176,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
               </Tooltip>
             </span>
           </div>}
-          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          {breakpoint !== DEVICE_TYPE.MOBILE && loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
               css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth: 140 })}
             />
@@ -196,6 +196,7 @@ interface SummuryAprProps {
   positions: PoolPositionModel[];
   rewardTokens: TokenModel[];
   loading: boolean;
+  breakpoint: DEVICE_TYPE;
 }
 
 export const SummuryApr: React.FC<SummuryAprProps> = ({
@@ -203,6 +204,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   checkPoints,
   positions,
   loading,
+  breakpoint,
 }) => {
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
@@ -288,7 +290,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
               </Tooltip>
             </span>
           </div>}
-          {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+          {loading && breakpoint !== DEVICE_TYPE.MOBILE && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
               css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth:  140 })}
             />

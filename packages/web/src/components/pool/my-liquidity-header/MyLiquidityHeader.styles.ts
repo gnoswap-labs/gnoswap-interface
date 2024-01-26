@@ -25,6 +25,10 @@ export const HeaderWrapper = styled.div`
       button {
         width: 50%;
       }
+      
+    }
+    .full-width {
+      width: 100%;
     }
   }
 `;

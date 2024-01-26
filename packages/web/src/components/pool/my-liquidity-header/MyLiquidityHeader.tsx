@@ -34,6 +34,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ availableRemovePo
             padding: "10px 16px",
             fontType: "p1",
           }}
+          className={!availableRemovePosition ? "full-width" : ""}
         />
       </div>
     </HeaderWrapper>

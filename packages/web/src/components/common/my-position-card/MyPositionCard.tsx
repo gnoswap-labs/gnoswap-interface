@@ -32,7 +32,7 @@ interface MyPositionCardProps {
   themeKey: "dark" | "light";
 }
 
-function estimateTick(tick: number, width: number) {
+export function estimateTick(tick: number, width: number) {
   if (tick < 0) return 0;
   if (tick > width) return width;
   return tick;
@@ -51,7 +51,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
-  const [viewMyRange, setViewMyRange] = useState(false);
+  const [viewMyRange, setViewMyRange] = useState(true);
   
   const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
     

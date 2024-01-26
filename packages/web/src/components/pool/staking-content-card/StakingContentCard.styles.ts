@@ -172,6 +172,9 @@ export const StakingContentCardWrapper = styled.div<Props>`
         }
         ${media.mobile} {
           ${fonts.body10}
+          > div {
+            gap: 4px;
+          }
         }
       }
       ${media.tablet} {
@@ -204,6 +207,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
           margin-left: 2px;
         }
         ${media.mobile} {
+          margin-left: 0;
           ${fonts.p4}
           height: 24px;
         }

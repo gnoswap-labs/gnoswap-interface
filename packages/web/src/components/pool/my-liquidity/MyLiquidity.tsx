@@ -74,11 +74,11 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
               ))}
             </div>
           </div>
-          <div className="box-indicator">
+         {positions.length > 1 && <div className="box-indicator">
             <span className="current-page">{currentIndex}</span>
             <span>/</span>
             <span>{positions.length}</span>
-          </div>
+          </div>}
         </>
       )}
     </MyLiquidityWrapper>

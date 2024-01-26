@@ -111,6 +111,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 period={period}
                 positions={stakingPositionMap[period]}
                 checkPoints={checkPoints}
+                breakpoint={breakpoint}
               />
             ) : (
               <StakingContentCard

@@ -30,8 +30,9 @@ import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
-import { tickToPrice } from "@utils/swap-utils";
+import { tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
+import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -48,6 +49,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const { tokenPrices } = useTokenData();
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
 
   const tokenA = useMemo(() => {
     return position.pool.tokenA;
@@ -213,15 +215,80 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const stringPrice = useMemo(() => {
     if (isSwap) {
       return `1 ${tokenB?.symbol} = ${convertToKMB(
-        `${Number(1 / position?.pool?.price)}`,
+        `${Number(1 / position?.pool?.price).toFixed(6)}`,
         6,
       )} ${tokenA?.symbol}`;
     }
     return `1 ${tokenA?.symbol} = ${convertToKMB(
-      `${Number(position?.pool?.price)}`,
+      `${Number(position?.pool?.price).toFixed(6)}`,
       6,
     )} ${tokenB?.symbol}`;
   }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
+
+  const tickRange = useMemo(() => {
+    const ticks = bins.flatMap(bin => [bin.minTick, bin.maxTick]);
+    const min = Math.min(...ticks);
+    const max = Math.max(...ticks);
+    return [min, max];
+  }, [bins]);
+
+  const minTickPosition = useMemo(() => {
+    const [min, max] = tickRange;
+    const currentTick = position.pool.currentTick;
+    if (position.tickLower === currentTick) {
+      return 0;
+    }
+    if (position.tickLower < currentTick) {
+      return (
+        ((position.tickLower - min) / (currentTick - min)) * (GRAPH_WIDTH / 2)
+      );
+    }
+    return (
+      ((position.tickLower - currentTick) / (max - currentTick)) *
+        (GRAPH_WIDTH / 2) +
+      GRAPH_WIDTH / 2
+    );
+  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
+
+  const maxTickPosition = useMemo(() => {
+    const [min, max] = tickRange;
+    const currentTick = position.pool.currentTick;
+    if (position.tickUpper === currentTick) {
+      return 0;
+    }
+    if (position.tickUpper < currentTick) {
+      return (
+        ((position.tickUpper - min) / (currentTick - min)) * (GRAPH_WIDTH / 2)
+      );
+    }
+    return (
+      ((position.tickUpper - currentTick) / (max - currentTick)) *
+        (GRAPH_WIDTH / 2) +
+      GRAPH_WIDTH / 2
+    );
+  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
+
+  const isFullRange = useMemo(() => {
+    return (
+      estimateTick(minTickPosition, GRAPH_WIDTH) === 0 &&
+      estimateTick(maxTickPosition, GRAPH_WIDTH) === GRAPH_WIDTH
+    );
+  }, [minTickPosition, maxTickPosition]);
+
+  const minPriceStr = useMemo(() => {
+
+    const minPrice = tickToPriceStr(position.tickLower, 6);
+    const tokenAPriceStr = isFullRange ? "0 " : minPrice;
+    return `${tokenAPriceStr}`;
+  }, [
+    tokenB.path,
+    tokenB.symbol,
+    tokenPrices,
+    tokenA.path,
+    tokenA.symbol,
+    isFullRange,
+    isSwap
+  ]);
 
   const currentPrice = useMemo(() => {
     return tickToPrice(position?.pool.currentTick);
@@ -242,6 +309,20 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const maxPrice = tickToPrice(position.tickUpper);
     return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
   }, [currentPrice, position.tickUpper]);
+
+  const maxPriceStr = useMemo(() => {
+    const maxPrice = tickToPriceStr(position.tickUpper, 6);
+    const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
+    return `${tokenBPriceStr}`;
+  }, [
+    tokenB.path,
+    tokenB.symbol,
+    tokenPrices,
+    tokenA.path,
+    tokenA.symbol,
+    maxTickRate,
+    isFullRange,
+  ]);
 
   const minTickLabel = useMemo(() => {
     return minTickRate > 1000 ? ">999%" : `${minTickRate < 0 ? "+" : ""}${minTickRate * -1}%`;
@@ -443,7 +524,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           tokenB={tokenB}
           bins={bins}
           currentTick={currentTick}
-          width={Math.min(width - (width > 767 ? 224 : 80), 1216)}
+          width={GRAPH_WIDTH}
           height={150}
           mouseover
           themeKey={themeKey}
@@ -455,16 +536,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         <div className="convert-price">
           <div>
             1 {(!isSwap ? tokenA : tokenB)?.symbol} ={" "}
-            {convertToKMB(
-              `${
-                !isSwap
-                  ? Number(position?.pool?.price)
-                  : Number(1 / position?.pool?.price)
-              }`,
-              6,
-            )}{" "}
+            {!isSwap ? minPriceStr : maxPriceStr}{" "}
             {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-            <span className={startClass}>{minTickLabel}</span>
+            <span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>
             )&nbsp;
             <Tooltip
               placement="top"
@@ -482,16 +556,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           <div>
             ~{" "}
-            {convertToKMB(
-              `${
-                !isSwap
-                  ? Number(1 / position?.pool?.price)
-                  : Number(position?.pool?.price)
-              }`,
-              6,
-            )}{" "}
+            {!isSwap ? maxPriceStr : minPriceStr}{" "}
             {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-            <span className={endClass}>{maxTickLabel}</span>)&nbsp;
+            <span className={endClass}>{!isSwap ? maxTickLabel : minTickLabel}</span>)&nbsp;
             <Tooltip
               placement="top"
               FloatingContent={
