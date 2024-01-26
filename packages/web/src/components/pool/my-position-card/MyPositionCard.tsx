@@ -554,6 +554,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           offset={40}
           poolPrice={price}
           isPosition
+          minTickPosition={minTickPosition}
+          maxTickPosition={maxTickPosition}
         />}
           {loading && <LoadingChart>
             <LoadingSpinner />
