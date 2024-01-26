@@ -62,10 +62,9 @@ const StakingContainer: React.FC = () => {
     }
     if (account?.address) {
       const temp = getPositionsByPoolId(poolPath);
-      const stakedPositions = temp.filter(position => position.staked);
-      setPositions(stakedPositions);
+      setPositions(temp);
     }
-  }, [account?.address, router.query]);
+  }, [account?.address, router.query, getPositionsByPoolId]);
 
   const isDisabledButton = useMemo(() => {
     return isSwitchNetwork || !connectedWallet || positions.length == 0;

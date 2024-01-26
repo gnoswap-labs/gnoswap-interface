@@ -17,6 +17,8 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
+import { checkGnotPath } from "@utils/common";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -37,7 +39,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   loadngTransactionClaim,
 }) => {
   const { tokenPrices } = useTokenData();
-
+  const { getGnotPath } = useGnotToGnot();
+    
   const activated = connected && positions.length > 0;
 
   const allBalances = useMemo(() => {
@@ -46,6 +49,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     }
     return positions.reduce<{ [key in string]: PositionBalanceInfo }>(
       (balanceMap, position) => {
+        const sumOfBalances = Number(position.token0Balance) + Number(position.token1Balance);
+      const depositRatio = sumOfBalances === 0 ? 0.5 : Number(position.token0Balance) / sumOfBalances;
         const tokenABalance =
           makeDisplayTokenAmount(
             position.pool.tokenA,
@@ -61,12 +66,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           balanceUSD:
             tokenABalance *
             Number(tokenPrices[position.pool.tokenA.priceId]?.usd || 1),
+            percent:  `${Math.round(depositRatio * 100)}%`,
         };
         const tokenBBalanceInfo = {
           token: position.pool.tokenB,
           balanceUSD:
             tokenBBalance *
             Number(tokenPrices[position.pool.tokenB.priceId]?.usd || 1),
+          percent: `${Math.round((1 - depositRatio) * 100)}%`,
         };
         if (!balanceMap[tokenABalanceInfo.token.priceId]) {
           balanceMap[tokenABalanceInfo.token.priceId] = {
@@ -109,7 +116,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       {},
     );
   }, [activated, positions, tokenPrices]);
-
+  
   const totalBalance = useMemo(() => {
     if (!connected) {
       return "-";
@@ -123,7 +130,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     );
     return formatUsdNumber(String(balance), 2, true);
   }, [allBalances, connected]);
-
+  
   const claimableRewardInfo = useMemo(():
     | { [key in RewardType]: PositionClaimInfo[] }
     | null => {
@@ -137,6 +144,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       STAKING: {},
       EXTERNAL: {},
     };
+    console.log(positions, "positions");
+    
     positions
       .flatMap(position => position.rewards)
       .map(reward => ({
@@ -153,6 +162,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsdValue),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
+        claimableUsdValue: Number(reward.claimableUsdValue),
       }))
       .forEach(rewardInfo => {
         const existReward =
@@ -166,6 +176,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               existReward.claimableAmount + rewardInfo.claimableAmount,
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
             accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
+            claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
@@ -217,6 +228,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsdValue),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
+        claimableUsdValue: Number(reward.claimableUsdValue),
       }))
       .forEach(rewardInfo => {
         if (rewardInfo.claimableAmount > 0) {
@@ -228,6 +240,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
               claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
               accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
+              claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
             };
           } else {
             infoMap[rewardInfo.token.priceId] = rewardInfo;
@@ -245,7 +258,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ? Object.values(claimableRewardInfo)
           .flatMap(item => item)
           .reduce((accum, current) => {
-            return accum + Number(current.claimableAmount);
+            return accum + Number(current.claimableUsdValue);
           }, 0)
       : 0;
 
@@ -263,41 +276,31 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     );
   }, [activated, unclaimedRewardInfo]);
 
-  const tokenABalance = useMemo(() => {
-    return (
-      makeDisplayTokenAmount(
-        positions?.[0]?.pool?.tokenA,
-        positions?.[0]?.pool?.tokenABalance,
-      ) || 0
-    );
-  }, [positions?.[0]?.pool?.tokenA, positions?.[0]?.pool?.tokenABalance]);
+  const tokenBPath = useMemo(() => {
+    return checkGnotPath(positions?.[0]?.pool?.tokenB?.path);
+  }, [positions, checkGnotPath]);
 
-  const tokenBBalance = useMemo(() => {
-    return (
-      makeDisplayTokenAmount(
-        positions?.[0]?.pool?.tokenB,
-        positions?.[0]?.pool?.tokenBBalance,
-      ) || 0
-    );
-  }, [positions?.[0]?.pool?.tokenB, positions?.[0]?.pool?.tokenBBalance]);
-
-  const depositRatio = useMemo(() => {
-    const sumOfBalances = tokenABalance + tokenBBalance;
-    if (sumOfBalances === 0) {
-      return 0.5;
-    }
-    return tokenABalance / sumOfBalances;
-  }, [tokenABalance, tokenBBalance]);
+  const tokenAPath = useMemo(() => {
+    return checkGnotPath(positions?.[0]?.pool?.tokenA?.path);
+  }, [positions, checkGnotPath]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
-    const depositStr = `${Math.round(depositRatio * 100)}%`;
-    return `(${depositStr})`;
-  }, [depositRatio]);
+    const balance = Object.values(allBalances || {}).reduce(
+      (acc, current) => (acc += current.balanceUSD),
+      0,
+    );
+    const tokenBalance = allBalances?.[tokenAPath]?.balanceUSD || 0;
+    return `(${Math.round((tokenBalance / Number(balance) * 100))}%)`;
+  }, [allBalances, tokenAPath]);
 
   const depositRatioStrOfTokenB = useMemo(() => {
-    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
-    return `(${depositStr})`;
-  }, [depositRatio]);
+    const balance = Object.values(allBalances || {}).reduce(
+      (acc, current) => (acc += current.balanceUSD),
+      0,
+    );
+    const tokenBalance = allBalances?.[tokenBPath]?.balanceUSD || 0;
+    return `(${Math.round((tokenBalance / Number(balance) * 100))}%)`;
+  }, [allBalances, tokenBPath]);
 
   const isWrapText = useMemo(() => {
     return (
@@ -310,28 +313,31 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   ]);
 
   const feeDaily = useMemo(() => {
-    const temp = claimableRewardInfo?.SWAP_FEE;
-    const sumUSD =
-      temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
-    return formatUsdNumber(`${sumUSD}`, 2, true);
-  }, [claimableRewardInfo]);
+    // const temp = claimableRewardInfo?.SWAP_FEE;
+    // const sumUSD =
+    //   temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
+    // return formatUsdNumber(`${sumUSD}`, 2, true);
+    return "$0";
+  }, []);
 
   const feeClaim = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
     const sumUSD =
-      temp?.reduce((accum, current) => accum + current.claimableAmount, 0) || 0;
+      temp?.reduce((accum, current) => accum + current.claimableUsdValue, 0) || 0;
     return formatUsdNumber(`${sumUSD}`, 2, true);
   }, [claimableRewardInfo]);
 
   const logoDaily = useMemo(() => {
     const temp = claimableRewardInfo?.SWAP_FEE;
-    return temp?.map(item => item.token.logoURI) || [];
+    return temp?.map(item => getGnotPath(item.token).logoURI) || [];
   }, [claimableRewardInfo]);
 
   const logoReward = useMemo(() => {
     const temp = claimableRewardInfo?.STAKING;
-    return temp?.map(item => item.token.logoURI) || [];
-  }, [claimableRewardInfo]);
+    const rewardTokens = positions?.[0]?.pool?.rewardTokens || [];
+    const rewardLogo = rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
+    return [...new Set([...rewardLogo, ...temp?.map(item => getGnotPath(item.token).logoURI) || []])];
+  }, [claimableRewardInfo, getGnotPath, positions]);
   
   const rewardDaily = useMemo(() => {
     const temp = claimableRewardInfo?.STAKING;
@@ -378,7 +384,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <span>
                 {convertToKMB(
                   `${
-                    allBalances?.[positions?.[0]?.pool?.tokenA?.path]
+                    allBalances?.[tokenAPath]
                       ?.balanceUSD
                   }`,
                 )}{" "}
@@ -405,7 +411,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <span>
                 {convertToKMB(
                   `${
-                    allBalances?.[positions?.[0]?.pool?.tokenB?.path]
+                    allBalances?.[tokenBPath]
                       ?.balanceUSD
                   }`,
                 )}{" "}
@@ -414,7 +420,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     isWrapText ? "wrap-text" : ""
                   }`}
                 >
-                  GNOT
+                  {positions?.[0]?.pool?.tokenB?.symbol}
                 </span>{" "}
                 <span className="token-percent">
                   {depositRatioStrOfTokenB}

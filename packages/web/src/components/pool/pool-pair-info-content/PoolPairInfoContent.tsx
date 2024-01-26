@@ -88,7 +88,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.feeChange]);
 
   const rewardChangedStr = useMemo((): string => {
-    return "$1.23K";
+    return "$0";
   }, []);
 
   const isWrapText = useMemo(() => {

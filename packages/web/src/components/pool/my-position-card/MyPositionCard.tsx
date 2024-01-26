@@ -33,7 +33,7 @@ import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
-import { AprDivider, LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
+import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface MyPositionCardProps {
@@ -104,17 +104,22 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     token: TokenModel;
     balance: number;
     balanceUSD: number;
+    percent: string;
   }[] => {
+    const sumOfBalances = Number(position.token0Balance) + Number(position.token1Balance);
+    const depositRatio = sumOfBalances === 0 ? 0.5 : Number(position.token0Balance) / sumOfBalances;
     return [
       {
         token: tokenA,
         balance: Number(position.token0Balance),
         balanceUSD: tokenABalanceUSD,
+        percent:  `${Math.round(depositRatio * 100)}%`,
       },
       {
         token: tokenB,
         balance: Number(position.token1Balance),
         balanceUSD: tokenBBalanceUSD,
+        percent: `${Math.round((1 - depositRatio) * 100)}%`,
       },
     ];
   }, [
@@ -124,6 +129,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     tokenABalanceUSD,
     tokenB,
     tokenBBalanceUSD,
+    position.pool
   ]);
 
   const totalRewardInfo = useMemo(():
@@ -521,7 +527,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 css={pulseSkeletonStyle({ h: 20, w:"80px"})}
               />
               </SkeletonEarnDetailWrapper>}
-              <AprDivider className="divider"/>
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
                 <span
                   css={pulseSkeletonStyle({ h: 20, w:"80px"})}

@@ -69,6 +69,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsdValue),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
+        claimableUsdValue: Number(reward.claimableUsdValue),
       }))
       .forEach((rewardInfo) => {
         const existReward = infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
@@ -80,6 +81,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
             accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
+            claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;

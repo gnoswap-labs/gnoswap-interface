@@ -230,7 +230,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      return mouseX >= minX && mouseX >= maxX;
+      return mouseX >= minX && mouseX <= maxX;
     });
     
     if (!bin) {

@@ -24,7 +24,7 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ ba
               {balance.token.symbol}
             </span>
           </div>
-          <span className="position">{prettyNumberFloatInteger(makeDisplayTokenAmount(balance.token, balance.balance) || 0)}</span>
+          <span className="position">{prettyNumberFloatInteger(makeDisplayTokenAmount(balance.token, balance.balance) || 0)} ({balance.percent})</span>
         </div>
       ))}
     </TooltipContent>
