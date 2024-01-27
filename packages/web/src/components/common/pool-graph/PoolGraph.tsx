@@ -35,6 +35,8 @@ export interface PoolGraphProps {
   minTickPosition?: number | null;
   poolPrice: number;
   isPosition?: boolean;
+  binsMyAmount: PoolBinModel[];
+  isSwap?: boolean;
 }
 
 interface TooltipInfo {
@@ -79,6 +81,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   minTickPosition = 0,
   poolPrice,
   isPosition = false,
+  binsMyAmount = [],
+  isSwap = false,
 }) => {
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
@@ -100,20 +104,26 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       const reserveTokenBMap = Number(item.reserveTokenA);
       return {
         ...item,
+        reserveTokenAMyAmount: binsMyAmount[index]?.reserveTokenA,
+        reserveTokenBMyAmount: binsMyAmount[index]?.reserveTokenB,
         reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
       };
     });
     
     const maxHeight = d3.max(convertReserveBins, (bin) => bin.reserveTokenAMap) || 0;
-    return convertReserveBins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => {
+    const temp = convertReserveBins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => {
       return {
         ...bin,
         minTick: bin.minTick - defaultMinX,
         maxTick: bin.maxTick - defaultMinX,
         reserveTokenMap: bin.reserveTokenAMap * boundsHeight / maxHeight,
+
       };
     });
-  }, [bins, boundsHeight, defaultMinX, poolPrice]);
+    const revereTemp = temp.map((item, i) => ({...temp[length * 2 - i - 1], minTick: item.minTick, maxTick: item.maxTick}));
+    return !isSwap ? temp : revereTemp;
+    
+  }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap]);
   
   const maxHeight = d3.max(resolvedBins, (bin) => bin.reserveTokenMap) || 0;
 
@@ -258,8 +268,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     };
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
     const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
-    const myTokenAAmountStr = makeDisplayTokenAmount(tokenA, resolvedBins.reduce((acc, current) => Number(current.reserveTokenA) + acc, 0));
-    const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, resolvedBins.reduce((acc, current) => Number(current.reserveTokenB) + acc, 0));
+    const myTokenAAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenAMyAmount);
+    const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenBMyAmount);
     
     const tickSpacing = getTickSpacing();
     const isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));

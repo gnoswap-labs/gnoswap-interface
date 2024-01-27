@@ -129,7 +129,7 @@ const EarnMyPositionContainer: React.FC<
   const handleChangeClosed = () => {
     setIsClosed(!isClosed);
   };
-
+  
   return (
     <EarnMyPositions
       connected={connected}

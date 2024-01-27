@@ -130,6 +130,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 position="top"
                 offset={40}
                 poolPrice={pool?.price || 1}
+                binsMyAmount={[]}
               />
               <div className="price-section">
                 <span className="label-text">

@@ -245,6 +245,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             position="top"
             offset={40}
             poolPrice={pool?.price || 1}
+            binsMyAmount={[]}
           />}
           {loading && <LoadingChart>
             <LoadingSpinner />

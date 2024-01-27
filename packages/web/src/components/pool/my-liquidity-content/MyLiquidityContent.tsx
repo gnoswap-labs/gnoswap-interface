@@ -17,7 +17,6 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
-import { checkGnotPath } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface MyLiquidityContentProps {
@@ -42,6 +41,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
     
   const activated = connected && positions.length > 0;
+  const positionData = positions?.[0]?.pool;
 
   const allBalances = useMemo(() => {
     if (!activated) {
@@ -144,7 +144,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       STAKING: {},
       EXTERNAL: {},
     };
-    console.log(positions, "positions");
     
     positions
       .flatMap(position => position.rewards)
@@ -275,41 +274,41 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       }, 0) > 0
     );
   }, [activated, unclaimedRewardInfo]);
+  
+  const tokenABalance = useMemo(() => {
+    return makeDisplayTokenAmount(positionData?.tokenA, positionData?.tokenABalance) || 0;
+  }, [positionData?.tokenA, positionData?.tokenABalance]);
 
-  const tokenBPath = useMemo(() => {
-    return checkGnotPath(positions?.[0]?.pool?.tokenB?.path);
-  }, [positions, checkGnotPath]);
-
-  const tokenAPath = useMemo(() => {
-    return checkGnotPath(positions?.[0]?.pool?.tokenA?.path);
-  }, [positions, checkGnotPath]);
+  const tokenBBalance = useMemo(() => {
+    return makeDisplayTokenAmount(positionData?.tokenB, positionData?.tokenBBalance) || 0;
+  }, [positionData?.tokenB, positionData?.tokenBBalance]);
+  
+  const depositRatio = useMemo(() => {
+    const sumOfBalances = tokenABalance + tokenBBalance;
+    if (sumOfBalances === 0) {
+      return 0.5;
+    }
+    return tokenABalance / (tokenABalance + tokenBBalance / positionData?.price);
+  }, [tokenABalance, tokenBBalance, positionData?.price]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
-    const balance = Object.values(allBalances || {}).reduce(
-      (acc, current) => (acc += current.balanceUSD),
-      0,
-    );
-    const tokenBalance = allBalances?.[tokenAPath]?.balanceUSD || 0;
-    return `(${Math.round((tokenBalance / Number(balance) * 100))}%)`;
-  }, [allBalances, tokenAPath]);
+    const depositStr = `${Math.round(depositRatio * 100)}%`;
+    return `(${depositStr})`;
+  }, [depositRatio]);
 
   const depositRatioStrOfTokenB = useMemo(() => {
-    const balance = Object.values(allBalances || {}).reduce(
-      (acc, current) => (acc += current.balanceUSD),
-      0,
-    );
-    const tokenBalance = allBalances?.[tokenBPath]?.balanceUSD || 0;
-    return `(${Math.round((tokenBalance / Number(balance) * 100))}%)`;
-  }, [allBalances, tokenBPath]);
+    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
+    return `(${depositStr})`;
+  }, [depositRatio]);
 
   const isWrapText = useMemo(() => {
     return (
-      positions?.[0]?.pool?.tokenA?.symbol.length === 4 ||
-      positions?.[0]?.pool?.tokenB?.symbol.length === 4
+      positionData?.tokenA?.symbol.length === 4 ||
+      positionData?.tokenB?.symbol.length === 4
     );
   }, [
-    positions?.[0]?.pool?.tokenB?.symbol,
-    positions?.[0]?.pool?.tokenA?.symbol,
+    positionData?.tokenB?.symbol,
+    positionData?.tokenA?.symbol,
   ]);
 
   const feeDaily = useMemo(() => {
@@ -334,10 +333,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
   const logoReward = useMemo(() => {
     const temp = claimableRewardInfo?.STAKING;
-    const rewardTokens = positions?.[0]?.pool?.rewardTokens || [];
+    const rewardTokens = positionData?.rewardTokens || [];
     const rewardLogo = rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
     return [...new Set([...rewardLogo, ...temp?.map(item => getGnotPath(item.token).logoURI) || []])];
-  }, [claimableRewardInfo, getGnotPath, positions]);
+  }, [claimableRewardInfo, getGnotPath, positionData]);
   
   const rewardDaily = useMemo(() => {
     const temp = claimableRewardInfo?.STAKING;
@@ -376,24 +375,19 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <div className="sub-content">
             <div className="sub-content-detail">
               <MissingLogo
-                symbol={positions?.[0]?.pool?.tokenA?.symbol}
-                url={positions?.[0]?.pool?.tokenA?.logoURI}
+                symbol={positionData?.tokenA?.symbol}
+                url={positionData?.tokenA?.logoURI}
                 width={20}
                 className="image-logo"
               />
               <span>
-                {convertToKMB(
-                  `${
-                    allBalances?.[tokenAPath]
-                      ?.balanceUSD
-                  }`,
-                )}{" "}
+                {convertToKMB(`${tokenABalance}`)}{" "}
                 <span
                   className={`token-symbol ${
                     isWrapText ? "wrap-text" : ""
                   }`}
                 >
-                  {positions?.[0]?.pool?.tokenA?.symbol}
+                  {positionData?.tokenA?.symbol}
                 </span>{" "}
                 <span className="token-percent">
                   {depositRatioStrOfTokenA}
@@ -403,24 +397,19 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <div className="divider"></div>
             <div className="sub-content-detail">
               <MissingLogo
-                symbol={positions?.[0]?.pool?.tokenB?.symbol}
-                url={positions?.[0]?.pool?.tokenB?.logoURI}
+                symbol={positionData?.tokenB?.symbol}
+                url={positionData?.tokenB?.logoURI}
                 width={20}
                 className="image-logo"
               />
               <span>
-                {convertToKMB(
-                  `${
-                    allBalances?.[tokenBPath]
-                      ?.balanceUSD
-                  }`,
-                )}{" "}
+                {convertToKMB(`${tokenBBalance}`)}{" "}
                 <span
                   className={`token-symbol ${
                     isWrapText ? "wrap-text" : ""
                   }`}
                 >
-                  {positions?.[0]?.pool?.tokenB?.symbol}
+                  {positionData?.tokenB?.symbol}
                 </span>{" "}
                 <span className="token-percent">
                   {depositRatioStrOfTokenB}

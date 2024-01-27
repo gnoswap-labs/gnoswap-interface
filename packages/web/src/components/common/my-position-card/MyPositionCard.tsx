@@ -45,6 +45,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   currentIndex,
   themeKey,
 }) => {
+  
   const GRAPH_WIDTH = mobile ? 226 : 290;
   const GRAPH_HEIGHT = 80;
   const { pool, rewards } = position;
@@ -375,6 +376,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 minTickRate={minTickRate}
                 maxTickRate={maxTickRate}
                 pool={pool}
+                binsMyAmount={position.bins}
               />
             </div>
             <div className="min-max-price">

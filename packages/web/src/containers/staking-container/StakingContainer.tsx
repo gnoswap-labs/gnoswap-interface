@@ -62,7 +62,8 @@ const StakingContainer: React.FC = () => {
     }
     if (account?.address) {
       const temp = getPositionsByPoolId(poolPath);
-      setPositions(temp);
+      const stakedPositions = temp.filter(position => position.staked);
+      setPositions(stakedPositions);
     }
   }, [account?.address, router.query, getPositionsByPoolId]);
 
@@ -115,9 +116,10 @@ const StakingContainer: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  
   return (
     <Staking
+      pool={pool}
       totalApr={totalApr}
       positions={positions}
       rewardTokens={rewardTokens}

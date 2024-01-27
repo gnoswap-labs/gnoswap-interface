@@ -14,6 +14,7 @@ import { TokenModel } from "@models/token/token-model";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 interface StakingContentProps {
   totalApr: string;
@@ -23,6 +24,7 @@ interface StakingContentProps {
   mobile: boolean;
   type: number;
   loading: boolean;
+  pool: PoolDetailModel | null;
 }
 
 const TEXT_BTN = [
@@ -42,15 +44,15 @@ const StakingContent: React.FC<StakingContentProps> = ({
   mobile,
   type,
   loading,
+  pool,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-
   const rewardTokenLogos = useMemo(() => {
-    const rewardData = positions?.[0]?.pool?.rewardTokens || [];
+    const rewardData = pool?.rewardTokens || [];
     const rewardLogo = rewardData?.map(item => getGnotPath(item).logoURI) || [];
-    const temp = rewardTokens.map(token => token.logoURI);
-    return [...new Set(temp), ...rewardLogo];
-  }, [rewardTokens, positions]);
+    const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
+    return [...new Set([...temp, ...rewardLogo])];
+  }, [rewardTokens, pool]);
   
   const stakingPositionMap = useMemo(() => {
     return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {

@@ -52,7 +52,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
-
+  
   const tokenA = useMemo(() => {
     return position.pool.tokenA;
   }, [position.pool.tokenA]);
@@ -300,24 +300,24 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const currentPrice = useMemo(() => {
-    return tickToPrice(position?.pool.currentTick);
-  }, [position?.pool.currentTick]);
-
+    return !isSwap ? tickToPrice(position?.pool.currentTick) : 1 / tickToPrice(position?.pool.currentTick);
+  }, [position?.pool.currentTick, isSwap]);
+  
   const minTickRate = useMemo(() => {
     if (isMinTick(position.tickLower)) {
       return 0;
     }
-    const minPrice = tickToPrice(position.tickLower);
+    const minPrice = !isSwap ? tickToPrice(position.tickLower) : 1 / tickToPrice(position.tickLower);
     return Math.round(((currentPrice - minPrice) / currentPrice) * 100);
-  }, [currentPrice, position.tickLower]);
+  }, [currentPrice, position.tickLower, isSwap]);
 
   const maxTickRate = useMemo(() => {
     if (isMaxTick(position.tickUpper)) {
       return 999;
     }
-    const maxPrice = tickToPrice(position.tickUpper);
+    const maxPrice = !isSwap ? tickToPrice(position.tickUpper) : 1 / tickToPrice(position.tickUpper);
     return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
-  }, [currentPrice, position.tickUpper]);
+  }, [currentPrice, position.tickUpper, isSwap]);
 
   const maxPriceStr = useMemo(() => {
     const minPrice = tickToPriceStr(position.tickLower, 6);
@@ -349,12 +349,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
-    return (minTickRate > 0) ? "negative" : "positive";
-  }, [minTickRate]);
+    return ((!isSwap ? minTickRate : -maxTickRate) > 0) ? "negative" : "positive";
+  }, [minTickRate, isSwap, maxTickRate]);
 
   const endClass = useMemo(() => {
-    return maxTickRate > 0 ? "positive" : "negative";
-  }, [maxTickRate]);
+    return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
+  }, [maxTickRate, isSwap, minTickRate]);
 
   return (
     <MyPositionCardWrapper type={inRange}>
@@ -556,6 +556,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           isPosition
           minTickPosition={minTickPosition}
           maxTickPosition={maxTickPosition}
+          binsMyAmount={position?.bins || []}
+          isSwap={isSwap}
         />}
           {loading && <LoadingChart>
             <LoadingSpinner />
@@ -565,7 +567,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             1 {(!isSwap ? tokenA : tokenB)?.symbol} ={" "}
             {minPriceStr}{" "}
             {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-            <span className={startClass}>{minTickLabel}</span>
+            <span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>
             )&nbsp;
             <Tooltip
               placement="top"
@@ -585,7 +587,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             ~{" "}
             {maxPriceStr}{" "}
             {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-            <span className={endClass}>{maxTickLabel}</span>)&nbsp;
+            <span className={endClass}>{!isSwap ? maxTickLabel : minTickLabel}</span>)&nbsp;
             <Tooltip
               placement="top"
               FloatingContent={

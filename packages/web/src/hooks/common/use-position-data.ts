@@ -81,7 +81,7 @@ export const usePositionData = () => {
   const { isLoadingCommon } = useLoading({ connected: connected && PATH.includes(router.pathname) || first404, isLoading: loading && !first404, isFetching: isFetching, isBack: !!back, status: initialData.status});
   
   const { getGnotPath } = useGnotToGnot();
-
+  
   const positions = useMemo(() => {
     const poolPositions: PoolPositionModel[] = [];
     data.forEach(position => {

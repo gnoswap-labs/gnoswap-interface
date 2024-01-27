@@ -106,6 +106,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
             position="top"
             nextSpacing
             poolPrice={Number(price)}
+            binsMyAmount={[]}
           />
         </div>
       </TableColumn>

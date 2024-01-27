@@ -1,5 +1,6 @@
 import { IncentivizedOptions } from "@common/values";
 import { RewardModel } from "./reward-model";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 export interface PositionModel {
   id: string;
@@ -54,4 +55,6 @@ export interface PositionModel {
   
   // fake status
   status: boolean;
+  bins: PoolBinModel[];
+
 }

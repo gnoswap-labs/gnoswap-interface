@@ -142,6 +142,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
             position: absolute;
             height: fit-content;
             display: none;
+            min-width: 165px;
           }
           .open {
             display: block;
@@ -162,7 +163,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
             height: fit-content;
             display: none;
             width: 100%;
-            max-width: 297px;
+            max-width: 303px;
             min-width: auto;
             left: 0;
             right: auto;
