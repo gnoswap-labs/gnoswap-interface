@@ -26,7 +26,7 @@ const MissingLogo: React.FC<Props> = ({
           mobileWidth={mobileWidth}
           className="missing-logo"
         >
-          {symbol.slice(0, 3)}
+          {(symbol || "").slice(0, 3)}
         </LogoWrapper>
       )}
     </>

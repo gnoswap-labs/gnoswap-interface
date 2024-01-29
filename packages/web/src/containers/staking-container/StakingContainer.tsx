@@ -65,10 +65,10 @@ const StakingContainer: React.FC = () => {
       const stakedPositions = temp.filter(position => position.staked);
       setPositions(stakedPositions);
     }
-  }, [account?.address, router.query]);
+  }, [account?.address, router.query, getPositionsByPoolId]);
 
   const isDisabledButton = useMemo(() => {
-    return isSwitchNetwork || !connectedWallet;
+    return isSwitchNetwork || !connectedWallet || positions.length == 0;
   }, [isSwitchNetwork, connectedWallet, positions]);
 
   const totalApr = useMemo(() => {
@@ -116,9 +116,10 @@ const StakingContainer: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  
   return (
     <Staking
+      pool={pool}
       totalApr={totalApr}
       positions={positions}
       rewardTokens={rewardTokens}

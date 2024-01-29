@@ -235,3 +235,14 @@ export function formatUsdNumber3Digits(val: string | number) {
   }
   return stringVal;
 }
+
+export function formatNumberToLocaleString(inputNumber: Number | string) {
+  if (Number.isInteger(Number(inputNumber))) {
+      // If the number is an integer, return it as is
+      return inputNumber.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  } else {
+      // If the number is not an integer, format it with toLocaleString
+      // and set minimumFractionDigits to 6
+      return inputNumber.toLocaleString(undefined, { maximumFractionDigits: 6 });
+  }
+}

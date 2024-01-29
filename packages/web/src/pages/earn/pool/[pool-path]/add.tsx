@@ -4,13 +4,13 @@ import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsC
 import PoolAddLayout from "@layouts/pool-add-layout/PoolAddLayout";
 import PoolAddLiquidityContainer from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { DEVICE_TYPE } from "@styles/media";
 import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
 import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default function EarnAdd() {
   const { breakpoint } = useWindowSize();
@@ -25,7 +25,7 @@ export default function EarnAdd() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          breakpoint === DEVICE_TYPE.WEB
+          breakpoint === DEVICE_TYPE.MEDIUM_WEB
             ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
@@ -33,7 +33,7 @@ export default function EarnAdd() {
       },
       { title: "Add Position", path: "" },
     ];
-  }, [data]);
+  }, [data, breakpoint]);
 
   return (
     <PoolAddLayout

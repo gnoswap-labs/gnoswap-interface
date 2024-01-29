@@ -194,7 +194,12 @@ export const useEarnAddLiquidityConfirmModal = ({
 
   const moveToBack = useCallback(() => {
     close();
-    router.push("/earn?back=q");
+    const pathName = router.pathname;
+    if (pathName === "/earn/add") {
+      router.push("/earn?back=q");
+    } else {
+      router.push(router.asPath.replace("/add", ""));
+    }
   }, [close, router]);
 
   const confirm = useCallback(() => {

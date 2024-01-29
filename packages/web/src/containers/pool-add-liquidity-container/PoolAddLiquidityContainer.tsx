@@ -437,6 +437,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       changeStartingPrice={changeStartingPrice}
       createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
       fetching={fetching}
+      handleSwapValue={() => {}}
     />
   );
 };

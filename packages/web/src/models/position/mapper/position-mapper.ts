@@ -65,6 +65,7 @@ export class PositionMapper {
       dailyRewards:
         position.dailyRewards?.map(PositionMapper.rewardFromResponse) || [],
       status: false,
+      bins: position.bins,
     };
   }
 

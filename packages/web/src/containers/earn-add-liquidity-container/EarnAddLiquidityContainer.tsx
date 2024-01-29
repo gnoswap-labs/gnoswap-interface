@@ -439,7 +439,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (fetching) {
+    if (fetching && !swapValue?.isEarnChanged) {
       selectSwapFeeTier("FEE_3000");
       setSwapValue({
         tokenA,
@@ -447,7 +447,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
         type: "EXACT_IN",
       });
     }
-  }, [fetching]);
+  }, [fetching, swapValue?.isEarnChanged]);
+
+  const handleSwapValue = useCallback(() => {
+    const tempTokenA = swapValue.tokenA;
+    const tempTokenB = swapValue.tokenB;
+    setSwapValue({
+      ...swapValue,
+      tokenA: tempTokenB,
+      tokenB: tempTokenA,
+      isEarnChanged: true,
+    });
+  }, [swapValue, setSwapValue]);
 
   return (
     <EarnAddLiquidity
@@ -484,6 +495,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       changeStartingPrice={changeStartingPrice}
       createOption={createOption}
       fetching={fetching}
+      handleSwapValue={handleSwapValue}
     />
   );
 };

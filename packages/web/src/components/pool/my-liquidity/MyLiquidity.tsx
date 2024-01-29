@@ -19,6 +19,9 @@ interface MyLiquidityProps {
   claimAll: () => void;
   availableRemovePosition: boolean;
   loading: boolean;
+  loadngTransactionClaim: boolean;
+  isShowClosePosition: boolean;
+  handleSetIsClosePosition: () => void;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -34,6 +37,9 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   claimAll,
   availableRemovePosition,
   loading,
+  loadngTransactionClaim,
+  isShowClosePosition,
+  handleSetIsClosePosition,
 }) => {
   return (
     <MyLiquidityWrapper>
@@ -42,6 +48,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           availableRemovePosition={availableRemovePosition}
           handleClickAddPosition={handleClickAddPosition}
           handleClickRemovePosition={handleClickRemovePosition}
+          isShowClosePosition={isShowClosePosition}
+          handleSetIsClosePosition={handleSetIsClosePosition}
         />
         <MyLiquidityContent
           connected={connected}
@@ -50,6 +58,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           isDisabledButton={isSwitchNetwork || !connected}
           claimAll={claimAll}
           loading={loading}
+          loadngTransactionClaim={loadngTransactionClaim}
         />
       </div>
       {positions.length > 0 && <PoolDivider />}
@@ -60,7 +69,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
       ) : (
         <>
           <div className="slider-wrap" ref={divRef} onScroll={onScroll}>
-            <div className={`box-slider ${positions.length === 1 ? "full-width" : positions.length === 2 ? "w-50" : ""}`}>
+            <div className={"box-slider full-width"}>
               {positions.map((position: PoolPositionModel, index: number) => (
                 <MyPositionCard
                   position={position}
@@ -71,11 +80,11 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
               ))}
             </div>
           </div>
-          <div className="box-indicator">
+         {positions.length > 1 && <div className="box-indicator">
             <span className="current-page">{currentIndex}</span>
             <span>/</span>
             <span>{positions.length}</span>
-          </div>
+          </div>}
         </>
       )}
     </MyLiquidityWrapper>

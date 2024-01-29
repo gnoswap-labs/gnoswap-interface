@@ -57,8 +57,12 @@ export const PoolGraphTooltipWrapper = styled.div`
         &.price-range {
           justify-content: flex-end;
         }
+        &.token-title {
+          ${media.mobile} {
+            display: none;
+          }
+        }
       }
-      
     }
 
     .header {
@@ -84,6 +88,13 @@ export const PoolGraphTooltipWrapper = styled.div`
       .row {
         padding: 4px 0;
       }
+      &:last-of-type {
+        .token {
+          ${media.mobile} {
+            display: none;
+          }
+        }
+      }
     }
 
     .token {
@@ -95,18 +106,37 @@ export const PoolGraphTooltipWrapper = styled.div`
         width: 20px;
         height: 20px;
       }
+      ${media.mobile} {
+        display: none;
+      }
     }
 
     .amount {
       flex-shrink: 0;
       width: 80px;
-
       & .hidden {
         display: inline;
         overflow: hidden;
         text-overflow: clip;
         white-space: nowrap;
         word-break: break-all;
+      }
+      &.mr-3 {
+        margin-left: -8px;
+      }
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: 4px;
+        display: none;
+      }
+      ${media.mobile} {
+        &.total-amount {
+          width: 85px;
+        }
+        img {
+          display: block;
+        }
       }
     }
 

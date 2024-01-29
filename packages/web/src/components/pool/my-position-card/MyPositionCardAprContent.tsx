@@ -3,12 +3,15 @@ import { RewardsContent } from "./MyPositionCard.styles";
 import { RewardType } from "@constants/option.constant";
 import { numberToFormat } from "@utils/string-utils";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface MyPositionAprContentProps {
   rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
 }
 
 export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewardInfo }) => {
+  const { getGnotPath } = useGnotToGnot();
+
   const swapFeeRewards = useMemo(() => {
     if (rewardInfo.SWAP_FEE.length === 0) {
       return null;
@@ -42,7 +45,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
             <div key={index} className="list">
               <div className="coin-info">
                 <img
-                  src={reward.token.logoURI}
+                  src={getGnotPath(reward.token).logoURI}
                   alt="token logo"
                   className="token-logo"
                 />
@@ -51,13 +54,13 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.aprOf7d, 2)}%
+                {numberToFormat(reward.aprOf7d, 0)}%
               </span>
             </div>
           ))}
         </React.Fragment>
       )}
-
+      {stakingRewards && <div className="divider" />}
       {stakingRewards && (
         <React.Fragment>
           <div className="list">
@@ -68,7 +71,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
             <div key={index} className="list">
               <div className="coin-info">
                 <img
-                  src={reward.token.logoURI}
+                  src={getGnotPath(reward.token).logoURI}
                   alt="token logo"
                   className="token-logo"
                 />
@@ -83,7 +86,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
           ))}
         </React.Fragment>
       )}
-
+      {externalRewards && <div className="divider" />}
       {externalRewards && (
         <React.Fragment>
           <div className="list">
@@ -94,7 +97,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
             <div key={index} className="list">
               <div className="coin-info">
                 <img
-                  src={reward.token.logoURI}
+                  src={getGnotPath(reward.token).logoURI}
                   alt="token logo"
                   className="token-logo"
                 />

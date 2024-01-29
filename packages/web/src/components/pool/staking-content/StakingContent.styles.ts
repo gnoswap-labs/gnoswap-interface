@@ -24,12 +24,13 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     gap: 5px;
     position: relative;
     color: ${({ theme }) => theme.color.text01};
-    ${fonts.body4}
+    ${fonts.body6}
     ${media.tablet} {
       ${fonts.body8}
+      font-size: 17px;
     }
     ${media.mobile} {
-      ${fonts.body10}
+      ${fonts.body12}
       align-items: flex-start;
       flex-wrap: wrap;
     }
@@ -60,17 +61,36 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     }
     .coin-info {
       ${mixins.flexbox("row", "flex-start", "flex-start")};
-      .token-logo {
-        width: 36px;
-        height: 36px;
+      .overlap-logo-wrapper {
+        img {
+          width: 36px;
+          height: 36px;
+          
+          &:not(:first-of-type) {
+            margin-left: -6px;
+          }
+        }
+        ${media.tablet} {
+          &:not(:first-of-type) {
+            margin-left: -4px;
+          }
+          width: 24px;
+          height: 24px;
+          img {
+            width: 24px;
+            height: 24px;
+          }
+        }
         ${media.mobile} {
           width: 20px;
           height: 20px;
-        }
-        &:not(:first-of-type) {
-          margin-left: -6px;
+          img {
+            width: 20px;
+            height: 20px;
+          }
         }
       }
+      
     }
     .apr {
       ${fonts.body3}
@@ -111,17 +131,30 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       }
     }
   }
+  .empty-content {
+    max-width: 350px;
+    min-width: 350px;
+    flex: 1;
+    ${media.tabletMiddle} {
+      min-width: 32px;
+    }
+  }
   .button-wrap {
-    ${mixins.flexbox("row", "center", "flex-end")};
+    ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     .loading-button {
-      transform: translateX(-50%);
-      ${media.mobile} {
-        transform: translateX(0);
-        margin: auto;
-      }
+    }
+    .loading-wrapper {
+      ${mixins.flexbox("row", "center", "center")};
+      width: 100%;
+      max-width: 900px;
+      background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-align: center;
     }
     .change-weight {
+      max-width: 900px;
       cursor: default;
       border: 1px solid ${({ theme }) => theme.color.border14};;
       span {
@@ -134,6 +167,7 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       gap: 20px;
     }
     .receive-button {
+      max-width: 900px;
       cursor: default;
       background: ${({ theme }) => theme.color.background21};
       border: 1px solid ${({ theme }) => theme.color.border16};

@@ -13,6 +13,8 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 interface StakingContentProps {
   totalApr: string;
@@ -22,6 +24,7 @@ interface StakingContentProps {
   mobile: boolean;
   type: number;
   loading: boolean;
+  pool: PoolDetailModel | null;
 }
 
 const TEXT_BTN = [
@@ -41,11 +44,16 @@ const StakingContent: React.FC<StakingContentProps> = ({
   mobile,
   type,
   loading,
+  pool,
 }) => {
+  const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
-    return rewardTokens.map(token => token.logoURI);
-  }, [rewardTokens]);
-
+    const rewardData = pool?.rewardTokens || [];
+    const rewardLogo = rewardData?.map(item => getGnotPath(item).logoURI) || [];
+    const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
+    return [...new Set([...temp, ...rewardLogo])];
+  }, [rewardTokens, pool]);
+  
   const stakingPositionMap = useMemo(() => {
     return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
       const stakedTime = Number(current.stakedAt) * 1000;
@@ -86,7 +94,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       <div className="content-header">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
           <span
-            css={pulseSkeletonStyle({ h: 22, w: "600px" })}
+            css={pulseSkeletonStyle({ h: 22, w: "600px", mobileWidth: 400 })}
           />
         </SkeletonEarnDetailWrapper>}
         {!loading && <span>Stake your position to earn rewards up <span className="to-web">to</span></span>}
@@ -110,6 +118,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 period={period}
                 positions={stakingPositionMap[period]}
                 checkPoints={checkPoints}
+                breakpoint={breakpoint}
               />
             ) : (
               <StakingContentCard
@@ -126,20 +135,18 @@ const StakingContent: React.FC<StakingContentProps> = ({
         </>
       </div>
       <div className="button-wrap">
-        {loading && <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
-          <span
-            css={pulseSkeletonStyle({ h: 22, w: "400px" })}
-          />
-        </SkeletonEarnDetailWrapper>}
+        <div className="empty-content"></div>
+        {loading && <div className="loading-wrapper">
+            <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
+            <span
+              css={pulseSkeletonStyle({ h: 22, w: "400px", mobileWidth: 150 })}
+            />
+          </SkeletonEarnDetailWrapper>
+        </div>}
         {!loading && <Button
           text={TEXT_BTN[type]}
           style={{
-            width: `${breakpoint === DEVICE_TYPE.WEB
-              ? "800px"
-              : breakpoint === DEVICE_TYPE.TABLET
-                ? "600px"
-                : "calc(100% - 32px)"
-              }`,
+            width: "100%",
             height: `${breakpoint === DEVICE_TYPE.MOBILE ? "49px" : "60px"}`,
             fontType: `${breakpoint === DEVICE_TYPE.WEB
               ? "body7"

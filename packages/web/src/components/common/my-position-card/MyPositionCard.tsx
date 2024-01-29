@@ -21,7 +21,6 @@ import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 
@@ -33,7 +32,7 @@ interface MyPositionCardProps {
   themeKey: "dark" | "light";
 }
 
-function estimateTick(tick: number, width: number) {
+export function estimateTick(tick: number, width: number) {
   if (tick < 0) return 0;
   if (tick > width) return width;
   return tick;
@@ -46,6 +45,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   currentIndex,
   themeKey,
 }) => {
+  
   const GRAPH_WIDTH = mobile ? 226 : 290;
   const GRAPH_HEIGHT = 80;
   const { pool, rewards } = position;
@@ -68,7 +68,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
         balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
         claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
-        claimableUSD: Number(reward.claimableUsdValue)
+        claimableUSD: Number(reward.claimableUsdValue),
+        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
+        claimableUsdValue: Number(reward.claimableUsdValue),
+        aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach((rewardInfo) => {
         const existReward = infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
@@ -79,6 +82,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
             claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
+            accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
+            claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
+            aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
@@ -146,7 +152,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999
       ? `>${maxTickRate}%`
-      : maxTickRate > 1000
+      : maxTickRate >= 1000
       ? ">999%"
       : `${maxTickRate > 0 ? "+" : ""}${maxTickRate}%`;
   }, [maxTickRate]);
@@ -258,33 +264,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return maxTickPosition;
   }, [maxTickPosition]);
 
-  const isMinTickGreen = useMemo(() => {
-    if (!getMinTick) {
-      return true;
-    }
-    return BigNumber(getMinTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
-  }, [getMinTick, GRAPH_WIDTH]);
-
-  const isMaxTickGreen = useMemo(() => {
-    if (!getMaxTick) {
-      return true;
-    }
-    return BigNumber(getMaxTick).isGreaterThanOrEqualTo(GRAPH_WIDTH / 2);
-  }, [getMaxTick]);
-
   const startClass = useMemo(() => {
     if (getMinTick === null) {
-      return null;
+      return "";
     }
-    return !isMinTickGreen || isFullRange ? "negative" : "positive";
-  }, [getMinTick, isMinTickGreen, isFullRange]);
+    return (minTickRate > 0 || isFullRange) ? "negative" : "positive";
+  }, [getMinTick, minTickRate, isFullRange]);
 
   const endClass = useMemo(() => {
     if (getMaxTick === null) {
       return "";
     }
-    return isMaxTickGreen ? "positive" : "negative";
-  }, [getMaxTick, isMaxTickGreen, maxTickRate]);
+    return maxTickRate > 0 ? "positive" : "negative";
+  }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
     const claimableUsdValue = claimableRewardInfo ? Object.values(claimableRewardInfo)
@@ -386,6 +378,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 minTickRate={minTickRate}
                 maxTickRate={maxTickRate}
                 pool={pool}
+                binsMyAmount={position.bins}
               />
             </div>
             <div className="min-max-price">

@@ -9,6 +9,7 @@ export interface SelectBoxProps<ItemType = unknown> {
   items: ItemType[];
   select: (item: ItemType) => void;
   render: (item: ItemType) => React.ReactNode;
+  className?: string;
 }
 
 
@@ -17,6 +18,7 @@ const SelectBox: <ItemType>(p: SelectBoxProps<ItemType>) => JSX.Element = ({
   items,
   select,
   render,
+  className,
 }) => {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [opened, setOpened] = useState(false);
@@ -31,8 +33,8 @@ const SelectBox: <ItemType>(p: SelectBoxProps<ItemType>) => JSX.Element = ({
   }, [current]);
 
   return (
-    <SelectBoxWrapper ref={boxRef}>
-      <div className="selected-wrapper" onClick={toggleModal}>
+    <SelectBoxWrapper ref={boxRef} className={`select-box ${className}`} onClick={toggleModal}>
+      <div className="selected-wrapper">
         <span className="current">{selectedItemName}</span>
         {opened ?
           <IconArrowUp className="icon-arrow" /> :
@@ -40,7 +42,7 @@ const SelectBox: <ItemType>(p: SelectBoxProps<ItemType>) => JSX.Element = ({
         }
       </div>
 
-      <SelectBoxModalWrapper className={opened ? "open" : ""}>
+      <SelectBoxModalWrapper className={`${opened ? "open" : ""} select-item`}>
         {items.map((item, index) => (
           <div
             key={index}

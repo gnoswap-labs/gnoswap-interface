@@ -55,16 +55,13 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
   
   const resolvedBins = useMemo(() => {
     const length = 20;
-    if (pool.bins.length <= length) {
-      return pool.bins;
-    }
-    const resolvedRate = pool.bins.length / length;
+    const poolLength = pool.bins.length;
     return Array.from({ length }, (_, index) => {
-      const pickIndex = Math.round((index + 1) * resolvedRate) - 1;
-      return pool.bins[pickIndex];
-    })
+      if (index + 10 > poolLength - 1) return pool.bins[0];
+      return pool.bins[10 + index];
+    });
   }, [pool.bins]);
-
+  
   return (
     <PoolInfoWrapper
       onClick={() => routeItem(poolId)}

@@ -3,29 +3,61 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import React from "react";
 import { HeaderWrapper } from "./MyLiquidityHeader.styles";
+import Switch from "@components/common/switch/Switch";
 
 interface MyLiquidityHeaderProps {
   availableRemovePosition: boolean;
   handleClickAddPosition: () => void;
   handleClickRemovePosition: () => void;
+  isShowClosePosition: boolean;
+  handleSetIsClosePosition: () => void;
 }
 
-const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ availableRemovePosition, handleClickAddPosition, handleClickRemovePosition }) => {
+const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
+  availableRemovePosition,
+  handleClickAddPosition,
+  handleClickRemovePosition,
+  isShowClosePosition,
+  handleSetIsClosePosition,
+}) => {
   return (
     <HeaderWrapper>
-      <h2>My Positions</h2>
+      <div className="header">
+        <h2>My Positions</h2>
+        {availableRemovePosition && (
+          <div className="hide-close-position">
+            <Switch
+              checked={isShowClosePosition}
+              onChange={handleSetIsClosePosition}
+              hasLabel={true}
+              labelText="Show closed positions"
+            />
+          </div>
+        )}
+      </div>
       <div className="button-wrap">
-        <Button
-          disabled={!availableRemovePosition}
-          text="Remove Position"
-          onClick={handleClickRemovePosition}
-          style={{
-            hierarchy: ButtonHierarchy.Primary,
-            height: 36,
-            padding: "10px 16px",
-            fontType: "p1",
-          }}
-        />
+        {availableRemovePosition && (
+          <div className="hide-close-position">
+            <Switch
+              checked={isShowClosePosition}
+              onChange={handleSetIsClosePosition}
+              hasLabel={true}
+              labelText="Show closed positions"
+            />
+          </div>
+        )}
+        {availableRemovePosition && (
+          <Button
+            text="Remove Position"
+            onClick={handleClickRemovePosition}
+            style={{
+              hierarchy: ButtonHierarchy.Primary,
+              height: 36,
+              padding: "10px 16px",
+              fontType: "p1",
+            }}
+          />
+        )}
         <Button
           text="Add Position"
           onClick={handleClickAddPosition}
@@ -35,6 +67,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({ availableRemovePo
             padding: "10px 16px",
             fontType: "p1",
           }}
+          className={!availableRemovePosition ? "full-width" : ""}
         />
       </div>
     </HeaderWrapper>

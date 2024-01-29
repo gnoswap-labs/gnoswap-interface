@@ -9,6 +9,19 @@ export const HeaderWrapper = styled.div`
   ${fonts.h5};
   color: ${({ theme }) => theme.color.text02};
 
+  .header {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    .hide-close-position {
+      display: none;
+    }
+    ${media.mobile} {
+      width: 100%;
+      .hide-close-position {
+        display: flex;
+      }
+      ${mixins.flexbox("row", "center", "space-between")};
+    }
+  }
   ${media.mobile} {
     flex-direction: column;
     align-items: flex-start;
@@ -18,13 +31,27 @@ export const HeaderWrapper = styled.div`
   }
 
   .button-wrap {
-    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     gap: 8px;
+    .hide-close-position {
+      ${mixins.flexbox("row", "center", "cencter")};
+      margin-right: 28px;
+      ${media.tablet} {
+        margin-right: 16px;
+      }
+      ${media.mobile} {
+        display: none;
+      }
+    }
     ${media.mobile} {
       width: 100%;
       button {
         width: 50%;
       }
+      
+    }
+    .full-width {
+      width: 100%;
     }
   }
 `;

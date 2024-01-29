@@ -5,6 +5,7 @@ import { StakingWrapper } from "./Staking.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 interface StakingProps {
   totalApr: string;
@@ -17,6 +18,7 @@ interface StakingProps {
   handleClickStakeRedirect: () => void;
   handleClickUnStakeRedirect: () => void;
   loading: boolean;
+  pool: PoolDetailModel | null;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -30,6 +32,7 @@ const Staking: React.FC<StakingProps> = ({
   handleClickStakeRedirect,
   handleClickUnStakeRedirect,
   loading,
+  pool,
 }) => {
   
   return (
@@ -42,6 +45,7 @@ const Staking: React.FC<StakingProps> = ({
         isUnstake={positions.length > 0}
       />
       <StakingContent
+        pool={pool}
         totalApr={totalApr}
         positions={positions}
         rewardTokens={rewardTokens}

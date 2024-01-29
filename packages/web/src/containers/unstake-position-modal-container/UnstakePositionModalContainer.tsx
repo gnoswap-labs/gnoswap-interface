@@ -34,7 +34,7 @@ const UnstakePositionModalContainer = ({
     }).catch(() => null);
     if (result) {
       clearModal();
-      router.back();
+      router.push(router.asPath.replace("/unstake", ""));
     }
     return result;
   }, [account?.address, clearModal, positionRepository, positions, router]);

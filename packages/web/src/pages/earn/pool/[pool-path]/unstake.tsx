@@ -4,12 +4,12 @@ import HeaderContainer from "@containers/header-container/HeaderContainer";
 import UnstakeLiquidityContainer from "@containers/unstake-position-container/UnstakePositionContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import UnstakeLiquidityLayout from "@layouts/unstake-liquidity-layout/UnstakeLiquidityLayout";
-import { DEVICE_TYPE } from "@styles/media";
 import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default function Earn() {
   const { breakpoint } = useWindowSize();
@@ -24,7 +24,7 @@ export default function Earn() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          breakpoint === DEVICE_TYPE.WEB
+          breakpoint === DEVICE_TYPE.MEDIUM_TABLET
             ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
@@ -32,7 +32,7 @@ export default function Earn() {
       },
       { title: "Unstake Position", path: "" },
     ];
-  }, [data]);
+  }, [data, breakpoint]);
 
   return (
     <UnstakeLiquidityLayout

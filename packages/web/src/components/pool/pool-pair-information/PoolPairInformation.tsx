@@ -43,11 +43,11 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             {tokenInfo}
           </span>
         </div>}
-        {loading && <div css={pulseSkeletonStyle({ w: "190px", h: 26 })} className="pulse-skeleton"/>}
+        {loading && <div css={pulseSkeletonStyle({ w: "150px", h: 26 })} className="pulse-skeleton"/>}
       </BreadcrumbsWrapper>
       <div className="token-status">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-          <span css={pulseSkeletonStyle({ w: "300px", h: 22 })} />
+          <span css={pulseSkeletonStyle({ w: "200px", h: 20 })} />
           </SkeletonEarnDetailWrapper>}
         {!loading && <PoolPairInfoHeader
           tokenA={pool.tokenA}

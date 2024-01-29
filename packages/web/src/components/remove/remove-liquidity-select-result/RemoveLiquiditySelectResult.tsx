@@ -45,7 +45,7 @@ const RemoveLiquiditySelectResult: React.FC<
                   mobileWidth={24}
                 />
                 <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
-                <strong>{pooledTokenInfo.amount}</strong>
+                <strong>{pooledTokenInfo.amount.toLocaleString("en", { minimumFractionDigits: 6 })}</strong>
               </div>
               <span className="dallor">{pooledTokenInfo.amountUSD}</span>
             </li>

@@ -42,7 +42,7 @@ export const PoolInfoHeaderWrapper = styled.div`
       gap: 5px;
       border-radius: 4px;
       ${fonts.p3};
-      color: ${({ theme }) => theme.color.text12};
+      color: ${({ theme }) => theme.color.text05};
       border: 1px solid ${({ theme }) => theme.color.border08};
       background-color: ${({ theme }) => theme.color.background08};
       img {

@@ -17,6 +17,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     align-self: stretch;
   }
   .left {
+    width: 350px;
     ${mixins.flexbox("row", "center", "flex-start")};
     ${media.tabletMiddle} {
       justify-content: space-between;
@@ -60,7 +61,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         height: 55px;
         border-left: 1px solid ${({ theme }) => theme.color.border08};
         ${media.tabletMiddle} {
-          height: 150px;
+          height: 100px;
         }
       }
       &-not-active {
@@ -124,6 +125,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     }
   }
   .contents-wrap {
+    flex: 1;
     ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
@@ -132,21 +134,16 @@ export const StakingContentCardWrapper = styled.div<Props>`
   }
 
   .contents {
+    width: 100%;
+    max-width: 900px;
+    margin-left: auto;
     ${mixins.flexbox("row", "center", "space-between")};
-    width: 800px;
     padding: 12px 16px;
     border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.color.border12};
+    border: 1px solid ${({ theme }) => theme.color.border14};
     background-color: ${({ theme }) => theme.color.backgroundOpacity2};
-    ${media.tablet} {
-      width: 600px;
-    }
     ${media.tabletMiddle} {
-      width: 100%;
-      padding: 12px 16px;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-end;
+      padding: 11px 16px;
       gap: 12px;
     }
     .price {
@@ -155,9 +152,6 @@ export const StakingContentCardWrapper = styled.div<Props>`
         div {
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 6px;
-          ${media.mobile} {
-            gap: 8px;
-          }
           color: ${({ theme }) => theme.color.text02};
           span {
             color: ${({ theme }) => theme.color.text02};
@@ -178,6 +172,9 @@ export const StakingContentCardWrapper = styled.div<Props>`
         }
         ${media.mobile} {
           ${fonts.body10}
+          > div {
+            gap: 4px;
+          }
         }
       }
       ${media.tablet} {
@@ -206,7 +203,11 @@ export const StakingContentCardWrapper = styled.div<Props>`
         ${media.tablet} {
           ${fonts.body9}
         }
+        ${media.tabletMiddle} {
+          margin-left: 2px;
+        }
         ${media.mobile} {
+          margin-left: 0;
           ${fonts.p4}
           height: 24px;
         }
@@ -253,7 +254,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
       .coin-info {
         ${mixins.flexbox("row", "center", "flex-start")};
-        .token-logo {
+        img {
           width: 36px;
           height: 36px;
           ${media.tablet} {
@@ -291,7 +292,7 @@ export const RewardsContent = styled.div`
       width: 170px;
       gap: 8px;
       flex-shrink: 0;
-      .token-logo {
+      img {
         width: 20px;
         height: 20px;
       }

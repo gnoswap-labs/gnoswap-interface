@@ -31,6 +31,7 @@ export interface BarAreaGraphProps {
   minTickRate?: number;
   maxTickRate?: number;
   pool: PoolModel;
+  binsMyAmount: PoolBinModel[];
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
@@ -47,7 +48,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   tokenA,
   tokenB,
   themeKey,
-  pool
+  pool,
+  binsMyAmount,
 }) => {
 
   const minTickPosition = useMemo(() => {
@@ -96,6 +98,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         maxTickPosition={maxTickPosition}
         minTickPosition={minTickPosition}
         poolPrice={pool?.price || 1}
+        isPosition
+        binsMyAmount={binsMyAmount || []}
       />
     </BarAreaGraphWrapper>
   );

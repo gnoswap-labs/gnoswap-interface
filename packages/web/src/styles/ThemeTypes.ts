@@ -28,6 +28,8 @@ export interface ThemeColorType {
   background25: string;
   background26: string;
   background27: string;
+  background28: string;
+  background29: string;
   bgLoading: string;
   backgroundOpacity: string;
   backgroundOpacity2: string;
@@ -40,6 +42,7 @@ export interface ThemeColorType {
   backgroundOpacity9: string;
   backgroundOpacity10: string;
   backgroundOpacity11: string;
+  backgroundOpacity12: string;
   backgroundGradient: string;
   backgroundGradient2: string;
   backgroundGradient3: string;
@@ -63,6 +66,7 @@ export interface ThemeColorType {
   border15: string;
   border16: string;
   border17: string;
+  border18: string;
   text01: string;
   text02: string;
   text03: string;
@@ -91,6 +95,7 @@ export interface ThemeColorType {
   text26: string;
   text27: string;
   text28: string;
+  text29: string;
   icon01: string;
   icon02: string;
   icon03: string;

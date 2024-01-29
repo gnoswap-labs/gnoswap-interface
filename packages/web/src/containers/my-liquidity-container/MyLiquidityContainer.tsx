@@ -20,6 +20,9 @@ const MyLiquidityContainer: React.FC = () => {
   const { getPositionsByPoolId, loading } = usePositionData();
   const { isLoadingCommon } = useLoading();
   const { claimAll } = usePosition(positions);
+  const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
+
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -39,17 +42,21 @@ const MyLiquidityContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.floor(currentScrollX / 240) + 1);
+      setCurrentIndex(Math.floor(currentScrollX / divRef.current.offsetWidth) + 1);
     }
   };
 
   const claimAllReward = useCallback(() => {
+    setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response !== null) {
+        setLoadingTransactionClaim(false);
         router.reload();
+      } else {
+        setLoadingTransactionClaim(false);
       }
     });
-  }, [claimAll, router]);
+  }, [claimAll, router, setLoadingTransactionClaim]);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
@@ -57,10 +64,34 @@ const MyLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      setPositions(getPositionsByPoolId(poolPath));
+      const temp = getPositionsByPoolId(poolPath);
+      if (temp.length > 0 && isShowClosePosition) {
+        const fake = {
+          ...temp[0],
+          status: true,
+          balance: 0,
+          balanceUSD: 0,
+          claimableAmount: 0,
+          claimableUSD: 0,
+          accumulatedRewardOf1d: 0,
+          aprOf7d: 0,
+          claimableUsdValue: 0,
+          rewards: [],
+          positionUsdValue: "0",
+          token0Balance: 0n,
+          token1Balance: 0n,
+        };
+        setPositions([...temp, fake, fake]);
+        return;
+      }
+      setPositions(temp);
     }
-  }, [account?.address, router.query]);
+  }, [account?.address, router.query, setPositions, getPositionsByPoolId, isShowClosePosition]);
   
+  const handleSetIsClosePosition = () => {
+    setIsShowClosedPosition(!isShowClosePosition);
+  };
+
   return (
     <MyLiquidity
       positions={positions}
@@ -75,6 +106,9 @@ const MyLiquidityContainer: React.FC = () => {
       claimAll={claimAllReward}
       availableRemovePosition={availableRemovePosition}
       loading={loading || isLoadingCommon}
+      loadngTransactionClaim={loadngTransactionClaim}
+      isShowClosePosition={isShowClosePosition}
+      handleSetIsClosePosition={handleSetIsClosePosition}
     />
   );
 };
