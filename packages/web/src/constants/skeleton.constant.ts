@@ -275,6 +275,7 @@ export const skeletonBalanceDetail =
     `;
 
 export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
+export const POOL_TD_WIDTH_TABLET = [185, 110, 110, 100, 80, 104, 160];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];
 export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];

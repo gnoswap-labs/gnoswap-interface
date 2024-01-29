@@ -29,12 +29,13 @@ import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
-import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { numberToFormat } from "@utils/string-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -102,7 +103,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (isClosed) {
       return "-";
     }
-    return formatUsdNumber(position.positionUsdValue, 2, true);
+    return `$${numberToFormat(`${position.positionUsdValue}`, 2)}`;
   }, [position.positionUsdValue, isClosed]);
 
   const balances = useMemo((): {
@@ -188,7 +189,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       .reduce((accum, current) => {
         return accum + current.claimableAmount;
       }, 0);
-    return formatUsdNumber(`${usdValue}`, 2, true);
+    return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
   const totalDailyEarning = useMemo(() => {
@@ -204,7 +205,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       .reduce((accum, current) => {
         return accum + current.accumulatedRewardOf1d;
       }, 0);
-    return formatUsdNumber(`${usdValue}`, 2, true);
+    return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =

@@ -107,15 +107,12 @@ const EarnMyPositionContainer: React.FC<
 
   const dataMapping = useMemo(() => {
     let temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-    if (positions.length > 0) {
+    if (positions.length > 0 && isClosed) {
       const fake = {
         ...positions[0],
         status: true,
       };
       temp = [...positions, fake, fake];
-    }
-    if (isClosed) {
-      temp = temp.filter(_x => _x.status !== isClosed);
     }
     if (page === 1) {
       if (width > 1180) {

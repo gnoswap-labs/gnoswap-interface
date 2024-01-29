@@ -92,7 +92,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey }) => {
       <TableColumn tdWidth={POOL_TD_WIDTH[5]}>
         {rewardImage}
       </TableColumn>
-      <TableColumn tdWidth={POOL_TD_WIDTH[6]}>
+      <TableColumn tdWidth={POOL_TD_WIDTH[6]} onClick={(e) => e.stopPropagation()}>
         <div className="chart-wrapper">
           <PoolGraph
             width={100}
