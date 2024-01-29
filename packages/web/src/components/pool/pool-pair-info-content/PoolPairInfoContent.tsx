@@ -30,6 +30,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 }) => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
+  const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
 
   const tokenABalance = useMemo(() => {
     return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
@@ -238,14 +239,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             tokenB={pool?.tokenB}
             bins={pool?.bins}
             currentTick={pool?.currentTick}
-            width={Math.min(width - (width > 767 ? 224 : 80), 1216)}
+            width={GRAPWIDTH}
             height={150}
             mouseover
             themeKey={themeKey}
             position="top"
             offset={40}
             poolPrice={pool?.price || 1}
-            binsMyAmount={[]}
           />}
           {loading && <LoadingChart>
             <LoadingSpinner />

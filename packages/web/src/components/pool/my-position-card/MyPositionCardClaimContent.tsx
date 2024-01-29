@@ -36,23 +36,6 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
     return rewardInfo.STAKING;
   }, [rewardInfo]);
 
-  // const externalRewards = useMemo(() => {
-  //   if (!rewardInfo) {
-  //     return null;
-  //   }
-  //   if (rewardInfo.EXTERNAL.length === 0) {
-  //     return null;
-  //   }
-  //   return rewardInfo.EXTERNAL;
-  // }, [rewardInfo]);
-
-  // const unclaimedRewards = useMemo(() => {
-  //   if (!unclaimedRewardInfo || unclaimedRewardInfo.length === 0) {
-  //     return null;
-  //   }
-  //   return unclaimedRewardInfo;
-  // }, [unclaimedRewardInfo]);
-
   const swapFeeRewardUSD = useMemo(() => {
     if (!rewardInfo) {
       return 0;
@@ -74,22 +57,6 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
     );
     return toUnitFormat(sumUSD, true);
   }, [rewardInfo]);
-
-  // const externalRewardUSD = useMemo(() => {
-  //   if (!rewardInfo) {
-  //     return 0;
-  //   }
-  //   const sumUSD = rewardInfo.EXTERNAL.reduce((accum, current) => accum + current.balanceUSD, 0);
-  //   return toUnitFormat(sumUSD, true);
-  // }, [rewardInfo]);
-
-  // const unclaimedRewardUSD = useMemo(() => {
-  //   if (!unclaimedRewardInfo) {
-  //     return "$0";
-  //   }
-  //   const sumUSD = unclaimedRewardInfo.reduce((accum, current) => accum + current.balanceUSD, 0);
-  //   return toUnitFormat(sumUSD, true);
-  // }, [unclaimedRewardInfo]);
 
   return (
     <RewardsContent>

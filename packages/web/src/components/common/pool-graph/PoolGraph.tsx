@@ -15,7 +15,7 @@ export interface PoolGraphProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   bins: PoolBinModel[];
-  currentTick: number | null;
+  currentTick?: number | null;
   mouseover?: boolean;
   zoomable?: boolean;
   visibleLabel?: boolean;
@@ -35,7 +35,7 @@ export interface PoolGraphProps {
   minTickPosition?: number | null;
   poolPrice: number;
   isPosition?: boolean;
-  binsMyAmount: PoolBinModel[];
+  binsMyAmount?: PoolBinModel[];
   isSwap?: boolean;
 }
 
@@ -104,8 +104,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       const reserveTokenBMap = Number(item.reserveTokenA);
       return {
         ...item,
-        reserveTokenAMyAmount: binsMyAmount[index]?.reserveTokenA,
-        reserveTokenBMyAmount: binsMyAmount[index]?.reserveTokenB,
+        reserveTokenAMyAmount: binsMyAmount?.[index]?.reserveTokenA || 0,
+        reserveTokenBMyAmount: binsMyAmount?.[index]?.reserveTokenB || 0,
         reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
       };
     });

@@ -10,4 +10,5 @@ export interface PositionClaimInfo {
   claimableUSD: number;
   accumulatedRewardOf1d: number;
   claimableUsdValue: number;
+  aprOf7d: number;
 }

@@ -40,7 +40,8 @@ export function makePairName({
 }
 
 export function numberToFormat(num: string | number, decimals?: number) {
-  return BigNumber(num).toFormat(decimals || 0);
+  const decimal = Number.isInteger(Number(num)) ? 0 : decimals;
+  return BigNumber(num).toFormat(decimal || 0);
 }
 
 export function displayTickNumber(range: number[], tick: number) {

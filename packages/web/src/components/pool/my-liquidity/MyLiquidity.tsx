@@ -20,6 +20,8 @@ interface MyLiquidityProps {
   availableRemovePosition: boolean;
   loading: boolean;
   loadngTransactionClaim: boolean;
+  isShowClosePosition: boolean;
+  handleSetIsClosePosition: () => void;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -36,6 +38,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   availableRemovePosition,
   loading,
   loadngTransactionClaim,
+  isShowClosePosition,
+  handleSetIsClosePosition,
 }) => {
   return (
     <MyLiquidityWrapper>
@@ -44,6 +48,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           availableRemovePosition={availableRemovePosition}
           handleClickAddPosition={handleClickAddPosition}
           handleClickRemovePosition={handleClickRemovePosition}
+          isShowClosePosition={isShowClosePosition}
+          handleSetIsClosePosition={handleSetIsClosePosition}
         />
         <MyLiquidityContent
           connected={connected}

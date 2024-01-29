@@ -20,5 +20,6 @@ export const Default: StoryObj<PoolGraphProps> = {
     width: 600,
     height: 400,
     zoomable: false,
+    binsMyAmount: pool.bins,
   },
 };

@@ -54,7 +54,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.aprOf7d, 2)}%
+                {numberToFormat(reward.aprOf7d, 0)}%
               </span>
             </div>
           ))}

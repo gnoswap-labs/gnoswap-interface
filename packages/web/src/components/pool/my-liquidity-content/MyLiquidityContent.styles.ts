@@ -104,7 +104,7 @@ export const MyLiquidityContentWrapper = styled.div`
             display: none;
           }
           ${media.mobile} {
-            display: none;
+            display: inline;
           }
         }
       }

@@ -9,9 +9,10 @@ import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
+import { DEVICE_TYPE } from "@styles/media";
 
 export default function Earn() {
-  const { width } = useWindowSize();
+  const { breakpoint } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"];
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
@@ -23,7 +24,7 @@ export default function Earn() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          width >= 1150
+          breakpoint === DEVICE_TYPE.MEDIUM_TABLET
             ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
@@ -31,7 +32,7 @@ export default function Earn() {
       },
       { title: "Unstake Position", path: "" },
     ];
-  }, [data, width]);
+  }, [data, breakpoint]);
 
   return (
     <UnstakeLiquidityLayout

@@ -49,6 +49,7 @@ export interface PoolModel {
   poolPath?: string;
 
   rewardTokens: TokenModel[];
+
 }
 
 export interface IPoolDetailResponse {

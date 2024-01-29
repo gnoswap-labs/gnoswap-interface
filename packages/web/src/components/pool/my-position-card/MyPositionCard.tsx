@@ -207,6 +207,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           }
           accum[current.rewardType].push({
             token: current.token,
+            rewardType: current.rewardType,
             tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
             aprOf7d: Number(current.aprOf7d),
           });
@@ -536,6 +537,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           {!loading && <div className="range-badge">
             <RangeBadge
               status={
+                position.status ? RANGE_STATUS_OPTION.NONE :
                 inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT
               }
             />

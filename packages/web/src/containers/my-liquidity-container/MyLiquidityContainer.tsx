@@ -21,6 +21,8 @@ const MyLiquidityContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
   const { claimAll } = usePosition(positions);
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
+
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -62,10 +64,34 @@ const MyLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      setPositions(getPositionsByPoolId(poolPath));
+      const temp = getPositionsByPoolId(poolPath);
+      if (temp.length > 0 && isShowClosePosition) {
+        const fake = {
+          ...temp[0],
+          status: true,
+          balance: 0,
+          balanceUSD: 0,
+          claimableAmount: 0,
+          claimableUSD: 0,
+          accumulatedRewardOf1d: 0,
+          aprOf7d: 0,
+          claimableUsdValue: 0,
+          rewards: [],
+          positionUsdValue: "0",
+          token0Balance: 0n,
+          token1Balance: 0n,
+        };
+        setPositions([...temp, fake, fake]);
+        return;
+      }
+      setPositions(temp);
     }
-  }, [account?.address, router.query, setPositions, getPositionsByPoolId]);
+  }, [account?.address, router.query, setPositions, getPositionsByPoolId, isShowClosePosition]);
   
+  const handleSetIsClosePosition = () => {
+    setIsShowClosedPosition(!isShowClosePosition);
+  };
+
   return (
     <MyLiquidity
       positions={positions}
@@ -81,6 +107,8 @@ const MyLiquidityContainer: React.FC = () => {
       availableRemovePosition={availableRemovePosition}
       loading={loading || isLoadingCommon}
       loadngTransactionClaim={loadngTransactionClaim}
+      isShowClosePosition={isShowClosePosition}
+      handleSetIsClosePosition={handleSetIsClosePosition}
     />
   );
 };

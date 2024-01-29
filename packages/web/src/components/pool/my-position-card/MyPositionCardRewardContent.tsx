@@ -26,13 +26,6 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
     return rewardInfo.STAKING;
   }, [rewardInfo.STAKING]);
 
-  // const externalRewards = useMemo(() => {
-  //   if (rewardInfo.EXTERNAL.length === 0) {
-  //     return null;
-  //   }
-  //   return rewardInfo.EXTERNAL;
-  // }, [rewardInfo.EXTERNAL]);
-
   const swapFeeRewardUSD = useMemo(() => {
     const sumUSD = rewardInfo.SWAP_FEE.reduce((accum, current) => accum + current.claimableUSD, 0);
     return toLowerUnitFormat(sumUSD, true);
@@ -42,11 +35,6 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
     const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.claimableUSD, 0);
     return toLowerUnitFormat(sumUSD, true);
   }, [rewardInfo.STAKING]);
-
-  // const externalRewardUSD = useMemo(() => {
-  //   const sumUSD = rewardInfo.EXTERNAL.reduce((accum, current) => accum + current.claimableUSD, 0);
-  //   return toLowerUnitFormat(sumUSD, true);
-  // }, [rewardInfo.EXTERNAL]);
 
   return (
     <RewardsContent>

@@ -7,7 +7,6 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { RewardType } from "@constants/option.constant";
-import { MyPositionRewardContent } from "../my-position-card/MyPositionCardRewardContent";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
@@ -18,6 +17,8 @@ import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimC
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PositionAPRInfo } from "@models/position/info/position-apr-info";
+import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -144,7 +145,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       STAKING: {},
       EXTERNAL: {},
     };
-    
     positions
       .flatMap(position => position.rewards)
       .map(reward => ({
@@ -162,6 +162,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableUSD: Number(reward.claimableUsdValue),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
         claimableUsdValue: Number(reward.claimableUsdValue),
+        aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach(rewardInfo => {
         const existReward =
@@ -176,7 +177,49 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
             accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
             claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-          };
+            aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
+      };
+        } else {
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
+        }
+      });
+    return {
+      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
+      STAKING: Object.values(infoMap["STAKING"]),
+      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+    };
+  }, [activated, positions, tokenPrices]);
+
+  const aprRewardInfo = useMemo(():
+    | { [key in RewardType]: PositionAPRInfo[] }
+    | null => {
+    if (!activated) {
+      return null;
+    }
+    const infoMap: {
+      [key in RewardType]: { [key in string]: PositionAPRInfo };
+    } = {
+      SWAP_FEE: {},
+      STAKING: {},
+      EXTERNAL: {},
+    };
+    positions
+      .flatMap(position => position.rewards)
+      .map(reward => ({
+        token: reward.token,
+        rewardType: reward.rewardType,
+        tokenAmountOf7d: Number(reward.accumulatedRewardOf7d),
+        aprOf7d: Number(reward.aprOf7d),
+      }))
+      .forEach(rewardInfo => {
+        const existReward =
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
+        if (existReward) {
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
+            ...existReward,
+            tokenAmountOf7d: existReward.tokenAmountOf7d + rewardInfo.tokenAmountOf7d,
+            aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
+      };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
         }
@@ -228,6 +271,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableUSD: Number(reward.claimableUsdValue),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
         claimableUsdValue: Number(reward.claimableUsdValue),
+        aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach(rewardInfo => {
         if (rewardInfo.claimableAmount > 0) {
@@ -240,6 +284,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
               accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
               claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
+              aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
             };
           } else {
             infoMap[rewardInfo.token.priceId] = rewardInfo;
@@ -421,12 +466,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       </section>
       <section>
         <h4>Total Daily Earnings</h4>
-        {!loading && claimableRewardInfo ? (
+        {!loading && aprRewardInfo ? (
           <Tooltip
             placement="top"
             FloatingContent={
               <div>
-                <MyPositionRewardContent rewardInfo={claimableRewardInfo} />
+                <MyPositionAprContent rewardInfo={aprRewardInfo} />
               </div>
             }
           >
