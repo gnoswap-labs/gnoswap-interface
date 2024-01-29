@@ -117,10 +117,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         minTick: bin.minTick - defaultMinX,
         maxTick: bin.maxTick - defaultMinX,
         reserveTokenMap: bin.reserveTokenAMap * boundsHeight / maxHeight,
-
+        minTickSwap: bin.minTick - defaultMinX,
+        maxTickSwap: bin.maxTick - defaultMinX,
       };
     });
-    const revereTemp = temp.map((item, i) => ({...temp[length * 2 - i - 1], minTick: item.minTick, maxTick: item.maxTick}));
+    const revereTemp = temp.map((item, i) => ({...temp[length * 2 - i - 1], minTick: item.minTick, maxTick: item.maxTick, minTickSwap: temp[length * 2 - i - 1].minTick, maxTickSwap: temp[length * 2 - i - 1].maxTick}));
     return !isSwap ? temp : revereTemp;
     
   }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap]);
@@ -184,7 +185,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
-      const isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
+      let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
+      if (isSwap) {
+        isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing || scaleX(bin.minTick) > scaleX(maxX) - minTickPosition));
+      }
       if (isBlackBar) 
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
@@ -258,13 +262,17 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }
     const minTick = bin.minTick + defaultMinX;
     const maxTick = bin.maxTick + defaultMinX;
+
+    const minTickSwap = bin.minTickSwap + defaultMinX;
+    const maxTickSwap = bin.maxTickSwap + defaultMinX;
+
     const tokenARange = {
-      min: tickOfPrices[minTick] || null,
-      max: tickOfPrices[maxTick] || null,
+      min: tickOfPrices[!isSwap ? minTick : minTickSwap] || null,
+      max: tickOfPrices[!isSwap ? maxTick : maxTickSwap] || null,
     };
     const tokenBRange = {
-      min: tickOfPrices[-minTick] || null,
-      max: tickOfPrices[-maxTick] || null,
+      min: tickOfPrices[!isSwap ? -minTick : -minTickSwap] || null,
+      max: tickOfPrices[!isSwap ? -maxTick : -maxTickSwap] || null,
     };
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
     const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
@@ -272,8 +280,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenBMyAmount);
     
     const tickSpacing = getTickSpacing();
-    const isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
-        
+    let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
+    if (isSwap) {
+      isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing || scaleX(bin.minTick) > scaleX(maxX) - minTickPosition));
+    }
     setTooltipInfo({
       tokenA: tokenA,
       tokenB: tokenB,

@@ -478,7 +478,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             <span className="content-value">{dailyEarning}</span>
           </Tooltip>
         ) : (
-          !loading && <span className="content-value">{dailyEarning}</span>
+          !loading && <span className="content-value disabled">{dailyEarning}</span>
         )}
         {loading && (
           <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
@@ -594,7 +594,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 </Tooltip>
               ) : (
                 !loading && (
-                  <span className="content-value has-tooltip disabled">
+                  <span className="content-value disabled">
                     {claimableUSD}
                   </span>
                 )

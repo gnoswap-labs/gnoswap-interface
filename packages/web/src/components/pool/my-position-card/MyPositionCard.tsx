@@ -53,6 +53,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
   
+  const isClosed = position.status;
+
   const tokenA = useMemo(() => {
     return position.pool.tokenA;
   }, [position.pool.tokenA]);
@@ -97,8 +99,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.token1Balance, tokenB, tokenPrices]);
 
   const positionBalanceUSD = useMemo(() => {
+    if (isClosed) {
+      return "-";
+    }
     return formatUsdNumber(position.positionUsdValue, 2, true);
-  }, [position.positionUsdValue]);
+  }, [position.positionUsdValue, isClosed]);
 
   const balances = useMemo((): {
     token: TokenModel;
@@ -171,6 +176,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.rewards, tokenPrices]);
   
   const totalRewardUSD = useMemo(() => {
+    if (isClosed) {
+      return "-";
+    }
     if (!totalRewardInfo) {
       return "$0";
     }
@@ -181,9 +189,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         return accum + current.claimableAmount;
       }, 0);
     return formatUsdNumber(`${usdValue}`, 2, true);
-  }, [totalRewardInfo]);
+  }, [totalRewardInfo, isClosed]);
 
   const totalDailyEarning = useMemo(() => {
+    if (isClosed) {
+      return "-";
+    }
     if (!totalRewardInfo) {
       return "$0";
     }
@@ -194,7 +205,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         return accum + current.accumulatedRewardOf1d;
       }, 0);
     return formatUsdNumber(`${usdValue}`, 2, true);
-  }, [totalRewardInfo]);
+  }, [totalRewardInfo, isClosed]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {
@@ -358,7 +369,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [maxTickRate, isSwap, minTickRate]);
 
   return (
-    <MyPositionCardWrapper type={inRange}>
+    <MyPositionCardWrapper type={inRange} isClosed={isClosed}>
       <div className="box-title">
         <div className="box-header">
           <div className="box-left">
@@ -430,13 +441,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               className={!position.staked ? "visible-badge" : ""}
             />
           </div>
-          <SelectBox
+          {!isClosed && <SelectBox
             current={"Manage"}
             items={["Reposition", "Increase Liquidity", "Decrease Liquidity"]}
             select={() => {}}
             render={period => <ManageItem>{period}</ManageItem>}
             className={!inRange ? "out-range" : ""}
-          />
+          />}
         </div>
       </div>
       <div className="info-wrap">
@@ -447,7 +458,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
             </SkeletonEarnDetailWrapper>
           )}
-          {!loading && (
+          {!isClosed && !loading ? (
             <Tooltip
               placement="top"
               FloatingContent={
@@ -458,11 +469,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             >
               <span className="content-text">{positionBalanceUSD}</span>
             </Tooltip>
-          )}
+          ) : <span className="content-text disabled">{positionBalanceUSD}</span>}
         </div>
         <div className="info-box">
           <span className="symbol-text">Daily Earnings</span>
-          {aprRewardInfo && !loading ? (
+          {!isClosed && aprRewardInfo && !loading ? (
             <Tooltip
               placement="top"
               FloatingContent={
@@ -475,7 +486,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </Tooltip>
           ) : (
             !loading && (
-              <span className="content-text">{totalDailyEarning}</span>
+              <span className="content-text disabled">{totalDailyEarning}</span>
             )
           )}
           {loading && (
@@ -486,7 +497,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         </div>
         <div className="info-box">
           <span className="symbol-text">Claimable Rewards</span>
-          {!loading && totalRewardInfo ? (
+          {!isClosed && !loading && totalRewardInfo ? (
             <Tooltip
               placement="top"
               FloatingContent={

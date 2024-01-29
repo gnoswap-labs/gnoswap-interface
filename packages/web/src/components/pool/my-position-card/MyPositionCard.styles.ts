@@ -5,6 +5,7 @@ import mixins from "@styles/mixins";
 
 interface Props {
   type: boolean;
+  isClosed: boolean;
 }
 
 export const MyPositionCardWrapper = styled.div<Props>`
@@ -14,7 +15,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
-  background-color: ${({ theme }) => theme.color.background03};
+  background-color: ${({ theme, isClosed }) => isClosed ?  theme.color.background29 :  theme.color.background03};
   ${media.tablet} {
     padding: 24px;
     border-radius: 10px;
@@ -70,7 +71,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         ${media.mobile} {
           ${fonts.body7};
         }
-        color: ${({ theme }) => theme.color.text02};
+        color: ${({ theme, isClosed }) => !isClosed ? theme.color.text02 : theme.color.text10};
       }
       
       .select-box {
@@ -78,6 +79,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         height: 36px;
         cursor: pointer;
         background: ${({ theme }) => theme.color.background13};
+        border: 1px solid ${({ theme }) => theme.color.border18};
         &:hover {
           background: ${({ theme }) => theme.color.backgroundGradient};
         }
@@ -258,7 +260,10 @@ export const MyPositionCardWrapper = styled.div<Props>`
         &:hover {
           color: ${({ theme }) => theme.color.text07};
         }
-        color: ${({ theme }) => theme.color.text02};
+        color: ${({ theme, isClosed }) => !isClosed ? theme.color.text02 : theme.color.text10};
+        &.disabled {
+          pointer-events: none;
+        }
       }
     }
   }
