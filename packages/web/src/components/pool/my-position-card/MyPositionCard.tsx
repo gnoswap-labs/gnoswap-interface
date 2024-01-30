@@ -237,12 +237,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const stringPrice = useMemo(() => {
     if (isSwap) {
       return `1 ${tokenB?.symbol} = ${convertToKMB(
-        `${Number(1 / position?.pool?.price).toFixed(6)}`,
+        `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
         6,
       )} ${tokenA?.symbol}`;
     }
     return `1 ${tokenA?.symbol} = ${convertToKMB(
-      `${Number(position?.pool?.price).toFixed(6)}`,
+      `${Number(Number(position?.pool?.price).toFixed(6))}`,
       6,
     )} ${tokenB?.symbol}`;
   }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
@@ -300,7 +300,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minPriceStr = useMemo(() => {
     const maxPrice = tickToPriceStr(position.tickUpper, 6);
     const minPrice = tickToPriceStr(position.tickLower, 6);
-    const tokenAPriceStr = isFullRange ? "0 " : convertToKMB(`${(!isSwap ? Number(minPrice) : 1 / Number(maxPrice)).toFixed(2)}`);
+    const tokenAPriceStr = isFullRange ? "0 " : convertToKMB(`${(!isSwap ? Number(minPrice) : Number(1 / Number(maxPrice)).toFixed(2))}`);
     return `${tokenAPriceStr}`;
   }, [
     tokenB.path,
@@ -336,7 +336,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const minPrice = tickToPriceStr(position.tickLower, 6);
 
     const maxPrice = tickToPriceStr(position.tickUpper, 6);
-    const tokenBPriceStr = isFullRange ? "∞ " : convertToKMB(`${(!isSwap ? Number(maxPrice) : 1 / Number(minPrice)).toFixed(2)}`);
+    const tokenBPriceStr = isFullRange ? "∞ " : convertToKMB(`${(!isSwap ? Number(maxPrice) : Number(1 / Number(minPrice)).toFixed(2))}`);
     return `${tokenBPriceStr}`;
   }, [
     tokenB.path,
@@ -350,8 +350,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const minTickLabel = useMemo(() => {
-    return minTickRate > 1000 ? ">999%" : `${minTickRate < 0 ? "+" : ""}${minTickRate * -1}%`;
-  }, [minTickRate]);
+    return (!isSwap ? minTickRate : -minTickRate) > 1000 ? ">999%" : `${minTickRate < 0 ? "+" : ""}${minTickRate * -1}%`;
+  }, [minTickRate, isSwap]);
 
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999

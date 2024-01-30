@@ -248,7 +248,7 @@ export const useEarnAddLiquidityConfirmModal = ({
           setTimeout(() => {
             broadcastSuccess(makeBroadcastAddLiquidityMessage("success", {
               tokenASymbol: result.tokenA.symbol,
-              tokenBSymbol: result.tokenA.symbol,
+              tokenBSymbol: result.tokenB.symbol,
               tokenAAmount: result.tokenAAmount,
               tokenBAmount: result.tokenBAmount,
             }), moveToBack);

@@ -210,7 +210,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {convertToKMB(`${Number(pool.price).toFixed(width > 400 ? 6 : 2 )}`, 6)} {pool?.tokenB?.symbol}
+                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {convertToKMB(`${Number(Number(pool.price).toFixed(width > 400 ? 6 : 2 ))}`, 6)} {pool?.tokenB?.symbol}
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
@@ -230,7 +230,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = {convertToKMB(`${(Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 )}`, 6)} {pool?.tokenA?.symbol}
+                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = {convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 ))}`, 6)} {pool?.tokenA?.symbol}
               </div>}
             </div>
           </div>
