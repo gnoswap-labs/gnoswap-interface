@@ -13,6 +13,10 @@ export interface SwapRouterRepository {
     request: EstimateSwapRouteRequest,
   ) => Promise<EstimateSwapRouteResponse>;
 
+  estimateAlphaSwapRoute: (
+    request: EstimateSwapRouteRequest,
+  ) => Promise<EstimateSwapRouteResponse>;
+
   swapRoute: (request: SwapRouteRequest) => Promise<SwapRouteResponse>;
 
   wrapToken: (request: WrapTokenRequest) => Promise<string>;
