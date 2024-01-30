@@ -45,6 +45,8 @@ import {
 import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
 import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KEY } from "@states/common";
+import { FaucetRepositoryImpl } from "@repositories/faucet/faucet-repository-impl";
+import { FaucetRepository } from "@repositories/faucet/faucet-repository";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -60,9 +62,11 @@ interface GnoswapContextProps {
   dashboardRepository: DashboardRepository;
   notificationRepository: NotificationRepository;
   walletRepository: WalletRepository;
+  faucetRepository: FaucetRepository;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const FAUCET_URL = process.env.NEXT_PUBLIC_FAUCET_URL;
 
 const getSessionId = () => {
   const sessionId = sessionStorage.getItem(GNOSWAP_SESSION_ID_KEY);
@@ -98,6 +102,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [, setStatus] = useAtom(WalletState.status);
 
   const [networkClient] = useState(new AxiosClient(API_URL));
+
+  const [faucetNetworkClient] = useState(new AxiosClient(FAUCET_URL));
 
   const [localStorageClient, setLocalStorageClient] = useState(
     WebStorageClient.createLocalStorageClient(),
@@ -192,9 +198,14 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const notificationRepository = useMemo(() => {
     return new NotificationRepositoryImpl(networkClient, localStorageClient);
   }, [localStorageClient, networkClient]);
+
   const walletRepository = useMemo(() => {
     return new WalletRepositoryImpl(walletClient);
   }, [walletClient]);
+
+  const faucetRepository = useMemo(() => {
+    return new FaucetRepositoryImpl(faucetNetworkClient, walletClient);
+  }, [faucetNetworkClient, walletClient]);
 
   async function initNetwork() {
     const defaultChainId =
@@ -242,6 +253,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         dashboardRepository,
         notificationRepository,
         walletRepository,
+        faucetRepository,
       }}
     >
       {rpcProvider && children}

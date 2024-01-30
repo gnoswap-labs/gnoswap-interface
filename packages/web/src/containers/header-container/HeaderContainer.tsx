@@ -21,6 +21,7 @@ import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -143,11 +144,14 @@ const HeaderContainer: React.FC = () => {
   const [sideMenuToggle, setSideMenuToggle] = useState(false);
   const [searchMenuToggle, setSearchMenuToggle] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [faucetLoading, setFaucetLoading] = useState(false);
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
+
+  const { faucetRepository } = useGnoswapContext();
 
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
   const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokensList({ enabled: !!searchMenuToggle });
@@ -191,10 +195,10 @@ const HeaderContainer: React.FC = () => {
         liquidity: Number(item ? item.tvl : "0"),
       };
     })
-    .sort((a, b) => b.liquidity - a.liquidity)
-    .slice(0, 3);
+      .sort((a, b) => b.liquidity - a.liquidity)
+      .slice(0, 3);
   }, [poolList, keyword, tokenPrices, gnot]);
-  
+
   const popularTokens = useMemo(() => {
     let temp = listTokens;
     if (keyword) {
@@ -210,7 +214,7 @@ const HeaderContainer: React.FC = () => {
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const usdFormat = formatUsdNumber3Digits(transferData.usd);
-      
+
       return {
         path: "",
         searchType: "",
@@ -238,7 +242,7 @@ const HeaderContainer: React.FC = () => {
       };
     }).sort((a, b) => Number(b.volume) - Number(a.volume)).slice(0, keyword ? 6 : 6 - recents.length);
   }, [listTokens, recents.length, keyword, tokenPrices]);
-  
+
   const { openModal } = useConnectWalletModal();
 
   const handleESC = () => {
@@ -270,6 +274,18 @@ const HeaderContainer: React.FC = () => {
     push(path);
   }, [])
 
+  const faucet = () => {
+    if (!account?.address || faucetLoading) {
+      return;
+    }
+    setFaucetLoading(true);
+    faucetRepository.faucetGNOT(account.address)
+      .then(() =>
+        setTimeout(() => faucetRepository.faucetTokens(account.address)
+          .finally(() => setFaucetLoading(false)), 1000))
+
+  };
+
   return (
     <Header
       account={account}
@@ -295,6 +311,8 @@ const HeaderContainer: React.FC = () => {
       popularTokens={popularTokens}
       recents={recents}
       movePage={movePage}
+      faucet={faucet}
+      faucetLoading={faucetLoading}
     />
   );
 };
