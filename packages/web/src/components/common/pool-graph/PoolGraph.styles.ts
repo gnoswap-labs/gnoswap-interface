@@ -54,7 +54,6 @@ export const PoolGraphTooltipWrapper = styled.div`
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 4px;
         &.price-range {
           justify-content: flex-end;
         }
