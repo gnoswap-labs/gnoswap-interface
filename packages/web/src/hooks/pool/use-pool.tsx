@@ -5,6 +5,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePoolData } from "./use-pool-data";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -22,6 +23,7 @@ export const usePool = ({
   const [fetching, setFetching] = useState(false);
   const { pools, updatePools } = usePoolData();
   const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<{ [key in string]: number } | null>(null);
+  const { convertToNative } = useGnotToGnot();
 
   const currentPools: PoolModel[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -89,8 +91,10 @@ export const usePool = ({
       return null;
     }
     return poolRepository.createPool({
-      tokenA: currentTokenData.tokenA,
-      tokenB: currentTokenData.tokenB,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      tokenA: convertToNative(currentTokenData.tokenA)!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      tokenB: convertToNative(currentTokenData.tokenB)!,
       tokenAAmount: currentTokenData.tokenAAmount,
       tokenBAmount: currentTokenData.tokenBAmount,
       feeTier: swapFeeTier,
@@ -128,8 +132,10 @@ export const usePool = ({
       return null;
     }
     return poolRepository.addLiquidity({
-      tokenA: currentTokenData.tokenA,
-      tokenB: currentTokenData.tokenB,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      tokenA: convertToNative(currentTokenData.tokenA)!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      tokenB: convertToNative(currentTokenData.tokenB)!,
       tokenAAmount: currentTokenData.tokenAAmount,
       tokenBAmount: currentTokenData.tokenBAmount,
       feeTier: swapFeeTier,

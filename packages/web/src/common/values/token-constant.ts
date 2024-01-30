@@ -11,6 +11,7 @@ export const GNOT_TOKEN: TokenModel = {
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   priceId: "gnot",
+  wrappedPath: "gno.land/r/demo/wugnot",
   address: "",
 };
 

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
 import { convertToMB } from "@utils/stake-position-utils";
 import { checkGnotPath } from "@utils/common";
+import { useGnotToGnot } from "./use-gnot-wugnot";
 
 export interface TokenAmountInputModel {
   token: TokenModel | null;
@@ -18,10 +19,12 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const [balance, setBalance] = useState<string>("0");
   const [usd, setUSD] = useState<number>();
   const { displayBalanceMap, tokenPrices } = useTokenData();
-  
+  const { convertToNative } = useGnotToGnot();
+
   useEffect(() => {
-    if (token && displayBalanceMap[token.priceId]) {
-      const balance = displayBalanceMap[token.priceId];
+    const convertedToken = convertToNative(token);
+    if (convertedToken && displayBalanceMap[convertedToken.priceId]) {
+      const balance = displayBalanceMap[convertedToken.priceId];
       setBalance(BigNumber(balance ?? 0).toFormat());
     } else {
       setBalance("0");
