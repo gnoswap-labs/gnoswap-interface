@@ -1,7 +1,7 @@
 import { FloatingPortal, FloatingArrow } from "@floating-ui/react";
 
 import type { ElementRef } from "react";
-import React, { cloneElement, forwardRef, useEffect} from "react";
+import React, { cloneElement, forwardRef, useEffect, useRef} from "react";
 
 import { useMergedRef } from "@hooks/common/use-merged-ref";
 import {
@@ -25,6 +25,9 @@ interface TooltipProps {
 
 const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
   ({ children, content, className, isHiddenArrow, position = "top" as FloatingPosition, offset = 20 }, ref) => {
+    const tooltipRef = useRef<HTMLDivElement>(null);
+    const { breakpoint, width } = useWindowSize();
+
     const {
       handleMouseMove,
       x,
@@ -39,12 +42,12 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
     } = useFloatingTooltip({
       offset: offset,
       position: position,
+      tooltipWidth: width - (tooltipRef?.current?.offsetWidth || 0),
     });
 
     const theme = useTheme();
 
     const targetRef = useMergedRef(boundaryRef, (children as any).ref, ref);
-    const { breakpoint} = useWindowSize();
 
     const onMouseEnter = (event: React.MouseEvent<unknown, MouseEvent> | React.TouchEvent<unknown>) => {
       children.props.onMouseEnter?.(event);
@@ -74,7 +77,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
         document.removeEventListener("scroll", handleScroll);
       };
     }, [breakpoint]);
-
+    
     return (
       <>
         {cloneElement(children, {
@@ -109,7 +112,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
               height={14}
               tipRadius={4}
             />}
-            {content && <FloatContent>{content}</FloatContent>}
+            {content && <FloatContent ref={tooltipRef}>{content}</FloatContent>}
           </div>
         </FloatingPortal>
       </>

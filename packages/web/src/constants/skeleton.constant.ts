@@ -85,9 +85,11 @@ export const pulseSkeletonStyle =
 
       ${media.tablet} {
         width: ${tabletWidth ? `${tabletWidth}px` : tabletWidth};
+        height: ${typeof height === "number" ? `${h}px` : h};
       }
       ${media.tabletMiddle} {
         width: ${smallTableWidth ? `${smallTableWidth}px` : smallTableWidth};
+        height: ${typeof height === "number" ? `${h}px` : h};
       }
       ${media.mobile} {
         width: ${w};
@@ -275,7 +277,8 @@ export const skeletonBalanceDetail =
     `;
 
 export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
-export const POOL_TD_WIDTH_TABLET = [185, 110, 110, 100, 80, 104, 160];
+export const POOL_TD_WIDTH_TABLET = [199, 150, 150, 150, 140, 150, 160];
+export const POOL_TD_WIDTH_SMALL_TABLET = [185, 110, 110, 100, 80, 104, 160];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];
 export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];
@@ -320,6 +323,36 @@ export const POOL_INFO = {
     { width: 170, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 198, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+  ],
+};
+
+export const POOL_INFO_SMALL_TABLET = {
+  title: TABLE_TITLE.POOL_TABLE,
+  total: 15,
+  tdWidth: POOL_TD_WIDTH_SMALL_TABLET,
+  list: [
+    { width: 185, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+  ],
+};
+
+export const POOL_INFO_TABLET = {
+  title: TABLE_TITLE.POOL_TABLE,
+  total: 15,
+  tdWidth: POOL_TD_WIDTH_TABLET,
+  list: [
+    { width: 199, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
 

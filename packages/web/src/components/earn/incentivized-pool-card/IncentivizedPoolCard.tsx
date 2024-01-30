@@ -61,7 +61,6 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     });
     return filteredArray;
   }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
-  console.log(pool,pool.liquidity);
   
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>

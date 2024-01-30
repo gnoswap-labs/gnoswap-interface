@@ -7,10 +7,18 @@ import PoolInfo from "@components/earn/pool-info/PoolInfo";
 import { noDataText, TableColumn, TableWrapper } from "./PoolListTable.styles";
 import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
-import { POOL_INFO, POOL_TD_WIDTH } from "@constants/skeleton.constant";
+import {
+  POOL_INFO,
+  POOL_INFO_SMALL_TABLET,
+  POOL_INFO_TABLET,
+  POOL_TD_WIDTH,
+  POOL_TD_WIDTH_SMALL_TABLET,
+  POOL_TD_WIDTH_TABLET,
+} from "@constants/skeleton.constant";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface PoolListTableProps {
   pools: PoolListInfo[];
@@ -20,6 +28,7 @@ interface PoolListTableProps {
   isSortOption: (head: TABLE_HEAD) => boolean;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
+  breakpoint: DEVICE_TYPE;
 }
 
 const PoolListTable: React.FC<PoolListTableProps> = ({
@@ -30,6 +39,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
   isSortOption,
   routeItem,
   themeKey,
+  breakpoint,
 }) => {
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
@@ -56,6 +66,19 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
     return TABLE_HEAD.POOL_NAME === head;
   };
 
+  const tdWidth =
+    breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.MOBILE
+      ? POOL_TD_WIDTH_SMALL_TABLET
+      : breakpoint === DEVICE_TYPE.TABLET
+      ? POOL_TD_WIDTH_TABLET
+      : POOL_TD_WIDTH;
+  const poolInfo =
+    breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.MOBILE
+      ? POOL_INFO_SMALL_TABLET
+      : breakpoint === DEVICE_TYPE.TABLET
+      ? POOL_INFO_TABLET
+      : POOL_INFO;
+
   return (
     <TableWrapper>
       <div className="pool-list-head">
@@ -66,7 +89,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
               left: isAlignLeft(head),
               sort: isSortOption(head),
             })}
-            tdWidth={POOL_TD_WIDTH[idx]}
+            tdWidth={tdWidth[idx]}
           >
             <span
               className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
@@ -90,9 +113,15 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         {isFetched &&
           pools.length > 0 &&
           pools.map((pool, idx) => (
-            <PoolInfo pool={pool} key={idx} routeItem={routeItem} themeKey={themeKey}/>
+            <PoolInfo
+              pool={pool}
+              key={idx}
+              routeItem={routeItem}
+              themeKey={themeKey}
+              breakpoint={breakpoint}
+            />
           ))}
-        {!isFetched && <TableSkeleton info={POOL_INFO} />}
+        {!isFetched && <TableSkeleton info={poolInfo} />}
       </div>
     </TableWrapper>
   );

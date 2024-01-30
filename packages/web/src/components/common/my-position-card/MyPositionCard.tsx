@@ -1,6 +1,6 @@
 import {
   RANGE_STATUS_OPTION,
-  RewardType,
+  // RewardType,
   SwapFeeTierInfoMap,
 } from "@constants/option.constant";
 import { POSITION_CONTENT_LABEL } from "@containers/my-position-card-list-container/MyPositionCardListContainer";
@@ -15,14 +15,13 @@ import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
 import { useMemo, useState } from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeSwapFeeTierByTickSpacing, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { numberToFormat } from "@utils/string-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { PositionClaimInfo } from "@models/position/info/position-claim-info";
+// import { makeDisplayTokenAmount } from "@utils/token-utils";
+// import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -48,54 +47,54 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   
   const GRAPH_WIDTH = mobile ? 226 : 290;
   const GRAPH_HEIGHT = 80;
-  const { pool, rewards } = position;
+  const { pool } = position;
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
   
-  const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
+  // const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
     
-    const infoMap: { [key in RewardType]: { [key in string]: PositionClaimInfo } } = {
-      "SWAP_FEE": {},
-      "STAKING": {},
-      "EXTERNAL": {},
-    };
-    rewards
-      .map(reward => ({
-        token: reward.token,
-        rewardType: reward.rewardType,
-        balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
-        balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
-        claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
-        claimableUSD: Number(reward.claimableUsdValue),
-        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
-        claimableUsdValue: Number(reward.claimableUsdValue),
-        aprOf7d: Number(reward.aprOf7d),
-      }))
-      .forEach((rewardInfo) => {
-        const existReward = infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
-        if (existReward) {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
-            ...existReward,
-            balance: existReward.balance + rewardInfo.balance,
-            balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
-            claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
-            claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
-            accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
-            claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-            aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
-          };
-        } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
-        }
-      });
-    return {
-      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      STAKING: Object.values(infoMap["STAKING"]),
-      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
-    };
-  }, [rewards, tokenPrices]);
+  //   const infoMap: { [key in RewardType]: { [key in string]: PositionClaimInfo } } = {
+  //     "SWAP_FEE": {},
+  //     "STAKING": {},
+  //     "EXTERNAL": {},
+  //   };
+  //   rewards
+  //     .map(reward => ({
+  //       token: reward.token,
+  //       rewardType: reward.rewardType,
+  //       balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
+  //       balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
+  //       claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
+  //       claimableUSD: Number(reward.claimableUsdValue),
+  //       accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
+  //       claimableUsdValue: Number(reward.claimableUsdValue),
+  //       aprOf7d: Number(reward.aprOf7d),
+  //     }))
+  //     .forEach((rewardInfo) => {
+  //       const existReward = infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
+  //       if (existReward) {
+  //         infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
+  //           ...existReward,
+  //           balance: existReward.balance + rewardInfo.balance,
+  //           balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
+  //           claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
+  //           claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
+  //           accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
+  //           claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
+  //           aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
+  //         };
+  //       } else {
+  //         infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
+  //       }
+  //     });
+  //   return {
+  //     SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
+  //     STAKING: Object.values(infoMap["STAKING"]),
+  //     EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+  //   };
+  // }, [rewards, tokenPrices]);
 
   // fake close
   const inRange: boolean | null = useMemo(() => {
@@ -123,7 +122,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
-    return position.apr === "" ? "-" : `${numberToFormat(position.apr, 2)}%`;
+    return "-";
+    // return position.apr === "" ? "-" : `${numberToFormat(position.apr, 2)}%`;
   }, [position.apr]);
 
   const currentPrice = useMemo(() => {
@@ -279,13 +279,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
-    const claimableUsdValue = claimableRewardInfo ? Object.values(claimableRewardInfo)
-      .flatMap(item => item)
-      .reduce((accum, current) => {
-        return accum + current.balanceUSD;
-      }, 0) : 0;
-    return formatUsdNumber(String(claimableUsdValue), 2, true);
-  }, [claimableRewardInfo]);
+    if (Number.isInteger(Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd))) 
+      return `${Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)}`;
+    return formatUsdNumber((Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)).toFixed(6));
+  }, [position.unclaimedFee0Usd, position.unclaimedFee1Usd]);
 
   return (
     <MyPositionCardWrapperBorder
@@ -340,7 +337,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </span>
             </div>
             <div className="list-content">
-              <span>$200</span>
+              <span>$0</span>
               {claimableUSD}
             </div>
           </div>

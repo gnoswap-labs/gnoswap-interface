@@ -124,7 +124,7 @@ export function tickToPriceStr(
     .toFormat(decimalsLimit)
     .replace(/\.?0+$/, "");
   if (result === "0") {
-    return "";
+    return "0.00";
   }
   return convertToKMB(result.replace(/,/g, ""));
 }
