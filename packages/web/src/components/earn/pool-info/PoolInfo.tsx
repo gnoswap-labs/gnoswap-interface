@@ -2,7 +2,12 @@
 /* eslint-disable */
 import BarGraph from "@components/common/bar-graph/BarGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { POOL_TD_WIDTH, POOL_TD_WIDTH_SMALL_TABLET, POOL_TD_WIDTH_TABLET } from "@constants/skeleton.constant";
+import {
+  POOL_TD_WIDTH,
+  POOL_TD_WIDTH_MOBILE,
+  POOL_TD_WIDTH_SMALL_TABLET,
+  POOL_TD_WIDTH_TABLET,
+} from "@constants/skeleton.constant";
 import React, { useMemo } from "react";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
@@ -21,7 +26,12 @@ interface PoolInfoProps {
   breakpoint: DEVICE_TYPE;
 }
 
-const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey, breakpoint }) => {
+const PoolInfo: React.FC<PoolInfoProps> = ({
+  pool,
+  routeItem,
+  themeKey,
+  breakpoint,
+}) => {
   const {
     poolId,
     tokenA,
@@ -38,11 +48,11 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey, breakpoi
   } = pool;
   const { getGnotPath } = useGnotToGnot();
   const rewardImage = useMemo(() => {
-    const tempRewardTokens = rewardTokens.map((item) => {
+    const tempRewardTokens = rewardTokens.map(item => {
       return {
         ...item,
         logoURI: getGnotPath(item).logoURI,
-      }
+      };
     });
     const temp = tempRewardTokens.map(token => token.logoURI);
     if (!temp.includes(getGnotPath(tokenB).logoURI)) {
@@ -52,9 +62,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey, breakpoi
       temp.unshift(getGnotPath(tokenA).logoURI);
     }
     const logos = [...new Set(temp)];
-    return <OverlapLogo logos={logos} size={20} />
+    return <OverlapLogo logos={logos} size={20} />;
   }, [rewardTokens, tokenA, tokenB]);
-  
+
   const resolvedBins = useMemo(() => {
     const length = 20;
     const poolLength = pool.bins.length;
@@ -65,15 +75,15 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey, breakpoi
   }, [pool.bins]);
 
   const tdWidth =
-  breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.MOBILE
-    ? POOL_TD_WIDTH_SMALL_TABLET
-    : breakpoint === DEVICE_TYPE.TABLET
-    ? POOL_TD_WIDTH_TABLET
-    : POOL_TD_WIDTH;
+    breakpoint === DEVICE_TYPE.MOBILE
+      ? POOL_TD_WIDTH_MOBILE
+      : breakpoint === DEVICE_TYPE.TABLET_M
+      ? POOL_TD_WIDTH_SMALL_TABLET
+      : breakpoint === DEVICE_TYPE.TABLET
+      ? POOL_TD_WIDTH_TABLET
+      : POOL_TD_WIDTH;
   return (
-    <PoolInfoWrapper
-      onClick={() => routeItem(poolId)}
-    >
+    <PoolInfoWrapper onClick={() => routeItem(poolId)}>
       <TableColumn className="left" tdWidth={tdWidth[0]}>
         <DoubleLogo
           left={tokenA.logoURI}
@@ -97,10 +107,8 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, themeKey, breakpoi
       <TableColumn tdWidth={tdWidth[4]}>
         <span className="apr">{apr}</span>
       </TableColumn>
-      <TableColumn tdWidth={tdWidth[5]}>
-        {rewardImage}
-      </TableColumn>
-      <TableColumn tdWidth={tdWidth[6]} onClick={(e) => e.stopPropagation()}>
+      <TableColumn tdWidth={tdWidth[5]}>{rewardImage}</TableColumn>
+      <TableColumn tdWidth={tdWidth[6]} onClick={e => e.stopPropagation()}>
         <div className="chart-wrapper">
           <PoolGraph
             width={100}

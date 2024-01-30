@@ -279,6 +279,7 @@ export const skeletonBalanceDetail =
 export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const POOL_TD_WIDTH_TABLET = [199, 150, 150, 150, 140, 150, 160];
 export const POOL_TD_WIDTH_SMALL_TABLET = [185, 110, 110, 100, 80, 104, 160];
+export const POOL_TD_WIDTH_MOBILE = [210, 110, 140, 120, 100, 106, 160];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];
 export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];
@@ -351,6 +352,21 @@ export const POOL_INFO_TABLET = {
     { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
+    { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+  ],
+};
+
+export const POOL_INFO_MOBILE = {
+  title: TABLE_TITLE.POOL_TABLE,
+  total: 15,
+  tdWidth: POOL_TD_WIDTH_MOBILE,
+  list: [
+    { width: 210, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 110, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 20, type: SHAPE_TYPES.CIRCLE, left: false },
     { width: 160, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],

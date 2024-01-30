@@ -209,7 +209,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minPriceStr = useMemo(() => {
     const minPrice = tickToPriceStr(position.tickLower, 6);
-    const tokenAPriceStr = isFullRange ? "0 " : Number(minPrice);
+    const tokenAPriceStr = isFullRange ? "0 " : minPrice;
     return `1 ${tokenA.symbol} = ${tokenAPriceStr}`;
   }, [
     tokenB.path,
@@ -222,7 +222,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const maxPriceStr = useMemo(() => {
     const maxPrice = tickToPriceStr(position.tickUpper, 6);
-    const tokenBPriceStr = isFullRange ? "∞ " : Number(maxPrice);
+    const tokenBPriceStr = isFullRange ? "∞ " : maxPrice;
     return `${tokenBPriceStr}`;
   }, [
     tokenB.path,

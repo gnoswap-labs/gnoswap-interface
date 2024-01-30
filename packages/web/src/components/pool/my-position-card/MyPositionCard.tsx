@@ -113,7 +113,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     percent: string;
   }[] => {
     const sumOfBalances = Number(position.token0Balance) + Number(position.token1Balance);
-    const depositRatio = sumOfBalances === 0 ? 0.5 : Number(position.token0Balance) / sumOfBalances;
+    const token0Balance = Number(position.token0Balance);
+    const token1Balance = Number(position.token1Balance);
+    const depositRatio = sumOfBalances === 0 ? 0.5 : (token0Balance) / (token0Balance + token1Balance / position?.pool?.price);
     return [
       {
         token: tokenA,
@@ -187,7 +189,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const usdValue = Object.values(totalRewardInfo)
       .flatMap(item => item)
       .reduce((accum, current) => {
-        return accum + current.claimableAmount;
+        return accum + current.claimableUSD;
       }, 0);
     return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
@@ -298,11 +300,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickPosition, maxTickPosition]);
 
   const minPriceStr = useMemo(() => {
-    const maxPrice = tickToPriceStr(position.tickUpper, 6);
+    const maxPrice = tickToPrice(position.tickUpper);
     const minPrice = tickToPriceStr(position.tickLower, 6);
-    const tokenAPriceStr = isFullRange ? "0 " : convertToKMB(`${(!isSwap ? Number(minPrice) : Number(1 / Number(maxPrice)).toFixed(2))}`);
+    const tokenAPriceStr = isFullRange ? "0 " : !isSwap ? minPrice : convertToKMB(`${(Number(1 / Number(maxPrice)))}`, 6);
     return `${tokenAPriceStr}`;
   }, [
+    position.tickUpper,
+    position.tickLower,
     tokenB.path,
     tokenB.symbol,
     tokenPrices,
@@ -333,12 +337,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickUpper, isSwap]);
 
   const maxPriceStr = useMemo(() => {
-    const minPrice = tickToPriceStr(position.tickLower, 6);
+    const minPrice = tickToPrice(position.tickLower);
 
     const maxPrice = tickToPriceStr(position.tickUpper, 6);
-    const tokenBPriceStr = isFullRange ? "∞ " : convertToKMB(`${(!isSwap ? Number(maxPrice) : Number(1 / Number(minPrice)).toFixed(2))}`);
+
+    const tokenBPriceStr = isFullRange ? "∞ " : !isSwap ? maxPrice : convertToKMB(`${Number((1 / Number(minPrice)))}`, 6);
     return `${tokenBPriceStr}`;
   }, [
+    position.tickLower,
+    position.tickUpper,
     tokenB.path,
     tokenB.symbol,
     tokenPrices,

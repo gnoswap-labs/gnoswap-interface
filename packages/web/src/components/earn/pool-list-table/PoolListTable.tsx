@@ -9,9 +9,11 @@ import { cx } from "@emotion/css";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
   POOL_INFO,
+  POOL_INFO_MOBILE,
   POOL_INFO_SMALL_TABLET,
   POOL_INFO_TABLET,
   POOL_TD_WIDTH,
+  POOL_TD_WIDTH_MOBILE,
   POOL_TD_WIDTH_SMALL_TABLET,
   POOL_TD_WIDTH_TABLET,
 } from "@constants/skeleton.constant";
@@ -67,13 +69,17 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
   };
 
   const tdWidth =
-    breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.MOBILE
+    breakpoint === DEVICE_TYPE.MOBILE
+      ? POOL_TD_WIDTH_MOBILE
+      : breakpoint === DEVICE_TYPE.TABLET_M
       ? POOL_TD_WIDTH_SMALL_TABLET
       : breakpoint === DEVICE_TYPE.TABLET
       ? POOL_TD_WIDTH_TABLET
       : POOL_TD_WIDTH;
   const poolInfo =
-    breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.MOBILE
+    breakpoint === DEVICE_TYPE.MOBILE
+      ? POOL_INFO_MOBILE
+      : breakpoint === DEVICE_TYPE.TABLET_M
       ? POOL_INFO_SMALL_TABLET
       : breakpoint === DEVICE_TYPE.TABLET
       ? POOL_INFO_TABLET
