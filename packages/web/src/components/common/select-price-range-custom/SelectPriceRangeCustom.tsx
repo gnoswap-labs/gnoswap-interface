@@ -3,7 +3,7 @@ import IconRefresh from "../icons/IconRefresh";
 import IconSwap from "../icons/IconSwap";
 import SelectPriceRangeCutomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
 import SelectTab from "../select-tab/SelectTab";
-import { SelectPriceRangeCustomWrapper, StartingPriceWrapper } from "./SelectPriceRangeCustom.styles";
+import { SelectPriceRangeCustomWrapper, StartingPriceWrapper, TooltipContentWrapper } from "./SelectPriceRangeCustom.styles";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
@@ -17,6 +17,10 @@ import { numberToFormat } from "@utils/string-utils";
 import IconRemove from "../icons/IconRemove";
 import IconAdd from "../icons/IconAdd";
 import { convertToKMB } from "@utils/stake-position-utils";
+import IconKeyboardArrowLeft from "../icons/IconKeyboardArrowLeft";
+import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
+import IconInfo from "../icons/IconInfo";
+import Tooltip from "../tooltip/Tooltip";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -237,7 +241,13 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
           <StartingPriceWrapper className="starting-price-wrapper">
             <div className="title-wrapper">
               <span className="sub-title">Starting Price</span>
-              <span className="description">{startingPriceDescription}</span>
+              <div className="price-info">
+                <Tooltip placement="top" FloatingContent={<TooltipContentWrapper>Suggested starting price based on the current price of the most liquid pool in the same pair.</TooltipContentWrapper>}>
+                  <IconInfo />
+                </Tooltip>
+                <span className="description">{startingPriceDescription}</span>
+
+              </div>
             </div>
             <input
               className="starting-price-input"
@@ -257,17 +267,27 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="option-wrapper">
                   <SelectTab
                     selectType={selectPool.compareToken?.symbol || ""}
-                    list={[isRevert ? tokenA.symbol : tokenB.symbol, !isRevert ? tokenA.symbol : tokenB.symbol]}
+                    list={[!isRevert ? tokenA.symbol : tokenB.symbol, isRevert ? tokenA.symbol : tokenB.symbol]}
                     onClick={onClickTabItem}
                   />
+                 <div className="button-option-contaier">
                   <div className="graph-option-wrapper">
-                    <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
-                      <IconRemove />
-                    </span>
-                    <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
-                      <IconAdd />
-                    </span>
-                  </div>
+                      <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                        <IconKeyboardArrowLeft />
+                      </span>
+                      <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                        <IconKeyboardArrowRight />
+                      </span>
+                    </div>
+                    <div className="graph-option-wrapper">
+                      <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                        <IconRemove />
+                      </span>
+                      <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                        <IconAdd />
+                      </span>
+                    </div>
+                 </div>
                 </div>
               )}
 
@@ -346,10 +366,12 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       <div className="icon-button reset" onClick={() => resetRange()}>
                         <IconRefresh />
                         <span>Reset Range</span>
+                        <span>Reset</span>
                       </div>
                       <div className="icon-button full" onClick={selectFullRange}>
                         <IconSwap />
                         <span>Full Price Range</span>
+                        <span>Full Price</span>
                       </div>
                     </div>
                     {showDim && <div className="dim-content-3" />}
