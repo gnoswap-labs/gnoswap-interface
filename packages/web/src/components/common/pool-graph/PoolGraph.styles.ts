@@ -132,6 +132,7 @@ export const PoolGraphTooltipWrapper = styled.div`
       ${media.mobile} {
         &.total-amount {
           width: 85px;
+          gap: 8px;
         }
         img {
           display: block;
@@ -144,6 +145,7 @@ export const PoolGraphTooltipWrapper = styled.div`
     }
     ${media.mobile} {
       width: 336px;
+      max-width: 100%;
     }
   }
 `;

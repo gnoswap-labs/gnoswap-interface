@@ -186,6 +186,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
       let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
+
       if (isSwap) {
         isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing || scaleX(bin.minTick) > scaleX(maxX) - minTickPosition));
       }

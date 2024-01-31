@@ -27,7 +27,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
   ({ children, content, className, isHiddenArrow, position = "top" as FloatingPosition, offset = 20 }, ref) => {
     const tooltipRef = useRef<HTMLDivElement>(null);
     const { breakpoint, width } = useWindowSize();
-
+    const padding = width <= 768 ? 16 : 0;
     const {
       handleMouseMove,
       x,
@@ -42,7 +42,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
     } = useFloatingTooltip({
       offset: offset,
       position: position,
-      tooltipWidth: width - (tooltipRef?.current?.offsetWidth || 0),
+      tooltipWidth: width - (tooltipRef?.current?.offsetWidth || 0) - padding,
     });
 
     const theme = useTheme();

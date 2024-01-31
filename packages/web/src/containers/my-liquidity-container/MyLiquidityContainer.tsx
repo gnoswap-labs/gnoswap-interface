@@ -7,8 +7,9 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePosition } from "@hooks/common/use-position";
 import { useLoading } from "@hooks/common/use-loading";
-
-
+import { makeBroadcastClaimMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 
 const MyLiquidityContainer: React.FC = () => {
   const router = useRouter();
@@ -22,7 +23,9 @@ const MyLiquidityContainer: React.FC = () => {
   const { claimAll } = usePosition(positions);
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
+  const { openModal } = useTransactionConfirmModal();
 
+  const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -45,18 +48,36 @@ const MyLiquidityContainer: React.FC = () => {
       setCurrentIndex(Math.floor(currentScrollX / divRef.current.offsetWidth) + 1);
     }
   };
-
+  
   const claimAllReward = useCallback(() => {
+    const data = {
+      tokenASymbol: positions[0]?.pool?.tokenA?.symbol,
+      tokenBSymbol: positions[0]?.pool?.tokenA?.symbol,
+      tokenAAmount: "0.12",
+      tokenBAmount: "0.13",
+    };
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
-      if (response !== null) {
-        setLoadingTransactionClaim(false);
-        router.reload();
-      } else {
-        setLoadingTransactionClaim(false);
+      if (response) {
+        if (response.code === 0) {
+          broadcastPending();
+          setTimeout(() => {
+            broadcastSuccess(makeBroadcastClaimMessage("success", data));
+            setLoadingTransactionClaim(false);
+          }, 1000);
+          openModal();
+        } else if (response.code === 4000 && response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
+          broadcastError(makeBroadcastClaimMessage("error", data));
+          setLoadingTransactionClaim(false);
+          openModal();
+        } else {
+          openModal();
+          broadcastRejected(makeBroadcastClaimMessage("error", data), () => {}, true);
+          setLoadingTransactionClaim(false);
+        }
       }
     });
-  }, [claimAll, router, setLoadingTransactionClaim]);
+  }, [claimAll, router, setLoadingTransactionClaim, positions, openModal]);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;

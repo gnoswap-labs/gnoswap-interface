@@ -118,7 +118,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    return `$${convertToKMB(position.positionUsdValue, 2)}`;
+    return `$${convertToKMB(`${Number(position.positionUsdValue)}`, 2)}`;
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
@@ -280,8 +280,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const claimableUSD = useMemo(() => {
     if (Number.isInteger(Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd))) 
-      return `${Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)}`;
-    return formatUsdNumber((Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)).toFixed(6));
+      return `$${Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)}`;
+    return formatUsdNumber((Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)).toFixed(2));
   }, [position.unclaimedFee0Usd, position.unclaimedFee1Usd]);
 
   return (

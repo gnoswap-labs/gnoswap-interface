@@ -47,6 +47,33 @@ function makeScannerURL(hash: string) {
   return `${SCANNER_URL}/transactions/details?txhash=${hash}`;
 }
 
+export function makeBroadcastClaimMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return `Claiming ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "success":
+        return `Claimed ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+      case "error":
+        return `Failed to Claim ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+    }
+  }
+  return {
+    title: "Swap",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
 export function makeBroadcastSwapMessage(
   type: TNoticeType,
   data: {
@@ -250,14 +277,14 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastRejected = useCallback(
-    (content?: INoticeContent, callback?: () => void) => {
+    (content?: INoticeContent, callback?: () => void, isHiddenReject?: boolean) => {
       setTransactionModalData({
         status: "rejected",
         description: content?.description || null,
         scannerURL: content?.scannerUrl || null,
         callback,
       });
-      setNotice(content, makeNoticeConfig("error"));
+      !isHiddenReject && setNotice(content, makeNoticeConfig("error"));
     },
     [setNotice, setTransactionModalData],
   );
