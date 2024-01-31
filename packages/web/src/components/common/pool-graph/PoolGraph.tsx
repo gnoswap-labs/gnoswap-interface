@@ -177,7 +177,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }
     return `${isStart ? "right" : "left"}`;
   }, [width, height, positionX, positionY, position]);
-
+  const random = Math.random().toString();
+  
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = getTickSpacing();
@@ -193,9 +194,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (isBlackBar) 
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
-        return "url(#gradient-bar-green)";
+        return `url(#gradient-bar-green-${random})`;
       }
-      return "url(#gradient-bar-red)";
+      return `url(#gradient-bar-red-${random})`;
     }
 
     // Clean child elements.
@@ -215,7 +216,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("y", bin => (scaleY(bin.reserveTokenMap)) - ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0))
       .attr("width", tickSpacing - 1)
       .attr("height", bin => boundsHeight - (scaleY(bin.reserveTokenMap)) + ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0));
-
     // Create a line of current tick.
     if (currentTick) {
       rects.append("line")
@@ -388,11 +388,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         }>
         <svg ref={svgRef}>
           <defs>
-            <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id={`gradient-bar-green-${random}`} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={greenColor.start} />
               <stop offset="100%" stopColor={greenColor.end} />
             </linearGradient>
-            <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id={`gradient-bar-red-${random}`} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={redColor.start} />
               <stop offset="100%" stopColor={redColor.end} />
             </linearGradient>
