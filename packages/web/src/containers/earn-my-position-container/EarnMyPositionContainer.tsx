@@ -116,7 +116,7 @@ const EarnMyPositionContainer: React.FC<
     }
     if (page === 1) {
       if (width > 1180) {
-        return temp.slice(positions.length - 3, positions.length - 1);
+        return temp.slice(0, 4);
       } else if (width > 920) {
         return temp.slice(0, 3);
       } else return temp;
