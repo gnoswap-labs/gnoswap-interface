@@ -19,6 +19,7 @@ import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { tickToPriceStr } from "@utils/swap-utils";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -96,6 +97,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
+  const currentPrice = useMemo(() => {
+    return tickToPriceStr(pool.currentTick, 40);
+  }, [pool?.currentTick]);
+
+  
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
@@ -210,7 +216,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {convertToKMB(`${Number(Number(pool.price).toFixed(width > 400 ? 6 : 2 ))}`, 6)} {pool?.tokenB?.symbol}
+                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {currentPrice} {pool?.tokenB?.symbol}
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span

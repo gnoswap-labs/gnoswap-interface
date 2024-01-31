@@ -246,17 +246,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }, []);
 
   const stringPrice = useMemo(() => {
+    const price = tickToPriceStr(position?.pool?.currentTick, 40);
+
     if (isSwap) {
       return `1 ${tokenB?.symbol} = ${convertToKMB(
         `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
         6,
       )} ${tokenA?.symbol}`;
     }
-    return `1 ${tokenA?.symbol} = ${convertToKMB(
-      `${Number(Number(position?.pool?.price).toFixed(6))}`,
-      6,
-    )} ${tokenB?.symbol}`;
-  }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
+    return `1 ${tokenA?.symbol} = ${price} ${tokenB?.symbol}`;
+  }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price, position?.pool?.currentTick]);
 
   const tickRange = useMemo(() => {
     const ticks = bins.flatMap(bin => [bin.minTick, bin.maxTick]);
@@ -310,7 +309,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const minPriceStr = useMemo(() => {
     const maxPrice = tickToPrice(position.tickUpper);
-    const minPrice = tickToPriceStr(position.tickLower, 6);
+    const minPrice = tickToPriceStr(position.tickLower, 40);
     const tokenAPriceStr = isFullRange
       ? "0 "
       : !isSwap
@@ -358,7 +357,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const maxPriceStr = useMemo(() => {
     const minPrice = tickToPrice(position.tickLower);
 
-    const maxPrice = tickToPriceStr(position.tickUpper, 6);
+    const maxPrice = tickToPriceStr(position.tickUpper, 40);
 
     const tokenBPriceStr = isFullRange
       ? "∞ "
@@ -383,7 +382,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return (!isSwap ? minTickRate : -minTickRate) > 1000
       ? ">999%"
       : `${minTickRate < -1 ? "+" : ""}${
-          minTickRate * -1 > 0 && minTickRate * -1 < 1
+          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
             ? "<1"
             : Math.round(minTickRate * -1)
         }%`;
@@ -395,7 +394,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       : maxTickRate >= 1000
       ? ">999%"
       : `${maxTickRate > 1 ? "+" : ""}${
-          maxTickRate < 1 ? "<1" : Math.round(maxTickRate)
+          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
         }%`;
   }, [maxTickRate]);
 
