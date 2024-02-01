@@ -39,13 +39,16 @@ export const SelectPriceRangeItemWrapper = styled.div`
   padding: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
-
+  gap: 4px;
   &.selected,
   &:hover {
     background-color: ${({ theme }) => theme.color.background11};
     border: 1px solid ${({ theme }) => theme.color.border03};
   }
-
+  p {
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.p3}
+  }
   .item-title {
     color: ${({ theme }) => theme.color.text02};
     ${fonts.body11};
@@ -54,7 +57,6 @@ export const SelectPriceRangeItemWrapper = styled.div`
   .tooltip-wrap {
     width: 16px;
     height: 16px;
-    margin-left: 4px;
     & * {
       ${mixins.flexbox("row", "center", "center")};
     }

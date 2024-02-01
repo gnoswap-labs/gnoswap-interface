@@ -1,7 +1,7 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { EarnAddLiquidityWrapper } from "./EarnAddLiquidity.styles";
+import { EarnAddLiquidityWrapper, OutOfRangeWrapper } from "./EarnAddLiquidity.styles";
 import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType } from "@constants/option.constant";
 import { AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
@@ -19,6 +19,7 @@ import IconStaking from "@components/common/icons/IconStaking";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import { SelectPool } from "@hooks/pool/use-select-pool";
+import IconFailed from "@components/common/icons/IconFailed";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -293,6 +294,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             handleSwapValue={handleSwapValue}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
+          <OutOfRangeWrapper>
+            <div><IconFailed /> Your position will not earn any fees</div>
+            <p>If you add a position with the current range, you will not earn any fees until the token price moves into your range.</p>
+          </OutOfRangeWrapper>
         </article>
 
         <article className="selector-wrapper amount-input-wrapper">

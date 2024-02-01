@@ -23,7 +23,8 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       padding: 2px;
       ${media.mobile} {
         button {
-          width: 72px;
+          width: 65px;
+          height: 24px;
         }
       }
     }
@@ -55,6 +56,14 @@ export const SelectPriceRangeCustomWrapper = styled.div`
           background: ${({ theme }) => theme.color.backgroundOpacity};
         }
         position: relative;
+        ${media.mobile} {
+          width: 24px;
+          height: 24px;
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
       }
       .disabled-option {
         pointer-events: none;

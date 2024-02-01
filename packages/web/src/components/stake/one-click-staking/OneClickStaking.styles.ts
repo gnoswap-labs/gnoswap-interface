@@ -22,8 +22,9 @@ export const OneClickStakingWrapper = styled.div`
       width: 100%;
       .label,
       .value {
+        ${mixins.flexbox("row", "center", "center")};
         ${fonts.body12}
-        x
+        gap: 5px;
       }
     }
   }

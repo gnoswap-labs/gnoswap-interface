@@ -84,14 +84,11 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   tooltip,
   changePriceRange,
 }) => {
-
+  
   const aprStr = useMemo(() => {
     const apr = priceRange.apr;
     if (apr) {
       return `${apr}%`;
-    }
-    if (priceRange.type === "Custom") {
-      return null;
     }
     return "-";
   }, [priceRange]);
@@ -103,6 +100,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   return (
     <SelectPriceRangeItemWrapper className={selected ? "selected" : ""} onClick={onClickItem}>
       <strong className="item-title">{priceRange.type}</strong>
+      {priceRange.text && <p>{priceRange.text}</p>}
       {tooltip && (
         <div className="tooltip-wrap">
           <Tooltip

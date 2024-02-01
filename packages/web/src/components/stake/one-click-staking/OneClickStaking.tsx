@@ -8,6 +8,7 @@ import { PositionModel } from "@models/position/position-model";
 import { useMemo } from "react";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -64,19 +65,19 @@ const OneClickStaking: React.FC<Props> = ({
       </div>
       <div className="one-click-info">
         <div>
-          <div className="label">Total APR</div>
+          <div className="label">TVL</div>
+          <div className="value">-</div>
+        </div>
+        <div>
+          <div className="label">Volume 24h</div>
+          <div className="value">-</div>
+        </div>
+        <div>
+          <div className="label">Fee 24h</div>
           <div className="value">-</div>
         </div>
         <div>
           <div className="label">Fee APR</div>
-          <div className="value">-</div>
-        </div>
-        <div>
-          <div className="label">Staking APR</div>
-          <div className="value">-</div>
-        </div>
-        <div>
-          <div className="label">Rewards</div>
           <div className="value">
             <DoubleLogo
               left={tokenA?.logoURI || ""}
@@ -85,6 +86,19 @@ const OneClickStaking: React.FC<Props> = ({
               leftSymbol={tokenA?.symbol || ""}
               rightSymbol={tokenB?.symbol || ""}
             />
+            14.45%
+          </div>
+        </div>
+        <div>
+          <div className="label">Staking APR</div>
+          <div className="value">
+            <MissingLogo
+              symbol={tokenA?.symbol || ""}
+              url={tokenA?.logoURI || ""}
+              width={24}
+              mobileWidth={24}
+            />
+            14.45%
           </div>
         </div>
       </div>
@@ -133,7 +147,7 @@ const OneClickStaking: React.FC<Props> = ({
                   size={24}
                   fontSize={8}
                 />
-                #{item.id}
+                ID #{item.id}
               </div>
               <div className="value">${convertToKMB(item.positionUsdValue)}</div>
             </div>

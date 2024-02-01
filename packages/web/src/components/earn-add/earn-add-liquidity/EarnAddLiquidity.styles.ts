@@ -184,3 +184,26 @@ export const EarnAddLiquidityWrapper = styled.section`
     }
   }
 `;
+
+export const OutOfRangeWrapper = styled.div`
+  padding: 12px 16px;
+  gap: 8px;
+  background-color: ${({ theme }) => theme.color.backgroundOpacity4};
+  color: ${({ theme }) => theme.color.text08};
+  ${mixins.flexbox("column", "flex-start", "flex-start")}
+  border-radius: 8px;
+  ${fonts.body12}
+  margin-top: 8.5px;
+  div {
+    ${mixins.flexbox("row", "center", "flex-start")}
+    svg {
+      width: 16px;
+      height: auto;
+      * {
+        fill: ${({ theme }) => theme.color.text08};
+      }
+    }
+    gap: 8px;
+    font-weight: 600;
+  }
+`;

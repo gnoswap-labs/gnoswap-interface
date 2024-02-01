@@ -27,6 +27,7 @@ import { encriptId } from "@utils/common";
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
   apr?: string;
+  text?: string;
 }
 
 export interface PoolTick {
@@ -49,8 +50,8 @@ export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
 ];
 
 const PRICE_RANGES: AddLiquidityPriceRage[] = [
-  { type: "Active" },
-  { type: "Passive" },
+  { type: "Active", text: "[-10% / +10%]" },
+  { type: "Passive", text: "[-50% / +100%]" },
   { type: "Custom" }
 ];
 
