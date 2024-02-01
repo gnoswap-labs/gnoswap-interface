@@ -11,12 +11,14 @@ interface Props {
   compareToken: TokenModel | null;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
+  isReverted?: boolean;
 }
 
 export const usePool = ({
   compareToken,
   tokenA,
-  tokenB
+  tokenB,
+  isReverted = false,
 }: Props) => {
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
@@ -148,12 +150,13 @@ export const usePool = ({
   useEffect(() => {
     updatePools();
   }, []);
-
+  console.log(tokenA, tokenB, isReverted);
+  
   useEffect(() => {
-    setFeetierOfLiquidityMap(null);
-    if (!tokenA || !tokenB) {
+    if (!tokenA || !tokenB || isReverted) {
       return;
     }
+    setFeetierOfLiquidityMap(null);
     setFetching(true);
     fetchPoolInfos(currentPools)
       .then(infos => {
@@ -174,7 +177,7 @@ export const usePool = ({
           setFetching(false);
         }, 1000);
       });
-  }, [currentPools, tokenA, tokenB]);
+  }, [currentPools, tokenA, tokenB, isReverted]);
 
   return {
     fetching,

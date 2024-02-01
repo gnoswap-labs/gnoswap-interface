@@ -102,9 +102,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     }
     return () => {
       setOpenedFeeTier(false);
-      setOpenedPriceRange(false);
+      isEarnAdd && setOpenedPriceRange(false);
     };
-  }, [tokenA, tokenB]);
+  }, [tokenA, tokenB, isEarnAdd]);
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
@@ -213,6 +213,12 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const showDim = useMemo(() => {
     return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
   }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
+
+  const isShowOutRange = useMemo(() => {
+    const { minPrice, maxPrice, currentPrice } = selectPool;
+    return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0)); 
+  }, [selectPool]);
+
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -294,10 +300,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             handleSwapValue={handleSwapValue}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
-          <OutOfRangeWrapper>
+          {isShowOutRange && <OutOfRangeWrapper>
             <div><IconFailed /> Your position will not earn any fees</div>
             <p>If you add a position with the current range, you will not earn any fees until the token price moves into your range.</p>
-          </OutOfRangeWrapper>
+          </OutOfRangeWrapper>}
         </article>
 
         <article className="selector-wrapper amount-input-wrapper">

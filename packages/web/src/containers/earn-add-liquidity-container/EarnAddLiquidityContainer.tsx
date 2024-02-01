@@ -57,7 +57,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 const EarnAddLiquidityContainer: React.FC = () => {
   const [isEarnAdd, setIsEarnAdd] = useAtom(EarnState.isOneClick);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN", isReverted } = swapValue;
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
@@ -81,7 +81,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { updateBalances, updateTokenPrices, tokens } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption.isCreate, startPrice: createOption.startPrice });
-  const { fetching, pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
+  const { fetching, pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken, isReverted });
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
     tokenA,
     tokenB,
@@ -221,6 +221,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
         tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
         type: type,
+        isReverted: false,
       };
     });
     selectSwapFeeTier("NONE");
@@ -239,6 +240,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
         tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
         type: type,
+        isReverted: false,
       };
     });
     selectSwapFeeTier("NONE");
@@ -458,6 +460,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenA: tempTokenB,
       tokenB: tempTokenA,
       isEarnChanged: true,
+      isReverted: true,
     });
   }, [swapValue, setSwapValue]);
 

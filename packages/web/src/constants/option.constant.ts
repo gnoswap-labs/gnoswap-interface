@@ -238,36 +238,74 @@ export const PriceRangeTooltip: {
 } = {
   FEE_10000: {
     Active:
-      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+      "An aggressive price range for higher risks & returns.",
     Passive:
-      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+      "A passive price range of for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_3000: {
     Active:
-      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+      "An aggressive price range for higher risks & returns.",
     Passive:
-      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+      "A passive price range of for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_500: {
     Active:
-      "An aggressive price range of [-10% ~ +10%] for higher risks & returns.",
+      "An aggressive price range for higher risks & returns.",
     Passive:
-      "A passive price range of [-50% ~ 100%] <br />for moderate risks & returns.",
+      "A passive price range of for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_100: {
     Active:
-      "An aggressive price range of [-0.5% ~ +0.5%] for higher risks & returns.",
+      "An aggressive price range for higher risks & returns.",
     Passive:
-      "A passive price range of [-1% ~ 1%] <br />for moderate risks & returns.",
+      "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   NONE: {
     Active: undefined,
     Passive: undefined,
     Custom: undefined,
+  },
+};
+
+export const PriceRangeStr: {
+  [key in SwapFeeTierType]: { [key in PriceRangeType]: string };
+} = {
+  FEE_10000: {
+    Active:
+      "[-10% / +10%]",
+    Passive:
+      "[-50% / +100%]",
+    Custom: "",
+  },
+  FEE_3000: {
+    Active:
+      "[-10% / +10%]",
+    Passive:
+      "[-50% / +100%]",
+    Custom: "",
+  },
+  FEE_500: {
+    Active:
+      "[-10% / +10%]",
+    Passive:
+      "[-50% / +100%]",
+    Custom: "",
+  },
+  FEE_100: {
+    Active:
+      "[-0.5% / +0.5%]",
+    Passive:
+      "[-1% / +1%]",
+    Custom: "",
+  },
+  NONE: {
+    Active: "",
+    Passive: "",
+    Custom: "",
   },
 };
 

@@ -18,7 +18,7 @@ export const menu = {
   path: "/earn",
 };
 
-const initialPool: PoolDetailModel = {
+export const initialPool: PoolDetailModel = {
   name: "",
   path: "",
   tokenA: {

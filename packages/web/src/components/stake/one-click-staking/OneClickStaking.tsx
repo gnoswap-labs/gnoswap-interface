@@ -6,19 +6,22 @@ import { SwapState } from "@states/index";
 import DoubleTokenLogo from "@components/common/double-token-logo/DoubleTokenLogo";
 import { PositionModel } from "@models/position/position-model";
 import { useMemo } from "react";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
   handleClickGotoStaking: () => void;
+  pool: PoolDetailModel;
 }
 
 const OneClickStaking: React.FC<Props> = ({
   stakedPositions,
   unstakedPositions,
-  handleClickGotoStaking
+  handleClickGotoStaking,
+  pool,
 }) => {
   const [swapValue] = useAtom(SwapState.swap);
   const { getGnotPath } = useGnotToGnot();
@@ -47,6 +50,22 @@ const OneClickStaking: React.FC<Props> = ({
     return unstakedPositions.length > 0;
   }, [unstakedPositions]);
 
+  const liquidityValue = useMemo((): string => {
+    return formatUsdNumber(Number(pool.tvl).toString(), undefined, true);
+  }, [pool.tvl]);
+
+  const volumeValue = useMemo((): string => {
+    return formatUsdNumber(Number(pool.volume).toString(), undefined, true);
+  }, [pool.volume]);
+
+  const feeChangedStr = useMemo((): string => {
+    return `$${convertToKMB(`${Number(pool.feeChange)}`, 2)}`;
+  }, [pool.feeChange]);
+
+  const rewardTokens = useMemo(() => {
+    return pool?.rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
+  }, [pool.rewardTokens]);
+
   if (!tokenA || !tokenB) {
     return <></>;
   }
@@ -66,15 +85,15 @@ const OneClickStaking: React.FC<Props> = ({
       <div className="one-click-info">
         <div>
           <div className="label">TVL</div>
-          <div className="value">-</div>
+          <div className="value">{liquidityValue}</div>
         </div>
         <div>
           <div className="label">Volume 24h</div>
-          <div className="value">-</div>
+          <div className="value">{volumeValue}</div>
         </div>
         <div>
           <div className="label">Fee 24h</div>
-          <div className="value">-</div>
+          <div className="value">{feeChangedStr}</div>
         </div>
         <div>
           <div className="label">Fee APR</div>
@@ -86,19 +105,14 @@ const OneClickStaking: React.FC<Props> = ({
               leftSymbol={tokenA?.symbol || ""}
               rightSymbol={tokenB?.symbol || ""}
             />
-            14.45%
+            {pool.feeApr || "-"}
           </div>
         </div>
         <div>
           <div className="label">Staking APR</div>
           <div className="value">
-            <MissingLogo
-              symbol={tokenA?.symbol || ""}
-              url={tokenA?.logoURI || ""}
-              width={24}
-              mobileWidth={24}
-            />
-            14.45%
+            <OverlapLogo logos={rewardTokens} size={24}/>
+            {pool.stakingApr || "-"}
           </div>
         </div>
       </div>

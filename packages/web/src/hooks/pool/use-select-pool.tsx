@@ -7,6 +7,7 @@ import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
+import { useLoading } from "@hooks/common/use-loading";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -76,7 +77,8 @@ export const useSelectPool = ({
   const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
-  
+  const { isLoadingCommon } = useLoading();
+
   const poolPath = useMemo(() => {
     setCurrentPoolPath(latestPoolPath);
     return latestPoolPath;
@@ -89,11 +91,11 @@ export const useSelectPool = ({
     if (isCreate && startPrice === null) {
       return "CREATE";
     }
-    if (!poolInfo) {
+    if (!poolInfo || isLoadingCommon) {
       return "LOADING";
     }
     return "DONE";
-  }, [feeTier, isCreate, poolInfo, startPrice, tokenA, tokenB]);
+  }, [feeTier, isCreate, poolInfo, startPrice, tokenA, tokenB, isLoadingCommon]);
 
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
     if (!poolInfo || poolInfo.ticks.length === 0) {

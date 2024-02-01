@@ -21,6 +21,7 @@ import IconKeyboardArrowLeft from "../icons/IconKeyboardArrowLeft";
 import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
 import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -43,6 +44,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   defaultPrice,
   handleSwapValue,
 }) => {
+  const { isLoadingCommon } = useLoading();
   const [isRevert, setIsRevert] = useState(false);
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
@@ -87,7 +89,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   const isCustom = true;
 
-  const isLoading = useMemo(() => selectPool.renderState === "LOADING", [selectPool.renderState]);
+  const isLoading = useMemo(() => selectPool.renderState === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
 
   const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState === "DONE";
 
@@ -242,11 +244,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
             <div className="title-wrapper">
               <span className="sub-title">Starting Price</span>
               <div className="price-info">
-                <Tooltip placement="top" FloatingContent={<TooltipContentWrapper>Suggested starting price based on the current price of the most liquid pool in the same pair.</TooltipContentWrapper>}>
+                {!startingPriceValue && <Tooltip placement="top" FloatingContent={<TooltipContentWrapper>Suggested starting price based on the current price of the most liquid pool in the same pair.</TooltipContentWrapper>}>
                   <IconInfo />
-                </Tooltip>
+                </Tooltip>}
                 <span className="description">{startingPriceDescription}</span>
-
               </div>
             </div>
             <input
@@ -297,7 +298,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 </div>
               )}
 
-              {(showDim || availSelect) && (
+              {!isLoading && (showDim || availSelect) && (
                 <React.Fragment>
                   {!showDim && <div className="current-price-wrapper">
                     <span>Current Price</span>

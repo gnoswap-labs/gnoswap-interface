@@ -1,4 +1,4 @@
-import { PriceRangeTooltip } from "@constants/option.constant";
+import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
 import React, { useCallback, useMemo } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -50,6 +50,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
             key={index}
             selected={item.type === priceRange?.type}
             tooltip={PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]}
+            priceRangeStr={PriceRangeStr[selectPool.feeTier || "NONE"][item.type]}
             priceRange={item}
             changePriceRange={changePriceRangeWithClear}
           />
@@ -75,6 +76,7 @@ interface SelectPriceRangeItemProps {
   selected: boolean;
   priceRange: AddLiquidityPriceRage;
   tooltip: string | undefined;
+  priceRangeStr: string;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
 }
 
@@ -83,6 +85,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   priceRange,
   tooltip,
   changePriceRange,
+  priceRangeStr,
 }) => {
   
   const aprStr = useMemo(() => {
@@ -100,7 +103,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   return (
     <SelectPriceRangeItemWrapper className={selected ? "selected" : ""} onClick={onClickItem}>
       <strong className="item-title">{priceRange.type}</strong>
-      {priceRange.text && <p>{priceRange.text}</p>}
+      {priceRange.text && <p>{priceRangeStr}</p>}
       {tooltip && (
         <div className="tooltip-wrap">
           <Tooltip
