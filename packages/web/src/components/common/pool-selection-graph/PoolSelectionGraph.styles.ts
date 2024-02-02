@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import mixins from "@styles/mixins";
 
 export const PoolSelectionGraphWrapper = styled.div`
   position: relative;
@@ -89,7 +90,9 @@ export const PoolSelectionGraphWrapper = styled.div`
       }
     }
   }
-
+  .domain {
+    color: #596782;
+  }
   .tick {
     text {
       ${fonts.p7}
@@ -101,4 +104,54 @@ export const PoolSelectionGraphWrapper = styled.div`
     stroke: none;
     fill-opacity: 1;
   }
+`;
+
+export const GraphWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")}
+  gap: 8px;
+  min-width: 360px;
+  .header {
+    width: 100%;
+    ${fonts.body12}
+    color: ${({ theme }) => theme.color.text04};
+    ${mixins.flexbox("row", "center", "flex-start")}
+
+    .token, .amount {
+      width: 80px;
+      margin-right: 8px;
+    }
+    .price {
+      text-align: right;
+      margin-left: 8px;
+      flex: 1;
+    }
+  }
+  .content {
+    width: 100%;
+    ${mixins.flexbox("column", "flex-start", "flex-start")}
+    gap: 8px;
+      .item {
+        height: 28px;
+        ${fonts.body12}
+        color: ${({ theme }) => theme.color.text02};
+        width: 100%;
+        ${mixins.flexbox("row", "center", "flex-start")}
+      }
+      .logo {
+        ${mixins.flexbox("row", "center", "flex-start")}
+        gap: 8px;
+        width: 80px;
+        margin-right: 8px;
+      }
+      .amount {
+        width: 80px;
+        margin-right: 8px;
+      }
+      .price {
+        text-align: right;
+        margin-left: 8px;
+        flex: 1;
+      }
+  }
+
 `;

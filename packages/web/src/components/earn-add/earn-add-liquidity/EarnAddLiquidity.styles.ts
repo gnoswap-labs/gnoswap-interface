@@ -205,4 +205,7 @@ export const OutOfRangeWrapper = styled.div`
     gap: 8px;
     font-weight: 600;
   }
+  ${media.mobile} {
+    ${fonts.p2}
+  }
 `;
