@@ -22,6 +22,7 @@ import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
 import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
 import { useLoading } from "@hooks/common/use-loading";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -33,6 +34,7 @@ export interface SelectPriceRangeCustomProps {
   defaultPrice: number | null;
   handleSwapValue: () => void;
   isEmptyLiquidity: boolean;
+  isKeepToken: boolean;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -45,9 +47,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   defaultPrice,
   handleSwapValue,
   isEmptyLiquidity,
+  isKeepToken,
 }) => {
+  const { getGnotPath } = useGnotToGnot();
   const { isLoadingCommon } = useLoading();
-  const [isRevert, setIsRevert] = useState(false);
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
   const [startingPriceValue, setStartingPriceValue] = useState<string>("");
@@ -98,11 +101,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const comparedTokenA = selectPool.compareToken?.symbol !== tokenB.symbol;
 
   const currentTokenA = useMemo(() => {
-    return comparedTokenA ? tokenA : tokenB;
+    return comparedTokenA ? getGnotPath(tokenA) : getGnotPath(tokenB);
   }, [comparedTokenA, tokenA, tokenB]);
 
   const currentTokenB = useMemo(() => {
-    return comparedTokenA ? tokenB : tokenA;
+    return comparedTokenA ? getGnotPath(tokenB) : getGnotPath(tokenA);
   }, [comparedTokenA, tokenA, tokenB]);
 
   const currentPriceStr = useMemo(() => {
@@ -145,8 +148,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       selectPool.setMinPosition(1 / maxPosition);
     }
     handleSwapValue();
-    setIsRevert(prev => !prev);
-  }, [selectPool, tokenA, tokenB, handleSwapValue, setIsRevert]);
+  }, [selectPool, tokenA, tokenB, handleSwapValue]);
 
   const selectFullRange = useCallback(() => {
     selectPool.selectFullRange();
@@ -208,7 +210,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   useEffect(() => {
     selectPool.setCompareToken(tokenA);
-  }, []);
+  }, [tokenA]);
 
   useEffect(() => {
     resetRange(priceRangeType);
@@ -229,7 +231,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       selectPool.setFocusPosition(scaleX(Number(selectPool.startPrice)));
     }
   }, [selectPool.currentPrice, selectPool.startPrice]);
-  // console.log([isRevert ? tokenA.symbol : tokenB.symbol, !isRevert ? tokenA.symbol : tokenB.symbol], selectPool.compareToken?.symbol, isEmptyLiquidity);
   
   if (selectPool.renderState === "NONE") {
     return <></>;
@@ -270,8 +271,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
               {(availSelect || showDim) && (
                 <div className="option-wrapper">
                   <SelectTab
-                    selectType={selectPool.compareToken?.symbol || ""}
-                    list={[isRevert ? tokenA.symbol : tokenB.symbol, !isRevert ? tokenA.symbol : tokenB.symbol]}
+                    selectType={getGnotPath(selectPool.compareToken)?.symbol || ""}
+                    list={[!isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol, isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol]}
                     onClick={onClickTabItem}
                   />
                  <div className="button-option-contaier">

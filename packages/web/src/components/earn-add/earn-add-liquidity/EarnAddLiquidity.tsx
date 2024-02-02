@@ -57,6 +57,7 @@ interface EarnAddLiquidityProps {
   createOption: { startPrice: number | null, isCreate: boolean };
   fetching: boolean;
   handleSwapValue: () => void;
+  isKeepToken: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -90,6 +91,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   createOption,
   fetching,
   handleSwapValue,
+  isKeepToken,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -216,10 +218,12 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
 
   const isShowOutRange = useMemo(() => {
+    if (!tokenA || !tokenB)
+      return false;
     const { minPrice, maxPrice, currentPrice } = selectPool;
     return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0)); 
-  }, [selectPool]);
-
+  }, [selectPool, tokenA, tokenB]);
+  
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -300,6 +304,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             showDim={showDim}
             handleSwapValue={handleSwapValue}
             isEmptyLiquidity={isEmptyObject(feetierOfLiquidityMap)}
+            isKeepToken={isKeepToken}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
           {isShowOutRange && <OutOfRangeWrapper>

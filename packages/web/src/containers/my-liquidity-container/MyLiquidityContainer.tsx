@@ -86,6 +86,7 @@ const MyLiquidityContainer: React.FC = () => {
     }
     if (!connectedWallet) {
       setPositions([]);
+      return;
     }
     if (account?.address) {
       const temp = getPositionsByPoolId(poolPath);
@@ -111,7 +112,7 @@ const MyLiquidityContainer: React.FC = () => {
       setPositions(temp);
     }
 
-  }, [account?.address, router.query, setPositions, getPositionsByPoolId, isShowClosePosition, connectedWallet]);
+  }, [account?.address, router.query, isShowClosePosition, connectedWallet]);
   
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);

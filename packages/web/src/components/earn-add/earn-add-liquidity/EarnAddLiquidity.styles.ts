@@ -186,7 +186,6 @@ export const EarnAddLiquidityWrapper = styled.section`
 `;
 
 export const OutOfRangeWrapper = styled.div`
-  margin-top: 8px;
   padding: 12px 16px;
   gap: 8px;
   background-color: ${({ theme }) => theme.color.backgroundOpacity4};

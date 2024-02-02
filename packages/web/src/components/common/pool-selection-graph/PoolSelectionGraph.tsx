@@ -117,7 +117,7 @@ function changeLine(
   const priceId = `${type}-price`;
   const color = type === "start" ? "#EA3943B2" : "#16C78AB2";
 
-  const margin = right === false ? -70 : 20;
+  const margin = right === false ? -62 : 12;
   const labelWrapper = lineElement.select(`#${priceId}`);
   labelWrapper.select("rect")
     .attr("x", margin)
@@ -204,7 +204,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   };
 
   const getBinWidth = () => {
-    return width / 20;
+    return width / 40;
   };
 
   const { redColor, greenColor } = useColorGraph();
@@ -217,7 +217,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const binWidth = getBinWidth();
     const startXPosition = (getInvertX(0) % binWidth) * -1;
 
-    return Array.from({ length: 22 }, (_, index) => {
+    return Array.from({ length: 40 }, (_, index) => {
       const x: number = startXPosition + (binWidth * index);
       const y: number = liquidityOfTickPoints.find((point, pIndex) => {
         const pointPosition = scaleX(point[0]);
@@ -244,6 +244,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const xAxis = d3
     .axisBottom(scaleX)
+    .tickSize(0)
+    .tickPadding(4)
     .tickFormat(tick => displayTickNumber([getInvertX(0), getInvertX(width)], Number(tick)))
     .tickArguments([displayLabels]);
 
@@ -276,7 +278,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       };
     });
   };
-
+  // console.log(binData(), "binData");
+  
   const brush = d3.brushX()
     .extent([
       [scaleX(0), 0],

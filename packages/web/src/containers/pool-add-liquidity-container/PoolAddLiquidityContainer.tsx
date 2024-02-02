@@ -59,7 +59,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 const EarnAddLiquidityContainer: React.FC = () => {
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN", isKeepToken = false } = swapValue;
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   
@@ -412,8 +412,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenB: tempTokenA,
       isEarnChanged: true,
       isReverted: true,
+      isKeepToken: !isKeepToken,
     });
-  }, [swapValue, setSwapValue]);
+  }, [swapValue, setSwapValue, isKeepToken]);
 
   return (
     <EarnAddLiquidity
@@ -451,6 +452,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
       fetching={fetching}
       handleSwapValue={handleSwapValue}
+      isKeepToken={isKeepToken}
     />
   );
 };

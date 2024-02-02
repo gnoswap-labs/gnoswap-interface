@@ -10,10 +10,10 @@ import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
-import { DEVICE_TYPE } from "@styles/media";
+import { DeviceSize } from "@styles/media";
 
 export default function EarnAdd() {
-  const { breakpoint } = useWindowSize();
+  const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"] || "";
   const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
@@ -25,7 +25,7 @@ export default function EarnAdd() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          breakpoint === DEVICE_TYPE.MEDIUM_WEB || breakpoint === DEVICE_TYPE.WEB
+          (width > DeviceSize.mediumWeb)
             ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
@@ -33,8 +33,8 @@ export default function EarnAdd() {
       },
       { title: "Add Position", path: "" },
     ];
-  }, [data, breakpoint]);
-
+  }, [data, width]);
+  
   return (
     <PoolAddLayout
       header={<HeaderContainer />}

@@ -16,7 +16,7 @@ export type DEVICE_TYPE = ValuesType<typeof DEVICE_TYPE>;
 
 export const DeviceSize: MediaProps = {
   web: 2160,
-  mediumWeb: 1250,
+  mediumWeb: 1330,
   tablet: 1180,
   mediumTablet: 1180,
   tabletMiddle: 930,
