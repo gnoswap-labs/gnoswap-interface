@@ -114,7 +114,7 @@ export const EarnAddLiquidityWrapper = styled.section`
       padding-bottom: 0;
     }
     &-price-range {
-      gap: 7.5px;
+      gap: 8px;
     }
   }
   .amount-input-wrapper {
@@ -186,6 +186,7 @@ export const EarnAddLiquidityWrapper = styled.section`
 `;
 
 export const OutOfRangeWrapper = styled.div`
+  margin-top: 8px;
   padding: 12px 16px;
   gap: 8px;
   background-color: ${({ theme }) => theme.color.backgroundOpacity4};
@@ -193,7 +194,6 @@ export const OutOfRangeWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")}
   border-radius: 8px;
   ${fonts.body12}
-  margin-top: 8.5px;
   div {
     ${mixins.flexbox("row", "center", "flex-start")}
     svg {

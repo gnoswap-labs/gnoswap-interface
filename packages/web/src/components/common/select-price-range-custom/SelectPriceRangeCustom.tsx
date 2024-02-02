@@ -32,6 +32,7 @@ export interface SelectPriceRangeCustomProps {
   showDim: boolean;
   defaultPrice: number | null;
   handleSwapValue: () => void;
+  isEmptyLiquidity: boolean;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -43,6 +44,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   showDim,
   defaultPrice,
   handleSwapValue,
+  isEmptyLiquidity,
 }) => {
   const { isLoadingCommon } = useLoading();
   const [isRevert, setIsRevert] = useState(false);
@@ -227,7 +229,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       selectPool.setFocusPosition(scaleX(Number(selectPool.startPrice)));
     }
   }, [selectPool.currentPrice, selectPool.startPrice]);
-
+  // console.log([isRevert ? tokenA.symbol : tokenB.symbol, !isRevert ? tokenA.symbol : tokenB.symbol], selectPool.compareToken?.symbol, isEmptyLiquidity);
+  
   if (selectPool.renderState === "NONE") {
     return <></>;
   }
@@ -244,7 +247,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
             <div className="title-wrapper">
               <span className="sub-title">Starting Price</span>
               <div className="price-info">
-                {!startingPriceValue && <Tooltip placement="top" FloatingContent={<TooltipContentWrapper>Suggested starting price based on the current price of the most liquid pool in the same pair.</TooltipContentWrapper>}>
+                {!startingPriceValue && !isEmptyLiquidity && <Tooltip placement="top" FloatingContent={<TooltipContentWrapper>Suggested starting price based on the current price of the most liquid pool in the same pair.</TooltipContentWrapper>}>
                   <IconInfo />
                 </Tooltip>}
                 <span className="description">{startingPriceDescription}</span>
@@ -268,7 +271,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="option-wrapper">
                   <SelectTab
                     selectType={selectPool.compareToken?.symbol || ""}
-                    list={[!isRevert ? tokenA.symbol : tokenB.symbol, isRevert ? tokenA.symbol : tokenB.symbol]}
+                    list={[isRevert ? tokenA.symbol : tokenB.symbol, !isRevert ? tokenA.symbol : tokenB.symbol]}
                     onClick={onClickTabItem}
                   />
                  <div className="button-option-contaier">

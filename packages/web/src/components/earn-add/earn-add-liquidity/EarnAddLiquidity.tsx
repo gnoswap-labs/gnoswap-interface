@@ -20,6 +20,7 @@ import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import IconFailed from "@components/common/icons/IconFailed";
+import { isEmptyObject } from "@utils/validation-utils";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -298,6 +299,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             selectPool={selectPool}
             showDim={showDim}
             handleSwapValue={handleSwapValue}
+            isEmptyLiquidity={isEmptyObject(feetierOfLiquidityMap)}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
           {isShowOutRange && <OutOfRangeWrapper>

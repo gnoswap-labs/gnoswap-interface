@@ -240,21 +240,21 @@ export const PriceRangeTooltip: {
     Active:
       "An aggressive price range for higher risks & returns.",
     Passive:
-      "A passive price range of for moderate risks & returns.",
+      "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_3000: {
     Active:
       "An aggressive price range for higher risks & returns.",
     Passive:
-      "A passive price range of for moderate risks & returns.",
+      "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_500: {
     Active:
       "An aggressive price range for higher risks & returns.",
     Passive:
-      "A passive price range of for moderate risks & returns.",
+      "A passive price range for moderate risks & returns.",
     Custom: undefined,
   },
   FEE_100: {

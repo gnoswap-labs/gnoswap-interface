@@ -103,7 +103,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     selectPool,
     swapFeeTier,
   });
-
+  
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
     let feeBoost: string | null = null;
@@ -217,6 +217,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
           type: type,
         };
       }
+      selectPool.setCompareToken(token);
       return {
         tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
         tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,

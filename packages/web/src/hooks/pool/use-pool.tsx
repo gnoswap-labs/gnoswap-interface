@@ -150,7 +150,6 @@ export const usePool = ({
   useEffect(() => {
     updatePools();
   }, []);
-  console.log(tokenA, tokenB, isReverted);
   
   useEffect(() => {
     if (!tokenA || !tokenB || isReverted) {

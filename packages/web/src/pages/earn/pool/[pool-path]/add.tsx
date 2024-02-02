@@ -25,7 +25,7 @@ export default function EarnAdd() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          breakpoint === DEVICE_TYPE.MEDIUM_WEB
+          breakpoint === DEVICE_TYPE.MEDIUM_WEB || breakpoint === DEVICE_TYPE.WEB
             ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
