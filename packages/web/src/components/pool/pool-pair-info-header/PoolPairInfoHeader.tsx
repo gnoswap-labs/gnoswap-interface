@@ -24,17 +24,17 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const incentivezedStr = useMemo(() => {
     if (incentivizedType === "INCENTIVIZED") {
-      return "Incentivized";
+      return "Incentive";
     }
     if (incentivizedType === "EXTERNAL_INCENTIVIZED") {
-      return "Incentivized";
+      return "Incentive";
     }
     return "";
   }, [incentivizedType]);
 
   const rewardTokenLogos = useMemo(() => {
     const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
-    return [...new Set([getGnotPath(tokenA).logoURI, getGnotPath(tokenB).logoURI, ...temp])];
+    return temp;
   }, [rewardTokens]);
   
   return (

@@ -233,6 +233,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (!mouseover) {
       return;
     }
+    console.log(resolvedBins, "resolvedBins");
     
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
@@ -290,8 +291,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tokenB: tokenB,
       tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
       tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
-      myTokenAAmount: myTokenAAmountStr ? convertToKMB(myTokenAAmountStr.toString()) : "-",
-      myTokenBAmount: myTokenBAmountStr ? convertToKMB(myTokenBAmountStr.toString()) : "-",
+      myTokenAAmount: myTokenAAmountStr ? convertToKMB(myTokenAAmountStr.toString()) : "<0.000001",
+      myTokenBAmount: myTokenBAmountStr ? convertToKMB(myTokenBAmountStr.toString()) : "<0.000001",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: tickOfPrices[currentTick || 0],
