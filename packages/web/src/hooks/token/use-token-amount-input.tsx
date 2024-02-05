@@ -20,8 +20,8 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const { displayBalanceMap, tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
   useEffect(() => {
-    if (token && displayBalanceMap[getGnotPath(token).path]) {
-      const balance = displayBalanceMap[getGnotPath(token).path];
+    if (token && displayBalanceMap[token.path]) {
+      const balance = displayBalanceMap[token.path];
       setBalance(BigNumber(balance ?? 0).toFormat());
     } else {
       setBalance("0");

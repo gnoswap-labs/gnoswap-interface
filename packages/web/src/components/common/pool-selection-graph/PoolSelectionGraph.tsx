@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GraphWrapper, PoolSelectionGraphWrapper } from "./PoolSelectionGraph.styles";
 import * as d3 from "d3";
 import { displayTickNumber } from "@utils/string-utils";
@@ -14,9 +14,62 @@ import { ThemeState } from "@states/index";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
 
+const getSelectionColor = (startPercent: number, endPercent: number) => {
+  if (startPercent > 0 && endPercent > 0) {
+    return {
+      startPercent: startPercent,
+      endPercent: endPercent,
+      start: "#60E66A33",
+      end: "#60E66A33",
+      lineStart: "#16C78A", //red EA3943
+      lineEnd: "#16C78A", //green 16C78A
+      badgeStart: "#16C78AB2",
+      badgeEnd: "#16C78AB2",
+    };
+  }
+
+  if (startPercent < 0 && endPercent < 0) {
+    return {
+      startPercent: startPercent,
+      endPercent: endPercent,
+      start: "#FF020233",
+      end: "#FF020233",
+      lineStart: "#EA3943",
+      lineEnd: "#EA3943",
+      badgeStart: "#EA3943B2",
+      badgeEnd: "#EA3943B2",
+    };
+  }
+
+  if (startPercent < 0 && endPercent > 0) {
+    return {
+      startPercent: startPercent,
+      endPercent: endPercent,
+      start: "#FF020233",
+      end: "#00CD2E33",
+      lineStart: "#EA3943",
+      lineEnd: "#16C78A",
+      badgeStart: "#EA3943B2",
+      badgeEnd: "#16C78AB2",
+    };
+  }
+
+  return {
+    startPercent: startPercent,
+    endPercent: endPercent,
+    start: "#00CD2E33",
+    end: "#FF020233",
+    lineStart: "#16C78A",
+    lineEnd: "#EA3943",
+    badgeStart: "#16C78AB2",
+    badgeEnd: "#EA3943B2",
+  };
+};
+
 function makeLeftBadge(
   refer: d3.Selection<any, unknown, null, undefined>,
   reverse = false,
+  selectionColor: any
 ) {
   const badge = refer
     .append("svg")
@@ -47,13 +100,14 @@ function makeLeftBadge(
     .attr("height", "28")
     .style("fill", "#90A2C0");
 
-  makeLabel(refer, false, reverse);
+  makeLabel(refer, false, reverse, selectionColor);
   return badge;
 }
 
 function makeRightBadge(
   refer: d3.Selection<any, unknown, null, undefined>,
   reverse = false,
+  selectionColor: any
 ) {
   const badge = refer
     .append("svg")
@@ -84,7 +138,7 @@ function makeRightBadge(
     .attr("height", "28")
     .style("fill", "#90A2C0");
 
-  makeLabel(refer, true, reverse);
+  makeLabel(refer, true, reverse, selectionColor);
   return badge;
 }
 
@@ -92,9 +146,13 @@ function makeLabel(
   refer: d3.Selection<any, unknown, null, undefined>,
   right = false,
   reverse = false,
+  selectionColor: any
 ) {
-  const id = right === false ? "start-price" : "end-price";
-  const color = right === false ? "#EA3943B2" : "#16C78AB2";
+  // const id = right === false ? "start-price" : "end-price";
+  const id = right === false ? `start-price-${Math.round(selectionColor.startPercent)}` : `end-price-${Math.round(selectionColor.endPercent)}`;
+  
+  // const color = right === false ? "#EA3943B2" : "#16C78AB2";
+  const color = right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
   if (refer.select(`#${id}`)) {
     refer.append("g").attr("id", id);
   }
@@ -125,16 +183,18 @@ function changeLine(
   rate: number,
   right = false,
   selectedFullRange = false,
+  selectionColor: any,
 ) {
   const hidden = type === "end" && selectedFullRange === true;
-  const rateStr = `${Math.round(rate).toFixed(0)}%`;
+  const rateStr = `${rate > 0 ? "+" : ""}${Math.round(rate).toFixed(0)}%`;
   const lineElement = selectionElement.select(`#${type}`).attr("x", x);
 
   lineElement.select("svg").attr("x", 0);
 
-  const priceId = `${type}-price`;
-  const color = type === "start" ? "#EA3943B2" : "#16C78AB2";
 
+  const priceId = `${type}-price-${Math.round(type === "start" ? selectionColor.startPercent : selectionColor.endPercent)}`;
+  const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
+  
   const margin = right === false ? (type === "end" ? -51 : -62) : (type === "end" ? 12 : 1);
   const labelWrapper = lineElement.select(`#${priceId}`);
   labelWrapper
@@ -208,12 +268,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   },
   setIsChangeMinMax,
 }) => {
+  const [selectionColor, setSelectionColor] = useState(getSelectionColor(0, 0));
   const svgRef = useRef(null);
   const chartRef = useRef<SVGGElement | null>(null);
   const brushRef = useRef<SVGGElement | null>(null);
   const labelHeight = displayLabels > 0 ? 20 : 0;
   const themeKey = useAtomValue(ThemeState.themeKey);
-
   const paddingHeight = 0;
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight =
@@ -328,9 +388,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .append("line")
         .attr("y1", 0)
         .attr("y2", boundsHeight + paddingHeight)
-        .style("stroke", "#EA3943")
+        .style("stroke", selectionColor.lineStart)
         .attr("stroke-width", 2);
-      makeLeftBadge(startLineElement);
+      makeLeftBadge(startLineElement, false, selectionColor);
 
       /** End Line */
       brushElement.select("#end").selectChildren().remove();
@@ -339,10 +399,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .append("line")
         .attr("y1", boundsHeight + paddingHeight)
         .attr("y2", 0)
-        .style("stroke", "#16C78A")
+        .style("stroke", selectionColor.lineEnd)
         .attr("stroke-width", 2);
 
-      makeRightBadge(endLineElement);
+      makeRightBadge(endLineElement, false, selectionColor);
     }
 
     const selection = event.selection ? event.selection : [0, 0];
@@ -367,6 +427,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       startPosition as number,
       startRate,
       isRightStartLine,
+      false,
+      selectionColor,
     );
     changeLine(
       brushElement,
@@ -375,6 +437,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       endRate,
       isRightEndLine,
       selectedFullRange,
+      selectionColor,
     );
   }
 
@@ -394,6 +457,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const selection = event.selection ? event.selection : [0, 0];
       const startPosition = selection[0] as number;
       const endPosition = selection[1] as number;
+      const startRate = currentPrice
+      ? ((scaleX.invert(startPosition) - currentPrice) / currentPrice) * 100
+      : 0;
+    const endRate = currentPrice
+      ? ((scaleX.invert(endPosition) - currentPrice) / currentPrice) * 100
+      : 0;
+      setSelectionColor(getSelectionColor(startRate, endRate));
       const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN()
         ? tickToPrice(
             priceToNearTick(
@@ -586,13 +656,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
               id="gradient-selection-area"
               gradientTransform="rotate(0)"
             >
-              <stop offset="0%" stopColor={"#FF020233"} />
-              <stop
+              <stop offset="0%" stopColor={selectionColor.start} />
+              {/* <stop
                 id="gradient-selection-current-position"
                 offset="50%"
-                stopColor={"rgba(0, 0, 0, 0)"}
-              />
-              <stop offset="100%" stopColor={"#00CD2E33"} />
+                stopColor={"#697A1C33"}
+              /> */}
+              <stop offset="100%" stopColor={selectionColor.end} />
             </linearGradient>
           </defs>
           <g

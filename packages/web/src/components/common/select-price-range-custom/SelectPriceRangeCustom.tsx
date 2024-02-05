@@ -155,14 +155,19 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [selectPool]);
 
   function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
+    console.log(priceRangeType, "priceRangeTypepriceRangeTypepriceRangeType", selectPool.minPrice, selectPool.isChangeMinMax);
+    // if (inputPriceRangeType === "Custom") return;
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
     const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
-    if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
+    if (currentPrice && selectPool.feeTier && currentPriceRangeType && !selectPool.isChangeMinMax) {
       const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
       const minRateAmount = currentPrice * (priceRange.min / 100);
       const maxRateAmount = currentPrice * (priceRange.max / 100);
       selectPool.setMinPosition(currentPrice + minRateAmount);
       selectPool.setMaxPosition(currentPrice + maxRateAmount);
+    } else if (selectPool.isChangeMinMax) {
+      selectPool.setMinPosition(selectPool.minPrice);
+      selectPool.setMaxPosition(selectPool.maxPrice);
     }
   }
 

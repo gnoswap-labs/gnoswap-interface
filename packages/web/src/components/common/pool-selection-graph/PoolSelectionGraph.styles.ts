@@ -100,6 +100,12 @@ export const PoolSelectionGraphWrapper = styled.div`
     }
   }
 
+  .overlay {
+    cursor: default;
+    &:active {
+      cursor: ew-resize;
+    }
+  }
   .selection {
     stroke: none;
     fill-opacity: 1;

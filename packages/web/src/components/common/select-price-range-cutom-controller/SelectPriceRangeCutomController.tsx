@@ -92,9 +92,7 @@ const SelectPriceRangeCutomController: React.FC<SelectPriceRangeCutomControllerP
     }
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
     changePrice(nearPrice);
-    if (priceRangeType !== "Active" && priceRangeType !== "Passive") {
-      setIsChangeMinMax(true);
-    }
+    setIsChangeMinMax(true);
     if (nearPrice > 1) {
       setValue(numberToFormat(nearPrice, 4));
     } else {
