@@ -233,8 +233,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             <h5>1. Select Pair</h5>
             {!isEarnAdd && existTokenPair && (
               <DoubleLogo
-                left={tokenALogo}
-                right={tokenBLogo}
+                left={isKeepToken ? tokenALogo : tokenBLogo}
+                right={!isKeepToken ? tokenALogo : tokenBLogo}
                 size={30}
                 leftSymbol={tokenA?.symbol || ""}
                 rightSymbol={tokenB?.symbol || ""}

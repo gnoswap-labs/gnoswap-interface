@@ -38,7 +38,7 @@ export const TABLE_HEAD = {
   VOLUME: "Volume (24h)",
   FEES: "Fees (24h)",
   APR: "APR",
-  REWARDS: "Rewards",
+  REWARDS: "Incentive",
   LIQUIDITY_PLOT: "Liquidity Plot",
 } as const;
 

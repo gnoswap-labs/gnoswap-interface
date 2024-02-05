@@ -44,7 +44,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
         {isLoading && <div css={loadingWrapper}>
           <LoadingSpinner />
         </div>}
-        {!isLoading && unstakedPositions.map((position, index) => (
+        {!isLoading && stakedPositions.map((position, index) => (
           <RemoveLiquiditySelectListItem
             position={position}
             checkedList={checkedList}
@@ -52,7 +52,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             key={index}
           />
         ))}
-        {!isLoading && stakedPositions.map((position, index) => (
+        {!isLoading && unstakedPositions.map((position, index) => (
           <RemoveLiquiditySelectListItem
             position={position}
             checkedList={checkedList}

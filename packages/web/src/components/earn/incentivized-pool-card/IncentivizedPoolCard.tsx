@@ -44,7 +44,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [pool.incentivizedType]);
 
   const rewardTokensInfo = useMemo(() => {
-    const allRewardTokens = [pool.tokenA, pool.tokenB, ...pool.rewardTokens,];
+    const allRewardTokens = pool.rewardTokens;
     const temp = allRewardTokens.map((item) => {
       return {
         ...item,

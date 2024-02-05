@@ -78,7 +78,7 @@ const EarnMyPositionContainer: React.FC<
   }, [router]);
 
   const moveEarnStake = useCallback(() => {
-    router.push("/earn/stake");
+    router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/stake");
   }, [router]);
 
 

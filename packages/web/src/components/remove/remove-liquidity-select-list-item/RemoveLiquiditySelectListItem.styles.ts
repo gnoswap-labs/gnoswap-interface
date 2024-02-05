@@ -25,7 +25,10 @@ export const RemoveLiquiditySelectListItemWrapper = styled.li<{
   ${media.mobile} {
     padding: 11px;
   }
-
+  .logo-wrapper {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 5px;
+  }
   input[type="checkbox"] + label:before {
     background-color: ${({ theme }) => theme.color.background12};
   }

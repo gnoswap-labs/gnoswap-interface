@@ -36,6 +36,10 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
       color: ${theme.color.text02};
       text-align: right;
     }
+    .logo-wrapper {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
+    }
     .hover-info {
       &,
       & * {

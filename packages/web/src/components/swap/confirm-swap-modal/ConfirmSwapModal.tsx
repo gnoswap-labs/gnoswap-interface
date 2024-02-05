@@ -114,7 +114,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               </div>
             </div>
             {submitted ? (
-              <ConfirmSwapResult swapResult={swapResult} close={close} />
+              <ConfirmSwapResult swapResult={swapResult} close={close} swapTokenInfo={swapTokenInfo}/>
             ) : (
               <>
                 <div className="modal-receipt">
@@ -219,11 +219,13 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 interface ConfirmSwapResultProps {
   swapResult: SwapResultInfo | null;
   close: () => void;
+  swapTokenInfo: SwapTokenInfo;
 }
 
 const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
   swapResult,
   close,
+  swapTokenInfo,
 }) => {
   if (swapResult === null) {
     return (
@@ -233,7 +235,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         </div>
         <div className="transaction-state">
           <span className="submitted">Waiting for Confirmation</span>
-          <span className="swap-message">Swapping 0.1 GNS for 0.12 GNOT</span>
+          <span className="swap-message">Swapping {swapTokenInfo.tokenAUSD.toLocaleString()} GNS for {swapTokenInfo.tokenBUSD.toLocaleString()} GNOT</span>
           <div className="view-transaction">
             <span>Confirm this transaction in your wallet</span>
           </div>

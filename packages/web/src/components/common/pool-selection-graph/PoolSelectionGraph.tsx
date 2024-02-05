@@ -550,8 +550,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       rects
         .append("g")
         .attr("transform", `translate(0,${boundsHeight})`)
-        .call(xAxis)
-        .style("stroke", "#596782");
+        .call(xAxis);
     }
 
     // Create a line of current tick.

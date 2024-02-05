@@ -39,7 +39,7 @@ const SelectDistributionDateInput: React.FC<SelectDistributionDateInputProps> = 
     if (!date) {
       return "";
     }
-    return `${date.date}/${date.month}/${date.year}`;
+    return `${date.year}/${`0${date.month}`.slice(-2)}/${`0${date.date}`.slice(-2)}`;
   }, [date]);
 
   const onClickCalendarDate = (date: DistributionPeriodDate) => {

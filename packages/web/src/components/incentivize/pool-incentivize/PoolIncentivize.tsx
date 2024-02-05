@@ -46,18 +46,9 @@ interface PoolIncentivizeProps {
 }
 
 const customSort = (a: PoolSelectItemInfo, b: PoolSelectItemInfo) => {
-  const isAGnotGns = a.tokenA.symbol?.includes("GNS") && a.tokenB.symbol?.includes("GNOT");
-  const isBGnotGns = b.tokenA.symbol?.includes("GNS") && b.tokenB.symbol?.includes("GNOT");
-  
-  if (isAGnotGns && !isBGnotGns) {
-    return -1;
-  } else if (!isAGnotGns && isBGnotGns) {
-    return 1;
-  } else {
-    const liquidityA = parseFloat(a.liquidityAmount);
-    const liquidityB = parseFloat(b.liquidityAmount);
-    return liquidityB - liquidityA;
-  }
+  const liquidityA = parseFloat(a.liquidityAmount);
+  const liquidityB = parseFloat(b.liquidityAmount);
+  return liquidityB - liquidityA;
 };
 
 const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
@@ -79,13 +70,15 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   isDisabledSelect,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-
+  
   const selectedItem = useMemo((): PoolSelectItemInfo | null => {
     const temp = selectedPool ? PoolMapper.toPoolSelectItemInfo(selectedPool) : null;
     return temp;
   }, [selectedPool]);
   
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
+    console.log(pools.map(PoolMapper.toPoolSelectItemInfo));
+    
     return pools.map(PoolMapper.toPoolSelectItemInfo).map((item: PoolSelectItemInfo) => {
       return {
         ...item,

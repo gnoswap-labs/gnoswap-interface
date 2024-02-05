@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { SCANNER_URL } from "@common/values";
 import { INoticeContent } from "@components/common/notice/NoticeToast";
 import { CommonState } from "@states/index";
@@ -85,13 +86,15 @@ export function makeBroadcastSwapMessage(
   hash?: string,
 ): INoticeContent {
   function description() {
+    const tokenA = BigNumber(data.tokenAAmount).toFormat(2);
+    const tokenB = BigNumber(data.tokenBAmount).toFormat(2);
     switch (type) {
       case "pending":
-        return `Swapping ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Swapping ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
       case "success":
-        return `Swapped ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Swapped ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
       case "error":
-        return `Failed to swap ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Failed to swap ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
     }
   }
   return {

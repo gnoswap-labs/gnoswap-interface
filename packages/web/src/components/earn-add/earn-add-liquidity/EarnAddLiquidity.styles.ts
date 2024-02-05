@@ -106,7 +106,7 @@ export const EarnAddLiquidityWrapper = styled.section`
       }
     }
     .fee-tier-bad {
-      border: 1px solid #233DBD;
+      border: 1px solid ${({ theme }) => theme.color.border19};
       color: ${({ theme }) => theme.color.text26};
       background: ${({ theme }) => theme.color.background22};
     }
