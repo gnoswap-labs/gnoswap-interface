@@ -3,21 +3,16 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useState } from "react";
 import { wrapper } from "./WalletMyPositionsHeader.styles";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 const WalletMyPositionsHeader: React.FC = () => {
-  const [disabled, setDisabled] = useState(false);
-  const [positionNum, setPositionNum] = useState(0);
-  const onClickNewPosition = () => {
-    // TODO
-  };
+  const {  isFetchedPosition, positions } = usePositionData();
 
-  if(positionNum === 0) {
-    return null;
-  }
+  if (!isFetchedPosition) return null;
 
   return (
     <div css={wrapper}>
-      <h2>{`My Positions (${positionNum})`}</h2>
+      <h2>{`My Positions (${positions.length})`}</h2>
     </div>
   );
 };

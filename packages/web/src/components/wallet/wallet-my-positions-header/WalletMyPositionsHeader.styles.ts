@@ -6,7 +6,7 @@ import mixins from "@styles/mixins";
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
-  margin-top: 100px;
+  margin-top: 60px;
   color: ${theme.color.text02};
   ${fonts.h5}
   ${media.tablet} {

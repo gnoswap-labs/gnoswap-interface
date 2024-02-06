@@ -27,6 +27,7 @@ import {
   SearchButton,
   SearchContainer,
 } from "./Header.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface HeaderProps {
   pathname?: string;
@@ -78,6 +79,7 @@ const Header: React.FC<HeaderProps> = ({
   recents,
   movePage,
 }) => {
+  const { width } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
 
   const changeTokenDeposit = useCallback(() => {
@@ -135,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
-              {connected && breakpoint !== DEVICE_TYPE.MOBILE && (
+              {connected && width > 890 && (
                 <DepositButton onClick={() => changeTokenDeposit()}>
                   <IconDownload />
                   <span>Deposit</span>

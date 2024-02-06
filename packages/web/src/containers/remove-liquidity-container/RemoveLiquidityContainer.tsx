@@ -9,7 +9,7 @@ import { useLoading } from "@hooks/common/use-loading";
 
 const RemoveLiquidityContainer: React.FC = () => {
   const router = useRouter();
-  const { account } = useWallet();
+  const { account, connected } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { getPositionsByPoolId, loadingPositionById } = usePositionData();
@@ -20,12 +20,14 @@ const RemoveLiquidityContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
+    if (!connected) return [];
     return positions.filter(position => position.staked);
-  }, [positions]);
+  }, [positions, connected]);
 
   const unstakedPositions = useMemo(() => {
+    if (!connected) return [];
     return positions.filter(position => !position.staked);
-  }, [positions]);
+  }, [positions, connected]);
 
   const checkedAll = useMemo(() => {
     if (unstakedPositions.length === 0) {
@@ -66,8 +68,7 @@ const RemoveLiquidityContainer: React.FC = () => {
     }
     if (account?.address) {
       setPositions(getPositionsByPoolId(poolPath));
-    } else {
-      setPositions([]);
+      return;
     }
   }, [account?.address, getPositionsByPoolId, router.query]);
 

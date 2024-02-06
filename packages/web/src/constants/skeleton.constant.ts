@@ -281,9 +281,9 @@ export const POOL_TD_WIDTH_TABLET = [199, 150, 150, 150, 140, 150, 160];
 export const POOL_TD_WIDTH_SMALL_TABLET = [185, 110, 110, 100, 80, 104, 160];
 export const POOL_TD_WIDTH_MOBILE = [210, 110, 140, 120, 100, 106, 160];
 export const TOKEN_SEARCH_WIDTH = [400];
-export const ASSET_TD_WIDTH = [360, 360, 360, 140, 138];
-export const TABLET_ASSET_TD_WIDTH = [273, 273, 273, 140, 140];
-export const MOBILE_ASSET_TD_WIDTH = [230, 210, 210, 80, 120];
+export const ASSET_TD_WIDTH = [240, 300, 280, 280, 120, 138];
+export const TABLET_ASSET_TD_WIDTH = [220, 240, 190, 190, 120, 138];
+export const MOBILE_ASSET_TD_WIDTH = [230, 230, 195, 195, 90, 118];
 export const TOKEN_TD_WIDTH = [
   56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124,
 ];

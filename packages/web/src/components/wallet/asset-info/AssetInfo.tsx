@@ -24,10 +24,10 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   withdraw,
   breakpoint,
 }) => {
-  const { logoURI, name, symbol, balance, type } = asset;
+  const { logoURI, name, symbol, balance, type, path } = asset;
 
   const onClickItem = useCallback((symbol: string) => {
-    location.href = "/tokens/" + symbol;
+    location.href = `/tokens/${symbol}?tokenB=${path}&direction=EXACT_IN`;
   }, []);
 
   const onClickDeposit = useCallback(() => {
@@ -63,10 +63,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn tdWidth={ASSET_TD_WIDTH[3]}>
-        <DepositButton onClick={onClickDeposit} />
+      <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[3]}>
+        <span className="balance">{convertBalance}</span>
       </TableColumn>
       <TableColumn tdWidth={ASSET_TD_WIDTH[4]}>
+        <DepositButton onClick={onClickDeposit} />
+      </TableColumn>
+      <TableColumn tdWidth={ASSET_TD_WIDTH[5]}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
@@ -93,6 +96,9 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <DepositButton onClick={onClickDeposit} />
       </TableColumn>
       <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[4]}>
+        <DepositButton onClick={onClickDeposit} />
+      </TableColumn>
+      <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[5]}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>

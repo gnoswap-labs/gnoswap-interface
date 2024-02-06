@@ -16,7 +16,6 @@ import { convertToMB } from "@utils/stake-position-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useRef, useState } from "react";
-import WithdrawStatus from "./confirm-withdraw-modal/WithdrawStatusModal";
 import useWithdrawTokens from "./useWithdrawTokens";
 import {
   BoxDescription,
@@ -75,8 +74,6 @@ const WithDrawModal: React.FC<Props> = ({
     isConfirm,
     setIsConfirm,
     onSubmit: handleSubmit,
-    result,
-    setResult,
   } = useWithdrawTokens();
 
   const { account } = useWallet();
@@ -90,7 +87,7 @@ const WithDrawModal: React.FC<Props> = ({
       const value = e.target.value;
 
       if (value !== "" && !isAmount(value)) return;
-      setAmount(value);
+      setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
     [],
   );
@@ -117,11 +114,6 @@ const WithDrawModal: React.FC<Props> = ({
       withdrawInfo.type,
     );
   };
-
-  const onCancelConfirm = useCallback(() => {
-    setIsConfirm(false);
-    setResult(null);
-  }, [setIsConfirm, setResult]);
 
   const getNativeToken = () => {
     if (!tokens || tokens.length === 0) return null;
@@ -159,7 +151,7 @@ const WithDrawModal: React.FC<Props> = ({
   };
 
   if (isConfirm) {
-    return <WithdrawStatus withdrawResult={result} close={onCancelConfirm} />;
+    return null;
   }
 
   return (

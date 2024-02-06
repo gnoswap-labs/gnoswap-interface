@@ -74,7 +74,7 @@ const StakePositionContainer: React.FC = () => {
     if (!connected) return true;
     return stakedPositions.length === 0 && unstakedPositions.length === 0 && isFetched;
   }, [stakedPositions.length, unstakedPositions.length, isFetched, connected]);
-    
+  
   return (
     <StakePosition
       stakedPositions={stakedPositions}

@@ -1,5 +1,6 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
+import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
@@ -23,6 +24,7 @@ export interface AssetSortOption {
 export const ASSET_HEAD = {
   ASSET: "Asset",
   CHAIN: "Chain",
+  AMOUNT: "Amount",
   BALANCE: "Balance",
   DEPOSIT: "Deposit",
   WITHDRAW: "Withdraw",
@@ -160,55 +162,20 @@ interface SortedProps extends TokenModel {
   tokenPrice: number;
 }
 
-const customSortAll = (a: SortedProps, b: SortedProps): number => {
-  if (a.symbol === "GNOT" && b.symbol !== "GNOT") {
-    return -1;
-  } else if (a.symbol !== "GNOT" && b.symbol === "GNOT") {
-    return 1;
-  } else if (a.symbol === "GNS" && b.symbol !== "GNS") {
-    return -1;
-  } else if (a.symbol !== "GNS" && b.symbol === "GNS") {
-    return 1;
-  } else {
-    const priceA = parseFloat((a?.price ?? "").replace(/,/g, ""));
-    const priceB = parseFloat((b?.price ?? "").replace(/,/g, ""));
-
-    if (!isNaN(priceA) && !isNaN(priceB) && priceA < priceB) {
-      return 1;
-    } else if (isNaN(priceA) && isNaN(priceB)) {
-      const numberRegex = /\d+/;
-      const numberA = numberRegex.test(a.name);
-      const numberB = numberRegex.test(b.name);
-      if (numberA > numberB) {
-        return 1;
-      } else if (numberA > numberB) {
-        return -1;
-      } else {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      }
-    } else if (!isNaN(priceA) || isNaN(priceB) ) {
-      if (priceA === 0 && priceB === 0) {
-        if (a.tokenPrice < b.tokenPrice) {
-          return 1;
-        } else {
-          return -1;
-        }
-      } else {
-        return -1;
-      }
-    } else {
-      const numberRegex = /\d+/;
-      const numberA = numberRegex.test(a.name);
-      const numberB = numberRegex.test(b.name);
-      if (numberA > numberB) {
-        return 1;
-      } else if (numberA > numberB) {
-        return -1;
-      } else {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-      }
-    }
-  }
+const handleSort = (list: SortedProps[]) => {
+  const gnot = list.find(a => a.symbol === GNOT_SYMBOL);
+  const gnos = list.find(a => a.symbol === GNS_SYMBOL);
+  const valueOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL).sort((a, b) => {
+    const priceA = parseFloat((a.price || "0").replace(/,/g, ""));
+    const priceB = parseFloat((b.price || "0").replace(/,/g, ""));
+    return priceB - priceA;
+  });
+  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a,b) => b.tokenPrice - a.tokenPrice);
+  const alphabest = list.filter(a => !amountOfBalance.includes(a) && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  const rs = [];
+  gnot && rs.push(gnot);
+  gnos && rs.push(gnos);
+  return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
 };
 
 const AssetListContainer: React.FC = () => {
@@ -304,7 +271,7 @@ const AssetListContainer: React.FC = () => {
         asset => invisibleZeroBalance === false || filterZeroBalance(asset),
       );
 
-    let sortedData = temp.sort(customSortAll);
+    let sortedData = handleSort(temp || []);
 
     if (sortOption?.key === "Asset") {
       sortedData = sortedData.sort((x, y) => {
@@ -366,6 +333,8 @@ const AssetListContainer: React.FC = () => {
   }, []);
 
   const toggleInvisibleZeroBalance = useCallback(() => {
+    console.log(123);
+    
     setInvisibleZeroBalance(!invisibleZeroBalance);
   }, [invisibleZeroBalance]);
 

@@ -50,7 +50,6 @@ export const WalletLayoutWrapper = styled.div`
   .balance-container {
     width: 100%;
   }
-
   .wallet-detail-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};

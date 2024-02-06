@@ -12,6 +12,7 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { convertToKMB } from "@utils/stake-position-utils";
+import BigNumber from "bignumber.js";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -38,14 +39,14 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
             <img src={position.pool.tokenA.logoURI} alt="token logo" />
             {position.pool.tokenA.symbol}
           </div>
-          <div className="value">{makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance)}</div>
+          <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance) || 0).toFormat(2)}</div>
         </div>
         <div>
           <div className="value">
             <img src={position.pool.tokenB.logoURI} alt="token logo" />
             {position.pool.tokenB.symbol}
           </div>
-          <div className="value">{makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance)}</div>
+          <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance) || 0).toFormat(2)}</div>
         </div>
       </div>
       {disabled && <div className="divider"></div>}

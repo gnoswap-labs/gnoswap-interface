@@ -49,7 +49,6 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
                 checked={invisibleZeroBalance}
                 onChange={toggleInvisibleZeroBalance}
                 hasLabel={true}
-                disabled={assetType === ASSET_FILTER_TYPE.GRC20}
               />
             )}
             {searchIcon ? (
@@ -70,7 +69,6 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
                   checked={invisibleZeroBalance}
                   onChange={toggleInvisibleZeroBalance}
                   hasLabel={true}
-                  disabled={assetType === ASSET_FILTER_TYPE.GRC20}
                 />
                 <div className="icon-wrap" onClick={onTogleSearch}>
                   <IconSearch className="search-icon" />
@@ -86,7 +84,6 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
             checked={invisibleZeroBalance}
             onChange={toggleInvisibleZeroBalance}
             hasLabel={true}
-            disabled={assetType === ASSET_FILTER_TYPE.GRC20}
           />
           <SearchInput
             width={300}
