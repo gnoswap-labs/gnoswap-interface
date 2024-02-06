@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
+import { DeviceSize } from "@styles/media";
 
 export default function Earn() {
   const { width } = useWindowSize();
@@ -23,7 +24,7 @@ export default function Earn() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          width >= 1130
+          width >= DeviceSize.mediumWeb
             ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",

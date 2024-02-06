@@ -13,7 +13,7 @@ const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
 
   return (
     <WalletBalanceSummaryInfoWrapper>
-      <PulseSkeleton loading={balanceSummaryInfo.loading} w="300px" h={20} className="amount">
+      <PulseSkeleton loading={balanceSummaryInfo.loading} w="200px" h={20} className="amount">
         <span className="amount">{balanceSummaryInfo.amount}</span>
       </PulseSkeleton>
       {/* <span

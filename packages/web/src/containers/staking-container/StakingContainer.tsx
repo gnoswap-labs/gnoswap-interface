@@ -117,8 +117,6 @@ const StakingContainer: React.FC = () => {
     };
   }, []);
   
-  if (positions.length === 0) return null;
-
   return (
     <Staking
       pool={pool}

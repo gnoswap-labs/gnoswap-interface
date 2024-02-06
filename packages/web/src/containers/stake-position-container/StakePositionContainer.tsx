@@ -9,7 +9,7 @@ import React, { useCallback, useState, useEffect, useMemo } from "react";
 
 const StakePositionContainer: React.FC = () => {
   const router = useRouter();
-  const { account } = useWallet();
+  const { account, connected } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
@@ -62,7 +62,6 @@ const StakePositionContainer: React.FC = () => {
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
     if (!account?.address) {
-        setPositions([]);
         return;
     }
     if (!poolPath) {
@@ -72,9 +71,10 @@ const StakePositionContainer: React.FC = () => {
     setPositions(getPositionsByPoolId(poolPath));
   }, [account?.address, getPositionsByPoolId, router.query]);
   const isEmpty = useMemo(() => {
+    if (!connected) return true;
     return stakedPositions.length === 0 && unstakedPositions.length === 0 && isFetched;
-  }, [stakedPositions.length, unstakedPositions.length, isFetched]);
-  
+  }, [stakedPositions.length, unstakedPositions.length, isFetched, connected]);
+    
   return (
     <StakePosition
       stakedPositions={stakedPositions}

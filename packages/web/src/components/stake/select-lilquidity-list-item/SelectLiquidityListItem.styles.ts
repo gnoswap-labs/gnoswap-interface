@@ -29,6 +29,10 @@ export const wrapper = (checked: boolean) => (theme: Theme) =>
         margin-left: 3px;
       }
     }
+    .logo-wrapper {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 5px;
+    }
     .liquidity-value {
       margin-left: auto;
       color: ${theme.color.text02};

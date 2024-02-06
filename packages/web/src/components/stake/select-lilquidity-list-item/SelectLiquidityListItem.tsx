@@ -6,6 +6,8 @@ import { numberToUSD } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import React, { useMemo } from "react";
 import { tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 interface SelectLiquidityListItemProps {
   disabled?: boolean;
@@ -38,7 +40,7 @@ const TooltipContent: React.FC<{ position: PoolPositionModel, disabled: boolean 
       {disabled && <div className="divider"></div>}
       {disabled && (
           <div className="unstake-description">
-            *You need to unstake your position first.
+            This position is already staked.
           </div>
         )}
     </div>
@@ -51,6 +53,8 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
   onCheckedItem,
   disabled = false,
 }) => {
+  const { width } = useWindowSize();
+
   const checked = useMemo(() => {
     return checkedList.includes(position.id);
   }, [checkedList, position.id]);
@@ -64,8 +68,9 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
+    if (width < 400) return `$${convertToKMB(position.positionUsdValue)}`;
     return numberToUSD(Number(position.positionUsdValue));
-  }, [position.positionUsdValue]);
+  }, [position.positionUsdValue, width]);
 
   return (
     <li css={wrapper(checked)}>
@@ -78,14 +83,16 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
           onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
-        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
         <Tooltip
           placement="top"
           FloatingContent={<TooltipContent position={position} disabled={disabled}/>}
         >
-          <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
+          <div className="logo-wrapper">
+            <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
+            {width > 768 && <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>}
+            <Badge text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
+          </div>
         </Tooltip>
-        <Badge text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
       <span className="liquidity-value" >{liquidityUSD}</span>
     </li>

@@ -56,9 +56,5 @@ export const RemoveLiquiditySelectListWrapper = styled.div`
     margin-top: 12px;
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body12}
-    background-color: ${({ theme }) => theme.color.background20};
-    width: 100%;
-    border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.color.border02};
   }
 `;
