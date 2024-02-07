@@ -33,7 +33,6 @@ interface PoolPairInfoContentProps {
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
-  positions,
 }) => {
   const { getGnotPath } = useGnotToGnot();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -41,14 +40,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
   
   const tokenABalance = useMemo(() => {
-    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token0Balance), 0);
-    return makeDisplayTokenAmount(pool.tokenA, sum) || 0;
-  }, [pool.tokenA, pool.tokenABalance, positions]);
+    return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
+  }, [pool.tokenA, pool.tokenABalance]);
 
   const tokenBBalance = useMemo(() => {
-    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token1Balance), 0);
-    return makeDisplayTokenAmount(pool.tokenB, sum) || 0;
-  }, [pool.tokenB, pool.tokenBBalance, positions]);
+    return makeDisplayTokenAmount(pool.tokenB, pool.tokenBBalance) || 0;
+  }, [pool.tokenB, pool.tokenBBalance]);
   
   const depositRatio = useMemo(() => {
     const sumOfBalances = tokenABalance + tokenBBalance;

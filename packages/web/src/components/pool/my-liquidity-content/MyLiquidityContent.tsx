@@ -322,11 +322,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [activated, unclaimedRewardInfo]);
   
   const tokenABalance = useMemo(() => {
-    return makeDisplayTokenAmount(positionData?.tokenA, positionData?.tokenABalance) || 0;
+    if (!positionData) return 0;
+    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token0Balance), 0);
+    return makeDisplayTokenAmount(positionData?.tokenA, sum) || 0;
   }, [positionData?.tokenA, positionData?.tokenABalance]);
 
   const tokenBBalance = useMemo(() => {
-    return makeDisplayTokenAmount(positionData?.tokenB, positionData?.tokenBBalance) || 0;
+    if (!positionData) return 0;
+    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token1Balance), 0);
+    return makeDisplayTokenAmount(positionData?.tokenB, sum) || 0;
   }, [positionData?.tokenB, positionData?.tokenBBalance]);
   
   const depositRatio = useMemo(() => {

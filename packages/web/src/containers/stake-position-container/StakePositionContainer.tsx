@@ -9,7 +9,7 @@ import React, { useCallback, useState, useEffect, useMemo } from "react";
 
 const StakePositionContainer: React.FC = () => {
   const router = useRouter();
-  const { account, connected } = useWallet();
+  const { account, connected, connectAccount } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
@@ -58,8 +58,13 @@ const StakePositionContainer: React.FC = () => {
   }, [checkedAll, unstakedPositions]);
 
   const submitPosition = useCallback(() => {
-    openModal();
-  }, [openModal]);
+    if (!connected) {
+      connectAccount();
+    } else {
+      openModal();
+    }
+    
+  }, [openModal, connected, connectAccount]);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;

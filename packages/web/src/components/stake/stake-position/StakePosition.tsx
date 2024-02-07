@@ -41,8 +41,8 @@ const StakePosition: React.FC<StakePositionProps> = ({
   connected,
 }) => {
   const isEmptyCheckList = useMemo(() => {
-    return checkedList.length === 0;
-  }, [checkedList]);
+    return checkedList.length === 0 && connected;
+  }, [checkedList, connected]);
 
   const selectedPositions = useMemo(() => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
