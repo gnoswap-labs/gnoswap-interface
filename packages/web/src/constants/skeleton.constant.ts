@@ -377,9 +377,10 @@ export const ASSET_INFO = {
   total: 15,
   tdWidth: ASSET_TD_WIDTH,
   list: [
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
   ],
 };
 

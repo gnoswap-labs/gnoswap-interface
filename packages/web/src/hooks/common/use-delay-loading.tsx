@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const DELAY_LOADING = 500;
 
 const useDelayLoading = (loadingProp = false, delay = DELAY_LOADING) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(loadingProp);
 
   useEffect(() => {
     let loadingTimeout: NodeJS.Timeout | null = null;

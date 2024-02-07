@@ -77,7 +77,6 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
   }, [selectedPool]);
   
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
-    console.log(pools.map(PoolMapper.toPoolSelectItemInfo));
     
     return pools.map(PoolMapper.toPoolSelectItemInfo).map((item: PoolSelectItemInfo) => {
       return {

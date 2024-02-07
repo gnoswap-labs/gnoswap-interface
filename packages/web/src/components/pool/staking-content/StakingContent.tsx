@@ -28,8 +28,8 @@ interface StakingContentProps {
 }
 
 const TEXT_BTN = [
-  "Stake your positions to get started ⛵",
   "Create your first position to get started ⛵",
+  "Stake your positions to get started ⛵",
   "Keep your position staked to get higher rewards ⌛",
   "Receiving Max Rewards ✨",
 ];

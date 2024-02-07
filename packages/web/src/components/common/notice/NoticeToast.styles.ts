@@ -127,9 +127,13 @@ export const NoticeUIWrapper = styled.div`
           ${fonts.body7}
         }
       }
-      p {
+      .description {
         ${fonts.body12}
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text22};
+        span {
+          color: ${({ theme }) => theme.color.text16};
+          font-weight: 500;
+        }
         ${media.mobile} {
           ${fonts.p2}
         }

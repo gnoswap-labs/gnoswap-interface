@@ -44,7 +44,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const changeTokenWithdraw = useCallback((token: TokenModel) => {
     setWithDrawInfo(token);
-    setIsShowWithDrawModal(true);
+    // setIsShowWithDrawModal(true);
   }, []);
 
   const deposit = useCallback(() => {
@@ -126,7 +126,8 @@ const WalletBalanceContainer: React.FC = () => {
   };
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
-
+  console.log(isShowWithdrawModal, "isShowWithdrawModal");
+  
   return (
     <>
       <WalletBalance

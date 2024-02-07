@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import PoolPairInformation from "@components/pool/pool-pair-information/PoolPairInformation";
 import { makeSwapFeeTier } from "@utils/swap-utils";
@@ -7,6 +7,9 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useLoading } from "@hooks/common/use-loading";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 export interface pathProps {
   title: string;
@@ -74,6 +77,25 @@ const PoolPairInformationContainer = () => {
   const poolPath = router.query["pool-path"] || "";
   const { data = initialPool as PoolDetailModel, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoadingCommon } = useLoading();
+  const [positions, setPositions] = useState<PoolPositionModel[]>([]);
+  const { getPositionsByPoolId } = usePositionData();
+  const { connected: connectedWallet, account } = useWallet();
+
+  useEffect(() => {
+    const poolPath = router.query["pool-path"] as string;
+    if (!poolPath) {
+      return;
+    }
+    if (!connectedWallet) {
+      return;
+    }
+    if (account?.address) {
+      const temp = getPositionsByPoolId(poolPath);
+      setPositions(temp);
+    }
+
+  }, [account?.address, router.query, getPositionsByPoolId, connectedWallet]);
+  
   const onClickPath = (path: string) => {
     router.push(path);
   };
@@ -112,6 +134,7 @@ const PoolPairInformationContainer = () => {
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || isLoadingCommon}
+      positions={connectedWallet ? positions : []}
     />
   );
 };

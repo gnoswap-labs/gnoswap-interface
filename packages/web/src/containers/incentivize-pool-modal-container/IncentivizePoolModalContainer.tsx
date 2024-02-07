@@ -21,7 +21,6 @@ const IncentivizePoolModalContainer = () => {
   const [dataModal] = useAtom(EarnState.dataModal);
   const [pool] = useAtom(EarnState.pool);
   const { openModal } = useTransactionConfirmModal();
-  console.log(dataModal, "dataModaldataModal");
   
   const close = useCallback(() => {
     clearModal();

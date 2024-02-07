@@ -157,11 +157,11 @@ export function makeBroadcastIncentivizeMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Adding ${data.tokenAmount} ${data.tokenSymbol} as incentives`;
+        return `Adding <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
       case "success":
-        return `Added ${data.tokenAmount} ${data.tokenSymbol} as incentives`;
+        return `Added <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
       case "error":
-        return `Failed to add ${data.tokenAmount} ${data.tokenSymbol} as incentives`;
+        return `Failed to add <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
     }
   }
   return {

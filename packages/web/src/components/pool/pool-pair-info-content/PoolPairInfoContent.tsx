@@ -22,28 +22,33 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { tickToPriceStr } from "@utils/swap-utils";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
+  positions: PoolPositionModel[];
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
+  positions,
 }) => {
-  console.log(pool);
-  
+  const { getGnotPath } = useGnotToGnot();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
   
   const tokenABalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
-  }, [pool.tokenA, pool.tokenABalance]);
+    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token0Balance), 0);
+    return makeDisplayTokenAmount(pool.tokenA, sum) || 0;
+  }, [pool.tokenA, pool.tokenABalance, positions]);
 
   const tokenBBalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenB, pool.tokenBBalance) || 0;
-  }, [pool.tokenB, pool.tokenBBalance]);
+    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token1Balance), 0);
+    return makeDisplayTokenAmount(pool.tokenB, sum) || 0;
+  }, [pool.tokenB, pool.tokenBBalance, positions]);
   
   const depositRatio = useMemo(() => {
     const sumOfBalances = tokenABalance + tokenBBalance;
@@ -110,7 +115,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool]);
 
   const stakeLogo = useMemo(() => {
-    return pool?.rewardTokens?.map((item) => item?.logoURI);
+    return pool?.rewardTokens?.map((item) => getGnotPath(item)?.logoURI);
   }, [pool?.rewardTokens]);
 
   return (

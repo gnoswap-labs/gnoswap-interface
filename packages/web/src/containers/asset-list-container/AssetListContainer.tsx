@@ -266,6 +266,7 @@ const AssetListContainer: React.FC = () => {
           ...item,
           price: BigNumber(tokenPrice)
             .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
+            .dividedBy(10 ** 6)
             .toFormat(2),
           balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
@@ -337,8 +338,6 @@ const AssetListContainer: React.FC = () => {
   }, []);
 
   const toggleInvisibleZeroBalance = useCallback(() => {
-    console.log(123);
-    
     setInvisibleZeroBalance(!invisibleZeroBalance);
   }, [invisibleZeroBalance]);
 
@@ -410,7 +409,7 @@ const AssetListContainer: React.FC = () => {
   };
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
-
+  
   return (
     <>
       <AssetList

@@ -76,14 +76,26 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     ${media.mobile} {
       gap: 8px;
     }
+    > div {
+      ${mixins.flexbox("row", "center", "flex-start")};
+    }
     .pule-skeleton {
       display: inline-flex;
+    }
+    .loading {
+      height: 39px;
+      ${media.tablet} {
+        height: 34px;
+      }
+      ${media.mobile} {
+        height: 31px;
+      }
     }
     .value {
       display: inline-flex;
       width: 100%;
       ${fonts.body2};
-      font-weight: 600;
+      font-weight: 500;
       color: ${({ theme }) => theme.color.text02};
       ${media.tablet} {
         ${fonts.body4};

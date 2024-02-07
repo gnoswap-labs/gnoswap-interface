@@ -155,7 +155,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [selectPool]);
 
   function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
-    console.log(priceRangeType, "priceRangeTypepriceRangeTypepriceRangeType", selectPool.minPrice, selectPool.isChangeMinMax);
     // if (inputPriceRangeType === "Custom") return;
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
     const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;

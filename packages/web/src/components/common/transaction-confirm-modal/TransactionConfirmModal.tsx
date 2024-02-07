@@ -58,7 +58,7 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({
       </div>
       <div className="transaction-state">
         <span className="submitted">Waiting for Confirmation</span>
-        <span className="swap-message">{description || ""}</span>
+        <div className="swap-message" dangerouslySetInnerHTML={{ __html: description || ""}} />
         <div className="view-transaction">
           <span>Confirm this transaction in your wallet</span>
         </div>
