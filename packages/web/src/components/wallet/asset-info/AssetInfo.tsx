@@ -24,7 +24,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   withdraw,
   breakpoint,
 }) => {
-  const { logoURI, name, symbol, balance, type, path } = asset;
+  const { logoURI, name, symbol, balance, type, path, price } = asset;
 
   const onClickItem = useCallback((symbol: string) => {
     location.href = `/tokens/${symbol}?tokenB=${path}&direction=EXACT_IN`;
@@ -38,7 +38,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
-  const convertBalance = BigNumber((balance ?? "").toString()).toFormat();
+  const convertBalance = BigNumber((balance ?? "").toString()).toFormat(6);
+  const priceData = price === "-" ? price : `$${price}`;
 
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
@@ -64,7 +65,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <span className="balance">{convertBalance}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_TD_WIDTH[3]}>
-        <span className="balance">{convertBalance}</span>
+        <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={ASSET_TD_WIDTH[4]}>
         <DepositButton onClick={onClickDeposit} />

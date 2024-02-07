@@ -12,6 +12,7 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetTokensList } from "@query/token";
+import { checkGnotPath } from "@utils/common";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
@@ -39,6 +40,7 @@ export interface Asset extends TokenModel {
   // symbol: string;
   // chain: string;
   balance?: number | string | null;
+  price?: any;
 }
 
 export const ASSET_TYPE = {
@@ -69,6 +71,7 @@ export const dummyAssetList: Asset[] = [
     priceId: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
+    price: "0",
   },
   {
     type: "grc20",
@@ -83,6 +86,7 @@ export const dummyAssetList: Asset[] = [
     priceId: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
+    price: "0",
   },
 ];
 
@@ -243,7 +247,7 @@ const AssetListContainer: React.FC = () => {
       setTokenSortOption(undefined);
     }
   }, [tokens]);
-
+  
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;
 
@@ -261,8 +265,8 @@ const AssetListContainer: React.FC = () => {
         return {
           ...item,
           price: BigNumber(tokenPrice)
-            .multipliedBy(tokenPrices[item?.path]?.usd || "0")
-            .toFormat(),
+            .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
+            .toFormat(2),
           balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
         };
@@ -298,8 +302,8 @@ const AssetListContainer: React.FC = () => {
     }
 
     sortedData = sortedData
-      .filter(asset => filterType(asset, assetType))
-      .filter(asset => filterKeyword(asset, keyword));
+      .filter((asset: any) => filterType(asset, assetType))
+      .filter((asset: any) => filterKeyword(asset, keyword));
 
     const resultFilteredAssets = extended
       ? sortedData

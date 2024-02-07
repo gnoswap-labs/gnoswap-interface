@@ -20,6 +20,8 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { tickToPriceStr } from "@utils/swap-utils";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import TooltipAPR from "./TooltipAPR";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -29,10 +31,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
 }) => {
+  console.log(pool);
+  
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
-
+  
   const tokenABalance = useMemo(() => {
     return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
   }, [pool.tokenA, pool.tokenABalance]);
@@ -101,7 +105,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return tickToPriceStr(pool.currentTick, 40);
   }, [pool?.currentTick]);
 
-  
+  const feeLogo = useMemo(() => {
+    return [pool?.tokenA?.logoURI, pool?.tokenB?.logoURI];
+  }, [pool]);
+
+  const stakeLogo = useMemo(() => {
+    return pool?.rewardTokens?.map((item) => item?.logoURI);
+  }, [pool?.rewardTokens]);
+
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
@@ -175,7 +186,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         </section>
         <section>
           <h4>APR</h4>
-          {!loading && <strong>{aprValue}</strong>}
+          {!loading && 
+          <Tooltip
+            placement="top"
+            FloatingContent={<TooltipAPR feeAPR={pool?.feeApr} stakingAPR={pool?.stakingApr} feeLogo={feeLogo} stakeLogo={stakeLogo}/>}
+          >
+          <strong>{aprValue}</strong>
+        </Tooltip>}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
             css={pulseSkeletonStyle({ h: 20, w:"170px"})}

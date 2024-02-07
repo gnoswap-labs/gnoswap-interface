@@ -83,6 +83,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
       display: inline-flex;
       width: 100%;
       ${fonts.body2};
+      font-weight: 600;
       color: ${({ theme }) => theme.color.text02};
       ${media.tablet} {
         ${fonts.body4};

@@ -21,6 +21,7 @@ import IconArrowUp from "@components/common/icons/IconArrowUp";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import IconFailed from "@components/common/icons/IconFailed";
 import { isEmptyObject } from "@utils/validation-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -97,6 +98,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openedSetting, setOpenedSetting] = useState(false);
+  const { isLoadingCommon } = useLoading();
 
   useEffect(() => {
     if (tokenA && tokenB && isEarnAdd) {
@@ -203,6 +205,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   const handleSelectFeeTier = useCallback((feeTier: SwapFeeTierType) => {
     selectFeeTier(feeTier);
+    selectPool.setIsChangeMinMax(false);
   }, [selectFeeTier]);
 
   const openSetting = useCallback(() => {
@@ -223,6 +226,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     const { minPrice, maxPrice, currentPrice } = selectPool;
     return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0)); 
   }, [selectPool, tokenA, tokenB]);
+  const isLoading = useMemo(() => selectPool.renderState === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
   
   return (
     <EarnAddLiquidityWrapper>
@@ -307,7 +311,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             isKeepToken={isKeepToken}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
-          {isShowOutRange && <OutOfRangeWrapper>
+          {!isLoading && isShowOutRange && <OutOfRangeWrapper>
             <div><IconFailed /> Your position will not earn any fees</div>
             <p>If you add a position with the current range, you will not earn any fees until the token price moves into your range.</p>
           </OutOfRangeWrapper>}

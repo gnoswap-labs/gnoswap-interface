@@ -67,7 +67,7 @@ const WithDrawModal: React.FC<Props> = ({
   callback,
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState("");
   const [address, setAddress] = useState("");
 
   const {

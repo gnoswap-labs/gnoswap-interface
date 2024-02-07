@@ -20,12 +20,14 @@ const StakePositionContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
+    if (!connected) return [];
     return positions.filter(position => position.staked);
-  }, [positions]);
+  }, [positions, connected]);
 
   const unstakedPositions = useMemo(() => {
+    if (!connected) return [];
     return positions.filter(position => !position.staked);
-  }, [positions]);
+  }, [positions, connected]);
 
   const checkedAll = useMemo(() => {
     if (unstakedPositions.length === 0) {
@@ -86,6 +88,7 @@ const StakePositionContainer: React.FC = () => {
       submitPosition={submitPosition}
       isEmpty={isEmpty}
       isLoading={isLoadingCommon || loadingPositionById}
+      connected={connected}
     />
   );
 };

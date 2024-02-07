@@ -75,7 +75,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       "MAX": [],
     });
   }, [positions]);
-
+  
   const checkPoints = useMemo((): StakingPeriodType[] => {
     let checkPointIndex = -1;
     STAKING_PERIOS.forEach((period, index) => {

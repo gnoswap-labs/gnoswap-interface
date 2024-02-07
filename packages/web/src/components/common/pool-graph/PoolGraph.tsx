@@ -107,6 +107,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         reserveTokenAMyAmount: binsMyAmount?.[index]?.reserveTokenA || 0,
         reserveTokenBMyAmount: binsMyAmount?.[index]?.reserveTokenB || 0,
         reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
+        index: index,
       };
     });
     
@@ -275,11 +276,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       min: tickOfPrices[!isSwap ? -minTick : -minTickSwap] || null,
       max: tickOfPrices[!isSwap ? -maxTick : -maxTickSwap] || null,
     };
+    const index = bin.index;
+
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
     const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
     const myTokenAAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenAMyAmount);
     const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenBMyAmount);
-    
+
     const tickSpacing = getTickSpacing();
     let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
     if (isSwap) {
@@ -290,8 +293,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tokenB: tokenB,
       tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
       tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
-      myTokenAAmount: myTokenAAmountStr ? convertToKMB(myTokenAAmountStr.toString()) : "<0.000001",
-      myTokenBAmount: myTokenBAmountStr ? convertToKMB(myTokenBAmountStr.toString()) : "<0.000001",
+      myTokenAAmount: (index < 20  && `${bin.reserveTokenB}` === "0") ? "<0.000001" : (index > 19 && `${bin.reserveTokenA}` === "0") ? "0" : (convertToKMB((myTokenAAmountStr || "0").toString()) || "0"),
+      myTokenBAmount: (index > 19 && `${bin.reserveTokenA}` === "0") ? "<0.000001" : (index < 20 && `${bin.reserveTokenB}` === "0") ? "0" : (convertToKMB((myTokenBAmountStr || "0").toString()) || "0"),
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: tickOfPrices[currentTick || 0],

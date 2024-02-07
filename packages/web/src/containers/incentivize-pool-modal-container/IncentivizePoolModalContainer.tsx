@@ -7,11 +7,12 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useRouter } from "next/router";
 import { makeBroadcastIncentivizeMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 
 const DAY_TIME = 24 * 60 * 60;
 
 const IncentivizePoolModalContainer = () => {
-  const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
+  const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
   const router = useRouter();
   const clearModal = useClearModal();
   const { poolRepository } = useGnoswapContext();
@@ -19,7 +20,9 @@ const IncentivizePoolModalContainer = () => {
   const [startDate] = useAtom(EarnState.date);
   const [dataModal] = useAtom(EarnState.dataModal);
   const [pool] = useAtom(EarnState.pool);
-
+  const { openModal } = useTransactionConfirmModal();
+  console.log(dataModal, "dataModaldataModal");
+  
   const close = useCallback(() => {
     clearModal();
   }, [clearModal]);
@@ -31,6 +34,7 @@ const IncentivizePoolModalContainer = () => {
     const startUTCDate = Date.UTC(startDate.year, startDate.month - 1, startDate.date, 0, 0, 0, 0);
     const startTime = new Date(startUTCDate).getTime();
     const endTime = startTime + period * DAY_TIME;
+    broadcastLoading(makeBroadcastIncentivizeMessage("pending", { tokenAmount: dataModal.amount, tokenSymbol: dataModal?.token?.symbol }));
 
     return poolRepository.createExternalIncentive({
       poolPath: pool.path,
@@ -39,12 +43,13 @@ const IncentivizePoolModalContainer = () => {
       startTime,
       endTime
     }).then(response => {
+
       if (response) {
         if (response.code === 0) {
           broadcastPending();
           setTimeout(() => {
-            broadcastSuccess(makeBroadcastIncentivizeMessage("success"));
-            clearModal();
+            broadcastSuccess(makeBroadcastIncentivizeMessage("success", { tokenAmount: dataModal.amount, tokenSymbol: dataModal?.token?.symbol }));
+            openModal();
           }, 1000);
           const pathName = router.pathname;
           if (pathName === "/earn/incentivize") {
@@ -55,11 +60,12 @@ const IncentivizePoolModalContainer = () => {
         } else if (response.code === 4000 && response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
           broadcastPending();
           setTimeout(() => {
-            broadcastError(makeBroadcastIncentivizeMessage("error"));
-            clearModal();
+            broadcastError(makeBroadcastIncentivizeMessage("error", { tokenAmount: dataModal.amount, tokenSymbol: dataModal?.token?.symbol }));
+            openModal();
           }, 1000);
         } else {
-          broadcastRejected(makeBroadcastIncentivizeMessage("error"));
+          broadcastRejected(makeBroadcastIncentivizeMessage("error", { tokenAmount: dataModal.amount, tokenSymbol: dataModal?.token?.symbol }));
+          openModal();
         }
       }
       return response;
@@ -67,7 +73,7 @@ const IncentivizePoolModalContainer = () => {
       console.log(e);
       return null;
     });
-  }, [clearModal, dataModal, period, pool, poolRepository, router, startDate.date, startDate.month, startDate.year]);
+  }, [dataModal, period, pool, poolRepository, router, startDate.date, startDate.month, startDate.year]);
 
   return <IncentivizePoolModal close={close} onSubmit={onSubmit} data={dataModal} date={startDate} period={period} pool={pool} />;
 };

@@ -148,22 +148,26 @@ export function makeBroadcastRemoveMessage(
 
 export function makeBroadcastIncentivizeMessage(
   type: TNoticeType,
-  hash?: string,
+  data: {
+    tokenAmount?: string;
+    tokenSymbol?: string;
+    hash?: any;
+  },
 ): INoticeContent {
   function description() {
     switch (type) {
       case "pending":
-        return "Incentivize pending";
+        return `Adding ${data.tokenAmount} ${data.tokenSymbol} as incentives`;
       case "success":
-        return "Incentivize succcessfully";
+        return `Added ${data.tokenAmount} ${data.tokenSymbol} as incentives`;
       case "error":
-        return "Failed to incentivize";
+        return `Failed to add ${data.tokenAmount} ${data.tokenSymbol} as incentives`;
     }
   }
   return {
     title: "Incentivize",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    scannerUrl: data?.hash ? makeScannerURL(data?.hash) : "",
   };
 }
 
