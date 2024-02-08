@@ -405,7 +405,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [maxTickRate, isSwap, minTickRate]);
 
   return (
-    <MyPositionCardWrapper type={inRange} isClosed={isClosed}>
+    <MyPositionCardWrapper id={`position-${position.id}`} type={inRange} isClosed={isClosed}>
       <div className="box-title">
         <div className="box-header">
           <div className="box-left">

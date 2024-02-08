@@ -10,6 +10,7 @@ import { useGetPoolDetailByPath } from "@query/pools";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { usePoolData } from "@hooks/pool/use-pool-data";
+import { addressValidationCheck } from "@utils/validation-utils";
 
 export default function Pool() {
   const router = useRouter();
@@ -17,11 +18,19 @@ export default function Pool() {
   usePoolData();
   const poolPath = router.query["pool-path"] || "";
   const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  const { initializedData } = useUrlParam<{ addr: string | undefined }>({ addr: account?.address });
+  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({ addr: account?.address });
+
+  const address = useMemo(() => {
+    const address = initializedData?.addr;
+    if (!address || !addressValidationCheck(address)) {
+      return undefined;
+    }
+    return address;
+  }, [initializedData]);
 
   const isScrollMove = useMemo(() => {
-    return Boolean(initializedData?.addr);
-  }, [initializedData]);
+    return Boolean(address) && Boolean(hash);
+  }, [address, hash]);
 
   const isStaking = useMemo(() => {
     if (data?.incentivizedType === "INCENTIVIZED") {
@@ -37,8 +46,11 @@ export default function Pool() {
 
   useEffect(() => {
     if (isScrollMove && !loading) {
-      const positionContainerElement = document.getElementById("positions-container");
+      const positionContainerElement = document.getElementById(`position-${hash}`);
       const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      if (!topPosition) {
+        return;
+      }
       window.scrollTo({
         top: topPosition,
         behavior: "smooth"
@@ -50,7 +62,7 @@ export default function Pool() {
     <PoolLayout
       header={<HeaderContainer />}
       poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={<MyLiquidityContainer address={initializedData?.addr} />}
+      liquidity={<MyLiquidityContainer address={address} />}
       staking={isStaking ? <StakingContainer /> : null}
       footer={<Footer />}
       isStaking={isStaking}

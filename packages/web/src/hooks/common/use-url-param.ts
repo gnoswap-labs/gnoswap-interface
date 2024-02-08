@@ -35,9 +35,11 @@ export function useUrlParam<T extends DefaultObject = DefaultObject>(
 ): {
   currentData: T;
   initializedData: T | null;
+  hash: string | null;
   updateParams: () => void;
 } {
   const [currentData, setCurrentData] = useState<T>(request);
+  const [hash, setHash] = useState<string | null>(null);
   const [initializedData, setInitializedData] = useState<T | null>(null);
 
   const updateParams = useCallback(() => {
@@ -54,10 +56,12 @@ export function useUrlParam<T extends DefaultObject = DefaultObject>(
   useEffect(() => {
     const search = location.search;
     const data = parseQueryString(search);
+    const hash = (location.hash || "").replace("#", "");
+    setHash(hash);
     setInitializedData(data as T);
   }, []);
 
-  return { initializedData, currentData, updateParams };
+  return { initializedData, hash, currentData, updateParams };
 }
 
 export default useUrlParam;
