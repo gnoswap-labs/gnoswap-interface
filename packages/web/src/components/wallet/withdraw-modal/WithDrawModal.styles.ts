@@ -242,7 +242,7 @@ export const WithdrawContent = styled.div`
     }
 
     ::placeholder {
-      color: ${({ theme }) => theme.color.text04};
+      color: ${({ theme }) => theme.color.text01};
       opacity: 1;
     }
   }

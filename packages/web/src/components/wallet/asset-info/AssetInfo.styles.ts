@@ -57,6 +57,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
   .name,
   .chain,
+  .amount,
   .balance {
     color: ${({ theme }) => theme.color.text02};
   }
@@ -67,6 +68,12 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .balance {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 0px;
+    }
+  }
+  .amount {
     padding: 16px;
     ${media.tablet} {
       padding: 16px 0px;

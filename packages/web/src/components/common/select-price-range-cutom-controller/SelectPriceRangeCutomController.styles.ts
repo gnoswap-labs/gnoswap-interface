@@ -66,6 +66,7 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
         display: block;
         ${media.mobile} {
           width: calc(100vw - 220px);
+          max-width: 300px;
         }
       }
     }

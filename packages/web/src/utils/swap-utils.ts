@@ -119,12 +119,13 @@ export function tickToPriceStr(
   if (isEnd) {
     return tick < 0 ? "0.00" : "∞";
   }
+  
   const decimalsLimit = decimals || 4;
   const result = BigNumber(tickToPrice(tick).toString())
     .toFormat(decimalsLimit)
     .replace(/\.?0+$/, "");
   if (result === "0") {
-    return "";
+    return "0";
   }
   return convertToKMB(result.replace(/,/g, ""));
 }

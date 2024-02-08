@@ -15,14 +15,22 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
       padding: 23px;
     }
   }
+  height: 116px;
   ${media.tablet} {
     padding: 23px;
+    height: 118px;
+  }
+  ${media.tabletMiddle} {
+    height: auto;
   }
   @media (max-width: 968px) {
+    height: auto;
+
     ${mixins.flexbox("row", "center", "space-between")};
     padding: 11px;
   }
   ${media.mobile} {
+    height: auto;
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     padding: 11px;
     gap: 8px;
@@ -68,13 +76,26 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     ${media.mobile} {
       gap: 8px;
     }
+    > div {
+      ${mixins.flexbox("row", "center", "flex-start")};
+    }
     .pule-skeleton {
       display: inline-flex;
+    }
+    .loading {
+      height: 39px;
+      ${media.tablet} {
+        height: 34px;
+      }
+      ${media.mobile} {
+        height: 31px;
+      }
     }
     .value {
       display: inline-flex;
       width: 100%;
       ${fonts.body2};
+      font-weight: 500 !important;
       color: ${({ theme }) => theme.color.text02};
       ${media.tablet} {
         ${fonts.body4};

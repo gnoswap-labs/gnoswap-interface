@@ -12,6 +12,7 @@ import {
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface PoolPairInformationProps {
   pool: PoolDetailModel;
@@ -19,6 +20,7 @@ interface PoolPairInformationProps {
   feeStr: string | null;
   onClickPath: (path: string) => void;
   loading: boolean;
+  positions: PoolPositionModel[];
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
@@ -27,6 +29,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   feeStr,
   onClickPath,
   loading,
+  positions,
 }) => {
   const tokenInfo = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol} (${feeStr || "0"})`;
@@ -56,7 +59,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           rewardTokens={pool.rewardTokens}
           feeStr={feeStr || ""}
         />}
-        <PoolPairInfoContent pool={pool} loading={loading}/>
+        <PoolPairInfoContent pool={pool} loading={loading} positions={positions}/>
       </div>
     </PoolPairInformationWrapper>
   );

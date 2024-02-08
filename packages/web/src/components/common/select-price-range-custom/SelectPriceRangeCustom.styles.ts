@@ -23,11 +23,15 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       padding: 2px;
       ${media.mobile} {
         button {
-          width: 72px;
+          width: 65px;
+          height: 24px;
         }
       }
     }
-
+    .button-option-contaier {
+      ${mixins.flexbox("row", "center", "center")}
+      gap: 4px;
+    }
     .graph-option-wrapper {
       display: flex;
       align-items: flex-start;
@@ -52,6 +56,14 @@ export const SelectPriceRangeCustomWrapper = styled.div`
           background: ${({ theme }) => theme.color.backgroundOpacity};
         }
         position: relative;
+        ${media.mobile} {
+          width: 24px;
+          height: 24px;
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
       }
       .disabled-option {
         pointer-events: none;
@@ -172,6 +184,9 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       span {
         color: ${({ theme }) => theme.color.text10};
         ${fonts.body11};
+        &:nth-of-type(2) {
+          display: none;
+        }
       }
     }
     .icon-button:hover {
@@ -183,9 +198,19 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       }
     }
     ${media.mobile} {
-      flex-direction: column;
+      flex-direction: row;
       gap: 16px;
       align-items: flex-start;
+      .icon-button {
+        span {
+          &:nth-of-type(1) {
+            display: none;
+          }
+          &:nth-of-type(2) {
+            display: initial;
+          }
+        }
+      }
     }
   }
   ${media.mobile} {
@@ -213,9 +238,21 @@ export const StartingPriceWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       ${fonts.p4}
     }
-
+    .price-info {
+      ${mixins.flexbox("row", "center", "center")}
+      gap: 2px;
+      svg {
+        width: 16px;
+        height: 16px;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+    }
     .description {
-      color: ${({ theme }) => theme.color.text05};
+      ${mixins.flexbox("row", "center", "center")}
+      height: 16px;
+      color: ${({ theme }) => theme.color.text04};
       ${fonts.p4}
     }
   }
@@ -237,4 +274,10 @@ export const StartingPriceWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
     }
   }
+`;
+
+export const TooltipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

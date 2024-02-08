@@ -7,7 +7,7 @@ export const OneClickStakingWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   background-color: ${({ theme }) => theme.color.background01};
   width: 430px;
-  padding: 23px;
+  padding: 15px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   border-radius: 8px;
   gap: 16px;
@@ -22,8 +22,9 @@ export const OneClickStakingWrapper = styled.div`
       width: 100%;
       .label,
       .value {
+        ${mixins.flexbox("row", "center", "center")};
         ${fonts.body12}
-        x
+        gap: 5px;
       }
     }
   }
@@ -88,6 +89,10 @@ export const OneClickStakingWrapper = styled.div`
     margin-left: 0;
     width: 100%;
     max-width: 500px;
+  }
+  ${media.mobile} {
+    padding: 11px;
+    gap: 12px;
   }
 `;
 

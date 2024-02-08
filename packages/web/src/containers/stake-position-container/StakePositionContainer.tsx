@@ -9,7 +9,7 @@ import React, { useCallback, useState, useEffect, useMemo } from "react";
 
 const StakePositionContainer: React.FC = () => {
   const router = useRouter();
-  const { account } = useWallet();
+  const { account, connected, connectAccount } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
@@ -20,12 +20,14 @@ const StakePositionContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const stakedPositions = useMemo(() => {
+    if (!connected) return [];
     return positions.filter(position => position.staked);
-  }, [positions]);
+  }, [positions, connected]);
 
   const unstakedPositions = useMemo(() => {
+    if (!connected) return [];
     return positions.filter(position => !position.staked);
-  }, [positions]);
+  }, [positions, connected]);
 
   const checkedAll = useMemo(() => {
     if (unstakedPositions.length === 0) {
@@ -56,13 +58,17 @@ const StakePositionContainer: React.FC = () => {
   }, [checkedAll, unstakedPositions]);
 
   const submitPosition = useCallback(() => {
-    openModal();
-  }, [openModal]);
+    if (!connected) {
+      connectAccount();
+    } else {
+      openModal();
+    }
+    
+  }, [openModal, connected, connectAccount]);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
     if (!account?.address) {
-        setPositions([]);
         return;
     }
     if (!poolPath) {
@@ -72,8 +78,9 @@ const StakePositionContainer: React.FC = () => {
     setPositions(getPositionsByPoolId(poolPath));
   }, [account?.address, getPositionsByPoolId, router.query]);
   const isEmpty = useMemo(() => {
+    if (!connected) return true;
     return stakedPositions.length === 0 && unstakedPositions.length === 0 && isFetched;
-  }, [stakedPositions.length, unstakedPositions.length, isFetched]);
+  }, [stakedPositions.length, unstakedPositions.length, isFetched, connected]);
   
   return (
     <StakePosition
@@ -86,6 +93,7 @@ const StakePositionContainer: React.FC = () => {
       submitPosition={submitPosition}
       isEmpty={isEmpty}
       isLoading={isLoadingCommon || loadingPositionById}
+      connected={connected}
     />
   );
 };

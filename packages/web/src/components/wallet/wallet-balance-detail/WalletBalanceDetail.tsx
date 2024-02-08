@@ -61,7 +61,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
               </div>
             ) : (
               <span className="value">
-                {BigNumber(balanceDetailInfo.claimableRewards)
+                ${BigNumber(balanceDetailInfo.claimableRewards)
                   .decimalPlaces(2)
                   .toFormat()}
               </span>

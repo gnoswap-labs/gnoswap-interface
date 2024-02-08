@@ -26,6 +26,7 @@ import { PoolModel } from "@models/pool/pool-model";
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
   apr?: string;
+  text?: string;
 }
 
 export interface PoolTick {
@@ -48,15 +49,15 @@ export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
 ];
 
 const PRICE_RANGES: AddLiquidityPriceRage[] = [
-  { type: "Active" },
-  { type: "Passive" },
+  { type: "Active", text: "[-10% / +10%]" },
+  { type: "Passive", text: "[-50% / +100%]" },
   { type: "Custom" }
 ];
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const [isEarnAdd, setIsEarnAdd] = useAtom(EarnState.isOneClick);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN", isReverted, isKeepToken = false } = swapValue;
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
@@ -80,7 +81,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { updateBalances, updateTokenPrices, tokens } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
   const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption.isCreate, startPrice: createOption.startPrice });
-  const { fetching, pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
+  const { fetching, pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken, isReverted });
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
     tokenA,
     tokenB,
@@ -102,7 +103,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     selectPool,
     swapFeeTier,
   });
-
+  
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
     let feeBoost: string | null = null;
@@ -159,13 +160,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
       return "INSUFFICIENT_BALANCE";
     }
-
-    // if (!account?.balances || account.balances.length === 0) {
-    //   return "INSUFFICIENT_BALANCE";
-    // }
-    // if (BigNumber(account.balances[0].amount).isLessThanOrEqualTo(1)) {
-    //   return "INSUFFICIENT_BALANCE";
-    // }
     const ordered = selectPool.compareToken?.path === tokenA?.path;
     const checkTokenA = ordered ? selectPool.depositRatio !== 0 : selectPool.depositRatio !== 100;
     const checkTokenB = ordered ? selectPool.depositRatio !== 100 : selectPool.depositRatio !== 0;
@@ -216,14 +210,17 @@ const EarnAddLiquidityContainer: React.FC = () => {
           type: type,
         };
       }
+      selectPool.setCompareToken(token);
       return {
         tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
         tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
         type: type,
+        isReverted: false,
+        isKeepToken: !isKeepToken,
       };
     });
     selectSwapFeeTier("NONE");
-  }, [type]);
+  }, [type, isKeepToken]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
     setSwapValue((prev) => {
@@ -238,6 +235,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
         tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
         type: type,
+        isReverted: false,
       };
     });
     selectSwapFeeTier("NONE");
@@ -457,8 +455,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenA: tempTokenB,
       tokenB: tempTokenA,
       isEarnChanged: true,
+      isReverted: true,
+      isKeepToken: !isKeepToken
     });
-  }, [swapValue, setSwapValue]);
+  }, [swapValue, setSwapValue, isKeepToken]);
 
   return (
     <EarnAddLiquidity
@@ -496,6 +496,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       createOption={createOption}
       fetching={fetching}
       handleSwapValue={handleSwapValue}
+      isKeepToken={isKeepToken}
     />
   );
 };

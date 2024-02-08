@@ -22,17 +22,26 @@ export const wrapper = (theme: Theme) => css`
   }
   .button-submit {
     height: 57px;
+    span {
+      font-size: 18px;
+    }
     ${media.mobile} {
       height: 41px;
+      span {
+        font-size: 16px;
+      }
     }
   }
 
   ${media.tabletMiddle} {
     max-width: 500px;
     width: 100%;
-    padding: 15px;
+    padding: 23px;
     margin: auto;
     gap: 12px;
+  }
+  ${media.mobile} {
+    padding: 15px;
   }
 `;
 

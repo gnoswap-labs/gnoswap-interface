@@ -15,7 +15,7 @@ export const NotificationListWrapper = styled.div<NotificationProps>`
   width: 320px;
   height: calc(100vh - 124px);
   overflow-y: auto;
-  padding: 20px 0px;
+  padding: 19px 0px;
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
@@ -90,6 +90,8 @@ export const ClearButton = styled.button`
 
 export const TxsListItem = styled.div`
   width: 100%;
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 4px;
   & + & {
     :before {
       content: "";
@@ -119,7 +121,7 @@ export const TxsSummaryItem = styled.div`
   position: relative;
   width: 100%;
   min-height: 40px;
-  padding: 12px 24px;
+  padding: 16px 24px;
   height: auto;
   cursor: pointer;
   ${fonts.body12};
@@ -130,7 +132,9 @@ export const TxsSummaryItem = styled.div`
   .summary-content {
     width: 100%;
     padding: 0px 10px 0px 44px;
+    color: ${({ theme }) => theme.color.text22};
     span {
+      color: ${({ theme }) => theme.color.text01};
       font-weight: 500;
     }
   }

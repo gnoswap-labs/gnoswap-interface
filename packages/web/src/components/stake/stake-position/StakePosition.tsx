@@ -17,6 +17,7 @@ interface StakePositionProps {
   isUnstake?: boolean;
   isEmpty: boolean;
   isLoading: boolean;
+  connected: boolean;
 }
 
 export const CONTENT_TITLE = {
@@ -37,10 +38,11 @@ const StakePosition: React.FC<StakePositionProps> = ({
   submitPosition,
   isEmpty,
   isLoading,
+  connected,
 }) => {
   const isEmptyCheckList = useMemo(() => {
-    return checkedList.length === 0;
-  }, [checkedList]);
+    return checkedList.length === 0 && connected;
+  }, [checkedList, connected]);
 
   const selectedPositions = useMemo(() => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
@@ -66,7 +68,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
       />
       <Button
         className="button-stake-position"
-        text={isEmptyCheckList ? "Select Position" : "Stake Position"}
+        text={!connected ? "Wallet Login" : isEmptyCheckList ? "Select Position" : "Stake Position"}
         disabled={isEmptyCheckList}
         style={{
           hierarchy: ButtonHierarchy.Primary,

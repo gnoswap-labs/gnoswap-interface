@@ -45,7 +45,7 @@ export const wrapper = (theme: Theme) => css`
       }
     }
     h5 {
-      fontWeight: 600;
+      font-weight: 600;
     }
     p {
       margin: 16px 0 24px;

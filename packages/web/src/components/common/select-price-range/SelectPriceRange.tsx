@@ -1,4 +1,4 @@
-import { PriceRangeTooltip } from "@constants/option.constant";
+import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
 import React, { useCallback, useMemo } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -21,6 +21,8 @@ interface SelectPriceRangeProps {
   showDim: boolean;
   defaultPrice: number | null;
   handleSwapValue: () => void;
+  isEmptyLiquidity: boolean;
+  isKeepToken: boolean;
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -35,6 +37,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   showDim,
   defaultPrice,
   handleSwapValue,
+  isEmptyLiquidity,
+  isKeepToken,
 }) => {
   const selectedTokenPair = true;
 
@@ -50,6 +54,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
             key={index}
             selected={item.type === priceRange?.type}
             tooltip={PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]}
+            priceRangeStr={PriceRangeStr[selectPool.feeTier || "NONE"][item.type]}
             priceRange={item}
             changePriceRange={changePriceRangeWithClear}
           />
@@ -65,6 +70,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           showDim={showDim}
           defaultPrice={defaultPrice}
           handleSwapValue={handleSwapValue}
+          isEmptyLiquidity={isEmptyLiquidity}
+          isKeepToken={isKeepToken}
         />
       )}
     </SelectPriceRangeWrapper>
@@ -75,6 +82,7 @@ interface SelectPriceRangeItemProps {
   selected: boolean;
   priceRange: AddLiquidityPriceRage;
   tooltip: string | undefined;
+  priceRangeStr: string;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
 }
 
@@ -83,15 +91,13 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   priceRange,
   tooltip,
   changePriceRange,
+  priceRangeStr,
 }) => {
-
+  
   const aprStr = useMemo(() => {
     const apr = priceRange.apr;
     if (apr) {
       return `${apr}%`;
-    }
-    if (priceRange.type === "Custom") {
-      return null;
     }
     return "-";
   }, [priceRange]);
@@ -103,6 +109,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   return (
     <SelectPriceRangeItemWrapper className={selected ? "selected" : ""} onClick={onClickItem}>
       <strong className="item-title">{priceRange.type}</strong>
+      {priceRange.text && <p>{priceRangeStr}</p>}
       {tooltip && (
         <div className="tooltip-wrap">
           <Tooltip

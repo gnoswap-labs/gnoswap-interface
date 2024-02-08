@@ -257,9 +257,11 @@ export const useSwapHandler = () => {
     const inputAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
-    
+
     const swapRate =
-      swapRateAction === "ATOB" ? Number(tokenBAmount) / Number(tokenAAmount) : Number(tokenAAmount) / Number(tokenBAmount);
+      swapRateAction === "ATOB"
+        ? Number(tokenBAmount) / Number(tokenAAmount)
+        : Number(tokenAAmount) / Number(tokenBAmount);
     const swapRateUSD =
       type === "EXACT_IN"
         ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
@@ -426,7 +428,7 @@ export const useSwapHandler = () => {
       tokenBAmount,
     }));
   }, [setSwapValue, tokenAAmount, tokenBAmount]);
-  
+
   const changeTokenBAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenA = memoryzeTokenSwap?.[`${tokenB?.symbol}:${value}`];
@@ -522,8 +524,10 @@ export const useSwapHandler = () => {
     }));
     if (type === "EXACT_IN") {
       const keyForValue =
-        findKeyByValue(`${tokenA?.symbol}:${tokenAAmount}`, memoryzeTokenSwap) ??
-        "";
+        findKeyByValue(
+          `${tokenA?.symbol}:${tokenAAmount}`,
+          memoryzeTokenSwap,
+        ) ?? "";
       if (memoryzeTokenSwap?.[keyForValue]) {
         setTokenAAmount(keyForValue?.split(":")?.[1]);
         setTokenBAmount(memoryzeTokenSwap?.[keyForValue]?.split(":")?.[1]);
@@ -608,14 +612,32 @@ export const useSwapHandler = () => {
       nativeProcess.then(response => {
         setTimeout(() => {
           if (response === false) {
-            setNotice(null, {
-              timeout: 50000,
-              type: "error" as TNoticeType,
-              closeable: true,
-              id: makeRandomId(),
-            });
+            setNotice(
+              {
+                title: "Swap",
+                description: `Failed swapping ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+                  swapTokenInfo?.tokenA?.symbol
+                } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                  swapTokenInfo?.tokenB?.symbol
+                }`,
+              },
+              {
+                timeout: 50000,
+                type: "error" as TNoticeType,
+                closeable: true,
+                id: makeRandomId(),
+              },
+            );
           } else {
-            setNotice(null, {
+            setNotice(
+            {
+              title: "Swap",
+              description: `Swapped ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+                swapTokenInfo?.tokenA?.symbol
+              } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                swapTokenInfo?.tokenB?.symbol
+              }`,
+            }, {
               timeout: 50000,
               type: "success" as TNoticeType,
               closeable: true,
@@ -652,14 +674,28 @@ export const useSwapHandler = () => {
               if (typeof result !== "boolean") {
                 unwrapBySwapResposne(result);
               }
-              setNotice(null, {
+              setNotice({
+                title: "Swap",
+                description: `Swapped ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+                  swapTokenInfo?.tokenA?.symbol
+                } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                  swapTokenInfo?.tokenB?.symbol
+                }`,
+              }, {
                 timeout: 50000,
                 type: "success" as TNoticeType,
                 closeable: true,
                 id: makeRandomId(),
               });
             } else {
-              setNotice(null, {
+              setNotice({
+                title: "Swap",
+                description: `Failed swapping ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+                  swapTokenInfo?.tokenA?.symbol
+                } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                  swapTokenInfo?.tokenB?.symbol
+                }`,
+              }, {
                 timeout: 50000,
                 type: "error" as TNoticeType,
                 closeable: true,
@@ -692,19 +728,37 @@ export const useSwapHandler = () => {
   }, []);
 
   useEffect(() => {
-    if (memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] && type === "EXACT_IN") {
+    if (
+      memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
+      type === "EXACT_IN"
+    ) {
       setIsLoading(false);
       return;
     }
-    if (memoryzeTokenSwap?.[`${tokenB?.symbol}:${tokenBAmount}`] && type === "EXACT_OUT") {
+    if (
+      memoryzeTokenSwap?.[`${tokenB?.symbol}:${tokenBAmount}`] &&
+      type === "EXACT_OUT"
+    ) {
       setIsLoading(false);
       return;
     }
 
-    if (defaultTokenAAmount && !!Number(tokenAAmount) && !!Number(tokenBAmount)) {
+    if (
+      defaultTokenAAmount &&
+      !!Number(tokenAAmount) &&
+      !!Number(tokenBAmount)
+    ) {
       setIsLoading(true);
     }
-  }, [defaultTokenAAmount, memoryzeTokenSwap, tokenA?.symbol, tokenAAmount, tokenBAmount, type, tokenB?.symbol]);
+  }, [
+    defaultTokenAAmount,
+    memoryzeTokenSwap,
+    tokenA?.symbol,
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenB?.symbol,
+  ]);
 
   useEffect(() => {
     if (!tokenA || !tokenB) {
@@ -758,7 +812,7 @@ export const useSwapHandler = () => {
       }));
     }
     return () => clearTimeout(timeout);
-  }, [type, tokenA, tokenAAmount, tokenB, tokenBAmount, isSameToken,]);
+  }, [type, tokenA, tokenAAmount, tokenB, tokenBAmount, isSameToken]);
 
   return {
     slippage,

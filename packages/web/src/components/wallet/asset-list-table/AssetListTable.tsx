@@ -65,7 +65,8 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
     return (
       ASSET_HEAD.ASSET === head ||
       ASSET_HEAD.BALANCE === head ||
-      ASSET_HEAD.CHAIN === head
+      ASSET_HEAD.CHAIN === head ||
+      ASSET_HEAD.AMOUNT === head
     );
   };
   return (

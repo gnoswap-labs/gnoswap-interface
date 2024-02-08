@@ -107,6 +107,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         reserveTokenAMyAmount: binsMyAmount?.[index]?.reserveTokenA || 0,
         reserveTokenBMyAmount: binsMyAmount?.[index]?.reserveTokenB || 0,
         reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
+        index: index,
       };
     });
     
@@ -177,7 +178,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }
     return `${isStart ? "right" : "left"}`;
   }, [width, height, positionX, positionY, position]);
-
+  const random = Math.random().toString();
+  
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = getTickSpacing();
@@ -186,15 +188,16 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
       let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
+
       if (isSwap) {
         isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing || scaleX(bin.minTick) > scaleX(maxX) - minTickPosition));
       }
       if (isBlackBar) 
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
-        return "url(#gradient-bar-green)";
+        return `url(#gradient-bar-green-${random})`;
       }
-      return "url(#gradient-bar-red)";
+      return `url(#gradient-bar-red-${random})`;
     }
 
     // Clean child elements.
@@ -214,7 +217,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("y", bin => (scaleY(bin.reserveTokenMap)) - ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0))
       .attr("width", tickSpacing - 1)
       .attr("height", bin => boundsHeight - (scaleY(bin.reserveTokenMap)) + ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0));
-
     // Create a line of current tick.
     if (currentTick) {
       rects.append("line")
@@ -274,11 +276,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       min: tickOfPrices[!isSwap ? -minTick : -minTickSwap] || null,
       max: tickOfPrices[!isSwap ? -maxTick : -maxTickSwap] || null,
     };
+    const index = bin.index;
+
     const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
     const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
     const myTokenAAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenAMyAmount);
     const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenBMyAmount);
-    
+
     const tickSpacing = getTickSpacing();
     let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
     if (isSwap) {
@@ -289,8 +293,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tokenB: tokenB,
       tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
       tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
-      myTokenAAmount: myTokenAAmountStr ? convertToKMB(myTokenAAmountStr.toString()) : "-",
-      myTokenBAmount: myTokenBAmountStr ? convertToKMB(myTokenBAmountStr.toString()) : "-",
+      myTokenAAmount: (index < 20  && `${bin.reserveTokenB}` === "0") ? "<0.000001" : (index > 19 && `${bin.reserveTokenA}` === "0") ? "-" : (convertToKMB((myTokenAAmountStr || "-").toString()) || "-"),
+      myTokenBAmount: (index > 19 && `${bin.reserveTokenA}` === "0") ? "<0.000001" : (index < 20 && `${bin.reserveTokenB}` === "0") ? "-" : (convertToKMB((myTokenBAmountStr || "-").toString()) || "-"),
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: tickOfPrices[currentTick || 0],
@@ -330,7 +334,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         })
           .reduce<{ [key in number]: string }>((acc, current) => {
             if (!acc[current]) {
-              acc[current] = tickToPriceStr(current).toString();
+              acc[current] = tickToPriceStr(current, 40).toString();
             }
             return acc;
           }, {});
@@ -387,11 +391,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         }>
         <svg ref={svgRef}>
           <defs>
-            <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id={`gradient-bar-green-${random}`} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={greenColor.start} />
               <stop offset="100%" stopColor={greenColor.end} />
             </linearGradient>
-            <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id={`gradient-bar-red-${random}`} x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor={redColor.start} />
               <stop offset="100%" stopColor={redColor.end} />
             </linearGradient>

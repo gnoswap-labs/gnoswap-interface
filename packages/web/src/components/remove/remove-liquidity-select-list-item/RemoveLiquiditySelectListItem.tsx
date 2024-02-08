@@ -10,6 +10,9 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { numberToUSD } from "@utils/number-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { convertToKMB } from "@utils/stake-position-utils";
+import BigNumber from "bignumber.js";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -36,14 +39,14 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
             <img src={position.pool.tokenA.logoURI} alt="token logo" />
             {position.pool.tokenA.symbol}
           </div>
-          <div className="value">{makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance)}</div>
+          <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance) || 0).toFormat(2)}</div>
         </div>
         <div>
           <div className="value">
             <img src={position.pool.tokenB.logoURI} alt="token logo" />
             {position.pool.tokenB.symbol}
           </div>
-          <div className="value">{makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance)}</div>
+          <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance) || 0).toFormat(2)}</div>
         </div>
       </div>
       {disabled && <div className="divider"></div>}
@@ -62,6 +65,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
   onCheckedItem,
   disabled = false,
 }) => {
+  const { width } = useWindowSize();
   const checked = useMemo(() => {
     return checkedList.includes(position.id);
   }, [checkedList, position.id]);
@@ -75,8 +79,9 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
+    if (width < 400) return `$${convertToKMB(position.positionUsdValue)}`;
     return numberToUSD(Number(position.positionUsdValue));
-  }, [position.positionUsdValue]);
+  }, [position.positionUsdValue, width]);
 
   const feeStr = useMemo(() => {
     return SwapFeeTierInfoMap[makeSwapFeeTier(position.pool.fee)].rateStr;
@@ -93,14 +98,16 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
           onChange={e => onCheckedItem(e.target.checked, position.id)}
         />
         <label htmlFor={`checkbox-item-${position.id}`} />
-        <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
         <Tooltip
           placement="top"
           FloatingContent={<TooltipContent position={position} disabled={disabled} />}
         >
-          <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
+          <div className="logo-wrapper">
+            <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
+            {width > 768 && <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>}
+            <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
+          </div>
         </Tooltip>
-        <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
       </div>
       {/* <span className="liquidity-value-fake" ref={liquidityRef}>${lpPosition.position.balance.toLocaleString()}</span>
       <span className="liquidity-value" >${!checkWidth ? convertToMB(lpPosition.position.balance.toString()) : lpPosition.position.balance.toLocaleString()}</span> */}

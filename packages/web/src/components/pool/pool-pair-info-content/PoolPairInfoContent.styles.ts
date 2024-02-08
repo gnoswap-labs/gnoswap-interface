@@ -161,7 +161,7 @@ export const PoolPairInfoContentWrapper = styled.div`
             display: none;
           }
           ${media.mobile} {
-            display: none;
+            display: inline;
           }
         }
       }

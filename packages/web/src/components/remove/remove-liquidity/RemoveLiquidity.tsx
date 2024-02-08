@@ -32,8 +32,8 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   }, [checkedList.length]);
 
   const selectedPositions = useMemo(() => {
-    return stakedPositions.filter(position => checkedList.includes(position.id));
-  }, [checkedList, stakedPositions]);
+    return unstakedPositions.filter(position => checkedList.includes(position.id));
+  }, [checkedList, unstakedPositions]);
 
   return (
     <div css={wrapper}>

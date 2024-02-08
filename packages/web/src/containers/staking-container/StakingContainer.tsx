@@ -10,6 +10,8 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { useLoading } from "@hooks/common/use-loading";
+import { StakingPeriodType } from "@constants/option.constant";
+const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const StakingContainer: React.FC = () => {
   const { account } = useWallet();
@@ -19,6 +21,8 @@ const StakingContainer: React.FC = () => {
   const { loading: loadingPool } = usePoolData();
   const { getPositionsByPoolId, loading: loadingPosition } = usePositionData();
   const [type, setType] = useState(3);
+
+  const [allPosition, setAllPosition] = useState<PoolPositionModel[]>([]);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
@@ -64,6 +68,7 @@ const StakingContainer: React.FC = () => {
       const temp = getPositionsByPoolId(poolPath);
       const stakedPositions = temp.filter(position => position.staked);
       setPositions(stakedPositions);
+      setAllPosition(temp);
     }
   }, [account?.address, router.query, getPositionsByPoolId]);
 
@@ -106,10 +111,6 @@ const StakingContainer: React.FC = () => {
   }, [router]);
 
   useEffect(() => {
-    setType(Math.floor(Math.random() * 4));
-  }, []);
-
-  useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => {
@@ -117,6 +118,50 @@ const StakingContainer: React.FC = () => {
     };
   }, []);
   
+  const stakingPositionMap = useMemo(() => {
+    return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
+      const stakedTime = Number(current.stakedAt) * 1000;
+      const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
+      let periodType: StakingPeriodType = "MAX";
+      if (difference < 5) {
+        periodType = "5D";
+      } else if (difference < 10) {
+        periodType = "10D";
+      } else if (difference < 30) {
+        periodType = "30D";
+      }
+      accum[periodType].push(current);
+      return accum;
+    }, {
+      "5D": [],
+      "10D": [],
+      "30D": [],
+      "MAX": [],
+    });
+  }, [positions]);
+
+  useEffect(() => {
+    if (allPosition.length === 0) {
+      setType(0);
+      return;
+    }
+    if (positions.length === 0) {
+      setType(1);
+      return;
+    }
+    if (stakingPositionMap["MAX"].length === 0) {
+      setType(2);
+      return;
+    }
+
+    if (stakingPositionMap["MAX"].length !== 0) {
+      setType(3);
+      return;
+    }
+    setType(0);
+    
+  }, [allPosition.length, positions.length, stakingPositionMap["MAX"].length]);
+
   return (
     <Staking
       pool={pool}

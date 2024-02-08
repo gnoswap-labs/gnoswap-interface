@@ -19,19 +19,26 @@ import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { tickToPriceStr } from "@utils/swap-utils";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import TooltipAPR from "./TooltipAPR";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
+  positions: PoolPositionModel[];
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
 }) => {
+  const { getGnotPath } = useGnotToGnot();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
-
+  
   const tokenABalance = useMemo(() => {
     return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
   }, [pool.tokenA, pool.tokenABalance]);
@@ -95,6 +102,18 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const isWrapText = useMemo(() => {
     return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
+
+  const currentPrice = useMemo(() => {
+    return tickToPriceStr(pool.currentTick, 40);
+  }, [pool?.currentTick]);
+
+  const feeLogo = useMemo(() => {
+    return [pool?.tokenA?.logoURI, pool?.tokenB?.logoURI];
+  }, [pool]);
+
+  const stakeLogo = useMemo(() => {
+    return pool?.rewardTokens?.map((item) => getGnotPath(item)?.logoURI);
+  }, [pool?.rewardTokens]);
 
   return (
     <ContentWrapper>
@@ -169,7 +188,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         </section>
         <section>
           <h4>APR</h4>
-          {!loading && <strong>{aprValue}</strong>}
+          {!loading && 
+          <Tooltip
+            placement="top"
+            FloatingContent={<TooltipAPR feeAPR={pool?.feeApr} stakingAPR={pool?.stakingApr} feeLogo={feeLogo} stakeLogo={stakeLogo}/>}
+          >
+          <strong>{aprValue}</strong>
+        </Tooltip>}
           {loading && <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
           <span
             css={pulseSkeletonStyle({ h: 20, w:"170px"})}
@@ -210,7 +235,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {convertToKMB(`${Number(pool.price).toFixed(width > 400 ? 6 : 2 )}`, 6)} {pool?.tokenB?.symbol}
+                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {currentPrice} {pool?.tokenB?.symbol}
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
@@ -230,7 +255,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = {convertToKMB(`${(Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 )}`, 6)} {pool?.tokenA?.symbol}
+                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = {convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 ))}`, 6)} {pool?.tokenA?.symbol}
               </div>}
             </div>
           </div>

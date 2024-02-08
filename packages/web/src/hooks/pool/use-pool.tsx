@@ -5,17 +5,20 @@ import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePoolData } from "./use-pool-data";
+import { checkGnotPath } from "@utils/common";
 
 interface Props {
   compareToken: TokenModel | null;
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
+  isReverted?: boolean;
 }
 
 export const usePool = ({
   compareToken,
   tokenA,
-  tokenB
+  tokenB,
+  isReverted = false,
 }: Props) => {
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
@@ -28,8 +31,9 @@ export const usePool = ({
       return [];
     }
 
-    const tokenATokenPath = isNativeToken(tokenA) ? tokenA.wrappedPath : tokenA.path;
-    const tokenBTokenPath = isNativeToken(tokenB) ? tokenB.wrappedPath : tokenB.path;
+    const tokenATokenPath = checkGnotPath(tokenA.path) ? tokenA.wrappedPath : tokenA.path;
+    const tokenBTokenPath = checkGnotPath(tokenB.path) ? tokenB.wrappedPath : tokenB.path;
+    
     const tokenPairOfPaths = [tokenATokenPath, tokenBTokenPath];
     return pools?.filter(pool => {
       const currentTokenATokenPath = isNativeToken(pool.tokenA) ? pool.tokenA.wrappedPath : pool.tokenA.path;
@@ -146,12 +150,12 @@ export const usePool = ({
   useEffect(() => {
     updatePools();
   }, []);
-
+  
   useEffect(() => {
-    setFeetierOfLiquidityMap(null);
-    if (!tokenA || !tokenB) {
+    if (!tokenA || !tokenB || isReverted) {
       return;
     }
+    setFeetierOfLiquidityMap(null);
     setFetching(true);
     fetchPoolInfos(currentPools)
       .then(infos => {
@@ -172,7 +176,7 @@ export const usePool = ({
           setFetching(false);
         }, 1000);
       });
-  }, [currentPools, tokenA, tokenB]);
+  }, [currentPools, tokenA, tokenB, isReverted]);
 
   return {
     fetching,

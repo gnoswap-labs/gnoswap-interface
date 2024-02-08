@@ -174,6 +174,7 @@ export const usePositionData = () => {
     },
     [getPositionsByPoolId],
   );
+  
   return {
     availableStake,
     isError,
@@ -184,6 +185,6 @@ export const usePositionData = () => {
     getPositionsByPoolPath,
     isFetchedPosition,
     loading: (loading && connected) || isLoadingCommon,
-    loadingPositionById: isLoadingPool || loading,
+    loadingPositionById: isLoadingPool || (loading && connected),
   };
 };

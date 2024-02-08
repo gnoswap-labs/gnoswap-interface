@@ -75,6 +75,7 @@ const PoolList: React.FC<TokenListProps> = ({
         isSortOption={isSortOption}
         routeItem={routeItem}
         themeKey={themeKey}
+        breakpoint={breakpoint}
       />
       {totalPage > 1 && <Pagination
         currentPage={currentPage}

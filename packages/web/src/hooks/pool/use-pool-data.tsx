@@ -12,7 +12,7 @@ import { useMemo } from "react";
 export const usePoolData = () => {
   const { data: pools = [], isLoading: loading, isFetched: isFetchedPools } = useGetPoolList();
   const forceRefect = useForceRefetchQuery();
-
+  
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(
     PoolState.isFetchedPositions,
   );

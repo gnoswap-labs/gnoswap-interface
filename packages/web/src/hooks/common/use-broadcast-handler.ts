@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { SCANNER_URL } from "@common/values";
 import { INoticeContent } from "@components/common/notice/NoticeToast";
 import { CommonState } from "@states/index";
@@ -47,7 +48,7 @@ function makeScannerURL(hash: string) {
   return `${SCANNER_URL}/transactions/details?txhash=${hash}`;
 }
 
-export function makeBroadcastSwapMessage(
+export function makeBroadcastClaimMessage(
   type: TNoticeType,
   data: {
     tokenASymbol: string;
@@ -60,11 +61,40 @@ export function makeBroadcastSwapMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Swapping ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Claiming ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
       case "success":
-        return `Swapped ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Claimed ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
       case "error":
-        return `Failed to swap ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Failed to Claim ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+    }
+  }
+  return {
+    title: "Swap",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastSwapMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    const tokenA = BigNumber(data.tokenAAmount).toFormat(2);
+    const tokenB = BigNumber(data.tokenBAmount).toFormat(2);
+    switch (type) {
+      case "pending":
+        return `Swapping ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
+      case "success":
+        return `Swapped ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
+      case "error":
+        return `Failed to swap ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
     }
   }
   return {
@@ -118,22 +148,26 @@ export function makeBroadcastRemoveMessage(
 
 export function makeBroadcastIncentivizeMessage(
   type: TNoticeType,
-  hash?: string,
+  data: {
+    tokenAmount?: string;
+    tokenSymbol?: string;
+    hash?: any;
+  },
 ): INoticeContent {
   function description() {
     switch (type) {
       case "pending":
-        return "Incentivize pending";
+        return `Adding <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
       case "success":
-        return "Incentivize succcessfully";
+        return `Added <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
       case "error":
-        return "Failed to incentivize";
+        return `Failed to add <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
     }
   }
   return {
     title: "Incentivize",
     description: description(),
-    scannerUrl: hash ? makeScannerURL(hash) : "",
+    scannerUrl: data?.hash ? makeScannerURL(data?.hash) : "",
   };
 }
 
@@ -250,14 +284,14 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastRejected = useCallback(
-    (content?: INoticeContent, callback?: () => void) => {
+    (content?: INoticeContent, callback?: () => void, isHiddenReject?: boolean) => {
       setTransactionModalData({
         status: "rejected",
         description: content?.description || null,
         scannerURL: content?.scannerUrl || null,
         callback,
       });
-      setNotice(content, makeNoticeConfig("error"));
+      !isHiddenReject && setNotice(content, makeNoticeConfig("error"));
     },
     [setNotice, setTransactionModalData],
   );

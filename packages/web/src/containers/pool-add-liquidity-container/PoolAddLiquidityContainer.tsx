@@ -27,6 +27,7 @@ import { encriptId } from "@utils/common";
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
   apr?: string;
+  text?: string;
 }
 
 export interface PoolTick {
@@ -49,8 +50,8 @@ export const SWAP_FEE_TIERS: SwapFeeTierType[] = [
 ];
 
 const PRICE_RANGES: AddLiquidityPriceRage[] = [
-  { type: "Active" },
-  { type: "Passive" },
+  { type: "Active", text: "[-10% / +10%]" },
+  { type: "Passive", text: "[-50% / +100%]" },
   { type: "Custom" }
 ];
 
@@ -58,7 +59,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 const EarnAddLiquidityContainer: React.FC = () => {
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const { tokenA = null, tokenB = null, type = "EXACT_IN" } = swapValue;
+  const { tokenA = null, tokenB = null, type = "EXACT_IN", isKeepToken = false } = swapValue;
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   
@@ -402,6 +403,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
   }, [createOption, selectPool.tickSpacing]);
 
+  const handleSwapValue = useCallback(() => {
+    const tempTokenA = swapValue.tokenA;
+    const tempTokenB = swapValue.tokenB;
+    setSwapValue({
+      ...swapValue,
+      tokenA: tempTokenB,
+      tokenB: tempTokenA,
+      isEarnChanged: true,
+      isReverted: true,
+      isKeepToken: !isKeepToken,
+    });
+  }, [swapValue, setSwapValue, isKeepToken]);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -437,7 +451,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       changeStartingPrice={changeStartingPrice}
       createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
       fetching={fetching}
-      handleSwapValue={() => {}}
+      handleSwapValue={handleSwapValue}
+      isKeepToken={isKeepToken}
     />
   );
 };

@@ -8,7 +8,7 @@ import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-
 export interface PositionRepository {
   getPositionsByAddress: (address: string) => Promise<PositionModel[]>;
 
-  claimAll: (request: ClaimAllRequest) => Promise<string | null>;
+  claimAll: (request: ClaimAllRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
   stakePositions: (request: StakePositionsRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>> ;
 

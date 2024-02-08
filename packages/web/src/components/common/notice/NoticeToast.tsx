@@ -34,7 +34,7 @@ const SuccessContent: FC<{ content?: INoticeContent }> = ({ content }) => {
       <IconSuccess className="icon-success" />
       <div>
         <h5>{content.title} - Success!</h5>
-        <p>{content.description}</p>
+        <div className="description" dangerouslySetInnerHTML={{ __html: content.description || ""}}/>
         <a href={content.scannerUrl} target="_blank">
           View transaction <IconNewTab />
         </a>
@@ -86,7 +86,7 @@ const FailContent: FC<{ content?: INoticeContent }> = ({ content }: { content?: 
       <IconFailed className="icon-success" />
       <div>
         <h5>{content.title} - Failure!</h5>
-        <p>{content.description}</p>
+        <div className="description" dangerouslySetInnerHTML={{ __html: content.description || ""}}/>
         <a href={content.scannerUrl} target="_blank">
           View transaction <IconNewTab />
         </a>

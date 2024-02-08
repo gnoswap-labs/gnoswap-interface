@@ -45,7 +45,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     return PositionMapper.fromList(response.data);
   };
 
-  claimAll = async (request: ClaimAllRequest): Promise<string | null> => {
+  claimAll = async (request: ClaimAllRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -75,11 +75,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
-    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
-    if (!hash) {
-      throw new Error(`${result}`);
-    }
-    return hash;
+    return result as WalletResponse<SendTransactionResponse<string[] | null>>;
   };
 
   stakePositions = async (

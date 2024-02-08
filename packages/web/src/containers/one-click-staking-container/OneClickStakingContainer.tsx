@@ -7,6 +7,9 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { makeId } from "@utils/common";
+import { initialPool } from "@containers/pool-pair-information-container/PoolPairInformationContainer";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { useGetPoolDetailByPath } from "@query/pools";
 
 const OneClickStakingContainer: React.FC = () => {
   const router = useRouter();
@@ -17,14 +20,18 @@ const OneClickStakingContainer: React.FC = () => {
 
   const poolId = router.query?.["pool-path"] === undefined ? null : `${router.query?.["pool-path"]}`;
   const poolPath = currentPoolPath;
-
+  const { data = initialPool as PoolDetailModel } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  console.log(poolPath, "poolPath");
+  
   const stakedPositions = useMemo(() => {
+    if (!poolPath) return [];
     return positions.filter(position => position.staked);
-  }, [positions]);
+  }, [positions, poolPath]);
 
   const unstakedPositions = useMemo(() => {
+    if (!poolPath) return [];
     return positions.filter(position => !position.staked);
-  }, [positions]);
+  }, [positions, poolPath]);
 
   const handleClickGotoStaking = useCallback(() => {
     if (poolId) {
@@ -56,6 +63,7 @@ const OneClickStakingContainer: React.FC = () => {
       stakedPositions={stakedPositions}
       unstakedPositions={unstakedPositions}
       handleClickGotoStaking={handleClickGotoStaking}
+      pool={data}
     />
   );
 };

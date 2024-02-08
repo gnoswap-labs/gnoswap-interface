@@ -32,6 +32,7 @@ Default.args = {
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
     balance: 0.0,
+    price: "0",
   },
   deposit: action("deposit"),
   withdraw: action("withdraw"),

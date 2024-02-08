@@ -11,6 +11,7 @@ export const WalletBalanceSummaryInfoWrapper = styled.div`
   }
   .amount {
     ${fonts.h3};
+    font-weight: 500 !important;
     color: ${({ theme }) => theme.color.text02};
     ${media.tablet} {
       ${fonts.h4};

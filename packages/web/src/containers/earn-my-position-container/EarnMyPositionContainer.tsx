@@ -78,7 +78,7 @@ const EarnMyPositionContainer: React.FC<
   }, [router]);
 
   const moveEarnStake = useCallback(() => {
-    router.push("/earn/stake");
+    router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/stake");
   }, [router]);
 
 
@@ -107,15 +107,12 @@ const EarnMyPositionContainer: React.FC<
 
   const dataMapping = useMemo(() => {
     let temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-    if (positions.length > 0) {
+    if (positions.length > 0 && isClosed) {
       const fake = {
         ...positions[0],
         status: true,
       };
       temp = [...positions, fake, fake];
-    }
-    if (isClosed) {
-      temp = temp.filter(_x => _x.status !== isClosed);
     }
     if (page === 1) {
       if (width > 1180) {
@@ -129,7 +126,6 @@ const EarnMyPositionContainer: React.FC<
   const handleChangeClosed = () => {
     setIsClosed(!isClosed);
   };
-  
   return (
     <EarnMyPositions
       connected={connected}

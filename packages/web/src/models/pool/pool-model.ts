@@ -49,7 +49,8 @@ export interface PoolModel {
   poolPath?: string;
 
   rewardTokens: TokenModel[];
-
+  feeApr?: any;
+  stakingApr?: any;
 }
 
 export interface IPoolDetailResponse {

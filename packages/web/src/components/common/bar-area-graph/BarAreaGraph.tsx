@@ -1,6 +1,6 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
-import React, { useMemo } from "react";
+import React from "react";
 import PoolGraph from "../pool-graph/PoolGraph";
 import { BarAreaGraphWrapper } from "./BarAreaGraph.styles";
 import { PoolModel } from "@models/pool/pool-model";
@@ -52,32 +52,6 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   binsMyAmount,
 }) => {
 
-  const minTickPosition = useMemo(() => {
-    if (!minTick) {
-      return null;
-    }
-    if (minTick < 0) {
-      return 0;
-    }
-    if (minTick > width) {
-      return width;
-    }
-    return minTick;
-  }, [minTick, width]);
-
-  const maxTickPosition = useMemo(() => {
-    if (!maxTick) {
-      return null;
-    }
-    if (maxTick < 0) {
-      return 0;
-    }
-    if (maxTick > width) {
-      return width;
-    }
-    return maxTick;
-  }, [maxTick, width]);
-
   return (
     <BarAreaGraphWrapper
       className={className}
@@ -95,8 +69,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         mouseover
         position="top"
         offset={40}
-        maxTickPosition={maxTickPosition}
-        minTickPosition={minTickPosition}
+        maxTickPosition={maxTick}
+        minTickPosition={minTick}
         poolPrice={pool?.price || 1}
         isPosition
         binsMyAmount={binsMyAmount || []}

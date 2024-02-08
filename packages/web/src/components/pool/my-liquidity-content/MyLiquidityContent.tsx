@@ -19,6 +19,7 @@ import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
+import { numberToFormat } from "@utils/string-utils";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -129,7 +130,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       (acc, current) => (acc += current.balanceUSD),
       0,
     );
-    return formatUsdNumber(String(balance), 2, true);
+    return `$${numberToFormat(`${balance}`, 2)}`;
   }, [allBalances, connected]);
   
   const claimableRewardInfo = useMemo(():
@@ -246,7 +247,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           }, 0)
       : 0;
 
-    return formatUsdNumber(String(claimableUsdValue), 2, true);
+    return `$${numberToFormat(`${claimableUsdValue}`, 2)}`;
   }, [positions, connected]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
@@ -306,7 +307,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           }, 0)
       : 0;
 
-    return formatUsdNumber(String(claimableUsdValue), 2, true);
+    return `$${numberToFormat(`${claimableUsdValue}`, 2)}`;
   }, [claimableRewardInfo, connected]);
 
   const claimable = useMemo(() => {
@@ -321,11 +322,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [activated, unclaimedRewardInfo]);
   
   const tokenABalance = useMemo(() => {
-    return makeDisplayTokenAmount(positionData?.tokenA, positionData?.tokenABalance) || 0;
+    if (!positionData) return 0;
+    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token0Balance), 0);
+    return makeDisplayTokenAmount(positionData?.tokenA, sum) || 0;
   }, [positionData?.tokenA, positionData?.tokenABalance]);
 
   const tokenBBalance = useMemo(() => {
-    return makeDisplayTokenAmount(positionData?.tokenB, positionData?.tokenBBalance) || 0;
+    if (!positionData) return 0;
+    const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.token1Balance), 0);
+    return makeDisplayTokenAmount(positionData?.tokenB, sum) || 0;
   }, [positionData?.tokenB, positionData?.tokenBBalance]);
   
   const depositRatio = useMemo(() => {

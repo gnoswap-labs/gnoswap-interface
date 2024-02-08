@@ -106,7 +106,7 @@ export const EarnAddLiquidityWrapper = styled.section`
       }
     }
     .fee-tier-bad {
-      border: 1px solid #233DBD;
+      border: 1px solid ${({ theme }) => theme.color.border19};
       color: ${({ theme }) => theme.color.text26};
       background: ${({ theme }) => theme.color.background22};
     }
@@ -114,7 +114,7 @@ export const EarnAddLiquidityWrapper = styled.section`
       padding-bottom: 0;
     }
     &-price-range {
-      gap: 7.5px;
+      gap: 8px;
     }
   }
   .amount-input-wrapper {
@@ -182,5 +182,30 @@ export const EarnAddLiquidityWrapper = styled.section`
     .btn-one-click {
       ${fonts.p4}
     }
+  }
+`;
+
+export const OutOfRangeWrapper = styled.div`
+  padding: 12px 16px;
+  gap: 8px;
+  background-color: ${({ theme }) => theme.color.backgroundOpacity4};
+  color: ${({ theme }) => theme.color.text08};
+  ${mixins.flexbox("column", "flex-start", "flex-start")}
+  border-radius: 8px;
+  ${fonts.body12}
+  div {
+    ${mixins.flexbox("row", "center", "flex-start")}
+    svg {
+      width: 16px;
+      height: auto;
+      * {
+        fill: ${({ theme }) => theme.color.text08};
+      }
+    }
+    gap: 8px;
+    font-weight: 600;
+  }
+  ${media.mobile} {
+    ${fonts.p2}
   }
 `;

@@ -22,8 +22,14 @@ export const wrapper = (theme: Theme) => css`
   }
   .button-stake-position {
     height: 57px;
+    span {
+      font-size: 18px;
+    }
     ${media.mobile} {
       height: 41px;
+      span {
+        font-size: 16px;
+      }
     }
   }
   ${media.tabletMiddle} {

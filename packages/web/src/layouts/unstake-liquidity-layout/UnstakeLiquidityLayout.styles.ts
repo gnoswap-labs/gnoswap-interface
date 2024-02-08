@@ -5,7 +5,8 @@ import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   width: 100%;
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  min-height: 100%;
+  ${mixins.flexbox("column", "flex-start", "space-between")};
   main {
     ${mixins.flexbox("row", "center", "center")};
     position: relative;

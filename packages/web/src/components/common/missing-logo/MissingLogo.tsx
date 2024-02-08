@@ -1,5 +1,5 @@
 import React from "react";
-import { LogoWrapper } from "./MissingLogo.styles";
+import { LogoWrapper, Image } from "./MissingLogo.styles";
 
 interface Props {
   symbol: string;
@@ -19,7 +19,7 @@ const MissingLogo: React.FC<Props> = ({
   return (
     <>
       {url ? (
-        <img src={url} alt="logo" className={className} />
+        <Image mobileWidth={mobileWidth} width={width} src={url} alt="logo" className={className} />
       ) : (
         <LogoWrapper
           width={width}

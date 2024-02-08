@@ -1,18 +1,26 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import { useRouter } from "next/router";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePositionData } from "@hooks/common/use-position-data";
+import { usePoolData } from "@hooks/pool/use-pool-data";
+import { useAtomValue } from "jotai";
+import { ThemeState } from "@states/index";
 
 const WalletPositionCardListContainer: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { width } = useWindowSize();
+  const {  isFetchedPosition, loading : loadingPosition, positions } = usePositionData();
+  const { loading } = usePoolData();
+  const themeKey = useAtomValue(ThemeState.themeKey);
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
-      window.innerWidth <= 1180 ? setMobile(true) : setMobile(false);
+      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
 
@@ -28,19 +36,36 @@ const WalletPositionCardListContainer: React.FC = () => {
     router.push(`/earn/pool/${id}`);
   }, [router]);
 
+  const showPagination = useMemo(() => {
+    if (width >= 920) {
+      return false;
+    } else {
+      return true;
+    }
+  }, [positions, width]);
+
+  const handleScroll = () => {
+    if (divRef.current) {
+      const currentScrollX = divRef.current.scrollLeft;
+      setCurrentIndex(Math.min(Math.floor(currentScrollX / 322) + 1, positions.length));
+    }
+  };
+
   return (
     <MyPositionCardList
-      positions={[]}
+      positions={positions}
       loadMore={false}
-      isFetched={true}
-      isLoading={false}
+      isFetched={isFetchedPosition}
+      isLoading={loading || loadingPosition}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}
       width={width}
-      showPagination={false}
-      showLoadMore={false}
-      themeKey="dark"
+      showPagination={showPagination}
+      showLoadMore={true}
+      themeKey={themeKey}
+      divRef={divRef}
+      onScroll={handleScroll}
     />
   );
 };

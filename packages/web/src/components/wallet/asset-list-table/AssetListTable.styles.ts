@@ -66,6 +66,12 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
       padding: 16px 0 16px 12px;
     }
   }
+  .amount {
+    padding: 16px;
+    ${media.tablet} {
+      padding: 16px 0px;
+    }
+  }
   .withdraw {
     padding: 16px 16px 16px 12px;
     ${media.tablet} {

@@ -38,8 +38,9 @@ export const convertToKMB = (
 ) => {
   if (Number.isNaN(Number(price))) return "-";
   if (Math.floor(Number(price)).toString().length < 4) {
+    if (Number.isInteger(Number(price))) return price;
     if (Number(price) < 0.000001 && Number(price) !== 0) return "0.000001";
-    if (Number(price) < 1) return price;
+    if (Number(price) < 1) return `${Number(Number(price).toFixed(6))}`;
     return Number(price).toLocaleString("en-US", {
       maximumFractionDigits: maximumFractionDigits ?? 2,
       minimumFractionDigits: minimumFractionDigits ?? 2,
@@ -71,7 +72,7 @@ export const convertToKMB = (
         }) + "K"
       );
     }
-    return Number(price).toLocaleString("en-US", {
+    return Number.isInteger(price) ? `${Number(price)}` : Number(price).toLocaleString("en-US", {
       maximumFractionDigits: maximumFractionDigits ?? 2,
       minimumFractionDigits: minimumFractionDigits ?? 2,
     });

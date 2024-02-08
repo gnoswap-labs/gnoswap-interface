@@ -29,12 +29,13 @@ import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
-import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { numberToFormat } from "@utils/string-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -52,7 +53,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
-  
+
   const isClosed = position.status;
 
   const tokenA = useMemo(() => {
@@ -102,7 +103,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (isClosed) {
       return "-";
     }
-    return formatUsdNumber(position.positionUsdValue, 2, true);
+    return `$${numberToFormat(`${position.positionUsdValue}`, 2)}`;
   }, [position.positionUsdValue, isClosed]);
 
   const balances = useMemo((): {
@@ -111,14 +112,21 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     balanceUSD: number;
     percent: string;
   }[] => {
-    const sumOfBalances = Number(position.token0Balance) + Number(position.token1Balance);
-    const depositRatio = sumOfBalances === 0 ? 0.5 : Number(position.token0Balance) / sumOfBalances;
+    const sumOfBalances =
+      Number(position.token0Balance) + Number(position.token1Balance);
+    const token0Balance = Number(position.token0Balance);
+    const token1Balance = Number(position.token1Balance);
+    const depositRatio =
+      sumOfBalances === 0
+        ? 0.5
+        : token0Balance /
+          (token0Balance + token1Balance / position?.pool?.price);
     return [
       {
         token: tokenA,
         balance: Number(position.token0Balance),
         balanceUSD: tokenABalanceUSD,
-        percent:  `${Math.round(depositRatio * 100)}%`,
+        percent: `${Math.round(depositRatio * 100)}%`,
       },
       {
         token: tokenB,
@@ -134,7 +142,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     tokenABalanceUSD,
     tokenB,
     tokenBBalanceUSD,
-    position.pool
+    position.pool,
   ]);
 
   const totalRewardInfo = useMemo(():
@@ -162,7 +170,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             Number(current.totalAmount) *
             Number(tokenPrices[current.token.priceId]?.usd || 0),
           claimableUSD: Number(current.claimableUsdValue),
-          accumulatedRewardOf1d: makeDisplayTokenAmount(current.token, current.accumulatedRewardOf1d || 0) || 0,
+          accumulatedRewardOf1d:
+            makeDisplayTokenAmount(
+              current.token,
+              current.accumulatedRewardOf1d || 0,
+            ) || 0,
         });
         return accum;
       },
@@ -174,7 +186,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     );
     return totalRewardInfo;
   }, [position.rewards, tokenPrices]);
-  
+
   const totalRewardUSD = useMemo(() => {
     if (isClosed) {
       return "-";
@@ -186,9 +198,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const usdValue = Object.values(totalRewardInfo)
       .flatMap(item => item)
       .reduce((accum, current) => {
-        return accum + current.claimableAmount;
+        return accum + current.claimableUSD;
       }, 0);
-    return formatUsdNumber(`${usdValue}`, 2, true);
+    return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
   const totalDailyEarning = useMemo(() => {
@@ -204,7 +216,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       .reduce((accum, current) => {
         return accum + current.accumulatedRewardOf1d;
       }, 0);
-    return formatUsdNumber(`${usdValue}`, 2, true);
+    return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
@@ -234,17 +246,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }, []);
 
   const stringPrice = useMemo(() => {
+    const price = tickToPriceStr(position?.pool?.currentTick, 40);
+
     if (isSwap) {
       return `1 ${tokenB?.symbol} = ${convertToKMB(
-        `${Number(1 / position?.pool?.price).toFixed(6)}`,
+        `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
         6,
       )} ${tokenA?.symbol}`;
     }
-    return `1 ${tokenA?.symbol} = ${convertToKMB(
-      `${Number(position?.pool?.price).toFixed(6)}`,
-      6,
-    )} ${tokenB?.symbol}`;
-  }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price]);
+    return `1 ${tokenA?.symbol} = ${price} ${tokenB?.symbol}`;
+  }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price, position?.pool?.currentTick]);
 
   const tickRange = useMemo(() => {
     const ticks = bins.flatMap(bin => [bin.minTick, bin.maxTick]);
@@ -297,47 +308,66 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickPosition, maxTickPosition]);
 
   const minPriceStr = useMemo(() => {
-    const maxPrice = tickToPriceStr(position.tickUpper, 6);
-    const minPrice = tickToPriceStr(position.tickLower, 6);
-    const tokenAPriceStr = isFullRange ? "0 " : convertToKMB(`${(!isSwap ? Number(minPrice) : 1 / Number(maxPrice)).toFixed(2)}`);
+    const maxPrice = tickToPrice(position.tickUpper);
+    const minPrice = tickToPriceStr(position.tickLower, 40);
+    const tokenAPriceStr = isFullRange
+      ? "0 "
+      : !isSwap
+      ? minPrice
+      : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
     return `${tokenAPriceStr}`;
   }, [
+    position.tickUpper,
+    position.tickLower,
     tokenB.path,
     tokenB.symbol,
     tokenPrices,
     tokenA.path,
     tokenA.symbol,
     isFullRange,
-    isSwap
+    isSwap,
   ]);
 
   const currentPrice = useMemo(() => {
-    return !isSwap ? tickToPrice(position?.pool.currentTick) : 1 / tickToPrice(position?.pool.currentTick);
+    return !isSwap
+      ? tickToPrice(position?.pool.currentTick)
+      : 1 / tickToPrice(position?.pool.currentTick);
   }, [position?.pool.currentTick, isSwap]);
-  
+
   const minTickRate = useMemo(() => {
     if (isMinTick(position.tickLower)) {
       return 0;
     }
-    const minPrice = !isSwap ? tickToPrice(position.tickLower) : 1 / tickToPrice(position.tickLower);
-    return Math.round(((currentPrice - minPrice) / currentPrice) * 100);
+    const minPrice = !isSwap
+      ? tickToPrice(position.tickLower)
+      : 1 / tickToPrice(position.tickLower);
+    return ((currentPrice - minPrice) / currentPrice) * 100;
   }, [currentPrice, position.tickLower, isSwap]);
 
   const maxTickRate = useMemo(() => {
     if (isMaxTick(position.tickUpper)) {
       return 999;
     }
-    const maxPrice = !isSwap ? tickToPrice(position.tickUpper) : 1 / tickToPrice(position.tickUpper);
-    return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
+    const maxPrice = !isSwap
+      ? tickToPrice(position.tickUpper)
+      : 1 / tickToPrice(position.tickUpper);
+    return ((maxPrice - currentPrice) / currentPrice) * 100;
   }, [currentPrice, position.tickUpper, isSwap]);
 
   const maxPriceStr = useMemo(() => {
-    const minPrice = tickToPriceStr(position.tickLower, 6);
+    const minPrice = tickToPrice(position.tickLower);
 
-    const maxPrice = tickToPriceStr(position.tickUpper, 6);
-    const tokenBPriceStr = isFullRange ? "∞ " : convertToKMB(`${(!isSwap ? Number(maxPrice) : 1 / Number(minPrice)).toFixed(2)}`);
+    const maxPrice = tickToPriceStr(position.tickUpper, 40);
+
+    const tokenBPriceStr = isFullRange
+      ? "∞ "
+      : !isSwap
+      ? maxPrice
+      : convertToKMB(`${Number(1 / Number(minPrice))}`, 6);
     return `${tokenBPriceStr}`;
   }, [
+    position.tickLower,
+    position.tickUpper,
     tokenB.path,
     tokenB.symbol,
     tokenPrices,
@@ -349,19 +379,27 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const minTickLabel = useMemo(() => {
-    return minTickRate > 1000 ? ">999%" : `${minTickRate < 0 ? "+" : ""}${minTickRate * -1}%`;
-  }, [minTickRate]);
+    return (!isSwap ? minTickRate : -minTickRate) > 1000
+      ? ">999%"
+      : `${minTickRate < -1 ? "+" : ""}${
+          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+            ? "<1"
+            : Math.round(minTickRate * -1)
+        }%`;
+  }, [minTickRate, isSwap]);
 
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999
       ? `>${maxTickRate}%`
       : maxTickRate >= 1000
       ? ">999%"
-      : `${maxTickRate > 0 ? "+" : ""}${maxTickRate}%`;
+      : `${maxTickRate > 1 ? "+" : ""}${
+          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+        }%`;
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
-    return ((!isSwap ? minTickRate : -maxTickRate) > 0) ? "negative" : "positive";
+    return (!isSwap ? minTickRate : -maxTickRate) > 0 ? "negative" : "positive";
   }, [minTickRate, isSwap, maxTickRate]);
 
   const endClass = useMemo(() => {
@@ -441,13 +479,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               className={!position.staked ? "visible-badge" : ""}
             />
           </div>
-          {!isClosed && <SelectBox
-            current={"Manage"}
-            items={["Reposition", "Increase Liquidity", "Decrease Liquidity"]}
-            select={() => {}}
-            render={period => <ManageItem>{period}</ManageItem>}
-            className={!inRange ? "out-range" : ""}
-          />}
+          {!isClosed && (
+            <SelectBox
+              current={"Manage"}
+              items={["Reposition", "Increase Liquidity", "Decrease Liquidity"]}
+              select={() => {}}
+              render={period => <ManageItem>{period}</ManageItem>}
+              className={!inRange ? "out-range" : ""}
+            />
+          )}
         </div>
       </div>
       <div className="info-wrap">
@@ -469,7 +509,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             >
               <span className="content-text">{positionBalanceUSD}</span>
             </Tooltip>
-          ) : <span className="content-text disabled">{positionBalanceUSD}</span>}
+          ) : (
+            !loading && (
+              <span className="content-text disabled">
+                {positionBalanceUSD}
+              </span>
+            )
+          )}
         </div>
         <div className="info-box">
           <span className="symbol-text">Daily Earnings</span>
@@ -524,97 +570,114 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         <div className="position-header">
           <div>Current Price</div>
           <div className="swap-price">
-            {!loading && <MissingLogo
-              symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
-              url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
-              width={20}
-              className="image-logo"
-            />}
-            {!loading && stringPrice}
-            {!loading && <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
-              <IconSwap />
-            </div>}
-            {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-              <span
-                css={pulseSkeletonStyle({ h: 20, w:"80px"})}
+            {!loading && (
+              <MissingLogo
+                symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
+                url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
+                width={20}
+                className="image-logo"
               />
-              </SkeletonEarnDetailWrapper>}
-              {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span
-                  css={pulseSkeletonStyle({ h: 20, w:"80px"})}
-                />
-              </SkeletonEarnDetailWrapper>}
+            )}
+            {!loading && stringPrice}
+            {!loading && (
+              <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
+                <IconSwap />
+              </div>
+            )}
+            {loading && (
+              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+              </SkeletonEarnDetailWrapper>
+            )}
+            {loading && (
+              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+              </SkeletonEarnDetailWrapper>
+            )}
           </div>
-          {!loading && <div className="range-badge">
-            <RangeBadge
-              status={
-                position.status ? RANGE_STATUS_OPTION.NONE :
-                inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT
-              }
-            />
-          </div>}
+          {!loading && (
+            <div className="range-badge">
+              <RangeBadge
+                status={
+                  position.status
+                    ? RANGE_STATUS_OPTION.NONE
+                    : inRange
+                    ? RANGE_STATUS_OPTION.IN
+                    : RANGE_STATUS_OPTION.OUT
+                }
+              />
+            </div>
+          )}
         </div>
-        {!loading && <PoolGraph
-          tokenA={tokenA}
-          tokenB={tokenB}
-          bins={bins}
-          currentTick={currentTick}
-          width={GRAPH_WIDTH}
-          height={150}
-          mouseover
-          themeKey={themeKey}
-          position="top"
-          offset={40}
-          poolPrice={price}
-          isPosition
-          minTickPosition={minTickPosition}
-          maxTickPosition={maxTickPosition}
-          binsMyAmount={position?.bins || []}
-          isSwap={isSwap}
-        />}
-          {loading && <LoadingChart>
+        {!loading && (
+          <PoolGraph
+            tokenA={tokenA}
+            tokenB={tokenB}
+            bins={bins}
+            currentTick={currentTick}
+            width={GRAPH_WIDTH}
+            height={150}
+            mouseover
+            themeKey={themeKey}
+            position="top"
+            offset={40}
+            poolPrice={price}
+            isPosition
+            minTickPosition={minTickPosition}
+            maxTickPosition={maxTickPosition}
+            binsMyAmount={position?.bins || []}
+            isSwap={isSwap}
+          />
+        )}
+        {loading && (
+          <LoadingChart>
             <LoadingSpinner />
-          </LoadingChart>}
-        {!loading && <div className="convert-price">
-          <div>
-            1 {(!isSwap ? tokenA : tokenB)?.symbol} ={" "}
-            {minPriceStr}{" "}
-            {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-            <span className={startClass}>{!isSwap ? minTickLabel : maxTickLabel}</span>
-            )&nbsp;
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <ToolTipContentWrapper>
-                  The price at which the position will be converted entirely
-                  to&nbsp;
-                  {(!isSwap ? tokenA : tokenB)?.symbol}.
-                </ToolTipContentWrapper>
-              }
-            >
-              <IconInfo />
-            </Tooltip>
-            &nbsp;
+          </LoadingChart>
+        )}
+        {!loading && (
+          <div className="convert-price">
+            <div>
+              1 {(!isSwap ? tokenA : tokenB)?.symbol} = {minPriceStr}{" "}
+              {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+              <span className={startClass}>
+                {!isSwap ? minTickLabel : maxTickLabel}
+              </span>
+              )&nbsp;
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <ToolTipContentWrapper>
+                    The price at which the position will be converted entirely
+                    to&nbsp;
+                    {(!isSwap ? tokenA : tokenB)?.symbol}.
+                  </ToolTipContentWrapper>
+                }
+              >
+                <IconInfo />
+              </Tooltip>
+              &nbsp;
+            </div>
+            <div>
+              ~ {maxPriceStr} {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+              <span className={endClass}>
+                {!isSwap ? maxTickLabel : minTickLabel}
+              </span>
+              )&nbsp;
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <ToolTipContentWrapper>
+                    The price at which the position will be converted entirely
+                    to&nbsp;
+                    {(!isSwap ? tokenB : tokenA)?.symbol}.
+                  </ToolTipContentWrapper>
+                }
+              >
+                <IconInfo />
+              </Tooltip>
+            </div>
           </div>
-          <div>
-            ~{" "}
-            {maxPriceStr}{" "}
-            {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-            <span className={endClass}>{!isSwap ? maxTickLabel : minTickLabel}</span>)&nbsp;
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <ToolTipContentWrapper>
-                  The price at which the position will be converted entirely
-                  to&nbsp;
-                  {(!isSwap ? tokenB : tokenA)?.symbol}.
-                </ToolTipContentWrapper>
-              }
-            >
-              <IconInfo />
-            </Tooltip>
-          </div>
-        </div>}
+        )}
       </div>
     </MyPositionCardWrapper>
   );

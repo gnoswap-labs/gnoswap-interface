@@ -42,7 +42,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
           checked={isClosed}
           onChange={handleChangeClosed}
           hasLabel={true}
-          labelText="Hide closed positions"
+          labelText="Show closed positions"
         />}
       </div>
       <div className="button-wrapper">
@@ -50,7 +50,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
           checked={isClosed}
           onChange={handleChangeClosed}
           hasLabel={true}
-          labelText="Hide closed positions"
+          labelText="Show closed positions"
         />}
         <Button
           text="Stake Position"

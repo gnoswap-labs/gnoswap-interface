@@ -1,7 +1,7 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { EarnAddLiquidityWrapper } from "./EarnAddLiquidity.styles";
+import { EarnAddLiquidityWrapper, OutOfRangeWrapper } from "./EarnAddLiquidity.styles";
 import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType } from "@constants/option.constant";
 import { AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
@@ -19,6 +19,9 @@ import IconStaking from "@components/common/icons/IconStaking";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import { SelectPool } from "@hooks/pool/use-select-pool";
+import IconFailed from "@components/common/icons/IconFailed";
+import { isEmptyObject } from "@utils/validation-utils";
+import { useLoading } from "@hooks/common/use-loading";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -55,6 +58,7 @@ interface EarnAddLiquidityProps {
   createOption: { startPrice: number | null, isCreate: boolean };
   fetching: boolean;
   handleSwapValue: () => void;
+  isKeepToken: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -88,11 +92,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   createOption,
   fetching,
   handleSwapValue,
+  isKeepToken,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
   const [openedPriceRange, setOpenedPriceRange] = useState(isEarnAdd ? false : true);
   const [openedSetting, setOpenedSetting] = useState(false);
+  const { isLoadingCommon } = useLoading();
 
   useEffect(() => {
     if (tokenA && tokenB && isEarnAdd) {
@@ -101,9 +107,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     }
     return () => {
       setOpenedFeeTier(false);
-      setOpenedPriceRange(false);
+      isEarnAdd && setOpenedPriceRange(false);
     };
-  }, [tokenA, tokenB]);
+  }, [tokenA, tokenB, isEarnAdd]);
 
   const existTokenPair = useMemo(() => {
     return tokenA !== null && tokenB !== null;
@@ -199,6 +205,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   const handleSelectFeeTier = useCallback((feeTier: SwapFeeTierType) => {
     selectFeeTier(feeTier);
+    selectPool.setIsChangeMinMax(false);
   }, [selectFeeTier]);
 
   const openSetting = useCallback(() => {
@@ -212,6 +219,15 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   const showDim = useMemo(() => {
     return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
   }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
+
+  const isShowOutRange = useMemo(() => {
+    if (!tokenA || !tokenB)
+      return false;
+    const { minPrice, maxPrice, currentPrice } = selectPool;
+    return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0)); 
+  }, [selectPool, tokenA, tokenB]);
+  const isLoading = useMemo(() => selectPool.renderState === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
+  
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -221,8 +237,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             <h5>1. Select Pair</h5>
             {!isEarnAdd && existTokenPair && (
               <DoubleLogo
-                left={tokenALogo}
-                right={tokenBLogo}
+                left={isKeepToken ? tokenALogo : tokenBLogo}
+                right={!isKeepToken ? tokenALogo : tokenBLogo}
                 size={30}
                 leftSymbol={tokenA?.symbol || ""}
                 rightSymbol={tokenB?.symbol || ""}
@@ -291,8 +307,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             selectPool={selectPool}
             showDim={showDim}
             handleSwapValue={handleSwapValue}
+            isEmptyLiquidity={isEmptyObject(feetierOfLiquidityMap)}
+            isKeepToken={isKeepToken}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
+          {!isLoading && isShowOutRange && <OutOfRangeWrapper>
+            <div><IconFailed /> Your position will not earn any fees</div>
+            <p>If you add a position with the current range, you will not earn any fees until the token price moves into your range.</p>
+          </OutOfRangeWrapper>}
         </article>
 
         <article className="selector-wrapper amount-input-wrapper">

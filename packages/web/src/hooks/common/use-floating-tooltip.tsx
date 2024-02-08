@@ -14,11 +14,13 @@ export type FloatingPosition =
 interface UseFloatingTooltip {
   offset: number;
   position: FloatingPosition;
+  tooltipWidth?: number;
 }
 
 export function useFloatingTooltip<T extends HTMLElement = any>({
   offset,
   position,
+  tooltipWidth,
 }: UseFloatingTooltip) {
   const [opened, setOpened] = useState(false);
   const boundaryRef = useRef<T>();
@@ -108,7 +110,7 @@ export function useFloatingTooltip<T extends HTMLElement = any>({
 
   return {
     handleMouseMove,
-    x,
+    x: Math.min((tooltipWidth || 0), (x || 0)),
     y,
     arrowRef,
     context,
