@@ -44,7 +44,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   currentIndex,
   themeKey,
 }) => {
-  
+
   const GRAPH_WIDTH = mobile ? 226 : 290;
   const GRAPH_HEIGHT = 80;
   const { pool } = position;
@@ -52,49 +52,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
-  
-  // const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionClaimInfo[] } | null => {
-    
-  //   const infoMap: { [key in RewardType]: { [key in string]: PositionClaimInfo } } = {
-  //     "SWAP_FEE": {},
-  //     "STAKING": {},
-  //     "EXTERNAL": {},
-  //   };
-  //   rewards
-  //     .map(reward => ({
-  //       token: reward.token,
-  //       rewardType: reward.rewardType,
-  //       balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
-  //       balanceUSD: Number(reward.totalAmount) * Number(tokenPrices[reward.token.priceId]?.usd || 0),
-  //       claimableAmount: makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
-  //       claimableUSD: Number(reward.claimableUsdValue),
-  //       accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
-  //       claimableUsdValue: Number(reward.claimableUsdValue),
-  //       aprOf7d: Number(reward.aprOf7d),
-  //     }))
-  //     .forEach((rewardInfo) => {
-  //       const existReward = infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
-  //       if (existReward) {
-  //         infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
-  //           ...existReward,
-  //           balance: existReward.balance + rewardInfo.balance,
-  //           balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
-  //           claimableAmount: existReward.claimableAmount + rewardInfo.claimableAmount,
-  //           claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
-  //           accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
-  //           claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-  //           aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
-  //         };
-  //       } else {
-  //         infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
-  //       }
-  //     });
-  //   return {
-  //     SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-  //     STAKING: Object.values(infoMap["STAKING"]),
-  //     EXTERNAL: Object.values(infoMap["EXTERNAL"]),
-  //   };
-  // }, [rewards, tokenPrices]);
+
 
   // fake close
   const inRange: boolean | null = useMemo(() => {
@@ -153,8 +111,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return maxTickRate === 999
       ? `>${maxTickRate}%`
       : maxTickRate >= 1000
-      ? ">999%"
-      : `${maxTickRate > 0 ? "+" : ""}${maxTickRate}%`;
+        ? ">999%"
+        : `${maxTickRate > 0 ? "+" : ""}${maxTickRate}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -177,7 +135,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -195,7 +153,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -279,7 +237,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
-    if (Number.isInteger(Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd))) 
+    if (Number.isInteger(Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)))
       return `$${Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)}`;
     return formatUsdNumber((Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)).toFixed(2));
   }, [position.unclaimedFee0Usd, position.unclaimedFee1Usd]);
@@ -316,8 +274,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                  ? RANGE_STATUS_OPTION.IN
-                  : RANGE_STATUS_OPTION.OUT
+                    ? RANGE_STATUS_OPTION.IN
+                    : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>
