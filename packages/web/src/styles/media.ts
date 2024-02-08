@@ -10,6 +10,7 @@ export const DEVICE_TYPE = {
   TABLET: "tablet",
   MEDIUM_TABLET: "mediumTablet",
   TABLET_M: "tabletMiddle",
+  TABLET_S: "tabletSmall",
   MOBILE: "mobile",
 } as const;
 export type DEVICE_TYPE = ValuesType<typeof DEVICE_TYPE>;
@@ -20,6 +21,7 @@ export const DeviceSize: MediaProps = {
   tablet: 1180,
   mediumTablet: 1180,
   tabletMiddle: 930,
+  tabletSmall: 890,
   mobile: 768,
 };
 

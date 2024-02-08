@@ -6,7 +6,7 @@ import { HEADER_NAV } from "@constants/header.constant";
 import { Token } from "@containers/header-container/HeaderContainer";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { AccountModel } from "@models/account/account-model";
-import { DEVICE_TYPE } from "@styles/media";
+import { DEVICE_TYPE, DeviceSize } from "@styles/media";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
 import IconDownload from "../icons/IconDownload";
@@ -137,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
-              {connected && width > 890 && (
+              {connected && width > DeviceSize[DEVICE_TYPE.TABLET_S] && (
                 <DepositButton onClick={() => changeTokenDeposit()}>
                   <IconDownload />
                   <span>Deposit</span>
