@@ -9,10 +9,12 @@ import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "@query/pools";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { usePoolData } from "@hooks/pool/use-pool-data";
 
 export default function Pool() {
   const router = useRouter();
   const { account } = useWallet();
+  usePoolData();
   const poolPath = router.query["pool-path"] || "";
   const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({ addr: account?.address });
