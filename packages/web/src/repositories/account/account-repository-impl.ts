@@ -15,7 +15,6 @@ import { AccountBalanceModel } from "@models/account/account-balance-model";
 import { CommonError } from "@common/errors";
 import { GNOWSWAP_CONNECTED_KEY } from "@states/common";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { evaluateExpressionToValues, makeABCIParams } from "@utils/rpc-utils";
 
 export class AccountRepositoryImpl implements AccountRepository {
   private walletClient: WalletClient | null;
@@ -73,11 +72,14 @@ export class AccountRepositoryImpl implements AccountRepository {
     if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
-    const param = makeABCIParams("GetUserByAddress", [address]);
-    const result = await this.rpcProvider
-      .evaluateExpression("gno.land/r/demo/users", param)
-      .then(evaluateExpressionToValues);
-    return result.length > 0 ? result[0] : "";
+    console.log(address);
+    // TODO: These lines are applied after the contract function that retrieves the member name is developed.
+    // const param = makeABCIParams("GetUserByAddress", [address]);
+    // const result = await this.rpcProvider
+    //   .evaluateExpression("gno.land/r/demo/users", param)
+    //   .then(evaluateExpressionToValues);
+    // return result.length > 0 ? result[0] : "";
+    return "";
   };
 
   public existsWallet = () => {
