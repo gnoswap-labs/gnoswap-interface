@@ -5,6 +5,7 @@ import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
 export interface EarnMyPositionContentProps {
+  isOtherPosition: boolean;
   connected: boolean;
   fetched: boolean;
   loading: boolean;
@@ -27,6 +28,7 @@ export interface EarnMyPositionContentProps {
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
+  isOtherPosition,
   connected,
   fetched,
   loading,
@@ -47,7 +49,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   account,
 }) => {
 
-  if (((!connected || isSwitchNetwork) && !loading)) {
+  if (((!connected || isSwitchNetwork) && !loading && !isOtherPosition)) {
     return (
       <EarnMyPositionsUnconnected
         connect={connect}
@@ -57,7 +59,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   }
 
   if (connected && positions.length === 0 && !loading) {
-    return <EarnMyPositionNoLiquidity account={account}/>;
+    return <EarnMyPositionNoLiquidity account={account} />;
   }
 
   return (

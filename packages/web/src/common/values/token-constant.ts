@@ -1,5 +1,21 @@
 import { TokenModel } from "@models/token/token-model";
 
+export const GNS_TOKEN: TokenModel = {
+  type: "grc20",
+  chainId: "dev.gnoswap",
+  createdAt: "2024-01-24T15:12:21Z",
+  name: "Gnoswap",
+  path: "gno.land/r/demo/gns",
+  decimals: 6,
+  symbol: "GNS",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  priceId: "gno.land/r/demo/gns",
+  description: "GNS is a GRC20 token issued solely for testing purposes.",
+  websiteURL: "https://beta.gnoswap.io",
+  wrappedPath: "gno.land/r/demo/gns",
+};
+
 export const GNOT_TOKEN: TokenModel = {
   type: "native",
   chainId: "",

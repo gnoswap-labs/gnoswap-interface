@@ -150,8 +150,9 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       networkClient,
       localStorageClient,
       sessionStorageClient,
+      rpcProvider,
     );
-  }, [walletClient, networkClient, localStorageClient, sessionStorageClient]);
+  }, [walletClient, networkClient, localStorageClient, sessionStorageClient, rpcProvider]);
 
   const liquidityRepository = useMemo(() => {
     return new LiquidityRepositoryMock();

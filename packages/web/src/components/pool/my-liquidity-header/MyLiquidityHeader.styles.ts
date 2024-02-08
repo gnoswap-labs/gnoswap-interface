@@ -21,6 +21,28 @@ export const HeaderWrapper = styled.div`
       }
       ${mixins.flexbox("row", "center", "space-between")};
     }
+
+    h2 {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      button {
+        display: inline-flex;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+      }
+      .name {
+        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        cursor: pointer;
+      }
+    }
   }
   ${media.mobile} {
     flex-direction: column;
@@ -48,7 +70,6 @@ export const HeaderWrapper = styled.div`
       button {
         width: 50%;
       }
-      
     }
     .full-width {
       width: 100%;

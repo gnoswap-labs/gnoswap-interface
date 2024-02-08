@@ -7,6 +7,9 @@ import MyPositionCard from "../my-position-card/MyPositionCard";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface MyLiquidityProps {
+  address: string | null;
+  addressName: string;
+  isOtherPosition: boolean;
   positions: PoolPositionModel[]
   breakpoint: DEVICE_TYPE;
   connected: boolean;
@@ -25,6 +28,9 @@ interface MyLiquidityProps {
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
+  isOtherPosition,
+  address,
+  addressName,
   positions,
   breakpoint,
   connected,
@@ -45,6 +51,11 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
     <MyLiquidityWrapper>
       <div className="liquidity-wrap">
         <MyLiquidityHeader
+          isOtherPosition={isOtherPosition}
+          connectedWallet={connected}
+          address={address}
+          addressName={addressName}
+          positionLength={positions.length}
           availableRemovePosition={availableRemovePosition}
           handleClickAddPosition={handleClickAddPosition}
           handleClickRemovePosition={handleClickRemovePosition}
@@ -64,7 +75,12 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
       {positions.length > 0 && <PoolDivider />}
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
         positions.map((position: PoolPositionModel, index: number) => (
-          <MyPositionCard position={position} key={index} breakpoint={breakpoint} loading={loading}/>
+          <MyPositionCard
+            position={position}
+            key={index}
+            breakpoint={breakpoint}
+            loading={loading}
+          />
         ))
       ) : (
         <>
@@ -80,7 +96,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
               ))}
             </div>
           </div>
-         {positions.length > 1 && <div className="box-indicator">
+          {positions.length > 1 && <div className="box-indicator">
             <span className="current-page">{currentIndex}</span>
             <span>/</span>
             <span>{positions.length}</span>

@@ -16,7 +16,10 @@ import { AccountModel } from "@models/account/account-model";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
 
 import AccountBalancesData from "./mock/account-balances.json";
-import { WalletResponse, SwitchNetworkResponse } from "@common/clients/wallet-client/protocols";
+import {
+  WalletResponse,
+  SwitchNetworkResponse,
+} from "@common/clients/wallet-client/protocols";
 
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
@@ -39,6 +42,10 @@ export class AccountRepositoryMock implements AccountRepository {
 
   public getAccount = async (): Promise<AccountModel> => {
     return AccountRepositoryMock.generateAccount();
+  };
+
+  public getUsername = async (): Promise<string> => {
+    return "";
   };
 
   public getBalances = async (): Promise<AccountBalanceModel[]> => {
@@ -206,7 +213,9 @@ export class AccountRepositoryMock implements AccountRepository {
     };
   };
 
-  public switchNetwork: (chainId: string) => Promise<WalletResponse<SwitchNetworkResponse>> = async () => {
+  public switchNetwork: (
+    chainId: string,
+  ) => Promise<WalletResponse<SwitchNetworkResponse>> = async () => {
     return {
       code: 0,
       status: "0",

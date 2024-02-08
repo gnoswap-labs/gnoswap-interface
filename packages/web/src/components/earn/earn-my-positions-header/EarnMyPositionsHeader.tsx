@@ -3,8 +3,14 @@ import { useCallback, useMemo } from "react";
 import { PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 import Switch from "@components/common/switch/Switch";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { SCANNER_URL } from "@common/values";
 
 export interface EarnMyPositionsHeaderProps {
+  address?: string | null;
+  addressName?: string;
+  isOtherPosition: boolean;
+  visiblePositions: boolean;
+  positionLength: number;
   connected: boolean;
   isSwitchNetwork: boolean;
   availableStake: boolean;
@@ -16,6 +22,11 @@ export interface EarnMyPositionsHeaderProps {
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
+  address,
+  addressName,
+  isOtherPosition,
+  visiblePositions,
+  positionLength,
   connected,
   isSwitchNetwork,
   availableStake,
@@ -23,12 +34,16 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   moveEarnStake,
   isClosed,
   handleChangeClosed,
-  positions,
 }) => {
 
   const disabledStake = useMemo(() => {
     return !connected || isSwitchNetwork || !availableStake;
   }, [availableStake, connected, isSwitchNetwork]);
+
+  const onClickAddressPosition = useCallback(() => {
+    const scannerUrl = `${SCANNER_URL}/accounts/${address}`;
+    window.open(scannerUrl, "_blank");
+  }, [address]);
 
   const onClickNewPosition = useCallback(() => {
     moveEarnAdd();
@@ -37,8 +52,21 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   return (
     <PositionsWrapper>
       <div className="header-content">
-        <h2>My Positions</h2>
-        {positions.length > 0 && connected && <Switch
+        {isOtherPosition ? (
+          <h2>
+            <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
+            <span>{`’s Positions (${positionLength})`}</span>
+          </h2>
+        ) : connected ? (
+          <h2>
+            <span>{`My Positions (${positionLength})`}</span>
+          </h2>
+        ) : (
+          <h2>
+            <span>{"My Positions"}</span>
+          </h2>
+        )}
+        {visiblePositions && <Switch
           checked={isClosed}
           onChange={handleChangeClosed}
           hasLabel={true}
@@ -46,7 +74,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
         />}
       </div>
       <div className="button-wrapper">
-        {positions.length > 0 && connected && <Switch
+        {visiblePositions && <Switch
           checked={isClosed}
           onChange={handleChangeClosed}
           hasLabel={true}
