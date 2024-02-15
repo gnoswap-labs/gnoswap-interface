@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import MyLiquidity from "@components/pool/my-liquidity/MyLiquidity";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -7,7 +13,10 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePosition } from "@hooks/common/use-position";
 import { useLoading } from "@hooks/common/use-loading";
-import { makeBroadcastClaimMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import {
+  makeBroadcastClaimMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetUsernameByAddress } from "@query/address/queries";
@@ -17,7 +26,7 @@ interface MyLiquidityContainerProps {
 }
 
 const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
-  address
+  address,
 }) => {
   const router = useRouter();
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -32,7 +41,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
 
-  const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
+  const {
+    broadcastSuccess,
+    broadcastPending,
+    broadcastError,
+    broadcastRejected,
+  } = useBroadcastHandler();
 
   const isOtherPosition = useMemo(() => {
     return Boolean(address) && address !== account?.address;
@@ -45,7 +59,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     return true;
   }, [address, connectedWallet]);
 
-  const { data: addressName = "" } = useGetUsernameByAddress(address || "", { enabled: !!address });
+  const { data: addressName = "" } = useGetUsernameByAddress(address || "", {
+    enabled: !!address,
+  });
 
   const availableRemovePosition = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -65,7 +81,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.floor(currentScrollX / divRef.current.offsetWidth) + 1);
+      setCurrentIndex(
+        Math.floor(currentScrollX / divRef.current.offsetWidth) + 1,
+      );
     }
   };
 
@@ -86,13 +104,20 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
             setLoadingTransactionClaim(false);
           }, 1000);
           openModal();
-        } else if (response.code === 4000 && response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
+        } else if (
+          response.code === 4000 &&
+          response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+        ) {
           broadcastError(makeBroadcastClaimMessage("error", data));
           setLoadingTransactionClaim(false);
           openModal();
         } else {
           openModal();
-          broadcastRejected(makeBroadcastClaimMessage("error", data), () => { }, true);
+          broadcastRejected(
+            makeBroadcastClaimMessage("error", data),
+            () => {},
+            true,
+          );
           setLoadingTransactionClaim(false);
         }
       }
@@ -128,8 +153,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       return;
     }
     setPositions(temp);
-
-  }, [router.query, isShowClosePosition, visiblePositions]);
+  }, [
+    router.query,
+    isShowClosePosition,
+    visiblePositions,
+    getPositionsByPoolId,
+  ]);
 
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
