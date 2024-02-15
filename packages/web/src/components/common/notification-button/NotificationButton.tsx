@@ -38,7 +38,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
       notificationRepository.getGroupedNotification({
         address: account?.address,
       }),
-    refetchInterval: 1000 * 5,
+    refetchInterval: 1000 * 10,
   });
 
   const handleClearAll = () => {

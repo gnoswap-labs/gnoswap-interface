@@ -21,14 +21,23 @@ import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { useRouter } from "next/router";
 
-const PATH = [
-  "/tokens/[token-path]",
-  "/swap",
-];
+const PATH = ["/tokens/[token-path]", "/swap"];
+const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake"];
 
 export const useTokenData = () => {
   const router = useRouter();
-  const { data: { tokens = [] } = {}, isLoading: loading, isFetched, error } = useGetTokensList({ refetchInterval: PATH.includes(router.pathname) ? 15 * 1000 : false });
+  const {
+    data: { tokens = [] } = {},
+    isLoading: loading,
+    isFetched,
+    error,
+  } = useGetTokensList({
+    refetchInterval: PATH.includes(router.pathname)
+      ? 15 * 1000
+      : router.pathname === "/"
+      ? 10 * 1000
+      : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
+  });
   const { data: tokenPrices = {} } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
 
@@ -133,7 +142,10 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertToMB(formatUsdNumber3Digits(tokenPrices[token.path].usd), 10)}`,
+              content: `$${convertToMB(
+                formatUsdNumber3Digits(tokenPrices[token.path].usd),
+                10,
+              )}`,
             }
           : {
               token: {
@@ -176,13 +188,13 @@ export const useTokenData = () => {
   );
 
   async function updateTokens() {
-    forceRefect({queryKey: [QUERY_KEY.tokens]});
+    forceRefect({ queryKey: [QUERY_KEY.tokens] });
   }
 
   async function updateTokenPrices() {
-    forceRefect({queryKey: [QUERY_KEY.tokenPrices]});
+    forceRefect({ queryKey: [QUERY_KEY.tokenPrices] });
   }
-  
+
   async function updateBalances() {
     if (!rpcProvider) {
       return;
@@ -233,6 +245,6 @@ export const useTokenData = () => {
     loading,
     loadingBalance,
     isFetched,
-    error
+    error,
   };
 };

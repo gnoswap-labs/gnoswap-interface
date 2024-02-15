@@ -6,11 +6,13 @@ import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 interface HeaderToggleProps {
   walletConnect: boolean;
   notification: boolean;
+  showLanguage: boolean;
 }
 
 export const headerToggle = atom<HeaderToggleProps>({
   walletConnect: false,
   notification: false,
+  showLanguage: false,
 });
 
 export const openedModal = atom<boolean>(false);

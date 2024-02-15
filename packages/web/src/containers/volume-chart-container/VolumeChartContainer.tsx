@@ -146,6 +146,7 @@ const VolumeChartContainer: React.FC = () => {
   const { data: volumeData, isFetching } = useQuery<VolumeResponse, Error>({
     queryKey: ["volumePriceInfo"],
     queryFn: dashboardRepository.getDashboardVolume,
+    refetchInterval: 60 * 1000,
   });
 
   const changeVolumeChartType = useCallback((newType: string) => {

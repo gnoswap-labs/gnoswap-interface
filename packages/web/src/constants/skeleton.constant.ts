@@ -287,9 +287,7 @@ export const MOBILE_ASSET_TD_WIDTH = [230, 230, 195, 195, 90, 118];
 export const TOKEN_TD_WIDTH = [
   56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124,
 ];
-export const MOBILE_TOKEN_TD_WIDTH = [
-  42, 90, 90, 85, 85, 85, 140, 140, 140, 190, 126,
-];
+export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
 export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
 export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
 
@@ -455,19 +453,10 @@ export const TOKEN_INFO = {
 
 export const MOBILE_TOKEN_INFO = {
   title: TABLE_TITLE.TOKEN_TABLE,
-  total: 15,
+  total: 2,
   tdWidth: MOBILE_TOKEN_TD_WIDTH,
   list: [
-    { width: 10, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 140, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 100, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 180, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };

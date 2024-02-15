@@ -23,6 +23,7 @@ import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContai
 import { AccountModel } from "@models/account/account-model";
 import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
+import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -73,6 +74,7 @@ interface WalletConnectorMenuProps {
   themeKey: "dark" | "light";
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
+  onClickChangeLanguage: () => void;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -84,6 +86,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   themeKey,
   switchNetwork,
   isSwitchNetwork,
+  onClickChangeLanguage,
 }) => {
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -168,6 +171,13 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             />
           </div>
         )}
+        
+        <div className="theme-container">
+          <ThemeSelector>
+            <span>Language</span>
+            <div className="language" onClick={onClickChangeLanguage}>EN <IconStrokeArrowRight /></div>
+          </ThemeSelector>
+        </div>
         <div className="theme-container">
           <ThemeSelector>
             <span>Theme</span>
@@ -176,6 +186,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         </div>
       </WalletConnectorMenuWrapper>
       <Overlay onClick={onMenuToggle} />
+
     </>
   );
 };

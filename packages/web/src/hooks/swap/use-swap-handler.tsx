@@ -615,9 +615,9 @@ export const useSwapHandler = () => {
             setNotice(
               {
                 title: "Swap",
-                description: `Failed swapping ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+                description: `Failed swapping <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
-                } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                }</span> for <sp${swapTokenInfo.tokenBUSD.toLocaleString()} ${
                   swapTokenInfo?.tokenB?.symbol
                 }`,
               },
@@ -632,11 +632,11 @@ export const useSwapHandler = () => {
             setNotice(
             {
               title: "Swap",
-              description: `Swapped ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+              description: `Swapped <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
                 swapTokenInfo?.tokenA?.symbol
-              } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+              }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString()}</span> <span>${
                 swapTokenInfo?.tokenB?.symbol
-              }`,
+              }</span>`,
             }, {
               timeout: 50000,
               type: "success" as TNoticeType,
@@ -676,11 +676,11 @@ export const useSwapHandler = () => {
               }
               setNotice({
                 title: "Swap",
-                description: `Swapped ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+                description: `Swapped <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
-                } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString()}</span> <span>${
                   swapTokenInfo?.tokenB?.symbol
-                }`,
+                }</span>`,
               }, {
                 timeout: 50000,
                 type: "success" as TNoticeType,
@@ -690,11 +690,11 @@ export const useSwapHandler = () => {
             } else {
               setNotice({
                 title: "Swap",
-                description: `Failed swapping ${swapTokenInfo.tokenAUSD.toLocaleString()} ${
+                description: `Failed swapping <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
-                } for ${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString()}</span> <span>${
                   swapTokenInfo?.tokenB?.symbol
-                }`,
+                }</span>`,
               }, {
                 timeout: 50000,
                 type: "error" as TNoticeType,

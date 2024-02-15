@@ -72,6 +72,7 @@ const DashboardInfoContainer: React.FC = () => {
   >({
     queryKey: ["dashboardToken"],
     queryFn: dashboardRepository.getDashboardToken,
+    refetchInterval: 60 * 1000,
   });
 
   const progressBar = useMemo(() => {

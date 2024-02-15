@@ -203,7 +203,7 @@ const AssetListContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingCommon } = useLoading();
-  const { data: { tokens = [] } = {}, } = useGetTokensList({ refetchInterval: 15 * 1000, });
+  const { data: { tokens = [] } = {}, } = useGetTokensList({ refetchInterval: 60 * 1000, });
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);

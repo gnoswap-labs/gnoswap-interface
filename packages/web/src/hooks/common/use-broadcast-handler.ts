@@ -209,11 +209,11 @@ export function makeBroadcastAddLiquidityMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Adding ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Adding <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "success":
-        return `Added ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Added <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "error":
-        return `Failed to add ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Failed to add <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
     }
   }
   return {

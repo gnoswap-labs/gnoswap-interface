@@ -155,6 +155,7 @@ const TvlChartContainer: React.FC = () => {
   const { data: tvlData, isLoading } = useQuery<TvlResponse, Error>({
     queryKey: ["dashboardTvl"],
     queryFn: dashboardRepository.getDashboardTvl,
+    refetchInterval: 60 * 1000,
   });
   
   const changeTvlChartType = useCallback((newType: string) => {

@@ -8,9 +8,19 @@ import { QUERY_KEY, useGetPoolList } from "@query/pools";
 import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
+import { useRouter } from "next/router";
+
+const PATH_60SECOND = "/wallet";
 
 export const usePoolData = () => {
-  const { data: pools = [], isLoading: loading, isFetched: isFetchedPools } = useGetPoolList();
+  const router = useRouter();
+  const {
+    data: pools = [],
+    isLoading: loading,
+    isFetched: isFetchedPools,
+  } = useGetPoolList({
+    refetchInterval: router.pathname === "/" ? 10 * 1000 : router.pathname === PATH_60SECOND ? 60 * 1000 : false,
+  });
   const forceRefect = useForceRefetchQuery();
   
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(
@@ -101,7 +111,7 @@ export const usePoolData = () => {
   }, [pools, gnot]);
 
   async function updatePools() {
-    forceRefect({queryKey: [QUERY_KEY.pools]});
+    forceRefect({ queryKey: [QUERY_KEY.pools] });
   }
 
   return {

@@ -246,3 +246,10 @@ export function formatNumberToLocaleString(inputNumber: Number | string) {
       return inputNumber.toLocaleString(undefined, { maximumFractionDigits: 6 });
   }
 }
+
+export function convertLargePrice(val: number) {
+  if (val >= 1000000000) {
+    return ">$999,999,999.99";
+  }
+  return `$${val.toLocaleString()}`;
+}

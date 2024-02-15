@@ -126,7 +126,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     ],
     queryFn: () =>
       dashboardRepository.getDashboardOnchainActivity({ type: activityType }),
-      refetchInterval: 15 * 1000,
+      refetchInterval: 60 * 1000,
   });
 
   const changeActivityType = useCallback((newType: string) => {

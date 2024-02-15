@@ -51,6 +51,22 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
   }
 
   .theme-container {
+    .language {
+      gap: 4px;
+      cursor: pointer;
+      ${mixins.flexbox("row", "center", "center")};
+      color: ${({ theme }) => theme.color.text01};
+      ${fonts.p2}
+      svg {
+        width: 16px;
+        height: 16px;
+        
+      }
+      svg * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+
+    }
     ${media.mobile} {
       ${mixins.flexbox("column", "center", "center")};
       width: 100%;
