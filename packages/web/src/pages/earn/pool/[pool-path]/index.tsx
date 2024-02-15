@@ -9,16 +9,19 @@ import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "@query/pools";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { usePoolData } from "@hooks/pool/use-pool-data";
 import { addressValidationCheck } from "@utils/validation-utils";
+import { usePositionData } from "@hooks/common/use-position-data";
 
 export default function Pool() {
   const router = useRouter();
   const { account } = useWallet();
-  usePoolData();
   const poolPath = router.query["pool-path"] || "";
-  const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({ addr: account?.address });
+  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
+  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
+    addr: account?.address,
+  });
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -28,9 +31,7 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const isScrollMove = useMemo(() => {
-    return Boolean(address) && Boolean(hash);
-  }, [address, hash]);
+  const { isFetchedPosition } = usePositionData(address);
 
   const isStaking = useMemo(() => {
     if (data?.incentivizedType === "INCENTIVIZED") {
@@ -42,21 +43,21 @@ export default function Pool() {
     return false;
   }, [data?.incentivizedType]);
 
-  const { isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-
   useEffect(() => {
-    if (isScrollMove && !loading) {
-      const positionContainerElement = document.getElementById(`position-${hash}`);
+    if (address && hash && isFetchedPosition) {
+      const positionContainerElement = document.getElementById(
+        `position-${hash}`,
+      );
       const topPosition = positionContainerElement?.getBoundingClientRect().top;
       if (!topPosition) {
         return;
       }
       window.scrollTo({
         top: topPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
-  }, [isScrollMove, loading]);
+  }, [isFetchedPosition, hash, address]);
 
   return (
     <PoolLayout

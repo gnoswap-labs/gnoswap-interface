@@ -48,13 +48,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   themeKey,
   account,
 }) => {
-
-  if (((!connected || isSwitchNetwork) && !loading && !isOtherPosition)) {
+  if ((!connected || isSwitchNetwork) && !loading && !isOtherPosition) {
     return (
-      <EarnMyPositionsUnconnected
-        connect={connect}
-        connected={connected}
-      />
+      <EarnMyPositionsUnconnected connect={connect} connected={connected} />
     );
   }
 
@@ -62,24 +58,28 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     return <EarnMyPositionNoLiquidity account={account} />;
   }
 
-  return (
-    <MyPositionCardList
-      positions={positions}
-      isFetched={fetched}
-      isLoading={loading}
-      currentIndex={currentIndex}
-      movePoolDetail={movePoolDetail}
-      mobile={mobile}
-      divRef={divRef}
-      onScroll={onScroll}
-      showPagination={showPagination}
-      showLoadMore={showLoadMore}
-      width={width}
-      loadMore={loadMore}
-      onClickLoadMore={onClickLoadMore}
-      themeKey={themeKey}
-    />
-  );
+  if (positions.length > 0) {
+    return (
+      <MyPositionCardList
+        positions={positions}
+        isFetched={fetched}
+        isLoading={loading}
+        currentIndex={currentIndex}
+        movePoolDetail={movePoolDetail}
+        mobile={mobile}
+        divRef={divRef}
+        onScroll={onScroll}
+        showPagination={showPagination}
+        showLoadMore={showLoadMore}
+        width={width}
+        loadMore={loadMore}
+        onClickLoadMore={onClickLoadMore}
+        themeKey={themeKey}
+      />
+    );
+  }
+
+  return <></>;
 };
 
 export default EarnMyPositionsContent;
