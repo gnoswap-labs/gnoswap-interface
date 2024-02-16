@@ -8,6 +8,7 @@ import IconClock from "@components/common/icons/IconClock";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useTranslation } from "next-i18next";
 interface RecentlyAddedCardListProps {
   list: Array<CardListTokenInfo>;
   device: DEVICE_TYPE;
@@ -21,6 +22,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   onClickItem,
   loading,
 }) => {
+  const { t } = useTranslation();
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
@@ -34,7 +36,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
       ) : (
         <div>
           <h2>
-            <IconClock className="icon-clock" /> New Listings
+            <IconClock className="icon-clock" /> {t("Main:newListings")}
           </h2>
         </div>
       )}

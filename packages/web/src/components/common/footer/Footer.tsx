@@ -14,6 +14,7 @@ import {
   AnchorStyle,
 } from "./Footer.styles";
 import { FOOTER_LEFT_NAV, FOOTER_RIGHT_NAV } from "@constants/footer.constant";
+import { useTranslation } from "next-i18next";
 
 type AnchorProps = {
   path: string;
@@ -46,6 +47,8 @@ function Anchor({ path, title, icon, newTab = false, className }: AnchorProps) {
 
 const Footer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
+  const { t } = useTranslation();
+
   return (
     <FooterWrapper>
       <FooterContainer>
@@ -55,7 +58,7 @@ const Footer: React.FC = () => {
           ) : (
             <IconFooterLightLogo className="footer-main-logo" />
           )}
-          <p className="footer-content">{FOOTER_LEFT_NAV.content}</p>
+          <p className="footer-content">{t(`${FOOTER_LEFT_NAV.content}`)} - {t(`${FOOTER_LEFT_NAV.contentSecond}`)}</p>
           <SocialNav>
             {FOOTER_LEFT_NAV.menu.map(item => (
               <Anchor
@@ -70,11 +73,11 @@ const Footer: React.FC = () => {
         <SecondSection>
           {FOOTER_RIGHT_NAV.map(list => (
             <MenuSection key={list.content}>
-              <strong>{list.content}</strong>
+              <strong>{t(`${list.content}`)}</strong>
               {list.menu.map((menu: any) => (
                 <Anchor
                   path={menu.path}
-                  title={menu.title}
+                  title={t(`${menu.title}`)}
                   newTab={menu.newTab}
                   key={menu.title}
                   className="list-menu"

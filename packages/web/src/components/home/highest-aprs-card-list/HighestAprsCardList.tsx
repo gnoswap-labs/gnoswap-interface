@@ -8,6 +8,7 @@ import IconDiamond from "@components/common/icons/IconDiamond";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useTranslation } from "next-i18next";
 
 interface HighestAprsCardListProps {
   list: Array<CardListPoolInfo>;
@@ -22,6 +23,7 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
   onClickItem,
   loading,
 }) => {
+  const { t } = useTranslation();
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
@@ -34,7 +36,7 @@ const HighestAprsCardList: React.FC<HighestAprsCardListProps> = ({
       ) : (
         <div>
           <h2>
-            <IconDiamond className="icon-diamond" /> Highest APRs
+            <IconDiamond className="icon-diamond" /> {t("Main:highest")}
           </h2>
         </div>
       )}

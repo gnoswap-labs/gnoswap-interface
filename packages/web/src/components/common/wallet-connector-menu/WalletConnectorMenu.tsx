@@ -24,6 +24,7 @@ import { AccountModel } from "@models/account/account-model";
 import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
+import { useTranslation } from "next-i18next";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -88,6 +89,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   isSwitchNetwork,
   onClickChangeLanguage,
 }) => {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
@@ -159,7 +161,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         ) : (
           <div className="button-container">
             <Button
-              text="Wallet Login"
+              text={t("HeaderFooter:walletLogin")}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
@@ -174,13 +176,13 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         
         <div className="theme-container">
           <ThemeSelector>
-            <span>Language</span>
+            <span>{t("HeaderFooter:language")}</span>
             <div className="language" onClick={onClickChangeLanguage}>EN <IconStrokeArrowRight /></div>
           </ThemeSelector>
         </div>
         <div className="theme-container">
           <ThemeSelector>
-            <span>Theme</span>
+            <span>{t("HeaderFooter:theme")}</span>
             <ThemeModeContainer />
           </ThemeSelector>
         </div>

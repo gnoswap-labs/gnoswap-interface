@@ -1,39 +1,39 @@
 export const HEADER_NAV = [
   {
-    title: "Swap",
+    title: "HeaderFooter:swap",
     path: "/swap",
     subPath: ["/tokens/"]
   },
   {
-    title: "Earn",
+    title: "HeaderFooter:earn",
     path: "/earn",
     subPath: ["/earn/pool/", "/earn/add", "/earn/stake"]
   },
   {
-    title: "Wallet",
+    title: "HeaderFooter:wallet",
     path: "/wallet",
   },
   {
-    title: "Dashboard",
+    title: "HeaderFooter:dashboard",
     path: "/dashboard",
   },
 ];
 
 export const SIDE_MENU_NAV = {
   GOVERNENCE: {
-    title: "Governance",
+    title: "HeaderFooter:governance",
     path: "/governance",
   },
   HELPCENTER: {
-    title: "Help Center",
+    title: "HeaderFooter:helpCenter",
     path: "https://t.me/gnoswap",
   },
   DOCUMENTATION: {
-    title: "Documentation",
+    title: "HeaderFooter:documentation",
     path: "https://docs.gnoswap.io/",
   },
   LEGALPRIVACY: {
-    title: "Legal & Privacy",
+    title: "HeaderFooter:legal",
     path: "/",
   },
 };

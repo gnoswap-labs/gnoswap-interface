@@ -17,6 +17,7 @@ import { Global, css } from "@emotion/react";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import SelectLanguage from "../select-language/SelectLanguage";
+import { useTranslation } from "next-i18next";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -64,6 +65,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   isSwitchNetwork,
   loadingConnect,
 }) => {
+  const { t } = useTranslation();
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const handleESC = () => {
     setToggle(prev => {
@@ -140,12 +142,12 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
         />
       ) : (
         <Button
-          text={isLoading ? "" : "Wallet Login"}
+          text={isLoading ? "" : t("HeaderFooter:walletLogin")}
           rightIcon={isLoading ? <LoadingSpinner className="loading-button"/> : <IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
-            width: 136,
+            minWidth: 136,
             height: 36,
             padding: isLoading ? "8.5px 16px 7.5px 20px" : "10px 16px 10px 20px",
             justify: "space-between",

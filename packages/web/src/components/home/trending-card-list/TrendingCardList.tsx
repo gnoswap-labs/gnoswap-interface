@@ -8,6 +8,7 @@ import IconFlame from "@components/common/icons/IconFlame";
 import { DEVICE_TYPE } from "@styles/media";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useTranslation } from "next-i18next";
 interface TrendingCardListProps {
   list: Array<CardListTokenInfo>;
   device: DEVICE_TYPE;
@@ -21,6 +22,7 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
   onClickItem,
   loading,
 }) => {
+  const { t } = useTranslation();
   const visible = useMemo(() => {
     return device !== DEVICE_TYPE.MOBILE;
   }, [device]);
@@ -35,7 +37,7 @@ const TrendingCardList: React.FC<TrendingCardListProps> = ({
         <div>
           <h2>
             <IconFlame className="icon-flame" />
-            Trending
+            {t("Main:trending")}
           </h2>
         </div>
       )}

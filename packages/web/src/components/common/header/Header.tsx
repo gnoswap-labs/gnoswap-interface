@@ -28,6 +28,7 @@ import {
   SearchContainer,
 } from "./Header.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useTranslation } from "next-i18next";
 
 interface HeaderProps {
   pathname?: string;
@@ -79,6 +80,7 @@ const Header: React.FC<HeaderProps> = ({
   recents,
   movePage,
 }) => {
+  const { t } = useTranslation();
   const { width } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
 
@@ -120,7 +122,7 @@ const Header: React.FC<HeaderProps> = ({
                             : ""
                         }
                       >
-                        <Link href={item.path}>{item.title}</Link>
+                        <Link href={item.path}>{t(`${item.title}`)}</Link>
                       </li>
                     ))}
                   </ul>
@@ -140,7 +142,7 @@ const Header: React.FC<HeaderProps> = ({
               {connected && width > DeviceSize[DEVICE_TYPE.TABLET_S] && (
                 <DepositButton onClick={() => changeTokenDeposit()}>
                   <IconDownload />
-                  <span>Deposit</span>
+                  <span>{t("HeaderFooter:deposit")}</span>
                 </DepositButton>
               )}
               <WalletConnectorButton
@@ -170,7 +172,7 @@ const Header: React.FC<HeaderProps> = ({
                       : ""
                   }
                 >
-                  <Link href={item.path}>{item.title}</Link>
+                  <Link href={item.path}>{t(`${item.title}`)}</Link>
                 </BottomNavItem>
               ))}
               <SubMenuButton

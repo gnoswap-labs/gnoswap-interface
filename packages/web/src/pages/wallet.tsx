@@ -6,6 +6,15 @@ import Footer from "@components/common/footer/Footer";
 import WalletMyPositions from "@components/wallet/wallet-my-positions/WalletMyPositions";
 import WalletMyPositionsHeader from "@components/wallet/wallet-my-positions-header/WalletMyPositionsHeader";
 import WalletPositionCardListContainer from "@containers/wallet-position-card-list-container/WalletPositionCardListContainer";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string}) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "Main"]))
+    }
+  };
+}
 
 export default function Wallet() {
   return (

@@ -6,7 +6,8 @@ import IconTwitter from "@components/common/icons/social/IconTwitter";
 
 export const FOOTER_LEFT_NAV = {
   content:
-    "Join Gnoswap - the fastest growing ecosystem aspiring to build the deepest source of liquidity on Gnoland.",
+    "HeaderFooter:joinGnoswap",
+  contentSecond: "HeaderFooter:theFastest",
   menu: [
     {
       title: "github",
@@ -41,32 +42,32 @@ export const FOOTER_RIGHT_NAV = [
     content: "Features",
     menu: [
       {
-        title: "Swap",
+        title: "HeaderFooter:swap",
         path: "/swap",
         newTab: false,
       },
       {
-        title: "Add Position",
+        title: "HeaderFooter:addPosi",
         path: "/earn/add",
         newTab: false,
       },
       {
-        title: "Stake Position",
+        title: "HeaderFooter:stakePosi",
         path: "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000",
         newTab: false,
       },
       {
-        title: "Incentivize Pool",
+        title: "HeaderFooter:incenti",
         path: "/earn/incentivize",
         newTab: false,
       },
     ],
   },
   {
-    content: "Help",
+    content: "HeaderFooter:help",
     menu: [
       {
-        title: "About Us",
+        title: "HeaderFooter:about",
         path: "https://docs.gnoswap.io/welcome",
         newTab: true,
       },
@@ -76,72 +77,72 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "Twitter (X)",
+        title: "HeaderFooter:Twitter",
         path: "https://twitter.com/gnoswaplabs",
         newTab: true,
       },
       {
-        title: "Project Onboarding",
+        title: "HeaderFooter:projectOnboarding",
         path: "/",
         newTab: true,
       },
     ],
   },
   {
-    content: "Developers",
+    content: "HeaderFooter:Developers",
     menu: [
       {
-        title: "Github",
+        title: "HeaderFooter:github",
         path: "https://github.com/gnoswap-labs/gnoswap",
         newTab: true,
       },
       {
-        title: "Docs",
+        title: "HeaderFooter:docs",
         path: "https://docs.gnoswap.io/contracts/",
         newTab: true,
       },
       {
-        title: "Audit",
+        title: "HeaderFooter:audit",
         path: "/",
         newTab: true,
       },
       {
-        title: "Bug Bounty",
-        path: "/",
-        newTab: true,
-      },
-    ],
-  },
-  {
-    content: "Governance",
-    menu: [
-      {
-        title: "Forum",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "Proposals",
-        path: "/",
-        newTab: true,
-      },
-      {
-        title: "Vote",
+        title: "HeaderFooter:bug",
         path: "/",
         newTab: true,
       },
     ],
   },
   {
-    content: "Policy",
+    content: "HeaderFooter:governance",
     menu: [
       {
-        title: "Terms of Use",
+        title: "HeaderFooter:forum",
         path: "/",
         newTab: true,
       },
       {
-        title: "Privacy Policy",
+        title: "HeaderFooter:proposals",
+        path: "/",
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:vote",
+        path: "/",
+        newTab: true,
+      },
+    ],
+  },
+  {
+    content: "HeaderFooter:policy",
+    menu: [
+      {
+        title: "HeaderFooter:terms",
+        path: "/",
+        newTab: true,
+      },
+      {
+        title: "HeaderFooter:privacy",
         path: "/",
         newTab: true,
       },

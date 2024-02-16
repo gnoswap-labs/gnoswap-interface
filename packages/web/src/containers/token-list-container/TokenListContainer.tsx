@@ -49,21 +49,21 @@ export interface SortOption {
 
 export const TABLE_HEAD = {
   INDEX: "#",
-  NAME: "Name",
-  PRICE: "Price",
+  NAME: "Main:name",
+  PRICE: "Main:price",
   PRICE_OF_1D: "1d",
   PRICE_OF_7D: "7d",
   PRICE_OF_30D: "30d",
-  MARKET_CAP: "Market Cap",
+  MARKET_CAP: "Main:marketCap",
   LIQUIDITY: "TVL",
-  VOLUME: "Volume (24h)",
-  MOST_LIQUID_POOL: "Most Liquid Pool",
-  LAST_7_DAYS: "Last 7 days",
+  VOLUME: "Main:volume",
+  MOST_LIQUID_POOL: "Main:mostLiquid",
+  LAST_7_DAYS: "Main:last7days",
 } as const;
 
 export const TABLE_HEAD_MOBILE = {
-  NAME: "Name",
-  PRICE: "Price",
+  NAME: "Main:name",
+  PRICE: "Main:price",
 } as const;
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;

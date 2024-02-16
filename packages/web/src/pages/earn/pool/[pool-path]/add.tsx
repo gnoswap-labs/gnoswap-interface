@@ -11,6 +11,15 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }:{ locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "Main"])),
+    }
+  };
+}
 
 export default function EarnAdd() {
   const { width } = useWindowSize();

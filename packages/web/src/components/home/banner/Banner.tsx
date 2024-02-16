@@ -2,16 +2,18 @@ import Button from "@components/common/button/Button";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import React from "react";
 import { BannerContent } from "./Banner.styled";
+import { useTranslation } from "next-i18next";
 
 const Banner: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <BannerContent>
-      <h4>Looking to get started on Gnoswap?</h4>
+      <h4>{t("Main:lookingTo")}</h4>
       <p>
-        Follow our simple guide to start building liquidity for your project.
+        {t("Main:followOur")}
       </p>
       <Button
-        text="Project Onboarding Guide"
+        text={t("Main:projectOnboarding")}
         rightIcon={<IconStrokeArrowRight className="arrow-icon" />}
         style={{
           bgColor: "background04",

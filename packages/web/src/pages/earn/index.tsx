@@ -6,7 +6,15 @@ import PoolListContainer from "@containers/pool-list-container/PoolListContainer
 import EarnLayout from "@layouts/earn-layout/EarnLayout";
 import EarnIncentivizedPools from "@components/earn/earn-incentivized-pools/EarnIncentivizedPools";
 import EarnMyPositionContainer from "@containers/earn-my-position-container/EarnMyPositionContainer";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string}) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "Main"]))
+    }
+  };
+}
 export default function Earn() {
   return (
     <EarnLayout

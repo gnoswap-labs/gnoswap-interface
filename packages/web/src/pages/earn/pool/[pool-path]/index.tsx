@@ -7,6 +7,15 @@ import PoolPairInformationContainer from "@containers/pool-pair-information-cont
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
 import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "@query/pools";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }:{ locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "Main"])),
+    }
+  };
+}
 
 export default function Pool() {
   const router = useRouter();
