@@ -8,6 +8,15 @@ import RecentlyAddedCardListContainer from "@containers/recently-added-card-list
 import TokenListContainer from "@containers/token-list-container/TokenListContainer";
 import TrendingCardListContainer from "@containers/trending-card-list-container/TrendingCardListContainer";
 import HomeLayout from "@layouts/home-layout/HomeLayout";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string}) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["home"]))
+    }
+  };
+}
 
 export default function Home() {
   return (
