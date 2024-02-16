@@ -18,18 +18,18 @@ export const useLoading = (params?: Props) => {
       setIsLoadingCommon(true);
       timeout = setTimeout(() => {
         setIsLoadingCommon(false);
-      }, 1500000);
+      }, 1500);
     } else if (params?.isLoading || isEmptyObject(params || {}) || !params?.isBack) {
       timeout = setTimeout(() => {
         setIsLoadingCommon(false);
-      }, 1500000);
+      }, 1500);
     } else {
       if (!isEmptyObject(params || {})) {
         if (params?.isBack || params?.status) {
           setIsLoadingCommon(true);
           timeout = setTimeout(() => {
             setIsLoadingCommon(false);
-          }, 1500000);
+          }, 1500);
         }
       }
     }
