@@ -34,6 +34,36 @@ const SelectLanguage: React.FC<Props> = ({
         <div>
           <p>Català</p>
         </div>
+        <div>
+          <p>Algeria</p>
+        </div>
+        <div>
+          <p>Angola</p>
+        </div>
+        <div>
+          <p>Benin</p>
+        </div>
+        <div>
+          <p>Botswana</p>
+        </div>
+        <div>
+          <p>Burkina Faso</p>
+        </div>
+        <div>
+          <p>Burundi</p>
+        </div>
+        <div>
+          <p>Cabo Verde</p>
+        </div>
+        <div>
+          <p>Cameroon</p>
+        </div>
+        <div>
+          <p>Chad</p>
+        </div>
+        <div>
+          <p>Congo</p>
+        </div>
       </div>
     </SelectLanguageWrapper>
     <Overlay onClick={onClickChangeLanguage} />

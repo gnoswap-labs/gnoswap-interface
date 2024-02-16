@@ -153,7 +153,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           onClick={onMenuToggle}
         />
       )}
-      {toggle.walletConnect && (
+      {toggle.walletConnect && !toggle.showLanguage && (
         <WalletConnectorMenu
           account={account}
           connected={connected}

@@ -35,10 +35,10 @@ export const SelectLanguageWrapper = styled.div<Props>`
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;
     width: 100%;
-    height: 172px;
-    top: calc(100vh - 172px);
+    height: 228px;
+    top: calc(100vh - 228px);
     z-index: ${Z_INDEX.modal};
-    padding: 16px;
+    padding: 16px 16px 0 16px;
     min-width: 360px;
   }
   .header {
@@ -90,6 +90,8 @@ export const SelectLanguageWrapper = styled.div<Props>`
     }
     ${media.mobile} {
       width: 100%;
+      max-height: 180px;
+
     }
   }
 

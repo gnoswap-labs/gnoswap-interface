@@ -119,7 +119,9 @@ export const ThemeSelector = styled.div`
   color: ${({ theme }) => theme.color.text05};
   width: 100%;
   height: 36px;
-  margin-top: 16px;
+  &.mt-16 {
+    margin-top: 16px;
+  }
 `;
 
 export const CopyTooltip = styled.div`

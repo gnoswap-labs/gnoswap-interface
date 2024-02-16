@@ -173,7 +173,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         )}
         
         <div className="theme-container">
-          <ThemeSelector>
+          <ThemeSelector className="mt-16">
             <span>Language</span>
             <div className="language" onClick={onClickChangeLanguage}>EN <IconStrokeArrowRight /></div>
           </ThemeSelector>

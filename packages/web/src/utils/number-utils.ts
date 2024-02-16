@@ -247,9 +247,9 @@ export function formatNumberToLocaleString(inputNumber: Number | string) {
   }
 }
 
-export function convertLargePrice(val: number) {
-  if (val >= 1000000000) {
+export function convertLargePrice(val: string) {
+  if (Number(val) >= 1000000000) {
     return ">$999,999,999.99";
   }
-  return `$${val.toLocaleString()}`;
+  return `$${convertToMB((val || "0.00"), 10)}`;
 }

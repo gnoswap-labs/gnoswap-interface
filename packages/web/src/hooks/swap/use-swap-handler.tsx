@@ -615,9 +615,9 @@ export const useSwapHandler = () => {
             setNotice(
               {
                 title: "Swap",
-                description: `Failed swapping <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
+                description: `Failed swapping <span>${swapTokenInfo.tokenAUSD.toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
-                }</span> for <sp${swapTokenInfo.tokenBUSD.toLocaleString()} ${
+                }</span> for <sp${swapTokenInfo.tokenBUSD.toLocaleString("en-US", { maximumFractionDigits: 6})} ${
                   swapTokenInfo?.tokenB?.symbol
                 }`,
               },
@@ -632,9 +632,9 @@ export const useSwapHandler = () => {
             setNotice(
             {
               title: "Swap",
-              description: `Swapped <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
+              description: `Swapped <span>${swapTokenInfo.tokenAUSD.toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                 swapTokenInfo?.tokenA?.symbol
-              }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString()}</span> <span>${
+              }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                 swapTokenInfo?.tokenB?.symbol
               }</span>`,
             }, {
@@ -676,9 +676,9 @@ export const useSwapHandler = () => {
               }
               setNotice({
                 title: "Swap",
-                description: `Swapped <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
+                description: `Swapped1 <span>${swapTokenInfo.tokenAUSD.toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
-                }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString()}</span> <span>${
+                }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                   swapTokenInfo?.tokenB?.symbol
                 }</span>`,
               }, {
@@ -690,9 +690,9 @@ export const useSwapHandler = () => {
             } else {
               setNotice({
                 title: "Swap",
-                description: `Failed swapping <span>${swapTokenInfo.tokenAUSD.toLocaleString()}</span> <span>${
+                description: `Failed swapping <span>${swapTokenInfo.tokenAUSD.toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
-                }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString()}</span> <span>${
+                }</span> for <span>${swapTokenInfo.tokenBUSD.toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                   swapTokenInfo?.tokenB?.symbol
                 }</span>`,
               }, {

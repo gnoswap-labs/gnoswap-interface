@@ -235,7 +235,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         </div>
         <div className="transaction-state">
           <span className="submitted">Waiting for Confirmation</span>
-          <span className="swap-message">Swapping {swapTokenInfo.tokenAUSD.toLocaleString()} {swapTokenInfo?.tokenA?.symbol} for {swapTokenInfo.tokenBUSD.toLocaleString()} {swapTokenInfo?.tokenB?.symbol}</span>
+          <span className="swap-message">Swapping {swapTokenInfo.tokenAUSD.toLocaleString("en-US", { maximumFractionDigits: 6})} {swapTokenInfo?.tokenA?.symbol} for {swapTokenInfo.tokenBUSD.toLocaleString("en-US", { maximumFractionDigits: 6})} {swapTokenInfo?.tokenB?.symbol}</span>
           <div className="view-transaction">
             <span>Confirm this transaction in your wallet</span>
           </div>
