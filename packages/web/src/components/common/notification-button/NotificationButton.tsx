@@ -9,7 +9,8 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@hooks/wallet/use-wallet";
-
+import { useState } from "react";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 export interface TransactionGroupsType {
   title: string;
   txs: Array<TransactionModel>;
@@ -17,6 +18,7 @@ export interface TransactionGroupsType {
 
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
+  const [showIcon, setShowIcon] = useState(true);
   const { notificationRepository } = useGnoswapContext();
   const { account } = useWallet();
   const handleESC = () => {
@@ -28,7 +30,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     });
   };
   useEscCloseModal(handleESC);
-
+  usePreventScroll(toggle.notification);
   const { data: txsGroupsInformation, refetch, isFetched } = useQuery<
     TransactionGroupsType[],
     Error
@@ -48,6 +50,9 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     }, [] as string[]);
     notificationRepository.appendRemovedTx(txs);
     refetch();
+    setTimeout(() => {
+      setShowIcon(true);
+    }, 2000);
   };
 
   const onListToggle = () => {
@@ -59,16 +64,22 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
 
   return (
     <NotificationWrapper>
-      <AlertButton onClick={onListToggle}>
+      <AlertButton onClick={() => {
+        onListToggle();
+        setShowIcon(false);
+      }}>
         <IconAlert className="notification-icon" />
-        {isFetched && txsGroupsInformation?.length !== 0 ? (
+        {showIcon && isFetched && txsGroupsInformation?.length !== 0 ? (
           <div className="point-unread" />
         ) : null}
       </AlertButton>
       {toggle.notification && (
         <NotificationList
           txsGroupsInformation={txsGroupsInformation ?? []}
-          onListToggle={onListToggle}
+          onListToggle={() => {
+            handleClearAll();
+            onListToggle();
+          }}
           breakpoint={breakpoint}
           onClearAll={handleClearAll}
         />

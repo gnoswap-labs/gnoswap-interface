@@ -216,7 +216,7 @@ const TokenListContainer: React.FC = () => {
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
-      const usdFormat = item.symbol === "QUX" ? "1000000000" : formatUsdNumber3Digits(transferData.usd || "0.00");
+      const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
       return {
         ...transferData,
         token: {

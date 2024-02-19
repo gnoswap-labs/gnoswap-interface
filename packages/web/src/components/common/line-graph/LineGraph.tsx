@@ -322,7 +322,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     // Draw the line chart path
     for (let i = 1; i < points.length; i++) {
-      path += ` L ${points[i].x},${points[i].y}`;
+      path += smooth ? bezierCommand(points[i], i, points) :  ` L ${points[i].x},${points[i].y}`;
     }
 
     // Draw a line straight down to the bottom of the chart
@@ -335,7 +335,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     path += "Z";
 
     return path;
-  }, [height, points]);
+  }, [height, points, smooth]);
 
   return (
     <LineGraphWrapper

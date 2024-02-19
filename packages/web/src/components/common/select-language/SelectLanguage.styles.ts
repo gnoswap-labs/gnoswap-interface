@@ -50,6 +50,9 @@ export const SelectLanguageWrapper = styled.div<Props>`
     svg * {
       fill: ${({ theme }) => theme.color.icon03};
     }
+    svg:hover * {
+      fill: ${({ theme }) => theme.color.icon07};
+    }
     p {
       color: ${({ theme }) => theme.color.text01};
       ${fonts.p1}

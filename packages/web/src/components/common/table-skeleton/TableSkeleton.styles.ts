@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { CSSProperties } from "react";
 interface SkeletonStyleProps {
@@ -11,6 +12,9 @@ export const SkeletonWrapper = styled.div<SkeletonStyleProps>`
   height: 68px;
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.color.border02};
+  }
+  ${media.mobile} {
+    height: 52px;
   }
 `;
 

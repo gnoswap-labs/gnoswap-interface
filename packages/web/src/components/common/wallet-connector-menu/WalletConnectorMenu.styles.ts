@@ -65,7 +65,11 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
       svg * {
         fill: ${({ theme }) => theme.color.icon03};
       }
-
+      :hover {
+        svg * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
     }
     ${media.mobile} {
       ${mixins.flexbox("column", "center", "center")};

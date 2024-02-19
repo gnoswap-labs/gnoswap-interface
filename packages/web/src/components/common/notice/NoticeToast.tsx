@@ -129,7 +129,7 @@ const NoticeUIItem: FC<NoticeProps> = ({ onClose, type = "success", id, content 
         if (isClosed.current === false) onClose?.(id);
       }, 500);
       return () => clearTimeout(animationTimeout);
-    }, 1000000);
+    }, 6000);
 
     return () => {
       clearTimeout(autoCloseTimeout);
