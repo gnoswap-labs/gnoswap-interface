@@ -67,12 +67,12 @@ const HomeSwapContainer: React.FC = () => {
 
   const tokenBBalance = useMemo(() => {
     if (!connected) return "-";
+    if (isEmptyObject(displayBalanceMap)) {
+      return "-";
+    }
     if (tokenB && displayBalanceMap[tokenB.priceId]) {
       const balance = displayBalanceMap[tokenB.priceId] || 0;
       return BigNumber(balance).toFormat(tokenB.decimals);
-    }
-    if (isEmptyObject(displayBalanceMap)) {
-      return "-";
     }
     return "0";
   }, [connected, displayBalanceMap, tokenB]);

@@ -1,3 +1,4 @@
+import { atomWithStorage } from "jotai/utils";
 import { NetworkModel } from "@models/common/network-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { atom } from "jotai";
@@ -49,3 +50,8 @@ export const ACCOUNT_SESSION_INFO_KEY = "account_info";
 export const GNOWSWAP_CONNECTED_KEY = "connected-wallet";
 
 export const sessionId = atom<string>("");
+
+export const NUMBER_NOTIFICATION = "number_notification";
+
+
+export const numberNotifications = atomWithStorage<string>(NUMBER_NOTIFICATION, "0");

@@ -15,20 +15,14 @@ export const SelectTabWrapper = styled.div`
 export const SelectButton = styled.button`
   ${mixins.flexbox("row", "center", "center")};
   ${fonts.body10};
-  padding: 8px 17px;
+  padding: 8px 24px;
   border-radius: 4px;
   color: ${({ theme }) => theme.color.text04};
   transition: all 0.3s ease;
   flex-shrink: 0;
-  ${media.tablet} {
-    padding: 8px 17px;
-  }
+
   ${media.mobile} {
     ${fonts.body12};
-    padding: 4px 10px;
-    &:first-of-type {
-      padding: 4px 16px;
-    }
   }
 
   &.selected {

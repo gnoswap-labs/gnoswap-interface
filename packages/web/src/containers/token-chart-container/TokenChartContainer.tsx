@@ -233,7 +233,7 @@ const TokenChartContainer: React.FC = () => {
     },
   });
   const path = router.query["tokenB"] as string;
-  const { data: tokenB } = useGetTokenByPath(path, { enabled: !!path });
+  const { data: tokenB } = useGetTokenByPath(path, { enabled: !!path, refetchInterval: 1000 * 10 });
   const {
     data: {
       prices1d = [],
@@ -246,6 +246,7 @@ const TokenChartContainer: React.FC = () => {
     isLoading,
   } = useGetTokenDetailByPath(path === "gnot" ? wugnotPath : path, {
     enabled: !!path,
+    refetchInterval: 1000 * 10,
   });
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
   

@@ -676,7 +676,7 @@ export const useSwapHandler = () => {
               }
               setNotice({
                 title: "Swap",
-                description: `Swapped1 <span>${Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
+                description: `Swapped <span>${Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
                 }</span> for <span>${Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
                   swapTokenInfo?.tokenB?.symbol

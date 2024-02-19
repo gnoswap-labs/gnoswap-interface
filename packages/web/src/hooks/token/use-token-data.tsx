@@ -34,7 +34,7 @@ export const useTokenData = () => {
   } = useGetTokensList({
     refetchInterval: PATH.includes(router.pathname)
       ? 15 * 1000
-      : router.pathname === "/"
+      : router.pathname === "/" || router.pathname === "/earn/add"
       ? 10 * 1000
       : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
   });

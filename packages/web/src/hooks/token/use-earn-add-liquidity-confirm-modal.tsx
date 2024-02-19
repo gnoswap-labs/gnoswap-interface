@@ -249,8 +249,8 @@ export const useEarnAddLiquidityConfirmModal = ({
             broadcastSuccess(makeBroadcastAddLiquidityMessage("success", {
               tokenASymbol: result.tokenA.symbol,
               tokenBSymbol: result.tokenB.symbol,
-              tokenAAmount: result.tokenAAmount,
-              tokenBAmount: result.tokenBAmount,
+              tokenAAmount: tokenAAmount,
+              tokenBAmount: tokenBAmount,
             }), moveToBack);
           }, 1000);
           return true;

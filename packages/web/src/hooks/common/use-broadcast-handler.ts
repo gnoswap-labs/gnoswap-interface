@@ -106,16 +106,49 @@ export function makeBroadcastSwapMessage(
 
 export function makeBroadcastStakingMessage(
   type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
   hash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
       case "pending":
-        return "Staking pending";
+        return `Staking <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "success":
-        return "Staked succcessfully";
+        return `Staked <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "error":
-        return "Failed to stake";
+        return `Failed to stake <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+    }
+  }
+  return {
+    title: "Stake",
+    description: description(),
+    scannerUrl: hash ? makeScannerURL(hash) : "",
+  };
+}
+
+export function makeBroadcastUnStakingMessage(
+  type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
+  hash?: string,
+): INoticeContent {
+  function description() {
+    switch (type) {
+      case "pending":
+        return `Unstaking <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+      case "success":
+        return `Unstaked <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+      case "error":
+        return `Failed to unstake <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
     }
   }
   return {
@@ -127,16 +160,22 @@ export function makeBroadcastStakingMessage(
 
 export function makeBroadcastRemoveMessage(
   type: TNoticeType,
+  data: {
+    tokenASymbol: string;
+    tokenBSymbol: string;
+    tokenAAmount: string;
+    tokenBAmount: string;
+  },
   hash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
       case "pending":
-        return "Remove pending";
+        return `Adding <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "success":
-        return "Remove succcessfully";
+        return `Added <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "error":
-        return "Failed to remove";
+        return `Failed to add <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
     }
   }
   return {
@@ -209,11 +248,11 @@ export function makeBroadcastAddLiquidityMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Adding <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return `Removing <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "success":
-        return `Added <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return `Removed <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "error":
-        return `Failed to add <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return `Failed to remove <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
     }
   }
   return {

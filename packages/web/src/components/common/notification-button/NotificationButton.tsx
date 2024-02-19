@@ -9,7 +9,7 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useState } from "react";
+import { useEffect, useMemo } from "react";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 export interface TransactionGroupsType {
   title: string;
@@ -18,9 +18,9 @@ export interface TransactionGroupsType {
 
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
-  const [showIcon, setShowIcon] = useState(true);
   const { notificationRepository } = useGnoswapContext();
   const { account } = useWallet();
+  const [numberNotifications, setNumberNotifications] = useAtom(CommonState.numberNotifications);
   const handleESC = () => {
     setToggle(prev => {
       if (prev.notification) {
@@ -43,16 +43,15 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     refetchInterval: 1000 * 10,
   });
 
-  const handleClearAll = () => {
-    const txs = (txsGroupsInformation ?? []).reduce((pre, next) => {
+  const txs = useMemo(() => {
+    return (txsGroupsInformation ?? []).reduce((pre, next) => {
       const allTxs = next.txs.flatMap(x => x.txHash);
       return [...pre, ...allTxs];
     }, [] as string[]);
+  }, [txsGroupsInformation]);
+  const handleClearAll = () => {
     notificationRepository.appendRemovedTx(txs);
     refetch();
-    setTimeout(() => {
-      setShowIcon(true);
-    }, 2000);
   };
 
   const onListToggle = () => {
@@ -62,11 +61,19 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     }));
   };
 
+  useEffect(() => {
+    if (numberNotifications === "0" && txs.length !== 0) {
+      setNumberNotifications(`${txs.length}`);
+    }
+  }, [txs, numberNotifications]);
+
+  const showIcon = Number(txs.length) > Number(numberNotifications);
+
   return (
     <NotificationWrapper>
       <AlertButton onClick={() => {
         onListToggle();
-        setShowIcon(false);
+        setNumberNotifications(`${txs.length}`);
       }}>
         <IconAlert className="notification-icon" />
         {showIcon && isFetched && txsGroupsInformation?.length !== 0 ? (
@@ -77,7 +84,6 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
         <NotificationList
           txsGroupsInformation={txsGroupsInformation ?? []}
           onListToggle={() => {
-            handleClearAll();
             onListToggle();
           }}
           breakpoint={breakpoint}

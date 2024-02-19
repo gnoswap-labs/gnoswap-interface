@@ -216,7 +216,7 @@ export function prettyNumberFloatInteger(val: string | number) {
   if (Number.isInteger(Number(val))) {
     return convertToMB(val.toString(), 0);
   } else {
-    return convertToMB(val.toString());
+    return convertToMB(val.toString(), 6);
   }
 }
 

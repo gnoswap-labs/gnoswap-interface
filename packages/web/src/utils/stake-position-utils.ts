@@ -1,10 +1,11 @@
 export const convertToMB = (price: string, maximumFractionDigits?: number) => {
   if (Number.isNaN(Number(price))) return "-";
   if (Math.floor(Number(price)).toString().length < 7) {
-    if (Number(price) < 1) return price;
+    if (Number(price) < 1) return Number(price).toString();
+    if (Number.isInteger(Number(price))) return Number(price).toString();
     return Number(price).toLocaleString("en-US", {
       maximumFractionDigits: maximumFractionDigits || 2,
-      minimumFractionDigits: 2,
+      minimumFractionDigits: maximumFractionDigits || 2,
     });
   } else {
     const temp = Math.floor(Number(price));
@@ -26,7 +27,7 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
     }
     return Number(price).toLocaleString("en-US", {
       maximumFractionDigits: maximumFractionDigits || 2,
-      minimumFractionDigits: 2,
+      minimumFractionDigits: maximumFractionDigits || 2,
     });
   }
 };
