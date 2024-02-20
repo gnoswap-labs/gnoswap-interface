@@ -51,7 +51,6 @@ export const GNOWSWAP_CONNECTED_KEY = "connected-wallet";
 
 export const sessionId = atom<string>("");
 
-export const NUMBER_NOTIFICATION = "number_notification";
+export const NOTIFICATION_HASH = "notification_hash";
 
-
-export const numberNotifications = atomWithStorage<string>(NUMBER_NOTIFICATION, "0");
+export const notificationHash = atomWithStorage<string>(NOTIFICATION_HASH, "");

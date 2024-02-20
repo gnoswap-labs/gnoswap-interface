@@ -152,7 +152,7 @@ export function makeBroadcastUnStakingMessage(
     }
   }
   return {
-    title: "Stake",
+    title: "Unstake",
     description: description(),
     scannerUrl: hash ? makeScannerURL(hash) : "",
   };

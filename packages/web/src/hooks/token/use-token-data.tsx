@@ -20,6 +20,7 @@ import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { useRouter } from "next/router";
+import { isEmptyObject } from "@utils/validation-utils";
 
 const PATH = ["/tokens/[token-path]", "/swap"];
 const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake"];
@@ -200,7 +201,9 @@ export const useTokenData = () => {
       return;
     }
 
-    setLoadingBalance(true);
+    if (isEmptyObject(balances)) {
+      setLoadingBalance(true);
+    }
     async function fetchTokenBalance(token: TokenModel) {
       if (!rpcProvider || !account) {
         return null;
@@ -219,13 +222,15 @@ export const useTokenData = () => {
       return null;
     }
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
-    const balances: Record<string, number | null> = {};
+    const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balances[tokens[index].priceId] = result;
+        balancesData[tokens[index].priceId] = result;
       }
     });
-    setBalances(balances);
+    if (JSON.stringify(balancesData) !== JSON.stringify(balances)) {
+      setBalances(balancesData);
+    }
     setLoadingBalance(false);
   }
 

@@ -3,12 +3,14 @@ import React from "react";
 import { copyTooltip, wrapper } from "./TokenDescriptionLinks.styles";
 import IconCopy from "@components/common/icons/IconCopy";
 import IconPolygon from "@components/common/icons/IconPolygon";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface TokenDescriptionLinksProps {
   links: { [key: string]: string };
   copied: boolean;
   copyClick: () => void;
   path: string;
+  isLoading: boolean;
 }
 
 const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
@@ -16,6 +18,7 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
   copied,
   copyClick,
   path,
+  isLoading,
 }) => {
   const onClickLink = (link: string) => {
     return window.open(link, "_blank");
@@ -24,7 +27,7 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
     <div css={wrapper}>
       {path && <div className="contract-path">
         <h3>Realm (Contract) Path</h3>
-        <button onClick={copyClick}>
+        {!isLoading && <button onClick={copyClick}>
           <span>{path}</span>
           <div className="icon-wrapper">
             <IconCopy className="link-icon"/>
@@ -37,11 +40,12 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
               </div>
             )}
           </div>
-        </button>
+        </button>}
+        {isLoading && <div css={pulseSkeletonStyle({ w: "150px", h: 20 })}/>}
       </div>}
       <div className="link">
         <h3>Links</h3>
-        <div className="group-button">
+        {!isLoading && <div className="group-button">
           {Object.keys(links)?.map((link, idx) => (
             links[link] ? (
               <button key={idx} onClick={() => onClickLink(links[link])}>
@@ -50,7 +54,8 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({
               </button>
             ) : null
           ))}
-        </div>
+        </div>}
+        {isLoading && <div css={pulseSkeletonStyle({ w: "150px", h: 20 })}/>}
       </div>
     </div>
   );

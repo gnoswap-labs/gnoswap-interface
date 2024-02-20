@@ -9,7 +9,7 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 export interface TransactionGroupsType {
   title: string;
@@ -20,7 +20,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const { notificationRepository } = useGnoswapContext();
   const { account } = useWallet();
-  const [numberNotifications, setNumberNotifications] = useAtom(CommonState.numberNotifications);
+  const [notificationHash, setNotificationHash] = useAtom(CommonState.notificationHash);
   const handleESC = () => {
     setToggle(prev => {
       if (prev.notification) {
@@ -61,19 +61,12 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     }));
   };
 
-  useEffect(() => {
-    if (numberNotifications === "0" && txs.length !== 0) {
-      setNumberNotifications(`${txs.length}`);
-    }
-  }, [txs, numberNotifications]);
-
-  const showIcon = Number(txs.length) > Number(numberNotifications);
-
+  const showIcon = txs.length > 0 && txs[0] !== notificationHash;
   return (
     <NotificationWrapper>
       <AlertButton onClick={() => {
         onListToggle();
-        setNumberNotifications(`${txs.length}`);
+        setNotificationHash(txs?.[0] || "");
       }}>
         <IconAlert className="notification-icon" />
         {showIcon && isFetched && txsGroupsInformation?.length !== 0 ? (

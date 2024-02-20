@@ -126,7 +126,6 @@ const WalletBalanceContainer: React.FC = () => {
   };
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
-  console.log(isShowWithdrawModal, "isShowWithdrawModal");
   
   return (
     <>

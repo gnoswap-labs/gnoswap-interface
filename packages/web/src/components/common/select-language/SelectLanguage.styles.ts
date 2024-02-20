@@ -73,6 +73,7 @@ export const SelectLanguageWrapper = styled.div<Props>`
     max-height: 360px;
     overflow-y: scroll;
     > div {
+      cursor: pointer;
       padding: 10px 8px;
       ${mixins.flexbox("row", "center", "space-between")};
       p {

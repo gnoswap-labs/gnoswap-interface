@@ -380,6 +380,14 @@ export const useSwapHandler = () => {
     setTokenBAmount("0");
   }, [updateBalances]);
 
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateBalances();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenB = memoryzeTokenSwap?.[`${tokenA?.symbol}:${value}`];

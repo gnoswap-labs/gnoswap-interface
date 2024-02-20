@@ -228,12 +228,20 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, updateTokens, tokenPrices, isFetched } =
+  const { displayBalanceMap, balances, updateTokens, tokenPrices, isFetched, updateBalances } =
     useTokenData();
 
   useEffect(() => {
     updateTokens();
   }, [connected]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateBalances();
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [tokens]);
+
 
   useEffect(() => {
     if (!tokens) return;

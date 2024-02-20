@@ -5,7 +5,7 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
     if (Number.isInteger(Number(price))) return Number(price).toString();
     return Number(price).toLocaleString("en-US", {
       maximumFractionDigits: maximumFractionDigits || 2,
-      minimumFractionDigits: maximumFractionDigits || 2,
+      minimumFractionDigits: 2,
     });
   } else {
     const temp = Math.floor(Number(price));
@@ -27,7 +27,7 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
     }
     return Number(price).toLocaleString("en-US", {
       maximumFractionDigits: maximumFractionDigits || 2,
-      minimumFractionDigits: maximumFractionDigits || 2,
+      minimumFractionDigits: 2,
     });
   }
 };
