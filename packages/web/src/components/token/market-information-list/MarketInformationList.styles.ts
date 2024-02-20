@@ -12,7 +12,7 @@ export const wrapper = (theme: Theme) => css`
     ${fonts.body8};
     color: ${theme.color.text02};
     width: 100%;
-    height: 91px;
+    min-height: 91px;
     background-color: ${theme.color.backgroundOpacity3};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
@@ -35,7 +35,8 @@ export const wrapper = (theme: Theme) => css`
       }
     }
     .loading-value {
-      max-width: 200px;
+      max-width: 100px;
+      height: 20px;
     }
   }
   @media (max-width: 1180px) {

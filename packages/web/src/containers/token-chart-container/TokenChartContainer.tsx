@@ -22,11 +22,13 @@ import {
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import dayjs from "dayjs";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
 
 const getXaxis1Day = (data: Date[]): string[] => {
+  const currentLocale = dayjs.locale();
   const rs: string[] = [];
   const formatOptions: Intl.DateTimeFormatOptions = {
     hour: "numeric",
@@ -34,7 +36,7 @@ const getXaxis1Day = (data: Date[]): string[] => {
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
   for (const entry of data) {
-    const data = new Date(entry).toLocaleTimeString("en-US", formatOptions);
+    const data = new Date(entry).toLocaleTimeString(currentLocale, formatOptions);
     rs.push(data);
   }
   return rs;
@@ -46,7 +48,6 @@ const getXaxis1M = (data: IPrices1d[], numberAxis: number): string[] => {
     const firstDate = new Date(data[data.length - 1].date);
     const timeDifference = lastDate.getTime() - firstDate.getTime();
     const interval = timeDifference / numberAxis;
-
     const points: string[] = [];
 
     for (let i = 0; i <= numberAxis - 1; i++) {
@@ -57,7 +58,13 @@ const getXaxis1M = (data: IPrices1d[], numberAxis: number): string[] => {
       const dayStr = `${pointDate.getDate()}`.padStart(2, "0");
       const yearStr = pointDate.getFullYear();
       const str = `${monthStr} ${dayStr}, ${yearStr}`;
-      points.push(str);
+      if (points.includes(str)) {
+        const newDayStr = `${pointDate.getDate() - 1}`.padStart(2, "0");
+        const str = `${monthStr} ${newDayStr}, ${yearStr}`;
+        points.push(str);
+      } else {
+        points.push(str);
+      }
     }
     return points.reverse();
   }
@@ -141,16 +148,16 @@ function createXAxisDatas(
   const uniqueDates = [
     ...new Set(chartData.map(entry => entry.date.split(" ")[0])),
   ];
-  const uniqueMonths = [
-    ...new Set(
-      chartData.map(item =>
-        new Date(item.date).toLocaleString("default", { month: "long" }),
-      ),
-    ),
-  ];
-  const uniqueYears = [
-    ...new Set(chartData.map(item => new Date(item.date).getFullYear())),
-  ];
+  // const uniqueMonths = [
+  //   ...new Set(
+  //     chartData.map(item =>
+  //       new Date(item.date).toLocaleString("default", { month: "long" }),
+  //     ),
+  //   ),
+  // ];
+  // const uniqueYears = [
+  //   ...new Set(chartData.map(item => new Date(item.date).getFullYear())),
+  // ];
 
   switch (currentTab) {
     case "1D":
@@ -170,30 +177,32 @@ function createXAxisDatas(
     case "1M":
       return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
     case "1Y":
-      return Array.from(
-        { length: Math.min(uniqueMonths.length, numberAxis) },
-        (_, index) => {
-          const date = new Date(now);
-          date.setMonth(date.getMonth() - 1 * index);
-          const monthStr = months[date.getMonth()];
-          const dayStr = `${date.getDate()}`.padStart(2, "0");
-          const yearStr = date.getFullYear();
-          return `${monthStr} ${dayStr}, ${yearStr}`;
-        },
-      ).reverse();
+      return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
+      // return Array.from(
+      //   { length: Math.min(uniqueMonths.length, numberAxis) },
+      //   (_, index) => {
+      //     const date = new Date(now);
+      //     date.setMonth(date.getMonth() - 1 * index);
+      //     const monthStr = months[date.getMonth()];
+      //     const dayStr = `${date.getDate()}`.padStart(2, "0");
+      //     const yearStr = date.getFullYear();
+      //     return `${monthStr} ${dayStr}, ${yearStr}`;
+      //   },
+      // ).reverse();
     case "ALL":
     default:
-      return Array.from(
-        { length: Math.min(uniqueYears.length, numberAxis) },
-        (_, index) => {
-          const date = new Date(now);
-          date.setFullYear(date.getFullYear() - 1 * index);
-          const monthStr = months[date.getMonth()];
-          const dayStr = `${date.getDate()}`.padStart(2, "0");
-          const yearStr = date.getFullYear();
-          return `${monthStr} ${dayStr}, ${yearStr}`;
-        },
-      ).reverse();
+      return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
+      // return Array.from(
+      //   { length: Math.min(uniqueYears.length, numberAxis) },
+      //   (_, index) => {
+      //     const date = new Date(now);
+      //     date.setFullYear(date.getFullYear() - 1 * index);
+      //     const monthStr = months[date.getMonth()];
+      //     const dayStr = `${date.getDate()}`.padStart(2, "0");
+      //     const yearStr = date.getFullYear();
+      //     return `${monthStr} ${dayStr}, ${yearStr}`;
+      //   },
+      // ).reverse();
   }
 }
 
@@ -372,7 +381,7 @@ const TokenChartContainer: React.FC = () => {
     const datas =
       chartData?.length > 0
         ? chartData
-            .slice(startTime, currentLength - 1)
+            .slice(startTime)
             .map((item: IPriceResponse) => {
               return {
                 amount: {

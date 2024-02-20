@@ -459,4 +459,4 @@ const LineGraph: React.FC<LineGraphProps> = ({
   );
 };
 
-export default LineGraph;
+export default React.memo(LineGraph);

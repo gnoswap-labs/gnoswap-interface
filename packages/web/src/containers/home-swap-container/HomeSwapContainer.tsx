@@ -25,7 +25,7 @@ const TOKEN_A: TokenModel = {
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "native",
-  priceId: "gnot",
+  priceId: "gno.land/r/demo/wugnot",
 };
 const TOKEN_B: TokenModel = {
   chainId: "dev",
@@ -85,7 +85,6 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[tokenA.priceId].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
-  
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
       return Number.NaN;
