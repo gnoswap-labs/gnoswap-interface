@@ -382,7 +382,9 @@ export const useSwapHandler = () => {
 
 
   useEffect(() => {
+    updateBalances();
     const interval = setInterval(() => {
+      console.log("interval");
       updateBalances();
     }, 10000);
     return () => clearInterval(interval);

@@ -36,7 +36,8 @@ export const SelectLanguageWrapper = styled.div<Props>`
     position: fixed;
     width: 100%;
     height: 228px;
-    top: calc(100vh - 228px);
+    top: auto;
+    bottom: 0;
     z-index: ${Z_INDEX.modal};
     padding: 16px 16px 0 16px;
     min-width: 360px;

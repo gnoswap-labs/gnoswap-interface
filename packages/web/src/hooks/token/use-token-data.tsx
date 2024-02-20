@@ -201,7 +201,7 @@ export const useTokenData = () => {
       return;
     }
 
-    if (isEmptyObject(balances)) {
+    if (isEmptyObject(balances), loadingBalance) {
       setLoadingBalance(true);
     }
     async function fetchTokenBalance(token: TokenModel) {
@@ -228,7 +228,7 @@ export const useTokenData = () => {
         balancesData[tokens[index].priceId] = result;
       }
     });
-    if (JSON.stringify(balancesData) !== JSON.stringify(balances)) {
+    if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
       setBalances(balancesData);
     }
     setLoadingBalance(false);

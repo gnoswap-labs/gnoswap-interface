@@ -69,7 +69,7 @@ export const ModalContainer = styled.div`
   max-height: calc(100vh - 80px);
   overflow-y: scroll;
   top: 67.5px;
-  padding: 0px 0 8px;
+  padding: 0px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};

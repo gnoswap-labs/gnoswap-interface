@@ -413,7 +413,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   );
 };
 
-export default PoolGraph;
+export default React.memo(PoolGraph);
 
 interface PoolGraphBinTooptipProps {
   tooltipInfo: TooltipInfo | null;
