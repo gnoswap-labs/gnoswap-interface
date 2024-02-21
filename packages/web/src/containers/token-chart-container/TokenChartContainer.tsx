@@ -23,6 +23,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import dayjs from "dayjs";
+import { getLocalizeTime } from "@utils/chart";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -144,7 +145,6 @@ function createXAxisDatas(
   numberAxis: number,
   date: Date[],
 ) {
-  const now = Date.now();
   const uniqueDates = [
     ...new Set(chartData.map(entry => entry.date.split(" ")[0])),
   ];
@@ -163,17 +163,7 @@ function createXAxisDatas(
     case "1D":
       return getXaxis1Day(date);
     case "7D":
-      return Array.from(
-        { length: Math.min(numberAxis, uniqueDates.length) },
-        (_, index) => {
-          const date = new Date(now);
-          date.setDate(date.getDate() - 1 * index);
-          const monthStr = months[date.getMonth()];
-          const dayStr = `${date.getDate()}`.padStart(2, "0");
-          const yearStr = date.getFullYear();
-          return `${monthStr} ${dayStr}, ${yearStr}`;
-        },
-      ).reverse();
+      return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
     case "1M":
       return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
     case "1Y":
@@ -313,20 +303,23 @@ const TokenChartContainer: React.FC = () => {
   }, [size.width, breakpoint, currentTab]);
 
   const chartData = useMemo(() => {
-    
+    let temp = prices1y || [];
     if (currentTab === TokenChartGraphPeriods[0]) {
-      return prices1d || [];
+      temp = prices1d || [];
     }
     if (currentTab === TokenChartGraphPeriods[1]) {
-      return prices7d || [];
+       temp = prices7d || [];
     }
     if (currentTab === TokenChartGraphPeriods[2]) {
-      return prices1m || [];
+       temp = prices1m || [];
     }
     if (currentTab === TokenChartGraphPeriods[3]) {
-      return prices1y || [];
+       temp = prices1y || [];
     }
-    return prices1y || [];
+    return temp.map((item) => ({
+      ...item,
+      date: getLocalizeTime(item.date)
+    }));
   }, [
     prices1d,
     prices7d,
@@ -394,16 +387,24 @@ const TokenChartContainer: React.FC = () => {
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),
-    );    
+    );
+  const date = dayjs(new Date());
+    
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
-      datas: datas,
+      datas: [...datas, {
+        amount: {
+          value: currentPrice ? `${Number(formatUsdNumber3Digits(currentPrice))}` : "$0",
+          denom: "",
+        },
+        time: date.format("YYYY-MM-DD HH:mm:ss"),
+      }],
       left: left,
       right: right,
     };
-    return chartInfo;
-  }, [currentTab, chartData, countXAxis]);
+  return chartInfo;
+}, [currentTab, chartData, countXAxis, currentPrice]);
 
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));

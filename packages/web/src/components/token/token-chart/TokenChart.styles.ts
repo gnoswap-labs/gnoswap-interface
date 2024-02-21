@@ -48,7 +48,7 @@ export const LoadingChart = styled.div`
     }
   }
   ${media.mobile} {
-    height: 252px;
+    height: 282px;
   }
 `;
 

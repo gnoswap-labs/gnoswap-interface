@@ -85,21 +85,22 @@ export const mathSybmolAbsFormat = (
 export const toUnitFormat = (
   value: BigNumber | string | number,
   usd = false,
+  isKMB = false,
 ): string => {
   if (!isNumber(value)) {
     // TODO : Error Check
-    return usd ? "$0.00" : "0";
+    return usd ? "$0" : "0";
   }
 
   const bigNumber = BigNumber(value);
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
 
-  if (wholeNumberLength >= 13)
-    return (
-      (usd ? "$" : "") +
-      bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
-      unitsUpperCase.trillion
-    );
+  // if (wholeNumberLength >= 13)
+  //   return (
+  //     (usd ? "$" : "") +
+  //     bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
+  //     unitsUpperCase.trillion
+  //   );
   if (wholeNumberLength >= 10)
     return (
       (usd ? "$" : "") +
@@ -112,14 +113,22 @@ export const toUnitFormat = (
       bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
       unitsUpperCase.million
     );
-  if (wholeNumberLength >= 4)
+  if (isKMB) {
+    if (wholeNumberLength >= 4)
     return (
       (usd ? "$" : "") +
       bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
       unitsUpperCase.thousand
     );
+  }
 
   // TODO : Else Return Type
+  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0)) {
+    return (usd ? "$<" : "") +"0.01";
+  }
+  if (bigNumber.isInteger()) {
+    return (usd ? "$" : "") + bigNumber.decimalPlaces(0).toString();
+  }
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toString();
 };
 

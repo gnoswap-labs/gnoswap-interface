@@ -63,7 +63,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   }, [size, datas.length, right]);
   
   return (
-    <TokenChartGraphWrapper left={breakpoint !== DEVICE_TYPE.MOBILE ?  paddingLeft : Math.max(paddingLeft, 12)} right={paddingRight}>
+    <TokenChartGraphWrapper left={Math.max(paddingLeft, 12)} right={Math.max(paddingRight, 12)}>
       <div className="data-wrapper" ref={componentRef}>
         <LineGraph
           cursor
