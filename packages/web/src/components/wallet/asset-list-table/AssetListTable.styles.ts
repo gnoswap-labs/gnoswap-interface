@@ -55,7 +55,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .balance {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
@@ -67,7 +67,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .amount {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }

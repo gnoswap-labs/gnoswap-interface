@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+import { checkGnotPath } from "@utils/common";
 const GNOS_PATH = "gno.land/r/demo/gns" || "";
 
 const TOKEN_A: TokenModel = {
@@ -25,7 +26,7 @@ const TOKEN_A: TokenModel = {
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "native",
-  priceId: "gno.land/r/demo/wugnot",
+  priceId: "gnot",
 };
 const TOKEN_B: TokenModel = {
   chainId: "dev",
@@ -46,7 +47,7 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
-  const [tokenBAmount, setTokenBAmount] = useState<string>("0");
+  const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [swapDirection, setSwapDirection] =
     useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
@@ -78,11 +79,11 @@ const HomeSwapContainer: React.FC = () => {
   }, [connected, displayBalanceMap, tokenB]);
   
   const tokenAUSD = useMemo(() => {
-    if (!tokenA || !tokenPrices[tokenA.priceId]) {
+    if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceId)]) {
       return Number.NaN;
     }
     return BigNumber(tokenAAmount)
-      .multipliedBy(tokenPrices[tokenA.priceId].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceId)].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
   const tokenBUSD = useMemo(() => {

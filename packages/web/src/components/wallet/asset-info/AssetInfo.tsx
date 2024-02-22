@@ -38,7 +38,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
-  const convertBalance = BigNumber((balance ?? "").toString()).toFormat(6);
+  const convertBalance = BigNumber((balance ?? "").toString()).toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6);
   const priceData = price === "-" ? price : `$${price}`;
 
   return breakpoint === DEVICE_TYPE.WEB ? (
@@ -74,7 +74,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
-  ) : breakpoint === DEVICE_TYPE.TABLET ? (
+  ) : breakpoint !== DEVICE_TYPE.MOBILE ? (
     <AssetInfoWrapper>
       <TableColumn
         className="left"
@@ -93,8 +93,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
-        <DepositButton onClick={onClickDeposit} />
+      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
+        <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[4]}>
         <DepositButton onClick={onClickDeposit} />
@@ -122,10 +122,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
-        <DepositButton onClick={onClickDeposit} />
+      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
+        <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[4]}>
+        <DepositButton onClick={onClickDeposit} />
+      </TableColumn>
+      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[5]}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>

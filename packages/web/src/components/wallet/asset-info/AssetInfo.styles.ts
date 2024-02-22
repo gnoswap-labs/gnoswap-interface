@@ -68,13 +68,13 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .balance {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
   }
   .amount {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
@@ -91,6 +91,9 @@ export const LoadButton = styled.button`
   gap: 4px;
   &.withdraw-pd {
     padding-right: 16px;
+    ${media.mobile} {
+      padding-right: 12px;
+    }
   }
   &,
   svg * {

@@ -16,7 +16,7 @@ export type WithdrawResponse = {
   code?: number;
 } | null;
 
-const useWithdrawTokens = () => {
+const useWithdrawTokens = (callback?: () => void) => {
   const { broadcastLoading, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
   const { walletRepository } = useGnoswapContext();
 
@@ -53,6 +53,7 @@ const useWithdrawTokens = () => {
               tokenAmount
             }));
           }, 1000);
+          callback?.();
           return true;
         }
         broadcastError(makeBroadcastWithdrawMessage("error", {

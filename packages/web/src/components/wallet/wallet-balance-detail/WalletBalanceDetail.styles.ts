@@ -77,6 +77,7 @@ export const InfoWrapper = styled.div`
       }
       ${media.mobile} {
         ${fonts.body6};
+        font-weight: 500;
       }
     }
     .button-wrapper {

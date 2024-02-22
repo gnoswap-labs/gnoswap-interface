@@ -7,6 +7,7 @@ import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
 import { prettyNumber } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { getLocalizeTime } from "@utils/chart";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -200,7 +201,7 @@ const TvlChartContainer: React.FC = () => {
                 value: next.price,
                 denom: "USD",
               },
-              time,
+              time: getLocalizeTime(next.date),
             },
           ],
         };
