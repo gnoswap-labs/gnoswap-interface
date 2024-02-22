@@ -38,6 +38,9 @@ export const wrapper = (theme: Theme) => css`
       max-width: 100px;
       height: 20px;
     }
+    ${media.mobile} {
+      min-height: 50px;
+    }
   }
   @media (max-width: 1180px) {
     grid-gap: 8px;

@@ -50,6 +50,9 @@ export const wrapper = (theme: Theme) => css`
     .none {
       color: ${theme.color.text01};
     }
+    ${media.mobile} {
+      min-height: 50px;
+    }
   }
   @media (max-width: 1360px) and (min-width: 930px) {
     .information-wrap {

@@ -124,7 +124,7 @@ export const toUnitFormat = (
 
   // TODO : Else Return Type
   if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0)) {
-    return (usd ? "$<" : "") +"0.01";
+    return (usd ? "<$" : "") +"0.01";
   }
   if (bigNumber.isInteger()) {
     return (usd ? "$" : "") + bigNumber.decimalPlaces(0).toString();
