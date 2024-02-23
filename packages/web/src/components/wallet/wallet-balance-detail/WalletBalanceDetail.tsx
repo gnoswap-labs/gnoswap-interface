@@ -89,6 +89,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={"Claimable Rewards"}
         value={balanceDetailInfo.claimableRewards}
         tooltip={"Total sum of unclaimed rewards."}
+        className="claimable-rewards"
         button={
           <ClaimAllButton
             onClick={claimAll}

@@ -96,6 +96,10 @@ function filterZeroBalance(asset: Asset) {
   return balance.isGreaterThan(0);
 }
 
+function removeTrailingZeros(value: string) {
+  return value.replace(/\.?0+$/, "");
+}
+
 function filterType(asset: Asset, type: ASSET_FILTER_TYPE) {
   if (type === "All") return true;
   return asset.type.toUpperCase() === type.toUpperCase();
@@ -271,12 +275,13 @@ const AssetListContainer: React.FC = () => {
             tokenPrice: tokenPrice || 0,
           };
         }
+        const price = BigNumber(tokenPrice)
+        .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
+        .dividedBy(10 ** 6);
+        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.1);
         return {
           ...item,
-          price: BigNumber(tokenPrice)
-            .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
-            .dividedBy(10 ** 6)
-            .toFormat(2),
+          price: checkPrice ? "<$0.01" : removeTrailingZeros(price.toFormat(2, BigNumber.ROUND_CEIL)),
           balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
         };

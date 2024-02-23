@@ -25,6 +25,14 @@ export const WalletBalanceDetailWrapper = styled.div`
       background-color: ${({ theme }) => theme.color.background04Hover};
     }
   }
+  .claimable-rewards {
+    .value {
+      max-width: 180px;
+      @media (max-width: 968px) {
+        max-width: max-content;
+      }
+    }
+  }
 `;
 
 export const InfoWrapper = styled.div`

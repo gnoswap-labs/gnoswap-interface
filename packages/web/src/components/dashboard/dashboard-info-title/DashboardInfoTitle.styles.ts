@@ -36,8 +36,8 @@ export const GnosLogoWrapper = styled.div`
   .gnos-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
     svg {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       ${media.mobile} {
         width: 25px;
         height: 25px;
@@ -68,8 +68,8 @@ export const GnotLogoWrapper = styled.div`
   .gnot-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
     svg {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       ${media.mobile} {
         width: 25px;
         height: 25px;

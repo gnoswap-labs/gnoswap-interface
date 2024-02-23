@@ -14,6 +14,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { useGetBalancesByAddress, useGetTokenPrices } from "@query/token";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -48,12 +49,13 @@ const WalletBalanceContainer: React.FC = () => {
   const { claimAll } = usePosition(positions);
   const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
+  const { data: { balances = []} = {}} = useGetBalancesByAddress(account?.address || "", { enabled: !!account?.address });
+  const { data: tokenPrices = {} } = useGetTokenPrices();
 
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
   }, []);
-
   const changeTokenWithdraw = useCallback((token: TokenModel) => {
     setWithDrawInfo(token);
     // setIsShowWithDrawModal(true);
@@ -111,13 +113,10 @@ const WalletBalanceContainer: React.FC = () => {
   }, [connected]);
 
   const loadingTotalBalance = loadingBalance || loadingPositions || loadingConnect === "loading";
-  console.log(displayBalanceMap, "displayBalanceMap")
-  const availableBalance: number = Object.keys(displayBalanceMap ?? {})
-    .map(x => displayBalanceMap[x] ?? 0)
-    .reduce(
-      (acc: number, cur: number) => BigNumber(acc).plus(cur).toNumber(),
-      0,
-    );
+  const availableBalance = balances.reduce((acc, cur) => {
+    const balance = BigNumber(cur.balance).multipliedBy(tokenPrices?.[cur.path]?.pricesBefore?.latestPrice).dividedBy(10 ** 6).toNumber() || 0; 
+    return BigNumber(acc).plus(balance).toNumber();
+  }, 0);
 
   const { stakedBalance, unStakedBalance, claimableRewards } = positions.reduce(
     (acc, cur) => {

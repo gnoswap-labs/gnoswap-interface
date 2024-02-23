@@ -10,7 +10,7 @@ export const SupplyOverviewWrapper = styled.div`
   padding: 23px;
   gap: 24px;
   .supply-overview {
-    ${fonts.body9};
+    ${fonts.body7};
     ${media.mobile} {
       ${fonts.body7};
     }

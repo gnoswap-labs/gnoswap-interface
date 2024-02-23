@@ -18,7 +18,7 @@ export const GovernanceOverviewWrapper = styled.div`
 export const GovernanceOverviewTitleWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   color: ${({ theme }) => theme.color.text02};
-  ${fonts.body9};
+  ${fonts.body7};
   gap: 6px;
 
   ${media.mobile} {

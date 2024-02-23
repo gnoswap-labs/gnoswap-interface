@@ -17,6 +17,9 @@ interface AssetInfoProps {
   withdraw: (asset: Asset) => void;
   breakpoint: DEVICE_TYPE;
 }
+function removeTrailingZeros(value: string) {
+  return value.replace(/\.?0+$/, "");
+}
 
 const AssetInfo: React.FC<AssetInfoProps> = ({
   asset,
@@ -38,8 +41,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
-  const convertBalance = BigNumber((balance ?? "").toString()).toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6);
-  const priceData = price === "-" ? price : `$${price}`;
+  const convertBalance = removeTrailingZeros(BigNumber((balance ?? "").toString()).toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6)) || 0;
+  const priceData = ["-", "<$0.01"].includes(price) ? price : `$${price}`;
 
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>

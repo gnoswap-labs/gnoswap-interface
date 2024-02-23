@@ -7,4 +7,5 @@ export enum QUERY_KEY {
   tokenDetails = "token_details",
   chain = "chain",
   tokenByPath = "token",
+  tokenBalancesByAddress = "balances",
 }

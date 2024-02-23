@@ -188,7 +188,7 @@ const DashboardActivitiesContainer: React.FC = () => {
         res.token1.symbol,
       )}`,
       account: res.account,
-      time: dayjs(res.time).fromNow(),
+      time: res.time,
       explorerUrl,
     };
   };
