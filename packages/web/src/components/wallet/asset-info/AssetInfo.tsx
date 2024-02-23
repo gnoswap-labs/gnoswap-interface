@@ -122,7 +122,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
+      <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
         <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[4]}>

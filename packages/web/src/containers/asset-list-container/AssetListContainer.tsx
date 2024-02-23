@@ -4,6 +4,7 @@ import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { useLoading } from "@hooks/common/use-loading";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
@@ -183,7 +184,7 @@ const handleSort = (list: SortedProps[]) => {
 };
 
 const AssetListContainer: React.FC = () => {
-  const { connected } = useWallet();
+  const { connected, account } = useWallet();
 
   const [address, setAddress] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
@@ -418,6 +419,24 @@ const AssetListContainer: React.FC = () => {
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
   
+  const {
+    isConfirm,
+    setIsConfirm,
+    onSubmit: handleSubmit,
+  } = useWithdrawTokens();
+
+  const onSubmit = (amount: any, address: string) => {
+    if (!withdrawInfo || !account?.address) return;
+    handleSubmit({
+      fromAddress: account.address,
+      toAddress: address,
+      token: withdrawInfo,
+      tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
+    },
+    withdrawInfo.type,);
+    closeWithdraw();
+  }
+
   return (
     <>
       <AssetList
@@ -459,6 +478,9 @@ const AssetListContainer: React.FC = () => {
           connected={connected}
           changeToken={changeTokenWithdraw}
           callback={callbackWithdraw}
+          setIsConfirm={() => setIsConfirm(true)}
+          isConfirm={isConfirm}
+          handleSubmit={onSubmit}
         />
       )}
     </>

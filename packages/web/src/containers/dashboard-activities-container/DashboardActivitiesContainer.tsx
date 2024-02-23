@@ -8,7 +8,6 @@ import {
   OnchainActivityData,
   OnchainActivityResponse,
 } from "@repositories/dashboard/response/onchain-response";
-import { formatAddress } from "@utils/string-utils";
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -188,7 +187,7 @@ const DashboardActivitiesContainer: React.FC = () => {
       tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount)} ${replaceToken(
         res.token1.symbol,
       )}`,
-      account: formatAddress(res.account),
+      account: res.account,
       time: dayjs(res.time).fromNow(),
       explorerUrl,
     };

@@ -26,6 +26,12 @@ export const AssetListTableWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
   }
+  .skeleton {
+    height: 68px;
+    ${media.mobile} {
+      height: 68px;
+    }
+  }
 `;
 
 export const TableColumn = styled.div<{ tdWidth: number }>`

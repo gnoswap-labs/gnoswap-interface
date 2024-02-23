@@ -15,6 +15,7 @@ import {
   MOBILE_ACTIVITY_TD_WIDTH,
 } from "@constants/skeleton.constant";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { formatAddress } from "@utils/string-utils";
 
 interface ActivityInfoProps {
   item: Activity;
@@ -70,11 +71,11 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                g1c4f5pn9zatmyxrndncv3zsq8qmk33vf4g9gm7h
+                {account}
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index tooltip-label">{account}</span>
+            <span className="token-index tooltip-label">{formatAddress(account)}</span>
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[5]}>

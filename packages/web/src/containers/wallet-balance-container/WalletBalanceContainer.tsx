@@ -1,10 +1,15 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
+import { ERROR_VALUE } from "@common/errors/adena";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WalletBalance from "@components/wallet/wallet-balance/WalletBalance";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
+import { makeBroadcastClaimMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { usePosition } from "@hooks/common/use-position";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -28,7 +33,7 @@ export interface BalanceDetailInfo {
 }
 
 const WalletBalanceContainer: React.FC = () => {
-  const { connected, isSwitchNetwork, loadingConnect } = useWallet();
+  const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
   const [address, setAddress] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -36,6 +41,13 @@ const WalletBalanceContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
   const [loadingBalance, setLoadingBalance] = useState(false);
+  const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+
+  const { displayBalanceMap, updateBalances } = useTokenData();
+  const { positions, loading: loadingPositions } = usePositionData();
+  const { claimAll } = usePosition(positions);
+  const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
+  const { openModal } = useTransactionConfirmModal();
 
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
@@ -59,10 +71,37 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
 
-  const claimAll = useCallback(() => {}, []);
+  const claimAllReward = useCallback(() => {
+    const data = {
+      tokenASymbol: positions[0]?.pool?.tokenA?.symbol,
+      tokenBSymbol: positions[0]?.pool?.tokenA?.symbol,
+      tokenAAmount: "0.12",
+      tokenBAmount: "0.13",
+    };
+    setLoadingTransactionClaim(true);
+    claimAll().then(response => {
+      if (response) {
+        if (response.code === 0) {
+          broadcastPending();
+          setTimeout(() => {
+            broadcastSuccess(makeBroadcastClaimMessage("success", data));
+            setLoadingTransactionClaim(false);
+          }, 1000);
+          openModal();
+        } else if (response.code === 4000 && response.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
+          broadcastError(makeBroadcastClaimMessage("error", data));
+          setLoadingTransactionClaim(false);
+          openModal();
+        } else {
+          openModal();
+          broadcastRejected(makeBroadcastClaimMessage("error", data), () => {}, true);
+          setLoadingTransactionClaim(false);
+        }
+      }
+    });
+  }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
 
-  const { displayBalanceMap, updateBalances } = useTokenData();
-  const { positions, loading: loadingPositions } = usePositionData();
+
 
   useEffect(() => {
     setLoadingBalance(true);
@@ -72,7 +111,7 @@ const WalletBalanceContainer: React.FC = () => {
   }, [connected]);
 
   const loadingTotalBalance = loadingBalance || loadingPositions || loadingConnect === "loading";
-
+  console.log(displayBalanceMap, "displayBalanceMap")
   const availableBalance: number = Object.keys(displayBalanceMap ?? {})
     .map(x => displayBalanceMap[x] ?? 0)
     .reduce(
@@ -127,6 +166,24 @@ const WalletBalanceContainer: React.FC = () => {
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
   
+  const {
+    isConfirm,
+    setIsConfirm,
+    onSubmit: handleSubmit,
+  } = useWithdrawTokens();
+
+  const onSubmit = (amount: any, address: string) => {
+    if (!withdrawInfo || !account?.address) return;
+    handleSubmit({
+      fromAddress: account.address,
+      toAddress: address,
+      token: withdrawInfo, 
+      tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
+    },
+    withdrawInfo.type,);
+    closeWithdraw();
+  }
+
   return (
     <>
       <WalletBalance
@@ -146,9 +203,10 @@ const WalletBalanceContainer: React.FC = () => {
         }}
         deposit={deposit}
         withdraw={withdraw}
-        claimAll={claimAll}
+        claimAll={claimAllReward}
         breakpoint={breakpoint}
         isSwitchNetwork={isSwitchNetwork}
+        loadngTransactionClaim={loadngTransactionClaim}
       />
       {isShowDepositModal && (
         <DepositModal
@@ -167,6 +225,9 @@ const WalletBalanceContainer: React.FC = () => {
           connected={connected}
           changeToken={changeTokenWithdraw}
           callback={callbackWithdraw}
+          setIsConfirm={() => setIsConfirm(true)}
+          isConfirm={isConfirm}
+          handleSubmit={onSubmit}
         />
       )}
     </>
