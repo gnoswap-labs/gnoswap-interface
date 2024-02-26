@@ -30,7 +30,7 @@ export const LineGraphWrapper = styled.div`
 export const LineGraphTooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 126px;
+  min-width: 106px;
   height: auto;
   background: ${({ theme }) => theme.color.background02};
   border-radius: 4px;

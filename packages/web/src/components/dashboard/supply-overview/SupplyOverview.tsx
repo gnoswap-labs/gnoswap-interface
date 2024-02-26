@@ -15,10 +15,10 @@ interface SupplyOverviewInfoProps {
   loading: boolean;
 }
 
-const LoadingText = () => {
+const LoadingText = ({ className } : { className?: string }) => {
   return (
-    <LoadingTextWrapper className="loading-text-wrapper">
-      <span css={pulseSkeletonStyle({ w: "150px" })} />
+    <LoadingTextWrapper className={`loading-text-wrapper ${className ?? ""}`}>
+      <span css={pulseSkeletonStyle({ w: "150px", mobileWidth: "120" })} />
     </LoadingTextWrapper>
   );
 };
@@ -73,7 +73,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           <DashboardLabel tooltip={<>The total supply of GNS tokens is <br />1,000,000,000 GNS.</>} />
         </div>
         {!loading ? (
-          <div>{supplyOverviewInfo.totalSupply}</div>
+          <div className="supply-value">{supplyOverviewInfo.totalSupply}</div>
         ) : (
           <LoadingText />
         )}
@@ -85,7 +85,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
             <DashboardLabel tooltip="The sum of liquid GNS tokens including released vesting allocations and cumulative block emissions." />
           </div>
           {!loading ? (
-            <div>{supplyOverviewInfo.circulatingSupply}</div>
+            <div className="supply-value">{supplyOverviewInfo.circulatingSupply}</div>
           ) : (
             <LoadingText />
           )}
@@ -105,7 +105,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         </div>
         <div className="daily-block-emissions-tooltip">
           {!loading ? (
-            <div>{supplyOverviewInfo.dailyBlockEmissions}</div>
+            <div className="supply-value">{supplyOverviewInfo.dailyBlockEmissions}</div>
           ) : (
             <LoadingText />
           )}
@@ -119,7 +119,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
         </div>
         <div className="staked-info">
           {!loading ? (
-            <div>{supplyOverviewInfo.totalStaked}</div>
+            <div className="supply-value">{supplyOverviewInfo.totalStaked}</div>
           ) : (
             <LoadingText />
           )}
@@ -128,7 +128,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
               Staking Ratio: {supplyOverviewInfo.stakingRatio}
             </div>
           ) : (
-            <LoadingText />
+            <LoadingText className="loading-staked-ratio"/>
           )}
         </div>
       </div>

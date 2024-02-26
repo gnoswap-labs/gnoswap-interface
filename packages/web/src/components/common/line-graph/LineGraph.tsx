@@ -357,9 +357,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 <span className="date">
                   {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
                 </span>
-                <span className="time">
-                  {parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
-                </span>
               </div>
               <div className="tooltip-header">
                 <span className="value">{`$${prettyNumber(

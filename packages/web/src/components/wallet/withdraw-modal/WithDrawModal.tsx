@@ -143,9 +143,8 @@ const WithDrawModal: React.FC<Props> = ({
       setAmount(`${currentAvailableBalance}`);
     }
   };
-
   const text = useMemo(() => {
-    if (currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) {
+    if ((currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) || !Number(amount || 0)) {
       return "Insufficient Balance";
     }
     if (!addressValidationCheck(address)) return "Invalid Address";

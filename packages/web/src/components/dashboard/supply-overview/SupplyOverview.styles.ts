@@ -12,11 +12,11 @@ export const SupplyOverviewWrapper = styled.div`
   .supply-overview {
     ${fonts.body7};
     ${media.mobile} {
-      ${fonts.body7};
+      ${fonts.body9};
     }
   }
   ${media.mobile} {
-    padding: 11px;
+    padding: 12px;
     gap: 16px;
   }
 `;
@@ -41,12 +41,21 @@ export const SupplyInfoWrapper = styled.div`
       ${fonts.body12}
     }
     svg {
-      margin: 1.5px 0px;
       width: 18px;
       height: 18px;
+      ${media.mobile} {
+        width: 16px;
+        height: 16px;
+      }
     }
     path {
       fill: ${({ theme }) => theme.color.icon03};
+    }
+  }
+  .supply-value {
+    ${fonts.body7}
+    ${media.mobile} {
+      ${fonts.body11}
     }
   }
 
@@ -56,6 +65,10 @@ export const SupplyInfoWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
       gap: 4px;
     }
   }
@@ -78,6 +91,10 @@ export const SupplyInfoWrapper = styled.div`
         align-items: flex-start;
         gap: 4px;
       }
+      ${media.mobile} {
+        ${mixins.flexbox("row", "center", "space-between")};
+        gap: 4px;
+      }
     }
   }
 
@@ -89,6 +106,10 @@ export const SupplyInfoWrapper = styled.div`
       align-items: flex-start;
       gap: 4px;
     }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      gap: 4px;
+    }
   }
 
   .total-staked {
@@ -97,6 +118,10 @@ export const SupplyInfoWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "flex-start", "space-between")};
       gap: 4px;
     }
     .staked-info {
@@ -115,16 +140,17 @@ export const SupplyInfoWrapper = styled.div`
         gap: 4px;
       }
       ${media.mobile} {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: flex-end;
         gap: 4px;
         .loading-text-wrapper {
-          span {
-            width: 100px;
-          }
           &:last-of-type {
             margin-bottom: 0px;
+          }
+        }
+        .loading-staked-ratio {
+          span {
+            width: 100px;
           }
         }
       }
@@ -132,6 +158,9 @@ export const SupplyInfoWrapper = styled.div`
     .staked-ratio-title {
       ${fonts.p2}
       color: ${({ theme }) => theme.color.text04};
+      ${media.mobile} {
+        ${fonts.p4}
+      }
     }
   }
 
@@ -140,9 +169,12 @@ export const SupplyInfoWrapper = styled.div`
     gap: 4px;
     svg {
       cursor: default;
-      margin: 3.5px 0px;
       width: 18px;
       height: 18px;
+      ${media.mobile} {
+        width: 16px;
+        height: 16px;
+      }
     }
     path {
       fill: ${({ theme }) => theme.color.icon03};

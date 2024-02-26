@@ -10,7 +10,7 @@ export const GovernanceOverviewWrapper = styled.div`
   padding: 23px;
   gap: 24px;
   ${media.mobile} {
-    padding: 11px 11px 15px 11px;
+    padding: 12px 12px 15px 12px;
     gap: 16px;
   }
 `;
@@ -23,7 +23,7 @@ export const GovernanceOverviewTitleWrapper = styled.div`
 
   ${media.mobile} {
     gap: 4px;
-    ${fonts.body7};
+    ${fonts.body9};
   }
 `;
 
@@ -87,12 +87,21 @@ export const GovernanceWrapper = styled.div`
       ${fonts.body12}
     }
     svg {
-      margin: 1.5px 0px;
       width: 18px;
       height: 18px;
+      ${media.mobile} {
+        width: 16px;
+        height: 16px;
+      }
     }
     path {
       fill: ${({ theme }) => theme.color.icon03};
+    }
+  }
+  .value {
+    ${fonts.body7}
+    ${media.mobile} {
+      ${fonts.body11};
     }
   }
 
@@ -104,6 +113,11 @@ export const GovernanceWrapper = styled.div`
       align-items: flex-start;
       gap: 4px;
     }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      gap: 4px;
+      height: 20px;
+    }
   }
   .holders {
     ${mixins.flexbox("row", "center", "space-between")};
@@ -111,6 +125,11 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
       gap: 4px;
     }
   }
@@ -122,6 +141,11 @@ export const GovernanceWrapper = styled.div`
       align-items: flex-start;
       gap: 4px;
     }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
+      gap: 4px;
+    }
   }
   .active-proposals {
     ${mixins.flexbox("row", "center", "space-between")};
@@ -131,6 +155,11 @@ export const GovernanceWrapper = styled.div`
       align-items: flex-start;
       gap: 4px;
     }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
+      gap: 4px;
+    }
   }
   .community-pool {
     ${mixins.flexbox("row", "center", "space-between")};
@@ -138,6 +167,11 @@ export const GovernanceWrapper = styled.div`
     ${media.tabletMiddle} {
       flex-direction: column;
       align-items: flex-start;
+      gap: 4px;
+    }
+    ${media.mobile} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      height: 20px;
       gap: 4px;
     }
   }

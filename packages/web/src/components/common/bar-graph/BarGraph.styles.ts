@@ -50,7 +50,7 @@ export const BarLineWrapper = styled.line`
 export const BarGraphTooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 126px;
+  min-width: 256px;
   height: auto;
   background: ${({ theme }) => theme.color.background02};
   border-radius: 4px;
@@ -62,10 +62,14 @@ export const BarGraphTooltipWrapper = styled.div`
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: auto;
+    height: 29px;
     justify-content: space-between;
     ${fonts.body9}
     color: ${({ theme }) => theme.color.text02};
+    .label {
+      ${mixins.flexbox("row", "center", "center")};
+      ${fonts.body12}
+    }
   }
 
   & .tooltip-body {

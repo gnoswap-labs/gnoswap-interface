@@ -276,7 +276,7 @@ const AssetListContainer: React.FC = () => {
         const price = BigNumber(tokenPrice)
         .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
         .dividedBy(10 ** 6);
-        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.1);
+        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
           price: checkPrice ? "<$0.01" : removeTrailingZeros(price.toFormat(2)),

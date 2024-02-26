@@ -45,7 +45,6 @@ const WalletBalanceContainer: React.FC = () => {
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const { isLoadingCommon } = useLoading();
 
-  const { updateBalances } = useTokenData();
   const { positions, loading: loadingPositions } = usePositionData();
   const { claimAll } = usePosition(positions);
   const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
@@ -103,10 +102,9 @@ const WalletBalanceContainer: React.FC = () => {
       }
     });
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
-
   const loadingTotalBalance = useMemo(() => {
-    return loadingPositions || loadingConnect === "loading" || loadingGetBalances || isLoadingCommon;
-  }, [loadingPositions, loadingConnect, loadingGetBalances || isLoadingCommon]);
+    return loadingPositions || loadingConnect === "loading" || !!(loadingGetBalances && account?.address) || isLoadingCommon;
+  }, [loadingPositions, loadingConnect, loadingGetBalances, isLoadingCommon, account?.address]);
 
   const availableBalance = balances.reduce((acc, cur) => {
     const balance = BigNumber(cur.balance).multipliedBy(tokenPrices?.[cur.path]?.pricesBefore?.latestPrice).dividedBy(10 ** 6).toNumber() || 0; 

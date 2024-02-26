@@ -143,12 +143,11 @@ const VolumeChartContainer: React.FC = () => {
     CHART_TYPE["7D"],
   );
 
-  const { data: volumeData, isFetching } = useQuery<VolumeResponse, Error>({
+  const { data: volumeData, isLoading } = useQuery<VolumeResponse, Error>({
     queryKey: ["volumePriceInfo"],
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
-
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
@@ -166,10 +165,10 @@ const VolumeChartContainer: React.FC = () => {
     let chartData = volumeData?.last_7d;
 
     switch (volumeChartType) {
-      case "1M":
+      case "30D":
         chartData = volumeData?.last_1m;
         break;
-      case "1Y":
+      case "90D":
         chartData = volumeData?.last_1y;
         break;
       case "ALL":
@@ -206,7 +205,7 @@ const VolumeChartContainer: React.FC = () => {
           : "-",
       }}
       volumeChartInfo={chartData}
-      loading={isFetching || isLoadingCommon}
+      loading={isLoading || isLoadingCommon}
     />
   );
 };

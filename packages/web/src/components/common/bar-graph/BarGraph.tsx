@@ -93,7 +93,6 @@ const BarGraph: React.FC<BarGraphProps> = ({
 
     return maxStorkeWidth.toNumber();
   }, [width, datas.length, minGap, strokeWidth]);
-
   const getGraphPoints = useCallback(() => {
     const strokeWidth = getStrokeWidth();
     const mappedDatas = datas.map((data, index) => ({
@@ -181,6 +180,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
     for (const point of getGraphPoints()) {
       const distance = xPosition - point.x;
       currentPointIndex += 1;
+      
       if (minDistance < 0 && distance >= 0) {
         minDistance = distance;
       }
@@ -231,7 +231,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onTouchStart={onTouchStart}
     >
       <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition}
-        content={tooltipOption === "default" && currentPointIndex > -1 && activated ?
+        content={tooltipOption === "default" && currentPointIndex > -1 ?
           <BarGraphTooltipWrapper>
             <div className="tooltip-body">
               <span className="date">
@@ -239,9 +239,14 @@ const BarGraph: React.FC<BarGraphProps> = ({
               </span>
             </div>
             <div className="tooltip-header">
+              <span className="label">Trading Volume</span>
               <span className="value">{`$${Number(BigNumber(
                 datas[currentPointIndex],
               )).toLocaleString()}`}</span>
+            </div>
+            <div className="tooltip-header">
+              <span className="label">Fees</span>
+              <span className="value">-</span>
             </div>
           </BarGraphTooltipWrapper> :
           tooltipOption === "incentivized" && currentPointIndex > -1 && activated ?
