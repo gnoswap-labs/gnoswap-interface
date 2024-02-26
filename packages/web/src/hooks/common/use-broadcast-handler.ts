@@ -221,11 +221,11 @@ export function makeBroadcastWithdrawMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Sending ${data.tokenAmount} ${data.tokenSymbol}`;
+        return `Sending <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span>`;
       case "success":
-        return `Sent ${data.tokenAmount} ${data.tokenSymbol}`;
+        return `Sent <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span>`;
       case "error":
-        return `Failed to Send ${data.tokenAmount} ${data.tokenSymbol}`;
+        return `Failed to send <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span>`;
     }
   }
   return {

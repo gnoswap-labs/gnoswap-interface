@@ -16,7 +16,8 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetBalancesByAddress, useGetTokenPrices } from "@query/token";
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -41,15 +42,15 @@ const WalletBalanceContainer: React.FC = () => {
   const [isShowWithdrawModal, setIsShowWithDrawModal] = useState(false);
   const [depositInfo, setDepositInfo] = useState<TokenModel>();
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>();
-  const [loadingBalance, setLoadingBalance] = useState(false);
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const { isLoadingCommon } = useLoading();
 
-  const { displayBalanceMap, updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData();
   const { positions, loading: loadingPositions } = usePositionData();
   const { claimAll } = usePosition(positions);
   const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
-  const { data: { balances = []} = {}} = useGetBalancesByAddress(account?.address || "", { enabled: !!account?.address });
+  const { data: { balances = []} = {}, isLoading: loadingGetBalances } = useGetBalancesByAddress(account?.address || "", { enabled: !!account?.address });
   const { data: tokenPrices = {} } = useGetTokenPrices();
 
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
@@ -103,16 +104,10 @@ const WalletBalanceContainer: React.FC = () => {
     });
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
 
+  const loadingTotalBalance = useMemo(() => {
+    return loadingPositions || loadingConnect === "loading" || loadingGetBalances || isLoadingCommon;
+  }, [loadingPositions, loadingConnect, loadingGetBalances || isLoadingCommon]);
 
-
-  useEffect(() => {
-    setLoadingBalance(true);
-    updateBalances().finally(() => {
-      setLoadingBalance(false);
-    });
-  }, [connected]);
-
-  const loadingTotalBalance = loadingBalance || loadingPositions || loadingConnect === "loading";
   const availableBalance = balances.reduce((acc, cur) => {
     const balance = BigNumber(cur.balance).multipliedBy(tokenPrices?.[cur.path]?.pricesBefore?.latestPrice).dividedBy(10 ** 6).toNumber() || 0; 
     return BigNumber(acc).plus(balance).toNumber();
@@ -182,7 +177,6 @@ const WalletBalanceContainer: React.FC = () => {
     withdrawInfo.type,);
     closeWithdraw();
   }
-
   return (
     <>
       <WalletBalance

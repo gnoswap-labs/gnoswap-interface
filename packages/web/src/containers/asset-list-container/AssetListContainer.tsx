@@ -7,6 +7,7 @@ import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
 import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { useLoading } from "@hooks/common/use-loading";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -208,7 +209,8 @@ const AssetListContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingCommon } = useLoading();
-  const { data: { tokens = [] } = {}, } = useGetTokensList({ refetchInterval: 60 * 1000, });
+  const { data: { tokens = [] } = {}, isLoading } = useGetTokensList({ refetchInterval: 60 * 1000, });
+  const { loading: loadingPositions } = usePositionData();
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -233,14 +235,10 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, updateTokens, tokenPrices, isFetched, updateBalances } =
+  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } =
     useTokenData();
 
-  useEffect(() => {
-    updateTokens();
-  }, [connected]);
-
-  useEffect(() => {
+    useEffect(() => {
     const interval = setInterval(() => {
       updateBalances();
     }, 60000);
@@ -281,7 +279,7 @@ const AssetListContainer: React.FC = () => {
         const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.1);
         return {
           ...item,
-          price: checkPrice ? "<$0.01" : removeTrailingZeros(price.toFormat(2, BigNumber.ROUND_CEIL)),
+          price: checkPrice ? "<$0.01" : removeTrailingZeros(price.toFormat(2)),
           balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
         };
@@ -446,7 +444,7 @@ const AssetListContainer: React.FC = () => {
     <>
       <AssetList
         assets={filteredTokens}
-        isFetched={isFetched && !isLoadingCommon}
+        isFetched={isFetched && !isLoadingCommon && !isLoading && !loadingPositions}
         assetType={assetType}
         invisibleZeroBalance={invisibleZeroBalance}
         keyword={keyword}

@@ -121,7 +121,7 @@ const ClaimAllButton: React.FC<ClaimAllButtonProps> = ({
     style={{
       width: 86,
       fontType: "p1",
-      padding: "10px 16px",
+      padding: loadngTransactionClaim ? "8px 16px" : "10px 16px",
       hierarchy: ButtonHierarchy.Primary,
     }}
     text={loadngTransactionClaim ? "" : "Claim All"}

@@ -7,7 +7,7 @@ export const AssetInfoWrapper = styled.div`
   transition: background-color 0.3s ease;
   cursor: pointer;
   min-width: 100%;
-  height: 67px;
+  height: 68px;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};

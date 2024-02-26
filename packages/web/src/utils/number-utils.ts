@@ -262,3 +262,23 @@ export function convertLargePrice(val: string) {
   }
   return `$${convertToMB((val || "0.00"), 10)}`;
 }
+
+
+export const formatUSDWallet = (
+  value: BigNumber | string | number,
+  usd = false,
+): string => {
+  if (!isNumber(value)) {
+    // TODO : Error Check
+    return usd ? "$0" : "0";
+  }
+
+  const bigNumber = BigNumber(value);
+  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0)) {
+    return (usd ? "<$" : "") +"0.01";
+  }
+  if (bigNumber.isInteger()) {
+    return (usd ? "$" : "") + bigNumber.decimalPlaces(0).toString();
+  }
+  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFormat(2);
+};
