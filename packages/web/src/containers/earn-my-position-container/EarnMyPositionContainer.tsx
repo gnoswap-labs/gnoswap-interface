@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useRef, useState, useMemo } from "react"
 import { ValuesType } from "utility-types";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
+import { useGetUsernameByAddress } from "@query/address/queries";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -24,136 +25,161 @@ export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
+  address?: string | undefined;
 }
 
 const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
-> = () => {
-  const [currentIndex, setCurrentIndex] = useState(1);
-  const [page, setPage] = useState(1);
+> = ({
+  address,
+}) => {
+    const [currentIndex, setCurrentIndex] = useState(1);
+    const [page, setPage] = useState(1);
 
-  const router = useRouter();
-  const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
-  const { updateTokenPrices } = useTokenData();
-  const { updatePositions, isFetchedPools, loading } = usePoolData();
-  const { width } = useWindowSize();
-  const divRef = useRef<HTMLDivElement | null>(null);
-  const { openModal } = useConnectWalletModal();
-  const { isError, availableStake, isFetchedPosition, loading : loadingPosition, positions } = usePositionData();
-  const [mobile, setMobile] = useState(false);
-  const themeKey = useAtomValue(ThemeState.themeKey);
-  const [isClosed, setIsClosed] = useState(false);
+    const router = useRouter();
+    const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
+    const { updateTokenPrices } = useTokenData();
+    const { updatePositions, isFetchedPools, loading } = usePoolData();
+    const { width } = useWindowSize();
+    const divRef = useRef<HTMLDivElement | null>(null);
+    const { openModal } = useConnectWalletModal();
+    const { isError, availableStake, isFetchedPosition, loading: loadingPosition, positions } = usePositionData(address);
+    const [mobile, setMobile] = useState(false);
+    const themeKey = useAtomValue(ThemeState.themeKey);
+    const [isClosed, setIsClosed] = useState(false);
 
-  const handleResize = () => {
-    if (typeof window !== "undefined") {
-      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
-    }
-  };
-  useEffect(() => {
-    updateTokenPrices();
-    updatePositions();
-    if (typeof window !== "undefined") {
-      window.innerWidth < 920 ? setMobile(true) : setMobile(false);
-    }
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    const isOtherPosition = useMemo(() => {
+      return Boolean(address) && address !== account?.address;
+    }, [account?.address, address]);
 
-  const connect = useCallback(() => {
-    if (!connected) {
-      openModal();
-    } else {
-      switchNetwork();
-    }
-  }, [connectAdenaClient, isSwitchNetwork, switchNetwork, openModal, connected]);
-
-  const moveEarnAdd = useCallback(() => {
-    router.push("/earn/add");
-  }, [router]);
-
-  const movePoolDetail = useCallback((id: string) => {
-    router.push(`/earn/pool/${id}`);
-  }, [router]);
-
-  const moveEarnStake = useCallback(() => {
-    router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/stake");
-  }, [router]);
-
-
-  const handleScroll = () => {
-    if (divRef.current) {
-      const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.min(Math.floor(currentScrollX / 220) + 1, positions.length));
-    }
-  };
-
-  const showPagination = useMemo(() => {
-    if (width >= 920) {
-      return false;
-    } else {
+    const visiblePositions = useMemo(() => {
+      if (!connected && !address) {
+        return false;
+      }
       return true;
-    }
-  }, [positions, width]);
+    }, [address, connected]);
 
-  const handleClickLoadMore = useCallback(() => {
-    if (page === 1) {
-      setPage(prev => prev + 1);
-    } else {
-      setPage(1);
-    }
-  }, [page]);
+    const { data: addressName = "" } = useGetUsernameByAddress(address || "", { enabled: !!address });
 
-  const dataMapping = useMemo(() => {
-    let temp = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-    if (positions.length > 0 && isClosed) {
-      const fake = {
-        ...positions[0],
-        status: true,
+    const handleResize = () => {
+      if (typeof window !== "undefined") {
+        window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+      }
+    };
+    useEffect(() => {
+      updateTokenPrices();
+      updatePositions();
+      if (typeof window !== "undefined") {
+        window.innerWidth < 920 ? setMobile(true) : setMobile(false);
+      }
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
       };
-      temp = [...positions, fake, fake];
-    }
-    if (page === 1) {
-      if (width > 1180) {
-        return temp.slice(0, 4);
-      } else if (width > 920) {
-        return temp.slice(0, 3);
-      } else return temp;
-    } else return temp;
-  }, [width, page, positions, isClosed]);
+    }, []);
 
-  const handleChangeClosed = () => {
-    setIsClosed(!isClosed);
+    const connect = useCallback(() => {
+      if (!connected) {
+        openModal();
+      } else {
+        switchNetwork();
+      }
+    }, [connectAdenaClient, isSwitchNetwork, switchNetwork, openModal, connected]);
+
+    const moveEarnAdd = useCallback(() => {
+      router.push("/earn/add");
+    }, [router]);
+
+    const movePoolDetail = useCallback((id: string) => {
+      let query = "";
+      if (address && address.length > 0) {
+        query = `?addr=${address}`;
+      }
+      router.push(`/earn/pool/${id}${query}`);
+    }, [router, address]);
+
+    const moveEarnStake = useCallback(() => {
+      router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/stake");
+    }, [router]);
+
+
+    const handleScroll = () => {
+      if (divRef.current) {
+        const currentScrollX = divRef.current.scrollLeft;
+        setCurrentIndex(Math.min(Math.floor(currentScrollX / 220) + 1, positions.length));
+      }
+    };
+
+    const showPagination = useMemo(() => {
+      if (width >= 920) {
+        return false;
+      } else {
+        return true;
+      }
+    }, [positions, width]);
+
+    const handleClickLoadMore = useCallback(() => {
+      if (page === 1) {
+        setPage(prev => prev + 1);
+      } else {
+        setPage(1);
+      }
+    }, [page]);
+
+    const dataMapping = useMemo(() => {
+      let temp = positions.sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+      if (positions.length > 0 && isClosed) {
+        const fake = {
+          ...positions[0],
+          status: true,
+        };
+        temp = [...positions, fake, fake];
+      }
+      if (page === 1) {
+        if (width > 1180) {
+          return temp.slice(0, 4);
+        } else if (width > 920) {
+          return temp.slice(0, 3);
+        } else return temp;
+      } else return temp;
+    }, [width, page, positions, isClosed]);
+
+    const handleChangeClosed = () => {
+      setIsClosed(!isClosed);
+    };
+    return (
+      <EarnMyPositions
+        address={address}
+        addressName={addressName}
+        isOtherPosition={isOtherPosition}
+        visiblePositions={visiblePositions}
+        positionLength={positions.length}
+        connected={connected}
+        availableStake={availableStake}
+        connect={connect}
+        loading={loading || loadingPosition}
+        fetched={isFetchedPools && isFetchedPosition}
+        isError={isError}
+        positions={dataMapping}
+        moveEarnAdd={moveEarnAdd}
+        movePoolDetail={movePoolDetail}
+        moveEarnStake={moveEarnStake}
+        isSwitchNetwork={isSwitchNetwork}
+        mobile={mobile}
+        onScroll={handleScroll}
+        divRef={divRef}
+        currentIndex={currentIndex}
+        showPagination={showPagination}
+        showLoadMore={positions.length > 4}
+        width={width}
+        loadMore={page === 1}
+        onClickLoadMore={handleClickLoadMore}
+        themeKey={themeKey}
+        account={account}
+        isClosed={isClosed}
+        handleChangeClosed={handleChangeClosed}
+      />
+    );
   };
-  return (
-    <EarnMyPositions
-      connected={connected}
-      availableStake={availableStake}
-      connect={connect}
-      loading={loading || loadingPosition}
-      fetched={isFetchedPools && isFetchedPosition}
-      isError={isError}
-      positions={dataMapping}
-      moveEarnAdd={moveEarnAdd}
-      movePoolDetail={movePoolDetail}
-      moveEarnStake={moveEarnStake}
-      isSwitchNetwork={isSwitchNetwork}
-      mobile={mobile}
-      onScroll={handleScroll}
-      divRef={divRef}
-      currentIndex={currentIndex}
-      showPagination={showPagination}
-      showLoadMore={positions.length > 4}
-      width={width}
-      loadMore={page === 1}
-      onClickLoadMore={handleClickLoadMore}
-      themeKey={themeKey}
-      account={account}
-      isClosed={isClosed}
-      handleChangeClosed={handleChangeClosed}
-    />
-  );
-};
 
 export default EarnMyPositionContainer;

@@ -120,7 +120,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       sumOfBalances === 0
         ? 0.5
         : token0Balance /
-          (token0Balance + token1Balance / position?.pool?.price);
+        (token0Balance + token1Balance / position?.pool?.price);
     return [
       {
         token: tokenA,
@@ -277,7 +277,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -295,7 +295,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -313,8 +313,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const tokenAPriceStr = isFullRange
       ? "0 "
       : !isSwap
-      ? minPrice
-      : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
+        ? minPrice
+        : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
     return `${tokenAPriceStr}`;
   }, [
     position.tickUpper,
@@ -362,8 +362,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const tokenBPriceStr = isFullRange
       ? "∞ "
       : !isSwap
-      ? maxPrice
-      : convertToKMB(`${Number(1 / Number(minPrice))}`, 6);
+        ? maxPrice
+        : convertToKMB(`${Number(1 / Number(minPrice))}`, 6);
     return `${tokenBPriceStr}`;
   }, [
     position.tickLower,
@@ -381,20 +381,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return (!isSwap ? minTickRate : -minTickRate) > 1000
       ? ">999%"
-      : `${minTickRate < -1 ? "+" : ""}${
-          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-            ? "<1"
-            : Math.round(minTickRate * -1)
-        }%`;
+      : `${minTickRate < -1 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+        ? "<1"
+        : Math.round(minTickRate * -1)
+      }%`;
   }, [minTickRate, isSwap]);
 
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999
       ? `>${maxTickRate}%`
       : maxTickRate >= 1000
-      ? ">999%"
-      : `${maxTickRate > 1 ? "+" : ""}${
-          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+        ? ">999%"
+        : `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
         }%`;
   }, [maxTickRate]);
 
@@ -407,7 +405,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [maxTickRate, isSwap, minTickRate]);
 
   return (
-    <MyPositionCardWrapper type={inRange} isClosed={isClosed}>
+    <MyPositionCardWrapper id={`position-${position.id}`} type={inRange} isClosed={isClosed}>
       <div className="box-title">
         <div className="box-header">
           <div className="box-left">
@@ -483,7 +481,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <SelectBox
               current={"Manage"}
               items={["Reposition", "Increase Liquidity", "Decrease Liquidity"]}
-              select={() => {}}
+              select={() => { }}
               render={period => <ManageItem>{period}</ManageItem>}
               className={!inRange ? "out-range" : ""}
             />
@@ -602,8 +600,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   position.status
                     ? RANGE_STATUS_OPTION.NONE
                     : inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
+                      ? RANGE_STATUS_OPTION.IN
+                      : RANGE_STATUS_OPTION.OUT
                 }
               />
             </div>

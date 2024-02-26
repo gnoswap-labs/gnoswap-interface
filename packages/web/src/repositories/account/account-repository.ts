@@ -15,6 +15,8 @@ export interface AccountRepository extends AccountNotificationRepository {
 
   getBalances: (address: string) => Promise<AccountBalanceModel[]>;
 
+  getUsername: (address: string) => Promise<string>;
+
   getAccount: () => Promise<AccountModel>;
 
   existsWallet: () => boolean;

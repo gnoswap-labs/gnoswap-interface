@@ -20,7 +20,7 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
   footer,
   isStaking,
 }) => {
-  
+
   const router = useRouter();
   const onClickIncentivize = () => {
     router.push(`/earn/pool/${router.query["pool-path"]}/incentivize`);
@@ -30,8 +30,8 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
       {header}
       <div className="pool-section">
         <div className="summury-container">{poolPairInformation}</div>
-        <div className="positions-container">{liquidity}</div>
-        <div className="staking-container" style={{ marginTop: !isStaking ? "-44px" : "0"}}>
+        <div id="positions-container" className="positions-container">{liquidity}</div>
+        <div className="staking-container" style={{ marginTop: !isStaking ? "-44px" : "0" }}>
           {staking}
           <div className="button">
             <span>Want to {isStaking ? "boost" : "add"} up incentives for this pool?&nbsp;</span>

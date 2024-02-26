@@ -14,10 +14,12 @@ import { NetworkClient } from "@common/clients/network-client";
 import { AccountBalanceModel } from "@models/account/account-balance-model";
 import { CommonError } from "@common/errors";
 import { GNOWSWAP_CONNECTED_KEY } from "@states/common";
+import { GnoProvider } from "@gnolang/gno-js-client";
 
 export class AccountRepositoryImpl implements AccountRepository {
   private walletClient: WalletClient | null;
   private networkClient: NetworkClient;
+  private rpcProvider: GnoProvider | null;
   private localStorageClient: StorageClient<StorageKeyType>;
   private sessionStorageClient: StorageClient<SessionStorageKeyType>;
 
@@ -26,11 +28,13 @@ export class AccountRepositoryImpl implements AccountRepository {
     networkClient: NetworkClient,
     localStorageClient: StorageClient,
     sessionStorageClient: StorageClient,
+    rpcProvider: GnoProvider | null,
   ) {
     this.walletClient = walletClient;
     this.networkClient = networkClient;
     this.localStorageClient = localStorageClient;
     this.sessionStorageClient = sessionStorageClient;
+    this.rpcProvider = rpcProvider;
   }
 
   public isConnectedWalletBySession = () => {
@@ -62,6 +66,20 @@ export class AccountRepositoryImpl implements AccountRepository {
       url: `/user/${address}/balance`,
     });
     return response.data.balances;
+  };
+
+  public getUsername = async (address: string): Promise<string> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+    console.log(address);
+    // TODO: These lines are applied after the contract function that retrieves the member name is developed.
+    // const param = makeABCIParams("GetUserByAddress", [address]);
+    // const result = await this.rpcProvider
+    //   .evaluateExpression("gno.land/r/demo/users", param)
+    //   .then(evaluateExpressionToValues);
+    // return result.length > 0 ? result[0] : "";
+    return "";
   };
 
   public existsWallet = () => {
@@ -188,7 +206,7 @@ export class AccountRepositoryImpl implements AccountRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    
+
     const response = await this.walletClient.switchNetwork(chainId);
     return response;
   };

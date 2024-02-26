@@ -5,6 +5,7 @@ import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
 export interface EarnMyPositionContentProps {
+  isOtherPosition: boolean;
   connected: boolean;
   fetched: boolean;
   loading: boolean;
@@ -27,6 +28,7 @@ export interface EarnMyPositionContentProps {
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
+  isOtherPosition,
   connected,
   fetched,
   loading,
@@ -46,38 +48,38 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   themeKey,
   account,
 }) => {
-
-  if (((!connected || isSwitchNetwork) && !loading)) {
+  if ((!connected || isSwitchNetwork) && !loading && !isOtherPosition) {
     return (
-      <EarnMyPositionsUnconnected
-        connect={connect}
-        connected={connected}
-      />
+      <EarnMyPositionsUnconnected connect={connect} connected={connected} />
     );
   }
 
   if (connected && positions.length === 0 && !loading) {
-    return <EarnMyPositionNoLiquidity account={account}/>;
+    return <EarnMyPositionNoLiquidity account={account} />;
   }
 
-  return (
-    <MyPositionCardList
-      positions={positions}
-      isFetched={fetched}
-      isLoading={loading}
-      currentIndex={currentIndex}
-      movePoolDetail={movePoolDetail}
-      mobile={mobile}
-      divRef={divRef}
-      onScroll={onScroll}
-      showPagination={showPagination}
-      showLoadMore={showLoadMore}
-      width={width}
-      loadMore={loadMore}
-      onClickLoadMore={onClickLoadMore}
-      themeKey={themeKey}
-    />
-  );
+  if (positions.length > 0) {
+    return (
+      <MyPositionCardList
+        positions={positions}
+        isFetched={fetched}
+        isLoading={loading}
+        currentIndex={currentIndex}
+        movePoolDetail={movePoolDetail}
+        mobile={mobile}
+        divRef={divRef}
+        onScroll={onScroll}
+        showPagination={showPagination}
+        showLoadMore={showLoadMore}
+        width={width}
+        loadMore={loadMore}
+        onClickLoadMore={onClickLoadMore}
+        themeKey={themeKey}
+      />
+    );
+  }
+
+  return <></>;
 };
 
 export default EarnMyPositionsContent;
