@@ -151,6 +151,13 @@ export const SupplyInfoWrapper = styled.div`
         .loading-staked-ratio {
           span {
             width: 100px;
+            height: 16px;
+          }
+        }
+        .loading-staked-info {
+          padding: 0;
+          span {
+            height: 20px;
           }
         }
       }
@@ -167,6 +174,7 @@ export const SupplyInfoWrapper = styled.div`
   .daily-block-emissions-tooltip {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
+    height: 18px;
     svg {
       cursor: default;
       width: 18px;

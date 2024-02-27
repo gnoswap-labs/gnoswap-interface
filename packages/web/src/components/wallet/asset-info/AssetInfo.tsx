@@ -28,7 +28,6 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   breakpoint,
 }) => {
   const { logoURI, name, symbol, balance, type, path, price } = asset;
-
   const onClickItem = useCallback((symbol: string) => {
     location.href = `/tokens/${symbol}?tokenB=${path}&direction=EXACT_IN`;
   }, []);

@@ -10,9 +10,9 @@ export const DashboardInfoTitleWrapper = styled.div`
   gap: 16px;
   ${media.mobile} {
     padding: 12px;
-    ${mixins.flexbox("row", "center", "space-between")};
+    ${mixins.flexbox("row", "center", "flex-start")};
     width: 100%;
-    gap: 6px;
+    gap: 8px;
     ${fonts.body7};
   }
 `;

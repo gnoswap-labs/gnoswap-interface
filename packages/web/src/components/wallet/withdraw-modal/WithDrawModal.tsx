@@ -144,13 +144,17 @@ const WithDrawModal: React.FC<Props> = ({
     }
   };
   const text = useMemo(() => {
+
+    if (!withdrawInfo) {
+      return "Select a Token";
+    }
     if ((currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) || !Number(amount || 0)) {
       return "Insufficient Balance";
     }
     if (!addressValidationCheck(address)) return "Invalid Address";
     return "Withdraw";
 
-  }, [address, amount, currentAvailableBalance]);
+  }, [address, amount, currentAvailableBalance, withdrawInfo]);
 
   if (isConfirm) {
     return null;

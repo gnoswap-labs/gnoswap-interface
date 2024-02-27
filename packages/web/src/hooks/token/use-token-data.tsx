@@ -39,7 +39,7 @@ export const useTokenData = () => {
       ? 10 * 1000
       : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
   });
-  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
 
   const { account } = useWallet();
@@ -200,8 +200,7 @@ export const useTokenData = () => {
     if (!rpcProvider) {
       return;
     }
-
-    if (isEmptyObject(balances), loadingBalance) {
+    if (isEmptyObject(balances) && loadingBalance) {
       setLoadingBalance(true);
     }
     async function fetchTokenBalance(token: TokenModel) {
@@ -251,5 +250,6 @@ export const useTokenData = () => {
     loadingBalance,
     isFetched,
     error,
+    isLoadingTokenPrice,
   };
 };

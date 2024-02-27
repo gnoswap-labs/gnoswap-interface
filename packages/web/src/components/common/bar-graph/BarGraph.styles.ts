@@ -61,6 +61,7 @@ export const BarGraphTooltipWrapper = styled.div`
   & .tooltip-header {
     display: flex;
     flex-direction: row;
+    align-items: center;
     width: 100%;
     height: 29px;
     justify-content: space-between;

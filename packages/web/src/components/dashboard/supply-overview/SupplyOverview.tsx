@@ -121,7 +121,7 @@ const SupplyOverview: React.FC<SupplyOverviewInfoProps> = ({
           {!loading ? (
             <div className="supply-value">{supplyOverviewInfo.totalStaked}</div>
           ) : (
-            <LoadingText />
+            <LoadingText className="loading-staked-info"/>
           )}
           {!loading ? (
             <div className="staked-ratio-title">

@@ -18,6 +18,8 @@ import { useGetBalancesByAddress, useGetTokenPrices } from "@query/token";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useLoading } from "@hooks/common/use-loading";
+import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
+import { isEmptyObject } from "@utils/validation-utils";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -45,13 +47,14 @@ const WalletBalanceContainer: React.FC = () => {
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const { isLoadingCommon } = useLoading();
 
+  const { balances: balancesPrice } = useTokenData();
+
   const { positions, loading: loadingPositions } = usePositionData();
   const { claimAll } = usePosition(positions);
   const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
   const { data: { balances = []} = {}, isLoading: loadingGetBalances } = useGetBalancesByAddress(account?.address || "", { enabled: !!account?.address });
   const { data: tokenPrices = {} } = useGetTokenPrices();
-
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
     setIsShowDepositModal(true);
@@ -103,11 +106,12 @@ const WalletBalanceContainer: React.FC = () => {
     });
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
   const loadingTotalBalance = useMemo(() => {
-    return loadingPositions || loadingConnect === "loading" || !!(loadingGetBalances && account?.address) || isLoadingCommon;
-  }, [loadingPositions, loadingConnect, loadingGetBalances, isLoadingCommon, account?.address]);
+    return loadingPositions || loadingConnect === "loading" || !!(loadingGetBalances && account?.address) || isLoadingCommon || !!(isEmptyObject(balancesPrice) && account?.address);
+  }, [loadingPositions, loadingConnect, loadingGetBalances, isLoadingCommon, account?.address, balancesPrice]);
 
   const availableBalance = balances.reduce((acc, cur) => {
-    const balance = BigNumber(cur.balance).multipliedBy(tokenPrices?.[cur.path]?.pricesBefore?.latestPrice).dividedBy(10 ** 6).toNumber() || 0; 
+    const path = cur?.type === "native" ? WRAPPED_GNOT_PATH : cur?.path;
+    const balance = BigNumber(cur.balance).multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice).dividedBy(10 ** 6).toNumber() || 0; 
     return BigNumber(acc).plus(balance).toNumber();
   }, 0);
 
