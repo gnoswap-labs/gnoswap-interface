@@ -54,6 +54,7 @@ const SwapContainer: React.FC = () => {
       tokenA: GNOT_TOKEN_DEFAULT,
       tokenB: null,
       type: "EXACT_IN",
+      tokenAAmount: "",
     });
   }, []);
 
@@ -74,6 +75,7 @@ const SwapContainer: React.FC = () => {
       tokenA: currentTokenA,
       tokenB: currentTokenB,
       type: direction,
+      tokenAAmount: "",
     });
   }, [initialized]);
 

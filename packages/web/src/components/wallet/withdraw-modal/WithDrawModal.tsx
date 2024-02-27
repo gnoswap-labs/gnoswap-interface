@@ -148,9 +148,16 @@ const WithDrawModal: React.FC<Props> = ({
     if (!withdrawInfo) {
       return "Select a Token";
     }
+    if (amount === "") {
+      return "Enter Amount";
+    }
+    if (Number(amount) < 0.000001) {
+      return "Amount Too Low";
+    }
     if ((currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) || !Number(amount || 0)) {
       return "Insufficient Balance";
     }
+    if (address === "") return "Enter an Address";
     if (!addressValidationCheck(address)) return "Invalid Address";
     return "Withdraw";
 
