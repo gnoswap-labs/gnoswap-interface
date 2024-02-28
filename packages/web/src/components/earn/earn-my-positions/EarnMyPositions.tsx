@@ -6,6 +6,11 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
 
 export interface EarnMyPositionsProps {
+  address?: string | null;
+  addressName?: string;
+  isOtherPosition: boolean;
+  visiblePositions: boolean;
+  positionLength: number;
   connected: boolean;
   fetched: boolean;
   loading: boolean;
@@ -33,8 +38,13 @@ export interface EarnMyPositionsProps {
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
+  address,
+  addressName,
+  isOtherPosition,
+  visiblePositions,
   connected,
   availableStake,
+  positionLength,
   connect,
   fetched,
   loading,
@@ -60,6 +70,11 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
+      address={address}
+      addressName={addressName}
+      isOtherPosition={isOtherPosition}
+      visiblePositions={visiblePositions}
+      positionLength={positionLength}
       connected={connected}
       availableStake={availableStake}
       moveEarnAdd={moveEarnAdd}
@@ -70,6 +85,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       positions={positions}
     />
     <EarnMyPositionsContent
+      isOtherPosition={isOtherPosition}
       connected={connected}
       connect={connect}
       fetched={fetched}

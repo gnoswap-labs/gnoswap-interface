@@ -15,7 +15,7 @@ const PATH = ["/earn"];
 const PATH_10SECOND = ["/earn/pool/[pool-path]/remove", "/tokens/[token-path]"];
 const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake", "/earn/pool/[pool-path]/unstake", "/earn/pool/[pool-path]"];
 
-export const usePositionData = () => {
+export const usePositionData = (address?: string) => {
   const router = useRouter();
   const [initialData, setInitialData] = useAtom(EarnState.initialDataData);
   const { back } = router.query;
@@ -23,14 +23,18 @@ export const usePositionData = () => {
   const { pools, loading: isLoadingPool } = usePoolData();
   const [first404, setFirst404] = useState(false);
 
+  const fetchedAddress = useMemo(() => {
+    return address || account?.address;
+  }, [account?.address, address]);
+
   const {
     data = [],
     isError,
     isLoading: loading,
     isFetched: isFetchedPosition,
     isFetching,
-  } = useGetPositionsByAddress(account?.address as string, {
-    enabled: !!account?.address && pools.length > 0 && connected,
+  } = useGetPositionsByAddress(fetchedAddress as string, {
+    enabled: !!fetchedAddress && pools.length > 0 && connected,
     refetchInterval: first404 ? false : PATH.includes(router.pathname)
       ? (((back && !initialData.status) ? 3 : 15) * 1000)
       : PATH_10SECOND.includes(router.pathname) ? 10 * 1000 : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
@@ -39,16 +43,15 @@ export const usePositionData = () => {
   useEffect(() => {
     if (data.length > 0) {
       setFirst404(false);
-    } else
-    if (isError) {
+    } else if (isError) {
       setFirst404(true);
     }
-  }, [isError, data.length, account?.address]);
+  }, [isError, data.length, fetchedAddress]);
 
   useEffect(() => {
     if (loading) {
       setInitialData(() => {
-        return  {
+        return {
           length: data.length,
           status: false,
           loadingCall: true,
@@ -56,11 +59,11 @@ export const usePositionData = () => {
       });
     }
   }, [loading]);
-  
+
   useEffect(() => {
     if (initialData.loadingCall && isFetchedPosition && !loading) {
       setInitialData(() => {
-        return  {
+        return {
           length: data.length,
           status: false,
           loadingCall: false,
@@ -68,7 +71,12 @@ export const usePositionData = () => {
       });
       return;
     }
-    if (initialData.length !== -1 && data.length !== initialData.length && isFetchedPosition && !loading) {
+    if (
+      initialData.length !== -1 &&
+      data.length !== initialData.length &&
+      isFetchedPosition &&
+      !loading
+    ) {
       setInitialData(() => {
         return {
           length: data.length,
@@ -79,11 +87,17 @@ export const usePositionData = () => {
       return;
     }
   }, [initialData.loadingCall, data.length, isFetchedPosition, loading]);
-  
-  const { isLoadingCommon } = useLoading({ connected: connected && PATH.includes(router.pathname) || first404, isLoading: loading && !first404, isFetching: isFetching, isBack: !!back, status: initialData.status});
-  
+
+  const { isLoadingCommon } = useLoading({
+    connected: (connected && PATH.includes(router.pathname)) || first404,
+    isLoading: loading && !first404,
+    isFetching: isFetching,
+    isBack: !!back,
+    status: initialData.status,
+  });
+
   const { getGnotPath } = useGnotToGnot();
-  
+
   const positions = useMemo(() => {
     const poolPositions: PoolPositionModel[] = [];
     data.forEach(position => {
@@ -132,7 +146,7 @@ export const usePositionData = () => {
 
   const getPositionsByPoolId = useCallback(
     (poolId: string): PoolPositionModel[] => {
-      if (!account?.address) {
+      if (!fetchedAddress) {
         return [];
       }
       if (pools.length === 0) {
@@ -166,7 +180,7 @@ export const usePositionData = () => {
       });
       return poolPositions;
     },
-    [account?.address, pools, data],
+    [fetchedAddress, pools, data],
   );
 
   const getPositionsByPoolPath = useCallback(
@@ -176,7 +190,7 @@ export const usePositionData = () => {
     },
     [getPositionsByPoolId],
   );
-  
+
   return {
     availableStake,
     isError,
