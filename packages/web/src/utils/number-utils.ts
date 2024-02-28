@@ -283,3 +283,7 @@ export const formatUSDWallet = (
   }
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFormat(2);
 };
+
+export function removeTrailingZeros(value: string) {
+  return value.replace(/\.?0+$/, "");
+}

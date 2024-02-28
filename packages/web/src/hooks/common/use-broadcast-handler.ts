@@ -171,11 +171,11 @@ export function makeBroadcastRemoveMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Adding <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return `Removing <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "success":
-        return `Added <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return `Removed <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
       case "error":
-        return `Failed to add <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return `Failed to remove <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
     }
   }
   return {

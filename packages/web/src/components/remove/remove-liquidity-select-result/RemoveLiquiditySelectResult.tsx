@@ -3,6 +3,8 @@ import { RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResul
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import BigNumber from "bignumber.js";
+import { removeTrailingZeros } from "@utils/number-utils";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
@@ -30,7 +32,7 @@ const RemoveLiquiditySelectResult: React.FC<
                   mobileWidth={24}
                 />
                 <p>Pooled {pooledTokenInfo.token.symbol}</p>
-                <strong>{pooledTokenInfo.amount.toLocaleString("en")}</strong>
+                <strong>{removeTrailingZeros(BigNumber(pooledTokenInfo.amount).toFormat(6))}</strong>
               </div>
               <span className="dallor">{pooledTokenInfo.amountUSD}</span>
             </li>
@@ -45,7 +47,7 @@ const RemoveLiquiditySelectResult: React.FC<
                   mobileWidth={24}
                 />
                 <p>Unclaimed {pooledTokenInfo.token.symbol}</p>
-                <strong>{pooledTokenInfo.amount.toLocaleString("en")}</strong>
+                <strong>{removeTrailingZeros(BigNumber(pooledTokenInfo.amount).toFormat(6))}</strong>
               </div>
               <span className="dallor">{pooledTokenInfo.amountUSD}</span>
             </li>
