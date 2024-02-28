@@ -104,7 +104,7 @@ const ActivityListTable: React.FC<ActivityListTableProps> = ({
             activities.map((item, idx) => (
               <ActivityInfo item={item} idx={idx + 1} key={idx} />
             ))}
-          {!isFetched && <TableSkeleton info={ACTIVITY_INFO} />}
+          {!isFetched && <TableSkeleton info={ACTIVITY_INFO} className="activity-table"/>}
         </div>
       </div>
     </TableWrapper>

@@ -126,11 +126,11 @@ const HomeSwapContainer: React.FC = () => {
   const swapNow = useCallback(() => {
     if (swapDirection === "EXACT_IN") {
       router.push(
-        `/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`,
+        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`, {},
       );
     } else {
       router.push(
-        `/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`,
+        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`,
       );
     }
   }, [router, swapDirection, tokenA, tokenB]);

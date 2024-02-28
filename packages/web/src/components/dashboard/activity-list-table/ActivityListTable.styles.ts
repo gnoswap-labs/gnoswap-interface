@@ -29,13 +29,14 @@ export const TableWrapper = styled.div`
   .activity-list-body {
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
+
   }
-  
+  .activity-table {
+    height: 66px;
+  }
   ${media.mobile} {
     margin-top: 8px;
-    .activity-table {
-      height: 66px;
-    }
+
   }
 `;
 

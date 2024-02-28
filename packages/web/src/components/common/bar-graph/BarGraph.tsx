@@ -189,13 +189,15 @@ const BarGraph: React.FC<BarGraphProps> = ({
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);
       }
+      if ((clientY || 0) - top - 24 < Number(currentPoint?.y)) {
+        setCurrentPointIndex(-1);
+      }
       if (currentPoint) {
         setChartPoint({ x: positionX, y: (clientY || 0) - top });
         setCurrentPoint(currentPoint);
       }
     }
   };
-
   const locationTooltipPosition = useMemo(() => {
     if ((chartPoint?.y || 0) > customHeight + height - 25) {
       if (width < (currentPoint?.x || 0) + locationTooltip) {

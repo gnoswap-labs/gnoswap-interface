@@ -48,8 +48,8 @@ const SwapContainer: React.FC = () => {
       setInitialized(true);
     }
   }, [tokens]);
-
   useEffect(() => {
+    if (router.pathname !== router.asPath) return;
     setSwapValue({
       tokenA: GNOT_TOKEN_DEFAULT,
       tokenB: null,
@@ -64,13 +64,13 @@ const SwapContainer: React.FC = () => {
     }
     const query = router.query;
     const currentTokenA =
-      tokens.find(token => token.path === query.tokenA) || null;
+      tokens.find(token => token.path === query.from) || null;
     const currentTokenB =
-      tokens.find(token => token.path === query.tokenB) || null;
+      tokens.find(token => token.path === query.to) || null;
     const direction: SwapDirectionType =
       query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
-    if (!currentTokenA || !currentTokenB) return;
-
+    if (!currentTokenA && !currentTokenB) return;
+    
     setSwapValue({
       tokenA: currentTokenA,
       tokenB: currentTokenB,
@@ -78,7 +78,6 @@ const SwapContainer: React.FC = () => {
       tokenAAmount: "",
     });
   }, [initialized]);
-
   return (
     <SwapCard
       connectedWallet={connectedWallet}

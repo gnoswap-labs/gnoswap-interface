@@ -31,6 +31,9 @@ export const DashboardInfoWrapper = styled.div`
     gap: 0px;
     .loading-spining {
       padding: 12px 0 12px 11px;
+      span {
+        height: 22px;
+      }
     }
   }
 `;

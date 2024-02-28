@@ -55,6 +55,7 @@ export const SupplyInfoWrapper = styled.div`
   .supply-value {
     ${fonts.body7}
     ${media.mobile} {
+      height: 20px;
       ${fonts.body11}
     }
   }
@@ -70,6 +71,7 @@ export const SupplyInfoWrapper = styled.div`
     ${media.mobile} {
       ${mixins.flexbox("row", "center", "space-between")};
       gap: 4px;
+      height: 20px;
     }
   }
 
@@ -94,6 +96,7 @@ export const SupplyInfoWrapper = styled.div`
       ${media.mobile} {
         ${mixins.flexbox("row", "center", "space-between")};
         gap: 4px;
+        height: 20px;
       }
     }
   }
@@ -109,6 +112,7 @@ export const SupplyInfoWrapper = styled.div`
     ${media.mobile} {
       ${mixins.flexbox("row", "center", "space-between")};
       gap: 4px;
+      height: 20px;
     }
   }
 
@@ -167,6 +171,7 @@ export const SupplyInfoWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       ${media.mobile} {
         ${fonts.p4}
+        height: 16px;
       }
     }
   }

@@ -20,6 +20,8 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { formatUsdNumber } from "@utils/stake-position-utils";
+import { useRouter } from "next/router";
+import { isEmptyObject } from "@utils/validation-utils";
 
 const findKeyByValue = (
   value: string,
@@ -32,6 +34,7 @@ export const useSwapHandler = () => {
   const [memoryzeTokenSwap, setMemoryzeTokenSwap] = useAtom(
     SwapState.memoryzeTokenSwap,
   );
+  const router = useRouter();
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const {
     tokenA = null,
@@ -389,7 +392,6 @@ export const useSwapHandler = () => {
     }, 10000);
     return () => clearInterval(interval);
   }, []);
-
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenB = memoryzeTokenSwap?.[`${tokenA?.symbol}:${value}`];
@@ -577,7 +579,18 @@ export const useSwapHandler = () => {
 
   const copyURL = async () => {
     try {
-      const url = window?.location?.href;
+      let url = window?.location?.host + "/swap";
+      const query = {
+        to: tokenB?.path,
+        from: tokenA?.path,
+      };
+      if (query.to && query.from) {
+        url += `?from=${query.from}&to=${query.to}`;
+      } else if (query.to) {
+        url += `?to=${query.to}`;
+      } else if (query.from) {
+        url += `?from=${query.from}`;
+      }
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => {
@@ -730,6 +743,8 @@ export const useSwapHandler = () => {
   useEffect(() => {
     updateTokens();
     updateTokenPrices();
+    if (!isEmptyObject(router?.query)) return;
+    setTokenAAmount("");
     // setSwapValue({
     //   tokenA: null,
     //   tokenB: null,

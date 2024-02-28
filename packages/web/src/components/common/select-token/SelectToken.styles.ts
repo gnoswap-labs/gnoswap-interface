@@ -273,11 +273,11 @@ interface Props {
 export const TokenInfoWrapper = styled.div<Props>`
   overflow-x: hidden;
   max-width: ${({ maxWidth }) => {
-    return `calc(460px - 100px - ${maxWidth}px)`;
+    return `calc(460px - 120px - ${maxWidth}px)`;
   }};
   .token-path {
     max-width: ${({ tokenNameWidthList, maxWidth }) => {
-      return `calc(460px - 108px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+      return `calc(460px - 128px - ${maxWidth}px - ${tokenNameWidthList}px)`;
     }};
   }
   ${media.mobile} {
