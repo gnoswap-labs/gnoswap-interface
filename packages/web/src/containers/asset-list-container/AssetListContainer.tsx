@@ -171,6 +171,7 @@ interface SortedProps extends TokenModel {
   balance: string;
   price?: string;
   tokenPrice: number;
+  sortPrice?: string;
 }
 
 const handleSort = (list: SortedProps[]) => {
@@ -299,6 +300,7 @@ const AssetListContainer: React.FC = () => {
             balance: "0",
             ...item,
             tokenPrice: tokenPrice || 0,
+            sortPrice: "0",
           };
         }
         const price = BigNumber(tokenPrice)
@@ -310,6 +312,7 @@ const AssetListContainer: React.FC = () => {
           price: checkPrice ? "<$0.01" : price.toFormat(2),
           balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
+          sortPrice: price.toString(),
         };
       })
       .filter(
@@ -325,20 +328,35 @@ const AssetListContainer: React.FC = () => {
           : y.name.localeCompare(x.name);
       });
     }
+    if (sortOption?.key === "Chain") {
+      sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "asc"
+        ? x.type.localeCompare(y.type)
+        : y.type.localeCompare(x.type);
+      });
+    }
 
     if (sortOption?.key === "Balance") {
       sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "desc"
+          ? Number(y.balance) - Number(x.balance)
+          : Number(x.balance) - Number(y.balance);
+      });
+    }
+
+    if (sortOption?.key === "Amount") {
+      sortedData = sortedData.sort((x, y) => {
         if (
-          x.balance === undefined ||
-          y.balance === undefined ||
-          x.balance === null ||
-          y.balance === null
+          x.sortPrice === undefined ||
+          y.sortPrice === undefined ||
+          x.sortPrice === null ||
+          y.sortPrice === null
         )
           return 0;
 
         return sortOption?.direction === "desc"
-          ? Number(y.balance) - Number(x.balance)
-          : Number(x.balance) - Number(y.balance);
+          ? Number(y.sortPrice) - Number(x.sortPrice)
+          : Number(x.sortPrice) - Number(y.sortPrice);
       });
     }
 

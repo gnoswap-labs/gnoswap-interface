@@ -4,7 +4,7 @@ import {
   unitsUpperCase,
 } from "@common/values/global-initial-value";
 import BigNumber from "bignumber.js";
-import { convertToMB } from "./stake-position-utils";
+import { convertToKMB, convertToMB } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
@@ -221,11 +221,12 @@ export function prettyNumber(val: string | number) {
   });
 }
 
-export function prettyNumberFloatInteger(val: string | number) {
+export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) {
+  const func = isKMB ? convertToKMB : convertToMB;
   if (Number.isInteger(Number(val))) {
-    return convertToMB(val.toString(), 0);
+    return func(val.toString());
   } else {
-    return convertToMB(val.toString(), 6);
+    return func(val.toString(), 6);
   }
 }
 

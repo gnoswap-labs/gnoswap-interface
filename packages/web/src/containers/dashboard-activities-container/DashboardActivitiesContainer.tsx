@@ -181,10 +181,10 @@ const DashboardActivitiesContainer: React.FC = () => {
         res.token0.symbol,
       )} for ${replaceToken(res.token1.symbol)}`,
       totalValue: `$${prettyNumber(res.totalUsdValue)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount)} ${replaceToken(
+      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount, true)} ${replaceToken(
         res.token0.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount, true)} ${replaceToken(
         res.token1.symbol,
       )}`,
       account: res.account,
