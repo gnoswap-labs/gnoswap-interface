@@ -181,6 +181,9 @@ export const useSwapHandler = () => {
         return "Insufficient Balance";
       }
     }
+    if (Number(tokenAAmount) > 0 && tokenBAmount === "0") {
+      return "Insufficient Liquidity";
+    }
     if (isSameToken) {
       if (isNativeToken(tokenA)) {
         return "Wrap";
@@ -802,7 +805,6 @@ export const useSwapHandler = () => {
     ) {
       return;
     }
-
     const timeout = setTimeout(() => {
       estimateSwapRoute(changedAmount).then(result => {
         const isError = result === null;

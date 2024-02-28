@@ -114,12 +114,14 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
                 openedRouteInfo={openedRouteInfo}
                 toggleRouteInfo={toggleRouteInfo}
                 swapSummaryInfo={swapSummaryInfo}
+                isLoading={isLoading}
               />
             )}
             {openedRouteInfo && (
               <SwapCardAutoRouter
                 swapRouteInfos={swapRouteInfos}
                 swapSummaryInfo={swapSummaryInfo}
+                isLoading={isLoading}
               />
             )}
           </div>
