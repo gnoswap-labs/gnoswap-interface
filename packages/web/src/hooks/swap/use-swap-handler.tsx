@@ -386,7 +386,6 @@ export const useSwapHandler = () => {
     setTokenBAmount("0");
   }, [updateBalances]);
 
-
   useEffect(() => {
     updateBalances();
     const interval = setInterval(() => {
@@ -442,7 +441,6 @@ export const useSwapHandler = () => {
       tokenBAmount,
     }));
   }, [setSwapValue, tokenAAmount, tokenBAmount]);
-
   const changeTokenBAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenA = memoryzeTokenSwap?.[`${tokenB?.symbol}:${value}`];
@@ -785,20 +783,17 @@ export const useSwapHandler = () => {
     //   type: "EXACT_IN",
     // });
   }, []);
-
   useEffect(() => {
     if (
       memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
       type === "EXACT_IN"
     ) {
-      setIsLoading(false);
       return;
     }
     if (
       memoryzeTokenSwap?.[`${tokenB?.symbol}:${tokenBAmount}`] &&
       type === "EXACT_OUT"
     ) {
-      setIsLoading(false);
       return;
     }
 
@@ -821,6 +816,23 @@ export const useSwapHandler = () => {
 
   useEffect(() => {
     if (!tokenA || !tokenB) {
+      setIsLoading(false);
+      return;
+    }
+    if (
+      memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
+      type === "EXACT_IN"
+    ) {
+      console.log("Cmm");
+      setIsLoading(false);
+      return;
+    }
+    if (
+      memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
+      type === "EXACT_OUT"
+    ) {
+      console.log("dmm");
+      setIsLoading(false);
       return;
     }
     if (isSameToken) {
@@ -829,7 +841,6 @@ export const useSwapHandler = () => {
     }
     const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
-
     if (
       Number.isNaN(changedAmount) ||
       BigNumber(changedAmount).isLessThanOrEqualTo(0)
@@ -863,15 +874,34 @@ export const useSwapHandler = () => {
       });
     }, 2000);
     if (!isLoading && tokenA && tokenB && tokenAAmount && tokenBAmount) {
-      setMemoryzeTokenSwap(prev => ({
-        ...prev,
-        [`${tokenA?.symbol}:${tokenAAmount}`]: `${tokenB?.symbol}:${tokenBAmount}`,
-        [`${tokenB?.symbol}:${tokenBAmount}`]: `${tokenA?.symbol}:${tokenAAmount}`,
-      }));
+      if (
+        isExactIn &&
+        !!Number(tokenAAmount || 0) &&
+        !!Number(tokenBAmount || 0)
+      ) {
+        setMemoryzeTokenSwap(prev => ({
+          ...prev,
+          [`${tokenA?.symbol}:${tokenAAmount}`]: `${tokenB?.symbol}:${tokenBAmount}`,
+          // [`${tokenB?.symbol}:${tokenBAmount}`]: `${tokenA?.symbol}:${tokenAAmount}`,
+        }));
+      } else {
+        setMemoryzeTokenSwap(prev => ({
+          ...prev,
+          [`${tokenA?.symbol}:${tokenAAmount}`]: `${tokenB?.symbol}:${tokenBAmount}`,
+        }));
+      }
     }
     return () => clearTimeout(timeout);
-  }, [type, tokenA, tokenAAmount, tokenB, tokenBAmount, isSameToken]);
-
+  }, [
+    type,
+    tokenA,
+    tokenAAmount,
+    tokenB,
+    tokenBAmount,
+    isSameToken,
+    memoryzeTokenSwap,
+  ]);
+  console.log(memoryzeTokenSwap);
   return {
     slippage,
     connectedWallet,

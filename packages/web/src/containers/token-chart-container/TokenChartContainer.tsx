@@ -418,7 +418,6 @@ const TokenChartContainer: React.FC = () => {
     temp.push(maxPoint.toString());
     return temp;
   };
-
   return (
     <TokenChart
       tokenInfo={tokenInfo}
