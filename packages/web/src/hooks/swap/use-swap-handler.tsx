@@ -435,7 +435,7 @@ export const useSwapHandler = () => {
     },
     [isSameToken, memoryzeTokenSwap, tokenA],
   );
-
+  console.log(memoryzeTokenSwap, "memoryzeTokenSwap")
   useEffect(() => {
     setSwapValue(prev => ({
       ...prev,
@@ -641,9 +641,15 @@ export const useSwapHandler = () => {
             setNotice(
               {
                 title: "Swap",
-                description: `Failed swapping <span>${Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
+                description: `Failed swapping <span>${Number(
+                  swapTokenInfo.tokenAAmount,
+                ).toLocaleString("en-US", {
+                  maximumFractionDigits: 6,
+                })}</span> <span>${
                   swapTokenInfo?.tokenA?.symbol
-                }</span> for <sp${Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})} ${
+                }</span> for <sp${Number(
+                  swapTokenInfo.tokenBAmount,
+                ).toLocaleString("en-US", { maximumFractionDigits: 6 })} ${
                   swapTokenInfo?.tokenB?.symbol
                 }`,
               },
@@ -656,19 +662,27 @@ export const useSwapHandler = () => {
             );
           } else {
             setNotice(
-            {
-              title: "Swap",
-              description: `Swapped <span>${Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
-                swapTokenInfo?.tokenA?.symbol
-              }</span> for <span>${Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
-                swapTokenInfo?.tokenB?.symbol
-              }</span>`,
-            }, {
-              timeout: 50000,
-              type: "success" as TNoticeType,
-              closeable: true,
-              id: makeRandomId(),
-            });
+              {
+                title: "Swap",
+                description: `Swapped <span>${Number(
+                  swapTokenInfo.tokenAAmount,
+                ).toLocaleString("en-US", {
+                  maximumFractionDigits: 6,
+                })}</span> <span>${
+                  swapTokenInfo?.tokenA?.symbol
+                }</span> for <span>${Number(
+                  swapTokenInfo.tokenBAmount,
+                ).toLocaleString("en-US", {
+                  maximumFractionDigits: 6,
+                })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+              },
+              {
+                timeout: 50000,
+                type: "success" as TNoticeType,
+                closeable: true,
+                id: makeRandomId(),
+              },
+            );
           }
         }, 1000);
         if (response !== false) {
@@ -700,33 +714,51 @@ export const useSwapHandler = () => {
               if (typeof result !== "boolean") {
                 unwrapBySwapResposne(result);
               }
-              setNotice({
-                title: "Swap",
-                description: `Swapped <span>${Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
-                  swapTokenInfo?.tokenA?.symbol
-                }</span> for <span>${Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
-                  swapTokenInfo?.tokenB?.symbol
-                }</span>`,
-              }, {
-                timeout: 50000,
-                type: "success" as TNoticeType,
-                closeable: true,
-                id: makeRandomId(),
-              });
+              setNotice(
+                {
+                  title: "Swap",
+                  description: `Swapped <span>${Number(
+                    swapTokenInfo.tokenAAmount,
+                  ).toLocaleString("en-US", {
+                    maximumFractionDigits: 6,
+                  })}</span> <span>${
+                    swapTokenInfo?.tokenA?.symbol
+                  }</span> for <span>${Number(
+                    swapTokenInfo.tokenBAmount,
+                  ).toLocaleString("en-US", {
+                    maximumFractionDigits: 6,
+                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                },
+                {
+                  timeout: 50000,
+                  type: "success" as TNoticeType,
+                  closeable: true,
+                  id: makeRandomId(),
+                },
+              );
             } else {
-              setNotice({
-                title: "Swap",
-                description: `Failed swapping <span>${Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
-                  swapTokenInfo?.tokenA?.symbol
-                }</span> for <span>${Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})}</span> <span>${
-                  swapTokenInfo?.tokenB?.symbol
-                }</span>`,
-              }, {
-                timeout: 50000,
-                type: "error" as TNoticeType,
-                closeable: true,
-                id: makeRandomId(),
-              });
+              setNotice(
+                {
+                  title: "Swap",
+                  description: `Failed swapping <span>${Number(
+                    swapTokenInfo.tokenAAmount,
+                  ).toLocaleString("en-US", {
+                    maximumFractionDigits: 6,
+                  })}</span> <span>${
+                    swapTokenInfo?.tokenA?.symbol
+                  }</span> for <span>${Number(
+                    swapTokenInfo.tokenBAmount,
+                  ).toLocaleString("en-US", {
+                    maximumFractionDigits: 6,
+                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                },
+                {
+                  timeout: 50000,
+                  type: "error" as TNoticeType,
+                  closeable: true,
+                  id: makeRandomId(),
+                },
+              );
             }
           }, 1000);
         }
@@ -805,7 +837,11 @@ export const useSwapHandler = () => {
     ) {
       return;
     }
-    const timeout = setTimeout(() => {
+    let timeout: NodeJS.Timeout | null = null;
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
       estimateSwapRoute(changedAmount).then(result => {
         const isError = result === null;
         const expectedAmount = isError ? "" : result.amount;

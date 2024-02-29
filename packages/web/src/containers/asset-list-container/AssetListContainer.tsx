@@ -284,8 +284,6 @@ const AssetListContainer: React.FC = () => {
         key: "Asset",
         direction: "asc",
       });
-    } else {
-      setTokenSortOption(undefined);
     }
   }, [tokens]);
 
@@ -336,7 +334,7 @@ const AssetListContainer: React.FC = () => {
       });
     }
 
-    if (sortOption?.key === "Balance") {
+    if (sortOption?.key === "Amount") {
       sortedData = sortedData.sort((x, y) => {
         return sortOption?.direction === "desc"
           ? Number(y.balance) - Number(x.balance)
@@ -344,7 +342,7 @@ const AssetListContainer: React.FC = () => {
       });
     }
 
-    if (sortOption?.key === "Amount") {
+    if (sortOption?.key === "Balance") {
       sortedData = sortedData.sort((x, y) => {
         if (
           x.sortPrice === undefined ||

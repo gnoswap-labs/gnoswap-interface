@@ -216,9 +216,7 @@ export function matchInputNumber(value: string) {
 }
 
 export function prettyNumber(val: string | number) {
-  return Number(val).toLocaleString("en", {
-    maximumFractionDigits: 2,
-  });
+  return BigNumber(val).decimalPlaces(2).toFormat(Number(val) === 0 ? 0 : 2);
 }
 
 export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) {
