@@ -435,7 +435,6 @@ export const useSwapHandler = () => {
     },
     [isSameToken, memoryzeTokenSwap, tokenA],
   );
-  console.log(memoryzeTokenSwap, "memoryzeTokenSwap")
   useEffect(() => {
     setSwapValue(prev => ({
       ...prev,
@@ -837,11 +836,7 @@ export const useSwapHandler = () => {
     ) {
       return;
     }
-    let timeout: NodeJS.Timeout | null = null;
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       estimateSwapRoute(changedAmount).then(result => {
         const isError = result === null;
         const expectedAmount = isError ? "" : result.amount;

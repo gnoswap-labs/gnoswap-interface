@@ -142,7 +142,7 @@ const WalletBalanceContainer: React.FC = () => {
     .plus(stakedBalance)
     .plus(claimableRewards)
     .decimalPlaces(2)
-    .toFormat(availableBalance === "0" ? 0 : 2);
+    .toFormat(`${availableBalance}` === "0" ? 0 : 2);
 
   const closeDeposit = () => {
     setIsShowDepositModal(false);
