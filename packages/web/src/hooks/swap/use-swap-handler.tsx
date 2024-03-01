@@ -387,12 +387,11 @@ export const useSwapHandler = () => {
   }, [updateBalances]);
 
   useEffect(() => {
-    // updateBalances();
-    // const interval = setInterval(() => {
-    //   console.log("interval");
-    //   updateBalances();
-    // }, 10000);
-    // return () => clearInterval(interval);
+    updateBalances();
+    const interval = setInterval(() => {
+      updateBalances();
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
@@ -579,6 +578,11 @@ export const useSwapHandler = () => {
 
   const copyURL = async () => {
     try {
+      if (router.pathname === "/tokens/[token-path]") {
+        const url = window?.location?.host + router.asPath;
+        await navigator.clipboard.writeText(url);
+        return;
+      }
       let url = window?.location?.host + "/swap";
       const query = {
         to: tokenB?.path,

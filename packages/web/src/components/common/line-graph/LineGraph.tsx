@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css } from "@emotion/react";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -362,9 +362,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 </span>
               </div>
               <div className="tooltip-header">
-                <span className="value">{`$${prettyNumber(
+                <span className="value">{`$${removeTrailingZeros(prettyNumber(
                   datas[currentPointIndex]?.value || "0",
-                )}`}</span>
+                ))}`}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null

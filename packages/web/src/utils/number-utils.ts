@@ -233,7 +233,7 @@ export function formatUsdNumber3Digits(val: string | number) {
     return String(val);
   }
   if (Number(val) >= 1) {
-    return (Math.floor(Number(val) * 100) / 100).toString();
+    return (Math.floor((Number(val) + 0.005) * 100) / 100).toString();
   }
   const stringVal = val.toString();
   for (let index = 0; index < stringVal.length; index++) {
@@ -259,7 +259,7 @@ export function convertLargePrice(val: string) {
   if (Number(val) >= 1000000000) {
     return ">$999,999,999.99";
   }
-  return `${toUnitFormat(val || "0.00", true, false)}`;
+  return `${toUnitFormat(val || "0.00", true, false)}${BigNumber(val).isInteger() && Number(val) !== 0 ? ".00" : ""}`;
 }
 
 
