@@ -179,7 +179,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
         res.token0.symbol,
-      )} for ${replaceToken(res.token1.symbol)}`,
+      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.token1.symbol)}`,
       totalValue: `$${prettyNumber(res.totalUsdValue)}`,
       tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount, true)} ${replaceToken(
         res.token0.symbol,

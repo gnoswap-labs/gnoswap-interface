@@ -5,7 +5,7 @@ import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { getLocalizeTime } from "@utils/chart";
 
@@ -215,7 +215,7 @@ const TvlChartContainer: React.FC = () => {
       tvlChartType={tvlChartType}
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={{
-        amount: tvlData?.latest ? `$${prettyNumber(tvlData?.latest)}` : "-",
+        amount: tvlData?.latest ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}` : "-",
       }}
       tvlChartInfo={chartData}
       loading={isLoading || isLoadingCommon}

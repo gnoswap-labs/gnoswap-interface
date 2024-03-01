@@ -259,7 +259,7 @@ export function convertLargePrice(val: string) {
   if (Number(val) >= 1000000000) {
     return ">$999,999,999.99";
   }
-  return `$${convertToMB((val || "0.00"), 10)}`;
+  return `${toUnitFormat(val || "0.00", true, false)}`;
 }
 
 
