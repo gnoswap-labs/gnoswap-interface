@@ -54,16 +54,9 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     }
     return "small-text";
   }, [yAxisLabels]);
-
-  const paddingLeft = useMemo(() => {
-    return Math.max(0, Math.floor(size?.width / datas.length * left - 27));
-  }, [size, datas.length, left]);
-  const paddingRight = useMemo(() => {
-    return Math.max(0, Math.floor(size?.width / datas.length * right - 27));
-  }, [size, datas.length, right]);
   
   return (
-    <TokenChartGraphWrapper left={Math.max(paddingLeft, 12)} right={Math.max(paddingRight, 12)}>
+    <TokenChartGraphWrapper left={Math.max(left, 12)} right={Math.max(right, 12)}>
       <div className="data-wrapper" ref={componentRef}>
         <LineGraph
           cursor

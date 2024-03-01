@@ -387,12 +387,12 @@ export const useSwapHandler = () => {
   }, [updateBalances]);
 
   useEffect(() => {
-    updateBalances();
-    const interval = setInterval(() => {
-      console.log("interval");
-      updateBalances();
-    }, 10000);
-    return () => clearInterval(interval);
+    // updateBalances();
+    // const interval = setInterval(() => {
+    //   console.log("interval");
+    //   updateBalances();
+    // }, 10000);
+    // return () => clearInterval(interval);
   }, []);
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
@@ -823,7 +823,6 @@ export const useSwapHandler = () => {
       memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
       type === "EXACT_IN"
     ) {
-      console.log("Cmm");
       setIsLoading(false);
       return;
     }
@@ -831,7 +830,6 @@ export const useSwapHandler = () => {
       memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
       type === "EXACT_OUT"
     ) {
-      console.log("dmm");
       setIsLoading(false);
       return;
     }

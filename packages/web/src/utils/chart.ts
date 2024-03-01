@@ -54,30 +54,61 @@ export const parseDate = (dateString: string) => {
 
 */
 
+const MIN_AXIS = 3;
 export const getNumberOfAxis = (
   length: number,
   maxAxis: number,
-  MIN_AXIS = 3,
+  minAxis = MIN_AXIS,
 ) => {
-  let result = maxAxis;
-  // because max Label  = 7
-  let minSurplus = 6;
-  for (let i = MIN_AXIS; i <= maxAxis; i++) {
-    if (minSurplus < length % i) {
-      minSurplus = length % i;
-      result = i;
+  let result = minAxis;
+  let minSurplus = 999999999;
+  for (let i = minAxis; i <= maxAxis; i++) {
+    const tempSpace = Math.floor(length / i);
+    const floorNumberAxis = tempSpace * i - tempSpace + 1;
+    const ceilNumberAxis = (tempSpace + 1) * i - tempSpace + 1;
+    if (ceilNumberAxis > length) {
+      if (minSurplus > length - floorNumberAxis) {
+        minSurplus = length - floorNumberAxis;
+        result = i;
+      }
+    } else {
+      const checkCeillOrFloor = Math.min(
+        length - floorNumberAxis,
+        length - ceilNumberAxis,
+      );
+      if (minSurplus > checkCeillOrFloor) {
+        minSurplus = checkCeillOrFloor;
+        result = i;
+      }
     }
   }
   return result;
 };
+/*
+ * data is unique day in array
+ * numberOfAxis is getNumberOfAxis();
+ */
 
 export const getLabelChart = (data: any[], numberOfAxis: number) => {
   const length = data.length;
   const label = [];
-  for (let i = data.length - 1; i >= 0; i -= length / numberOfAxis) {
-    label.push(data[i]);
+  let tempSpace = Math.floor(length / numberOfAxis);
+  const ceilNumberAxis = tempSpace * numberOfAxis - tempSpace + 1;
+  if (ceilNumberAxis <= length && numberOfAxis !== data.length) {
+    tempSpace += 1;
   }
-  return label;
+  for (let i = data.length - 1; i >= 0; i -= tempSpace) {
+    if (tempSpace === 1) {
+      label.push(data[i]);
+    } else {
+      if (i < tempSpace) {
+        label.push(data[0]);
+      } else {
+        label.push(data[i]);
+      }
+    }
+  }
+  return label.reverse();
 };
 
 /*
@@ -95,22 +126,28 @@ export const getLabelChart = (data: any[], numberOfAxis: number) => {
  */
 
 export const getPaddingLeftAndRight = (
-  data: Date[],
+  data: any[],
   width: number,
   space: number,
 ) => {
+  
+  if (data.length === 0 || space === 10)
+    return {
+      countFirstDay: 0,
+      countLastDay: 0,
+      paddingLeft: 12,
+      paddingRight: 12,
+    };
   const px = width / data.length;
-  const firstDay = new Date(data[0]);
-  const nextDay = new Date(data[0]);
+  const firstDay = new Date(data[0].date);
+  const nextDay = new Date(data[0].date);
   nextDay.setDate(firstDay.getDate() + 1);
   nextDay.setHours(0);
   nextDay.setMinutes(0);
   nextDay.setSeconds(0);
-
   let countFirstDay = 0;
-  let countLastDay = 0;
   while (true) {
-    if (firstDay < nextDay) {
+    if (firstDay <= nextDay) {
       countFirstDay++;
     } else {
       break;
@@ -118,13 +155,14 @@ export const getPaddingLeftAndRight = (
     firstDay.setMinutes(firstDay.getMinutes() + space);
   }
 
-  const lastDay = data[data.length - 1];
-  const beforeLastDay = data[data.length - 1];
+  let countLastDay = 0;
+  const lastDay = new Date(data[data.length - 1].date);
+  const beforeLastDay = new Date(data[data.length - 1].date);
   beforeLastDay.setHours(0);
   beforeLastDay.setMinutes(0);
   beforeLastDay.setSeconds(0);
   while (true) {
-    if (beforeLastDay < lastDay) {
+    if (beforeLastDay <= lastDay) {
       countLastDay++;
     } else {
       break;
@@ -133,6 +171,8 @@ export const getPaddingLeftAndRight = (
   }
   return {
     // min px = 12
+    countFirstDay: countFirstDay,
+    countLastDay: countLastDay,
     paddingLeft: Math.max(12, px * countFirstDay),
     paddingRight: Math.max(12, px * countLastDay),
   };

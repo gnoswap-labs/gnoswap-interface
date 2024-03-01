@@ -15,18 +15,28 @@ import {
   generateDateSequence,
 } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import {
-  useGetTokenByPath,
-  useGetTokenDetailByPath,
-} from "@query/token";
+import { useGetTokenByPath, useGetTokenDetailByPath } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import dayjs from "dayjs";
-import { getLocalizeTime } from "@utils/chart";
+import {
+  getLabelChart,
+  getLocalizeTime,
+  getNumberOfAxis,
+  getPaddingLeftAndRight,
+} from "@utils/chart";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
+
+const MINUTES = {
+  "1D": 10,
+  "7D" : 60,
+  "1M": 240,
+  "1Y": 1440,
+  "ALL": 1440,
+};
 
 const getXaxis1Day = (data: Date[]): string[] => {
   const currentLocale = dayjs.locale();
@@ -37,39 +47,13 @@ const getXaxis1Day = (data: Date[]): string[] => {
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
   for (const entry of data) {
-    const data = new Date(entry).toLocaleTimeString(currentLocale, formatOptions);
+    const data = new Date(entry).toLocaleTimeString(
+      currentLocale,
+      formatOptions,
+    );
     rs.push(data);
   }
   return rs;
-};
-
-const getXaxis1M = (data: IPrices1d[], numberAxis: number): string[] => {
-  if (data.length > 0) {
-    const lastDate = new Date(data[0].date);
-    const firstDate = new Date(data[data.length - 1].date);
-    const timeDifference = lastDate.getTime() - firstDate.getTime();
-    const interval = timeDifference / numberAxis;
-    const points: string[] = [];
-
-    for (let i = 0; i <= numberAxis - 1; i++) {
-      const pointTime = firstDate.getTime() + i * interval;
-      const pointDate = new Date(pointTime);
-      pointDate.setDate(pointDate.getDate());
-      const monthStr = months[pointDate.getMonth()];
-      const dayStr = `${pointDate.getDate()}`.padStart(2, "0");
-      const yearStr = pointDate.getFullYear();
-      const str = `${monthStr} ${dayStr}, ${yearStr}`;
-      if (points.includes(str)) {
-        const newDayStr = `${pointDate.getDate() - 1}`.padStart(2, "0");
-        const str = `${monthStr} ${newDayStr}, ${yearStr}`;
-        points.push(str);
-      } else {
-        points.push(str);
-      }
-    }
-    return points.reverse();
-  }
-  return [];
 };
 
 export interface TokenInfo {
@@ -91,20 +75,7 @@ export interface TokenInfo {
     changedRate: number;
   };
 }
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+
 export interface ChartInfo {
   xAxisLabels: string[];
   yAxisLabels: string[];
@@ -148,51 +119,19 @@ function createXAxisDatas(
   const uniqueDates = [
     ...new Set(chartData.map(entry => entry.date.split(" ")[0])),
   ];
-  // const uniqueMonths = [
-  //   ...new Set(
-  //     chartData.map(item =>
-  //       new Date(item.date).toLocaleString("default", { month: "long" }),
-  //     ),
-  //   ),
-  // ];
-  // const uniqueYears = [
-  //   ...new Set(chartData.map(item => new Date(item.date).getFullYear())),
-  // ];
-
+  const labelX = getLabelChart(uniqueDates.slice(1, -1), numberAxis);
   switch (currentTab) {
     case "1D":
       return getXaxis1Day(date);
     case "7D":
-      return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
+      return labelX;
     case "1M":
-      return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
+      return labelX;
     case "1Y":
-      return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
-      // return Array.from(
-      //   { length: Math.min(uniqueMonths.length, numberAxis) },
-      //   (_, index) => {
-      //     const date = new Date(now);
-      //     date.setMonth(date.getMonth() - 1 * index);
-      //     const monthStr = months[date.getMonth()];
-      //     const dayStr = `${date.getDate()}`.padStart(2, "0");
-      //     const yearStr = date.getFullYear();
-      //     return `${monthStr} ${dayStr}, ${yearStr}`;
-      //   },
-      // ).reverse();
+      return labelX;
     case "ALL":
     default:
-      return getXaxis1M(chartData, Math.min(numberAxis, uniqueDates.length));
-      // return Array.from(
-      //   { length: Math.min(uniqueYears.length, numberAxis) },
-      //   (_, index) => {
-      //     const date = new Date(now);
-      //     date.setFullYear(date.getFullYear() - 1 * index);
-      //     const monthStr = months[date.getMonth()];
-      //     const dayStr = `${date.getDate()}`.padStart(2, "0");
-      //     const yearStr = date.getFullYear();
-      //     return `${monthStr} ${dayStr}, ${yearStr}`;
-      //   },
-      // ).reverse();
+      return labelX;
   }
 }
 
@@ -232,7 +171,10 @@ const TokenChartContainer: React.FC = () => {
     },
   });
   const path = router.query["tokenB"] as string;
-  const { data: tokenB } = useGetTokenByPath(path, { enabled: !!path, refetchInterval: 1000 * 10 });
+  const { data: tokenB } = useGetTokenByPath(path, {
+    enabled: !!path,
+    refetchInterval: 1000 * 10,
+  });
   const {
     data: {
       prices1d = [],
@@ -248,7 +190,7 @@ const TokenChartContainer: React.FC = () => {
     refetchInterval: 1000 * 10,
   });
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
-  
+
   useEffect(() => {
     if (tokenB) {
       const dataToday = checkPositivePrice(
@@ -268,7 +210,9 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: currentPrice ? Number(formatUsdNumber3Digits(currentPrice)) : "",
+            value: currentPrice
+              ? Number(formatUsdNumber3Digits(currentPrice))
+              : "",
             denom: "USD",
             status: dataToday.status,
           },
@@ -308,25 +252,19 @@ const TokenChartContainer: React.FC = () => {
       temp = prices1d || [];
     }
     if (currentTab === TokenChartGraphPeriods[1]) {
-       temp = prices7d || [];
+      temp = prices7d || [];
     }
     if (currentTab === TokenChartGraphPeriods[2]) {
-       temp = prices1m || [];
+      temp = prices1m || [];
     }
     if (currentTab === TokenChartGraphPeriods[3]) {
-       temp = prices1y || [];
+      temp = prices1y || [];
     }
-    return temp.map((item) => ({
+    return temp.map(item => ({
       ...item,
-      date: getLocalizeTime(item.date)
+      date: getLocalizeTime(item.date),
     }));
-  }, [
-    prices1d,
-    prices7d,
-    prices1m,
-    prices1y,
-    currentTab,
-  ]);
+  }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
   const getChartInfo = useCallback(() => {
     const length =
@@ -339,7 +277,7 @@ const TokenChartContainer: React.FC = () => {
         : currentTab === TokenChartGraphPeriods[3]
         ? 365
         : 144;
-
+    const minutes = MINUTES[currentTab as TokenChartGraphPeriodType];
     const currentLength = chartData.length;
     const startTime = Math.max(0, currentLength - length - 1);
 
@@ -365,46 +303,58 @@ const TokenChartContainer: React.FC = () => {
         10,
       );
     }
+
+  const paddingLeft = Math.max(0, Math.floor(size?.width / chartData.length * left - 27));
+  const paddingRight = Math.max(0, Math.floor(size?.width / chartData.length * right - 27));
+    const padding = getPaddingLeftAndRight(chartData, size.width, minutes);
+    const numberOfAxis = getNumberOfAxis(
+      chartData.length - padding?.countFirstDay - padding?.countLastDay,
+      countXAxis,
+      3,
+    );
     const xAxisLabels = createXAxisDatas(
       currentTab,
       chartData,
-      countXAxis,
+      numberOfAxis,
       temp,
     );
     const datas =
       chartData?.length > 0
-        ? chartData
-            .slice(startTime)
-            .map((item: IPriceResponse) => {
-              return {
-                amount: {
-                  value: `${item.price}`,
-                  denom: "",
-                },
-                time: item.date,
-              };
-            })
+        ? chartData.slice(startTime).map((item: IPriceResponse) => {
+            return {
+              amount: {
+                value: `${item.price}`,
+                denom: "",
+              },
+              time: item.date,
+            };
+          })
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),
     );
-  const date = dayjs(new Date());
-    
+    const date = dayjs(new Date());
+
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
-      datas: [...datas, {
-        amount: {
-          value: currentPrice ? `${Number(formatUsdNumber3Digits(currentPrice))}` : "$0",
-          denom: "",
+      datas: [
+        ...datas,
+        {
+          amount: {
+            value: currentPrice
+              ? `${Number(formatUsdNumber3Digits(currentPrice))}`
+              : "$0",
+            denom: "",
+          },
+          time: date.format("YYYY-MM-DD HH:mm:ss"),
         },
-        time: date.format("YYYY-MM-DD HH:mm:ss"),
-      }],
-      left: left,
-      right: right,
+      ],
+      left: currentTab === TokenChartGraphPeriods[0] ? paddingLeft : padding.paddingLeft,
+      right: currentTab === TokenChartGraphPeriods[0] ? paddingRight : padding.paddingRight,
     };
-  return chartInfo;
-}, [currentTab, chartData, countXAxis, currentPrice]);
+    return chartInfo;
+  }, [currentTab, chartData, countXAxis, currentPrice]);
 
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));
@@ -418,6 +368,8 @@ const TokenChartContainer: React.FC = () => {
     temp.push(maxPoint.toString());
     return temp;
   };
+  // console.log(uniqueDates.length)
+  // const numberOfAxis = getNumberOfAxis(chartData.length)
   return (
     <TokenChart
       tokenInfo={tokenInfo}
