@@ -349,8 +349,8 @@ const TokenChartContainer: React.FC = () => {
     const minPoint = Math.min(...convertNumber);
     const maxPoint = Math.max(...convertNumber);
     const temp = [minPoint.toString()];
-    const space = Number(Number((maxPoint - minPoint) / 6).toFixed(2));
-    for (let i = Number(minPoint); i < Number(maxPoint); i++) {
+    const space = Number(Number((maxPoint - minPoint) / 5));
+    for (let i = Number(minPoint) + Number(space) ; i < Number(maxPoint); i+=space) {
       temp.push(`${(Number(temp[0]) + space * (i + 1)).toFixed(2)}`);
     }
     temp.push(maxPoint.toString());

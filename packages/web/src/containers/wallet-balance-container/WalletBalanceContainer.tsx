@@ -14,9 +14,9 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { useGetBalancesByAddress, useGetTokenPrices } from "@query/token";
+import { useGetTokenPrices } from "@query/token";
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { useLoading } from "@hooks/common/use-loading";
 import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import { isEmptyObject } from "@utils/validation-utils";
@@ -53,7 +53,6 @@ const WalletBalanceContainer: React.FC = () => {
   const { claimAll } = usePosition(positions);
   const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected } = useBroadcastHandler();
   const { openModal } = useTransactionConfirmModal();
-  const { data: { balances = []} = {}, isLoading: loadingGetBalances } = useGetBalancesByAddress(account?.address || "", { enabled: !!account?.address });
   const { data: tokenPrices = {} } = useGetTokenPrices();
   const changeTokenDeposit = useCallback((token?: TokenModel) => {
     setDepositInfo(token);
@@ -69,7 +68,6 @@ const WalletBalanceContainer: React.FC = () => {
     changeTokenDeposit(undefined);
     if (!address) return;
   }, [connected, address, changeTokenDeposit]);
-
   const withdraw = useCallback(() => {
     if (!connected) return;
     setIsShowWithDrawModal(true);
@@ -106,14 +104,16 @@ const WalletBalanceContainer: React.FC = () => {
     });
   }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
   const loadingTotalBalance = useMemo(() => {
-    return loadingPositions || loadingConnect === "loading" || !!(loadingGetBalances && account?.address) || isLoadingCommon || !!(isEmptyObject(balancesPrice) && account?.address);
-  }, [loadingPositions, loadingConnect, loadingGetBalances, isLoadingCommon, account?.address, balancesPrice]);
+    return loadingPositions || loadingConnect === "loading" || isLoadingCommon || !!(isEmptyObject(balancesPrice) && account?.address);
+  }, [loadingPositions, loadingConnect, isLoadingCommon, account?.address, balancesPrice]);
 
-  const availableBalance = balances.reduce((acc, cur) => {
-    const path = cur?.type === "native" ? WRAPPED_GNOT_PATH : cur?.path;
-    const balance = BigNumber(cur.balance).multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice).dividedBy(10 ** 6).toNumber() || 0; 
-    return BigNumber(acc).plus(balance).toNumber();
-  }, 0);
+  const availableBalance = useMemo(() => {
+    return  Object.entries(balancesPrice).reduce((acc, [key, value]) => {
+      const path = key === "gnot" ? WRAPPED_GNOT_PATH : key;
+      const balance = BigNumber(value || 0).multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0).dividedBy(10 ** 6).toNumber() || 0;
+      return BigNumber(acc).plus(balance).toNumber();
+    }, 0);
+  }, [balancesPrice, tokenPrices]);
 
   const { stakedBalance, unStakedBalance, claimableRewards } = positions.reduce(
     (acc, cur) => {

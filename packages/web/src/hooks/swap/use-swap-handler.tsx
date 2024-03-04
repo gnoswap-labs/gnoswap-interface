@@ -581,6 +581,10 @@ export const useSwapHandler = () => {
       if (router.pathname === "/tokens/[token-path]") {
         const url = window?.location?.host + router.asPath;
         await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => {
+          setCopied(false);
+        }, 2000);
         return;
       }
       let url = window?.location?.host + "/swap";

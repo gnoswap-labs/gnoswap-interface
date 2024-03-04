@@ -126,10 +126,10 @@ export const toUnitFormat = (
   if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0)) {
     return (usd ? "<$" : "") +"0.01";
   }
-  if (bigNumber.isInteger()) {
-    return (usd ? "$" : "") + bigNumber.decimalPlaces(0).toString();
+  if (Number(bigNumber) === 0) {
+    return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
   }
-  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toString();
+  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed(2);
 };
 
 /**
@@ -259,7 +259,7 @@ export function convertLargePrice(val: string) {
   if (Number(val) >= 1000000000) {
     return ">$999,999,999.99";
   }
-  return `${toUnitFormat(val || "0.00", true, false)}${BigNumber(val).isInteger() && Number(val) !== 0 ? ".00" : ""}`;
+  return `${toUnitFormat(val || "0.00", true, false)}`;
 }
 
 

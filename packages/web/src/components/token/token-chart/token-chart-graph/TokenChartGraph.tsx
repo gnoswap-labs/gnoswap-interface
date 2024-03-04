@@ -45,7 +45,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
 
   const typeYAxis = useMemo(() => {
     if (yAxisLabels.length > 0) {
-      const leng = yAxisLabels[0].length;
+      const leng = Math.max(...yAxisLabels.map(x => x.length), 0);
       if (leng > 0) {
         if (leng <=3 ) return "large-text";
         if (leng === 4) return "medium-text";
@@ -54,7 +54,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     }
     return "small-text";
   }, [yAxisLabels]);
-  
+
   return (
     <TokenChartGraphWrapper left={Math.max(left, 12)} right={Math.max(right, 12)}>
       <div className="data-wrapper" ref={componentRef}>

@@ -152,10 +152,35 @@ const HeaderContainer: React.FC = () => {
   const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
   const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokensList({ enabled: !!searchMenuToggle });
   const { data: tokenPrices = {} } = useGetTokenPrices({ enabled: !!searchMenuToggle });
-
   const recents = useMemo(() => {
-    return parseJson(recentsData ? recentsData : "[]");
-  }, [recentsData]);
+    const storageData = parseJson(recentsData ? recentsData : "[]");
+    return storageData.map((item: any) => {
+      if (!item.isLiquid) {
+        const temp: TokenPriceModel = tokenPrices[item?.token?.path] ?? {};
+        const isGnot = item?.token?.path === "gnot";
+        const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
+        const transferData = isGnot ? tempWuGnot : temp;
+        const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
+        const usdFormat = formatUsdNumber3Digits(transferData.usd);
+        return {
+          ...item,
+          price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat: convertToMB(usdFormat || "0", 10)}`,
+          priceOf1d: {
+            status: dataToday.status,
+            value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
+          },
+        }
+      } else {
+        const item_ = poolList.filter((_) => _.tokenA.symbol === item.token.symbol && _.tokenB.symbol === item.tokenB.symbol)?.[0];
+        if (!item_) return item;
+        return {
+          ...item,
+          apr: `${!item_.apr ? "-" : Number(item_.apr) > 10 ? `${item_.apr}% APR` : `${Number(item_.apr).toFixed(2)}% APR`}`,
+          price: `$${convertToKMB((item_.tvl || 0).toString())}`,
+        };
+      }
+    });
+  }, [recentsData, poolList, listTokens, tokenPrices]);
 
   const mostLiquidity = useMemo(() => {
     let temp = poolList;

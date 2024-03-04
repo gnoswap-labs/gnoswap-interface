@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -64,8 +64,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const {
     tokens,
     balances,
-    updateTokens,
-    updateBalances,
     tokenPrices,
     displayBalanceMap,
   } = useTokenData();
@@ -86,14 +84,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       close();
     },
   });
-
-  useEffect(() => {
-    updateTokens();
-  }, []);
-
-  useEffect(() => {
-    if (tokens.length > 0) updateBalances();
-  }, [tokens]);
 
   const defaultTokens = useMemo(() => {
     const temp = tokens;
@@ -154,14 +144,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   }, [clearModal, callback]);
 
   useEscCloseModal(close);
-
-  useEffect(() => {
-    updateTokens();
-  }, []);
-
-  useEffect(() => {
-    if (tokens.length > 0) updateBalances();
-  }, [tokens]);
 
   return (
     <SelectToken
