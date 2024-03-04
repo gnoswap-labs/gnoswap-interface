@@ -45,7 +45,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
           </div>}
         </div>
         <div className="price-info">
-          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${priceInfo.amount.value === 0 ? "0.00" : convertToMB(priceInfo.amount.value.toString(), 6)}`}</span>}
+          {<span className="price">{(!priceInfo.amount.value || loading) ? "-" : `$${Number.isInteger(Number(priceInfo.amount.value)) ? `${priceInfo.amount.value}.00` : convertToMB(priceInfo.amount.value.toString(), 6)}`}</span>}
           {(priceInfo.amount.value && !loading) ? <div className={`change-rate-wrapper ${isIncreasePrice() ? "up" : "down"}`}>
             {
               isIncreasePrice() ?

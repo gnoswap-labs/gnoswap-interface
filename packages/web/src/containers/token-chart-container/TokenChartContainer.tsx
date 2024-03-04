@@ -333,28 +333,16 @@ const TokenChartContainer: React.FC = () => {
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),
     );
-    const date = dayjs(new Date());
-
+    // const date = dayjs(new Date());
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
-      datas: [
-        ...datas,
-        {
-          amount: {
-            value: currentPrice
-              ? `${Number(formatUsdNumber3Digits(currentPrice))}`
-              : "$0",
-            denom: "",
-          },
-          time: date.format("YYYY-MM-DD HH:mm:ss"),
-        },
-      ],
+      datas: datas,
       left: currentTab === TokenChartGraphPeriods[0] ? paddingLeft : padding.paddingLeft,
       right: currentTab === TokenChartGraphPeriods[0] ? paddingRight : padding.paddingRight,
     };
     return chartInfo;
-  }, [currentTab, chartData, countXAxis, currentPrice]);
+  }, [currentTab, chartData, countXAxis]);
 
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));
@@ -362,11 +350,13 @@ const TokenChartContainer: React.FC = () => {
     const maxPoint = Math.max(...convertNumber);
     const temp = [minPoint.toString()];
     const space = Number(Number((maxPoint - minPoint) / 6).toFixed(2));
-    for (let i = 0; i < 5; i++) {
+    for (let i = Number(minPoint); i < Number(maxPoint); i++) {
       temp.push(`${(Number(temp[0]) + space * (i + 1)).toFixed(2)}`);
     }
     temp.push(maxPoint.toString());
-    return temp;
+    const uniqueLabel = [...new Set(temp)];
+    if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
+    return uniqueLabel;
   };
   // console.log(uniqueDates.length)
   // const numberOfAxis = getNumberOfAxis(chartData.length)

@@ -220,7 +220,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${convertToMB(usdFormat || "0", 10)}`,
+        price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat: convertToMB(usdFormat || "0", 10)}`,
         priceOf1d: {
           status: dataToday.status,
           value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
