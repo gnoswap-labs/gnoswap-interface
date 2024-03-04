@@ -204,7 +204,9 @@ const TokenListContainer: React.FC = () => {
   );
 
   const firstData = useMemo(() => {
-    const temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
+    const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
+
+    let temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
       const isGnot = item.path === "gnot";
       const temp: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
@@ -243,7 +245,7 @@ const TokenListContainer: React.FC = () => {
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
         },
-        last7days: transferData?.last7Days?.map(item => Number(item.price || 0)) || [],
+        last7days: [...(transferData?.last7Days?.map(item => Number(item.price || 0)) || []), Number(transferData?.pricesBefore?.latestPrice)],
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(transferData.liquidity || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(transferData.volume || 0)).toLocaleString()}`,
@@ -255,8 +257,9 @@ const TokenListContainer: React.FC = () => {
       };
     });
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
+    temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({...item, idx: i}));
-  }, [tokens, tokenPrices]);
+  }, [tokens, tokenPrices, tokenType]);
     
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
@@ -321,7 +324,7 @@ const TokenListContainer: React.FC = () => {
         }
       }
     }
-    return temp.slice(page * 15, (page +1 ) * 15);
+    return temp.slice(page * 15, (page + 1) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
   
   return (
