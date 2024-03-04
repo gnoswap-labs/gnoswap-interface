@@ -579,7 +579,19 @@ export const useSwapHandler = () => {
   const copyURL = async () => {
     try {
       if (router.pathname === "/tokens/[token-path]") {
-        const url = window?.location?.host + router.asPath;
+        
+        let url = window?.location?.host + "/tokens/" + router.query?.["token-path"];
+        const query = {
+          to: tokenB?.path,
+          from: tokenA?.path,
+        };
+        if (query.to && query.from) {
+          url += `?tokenA=${query.from}&tokenB=${query.to}`;
+        } else if (query.to) {
+          url += `?tokenB=${query.to}`;
+        } else if (query.from) {
+          url += `?tokenA=${query.from}`;
+        }
         await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => {
