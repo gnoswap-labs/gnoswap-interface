@@ -919,7 +919,6 @@ export const useSwapHandler = () => {
     isSameToken,
     memoryzeTokenSwap,
   ]);
-  console.log(memoryzeTokenSwap);
   return {
     slippage,
     connectedWallet,

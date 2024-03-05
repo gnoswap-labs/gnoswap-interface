@@ -79,7 +79,7 @@ const TokenSwapContainer: React.FC = () => {
         };
       } else if (tokenA) {
         request = {
-          tokenA: {
+          tokenB: {
             ...tokenA,
             path: getGnotPath(tokenA).path,
             symbol: getGnotPath(tokenA).symbol,
@@ -108,9 +108,17 @@ const TokenSwapContainer: React.FC = () => {
   }, [tokenB, isFetched, tokenA]);
   
   const handleChangeTokenB = (token: TokenModel) => {
-    const tokenBTemp = swapValue.tokenA?.symbol === token.symbol ? swapValue.tokenA : token;
-    router.push(`/tokens/${tokenBTemp.symbol}?tokenB=${tokenBTemp.path}&direction=EXACT_IN`);
+    if (swapValue?.tokenB?.symbol === router?.query?.["token-path"] && swapValue?.tokenA?.symbol !== token?.symbol) {
+      router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
+    }
     changeTokenB(token);
+  };
+
+  const handleChangeTokenA = (token: TokenModel) => {
+    if (swapValue?.tokenA?.symbol === router?.query?.["token-path"] && swapValue?.tokenB?.symbol !== token?.symbol) {
+      router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
+    }
+    changeTokenA(token);
   };
 
   return (
@@ -126,7 +134,7 @@ const TokenSwapContainer: React.FC = () => {
         handleSetting={() => setOpenedSlippage(true)}
         isSwitchNetwork={isSwitchNetwork}
         dataTokenInfo={swapTokenInfo}
-        changeTokenA={changeTokenA}
+        changeTokenA={handleChangeTokenA}
         changeTokenB={handleChangeTokenB}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenBAmount={changeTokenBAmount}
