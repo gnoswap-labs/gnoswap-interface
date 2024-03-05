@@ -88,15 +88,18 @@ const TokenSwapContainer: React.FC = () => {
           }, 
         };
       } else {
-        request = {
-          tokenB: {
-            ...tokenB,
-            path: getGnotPath(tokenB).path,
-            symbol: getGnotPath(tokenB).symbol,
-            logoURI: getGnotPath(tokenB).logoURI,
-            name: getGnotPath(tokenB).name,
-          }, 
-        };
+        if (swapValue?.tokenA?.symbol === tokenB?.symbol) request = {};
+        else {
+          request = {
+            tokenB: {
+              ...tokenB,
+              path: getGnotPath(tokenB).path,
+              symbol: getGnotPath(tokenB).symbol,
+              logoURI: getGnotPath(tokenB).logoURI,
+              name: getGnotPath(tokenB).name,
+            }, 
+          };
+        }
       }
       setSwapValue(prev => {
         return {
@@ -119,6 +122,7 @@ const TokenSwapContainer: React.FC = () => {
       router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
     }
     changeTokenA(token);
+
   };
 
   return (

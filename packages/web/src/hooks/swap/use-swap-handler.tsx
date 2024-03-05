@@ -166,20 +166,15 @@ export const useSwapHandler = () => {
       return "Insufficient Liquidity";
     }
 
-    if (type === "EXACT_IN") {
-      if (
-        Number(tokenAAmount) >
-        Number(parseFloat(tokenABalance.replace(/,/g, "")))
-      ) {
-        return "Insufficient Balance";
-      }
-    } else {
-      if (
-        Number(tokenBAmount) >
-        Number(parseFloat(tokenBBalance.replace(/,/g, "")))
-      ) {
-        return "Insufficient Balance";
-      }
+    if (
+      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+    ) {
+      return "Insufficient Balance";
+    }
+    if (
+      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
+    ) {
+      return "No Error";
     }
     if (Number(tokenAAmount) > 0 && tokenBAmount === "0") {
       return "Insufficient Liquidity";
@@ -332,20 +327,15 @@ export const useSwapHandler = () => {
     ) {
       return false;
     }
-    if (type === "EXACT_IN") {
-      if (
-        Number(tokenAAmount) >
-        Number(parseFloat(tokenABalance.replace(/,/g, "")))
-      ) {
-        return false;
-      }
-    } else {
-      if (
-        Number(tokenBAmount) >
-        Number(parseFloat(tokenBBalance.replace(/,/g, "")))
-      ) {
-        return false;
-      }
+    if (
+      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+    ) {
+      return false;
+    }
+    if (
+      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
+    ) {
+      return false;
     }
     return true;
   }, [
@@ -395,7 +385,8 @@ export const useSwapHandler = () => {
   }, []);
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
-      const memoryzeTokenB = memoryzeTokenSwap?.[`${tokenA?.symbol}:${value}`];
+      const memoryzeTokenB =
+        memoryzeTokenSwap?.[`${tokenA?.symbol}:${value}:${tokenB?.symbol}`];
       if (memoryzeTokenB) {
         setTokenAAmount(value);
         setTokenBAmount(memoryzeTokenB.split(":")[1]);
@@ -442,7 +433,8 @@ export const useSwapHandler = () => {
   }, [setSwapValue, tokenAAmount, tokenBAmount]);
   const changeTokenBAmount = useCallback(
     (value: string, none?: boolean) => {
-      const memoryzeTokenA = memoryzeTokenSwap?.[`${tokenB?.symbol}:${value}`];
+      const memoryzeTokenA =
+        memoryzeTokenSwap?.[`${tokenB?.symbol}:${value}:${tokenB?.symbol}`];
       if (memoryzeTokenA) {
         setTokenBAmount(value);
         setTokenAAmount(memoryzeTokenA.split(":")[1]);
@@ -494,6 +486,9 @@ export const useSwapHandler = () => {
           prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
         type: changedSwapDirection,
       }));
+      if (!!Number(tokenAAmount)) {
+        setIsLoading(true);
+      }
     },
     [tokenA, tokenB, type, tokenBAmount, tokenAAmount],
   );
@@ -512,6 +507,9 @@ export const useSwapHandler = () => {
           prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
         type: changedSwapDirection,
       }));
+      if (!!Number(tokenAAmount)) {
+        setIsLoading(true);
+      }
     },
     [tokenA, type, tokenBAmount, tokenAAmount, swapValue],
   );
@@ -536,7 +534,7 @@ export const useSwapHandler = () => {
     if (type === "EXACT_IN") {
       const keyForValue =
         findKeyByValue(
-          `${tokenA?.symbol}:${tokenAAmount}`,
+          `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`,
           memoryzeTokenSwap,
         ) ?? "";
       if (memoryzeTokenSwap?.[keyForValue]) {
@@ -545,7 +543,7 @@ export const useSwapHandler = () => {
         return;
       }
     } else {
-      const keyForValue = `${tokenB?.symbol}:${tokenBAmount}`;
+      const keyForValue = `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`;
       if (memoryzeTokenSwap?.[keyForValue]) {
         setTokenAAmount(tokenBAmount);
         setTokenBAmount(memoryzeTokenSwap?.[keyForValue]?.split(":")?.[1]);
@@ -579,8 +577,8 @@ export const useSwapHandler = () => {
   const copyURL = async () => {
     try {
       if (router.pathname === "/tokens/[token-path]") {
-        
-        let url = window?.location?.host + "/tokens/" + router.query?.["token-path"];
+        let url =
+          window?.location?.host + "/tokens/" + router.query?.["token-path"];
         const query = {
           to: tokenB?.path,
           from: tokenA?.path,
@@ -805,13 +803,17 @@ export const useSwapHandler = () => {
   }, []);
   useEffect(() => {
     if (
-      memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
+      memoryzeTokenSwap?.[
+        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+      ] &&
       type === "EXACT_IN"
     ) {
       return;
     }
     if (
-      memoryzeTokenSwap?.[`${tokenB?.symbol}:${tokenBAmount}`] &&
+      memoryzeTokenSwap?.[
+        `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`
+      ] &&
       type === "EXACT_OUT"
     ) {
       return;
@@ -840,14 +842,18 @@ export const useSwapHandler = () => {
       return;
     }
     if (
-      memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
+      memoryzeTokenSwap?.[
+        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+      ] &&
       type === "EXACT_IN"
     ) {
       setIsLoading(false);
       return;
     }
     if (
-      memoryzeTokenSwap?.[`${tokenA?.symbol}:${tokenAAmount}`] &&
+      memoryzeTokenSwap?.[
+        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+      ] &&
       type === "EXACT_OUT"
     ) {
       setIsLoading(false);
@@ -899,13 +905,13 @@ export const useSwapHandler = () => {
       ) {
         setMemoryzeTokenSwap(prev => ({
           ...prev,
-          [`${tokenA?.symbol}:${tokenAAmount}`]: `${tokenB?.symbol}:${tokenBAmount}`,
+          [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
           // [`${tokenB?.symbol}:${tokenBAmount}`]: `${tokenA?.symbol}:${tokenAAmount}`,
         }));
       } else {
         setMemoryzeTokenSwap(prev => ({
           ...prev,
-          [`${tokenA?.symbol}:${tokenAAmount}`]: `${tokenB?.symbol}:${tokenBAmount}`,
+          [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
         }));
       }
     }

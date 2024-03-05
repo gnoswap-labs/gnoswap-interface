@@ -87,14 +87,13 @@ const HomeSwapContainer: React.FC = () => {
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
   const tokenBUSD = useMemo(() => {
-    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
+    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceId)]) {
       return Number.NaN;
     }
     return BigNumber(tokenBAmount)
-      .multipliedBy(tokenPrices[tokenB.priceId].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceId)].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
-
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
       tokenA,
@@ -139,8 +138,9 @@ const HomeSwapContainer: React.FC = () => {
     setTokenA(tokenB);
     setTokenB(tokenA);
     setSwapDirection(prev => (prev === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN"));
+    setTokenAAmount(tokenBAmount);
+    setTokenBAmount(tokenAAmount);
   };
-
   const changeTokenAAmount = useCallback((value: string) => {
     setSwapValue(prev => ({
       ...prev,
