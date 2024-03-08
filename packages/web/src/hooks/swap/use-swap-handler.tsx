@@ -153,7 +153,7 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenB) {
       return "Select a Token";
     }
-    if (!Number(tokenAAmount) && !Number(tokenAAmount)) {
+    if (!Number(tokenAAmount) && !Number(tokenBAmount)) {
       return "Enter Amount";
     }
     if (
@@ -176,7 +176,10 @@ export const useSwapHandler = () => {
     ) {
       return "No Error";
     }
-    if (Number(tokenAAmount) > 0 && tokenBAmount === "0") {
+    if (Number(tokenAAmount) > 0 && tokenBAmount === "0" && type === "EXACT_IN") {
+      return "Insufficient Liquidity";
+    }
+    if (Number(tokenBAmount) > 0 && tokenAAmount === "0" && type === "EXACT_OUT") {
       return "Insufficient Liquidity";
     }
     if (isSameToken) {
@@ -318,7 +321,7 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenB) {
       return false;
     }
-    if (!tokenAAmount && !tokenAAmount) {
+    if (!tokenAAmount && !tokenBAmount) {
       return false;
     }
     if (
@@ -327,6 +330,7 @@ export const useSwapHandler = () => {
     ) {
       return false;
     }
+
     if (
       Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
     ) {
@@ -335,6 +339,12 @@ export const useSwapHandler = () => {
     if (
       Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
     ) {
+      return false;
+    }
+    if (Number(tokenAAmount) > 0 && tokenBAmount === "0" && type === "EXACT_IN") {
+      return false;
+    }
+    if (Number(tokenBAmount) > 0 && tokenAAmount === "0" && type === "EXACT_OUT") {
       return false;
     }
     return true;

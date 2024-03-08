@@ -8,11 +8,10 @@ import {
 } from "@query/token";
 import { ITrending } from "@repositories/token";
 import { TokenModel } from "@models/token/token-model";
-import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useRouter } from "next/router";
 import { useGetPoolList } from "@query/pools";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 
 const trendingCryptoInit = [
@@ -70,7 +69,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertToMB(formatUsdNumber3Digits(item.tokenPrice), 3)}`,
+        price: `${(toUnitFormat(item.tokenPrice, true, false))}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,

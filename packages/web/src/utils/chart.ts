@@ -173,7 +173,9 @@ export const getPaddingLeftAndRight = (
     // min px = 12
     countFirstDay: countFirstDay,
     countLastDay: countLastDay,
-    paddingLeft: Math.max(12, px * countFirstDay),
+    paddingLeft: Math.max(12, px * countFirstDay) > 48 ? Math.max(12, px * countFirstDay) - 48 : Math.max(12, px * countFirstDay),
+    // paddingRight: Math.max(12, px * countLastDay) > 40 ? Math.max(12, px * countLastDay) - 40 : Math.max(12, px * countLastDay),
+    // paddingLeft: Math.max(12, px * countFirstDay),
     paddingRight: Math.max(12, px * countLastDay),
   };
 };

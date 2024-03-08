@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { FeeWrapper, SwapDivider } from "./SwapCardFeeInfo.styles";
+import { FeeWrapper, SwapDivider, ToolTipContentWrapper } from "./SwapCardFeeInfo.styles";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import IconRouter from "@components/common/icons/IconRouter";
@@ -9,6 +9,8 @@ import {
 } from "@models/swap/swap-summary-info";
 import { toNumberFormat } from "@utils/number-utils";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IconInfo from "@components/common/icons/IconInfo";
 
 interface ContentProps {
   openedRouteInfo: boolean;
@@ -67,8 +69,21 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
           <span className="white-text">{guaranteedStr}</span>
         )}
       </div>
+      <div className="received">
+        <div className="protocol">
+          <span className="">Protocol Fee</span>
+          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The amount of fees charged on each trade that goes to the protocol.</ToolTipContentWrapper>}>
+            <IconInfo />
+          </Tooltip>
+        </div>
+        {isLoading ? (
+          <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
+        ) : (
+          <span className="white-text">0%</span>
+        )}
+      </div>
       <div className="gas-fee">
-        <span className="gray-text">Gas Fee</span>
+        <span className="gray-text">Network Gas Fee</span>
 
         {isLoading ? (
           <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
