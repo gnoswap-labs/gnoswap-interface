@@ -7,10 +7,7 @@ import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
 import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
-import { getLabelChart, getLocalizeTime, getNumberOfAxis, getPaddingLeftAndRight } from "@utils/chart";
-import useComponentSize from "@hooks/common/use-component-size";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { DEVICE_TYPE } from "@styles/media";
+import { getLocalizeTime } from "@utils/chart";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -148,33 +145,10 @@ const parseDate = (dateString: string) => {
 //   );
 // }
 
-const getChartData = (tvlChartType: CHART_TYPE, tvlData: any) => {
-  let data = [];
-  switch (tvlChartType) {
-    case "30D":
-      data = tvlData?.last_1m || [];
-    case "90D":
-      data = tvlData?.last_1y || [];
-    case "ALL":
-      data = tvlData?.all || [];
-    default:
-      data = tvlData?.last_7d || [];
-  }
-  return data.map((item: any) => ({
-    item,
-    date: getLocalizeTime(item.date)
-  }));
-};
-const MINUTES = {
-  "7D" : 60,
-  "30D": 240,
-  "90D": 1440,
-  "ALL": 1440,
-};
-
 const TvlChartContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
   const { isLoadingCommon } = useLoading();
+
   const [tvlChartType, setTvlChartType] = useState<CHART_TYPE>(
     CHART_TYPE["7D"],
   );
@@ -184,8 +158,7 @@ const TvlChartContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardTvl,
     refetchInterval: 60 * 1000,
   });
-  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
-  const { breakpoint } = useWindowSize();
+  
   const changeTvlChartType = useCallback((newType: string) => {
     const tvlChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
@@ -201,7 +174,20 @@ const TvlChartContainer: React.FC = () => {
       };
     let chartData = tvlData?.last_7d;
 
-    chartData = getChartData(tvlChartType, tvlData);
+    switch (tvlChartType) {
+      case "30D":
+        chartData = tvlData?.last_1m;
+        break;
+      case "90D":
+        chartData = tvlData?.last_1y;
+        break;
+      case "ALL":
+        chartData = tvlData?.all;
+        break;
+      default:
+        chartData = tvlData?.last_7d;
+        break;
+    }
 
     return chartData?.reduce(
       (pre, next) => {
@@ -215,7 +201,7 @@ const TvlChartContainer: React.FC = () => {
                 value: next.price,
                 denom: "USD",
               },
-              time: next.date,
+              time: getLocalizeTime(next.date),
             },
           ],
         };
@@ -223,19 +209,7 @@ const TvlChartContainer: React.FC = () => {
       { xAxisLabels: [], datas: [] } as TvlChartInfo,
     );
   }, [tvlChartType, tvlData]);
-  const countXAxis = useMemo(() => {
-    if (breakpoint !== DEVICE_TYPE.MOBILE)
-      return Math.floor(((size.width || 0) + 20 - 25) / 100);
-    return Math.floor(((size.width || 0) + 20 - 8) / 80);
-  }, [size.width, breakpoint]);
-  const chart = getChartData(tvlChartType, tvlData) || [];
-  const padding = getPaddingLeftAndRight(chart || [], size.width, MINUTES[tvlChartType as "7D" | "30D" | "90D" | "ALL"]);
-  const numberOfAxis = getNumberOfAxis(chart.length - padding.countFirstDay - padding.countLastDay, countXAxis, 3);
-  const uniqueDates = [
-    ...new Set(chart.slice(padding.countFirstDay, -padding.countLastDay).map((entry: any) => entry.date.split(" ")[0])),
-  ];
-  const label = getLabelChart(uniqueDates, numberOfAxis);
-  console.log(label);
+
   return (
     <TvlChart
       tvlChartType={tvlChartType}
@@ -245,8 +219,6 @@ const TvlChartContainer: React.FC = () => {
       }}
       tvlChartInfo={chartData}
       loading={isLoading || isLoadingCommon}
-      componentRef={componentRef}
-      size={size}
     />
   );
 };

@@ -8,8 +8,6 @@ import TvlChartPriceInfo from "../tvl-chart-price-info/TvlChartPriceInfo";
 import TvlChartSelectTab from "../tvl-chart-select-tab/TvlChartSelectTab";
 import { ChartWrapper, LoadingTVLChart, TvlChartWrapper } from "./TvlChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { ComponentSize } from "@hooks/common/use-component-size";
-import React from "react";
 
 interface TvlChartItemProps {
   tvlChartType: CHART_TYPE;
@@ -17,8 +15,6 @@ interface TvlChartItemProps {
   tvlChartInfo: TvlChartInfo;
   loading: boolean;
   changeTvlChartType: (newType: string) => void;
-  componentRef: React.RefObject<HTMLDivElement>;
-  size: ComponentSize;
 }
 
 const TvlChart: React.FC<TvlChartItemProps> = ({
@@ -27,8 +23,6 @@ const TvlChart: React.FC<TvlChartItemProps> = ({
   tvlChartInfo,
   changeTvlChartType,
   loading,
-  componentRef,
-  size,
 }) => {
   return (
     <TvlChartWrapper>
@@ -41,8 +35,6 @@ const TvlChart: React.FC<TvlChartItemProps> = ({
         {!loading && <TvlChartGraph
           xAxisLabels={tvlChartInfo.xAxisLabels}
           datas={tvlChartInfo.datas}
-          size={size}
-          componentRef={componentRef}
         />}
         {loading && <LoadingTVLChart>
           <LoadingSpinner />

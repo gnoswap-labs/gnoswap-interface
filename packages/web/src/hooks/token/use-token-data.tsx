@@ -60,6 +60,7 @@ export const useTokenData = () => {
 
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
+    if (tokens.length === 0) return {};
     Object.keys(balances).forEach(key => {
       const balance = balances[key];
       const token = tokens.find(token => token.priceId === key);
@@ -228,6 +229,7 @@ export const useTokenData = () => {
       }
     });
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
+      console.log(balancesData, balances);
       setBalances(balancesData);
     }
     setLoadingBalance(false);

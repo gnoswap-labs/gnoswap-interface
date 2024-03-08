@@ -174,7 +174,7 @@ export const useSwapHandler = () => {
     if (
       Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
     ) {
-      return "No Error";
+      return "Swap";
     }
     if (Number(tokenAAmount) > 0 && tokenBAmount === "0" && type === "EXACT_IN") {
       return "Insufficient Liquidity";

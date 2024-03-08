@@ -1,6 +1,6 @@
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
-import { ComponentSize } from "@hooks/common/use-component-size";
+import useComponentSize from "@hooks/common/use-component-size";
 import React, { useCallback, useMemo } from "react";
 import { TvlChartGraphWrapper } from "./TvlChartGraph.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -16,8 +16,6 @@ export interface TvlChartGraphProps {
   }[];
   xAxisLabels: string[];
   yAxisLabels?: string[];
-  componentRef: React.RefObject<HTMLDivElement>;
-  size: ComponentSize;
 }
 
 const calculateMiddleIndices = (totalLabels = 0, countXAxis = 0) => {
@@ -50,10 +48,9 @@ const calculateMiddleIndices = (totalLabels = 0, countXAxis = 0) => {
 const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
   datas,
   xAxisLabels,
-  size,
-  componentRef,
 }) => {
   const theme = useTheme();
+  const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
 
   const getDatas = useCallback(() => {
