@@ -48,6 +48,9 @@ export const useTokenData = () => {
   const [loadingBalance, setLoadingBalance] = useAtom(
     TokenState.isLoadingBalances,
   );
+  const [isChangeBalancesToken, setIsChangeBalancesToken] = useAtom(
+    TokenState.isChangeBalancesToken,
+  );
   const { getGnotPath } = useGnotToGnot();
 
   const gnotToken = useMemo((): TokenModel => {
@@ -60,10 +63,10 @@ export const useTokenData = () => {
 
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
-    if (tokens.length === 0) return {};
+    if (tokens.length === 0 || isEmptyObject(balances)) return {};
     Object.keys(balances).forEach(key => {
-      const balance = balances[key];
       const token = tokens.find(token => token.priceId === key);
+      const balance = balances[key];
       const exist = token && balance !== null && balance !== undefined;
       tokenBalanceMap[key] = exist
         ? makeDisplayTokenAmount(token, balance)
@@ -221,6 +224,7 @@ export const useTokenData = () => {
       }
       return null;
     }
+    if (tokens.length === 0) return;
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
@@ -229,7 +233,7 @@ export const useTokenData = () => {
       }
     });
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
-      console.log(balancesData, balances);
+      setIsChangeBalancesToken(true);
       setBalances(balancesData);
     }
     setLoadingBalance(false);
@@ -253,5 +257,7 @@ export const useTokenData = () => {
     isFetched,
     error,
     isLoadingTokenPrice,
+    isChangeBalancesToken,
+    setIsChangeBalancesToken,
   };
 };

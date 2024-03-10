@@ -13,6 +13,7 @@ import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
 import { IBalancesByAddressReponse } from "./response/balance-by-address-response";
+import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient;
@@ -40,7 +41,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     if (response.data.tokens === null) {
       return { tokens: [] };
     }
-    const tokens = response?.data?.tokens || [];
+    const tokens = response?.data?.tokens.sort(customSort) || [];
     return { tokens };
   };
 

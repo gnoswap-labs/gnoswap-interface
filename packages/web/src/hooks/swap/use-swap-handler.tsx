@@ -65,6 +65,9 @@ export const useSwapHandler = () => {
     switchNetwork,
   } = useWallet();
   const {
+    tokens,
+    isChangeBalancesToken,
+    setIsChangeBalancesToken,
     tokenPrices,
     displayBalanceMap,
     updateTokens,
@@ -72,7 +75,6 @@ export const useSwapHandler = () => {
     updateBalances,
     getTokenUSDPrice,
   } = useTokenData();
-
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const {
@@ -176,10 +178,18 @@ export const useSwapHandler = () => {
     ) {
       return "Swap";
     }
-    if (Number(tokenAAmount) > 0 && tokenBAmount === "0" && type === "EXACT_IN") {
+    if (
+      Number(tokenAAmount) > 0 &&
+      tokenBAmount === "0" &&
+      type === "EXACT_IN"
+    ) {
       return "Insufficient Liquidity";
     }
-    if (Number(tokenBAmount) > 0 && tokenAAmount === "0" && type === "EXACT_OUT") {
+    if (
+      Number(tokenBAmount) > 0 &&
+      tokenAAmount === "0" &&
+      type === "EXACT_OUT"
+    ) {
       return "Insufficient Liquidity";
     }
     if (isSameToken) {
@@ -341,10 +351,18 @@ export const useSwapHandler = () => {
     ) {
       return false;
     }
-    if (Number(tokenAAmount) > 0 && tokenBAmount === "0" && type === "EXACT_IN") {
+    if (
+      Number(tokenAAmount) > 0 &&
+      tokenBAmount === "0" &&
+      type === "EXACT_IN"
+    ) {
       return false;
     }
-    if (Number(tokenBAmount) > 0 && tokenAAmount === "0" && type === "EXACT_OUT") {
+    if (
+      Number(tokenBAmount) > 0 &&
+      tokenAAmount === "0" &&
+      type === "EXACT_OUT"
+    ) {
       return false;
     }
     return true;
@@ -361,13 +379,6 @@ export const useSwapHandler = () => {
     tokenBBalance,
   ]);
 
-  const checkBalance = useCallback(
-    (token: TokenModel, amount: string) => {
-      const tokenBalance = displayBalanceMap[token.priceId] || 0;
-      return BigNumber(tokenBalance).isGreaterThan(amount);
-    },
-    [displayBalanceMap],
-  );
 
   const openConfirmModal = useCallback(() => {
     setOpenedConfirModal(true);
@@ -392,7 +403,7 @@ export const useSwapHandler = () => {
       updateBalances();
     }, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [tokens]);
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenB =
@@ -892,12 +903,6 @@ export const useSwapHandler = () => {
             setTokenAAmount("0");
           }
         } else {
-          if (
-            !checkBalance(tokenA, tokenAAmount) ||
-            !checkBalance(tokenB, tokenBAmount)
-          ) {
-          }
-
           if (isExactIn) {
             setTokenBAmount(expectedAmount);
           } else {
@@ -916,9 +921,10 @@ export const useSwapHandler = () => {
         setMemoryzeTokenSwap(prev => ({
           ...prev,
           [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
-          // [`${tokenB?.symbol}:${tokenBAmount}`]: `${tokenA?.symbol}:${tokenAAmount}`,
         }));
+        setIsChangeBalancesToken(false);
       } else {
+        setIsChangeBalancesToken(false);
         setMemoryzeTokenSwap(prev => ({
           ...prev,
           [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
@@ -935,6 +941,32 @@ export const useSwapHandler = () => {
     isSameToken,
     memoryzeTokenSwap,
   ]);
+
+  useEffect(() => {
+    if (!Number(tokenAAmount) || !Number(tokenBAmount) || !tokenA?.symbol || !tokenB?.symbol || !isChangeBalancesToken) return;
+    const isExactIn = type === "EXACT_IN";
+    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    estimateSwapRoute(changedAmount).then(result => {
+      const isError = result === null;
+      const expectedAmount = isError ? "" : result.amount;
+      if (!isError) {
+        if (isExactIn) {
+          setTokenBAmount(expectedAmount);
+          setMemoryzeTokenSwap(prev => ({
+            ...prev,
+            [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
+          }));
+        } else {
+          setMemoryzeTokenSwap(prev => ({
+            ...prev,
+            [`${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`]: `${tokenA?.symbol}:${tokenAAmount}`,
+          }));
+          setTokenAAmount(expectedAmount);
+        }
+        setIsChangeBalancesToken(false);
+      }
+    });
+  }, [tokenAAmount, tokenBAmount, type, tokenA?.symbol, tokenB?.symbol, isChangeBalancesToken]);
   return {
     slippage,
     connectedWallet,

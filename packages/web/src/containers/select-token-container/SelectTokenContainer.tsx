@@ -25,7 +25,7 @@ export interface SortedProps extends TokenModel {
 
 export const ORDER = [GNOT_SYMBOL, GNS_SYMBOL, "BAR", "BAZ"];
 
-const customSort = (a: TokenModel, b: TokenModel) => {
+export const customSort = (a: TokenModel, b: TokenModel) => {
   const symbolA = a.symbol.toUpperCase();
   const symbolB = b.symbol.toUpperCase();
 
