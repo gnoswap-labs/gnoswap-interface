@@ -48,6 +48,7 @@ const TokenSwapContainer: React.FC = () => {
     isLoading,
     swapValue,
     setSwapRateAction,
+    setTokenAAmount,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -56,7 +57,9 @@ const TokenSwapContainer: React.FC = () => {
       tokenB: null,
       type: "EXACT_IN",
     });
+    setTokenAAmount("");
   }, []);
+
   useEffect(() => {
     if (isFetched) {
       let request = {};

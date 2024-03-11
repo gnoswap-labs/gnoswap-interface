@@ -57,7 +57,6 @@ export const useSwapHandler = () => {
   });
   const [openedConfirmModal, setOpenedConfirModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const { setNotice } = useNotice();
   const {
     connected: connectedWallet,
@@ -1000,5 +999,6 @@ export const useSwapHandler = () => {
     tokenBAmount,
     swapValue,
     setSwapRateAction,
+    setTokenAAmount,
   };
 };

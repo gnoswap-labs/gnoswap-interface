@@ -10,7 +10,6 @@ import { TokenModel } from "@models/token/token-model";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
-import { convertToMB } from "@utils/stake-position-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
@@ -18,7 +17,7 @@ import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { useRouter } from "next/router";
 import { isEmptyObject } from "@utils/validation-utils";
 
@@ -147,10 +146,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertToMB(
-                formatUsdNumber3Digits(tokenPrices[token.path].usd),
-                10,
-              )}`,
+              content: `${toUnitFormat(tokenPrices[token.path].usd, true, false)}`,
             }
           : {
               token: {
