@@ -35,12 +35,12 @@ describe("mathSybmolAbsFormat", () => {
 describe("The toUnitFormat function returns a value represented in numeric units and up to two decimal places.", () => {
   test("12345.6789 to $12.35K", () => {
     const num = 12345.6789;
-    expect(toUnitFormat(num, true)).toBe("$12.35K");
+    expect(toUnitFormat(num, true, true)).toBe("$12.35K");
   });
 
   test("-12345.6789 to -12.35K", () => {
     const num = -12345.6789;
-    expect(toUnitFormat(num, false)).toBe("-12.35K");
+    expect(toUnitFormat(num, false, true)).toBe("-12.35K");
   });
 });
 
