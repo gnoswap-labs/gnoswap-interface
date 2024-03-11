@@ -58,28 +58,25 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     return <EarnMyPositionNoLiquidity account={account} />;
   }
 
-  if (positions.length > 0) {
-    return (
-      <MyPositionCardList
-        positions={positions}
-        isFetched={fetched}
-        isLoading={loading}
-        currentIndex={currentIndex}
-        movePoolDetail={movePoolDetail}
-        mobile={mobile}
-        divRef={divRef}
-        onScroll={onScroll}
-        showPagination={showPagination}
-        showLoadMore={showLoadMore}
-        width={width}
-        loadMore={loadMore}
-        onClickLoadMore={onClickLoadMore}
-        themeKey={themeKey}
-      />
-    );
-  }
+  return (
+    <MyPositionCardList
+      positions={positions}
+      isFetched={fetched}
+      isLoading={loading}
+      currentIndex={currentIndex}
+      movePoolDetail={movePoolDetail}
+      mobile={mobile}
+      divRef={divRef}
+      onScroll={onScroll}
+      showPagination={showPagination}
+      showLoadMore={showLoadMore}
+      width={width}
+      loadMore={loadMore}
+      onClickLoadMore={onClickLoadMore}
+      themeKey={themeKey}
+    />
+  );
 
-  return <></>;
 };
 
 export default EarnMyPositionsContent;

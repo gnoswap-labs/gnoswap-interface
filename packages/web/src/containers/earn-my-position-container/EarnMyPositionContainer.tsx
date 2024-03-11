@@ -11,6 +11,7 @@ import { ValuesType } from "utility-types";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
+import { useLoading } from "@hooks/common/use-loading";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -47,6 +48,7 @@ const EarnMyPositionContainer: React.FC<
     const [mobile, setMobile] = useState(false);
     const themeKey = useAtomValue(ThemeState.themeKey);
     const [isClosed, setIsClosed] = useState(false);
+    const { isLoadingCommon } = useLoading();
 
     const isOtherPosition = useMemo(() => {
       return Boolean(address) && address !== account?.address;
@@ -106,7 +108,7 @@ const EarnMyPositionContainer: React.FC<
     const handleScroll = () => {
       if (divRef.current) {
         const currentScrollX = divRef.current.scrollLeft;
-        setCurrentIndex(Math.min(Math.floor(currentScrollX / 220) + 1, positions.length));
+        setCurrentIndex(Math.min(Math.floor(currentScrollX / 332) + 1, positions.length));
       }
     };
 
@@ -157,7 +159,7 @@ const EarnMyPositionContainer: React.FC<
         connected={connected}
         availableStake={availableStake}
         connect={connect}
-        loading={loading || loadingPosition}
+        loading={loading || loadingPosition || isLoadingCommon}
         fetched={isFetchedPools && isFetchedPosition}
         isError={isError}
         positions={dataMapping}

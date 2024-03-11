@@ -282,7 +282,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
     const myTokenAAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenAMyAmount);
     const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenBMyAmount);
-
     const tickSpacing = getTickSpacing();
     let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
     if (isSwap) {
@@ -495,8 +494,8 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
       <div className="header mt-8">
         <div className="row">
           <span className="token token-title">Token</span>
-          <span className="amount total-amount">Amount</span>
-          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount mr-3">My Amount</span> : ""}
+          <span className="amount total-amount">Total Amt.</span>
+          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount mr-3">Position{"'"}s Amt.</span> : ""}
           <span className="price-range">Price Range</span>
         </div>
       </div>
@@ -513,7 +512,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount mr-3">
             <span className="hidden">{tooltipInfo.myTokenAAmount || "0"}</span>
           </span> : ""}
-          <span className="price-range">{tokenAPriceRangeStr}</span>
+          <span className="price-range" style={tokenAPriceRangeStr.length > 21 ? { fontSize: "12px"} : {}}>{tokenAPriceRangeStr}</span>
         </div>
         <div className="row">
           <span className="token">
@@ -527,7 +526,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount  mr-3">
             <span className="hidden">{tooltipInfo.myTokenBAmount || "0"}</span>
           </span> : ""}
-          <span className="price-range">{tokenBPriceRangeStr}</span>
+          <span className="price-range" style={tokenBPriceRangeStr.length > 21 ? { fontSize: "12px"} : {}}>{tokenBPriceRangeStr}</span>
         </div>
       </div>
     </div>

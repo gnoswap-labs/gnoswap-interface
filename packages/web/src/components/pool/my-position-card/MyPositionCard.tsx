@@ -379,7 +379,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const minTickLabel = useMemo(() => {
-    return (!isSwap ? minTickRate : -minTickRate) > 1000
+    return (!isSwap ? -minTickRate : minTickRate) > 1000
       ? ">999%"
       : `${minTickRate < -1 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
         ? "<1"

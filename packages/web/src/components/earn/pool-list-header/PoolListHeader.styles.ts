@@ -21,7 +21,9 @@ export const PoolHeaderWrapper = styled.div`
       height: 24px;
     }
   }
-
+  .select-tab-wrapper {
+    overflow-x: scroll;
+  }
   h2 {
     ${fonts.h5};
     ${media.mobile} {

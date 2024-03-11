@@ -14,7 +14,11 @@ import {
 import BarAreaGraph from "../bar-area-graph/BarAreaGraph";
 import { useMemo, useState } from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { makeSwapFeeTierByTickSpacing, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import {
+  makeSwapFeeTierByTickSpacing,
+  tickToPrice,
+  tickToPriceStr,
+} from "@utils/swap-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
@@ -40,19 +44,16 @@ export function estimateTick(tick: number, width: number) {
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
   position,
   movePoolDetail,
-  mobile,
   currentIndex,
   themeKey,
 }) => {
-
-  const GRAPH_WIDTH = mobile ? 226 : 290;
+  const GRAPH_WIDTH = 290;
   const GRAPH_HEIGHT = 80;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
   const { tokenPrices } = useTokenData();
   const [viewMyRange, setViewMyRange] = useState(false);
-
 
   // fake close
   const inRange: boolean | null = useMemo(() => {
@@ -92,7 +93,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return 0;
     }
     const minPrice = tickToPrice(position.tickLower);
-    return Math.round(((currentPrice - minPrice) / currentPrice) * 100);
+    return (((currentPrice - minPrice) / currentPrice) * 100);
   }, [currentPrice, position.tickLower]);
 
   const maxTickRate = useMemo(() => {
@@ -100,19 +101,25 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return 999;
     }
     const maxPrice = tickToPrice(position.tickUpper);
-    return Math.round(((maxPrice - currentPrice) / currentPrice) * 100);
+    return ((maxPrice - currentPrice) / currentPrice) * 100;
   }, [currentPrice, position.tickUpper]);
 
   const minTickLabel = useMemo(() => {
-    return minTickRate > 1000 ? ">999%" : `${minTickRate < 0 ? "+" : ""}${minTickRate * -1}%`;
+    return minTickRate * -1 > 1000
+      ? ">999%"
+      : `${minTickRate < 0 ? "+" : ""}${
+          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+            ? "<1"
+            : Math.round(minTickRate * -1)
+        }%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999
       ? `>${maxTickRate}%`
       : maxTickRate >= 1000
-        ? ">999%"
-        : `${maxTickRate > 0 ? "+" : ""}${maxTickRate}%`;
+      ? ">999%"
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -135,7 +142,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -153,7 +160,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-      (GRAPH_WIDTH / 2) +
+        (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -226,7 +233,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (getMinTick === null) {
       return "";
     }
-    return (minTickRate > 0 || isFullRange) ? "negative" : "positive";
+    return minTickRate > 0 || isFullRange ? "negative" : "positive";
   }, [getMinTick, minTickRate, isFullRange]);
 
   const endClass = useMemo(() => {
@@ -237,9 +244,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
-    if (Number.isInteger(Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)))
-      return `$${Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)}`;
-    return formatUsdNumber((Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)).toFixed(2));
+    if (
+      Number.isInteger(
+        Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd),
+      )
+    )
+      return `$${
+        Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)
+      }`;
+    return formatUsdNumber(
+      (
+        Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)
+      ).toFixed(2),
+    );
   }, [position.unclaimedFee0Usd, position.unclaimedFee1Usd]);
 
   return (
@@ -274,8 +291,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
+                  ? RANGE_STATUS_OPTION.IN
+                  : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>
