@@ -106,9 +106,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   const positionRewards = useMemo(() => {
     return positions.flatMap(position => position.rewards);
   }, [positions]);
-
   const totalStakedRewardUSD = useMemo(() => {
-    return positionRewards.reduce((accum, current) => {
+    return positionRewards.filter(_ => ["EXTERNAL", "STAKING"].includes(_.rewardType)).reduce((accum, current) => {
       if (current.rewardType !== "STAKING") {
         return accum;
       }
