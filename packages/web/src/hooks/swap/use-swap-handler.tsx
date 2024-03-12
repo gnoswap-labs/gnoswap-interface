@@ -31,8 +31,8 @@ const findKeyByValue = (
 };
 
 export const useSwapHandler = () => {
-  const [memoryzeTokenSwap, setMemoryzeTokenSwap] = useAtom(
-    SwapState.memoryzeTokenSwap,
+  const [memorizeTokenSwap, setMemorizeTokenSwap] = useAtom(
+    SwapState.memorizeTokenSwap,
   );
   const router = useRouter();
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -406,7 +406,7 @@ export const useSwapHandler = () => {
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenB =
-        memoryzeTokenSwap?.[`${tokenA?.symbol}:${value}:${tokenB?.symbol}`];
+        memorizeTokenSwap?.[`${tokenA?.symbol}:${value}:${tokenB?.symbol}`];
       if (memoryzeTokenB) {
         setTokenAAmount(value);
         setTokenBAmount(memoryzeTokenB.split(":")[1]);
@@ -442,7 +442,7 @@ export const useSwapHandler = () => {
       }));
       setTokenAAmount(value);
     },
-    [isSameToken, memoryzeTokenSwap, tokenA],
+    [isSameToken, memorizeTokenSwap, tokenA],
   );
   useEffect(() => {
     setSwapValue(prev => ({
@@ -454,7 +454,7 @@ export const useSwapHandler = () => {
   const changeTokenBAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenA =
-        memoryzeTokenSwap?.[`${tokenB?.symbol}:${value}:${tokenB?.symbol}`];
+        memorizeTokenSwap?.[`${tokenB?.symbol}:${value}:${tokenB?.symbol}`];
       if (memoryzeTokenA) {
         setTokenBAmount(value);
         setTokenAAmount(memoryzeTokenA.split(":")[1]);
@@ -489,7 +489,7 @@ export const useSwapHandler = () => {
       }));
       setTokenBAmount(value);
     },
-    [isSameToken, memoryzeTokenSwap, tokenB],
+    [isSameToken, memorizeTokenSwap, tokenB],
   );
 
   const changeTokenA = useCallback(
@@ -555,18 +555,18 @@ export const useSwapHandler = () => {
       const keyForValue =
         findKeyByValue(
           `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`,
-          memoryzeTokenSwap,
+          memorizeTokenSwap,
         ) ?? "";
-      if (memoryzeTokenSwap?.[keyForValue]) {
+      if (memorizeTokenSwap?.[keyForValue]) {
         setTokenAAmount(keyForValue?.split(":")?.[1]);
-        setTokenBAmount(memoryzeTokenSwap?.[keyForValue]?.split(":")?.[1]);
+        setTokenBAmount(memorizeTokenSwap?.[keyForValue]?.split(":")?.[1]);
         return;
       }
     } else {
       const keyForValue = `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`;
-      if (memoryzeTokenSwap?.[keyForValue]) {
+      if (memorizeTokenSwap?.[keyForValue]) {
         setTokenAAmount(tokenBAmount);
-        setTokenBAmount(memoryzeTokenSwap?.[keyForValue]?.split(":")?.[1]);
+        setTokenBAmount(memorizeTokenSwap?.[keyForValue]?.split(":")?.[1]);
         return;
       }
     }
@@ -591,7 +591,7 @@ export const useSwapHandler = () => {
     type,
     tokenAAmount,
     tokenBAmount,
-    memoryzeTokenSwap,
+    memorizeTokenSwap,
   ]);
 
   const copyURL = async () => {
@@ -823,7 +823,7 @@ export const useSwapHandler = () => {
   }, []);
   useEffect(() => {
     if (
-      memoryzeTokenSwap?.[
+      memorizeTokenSwap?.[
         `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_IN"
@@ -831,7 +831,7 @@ export const useSwapHandler = () => {
       return;
     }
     if (
-      memoryzeTokenSwap?.[
+      memorizeTokenSwap?.[
         `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`
       ] &&
       type === "EXACT_OUT"
@@ -848,7 +848,7 @@ export const useSwapHandler = () => {
     }
   }, [
     defaultTokenAAmount,
-    memoryzeTokenSwap,
+    memorizeTokenSwap,
     tokenA?.symbol,
     tokenAAmount,
     tokenBAmount,
@@ -862,7 +862,7 @@ export const useSwapHandler = () => {
       return;
     }
     if (
-      memoryzeTokenSwap?.[
+      memorizeTokenSwap?.[
         `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_IN"
@@ -871,7 +871,7 @@ export const useSwapHandler = () => {
       return;
     }
     if (
-      memoryzeTokenSwap?.[
+      memorizeTokenSwap?.[
         `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_OUT"
@@ -917,14 +917,14 @@ export const useSwapHandler = () => {
         !!Number(tokenAAmount || 0) &&
         !!Number(tokenBAmount || 0)
       ) {
-        setMemoryzeTokenSwap(prev => ({
+        setMemorizeTokenSwap(prev => ({
           ...prev,
           [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
         }));
         setIsChangeBalancesToken(false);
       } else {
         setIsChangeBalancesToken(false);
-        setMemoryzeTokenSwap(prev => ({
+        setMemorizeTokenSwap(prev => ({
           ...prev,
           [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
         }));
@@ -938,7 +938,7 @@ export const useSwapHandler = () => {
     tokenB,
     tokenBAmount,
     isSameToken,
-    memoryzeTokenSwap,
+    memorizeTokenSwap,
   ]);
 
   useEffect(() => {
@@ -951,12 +951,12 @@ export const useSwapHandler = () => {
       if (!isError) {
         if (isExactIn) {
           setTokenBAmount(expectedAmount);
-          setMemoryzeTokenSwap(prev => ({
+          setMemorizeTokenSwap(prev => ({
             ...prev,
             [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
           }));
         } else {
-          setMemoryzeTokenSwap(prev => ({
+          setMemorizeTokenSwap(prev => ({
             ...prev,
             [`${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`]: `${tokenA?.symbol}:${tokenAAmount}`,
           }));

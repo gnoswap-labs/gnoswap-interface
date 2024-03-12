@@ -22,7 +22,7 @@ import BigNumber from "bignumber.js";
 import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { encriptId } from "@utils/common";
+import { encryptId } from "@utils/common";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -316,7 +316,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
     if (!initialized) {
-      const convertPath = encriptId(router.query["pool-path"] as string);
+      const convertPath = encryptId(router.query["pool-path"] as string);
       const splitPath: string[] = convertPath.split(":") || [];
       const currentTokenA = tokens.find(token => token.path === splitPath[0]) || null;
       const currentTokenB = tokens.find(token => token.path === splitPath[1]) || null;

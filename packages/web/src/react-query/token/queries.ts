@@ -8,7 +8,7 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { QUERY_KEY } from "./types";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { IBalancesByAddressReponse } from "@repositories/token/response/balance-by-address-response";
+import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
 
 export const useGetTokensList = (
   options?: UseQueryOptions<TokenListResponse, Error>,
@@ -68,7 +68,7 @@ export const useGetChainList = (
 
 export const useGetTokenByPath = (
   path: string,
-  option?: UseQueryOptions<ITokenResponse, Error>
+  option?: UseQueryOptions<ITokenResponse, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
   return useQuery<ITokenResponse, Error>({
@@ -80,10 +80,10 @@ export const useGetTokenByPath = (
 
 export const useGetBalancesByAddress = (
   address: string,
-  option?: UseQueryOptions<IBalancesByAddressReponse, Error>
+  option?: UseQueryOptions<IBalancesByAddressResponse, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
-  return useQuery<IBalancesByAddressReponse, Error>({
+  return useQuery<IBalancesByAddressResponse, Error>({
     queryKey: [QUERY_KEY.tokenBalancesByAddress, address],
     queryFn: () => tokenRepository.getBalancesByAddress(address),
     ...option,

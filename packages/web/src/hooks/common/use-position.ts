@@ -23,7 +23,7 @@ export const usePosition = (positions: PoolPositionModel[]) => {
     return positionRepository
       .claimAll({
         positions: claimablePositions,
-        receipient: address,
+        recipient: address,
       })
       .catch(() => null);
   }, [account?.address, positionRepository, positions]);
