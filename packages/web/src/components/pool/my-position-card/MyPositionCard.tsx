@@ -494,19 +494,28 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 className={!position.staked ? "visible-badge" : ""}
               />
             </div>
-            {!isClosed && (
+            <div className="flex-button">
               <SelectBox
-                current={"Manage"}
-                items={[
-                  "Reposition",
-                  "Increase Liquidity",
-                  "Decrease Liquidity",
-                ]}
+                current={"Copy Positioning"}
+                items={[]}
                 select={() => {}}
-                render={period => <ManageItem>{period}</ManageItem>}
-                className={!inRange ? "out-range" : ""}
+                render={() => null}
+                className="disable-select"
               />
-            )}
+              {!isClosed && (
+                <SelectBox
+                  current={"Manage"}
+                  items={[
+                    "Reposition",
+                    "Increase Liquidity",
+                    "Decrease Liquidity",
+                  ]}
+                  select={() => {}}
+                  render={period => <ManageItem>{period}</ManageItem>}
+                  className={!inRange ? "out-range" : ""}
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className="info-wrap">

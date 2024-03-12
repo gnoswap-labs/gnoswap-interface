@@ -73,7 +73,21 @@ export const MyPositionCardWrapper = styled.div<Props>`
         }
         color: ${({ theme, isClosed }) => !isClosed ? theme.color.text02 : theme.color.text10};
       }
-      
+      .flex-button {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 8px;
+        .disable-select {
+          .icon-arrow {
+            display: none;
+          }
+          .current {
+            margin-right: 0px;
+          }
+          .select-item {
+            display: none;
+          }
+        }
+      }
       .select-box {
         width: auto;
         height: 36px;
