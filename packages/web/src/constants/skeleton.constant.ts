@@ -293,6 +293,9 @@ export const MOBILE_TOKEN_TD_WIDTH = [
 export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
 export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
 
+export const LEADERBOARD_TD_WIDTH = [120, 400, 200, 200, 200, 240];
+export const MOBILE_LEADERBOARD_TD_WIDTH = [50, 150, 128];
+
 export const SHAPE_TYPES = {
   CIRCLE: "circle",
   ROUNDED_SQUARE: "rounded-square",
@@ -305,6 +308,7 @@ export const TABLE_TITLE = {
   ASSET_TABLE: "asset-table",
   TOKEN_TABLE: "token-table",
   ACTIVITY_TABLE: "activity-table",
+  LEADERBOARD_TABLE: "leaderboard-table",
 };
 export type TABLE_TITLE = ValuesType<typeof TABLE_TITLE>;
 
@@ -453,6 +457,62 @@ export const TOKEN_INFO = {
   ],
 };
 
+export const LEADER_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 6,
+  tdWidth: LEADERBOARD_TD_WIDTH,
+  list: [
+    { width: 120 / 4, type: SHAPE_TYPES.ROUNDED_SQUARE, className: "center" },
+    {
+      width: 400 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 200 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 200 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 200 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 240 / 3,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      className: "padding-50",
+    },
+  ],
+};
+
+export const MOBILE_LEADER_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 6,
+  tdWidth: MOBILE_LEADERBOARD_TD_WIDTH,
+  list: [
+    { width: 50 / 2, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    {
+      width: 150,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "flex-grow start",
+    },
+    {
+      width: 128,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+  ],
+};
+
 export const MOBILE_TOKEN_INFO = {
   title: TABLE_TITLE.TOKEN_TABLE,
   total: 15,
@@ -481,6 +541,20 @@ export const ACTIVITY_INFO = {
   title: TABLE_TITLE.ACTIVITY_TABLE,
   total: 15,
   tdWidth: ACTIVITY_TD_WIDTH,
+  list: [
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+  ],
+};
+
+export const LEADERBOARD_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 15,
+  tdWidth: LEADERBOARD_TD_WIDTH,
   list: [
     { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
