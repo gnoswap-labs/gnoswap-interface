@@ -36,8 +36,8 @@ const PricePerformanceList: React.FC<PricePerformanceListProps> = ({
             >
               {item.amount.value}
             </span>}
-            {loading && <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />}
-            {loading && <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />}
+            {loading && <span css={pulseSkeletonStyle({ h: 22, w: "100px!important" })} />}
+            {loading && <span css={pulseSkeletonStyle({ h: 22, w: "100px!important" })} />}
             {!loading && <span
               className={cx({
                 negative: item.change.status === MATH_NEGATIVE_TYPE.NEGATIVE,

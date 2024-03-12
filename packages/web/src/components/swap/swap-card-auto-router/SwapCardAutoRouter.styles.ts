@@ -98,6 +98,16 @@ export const AutoRouterWrapper = styled.div`
     }
     color: ${({ theme }) => theme.color.text04};
   }
+  .loading-spin {
+    width: 36px;
+    height: 36px;
+    margin: 28px auto;
+    &::before {
+      width: 28px;
+      height: 28px;
+      box-shadow: none;
+    }
+  }
 `;
 
 export const SwapDivider = styled.div`

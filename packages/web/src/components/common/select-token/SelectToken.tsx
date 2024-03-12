@@ -73,7 +73,6 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     },
     [tokenPrices],
   );
-
   const onClickClose = useCallback(() => {
     close();
   }, [close]);

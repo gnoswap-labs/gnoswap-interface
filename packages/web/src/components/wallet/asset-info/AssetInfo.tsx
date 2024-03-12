@@ -17,6 +17,9 @@ interface AssetInfoProps {
   withdraw: (asset: Asset) => void;
   breakpoint: DEVICE_TYPE;
 }
+function removeTrailingZeros(value: string) {
+  return value.replace(/\.?0+$/, "");
+}
 
 const AssetInfo: React.FC<AssetInfoProps> = ({
   asset,
@@ -25,7 +28,6 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   breakpoint,
 }) => {
   const { logoURI, name, symbol, balance, type, path, price } = asset;
-
   const onClickItem = useCallback((symbol: string) => {
     location.href = `/tokens/${symbol}?tokenB=${path}&direction=EXACT_IN`;
   }, []);
@@ -38,8 +40,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
-  const convertBalance = BigNumber((balance ?? "").toString()).toFormat(6);
-  const priceData = price === "-" ? price : `$${price}`;
+  const convertBalance = removeTrailingZeros(BigNumber((balance ?? "").toString()).toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6)) || 0;
+  const priceData = ["-", "<$0.01"].includes(price) ? price : `$${price}`;
 
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
@@ -74,7 +76,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
-  ) : breakpoint === DEVICE_TYPE.TABLET ? (
+  ) : breakpoint !== DEVICE_TYPE.MOBILE ? (
     <AssetInfoWrapper>
       <TableColumn
         className="left"
@@ -93,8 +95,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
-        <DepositButton onClick={onClickDeposit} />
+      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
+        <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[4]}>
         <DepositButton onClick={onClickDeposit} />
@@ -122,10 +124,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
-        <DepositButton onClick={onClickDeposit} />
+      <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
+        <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[4]}>
+        <DepositButton onClick={onClickDeposit} />
+      </TableColumn>
+      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[5]}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>

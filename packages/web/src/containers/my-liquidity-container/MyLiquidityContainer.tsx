@@ -20,6 +20,7 @@ import {
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useGetUsernameByAddress } from "@query/address/queries";
+import { toUnitFormat } from "@utils/number-utils";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -88,12 +89,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   };
 
   const claimAllReward = useCallback(() => {
+    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableAmount), 0);
     const data = {
-      tokenASymbol: positions[0]?.pool?.tokenA?.symbol,
-      tokenBSymbol: positions[0]?.pool?.tokenA?.symbol,
-      tokenAAmount: "0.12",
-      tokenBAmount: "0.13",
+      amount: toUnitFormat(amount, true, true),
     };
+
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
       if (response) {

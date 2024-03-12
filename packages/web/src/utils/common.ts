@@ -132,7 +132,7 @@ export function countPoints(
 
   let count = 0;
 
-  while (currentDateTime <= endDate) {
+  while (currentDateTime < endDate) {
     count++;
     currentDateTime.setMinutes(currentDateTime.getMinutes() + intervalMinutes);
   }

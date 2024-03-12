@@ -273,20 +273,20 @@ interface Props {
 export const TokenInfoWrapper = styled.div<Props>`
   overflow-x: hidden;
   max-width: ${({ maxWidth }) => {
-    return `calc(460px - 150px - ${maxWidth}px)`;
+    return `calc(460px - 120px - ${maxWidth}px)`;
   }};
   .token-path {
     max-width: ${({ tokenNameWidthList, maxWidth }) => {
-      return `calc(460px - 158px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+      return `calc(460px - 128px - ${maxWidth}px - ${tokenNameWidthList}px)`;
     }};
   }
   ${media.mobile} {
     max-width: ${({ maxWidth }) => {
-      return `calc(328px - 86px - ${maxWidth}px)`;
+      return `calc(328px - 76px - ${maxWidth}px)`;
     }};
     .token-path {
       max-width: ${({ tokenNameWidthList, maxWidth }) => {
-        return `calc(328px - 105px - ${maxWidth}px - ${tokenNameWidthList}px)`;
+        return `calc(328px - 95px - ${maxWidth}px - ${tokenNameWidthList}px)`;
       }};
     }
   }

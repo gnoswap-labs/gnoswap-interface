@@ -33,6 +33,11 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
     if (datas.length < 2) {
       return "UP";
     }
+    if (status === MATH_NEGATIVE_TYPE.NONE) {
+      if (datas[0] < datas[datas.length - 1]) {
+        return "UP";
+      } else return "DOWN";
+    }
 
     if (status === MATH_NEGATIVE_TYPE.POSITIVE) {
       return "UP";

@@ -3,6 +3,7 @@ import RemovePositionModal from "@components/remove/remove-position-modal/Remove
 import { makeBroadcastRemoveMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useRouter } from "next/router";
@@ -20,6 +21,7 @@ const RemovePositionModalContainer = ({
   const router = useRouter();
   const clearModal = useClearModal();
   const { broadcastRejected, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
+  const { pooledTokenInfos } = useRemoveData({ positions });
 
   const close = useCallback(() => {
     clearModal();
@@ -31,6 +33,7 @@ const RemovePositionModalContainer = ({
       return null;
     }
     const lpTokenIds = positions.map(position => position.id);
+
     const result = await positionRepository.removeLiquidity({
       lpTokenIds,
       caller: address
@@ -39,18 +42,33 @@ const RemovePositionModalContainer = ({
       if (result.code === 0) {
         broadcastPending();
         setTimeout(() => {
-          broadcastSuccess(makeBroadcastRemoveMessage("success"));
+          broadcastSuccess(makeBroadcastRemoveMessage("success", {
+            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
+            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+          }));
           router.push(router.asPath.replace("/remove", ""));
           clearModal();
         }, 1000);
       } else if (result.code === 4000 && result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
         broadcastPending();
         setTimeout(() => {
-          broadcastError(makeBroadcastRemoveMessage("error"));
+          broadcastError(makeBroadcastRemoveMessage("error", {
+            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
+            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+          }));
           clearModal();
         }, 1000);
       } else {
-        broadcastRejected(makeBroadcastRemoveMessage("error"));
+        broadcastRejected(makeBroadcastRemoveMessage("error", {
+          tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+          tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
+          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+        }));
       }
     }
   }, [account?.address, clearModal, positionRepository, positions, router]);

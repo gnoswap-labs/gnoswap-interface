@@ -35,6 +35,19 @@ export const FeeWrapper = styled.div`
     width: 100%;
     align-self: stretch;
   }
+  .protocol {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text04};
+
+    svg {
+      width: 16px;
+      height: 16px;
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
+  }
   .auto-router {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
@@ -68,4 +81,10 @@ export const SwapDivider = styled.div`
   height: 1px;
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

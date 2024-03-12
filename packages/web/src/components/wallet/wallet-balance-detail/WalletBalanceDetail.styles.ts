@@ -15,6 +15,24 @@ export const WalletBalanceDetailWrapper = styled.div`
   ${media.mobile} {
     flex-direction: column;
   }
+  .loading-button {
+    width: 20px;
+    height: 20px;
+    background: conic-gradient(from 0deg at 50% 50.63%, #FFFFFF 0deg, #233DBD 360deg);
+    &::before {
+      width: 14.8px;
+      height: 14.8px;
+      background-color: ${({ theme }) => theme.color.background04Hover};
+    }
+  }
+  .claimable-rewards {
+    .value {
+      max-width: 180px;
+      @media (max-width: 968px) {
+        max-width: max-content;
+      }
+    }
+  }
 `;
 
 export const InfoWrapper = styled.div`
@@ -77,6 +95,7 @@ export const InfoWrapper = styled.div`
       }
       ${media.mobile} {
         ${fonts.body6};
+        font-weight: 500;
       }
     }
     .button-wrapper {

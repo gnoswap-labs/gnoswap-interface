@@ -14,7 +14,7 @@ export interface PositionRepository {
 
   unstakePositions: (
     request: UnstakePositionsRequest,
-  ) => Promise<string | null>;
+  ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
   removeLiquidity: (request: RemoveLiquidityReqeust) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 }

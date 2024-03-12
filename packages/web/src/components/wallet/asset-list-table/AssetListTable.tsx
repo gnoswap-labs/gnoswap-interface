@@ -9,6 +9,8 @@ import { noDataText } from "@components/earn/pool-list-table/PoolListTable.style
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
   ASSET_INFO,
+  ASSET_INFO_MOBILE,
+  ASSET_INFO_TABLET,
   ASSET_TD_WIDTH,
   MOBILE_ASSET_TD_WIDTH,
   TABLET_ASSET_TD_WIDTH,
@@ -82,7 +84,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
             tdWidth={
               breakpoint === DEVICE_TYPE.WEB
                 ? ASSET_TD_WIDTH[idx]
-                : breakpoint === DEVICE_TYPE.TABLET
+                : breakpoint !== DEVICE_TYPE.MOBILE
                 ? TABLET_ASSET_TD_WIDTH[idx]
                 : MOBILE_ASSET_TD_WIDTH[idx]
             }
@@ -117,7 +119,7 @@ const AssetListTable: React.FC<AssetListTableProps> = ({
               breakpoint={breakpoint}
             />
           ))}
-        {!isFetched && <TableSkeleton info={ASSET_INFO} />}
+        {!isFetched && <TableSkeleton className="skeleton" info={breakpoint === DEVICE_TYPE.WEB ? ASSET_INFO : breakpoint !== DEVICE_TYPE.MOBILE ? ASSET_INFO_TABLET : ASSET_INFO_MOBILE} breakpoint={breakpoint}/>}
       </div>
     </AssetListTableWrapper>
   );

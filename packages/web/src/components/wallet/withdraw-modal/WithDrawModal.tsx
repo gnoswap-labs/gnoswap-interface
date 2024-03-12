@@ -15,8 +15,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { convertToMB } from "@utils/stake-position-utils";
 import { addressValidationCheck } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
-import React, { useCallback, useRef, useState } from "react";
-import useWithdrawTokens from "./useWithdrawTokens";
+import React, { useCallback, useRef, useState, useMemo } from "react";
 import {
   BoxDescription,
   WithDrawModalBackground,
@@ -51,6 +50,9 @@ interface Props {
   connected: boolean;
   changeToken: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
+  handleSubmit: (amount: string, address: string) => void;
+  setIsConfirm: () => void;
+  isConfirm: boolean;
 }
 
 function isAmount(str: string) {
@@ -65,18 +67,16 @@ const WithDrawModal: React.FC<Props> = ({
   connected,
   changeToken,
   callback,
+  handleSubmit,
+  setIsConfirm,
+  isConfirm,
 }) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [amount, setAmount] = useState("");
   const [address, setAddress] = useState("");
 
-  const {
-    isConfirm,
-    setIsConfirm,
-    onSubmit: handleSubmit,
-  } = useWithdrawTokens();
-
   const { account } = useWallet();
+
   const { tokens, tokenPrices, displayBalanceMap } = useTokenData();
 
   useEscCloseModal(close);
@@ -103,16 +103,8 @@ const WithDrawModal: React.FC<Props> = ({
   const onSubmit = () => {
     if (!withdrawInfo || !account?.address) return;
 
-    setIsConfirm(true);
-    handleSubmit(
-      {
-        fromAddress: account?.address,
-        toAddress: address,
-        token: withdrawInfo,
-        tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
-      },
-      withdrawInfo.type,
-    );
+    setIsConfirm();
+    handleSubmit(amount, address);
   };
 
   const getNativeToken = () => {
@@ -120,11 +112,15 @@ const WithDrawModal: React.FC<Props> = ({
     return tokens.find(token => token.type === "native");
   };
 
+  const currentAvailableBalance =
+  displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null;
+
   const isDisabledWithdraw =
     !Number(amount ?? 0) ||
     !address ||
     !withdrawInfo ||
-    !addressValidationCheck(address);
+    !addressValidationCheck(address) ||
+    BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
   const estimateFee = 0.000001;
   const nativeToken = getNativeToken();
   const estimateFeeUSD =
@@ -141,14 +137,31 @@ const WithDrawModal: React.FC<Props> = ({
         )
       : undefined;
 
-  const currentAvailableBalance =
-    displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null;
 
   const handleEnterAllBalanceAvailable = () => {
     if (currentAvailableBalance) {
       setAmount(`${currentAvailableBalance}`);
     }
   };
+  const text = useMemo(() => {
+
+    if (!withdrawInfo) {
+      return "Select a Token";
+    }
+    if (amount === "") {
+      return "Enter Amount";
+    }
+    if (Number(amount) < 0.000001) {
+      return "Amount Too Low";
+    }
+    if ((currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) || !Number(amount || 0)) {
+      return "Insufficient Balance";
+    }
+    if (address === "") return "Enter an Address";
+    if (!addressValidationCheck(address)) return "Invalid Address";
+    return "Withdraw";
+
+  }, [address, amount, currentAvailableBalance, withdrawInfo]);
 
   if (isConfirm) {
     return null;
@@ -277,7 +290,7 @@ const WithDrawModal: React.FC<Props> = ({
             <Button
               disabled={isDisabledWithdraw}
               onClick={onSubmit}
-              text="Withdraw"
+              text={text}
               className="btn-withdraw"
               style={{
                 fullWidth: true,

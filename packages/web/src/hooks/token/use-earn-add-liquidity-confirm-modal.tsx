@@ -222,8 +222,8 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastLoading(makeBroadcastAddLiquidityMessage("pending", {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: tokenAAmount,
-      tokenBAmount: tokenBAmount
+      tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
+      tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})
     }));
     const transaction = selectPool.isCreate ? createPool({
       tokenAAmount,
@@ -249,8 +249,8 @@ export const useEarnAddLiquidityConfirmModal = ({
             broadcastSuccess(makeBroadcastAddLiquidityMessage("success", {
               tokenASymbol: result.tokenA.symbol,
               tokenBSymbol: result.tokenB.symbol,
-              tokenAAmount: result.tokenAAmount,
-              tokenBAmount: result.tokenBAmount,
+              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
+              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
             }), moveToBack);
           }, 1000);
           return true;
@@ -258,8 +258,8 @@ export const useEarnAddLiquidityConfirmModal = ({
           broadcastRejected(makeBroadcastAddLiquidityMessage("error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
-            tokenAAmount: tokenAAmount,
-            tokenBAmount: tokenBAmount
+            tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
+            tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})
           }));
           return true;
         }
@@ -273,8 +273,8 @@ export const useEarnAddLiquidityConfirmModal = ({
         broadcastError(makeBroadcastAddLiquidityMessage("error", {
           tokenASymbol: tokenA.symbol,
           tokenBSymbol: tokenB.symbol,
-          tokenAAmount: tokenAAmount,
-          tokenBAmount: tokenBAmount
+          tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
+          tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})
         }));
       });
   }, [tokenA, tokenB, swapFeeTier, selectPool.tickSpacing, selectPool.minPrice, selectPool.maxPrice, selectPool.isCreate, selectPool.selectedFullRange, selectPool.startPrice, addLiquidity, tokenAAmount, tokenBAmount, slippage, createPool]);

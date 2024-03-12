@@ -152,6 +152,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         text={text}
         style={defaultStyle}
         onClick={openConnectWallet}
+        className="button-swap"
       />
     );
   }
@@ -162,6 +163,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         text={text}
         style={defaultStyle}
         onClick={switchNetwork}
+        className="button-swap"
       />
     );
   }
@@ -183,6 +185,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
       text={text}
       style={defaultStyle}
       onClick={openConfirmModal}
+      className="button-swap"
     />
   );
 };

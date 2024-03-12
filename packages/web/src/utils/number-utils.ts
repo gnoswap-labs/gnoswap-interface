@@ -4,7 +4,7 @@ import {
   unitsUpperCase,
 } from "@common/values/global-initial-value";
 import BigNumber from "bignumber.js";
-import { convertToMB } from "./stake-position-utils";
+import { convertToKMB, convertToMB } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
@@ -85,21 +85,22 @@ export const mathSybmolAbsFormat = (
 export const toUnitFormat = (
   value: BigNumber | string | number,
   usd = false,
+  isKMB = false,
 ): string => {
   if (!isNumber(value)) {
     // TODO : Error Check
-    return usd ? "$0.00" : "0";
+    return usd ? "$0" : "0";
   }
 
   const bigNumber = BigNumber(value);
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
 
-  if (wholeNumberLength >= 13)
-    return (
-      (usd ? "$" : "") +
-      bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
-      unitsUpperCase.trillion
-    );
+  // if (wholeNumberLength >= 13)
+  //   return (
+  //     (usd ? "$" : "") +
+  //     bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
+  //     unitsUpperCase.trillion
+  //   );
   if (wholeNumberLength >= 10)
     return (
       (usd ? "$" : "") +
@@ -112,15 +113,23 @@ export const toUnitFormat = (
       bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
       unitsUpperCase.million
     );
-  if (wholeNumberLength >= 4)
+  if (isKMB) {
+    if (wholeNumberLength >= 4)
     return (
       (usd ? "$" : "") +
       bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
       unitsUpperCase.thousand
     );
+  }
 
   // TODO : Else Return Type
-  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toString();
+  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0)) {
+    return (usd ? "<$" : "") +"0.01";
+  }
+  if (Number(bigNumber) === 0) {
+    return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
+  }
+  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed(2);
 };
 
 /**
@@ -207,16 +216,15 @@ export function matchInputNumber(value: string) {
 }
 
 export function prettyNumber(val: string | number) {
-  return Number(val).toLocaleString("en", {
-    maximumFractionDigits: 2,
-  });
+  return BigNumber(val).decimalPlaces(2).toFormat(Number(val) === 0 ? 0 : 2);
 }
 
-export function prettyNumberFloatInteger(val: string | number) {
+export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) {
+  const func = isKMB ? convertToKMB : convertToMB;
   if (Number.isInteger(Number(val))) {
-    return convertToMB(val.toString(), 0);
+    return func(val.toString());
   } else {
-    return convertToMB(val.toString());
+    return func(val.toString(), 6);
   }
 }
 
@@ -225,7 +233,7 @@ export function formatUsdNumber3Digits(val: string | number) {
     return String(val);
   }
   if (Number(val) >= 1) {
-    return (Math.floor(Number(val) * 100) / 100).toString();
+    return (Math.floor((Number(val) + 0.005) * 100) / 100).toFixed(2);
   }
   const stringVal = val.toString();
   for (let index = 0; index < stringVal.length; index++) {
@@ -245,4 +253,35 @@ export function formatNumberToLocaleString(inputNumber: Number | string) {
       // and set minimumFractionDigits to 6
       return inputNumber.toLocaleString(undefined, { maximumFractionDigits: 6 });
   }
+}
+
+export function convertLargePrice(val: string) {
+  if (Number(val) >= 1000000000) {
+    return ">$999,999,999.99";
+  }
+  return `${toUnitFormat(val || "0.00", true, false)}`;
+}
+
+
+export const formatUSDWallet = (
+  value: BigNumber | string | number,
+  usd = false,
+): string => {
+  if (!isNumber(value)) {
+    // TODO : Error Check
+    return usd ? "$0" : "0";
+  }
+
+  const bigNumber = BigNumber(value);
+  if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0)) {
+    return (usd ? "<$" : "") +"0.01";
+  }
+  if (bigNumber.isInteger()) {
+    return (usd ? "$" : "") + bigNumber.decimalPlaces(0).toString();
+  }
+  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFormat(2);
+};
+
+export function removeTrailingZeros(value: string) {
+  return value.replace(/\.?0+$/, "");
 }

@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+import { checkGnotPath } from "@utils/common";
 const GNOS_PATH = "gno.land/r/demo/gns" || "";
 
 const TOKEN_A: TokenModel = {
@@ -46,7 +47,7 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenA, setTokenA] = useState<TokenModel | null>(TOKEN_A);
   const [tokenAAmount, setTokenAAmount] = useState<string>("");
   const [tokenB, setTokenB] = useState<TokenModel | null>(TOKEN_B);
-  const [tokenBAmount, setTokenBAmount] = useState<string>("0");
+  const [tokenBAmount, setTokenBAmount] = useState<string>("");
   const [swapDirection, setSwapDirection] =
     useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
@@ -67,34 +68,32 @@ const HomeSwapContainer: React.FC = () => {
 
   const tokenBBalance = useMemo(() => {
     if (!connected) return "-";
+    if (isEmptyObject(displayBalanceMap)) {
+      return "-";
+    }
     if (tokenB && displayBalanceMap[tokenB.priceId]) {
       const balance = displayBalanceMap[tokenB.priceId] || 0;
       return BigNumber(balance).toFormat(tokenB.decimals);
-    }
-    if (isEmptyObject(displayBalanceMap)) {
-      return "-";
     }
     return "0";
   }, [connected, displayBalanceMap, tokenB]);
   
   const tokenAUSD = useMemo(() => {
-    if (!tokenA || !tokenPrices[tokenA.priceId]) {
+    if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceId)]) {
       return Number.NaN;
     }
     return BigNumber(tokenAAmount)
-      .multipliedBy(tokenPrices[tokenA.priceId].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceId)].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
-  
   const tokenBUSD = useMemo(() => {
-    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[tokenB.priceId]) {
+    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceId)]) {
       return Number.NaN;
     }
     return BigNumber(tokenBAmount)
-      .multipliedBy(tokenPrices[tokenB.priceId].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceId)].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
-
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
       tokenA,
@@ -126,11 +125,11 @@ const HomeSwapContainer: React.FC = () => {
   const swapNow = useCallback(() => {
     if (swapDirection === "EXACT_IN") {
       router.push(
-        `/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`,
+        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`, {},
       );
     } else {
       router.push(
-        `/swap?tokenA=${tokenA?.path}&tokenB=${tokenB?.path}&direction=EXACT_IN`,
+        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`,
       );
     }
   }, [router, swapDirection, tokenA, tokenB]);
@@ -139,8 +138,9 @@ const HomeSwapContainer: React.FC = () => {
     setTokenA(tokenB);
     setTokenB(tokenA);
     setSwapDirection(prev => (prev === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN"));
+    setTokenAAmount(tokenBAmount);
+    setTokenBAmount(tokenAAmount);
   };
-
   const changeTokenAAmount = useCallback((value: string) => {
     setSwapValue(prev => ({
       ...prev,

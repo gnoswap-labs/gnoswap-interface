@@ -15,7 +15,7 @@ export const wrapper = (theme: Theme) => css`
     ${fonts.body8};
     color: ${theme.color.green01};
     width: 100%;
-    height: 91px;
+    min-height: 91px;
     background-color: ${theme.color.backgroundOpacity3};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
@@ -41,13 +41,17 @@ export const wrapper = (theme: Theme) => css`
       }
     }
     .loading-value {
-      max-width: 200px;
+      height: 20px;
+      max-width: 100px;
     }
     .negative {
       color: ${theme.color.red01};
     }
     .none {
       color: ${theme.color.text01};
+    }
+    ${media.mobile} {
+      min-height: 50px;
     }
   }
   @media (max-width: 1360px) and (min-width: 930px) {

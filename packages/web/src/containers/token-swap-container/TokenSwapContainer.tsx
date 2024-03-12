@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { useGetTokenByPath } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
-import { useLoading } from "@hooks/common/use-loading";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 const TokenSwapContainer: React.FC = () => {
@@ -17,8 +16,9 @@ const TokenSwapContainer: React.FC = () => {
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const { getGnotPath } = useGnotToGnot();
   const path = router.query["tokenB"] as string;
+  const tokenAPath = router.query["tokenA"] as string;
   const { data: tokenB = null, isFetched } = useGetTokenByPath(path, { enabled: !!path});
-  const { isLoadingCommon } = useLoading();
+  const { data: tokenA = null } = useGetTokenByPath(tokenAPath, { enabled: !!tokenAPath});
   
   const {
     connectedWallet,
@@ -48,6 +48,7 @@ const TokenSwapContainer: React.FC = () => {
     isLoading,
     swapValue,
     setSwapRateAction,
+    setTokenAAmount,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -56,13 +57,14 @@ const TokenSwapContainer: React.FC = () => {
       tokenB: null,
       type: "EXACT_IN",
     });
+    setTokenAAmount("");
   }, []);
 
   useEffect(() => {
-    if (isFetched && tokenB) {
-      setSwapValue(prev => {
-        return {
-          ...prev,
+    if (isFetched) {
+      let request = {};
+      if (tokenA && tokenB) {
+        request = {
           tokenB: {
             ...tokenB,
             path: getGnotPath(tokenB).path,
@@ -70,17 +72,62 @@ const TokenSwapContainer: React.FC = () => {
             logoURI: getGnotPath(tokenB).logoURI,
             name: getGnotPath(tokenB).name,
           },
+          tokenA: {
+            ...tokenA,
+            path: getGnotPath(tokenA).path,
+            symbol: getGnotPath(tokenA).symbol,
+            logoURI: getGnotPath(tokenA).logoURI,
+            name: getGnotPath(tokenA).name,
+          },
+        };
+      } else if (tokenA) {
+        request = {
+          tokenB: {
+            ...tokenA,
+            path: getGnotPath(tokenA).path,
+            symbol: getGnotPath(tokenA).symbol,
+            logoURI: getGnotPath(tokenA).logoURI,
+            name: getGnotPath(tokenA).name,
+          }, 
+        };
+      } else {
+        if (swapValue?.tokenA?.symbol === tokenB?.symbol) request = {};
+        else {
+          request = {
+            tokenB: {
+              ...tokenB,
+              path: getGnotPath(tokenB).path,
+              symbol: getGnotPath(tokenB).symbol,
+              logoURI: getGnotPath(tokenB).logoURI,
+              name: getGnotPath(tokenB).name,
+            }, 
+          };
+        }
+      }
+      setSwapValue(prev => {
+        return {
+          ...prev,
+          ...request,
         };
       });
     }
-  }, [tokenB, isFetched]);
+  }, [tokenB, isFetched, tokenA]);
   
   const handleChangeTokenB = (token: TokenModel) => {
-    const tokenBTemp = swapValue.tokenA?.symbol === token.symbol ? swapValue.tokenA : token;
-    router.push(`/tokens/${tokenBTemp.symbol}?tokenB=${tokenBTemp.path}&direction=EXACT_IN`);
+    if (swapValue?.tokenB?.symbol === router?.query?.["token-path"] && swapValue?.tokenA?.symbol !== token?.symbol) {
+      router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
+    }
     changeTokenB(token);
   };
-  
+
+  const handleChangeTokenA = (token: TokenModel) => {
+    if (swapValue?.tokenA?.symbol === router?.query?.["token-path"] && swapValue?.tokenB?.symbol !== token?.symbol) {
+      router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
+    }
+    changeTokenA(token);
+
+  };
+
   return (
     <>
       <TokenSwap
@@ -94,11 +141,11 @@ const TokenSwapContainer: React.FC = () => {
         handleSetting={() => setOpenedSlippage(true)}
         isSwitchNetwork={isSwitchNetwork}
         dataTokenInfo={swapTokenInfo}
-        changeTokenA={changeTokenA}
+        changeTokenA={handleChangeTokenA}
         changeTokenB={handleChangeTokenB}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenBAmount={changeTokenBAmount}
-        isLoading={isLoading || isLoadingCommon}
+        isLoading={isLoading}
         isAvailSwap={isAvailSwap}
         swapButtonText={swapButtonText}
         swapSummaryInfo={swapSummaryInfo}

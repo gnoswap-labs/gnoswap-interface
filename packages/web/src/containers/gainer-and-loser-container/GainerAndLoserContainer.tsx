@@ -8,11 +8,10 @@ import {
 } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { IGainer } from "@repositories/token";
-import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolList } from "@query/pools";
 import { useRouter } from "next/router";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 
 export const gainersInit = [
@@ -116,7 +115,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertToMB(formatUsdNumber3Digits(item.tokenPrice), 10)}`,
+        price: `${(toUnitFormat(item.tokenPrice, true, false))}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
@@ -133,7 +132,7 @@ const GainerAndLoserContainer: React.FC = () => {
         name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
         symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `$${convertToMB(formatUsdNumber3Digits(item.tokenPrice), 10)}`,
+        price: `${(toUnitFormat(item.tokenPrice, true, false))}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,

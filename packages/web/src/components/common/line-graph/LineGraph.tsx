@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css } from "@emotion/react";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -322,7 +322,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     // Draw the line chart path
     for (let i = 1; i < points.length; i++) {
-      path += ` L ${points[i].x},${points[i].y}`;
+      path += smooth ? bezierCommand(points[i], i, points) :  ` L ${points[i].x},${points[i].y}`;
     }
 
     // Draw a line straight down to the bottom of the chart
@@ -335,7 +335,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     path += "Z";
 
     return path;
-  }, [height, points]);
+  }, [height, points, smooth]);
 
   return (
     <LineGraphWrapper
@@ -362,9 +362,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 </span>
               </div>
               <div className="tooltip-header">
-                <span className="value">{`$${prettyNumber(
+                <span className="value">{`$${removeTrailingZeros(prettyNumber(
                   datas[currentPointIndex]?.value || "0",
-                )}`}</span>
+                ))}`}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null
@@ -459,4 +459,4 @@ const LineGraph: React.FC<LineGraphProps> = ({
   );
 };
 
-export default LineGraph;
+export default React.memo(LineGraph);

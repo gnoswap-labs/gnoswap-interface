@@ -242,6 +242,22 @@ export const ConfirmModal = styled.div`
           width: 100%;
           align-self: stretch;
         }
+        .protocol {
+          width: 100%;
+          ${mixins.flexbox("row", "center", "space-between")};
+          color: ${({ theme }) => theme.color.text04};
+          > div {
+            ${mixins.flexbox("row", "center", "flex-start")};
+            gap: 4px;
+          }
+          svg {
+            width: 16px;
+            height: 16px;
+            * {
+              fill: ${({ theme }) => theme.color.icon03};
+            }
+          }
+        }
       }
     }
 

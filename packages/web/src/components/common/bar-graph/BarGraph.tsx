@@ -30,6 +30,7 @@ interface Point {
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
+const TOP_MARGIN_BAR = 24;
 
 function parseTime(time: string) {
   const dateObject = new Date(time);
@@ -93,7 +94,6 @@ const BarGraph: React.FC<BarGraphProps> = ({
 
     return maxStorkeWidth.toNumber();
   }, [width, datas.length, minGap, strokeWidth]);
-
   const getGraphPoints = useCallback(() => {
     const strokeWidth = getStrokeWidth();
     const mappedDatas = datas.map((data, index) => ({
@@ -181,6 +181,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
     for (const point of getGraphPoints()) {
       const distance = xPosition - point.x;
       currentPointIndex += 1;
+      
       if (minDistance < 0 && distance >= 0) {
         minDistance = distance;
       }
@@ -189,13 +190,15 @@ const BarGraph: React.FC<BarGraphProps> = ({
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);
       }
+      if ((clientY || 0) - top - TOP_MARGIN_BAR < Number(currentPoint?.y)) {
+        setCurrentPointIndex(-1);
+      }
       if (currentPoint) {
         setChartPoint({ x: positionX, y: (clientY || 0) - top });
         setCurrentPoint(currentPoint);
       }
     }
   };
-
   const locationTooltipPosition = useMemo(() => {
     if ((chartPoint?.y || 0) > customHeight + height - 25) {
       if (width < (currentPoint?.x || 0) + locationTooltip) {
@@ -231,7 +234,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
       onTouchStart={onTouchStart}
     >
       <FloatingTooltip className="chart-tooltip" isHiddenArrow position={locationTooltipPosition}
-        content={tooltipOption === "default" && currentPointIndex > -1 && activated ?
+        content={tooltipOption === "default" && currentPointIndex > -1 ?
           <BarGraphTooltipWrapper>
             <div className="tooltip-body">
               <span className="date">
@@ -239,9 +242,14 @@ const BarGraph: React.FC<BarGraphProps> = ({
               </span>
             </div>
             <div className="tooltip-header">
+              <span className="label">Trading Volume</span>
               <span className="value">{`$${Number(BigNumber(
                 datas[currentPointIndex],
               )).toLocaleString()}`}</span>
+            </div>
+            <div className="tooltip-header">
+              <span className="label">Fees</span>
+              <span className="value">-</span>
             </div>
           </BarGraphTooltipWrapper> :
           tooltipOption === "incentivized" && currentPointIndex > -1 && activated ?

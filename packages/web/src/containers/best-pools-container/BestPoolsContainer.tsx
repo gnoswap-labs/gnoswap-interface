@@ -9,11 +9,11 @@ import {
   useGetTokensList,
 } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
+import { toUnitFormat } from "@utils/number-utils";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -94,7 +94,7 @@ const BestPoolsContainer: React.FC = () => {
         poolPath: temp?.poolPath || "",
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
-        tvl: `$${convertToKMB(item.tvl)}`,
+        tvl: `${toUnitFormat(item.tvl, true, true)}`,
         apr: `${item.apr === "" ? "-" : `${Number(item.apr).toFixed(2)}%`}`,
       };
     });

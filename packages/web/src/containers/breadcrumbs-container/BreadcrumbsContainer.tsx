@@ -29,9 +29,10 @@ const getMapping: any = (router: any) => {
 interface Props {
   listBreadcrumb?: { title: string, path: string } [];
   isLoading?: boolean;
+  w?: string;
 }
 
-const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading }) => {
+const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = "200px" }) => {
   const router = useRouter();
 
   const removePoolSteps = useMemo(() => {
@@ -57,7 +58,7 @@ const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading }) =>
   };
 
   if (isLoading) {
-    return <div css={pulseSkeletonStyle({ w: "200px", h: 26 })}/>;
+    return <div css={pulseSkeletonStyle({ w: w, h: 26 })}/>;
   }
 
   return <Breadcrumbs steps={removePoolSteps} onClickPath={onClickPath} />;

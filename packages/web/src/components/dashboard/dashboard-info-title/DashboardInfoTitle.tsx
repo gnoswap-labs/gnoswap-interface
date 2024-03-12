@@ -17,7 +17,6 @@ interface DashboardInfoTitleProps {
 
 const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
   dashboardTokenInfo,
-  breakpoint,
 }) => (
   <DashboardInfoTitleWrapper>
     <TokenWrapper>
@@ -29,7 +28,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({
       </GnosLogoWrapper>
       <div className="amount-info">{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>
-    {breakpoint !== DEVICE_TYPE.MOBILE && <TitleDivider />}
+    <TitleDivider />
     <TokenWrapper>
       <GnotLogoWrapper>
         <div className="gnot-image-wrapper">

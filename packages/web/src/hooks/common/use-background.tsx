@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { useAtom } from "jotai";
-import { CommonState, TokenState, WalletState } from "@states/index";
+import { CommonState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/use-token-data";
 
 export const useBackground = () => {
   const { account, initSession, updateWalletEvents, connectAccount } = useWallet();
   const [walletClient] = useAtom(WalletState.client);
-  const [, setBalances] = useAtom(TokenState.balances);
   const [sessionId] = useAtom(CommonState.sessionId);
-  const { updateBalances, tokens } = useTokenData();
+  const { updateBalances } = useTokenData();
   
   useEffect(() => {
     if (walletClient) {
@@ -42,10 +41,9 @@ export const useBackground = () => {
   }, [walletClient, String(account)]);
 
   useEffect(() => {
-    setBalances({});
     if (account?.address && account?.chainId) {
       updateBalances();
     }
-  }, [account, tokens.toString()]);
+  }, [account]);
 
 };
