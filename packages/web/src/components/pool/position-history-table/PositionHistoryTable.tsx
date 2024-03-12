@@ -1,0 +1,79 @@
+import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
+import {
+  MOBILE_POSITION_HISTORY_TD_WIDTH,
+  POSITION_HISTORY_INFO,
+  POSITION_HISTORY_TD_WIDTH,
+  TABLET_POSITION_HISTORY_TD_WIDTH
+} from "@constants/skeleton.constant";
+import {
+  IHistory,
+  TABLE_HEAD,
+} from "@containers/position-history-container/PositionHistoryContainer";
+import { cx } from "@emotion/css";
+import { DEVICE_TYPE } from "@styles/media";
+import React from "react";
+import PositionInfo from "../position-info/PositionInfo";
+import {
+  TableHeader,
+  TableWrapper,
+  noDataText
+} from "./PositionHistoryTable.styles";
+
+interface PositionHistoryTableProps {
+  list: IHistory[];
+  isFetched: boolean;
+  breakpoint: DEVICE_TYPE;
+}
+
+const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
+  list,
+  isFetched,
+  breakpoint,
+}) => {
+  const td =
+  breakpoint === DEVICE_TYPE.MOBILE
+    ? MOBILE_POSITION_HISTORY_TD_WIDTH
+    : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
+    ? TABLET_POSITION_HISTORY_TD_WIDTH
+    : POSITION_HISTORY_TD_WIDTH;
+  return (
+    <TableWrapper>
+      <div className="scroll-wrapper">
+        <div className="position-history-list-head">
+          {Object.values(TABLE_HEAD).map((head, idx) => (
+            <TableHeader
+              key={idx}
+              className={cx({
+                left: idx < 2,
+                right: idx > 1,
+              })}
+              tdWidth={td[idx]}
+            >
+              <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}>
+                {head}
+              </span>
+            </TableHeader>
+          ))}
+        </div>
+        <div className="position-history-list-body">
+          {isFetched && list.length === 0 && (
+            <div css={noDataText}>No position history found</div>
+          )}
+          {isFetched &&
+            list.length > 0 &&
+            list.map((item, idx) => (
+              <PositionInfo item={item} key={idx} breakpoint={breakpoint}/>
+            ))}
+          {!isFetched && (
+            <TableSkeleton
+              info={POSITION_HISTORY_INFO}
+              className="position-history-table"
+            />
+          )}
+        </div>
+      </div>
+    </TableWrapper>
+  );
+};
+
+export default PositionHistoryTable;

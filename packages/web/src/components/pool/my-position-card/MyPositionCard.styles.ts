@@ -11,19 +11,19 @@ interface Props {
 export const MyPositionCardWrapper = styled.div<Props>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  padding: 24px 24px;
+  padding: 24px 24px 0 24px;
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
   background-color: ${({ theme, isClosed }) => isClosed ?  theme.color.background29 :  theme.color.background03};
   ${media.tablet} {
-    padding: 24px;
+    padding: 24px 24px 0 24px;
     border-radius: 10px;
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     min-width: calc(100vw - 32px);
-    padding: 12px;
+    padding: 12px 12px 0 12px;
     gap: 12px;
   }
   .box-title {
