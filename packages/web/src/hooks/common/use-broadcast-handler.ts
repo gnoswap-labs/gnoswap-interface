@@ -11,6 +11,33 @@ import {
   TNoticeType,
 } from "src/context/NoticeContext";
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
+import {
+  ERROR_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_STAKE_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_SWAP_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
+  ERROR_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_STAKE_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_SWAP_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
+  PEDING_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_STAKE_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_SWAP_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
+  SUCCESS_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
+  mapMessageByTemplate,
+} from "@utils/template";
 
 /**
  * PENDING
@@ -58,15 +85,24 @@ export function makeBroadcastClaimMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Claiming <span>${data.amount}</span>`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE,
+          data,
+        );
       case "success":
-        return `Claimed <span>${data.amount}</span>`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE,
+          data,
+        );
       case "error":
-        return `Failed to Claim <span>${data.amount}</span>`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE,
+          data,
+        );
     }
   }
   return {
-    title: "Swap",
+    title: "Claim",
     description: description(),
     scannerUrl: hash ? makeScannerURL(hash) : "",
   };
@@ -85,13 +121,28 @@ export function makeBroadcastSwapMessage(
   function description() {
     const tokenA = BigNumber(data.tokenAAmount).toFormat(2);
     const tokenB = BigNumber(data.tokenBAmount).toFormat(2);
+    const request = {
+      tokenA,
+      tokenB,
+      tokenASymbol: data.tokenASymbol,
+      tokenBSymbol: data.tokenBSymbol,
+    };
     switch (type) {
       case "pending":
-        return `Swapping ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_SWAP_MESSAGE_TEMPLATE,
+          request,
+        );
       case "success":
-        return `Swapped ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_SWAP_MESSAGE_TEMPLATE,
+          request,
+        );
       case "error":
-        return `Failed to swap ${tokenA} ${data.tokenASymbol} and ${tokenB} ${data.tokenBSymbol}`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_SWAP_MESSAGE_TEMPLATE,
+          request,
+        );
     }
   }
   return {
@@ -114,11 +165,20 @@ export function makeBroadcastStakingMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Staking <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_STAKE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "success":
-        return `Staked <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_STAKE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "error":
-        return `Failed to stake <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_STAKE_MESSAGE_TEMPLATE,
+          data,
+        );
     }
   }
   return {
@@ -141,11 +201,20 @@ export function makeBroadcastUnStakingMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Unstaking <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "success":
-        return `Unstaked <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "error":
-        return `Failed to unstake <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE,
+          data,
+        );
     }
   }
   return {
@@ -168,11 +237,20 @@ export function makeBroadcastRemoveMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Removing <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "success":
-        return `Removed <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "error":
-        return `Failed to remove <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE,
+          data,
+        );
     }
   }
   return {
@@ -193,11 +271,20 @@ export function makeBroadcastIncentivizeMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Adding <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "success":
-        return `Added <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE,
+          data,
+        );
       case "error":
-        return `Failed to add <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span> as incentives`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE,
+          data,
+        );
     }
   }
   return {
@@ -218,11 +305,20 @@ export function makeBroadcastWithdrawMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Sending <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span>`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
+          data,
+        );
       case "success":
-        return `Sent <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span>`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
+          data,
+        );
       case "error":
-        return `Failed to send <span>${data.tokenAmount}</span> <span>${data.tokenSymbol}</span>`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE,
+          data,
+        );
     }
   }
   return {
@@ -245,11 +341,20 @@ export function makeBroadcastAddLiquidityMessage(
   function description() {
     switch (type) {
       case "pending":
-        return `Adding <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          PEDING_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE,
+          data,
+        );
       case "success":
-        return `Added <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          SUCCESS_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE,
+          data,
+        );
       case "error":
-        return `Failed to add <span>${data.tokenAAmount}</span> <span>${data.tokenASymbol}</span> and <span>${data.tokenBAmount}</span> <span>${data.tokenBSymbol}</span>`;
+        return mapMessageByTemplate(
+          ERROR_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE,
+          data,
+        );
     }
   }
   return {
@@ -320,7 +425,11 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastRejected = useCallback(
-    (content?: INoticeContent, callback?: () => void, isHiddenReject?: boolean) => {
+    (
+      content?: INoticeContent,
+      callback?: () => void,
+      isHiddenReject?: boolean,
+    ) => {
       setTransactionModalData({
         status: "rejected",
         description: content?.description || null,

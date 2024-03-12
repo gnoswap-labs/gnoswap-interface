@@ -30,6 +30,7 @@ interface Point {
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
+const TOP_MARGIN_BAR = 24;
 
 function parseTime(time: string) {
   const dateObject = new Date(time);
@@ -189,7 +190,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
         minDistance = distance;
         setCurrentPointIndex(currentPointIndex);
       }
-      if ((clientY || 0) - top - 24 < Number(currentPoint?.y)) {
+      if ((clientY || 0) - top - TOP_MARGIN_BAR < Number(currentPoint?.y)) {
         setCurrentPointIndex(-1);
       }
       if (currentPoint) {
