@@ -16,7 +16,7 @@ import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.style
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { STAKING_PERIOD_INFO, StakingPeriodType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
-import { numberToUSD } from "@utils/number-utils";
+import { numberToUSD, toUnitFormat } from "@utils/number-utils";
 import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
@@ -107,13 +107,14 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     return positions.flatMap(position => position.rewards);
   }, [positions]);
   const totalStakedRewardUSD = useMemo(() => {
-    return positionRewards.filter(_ => ["EXTERNAL", "STAKING"].includes(_.rewardType)).reduce((accum, current) => {
+    const tempTotalStakedRewardUSD = positionRewards.filter(_ => ["EXTERNAL", "STAKING"].includes(_.rewardType)).reduce((accum, current) => {
       if (current.rewardType !== "STAKING") {
         return accum;
       }
       const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
+    return toUnitFormat(tempTotalStakedRewardUSD, true, true);
   }, [positionRewards, tokenPrices]);
 
   const aprStr = useMemo(() => {
@@ -230,13 +231,15 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [positions]);
 
   const totalStakedRewardUSD = useMemo(() => {
-    return positionRewards.reduce((accum, current) => {
+    const tempTotalStakedRewardUSD = positionRewards.reduce((accum, current) => {
       if (current.rewardType !== "STAKING") {
         return accum;
       }
       const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
+    return toUnitFormat(tempTotalStakedRewardUSD, true, true);
+
   }, [positionRewards, tokenPrices]);
 
   const aprStr = useMemo(() => {
