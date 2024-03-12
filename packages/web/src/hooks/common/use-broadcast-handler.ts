@@ -51,21 +51,18 @@ function makeScannerURL(hash: string) {
 export function makeBroadcastClaimMessage(
   type: TNoticeType,
   data: {
-    tokenASymbol: string;
-    tokenBSymbol: string;
-    tokenAAmount: string;
-    tokenBAmount: string;
+    amount: string;
   },
   hash?: string,
 ): INoticeContent {
   function description() {
     switch (type) {
       case "pending":
-        return `Claiming ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Claiming <span>${data.amount}</span>`;
       case "success":
-        return `Claimed ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Claimed <span>${data.amount}</span>`;
       case "error":
-        return `Failed to Claim ${data.tokenAAmount} ${data.tokenASymbol} and ${data.tokenBAmount} ${data.tokenBSymbol}`;
+        return `Failed to Claim <span>${data.amount}</span>`;
     }
   }
   return {

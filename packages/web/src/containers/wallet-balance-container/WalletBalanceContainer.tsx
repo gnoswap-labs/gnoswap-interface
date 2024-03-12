@@ -20,6 +20,7 @@ import React, { useCallback, useState, useMemo } from "react";
 import { useLoading } from "@hooks/common/use-loading";
 import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import { isEmptyObject } from "@utils/validation-utils";
+import { toUnitFormat } from "@utils/number-utils";
 
 export interface BalanceSummaryInfo {
   amount: string;
@@ -73,13 +74,10 @@ const WalletBalanceContainer: React.FC = () => {
     setIsShowWithDrawModal(true);
     if (!address) return;
   }, [connected, address]);
-
   const claimAllReward = useCallback(() => {
+    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableAmount), 0);
     const data = {
-      tokenASymbol: positions[0]?.pool?.tokenA?.symbol,
-      tokenBSymbol: positions[0]?.pool?.tokenA?.symbol,
-      tokenAAmount: "0.12",
-      tokenBAmount: "0.13",
+      amount: toUnitFormat(amount, true, true),
     };
     setLoadingTransactionClaim(true);
     claimAll().then(response => {
@@ -142,8 +140,7 @@ const WalletBalanceContainer: React.FC = () => {
     .plus(stakedBalance)
     .plus(claimableRewards)
     .decimalPlaces(2)
-    .toFormat(`${availableBalance}` === "0" ? 0 : 2);
-
+    .toFormat(availableBalance === 0 ? 0 : 2);
   const closeDeposit = () => {
     setIsShowDepositModal(false);
   };
