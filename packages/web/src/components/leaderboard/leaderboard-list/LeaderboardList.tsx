@@ -19,6 +19,8 @@ interface LeaderItem {
 const LeaderboardList: React.FC<LeaderItem> = ({
   leaders,
   isFetched,
+  // TODO: Resolve Unused vars errors and remove ESLint comments
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   error,
   currentPage,
   totalPage,

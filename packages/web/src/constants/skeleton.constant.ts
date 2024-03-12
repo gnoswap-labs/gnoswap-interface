@@ -462,7 +462,12 @@ export const LEADER_INFO = {
   total: 6,
   tdWidth: LEADERBOARD_TD_WIDTH,
   list: [
-    { width: 120 / 4, type: SHAPE_TYPES.ROUNDED_SQUARE, className: "center" },
+    {
+      width: 120 / 4,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "center",
+    },
     {
       width: 400 / 2,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
@@ -488,6 +493,7 @@ export const LEADER_INFO = {
     {
       width: 240 / 3,
       type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
       className: "padding-50",
     },
   ],

@@ -3,6 +3,9 @@ import Switch from "@components/common/switch/Switch";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+
+// TODO: Resolve Unused vars errors and remove ESLint comments
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 import { useState } from "react";
@@ -67,7 +70,6 @@ const LeaderboardListHeader = () => {
         <Flex
           style={{
             paddingLeft: "16px",
-            paddingLeft: "4px",
           }}
         >
           <Switch

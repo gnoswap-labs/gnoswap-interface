@@ -21,6 +21,11 @@ import {
 import LeaderboardInfo from "../leaderboard-info/LeaderboardInfo";
 import LeaderboardInfoMobile from "../leaderboard-info-mobile/LeaderboardInfo";
 
+const WEB_DEVICE_TYPES: DEVICE_TYPE[] = [
+  DEVICE_TYPE.MEDIUM_WEB,
+  DEVICE_TYPE.WEB,
+];
+
 const LeaderboardListTable = ({
   leaders,
   isFetched,
@@ -34,7 +39,7 @@ const LeaderboardListTable = ({
     <TableWrapper>
       <ScrollWrapper>
         <ListHead>
-          {[DEVICE_TYPE.MEDIUM_WEB, DEVICE_TYPE.WEB].includes(breakpoint!) ? (
+          {WEB_DEVICE_TYPES.includes(breakpoint) ? (
             <>
               {Object.values(TABLE_HEAD).map((head, index) => (
                 <TableHeader key={index} tdWidth={LEADERBOARD_TD_WIDTH[index]}>
@@ -59,9 +64,7 @@ const LeaderboardListTable = ({
           {isFetched &&
             leaders.map((item, index) => (
               <>
-                {[DEVICE_TYPE.MEDIUM_WEB, DEVICE_TYPE.WEB].includes(
-                  breakpoint!,
-                ) ? (
+                {WEB_DEVICE_TYPES.includes(breakpoint) ? (
                   <LeaderboardInfo key={index} item={item} />
                 ) : (
                   <LeaderboardInfoMobile key={index} item={item} />
@@ -71,7 +74,7 @@ const LeaderboardListTable = ({
           {!isFetched && (
             <TableSkeleton
               info={
-                [DEVICE_TYPE.MEDIUM_WEB, DEVICE_TYPE.WEB].includes(breakpoint!)
+                WEB_DEVICE_TYPES.includes(breakpoint)
                   ? LEADER_INFO
                   : MOBILE_LEADER_INFO
               }
