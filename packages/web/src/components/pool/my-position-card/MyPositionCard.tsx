@@ -22,8 +22,8 @@ import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.style
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import { ThemeState } from "@states/index";
-import { useAtomValue } from "jotai";
+import { IncreaseState, ThemeState } from "@states/index";
+import { useAtomValue, useAtom } from "jotai";
 import IconSwap from "@components/common/icons/IconSwap";
 import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
@@ -37,6 +37,7 @@ import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styl
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { numberToFormat } from "@utils/string-utils";
 import PositionHistory from "./PositionRepository";
+import { useRouter } from "next/router";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -49,11 +50,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   breakpoint,
   loading,
 }) => {
+  const router = useRouter();
   const { width } = useWindowSize();
   const { tokenPrices } = useTokenData();
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
+  const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
 
   const isClosed = position.status;
 
@@ -415,6 +418,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const endClass = useMemo(() => {
     return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
   }, [maxTickRate, isSwap, minTickRate]);
+  const handleSelect = (text: string) => {
+    if (text === "Increase Liquidity") {
+      setSelectedPosition(position);
+      router.push(router.asPath + "/increase-liquidity");
+    }
+  };
 
   return (
     <>
@@ -510,7 +519,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     "Increase Liquidity",
                     "Decrease Liquidity",
                   ]}
-                  select={() => {}}
+                  select={handleSelect}
                   render={period => <ManageItem>{period}</ManageItem>}
                   className={!inRange ? "out-range" : ""}
                 />
