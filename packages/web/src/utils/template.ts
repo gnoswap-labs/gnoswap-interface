@@ -204,24 +204,31 @@ export const ERROR_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE = `
   
   /* ADD_LIQUIDITY */
 export const PEDING_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
-  <div>
-    Adding 
-    <span>{tokenAmount}</span> 
-    <span>{tokenSymbol}</span>
-  </div>
+  Adding 
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    and 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
   `;
 export const SUCCESS_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
   <div>
     Added 
-    <span>{tokenAmount}</span> 
-    <span>{tokenSymbol}</span>
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    and 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
   </div>
   `;
 export const ERROR_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
   <div>
     Failed to add 
-    <span>{tokenAmount}</span> 
-    <span>{tokenSymbol}</span>
+    <span>{tokenAAmount}</span> 
+    <span>{tokenASymbol}</span> 
+    and 
+    <span>{tokenBAmount}</span> 
+    <span>{tokenBSymbol}</span>
   </div>
   `;
   

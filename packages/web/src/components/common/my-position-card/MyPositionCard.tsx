@@ -21,10 +21,10 @@ import {
   tickToPriceStr,
 } from "@utils/swap-utils";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
+import { toUnitFormat } from "@utils/number-utils";
 // import { makeDisplayTokenAmount } from "@utils/token-utils";
 // import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 
@@ -78,7 +78,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.tickSpacing]);
 
   const positionUsdValueStr = useMemo(() => {
-    return `$${convertToKMB(`${Number(position.positionUsdValue)}`, 2)}`;
+    return toUnitFormat(Number(position.positionUsdValue), true, true);
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
@@ -247,19 +247,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
-    if (
-      Number.isInteger(
-        Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd),
-      )
-    )
-      return `$${
-        Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)
-      }`;
-    return formatUsdNumber(
-      (
-        Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd)
-      ).toFixed(2),
-    );
+    return toUnitFormat(Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd), true, true);
   }, [position.unclaimedFee0Usd, position.unclaimedFee1Usd]);
 
   return (

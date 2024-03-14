@@ -20,7 +20,7 @@ const RemovePositionModalContainer = ({
   const { positionRepository } = useGnoswapContext();
   const router = useRouter();
   const clearModal = useClearModal();
-  const { broadcastRejected, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError, broadcastPending } = useBroadcastHandler();
   const { pooledTokenInfos } = useRemoveData({ positions });
 
   const close = useCallback(() => {
@@ -33,6 +33,12 @@ const RemovePositionModalContainer = ({
       return null;
     }
     const lpTokenIds = positions.map(position => position.id);
+    broadcastLoading(makeBroadcastRemoveMessage("pending", {
+      tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+      tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
+      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+    }));
 
     const result = await positionRepository.removeLiquidity({
       lpTokenIds,

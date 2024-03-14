@@ -4,14 +4,14 @@ import HeaderContainer from "@containers/header-container/HeaderContainer";
 import PoolAddIncentivizeContainer from "@containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import PoolIncentivizeLayout from "@layouts/pool-incentivize-layout/PoolIncentivizeLayout";
-import { DEVICE_TYPE } from "@styles/media";
+import { DeviceSize } from "@styles/media";
 import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useLoading } from "@hooks/common/use-loading";
 
 export default function PoolIncentivize() {
-  const { breakpoint } = useWindowSize();
+  const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"];
   
@@ -23,7 +23,7 @@ export default function PoolIncentivize() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          breakpoint === DEVICE_TYPE.WEB
+          (width > DeviceSize.mediumWeb)
             ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
@@ -31,7 +31,7 @@ export default function PoolIncentivize() {
       },
       { title: "Incentivize Pool", path: "" },
     ];
-  }, [data]);
+  }, [data, width]);
 
   return (
     <PoolIncentivizeLayout
