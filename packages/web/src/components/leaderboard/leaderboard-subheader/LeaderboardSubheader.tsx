@@ -2,11 +2,7 @@ import CopyReferralLink from "../copy-referral-link/CopyReferralLink";
 import { Container, Text04, TitleWrapper } from "./LeaderboardSubheader.styles";
 import LearnMore from "../learn-more/LearnMore";
 
-export default function LeaderboardSubheader({
-  conneted,
-}: {
-  conneted: boolean;
-}) {
+const LeaderboardSubheader = ({ conneted }: { conneted: boolean }) => {
   return (
     <Container>
       <TitleWrapper>
@@ -21,4 +17,6 @@ export default function LeaderboardSubheader({
       <CopyReferralLink conneted={conneted} />
     </Container>
   );
-}
+};
+
+export default LeaderboardSubheader;
