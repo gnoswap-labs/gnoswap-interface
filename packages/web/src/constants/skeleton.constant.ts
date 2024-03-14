@@ -295,6 +295,7 @@ export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
 
 export const LEADERBOARD_TD_WIDTH = [120, 400, 200, 200, 200, 240];
 export const MOBILE_LEADERBOARD_TD_WIDTH = [50, 150, 128];
+export const TABLET_LEADERBOARD_TD_WIDTH = [120, 300, 170, 170, 170, 170];
 
 export const SHAPE_TYPES = {
   CIRCLE: "circle",
@@ -499,6 +500,48 @@ export const LEADER_INFO = {
   ],
 };
 
+export const TABLET_LEADER_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 6,
+  tdWidth: LEADERBOARD_TD_WIDTH,
+  list: [
+    {
+      width: 120 / 4,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "center",
+    },
+    {
+      width: 300 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 3,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "padding-50",
+    },
+  ],
+};
+
 export const MOBILE_LEADER_INFO = {
   title: TABLE_TITLE.LEADERBOARD_TABLE,
   total: 6,
@@ -537,6 +580,7 @@ export const MOBILE_TOKEN_INFO = {
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
+
 export const TOKEN_SEARCH_INFO = {
   title: TABLE_TITLE.TOKEN_TABLE,
   total: 3,

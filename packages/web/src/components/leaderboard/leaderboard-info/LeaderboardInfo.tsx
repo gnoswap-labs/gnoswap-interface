@@ -1,46 +1,65 @@
 import { HoverSection, TableColumn, Wrapper } from "./LeaderboardInfo.styles";
-import { LEADERBOARD_TD_WIDTH } from "@constants/skeleton.constant";
 import { Leader } from "@containers/leaderboard-list-container/LeaderboardListContainer";
-import IconGoldMedal from "@components/common/icons/IconGoldMedal";
-import IconBronzeMedal from "@components/common/icons/IconBronzeMedal";
-import IconSilverMedal from "@components/common/icons/IconSilverMedal";
+import PointComposition from "../point-composition/PointComposition";
+import UserColumn from "../user-column/UserColumn";
 
-const LeaderboardUserColumn = ({
-  rank,
-  user,
+export default function LeaderboardInfo({
+  item,
+  tdWidths,
+  isMobile,
+  children,
 }: {
-  rank: number;
-  user: string;
-}) => {
-  return (
-    <TableColumn tdWidth={LEADERBOARD_TD_WIDTH[1]}>
-      <div style={{ gap: "1rem", display: "flex" }}>
-        {rank === 1 && <IconGoldMedal />}
-        {rank === 2 && <IconSilverMedal />}
-        {rank === 3 && <IconBronzeMedal />}
-        {user}
-      </div>
-    </TableColumn>
-  );
-};
-
-const LeaderboardInfo = ({ item }: { item: Leader }) => {
-  const { rank, user, volume, position, staking, points } = item;
+  item: Leader;
+  tdWidths: number[];
+  isMobile: boolean;
+  children?: React.ReactNode;
+}) {
+  const {
+    rank,
+    user,
+    volume,
+    position,
+    staking,
+    points,
+    swapPoint,
+    positionPoint,
+    stakingPoint,
+    referralPoint,
+  } = item;
 
   return (
     <Wrapper>
-      <TableColumn tdWidth={LEADERBOARD_TD_WIDTH[0]}>#{rank}</TableColumn>
+      <TableColumn tdWidth={tdWidths.at(0)}>#{rank}</TableColumn>
       <HoverSection>
-        <LeaderboardUserColumn rank={rank} user={user} />
+        <UserColumn
+          rank={rank}
+          user={user}
+          tdWidth={tdWidths.at(1)}
+          style={{ justifyContent: "flex-start" }}
+        >
+          {children}
+        </UserColumn>
       </HoverSection>
-      <HoverSection>
-        <TableColumn tdWidth={LEADERBOARD_TD_WIDTH[2]}>{volume}</TableColumn>
-        <TableColumn tdWidth={LEADERBOARD_TD_WIDTH[3]}>{position}</TableColumn>
-        <TableColumn tdWidth={LEADERBOARD_TD_WIDTH[4]}>{staking}</TableColumn>
-        <TableColumn tdWidth={LEADERBOARD_TD_WIDTH[5]}>{points}</TableColumn>
+      <HoverSection style={{ cursor: "auto" }}>
+        <TableColumn
+          tdWidth={tdWidths.at(2)}
+          style={{ justifyContent: "flex-start" }}
+        >
+          {volume}
+        </TableColumn>
+        <TableColumn tdWidth={tdWidths.at(3)}>{position}</TableColumn>
+        <TableColumn tdWidth={tdWidths.at(4)}>{staking}</TableColumn>
+        <TableColumn tdWidth={tdWidths.at(5)}>
+          <PointComposition
+            points={points}
+            swapPoint={swapPoint}
+            positionPoint={positionPoint}
+            stakingPoint={stakingPoint}
+            referralPoint={referralPoint}
+            isMobile={isMobile}
+          />
+        </TableColumn>
       </HoverSection>
     </Wrapper>
   );
-};
-
-export default LeaderboardInfo;
+}

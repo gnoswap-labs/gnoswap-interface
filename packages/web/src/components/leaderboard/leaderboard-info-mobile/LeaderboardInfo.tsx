@@ -1,46 +1,44 @@
 import { TableColumn, Wrapper } from "./LeaderboardInfo.styles";
-import { MOBILE_LEADERBOARD_TD_WIDTH } from "@constants/skeleton.constant";
 import { Leader } from "@containers/leaderboard-list-container/LeaderboardListContainer";
-import IconGoldMedal from "@components/common/icons/IconGoldMedal";
-import IconBronzeMedal from "@components/common/icons/IconBronzeMedal";
-import IconSilverMedal from "@components/common/icons/IconSilverMedal";
+import UserColumn from "../user-column/UserColumn";
+import PointComposition from "../point-composition/PointComposition";
 
-const LeaderboardUserColumn = ({
-  tdWidth,
-  rank,
-  user,
+const LeaderboardInfoMobile = ({
+  item,
+  tdWidths,
+  isMobile,
+  children,
 }: {
-  tdWidth: number;
-  rank: number;
-  user: string;
+  item: Leader;
+  tdWidths: number[];
+  isMobile: boolean;
+  children?: React.ReactNode;
 }) => {
-  return (
-    <TableColumn tdWidth={tdWidth}>
-      <div style={{ gap: "1rem", display: "flex" }}>
-        {rank === 1 && <IconGoldMedal />}
-        {rank === 2 && <IconSilverMedal />}
-        {rank === 3 && <IconBronzeMedal />}
-        {user}
-      </div>
-    </TableColumn>
-  );
-};
-
-const LeaderboardInfoMobile = ({ item }: { item: Leader }) => {
-  const { rank, user, points } = item;
+  const {
+    rank,
+    user,
+    points,
+    swapPoint,
+    positionPoint,
+    stakingPoint,
+    referralPoint,
+  } = item;
 
   return (
     <Wrapper>
-      <TableColumn tdWidth={MOBILE_LEADERBOARD_TD_WIDTH[0]}>
-        #{rank}
-      </TableColumn>
-      <LeaderboardUserColumn
-        tdWidth={MOBILE_LEADERBOARD_TD_WIDTH[1]}
-        rank={rank}
-        user={user}
-      />
-      <TableColumn tdWidth={MOBILE_LEADERBOARD_TD_WIDTH[2]}>
-        {points}
+      <TableColumn tdWidth={tdWidths[0]}>#{rank}</TableColumn>
+      <UserColumn rank={rank} user={user} tdWidth={tdWidths[1]}>
+        {children}
+      </UserColumn>
+      <TableColumn tdWidth={tdWidths[2]}>
+        <PointComposition
+          points={points}
+          swapPoint={swapPoint}
+          positionPoint={positionPoint}
+          stakingPoint={stakingPoint}
+          referralPoint={referralPoint}
+          isMobile={isMobile}
+        />
       </TableColumn>
     </Wrapper>
   );

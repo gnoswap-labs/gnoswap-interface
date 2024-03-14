@@ -11,11 +11,6 @@ export const TableWrapper = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.color.border01};
   border-radius: 8px;
-  margin: 24px 0px;
-
-  ${media.tablet} {
-    margin-top: 8px;
-  }
 
   overflow-x: auto;
   &.hidden-scroll {
@@ -30,7 +25,7 @@ export const ScrollWrapper = styled.div`
   width: auto;
   overflow-y: hidden;
 
-  ${media.tablet} {
+  ${media.mobile} {
     width: 100%;
   }
 `;
@@ -70,7 +65,7 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
     padding-right: 50px;
   }
 
-  ${media.tablet} {
+  ${media.mobile} {
     flex-grow: 2;
 
     &:first-child {
@@ -79,30 +74,6 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
     &:last-child {
       justify-content: flex-end;
       padding-right: 16px;
-    }
-  }
-`;
-
-export const MobileTableHeader = styled.div<{ tdWidth: number }>`
-  width: ${({ tdWidth }) => `${tdWidth}px`};
-  height: 100%;
-  ${mixins.flexbox("row", "center", "flex-end")};
-  &.left {
-    flex-shrink: 0;
-    justify-content: flex-start;
-  }
-
-  span {
-    display: inline-flex;
-    align-items: center;
-    white-space: pre;
-  }
-
-  ${media.mobile} {
-    width: 50%;
-    padding: 16px 15px;
-    &:nth-last-of-type(1) {
-      padding: 16px 15px;
     }
   }
 `;

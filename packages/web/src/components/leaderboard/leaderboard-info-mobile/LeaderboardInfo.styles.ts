@@ -51,7 +51,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     padding-right: 50px;
   }
 
-  ${media.tablet} {
+  ${media.mobile} {
     flex-grow: 2;
 
     &:first-child {

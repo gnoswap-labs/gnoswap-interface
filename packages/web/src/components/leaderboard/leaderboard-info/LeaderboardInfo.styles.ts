@@ -26,13 +26,9 @@ export const HoverSection = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
   }
-
-  & > *:first-child {
-    justify-content: flex-start;
-  }
 `;
 
-export const TableColumn = styled.div<{ tdWidth: number }>`
+export const TableColumn = styled.div<{ tdWidth?: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   color: ${({ theme }) => theme.color.text01};
 
@@ -51,7 +47,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     padding-right: 50px;
   }
 
-  ${media.tablet} {
+  ${media.mobile} {
     flex-grow: 2;
 
     &:first-child {

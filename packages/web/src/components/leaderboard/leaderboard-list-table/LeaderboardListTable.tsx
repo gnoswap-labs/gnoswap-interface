@@ -11,8 +11,9 @@ import {
   LEADER_INFO,
   MOBILE_LEADERBOARD_TD_WIDTH,
   MOBILE_LEADER_INFO,
+  TABLET_LEADERBOARD_TD_WIDTH,
+  TABLET_LEADER_INFO,
 } from "@constants/skeleton.constant";
-import { DEVICE_TYPE } from "@styles/media";
 import {
   Leader,
   TABLE_HEAD,
@@ -20,72 +21,77 @@ import {
 } from "@containers/leaderboard-list-container/LeaderboardListContainer";
 import LeaderboardInfo from "../leaderboard-info/LeaderboardInfo";
 import LeaderboardInfoMobile from "../leaderboard-info-mobile/LeaderboardInfo";
+import IconMeLogo from "@components/common/icons/IconMeLogo";
+import React from "react";
+import { useConnection } from "@hooks/connection/use-connection";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
-const WEB_DEVICE_TYPES: DEVICE_TYPE[] = [
-  DEVICE_TYPE.MEDIUM_WEB,
-  DEVICE_TYPE.WEB,
-];
-
-const LeaderboardListTable = ({
+export default function LeaderboardListTable({
+  me,
   leaders,
   isFetched,
-  breakpoint,
 }: {
+  me: Leader;
   leaders: Leader[];
   isFetched: boolean;
-  breakpoint: DEVICE_TYPE;
-}) => {
+}) {
+  const { conneted } = useConnection();
+  const { isMobile, isTablet } = useWindowSize();
+
+  const heads = (isMobile && TABLE_HEAD_MOBILE) || TABLE_HEAD;
+
+  const skeleton =
+    (isMobile && MOBILE_LEADER_INFO) ||
+    (isTablet && TABLET_LEADER_INFO) ||
+    LEADER_INFO;
+
+  const widths =
+    (isMobile && MOBILE_LEADERBOARD_TD_WIDTH) ||
+    (isTablet && TABLET_LEADERBOARD_TD_WIDTH) ||
+    LEADERBOARD_TD_WIDTH;
+
+  const displayList = (item: Leader, children?: React.ReactNode) =>
+    isMobile ? (
+      <LeaderboardInfoMobile
+        key={item.user}
+        item={item}
+        tdWidths={widths}
+        isMobile={isMobile}
+      >
+        {children}
+      </LeaderboardInfoMobile>
+    ) : (
+      <LeaderboardInfo
+        key={item.user}
+        item={item}
+        tdWidths={widths}
+        isMobile={isMobile}
+      >
+        {children}
+      </LeaderboardInfo>
+    );
+
   return (
     <TableWrapper>
       <ScrollWrapper>
         <ListHead>
-          {WEB_DEVICE_TYPES.includes(breakpoint) ? (
-            <>
-              {Object.values(TABLE_HEAD).map((head, index) => (
-                <TableHeader key={index} tdWidth={LEADERBOARD_TD_WIDTH[index]}>
-                  <span>{head}</span>
-                </TableHeader>
-              ))}
-            </>
-          ) : (
-            <>
-              {Object.values(TABLE_HEAD_MOBILE).map((head, index) => (
-                <TableHeader
-                  key={index}
-                  tdWidth={MOBILE_LEADERBOARD_TD_WIDTH[index]}
-                >
-                  <span>{head}</span>
-                </TableHeader>
-              ))}
-            </>
-          )}
+          {Object.values(heads).map((head, index) => (
+            <TableHeader key={index} tdWidth={widths[index]}>
+              <span>{head}</span>
+            </TableHeader>
+          ))}
         </ListHead>
         <ListBody>
-          {isFetched &&
-            leaders.map((item, index) => (
-              <>
-                {WEB_DEVICE_TYPES.includes(breakpoint) ? (
-                  <LeaderboardInfo key={index} item={item} />
-                ) : (
-                  <LeaderboardInfoMobile key={index} item={item} />
-                )}
-              </>
-            ))}
-          {!isFetched && (
-            <TableSkeleton
-              info={
-                WEB_DEVICE_TYPES.includes(breakpoint)
-                  ? LEADER_INFO
-                  : MOBILE_LEADER_INFO
-              }
-            />
+          {isFetched ? (
+            <>
+              {conneted && displayList(me, <IconMeLogo />)}
+              {leaders.map(displayList)}
+            </>
+          ) : (
+            <TableSkeleton info={skeleton} />
           )}
         </ListBody>
       </ScrollWrapper>
     </TableWrapper>
   );
-};
-
-export default LeaderboardListTable;
-
-//className={leaders.length === 0 ? "hidden-scroll" : ""}
+}
