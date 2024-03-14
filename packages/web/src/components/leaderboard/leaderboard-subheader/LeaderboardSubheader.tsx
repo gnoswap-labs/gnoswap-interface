@@ -1,23 +1,24 @@
-import { Container, SubheaderTitle } from "./LeaderboardSubheader.styles";
 import CopyReferralLink from "../copy-referral-link/CopyReferralLink";
-import LeaderboardLearnMore from "../leaderboard-learn-more/LeaderboardLearnMore";
-import LeaderboardSubesction from "../leaderboard-subsection/LeaderboardSubesction";
-import { useConnection } from "../../../hooks/connection/use-connection";
+import { Container, Text04, TitleWrapper } from "./LeaderboardSubheader.styles";
+import LearnMore from "../learn-more/LearnMore";
 
-export default function LeaderboardSubHeader() {
-  const { conneted } = useConnection();
-
+export default function LeaderboardSubHeader({
+  conneted,
+}: {
+  conneted: boolean;
+}) {
   return (
     <Container>
-      <SubheaderTitle>
-        <LeaderboardSubesction />
-        &nbsp;
-        <LeaderboardLearnMore />
-      </SubheaderTitle>
+      <TitleWrapper>
+        <Text04>
+          Climb up the leaderboard by collecting points for swapping, providing
+          liquidity, staking, or inviting friends. Every activity on GnoSwap
+          counts!&nbsp;
+        </Text04>
+        <LearnMore />
+      </TitleWrapper>
 
-      <div>
-        <CopyReferralLink conneted={conneted} />
-      </div>
+      <CopyReferralLink conneted={conneted} />
     </Container>
   );
 }

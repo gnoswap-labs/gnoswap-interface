@@ -3,10 +3,10 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
 export const Container = styled.div`
-  display: flex;
   width: 100%;
+
+  display: flex;
   justify-content: space-between;
-  flex-direction: row;
   gap: 36px;
 
   ${media.mobile} {
@@ -15,12 +15,16 @@ export const Container = styled.div`
   }
 `;
 
-export const SubheaderTitle = styled.p`
+export const TitleWrapper = styled.p`
   width: 597px;
-  ${fonts.body10};
-  color: ${({ theme }) => theme.color.text04};
 
   @media screen and (max-width: 597px) {
     width: 100%;
   }
+
+  ${fonts.body10};
+`;
+
+export const Text04 = styled.span`
+  color: ${({ theme }) => theme.color.text04};
 `;

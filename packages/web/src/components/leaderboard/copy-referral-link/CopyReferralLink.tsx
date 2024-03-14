@@ -16,15 +16,17 @@ const CopyReferralLink = ({ conneted }: { conneted: boolean }) => {
   };
 
   return (
-    <CopyReferralLinkButton
-      disabled={!conneted}
-      style={{
-        hierarchy: conneted ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
-      }}
-      onClick={handleCopy}
-      text={copied ? "Copied!" : "Copy Referral Link"}
-      leftIcon={copied || <IconLink />}
-    />
+    <div>
+      <CopyReferralLinkButton
+        disabled={!conneted}
+        style={{
+          hierarchy: conneted ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
+        }}
+        onClick={handleCopy}
+        text={copied ? "Copied!" : "Copy Referral Link"}
+        leftIcon={copied || <IconLink />}
+      />
+    </div>
   );
 };
 
