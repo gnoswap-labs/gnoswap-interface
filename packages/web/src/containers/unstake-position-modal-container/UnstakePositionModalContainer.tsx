@@ -35,7 +35,7 @@ const UnstakePositionModalContainer = ({
       return null;
     }
     const lpTokenIds = positions.map(position => position.id);
-    broadcastLoading(makeBroadcastUnStakingMessage("success", {
+    broadcastLoading(makeBroadcastUnStakingMessage("pending", {
       tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
       tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
       tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
