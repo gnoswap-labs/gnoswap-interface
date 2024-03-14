@@ -39,7 +39,7 @@ export function makeId(value: string) {
   return value.replace(/\//g, "_");
 }
 
-export function encriptId(value: string) {
+export function encryptId(value: string) {
   return (value || "").replace(/_/g, "/");
 }
 

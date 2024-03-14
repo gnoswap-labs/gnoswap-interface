@@ -1,4 +1,4 @@
-export interface RemoveLiquidityReqeust {
+export interface RemoveLiquidityRequest {
   lpTokenIds: string[];
 
   caller: string;

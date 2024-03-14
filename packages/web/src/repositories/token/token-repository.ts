@@ -1,6 +1,13 @@
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
-import { IChainResponse, ITokenDetailResponse, ITokenResponse, TokenListResponse, TokenPriceListResponse, TokenSearchLogListResponse } from "./response";
-import { IBalancesByAddressReponse } from "./response/balance-by-address-response";
+import {
+  IChainResponse,
+  ITokenDetailResponse,
+  ITokenResponse,
+  TokenListResponse,
+  TokenPriceListResponse,
+  TokenSearchLogListResponse,
+} from "./response";
+import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
 
 export interface TokenRepository {
   getTokens: () => Promise<TokenListResponse>;
@@ -8,7 +15,7 @@ export interface TokenRepository {
   getTokenByPath: (path: string) => Promise<ITokenResponse>;
 
   getTokenPrices: () => Promise<TokenPriceListResponse>;
-  
+
   getTokenDetailByPath: (path: string) => Promise<ITokenDetailResponse>;
 
   createSearchLog: (searchLog: TokenSearchLogModel) => Promise<boolean>;
@@ -19,5 +26,7 @@ export interface TokenRepository {
 
   getChain: () => Promise<IChainResponse>;
 
-  getBalancesByAddress: (address: string) => Promise<IBalancesByAddressReponse>;
+  getBalancesByAddress: (
+    address: string,
+  ) => Promise<IBalancesByAddressResponse>;
 }

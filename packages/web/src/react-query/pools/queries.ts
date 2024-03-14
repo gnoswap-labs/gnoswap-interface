@@ -2,7 +2,7 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { PoolModel } from "@models/pool/pool-model";
 import { QUERY_KEY } from "./types";
-import { encriptId } from "@utils/common";
+import { encryptId } from "@utils/common";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
 export const useGetPoolList = (
@@ -26,7 +26,7 @@ export const useGetPoolDetailByPath = (
   options?: UseQueryOptions<PoolDetailModel, Error>
 ) => {
   const { poolRepository } = useGnoswapContext();
-  const convertPath = encriptId(path);
+  const convertPath = encryptId(path);
   return useQuery<PoolDetailModel, Error>({
     queryKey: [QUERY_KEY.poolDetail, convertPath],
     queryFn: async () => {

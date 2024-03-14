@@ -5,7 +5,7 @@ import {
   PositionListResponse,
   PositionResponse,
 } from "@repositories/position/response";
-import { RewardResposne } from "@repositories/position/response/reward-response";
+import { RewardResponse } from "@repositories/position/response/reward-response";
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
@@ -73,7 +73,7 @@ export class PositionMapper {
     return positions.map(PositionMapper.from);
   }
 
-  public static rewardFromResponse(reward: RewardResposne): RewardModel {
+  public static rewardFromResponse(reward: RewardResponse): RewardModel {
     return {
       token: reward.rewardToken,
       accumulatedRewardOf1d:

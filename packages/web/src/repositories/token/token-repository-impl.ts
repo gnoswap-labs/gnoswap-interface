@@ -12,7 +12,7 @@ import { StorageKeyType } from "@common/values";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
-import { IBalancesByAddressReponse } from "./response/balance-by-address-response";
+import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
 import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 
 export class TokenRepositoryImpl implements TokenRepository {
@@ -52,7 +52,9 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data;
   };
 
-  public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
+  public getTokenDetailByPath = async (
+    path: string,
+  ): Promise<ITokenDetailResponse> => {
     const response = await this.networkClient.get<ITokenDetailResponse>({
       url: `/token_details/${path}`,
     });
@@ -66,8 +68,10 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data;
   };
 
-  public getBalancesByAddress = async (address: string): Promise<IBalancesByAddressReponse> => {
-    const response = await this.networkClient.get<IBalancesByAddressReponse>({
+  public getBalancesByAddress = async (
+    address: string,
+  ): Promise<IBalancesByAddressResponse> => {
+    const response = await this.networkClient.get<IBalancesByAddressResponse>({
       url: `/balances/${address}`,
     });
     return response.data;
