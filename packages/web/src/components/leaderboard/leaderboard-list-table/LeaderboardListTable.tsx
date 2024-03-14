@@ -35,7 +35,7 @@ export default function LeaderboardListTable({
   leaders: Leader[];
   isFetched: boolean;
 }) {
-  const { conneted } = useConnection();
+  const { connected } = useConnection();
   const { isMobile, isTablet } = useWindowSize();
 
   const heads = (isMobile && TABLE_HEAD_MOBILE) || TABLE_HEAD;
@@ -84,7 +84,7 @@ export default function LeaderboardListTable({
         <ListBody>
           {isFetched ? (
             <>
-              {conneted && displayList(me, <IconMeLogo />)}
+              {connected && displayList(me, <IconMeLogo />)}
               {leaders.map(displayList)}
             </>
           ) : (

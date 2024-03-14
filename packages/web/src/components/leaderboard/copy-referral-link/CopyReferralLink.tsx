@@ -3,7 +3,7 @@ import IconLink from "@components/common/icons/IconLink";
 import { useState } from "react";
 import { CopyReferralLinkButton } from "./CopyReferralLink.styles";
 
-const CopyReferralLink = ({ conneted }: { conneted: boolean }) => {
+const CopyReferralLink = ({ connected }: { connected: boolean }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -18,9 +18,9 @@ const CopyReferralLink = ({ conneted }: { conneted: boolean }) => {
   return (
     <div>
       <CopyReferralLinkButton
-        disabled={!conneted}
+        disabled={!connected}
         style={{
-          hierarchy: conneted ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
+          hierarchy: connected ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
         }}
         onClick={handleCopy}
         text={copied ? "Copied!" : "Copy Referral Link"}

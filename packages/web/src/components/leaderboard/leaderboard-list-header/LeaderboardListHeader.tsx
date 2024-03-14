@@ -17,13 +17,13 @@ import {
 
 const LeaderboardListHeader = () => {
   const [checked, setChecked] = useState(true);
-  const { conneted } = useConnection();
+  const { connected } = useConnection();
   const { isMobile } = useWindowSize();
 
   return (
     <LeaderboardListHeaderWrapper>
       <Flex>
-        {conneted ? (
+        {connected ? (
           <>
             <Tooltip
               placement="top"

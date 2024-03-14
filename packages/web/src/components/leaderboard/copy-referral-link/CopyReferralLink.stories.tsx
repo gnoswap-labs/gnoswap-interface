@@ -12,10 +12,10 @@ const Template: ComponentStory<typeof CopyReferralLink> = args => (
 
 export const Connected = Template.bind({});
 Connected.args = {
-  conneted: true,
+  connected: true,
 };
 
 export const Unconnected = Template.bind({});
 Unconnected.args = {
-  conneted: false,
+  connected: false,
 };

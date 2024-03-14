@@ -2,7 +2,7 @@ import LeaderboardSubheader from "@components/leaderboard/leaderboard-subheader/
 import { useConnection } from "@hooks/connection/use-connection";
 
 export default function LeaderboardSubheaderContainer() {
-  const { conneted } = useConnection();
+  const { connected } = useConnection();
 
-  return <LeaderboardSubheader conneted={conneted} />;
+  return <LeaderboardSubheader connected={connected} />;
 }

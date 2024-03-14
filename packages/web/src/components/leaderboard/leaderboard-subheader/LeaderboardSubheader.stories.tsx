@@ -8,6 +8,6 @@ export default {
 
 export const Default: StoryObj<typeof LeaderboardSubheader> = {
   args: {
-    conneted: false,
+    connected: false,
   },
 };

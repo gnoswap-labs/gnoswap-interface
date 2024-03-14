@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 
 export const useConnection = () => {
   const account = useAtomValue(WalletState.account);
-  const conneted = (account?.address?.length || 0) >= 1;
+  const connected = (account?.address?.length || 0) >= 1;
 
-  return { conneted };
+  return { connected };
 };
