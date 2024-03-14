@@ -2,7 +2,7 @@ import CopyReferralLink from "../copy-referral-link/CopyReferralLink";
 import { Container, Text04, TitleWrapper } from "./LeaderboardSubheader.styles";
 import LearnMore from "../learn-more/LearnMore";
 
-export default function LeaderboardSubHeader({
+export default function LeaderboardSubheader({
   conneted,
 }: {
   conneted: boolean;
