@@ -42,6 +42,24 @@ export const MyPositionCardWrapper = styled.div<Props>`
         .visible-badge {
           visibility: hidden; 
         }
+        .link-page {
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 8px;
+          svg {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            ${media.mobile} {
+              width: 20px;
+              height: 20px;
+            }
+          }
+          svg:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
+          }
+        }
       }
       .mobile-container {
         ${mixins.flexbox("row", "flex-start", "flex-start")};
@@ -107,7 +125,6 @@ export const MyPositionCardWrapper = styled.div<Props>`
           right: -1px;
           top: 43px;
           width: 165px;
-          cursor: default;
           background: ${({ theme }) => theme.color.background01};
           box-shadow: ${({ theme }) => theme.color.shadow};
           .item-wrapper {

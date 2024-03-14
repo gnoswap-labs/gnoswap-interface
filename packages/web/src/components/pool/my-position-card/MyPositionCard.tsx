@@ -38,6 +38,8 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { numberToFormat } from "@utils/string-utils";
 import PositionHistory from "./PositionRepository";
 import { useRouter } from "next/router";
+import IconLinkPage from "@components/common/icons/IconLinkPage";
+import { useCopy } from "@hooks/common/use-copy";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -57,6 +59,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
+  const [, setCopy] = useCopy();
+  
 
   const isClosed = position.status;
 
@@ -461,7 +465,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     </div>
                   )}
                   {!loading && (
-                    <span className="product-id">ID #{position.id}</span>
+                    <div className="link-page">
+                      <span className="product-id">ID #{position.id}</span>
+                      <div onClick={() => setCopy(`${window.location.host + window.location.pathname}#position-${position.id}`)}><IconLinkPage /></div>
+                    </div>
                   )}
                 </>
               ) : (

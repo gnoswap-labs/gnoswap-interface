@@ -51,11 +51,11 @@ const HomeSwapContainer: React.FC = () => {
   const [swapDirection, setSwapDirection] =
     useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
-  const { connected } = useWallet();
+  const { connected, isSwitchNetwork } = useWallet();
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
 
   const tokenABalance = useMemo(() => {
-    if (!connected) return "-";
+    if (!connected || isSwitchNetwork) return "-";
     if (tokenA && displayBalanceMap[tokenA.priceId]) {
       const balance = displayBalanceMap[tokenA.priceId] || 0;
       return BigNumber(balance).toFormat(tokenA.decimals);
@@ -64,10 +64,10 @@ const HomeSwapContainer: React.FC = () => {
       return "-";
     }
     return "0";
-  }, [connected, displayBalanceMap, tokenA]);
+  }, [isSwitchNetwork, connected, displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (!connected) return "-";
+    if (!connected || isSwitchNetwork) return "-";
     if (isEmptyObject(displayBalanceMap)) {
       return "-";
     }
@@ -76,7 +76,7 @@ const HomeSwapContainer: React.FC = () => {
       return BigNumber(balance).toFormat(tokenB.decimals);
     }
     return "0";
-  }, [connected, displayBalanceMap, tokenB]);
+  }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
   
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceId)]) {

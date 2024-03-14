@@ -118,20 +118,22 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   }, [dataTokenInfo, isLoading]);
 
   const balanceADisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenABalance !== "-") {
       if (dataTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(2);
     }
     return "-";
-  }, [dataTokenInfo.tokenABalance, connected]);
+  }, [dataTokenInfo.tokenABalance, connected, isSwitchNetwork]);
 
   const balanceBDisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenBBalance !== "-") {
       if (dataTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(2);
     }
     return "-";
-  }, [dataTokenInfo.tokenBBalance, connected]);
+  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork]);
 
   return (
     <div css={wrapper}>

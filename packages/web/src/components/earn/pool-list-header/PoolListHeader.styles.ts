@@ -11,6 +11,11 @@ export const PoolHeaderWrapper = styled.div`
     flex-direction: column;
     gap: 24px;
     align-items: flex-start;
+    .select-tab-wrapper {
+      button {
+        padding: 4px 24px;
+      }
+    }
   }
 
   .title-container {

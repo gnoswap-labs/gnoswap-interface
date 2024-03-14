@@ -20,7 +20,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { formatUsdNumber3Digits, toUnitFormat } from "@utils/number-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -176,7 +176,7 @@ const HeaderContainer: React.FC = () => {
         return {
           ...item,
           apr: `${!item_.apr ? "-" : Number(item_.apr) > 10 ? `${item_.apr}% APR` : `${Number(item_.apr).toFixed(2)}% APR`}`,
-          price: `$${convertToKMB((item_.tvl || 0).toString())}`,
+          price: toUnitFormat(item_.tvl, true, true),
         };
       }
     });
@@ -199,7 +199,7 @@ const HeaderContainer: React.FC = () => {
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
         },
-        price: `$${convertToKMB((item.tvl || 0).toString())}`,
+        price: toUnitFormat(item.tvl, true, true),
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",

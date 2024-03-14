@@ -114,7 +114,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
-    return toUnitFormat(tempTotalStakedRewardUSD, true, true);
+    return toUnitFormat(tempTotalStakedRewardUSD / (10 ** 6), true, true);
   }, [positionRewards, tokenPrices]);
 
   const aprStr = useMemo(() => {
@@ -170,8 +170,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 }
               >
                 <span>{totalUSD}</span>
-                {positions.length > 0 && checkedStep && "+ "}
-                {positions.length > 0 && checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
+                {positions.length > 0 && checkedStep && totalStakedRewardUSD !== "$0" && "+ "}
+                {positions.length > 0 && checkedStep && totalStakedRewardUSD !== "$0" && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
                 {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
               </Tooltip>
             </span>
@@ -238,7 +238,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
-    return toUnitFormat(tempTotalStakedRewardUSD, true, true);
+    return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
 
   }, [positionRewards, tokenPrices]);
 
@@ -285,8 +285,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                 }
               >
                 <span>{totalUSD}</span>
-                {checkedStep && positions.length > 0 && "+ "}
-                {positions.length > 0 && checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
+                {checkedStep && positions.length > 0 && totalStakedRewardUSD !== "$0" && "+ "}
+                {positions.length > 0 && totalStakedRewardUSD !== "$0" && checkedStep && <span className="price-gd-text">{totalStakedRewardUSD}</span>}
                 {positions.length > 0 && <div className="badge">{positions.length} LP</div>}
               </Tooltip>
             </span>

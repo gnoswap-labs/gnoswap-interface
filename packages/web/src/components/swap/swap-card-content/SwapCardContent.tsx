@@ -22,6 +22,7 @@ interface ContentProps {
   connectedWallet: boolean;
   isLoading: boolean;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  isSwitchNetwork: boolean;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -36,6 +37,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   connectedWallet,
   isLoading,
   setSwapRateAction,
+  isSwitchNetwork,
 }) => {
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
@@ -93,6 +95,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   }, [swapSummaryInfo, swapTokenInfo, isLoading]);
 
   const balanceADisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
     if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(
@@ -100,9 +103,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
       );
     }
     return "-";
-  }, [swapTokenInfo.tokenABalance, connectedWallet]);
+  }, [swapTokenInfo.tokenABalance, connectedWallet, isSwitchNetwork]);
 
   const balanceBDisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
     if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(
@@ -110,7 +114,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
       );
     }
     return "-";
-  }, [swapTokenInfo.tokenBBalance, connectedWallet]);
+  }, [swapTokenInfo.tokenBBalance, connectedWallet, isSwitchNetwork]);
 
   return (
     <ContentWrapper>
