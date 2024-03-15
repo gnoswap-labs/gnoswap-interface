@@ -19,6 +19,9 @@ Mobile.args = {
   referralPoint: "20000000",
   isMobile: true,
 };
+Mobile.parameters = {
+  theme: "light",
+};
 
 export const Web = Template.bind({});
 Web.args = {
@@ -28,4 +31,7 @@ Web.args = {
   stakingPoint: "20000000",
   referralPoint: "20000000",
   isMobile: false,
+};
+Web.parameters = {
+  theme: "light",
 };

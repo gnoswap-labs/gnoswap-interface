@@ -1,9 +1,10 @@
 import IconBronzeMedal from "@components/common/icons/IconBronzeMedal";
 import IconGoldMedal from "@components/common/icons/IconGoldMedal";
+import IconMeLogo from "@components/common/icons/IconMeLogo";
 import IconSilverMedal from "@components/common/icons/IconSilverMedal";
 import styled from "@emotion/styled";
 import { HTMLAttributes } from "react";
-import { TableColumn } from "../leaderboard-info/LeaderboardInfo.styles";
+import { TableColumn } from "../leaderboard-table-row/LeaderboardTableRow.styles";
 
 const Flex = styled.div`
   gap: 1rem;
@@ -13,12 +14,12 @@ const Flex = styled.div`
 const UserColumn = ({
   rank,
   user,
-  children,
+  me = false,
   ...rest
 }: {
   rank: number;
   user: string;
-  children?: React.ReactNode;
+  me?: boolean;
   tdWidth?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
   return (
@@ -28,7 +29,7 @@ const UserColumn = ({
         {rank === 2 && <IconSilverMedal />}
         {rank === 3 && <IconBronzeMedal />}
         {user}
-        {children}
+        {me && <IconMeLogo />}
       </Flex>
     </TableColumn>
   );

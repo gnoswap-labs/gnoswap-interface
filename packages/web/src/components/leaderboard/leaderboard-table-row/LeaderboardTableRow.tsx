@@ -1,19 +1,23 @@
-import { HoverSection, TableColumn, Wrapper } from "./LeaderboardInfo.styles";
-import { Leader } from "@containers/leaderboard-list-container/LeaderboardListContainer";
+import {
+  HoverSection,
+  TableColumn,
+  Wrapper,
+} from "./LeaderboardTableRow.styles";
 import PointComposition from "../point-composition/PointComposition";
 import UserColumn from "../user-column/UserColumn";
+import { Leader } from "@repositories/leaderboard/response/common/types";
 
-export default function LeaderboardInfo({
+const LeaderboardTableRow = ({
   item,
   tdWidths,
   isMobile,
-  children,
+  me = false,
 }: {
   item: Leader;
   tdWidths: number[];
   isMobile: boolean;
-  children?: React.ReactNode;
-}) {
+  me?: boolean;
+}) => {
   const {
     rank,
     user,
@@ -34,11 +38,10 @@ export default function LeaderboardInfo({
         <UserColumn
           rank={rank}
           user={user}
+          me={me}
           tdWidth={tdWidths.at(1)}
           style={{ justifyContent: "flex-start" }}
-        >
-          {children}
-        </UserColumn>
+        />
       </HoverSection>
       <HoverSection style={{ cursor: "auto" }}>
         <TableColumn
@@ -62,4 +65,6 @@ export default function LeaderboardInfo({
       </HoverSection>
     </Wrapper>
   );
-}
+};
+
+export default LeaderboardTableRow;

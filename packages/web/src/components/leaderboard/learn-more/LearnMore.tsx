@@ -1,4 +1,4 @@
-import { StyledIconFile } from "../common/StyledIconFile/StyledIconFile";
+import { StyledIconFile } from "../common/styled-icon-file/StyledIconFile";
 import { Flex, Text30 } from "./LearnMore.styles";
 
 export default function LearnMore() {

@@ -10,4 +10,7 @@ export const Default: StoryObj<typeof LeaderboardSubheader> = {
   args: {
     connected: false,
   },
+  parameters: {
+    theme: "light",
+  },
 };

@@ -9,20 +9,20 @@ export default {
 export const Gold: StoryObj<typeof UserColumn> = {
   args: {
     rank: 1,
-    user: "sadfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf",
+    user: "g1j0q...8auvm",
   },
 };
 
 export const Silver: StoryObj<typeof UserColumn> = {
   args: {
     rank: 2,
-    user: "sadfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf",
+    user: "g1j0q...8auvm",
   },
 };
 
 export const Bronze: StoryObj<typeof UserColumn> = {
   args: {
     rank: 3,
-    user: "sadfsadfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf",
+    user: "g1j0q...8auvm",
   },
 };

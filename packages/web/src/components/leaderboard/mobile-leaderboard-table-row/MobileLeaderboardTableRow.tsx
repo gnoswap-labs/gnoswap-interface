@@ -1,18 +1,18 @@
-import { TableColumn, Wrapper } from "./LeaderboardInfo.styles";
-import { Leader } from "@containers/leaderboard-list-container/LeaderboardListContainer";
+import { TableColumn, Wrapper } from "./MobileLeaderboardTableRow.styles";
 import UserColumn from "../user-column/UserColumn";
 import PointComposition from "../point-composition/PointComposition";
+import { Leader } from "@repositories/leaderboard/response/common/types";
 
-const LeaderboardInfoMobile = ({
+const MobileLeaderboardTableRow = ({
   item,
   tdWidths,
   isMobile,
-  children,
+  me = false,
 }: {
   item: Leader;
   tdWidths: number[];
   isMobile: boolean;
-  children?: React.ReactNode;
+  me?: boolean;
 }) => {
   const {
     rank,
@@ -27,9 +27,7 @@ const LeaderboardInfoMobile = ({
   return (
     <Wrapper>
       <TableColumn tdWidth={tdWidths[0]}>#{rank}</TableColumn>
-      <UserColumn rank={rank} user={user} tdWidth={tdWidths[1]}>
-        {children}
-      </UserColumn>
+      <UserColumn rank={rank} user={user} me={me} tdWidth={tdWidths[1]} />
       <TableColumn tdWidth={tdWidths[2]}>
         <PointComposition
           points={points}
@@ -44,4 +42,4 @@ const LeaderboardInfoMobile = ({
   );
 };
 
-export default LeaderboardInfoMobile;
+export default MobileLeaderboardTableRow;
