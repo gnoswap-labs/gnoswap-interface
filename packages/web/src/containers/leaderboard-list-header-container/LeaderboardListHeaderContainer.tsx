@@ -1,8 +1,8 @@
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnection } from "@hooks/connection/use-connection";
-import ConnectYourWallet from "../connect-your-wallet/ConnectYourWallet";
-import NextUpdate from "../next-update/NextUpdate";
-import { ListHeaderWrapper } from "./LeaderboardListTable.styles";
+import ConnectYourWallet from "../../components/leaderboard/connect-your-wallet/ConnectYourWallet";
+import NextUpdate from "../../components/leaderboard/next-update/NextUpdate";
+import { ListHeaderWrapper } from "./LeaderboardListHeaderContainer.styles";
 
 const LeaderboardListHeaderContainer = () => {
   const { connected } = useConnection();

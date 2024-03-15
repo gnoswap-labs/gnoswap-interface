@@ -1,6 +1,6 @@
 import { ValuesType } from "utility-types";
 import { Wrapper } from "./LeaderboardListLayout.styles";
-import LeaderboardListHeaderContainer from "@components/leaderboard/leaderboard-list-header/LeaderboardListHeader";
+import LeaderboardListHeaderContainer from "@containers/leaderboard-list-header-container/LeaderboardListHeaderContainer";
 import { Suspense } from "react";
 import LeaderboardTableContainer from "@containers/leaderboard-table-container/LeaderboardTableContainer";
 import LeaderboardTableSkeletonContainer from "@containers/leaderboard-table-skeleton-container/LeaderboardTableSkeletonContainer";
