@@ -1,12 +1,12 @@
 import { ListHead, TableHeader } from "./LeaderboardTableHeader.styles";
 
-export default function LeaderboardTableHeader({
+const LeaderboardTableHeader = ({
   heads,
   headWidths,
 }: {
   heads: string[];
   headWidths: number[];
-}) {
+}) => {
   return (
     <ListHead>
       {heads.map((head, index) => (
@@ -16,4 +16,6 @@ export default function LeaderboardTableHeader({
       ))}
     </ListHead>
   );
-}
+};
+
+export default LeaderboardTableHeader;

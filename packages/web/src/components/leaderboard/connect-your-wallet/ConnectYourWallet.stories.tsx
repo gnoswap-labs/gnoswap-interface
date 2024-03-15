@@ -9,6 +9,6 @@ export default {
 export const Default: StoryObj<typeof ConnectYourWallet> = {
   args: { connected: false, isMobile: false },
   parameters: {
-    theme: "light",
+    backgrounds: { default: "light" },
   },
 };

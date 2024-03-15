@@ -1,19 +1,21 @@
-import { ComponentStory, Meta } from "@storybook/react";
 import HideMe from "./HideMe";
+import { ComponentMeta, StoryObj } from "@storybook/react";
 
 export default {
   title: "leaderboard/HideMe",
   component: HideMe,
-} as Meta<typeof HideMe>;
+} as ComponentMeta<typeof HideMe>;
 
-const Template: ComponentStory<typeof HideMe> = args => <HideMe {...args} />;
-
-export const Mobile = Template.bind({});
-Mobile.args = {
-  isMobile: true,
+export const Mobile: StoryObj<typeof HideMe> = {
+  args: { isMobile: true },
+  parameters: {
+    backgrounds: { default: "light" },
+  },
 };
 
-export const Web = Template.bind({});
-Web.args = {
-  isMobile: false,
+export const Web: StoryObj<typeof HideMe> = {
+  args: { isMobile: false },
+  parameters: {
+    backgrounds: { default: "light" },
+  },
 };

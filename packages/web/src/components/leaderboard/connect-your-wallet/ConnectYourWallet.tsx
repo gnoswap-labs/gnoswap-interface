@@ -1,6 +1,6 @@
 import Switch from "@components/common/switch/Switch";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { useState } from "react";
+import React from "react";
 import HideMe from "../hide-me/HideMe";
 import {
   TooltipContent,
@@ -15,7 +15,7 @@ const ConnectYourWallet = ({
   connected: boolean;
   isMobile: boolean;
 }) => {
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = React.useState(true);
   return (
     <Flex>
       {connected ? (
