@@ -1,9 +1,16 @@
-import IncreaseLiquidity from "@components/increase/increase-liquidity/IncreaseLiquidity";
-import { useIncreaseHandle } from "@hooks/increase/use-increase-handle";
-import { useIncreasePositionModal } from "@hooks/increase/use-increase-position-modal";
+import RepositionContent from "@components/reposition/reposition-content/RepositionContent";
+import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import { useRepositionHandle } from "@hooks/reposition/use-reposition-handle";
+import { useRepositionModalContainer } from "@hooks/reposition/use-reposition-position-modal";
 import React from "react";
 
-const IncreaseLiquidityContainer: React.FC = () => {
+const PRICE_RANGES: AddLiquidityPriceRage[] = [
+  { type: "Active" },
+  { type: "Passive" },
+  { type: "Custom" },
+];
+
+const RepositionContainer: React.FC = () => {
   const {
     tokenA,
     tokenB,
@@ -21,9 +28,12 @@ const IncreaseLiquidityContainer: React.FC = () => {
     slippage,
     changeSlippage,
     buttonType,
-  } = useIncreaseHandle();
+    selectPool,
+    priceRange,
+    changePriceRange,
+  } = useRepositionHandle();
 
-  const { openModal } = useIncreasePositionModal({
+  const { openModal } = useRepositionModalContainer({
     tokenA,
     tokenB,
     tokenAAmountInput,
@@ -32,6 +42,8 @@ const IncreaseLiquidityContainer: React.FC = () => {
     minPriceStr,
     maxPriceStr,
     rangeStatus,
+    priceRangeSummary,
+    aprFee,
   });
 
   const onSubmit = () => {
@@ -41,7 +53,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
   if (!tokenA || !tokenB) return null;
 
   return (
-    <IncreaseLiquidity
+    <RepositionContent
       tokenA={tokenA}
       tokenB={tokenB}
       fee={`${Number(fee) / 10000}%`}
@@ -59,8 +71,12 @@ const IncreaseLiquidityContainer: React.FC = () => {
       changeSlippage={changeSlippage}
       buttonType={buttonType}
       onSubmit={onSubmit}
+      selectPool={selectPool}
+      priceRanges={PRICE_RANGES}
+      changePriceRange={changePriceRange}
+      priceRange={priceRange}
     />
   );
 };
 
-export default IncreaseLiquidityContainer;
+export default RepositionContainer;

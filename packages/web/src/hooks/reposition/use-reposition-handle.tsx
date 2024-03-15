@@ -23,13 +23,13 @@ export type INCREASE_BUTTON_TYPE =
   | "ENTER_AMOUNT"
   | "INCREASE_LIQUIDITY"
 
-export const useIncreaseHandle = () => {
+export const useRepositionHandle = () => {
   const router = useRouter();
   const selectedPosition = useAtomValue(IncreaseState.selectedPosition);
   const poolPath = router.query["pool-path"] as string;
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Custom" });
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage>({ type: "Custom" });
 
   const { connected } = useWallet();
   const minPriceStr = useMemo(() => {

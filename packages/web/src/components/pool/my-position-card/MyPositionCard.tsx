@@ -60,7 +60,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [, setCopy] = useCopy();
-  
 
   const isClosed = position.status;
 
@@ -426,6 +425,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (text === "Increase Liquidity") {
       setSelectedPosition(position);
       router.push(router.asPath + "/increase-liquidity");
+    } else {
+      setSelectedPosition(position);
+      router.push(router.asPath + "/reposition");
     }
   };
 
@@ -467,7 +469,17 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   {!loading && (
                     <div className="link-page">
                       <span className="product-id">ID #{position.id}</span>
-                      <div onClick={() => setCopy(`${window.location.host + window.location.pathname}#position-${position.id}`)}><IconLinkPage /></div>
+                      <div
+                        onClick={() =>
+                          setCopy(
+                            `${
+                              window.location.host + window.location.pathname
+                            }#position-${position.id}`,
+                          )
+                        }
+                      >
+                        <IconLinkPage />
+                      </div>
                     </div>
                   )}
                 </>
