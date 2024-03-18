@@ -2,11 +2,13 @@ import {
   GetLeadersRequest,
   GetLeaderByAddressRequest,
   UpdateLeaderByAddressRequest as UpdateLeaderByAddressRequest,
+  GetNextUpdateTimeRequest,
 } from "./request";
 import {
   GetLeadersResponse,
   GetLeaderByAddressResponse,
   UpdateLeaderByAddressResponse as UpdateLeaderByAddressResponse,
+  GetNextUpdateTimeResponse,
 } from "./response";
 
 export interface LeaderboardRepository {
@@ -19,4 +21,8 @@ export interface LeaderboardRepository {
   updateLeaderByAddress: (
     request: UpdateLeaderByAddressRequest,
   ) => Promise<UpdateLeaderByAddressResponse>;
+
+  getNextUpdateTime: (
+    request: GetNextUpdateTimeRequest,
+  ) => Promise<GetNextUpdateTimeResponse>;
 }

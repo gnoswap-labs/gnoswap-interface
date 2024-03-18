@@ -3,12 +3,14 @@ import {
   GetLeadersRequest,
   GetLeaderByAddressRequest,
   UpdateLeaderByAddressRequest,
+  GetNextUpdateTimeRequest,
 } from "./request";
 
 import {
   GetLeadersResponse,
   GetLeaderByAddressResponse,
   UpdateLeaderByAddressResponse,
+  GetNextUpdateTimeResponse,
 } from "./response";
 
 export class LeaderboardRepositoryMock implements LeaderboardRepository {
@@ -172,5 +174,13 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     console.log(`request.address : ${request.address}`);
 
     return {};
+  };
+
+  public getNextUpdateTime = async (
+    request: GetNextUpdateTimeRequest,
+  ): Promise<GetNextUpdateTimeResponse> => {
+    console.log(`request.address : ${request}`);
+
+    return { seconds: 6151 }; //
   };
 }
