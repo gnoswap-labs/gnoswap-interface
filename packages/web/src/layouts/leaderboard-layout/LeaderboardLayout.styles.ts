@@ -35,11 +35,7 @@ export const Section = styled.section`
   padding: 100px 0px 36px 0px;
 
   gap: 36px;
-  // ${media.tablet} {
-  //   max-width: ${ContainerWidth.TABLET_CONTAINER};
-  //   padding: 60px 0px 60px 0px;
-  //   gap: 24px;
-  // }
+
   ${media.mobile} {
     max-width: ${ContainerWidth.MOBILE_CONTAINER};
     width: 100%;
@@ -60,12 +56,6 @@ export const ListSection = styled.div`
   width: 100%;
 
   padding-bottom: 48px;
-
-  // ${media.tablet} {
-  //   max-width: ${ContainerWidth.TABLET_CONTAINER};
-  //   padding-left: 16px;
-  //   padding-right: 16px;
-  // }
 
   ${media.mobile} {
     max-width: ${ContainerWidth.MOBILE_CONTAINER};
