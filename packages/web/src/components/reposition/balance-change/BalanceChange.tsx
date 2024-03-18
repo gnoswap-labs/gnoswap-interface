@@ -6,12 +6,13 @@ import { BalanceChangeWrapper } from "./BalanceChange.styles";
 export interface BalanceChangeProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
+  title?: string;
 }
 
-const BalanceChange: React.FC<BalanceChangeProps> = ({ tokenA, tokenB }) => {
+const BalanceChange: React.FC<BalanceChangeProps> = ({ tokenA, tokenB, title = "3. Balance Changes" }) => {
   return (
     <BalanceChangeWrapper>
-      <h5>3. Balance Changes</h5>
+      <h5>{title}</h5>
       <div className="select-position common-bg">
         <div className="table-balance-change">
           <p className="label">Token</p>

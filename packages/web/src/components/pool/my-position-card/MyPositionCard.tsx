@@ -422,7 +422,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
   }, [maxTickRate, isSwap, minTickRate]);
   const handleSelect = (text: string) => {
-    if (text === "Increase Liquidity") {
+    if (text == "Decrease Liquidity") {
+      setSelectedPosition(position);
+      router.push(router.asPath + "/decrease-liquidity");
+    } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
       router.push(router.asPath + "/increase-liquidity");
     } else {

@@ -1,7 +1,7 @@
 import Footer from "@components/common/footer/Footer";
 import BreadcrumbsContainer from "@containers/breadcrumbs-container/BreadcrumbsContainer";
+import DecreaseLiquidityContainer from "@containers/decrease-liquidity-container/DecreaseLiquidityContainer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import IncreaseLiquidityContainer from "@containers/increase-liquidity-container/IncreaseLiquidityContainer";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 
-export default function IncreaseLiquidity() {
+export default function DecreaseLiquidity() {
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"] || "";
@@ -30,7 +30,7 @@ export default function IncreaseLiquidity() {
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },
-      { title: "Increase Liquidity", path: "" },
+      { title: "Decrease Liquidity", path: "" },
     ];
   }, [data, width]);
   
@@ -38,7 +38,7 @@ export default function IncreaseLiquidity() {
     <IncreaseLiquidityLayout
       header={<HeaderContainer />}
       breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading}/>}
-      increaseLiquidity={<IncreaseLiquidityContainer />}
+      increaseLiquidity={<DecreaseLiquidityContainer />}
       footer={<Footer />}
     />
   );
