@@ -11,11 +11,14 @@ import {
 const ConnectYourWallet = ({
   connected,
   isMobile,
+  checked,
+  onSwitch,
 }: {
   connected: boolean;
   isMobile: boolean;
+  checked: boolean;
+  onSwitch: () => void;
 }) => {
-  const [checked, setChecked] = React.useState(true);
   return (
     <Flex>
       {connected ? (
@@ -32,7 +35,7 @@ const ConnectYourWallet = ({
             <HideMe isMobile={isMobile} />
           </Tooltip>
           <SwitchWrapper>
-            <Switch checked={checked} onChange={() => setChecked(v => !v)} />
+            <Switch checked={checked} onChange={onSwitch} />
           </SwitchWrapper>
         </>
       ) : (
