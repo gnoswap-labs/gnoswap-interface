@@ -1,10 +1,9 @@
-import { ThemeState } from "@states/index";
-import { useAtom } from "jotai";
+import { useTheme } from "@emotion/react";
 
 const IconMeLogo = ({ className }: { className?: string }) => {
-  const [themeKey] = useAtom(ThemeState.themeKey);
+  const theme = useTheme();
 
-  return themeKey === "light" ? (
+  return theme.themeKey === "light" ? (
     <svg
       width="34"
       height="20"
