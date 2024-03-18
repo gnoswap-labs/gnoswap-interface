@@ -1,18 +1,22 @@
 import {
   GetLeadersRequest,
-  GetMyLeaderRequest,
-  HideMyLeaderRequest,
+  GetLeaderByAddressRequest,
+  UpdateLeaderByAddressRequest as UpdateLeaderByAddressRequest,
 } from "./request";
 import {
   GetLeadersResponse,
-  GetMyLeaderResponse,
-  HideMyLeaderResponse,
+  GetLeaderByAddressResponse,
+  UpdateLeaderByAddressResponse as UpdateLeaderByAddressResponse,
 } from "./response";
 
 export interface LeaderboardRepository {
   getLeaders: (request: GetLeadersRequest) => Promise<GetLeadersResponse>;
 
-  getMyLeader: (request: GetMyLeaderRequest) => Promise<GetMyLeaderResponse>;
+  getLeaderByAddress: (
+    request: GetLeaderByAddressRequest,
+  ) => Promise<GetLeaderByAddressResponse>;
 
-  HideMyLeader: (request: HideMyLeaderRequest) => Promise<HideMyLeaderResponse>;
+  updateLeaderByAddress: (
+    request: UpdateLeaderByAddressRequest,
+  ) => Promise<UpdateLeaderByAddressResponse>;
 }

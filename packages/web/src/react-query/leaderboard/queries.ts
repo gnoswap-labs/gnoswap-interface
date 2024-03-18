@@ -20,7 +20,7 @@ export function useLeaders() {
         queryFn: () => {
           if (!account?.address) return null;
 
-          return leaderboardRepository.getMyLeader({
+          return leaderboardRepository.getLeaderByAddress({
             address: account.address,
           });
         },

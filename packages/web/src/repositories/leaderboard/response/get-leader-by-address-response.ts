@@ -1,5 +1,5 @@
 import { Leader } from "./common/types";
 
-export interface GetMyLeaderResponse {
+export interface GetLeaderByAddressResponse {
   leader: Leader;
 }

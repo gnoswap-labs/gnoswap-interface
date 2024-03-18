@@ -1,14 +1,14 @@
 import { LeaderboardRepository } from "./leaderboard-repository";
 import {
   GetLeadersRequest,
-  GetMyLeaderRequest,
-  HideMyLeaderRequest,
+  GetLeaderByAddressRequest,
+  UpdateLeaderByAddressRequest,
 } from "./request";
 
 import {
   GetLeadersResponse,
-  GetMyLeaderResponse,
-  HideMyLeaderResponse,
+  GetLeaderByAddressResponse,
+  UpdateLeaderByAddressResponse,
 } from "./response";
 
 export class LeaderboardRepositoryMock implements LeaderboardRepository {
@@ -145,9 +145,9 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     };
   };
 
-  public getMyLeader = async (
-    request: GetMyLeaderRequest,
-  ): Promise<GetMyLeaderResponse> => {
+  public getLeaderByAddress = async (
+    request: GetLeaderByAddressRequest,
+  ): Promise<GetLeaderByAddressResponse> => {
     console.log(`request.address : ${request.address}`);
 
     return {
@@ -166,9 +166,9 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     };
   };
 
-  public HideMyLeader = async (
-    request: HideMyLeaderRequest,
-  ): Promise<HideMyLeaderResponse> => {
+  public updateLeaderByAddress = async (
+    request: UpdateLeaderByAddressRequest,
+  ): Promise<UpdateLeaderByAddressResponse> => {
     console.log(`request.address : ${request.address}`);
 
     return {};
