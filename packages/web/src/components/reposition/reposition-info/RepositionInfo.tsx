@@ -45,7 +45,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
             </Tooltip>
           </div>
           <p className="value">
-            {priceRangeSummary.tokenARatioStr}{" "}
+            {priceRangeSummary.tokenARatioStr}{"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenA?.symbol}
@@ -56,7 +56,7 @@ const RepositionInfo: React.FC<RepositionInfoProps> = ({
             ) : (
               `${tokenA?.symbol}`
             )}{" "}
-            / {priceRangeSummary.tokenBRatioStr}{" "}
+            / {priceRangeSummary.tokenBRatioStr}{"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenB?.symbol}

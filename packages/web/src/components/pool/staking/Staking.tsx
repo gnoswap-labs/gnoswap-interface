@@ -1,7 +1,7 @@
 import React from "react";
 import StakingContent from "@components/pool/staking-content/StakingContent";
 import StakingHeader from "@components/pool/staking-header/StakingHeader";
-import { StakingWrapper } from "./Staking.styles";
+import { StakingAnchor, StakingWrapper } from "./Staking.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
@@ -36,25 +36,28 @@ const Staking: React.FC<StakingProps> = ({
 }) => {
   
   return (
-    <StakingWrapper>
-      <StakingHeader
-        breakpoint={breakpoint}
-        isDisabledButton={isDisabledButton}
-        handleClickStakeRedirect={handleClickStakeRedirect}
-        handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-        isUnstake={positions.length > 0}
-      />
-      <StakingContent
-        pool={pool}
-        totalApr={totalApr}
-        positions={positions}
-        rewardTokens={rewardTokens}
-        breakpoint={breakpoint}
-        mobile={mobile}
-        type={type}
-        loading={loading}
-      />
-    </StakingWrapper>
+    <>
+      <StakingAnchor id="staking" />
+      <StakingWrapper>
+        <StakingHeader
+          breakpoint={breakpoint}
+          isDisabledButton={isDisabledButton}
+          handleClickStakeRedirect={handleClickStakeRedirect}
+          handleClickUnStakeRedirect={handleClickUnStakeRedirect}
+          isUnstake={positions.length > 0}
+        />
+        <StakingContent
+          pool={pool}
+          totalApr={totalApr}
+          positions={positions}
+          rewardTokens={rewardTokens}
+          breakpoint={breakpoint}
+          mobile={mobile}
+          type={type}
+          loading={loading}
+        />
+      </StakingWrapper>
+    </>
   );
 };
 

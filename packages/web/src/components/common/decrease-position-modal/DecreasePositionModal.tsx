@@ -50,7 +50,7 @@ const DecreasePositionModal: React.FC<Props> = ({
           />
           <div>
             <p className="label">Decreasing Amount</p>
-            <DecreasePoolInfo {...amountInfo}/>
+            <DecreasePoolInfo {...amountInfo} isShowProtocolFee/>
           </div>
 
           <BalanceChange {...amountInfo} title="Balance Changes"/>

@@ -11,7 +11,7 @@ import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
+import { formatUsdNumber } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -20,6 +20,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 import { numberToFormat } from "@utils/string-utils";
+import { toUnitFormat } from "@utils/number-utils";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -250,7 +251,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }, 0)
       : 0;
 
-    return `$${numberToFormat(`${claimableUsdValue}`, 2)}`;
+    return toUnitFormat(claimableUsdValue, true, true);
   }, [positions, isDisplay]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
@@ -310,7 +311,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }, 0)
       : 0;
 
-    return `$${numberToFormat(`${claimableUsdValue}`, 2)}`;
+    return toUnitFormat(claimableUsdValue, true, true);
   }, [claimableRewardInfo, isDisplay]);
 
   const claimable = useMemo(() => {
@@ -434,7 +435,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <span>
-                {convertToKMB(`${tokenABalance}`)}{" "}
+                {toUnitFormat(tokenABalance, true, true)}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""
                     }`}
@@ -455,7 +456,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <span>
-                {convertToKMB(`${tokenBBalance}`)}{" "}
+                {toUnitFormat(tokenBBalance, true, true)}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""
                     }`}

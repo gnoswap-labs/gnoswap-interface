@@ -34,7 +34,7 @@ export const usePositionData = (address?: string) => {
     isFetched: isFetchedPosition,
     isFetching,
   } = useGetPositionsByAddress(fetchedAddress as string, {
-    enabled: !!fetchedAddress && pools.length > 0 && connected,
+    enabled: !!fetchedAddress && pools.length > 0,
     refetchInterval: first404 ? false : PATH.includes(router.pathname)
       ? (((back && !initialData.status) ? 3 : 15) * 1000)
       : PATH_10SECOND.includes(router.pathname) ? 10 * 1000 : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,

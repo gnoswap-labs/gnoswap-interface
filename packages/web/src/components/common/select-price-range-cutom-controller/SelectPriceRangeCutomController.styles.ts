@@ -86,5 +86,6 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
   }
   ${media.mobile} {
     padding: 12px;
+    gap: 4px;
   }
 `;

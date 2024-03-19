@@ -64,8 +64,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           placement="top"
           FloatingContent={
             <ToolTipContentWrapper>
-              Suggested starting price based on the current price of the most
-              liquid pool in the same pair.
+              This will remove this position and create a new one with the underlying tokens by swapping them proportionally to the new range.
             </ToolTipContentWrapper>
           }
         >

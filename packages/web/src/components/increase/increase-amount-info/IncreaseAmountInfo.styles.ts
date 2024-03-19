@@ -49,5 +49,11 @@ export const IncreaseAmountInfoWrapper = styled.div`
         }
       }
     }
+    > div {
+      &:nth-of-type(1),
+      &:nth-of-type(2) {
+        padding: 16px;
+      }
+    }
   }
 `;

@@ -50,7 +50,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
             </Tooltip>
           </div>
           <p className="value">
-            {priceRangeSummary.tokenARatioStr}{" "}
+            {priceRangeSummary.tokenARatioStr}{"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenA?.symbol}
@@ -61,7 +61,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
             ) : (
               `${tokenA?.symbol}`
             )}{" "}
-            / {priceRangeSummary.tokenBRatioStr}{" "}
+            / {priceRangeSummary.tokenBRatioStr}{"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenB?.symbol}
@@ -81,8 +81,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
                 </ToolTipContentWrapper>
               }
             >
@@ -98,8 +97,7 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the
-                  current price and the set price range.
+                  The estimated APR from swap fees is calculated based on the selected price range of the position.
                 </ToolTipContentWrapper>
               }
             >

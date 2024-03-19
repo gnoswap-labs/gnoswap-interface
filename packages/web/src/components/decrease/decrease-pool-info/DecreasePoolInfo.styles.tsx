@@ -27,6 +27,10 @@ export const DecreasePoolInfoWrapper = styled.div`
       > p {
         color: ${({ theme }) => theme.color.text03};
         ${fonts.body12}
+        white-space: nowrap;
+      }
+      .protocol-fee {
+        color: ${({ theme }) => theme.color.text04};
       }
     }
     .usd {
@@ -35,5 +39,9 @@ export const DecreasePoolInfoWrapper = styled.div`
       text-align: right;
       width: 100%;
     }
+  }
+  .divider {
+    width: 100%;
+    border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
 `;

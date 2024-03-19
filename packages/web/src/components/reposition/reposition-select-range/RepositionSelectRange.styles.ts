@@ -22,7 +22,7 @@ export const RepositionSelectRangeWrapper = styled.div<Props>`
   }
 
   ${media.mobile} {
-    gap: 2px;
+    gap: 8px;
   }
   .common-bg {
     border-radius: 8px;

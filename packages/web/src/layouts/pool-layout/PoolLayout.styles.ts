@@ -7,7 +7,6 @@ export const PoolLayoutWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
   background-color: ${({ theme }) => theme.color.background01};
-
   .pool-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};

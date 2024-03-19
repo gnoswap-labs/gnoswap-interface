@@ -8,6 +8,19 @@ interface Props {
   isClosed: boolean;
 }
 
+export const PositionCardAnchor = styled.div`
+  position: relative;
+  visibility: hidden;
+  display: block;
+  top: -87px;
+  ${media.tablet} {
+    top: -75px;
+  }
+  ${media.mobile} {
+    display: none;
+  }
+`;
+
 export const MyPositionCardWrapper = styled.div<Props>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;

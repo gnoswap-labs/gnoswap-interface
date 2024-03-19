@@ -53,7 +53,7 @@ const RepositionSelectRange: React.FC<RepositionSelectRangeProps> = ({
           <h5>2. Select New Range</h5>
           {!openedPriceRange ? <IconArrowDown /> : <IconArrowUp />}
         </div>
-        <Badge text="Custom" type={BADGE_TYPE.LINE} className="fee-tier-bad" />
+        <Badge text={priceRange.type} type={BADGE_TYPE.LINE} className="fee-tier-bad" />
       </div>
       <SelectPriceRangeReposition
         opened={openedPriceRange}

@@ -80,6 +80,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             key={index}
             breakpoint={breakpoint}
             loading={loading}
+            address={address || ""}
           />
         ))
       ) : (
@@ -92,6 +93,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                   key={index}
                   breakpoint={breakpoint}
                   loading={loading}
+                  address={address || ""}
                 />
               ))}
             </div>

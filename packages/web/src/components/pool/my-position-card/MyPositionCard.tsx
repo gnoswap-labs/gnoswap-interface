@@ -9,6 +9,7 @@ import React, { useMemo, useState } from "react";
 import {
   ManageItem,
   MyPositionCardWrapper,
+  PositionCardAnchor,
   ToolTipContentWrapper,
 } from "./MyPositionCard.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -40,17 +41,20 @@ import PositionHistory from "./PositionRepository";
 import { useRouter } from "next/router";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import { useCopy } from "@hooks/common/use-copy";
+import BigNumber from "bignumber.js";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
+  address: string;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
   position,
   breakpoint,
   loading,
+  address,
 }) => {
   const router = useRouter();
   const { width } = useWindowSize();
@@ -109,6 +113,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const positionBalanceUSD = useMemo(() => {
     if (isClosed) {
       return "-";
+    }
+    if (BigNumber(position.positionUsdValue).isLessThan(0.01) && BigNumber(position.positionUsdValue).isGreaterThan(0)) {
+      return "<$0.01";
     }
     return `$${numberToFormat(`${position.positionUsdValue}`, 2)}`;
   }, [position.positionUsdValue, isClosed]);
@@ -207,6 +214,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       .reduce((accum, current) => {
         return accum + current.claimableUSD;
       }, 0);
+    if (BigNumber(usdValue).isLessThan(0.01) && BigNumber(usdValue).isGreaterThan(0)) {
+      return "<$0.01";
+    }
     return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
@@ -223,6 +233,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       .reduce((accum, current) => {
         return accum + current.accumulatedRewardOf1d;
       }, 0);
+    if (BigNumber(usdValue).isLessThan(0.01) && BigNumber(usdValue).isGreaterThan(0)) {
+      return "<$0.01";
+    }
     return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
@@ -436,8 +449,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   return (
     <>
+      <PositionCardAnchor id={`${position.id}`} />
       <MyPositionCardWrapper
-        id={`position-${position.id}`}
         type={inRange}
         isClosed={isClosed}
       >
@@ -477,7 +490,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                           setCopy(
                             `${
                               window.location.host + window.location.pathname
-                            }#position-${position.id}`,
+                            }?addr=${address}#${position.id}`,
                           )
                         }
                       >

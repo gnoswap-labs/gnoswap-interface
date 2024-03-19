@@ -22,6 +22,7 @@ export const DecreaseLiquidityWrapper = styled.div`
     margin-bottom: 14px;
     ${media.mobile} {
       margin-bottom: 8px;
+      font-weight: 500;
     }
   }
   .title {

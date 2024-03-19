@@ -41,7 +41,7 @@ const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
           {isMobile ? "" : `${tokenA?.symbol}/${tokenB?.symbol}`}
           <Badge text={fee} type={BADGE_TYPE.DARK_DEFAULT} />
         </div>
-        <p>$145,541.02</p>
+        <p className="price-position">$145,541.02</p>
       </div>
     </RepositionSelectPositionWrapper>
   );

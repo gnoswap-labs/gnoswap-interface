@@ -35,9 +35,7 @@ export const RepositionSelectPositionWrapper = styled.div<Props>`
     }
   }
   h5 {
-    color: ${({ isDisabled, theme }) => {
-      return isDisabled ? theme.color.text04 : theme.color.text10;
-    }};
+    color: ${({ theme }) => theme.color.text04};
     ${fonts.body12}
   }
 
@@ -58,10 +56,13 @@ export const RepositionSelectPositionWrapper = styled.div<Props>`
       margin-top: 10px;
     }
   }
+  .price-position {
+    ${fonts.body12}
+  }
   .pool-select-wrapper {
     flex: 1;
     ${mixins.flexbox("row", "center", "flex-start")};
-    ${fonts.body9}
+    ${fonts.body12}
     gap: 5px;
   }
   .min-max-wrapper {

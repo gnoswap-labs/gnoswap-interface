@@ -36,7 +36,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
 }) => {
   return (
     <DecreaseLiquidityWrapper>
-      <h3>Decrease Liquidity</h3>
+      <h3 className="title">Decrease Liquidity</h3>
       <article>
         <DecreaseSelectPosition
           aprFee={aprFee}
@@ -59,7 +59,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
       </article>
       <Button
         onClick={onSubmit}
-        text="Decrease Liquidity"
+        text="Confirm Decrease Liquidity"
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,

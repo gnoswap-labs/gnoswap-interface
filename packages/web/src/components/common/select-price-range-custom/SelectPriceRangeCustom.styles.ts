@@ -214,7 +214,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding-bottom: 16px;
+    padding: 16px 12px;
   }
 `;
 

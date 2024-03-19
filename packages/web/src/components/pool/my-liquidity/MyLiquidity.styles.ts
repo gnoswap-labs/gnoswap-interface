@@ -8,7 +8,7 @@ export const MyLiquidityWrapper = styled.div`
   width: 100%;
   gap: 16px;
   ${media.tablet} {
-    gap: 24px;
+    gap: 16px;
   }
   ${media.mobile} {
     gap: 12px;

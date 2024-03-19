@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo } from "react";
-import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
-import PoolLayout from "@layouts/pool-layout/PoolLayout";
-import StakingContainer from "@containers/staking-container/StakingContainer";
-import PoolPairInformationContainer from "@containers/pool-pair-information-container/PoolPairInformationContainer";
+import HeaderContainer from "@containers/header-container/HeaderContainer";
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
-import { useRouter } from "next/router";
-import { useGetPoolDetailByPath } from "@query/pools";
+import PoolPairInformationContainer from "@containers/pool-pair-information-container/PoolPairInformationContainer";
+import StakingContainer from "@containers/staking-container/StakingContainer";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import PoolLayout from "@layouts/pool-layout/PoolLayout";
+import { useGetPoolDetailByPath } from "@query/pools";
 import { addressValidationCheck } from "@utils/validation-utils";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 export default function Pool() {
   const router = useRouter();
@@ -19,7 +18,7 @@ export default function Pool() {
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
+  const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
 
@@ -31,8 +30,6 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition } = usePositionData(address);
-
   const isStaking = useMemo(() => {
     if (data?.incentivizedType === "INCENTIVIZED") {
       return true;
@@ -43,26 +40,10 @@ export default function Pool() {
     return false;
   }, [data?.incentivizedType]);
 
-  useEffect(() => {
-    if (address && hash && isFetchedPosition) {
-      const positionContainerElement = document.getElementById(
-        `position-${hash}`,
-      );
-      const topPosition = positionContainerElement?.getBoundingClientRect().top;
-      if (!topPosition) {
-        return;
-      }
-      window.scrollTo({
-        top: topPosition,
-        behavior: "smooth",
-      });
-    }
-  }, [isFetchedPosition, hash, address]);
-
   return (
     <PoolLayout
       header={<HeaderContainer />}
-      poolPairInformation={<PoolPairInformationContainer />}
+      poolPairInformation={<PoolPairInformationContainer address={address}/>}
       liquidity={<MyLiquidityContainer address={address} />}
       staking={isStaking ? <StakingContainer /> : null}
       footer={<Footer />}

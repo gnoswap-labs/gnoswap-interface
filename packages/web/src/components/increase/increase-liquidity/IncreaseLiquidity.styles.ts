@@ -20,12 +20,11 @@ export const IncreaseLiquidityWrapper = styled.div`
   margin: 0 auto;
   h3 {
     margin-bottom: 14px;
+    ${fonts.h6};
     ${media.mobile} {
       margin-bottom: 8px;
+      font-weight: 500;
     }
-  }
-  .title {
-    ${fonts.h6};
   }
 
   ${media.mobile} {
