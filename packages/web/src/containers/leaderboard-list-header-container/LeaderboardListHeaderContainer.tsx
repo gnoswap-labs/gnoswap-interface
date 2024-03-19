@@ -20,7 +20,7 @@ const LeaderboardListHeaderContainer = () => {
         onSwitch={onSwitch}
       />
 
-      <NextUpdate />
+      <NextUpdate nextUpdateTime={"2024-03-20 10:00:00"} />
     </ListHeaderWrapper>
   );
 };

@@ -1,8 +1,28 @@
+import { getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { useEffect, useState } from "react";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
-import { Text10, TooltipContent, Flex, Hover } from "./NextUpdate.styles";
+import {
+  Text10,
+  TooltipContent,
+  Flex,
+  Hover,
+  InlineBlock,
+} from "./NextUpdate.styles";
 
-export default function NextUpdate() {
+export default function NextUpdate({
+  nextUpdateTime,
+}: {
+  nextUpdateTime: string | number | Date;
+}) {
+  const [seconds, setSeconds] = useState(getTimeDiffInSeconds(nextUpdateTime));
+
+  useEffect(() => {
+    const second = 1000;
+    const interval = setInterval(() => setSeconds(p => p - 1), second);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Tooltip
       placement="top"
@@ -15,7 +35,9 @@ export default function NextUpdate() {
       <Hover>
         <Flex>
           <StyledIconInfo />
-          <Text10>Next update in 01:42:31</Text10>
+          <InlineBlock>
+            <Text10>{`Next update in ${secondsToTime(seconds)}`}</Text10>
+          </InlineBlock>
         </Flex>
       </Hover>
     </Tooltip>

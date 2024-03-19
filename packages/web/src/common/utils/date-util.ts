@@ -74,3 +74,27 @@ export function calculateRemainTime(time: number) {
     seconds,
   };
 }
+
+export function secondsToTime(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return dayjs()
+    .startOf("day")
+    .add(hours, "hour")
+    .add(minutes, "minute")
+    .add(remainingSeconds, "second")
+    .format("HH:mm:ss");
+}
+
+export function getTimeDiffInSeconds(
+  endDate: string | number | Date,
+  startDate?: string | number | Date,
+) {
+  return (
+    (new Date(endDate).getTime() -
+      new Date(startDate || Date.now()).getTime()) /
+    1000
+  );
+}

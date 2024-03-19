@@ -19,6 +19,11 @@ export const Text10 = styled.p`
   color: ${({ theme }) => theme.color.text10};
 `;
 
+export const InlineBlock = styled.div`
+  display: inline-block;
+  width: 185px;
+`;
+
 export const Hover = styled.div`
   :hover {
     cursor: pointer;
