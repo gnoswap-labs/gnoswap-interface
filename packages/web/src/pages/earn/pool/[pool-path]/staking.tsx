@@ -19,7 +19,7 @@ export default function Pool() {
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
-  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
+  const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
 
@@ -43,11 +43,10 @@ export default function Pool() {
     return false;
   }, [data?.incentivizedType]);
 
+  const existsAddress = account?.address || address;
   useEffect(() => {
-    if (address && hash && isFetchedPosition && !loading) {
-      const positionContainerElement = document.getElementById(
-        `${hash}`,
-      );
+    if (existsAddress && isFetchedPosition && !loading) {
+      const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.getBoundingClientRect().top;
       if (!topPosition) {
         return;
@@ -56,7 +55,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [isFetchedPosition, hash, address, loading]);
+  }, [isFetchedPosition, loading, existsAddress]);
 
   return (
     <PoolLayout
