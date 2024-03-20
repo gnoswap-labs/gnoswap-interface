@@ -1,12 +1,6 @@
 import Switch from "@components/common/switch/Switch";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import React from "react";
 import HideMe from "../hide-me/HideMe";
-import {
-  TooltipContent,
-  Flex,
-  SwitchWrapper,
-} from "./ConnectYourWallet.styles";
+import { Flex, SwitchWrapper } from "./ConnectYourWallet.styles";
 
 const ConnectYourWallet = ({
   connected,
@@ -23,17 +17,7 @@ const ConnectYourWallet = ({
     <Flex>
       {connected ? (
         <>
-          <Tooltip
-            placement="top"
-            FloatingContent={
-              <TooltipContent>
-                Your username or address will be hidden. Other users will not be
-                able to see your positions.
-              </TooltipContent>
-            }
-          >
-            <HideMe isMobile={isMobile} />
-          </Tooltip>
+          <HideMe isMobile={isMobile} />
           <SwitchWrapper>
             <Switch checked={checked} onChange={onSwitch} />
           </SwitchWrapper>

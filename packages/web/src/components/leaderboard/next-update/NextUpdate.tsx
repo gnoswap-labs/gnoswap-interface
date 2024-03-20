@@ -2,13 +2,7 @@ import { getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useEffect, useState } from "react";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
-import {
-  Text10,
-  TooltipContent,
-  Flex,
-  Hover,
-  InlineBlock,
-} from "./NextUpdate.styles";
+import { Text10, TooltipContent, Flex, Hover, Div } from "./NextUpdate.styles";
 
 export default function NextUpdate({
   nextUpdateTime,
@@ -24,22 +18,26 @@ export default function NextUpdate({
   }, []);
 
   return (
-    <Tooltip
-      placement="top"
-      FloatingContent={
-        <TooltipContent style={{ width: "314px" }}>
-          The leaderboard is updated on an hourly basis.
-        </TooltipContent>
-      }
-    >
-      <Hover>
-        <Flex>
-          <StyledIconInfo />
-          <InlineBlock>
-            <Text10>{`Next update in ${secondsToTime(seconds)}`}</Text10>
-          </InlineBlock>
-        </Flex>
-      </Hover>
-    </Tooltip>
+    <Div>
+      <Flex>
+        <Tooltip
+          placement="top"
+          FloatingContent={
+            <TooltipContent style={{ width: "314px" }}>
+              The leaderboard is updated on an hourly basis.
+            </TooltipContent>
+          }
+        >
+          <Hover>
+            <Flex>
+              <StyledIconInfo />
+            </Flex>
+          </Hover>
+        </Tooltip>
+        <Div>
+          <Text10>{`Next update in ${secondsToTime(seconds)}`}</Text10>
+        </Div>
+      </Flex>
+    </Div>
   );
 }

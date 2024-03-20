@@ -40,12 +40,14 @@ export default function LeaderboardTableContainer() {
         )}
       </LeaderboardTableWrapper>
 
-      <Pagination
-        currentPage={leadersQuery.data!.currentPage}
-        totalPage={leadersQuery.data!.totalPage}
-        onPageChange={movePage}
-        siblingCount={isMobile ? 1 : 2}
-      />
+      <div style={{ marginTop: "4px" }}>
+        <Pagination
+          currentPage={leadersQuery.data!.currentPage}
+          totalPage={leadersQuery.data!.totalPage}
+          onPageChange={movePage}
+          siblingCount={isMobile ? 1 : 2}
+        />
+      </div>
     </>
   );
 }

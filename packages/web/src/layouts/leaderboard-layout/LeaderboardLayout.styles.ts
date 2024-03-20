@@ -55,7 +55,7 @@ export const ListSection = styled.div`
   max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
   width: 100%;
 
-  padding-bottom: 48px;
+  padding-bottom: 100px;
 
   ${media.mobile} {
     max-width: ${ContainerWidth.MOBILE_CONTAINER};

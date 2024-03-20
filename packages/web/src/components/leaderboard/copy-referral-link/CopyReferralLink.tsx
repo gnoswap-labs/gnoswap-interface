@@ -1,7 +1,10 @@
 import { ButtonHierarchy } from "@components/common/button/Button";
-import IconLink from "@components/common/icons/IconLink";
 import { useState } from "react";
-import { CopyReferralLinkButton } from "./CopyReferralLink.styles";
+import {
+  CopyReferralLinkButton,
+  StyledIconLink,
+  Text,
+} from "./CopyReferralLink.styles";
 
 const CopyReferralLink = ({
   connected,
@@ -27,10 +30,12 @@ const CopyReferralLink = ({
         disabled={!connected}
         style={{
           hierarchy: connected ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
+          width: "170px",
+          height: "36px",
         }}
         onClick={handleCopy}
-        text={copied ? "Copied!" : "Copy Referral Link"}
-        leftIcon={copied || <IconLink />}
+        text={copied ? <Text>Copied!</Text> : <Text>Copy Referral Link</Text>}
+        leftIcon={copied || <StyledIconLink />}
       />
     </div>
   );
