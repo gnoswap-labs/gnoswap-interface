@@ -25,6 +25,8 @@ export const Flex = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  padding-top: 4px;
+  padding-bottom: 4px;
 `;
 
 export const ContentWrapper = styled(Flex)`
