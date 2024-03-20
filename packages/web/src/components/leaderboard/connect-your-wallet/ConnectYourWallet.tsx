@@ -15,15 +15,13 @@ const ConnectYourWallet = ({
 }) => {
   return (
     <Flex>
-      {connected ? (
+      {connected && (
         <>
           <HideMe isMobile={isMobile} />
           <SwitchWrapper>
             <Switch checked={checked} onChange={onSwitch} />
           </SwitchWrapper>
         </>
-      ) : (
-        <>{!isMobile && "Connect your wallet to check your points"}</>
       )}
     </Flex>
   );
