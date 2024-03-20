@@ -21,6 +21,7 @@ const LeaderboardTableRow = ({
   const {
     rank,
     user,
+    address,
     volume,
     position,
     staking,
@@ -38,6 +39,7 @@ const LeaderboardTableRow = ({
         <UserColumn
           rank={rank}
           user={user}
+          address={address}
           me={me}
           tdWidth={tdWidths.at(1)}
           style={{ justifyContent: "flex-start" }}

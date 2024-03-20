@@ -1,6 +1,7 @@
 export interface Leader {
   rank: number;
   user: string;
+  address: string;
   volume: string;
   position: string;
   staking: string;

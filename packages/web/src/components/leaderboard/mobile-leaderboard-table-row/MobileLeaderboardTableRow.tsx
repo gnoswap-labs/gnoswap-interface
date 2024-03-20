@@ -17,6 +17,7 @@ const MobileLeaderboardTableRow = ({
   const {
     rank,
     user,
+    address,
     points,
     swapPoint,
     positionPoint,
@@ -27,7 +28,13 @@ const MobileLeaderboardTableRow = ({
   return (
     <Wrapper>
       <TableColumn tdWidth={tdWidths[0]}>#{rank}</TableColumn>
-      <UserColumn rank={rank} user={user} me={me} tdWidth={tdWidths[1]} />
+      <UserColumn
+        rank={rank}
+        user={user}
+        address={address}
+        me={me}
+        tdWidth={tdWidths[1]}
+      />
       <TableColumn tdWidth={tdWidths[2]}>
         <PointComposition
           points={points}
