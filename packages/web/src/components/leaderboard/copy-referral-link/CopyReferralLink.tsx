@@ -34,7 +34,7 @@ const CopyReferralLink = ({
           height: "36px",
         }}
         onClick={handleCopy}
-        text={copied ? <Text>Copied!</Text> : <Text>Copy Referral Link</Text>}
+        text={<Text> {copied ? "Copied!" : "Copy Referral Link"}</Text>}
         leftIcon={copied || <StyledIconLink />}
       />
     </div>
