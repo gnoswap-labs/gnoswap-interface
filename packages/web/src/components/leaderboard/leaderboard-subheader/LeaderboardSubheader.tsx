@@ -2,7 +2,13 @@ import CopyReferralLink from "../copy-referral-link/CopyReferralLink";
 import { Container, Text04, TitleWrapper } from "./LeaderboardSubheader.styles";
 import LearnMore from "../learn-more/LearnMore";
 
-const LeaderboardSubheader = ({ connected }: { connected: boolean }) => {
+const LeaderboardSubheader = ({
+  connected,
+  address,
+}: {
+  connected: boolean;
+  address?: string;
+}) => {
   return (
     <Container>
       <TitleWrapper>
@@ -14,7 +20,7 @@ const LeaderboardSubheader = ({ connected }: { connected: boolean }) => {
         <LearnMore />
       </TitleWrapper>
 
-      <CopyReferralLink connected={connected} />
+      <CopyReferralLink connected={connected} address={address} />
     </Container>
   );
 };

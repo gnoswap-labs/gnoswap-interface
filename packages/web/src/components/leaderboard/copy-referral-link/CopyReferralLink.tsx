@@ -3,11 +3,17 @@ import IconLink from "@components/common/icons/IconLink";
 import { useState } from "react";
 import { CopyReferralLinkButton } from "./CopyReferralLink.styles";
 
-const CopyReferralLink = ({ connected }: { connected: boolean }) => {
+const CopyReferralLink = ({
+  connected,
+  address,
+}: {
+  connected: boolean;
+  address?: string;
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    const copyContent = "COPY!";
+    const copyContent = `gnoswap.io/referrer=${address}`;
 
     navigator.clipboard
       .writeText(copyContent)
