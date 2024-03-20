@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
 import { DecreasePositionModalWrapper } from "./DecreasePositionModal.styles";
-import BalanceChange from "@components/reposition/balance-change/BalanceChange";
+import BalanceChange from "@components/decrease/balance-change/BalanceChange";
 
 interface Props {
   close: () => void;

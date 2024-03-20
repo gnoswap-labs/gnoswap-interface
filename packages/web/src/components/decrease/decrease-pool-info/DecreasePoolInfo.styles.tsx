@@ -31,6 +31,17 @@ export const DecreasePoolInfoWrapper = styled.div`
       }
       .protocol-fee {
         color: ${({ theme }) => theme.color.text04};
+        &:first-of-type {
+          ${mixins.flexbox("row", "center", "center")};
+          gap: 4px;
+        }
+        svg {
+          width: 16px;
+          height: 16px;
+          * {
+            fill: ${({ theme }) => theme.color.icon03};
+          }
+        }
       }
     }
     .usd {

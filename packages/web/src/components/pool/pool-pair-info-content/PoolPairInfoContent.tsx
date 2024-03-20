@@ -141,7 +141,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                <span>{toUnitFormat(tokenABalance, true, true)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenA?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenA}</span></span>
+                <span>{convertToKMB(`${tokenABalance}`)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenA?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenA}</span></span>
               </div>
               <div className="divider"></div>
               <div className="section-image">
@@ -151,7 +151,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                <span>{toUnitFormat(tokenBBalance, true, true)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenB?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenB}</span></span>
+                <span>{convertToKMB(`${tokenBBalance}`)} <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>{pool?.tokenB?.symbol}</span> <span className="token-percent">{depositRatioStrOfTokenB}</span></span>
               </div>
             </>}
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>

@@ -104,6 +104,7 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
         <BalanceChange
           tokenA={tokenA}
           tokenB={tokenB}
+          isHiddenCurrentBalance={false}
         />
       </article>
 

@@ -39,6 +39,8 @@ export const PositionHistoryWrapper = styled.div<Props>`
     margin-left: -12px;
     .title {
       margin-bottom: 4px;
+      ${fonts.p2}
+      margin: 4px 0 16px 0;
     }
   }
 `;

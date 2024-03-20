@@ -7,6 +7,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useMemo, useState } from "react";
 import {
+  CopyTooltip,
   ManageItem,
   MyPositionCardWrapper,
   PositionCardAnchor,
@@ -42,6 +43,7 @@ import { useRouter } from "next/router";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import { useCopy } from "@hooks/common/use-copy";
 import BigNumber from "bignumber.js";
+import IconPolygon from "@components/common/icons/IconPolygon";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -63,7 +65,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
-  const [, setCopy] = useCopy();
+  const [copied, setCopy] = useCopy();
 
   const isClosed = position.status;
 
@@ -494,7 +496,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                           )
                         }
                       >
-                        <IconLinkPage />
+                        <IconLinkPage className="icon-link"/>
+                        {copied && (
+                          <CopyTooltip>
+                            <div className={`box ${themeKey}-shadow`}>
+                              <span>URL Copied!</span>
+                            </div>
+                            <IconPolygon className="polygon-icon" />
+                          </CopyTooltip>
+                        )}
                       </div>
                     </div>
                   )}

@@ -1,8 +1,10 @@
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import {
+  MOBILE_POSITION_HISTORY_INFO,
   MOBILE_POSITION_HISTORY_TD_WIDTH,
   POSITION_HISTORY_INFO,
   POSITION_HISTORY_TD_WIDTH,
+  TABLET_POSITION_HISTORY_INFO,
   TABLET_POSITION_HISTORY_TD_WIDTH
 } from "@constants/skeleton.constant";
 import {
@@ -36,6 +38,13 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
     : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
     ? TABLET_POSITION_HISTORY_TD_WIDTH
     : POSITION_HISTORY_TD_WIDTH;
+
+  const sekeleton: any = 
+  breakpoint === DEVICE_TYPE.MOBILE
+  ? MOBILE_POSITION_HISTORY_INFO
+  : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
+  ? TABLET_POSITION_HISTORY_INFO
+  : POSITION_HISTORY_INFO;
   return (
     <TableWrapper>
       <div className="scroll-wrapper">
@@ -66,7 +75,7 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
             ))}
           {!isFetched && (
             <TableSkeleton
-              info={POSITION_HISTORY_INFO}
+              info={sekeleton}
               className="position-history-table"
             />
           )}

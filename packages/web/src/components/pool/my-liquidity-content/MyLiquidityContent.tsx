@@ -11,7 +11,7 @@ import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { formatUsdNumber } from "@utils/stake-position-utils";
+import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -435,7 +435,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <span>
-                {toUnitFormat(tokenABalance, true, true)}{" "}
+                {convertToKMB(`${tokenABalance}`)}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""
                     }`}
@@ -456,7 +456,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 className="image-logo"
               />
               <span>
-                {toUnitFormat(tokenBBalance, true, true)}{" "}
+                {convertToKMB(`${tokenBBalance}`)}{" "}
                 <span
                   className={`token-symbol ${isWrapText ? "wrap-text" : ""
                     }`}

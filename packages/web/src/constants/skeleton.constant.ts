@@ -514,9 +514,9 @@ export const POSITION_HISTORY_INFO = {
   list: [
     { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
     { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
   ],
 };
 
@@ -525,11 +525,11 @@ export const TABLET_POSITION_HISTORY_INFO = {
   total: 5,
   tdWidth: TABLET_POSITION_HISTORY_TD_WIDTH,
   list: [
-    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 224, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 184, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 84, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 164, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },,
+    { width: 162, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },,
   ],
 };
 
@@ -538,11 +538,11 @@ export const MOBILE_POSITION_HISTORY_INFO = {
   total: 5,
   tdWidth: MOBILE_POSITION_HISTORY_TD_WIDTH,
   list: [
-    { width: 70, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 70, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 50, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 60, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
-    { width: 60, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 132, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 122, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 92, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 125, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 123, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
   ],
 };
 

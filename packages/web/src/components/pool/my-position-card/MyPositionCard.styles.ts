@@ -35,7 +35,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    min-width: calc(100vw - 32px);
+    width: calc(100vw - 32px);
     padding: 12px 12px 0 12px;
     gap: 12px;
   }
@@ -58,7 +58,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
         .link-page {
           ${mixins.flexbox("row", "center", "flex-start")};
           gap: 8px;
-          svg {
+          .icon-link {
             width: 22px;
             height: 22px;
             cursor: pointer;
@@ -67,10 +67,13 @@ export const MyPositionCardWrapper = styled.div<Props>`
               height: 20px;
             }
           }
-          svg:hover {
+          .icon-link:hover {
             * {
               fill: ${({ theme }) => theme.color.icon07};
             }
+          }
+          > div {
+            position: relative;
           }
         }
       }
@@ -116,6 +119,16 @@ export const MyPositionCardWrapper = styled.div<Props>`
           }
           .select-item {
             display: none;
+          }
+        }
+        ${media.mobile} {
+          width: 100%;
+          ${mixins.flexbox("column", "center", "center")};
+          > div {
+            width: 100%;
+            .selected-wrapper {
+              justify-content: center;
+            }
           }
         }
       }
@@ -183,6 +196,8 @@ export const MyPositionCardWrapper = styled.div<Props>`
         }
       }
       ${media.mobile} {
+        gap: 16px;
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
         .select-box {
           .select-item {
             position: absolute;
@@ -488,4 +503,31 @@ export const ManageItem = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.p2}
   color: ${({ theme }) => theme.color.text22};
+`;
+
+export const CopyTooltip = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  position: absolute;
+  top: -65px;
+  left: -45px;
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 115px;
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.background02};
+  }
+  .dark-shadow {
+    box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
+  .polygon-icon * {
+    fill: ${({ theme }) => theme.color.background02};
+  }
 `;

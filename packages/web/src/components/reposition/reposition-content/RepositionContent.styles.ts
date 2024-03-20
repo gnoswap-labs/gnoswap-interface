@@ -37,7 +37,7 @@ export const RepositionContentWrapper = styled.div`
   }
   .resposition-content-header {
     ${mixins.flexbox("row", "center", "center")};
-    gap: 4px;
+    gap: 8px;
     margin-bottom: 14px;
     ${media.mobile} {
       margin-bottom: 8px;

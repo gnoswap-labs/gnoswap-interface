@@ -12,7 +12,7 @@ export const wrapper = (theme: Theme) => css`
     width: 100%;
     max-width: 1440px;
     margin: 100px auto;
-    padding: 0 0 0 40px;
+    padding: 0 40px;
   }
   .wrapper-sub-content {
     ${mixins.flexbox("row", "flex-start", "flex-end")};
