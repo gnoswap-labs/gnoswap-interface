@@ -12,3 +12,5 @@ export const Flex = styled.span`
 export const Text30 = styled.span`
   color: ${({ theme }) => theme.color.text30};
 `;
+
+export const Anchor = styled.a``;
