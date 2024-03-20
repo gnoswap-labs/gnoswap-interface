@@ -26,7 +26,7 @@ const MobileLeaderboardTableRow = ({
   } = item;
 
   return (
-    <Wrapper>
+    <Wrapper hover={me}>
       <TableColumn tdWidth={tdWidths[0]}>#{rank}</TableColumn>
       <UserColumn
         rank={rank}
@@ -34,6 +34,7 @@ const MobileLeaderboardTableRow = ({
         address={address}
         me={me}
         tdWidth={tdWidths[1]}
+        style={{ cursor: "pointer" }}
       />
       <TableColumn tdWidth={tdWidths[2]}>
         <PointComposition

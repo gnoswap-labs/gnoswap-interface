@@ -1,7 +1,9 @@
 import {
+  HoverOnBgSection,
   HoverSection,
   TableColumn,
   Wrapper,
+  WrapperHoverBackground,
 } from "./LeaderboardTableRow.styles";
 import PointComposition from "../point-composition/PointComposition";
 import UserColumn from "../user-column/UserColumn";
@@ -32,10 +34,13 @@ const LeaderboardTableRow = ({
     referralPoint,
   } = item;
 
+  const Hover = me ? HoverSection : HoverOnBgSection;
+  const TableWrapper = me ? WrapperHoverBackground : Wrapper;
+
   return (
-    <Wrapper>
+    <TableWrapper>
       <TableColumn tdWidth={tdWidths.at(0)}>#{rank}</TableColumn>
-      <HoverSection>
+      <Hover>
         <UserColumn
           rank={rank}
           user={user}
@@ -44,8 +49,8 @@ const LeaderboardTableRow = ({
           tdWidth={tdWidths.at(1)}
           style={{ justifyContent: "flex-start" }}
         />
-      </HoverSection>
-      <HoverSection style={{ cursor: "auto" }}>
+      </Hover>
+      <Hover style={{ cursor: "auto" }}>
         <TableColumn
           tdWidth={tdWidths.at(2)}
           style={{ justifyContent: "flex-start" }}
@@ -64,8 +69,8 @@ const LeaderboardTableRow = ({
             isMobile={isMobile}
           />
         </TableColumn>
-      </HoverSection>
-    </Wrapper>
+      </Hover>
+    </TableWrapper>
   );
 };
 

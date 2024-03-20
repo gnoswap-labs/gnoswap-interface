@@ -13,9 +13,12 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const WrapperHoverBackground = styled(Wrapper)`
+  background-color: ${({ theme }) => theme.color.hover04};
+`;
+
 export const HoverSection = styled.div`
   ${mixins.flexbox("row", "center", "center", false)};
-  background-color: ${({ theme }) => theme.color.background01};
   transition: background-color 0.3s ease;
   cursor: pointer;
   height: 100%;
@@ -23,6 +26,8 @@ export const HoverSection = styled.div`
   &.disabled-pointer {
     pointer-events: none;
   }
+`;
+export const HoverOnBgSection = styled(HoverSection)`
   &:hover {
     background-color: ${({ theme }) => theme.color.hover04};
   }

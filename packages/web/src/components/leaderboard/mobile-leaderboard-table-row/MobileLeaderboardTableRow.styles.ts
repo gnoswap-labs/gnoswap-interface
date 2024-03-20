@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ hover?: boolean }>`
   ${mixins.flexbox("row", "center", "flex-start")};
   height: 68px;
   width: 100%;
@@ -11,25 +11,8 @@ export const Wrapper = styled.div`
   &:not(:first-of-type) {
     border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
-`;
-
-export const HoverSection = styled.div`
-  ${mixins.flexbox("row", "center", "center", false)};
-  background-color: ${({ theme }) => theme.color.background01};
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-  height: 100%;
-  overflow: hidden;
-  &.disabled-pointer {
-    pointer-events: none;
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.color.hover04};
-  }
-
-  & *:first-child {
-    justify-content: flex-start;
-  }
+  background-color: ${({ theme, hover }) =>
+    hover ? theme.color.hover04 : theme.color.background01};
 `;
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
