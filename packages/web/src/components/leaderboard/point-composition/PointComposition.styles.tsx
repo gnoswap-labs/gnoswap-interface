@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const Wrapper = styled.div`
@@ -34,4 +35,13 @@ export const ContentWrapper = styled(Flex)`
 
 export const Label = styled.div`
   color: ${({ theme }) => theme.color.text04};
+`;
+
+export const FrontWeight = styled.span`
+  font-size: 16px;
+  font-weight: 700;
+
+  ${media.mobile} {
+    font-size: 14px;
+  }
 `;

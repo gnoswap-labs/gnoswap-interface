@@ -1,4 +1,3 @@
-import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
@@ -21,8 +20,6 @@ export const TitleWrapper = styled.p`
   @media screen and (max-width: 597px) {
     width: 100%;
   }
-
-  ${fonts.body10};
 `;
 
 export const Text04 = styled.span`

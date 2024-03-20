@@ -1,6 +1,7 @@
 import { getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useEffect, useState } from "react";
+import { FontSize } from "../common/common.styles";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
 import { Text10, TooltipContent, Flex, Hover, Div } from "./NextUpdate.styles";
 
@@ -35,7 +36,9 @@ export default function NextUpdate({
           </Hover>
         </Tooltip>
         <Div>
-          <Text10>{`Next update in ${secondsToTime(seconds)}`}</Text10>
+          <FontSize>
+            <Text10>{`Next update in ${secondsToTime(seconds)}`}</Text10>
+          </FontSize>
         </Div>
       </Flex>
     </Div>

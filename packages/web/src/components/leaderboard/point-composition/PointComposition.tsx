@@ -2,6 +2,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import {
   ContentWrapper,
   Flex,
+  FrontWeight,
   Label,
   Title,
   Wrapper,
@@ -49,7 +50,7 @@ const PointComposition = ({
         </Wrapper>
       }
     >
-      {points}
+      <FrontWeight>{points}</FrontWeight>
     </Tooltip>
   );
 };

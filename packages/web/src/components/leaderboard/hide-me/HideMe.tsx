@@ -1,4 +1,5 @@
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { FontSize } from "../common/common.styles";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
 import { Flex, Hover, TooltipContent } from "./HideMe.styles";
 
@@ -18,8 +19,9 @@ const HideMe = ({ isMobile }: { isMobile: boolean }) => {
           <StyledIconInfo />
         </Tooltip>
       </Hover>
-
-      {isMobile ? <p>Hide me</p> : <p>Hide my address or username</p>}
+      <FontSize>
+        {isMobile ? "Hide me" : "Hide my address or username"}
+      </FontSize>
     </Flex>
   );
 };

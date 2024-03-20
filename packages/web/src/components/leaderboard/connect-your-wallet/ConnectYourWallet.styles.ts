@@ -14,4 +14,38 @@ export const SwitchWrapper = styled(Flex)`
   ${media.mobile} {
     padding-left: 4px;
   }
+
+  & input {
+    ${media.tablet} {
+      width: 35px;
+      height: 18px;
+
+      &:after {
+        ${mixins.posTopCenterLeft("3px")};
+        width: 13.61px;
+        height: 12.6px;
+      }
+      &:checked {
+        &:after {
+          left: 17.5px;
+        }
+      }
+    }
+
+    ${media.mobile} {
+      width: 29px;
+      height: 16px;
+
+      &:after {
+        ${mixins.posTopCenterLeft("3px")};
+        width: 11.28px;
+        height: 11.2px;
+      }
+      &:checked {
+        &:after {
+          left: 14.5px;
+        }
+      }
+    }
+  }
 `;
