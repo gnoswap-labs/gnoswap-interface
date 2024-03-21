@@ -20,7 +20,15 @@ export const Text10 = styled.p`
   color: ${({ theme }) => theme.color.text10};
 `;
 
-export const Div = styled.div``;
+export const TextWrapper = styled.div`
+  width: 185px;
+  ${media.tablet} {
+    width: 165px;
+  }
+  ${media.mobile} {
+    width: 140px;
+  }
+`;
 
 export const Height24 = styled.div`
   height: 24px;

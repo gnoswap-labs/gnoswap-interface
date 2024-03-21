@@ -8,8 +8,8 @@ import {
   TooltipContent,
   Flex,
   Hover,
-  Div,
   Height24,
+  TextWrapper,
 } from "./NextUpdate.styles";
 
 export default function NextUpdate({
@@ -42,11 +42,11 @@ export default function NextUpdate({
             </Flex>
           </Hover>
         </Tooltip>
-        <Div>
+        <TextWrapper>
           <FontSize>
             <Text10>{`Next update in ${secondsToTime(seconds)}`}</Text10>
           </FontSize>
-        </Div>
+        </TextWrapper>
       </Flex>
     </Height24>
   );
