@@ -3,7 +3,14 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { useEffect, useState } from "react";
 import { FontSize } from "../common/common.styles";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
-import { Text10, TooltipContent, Flex, Hover, Div } from "./NextUpdate.styles";
+import {
+  Text10,
+  TooltipContent,
+  Flex,
+  Hover,
+  Div,
+  Height24,
+} from "./NextUpdate.styles";
 
 export default function NextUpdate({
   nextUpdateTime,
@@ -19,7 +26,7 @@ export default function NextUpdate({
   }, []);
 
   return (
-    <Div>
+    <Height24>
       <Flex>
         <Tooltip
           placement="top"
@@ -41,6 +48,6 @@ export default function NextUpdate({
           </FontSize>
         </Div>
       </Flex>
-    </Div>
+    </Height24>
   );
 }
