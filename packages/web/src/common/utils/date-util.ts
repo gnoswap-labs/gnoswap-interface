@@ -98,3 +98,12 @@ export function getTimeDiffInSeconds(
     1000
   );
 }
+
+export function getTimeDiffInMilliseconds(
+  endDate: string | number | Date,
+  startDate?: string | number | Date,
+) {
+  return (
+    new Date(endDate).getTime() - new Date(startDate || Date.now()).getTime()
+  );
+}

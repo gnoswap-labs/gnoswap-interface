@@ -1,5 +1,6 @@
 import { generateAddress } from "@common/utils/test-util";
 import { formatAddress, numberToFormat } from "@utils/string-utils";
+import dayjs from "dayjs";
 import { LeaderboardRepository } from "./leaderboard-repository";
 import {
   GetLeadersRequest,
@@ -92,8 +93,12 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
   public getNextUpdateTime = async (
     request: GetNextUpdateTimeRequest,
   ): Promise<GetNextUpdateTimeResponse> => {
-    console.log(`request.address : ${request}`);
+    console.log(`request : ${request}`);
 
-    return { seconds: 6151 }; //
+    return {
+      nextUpdateTime: dayjs(new Date(Date.now() + 1000 * 60 * 10)).format(
+        "YYYY-MM-DD HH:mm:ss",
+      ),
+    };
   };
 }

@@ -1,5 +1,6 @@
 import { getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { useNextUpdateTime } from "@query/leaderboard";
 import { useEffect, useState } from "react";
 import { FontSize } from "../common/common.styles";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
@@ -12,16 +13,21 @@ import {
   TextWrapper,
 } from "./NextUpdate.styles";
 
-export default function NextUpdate({
-  nextUpdateTime,
-}: {
-  nextUpdateTime: string | number | Date;
-}) {
-  const [seconds, setSeconds] = useState(getTimeDiffInSeconds(nextUpdateTime));
+export default function NextUpdate() {
+  const { data } = useNextUpdateTime();
+
+  const [seconds, setSeconds] = useState<number>();
+
+  useEffect(() => {
+    if (!data) return;
+    const gap = 1;
+    setSeconds(() => getTimeDiffInSeconds(data.nextUpdateTime) + gap);
+  }, [data]);
 
   useEffect(() => {
     const second = 1000;
-    const interval = setInterval(() => setSeconds(p => p - 1), second);
+    const interval = setInterval(() => setSeconds(p => (p || -1) - 1), second);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -44,7 +50,7 @@ export default function NextUpdate({
         </Tooltip>
         <TextWrapper>
           <FontSize>
-            <Text10>{`Next update in ${secondsToTime(seconds)}`}</Text10>
+            <Text10>{`Next update in ${secondsToTime(seconds!)}`}</Text10>
           </FontSize>
         </TextWrapper>
       </Flex>

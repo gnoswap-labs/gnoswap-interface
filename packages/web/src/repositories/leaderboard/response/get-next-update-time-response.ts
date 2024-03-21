@@ -1,3 +1,3 @@
 export interface GetNextUpdateTimeResponse {
-  seconds: number;
+  nextUpdateTime: string;
 }

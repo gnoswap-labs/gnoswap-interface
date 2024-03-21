@@ -62,7 +62,7 @@ const LeaderboardListHeaderContainer = () => {
       </Div>
 
       <Div ref={rightRef}>
-        <NextUpdate nextUpdateTime={"2024-03-20 10:00:00"} />
+        <NextUpdate />
       </Div>
     </ListHeaderWrapper>
   );
