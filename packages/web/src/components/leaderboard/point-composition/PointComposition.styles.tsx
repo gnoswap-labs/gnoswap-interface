@@ -39,6 +39,10 @@ export const Label = styled.div`
   color: ${({ theme }) => theme.color.text04};
 `;
 
+export const FontWeight500 = styled.div`
+  font-weight: 500;
+`;
+
 export const FrontWeight = styled.span`
   font-size: 16px;
   font-weight: 700;

@@ -2,6 +2,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import {
   ContentWrapper,
   Flex,
+  FontWeight500,
   FrontWeight,
   Label,
   Title,
@@ -32,19 +33,19 @@ const PointComposition = ({
           <ContentWrapper>
             <Flex>
               <Label>Swap</Label>
-              <div>{swapPoint}</div>
+              <FontWeight500>{swapPoint}</FontWeight500>
             </Flex>
             <Flex>
               <Label>Position</Label>
-              <div>{positionPoint}</div>
+              <FontWeight500>{positionPoint}</FontWeight500>
             </Flex>
             <Flex>
               <Label>Staking</Label>
-              <div>{stakingPoint}</div>
+              <FontWeight500>{stakingPoint}</FontWeight500>
             </Flex>
             <Flex>
               <Label>Referral</Label>
-              <div>{referralPoint}</div>
+              <FontWeight500>{referralPoint}</FontWeight500>
             </Flex>
           </ContentWrapper>
         </Wrapper>
