@@ -19,6 +19,9 @@ export const Wrapper = styled.div`
 export const Title = styled.div`
   min-width: 168px;
   width: 100%;
+  height: 26px;
+  display: flex;
+  align-items: center;
 `;
 
 export const Flex = styled.div`
