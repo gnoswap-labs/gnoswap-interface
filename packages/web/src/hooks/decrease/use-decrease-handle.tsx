@@ -1,16 +1,21 @@
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
+import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
+import { numberToUSD } from "@utils/number-utils";
 import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
-import { useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -24,13 +29,25 @@ export type DeCREASE_BUTTON_TYPE =
 
 export const useDecreaseHandle = () => {
   const router = useRouter();
-  const selectedPosition = useAtomValue(IncreaseState.selectedPosition);
+  const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const poolPath = router.query["pool-path"] as string;
+  const positionId = router.query["position-id"] as string;
   const { getGnotPath } = useGnotToGnot();
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Custom" });
   const [percent, setPercent] = useState<number>(50);
+  const { tokenPrices } = useTokenData();
 
-  const { connected } = useWallet();
+  const { positions } = usePositionData();
+  useEffect(() => {
+    if (!selectedPosition && positions.length > 0 && positionId) {
+      const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
+      if (position) {
+        setSelectedPosition(position);
+      }
+    }
+  }, [selectedPosition, positions, positionId]);
+
+  const { connected, account } = useWallet();
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(
@@ -157,6 +174,48 @@ export const useDecreaseHandle = () => {
     setPriceRange(priceRange);
   }, []);
 
+  const pooledTokenInfos = useMemo(() => {
+    if (!selectedPosition) {
+      return null;
+    }
+    const tokenA = selectedPosition.pool.tokenA;
+    const tokenB = selectedPosition.pool.tokenB;
+    const pooledTokenAAmount = selectedPosition.token0Balance;
+    const pooledTokenBAmount = selectedPosition.token1Balance;
+    const unClaimTokenA = selectedPosition.unclaimedFee0Amount;
+    const unClaimTokenB = selectedPosition.unclaimedFee1Amount;
+
+    const tokenAPrice = tokenPrices[tokenA.priceId]?.usd || 0;
+    const tokenBPrice = tokenPrices[tokenB.priceId]?.usd || 0;
+
+    const tokenAAmount =
+    makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
+  const tokenBAmount =
+    makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
+    
+    const unClaimTokenAAmount =
+      makeDisplayTokenAmount(tokenA, Number(unClaimTokenA)) || 0;
+    const unClaimTokenBAmount =
+      makeDisplayTokenAmount(tokenB, Number(unClaimTokenB)) || 0;
+    return {
+      poolAmountA: tokenAAmount.toLocaleString(),
+      poolAmountUSDA: numberToUSD(tokenAAmount * Number(tokenAPrice)),
+      poolAmountB: tokenBAmount.toLocaleString(),
+      poolAmountUSDB: numberToUSD(tokenBAmount * Number(tokenBPrice)),
+      unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
+      unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
+      unClaimTokenAAmountUSD: numberToUSD(unClaimTokenAAmount * Number(tokenBPrice)),
+      unClaimTokenBAmountUSD: numberToUSD(unClaimTokenBAmount * Number(tokenAPrice)),
+
+    };
+  }, [selectedPosition, tokenPrices]);
+
+  useEffect(() => {
+    if (!account && poolPath) {
+      router.push(`/earn/pool/${poolPath}`);
+    }
+  }, [account, poolPath]);
+
   return {
     tokenA,
     tokenB,
@@ -177,5 +236,6 @@ export const useDecreaseHandle = () => {
     changePriceRange,
     setPercent,
     percent,
+    pooledTokenInfos,
   };
 };

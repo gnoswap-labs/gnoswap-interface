@@ -107,7 +107,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
             </Tooltip>
           </div>
           <p className="value">
-            {priceRangeSummary.tokenARatioStr}{" "}
+            {priceRangeSummary.tokenARatioStr}{"% "}
             {isMobile ? (
               <MissingLogo
               symbol={tokenA?.symbol}
@@ -118,7 +118,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
             ) : (
               `${tokenA?.symbol}`
             )}{" "}
-            / {priceRangeSummary.tokenBRatioStr}{" "}
+            / {priceRangeSummary.tokenBRatioStr}{"% "}
             {isMobile ? (
               <MissingLogo
               symbol={tokenB?.symbol}

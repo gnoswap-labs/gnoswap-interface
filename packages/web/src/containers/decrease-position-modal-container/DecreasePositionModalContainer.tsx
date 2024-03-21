@@ -14,6 +14,7 @@ interface Props {
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
+  pooledTokenInfos: any;
 }
 
 const DecreasePositionModalContainer: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const DecreasePositionModalContainer: React.FC<Props> = ({
   minPriceStr,
   rangeStatus,
   percent,
+  pooledTokenInfos,
 }) => {
   const clearModal = useClearModal();
 
@@ -37,6 +39,7 @@ const DecreasePositionModalContainer: React.FC<Props> = ({
       minPriceStr={minPriceStr}
       rangeStatus={rangeStatus}
       percent={percent}
+      pooledTokenInfos={pooledTokenInfos}
     />
   );
 };

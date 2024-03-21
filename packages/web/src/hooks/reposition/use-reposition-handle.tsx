@@ -1,17 +1,19 @@
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
-import { useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -25,13 +27,25 @@ export type INCREASE_BUTTON_TYPE =
 
 export const useRepositionHandle = () => {
   const router = useRouter();
-  const selectedPosition = useAtomValue(IncreaseState.selectedPosition);
+  const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const poolPath = router.query["pool-path"] as string;
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage>({ type: "Custom" });
+  const positionId = router.query["position-id"] as string;
 
-  const { connected } = useWallet();
+  const { connected, account } = useWallet();
+
+  const { positions } = usePositionData();
+  useEffect(() => {
+    if (!selectedPosition && positions.length > 0 && positionId) {
+      const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
+      if (position) {
+        setSelectedPosition(position);
+      }
+    }
+  }, [selectedPosition, positions, positionId]);
+
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(
@@ -157,6 +171,12 @@ export const useRepositionHandle = () => {
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
   }, []);
+
+  useEffect(() => {
+    if (!account && poolPath) {
+      router.push(`/earn/pool/${poolPath}`);
+    }
+  }, [account, poolPath]);
 
   return {
     tokenA,

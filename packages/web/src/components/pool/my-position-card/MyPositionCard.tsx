@@ -439,13 +439,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const handleSelect = (text: string) => {
     if (text == "Decrease Liquidity") {
       setSelectedPosition(position);
-      router.push(router.asPath + "/decrease-liquidity");
+      router.push(router.asPath + "/" + position?.id + "/decrease-liquidity");
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
-      router.push(router.asPath + "/increase-liquidity");
+      router.push(router.asPath + "/" + position?.id + "/increase-liquidity");
     } else {
       setSelectedPosition(position);
-      router.push(router.asPath + "/reposition");
+      router.push(router.asPath + "/" + position?.id + "/reposition");
     }
   };
 

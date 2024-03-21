@@ -19,6 +19,7 @@ interface Props {
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
+  pooledTokenInfos: any;
 }
 
 const DecreasePositionModal: React.FC<Props> = ({
@@ -27,6 +28,7 @@ const DecreasePositionModal: React.FC<Props> = ({
   minPriceStr,
   maxPriceStr,
   rangeStatus,
+  pooledTokenInfos,
 }) => {
   const onClickClose = useCallback(() => {
     close();
@@ -50,7 +52,7 @@ const DecreasePositionModal: React.FC<Props> = ({
           />
           <div>
             <p className="label">Decreasing Amount</p>
-            <DecreasePoolInfo {...amountInfo} isShowProtocolFee/>
+            <DecreasePoolInfo {...amountInfo} isShowProtocolFee pooledTokenInfos={pooledTokenInfos}/>
           </div>
 
           <BalanceChange {...amountInfo} title="Balance Changes"/>

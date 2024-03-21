@@ -21,6 +21,7 @@ export interface DecreasePositionModal {
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
+  pooledTokenInfos: any;
 }
 
 export const useDecreasePositionModal = ({
@@ -31,6 +32,7 @@ export const useDecreasePositionModal = ({
   maxPriceStr,
   rangeStatus,
   percent,
+  pooledTokenInfos,
 }: DecreasePositionModal): Props => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -58,6 +60,7 @@ export const useDecreasePositionModal = ({
         maxPriceStr={maxPriceStr}
         rangeStatus={rangeStatus}
         percent={percent}
+        pooledTokenInfos={pooledTokenInfos}
       />,
     );
   }, [setModalContent, setOpenedModal, amountInfo]);

@@ -19,6 +19,7 @@ interface DecreaseLiquidityProps {
   onSubmit: () => void;
   percent: number;
   handlePercent: (value: number) => void;
+  pooledTokenInfos: any;
 }
 
 const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
@@ -33,6 +34,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   onSubmit,
   handlePercent,
   percent,
+  pooledTokenInfos,
 }) => {
   return (
     <DecreaseLiquidityWrapper>
@@ -55,6 +57,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
           tokenB={tokenB}
           handlePercent={handlePercent}
           percent={percent}
+          pooledTokenInfos={pooledTokenInfos}
         />
       </article>
       <Button

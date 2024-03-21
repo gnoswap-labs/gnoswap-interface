@@ -12,11 +12,13 @@ interface Props {
   tokenA: TokenModel;
   tokenB: TokenModel;
   isShowProtocolFee?: boolean;
+  pooledTokenInfos: any;
 }
 
 const DecreasePoolInfo: React.FC<Props> = ({
   tokenA,
   tokenB,
+  pooledTokenInfos,
   isShowProtocolFee = false,
 }) => {
   const { breakpoint } = useWindowSize();
@@ -30,9 +32,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
             <p>Pooled {isNotMobile ? tokenA?.symbol : ""}</p>
           </div>
-          <p>123,456.058</p>
+          <p>{pooledTokenInfos?.poolAmountA}</p>
         </div>
-        <div className="usd">$32,561.23</div>
+        <div className="usd">{pooledTokenInfos?.poolAmountUSDA}</div>
       </div>
       <div className="box-info">
         <div className="value">
@@ -40,9 +42,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
             <p>Pooled {isNotMobile ? tokenB?.symbol : ""}</p>
           </div>
-          <p>123,456.058</p>
+          <p>{pooledTokenInfos?.poolAmountB}</p>
         </div>
-        <div className="usd">$32,561.23</div>
+        <div className="usd">{pooledTokenInfos?.poolAmountUSDB}</div>
       </div>
       <div className="box-info">
         <div className="value">
@@ -50,9 +52,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
             <p>Unclaimed Fees {isNotMobile ? tokenA?.symbol : ""}</p>
           </div>
-          <p>123,456.058</p>
+          <p>{pooledTokenInfos?.unClaimTokenAAmount}</p>
         </div>
-        <div className="usd">$32,561.23</div>
+        <div className="usd">{pooledTokenInfos?.unClaimTokenAAmountUSD}</div>
       </div>
       <div className="box-info">
         <div className="value">
@@ -60,9 +62,9 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
             <p>Unclaimed Fees {isNotMobile ? tokenB?.symbol : ""}</p>
           </div>
-          <p>123,456.058</p>
+          <p>{pooledTokenInfos?.unClaimTokenBAmount}</p>
         </div>
-        <div className="usd">$32,561.23</div>
+        <div className="usd">{pooledTokenInfos?.unClaimTokenBAmountUSD}</div>
       </div>
       {isShowProtocolFee && <div className="divider"></div>}
       {isShowProtocolFee && <div className="box-info">

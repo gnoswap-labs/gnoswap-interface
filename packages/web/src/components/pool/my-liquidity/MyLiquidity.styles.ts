@@ -51,3 +51,16 @@ export const PoolDivider = styled.div`
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
 `;
+
+export const MyLiquidityWrapperAnchor = styled.div`
+  position: relative;
+  visibility: hidden;
+  display: block;
+  top: -87px;
+  ${media.tablet} {
+    top: -75px;
+  }
+  ${media.mobile} {
+    display: none;
+  }
+`;

@@ -15,6 +15,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     priceRangeSummary,
     percent,
     setPercent,
+    pooledTokenInfos,
   } = useDecreaseHandle();
 
   const { openModal } = useDecreasePositionModal({
@@ -25,6 +26,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     maxPriceStr,
     rangeStatus,
     percent,
+    pooledTokenInfos,
   });
 
   const onSubmit = () => {
@@ -46,6 +48,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
       onSubmit={onSubmit}
       percent={percent}
       handlePercent={(value: number) => setPercent(value)}
+      pooledTokenInfos={pooledTokenInfos}
     />
   );
 };

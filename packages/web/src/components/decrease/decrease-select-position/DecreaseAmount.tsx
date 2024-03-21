@@ -9,6 +9,7 @@ export interface DecreaseSelectPositionProps {
   tokenB: TokenModel;
   percent: number;
   handlePercent: (value: number) => void;
+  pooledTokenInfos: any;
 }
 
 const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
@@ -16,6 +17,7 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
   tokenB,
   percent,
   handlePercent,
+  pooledTokenInfos,
 }) => {
   return (
     <DecreaseSelectPositionWrapper>
@@ -36,7 +38,7 @@ const DecreaseAmountPosition: React.FC<DecreaseSelectPositionProps> = ({
           <Range percent={percent} handlePercent={handlePercent}/>
         </div>
       </div>
-      <DecreasePoolInfo tokenA={tokenA} tokenB={tokenB}/>
+      <DecreasePoolInfo tokenA={tokenA} tokenB={tokenB} pooledTokenInfos={pooledTokenInfos}/>
     </DecreaseSelectPositionWrapper>
   );
 };
