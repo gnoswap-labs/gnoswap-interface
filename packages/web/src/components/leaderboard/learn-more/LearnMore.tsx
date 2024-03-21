@@ -3,17 +3,11 @@ import { Anchor, Flex, Text30 } from "./LearnMore.styles";
 
 export default function LearnMore() {
   return (
-    <Flex>
-      <Text30>
-        <Anchor
-          href={"https://docs.gnoswap.io/"}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Learn More
-        </Anchor>
-      </Text30>
-      <StyledIconFile />
-    </Flex>
+    <Anchor href={"https://docs.gnoswap.io/"} target="_blank" rel="noreferrer">
+      <Flex>
+        <Text30>Learn More</Text30>
+        <StyledIconFile />
+      </Flex>
+    </Anchor>
   );
 }
