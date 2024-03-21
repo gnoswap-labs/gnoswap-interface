@@ -16,7 +16,7 @@ const MobileLeaderboardTableRow = ({
 }) => {
   const {
     rank,
-    user,
+    mobileSpecificFormattedAddress,
     address,
     points,
     swapPoint,
@@ -30,7 +30,7 @@ const MobileLeaderboardTableRow = ({
       <TableColumn tdWidth={tdWidths[0]}>#{rank}</TableColumn>
       <UserColumn
         rank={rank}
-        user={user}
+        user={mobileSpecificFormattedAddress}
         address={address}
         me={me}
         tdWidth={tdWidths[1]}

@@ -27,7 +27,8 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
       return {
         rank: index++,
         address: address,
-        user: formatAddress(address, 4),
+        formattedAddress: formatAddress(address, 8),
+        mobileSpecificFormattedAddress: formatAddress(address, 4),
         volume: "$100,241,421",
         position: "$241,421",
         staking: "$241,421",
@@ -66,7 +67,8 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
       leader: {
         rank: 1,
         address: request.address,
-        user: formatAddress(request.address, 4),
+        formattedAddress: formatAddress(request.address, 8),
+        mobileSpecificFormattedAddress: formatAddress(request.address, 4),
         volume: "$100,241,421",
         position: "$241,421",
         staking: "$241,421",

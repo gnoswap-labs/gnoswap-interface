@@ -22,7 +22,7 @@ const LeaderboardTableRow = ({
 }) => {
   const {
     rank,
-    user,
+    formattedAddress,
     address,
     volume,
     position,
@@ -43,7 +43,7 @@ const LeaderboardTableRow = ({
       <Hover>
         <UserColumn
           rank={rank}
-          user={user}
+          user={formattedAddress}
           address={address}
           me={me}
           tdWidth={tdWidths.at(1)}

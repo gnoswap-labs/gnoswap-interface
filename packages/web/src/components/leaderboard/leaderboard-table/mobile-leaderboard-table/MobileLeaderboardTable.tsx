@@ -23,7 +23,7 @@ export default function MobileLeaderboardTable({
       )}
       {leaders.map(leader => (
         <MobileLeaderboardTableRow
-          key={leader.user}
+          key={leader.address}
           item={leader}
           tdWidths={MOBILE_LEADERBOARD_TD_WIDTH}
           isMobile={isMobile}
