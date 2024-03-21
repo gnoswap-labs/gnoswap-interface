@@ -1,1 +1,3 @@
-export interface GetLeadersRequest {}
+export interface GetLeadersRequest {
+  page: number;
+}

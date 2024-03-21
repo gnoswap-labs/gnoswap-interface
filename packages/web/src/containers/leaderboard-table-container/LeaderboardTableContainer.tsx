@@ -5,14 +5,14 @@ import { useLeaders } from "@query/leaderboard";
 import MobileLeaderboardTable from "@components/leaderboard/leaderboard-table/mobile-leaderboard-table/MobileLeaderboardTable";
 import TabletLeaderboardTable from "@components/leaderboard/leaderboard-table/tablet-leaderboard-table/TabletLeaderboardTable";
 import WebLeaderboardTable from "@components/leaderboard/leaderboard-table/web-leaderboard-table/WebLeaderboardTable";
+import { useState } from "react";
 
 export default function LeaderboardTableContainer() {
-  const { isMobile, isTablet, isWeb } = useWindowSize();
-  const [leadersQuery, meQuery] = useLeaders();
+  const [page, setPage] = useState(0);
+  const movePage = (page: number) => setPage(page);
 
-  // const [page, setPage] = useState(0);
-  // const movePage = (page: number) => setPage(page);
-  const movePage = () => {};
+  const { isMobile, isTablet, isWeb } = useWindowSize();
+  const [leadersQuery, meQuery] = useLeaders(page);
 
   return (
     <>

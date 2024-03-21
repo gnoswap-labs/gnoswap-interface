@@ -19,9 +19,9 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
   public getLeaders = async (
     request: GetLeadersRequest,
   ): Promise<GetLeadersResponse> => {
-    console.log(`request.address : ${request}`);
+    console.log(`request.page : ${request.page}`);
 
-    let index = 1;
+    let index = request.page === 0 ? 1 : request.page * 10;
     const leader = () => {
       const address = generateAddress();
       return {
@@ -41,8 +41,8 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     };
 
     return {
-      totalPage: 100,
-      currentPage: 1,
+      totalPage: 10,
+      currentPage: request.page,
       leaders: [
         leader(),
         leader(),

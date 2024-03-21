@@ -4,15 +4,16 @@ import { QUERY_KEY } from "./types";
 import { useAtomValue } from "jotai";
 import { WalletState } from "@states/index";
 
-export function useLeaders() {
+export function useLeaders(page: number) {
   const account = useAtomValue(WalletState.account);
   const { leaderboardRepository } = useGnoswapContext();
 
   const results = useQueries({
     queries: [
       {
-        queryKey: QUERY_KEY.leaders(),
-        queryFn: () => leaderboardRepository.getLeaders({}),
+        queryKey: QUERY_KEY.leaders(page),
+        queryFn: () => leaderboardRepository.getLeaders({ page }),
+        keepPreviousData: true,
         suspense: true,
       },
       {
