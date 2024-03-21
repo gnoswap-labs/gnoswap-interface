@@ -31,7 +31,7 @@ export default function NextUpdate({
         <Tooltip
           placement="top"
           FloatingContent={
-            <TooltipContent style={{ width: "314px" }}>
+            <TooltipContent>
               The leaderboard is updated on an hourly basis.
             </TooltipContent>
           }

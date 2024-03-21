@@ -4,8 +4,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const TooltipContent = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  max-width: 268px;
+  width: 282px;
   ${fonts.body13};
   color: ${({ theme }) => theme.color.text02};
   background-color: ${({ theme }) => theme.color.background02};
