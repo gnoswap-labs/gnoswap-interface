@@ -3,12 +3,15 @@ import { PositionHistoryWrapper } from "./PositionRepository.styles";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import PositionHistoryContainer from "@containers/position-history-container/PositionHistoryContainer";
+import { TokenModel } from "@models/token/token-model";
 
 interface Props {
   isClosed: boolean;
+  tokenA: TokenModel;
+  tokenB: TokenModel;
 }
 
-const PositionHistory: FC<Props> = ({ isClosed }) => {
+const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA }) => {
   const [openedSelector, setOpenedSelector] = useState(false);
   return (
     <PositionHistoryWrapper isClosed={isClosed}>
@@ -22,7 +25,7 @@ const PositionHistory: FC<Props> = ({ isClosed }) => {
           )}
         </div>
       </div>
-      {openedSelector && <PositionHistoryContainer />}
+      {openedSelector && <PositionHistoryContainer tokenA={tokenA} tokenB={tokenB}/>}
     </PositionHistoryWrapper>
   );
 };

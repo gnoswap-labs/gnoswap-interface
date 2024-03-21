@@ -4,6 +4,7 @@ import { ValuesType } from "utility-types";
 
 import PositionHistoryList from "@components/pool/position-history-list/PositionHistoryList";
 import { useLoading } from "@hooks/common/use-loading";
+import { TokenModel } from "@models/token/token-model";
 
 export interface IHistory {
   timeStamp: string;
@@ -74,7 +75,12 @@ export const dummyList: IHistory[] = [
   },
 ];
 
-const PositionHistoryContainer: React.FC = () => {
+interface Props {
+  tokenA: TokenModel;
+  tokenB: TokenModel;
+}
+
+const PositionHistoryContainer: React.FC<Props> = ({ tokenA, tokenB }) => {
   const { breakpoint } = useWindowSize();
   const { isLoadingCommon } = useLoading();
 
@@ -83,6 +89,8 @@ const PositionHistoryContainer: React.FC = () => {
       list={dummyList}
       isFetched={!isLoadingCommon}
       breakpoint={breakpoint}
+      tokenA={tokenA}
+      tokenB={tokenB}
     />
   );
 };

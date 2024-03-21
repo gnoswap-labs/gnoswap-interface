@@ -11,6 +11,9 @@ export const PositionHistoryWrapper = styled.div<Props>`
   .title {
     ${mixins.flexbox("flex", "center", "center")}
     text-align: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body9}
     gap: 5px;

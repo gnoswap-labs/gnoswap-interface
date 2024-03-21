@@ -20,17 +20,22 @@ import {
   TableWrapper,
   noDataText
 } from "./PositionHistoryTable.styles";
+import { TokenModel } from "@models/token/token-model";
 
 interface PositionHistoryTableProps {
   list: IHistory[];
   isFetched: boolean;
   breakpoint: DEVICE_TYPE;
+  tokenA: TokenModel;
+  tokenB: TokenModel;
 }
 
 const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
   list,
   isFetched,
   breakpoint,
+  tokenA,
+  tokenB,
 }) => {
   const td =
   breakpoint === DEVICE_TYPE.MOBILE
@@ -59,7 +64,7 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
               tdWidth={td[idx]}
             >
               <span className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}>
-                {head}
+                {idx === 3 ? `${tokenA?.symbol} Amount` : idx === 4 ? `${tokenB?.symbol} Amount` : head}
               </span>
             </TableHeader>
           ))}

@@ -47,6 +47,9 @@ export const HeaderWrapper = styled.div`
         -webkit-text-fill-color: transparent;
         cursor: pointer;
       }
+      button {
+        position: relative;
+      }
     }
   }
   ${media.mobile} {

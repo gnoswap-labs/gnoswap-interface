@@ -766,7 +766,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
           )}
         </div>
-        <PositionHistory isClosed={isClosed} />
+        <PositionHistory isClosed={isClosed} tokenA={tokenA} tokenB={tokenB}/>
       </MyPositionCardWrapper>
     </>
   );
