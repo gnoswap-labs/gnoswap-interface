@@ -1,5 +1,5 @@
 import { generateAddress } from "@common/utils/test-util";
-import { formatAddress } from "@utils/string-utils";
+import { formatAddress, numberToFormat } from "@utils/string-utils";
 import { LeaderboardRepository } from "./leaderboard-repository";
 import {
   GetLeadersRequest,
@@ -29,14 +29,14 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
         address: address,
         formattedAddress: formatAddress(address, 8),
         mobileSpecificFormattedAddress: formatAddress(address, 4),
-        volume: "$100,241,421",
-        position: "$241,421",
-        staking: "$241,421",
-        points: "4,802,250",
-        swapPoint: "242,802,250000000000",
-        positionPoint: "1,000,000",
-        stakingPoint: "700,000",
-        referralPoint: "300,000",
+        volume: `$${numberToFormat(100241421)}`,
+        position: `$${numberToFormat(241421)}`,
+        staking: `$${numberToFormat(241421)}`,
+        points: `${numberToFormat(4802250)}`,
+        swapPoint: `${numberToFormat(242802250000000000)}`,
+        positionPoint: `${numberToFormat(1000000)}`,
+        stakingPoint: `${numberToFormat(700000)}`,
+        referralPoint: `${numberToFormat(300000)}`,
       };
     };
 
@@ -69,14 +69,14 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
         address: request.address,
         formattedAddress: formatAddress(request.address, 8),
         mobileSpecificFormattedAddress: formatAddress(request.address, 4),
-        volume: "$100,241,421",
-        position: "$241,421",
-        staking: "$241,421",
-        points: "4,802,250",
-        swapPoint: "242,802,250000000000",
-        positionPoint: "1,000,000",
-        stakingPoint: "700,000",
-        referralPoint: "300,000",
+        volume: `$${numberToFormat(100241421)}`,
+        position: `$${numberToFormat(241421)}`,
+        staking: `$${numberToFormat(241421)}`,
+        points: `${numberToFormat(4802250)}`,
+        swapPoint: `${numberToFormat(242802250000000000)}`,
+        positionPoint: `${numberToFormat(1000000)}`,
+        stakingPoint: `${numberToFormat(700000)}`,
+        referralPoint: `${numberToFormat(300000)}`,
       },
     };
   };
