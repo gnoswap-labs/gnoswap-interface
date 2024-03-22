@@ -7,7 +7,7 @@ import {
 } from "./LeaderboardTableRow.styles";
 import PointComposition from "../point-composition/PointComposition";
 import UserColumn from "../user-column/UserColumn";
-import { Leader } from "@repositories/leaderboard/response/common/types";
+import { LeaderModel } from "@models/leaderboard/leader-model";
 
 const LeaderboardTableRow = ({
   item,
@@ -15,23 +15,26 @@ const LeaderboardTableRow = ({
   isMobile,
   me = false,
 }: {
-  item: Leader;
+  item: LeaderModel;
   tdWidths: number[];
   isMobile: boolean;
   me?: boolean;
 }) => {
   const {
     rank,
+
     formattedAddress,
     address,
-    volume,
-    position,
-    staking,
-    points,
-    swapPoint,
-    positionPoint,
-    stakingPoint,
-    referralPoint,
+
+    swapVolume,
+    positionValue,
+    stakingValue,
+
+    pointSum,
+    swapFeePoint,
+    poolRewardPoint,
+    stakingRewardPoint,
+    referralRewardPoint,
   } = item;
 
   const Hover = me ? HoverSection : HoverOnBgSection;
@@ -55,17 +58,17 @@ const LeaderboardTableRow = ({
           tdWidth={tdWidths.at(2)}
           style={{ justifyContent: "flex-start" }}
         >
-          {volume}
+          {swapVolume}
         </TableColumn>
-        <TableColumn tdWidth={tdWidths.at(3)}>{position}</TableColumn>
-        <TableColumn tdWidth={tdWidths.at(4)}>{staking}</TableColumn>
+        <TableColumn tdWidth={tdWidths.at(3)}>{positionValue}</TableColumn>
+        <TableColumn tdWidth={tdWidths.at(4)}>{stakingValue}</TableColumn>
         <TableColumn tdWidth={tdWidths.at(5)}>
           <PointComposition
-            points={points}
-            swapPoint={swapPoint}
-            positionPoint={positionPoint}
-            stakingPoint={stakingPoint}
-            referralPoint={referralPoint}
+            points={pointSum}
+            swapPoint={swapFeePoint}
+            positionPoint={poolRewardPoint}
+            stakingPoint={stakingRewardPoint}
+            referralPoint={referralRewardPoint}
             isMobile={isMobile}
           />
         </TableColumn>

@@ -5,6 +5,40 @@ import { useAtomValue } from "jotai";
 import { WalletState } from "@states/index";
 import { getTimeDiffInMilliseconds } from "@common/utils/date-util";
 import { useEffect, useRef } from "react";
+import {
+  GetLeaderByAddressResponse,
+  GetLeadersResponse,
+} from "@repositories/leaderboard/response";
+import { formatAddress, numberToFormat } from "@utils/string-utils";
+import { Leader } from "@repositories/leaderboard/response/common/types";
+import { LeaderModel } from "@models/leaderboard/leader-model";
+
+const mapLeader = (v: Leader): LeaderModel => ({
+  rank: v.rank,
+  hide: v.hide,
+  address: v.address,
+
+  formattedAddress: formatAddress(v.address, 8),
+  mobileSpecificFormattedAddress: formatAddress(v.address, 4),
+
+  swapVolume: `$${numberToFormat(v.swapVolume)}`,
+  positionValue: `$${numberToFormat(v.positionValue)}`,
+  stakingValue: `$${numberToFormat(v.stakingValue)}`,
+
+  pointSum: `${numberToFormat(v.pointSum)}`,
+  swapFeePoint: `${numberToFormat(v.swapFeePoint)}`,
+  poolRewardPoint: `${numberToFormat(v.poolRewardPoint)}`,
+  stakingRewardPoint: `${numberToFormat(v.stakingRewardPoint)}`,
+  referralRewardPoint: `${numberToFormat(v.referralRewardPoint)}`,
+});
+
+const refetchingOptions = {
+  staleTime: 0,
+  enabled: true,
+  refetchOnMount: true,
+  refetchOnReconnect: true,
+  refetchOnWindowFocus: true,
+};
 
 export function useLeaders(page: number) {
   const account = useAtomValue(WalletState.account);
@@ -15,14 +49,17 @@ export function useLeaders(page: number) {
       {
         queryKey: QUERY_KEY.leaders(page),
         queryFn: () => leaderboardRepository.getLeaders({ page }),
+
+        select: (data: GetLeadersResponse) => ({
+          ...data,
+          leaders: data.leaders.map(mapLeader),
+        }),
+
         keepPreviousData: true,
+
         suspense: true,
 
-        staleTime: 0,
-        enabled: true,
-        refetchOnMount: true,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
+        ...refetchingOptions,
       },
       {
         queryKey: QUERY_KEY.leader(account?.address),
@@ -33,13 +70,13 @@ export function useLeaders(page: number) {
             address: account.address,
           });
         },
+
+        select: (data: GetLeaderByAddressResponse | null) =>
+          data === null ? null : { leader: mapLeader(data.leader) },
+
         suspense: true,
 
-        staleTime: 0,
-        enabled: true,
-        refetchOnMount: true,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
+        ...refetchingOptions,
       },
     ],
   });
@@ -57,11 +94,7 @@ export function useNextUpdateTime() {
     queryKey: QUERY_KEY.nextUpdateTime(),
     queryFn: () => leaderboardRepository.getNextUpdateTime({}),
 
-    staleTime: 0,
-    enabled: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    refetchOnWindowFocus: true,
+    ...refetchingOptions,
 
     onSuccess: data => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);

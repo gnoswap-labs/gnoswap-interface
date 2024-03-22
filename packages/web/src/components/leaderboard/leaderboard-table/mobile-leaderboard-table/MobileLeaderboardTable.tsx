@@ -1,5 +1,5 @@
 import { MOBILE_LEADERBOARD_TD_WIDTH } from "@constants/skeleton.constant";
-import { Leader } from "@repositories/leaderboard/response/common/types";
+import { LeaderModel } from "@models/leaderboard/leader-model";
 import MobileLeaderboardTableRow from "../../mobile-leaderboard-table-row/MobileLeaderboardTableRow";
 
 export default function MobileLeaderboardTable({
@@ -7,8 +7,8 @@ export default function MobileLeaderboardTable({
   leaders,
   isMobile,
 }: {
-  me?: Leader;
-  leaders: Leader[];
+  me?: LeaderModel;
+  leaders: LeaderModel[];
   isMobile: boolean;
 }) {
   return (

@@ -1,5 +1,4 @@
 import { generateAddress } from "@common/utils/test-util";
-import { formatAddress, numberToFormat } from "@utils/string-utils";
 import dayjs from "dayjs";
 import { LeaderboardRepository } from "./leaderboard-repository";
 import {
@@ -27,17 +26,19 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
       const address = generateAddress();
       return {
         rank: index++,
+
+        hide: false,
+
         address: address,
-        formattedAddress: formatAddress(address, 8),
-        mobileSpecificFormattedAddress: formatAddress(address, 4),
-        volume: `$${numberToFormat(100241421)}`,
-        position: `$${numberToFormat(241421)}`,
-        staking: `$${numberToFormat(241421)}`,
-        points: `${numberToFormat(4802250)}`,
-        swapPoint: `${numberToFormat(242802250000000000)}`,
-        positionPoint: `${numberToFormat(1000000)}`,
-        stakingPoint: `${numberToFormat(700000)}`,
-        referralPoint: `${numberToFormat(300000)}`,
+
+        swapVolume: 100241421,
+        positionValue: 241421,
+        stakingValue: 241421,
+        pointSum: 4802250,
+        swapFeePoint: 242802250000000000,
+        poolRewardPoint: 1000000,
+        stakingRewardPoint: 700000,
+        referralRewardPoint: 300000,
       };
     };
 
@@ -67,17 +68,19 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     return {
       leader: {
         rank: 1,
+
+        hide: false,
+
         address: request.address,
-        formattedAddress: formatAddress(request.address, 8),
-        mobileSpecificFormattedAddress: formatAddress(request.address, 4),
-        volume: `$${numberToFormat(100241421)}`,
-        position: `$${numberToFormat(241421)}`,
-        staking: `$${numberToFormat(241421)}`,
-        points: `${numberToFormat(4802250)}`,
-        swapPoint: `${numberToFormat(242802250000000000)}`,
-        positionPoint: `${numberToFormat(1000000)}`,
-        stakingPoint: `${numberToFormat(700000)}`,
-        referralPoint: `${numberToFormat(300000)}`,
+
+        swapVolume: 100241421,
+        positionValue: 241421,
+        stakingValue: 241421,
+        pointSum: 4802250,
+        swapFeePoint: 242802250000000000,
+        poolRewardPoint: 1000000,
+        stakingRewardPoint: 700000,
+        referralRewardPoint: 300000,
       },
     };
   };

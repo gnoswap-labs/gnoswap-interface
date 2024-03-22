@@ -1,14 +1,17 @@
 export interface Leader {
   rank: number;
+
   address: string;
-  formattedAddress: string;
-  mobileSpecificFormattedAddress: string;
-  volume: string;
-  position: string;
-  staking: string;
-  points: string;
-  swapPoint: string;
-  positionPoint: string;
-  stakingPoint: string;
-  referralPoint: string;
+
+  hide: boolean;
+
+  swapVolume: number;
+  positionValue: number;
+  stakingValue: number;
+
+  pointSum: number;
+  swapFeePoint: number;
+  poolRewardPoint: number;
+  stakingRewardPoint: number;
+  referralRewardPoint: number;
 }

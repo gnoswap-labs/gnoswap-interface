@@ -1,7 +1,7 @@
 import { TableColumn, Wrapper } from "./MobileLeaderboardTableRow.styles";
 import UserColumn from "../user-column/UserColumn";
 import PointComposition from "../point-composition/PointComposition";
-import { Leader } from "@repositories/leaderboard/response/common/types";
+import { LeaderModel } from "@models/leaderboard/leader-model";
 
 const MobileLeaderboardTableRow = ({
   item,
@@ -9,20 +9,22 @@ const MobileLeaderboardTableRow = ({
   isMobile,
   me = false,
 }: {
-  item: Leader;
+  item: LeaderModel;
   tdWidths: number[];
   isMobile: boolean;
   me?: boolean;
 }) => {
   const {
     rank,
+
     mobileSpecificFormattedAddress,
     address,
-    points,
-    swapPoint,
-    positionPoint,
-    stakingPoint,
-    referralPoint,
+
+    pointSum,
+    swapFeePoint,
+    poolRewardPoint,
+    stakingRewardPoint,
+    referralRewardPoint,
   } = item;
 
   return (
@@ -38,11 +40,11 @@ const MobileLeaderboardTableRow = ({
       />
       <TableColumn tdWidth={tdWidths[2]}>
         <PointComposition
-          points={points}
-          swapPoint={swapPoint}
-          positionPoint={positionPoint}
-          stakingPoint={stakingPoint}
-          referralPoint={referralPoint}
+          points={pointSum}
+          swapPoint={swapFeePoint}
+          positionPoint={poolRewardPoint}
+          stakingPoint={stakingRewardPoint}
+          referralPoint={referralRewardPoint}
           isMobile={isMobile}
         />
       </TableColumn>
