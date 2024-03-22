@@ -40,11 +40,10 @@ const refetchingOptions = {
   refetchOnWindowFocus: true,
 };
 
-export function useLeaders(page: number) {
+export function useLeaders(page: number, size: number) {
   const account = useAtomValue(WalletState.account);
   const { leaderboardRepository } = useGnoswapContext();
 
-  const size = 100;
   const results = useQueries({
     queries: [
       {

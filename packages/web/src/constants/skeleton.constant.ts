@@ -460,7 +460,7 @@ export const TOKEN_INFO = {
 
 export const LEADER_INFO = {
   title: TABLE_TITLE.LEADERBOARD_TABLE,
-  total: 6,
+  total: 15,
   tdWidth: LEADERBOARD_TD_WIDTH,
   list: [
     {
@@ -502,7 +502,7 @@ export const LEADER_INFO = {
 
 export const TABLET_LEADER_INFO = {
   title: TABLE_TITLE.LEADERBOARD_TABLE,
-  total: 6,
+  total: 15,
   tdWidth: LEADERBOARD_TD_WIDTH,
   list: [
     {
@@ -544,7 +544,7 @@ export const TABLET_LEADER_INFO = {
 
 export const MOBILE_LEADER_INFO = {
   title: TABLE_TITLE.LEADERBOARD_TABLE,
-  total: 6,
+  total: 15,
   tdWidth: MOBILE_LEADERBOARD_TD_WIDTH,
   list: [
     { width: 50 / 2, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },

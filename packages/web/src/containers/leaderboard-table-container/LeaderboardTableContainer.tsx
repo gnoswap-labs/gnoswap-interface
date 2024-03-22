@@ -12,7 +12,7 @@ export default function LeaderboardTableContainer() {
   const movePage = (page: number) => setPage(page);
 
   const { isMobile, isTablet, isWeb } = useWindowSize();
-  const [leadersQuery, meQuery] = useLeaders(page);
+  const [leadersQuery, meQuery] = useLeaders(page, 100);
 
   return (
     <>
@@ -40,14 +40,16 @@ export default function LeaderboardTableContainer() {
         )}
       </LeaderboardTableWrapper>
 
-      <div style={{ marginTop: "4px" }}>
-        <Pagination
-          currentPage={leadersQuery.data!.currentPage}
-          totalPage={leadersQuery.data!.totalPage}
-          onPageChange={movePage}
-          siblingCount={isMobile ? 1 : 2}
-        />
-      </div>
+      {leadersQuery.data!.totalPage > 1 && (
+        <div style={{ marginTop: "4px" }}>
+          <Pagination
+            currentPage={leadersQuery.data!.currentPage}
+            totalPage={leadersQuery.data!.totalPage}
+            onPageChange={movePage}
+            siblingCount={isMobile ? 1 : 2}
+          />
+        </div>
+      )}
     </>
   );
 }
