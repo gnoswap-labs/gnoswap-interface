@@ -23,7 +23,7 @@ export default function TabletLeaderboardTable({
       )}
       {leaders.map(leader => (
         <LeaderboardTableRow
-          key={leader.address}
+          key={`${leader.rank}:${leader.address}`}
           item={leader}
           tdWidths={TABLET_LEADERBOARD_TD_WIDTH}
           isMobile={isMobile}

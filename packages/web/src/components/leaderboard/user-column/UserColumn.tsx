@@ -16,12 +16,14 @@ const UserColumn = ({
   rank,
   user,
   address,
+  hide,
   me = false,
   ...rest
 }: {
   rank: number;
   user: string;
   address: string;
+  hide: boolean;
   me?: boolean;
   tdWidth?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
@@ -30,7 +32,7 @@ const UserColumn = ({
     <TableColumn
       {...rest}
       onClick={() => {
-        push(`/earn?addr=${address}`);
+        if (!hide) push(`/earn?addr=${address}`);
       }}
     >
       <Flex>

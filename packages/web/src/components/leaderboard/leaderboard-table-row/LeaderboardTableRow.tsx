@@ -23,6 +23,8 @@ const LeaderboardTableRow = ({
   const {
     rank,
 
+    hide,
+
     formattedAddress,
     address,
 
@@ -43,11 +45,12 @@ const LeaderboardTableRow = ({
   return (
     <TableWrapper>
       <TableColumn tdWidth={tdWidths.at(0)}>#{rank}</TableColumn>
-      <Hover>
+      <Hover style={hide ? { cursor: "auto" } : {}}>
         <UserColumn
           rank={rank}
           user={formattedAddress}
           address={address}
+          hide={hide}
           me={me}
           tdWidth={tdWidths.at(1)}
           style={{ justifyContent: "flex-start" }}

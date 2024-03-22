@@ -23,7 +23,7 @@ export default function WebLeaderboardTable({
       )}
       {leaders.map(leader => (
         <LeaderboardTableRow
-          key={leader.address}
+          key={`${leader.rank}:${leader.address}`}
           item={leader}
           tdWidths={LEADERBOARD_TD_WIDTH}
           isMobile={isMobile}

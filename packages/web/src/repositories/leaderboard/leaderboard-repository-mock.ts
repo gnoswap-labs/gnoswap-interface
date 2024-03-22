@@ -24,12 +24,13 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     let index = request.page === 0 ? 1 : request.page * 101;
     const leader = () => {
       const address = generateAddress();
+      const hide = Boolean(Math.round(Math.random()));
       return {
         rank: index++,
 
-        hide: false,
+        hide,
 
-        address: address,
+        address: hide ? "g1*********************" : address,
 
         swapVolume: 100241421,
         positionValue: 241421,

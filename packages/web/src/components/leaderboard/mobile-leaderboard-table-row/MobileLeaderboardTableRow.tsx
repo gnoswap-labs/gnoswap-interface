@@ -17,6 +17,8 @@ const MobileLeaderboardTableRow = ({
   const {
     rank,
 
+    hide,
+
     mobileSpecificFormattedAddress,
     address,
 
@@ -34,9 +36,10 @@ const MobileLeaderboardTableRow = ({
         rank={rank}
         user={mobileSpecificFormattedAddress}
         address={address}
+        hide={hide}
         me={me}
         tdWidth={tdWidths[1]}
-        style={{ cursor: "pointer" }}
+        style={hide ? { cursor: "auto" } : { cursor: "pointer" }}
       />
       <TableColumn tdWidth={tdWidths[2]}>
         <PointComposition
