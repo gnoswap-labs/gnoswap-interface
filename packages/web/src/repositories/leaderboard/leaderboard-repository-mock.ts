@@ -21,7 +21,9 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
   ): Promise<GetLeadersResponse> => {
     console.log(`request.page : ${request.page}`);
 
-    let index = request.page === 0 ? 1 : request.page * 101;
+    let index = request.page === 0 ? 1 : request.page * 100;
+    index = request.page === 0 ? index : index + 1;
+
     const leader = () => {
       const address = generateAddress();
       const hide = Boolean(Math.round(Math.random()));
