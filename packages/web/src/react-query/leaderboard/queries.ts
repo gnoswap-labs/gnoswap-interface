@@ -44,11 +44,12 @@ export function useLeaders(page: number) {
   const account = useAtomValue(WalletState.account);
   const { leaderboardRepository } = useGnoswapContext();
 
+  const size = 100;
   const results = useQueries({
     queries: [
       {
         queryKey: QUERY_KEY.leaders(page),
-        queryFn: () => leaderboardRepository.getLeaders({ page }),
+        queryFn: () => leaderboardRepository.getLeaders({ page, size }),
 
         select: (data: GetLeadersResponse) => ({
           ...data,

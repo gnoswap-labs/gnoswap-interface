@@ -45,18 +45,9 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     return {
       totalPage: 10,
       currentPage: request.page,
-      leaders: [
-        leader(),
-        leader(),
-        leader(),
-        leader(),
-        leader(),
-        leader(),
-        leader(),
-        leader(),
-        leader(),
-        leader(),
-      ],
+      leaders: Array(request.size)
+        .fill(0)
+        .map(() => leader()),
     };
   };
 
@@ -90,7 +81,10 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
   ): Promise<UpdateLeaderByAddressResponse> => {
     console.log(`request.address : ${request.address}`);
 
-    return {};
+    return {
+      address: request.address,
+      hide: !request.hide,
+    };
   };
 
   public getNextUpdateTime = async (
