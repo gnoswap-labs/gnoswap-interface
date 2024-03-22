@@ -72,11 +72,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   }, [connectedWallet, isSwitchNetwork, positions.length]);
 
   const handleClickAddPosition = useCallback(() => {
-    router.push(`${router.asPath}/add`);
+    router.push(`/earn/pool/${router.query["pool-path"]}/add`);
   }, [router]);
 
   const handleClickRemovePosition = useCallback(() => {
-    router.push(`${router.asPath}/remove`);
+    router.push(`/earn/pool/${router.query["pool-path"]}/remove`);
   }, [router]);
 
   const handleScroll = () => {
@@ -184,6 +184,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       loadngTransactionClaim={loadngTransactionClaim}
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
+      isHiddenAddPosition={!!(address && account?.address && address !== account?.address)}
     />
   );
 };

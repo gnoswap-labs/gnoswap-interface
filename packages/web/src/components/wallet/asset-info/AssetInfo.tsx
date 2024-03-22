@@ -46,7 +46,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
-        className="left"
+        className="left pointer"
         tdWidth={ASSET_TD_WIDTH[0]}
         onClick={() => onClickItem(symbol)}
       >

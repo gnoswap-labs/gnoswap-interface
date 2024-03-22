@@ -27,17 +27,20 @@ export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
   address?: string | undefined;
+  isOtherPosition?: boolean;
 }
 
 const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
 > = ({
   address,
+  isOtherPosition,
 }) => {
     const [currentIndex, setCurrentIndex] = useState(1);
     const [page, setPage] = useState(1);
 
     const router = useRouter();
+
     const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
     const { updateTokenPrices } = useTokenData();
     const { updatePositions, isFetchedPools, loading } = usePoolData();
@@ -49,10 +52,6 @@ const EarnMyPositionContainer: React.FC<
     const themeKey = useAtomValue(ThemeState.themeKey);
     const [isClosed, setIsClosed] = useState(false);
     const { isLoadingCommon } = useLoading();
-
-    const isOtherPosition = useMemo(() => {
-      return Boolean(address) && address !== account?.address;
-    }, [account?.address, address]);
 
     const visiblePositions = useMemo(() => {
       if (!connected && !address) {
@@ -153,7 +152,7 @@ const EarnMyPositionContainer: React.FC<
       <EarnMyPositions
         address={address}
         addressName={addressName}
-        isOtherPosition={isOtherPosition}
+        isOtherPosition={!!isOtherPosition}
         visiblePositions={visiblePositions}
         positionLength={positions.length}
         connected={connected}

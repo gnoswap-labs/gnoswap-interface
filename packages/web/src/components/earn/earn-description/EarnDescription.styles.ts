@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const EarnDescriptionWrapper = styled.div`
   display: flex;
@@ -17,8 +18,8 @@ export const EarnDescriptionWrapper = styled.div`
     align-items: flex-start;
     gap: 16px;
     border-radius: 8px;
-    border: 1px solid var(--border2-dark_gray500Border2, #1C2230);
-    background: var(--background-09-dark-black-opacity-07-hover-2, rgba(10, 14, 23, 0.70));
+    border: 1px solid  ${({ theme }) => theme.color.border02};
+    background: ${({ theme }) => theme.color.backgroundOpacity2};
 
     .title-wrapper {
       ${fonts.body11}
@@ -38,7 +39,11 @@ export const EarnDescriptionWrapper = styled.div`
       ${fonts.body11}
       color: ${({ theme }) => theme.color.text04};
       white-space: nowrap;
-
+      .text {
+        .highlight {
+          display: none;
+        }
+      }
       .text::after {
         content: " ";
       }
@@ -61,15 +66,43 @@ export const EarnDescriptionWrapper = styled.div`
     }
 
     .link-wrapper {
+      color: ${({ theme }) => theme.color.text08};
       display: flex;
       flex-direction: row;
       ${fonts.body11}
-      background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       cursor: pointer;
+      svg * {
+        fill: ${({ theme }) => theme.color.text08};
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.text07};
+        svg * {
+          fill: ${({ theme }) => theme.color.text07};
+        }
+      }
+    }
+    ${media.tablet} {
+      min-width: 356px;
+      .description-wrapper {
+        white-space: normal;
+        ${fonts.p2}
+
+        .text {
+          .highlight {
+            display: inline-flex;
+          }
+        }
+        > .highlight {
+          display: none;
+        }
+      }
+      .link-wrapper {
+        ${fonts.p1}
+
+      }
+    }
+    ${media.mobile} {
+      min-width: 280px;
     }
   }
 `;

@@ -4,6 +4,7 @@ import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyP
 import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
+import OtherPositionNoLiquidity from "../other-positions-no-liquidity/OtherPositionNoLiquidity";
 export interface EarnMyPositionContentProps {
   isOtherPosition: boolean;
   connected: boolean;
@@ -56,6 +57,10 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
 
   if (connected && positions.length === 0 && !loading) {
     return <EarnMyPositionNoLiquidity account={account} />;
+  }
+
+  if (isOtherPosition && positions.length === 0 && !loading) {
+    return <OtherPositionNoLiquidity account={account} />;
   }
 
   return (

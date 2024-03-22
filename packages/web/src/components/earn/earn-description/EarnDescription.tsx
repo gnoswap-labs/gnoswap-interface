@@ -30,9 +30,18 @@ const EarnDescription: React.FC = () => {
           <div className="description-wrapper">
             <span className="text">
               Stake your position and earn rewards up to&nbsp;
+              <span className="highlight">
+              89% APR&nbsp;
+              <span className="logo">
+                <OverlapLogo
+                  size={20}
+                  logos={[GNS_TOKEN.logoURI, GNOT_TOKEN.logoURI]}
+                />
+              </span>
+            </span>
             </span>
             <span className="highlight">
-              89& APR&nbsp;
+              89% APR&nbsp;
               <span className="logo">
                 <OverlapLogo
                   size={20}

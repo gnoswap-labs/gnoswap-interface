@@ -51,6 +51,8 @@ interface MyPositionCardProps {
   breakpoint: DEVICE_TYPE;
   loading: boolean;
   address: string;
+  isHiddenAddPosition: boolean;
+  connected: boolean;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
@@ -58,6 +60,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   breakpoint,
   loading,
   address,
+  isHiddenAddPosition,
+  connected,
 }) => {
   const router = useRouter();
   const { width } = useWindowSize();
@@ -440,13 +444,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const handleSelect = (text: string) => {
     if (text == "Decrease Liquidity") {
       setSelectedPosition(position);
-      router.push(router.asPath + "/" + position?.id + "/decrease-liquidity");
+      router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/decrease-liquidity");
     } else if (text === "Increase Liquidity") {
       setSelectedPosition(position);
-      router.push(router.asPath + "/" + position?.id + "/increase-liquidity");
+      router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/increase-liquidity");
     } else {
       setSelectedPosition(position);
-      router.push(router.asPath + "/" + position?.id + "/reposition");
+      router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/reposition");
     }
   };
 
@@ -551,7 +555,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="flex-button">
               <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + "/add")}/>
-              {!isClosed && (
+              {!isClosed && !isHiddenAddPosition && connected && (
                 <SelectBox
                   current={"Manage"}
                   items={[

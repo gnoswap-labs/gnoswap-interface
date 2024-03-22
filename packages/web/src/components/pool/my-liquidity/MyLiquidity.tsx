@@ -25,6 +25,7 @@ interface MyLiquidityProps {
   loadngTransactionClaim: boolean;
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
+  isHiddenAddPosition: boolean;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -46,6 +47,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   loadngTransactionClaim,
   isShowClosePosition,
   handleSetIsClosePosition,
+  isHiddenAddPosition,
 }) => {
   return (
     <>
@@ -64,6 +66,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             handleClickRemovePosition={handleClickRemovePosition}
             isShowClosePosition={isShowClosePosition}
             handleSetIsClosePosition={handleSetIsClosePosition}
+            isHiddenAddPosition={isHiddenAddPosition}
           />
           <MyLiquidityContent
             connected={connected}
@@ -84,6 +87,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
               breakpoint={breakpoint}
               loading={loading}
               address={address || ""}
+              isHiddenAddPosition={isHiddenAddPosition}
+              connected={connected}
             />
           ))
         ) : (
@@ -97,6 +102,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                     breakpoint={breakpoint}
                     loading={loading}
                     address={address || ""}
+                    isHiddenAddPosition={isHiddenAddPosition}
+                    connected={connected}
                   />
                 ))}
               </div>

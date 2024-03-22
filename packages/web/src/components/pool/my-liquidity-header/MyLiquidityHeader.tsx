@@ -22,6 +22,7 @@ interface MyLiquidityHeaderProps {
   handleClickRemovePosition: () => void;
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
+  isHiddenAddPosition: boolean;
 }
 
 const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
@@ -35,6 +36,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   handleClickRemovePosition,
   isShowClosePosition,
   handleSetIsClosePosition,
+  isHiddenAddPosition,
 }) => {
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -127,7 +129,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             }}
           />
         )}
-        <Button
+        {!isHiddenAddPosition && <Button
           text="Add Position"
           onClick={handleClickAddPosition}
           style={{
@@ -137,7 +139,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             fontType: "p1",
           }}
           className={!availableRemovePosition ? "full-width" : ""}
-        />
+        />}
       </div>
     </HeaderWrapper>
   );
