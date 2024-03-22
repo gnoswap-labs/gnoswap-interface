@@ -63,7 +63,7 @@ export const useDecreasePositionModal = ({
         pooledTokenInfos={pooledTokenInfos}
       />,
     );
-  }, [setModalContent, setOpenedModal, amountInfo]);
+  }, [setModalContent, setOpenedModal, amountInfo, pooledTokenInfos]);
 
   return {
     openModal,

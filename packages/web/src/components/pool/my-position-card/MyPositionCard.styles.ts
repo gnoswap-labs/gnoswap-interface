@@ -121,9 +121,22 @@ export const MyPositionCardWrapper = styled.div<Props>`
             display: none;
           }
         }
+        .copy-button {
+          padding: 10px 16px;
+          span {
+            ${fonts.p1}
+          }
+          background-color: ${({ theme }) => theme.color.background13};
+          &:hover {
+            background-color: ${({ theme }) => theme.color.backgroundGradient};
+          }
+        }
         ${media.mobile} {
           width: 100%;
           ${mixins.flexbox("column", "center", "center")};
+          button {
+            width: 100%;
+          }
           > div {
             width: 100%;
             .selected-wrapper {

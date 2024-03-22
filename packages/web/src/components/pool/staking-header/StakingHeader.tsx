@@ -19,8 +19,8 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
     <StakingHeaderWrapper>
       <div className="left-wrap">
         <h2>Staking</h2>
-          <div className="logo-wrap">
-            <span className="lean-more" onClick={() => setIsShowLearnModal(true)}>
+          <div className="logo-wrap" onClick={() => setIsShowLearnModal(true)}>
+            <span className="lean-more">
               Learn More
             </span>
             <IconNote className="icon-logo" />

@@ -44,6 +44,7 @@ import IconLinkPage from "@components/common/icons/IconLinkPage";
 import { useCopy } from "@hooks/common/use-copy";
 import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
+import Button from "@components/common/button/Button";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -549,13 +550,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              <SelectBox
-                current={"Copy Positioning"}
-                items={[]}
-                select={() => {}}
-                render={() => null}
-                className="disable-select"
-              />
+              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + "/add")}/>
               {!isClosed && (
                 <SelectBox
                   current={"Manage"}

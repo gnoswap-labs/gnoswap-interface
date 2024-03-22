@@ -42,9 +42,11 @@ export const useRepositionHandle = () => {
       const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
       if (position) {
         setSelectedPosition(position);
+      } else {
+        router.push(`/earn/pool/${poolPath}`);
       }
     }
-  }, [selectedPosition, positions, positionId]);
+  }, [selectedPosition, positions, positionId, poolPath]);
 
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";

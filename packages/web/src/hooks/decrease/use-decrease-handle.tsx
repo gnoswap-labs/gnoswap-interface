@@ -39,13 +39,15 @@ export const useDecreaseHandle = () => {
 
   const { positions } = usePositionData();
   useEffect(() => {
-    if (!selectedPosition && positions.length > 0 && positionId) {
+    if (!selectedPosition && positions.length > 0 && positionId && poolPath) {
       const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
       if (position) {
         setSelectedPosition(position);
+      } else {
+        router.push(`/earn/pool/${poolPath}`);
       }
     }
-  }, [selectedPosition, positions, positionId]);
+  }, [selectedPosition, positions, positionId, poolPath]);
 
   const { connected, account } = useWallet();
   const minPriceStr = useMemo(() => {
@@ -198,17 +200,16 @@ export const useDecreaseHandle = () => {
     const unClaimTokenBAmount =
       makeDisplayTokenAmount(tokenB, Number(unClaimTokenB)) || 0;
     return {
-      poolAmountA: tokenAAmount.toLocaleString(),
-      poolAmountUSDA: numberToUSD(tokenAAmount * Number(tokenAPrice)),
-      poolAmountB: tokenBAmount.toLocaleString(),
-      poolAmountUSDB: numberToUSD(tokenBAmount * Number(tokenBPrice)),
-      unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
-      unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
-      unClaimTokenAAmountUSD: numberToUSD(unClaimTokenAAmount * Number(tokenBPrice)),
-      unClaimTokenBAmountUSD: numberToUSD(unClaimTokenBAmount * Number(tokenAPrice)),
-
+      poolAmountA: (tokenAAmount * percent / 100).toLocaleString(),
+      poolAmountUSDA: numberToUSD(tokenAAmount * Number(tokenAPrice) * percent / 100),
+      poolAmountB: (tokenBAmount * percent / 100).toLocaleString(),
+      poolAmountUSDB: numberToUSD(tokenBAmount * Number(tokenBPrice) * percent / 100),
+      unClaimTokenAAmount: (unClaimTokenAAmount * percent / 100).toLocaleString(),
+      unClaimTokenBAmount: (unClaimTokenBAmount * percent / 100).toLocaleString(),
+      unClaimTokenAAmountUSD: numberToUSD(unClaimTokenAAmount * Number(tokenAPrice) * percent / 100),
+      unClaimTokenBAmountUSD: numberToUSD(unClaimTokenBAmount * Number(tokenBPrice) * percent / 100),
     };
-  }, [selectedPosition, tokenPrices]);
+  }, [selectedPosition, tokenPrices, percent]);
 
   useEffect(() => {
     if (!account && poolPath) {

@@ -8,7 +8,6 @@ export const HeaderWrapper = styled.div`
   width: 100%;
   ${fonts.h5};
   color: ${({ theme }) => theme.color.text02};
-
   .header {
     ${mixins.flexbox("row", "center", "flex-start")};
     .hide-close-position {
@@ -46,6 +45,7 @@ export const HeaderWrapper = styled.div`
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         cursor: pointer;
+        font-weight: 700;
       }
       button {
         position: relative;
