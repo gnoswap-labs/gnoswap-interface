@@ -26,9 +26,9 @@ export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 export default function LeaderboardListLayout() {
   return (
     <Wrapper>
-      <LeaderboardListHeaderContainer />
-
       <ErrorBoundary>
+        <LeaderboardListHeaderContainer />
+
         <Suspense fallback={<LeaderboardTableSkeletonContainer />}>
           <LeaderboardTableContainer />
         </Suspense>

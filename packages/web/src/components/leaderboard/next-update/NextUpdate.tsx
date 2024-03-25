@@ -14,7 +14,8 @@ import {
 } from "./NextUpdate.styles";
 
 export default function NextUpdate() {
-  const { data } = useNextUpdateTime();
+  const { data, error } = useNextUpdateTime();
+  if (error) throw error;
 
   const [seconds, setSeconds] = useState<number>();
 
