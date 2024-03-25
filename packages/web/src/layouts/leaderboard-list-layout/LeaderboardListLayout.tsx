@@ -4,6 +4,7 @@ import LeaderboardListHeaderContainer from "@containers/leaderboard-list-header-
 import { Suspense } from "react";
 import LeaderboardTableContainer from "@containers/leaderboard-table-container/LeaderboardTableContainer";
 import LeaderboardTableSkeletonContainer from "@containers/leaderboard-table-skeleton-container/LeaderboardTableSkeletonContainer";
+import ErrorBoundary from "@components/common/error-boundary/ErrorBoundary";
 
 export const TABLE_HEAD = {
   INDEX: "Rank",
@@ -27,9 +28,11 @@ export default function LeaderboardListLayout() {
     <Wrapper>
       <LeaderboardListHeaderContainer />
 
-      <Suspense fallback={<LeaderboardTableSkeletonContainer />}>
-        <LeaderboardTableContainer />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<LeaderboardTableSkeletonContainer />}>
+          <LeaderboardTableContainer />
+        </Suspense>
+      </ErrorBoundary>
     </Wrapper>
   );
 }
