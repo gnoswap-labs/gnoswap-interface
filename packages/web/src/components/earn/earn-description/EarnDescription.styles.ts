@@ -23,7 +23,7 @@ export const EarnDescriptionWrapper = styled.div`
 
     .title-wrapper {
       ${fonts.body11}
-      color: ${({ theme }) => theme.color.text05};
+      color: ${({ theme }) => theme.color.text10};
     }
 
     .content-wrapper {
@@ -89,6 +89,7 @@ export const EarnDescriptionWrapper = styled.div`
 
         .text {
           .highlight {
+            font-weight: 500;
             display: inline-flex;
           }
         }

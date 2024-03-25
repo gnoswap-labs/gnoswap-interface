@@ -204,10 +204,10 @@ export const useDecreaseHandle = () => {
       poolAmountUSDA: numberToUSD(tokenAAmount * Number(tokenAPrice) * percent / 100),
       poolAmountB: (tokenBAmount * percent / 100).toLocaleString(),
       poolAmountUSDB: numberToUSD(tokenBAmount * Number(tokenBPrice) * percent / 100),
-      unClaimTokenAAmount: (unClaimTokenAAmount * percent / 100).toLocaleString(),
-      unClaimTokenBAmount: (unClaimTokenBAmount * percent / 100).toLocaleString(),
-      unClaimTokenAAmountUSD: numberToUSD(unClaimTokenAAmount * Number(tokenAPrice) * percent / 100),
-      unClaimTokenBAmountUSD: numberToUSD(unClaimTokenBAmount * Number(tokenBPrice) * percent / 100),
+      unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
+      unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
+      unClaimTokenAAmountUSD: numberToUSD(unClaimTokenAAmount * Number(tokenAPrice)),
+      unClaimTokenBAmountUSD: numberToUSD(unClaimTokenBAmount * Number(tokenBPrice)),
     };
   }, [selectedPosition, tokenPrices, percent]);
 

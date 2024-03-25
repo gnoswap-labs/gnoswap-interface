@@ -188,6 +188,7 @@ const StakingContainer: React.FC = () => {
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
       loading={loadingPool || loadingPosition || isLoadingCommon}
+      isOtherPosition={!!(address && account?.address && address !== account?.address)}
     />
   );
 };

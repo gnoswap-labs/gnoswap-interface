@@ -154,7 +154,7 @@ const EarnMyPositionContainer: React.FC<
         addressName={addressName}
         isOtherPosition={!!isOtherPosition}
         visiblePositions={visiblePositions}
-        positionLength={positions.length}
+        positionLength={isSwitchNetwork ? 0 : positions.length}
         connected={connected}
         availableStake={availableStake}
         connect={connect}

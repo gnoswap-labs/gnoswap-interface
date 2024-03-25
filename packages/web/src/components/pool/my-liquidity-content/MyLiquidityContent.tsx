@@ -30,6 +30,7 @@ interface MyLiquidityContentProps {
   claimAll: () => void;
   loading: boolean;
   loadngTransactionClaim: boolean;
+  isOtherPosition: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
@@ -39,6 +40,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   claimAll,
   loading,
   loadngTransactionClaim,
+  isOtherPosition,
 }) => {
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
@@ -560,7 +562,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 </SkeletonEarnDetailWrapper>
               )}
             </div>
-            {claimable && (
+            {claimable && !isOtherPosition && (
               <Button
                 className="button-claim"
                 disabled={!claimable}
@@ -618,7 +620,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   />
                 </SkeletonEarnDetailWrapper>
               )}
-              {claimable && (
+              {claimable && !isOtherPosition && (
                 <Button
                   className="button-claim"
                   disabled={!claimable}

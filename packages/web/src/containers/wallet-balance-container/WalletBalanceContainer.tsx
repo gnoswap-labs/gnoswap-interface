@@ -181,14 +181,14 @@ const WalletBalanceContainer: React.FC = () => {
       <WalletBalance
         connected={connected}
         balanceSummaryInfo={{
-          amount: `$${sumTotalBalance}`,
+          amount: isSwitchNetwork ? "$0" : `$${sumTotalBalance}`,
           changeRate: "0.0%",
           loading: loadingTotalBalance,
         }}
         balanceDetailInfo={{
-          availableBalance: `${availableBalance}`,
-          claimableRewards: `${claimableRewards}`,
-          stakedLP: `${stakedBalance}`,
+          availableBalance: isSwitchNetwork ? "-" : `${availableBalance}`,
+          claimableRewards: isSwitchNetwork ? "-" : `${claimableRewards}`,
+          stakedLP: isSwitchNetwork ? "-" : `${stakedBalance}`,
           unstakingLP: `${unStakedBalance}`,
           loadingBalance: loadingTotalBalance,
           loadingPositions: loadingTotalBalance,

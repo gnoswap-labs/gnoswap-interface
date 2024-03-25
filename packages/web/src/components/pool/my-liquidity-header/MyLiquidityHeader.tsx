@@ -117,7 +117,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             />
           </div>
         )}
-        {availableRemovePosition && (
+        {availableRemovePosition && !isHiddenAddPosition && (
           <Button
             text="Remove Position"
             onClick={handleClickRemovePosition}
@@ -129,7 +129,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             }}
           />
         )}
-        {!isHiddenAddPosition && <Button
+        <Button
           text="Add Position"
           onClick={handleClickAddPosition}
           style={{
@@ -139,7 +139,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             fontType: "p1",
           }}
           className={!availableRemovePosition ? "full-width" : ""}
-        />}
+        />
       </div>
     </HeaderWrapper>
   );

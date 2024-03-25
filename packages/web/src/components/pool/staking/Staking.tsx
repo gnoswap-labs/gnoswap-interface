@@ -19,6 +19,7 @@ interface StakingProps {
   handleClickUnStakeRedirect: () => void;
   loading: boolean;
   pool: PoolDetailModel | null;
+  isOtherPosition: boolean;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -33,6 +34,7 @@ const Staking: React.FC<StakingProps> = ({
   handleClickUnStakeRedirect,
   loading,
   pool,
+  isOtherPosition,
 }) => {
   
   return (
@@ -45,6 +47,7 @@ const Staking: React.FC<StakingProps> = ({
           handleClickStakeRedirect={handleClickStakeRedirect}
           handleClickUnStakeRedirect={handleClickUnStakeRedirect}
           isUnstake={positions.length > 0}
+          isOtherPosition={isOtherPosition}
         />
         <StakingContent
           pool={pool}

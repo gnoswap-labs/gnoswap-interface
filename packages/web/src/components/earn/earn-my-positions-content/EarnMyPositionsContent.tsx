@@ -49,6 +49,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   themeKey,
   account,
 }) => {
+  if (isOtherPosition && positions.length === 0 && !loading) {
+    return <OtherPositionNoLiquidity account={account} />;
+  }
   if ((!connected || isSwitchNetwork) && !loading && !isOtherPosition) {
     return (
       <EarnMyPositionsUnconnected connect={connect} connected={connected} />
@@ -57,10 +60,6 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
 
   if (connected && positions.length === 0 && !loading) {
     return <EarnMyPositionNoLiquidity account={account} />;
-  }
-
-  if (isOtherPosition && positions.length === 0 && !loading) {
-    return <OtherPositionNoLiquidity account={account} />;
   }
 
   return (

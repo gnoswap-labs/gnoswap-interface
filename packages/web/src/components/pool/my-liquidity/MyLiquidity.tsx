@@ -76,6 +76,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             claimAll={claimAll}
             loading={loading}
             loadngTransactionClaim={loadngTransactionClaim}
+            isOtherPosition={isHiddenAddPosition}
           />
         </div>
         {positions.length > 0 && <PoolDivider />}
