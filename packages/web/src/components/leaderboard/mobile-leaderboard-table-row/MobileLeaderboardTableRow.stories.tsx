@@ -7,16 +7,23 @@ export default {
 } as ComponentMeta<typeof MobileLeaderboardTableRow>;
 
 const item = {
-  rank: 2,
-  user: "g1j0q...8auvm",
-  volume: "$100,241,421",
-  position: "$241,421",
-  staking: "$241,421",
-  points: "4,802,250",
-  swapPoint: "242,802,250250000000000",
-  positionPoint: "1,000,000",
-  stakingPoint: "700,000",
-  referralPoint: "300,000",
+  rank: 1,
+
+  hide: false,
+
+  address: "g1122u9x3d2p11mlqm3yrzqijqnee5oni2l7xnf5",
+  formattedAddress: "g1122u9x...i2l7xnf5",
+  mobileSpecificFormattedAddress: "g112...xnf5",
+
+  swapVolume: "$241,421",
+  positionValue: "$100,241,421",
+  stakingValue: "$241,421",
+
+  pointSum: "4,802,250",
+  swapFeePoint: "242,802,250250000000000",
+  poolRewardPoint: "1,000,000",
+  stakingRewardPoint: "700,000",
+  referralRewardPoint: "300,000",
 };
 
 const tdWidths = [120, 400, 200, 200, 200, 240];

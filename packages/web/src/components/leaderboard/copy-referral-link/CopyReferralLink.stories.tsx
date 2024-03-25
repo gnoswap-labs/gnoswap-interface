@@ -7,7 +7,7 @@ export default {
 } as ComponentMeta<typeof CopyReferralLink>;
 
 export const Connected: StoryObj<typeof CopyReferralLink> = {
-  args: { connected: true },
+  args: { connected: true, address: "temp_addr" },
   parameters: {
     backgrounds: { default: "light" },
   },

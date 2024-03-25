@@ -7,7 +7,12 @@ export default {
 } as ComponentMeta<typeof ConnectYourWallet>;
 
 export const Default: StoryObj<typeof ConnectYourWallet> = {
-  args: { connected: false, isMobile: false },
+  args: {
+    connected: true,
+    isMobile: true,
+    checked: true,
+    onSwitch: () => console.log("ConnectYourWallet"),
+  },
   parameters: {
     backgrounds: { default: "light" },
   },

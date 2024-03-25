@@ -9,6 +9,7 @@ export default {
 export const Default: StoryObj<typeof LeaderboardSubheader> = {
   args: {
     connected: false,
+    address: "temp_addr",
   },
   parameters: {
     theme: "light",
