@@ -45,7 +45,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         border-radius: 4px;
         justify-content: center;
         align-items: center;
-        background: ${({ theme }) => theme.color.background02};
+        background: ${({ theme }) => theme.color.background05};
         svg * {
           fill: ${({ theme }) => theme.color.icon05};
         }

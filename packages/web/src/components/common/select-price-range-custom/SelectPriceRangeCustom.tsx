@@ -65,7 +65,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     const range = currentPrice * visibleRate;
     return [currentPrice - range, currentPrice + range];
   }
-
   function getScaleRange() {
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
