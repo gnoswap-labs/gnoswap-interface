@@ -1,3 +1,4 @@
+import React from "react";
 import Switch from "@components/common/switch/Switch";
 import HideMe from "../hide-me/HideMe";
 import { Flex, SwitchWrapper } from "./ConnectYourWallet.styles";
