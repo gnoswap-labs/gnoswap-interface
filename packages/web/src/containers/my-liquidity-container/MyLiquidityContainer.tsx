@@ -184,7 +184,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       loadngTransactionClaim={loadngTransactionClaim}
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
-      isHiddenAddPosition={!!(address && account?.address && address !== account?.address)}
+      isHiddenAddPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
     />
   );
 };

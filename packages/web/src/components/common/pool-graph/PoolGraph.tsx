@@ -234,7 +234,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (!mouseover) {
       return;
     }
-    
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const bin = resolvedBins.find(bin => {

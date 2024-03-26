@@ -93,7 +93,9 @@ export const wrapper = (theme: Theme) => css`
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
     }
-
+    .text-opacity {
+      opacity: 0.5;
+    }
     .amount-text {
       width: 100%;
       ${fonts.body1};

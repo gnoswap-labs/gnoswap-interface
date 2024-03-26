@@ -34,6 +34,7 @@ export interface SelectTokenProps {
   modalRef?: React.RefObject<HTMLDivElement>;
   breakpoint: DEVICE_TYPE;
   recents: TokenModel[];
+  isSwitchNetwork: boolean;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -48,6 +49,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   modalRef,
   breakpoint,
   recents = [],
+  isSwitchNetwork,
 }) => {
   const myElementRef = useRef<HTMLDivElement | null>(null);
   const priceRefs = useRef(
@@ -66,12 +68,12 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
       const tokenPrice = tokenPrices[token.priceId];
-      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
         return "-";
       }
       return BigNumber(tokenPrice).toFormat();
     },
-    [tokenPrices],
+    [tokenPrices, isSwitchNetwork],
   );
   const onClickClose = useCallback(() => {
     close();

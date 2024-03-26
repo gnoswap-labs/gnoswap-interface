@@ -66,6 +66,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 }) => {
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
+  const direction = swapSummaryInfo?.swapDirection;
 
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,7 +161,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="from">
           <div className="amount">
             <input
-              className="amount-text"
+              className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
               value={dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
               placeholder="0"
@@ -170,7 +171,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{dataTokenInfo.tokenAUSDStr}</span>
+            <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
               Balance: {balanceADisplay}
             </span>
@@ -179,7 +180,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="to">
           <div className="amount">
             <input
-              className="amount-text"
+              className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
               value={dataTokenInfo.tokenBAmount}
               onChange={onChangeTokenBAmount}
               placeholder="0"
@@ -189,7 +190,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{dataTokenInfo.tokenBUSDStr}</span>
+            <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenBUSDStr}</span>
             <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
               Balance: {balanceBDisplay}
             </span>

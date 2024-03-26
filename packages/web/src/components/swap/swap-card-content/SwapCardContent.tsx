@@ -41,6 +41,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
 }) => {
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
+  const direction = swapSummaryInfo?.swapDirection;
 
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +122,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
       <div className="first-section">
         <div className="amount-container">
           <input
-            className="amount-text"
+            className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
             value={swapTokenInfo.tokenAAmount}
             onChange={onChangeTokenAAmount}
             placeholder="0"
@@ -131,7 +132,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
         <div className="amount-info">
-          <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
+          <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>{swapTokenInfo.tokenAUSDStr}</span>
           <span
             className={`balance-text ${
               tokenA && connectedWallet && "balance-text-disabled"
@@ -150,7 +151,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
       <div className="second-section">
         <div className="amount-container">
           <input
-            className="amount-text"
+            className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
             value={swapTokenInfo.tokenBAmount}
             onChange={onChangeTokenBAmount}
             placeholder="0"
@@ -160,7 +161,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
         <div className="amount-info">
-          <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
+          <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>{swapTokenInfo.tokenBUSDStr}</span>
           <span
             className={`balance-text ${
               tokenB && connectedWallet && "balance-text-disabled"
