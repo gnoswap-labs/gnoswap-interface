@@ -168,20 +168,14 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, ""))) && type === "EXACT_IN"
     ) {
       return "Insufficient Balance";
     }
     if (
-      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")) && type === "EXACT_IN")
+      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, ""))) && type === "EXACT_OUT"
     ) {
-      return "No error";
-    }
-
-    if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")) && type === "EXACT_OUT")
-    ) {
-      return "No error";
+      return "Insufficient Balance";
     }
     if (
       Number(tokenAAmount) > 0 &&
@@ -347,12 +341,12 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, ""))) && type === "EXACT_IN"
     ) {
       return false;
     }
     if (
-      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, "")))
+      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, ""))) && type === "EXACT_OUT"
     ) {
       return false;
     }

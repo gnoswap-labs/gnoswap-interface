@@ -45,7 +45,7 @@ export const wrapper = (theme: Theme) => css`
   .performance-list {
     height: 25px;
     ${media.mobile} {
-      height: auto;
+      height: 18px;
     }
     span {
       ${fonts.body10};

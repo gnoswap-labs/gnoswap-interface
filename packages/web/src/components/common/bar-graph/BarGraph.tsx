@@ -300,8 +300,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
               key={index}
               x={point.x}
               width={getStrokeWidth()}
-              y={point.y}
-              height={height - point.y}
+              y={point.y >= 177 && point.y < 180 ? 177 : point.y}
+              height={height - point.y < 3 && height - point.y > 0 ? 3 : height - point.y}
               fill={getStorkeColor(index)}
               rx={radiusBorder}
             />

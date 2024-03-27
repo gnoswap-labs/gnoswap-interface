@@ -11,7 +11,7 @@ import {
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
-import { prettyNumber, toUnitFormat } from "@utils/number-utils";
+import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 dayjs.extend(relativeTime);
 
@@ -181,10 +181,10 @@ const DashboardActivitiesContainer: React.FC = () => {
         res.token0.symbol,
       )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.token1.symbol)}`,
       totalValue: Number(res.totalUsdValue) < 0.01 && Number(res.totalUsdValue) ? "$<0.01" : `$${prettyNumber(res.totalUsdValue)}`,
-      tokenAmountOne: `${toUnitFormat(res.token0Amount, false, true)} ${replaceToken(
+      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount, true)} ${replaceToken(
         res.token0.symbol,
       )}`,
-      tokenAmountTwo: `${toUnitFormat(res.token1Amount, false, true)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount, true)} ${replaceToken(
         res.token1.symbol,
       )}`,
       account: res.account,
