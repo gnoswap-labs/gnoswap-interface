@@ -2,16 +2,15 @@ import { getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useNextUpdateTime } from "@query/leaderboard";
 import { useEffect, useState } from "react";
-import { FontSize } from "../common/common.styles";
-import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
 import {
-  Text10,
-  TooltipContent,
   Flex,
+  FontSize16,
   Hover,
-  Height24,
-  TextWrapper,
-} from "./NextUpdate.styles";
+  P,
+  TooltipContent,
+} from "../common/common.styles";
+import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
+import { Height24, TextWrapper } from "./NextUpdate.styles";
 
 export default function NextUpdate() {
   const { data, error } = useNextUpdateTime();
@@ -50,9 +49,9 @@ export default function NextUpdate() {
           </Hover>
         </Tooltip>
         <TextWrapper>
-          <FontSize>
-            <Text10>{`Next update in ${secondsToTime(seconds!)}`}</Text10>
-          </FontSize>
+          <FontSize16>
+            <P color="text10">{`Next update in ${secondsToTime(seconds!)}`}</P>
+          </FontSize16>
         </TextWrapper>
       </Flex>
     </Height24>

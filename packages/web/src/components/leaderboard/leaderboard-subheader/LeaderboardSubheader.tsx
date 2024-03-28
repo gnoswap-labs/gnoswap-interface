@@ -1,7 +1,7 @@
 import CopyReferralLink from "../copy-referral-link/CopyReferralLink";
-import { Container, Text04, TitleWrapper } from "./LeaderboardSubheader.styles";
+import { Container, TitleWrapper } from "./LeaderboardSubheader.styles";
 import LearnMore from "../learn-more/LearnMore";
-import { FontSize } from "../common/common.styles";
+import { FontSize16, P } from "../common/common.styles";
 
 const LeaderboardSubheader = ({
   connected,
@@ -13,14 +13,14 @@ const LeaderboardSubheader = ({
   return (
     <Container>
       <TitleWrapper>
-        <FontSize>
-          <Text04>
+        <FontSize16>
+          <P as="span" color="text04">
             Climb up the leaderboard by collecting points for swapping,
             providing liquidity, staking, or inviting friends. Every activity on
             GnoSwap counts!&nbsp;
-          </Text04>
+          </P>
           <LearnMore />
-        </FontSize>
+        </FontSize16>
       </TitleWrapper>
 
       <CopyReferralLink connected={connected} address={address} />

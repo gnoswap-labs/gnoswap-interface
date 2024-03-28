@@ -21,7 +21,3 @@ export const TitleWrapper = styled.p`
     width: 100%;
   }
 `;
-
-export const Text04 = styled.span`
-  color: ${({ theme }) => theme.color.text04};
-`;
