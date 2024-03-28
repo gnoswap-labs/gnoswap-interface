@@ -9,17 +9,18 @@ import { useSwapHandler } from "@hooks/swap/use-swap-handler";
 import { useGetTokenByPath } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { encryptId, makeId } from "@utils/common";
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const { getGnotPath } = useGnotToGnot();
-  const path = router.query["tokenB"] as string;
+  const path = router.query["token-path"] as string;
   const tokenAPath = router.query["tokenA"] as string;
   const { data: tokenB = null, isFetched } = useGetTokenByPath(path, { enabled: !!path});
   const { data: tokenA = null } = useGetTokenByPath(tokenAPath, { enabled: !!tokenAPath});
-  
+
   const {
     connectedWallet,
     copied,
@@ -63,7 +64,7 @@ const TokenSwapContainer: React.FC = () => {
   useEffect(() => {
     if (isFetched) {
       let request = {};
-      if (tokenA && tokenB) {
+      if (tokenA && tokenB && tokenA.symbol !== tokenB?.symbol) {
         request = {
           tokenB: {
             ...tokenB,
@@ -82,7 +83,7 @@ const TokenSwapContainer: React.FC = () => {
         };
       } else if (tokenA) {
         request = {
-          tokenB: {
+          tokenA: {
             ...tokenA,
             path: getGnotPath(tokenA).path,
             symbol: getGnotPath(tokenA).symbol,
@@ -114,15 +115,15 @@ const TokenSwapContainer: React.FC = () => {
   }, [tokenB, isFetched, tokenA]);
   
   const handleChangeTokenB = (token: TokenModel) => {
-    if (swapValue?.tokenB?.symbol === router?.query?.["token-path"] && swapValue?.tokenA?.symbol !== token?.symbol) {
-      router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
+    if (swapValue?.tokenB?.path === encryptId(router?.query?.["token-path"] as string) && swapValue?.tokenA?.symbol !== token?.symbol) {
+      router.push(`/tokens/${makeId(token.path)}`);
     }
     changeTokenB(token);
   };
 
   const handleChangeTokenA = (token: TokenModel) => {
-    if (swapValue?.tokenA?.symbol === router?.query?.["token-path"] && swapValue?.tokenB?.symbol !== token?.symbol) {
-      router.push(`/tokens/${token.symbol}?tokenB=${token.path}&direction=EXACT_IN`);
+    if (swapValue?.tokenA?.path === encryptId(router?.query?.["token-path"] as string) && swapValue?.tokenB?.symbol !== token?.symbol) {
+      router.push(`/tokens/${makeId(token.path)}`);
     }
     changeTokenA(token);
 

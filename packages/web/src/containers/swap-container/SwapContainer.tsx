@@ -70,12 +70,12 @@ const SwapContainer: React.FC = () => {
     const direction: SwapDirectionType =
       query.direction === "EXACT_OUT" ? "EXACT_OUT" : "EXACT_IN";
     if (!currentTokenA && !currentTokenB) return;
-    
     setSwapValue({
       tokenA: currentTokenA,
       tokenB: currentTokenB,
       type: direction,
       tokenAAmount: "",
+      tokenBAmount: "",
     });
   }, [initialized]);
   return (

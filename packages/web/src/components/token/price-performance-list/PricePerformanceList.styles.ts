@@ -47,6 +47,14 @@ export const wrapper = (theme: Theme) => css`
     ${media.mobile} {
       height: 18px;
     }
+    .loading-wrapper {
+      width: 200px;
+      display: flex;
+      justify-content: end;
+      > span {
+        display: flex;
+      }
+    }
     span {
       ${fonts.body10};
       width: 200px;

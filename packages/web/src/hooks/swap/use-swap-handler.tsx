@@ -41,14 +41,15 @@ export const useSwapHandler = () => {
     tokenB = null,
     type = "EXACT_IN",
     tokenAAmount: defaultTokenAAmount,
+    tokenBAmount: defaultTokenBAmount,
   } = swapValue;
-
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
   );
-  const [tokenBAmount, setTokenBAmount] = useState<string>("");
+  const [tokenBAmount, setTokenBAmount] = useState<string>(!defaultTokenAAmount && defaultTokenBAmount ? defaultTokenBAmount : "");
   const [submitted, setSubmitted] = useState(false);
+
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
   const [gasFeeAmount] = useState<AmountModel>({
@@ -352,14 +353,14 @@ export const useSwapHandler = () => {
     }
     if (
       Number(tokenAAmount) > 0 &&
-      tokenBAmount === "0" &&
+      !Number(tokenBAmount) &&
       type === "EXACT_IN"
     ) {
       return false;
     }
     if (
       Number(tokenBAmount) > 0 &&
-      tokenAAmount === "0" &&
+      !Number(tokenAAmount) &&
       type === "EXACT_OUT"
     ) {
       return false;
@@ -815,6 +816,7 @@ export const useSwapHandler = () => {
     updateTokenPrices();
     if (!isEmptyObject(router?.query)) return;
     setTokenAAmount("");
+    setTokenBAmount("");
     // setSwapValue({
     //   tokenA: null,
     //   tokenB: null,
@@ -840,13 +842,14 @@ export const useSwapHandler = () => {
     }
 
     if (
-      defaultTokenAAmount &&
+      (defaultTokenAAmount || defaultTokenBAmount) &&
       !!Number(tokenAAmount) &&
       !!Number(tokenBAmount)
     ) {
       setIsLoading(true);
     }
   }, [
+    defaultTokenBAmount,
     defaultTokenAAmount,
     memorizeTokenSwap,
     tokenA?.symbol,

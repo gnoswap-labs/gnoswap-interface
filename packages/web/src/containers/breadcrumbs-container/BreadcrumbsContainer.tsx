@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import Breadcrumbs from "@components/common/breadcrumbs/Breadcrumbs";
 import { useRouter } from "next/router";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { useGetTokenByPath } from "@query/token";
 
 export interface Steps {
   title: string;
@@ -18,11 +19,11 @@ export interface Steps {
 //   },
 // ];
 
-const getMapping: any = (router: any) => {
+const getMapping: any = (symbol: any) => {
   return {
     "/earn/add": "Add Liquidity",
     "/earn/stake": "Stake Position",
-    "/tokens/[token-path]": `${router.query["token-path"] || "BTC"}`,
+    "/tokens/[token-path]": `${symbol || "BTC"}`,
   };
 };
 
@@ -34,7 +35,11 @@ interface Props {
 
 const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = "200px" }) => {
   const router = useRouter();
-
+  const path = router.query["token-path"] as string;
+  const { data: tokenB } = useGetTokenByPath(path, {
+    enabled: !!path,
+    refetchInterval: 1000 * 10,
+  });
   const removePoolSteps = useMemo(() => {
     if (listBreadcrumb) {
       return listBreadcrumb;
@@ -46,12 +51,12 @@ const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = 
       },
       {
         title:
-          getMapping(router)[router.pathname as any] ||
-          `${router.query["token-path"] || "BTC"}`,
+          getMapping(tokenB?.symbol || "")[router.pathname as any] ||
+          `${tokenB?.symbol || "BTC"}`,
         path: "",
       },
     ];
-  }, [router, getMapping, listBreadcrumb]);
+  }, [tokenB, getMapping, listBreadcrumb]);
 
   const onClickPath = (path: string) => {
     router.push(path);

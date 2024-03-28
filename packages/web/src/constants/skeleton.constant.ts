@@ -93,7 +93,7 @@ export const pulseSkeletonStyle =
       }
       ${media.mobile} {
         width: ${w};
-        width: ${mobileWidth ? `${mobileWidth}px` : mobileWidth};
+        width: ${typeof mobileWidth === "number" ? `${mobileWidth}px` : mobileWidth};
         height: ${typeof height === "number" && height === 22 ? "22px" : h};
       }
     `;
