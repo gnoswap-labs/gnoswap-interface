@@ -44,7 +44,13 @@ import {
 } from "@repositories/notification";
 import { WalletRepositoryImpl } from "@repositories/wallet/wallet-repository-impl";
 import { WalletRepository } from "@repositories/wallet/wallet-repository";
-import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KEY } from "@states/common";
+import {
+  ACCOUNT_SESSION_INFO_KEY,
+  GNOSWAP_SESSION_ID_KEY,
+  GNOWSWAP_CONNECTED_KEY,
+} from "@states/common";
+import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
+import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -60,6 +66,7 @@ interface GnoswapContextProps {
   dashboardRepository: DashboardRepository;
   notificationRepository: NotificationRepository;
   walletRepository: WalletRepository;
+  leaderboardRepository: LeaderboardRepository;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -152,7 +159,13 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       sessionStorageClient,
       rpcProvider,
     );
-  }, [walletClient, networkClient, localStorageClient, sessionStorageClient, rpcProvider]);
+  }, [
+    walletClient,
+    networkClient,
+    localStorageClient,
+    sessionStorageClient,
+    rpcProvider,
+  ]);
 
   const liquidityRepository = useMemo(() => {
     return new LiquidityRepositoryMock();
@@ -196,6 +209,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const walletRepository = useMemo(() => {
     return new WalletRepositoryImpl(walletClient);
   }, [walletClient]);
+
+  const leaderboardRepository = useMemo(() => {
+    return new LeaderboardRepositoryMock();
+  }, []);
 
   async function initNetwork() {
     const defaultChainId =
@@ -243,6 +260,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
         dashboardRepository,
         notificationRepository,
         walletRepository,
+        leaderboardRepository,
       }}
     >
       {rpcProvider && children}

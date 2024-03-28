@@ -92,6 +92,11 @@ export const fonts = {
     font-weight: 400;
     line-height: 18px;
   `,
+  body13: css`
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18.2px;
+  `,
   p1: css`
     font-size: 13px;
     font-weight: 500;

@@ -11,10 +11,10 @@ export const useWindowSize = () => {
     return width > DeviceSize.tablet
       ? DEVICE_TYPE.WEB
       : width > DeviceSize.tabletMiddle
-        ? DEVICE_TYPE.TABLET
-        : width > DeviceSize.mobile
-          ? DEVICE_TYPE.TABLET_M
-          : DEVICE_TYPE.MOBILE;
+      ? DEVICE_TYPE.TABLET
+      : width > DeviceSize.mobile
+      ? DEVICE_TYPE.TABLET_M
+      : DEVICE_TYPE.MOBILE;
   };
 
   const handleBreakpoint = (width: number) => {
@@ -24,5 +24,25 @@ export const useWindowSize = () => {
     }
   };
 
-  return { breakpoint, handleBreakpoint, width: currentWidth };
+  const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+
+  const isWeb = [DEVICE_TYPE.WEB, DEVICE_TYPE.MEDIUM_WEB].some(
+    v => v === breakpoint,
+  );
+
+  const isTablet = [
+    DEVICE_TYPE.MEDIUM_TABLET,
+    DEVICE_TYPE.TABLET,
+    DEVICE_TYPE.TABLET_M,
+    DEVICE_TYPE.TABLET_S,
+  ].some(v => v === breakpoint);
+
+  return {
+    breakpoint,
+    handleBreakpoint,
+    width: currentWidth,
+    isMobile,
+    isWeb,
+    isTablet,
+  };
 };
