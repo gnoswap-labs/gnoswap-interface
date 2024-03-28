@@ -16,6 +16,7 @@ import {
 import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { makeId } from "@utils/common";
 
 interface TokenInfoProps {
   item: Token;
@@ -40,13 +41,13 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     priceOf1d
   } = item;
 
-  const onClickItem = (symbol: string, path: string) => {
-    location.href = "/tokens/" + symbol + `?tokenB=${path}&direction=EXACT_IN`;
+  const onClickItem = (path: string) => {
+    location.href = "/tokens/" + makeId(path);
   };
 
   return (
     <TokenInfoWrapper>
-      <HoverSection onClick={() => onClickItem(token.symbol, token.path)}>
+      <HoverSection onClick={() => onClickItem(token.path)}>
         <TableColumn className="left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
           <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
           <div className="symbol-col">

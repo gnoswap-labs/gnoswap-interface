@@ -107,7 +107,6 @@ export function useFloatingTooltip<T extends HTMLElement = any>({
     handleMouseMove,
     opened,
   ]);
-
   return {
     handleMouseMove,
     x: Math.min((tooltipWidth || 0), (x || 0)),

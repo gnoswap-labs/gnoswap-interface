@@ -7,8 +7,13 @@ export const WalletBalanceSummaryInfoWrapper = styled.div`
   ${mixins.flexbox("row", "baseline", "flex-start")};
   gap: 8px;
   ${media.mobile} {
+    .loading-wrapper {
+      ${mixins.flexbox("row", "center", "center")};
+      height: 29px;
+    }
     gap: 8px;
   }
+  
   .amount {
     ${fonts.h3};
     font-weight: 500 !important;

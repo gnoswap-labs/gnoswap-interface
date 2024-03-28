@@ -65,7 +65,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     const range = currentPrice * visibleRate;
     return [currentPrice - range, currentPrice + range];
   }
-
   function getScaleRange() {
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
@@ -380,7 +379,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       <div className="icon-button full" onClick={selectFullRange}>
                         <IconSwap />
                         <span>Full Price Range</span>
-                        <span>Full Price</span>
+                        <span>Full Range</span>
                       </div>
                     </div>
                     {showDim && <div className="dim-content-3" />}

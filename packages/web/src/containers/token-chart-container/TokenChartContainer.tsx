@@ -170,7 +170,7 @@ const TokenChartContainer: React.FC = () => {
       clearModal();
     },
   });
-  const path = router.query["tokenB"] as string;
+  const path = router.query["token-path"] as string;
   const { data: tokenB } = useGetTokenByPath(path, {
     enabled: !!path,
     refetchInterval: 1000 * 10,
@@ -262,7 +262,7 @@ const TokenChartContainer: React.FC = () => {
     }
     return temp.map(item => ({
       ...item,
-      date: getLocalizeTime(item.date),
+      date: item.date,
     }));
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
@@ -320,15 +320,21 @@ const TokenChartContainer: React.FC = () => {
     );
     const datas =
       chartData?.length > 0
-        ? chartData.slice(startTime).map((item: IPriceResponse) => {
+        ? [...chartData.slice(startTime).map((item: IPriceResponse) => {
             return {
               amount: {
                 value: `${item.price}`,
                 denom: "",
               },
-              time: item.date,
+              time: getLocalizeTime(item.date),
             };
-          })
+          }), {
+            amount: {
+              value: `${currentPrice}`,
+              denom: "",
+            },
+            time: getLocalizeTime(new Date(new Date(chartData[chartData.length - 1].date).getTime() + minutes * 60000)),
+          }]
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),

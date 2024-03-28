@@ -4,11 +4,12 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { useState } from "react";
 import { wrapper } from "./WalletMyPositionsHeader.styles";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 const WalletMyPositionsHeader: React.FC = () => {
   const {  isFetchedPosition, positions } = usePositionData();
-
-  if (!isFetchedPosition) return null;
+  const { isSwitchNetwork } = useWallet();
+  if (!isFetchedPosition || isSwitchNetwork) return null;
 
   return (
     <div css={wrapper}>

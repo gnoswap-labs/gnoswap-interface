@@ -49,7 +49,7 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
       &:hover {
         background: ${({ theme }) => theme.color.backgroundOpacity};
       }
-      background: ${({ theme }) => theme.color.background02};
+      background: ${({ theme }) => theme.color.background05};
       svg * {
         fill: ${({ theme }) => theme.color.icon05};
       }
@@ -86,5 +86,6 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
   }
   ${media.mobile} {
     padding: 12px;
+    gap: 4px;
   }
 `;

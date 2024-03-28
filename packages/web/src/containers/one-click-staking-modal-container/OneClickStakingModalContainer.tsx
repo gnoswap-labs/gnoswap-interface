@@ -22,7 +22,8 @@ interface Props {
     inRange: boolean;
     minPrice: string;
     maxPrice: string;
-    priceLabel: string;
+    priceLabelMin: string;
+    priceLabelMax: string;
     feeBoost: string;
     estimatedAPR: string;
   };

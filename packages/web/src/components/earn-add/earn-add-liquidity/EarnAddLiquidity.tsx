@@ -356,6 +356,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
           hierarchy: activatedSubmit ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
           fullWidth: true,
         }}
+        disabled={!activatedSubmit}
         className="button-submit"
       />
       {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && <div className="btn-one-click" onClick={openModal}>

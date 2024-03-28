@@ -8,7 +8,6 @@ export const HeaderWrapper = styled.div`
   width: 100%;
   ${fonts.h5};
   color: ${({ theme }) => theme.color.text02};
-
   .header {
     ${mixins.flexbox("row", "center", "flex-start")};
     .hide-close-position {
@@ -33,6 +32,11 @@ export const HeaderWrapper = styled.div`
         align-items: center;
         justify-content: center;
         margin-left: 8px;
+        svg:hover {
+          * {
+            fill: ${({ theme }) => theme.color.icon07};
+          }
+        }
       }
       .name {
         background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
@@ -41,6 +45,10 @@ export const HeaderWrapper = styled.div`
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         cursor: pointer;
+        font-weight: 700;
+      }
+      button {
+        position: relative;
       }
     }
   }

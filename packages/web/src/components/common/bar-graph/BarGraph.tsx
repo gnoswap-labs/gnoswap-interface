@@ -132,7 +132,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
 
     return mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.x, width, strokeWidth),
-      y: optimizeValue(data.value, height),
+      y: optimizeValue(data.value, height) >= 177 && optimizeValue(data.value, height) < 180 ? 177 : optimizeValue(data.value, height),
     }));
   }, [datas, getStrokeWidth, height, width]);
 

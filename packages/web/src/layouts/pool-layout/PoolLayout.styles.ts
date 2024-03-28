@@ -7,7 +7,6 @@ export const PoolLayoutWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
   background-color: ${({ theme }) => theme.color.background01};
-
   .pool-section {
     ${mixins.flexbox("column", "center", "flex-start")};
     max-width: ${ContainerWidth.WEB_SECTION_CONTAINER};
@@ -44,6 +43,18 @@ export const PoolLayoutWrapper = styled.div`
     }
   }
 
+  // .anchor-position-container {
+  //   position: relative;
+  //   visibility: hidden;
+  //   display: block;
+  //   top: -97px;
+  //   ${media.tablet} {
+  //     top: -75px;
+  //   }
+  //   ${media.mobile} {
+  //     display: none;
+  //   }
+  // }
   .positions-container {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: ${ContainerWidth.WEB_CONTAINER};

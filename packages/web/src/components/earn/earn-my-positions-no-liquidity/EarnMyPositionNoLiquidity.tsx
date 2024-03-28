@@ -1,9 +1,12 @@
+import { WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
 import IconNoPosition from "@components/common/icons/IconNoPosition";
-import { NoLiquidityWrapper } from "./EarnMyPositionNoLiquidity.styles";
+import { useTokenData } from "@hooks/token/use-token-data";
 import { AccountModel } from "@models/account/account-model";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { useGetTokenPrices } from "@query/token";
 import { convertToKMB } from "@utils/stake-position-utils";
+import BigNumber from "bignumber.js";
+import React, { useMemo } from "react";
+import { NoLiquidityWrapper } from "./EarnMyPositionNoLiquidity.styles";
 
 interface EarnMyPositionNoLiquidityProps {
   account: AccountModel | null;
@@ -11,10 +14,18 @@ interface EarnMyPositionNoLiquidityProps {
 
 const EarnMyPositionNoLiquidity: React.FC<
   EarnMyPositionNoLiquidityProps
-> = ({ account }) => {
-  const balanceText = `${makeDisplayTokenAmount(GNOT_TOKEN, account?.balances[0].amount || 0)}`;
-  const isInterger = Number.isInteger(Number(balanceText));
-  const converted = `$${convertToKMB(balanceText, isInterger ? 0 : 2, isInterger ? 0 : 2).toString()}`;
+> = ({ }) => {
+  const { balances: balancesPrice } = useTokenData();
+  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const availableBalance = useMemo(() => {
+    return  Object.entries(balancesPrice).reduce((acc, [key, value]) => {
+      const path = key === "gnot" ? WRAPPED_GNOT_PATH : key;
+      const balance = BigNumber(value || 0).multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0).dividedBy(10 ** 6).toNumber() || 0;
+      return BigNumber(acc).plus(balance).toNumber();
+    }, 0);
+  }, [balancesPrice, tokenPrices]);
+  const isInterger = Number.isInteger(Number(availableBalance));
+  const converted = `$${convertToKMB(`${availableBalance}`, isInterger ? 0 : 2, isInterger ? 0 : 2).toString()}`;
   // TODO : Added Recoil OR Props
   const apr = "999%";
   

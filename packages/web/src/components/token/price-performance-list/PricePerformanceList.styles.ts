@@ -45,7 +45,15 @@ export const wrapper = (theme: Theme) => css`
   .performance-list {
     height: 25px;
     ${media.mobile} {
-      height: auto;
+      height: 18px;
+    }
+    .loading-wrapper {
+      width: 200px;
+      display: flex;
+      justify-content: end;
+      > span {
+        display: flex;
+      }
     }
     span {
       ${fonts.body10};

@@ -66,7 +66,7 @@ const DashboardInfoContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
   const { isLoadingCommon } = useLoading();
 
-  const { data: tokenData, isFetching } = useQuery<
+  const { data: tokenData, isLoading } = useQuery<
     DashboardTokenResponse,
     Error
   >({
@@ -112,7 +112,7 @@ const DashboardInfoContainer: React.FC = () => {
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}
-      loading={isFetching || isLoadingCommon}
+      loading={isLoading || isLoadingCommon}
     />
   );
 };

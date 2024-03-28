@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { makeBroadcastAddLiquidityMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { CreatePoolResponse } from "@repositories/pool/response/create-pool-response";
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -120,20 +121,12 @@ export const useEarnAddLiquidityConfirmModal = ({
     };
   }, [tokenA, tokenB, swapFeeTier, tokenAAmount, tokenAAmountInput.usdValue, tokenBAmount, tokenBAmountInput.usdValue]);
 
-  const priceLabel = useMemo(() => {
-    if (!selectPool.compareToken || !tokenA || !tokenB) {
-      return "-";
-    }
-    const tokenASymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol : tokenB?.symbol;
-    const tokenBSymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol : tokenA?.symbol;
-    return `${tokenASymbol} per ${tokenBSymbol}`;
-  }, [selectPool.compareToken, tokenA, tokenB]);
-
-
   const priceRangeInfo = useMemo(() => {
     if (!selectPool) {
       return null;
     }
+    const tokenASymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol : tokenB?.symbol;
+    const tokenBSymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol : tokenA?.symbol;
     const currentPrice = `${selectPool.currentPrice}`;
     if (selectPool.selectedFullRange) {
       return {
@@ -141,7 +134,8 @@ export const useEarnAddLiquidityConfirmModal = ({
         inRange: true,
         minPrice: "0.0000",
         maxPrice: "∞",
-        priceLabel,
+        priceLabelMin: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
+        priceLabelMax: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
         feeBoost: "x1",
         estimatedAPR: "N/A",
       };
@@ -174,11 +168,12 @@ export const useEarnAddLiquidityConfirmModal = ({
       inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
-      priceLabel,
+      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞" ? minPriceStr : convertToKMB(Number(minPriceStr).toFixed(4), 4)} ${tokenBSymbol}`,
+      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞" ? maxPriceStr : convertToKMB(Number(maxPriceStr).toFixed(4), 4)} ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
     };
-  }, [priceLabel, selectPool]);
+  }, [selectPool, tokenA, tokenB]);
 
   const feeInfo = useMemo((): { token: TokenModel, fee: string } => {
     return {

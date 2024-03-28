@@ -93,7 +93,7 @@ export const pulseSkeletonStyle =
       }
       ${media.mobile} {
         width: ${w};
-        width: ${mobileWidth ? `${mobileWidth}px` : mobileWidth};
+        width: ${typeof mobileWidth === "number" ? `${mobileWidth}px` : mobileWidth};
         height: ${typeof height === "number" && height === 22 ? "22px" : h};
       }
     `;
@@ -290,6 +290,9 @@ export const TOKEN_TD_WIDTH = [
 export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
 export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
 export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
+export const POSITION_HISTORY_TD_WIDTH = [280, 280, 266, 266, 265];
+export const TABLET_POSITION_HISTORY_TD_WIDTH = [280, 240, 140, 220, 218];
+export const MOBILE_POSITION_HISTORY_TD_WIDTH = [160, 150, 120, 153, 151];
 
 export const SHAPE_TYPES = {
   CIRCLE: "circle",
@@ -303,6 +306,7 @@ export const TABLE_TITLE = {
   ASSET_TABLE: "asset-table",
   TOKEN_TABLE: "token-table",
   ACTIVITY_TABLE: "activity-table",
+  POSITION_HISTORY: "position-history-table",
 };
 export type TABLE_TITLE = ValuesType<typeof TABLE_TITLE>;
 
@@ -502,6 +506,46 @@ export const ACTIVITY_INFO = {
     { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
+
+export const POSITION_HISTORY_INFO = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  tdWidth: POSITION_HISTORY_TD_WIDTH,
+  list: [
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+  ],
+};
+
+export const TABLET_POSITION_HISTORY_INFO = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  tdWidth: TABLET_POSITION_HISTORY_TD_WIDTH,
+  list: [
+    { width: 224, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 184, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 84, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 164, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },,
+    { width: 162, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },,
+  ],
+};
+
+export const MOBILE_POSITION_HISTORY_INFO = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  tdWidth: MOBILE_POSITION_HISTORY_TD_WIDTH,
+  list: [
+    { width: 132, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 122, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 92, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 125, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+    { width: 123, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false, className: "right" },
+  ],
+};
+
 
 export const MOBILE_ACTIVITY_INFO = {
   title: TABLE_TITLE.ACTIVITY_TABLE,

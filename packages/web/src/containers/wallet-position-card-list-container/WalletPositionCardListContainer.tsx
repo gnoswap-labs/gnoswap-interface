@@ -18,7 +18,7 @@ const WalletPositionCardListContainer: React.FC = () => {
   const { loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const { connected } = useWallet();
+  const { connected, isSwitchNetwork } = useWallet();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -54,7 +54,7 @@ const WalletPositionCardListContainer: React.FC = () => {
   };
 
   const sortedData = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-  if (!connected) return null;
+  if (!connected || isSwitchNetwork) return null;
 
   return (
     <MyPositionCardList

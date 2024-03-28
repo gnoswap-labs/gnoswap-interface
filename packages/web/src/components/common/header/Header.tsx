@@ -120,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({
                             : ""
                         }
                       >
-                        <Link href={item.path}>{item.title}</Link>
+                        <Link href={item.path} replace>{item.title}</Link>
                       </li>
                     ))}
                   </ul>

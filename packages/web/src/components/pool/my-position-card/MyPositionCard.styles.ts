@@ -8,22 +8,35 @@ interface Props {
   isClosed: boolean;
 }
 
+export const PositionCardAnchor = styled.div`
+  position: relative;
+  visibility: hidden;
+  display: block;
+  top: -87px;
+  ${media.tablet} {
+    top: -75px;
+  }
+  ${media.mobile} {
+    display: none;
+  }
+`;
+
 export const MyPositionCardWrapper = styled.div<Props>`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  padding: 24px 24px;
+  padding: 24px 24px 0 24px;
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
   background-color: ${({ theme, isClosed }) => isClosed ?  theme.color.background29 :  theme.color.background03};
   ${media.tablet} {
-    padding: 24px;
+    padding: 24px 24px 0 24px;
     border-radius: 10px;
   }
   ${media.mobile} {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    min-width: calc(100vw - 32px);
-    padding: 12px;
+    width: calc(100vw - 32px);
+    padding: 12px 12px 0 12px;
     gap: 12px;
   }
   .box-title {
@@ -41,6 +54,27 @@ export const MyPositionCardWrapper = styled.div<Props>`
         gap: 8px;
         .visible-badge {
           visibility: hidden; 
+        }
+        .link-page {
+          ${mixins.flexbox("row", "center", "flex-start")};
+          gap: 8px;
+          .icon-link {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            ${media.mobile} {
+              width: 20px;
+              height: 20px;
+            }
+          }
+          .icon-link:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
+          }
+          > div {
+            position: relative;
+          }
         }
       }
       .mobile-container {
@@ -73,7 +107,44 @@ export const MyPositionCardWrapper = styled.div<Props>`
         }
         color: ${({ theme, isClosed }) => !isClosed ? theme.color.text02 : theme.color.text10};
       }
-      
+      .flex-button {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 8px;
+        .disable-select {
+          .icon-arrow {
+            display: none;
+          }
+          .current {
+            margin-right: 0px;
+          }
+          .select-item {
+            display: none;
+          }
+        }
+        .copy-button {
+          padding: 10px 16px;
+          span {
+            ${fonts.p1}
+          }
+          background-color: ${({ theme }) => theme.color.background13};
+          &:hover {
+            background-color: ${({ theme }) => theme.color.backgroundGradient};
+          }
+        }
+        ${media.mobile} {
+          width: 100%;
+          ${mixins.flexbox("column", "center", "center")};
+          button {
+            width: 100%;
+          }
+          > div {
+            width: 100%;
+            .selected-wrapper {
+              justify-content: center;
+            }
+          }
+        }
+      }
       .select-box {
         width: auto;
         height: 36px;
@@ -93,7 +164,6 @@ export const MyPositionCardWrapper = styled.div<Props>`
           right: -1px;
           top: 43px;
           width: 165px;
-          cursor: default;
           background: ${({ theme }) => theme.color.background01};
           box-shadow: ${({ theme }) => theme.color.shadow};
           .item-wrapper {
@@ -139,6 +209,8 @@ export const MyPositionCardWrapper = styled.div<Props>`
         }
       }
       ${media.mobile} {
+        gap: 16px;
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
         .select-box {
           .select-item {
             position: absolute;
@@ -444,4 +516,31 @@ export const ManageItem = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.p2}
   color: ${({ theme }) => theme.color.text22};
+`;
+
+export const CopyTooltip = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  position: absolute;
+  top: -65px;
+  left: -45px;
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 115px;
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.background02};
+  }
+  .dark-shadow {
+    box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
+  .polygon-icon * {
+    fill: ${({ theme }) => theme.color.background02};
+  }
 `;

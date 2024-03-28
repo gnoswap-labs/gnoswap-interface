@@ -15,6 +15,11 @@ export const AssetListHeaderWrapper = styled.div`
     justify-content: center;
     align-items: flex-start;
     gap: 24px;
+    .select-tab-wrapper {
+      button {
+        padding: 4px 24px;
+      }
+    }
   }
 
   .title-container {

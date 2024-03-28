@@ -110,10 +110,9 @@ export const PoolGraphTooltipWrapper = styled.div`
         display: none;
       }
     }
-
     .amount {
       flex-shrink: 0;
-      width: 80px;
+      min-width: 80px;
       & .hidden {
         display: inline;
         overflow: hidden;
@@ -144,8 +143,10 @@ export const PoolGraphTooltipWrapper = styled.div`
       width: 100%;
     }
     ${media.mobile} {
-      width: 336px;
-      max-width: 100%;
+      max-width: max-content;
+    }
+    @media (max-width: 360px){
+      max-width: 336px;
     }
   }
 `;

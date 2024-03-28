@@ -97,7 +97,7 @@ const GainerAndLoserContainer: React.FC = () => {
     useGetChainList();
   const { gnot, wugnotPath } = useGnotToGnot();
   const router = useRouter();
-  const path = router.query["tokenB"] as string;
+  const path = router.query["token-path"] as string;
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();
   const { isLoading: isLoadingTokenDetail } = useGetTokenDetailByPath(
     path === "gnot" ? wugnotPath : path,

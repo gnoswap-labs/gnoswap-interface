@@ -11,6 +11,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { TokenModel } from "@models/token/token-model";
+import { toUnitFormat } from "@utils/number-utils";
 interface Props {
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -72,15 +73,15 @@ const OneClickStaking: React.FC<Props> = ({
   }, [unstakedPositions]);
 
   const liquidityValue = useMemo((): string => {
-    return formatUsdNumber(Number(pool.tvl).toString(), undefined, true);
+    return formatUsdNumber(Math.round(Number(pool.tvl)).toString(), undefined, true);
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
-    return formatUsdNumber(Number(pool.volume).toString(), undefined, true);
+    return formatUsdNumber(Math.round(Number(pool.volume)).toString(), undefined, true);
   }, [pool.volume]);
 
   const feeChangedStr = useMemo((): string => {
-    return `$${convertToKMB(`${Number(pool.feeChange)}`, 2)}`;
+    return `$${convertToKMB(`${Math.round(Number(pool.feeChange))}`, 2)}`;
   }, [pool.feeChange]);
 
   const rewardTokens = useMemo(() => {
@@ -157,7 +158,7 @@ const OneClickStaking: React.FC<Props> = ({
                 />
                 ID #{item.id}
               </div>
-              <div className="value">${convertToKMB(item.positionUsdValue)}</div>
+              <div className="value">{toUnitFormat(item.positionUsdValue, true, true)}</div>
             </div>
           ))}
         </div>
@@ -184,7 +185,7 @@ const OneClickStaking: React.FC<Props> = ({
                 />
                 ID #{item.id}
               </div>
-              <div className="value">${convertToKMB(item.positionUsdValue)}</div>
+              <div className="value">{toUnitFormat(item.positionUsdValue, true, true)}</div>
             </div>
           ))}
         </div>

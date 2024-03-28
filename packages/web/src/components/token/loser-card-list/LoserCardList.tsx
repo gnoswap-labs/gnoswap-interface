@@ -5,6 +5,7 @@ import { cardStyle, loadingWrapper } from "@components/token/gainer-and-loser/Ca
 import Link from "next/link";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { makeId } from "@utils/common";
 
 interface LoserCardListProps {
   losers: any[];
@@ -22,7 +23,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers, loadingLose }) => {
         <span>No data</span>
       </div>}
       {!loadingLose && losers.map((loser, idx) => (
-        <Link href={`/tokens/${loser.symbol}?tokenB=${loser.path}&direction=EXACT_IN`} key={idx}>
+        <Link href={`/tokens/${makeId(loser.path)}`} key={idx}>
           <div className="card-wrap">
             <div>
               <MissingLogo symbol={loser.symbol} url={loser.logoURI} className="logo" width={20} mobileWidth={20}/>

@@ -18,7 +18,7 @@ const SubmitPositionModalContainer = ({
   positions
 }: SubmitPositionModalContainerProps) => {
   const { account } = useWallet();
-  const { broadcastRejected, broadcastSuccess, broadcastPending, broadcastError } = useBroadcastHandler();
+  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError, broadcastPending } = useBroadcastHandler();
   const { positionRepository } = useGnoswapContext();
   const router = useRouter();
   const clearModal = useClearModal();
@@ -52,10 +52,17 @@ const SubmitPositionModalContainer = ({
       return null;
     }
     const lpTokenIds = positions.map(position => position.id);
+    broadcastLoading(makeBroadcastStakingMessage("pending", {
+      tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+      tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
+      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+    }));
     const result = await positionRepository.stakePositions({
       lpTokenIds,
       caller: address
     }).catch(() => null);
+
     if (result) {
       if (result.code === 0) {
         broadcastPending();
@@ -91,7 +98,7 @@ const SubmitPositionModalContainer = ({
       }
     }
     return result;
-  }, [account?.address, clearModal, positionRepository, positions, router]);
+  }, [account?.address, positionRepository, positions, router]);
 
   return <SubmitPositionModal positions={positions} close={close} onSubmit={onSubmit} />;
 };

@@ -11,6 +11,7 @@ import { ValuesType } from "utility-types";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
+import { useLoading } from "@hooks/common/use-loading";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -26,17 +27,20 @@ export type POSITION_CONTENT_LABEL = ValuesType<typeof POSITION_CONTENT_LABEL>;
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
   address?: string | undefined;
+  isOtherPosition?: boolean;
 }
 
 const EarnMyPositionContainer: React.FC<
   EarnMyPositionContainerProps
 > = ({
   address,
+  isOtherPosition,
 }) => {
     const [currentIndex, setCurrentIndex] = useState(1);
     const [page, setPage] = useState(1);
 
     const router = useRouter();
+
     const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
     const { updateTokenPrices } = useTokenData();
     const { updatePositions, isFetchedPools, loading } = usePoolData();
@@ -47,10 +51,7 @@ const EarnMyPositionContainer: React.FC<
     const [mobile, setMobile] = useState(false);
     const themeKey = useAtomValue(ThemeState.themeKey);
     const [isClosed, setIsClosed] = useState(false);
-
-    const isOtherPosition = useMemo(() => {
-      return Boolean(address) && address !== account?.address;
-    }, [account?.address, address]);
+    const { isLoadingCommon } = useLoading();
 
     const visiblePositions = useMemo(() => {
       if (!connected && !address) {
@@ -106,7 +107,7 @@ const EarnMyPositionContainer: React.FC<
     const handleScroll = () => {
       if (divRef.current) {
         const currentScrollX = divRef.current.scrollLeft;
-        setCurrentIndex(Math.min(Math.floor(currentScrollX / 220) + 1, positions.length));
+        setCurrentIndex(Math.min(Math.floor(currentScrollX / 332) + 1, positions.length));
       }
     };
 
@@ -151,13 +152,13 @@ const EarnMyPositionContainer: React.FC<
       <EarnMyPositions
         address={address}
         addressName={addressName}
-        isOtherPosition={isOtherPosition}
+        isOtherPosition={!!isOtherPosition}
         visiblePositions={visiblePositions}
-        positionLength={positions.length}
+        positionLength={isSwitchNetwork ? 0 : positions.length}
         connected={connected}
         availableStake={availableStake}
         connect={connect}
-        loading={loading || loadingPosition}
+        loading={loading || loadingPosition || isLoadingCommon}
         fetched={isFetchedPools && isFetchedPosition}
         isError={isError}
         positions={dataMapping}

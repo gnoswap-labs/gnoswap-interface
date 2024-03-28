@@ -8,6 +8,7 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useLoading } from "@hooks/common/use-loading";
+import { usePositionData } from "@hooks/common/use-position-data";
 export interface PoolListProps {
   logo: string[];
   name: string[];
@@ -34,11 +35,12 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
-  const { incentivizedPools, isFetchedPools, updatePools } = usePoolData();
+  const { incentivizedPools, isFetchedPools, updatePools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
   const { isLoadingCommon } = useLoading();
+  const { loading: loadingPosition } = usePositionData();
   
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -74,7 +76,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const handleScroll = () => {
     if (divRef.current) {
       const currentScrollX = divRef.current.scrollLeft;
-      setCurrentIndex(Math.min(Math.floor(currentScrollX / 230) + 1, incentivizedPools.length));
+      setCurrentIndex(Math.min(Math.floor(currentScrollX / 332) + 1, incentivizedPools.length));
     }
   };
 
@@ -101,7 +103,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       onScroll={handleScroll}
       showPagination={showPagination}
       width={width}
-      isLoading={isLoadingCommon}
+      isLoading={isLoadingCommon || loading || loadingPosition}
     />
   );
 };

@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokenData } from "./use-token-data";
 import { convertToMB } from "@utils/stake-position-utils";
-import { useGnotToGnot } from "./use-gnot-wugnot";
+import { checkGnotPath } from "@utils/common";
 
 export interface TokenAmountInputModel {
   token: TokenModel | null;
@@ -18,7 +18,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const [balance, setBalance] = useState<string>("0");
   const [usd, setUSD] = useState<number>();
   const { displayBalanceMap, tokenPrices } = useTokenData();
-  const { getGnotPath } = useGnotToGnot();
+
   useEffect(() => {
     if (token && displayBalanceMap[token.path]) {
       const balance = displayBalanceMap[token.path];
@@ -46,8 +46,8 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     }
     setAmount(amount.toString());
 
-    if (tokenPrices[getGnotPath(token).path]) {
-      const usd = BigNumber(tokenPrices[getGnotPath(token).path].usd).multipliedBy(value.toString()).toNumber();
+    if (tokenPrices[checkGnotPath(token.path)]) {
+      const usd = BigNumber(tokenPrices[checkGnotPath(token.path)].usd).multipliedBy(value.toString()).toNumber();
       setUSD(usd);
     }
   }, [token, tokenPrices]);

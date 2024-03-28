@@ -10,6 +10,7 @@ import {
 } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
 import BigNumber from "bignumber.js";
+import { makeId } from "@utils/common";
 
 interface AssetInfoProps {
   asset: Asset;
@@ -28,8 +29,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   breakpoint,
 }) => {
   const { logoURI, name, symbol, balance, type, path, price } = asset;
-  const onClickItem = useCallback((symbol: string) => {
-    location.href = `/tokens/${symbol}?tokenB=${path}&direction=EXACT_IN`;
+  const onClickItem = useCallback((path: string) => {
+    location.href = `/tokens/${makeId(path)}`;
   }, []);
 
   const onClickDeposit = useCallback(() => {
@@ -46,9 +47,9 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
-        className="left"
+        className="left pointer"
         tdWidth={ASSET_TD_WIDTH[0]}
-        onClick={() => onClickItem(symbol)}
+        onClick={() => onClickItem(path)}
       >
         {logoURI ? (
           <img src={logoURI} alt="logo" className="logo" />

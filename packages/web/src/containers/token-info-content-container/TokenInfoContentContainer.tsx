@@ -100,6 +100,7 @@ const priceChangeDetailInit = {
 
 const TokenInfoContentContainer: React.FC = () => {
   const router = useRouter();
+  const path = router.query["token-path"];
   const {
     data: {
       market = marketInformationInit,
@@ -107,10 +108,8 @@ const TokenInfoContentContainer: React.FC = () => {
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(
-    router.query["tokenB"] === "gnot"
-      ? WRAPPED_GNOT_PATH
-      : (router.query["tokenB"] as string),
-    { enabled: !!router.query["tokenB"] },
+    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
+    { enabled: !!path },
   );
   const { isLoadingCommon } = useLoading();
 
@@ -231,7 +230,7 @@ const TokenInfoContentContainer: React.FC = () => {
       },
     ];
   }, [pricesBefore]);
-  
+
   return (
     <TokenInfoContent
       performance={pricePerformance}

@@ -13,7 +13,8 @@ export interface EarnAddConfirmPriceRangeInfoProps extends EarnAddConfirmAmountI
   inRange: boolean;
   minPrice: string;
   maxPrice: string;
-  priceLabel: string;
+  priceLabelMax: string;
+  priceLabelMin: string;
   feeBoost: string;
   estimatedAPR: string;
   isShowStaking?: boolean;
@@ -26,7 +27,8 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   inRange,
   minPrice,
   maxPrice,
-  priceLabel,
+  priceLabelMax,
+  priceLabelMin,
   feeBoost,
   estimatedAPR,
   isShowStaking,
@@ -56,12 +58,12 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
           <EarnAddConfirmPriceRangeInfoSection className="range-section">
             <span>Min Price</span>
             <span className="amount">{minPrice}</span>
-            <span className="label">{priceLabel}</span>
+            <span className="label">{priceLabelMin}</span>
           </EarnAddConfirmPriceRangeInfoSection>
           <EarnAddConfirmPriceRangeInfoSection className="range-section">
             <span>Max Price</span>
             <span className="amount">{maxPrice}</span>
-            <span className="label">{priceLabel}</span>
+            <span className="label">{priceLabelMax}</span>
           </EarnAddConfirmPriceRangeInfoSection>
         </div>
 

@@ -33,7 +33,9 @@ export const ContentWrapper = styled.div`
     align-self: stretch;
     color: ${({ theme }) => theme.color.text02};
   }
-
+  .text-opacity {
+    opacity: 0.5;
+  }
   .amount-text {
     width: 100%;
     ${fonts.body1};

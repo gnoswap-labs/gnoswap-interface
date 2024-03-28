@@ -5,6 +5,7 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
+import { convertToKMB } from "@utils/stake-position-utils";
 import { numberToFormat } from "@utils/string-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
@@ -67,6 +68,8 @@ export const useOneClickStakingModal = ({
     if (!selectPool || selectPool.currentPrice === null) {
       return null;
     }
+    const tokenASymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol : tokenB?.symbol;
+    const tokenBSymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol : tokenA?.symbol;
     const currentPriceStr = `${selectPool.currentPrice}`;
     if (selectPool.currentPrice === null || selectPool.selectedFullRange) {
       return {
@@ -74,7 +77,8 @@ export const useOneClickStakingModal = ({
         inRange: true,
         minPrice: "0.0000",
         maxPrice: "∞",
-        priceLabel,
+        priceLabelMin: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
+        priceLabelMax: `1 ${tokenASymbol} = ∞ ${tokenBSymbol}`,
         feeBoost: "x1",
         estimatedAPR: "N/A",
       };
@@ -107,7 +111,8 @@ export const useOneClickStakingModal = ({
       inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
-      priceLabel,
+      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞" ? minPriceStr : convertToKMB(Number(minPriceStr).toFixed(4), 4)} ${tokenBSymbol}`,
+      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞" ? maxPriceStr : convertToKMB(Number(maxPriceStr).toFixed(4), 4)} ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
     };

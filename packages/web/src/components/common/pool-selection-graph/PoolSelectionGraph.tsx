@@ -13,12 +13,14 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
-
-const getSelectionColor = (startPercent: number, endPercent: number) => {
+BigNumber.config({ EXPONENTIAL_AT: 1e9 });
+const getSelectionColor = (start: string, end: string) => {
+  const startPercent = Number(start);
+  const endPercent = Number(end);
   if (startPercent > 0 && endPercent > 0) {
     return {
-      startPercent: startPercent,
-      endPercent: endPercent,
+      startPercent: BigNumber(start).toString(),
+      endPercent: BigNumber(end).toString(),
       start: "#60E66A33",
       end: "#60E66A33",
       lineStart: "#16C78A", //red EA3943
@@ -30,8 +32,8 @@ const getSelectionColor = (startPercent: number, endPercent: number) => {
 
   if (startPercent < 0 && endPercent < 0) {
     return {
-      startPercent: startPercent,
-      endPercent: endPercent,
+      startPercent: BigNumber(start).toString(),
+      endPercent: BigNumber(end).toString(),
       start: "#FF020233",
       end: "#FF020233",
       lineStart: "#EA3943",
@@ -41,10 +43,10 @@ const getSelectionColor = (startPercent: number, endPercent: number) => {
     };
   }
 
-  if (startPercent < 0 && endPercent > 0) {
+  if (startPercent <= 0 && endPercent >= 0) {
     return {
-      startPercent: startPercent,
-      endPercent: endPercent,
+      startPercent: BigNumber(start).toString(),
+      endPercent: BigNumber(end).toString(),
       start: "#FF020233",
       end: "#00CD2E33",
       lineStart: "#EA3943",
@@ -55,8 +57,8 @@ const getSelectionColor = (startPercent: number, endPercent: number) => {
   }
 
   return {
-    startPercent: startPercent,
-    endPercent: endPercent,
+    startPercent: BigNumber(start).toString(),
+    endPercent: BigNumber(end).toString(),
     start: "#00CD2E33",
     end: "#FF020233",
     lineStart: "#16C78A",
@@ -149,7 +151,7 @@ function makeLabel(
   selectionColor: any
 ) {
   // const id = right === false ? "start-price" : "end-price";
-  const id = right === false ? `start-price-${Math.round(selectionColor.startPercent)}` : `end-price-${Math.round(selectionColor.endPercent)}`;
+  const id = right === false ? `start-price-${Math.round(selectionColor.startPercent)}` : `end-price-${BigNumber(selectionColor.endPercent).toString()}`;
   
   // const color = right === false ? "#EA3943B2" : "#16C78AB2";
   const color = right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
@@ -158,6 +160,7 @@ function makeLabel(
   }
 
   const margin = right === reverse ? -60 : 20;
+
   const labelWrapper = refer.select(`#${id}`);
   labelWrapper
     .append("rect")
@@ -188,11 +191,10 @@ function changeLine(
   const hidden = type === "end" && selectedFullRange === true;
   const rateStr = `${rate > 0 ? "+" : ""}${Math.round(rate).toFixed(0)}%`;
   const lineElement = selectionElement.select(`#${type}`).attr("x", x);
-
   lineElement.select("svg").attr("x", 0);
 
 
-  const priceId = `${type}-price-${Math.round(type === "start" ? selectionColor.startPercent : selectionColor.endPercent)}`;
+  const priceId = `${type}-price-${type === "start" ? selectionColor.startPercent : `${selectionColor.endPercent}`}`;
   const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
   
   const margin = right === false ? (type === "end" ? -51 : -62) : (type === "end" ? 12 : 1);
@@ -268,7 +270,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   },
   setIsChangeMinMax,
 }) => {
-  const [selectionColor, setSelectionColor] = useState(getSelectionColor(0, 0));
+  const [selectionColor, setSelectionColor] = useState(getSelectionColor("0", "0"));
   const svgRef = useRef(null);
   const chartRef = useRef<SVGGElement | null>(null);
   const brushRef = useRef<SVGGElement | null>(null);
@@ -364,7 +366,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       };
     });
   };
-  // console.log(binData(), "binData");
 
   const brush = d3
     .brushX()
@@ -439,6 +440,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       selectedFullRange,
       selectionColor,
     );
+  
   }
 
   function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
@@ -463,7 +465,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const endRate = currentPrice
       ? ((scaleX.invert(endPosition) - currentPrice) / currentPrice) * 100
       : 0;
-      setSelectionColor(getSelectionColor(startRate, endRate));
+      setSelectionColor(getSelectionColor(BigNumber(startRate).toFixed(0).toString(), BigNumber(endRate).toFixed(0).toString()));
       const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN()
         ? tickToPrice(
             priceToNearTick(

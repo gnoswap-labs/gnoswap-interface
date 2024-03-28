@@ -124,12 +124,12 @@ export const toUnitFormat = (
 
   // TODO : Else Return Type
   if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0)) {
-    return (usd ? "<$" : "") +"0.01";
+    return (usd ? "<$" : "<$") +"0.01";
   }
   if (Number(bigNumber) === 0) {
     return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
   }
-  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed(2);
+  return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
 };
 
 /**
