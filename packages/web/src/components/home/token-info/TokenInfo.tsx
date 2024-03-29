@@ -18,6 +18,7 @@ import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGrap
 import { Global, css } from "@emotion/react";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
+import { useRouter } from "next/router";
 
 interface TokenInfoProps {
   item: Token;
@@ -59,9 +60,10 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     mostLiquidPool,
     last7days,
   } = item;
+  const router = useRouter();
 
   const onClickItem = (path: string) => {
-    location.href = "/tokens/" + makeId(path);
+    router.push("/tokens/" + makeId(path));
   };
 
   const onClickPoolItem = (item: MostLiquidPool) => {

@@ -817,11 +817,6 @@ export const useSwapHandler = () => {
     if (!isEmptyObject(router?.query)) return;
     setTokenAAmount("");
     setTokenBAmount("");
-    // setSwapValue({
-    //   tokenA: null,
-    //   tokenB: null,
-    //   type: "EXACT_IN",
-    // });
   }, []);
   useEffect(() => {
     if (

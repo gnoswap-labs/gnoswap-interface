@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { PositionHistoryWrapper } from "./PositionRepository.styles";
+import { PositionHistoryWrapper } from "./PositionHistory.styles";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import PositionHistoryContainer from "@containers/position-history-container/PositionHistoryContainer";

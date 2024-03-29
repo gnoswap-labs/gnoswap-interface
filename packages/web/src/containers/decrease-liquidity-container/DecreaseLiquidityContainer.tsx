@@ -33,7 +33,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     openModal();
   };
 
-  if (!tokenA || !tokenB) return null;
+  if (!tokenA || !tokenB) return <></>;
 
   return (
     <DecreaseLiquidity

@@ -17,6 +17,7 @@ import { MOBILE_TOKEN_TD_WIDTH } from "@constants/skeleton.constant";
 import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGraph";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { makeId } from "@utils/common";
+import { useRouter } from "next/router";
 
 interface TokenInfoProps {
   item: Token;
@@ -40,9 +41,10 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     price,
     priceOf1d
   } = item;
+  const router = useRouter();
 
   const onClickItem = (path: string) => {
-    location.href = "/tokens/" + makeId(path);
+    router.push("/tokens/" + makeId(path));
   };
 
   return (

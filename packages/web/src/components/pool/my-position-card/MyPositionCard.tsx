@@ -38,7 +38,7 @@ import { estimateTick } from "@components/common/my-position-card/MyPositionCard
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { numberToFormat } from "@utils/string-utils";
-import PositionHistory from "./PositionRepository";
+import PositionHistory from "./PositionHistory";
 import { useRouter } from "next/router";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import { useCopy } from "@hooks/common/use-copy";

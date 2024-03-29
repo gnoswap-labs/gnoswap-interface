@@ -28,15 +28,6 @@ export const TABLE_HEAD = {
 } as const;
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
-// const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-//   Action: "action",
-//   "Total Value": "total_value",
-//   "Token amount": "token_amount",
-//   "Token amount ": "token_amount ",
-//   Account: "Account",
-//   Time: "Time",
-// };
-
 export const dummyList: IHistory[] = [
   {
     timeStamp: "Jan 17 2024, 13:12:42",
