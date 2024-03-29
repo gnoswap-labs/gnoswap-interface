@@ -8,7 +8,6 @@ import {
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
-// import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";

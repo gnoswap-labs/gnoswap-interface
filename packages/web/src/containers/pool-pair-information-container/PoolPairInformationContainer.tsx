@@ -70,15 +70,18 @@ export const initialPool: PoolDetailModel = {
   poolPath: ""
 };
 
+interface PoolPairInformationContainerProps {
+  address?: string | undefined;
+}
 
-const PoolPairInformationContainer = () => {
+const PoolPairInformationContainer:React.FC<PoolPairInformationContainerProps> = ({ address }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
   const { data = initialPool as PoolDetailModel, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoadingCommon } = useLoading();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId } = usePositionData();
+  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(address);
   const { connected: connectedWallet, account } = useWallet();
 
   useEffect(() => {
@@ -133,7 +136,7 @@ const PoolPairInformationContainer = () => {
       menu={menu}
       onClickPath={onClickPath}
       feeStr={feeStr}
-      loading={loading || isLoadingCommon}
+      loading={loading || isLoadingCommon || loadingPosition}
       positions={connectedWallet ? positions : []}
     />
   );

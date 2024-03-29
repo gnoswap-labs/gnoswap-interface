@@ -20,6 +20,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PositionAPRInfo } from "@models/position/info/position-apr-info";
 import { MyPositionAprContent } from "../my-position-card/MyPositionCardAprContent";
 import { numberToFormat } from "@utils/string-utils";
+import { toUnitFormat } from "@utils/number-utils";
 
 interface MyLiquidityContentProps {
   connected: boolean;
@@ -29,6 +30,7 @@ interface MyLiquidityContentProps {
   claimAll: () => void;
   loading: boolean;
   loadngTransactionClaim: boolean;
+  isOtherPosition: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
@@ -38,6 +40,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   claimAll,
   loading,
   loadngTransactionClaim,
+  isOtherPosition,
 }) => {
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
@@ -250,7 +253,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }, 0)
       : 0;
 
-    return `$${numberToFormat(`${claimableUsdValue}`, 2)}`;
+    return toUnitFormat(claimableUsdValue, true, true);
   }, [positions, isDisplay]);
 
   const unclaimedRewardInfo = useMemo((): PositionClaimInfo[] | null => {
@@ -310,7 +313,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }, 0)
       : 0;
 
-    return `$${numberToFormat(`${claimableUsdValue}`, 2)}`;
+    return toUnitFormat(claimableUsdValue, true, true);
   }, [claimableRewardInfo, isDisplay]);
 
   const claimable = useMemo(() => {
@@ -559,7 +562,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 </SkeletonEarnDetailWrapper>
               )}
             </div>
-            {claimable && (
+            {claimable && !isOtherPosition && (
               <Button
                 className="button-claim"
                 disabled={!claimable}
@@ -617,7 +620,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   />
                 </SkeletonEarnDetailWrapper>
               )}
-              {claimable && (
+              {claimable && !isOtherPosition && (
                 <Button
                   className="button-claim"
                   disabled={!claimable}

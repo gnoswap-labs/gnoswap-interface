@@ -11,6 +11,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
 import { parseJson } from "@utils/common";
 import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -72,6 +73,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const recentsData = useAtomValue(TokenState.selectRecents);
+  const { isSwitchNetwork } = useWallet();
 
   const recents = useMemo(() => {
     return parseJson(recentsData ? recentsData : "[]");
@@ -158,6 +160,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       modalRef={modalRef}
       breakpoint={breakpoint}
       recents={recents}
+      isSwitchNetwork={isSwitchNetwork}
     />
   );
 };

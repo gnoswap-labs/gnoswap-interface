@@ -192,7 +192,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       .badge {
         ${mixins.flexbox("row", "center", "center")};
         margin-left: 10px;
-        width: 58px;
+        min-width: 58px;
         height: 34px;
         padding: 0px 6px;
         gap: 4px;

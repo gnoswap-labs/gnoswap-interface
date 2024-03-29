@@ -9,8 +9,8 @@ import WalletBalanceDetailInfo, {
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import BigNumber from "bignumber.js";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { formatUSDWallet } from "@utils/number-utils";
 
 interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
@@ -64,9 +64,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
               </div>
             ) : (
               <span className="value">
-                ${BigNumber(balanceDetailInfo.claimableRewards)
-                  .decimalPlaces(2)
-                  .toFormat()}
+                {formatUSDWallet(balanceDetailInfo.claimableRewards, true)}
               </span>
             )}
           </div>

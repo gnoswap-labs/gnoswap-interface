@@ -7,7 +7,7 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { formatUsdNumber } from "@utils/stake-position-utils";
@@ -51,11 +51,11 @@ const HomeSwapContainer: React.FC = () => {
   const [swapDirection, setSwapDirection] =
     useState<SwapDirectionType>("EXACT_IN");
   const { slippage } = useSlippage();
-  const { connected } = useWallet();
+  const { connected, isSwitchNetwork } = useWallet();
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
 
   const tokenABalance = useMemo(() => {
-    if (!connected) return "-";
+    if (!connected || isSwitchNetwork) return "-";
     if (tokenA && displayBalanceMap[tokenA.priceId]) {
       const balance = displayBalanceMap[tokenA.priceId] || 0;
       return BigNumber(balance).toFormat(tokenA.decimals);
@@ -64,10 +64,10 @@ const HomeSwapContainer: React.FC = () => {
       return "-";
     }
     return "0";
-  }, [connected, displayBalanceMap, tokenA]);
+  }, [isSwitchNetwork, connected, displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (!connected) return "-";
+    if (!connected || isSwitchNetwork) return "-";
     if (isEmptyObject(displayBalanceMap)) {
       return "-";
     }
@@ -76,7 +76,7 @@ const HomeSwapContainer: React.FC = () => {
       return BigNumber(balance).toFormat(tokenB.decimals);
     }
     return "0";
-  }, [connected, displayBalanceMap, tokenB]);
+  }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
   
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceId)]) {
@@ -123,16 +123,16 @@ const HomeSwapContainer: React.FC = () => {
   ]);
 
   const swapNow = useCallback(() => {
-    if (swapDirection === "EXACT_IN") {
+    if (swapDirection === "EXACT_IN" && !!Number(tokenAAmount)) {
       router.push(
         `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`, {},
       );
     } else {
       router.push(
-        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`,
+        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_OUT`, {}
       );
     }
-  }, [router, swapDirection, tokenA, tokenB]);
+  }, [router, swapDirection, tokenA, tokenB, tokenAAmount]);
 
   const onSubmitSwapValue = () => {
     setTokenA(tokenB);
@@ -145,6 +145,7 @@ const HomeSwapContainer: React.FC = () => {
     setSwapValue(prev => ({
       ...prev,
       tokenAAmount: value,
+      tokenBAmount: "",
     }));
     setTokenAAmount(value);
   }, []);
@@ -153,10 +154,20 @@ const HomeSwapContainer: React.FC = () => {
     setSwapValue(prev => ({
       ...prev,
       tokenBAmount: value,
+      type: "EXACT_OUT",
     }));
     setTokenBAmount(value);
   }, []);
 
+  useEffect(() => {
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+      tokenAAmount: "",
+      tokenBAmount: "",
+    });
+  }, []);
   return (
     <HomeSwap
       swapTokenInfo={swapTokenInfo}

@@ -5,6 +5,7 @@ import { cardStyle, loadingWrapper } from "@components/token/gainer-and-loser/Ca
 import Link from "next/link";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { makeId } from "@utils/common";
 
 interface GainerCardListProps {
   gainers: any[];
@@ -22,7 +23,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain })
         <span>No data</span>
       </div>}
       {!loadingGain && gainers.map((gainer, idx) => (
-        <Link href={`/tokens/${gainer.symbol}?tokenB=${gainer.path}&direction=EXACT_IN`} key={idx}>
+        <Link href={`/tokens/${makeId(gainer.path)}`} key={idx}>
           <div className="card-wrap">
             <div>
               <MissingLogo symbol={gainer.symbol} url={gainer.logoURI} className="token-image" width={20} mobileWidth={20}/>

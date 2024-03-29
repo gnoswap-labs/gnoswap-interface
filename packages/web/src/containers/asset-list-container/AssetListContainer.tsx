@@ -213,7 +213,7 @@ const handleSort = (list: SortedProps[]) => {
 };
 
 const AssetListContainer: React.FC = () => {
-  const { connected, account } = useWallet();
+  const { connected, account, isSwitchNetwork } = useWallet();
 
   const [address, setAddress] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
@@ -307,8 +307,8 @@ const AssetListContainer: React.FC = () => {
         const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
-          price: checkPrice ? "<$0.01" : price.toFormat(2),
-          balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          price: isSwitchNetwork ? "-" : checkPrice ? "<$0.01" : price.toFormat(2),
+          balance: isSwitchNetwork ? "0" : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
@@ -378,6 +378,7 @@ const AssetListContainer: React.FC = () => {
     invisibleZeroBalance,
     assetType,
     keyword,
+    isSwitchNetwork,
   ]);
   const changeAssetType = useCallback((newType: string) => {
     switch (newType) {

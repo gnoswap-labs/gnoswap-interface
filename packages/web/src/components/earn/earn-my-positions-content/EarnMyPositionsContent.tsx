@@ -4,6 +4,7 @@ import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyP
 import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
+import OtherPositionNoLiquidity from "../other-positions-no-liquidity/OtherPositionNoLiquidity";
 export interface EarnMyPositionContentProps {
   isOtherPosition: boolean;
   connected: boolean;
@@ -48,6 +49,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   themeKey,
   account,
 }) => {
+  if (isOtherPosition && positions.length === 0 && !loading) {
+    return <OtherPositionNoLiquidity account={account} />;
+  }
   if ((!connected || isSwitchNetwork) && !loading && !isOtherPosition) {
     return (
       <EarnMyPositionsUnconnected connect={connect} connected={connected} />
@@ -58,28 +62,25 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     return <EarnMyPositionNoLiquidity account={account} />;
   }
 
-  if (positions.length > 0) {
-    return (
-      <MyPositionCardList
-        positions={positions}
-        isFetched={fetched}
-        isLoading={loading}
-        currentIndex={currentIndex}
-        movePoolDetail={movePoolDetail}
-        mobile={mobile}
-        divRef={divRef}
-        onScroll={onScroll}
-        showPagination={showPagination}
-        showLoadMore={showLoadMore}
-        width={width}
-        loadMore={loadMore}
-        onClickLoadMore={onClickLoadMore}
-        themeKey={themeKey}
-      />
-    );
-  }
+  return (
+    <MyPositionCardList
+      positions={positions}
+      isFetched={fetched}
+      isLoading={loading}
+      currentIndex={currentIndex}
+      movePoolDetail={movePoolDetail}
+      mobile={mobile}
+      divRef={divRef}
+      onScroll={onScroll}
+      showPagination={showPagination}
+      showLoadMore={showLoadMore}
+      width={width}
+      loadMore={loadMore}
+      onClickLoadMore={onClickLoadMore}
+      themeKey={themeKey}
+    />
+  );
 
-  return <></>;
 };
 
 export default EarnMyPositionsContent;

@@ -92,6 +92,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           connectedWallet={connectedWallet}
           isLoading={isLoading}
           setSwapRateAction={setSwapRateAction}
+          isSwitchNetwork={isSwitchNetwork}
         />
         <div className="footer">
           <SwapButton

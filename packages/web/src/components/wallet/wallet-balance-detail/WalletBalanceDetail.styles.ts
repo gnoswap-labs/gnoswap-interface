@@ -56,6 +56,7 @@ export const InfoWrapper = styled.div`
   .column-batch {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     gap: 8px;
+
   }
 
   .title-wrapper {
@@ -79,9 +80,9 @@ export const InfoWrapper = styled.div`
   }
 
   .value-wrapper {
-    ${mixins.flexbox("row", "flex-end", "center")};
+    ${mixins.flexbox("row", "center", "center")};
     width: 100%;
-
+    height: 31px;
     ${media.mobile} {
       gap: 8px;
     }

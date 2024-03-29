@@ -31,10 +31,14 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition } = usePositionData(address);
-
+  const { isFetchedPosition, loading, getPositionsByPoolId } = usePositionData(address);
   const isStaking = useMemo(() => {
     if (data?.incentivizedType === "INCENTIVIZED") {
+      return true;
+    }
+    const temp = getPositionsByPoolId(poolPath as string);
+    const stakedPositions = temp.filter(position => position.staked);
+    if (stakedPositions.length > 0) {
       return true;
     }
     if (data?.incentivizedType === "EXTERNAL_INCENTIVIZED") {
@@ -44,20 +48,30 @@ export default function Pool() {
   }, [data?.incentivizedType]);
 
   useEffect(() => {
-    if (address && hash && isFetchedPosition) {
-      const positionContainerElement = document.getElementById(
-        `position-${hash}`,
-      );
-      const topPosition = positionContainerElement?.getBoundingClientRect().top;
-      if (!topPosition) {
-        return;
+    if (address && isFetchedPosition && !loading) {
+      if (hash) {
+        const positionContainerElement = document.getElementById(
+          `${hash}`,
+        );
+        const topPosition = positionContainerElement?.getBoundingClientRect().top;
+        if (!topPosition) {
+          return;
+        }
+        window.scrollTo({
+          top: topPosition,
+        });
+      } else {
+        const positionContainerElement = document.getElementById("liquidity-wrapper");
+        const topPosition = positionContainerElement?.getBoundingClientRect().top;
+        if (!topPosition) {
+          return;
+        }
+        window.scrollTo({
+          top: topPosition,
+        });
       }
-      window.scrollTo({
-        top: topPosition,
-        behavior: "smooth",
-      });
     }
-  }, [isFetchedPosition, hash, address]);
+  }, [isFetchedPosition, hash, address, loading]);
 
   return (
     <PoolLayout

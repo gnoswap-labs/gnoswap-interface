@@ -33,6 +33,7 @@ export const FloatContent = styled.div`
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   ${media.mobile} {
     padding: 12px;
+    max-width: max-content;
     gap: 4px;
   }
 `;

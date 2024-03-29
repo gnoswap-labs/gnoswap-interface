@@ -5,16 +5,16 @@ import EarnDescription from "../earn-description/EarnDescription";
 
 interface EarnIncentivizedPoolsProps {
   cardList: React.ReactNode;
-  address?: string;
+  isOtherPosition: boolean;
 }
 
 const EarnIncentivizedPools: React.FC<EarnIncentivizedPoolsProps> = ({
   cardList,
-  address,
+  isOtherPosition,
 }) => {
   const router = useRouter();
 
-  if (address) {
+  if (isOtherPosition) {
     return (
       <EarnDescription />
     );

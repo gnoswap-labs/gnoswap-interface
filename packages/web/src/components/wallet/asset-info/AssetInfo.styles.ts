@@ -38,6 +38,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
+  &.pointer {
+    cursor: pointer;
+  }
   .missing-logo {
     ${mixins.flexbox("row", "center", "center")};
     width: 24px;
