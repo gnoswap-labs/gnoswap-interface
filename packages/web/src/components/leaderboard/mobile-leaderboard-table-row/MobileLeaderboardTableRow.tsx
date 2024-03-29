@@ -7,12 +7,12 @@ const MobileLeaderboardTableRow = ({
   item,
   tdWidths,
   isMobile,
-  me = false,
+  isMe = false,
 }: {
   item: LeaderModel;
   tdWidths: number[];
   isMobile: boolean;
-  me?: boolean;
+  isMe?: boolean;
 }) => {
   const {
     rank,
@@ -30,14 +30,14 @@ const MobileLeaderboardTableRow = ({
   } = item;
 
   return (
-    <Wrapper hover={me}>
+    <Wrapper hover={isMe}>
       <TableColumn tdWidth={tdWidths[0]}>#{rank}</TableColumn>
       <UserColumn
         rank={rank}
         user={mobileSpecificFormattedAddress}
         address={address}
         hide={hide}
-        me={me}
+        isMe={isMe}
         tdWidth={tdWidths[1]}
         style={hide ? { cursor: "auto" } : { cursor: "pointer" }}
       />

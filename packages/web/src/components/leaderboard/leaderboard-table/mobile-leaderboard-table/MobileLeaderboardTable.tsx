@@ -3,22 +3,22 @@ import { LeaderModel } from "@models/leaderboard/leader-model";
 import MobileLeaderboardTableRow from "../../mobile-leaderboard-table-row/MobileLeaderboardTableRow";
 
 export default function MobileLeaderboardTable({
-  me,
+  myLeader,
   leaders,
   isMobile,
 }: {
-  me?: LeaderModel;
+  myLeader?: LeaderModel;
   leaders: LeaderModel[];
   isMobile: boolean;
 }) {
   return (
     <>
-      {me && (
+      {myLeader && (
         <MobileLeaderboardTableRow
-          item={me}
+          item={myLeader}
           tdWidths={MOBILE_LEADERBOARD_TD_WIDTH}
           isMobile={isMobile}
-          me={true}
+          isMe={true}
         />
       )}
       {leaders.map(leader => (

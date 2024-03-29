@@ -13,12 +13,12 @@ const LeaderboardTableRow = ({
   item,
   tdWidths,
   isMobile,
-  me = false,
+  isMe = false,
 }: {
   item: LeaderModel;
   tdWidths: number[];
   isMobile: boolean;
-  me?: boolean;
+  isMe?: boolean;
 }) => {
   const {
     rank,
@@ -39,8 +39,8 @@ const LeaderboardTableRow = ({
     referralRewardPoint,
   } = item;
 
-  const Hover = me ? HoverSection : HoverOnBgSection;
-  const TableWrapper = me ? WrapperHoverBackground : Wrapper;
+  const Hover = isMe ? HoverSection : HoverOnBgSection;
+  const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
 
   return (
     <TableWrapper>
@@ -51,7 +51,7 @@ const LeaderboardTableRow = ({
           user={formattedAddress}
           address={address}
           hide={hide}
-          me={me}
+          isMe={isMe}
           tdWidth={tdWidths.at(1)}
           style={{ justifyContent: "flex-start" }}
         />

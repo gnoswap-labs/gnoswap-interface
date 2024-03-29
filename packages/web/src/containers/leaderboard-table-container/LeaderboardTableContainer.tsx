@@ -20,21 +20,21 @@ export default function LeaderboardTableContainer() {
       <LeaderboardTableWrapper>
         {isMobile && (
           <MobileLeaderboardTable
-            me={meQuery.data?.leader}
+            myLeader={meQuery.data?.leader}
             leaders={leadersQuery.data!.leaders}
             isMobile={isMobile}
           />
         )}
         {isTablet && (
           <TabletLeaderboardTable
-            me={meQuery.data?.leader}
+            myLeader={meQuery.data?.leader}
             leaders={leadersQuery.data!.leaders}
             isMobile={isMobile}
           />
         )}
         {isWeb && (
           <WebLeaderboardTable
-            me={meQuery.data?.leader}
+            myLeader={meQuery.data?.leader}
             leaders={leadersQuery.data!.leaders}
             isMobile={isMobile}
           />

@@ -17,14 +17,14 @@ const UserColumn = ({
   user,
   address,
   hide,
-  me = false,
+  isMe = false,
   ...rest
 }: {
   rank: number;
   user: string;
   address: string;
   hide: boolean;
-  me?: boolean;
+  isMe?: boolean;
   tdWidth?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
   const { push } = useNavigate();
@@ -40,7 +40,7 @@ const UserColumn = ({
         {rank === 2 && <IconSilverMedal />}
         {rank === 3 && <IconBronzeMedal />}
         {user}
-        {me && <IconMeLogo />}
+        {isMe && <IconMeLogo />}
       </Flex>
     </TableColumn>
   );
