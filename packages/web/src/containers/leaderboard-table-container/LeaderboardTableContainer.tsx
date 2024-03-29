@@ -6,6 +6,7 @@ import MobileLeaderboardTable from "@components/leaderboard/leaderboard-table/mo
 import TabletLeaderboardTable from "@components/leaderboard/leaderboard-table/tablet-leaderboard-table/TabletLeaderboardTable";
 import WebLeaderboardTable from "@components/leaderboard/leaderboard-table/web-leaderboard-table/WebLeaderboardTable";
 import { useState } from "react";
+import { Box } from "@components/leaderboard/common/common.styles";
 
 export default function LeaderboardTableContainer() {
   const [page, setPage] = useState(0);
@@ -41,14 +42,14 @@ export default function LeaderboardTableContainer() {
       </LeaderboardTableWrapper>
 
       {leadersQuery.data!.totalPage > 1 && (
-        <div style={{ marginTop: "4px" }}>
+        <Box style={{ marginTop: "4px" }}>
           <Pagination
             currentPage={leadersQuery.data!.currentPage}
             totalPage={leadersQuery.data!.totalPage}
             onPageChange={movePage}
             siblingCount={isMobile ? 1 : 2}
           />
-        </div>
+        </Box>
       )}
     </>
   );

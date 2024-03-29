@@ -6,5 +6,3 @@ export const ListHeaderWrapper = styled.div`
   width: 100%;
   color: ${({ theme }) => theme.color.text04};
 `;
-
-export const Div = styled.div``;

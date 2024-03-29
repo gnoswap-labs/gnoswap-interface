@@ -1,11 +1,9 @@
+import { Box } from "@components/leaderboard/common/common.styles";
 import { useConnection } from "@hooks/connection/use-connection";
 import { useEffect, useRef, useState } from "react";
 import ConnectYourWallet from "../../components/leaderboard/connect-your-wallet/ConnectYourWallet";
 import NextUpdate from "../../components/leaderboard/next-update/NextUpdate";
-import {
-  Div,
-  ListHeaderWrapper,
-} from "./LeaderboardListHeaderContainer.styles";
+import { ListHeaderWrapper } from "./LeaderboardListHeaderContainer.styles";
 
 const LeaderboardListHeaderContainer = () => {
   const { connected } = useConnection();
@@ -52,18 +50,18 @@ const LeaderboardListHeaderContainer = () => {
 
   return (
     <ListHeaderWrapper ref={divRef}>
-      <Div ref={leftRef}>
+      <Box ref={leftRef}>
         <ConnectYourWallet
           connected={connected}
           isMobile={isMobile}
           checked={checked}
           onSwitch={onSwitch}
         />
-      </Div>
+      </Box>
 
-      <Div ref={rightRef}>
+      <Box ref={rightRef}>
         <NextUpdate />
-      </Div>
+      </Box>
     </ListHeaderWrapper>
   );
 };

@@ -22,6 +22,8 @@ export const FontSize16 = styled.p`
   }
 `;
 
+export const Box = styled.div``;
+
 export const P = styled.p<{ color: keyof ThemeColorType }>`
   color: ${({ theme, color }) => theme.color[color]};
 `;
