@@ -127,10 +127,15 @@ export const RemovePositionModalWrapper = styled.div`
         }
         &-unclaim {
           .item-content {
-            > div {
+            .item-detail {
               display: block;
               > div {
                 ${mixins.flexbox("row", "center", "space-between")};
+              }
+              .sub-value {
+                color: ${({ theme }) => theme.color.text04};
+                justify-content: right;
+                ${fonts.p4}
               }
             }
             .label-logo {
@@ -139,13 +144,34 @@ export const RemovePositionModalWrapper = styled.div`
             .value {
               color: ${({ theme }) => theme.color.text03};
             }
-            .sub-value {
+            
+          }
+          .protocal-wrapper {
+            flex-direction: column !important;
+            gap: 8px;
+            .protocol {
+              ${mixins.flexbox("row", "center", "space-between")};
+              width: 100%;
+              gap: 4px;
               color: ${({ theme }) => theme.color.text04};
-              justify-content: right;
-              ${fonts.p4}
+              > div {
+                ${mixins.flexbox("row", "center", "flex-start")};
+                gap: 4px;
+              }
+              span {
+                ${fonts.body12}
+               }
+              svg {
+                width: 16px;
+                height: 16px;
+                * {
+                  fill: ${({ theme }) => theme.color.icon03};
+                }
+              }
             }
           }
         }
+
       }
       > div {
         width: 100%;
@@ -195,8 +221,12 @@ export const Divider = styled.div`
   border-top: 1px solid ${({ theme }) => theme.color.border02};
 `;
 
-export const ToolTipContentWrapper = styled.div`
-  width: 268px;
+interface Props {
+  width?: string;
+}
+
+export const ToolTipContentWrapper = styled.div<Props>`
+  width: ${({ width }) => width ? width : "268px"};
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;

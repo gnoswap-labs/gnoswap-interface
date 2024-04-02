@@ -6,8 +6,10 @@ import { useUnstakeData } from "@hooks/stake/use-unstake-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatNumberToLocaleString, numberToUSD } from "@utils/number-utils";
 import React, { useCallback } from "react";
-import { Divider, UnstakePositionModalWrapper } from "./UnstakePositionModal.styles";
+import { Divider, ToolTipContentWrapper, UnstakePositionModalWrapper } from "./UnstakePositionModal.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IconInfo from "@components/common/icons/IconInfo";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -56,8 +58,8 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
             <h4>Unclaimed Rewards</h4>
             <div className="item-content">
               {unclaimedRewards.map((rewardInfo, index) => (
-                <div key={index}>
-                  <div>
+                <div key={index} className="item-detail">
+                  <div className="item-detail-wrapper">
                     <div className="label-logo">
                       <MissingLogo
                         className="image-logo"
@@ -73,6 +75,18 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                   <div className="sub-value">{rewardInfo.amountUSD}</div>
                 </div>
               ))}
+               <div className="protocal-wrapper">
+                  <Divider />
+                  <div className="protocol">
+                    <div>
+                      <span className="">Protocol Fee</span>
+                      <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper width="251px">The amount of fees charged on each claim that goes to the protocol.</ToolTipContentWrapper>}>
+                        <IconInfo />
+                      </Tooltip>
+                    </div>
+                    <span className="white-text">0%</span>
+                  </div>
+                </div>
             </div>
           </div>
           <Divider />

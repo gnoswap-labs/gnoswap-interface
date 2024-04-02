@@ -28,7 +28,7 @@ export default function Earn() {
             ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
-        path: `/earn/pool/${poolPath}/unstake`,
+        path: `/earn/pool/${poolPath}`,
       },
       { title: "Unstake Position", path: "" },
     ];
