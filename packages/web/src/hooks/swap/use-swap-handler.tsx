@@ -169,7 +169,7 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, ""))) && type === "EXACT_IN"
+      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
     ) {
       return "Insufficient Balance";
     }
@@ -342,7 +342,7 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, ""))) && type === "EXACT_IN"
+      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
     ) {
       return false;
     }
@@ -838,8 +838,7 @@ export const useSwapHandler = () => {
 
     if (
       (defaultTokenAAmount || defaultTokenBAmount) &&
-      !!Number(tokenAAmount) &&
-      !!Number(tokenBAmount)
+      (!!Number(tokenAAmount) || !!Number(tokenBAmount))
     ) {
       setIsLoading(true);
     }
@@ -853,10 +852,10 @@ export const useSwapHandler = () => {
     type,
     tokenB?.symbol,
   ]);
-
+  
   useEffect(() => {
     if (!tokenA || !tokenB) {
-      setIsLoading(false);
+      // setIsLoading(false);
       return;
     }
     if (

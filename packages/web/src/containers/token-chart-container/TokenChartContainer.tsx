@@ -320,7 +320,7 @@ const TokenChartContainer: React.FC = () => {
     );
     const datas =
       chartData?.length > 0
-        ? [...chartData.slice(startTime).map((item: IPriceResponse) => {
+        ? [...chartData.slice(startTime, chartData.length - 1).map((item: IPriceResponse) => {
             return {
               amount: {
                 value: `${item.price}`,
@@ -328,13 +328,7 @@ const TokenChartContainer: React.FC = () => {
               },
               time: getLocalizeTime(item.date),
             };
-          }), {
-            amount: {
-              value: `${currentPrice}`,
-              denom: "",
-            },
-            time: getLocalizeTime(new Date(new Date(chartData[chartData.length - 1].date).getTime() + minutes * 60000)),
-          }]
+          })]
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),

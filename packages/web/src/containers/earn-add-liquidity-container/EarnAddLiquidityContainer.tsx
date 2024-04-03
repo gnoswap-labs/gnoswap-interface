@@ -18,9 +18,10 @@ import { usePool } from "@hooks/pool/use-pool";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
+import { makeQueryString } from "@hooks/common/use-url-param";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -437,6 +438,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (fetching && !swapValue?.isEarnChanged) {
+      if (router.query?.fee_tier) {
+        selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
+      } else
       selectSwapFeeTier("FEE_3000");
       setSwapValue({
         tokenA,
@@ -458,6 +462,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isKeepToken: !isKeepToken
     });
   }, [swapValue, setSwapValue, isKeepToken]);
+
+  useEffect(() => {
+    const queryString = makeQueryString({
+      tokenA: tokenA?.path,
+      tokenB: tokenB?.path,
+      fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
+      tickLower: priceToTick(selectPool.minPrice || 0),
+      tickUpper: priceToTick(selectPool.maxPrice || 0),
+    });
+    if (tokenA?.path && tokenB?.path) {
+      router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
+    }
+  }, [swapFeeTier, tokenA, tokenB, selectPool.minPrice, selectPool.maxPrice]);
 
   return (
     <EarnAddLiquidity

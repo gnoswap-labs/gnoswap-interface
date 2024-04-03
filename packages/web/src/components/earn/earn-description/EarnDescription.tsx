@@ -11,7 +11,7 @@ const EarnDescription: React.FC = () => {
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            Learn about positions and how to create one
+            Learn about positions and how to create one.
           </div>
           <div className="link-wrapper">
             <span>Go to User Guide</span>
@@ -29,11 +29,11 @@ const EarnDescription: React.FC = () => {
             <span className="text">
               Stake your position and earn up to&nbsp;
               <span className="highlight">
-              89% APR
+              89% APR.
             </span>
             </span>
             <span className="highlight">
-              89% APR
+              89% APR.
             </span>
           </div>
           <div className="link-wrapper">
@@ -49,7 +49,7 @@ const EarnDescription: React.FC = () => {
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            Discuss how to optimize your strategy
+            Discuss how to optimize your LP strategy.
           </div>
           <div className="link-wrapper">
             Go to Discord

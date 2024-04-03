@@ -19,10 +19,11 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { encryptId } from "@utils/common";
+import { makeQueryString } from "@hooks/common/use-url-param";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -415,6 +416,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isKeepToken: !isKeepToken,
     });
   }, [swapValue, setSwapValue, isKeepToken]);
+
+  useEffect(() => {
+    const queryString = makeQueryString({
+      tickLower: priceToTick(selectPool.minPrice || 0),
+      tickUpper: priceToTick(selectPool.maxPrice || 0),
+    });
+    if (tokenA?.path && tokenB?.path) {
+      router.push(`${router.asPath}?${queryString}`, undefined, { shallow: true });
+    }
+  }, [selectPool.minPrice, selectPool.maxPrice]);
 
   return (
     <EarnAddLiquidity

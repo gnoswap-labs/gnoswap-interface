@@ -39,7 +39,7 @@ export const HeaderWrapper = styled.div`
         }
       }
       .name {
-        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background: ${({ theme }) => theme.color.text30};
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-background-clip: text;

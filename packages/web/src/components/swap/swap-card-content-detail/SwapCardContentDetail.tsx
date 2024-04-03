@@ -13,6 +13,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { convertToMB } from "@utils/stake-position-utils";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -21,8 +22,9 @@ interface ContentProps {
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
 }
 
-const convertSwapRate = (value: number) => {
-  return Number(value.toFixed(6));
+export const convertSwapRate = (value: number) => {
+  if (value >= 0.00001) return value.toFixed(6);
+  return value.toFixed(15);
 };
 
 const SwapCardContentDetail: React.FC<ContentProps> = ({
@@ -38,9 +40,9 @@ const SwapCardContentDetail: React.FC<ContentProps> = ({
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
     if (swapRateAction === "ATOB") {
-      return `1 ${tokenA.symbol} = ${convertSwapRate(swapRate)} ${tokenB.symbol}`;
+      return <>1 {tokenA.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)}/>&nbsp;{tokenB.symbol}</>;
     } else {
-      return `1 ${tokenB.symbol} = ${convertSwapRate(swapRate)} ${tokenA.symbol}`;
+      return <>1 {tokenB.symbol} =&nbsp;<ExchangeRate value={convertSwapRate(swapRate)}/>&nbsp;{tokenA.symbol}</>;
     }
   }, [swapSummaryInfo]);
 
