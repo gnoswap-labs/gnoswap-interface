@@ -419,13 +419,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     const queryString = makeQueryString({
-      tickLower: priceToTick(selectPool.minPrice || 0),
-      tickUpper: priceToTick(selectPool.maxPrice || 0),
+      tickLower: priceToTick(selectPool.minPosition || 0),
+      tickUpper: priceToTick(selectPool.maxPosition || 0),
     });
     if (tokenA?.path && tokenB?.path) {
-      router.push(`${router.asPath}?${queryString}`, undefined, { shallow: true });
+      router.push(`/earn/pool/${router.query["pool-path"]}/add?${queryString}`, undefined, { shallow: true });
     }
-  }, [selectPool.minPrice, selectPool.maxPrice]);
+  }, [selectPool.minPosition, selectPool.maxPosition]);
 
   return (
     <EarnAddLiquidity

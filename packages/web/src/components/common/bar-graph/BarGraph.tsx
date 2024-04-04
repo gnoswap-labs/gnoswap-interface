@@ -35,7 +35,6 @@ interface Point {
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
 const TOP_MARGIN_BAR = 24;
-const BAR_MIN_HEIGHT = 3;
 
 function parseTime(time: string) {
   const dateObject = new Date(time);
@@ -135,17 +134,9 @@ const BarGraph: React.FC<BarGraphProps> = ({
         .toNumber();
     };
 
-    const validateHeight =
-      VIEWPORT_DEFAULT_HEIGHT - TOP_MARGIN_BAR - BAR_MIN_HEIGHT;
-
     return mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.x, width, strokeWidth),
-      y:
-        optimizeValue(data.value, height) >= validateHeight &&
-        optimizeValue(data.value, height) <
-          VIEWPORT_DEFAULT_HEIGHT - TOP_MARGIN_BAR
-          ? validateHeight
-          : optimizeValue(data.value, height),
+      y: Number(optimizeValue(data.value, height)) < 179.5 && Number(optimizeValue(data.value, height)) > 177 ? 177 : optimizeValue(data.value, height),
     }));
   }, [datas, getStrokeWidth, height, width]);
 
@@ -191,6 +182,10 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }
     const { currentTarget } = event;
     const { left, top } = currentTarget.getBoundingClientRect();
+    if ((clientY || 0) - top > 205) {
+      setCurrentPointIndex(-1);
+      return;
+    }
     const positionX = (clientX || 0) - left;
     const clientWidth = currentTarget.clientWidth;
     const xPosition = new BigNumber(positionX)
@@ -334,7 +329,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
               <stop offset="100%" stopColor={redColor.end} />
             </linearGradient>
           </defs>
-          {radiusBorder &&
+          {/* {radiusBorder &&
             getGraphPoints().map((point, index) => (
               <path
                 key={index}
@@ -343,7 +338,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 } h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
                 fill={getStorkeColor(index)}
               />
-            ))}
+            ))} */}
           {getGraphPoints().map((point, index) => (
             <rect
               key={index}

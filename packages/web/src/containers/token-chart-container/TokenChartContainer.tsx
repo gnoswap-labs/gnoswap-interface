@@ -328,7 +328,13 @@ const TokenChartContainer: React.FC = () => {
               },
               time: getLocalizeTime(item.date),
             };
-          })]
+          }), {
+            amount: {
+              value: `${currentPrice}`,
+              denom: "",
+            },
+            time: getLocalizeTime(chartData[chartData.length - 1].date),
+          }]
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),
@@ -358,7 +364,6 @@ const TokenChartContainer: React.FC = () => {
     if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
     return uniqueLabel;
   };
-  // console.log(uniqueDates.length)
   // const numberOfAxis = getNumberOfAxis(chartData.length)
   return (
     <TokenChart

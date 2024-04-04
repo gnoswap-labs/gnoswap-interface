@@ -97,14 +97,15 @@ export const getLabelChart = (data: any[], numberOfAxis: number) => {
   if (ceilNumberAxis <= length && numberOfAxis !== data.length) {
     tempSpace += 1;
   }
+
   for (let i = data.length - 1; i >= 0; i -= tempSpace) {
     if (tempSpace === 1) {
-      label.push(data[i]);
+      label.push(data[i].slice(0,10));
     } else {
       if (i < tempSpace) {
-        label.push(data[0]);
+        label.push(data[0].slice(0,10));
       } else {
-        label.push(data[i]);
+        label.push(data[i].slice(0,10));
       }
     }
   }

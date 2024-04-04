@@ -81,6 +81,9 @@ export const SelectPriceRangeCutomControllerWrapper = styled.div`
   }
 
   .token-info-wrapper {
+    .token-info {
+      display: inline-flex;
+    }
     color: ${({ theme }) => theme.color.text04};
     ${fonts.p4}
   }

@@ -14,6 +14,7 @@ function countZeros(decimalFraction: string) {
 const ExchangeRate: React.FC<Props> = ({ value }) => {
   const temp = `${value}`;
   const numberOfZero = countZeros(value);
+  if (Number(value) === 0) return <>0</>;
   if (value[0] !== "0" || !value.startsWith("0.00000")) return <>{removeTrailingZeros(value)}</>;
   return (
     <ExchangeRateWrapper>

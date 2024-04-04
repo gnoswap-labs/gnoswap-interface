@@ -440,15 +440,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (fetching && !swapValue?.isEarnChanged) {
       if (router.query?.fee_tier) {
         selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
-      } else
-      selectSwapFeeTier("FEE_3000");
+      } else {
+        selectSwapFeeTier("FEE_3000");
+      }
       setSwapValue({
         tokenA,
         tokenB,
         type: "EXACT_IN",
       });
     }
-  }, [fetching, swapValue?.isEarnChanged]);
+  }, [fetching, swapValue?.isEarnChanged, pools, priceRanges]);
 
   const handleSwapValue = useCallback(() => {
     const tempTokenA = swapValue.tokenA;
@@ -468,13 +469,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenA: tokenA?.path,
       tokenB: tokenB?.path,
       fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
-      tickLower: priceToTick(selectPool.minPrice || 0),
-      tickUpper: priceToTick(selectPool.maxPrice || 0),
+      tickLower: priceToTick(selectPool.minPosition || 0),
+      tickUpper: priceToTick(selectPool.maxPosition || 0),
     });
     if (tokenA?.path && tokenB?.path) {
       router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
     }
-  }, [swapFeeTier, tokenA, tokenB, selectPool.minPrice, selectPool.maxPrice]);
+  }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition]);
 
   return (
     <EarnAddLiquidity
