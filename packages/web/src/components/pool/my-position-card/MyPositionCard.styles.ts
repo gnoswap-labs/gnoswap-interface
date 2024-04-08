@@ -66,6 +66,9 @@ export const MyPositionCardWrapper = styled.div<Props>`
               width: 20px;
               height: 20px;
             }
+            * {
+              fill: ${({ theme }) => theme.color.icon03};
+            }
           }
           .icon-link:hover {
             * {

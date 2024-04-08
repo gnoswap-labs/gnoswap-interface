@@ -432,7 +432,7 @@ export const useSwapHandler = () => {
       if (!matchInputNumber(value)) {
         return;
       }
-      if (!!Number(value)) {
+      if (!!Number(value) && tokenB?.symbol) {
         setIsLoading(true);
       } else {
         setTokenBAmount("0");
@@ -479,7 +479,7 @@ export const useSwapHandler = () => {
       if (!matchInputNumber(value)) {
         return;
       }
-      if (!!Number(value)) {
+      if (!!Number(value) && tokenA?.symbol) {
         setIsLoading(true);
       } else {
         setTokenAAmount("0");
@@ -819,6 +819,9 @@ export const useSwapHandler = () => {
     setTokenBAmount("");
   }, []);
   useEffect(() => {
+    if (!tokenA?.symbol || !tokenB?.symbol) {
+      return;
+    }
     if (
       memorizeTokenSwap?.[
         `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`

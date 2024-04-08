@@ -36,7 +36,7 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
   return (
     <IncreaseSelectPositionWrapper>
       <div className="header-wrapper">
-        <h5>2. Enter Increasing Amount</h5>
+        <h5 className="enter-increase-amount">2. Enter Increasing Amount</h5>
         <button
           className="setting-button"
           onClick={() => setOpenedSetting(true)}

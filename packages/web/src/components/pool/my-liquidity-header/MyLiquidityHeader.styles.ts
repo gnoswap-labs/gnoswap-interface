@@ -32,10 +32,11 @@ export const HeaderWrapper = styled.div`
         align-items: center;
         justify-content: center;
         margin-left: 8px;
-        svg:hover {
-          * {
-            fill: ${({ theme }) => theme.color.icon07};
-          }
+        svg * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+        svg:hover * {
+          fill: ${({ theme }) => theme.color.icon07};
         }
       }
       .name {

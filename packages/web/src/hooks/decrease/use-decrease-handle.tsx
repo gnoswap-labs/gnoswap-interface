@@ -175,7 +175,7 @@ export const useDecreaseHandle = () => {
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
   }, []);
-
+  
   const pooledTokenInfos = useMemo(() => {
     if (!selectedPosition) {
       return null;
@@ -190,10 +190,8 @@ export const useDecreaseHandle = () => {
     const tokenAPrice = tokenPrices[tokenA.priceId]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceId]?.usd || 0;
 
-    const tokenAAmount =
-    makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
-  const tokenBAmount =
-    makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
+    const tokenAAmount = BigNumber(pooledTokenAAmount as any).toNumber() || 0;
+  const tokenBAmount = BigNumber(pooledTokenBAmount as any).toNumber() || 0;
     
     const unClaimTokenAAmount =
       makeDisplayTokenAmount(tokenA, Number(unClaimTokenA)) || 0;
