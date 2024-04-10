@@ -193,6 +193,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
+    if (priceRange.type !== "Custom") {
+      selectPool.setIsChangeMinMax(false);
+    }
   }, []);
 
   const changeTokenA = useCallback((token: TokenModel) => {
@@ -427,6 +430,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
       router.push(`/earn/pool/${router.query["pool-path"]}/add?${queryString}`, undefined, { shallow: true });
     }
   }, [selectPool.minPosition, selectPool.maxPosition]);
+
+  useEffect(() => {
+    if (selectPool.isChangeMinMax) {
+      setPriceRange({ type: "Custom" });
+    }
+  }, [selectPool.isChangeMinMax]);
 
   return (
     <EarnAddLiquidity

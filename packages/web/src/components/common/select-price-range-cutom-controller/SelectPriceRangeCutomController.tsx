@@ -17,7 +17,7 @@ import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomC
 import IconAdd from "../icons/IconAdd";
 import IconRemove from "../icons/IconRemove";
 import { convertToKMB } from "@utils/stake-position-utils";
-import { subscriptFormat } from "@utils/number-utils";
+import { isNumber, subscriptFormat } from "@utils/number-utils";
 
 export interface SelectPriceRangeCutomControllerProps {
   title: string;
@@ -147,9 +147,11 @@ const SelectPriceRangeCutomController: React.FC<
     }
     if (currentValue >= 1) {
       setValue(BigNumber(current).toFixed(4));
+      setCurrentValue(BigNumber(current).toFixed(10));
       return;
     }
-    setValue(BigNumber(current).toFixed());
+    setValue(BigNumber(current).toFixed(10));
+    setCurrentValue(BigNumber(current).toFixed(10));
   }, [current, feeTier]);
   useEffect(() => {
     const divElement = divRef.current;
@@ -175,7 +177,7 @@ const SelectPriceRangeCutomController: React.FC<
       1 {token0Symbol} =&nbsp;{exchangePrice}&nbsp;{token1Symbol}
     </>
   );
-
+  console.log(currentValue, "123123");
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
@@ -197,7 +199,9 @@ const SelectPriceRangeCutomController: React.FC<
             style={{ fontSize: `${fontSize}px` }}
             className="value"
             value={
-              currentValue
+              isNumber(currentValue) && Number(currentValue) > 1
+                ? convertToKMB(Number(value).toFixed(4), 4)
+                : currentValue
                 ? subscriptFormat(currentValue)
                 : value === "NaN"
                 ? "-"
@@ -213,7 +217,11 @@ const SelectPriceRangeCutomController: React.FC<
             className="fake-input"
             ref={divRef}
           >
-            {currentValue ? subscriptFormat(currentValue) : value}
+            {isNumber(currentValue) && Number(currentValue) > 1
+              ? convertToKMB(Number(value).toFixed(4), 4)
+              : currentValue
+              ? subscriptFormat(currentValue)
+              : value}
           </div>
         </div>
         <div

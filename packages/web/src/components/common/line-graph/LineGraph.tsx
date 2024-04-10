@@ -5,6 +5,7 @@ import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css } from "@emotion/react";
 import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 import { useRouter } from "next/router";
+import { getLocalizeTime } from "@utils/chart";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -361,7 +362,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
                 </span>
                 {router.pathname !== "/dashboard" && <span className="time">
-                  {parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
+                  
+                  {currentPointIndex === datas.length - 1 ? parseTimeTVL(getLocalizeTime(new Date().toString())).time : parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
                 </span>}
               </div>
               <div className="tooltip-header">
