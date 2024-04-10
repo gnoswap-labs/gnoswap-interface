@@ -555,7 +555,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + "/add")}/>
+              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}`)}/>
               {!position.staked && !isClosed && !isHiddenAddPosition && connected && (
                 <SelectBox
                   current={"Manage"}

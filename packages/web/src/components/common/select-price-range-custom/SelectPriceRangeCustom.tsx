@@ -25,6 +25,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import ExchangeRate from "../exchange-rate/ExchangeRate";
 import { subscriptFormat } from "@utils/number-utils";
+import { useRouter } from "next/router";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -51,6 +52,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   isEmptyLiquidity,
   isKeepToken,
 }) => {
+  const router = useRouter();
+  const { tickUpper, tickLower } = router?.query;
+
   const { getGnotPath } = useGnotToGnot();
   const { isLoadingCommon } = useLoading();
   const GRAPH_WIDTH = 388;
@@ -220,8 +224,14 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [tokenA]);
 
   useEffect(() => {
+        
+    if (tickUpper && tickLower && router.isReady) {
+      selectPool.setMinPosition(tickToPrice(Number(tickLower)));
+      selectPool.setMaxPosition(tickToPrice(Number(tickUpper)));
+      return;
+    }
     resetRange(priceRangeType);
-  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice]);
+  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice, router.isReady]);
 
   useEffect(() => {
     if (!selectPool.poolPath) {

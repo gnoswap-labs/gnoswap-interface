@@ -24,6 +24,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { encryptId } from "@utils/common";
 import { makeQueryString } from "@hooks/common/use-url-param";
+import { isNumber } from "@utils/number-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -419,8 +420,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     const queryString = makeQueryString({
-      tickLower: priceToTick(selectPool.minPosition || 0),
-      tickUpper: priceToTick(selectPool.maxPosition || 0),
+      tickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
+      tickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
     });
     if (tokenA?.path && tokenB?.path) {
       router.push(`/earn/pool/${router.query["pool-path"]}/add?${queryString}`, undefined, { shallow: true });

@@ -8,6 +8,8 @@ import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
+// import { makeQueryString } from "@hooks/common/use-url-param";
+// import { useRouter } from "next/router";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -78,6 +80,8 @@ export const useSelectPool = ({
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
   const { isLoadingCommon } = useLoading();
+  // const router = useRouter();
+  // const { tickUpper, tickLower, fee_tier } = router?.query;
 
   const poolPath = useMemo(() => {
     setCurrentPoolPath(latestPoolPath);
@@ -196,6 +200,16 @@ export const useSelectPool = ({
       setMinPosition(minPrice);
     }
     setMinPosition(num);
+    // const queryString = makeQueryString({
+    //   tokenA: tokenA?.path,
+    //   tokenB: tokenB?.path,
+    //   fee_tier: fee_tier || 3000,
+    //   tickLower: priceToTick(num || 0) || tickLower,
+    //   tickUpper: tickUpper || priceToTick(maxPosition),
+    // });
+    // if (tokenA?.path && tokenB?.path) {
+    //   router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
+    // }
   }, []);
 
   const changeMaxPosition = useCallback((num: number | null) => {
@@ -204,6 +218,17 @@ export const useSelectPool = ({
       return;
     }
     setMaxPosition(num);
+    // const queryString = makeQueryString({
+    //   tokenA: tokenA?.path,
+    //   tokenB: tokenB?.path,
+    //   fee_tier: fee_tier || 3000,
+    //   tickLower: tickLower || priceToTick(minPosition),
+    //   tickUpper: priceToTick(num || 0) || tickUpper,
+    // });
+    // if (tokenA?.path && tokenB?.path) {
+    //   router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
+    // }
+    // console.log(queryString, "max", minPosition)
   }, []);
 
   const increaseMinTick = useCallback(() => {

@@ -22,6 +22,7 @@ import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@uti
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
 import { makeQueryString } from "@hooks/common/use-url-param";
+import { isNumber } from "@utils/number-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -469,8 +470,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenA: tokenA?.path,
       tokenB: tokenB?.path,
       fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
-      tickLower: priceToTick(selectPool.minPosition || 0),
-      tickUpper: priceToTick(selectPool.maxPosition || 0),
+      tickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
+      tickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
     });
     if (tokenA?.path && tokenB?.path) {
       router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });

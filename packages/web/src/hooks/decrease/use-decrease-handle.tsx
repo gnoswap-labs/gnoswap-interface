@@ -190,17 +190,18 @@ export const useDecreaseHandle = () => {
     const tokenAPrice = tokenPrices[tokenA.priceId]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceId]?.usd || 0;
 
-    const tokenAAmount = BigNumber(pooledTokenAAmount as any).toNumber() || 0;
-  const tokenBAmount = BigNumber(pooledTokenBAmount as any).toNumber() || 0;
-    
+    const tokenAAmount =
+    makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
+    const tokenBAmount =
+    makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
     const unClaimTokenAAmount =
       makeDisplayTokenAmount(tokenA, Number(unClaimTokenA)) || 0;
     const unClaimTokenBAmount =
       makeDisplayTokenAmount(tokenB, Number(unClaimTokenB)) || 0;
     return {
-      poolAmountA: (tokenAAmount * percent / 100).toLocaleString(),
+      poolAmountA: BigNumber(tokenAAmount).multipliedBy(percent).dividedBy(100).toFormat(),
       poolAmountUSDA: numberToUSD(tokenAAmount * Number(tokenAPrice) * percent / 100),
-      poolAmountB: (tokenBAmount * percent / 100).toLocaleString(),
+      poolAmountB: BigNumber(tokenBAmount).multipliedBy(percent).dividedBy(100).toFormat(),
       poolAmountUSDB: numberToUSD(tokenBAmount * Number(tokenBPrice) * percent / 100),
       unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
       unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
