@@ -14,12 +14,16 @@ export const HEADER_NAV = [
     path: "/wallet",
   },
   {
-    title: "Dashboard",
-    path: "/dashboard",
+    title: "Leaderboard",
+    path: "/leaderboard",
   },
 ];
 
 export const SIDE_MENU_NAV = {
+  DASHBOARD: {
+    title: "Dashboard",
+    path: "/dashboard",
+  },
   GOVERNENCE: {
     title: "Governance",
     path: "/governance",

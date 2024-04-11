@@ -63,4 +63,19 @@ export const SkeletonItem = styled.div<SkeletonStyleProps>`
   &.padding-12 {
     padding: 16px 12px 16px 12px;
   }
+  &.padding-50 {
+    justify-content: flex-end;
+    padding-right: 50px;
+  }
+
+  &.center {
+    justify-content: center;
+  }
+
+  &.flex-grow {
+    flex-grow: 1;
+  }
+  &.start {
+    justify-content: flex-start;
+  }
 `;
