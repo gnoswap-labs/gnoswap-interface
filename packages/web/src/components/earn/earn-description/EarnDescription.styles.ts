@@ -56,7 +56,7 @@ export const EarnDescriptionWrapper = styled.div`
         flex-direction: row;
         align-items: center;
         height: 18px;
-        background: ${({ theme }) => theme.color.text30};
+        background: ${({ theme }) => theme.color.text32};
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-background-clip: text;

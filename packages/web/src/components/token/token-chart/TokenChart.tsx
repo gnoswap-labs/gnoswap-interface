@@ -52,8 +52,6 @@ const TokenChart: React.FC<TokenChartProps> = ({
         componentRef={componentRef}
         size={size}
         breakpoint={breakpoint}
-        left={chartInfo?.left || 0}
-        right={chartInfo?.right || 0}
       />}
     </TokenChartWrapper>
   );

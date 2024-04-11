@@ -9,11 +9,7 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
-import {
-  checkPositivePrice,
-  countPoints,
-  generateDateSequence,
-} from "@utils/common";
+import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenByPath, useGetTokenDetailByPath } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
@@ -21,22 +17,17 @@ import { formatUsdNumber3Digits } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import dayjs from "dayjs";
 import {
-  getLabelChart,
+  getLabelChartV2,
   getLocalizeTime,
   getNumberOfAxis,
-  getPaddingLeftAndRight,
 } from "@utils/chart";
 
 export const TokenChartGraphPeriods = ["1D", "7D", "1M", "1Y", "ALL"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
 
-const MINUTES = {
-  "1D": 10,
-  "7D" : 60,
-  "1M": 240,
-  "1Y": 1440,
-  "ALL": 1440,
-};
+const DEFAULT_PADDING = 12;
+const DEFAULT_X_LABEL_WIDTH = 82;
+const DEFAULT_X_LABEL_WIDTH_MOBILE = 70;
 
 const getXaxis1Day = (data: Date[]): string[] => {
   const currentLocale = dayjs.locale();
@@ -79,8 +70,6 @@ export interface TokenInfo {
 export interface ChartInfo {
   xAxisLabels: string[];
   yAxisLabels: string[];
-  left: number;
-  right: number;
   datas: {
     amount: {
       value: string;
@@ -115,11 +104,14 @@ function createXAxisDatas(
   chartData: IPrices1d[],
   numberAxis: number,
   date: Date[],
+  space: number,
 ) {
-  const uniqueDates = [
-    ...new Set(chartData.map(entry => entry.date.split(" ")[0])),
-  ];
-  const labelX = getLabelChart(uniqueDates.slice(1, -1), numberAxis);
+  const setData = chartData.slice(space).map(entry => entry.date.split(" ")[0]);
+  const labelX = getLabelChartV2(
+    setData,
+    Math.round((setData.length - space) / (numberAxis - 1)),
+  );
+
   switch (currentTab) {
     case "1D":
       return getXaxis1Day(date);
@@ -277,7 +269,6 @@ const TokenChartContainer: React.FC = () => {
         : currentTab === TokenChartGraphPeriods[3]
         ? 365
         : 144;
-    const minutes = MINUTES[currentTab as TokenChartGraphPeriodType];
     const currentLength = chartData.length;
     const startTime = Math.max(0, currentLength - length - 1);
 
@@ -287,28 +278,15 @@ const TokenChartContainer: React.FC = () => {
       countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
     );
 
-    let left = 0;
-    let right = 0;
-    if (
-      temp.length > 1 &&
-      chartData.length > 1 &&
-      currentTab === TokenChartGraphPeriods[0]
-    ) {
-      left =
-        countPoints(chartData[startTime].date, temp[0].toLocaleString(), 10) -
-        1;
-      right = countPoints(
-        temp[temp.length - 1].toLocaleString(),
-        chartData[chartData.length - 1].date,
-        10,
-      );
-    }
-
-  const paddingLeft = Math.max(0, Math.floor(size?.width / chartData.length * left - 27));
-  const paddingRight = Math.max(0, Math.floor(size?.width / chartData.length * right - 27));
-    const padding = getPaddingLeftAndRight(chartData, size.width, minutes);
+    const labelWidth =
+      breakpoint === DEVICE_TYPE.MOBILE
+        ? DEFAULT_X_LABEL_WIDTH_MOBILE
+        : DEFAULT_X_LABEL_WIDTH;
+    const spaceBetweenLeftYAxisWithFirstLabel = Math.round(
+      (labelWidth / 2 + DEFAULT_PADDING) / (size.width / chartData.length),
+    );
     const numberOfAxis = getNumberOfAxis(
-      chartData.length - padding?.countFirstDay - padding?.countLastDay,
+      chartData.length - DEFAULT_PADDING * 2 - labelWidth,
       countXAxis,
       3,
     );
@@ -317,38 +295,41 @@ const TokenChartContainer: React.FC = () => {
       chartData,
       numberOfAxis,
       temp,
+      spaceBetweenLeftYAxisWithFirstLabel,
     );
     const datas =
       chartData?.length > 0
-        ? [...chartData.slice(startTime, chartData.length - 1).map((item: IPriceResponse) => {
-            return {
+        ? [
+            ...chartData
+              .slice(startTime, chartData.length - 1)
+              .map((item: IPriceResponse) => {
+                return {
+                  amount: {
+                    value: `${item.price}`,
+                    denom: "",
+                  },
+                  time: getLocalizeTime(item.date),
+                };
+              }),
+            {
               amount: {
-                value: `${item.price}`,
+                value: `${currentPrice}`,
                 denom: "",
               },
-              time: getLocalizeTime(item.date),
-            };
-          }), {
-            amount: {
-              value: `${currentPrice}`,
-              denom: "",
+              time: getLocalizeTime(chartData[chartData.length - 1].date),
             },
-            time: getLocalizeTime(chartData[chartData.length - 1].date),
-          }]
+          ]
         : [];
     const yAxisLabels = getYAxisLabels(
       datas.map(item => Number(item.amount.value).toFixed(2)),
     );
-    // const date = dayjs(new Date());
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
       datas: datas,
-      left: currentTab === TokenChartGraphPeriods[0] ? paddingLeft : padding.paddingLeft,
-      right: currentTab === TokenChartGraphPeriods[0] ? paddingRight : padding.paddingRight,
     };
     return chartInfo;
-  }, [currentTab, chartData, countXAxis]);
+  }, [currentTab, chartData, countXAxis, breakpoint]);
 
   const getYAxisLabels = (datas: string[]): string[] => {
     const convertNumber = datas.map(item => Number(item));
@@ -356,15 +337,18 @@ const TokenChartContainer: React.FC = () => {
     const maxPoint = Math.max(...convertNumber);
     const temp = [minPoint.toString()];
     const space = Number(Number((maxPoint - minPoint) / 5));
-    for (let i = Number(minPoint) + Number(space) ; i < Number(maxPoint); i+=space) {
-      temp.push(`${(Number(i)).toFixed(2)}`);
+    for (
+      let i = Number(minPoint) + Number(space);
+      i < Number(maxPoint);
+      i += space
+    ) {
+      temp.push(`${Number(i).toFixed(2)}`);
     }
     temp.push(maxPoint.toString());
     const uniqueLabel = [...new Set(temp)];
     if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
     return uniqueLabel;
   };
-  // const numberOfAxis = getNumberOfAxis(chartData.length)
   return (
     <TokenChart
       tokenInfo={tokenInfo}

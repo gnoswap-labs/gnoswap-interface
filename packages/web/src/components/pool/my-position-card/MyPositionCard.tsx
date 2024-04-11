@@ -454,7 +454,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/reposition");
     }
   };
-  console.log(position);
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />

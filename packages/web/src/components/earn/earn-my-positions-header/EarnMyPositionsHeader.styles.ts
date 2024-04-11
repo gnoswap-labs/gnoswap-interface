@@ -39,7 +39,7 @@ export const PositionsWrapper = styled.div`
         margin-left: 8px;
       }
       .name {
-        background: ${({ theme }) => theme.color.text30};
+        background: ${({ theme }) => theme.color.text32};
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-background-clip: text;
