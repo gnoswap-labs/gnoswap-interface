@@ -506,12 +506,12 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20} />
-            <span className="hidden" style={tokenBPriceRangeStr.length > 21 ? { fontSize: "12px"} : {}}>{tooltipInfo.tokenAAmount || "0"}</span>
+            <span className="hidden" style={(tooltipInfo.tokenAAmount || "0").length > 21 ? { fontSize: "12px"} : {}}>{tooltipInfo.tokenAAmount || "0"}</span>
           </span>
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount mr-3">
             <span className="hidden">{tooltipInfo.myTokenAAmount || "0"}</span>
           </span> : ""}
-          <span className="price-range" style={tokenBPriceRangeStr.length > 21 ? { fontSize: "12px"} : {}}>{tokenAPriceRangeStr}</span>
+          <span className="price-range" style={(tokenAPriceRangeStr.length || "0") > 21 ? { fontSize: "12px"} : {}}>{tokenAPriceRangeStr}</span>
         </div>
         <div className="row">
           <span className="token">
@@ -520,7 +520,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20} />
-            <span className="hidden"  style={tokenBPriceRangeStr.length > 21 ? { fontSize: "12px"} : {}}>{tooltipInfo.tokenBAmount || "0"}</span>
+            <span className="hidden"  style={(tooltipInfo.tokenBAmount || "0").length > 21 ? { fontSize: "12px"} : {}}>{tooltipInfo.tokenBAmount || "0"}</span>
           </span>
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount  mr-3">
             <span className="hidden" >{tooltipInfo.myTokenBAmount || "0"}</span>
