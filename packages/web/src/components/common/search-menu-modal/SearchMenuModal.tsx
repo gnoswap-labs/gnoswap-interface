@@ -76,7 +76,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       const poolPath = `${item.token.path}:${item?.tokenB?.path}:${Number(item.fee.slice(0, item.fee.length - 1)) * 10000}`;
       movePage(`/earn/pool/${makeId(poolPath)}`);
     } else {
-      const routePath = "/tokens/" + item.token.symbol + `?tokenB=${item.token.path}` + "&direction=EXACT_IN";
+      const routePath = "/tokens/" + makeId(item.token.path) + "&direction=EXACT_IN";
       movePage(routePath);
     }
   };
@@ -86,7 +86,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     if (path === "gnot") {
       window.open("https://gnoscan.io/", "_blank");
     } else {
-      window.open("https://gnoscan.io/tokens/" + path, "_blank");
+      window.open("https://gnoscan.io/tokens/" + makeId(path), "_blank");
     }
   }, []);
 

@@ -18,7 +18,7 @@ import {
 } from "@utils/rpc-utils";
 import BigNumber from "bignumber.js";
 import { TokenModel } from "@models/token/token-model";
-import { FindBestPoolReqeust } from "./request/find-best-pool-request";
+import { FindBestPoolRequest } from "./request/find-best-pool-request";
 import { SwapPoolResponse } from "./response/swap-pool-response";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { CommonError } from "@common/errors";
@@ -54,7 +54,7 @@ export class SwapRepositoryImpl implements SwapRepository {
   };
 
   public findSwapPool = async (
-    request: FindBestPoolReqeust,
+    request: FindBestPoolRequest,
   ): Promise<SwapPoolResponse> => {
     const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
@@ -66,18 +66,25 @@ export class SwapRepositoryImpl implements SwapRepository {
     }
     const tokenAPath = tokenA.symbol.toLowerCase();
     const tokenBPath = tokenB.symbol.toLowerCase();
-    const param = makeABCIParams("FindBestPool", [tokenAPath, tokenBPath, zeroForOne, amountSpecified]);
+    const param = makeABCIParams("FindBestPool", [
+      tokenAPath,
+      tokenBPath,
+      zeroForOne,
+      amountSpecified,
+    ]);
     const result = await this.rpcProvider
       .evaluateExpression(poolPackagePath, param)
-      .then(evaluateExpressionToObject<{
-        response: {
-          data: {
-            pool_path: string;
-            sqrt_price_x96: number;
-            tick_spacing: number;
-          }
-        }
-      }>);
+      .then(
+        evaluateExpressionToObject<{
+          response: {
+            data: {
+              pool_path: string;
+              sqrt_price_x96: number;
+              tick_spacing: number;
+            };
+          };
+        }>,
+      );
 
     if (result === null) {
       throw new SwapError("NOT_FOUND_SWAP_POOL");
@@ -85,7 +92,9 @@ export class SwapRepositoryImpl implements SwapRepository {
     const poolPath = result.response.data.pool_path;
     const poolPathSplit = poolPath.split("_");
     const feeStr = poolPathSplit[poolPathSplit.length - 1];
-    const sqrtPriceX96 = BigNumber(result.response.data.sqrt_price_x96).toString();
+    const sqrtPriceX96 = BigNumber(
+      result.response.data.sqrt_price_x96,
+    ).toString();
     const tickSpacing = result.response.data.tick_spacing;
     const feeTier = makeSwapFeeTier(feeStr);
 
@@ -93,7 +102,7 @@ export class SwapRepositoryImpl implements SwapRepository {
       feeTier,
       poolPath,
       sqrtPriceX96,
-      tickSpacing
+      tickSpacing,
     };
   };
 
@@ -108,18 +117,20 @@ export class SwapRepositoryImpl implements SwapRepository {
         priceImpact: 0,
       };
     }
-    const {
-      tokenA,
-      tokenB,
-      fee,
-      amountSpecified,
-      zeroForOne,
-      receiver,
-    } = request;
+    const { tokenA, tokenB, fee, amountSpecified, zeroForOne, receiver } =
+      request;
     const tokenAPath = tokenA.symbol.toLowerCase();
     const tokenBPath = tokenB.symbol.toLowerCase();
     const priceLimit = zeroForOne ? MIN_PRICE_X96 : MAX_PRICE_X96;
-    const param = makeABCIParams("DrySwap", [tokenAPath, tokenBPath, fee, receiver, zeroForOne, amountSpecified, priceLimit.toString()]);
+    const param = makeABCIParams("DrySwap", [
+      tokenAPath,
+      tokenBPath,
+      fee,
+      receiver,
+      zeroForOne,
+      amountSpecified,
+      priceLimit.toString(),
+    ]);
     const result = await this.rpcProvider
       .evaluateExpression(poolPackagePath, param)
       .then(evaluateExpressionToValues);
@@ -164,14 +175,8 @@ export class SwapRepositoryImpl implements SwapRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const { address } = account.data;
-    const {
-      tokenA,
-      tokenB,
-      fee,
-      receiver,
-      zeroForOne,
-      amountSpecified,
-    } = swapRequest;
+    const { tokenA, tokenB, fee, receiver, zeroForOne, amountSpecified } =
+      swapRequest;
     const priceLimit = zeroForOne
       ? "4295128740"
       : "1461446703485210103287273052203988822378723970341";

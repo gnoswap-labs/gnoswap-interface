@@ -11,7 +11,9 @@ import { useLoading } from "./use-loading";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 
-const PATH = ["/earn/pool/[pool-path]", "/earn", "/wallet"];
+const PATH = ["/earn"];
+const PATH_10SECOND = ["/earn/pool/[pool-path]/remove", "/tokens/[token-path]"];
+const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake", "/earn/pool/[pool-path]/unstake", "/earn/pool/[pool-path]"];
 
 export const usePositionData = (address?: string) => {
   const router = useRouter();
@@ -33,11 +35,9 @@ export const usePositionData = (address?: string) => {
     isFetching,
   } = useGetPositionsByAddress(fetchedAddress as string, {
     enabled: !!fetchedAddress && pools.length > 0,
-    refetchInterval: first404
-      ? false
-      : PATH.includes(router.pathname)
-      ? (back && !initialData.status ? 3 : 15) * 1000
-      : false,
+    refetchInterval: first404 ? false : PATH.includes(router.pathname)
+      ? (((back && !initialData.status) ? 3 : 15) * 1000)
+      : PATH_10SECOND.includes(router.pathname) ? 10 * 1000 : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
   });
 
   useEffect(() => {

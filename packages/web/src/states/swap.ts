@@ -20,4 +20,4 @@ export const swap = atom<SwapValue>({
   isKeepToken: false,
 });
 
-export const memoryzeTokenSwap = atom<Record<string, string>>({});
+export const memorizeTokenSwap = atom<Record<string, string>>({});

@@ -4,8 +4,10 @@ import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
 import AssetList from "@components/wallet/asset-list/AssetList";
 import DepositModal from "@components/wallet/deposit-modal/DepositModal";
 import WithDrawModal from "@components/wallet/withdraw-modal/WithDrawModal";
+import useWithdrawTokens from "@components/wallet/withdraw-modal/useWithdrawTokens";
 import useClickOutside from "@hooks/common/use-click-outside";
 import { useLoading } from "@hooks/common/use-loading";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -13,6 +15,7 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetTokensList } from "@query/token";
 import { checkGnotPath } from "@utils/common";
+import { isEmptyObject } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
@@ -95,6 +98,10 @@ function filterZeroBalance(asset: Asset) {
   return balance.isGreaterThan(0);
 }
 
+function removeTrailingZeros(value: string) {
+  return value.replace(/\.?0+$/, "");
+}
+
 function filterType(asset: Asset, type: ASSET_FILTER_TYPE) {
   if (type === "All") return true;
   return asset.type.toUpperCase() === type.toUpperCase();
@@ -164,18 +171,41 @@ interface SortedProps extends TokenModel {
   balance: string;
   price?: string;
   tokenPrice: number;
+  sortPrice?: string;
 }
 
 const handleSort = (list: SortedProps[]) => {
   const gnot = list.find(a => a.symbol === GNOT_SYMBOL);
   const gnos = list.find(a => a.symbol === GNS_SYMBOL);
-  const valueOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL).sort((a, b) => {
-    const priceA = parseFloat((a.price || "0").replace(/,/g, ""));
-    const priceB = parseFloat((b.price || "0").replace(/,/g, ""));
-    return priceB - priceA;
-  });
-  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a,b) => b.tokenPrice - a.tokenPrice);
-  const alphabest = list.filter(a => !amountOfBalance.includes(a) && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  const valueOfBalance = list
+    .filter(
+      a =>
+        a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL,
+    )
+    .sort((a, b) => {
+      const priceA = parseFloat((a.price || "0").replace(/,/g, ""));
+      const priceB = parseFloat((b.price || "0").replace(/,/g, ""));
+      return priceB - priceA;
+    });
+  const amountOfBalance = list
+    .filter(
+      a =>
+        a.price !== "-" &&
+        a.symbol !== GNOT_SYMBOL &&
+        a.symbol !== GNS_SYMBOL &&
+        !valueOfBalance.includes(a) &&
+        a.tokenPrice > 0,
+    )
+    .sort((a, b) => b.tokenPrice - a.tokenPrice);
+  const alphabest = list
+    .filter(
+      a =>
+        !amountOfBalance.includes(a) &&
+        a.symbol !== GNOT_SYMBOL &&
+        a.symbol !== GNS_SYMBOL &&
+        !valueOfBalance.includes(a),
+    )
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
   const rs = [];
   gnot && rs.push(gnot);
   gnos && rs.push(gnos);
@@ -183,7 +213,7 @@ const handleSort = (list: SortedProps[]) => {
 };
 
 const AssetListContainer: React.FC = () => {
-  const { connected } = useWallet();
+  const { connected, account, isSwitchNetwork } = useWallet();
 
   const [address, setAddress] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(
@@ -203,7 +233,10 @@ const AssetListContainer: React.FC = () => {
   const [depositInfo, setDepositInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingCommon } = useLoading();
-  const { data: { tokens = [] } = {}, } = useGetTokensList({ refetchInterval: 15 * 1000, });
+  const { data: { tokens = [] } = {}, isLoading } = useGetTokensList({
+    refetchInterval: 60 * 1000,
+  });
+  const { loading: loadingPositions } = usePositionData();
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -228,12 +261,20 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, updateTokens, tokenPrices, isFetched } =
-    useTokenData();
+  const {
+    displayBalanceMap,
+    balances,
+    tokenPrices,
+    isFetched,
+    updateBalances,
+  } = useTokenData();
 
   useEffect(() => {
-    updateTokens();
-  }, [connected]);
+    const interval = setInterval(() => {
+      updateBalances();
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [tokens]);
 
   useEffect(() => {
     if (!tokens) return;
@@ -243,14 +284,11 @@ const AssetListContainer: React.FC = () => {
         key: "Asset",
         direction: "asc",
       });
-    } else {
-      setTokenSortOption(undefined);
     }
   }, [tokens]);
-  
+
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;
-
     const temp: SortedProps[] = tokens
       .map(item => {
         const tokenPrice = balances[item.priceId];
@@ -260,16 +298,19 @@ const AssetListContainer: React.FC = () => {
             balance: "0",
             ...item,
             tokenPrice: tokenPrice || 0,
+            sortPrice: "0",
           };
         }
+        const price = BigNumber(tokenPrice)
+          .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
+          .dividedBy(10 ** 6);
+        const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
-          price: BigNumber(tokenPrice)
-            .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || "0")
-            .dividedBy(10 ** 6)
-            .toFormat(2),
-          balance: BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
+          price: isSwitchNetwork ? "-" : checkPrice ? "<$0.01" : price.toFormat(2),
+          balance: isSwitchNetwork ? "0" : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
+          sortPrice: price.toString(),
         };
       })
       .filter(
@@ -285,20 +326,35 @@ const AssetListContainer: React.FC = () => {
           : y.name.localeCompare(x.name);
       });
     }
+    if (sortOption?.key === "Chain") {
+      sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "asc"
+        ? x.type.localeCompare(y.type)
+        : y.type.localeCompare(x.type);
+      });
+    }
+
+    if (sortOption?.key === "Amount") {
+      sortedData = sortedData.sort((x, y) => {
+        return sortOption?.direction === "desc"
+          ? Number(y.balance) - Number(x.balance)
+          : Number(x.balance) - Number(y.balance);
+      });
+    }
 
     if (sortOption?.key === "Balance") {
       sortedData = sortedData.sort((x, y) => {
         if (
-          x.balance === undefined ||
-          y.balance === undefined ||
-          x.balance === null ||
-          y.balance === null
+          x.sortPrice === undefined ||
+          y.sortPrice === undefined ||
+          x.sortPrice === null ||
+          y.sortPrice === null
         )
           return 0;
 
         return sortOption?.direction === "desc"
-          ? Number(y.balance) - Number(x.balance)
-          : Number(x.balance) - Number(y.balance);
+          ? Number(y.sortPrice) - Number(x.sortPrice)
+          : Number(x.sortPrice) - Number(y.sortPrice);
       });
     }
 
@@ -322,8 +378,8 @@ const AssetListContainer: React.FC = () => {
     invisibleZeroBalance,
     assetType,
     keyword,
+    isSwitchNetwork,
   ]);
-
   const changeAssetType = useCallback((newType: string) => {
     switch (newType) {
       case ASSET_FILTER_TYPE.ALL:
@@ -409,12 +465,38 @@ const AssetListContainer: React.FC = () => {
   };
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
-  
+
+  const {
+    isConfirm,
+    setIsConfirm,
+    onSubmit: handleSubmit,
+  } = useWithdrawTokens();
+
+  const onSubmit = (amount: any, address: string) => {
+    if (!withdrawInfo || !account?.address) return;
+    handleSubmit(
+      {
+        fromAddress: account.address,
+        toAddress: address,
+        token: withdrawInfo,
+        tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
+      },
+      withdrawInfo.type,
+    );
+    closeWithdraw();
+  };
+
   return (
     <>
       <AssetList
         assets={filteredTokens}
-        isFetched={isFetched && !isLoadingCommon}
+        isFetched={
+          isFetched &&
+          !isLoadingCommon &&
+          !isLoading &&
+          !loadingPositions &&
+          !(isEmptyObject(balances) && account?.address)
+        }
         assetType={assetType}
         invisibleZeroBalance={invisibleZeroBalance}
         keyword={keyword}
@@ -451,6 +533,9 @@ const AssetListContainer: React.FC = () => {
           connected={connected}
           changeToken={changeTokenWithdraw}
           callback={callbackWithdraw}
+          setIsConfirm={() => setIsConfirm(true)}
+          isConfirm={isConfirm}
+          handleSubmit={onSubmit}
         />
       )}
     </>

@@ -39,7 +39,7 @@ export function makeId(value: string) {
   return value.replace(/\//g, "_");
 }
 
-export function encriptId(value: string) {
+export function encryptId(value: string) {
   return (value || "").replace(/_/g, "/");
 }
 
@@ -132,7 +132,7 @@ export function countPoints(
 
   let count = 0;
 
-  while (currentDateTime <= endDate) {
+  while (currentDateTime < endDate) {
     count++;
     currentDateTime.setMinutes(currentDateTime.getMinutes() + intervalMinutes);
   }

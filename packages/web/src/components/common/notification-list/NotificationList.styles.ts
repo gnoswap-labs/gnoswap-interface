@@ -205,11 +205,12 @@ export const TransactionItemsWrap = styled.div`
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text02};
       .content-wrap {
-        ${mixins.flexbox("row", "center", "flex-start")};
         margin-left: 44px;
-
+        color: ${({ theme }) => theme.color.text22};
+        span {
+          color: ${({ theme }) => theme.color.text01};
+        }
         ${media.mobile} {
-          margin-left: 56px;
         }
       }
     }

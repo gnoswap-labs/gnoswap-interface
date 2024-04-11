@@ -10,12 +10,16 @@ import {
 } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
 import BigNumber from "bignumber.js";
+import { makeId } from "@utils/common";
 
 interface AssetInfoProps {
   asset: Asset;
   deposit: (asset: Asset) => void;
   withdraw: (asset: Asset) => void;
   breakpoint: DEVICE_TYPE;
+}
+function removeTrailingZeros(value: string) {
+  return value.replace(/\.?0+$/, "");
 }
 
 const AssetInfo: React.FC<AssetInfoProps> = ({
@@ -25,9 +29,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   breakpoint,
 }) => {
   const { logoURI, name, symbol, balance, type, path, price } = asset;
-
-  const onClickItem = useCallback((symbol: string) => {
-    location.href = `/tokens/${symbol}?tokenB=${path}&direction=EXACT_IN`;
+  const onClickItem = useCallback((path: string) => {
+    location.href = `/tokens/${makeId(path)}`;
   }, []);
 
   const onClickDeposit = useCallback(() => {
@@ -38,15 +41,15 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
-  const convertBalance = BigNumber((balance ?? "").toString()).toFormat(6);
-  const priceData = price === "-" ? price : `$${price}`;
+  const convertBalance = removeTrailingZeros(BigNumber((balance ?? "").toString()).toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6)) || 0;
+  const priceData = ["-", "<$0.01"].includes(price) ? price : `$${price}`;
 
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
-        className="left"
+        className="left pointer"
         tdWidth={ASSET_TD_WIDTH[0]}
-        onClick={() => onClickItem(symbol)}
+        onClick={() => onClickItem(path)}
       >
         {logoURI ? (
           <img src={logoURI} alt="logo" className="logo" />
@@ -74,7 +77,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>
-  ) : breakpoint === DEVICE_TYPE.TABLET ? (
+  ) : breakpoint !== DEVICE_TYPE.MOBILE ? (
     <AssetInfoWrapper>
       <TableColumn
         className="left"
@@ -93,8 +96,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
-        <DepositButton onClick={onClickDeposit} />
+      <TableColumn className="left" tdWidth={TABLET_ASSET_TD_WIDTH[3]}>
+        <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={TABLET_ASSET_TD_WIDTH[4]}>
         <DepositButton onClick={onClickDeposit} />
@@ -122,10 +125,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
       <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[2]}>
         <span className="balance">{convertBalance}</span>
       </TableColumn>
-      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
-        <DepositButton onClick={onClickDeposit} />
+      <TableColumn className="left" tdWidth={MOBILE_ASSET_TD_WIDTH[3]}>
+        <span className="balance">{priceData}</span>
       </TableColumn>
       <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[4]}>
+        <DepositButton onClick={onClickDeposit} />
+      </TableColumn>
+      <TableColumn tdWidth={MOBILE_ASSET_TD_WIDTH[5]}>
         <WithdrawButton onClick={onClickWithdraw} />
       </TableColumn>
     </AssetInfoWrapper>

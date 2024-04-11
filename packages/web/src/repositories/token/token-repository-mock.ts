@@ -14,6 +14,7 @@ import { StorageClient } from "@common/clients/storage-client";
 import TokenDetail from "./mock/token-detail.json";
 import ChainData from "./mock/token-chain.json";
 import TokenByPath from "./mock/token-by-path.json";
+import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
 
 export class TokenRepositoryMock implements TokenRepository {
   private localStorageClient: StorageClient<StorageKeyType>;
@@ -28,7 +29,7 @@ export class TokenRepositoryMock implements TokenRepository {
 
   public getTokenByPath = async (path: string): Promise<ITokenResponse> => {
     console.log(path);
-    
+
     return TokenByPath as ITokenResponse;
   };
 
@@ -36,9 +37,11 @@ export class TokenRepositoryMock implements TokenRepository {
     return { prices: [] };
   };
 
-  public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
+  public getTokenDetailByPath = async (
+    path: string,
+  ): Promise<ITokenDetailResponse> => {
     console.log(path);
-    
+
     return TokenDetail;
   };
 
@@ -77,5 +80,14 @@ export class TokenRepositoryMock implements TokenRepository {
   public clearSearchLogs = async (): Promise<boolean> => {
     await this.localStorageClient.remove("search-token-logs");
     return true;
+  };
+
+  public getBalancesByAddress = async (
+    address: string,
+  ): Promise<IBalancesByAddressResponse> => {
+    return {
+      address: address,
+      balances: [],
+    };
   };
 }

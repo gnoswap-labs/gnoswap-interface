@@ -92,6 +92,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           connectedWallet={connectedWallet}
           isLoading={isLoading}
           setSwapRateAction={setSwapRateAction}
+          isSwitchNetwork={isSwitchNetwork}
         />
         <div className="footer">
           <SwapButton
@@ -152,6 +153,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         text={text}
         style={defaultStyle}
         onClick={openConnectWallet}
+        className="button-swap"
       />
     );
   }
@@ -162,6 +164,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         text={text}
         style={defaultStyle}
         onClick={switchNetwork}
+        className="button-swap"
       />
     );
   }
@@ -183,6 +186,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
       text={text}
       style={defaultStyle}
       onClick={openConfirmModal}
+      className="button-swap"
     />
   );
 };

@@ -1,5 +1,5 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { RewardResposne } from "./reward-response";
+import { RewardResponse } from "./reward-response";
 
 export type PositionListResponse = PositionResponse[];
 
@@ -48,8 +48,8 @@ export interface PositionResponse {
 
   stakedUsdValue?: string;
 
-  rewards?: RewardResposne[];
+  rewards?: RewardResponse[];
 
-  dailyRewards?: RewardResposne[];
+  dailyRewards?: RewardResponse[];
   bins: PoolBinModel[];
 }

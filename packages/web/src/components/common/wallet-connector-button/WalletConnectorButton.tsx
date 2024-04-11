@@ -16,6 +16,7 @@ import Tooltip from "../tooltip/Tooltip";
 import { Global, css } from "@emotion/react";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import SelectLanguage from "../select-language/SelectLanguage";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -96,6 +97,13 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
     return loadingConnect === "loading";
   }, [loadingConnect]);
 
+  const onClickChangeLanguage = () => {
+    setToggle((prev) => ({
+      ...prev,
+      showLanguage: !prev.showLanguage,
+    }));
+  };
+
   return (
     <WalletConnectorButtonWrapper>
       {connected ? (
@@ -145,7 +153,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           onClick={onMenuToggle}
         />
       )}
-      {toggle.walletConnect && (
+      {toggle.walletConnect && !toggle.showLanguage && (
         <WalletConnectorMenu
           account={account}
           connected={connected}
@@ -155,8 +163,10 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           themeKey={themeKey}
           switchNetwork={switchNetwork}
           isSwitchNetwork={isSwitchNetwork}
+          onClickChangeLanguage={onClickChangeLanguage}
         />
       )}
+      {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage}/>}
       <ToolTipGlobalStyle />
     </WalletConnectorButtonWrapper>
   );

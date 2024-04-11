@@ -92,7 +92,7 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
-      liquidity: `${convertToKMB(tvl.toString(), 2)}`,
+      liquidity: `${convertToKMB(Math.round(tvl).toString(), 2)}`,
       volume24h: `${customVolume.replace(REGEX_NUMBER_FORMAT, "$1")}`,
       fees24h: `${convertToMB(Number(feeVolume).toString(), 2)}`,
       rewardTokens,

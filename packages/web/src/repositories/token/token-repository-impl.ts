@@ -12,6 +12,8 @@ import { StorageKeyType } from "@common/values";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
+import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
+import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient;
@@ -39,7 +41,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     if (response.data.tokens === null) {
       return { tokens: [] };
     }
-    const tokens = response?.data?.tokens || [];
+    const tokens = response?.data?.tokens.sort(customSort) || [];
     return { tokens };
   };
 
@@ -50,7 +52,9 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data;
   };
 
-  public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
+  public getTokenDetailByPath = async (
+    path: string,
+  ): Promise<ITokenDetailResponse> => {
     const response = await this.networkClient.get<ITokenDetailResponse>({
       url: `/token_details/${path}`,
     });
@@ -60,6 +64,15 @@ export class TokenRepositoryImpl implements TokenRepository {
   public getChain = async (): Promise<IChainResponse> => {
     const response = await this.networkClient.get<IChainResponse>({
       url: "/chain",
+    });
+    return response.data;
+  };
+
+  public getBalancesByAddress = async (
+    address: string,
+  ): Promise<IBalancesByAddressResponse> => {
+    const response = await this.networkClient.get<IBalancesByAddressResponse>({
+      url: `/balances/${address}`,
     });
     return response.data;
   };

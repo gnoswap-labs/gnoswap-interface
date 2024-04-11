@@ -5,8 +5,9 @@ import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { getLocalizeTime } from "@utils/chart";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -155,6 +156,7 @@ const TvlChartContainer: React.FC = () => {
   const { data: tvlData, isLoading } = useQuery<TvlResponse, Error>({
     queryKey: ["dashboardTvl"],
     queryFn: dashboardRepository.getDashboardTvl,
+    refetchInterval: 60 * 1000,
   });
   
   const changeTvlChartType = useCallback((newType: string) => {
@@ -173,10 +175,10 @@ const TvlChartContainer: React.FC = () => {
     let chartData = tvlData?.last_7d;
 
     switch (tvlChartType) {
-      case "1M":
+      case "30D":
         chartData = tvlData?.last_1m;
         break;
-      case "1Y":
+      case "90D":
         chartData = tvlData?.last_1y;
         break;
       case "ALL":
@@ -199,7 +201,7 @@ const TvlChartContainer: React.FC = () => {
                 value: next.price,
                 denom: "USD",
               },
-              time,
+              time: getLocalizeTime(next.date),
             },
           ],
         };
@@ -213,7 +215,7 @@ const TvlChartContainer: React.FC = () => {
       tvlChartType={tvlChartType}
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={{
-        amount: tvlData?.latest ? `$${prettyNumber(tvlData?.latest)}` : "-",
+        amount: tvlData?.latest ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}` : "-",
       }}
       tvlChartInfo={chartData}
       loading={isLoading || isLoadingCommon}

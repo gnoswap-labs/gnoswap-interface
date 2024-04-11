@@ -40,7 +40,7 @@ const TokenDescriptionContainer: React.FC = () => {
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
-  const path = router.query["tokenB"] as string;
+  const path = router.query["token-path"] as string;
   const { data: tokenB, isLoading } = useGetTokenByPath(path, { enabled: !!path });
   const { isLoadingCommon } = useLoading();
 

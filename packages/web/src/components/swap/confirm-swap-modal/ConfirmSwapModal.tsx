@@ -23,6 +23,9 @@ import { usePositionModal } from "@hooks/common/use-position-modal";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IconInfo from "@components/common/icons/IconInfo";
+import { ToolTipContentWrapper } from "../swap-card-fee-info/SwapCardFeeInfo.styles";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -185,8 +188,20 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                       <span className="gray-text">{guaranteedTypeStr}</span>
                       <span className="white-text">{guaranteedStr}</span>
                     </div>
+                    <div className="received">
+                      <div className="protocol">
+                        <div>
+                          <span className="">Protocol Fee</span>
+                          <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper>The amount of fees charged on each trade that goes to the protocol.</ToolTipContentWrapper>}>
+                            <IconInfo />
+                          </Tooltip>
+                        </div>
+                        <span className="white-text">0%</span>
+                      </div>
+                    </div>
+
                     <div className="gas-fee">
-                      <span className="gray-text">Gas Fee</span>
+                      <span className="gray-text">Network Gas Fee</span>
                       <span className="white-text">
                         {gasFeeStr}
                         <span className="gray-text">({gasFeeUSDStr})</span>
@@ -235,7 +250,7 @@ const ConfirmSwapResult: React.FC<ConfirmSwapResultProps> = ({
         </div>
         <div className="transaction-state">
           <span className="submitted">Waiting for Confirmation</span>
-          <span className="swap-message">Swapping {swapTokenInfo.tokenAUSD.toLocaleString()} {swapTokenInfo?.tokenA?.symbol} for {swapTokenInfo.tokenBUSD.toLocaleString()} {swapTokenInfo?.tokenB?.symbol}</span>
+          <span className="swap-message">Swapping {Number(swapTokenInfo.tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6})} {swapTokenInfo?.tokenA?.symbol} for {Number(swapTokenInfo.tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})} {swapTokenInfo?.tokenB?.symbol}</span>
           <div className="view-transaction">
             <span>Confirm this transaction in your wallet</span>
           </div>

@@ -10,7 +10,6 @@ import { TokenModel } from "@models/token/token-model";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
-import { convertToMB } from "@utils/stake-position-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
@@ -18,18 +17,28 @@ import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { useRouter } from "next/router";
+import { isEmptyObject } from "@utils/validation-utils";
 
-const PATH = [
-  "/tokens/[token-path]",
-  "/swap",
-];
+const PATH = ["/tokens/[token-path]", "/swap"];
+const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake"];
 
 export const useTokenData = () => {
   const router = useRouter();
-  const { data: { tokens = [] } = {}, isLoading: loading, isFetched, error } = useGetTokensList({ refetchInterval: PATH.includes(router.pathname) ? 15 * 1000 : false });
-  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const {
+    data: { tokens = [] } = {},
+    isLoading: loading,
+    isFetched,
+    error,
+  } = useGetTokensList({
+    refetchInterval: PATH.includes(router.pathname)
+      ? 15 * 1000
+      : router.pathname === "/" || router.pathname === "/earn/add"
+      ? 10 * 1000
+      : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
+  });
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
 
   const { account } = useWallet();
@@ -37,6 +46,9 @@ export const useTokenData = () => {
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(
     TokenState.isLoadingBalances,
+  );
+  const [isChangeBalancesToken, setIsChangeBalancesToken] = useAtom(
+    TokenState.isChangeBalancesToken,
   );
   const { getGnotPath } = useGnotToGnot();
 
@@ -50,9 +62,10 @@ export const useTokenData = () => {
 
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
+    if (tokens.length === 0 || isEmptyObject(balances)) return {};
     Object.keys(balances).forEach(key => {
-      const balance = balances[key];
       const token = tokens.find(token => token.priceId === key);
+      const balance = balances[key];
       const exist = token && balance !== null && balance !== undefined;
       tokenBalanceMap[key] = exist
         ? makeDisplayTokenAmount(token, balance)
@@ -133,7 +146,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertToMB(formatUsdNumber3Digits(tokenPrices[token.path].usd), 10)}`,
+              content: `${toUnitFormat(tokenPrices[token.path].usd, true, false)}`,
             }
           : {
               token: {
@@ -176,19 +189,20 @@ export const useTokenData = () => {
   );
 
   async function updateTokens() {
-    forceRefect({queryKey: [QUERY_KEY.tokens]});
+    forceRefect({ queryKey: [QUERY_KEY.tokens] });
   }
 
   async function updateTokenPrices() {
-    forceRefect({queryKey: [QUERY_KEY.tokenPrices]});
+    forceRefect({ queryKey: [QUERY_KEY.tokenPrices] });
   }
-  
+
   async function updateBalances() {
     if (!rpcProvider) {
       return;
     }
-
-    setLoadingBalance(true);
+    if (isEmptyObject(balances) && loadingBalance) {
+      setLoadingBalance(true);
+    }
     async function fetchTokenBalance(token: TokenModel) {
       if (!rpcProvider || !account) {
         return null;
@@ -206,14 +220,18 @@ export const useTokenData = () => {
       }
       return null;
     }
+    if (tokens.length === 0) return;
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
-    const balances: Record<string, number | null> = {};
+    const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balances[tokens[index].priceId] = result;
+        balancesData[tokens[index].priceId] = result;
       }
     });
-    setBalances(balances);
+    if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
+      setIsChangeBalancesToken(true);
+      setBalances(balancesData);
+    }
     setLoadingBalance(false);
   }
 
@@ -233,6 +251,9 @@ export const useTokenData = () => {
     loading,
     loadingBalance,
     isFetched,
-    error
+    error,
+    isLoadingTokenPrice,
+    isChangeBalancesToken,
+    setIsChangeBalancesToken,
   };
 };

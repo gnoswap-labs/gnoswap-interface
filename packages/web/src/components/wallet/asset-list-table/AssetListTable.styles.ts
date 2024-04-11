@@ -26,6 +26,12 @@ export const AssetListTableWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
   }
+  .skeleton {
+    height: 68px;
+    ${media.mobile} {
+      height: 68px;
+    }
+  }
 `;
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
@@ -55,7 +61,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .balance {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
@@ -67,7 +73,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .amount {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }

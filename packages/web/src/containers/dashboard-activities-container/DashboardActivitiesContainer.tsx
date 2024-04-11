@@ -8,7 +8,6 @@ import {
   OnchainActivityData,
   OnchainActivityResponse,
 } from "@repositories/dashboard/response/onchain-response";
-import { formatAddress } from "@utils/string-utils";
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -126,7 +125,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     ],
     queryFn: () =>
       dashboardRepository.getDashboardOnchainActivity({ type: activityType }),
-      refetchInterval: 15 * 1000,
+      refetchInterval: 60 * 1000,
   });
 
   const changeActivityType = useCallback((newType: string) => {
@@ -180,16 +179,16 @@ const DashboardActivitiesContainer: React.FC = () => {
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
         res.token0.symbol,
-      )} and ${replaceToken(res.token1.symbol)}`,
-      totalValue: `$${prettyNumber(res.totalUsdValue)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount)} ${replaceToken(
+      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.token1.symbol)}`,
+      totalValue: Number(res.totalUsdValue) < 0.01 && Number(res.totalUsdValue) ? "<$0.01" : `$${prettyNumber(res.totalUsdValue)}`,
+      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount, true)} ${replaceToken(
         res.token0.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount, true)} ${replaceToken(
         res.token1.symbol,
       )}`,
-      account: formatAddress(res.account),
-      time: dayjs(res.time).fromNow(),
+      account: res.account,
+      time: res.time,
       explorerUrl,
     };
   };

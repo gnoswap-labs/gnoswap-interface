@@ -42,4 +42,10 @@ export const SwapCardWrapper = styled.div`
   }
   .tooltip {
   }
+  button {
+    cursor: default;
+  }
+  .button-swap {
+    cursor: pointer;
+  }
 `;

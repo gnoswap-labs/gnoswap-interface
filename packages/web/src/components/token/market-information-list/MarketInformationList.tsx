@@ -20,7 +20,7 @@ const MarketInformationList: React.FC<MarketInformationListProps> = ({
           {!loading && <span className="market-info-value">{item}</span>}
           {loading && <span
             className="loading-value"
-            css={pulseSkeletonStyle({ h: 22, w : "100%"})}
+            css={pulseSkeletonStyle({ h: "20px", w : "100px", tabletWidth: "50", smallTableWidth: "100"})}
           />}
         </div>
       ))}

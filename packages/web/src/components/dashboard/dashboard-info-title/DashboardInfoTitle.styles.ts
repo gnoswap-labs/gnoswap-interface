@@ -9,10 +9,10 @@ export const DashboardInfoTitleWrapper = styled.div`
   color: ${({ theme }) => theme.color.text02};
   gap: 16px;
   ${media.mobile} {
-    flex-direction: column;
     padding: 12px;
-    align-items: flex-start;
-    gap: 6px;
+    ${mixins.flexbox("row", "center", "flex-start")};
+    width: 100%;
+    gap: 8px;
     ${fonts.body7};
   }
 `;
@@ -24,7 +24,7 @@ export const TokenWrapper = styled.div`
   .amount-info {
     ${fonts.body5};
     ${media.mobile} {
-      ${fonts.body7};
+      ${fonts.body9};
     }
   }
 `;
@@ -36,11 +36,11 @@ export const GnosLogoWrapper = styled.div`
   .gnos-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
     svg {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       ${media.mobile} {
-        width: 25px;
-        height: 25px;
+        width: 22px;
+        height: 22px;
       }
     }
   }
@@ -58,7 +58,7 @@ export const GnosLogoWrapper = styled.div`
       ${fonts.body3};
     }
     ${media.mobile} {
-      ${fonts.body7};
+      ${fonts.body9};
     }
   }
 `;
@@ -68,11 +68,11 @@ export const GnotLogoWrapper = styled.div`
   .gnot-image-wrapper {
     ${mixins.flexbox("row", "center", "center")};
     svg {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       ${media.mobile} {
-        width: 25px;
-        height: 25px;
+        width: 22px;
+        height: 22px;
       }
     }
   }
@@ -82,7 +82,7 @@ export const GnotLogoWrapper = styled.div`
       ${fonts.body3};
     }
     ${media.mobile} {
-      ${fonts.body7};
+      ${fonts.body9};
     }
   }
   .gnot-image {
@@ -98,5 +98,8 @@ export const GnotLogoWrapper = styled.div`
 export const TitleDivider = styled.div`
   width: 1px;
   height: 24px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
+  border-left: 1px solid ${({ theme }) => theme.color.border02};
+  ${media.mobile} {
+    height: 17px;
+  }
 `;

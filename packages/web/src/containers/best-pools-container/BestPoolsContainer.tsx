@@ -5,15 +5,16 @@ import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { useRouter } from "next/router";
 import {
   useGetChainList,
+  useGetTokenByPath,
   useGetTokenDetailByPath,
   useGetTokensList,
 } from "@query/token";
 import { IBestPoolResponse } from "@repositories/token";
-import { convertToKMB } from "@utils/stake-position-utils";
 import { useGetPoolList } from "src/react-query/pools";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
+import { toUnitFormat } from "@utils/number-utils";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -58,13 +59,14 @@ export const bestPoolListInit: BestPool[] = [
 const BestPoolsContainer: React.FC = () => {
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   const router = useRouter();
-  const path = router.query["tokenB"] as string;
+  const path = router.query["token-path"] as string;
   const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetailByPath(
     path === "gnot" ? wugnotPath : path,
     { enabled: !!path },
   );
   const { data: pools = [], isLoading: isLoadingGetPoolList } =
     useGetPoolList();
+  const { data: tokenB } = useGetTokenByPath(path, { enabled: !!path });
   const { isLoading: isLoadingChainList } = useGetChainList();
   const { isLoading: isLoadingListToken } = useGetTokensList();
   const { isLoadingCommon } = useLoading();
@@ -94,7 +96,7 @@ const BestPoolsContainer: React.FC = () => {
         poolPath: temp?.poolPath || "",
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
-        tvl: `$${convertToKMB(item.tvl)}`,
+        tvl: `${toUnitFormat(item.tvl, true, true)}`,
         apr: `${item.apr === "" ? "-" : `${Number(item.apr).toFixed(2)}%`}`,
       };
     });
@@ -102,7 +104,7 @@ const BestPoolsContainer: React.FC = () => {
 
   return (
     <BestPools
-      titleSymbol={(router?.query["token-path"] as string) || ""}
+      titleSymbol={tokenB?.symbol || ""}
       cardList={bestPoolList}
       loading={
         isLoading ||

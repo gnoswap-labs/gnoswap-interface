@@ -8,7 +8,6 @@ import {
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { useWallet } from "@hooks/wallet/use-wallet";
-// import BigNumber from "bignumber.js";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useEarnAddLiquidityConfirmModal } from "@hooks/token/use-earn-add-liquidity-confirm-modal";
@@ -378,7 +377,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
       updateBalances();
     }
   }, [account?.address]);
-
+  useEffect(() => {
+    setSwapValue({
+      tokenA: null,
+      tokenB: null,
+      type: "EXACT_IN",
+    });
+    selectSwapFeeTier("NONE");
+    setIsEarnAdd(false);
+  }, []);
   useEffect(() => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {
       return;
@@ -395,7 +402,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       });
       return;
     }
-  }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
+  }, [initialized, router, tokens]);
 
   useEffect(() => {
     const isEarnAdd = swapValue.tokenA !== null && swapValue.tokenB !== null;
@@ -426,15 +433,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [pools, selectPool.compareToken, tokenA, tokenB]);
 
-  useEffect(() => {
-    setSwapValue({
-      tokenA: null,
-      tokenB: null,
-      type: "EXACT_IN",
-    });
-    selectSwapFeeTier("NONE");
-    setIsEarnAdd(false);
-  }, []);
+
 
   useEffect(() => {
     if (fetching && !swapValue?.isEarnChanged) {

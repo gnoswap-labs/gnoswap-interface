@@ -124,8 +124,8 @@ const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onCl
   }, [item.upDown]);
 
   const onClick = useCallback(() => {
-    onClickItem(item.token.symbol + `?tokenB=${item.token.path}&direction=EXACT_IN`);
-  }, [onClickItem, item.token.symbol]);
+    onClickItem(item.token.path);
+  }, [onClickItem, item.token.path]);
 
   return (
     <ListItem onClick={onClick} upDown={item.upDown}>

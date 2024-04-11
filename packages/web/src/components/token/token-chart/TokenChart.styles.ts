@@ -42,11 +42,13 @@ export const LoadingChart = styled.div`
       border-radius: 50%;
       width: 60px;
       height: 60px;
-      background-color: ${({ theme }) => theme.color.background15};
+      @media (min-width: 769px) {
+        background-color: ${({ theme }) => theme.color.background15};
+      }
     }
   }
   ${media.mobile} {
-    height: 252px;
+    height: 282px;
   }
 `;
 

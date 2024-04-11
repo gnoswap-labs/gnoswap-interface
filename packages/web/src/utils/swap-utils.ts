@@ -117,7 +117,7 @@ export function tickToPriceStr(
   isEnd?: boolean,
 ) {
   if (isEnd) {
-    return tick < 0 ? "0.00" : "∞";
+    return tick < 0 ? "0" : "∞";
   }
   
   const decimalsLimit = decimals || 4;

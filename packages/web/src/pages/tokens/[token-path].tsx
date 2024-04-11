@@ -10,12 +10,14 @@ import BestPoolsContainer from "@containers/best-pools-container/BestPoolsContai
 import TrendingCryptoCardListContainer from "@containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
 import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos";
 import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
+import { useLoading } from "@hooks/common/use-loading";
 
 export default function Token() {
+  const { isLoadingCommon } = useLoading();
   return (
     <TokenLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer />}
+      breadcrumbs={<BreadcrumbsContainer isLoading={isLoadingCommon} w="102px"/>}
       chart={<TokenChartContainer />}
       info={<TokenInfoContentContainer />}
       description={<TokenDescriptionContainer />}

@@ -91,16 +91,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       .evaluateExpression(ROUTER_PACKAGE_PATH, param)
       .then(evaluateExpressionToNumber);
 
-    console.log("estimateRouteParams", [
-      inputTokenPath,
-      outputTokenPath,
-      tokenAmountRaw || "0",
-      exactType,
-      routesQuery,
-      quotes,
-    ]);
+    // console.log("estimateRouteParams", [
+    //   inputTokenPath,
+    //   outputTokenPath,
+    //   tokenAmountRaw || "0",
+    //   exactType,
+    //   routesQuery,
+    //   quotes,
+    // ]);
 
-    console.log("estimateRouteParams:Result", result);
+    // console.log("estimateRouteParams:Result", result);
 
     if (result === null) {
       throw new SwapError("NOT_FOUND_SWAP_POOL");

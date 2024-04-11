@@ -43,7 +43,7 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
         />
       </>}
 
-      <TokenDescriptionLinks links={links} copyClick={copyClick} copied={copied} path={path}/>
+      <TokenDescriptionLinks links={links} copyClick={copyClick} copied={copied} path={path} isLoading={loading} />
     </div>
   );
 };

@@ -22,6 +22,7 @@ export const swap = atom<TokenSwapModel>({
 export const isLoading = atom<boolean>(true);
 
 export const isLoadingBalances = atom<boolean>(true);
+export const isChangeBalancesToken = atom<boolean>(false);
 
 export const recents = atomWithStorage<string>(RECENT_KEY, "");
 

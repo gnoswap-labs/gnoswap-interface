@@ -66,12 +66,13 @@ const DashboardInfoContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
   const { isLoadingCommon } = useLoading();
 
-  const { data: tokenData, isFetching } = useQuery<
+  const { data: tokenData, isLoading } = useQuery<
     DashboardTokenResponse,
     Error
   >({
     queryKey: ["dashboardToken"],
     queryFn: dashboardRepository.getDashboardToken,
+    refetchInterval: 60 * 1000,
   });
 
   const progressBar = useMemo(() => {
@@ -111,7 +112,7 @@ const DashboardInfoContainer: React.FC = () => {
       }}
       governenceOverviewInfo={initialGovernenceOverviewInfo}
       breakpoint={breakpoint}
-      loading={isFetching || isLoadingCommon}
+      loading={isLoading || isLoadingCommon}
     />
   );
 };

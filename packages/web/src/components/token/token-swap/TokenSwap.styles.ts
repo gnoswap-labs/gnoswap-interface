@@ -93,7 +93,9 @@ export const wrapper = (theme: Theme) => css`
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
     }
-
+    .text-opacity {
+      opacity: 0.5;
+    }
     .amount-text {
       width: 100%;
       ${fonts.body1};
@@ -190,10 +192,10 @@ export const CopyTooltip = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   position: absolute;
   top: -65px;
-  left: -45px;
+  left: -65px;
   .box {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    width: 115px;
+    width: 155px;
     padding: 16px;
     gap: 8px;
     flex-shrink: 0;

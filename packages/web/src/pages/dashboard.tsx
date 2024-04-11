@@ -1,4 +1,4 @@
-import DashbordLayout from "@layouts/dashboard-layout/DashboardLayout";
+import DashboardLayout from "@layouts/dashboard-layout/DashboardLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import TvlChartContainer from "@containers/tvl-chart-container/TvlChartContainer";
@@ -8,7 +8,7 @@ import DashboardActivitiesContainer from "@containers/dashboard-activities-conta
 
 export default function Dashboard() {
   return (
-    <DashbordLayout
+    <DashboardLayout
       header={<HeaderContainer />}
       tvl={<TvlChartContainer />}
       volume={<VolumeChartContainer />}
