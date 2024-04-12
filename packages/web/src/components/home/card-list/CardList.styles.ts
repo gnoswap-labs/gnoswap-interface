@@ -61,7 +61,12 @@ export const ListItem = styled.li<{ upDown: UpDownType }>`
   .arrow-down * {
     fill: ${({ theme }) => theme.color.red01};
   }
+  .key-stats-label {
+    ${fonts.body12}
+    color: #596782;
+  }
   .notation-value {
+    font-weight: 700;
     color: ${({ theme, upDown }) => {
       if (upDown === "up") return theme.color.green01;
       if (upDown === "down") return theme.color.red01;
