@@ -322,12 +322,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
     if (!initialized) {
       const convertPath = encryptId(router.query["pool-path"] as string);
+      const type = router.query["type"] as string;
       const splitPath: string[] = convertPath.split(":") || [];
       const currentTokenA = tokens.find(token => token.path === splitPath[0]) || null;
       const currentTokenB = tokens.find(token => token.path === splitPath[1]) || null;
       const feeTier = makeSwapFeeTier(splitPath[2]);
       setSwapFeeTier(feeTier);
-      setPriceRange({ type: "Passive" });
+      setPriceRange({ type: type ? "Custom" : "Passive" });
       setSwapValue(prev => ({
         ...prev,
         tokenA: currentTokenA ? {

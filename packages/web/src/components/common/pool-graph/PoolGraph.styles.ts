@@ -49,7 +49,7 @@ export const PoolGraphTooltipWrapper = styled.div`
       display: flex;
       flex-direction: row;
       width: 100%;
-      gap: 16px;
+      gap: 8px;
       & > span {
         display: flex;
         flex-direction: row;
@@ -120,8 +120,8 @@ export const PoolGraphTooltipWrapper = styled.div`
         white-space: nowrap;
         word-break: break-all;
       }
-      &.mr-3 {
-        margin-left: -8px;
+      &.w-100 {
+        min-width: 108px;
       }
       img {
         width: 20px;

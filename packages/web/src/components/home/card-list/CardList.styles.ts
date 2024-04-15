@@ -15,7 +15,8 @@ export const CardListWrapper = styled.ul`
   min-height: 120px;
 `;
 
-export const ListItem = styled.li<{ upDown: UpDownType }>`
+export const ListItem = styled.li<{ upDown: UpDownType, disabled?: boolean }>`
+  cursor: ${({ disabled }) => disabled ? "text" : "pointer"};
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
   width: 100%;
@@ -24,7 +25,6 @@ export const ListItem = styled.li<{ upDown: UpDownType }>`
   ${media.tablet} {
     padding: 8px 16px;
   }
-  cursor: pointer;
   transition: background-color 0.3s ease;
   color: ${({ theme }) => theme.color.text01};
   &:hover {
