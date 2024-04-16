@@ -8,7 +8,6 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
 import { INCENTIVIZED_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import { usePositionData } from "@hooks/common/use-position-data";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { numberToFormat } from "@utils/string-utils";
@@ -18,16 +17,17 @@ export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
+  isStakedPool: (poolPath: string | null) => boolean
 }
 
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   pool,
   routeItem,
   themeKey,
+  isStakedPool,
 }) => {
-  const { isStakedPool } = usePositionData();
   const { getGnotPath } = useGnotToGnot();
-  
+
   const staked = useMemo(() => {
     return isStakedPool(pool.poolPath || null);
   }, [isStakedPool, pool.poolPath]);

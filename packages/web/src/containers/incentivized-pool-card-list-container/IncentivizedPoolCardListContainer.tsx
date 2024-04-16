@@ -40,7 +40,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
   const { isLoadingCommon } = useLoading();
-  const { loading: loadingPosition } = usePositionData();
+  const { loading: loadingPosition, isStakedPool } = usePositionData();
   
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -104,6 +104,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       showPagination={showPagination}
       width={width}
       isLoading={isLoadingCommon || loading || loadingPosition}
+      isStakedPool={isStakedPool}
     />
   );
 };

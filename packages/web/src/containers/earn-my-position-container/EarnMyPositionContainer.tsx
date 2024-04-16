@@ -43,7 +43,7 @@ const EarnMyPositionContainer: React.FC<
 
     const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
     const { updateTokenPrices } = useTokenData();
-    const { updatePositions, isFetchedPools, loading } = usePoolData();
+    const { updatePositions, isFetchedPools, loading: loadingPool } = usePoolData();
     const { width } = useWindowSize();
     const divRef = useRef<HTMLDivElement | null>(null);
     const { openModal } = useConnectWalletModal();
@@ -158,7 +158,7 @@ const EarnMyPositionContainer: React.FC<
         connected={connected}
         availableStake={availableStake}
         connect={connect}
-        loading={loading || loadingPosition || isLoadingCommon}
+        loading={loadingPool || loadingPosition || isLoadingCommon}
         fetched={isFetchedPools && isFetchedPosition}
         isError={isError}
         positions={dataMapping}

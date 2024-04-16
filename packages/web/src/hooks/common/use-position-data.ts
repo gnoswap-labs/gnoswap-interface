@@ -35,9 +35,17 @@ export const usePositionData = (address?: string) => {
     isFetching,
   } = useGetPositionsByAddress(fetchedAddress as string, {
     enabled: !!fetchedAddress && pools.length > 0,
-    refetchInterval: first404 ? false : PATH.includes(router.pathname)
-      ? (((back && !initialData.status) ? 3 : 15) * 1000)
-      : PATH_10SECOND.includes(router.pathname) ? 10 * 1000 : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
+    refetchInterval: () => {
+      if (first404) return false;
+
+      if (PATH.includes(router.pathname)) return (((back && !initialData.status) ? 3000 : 15000));
+
+      if (PATH_10SECOND.includes(router.pathname)) return 10000;
+
+      if (PATH_60SECOND.includes(router.pathname)) return 60000;
+
+      return false;
+    },
   });
 
   useEffect(() => {
@@ -58,8 +66,8 @@ export const usePositionData = (address?: string) => {
         };
       });
     }
-  }, [loading]);
-
+  }, [data.length, loading, setInitialData]);
+ 
   useEffect(() => {
     if (initialData.loadingCall && isFetchedPosition && !loading) {
       setInitialData(() => {
@@ -86,7 +94,7 @@ export const usePositionData = (address?: string) => {
       });
       return;
     }
-  }, [initialData.loadingCall, data.length, isFetchedPosition, loading]);
+  }, [initialData.loadingCall, data.length, isFetchedPosition, loading, initialData.length, setInitialData]);
 
   const { isLoadingCommon } = useLoading({
     connected: (connected && PATH.includes(router.pathname)) || first404,
@@ -120,7 +128,7 @@ export const usePositionData = (address?: string) => {
       }
     });
     return poolPositions;
-  }, [data]);
+  }, [data, getGnotPath, pools]);
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
@@ -180,7 +188,7 @@ export const usePositionData = (address?: string) => {
       });
       return poolPositions;
     },
-    [fetchedAddress, pools, data],
+    [fetchedAddress, pools, data, getGnotPath],
   );
 
   const getPositionsByPoolPath = useCallback(
@@ -201,6 +209,6 @@ export const usePositionData = (address?: string) => {
     getPositionsByPoolPath,
     isFetchedPosition,
     loading: (loading && connected) || isLoadingCommon,
-    loadingPositionById: isLoadingPool || (loading && connected),
+    loadingPositionById: isLoadingPool || ( loading && connected),
   };
 };

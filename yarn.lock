@@ -2171,6 +2171,7 @@ __metadata:
     "@storybook/testing-library": "npm:0.0.13"
     "@svgr/webpack": "npm:6.5.1"
     "@tanstack/react-query": "npm:4.26.1"
+    "@tanstack/react-query-devtools": "npm:4"
     "@testing-library/jest-dom": "npm:5.16.5"
     "@testing-library/react": "npm:14.0.0"
     "@testing-library/user-event": "npm:14.4.3"
@@ -4550,10 +4551,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/match-sorter-utils@npm:^8.7.0":
+  version: 8.15.1
+  resolution: "@tanstack/match-sorter-utils@npm:8.15.1"
+  dependencies:
+    remove-accents: "npm:0.5.0"
+  checksum: 10/5a42964a6b45ec1cbc43720953156070751ce589c95825df2d3cb392978e37b1bbcd418853426902e18470b29939076255b3239241133d77f220c3be693a60b1
+  languageName: node
+  linkType: hard
+
 "@tanstack/query-core@npm:4.26.1":
   version: 4.26.1
   resolution: "@tanstack/query-core@npm:4.26.1"
   checksum: 10/37b92ac674c03d94cdc167d69ed046e53cfe251cf2da3af3bfb9dc4128ec282c973c5f409e3993c79876a628f1fa0f20c445a6aa449bd09478a737da2b9ebeb3
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-devtools@npm:4":
+  version: 4.36.1
+  resolution: "@tanstack/react-query-devtools@npm:4.36.1"
+  dependencies:
+    "@tanstack/match-sorter-utils": "npm:^8.7.0"
+    superjson: "npm:^1.10.0"
+    use-sync-external-store: "npm:^1.2.0"
+  peerDependencies:
+    "@tanstack/react-query": ^4.36.1
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 10/f21896c97a50304071d9ebe130c9d1ea35b29462830fd3f908b986690a9d7f018d76c7595406154d83e4e173ffc2fe0be5ae78f19b36f6df2a3f4d551776d2b7
   languageName: node
   linkType: hard
 
@@ -8338,6 +8363,15 @@ __metadata:
   version: 0.5.0
   resolution: "cookie@npm:0.5.0"
   checksum: 10/aae7911ddc5f444a9025fbd979ad1b5d60191011339bce48e555cb83343d0f98b865ff5c4d71fecdfb8555a5cafdc65632f6fce172f32aaf6936830a883a0380
+  languageName: node
+  linkType: hard
+
+"copy-anything@npm:^3.0.2":
+  version: 3.0.5
+  resolution: "copy-anything@npm:3.0.5"
+  dependencies:
+    is-what: "npm:^4.1.8"
+  checksum: 10/4c41385a94a1cff6352a954f9b1c05b6bb1b70713a2d31f4c7b188ae7187ce00ddcc9c09bd58d24cd35b67fc6dd84df5954c0be86ea10700ff74e677db3cb09c
   languageName: node
   linkType: hard
 
@@ -12595,6 +12629,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-what@npm:^4.1.8":
+  version: 4.1.16
+  resolution: "is-what@npm:4.1.16"
+  checksum: 10/f6400634bae77be6903365dc53817292e1c4d8db1b467515d0c842505b8388ee8e558326d5e6952cb2a9d74116eca2af0c6adb8aa7e9d5c845a130ce9328bf13
+  languageName: node
+  linkType: hard
+
 "is-whitespace-character@npm:^1.0.0":
   version: 1.0.4
   resolution: "is-whitespace-character@npm:1.0.4"
@@ -16810,6 +16851,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"remove-accents@npm:0.5.0":
+  version: 0.5.0
+  resolution: "remove-accents@npm:0.5.0"
+  checksum: 10/4aa1a9d0c18468515a33c6760b0f8e28dfbceddcb846fac90b2189445445b27b11cc1df9fbceb97b4449438bc13250d77b27d4ab325b2d69933acc156d6c5b50
+  languageName: node
+  linkType: hard
+
 "remove-trailing-separator@npm:^1.0.1":
   version: 1.1.0
   resolution: "remove-trailing-separator@npm:1.1.0"
@@ -18180,6 +18228,15 @@ __metadata:
   version: 4.1.3
   resolution: "stylis@npm:4.1.3"
   checksum: 10/0065b6954f7007ded81598d8390c92682dd312f4d9a7f928e70190f716ee4019e29f5dd364016f8428b8ef9b5b6b950b2be717d76a7d813302cdbf1321084374
+  languageName: node
+  linkType: hard
+
+"superjson@npm:^1.10.0":
+  version: 1.13.3
+  resolution: "superjson@npm:1.13.3"
+  dependencies:
+    copy-anything: "npm:^3.0.2"
+  checksum: 10/71a186c513a9821e58264c0563cd1b3cf07d3b5ba53a09cc5c1a604d8ffeacac976a6ba1b5d5b3c71b6ab5a1941dfba5a15e3f106ad3ef22fe8d5eee3e2be052
   languageName: node
   linkType: hard
 
