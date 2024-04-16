@@ -16,7 +16,7 @@ export const CardListWrapper = styled.ul`
 `;
 
 export const ListItem = styled.li<{ upDown: UpDownType, disabled?: boolean }>`
-  cursor: ${({ disabled }) => disabled ? "text" : "pointer"};
+  cursor: ${({ disabled }) => disabled ? "default" : "pointer"};
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
   width: 100%;

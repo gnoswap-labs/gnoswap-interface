@@ -273,8 +273,8 @@ const TokenChartContainer: React.FC = () => {
     const startTime = Math.max(0, currentLength - length - 1);
 
     const temp = generateDateSequence(
-      chartData?.[startTime]?.date,
-      chartData[currentLength - 1]?.date,
+      getLocalizeTime(chartData?.[startTime]?.date),
+      getLocalizeTime(chartData[currentLength - 1]?.date),
       countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
     );
 
