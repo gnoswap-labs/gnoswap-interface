@@ -56,11 +56,16 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
     }
   }, [page, incentivizedPools, width]);
 
-  return (
-    <IncentivizedWrapper>
-      <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
-        {!isLoading &&
-          incentivizedPools.length > 0 &&
+  const renderPoolList = () => {
+    const hasData = !isLoading && incentivizedPools.length > 0;
+    const showLoading = !isFetched || isLoading;
+    const showBlank = isFetched &&
+    !isLoading &&
+    incentivizedPools.length > 0 &&
+    incentivizedPools.length < 4;
+    
+    return <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
+      {hasData &&
           data.map((info, index) => (
             <IncentivizedPoolCard
               pool={info}
@@ -70,38 +75,46 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
               isStakedPool={isStakedPool}
             />
           ))}
-        {isFetched &&
-          !isLoading &&
-          incentivizedPools.length > 0 &&
-          incentivizedPools.length < 4 &&
-          Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
-            .fill(1)
-            .map((_, index) => <BlankIncentivizedCard key={index} />)}
-        {(!isFetched || isLoading) &&
-          Array.from({ length: 8 }).map((_, index) => (
-            <span
-              key={index}
-              className="card-skeleton"
-              css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
-            />
-          ))}
-      </PoolListWrapper>
-      {!mobile &&
+      {showBlank &&
+        Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
+          .fill(1)
+          .map((_, index) => <BlankIncentivizedCard key={index} />)}
+      {showLoading &&
+        Array.from({ length: 8 }).map((_, index) => (
+          <span
+            key={index}
+            className="card-skeleton"
+            css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
+          />
+        ))}
+    </PoolListWrapper>;
+  };
+
+  const renderLoadMore = () => {
+    return <>
+    {!mobile &&
         !isLoading &&
         incentivizedPools.length > 8 &&
         onClickLoadMore && (
           <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
         )}
-      {showPagination &&
-        isFetched &&
-        incentivizedPools.length > 0 &&
-        !isLoading && (
-          <div className="box-indicator">
-            <span className="current-page">{currentIndex}</span>
-            <span>/</span>
-            <span>{incentivizedPools.length}</span>
-          </div>
-        )}
+    {showPagination &&
+      isFetched &&
+      incentivizedPools.length > 0 &&
+      !isLoading && (
+        <div className="box-indicator">
+          <span className="current-page">{currentIndex}</span>
+          <span>/</span>
+          <span>{incentivizedPools.length}</span>
+        </div>
+      )}
+    </>;
+  };
+
+  return (
+    <IncentivizedWrapper>
+      {renderPoolList()}
+      {renderLoadMore()}
     </IncentivizedWrapper>
   );
 };

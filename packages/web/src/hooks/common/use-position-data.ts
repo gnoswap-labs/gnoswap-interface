@@ -2,7 +2,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useEffect, useState } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeId } from "@utils/common";
 import { useGetPositionsByAddress } from "@query/positions";
@@ -10,54 +10,55 @@ import { useRouter } from "next/router";
 import { useLoading } from "./use-loading";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
+import { PATH, PATH_10SECOND, PATH_60SECOND } from "@constants/common.constant";
 
-const PATH = ["/earn"];
-const PATH_10SECOND = ["/earn/pool/[pool-path]/remove", "/tokens/[token-path]"];
-const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake", "/earn/pool/[pool-path]/unstake", "/earn/pool/[pool-path]"];
+
+// loading
+// refetch -> have new data -> must loading
+// loading sync
+// back -> loading
+
+// cases to cover : default loading 1.5s or longer
+// go back -> have new data -> loading
+// default loading even have existed data
+// api error -> return 404 when empty data
 
 export const usePositionData = (address?: string) => {
   const router = useRouter();
+  // TODO Question > EarnState.initialData
   const [initialData, setInitialData] = useAtom(EarnState.initialDataData);
   const { back } = router.query;
-  const { account, connected } = useWallet();
+  const { account, connected: walletConnected } = useWallet();
   const { pools, loading: isLoadingPool } = usePoolData();
-  const [first404, setFirst404] = useState(false);
 
   const fetchedAddress = useMemo(() => {
     return address || account?.address;
   }, [account?.address, address]);
 
+  const secToMilliSec = useCallback((sec: number) => {
+    return sec * 1000;
+  }, []);
+
   const {
     data = [],
     isError,
-    isLoading: loading,
+    isLoading: isPositionLoading,
     isFetched: isFetchedPosition,
-    isFetching,
   } = useGetPositionsByAddress(fetchedAddress as string, {
     enabled: !!fetchedAddress && pools.length > 0,
     refetchInterval: () => {
-      if (first404) return false;
+      if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15) );
 
-      if (PATH.includes(router.pathname)) return (((back && !initialData.status) ? 3000 : 15000));
+      if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
 
-      if (PATH_10SECOND.includes(router.pathname)) return 10000;
-
-      if (PATH_60SECOND.includes(router.pathname)) return 60000;
+      if (PATH_60SECOND.includes(router.pathname)) return secToMilliSec(60);
 
       return false;
     },
   });
 
   useEffect(() => {
-    if (data.length > 0) {
-      setFirst404(false);
-    } else if (isError) {
-      setFirst404(true);
-    }
-  }, [isError, data.length, fetchedAddress]);
-
-  useEffect(() => {
-    if (loading) {
+    if (isPositionLoading) {
       setInitialData(() => {
         return {
           length: data.length,
@@ -66,10 +67,10 @@ export const usePositionData = (address?: string) => {
         };
       });
     }
-  }, [data.length, loading, setInitialData]);
+  }, [data.length, isPositionLoading, setInitialData]);
  
   useEffect(() => {
-    if (initialData.loadingCall && isFetchedPosition && !loading) {
+    if (initialData.loadingCall && isFetchedPosition && !isPositionLoading) {
       setInitialData(() => {
         return {
           length: data.length,
@@ -83,7 +84,7 @@ export const usePositionData = (address?: string) => {
       initialData.length !== -1 &&
       data.length !== initialData.length &&
       isFetchedPosition &&
-      !loading
+      !isPositionLoading
     ) {
       setInitialData(() => {
         return {
@@ -94,14 +95,34 @@ export const usePositionData = (address?: string) => {
       });
       return;
     }
-  }, [initialData.loadingCall, data.length, isFetchedPosition, loading, initialData.length, setInitialData]);
+  }, [initialData.loadingCall, data.length, isFetchedPosition, isPositionLoading, initialData.length, setInitialData]);
+
+  const isEarnPath = PATH.includes(router.pathname);
+  
+  // * no need to force loading in another page
+  const isConnectedCheck = walletConnected && isEarnPath;
+
+  const shouldTriggerLoading = () => {
+    // * connected case
+    if(isConnectedCheck) {
+      return true;
+    }
+
+    // * not connected case
+    if(!isConnectedCheck && (isPositionLoading || !back)) {
+      return true;
+    }
+
+    // * [after go back] or [data change while interval refetch]
+    if (!!back || initialData.status) {
+      return true;
+    }
+
+    return false;
+  };
 
   const { isLoadingCommon } = useLoading({
-    connected: (connected && PATH.includes(router.pathname)) || first404,
-    isLoading: loading && !first404,
-    isFetching: isFetching,
-    isBack: !!back,
-    status: initialData.status,
+    shouldTrigger: shouldTriggerLoading(),
   });
 
   const { getGnotPath } = useGnotToGnot();
@@ -199,6 +220,10 @@ export const usePositionData = (address?: string) => {
     [getPositionsByPoolId],
   );
 
+  const loading = useMemo(() => {
+    return (isPositionLoading && walletConnected) || isLoadingCommon;
+  }, [walletConnected, isLoadingCommon, isPositionLoading]);
+
   return {
     availableStake,
     isError,
@@ -208,7 +233,7 @@ export const usePositionData = (address?: string) => {
     getPositionsByPoolId,
     getPositionsByPoolPath,
     isFetchedPosition,
-    loading: (loading && connected) || isLoadingCommon,
-    loadingPositionById: isLoadingPool || ( loading && connected),
+    loading: loading,
+    loadingPositionById: isLoadingPool || ( isPositionLoading && walletConnected),
   };
 };
