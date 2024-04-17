@@ -61,6 +61,9 @@ export const RecentlyAddedCardListwrapper = styled.div<Props>`
           fill: ${({ theme }) => theme.color.icon15};
         }
       }
+      ${media.tablet} {
+        margin-right: 12px;
+      }
     }
   }
 
