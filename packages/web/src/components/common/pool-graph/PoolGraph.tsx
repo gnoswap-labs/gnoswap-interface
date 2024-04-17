@@ -202,6 +202,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     // Clean child elements.
     d3.select(chartRef.current).selectChildren().remove();
+
     
     // Create a chart bar.
     const rects = d3.select(chartRef.current);
@@ -214,9 +215,17 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .style("stroke-width", "0")
       .attr("class", "rects")
       .attr("x", bin => scaleX(bin.minTick))
-      .attr("y", bin => (scaleY(bin.reserveTokenMap)) - ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0))
+      // Error on this line
+      .attr("y", bin => {
+        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+        return scaleYComputation - (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
+      })
       .attr("width", tickSpacing - 1)
-      .attr("height", bin => boundsHeight - (scaleY(bin.reserveTokenMap)) + ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0));
+      // Error on this line
+      .attr("height", bin => {
+        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+        return boundsHeight - scaleYComputation + (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
+      });
     // Create a line of current tick.
     if (currentTick) {
       rects.append("line")

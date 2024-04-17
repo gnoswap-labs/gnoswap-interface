@@ -90,7 +90,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   return (
     <IncentivizedPoolCardList
       incentivizedPools={incentivizedPools}
-      isFetched={isFetchedPools}
+      isPoolFetched={isFetchedPools}
       loadMore={!!loadMore}
       onClickLoadMore={handleClickLoadMore}
       currentIndex={currentIndex}

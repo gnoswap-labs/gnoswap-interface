@@ -11,7 +11,7 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 export interface IncentivizedPoolCardListProps {
   incentivizedPools: PoolCardInfo[];
   loadMore: boolean;
-  isFetched: boolean;
+  isPoolFetched: boolean;
   onClickLoadMore?: () => void;
   currentIndex: number;
   routeItem: (id: string) => void;
@@ -28,7 +28,7 @@ export interface IncentivizedPoolCardListProps {
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   incentivizedPools,
-  isFetched,
+  isPoolFetched,
   onClickLoadMore,
   currentIndex,
   routeItem,
@@ -58,12 +58,24 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
 
   const renderPoolList = () => {
     const hasData = !isLoading && incentivizedPools.length > 0;
-    const showLoading = !isFetched || isLoading;
-    const showBlank = isFetched &&
+    const showLoading = !isPoolFetched || isLoading;
+    const showBlank = isPoolFetched &&
     !isLoading &&
     incentivizedPools.length > 0 &&
     incentivizedPools.length < 4;
     
+    // return <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
+    //   {
+    //     Array.from({ length: 8 }).map((_, index) => (
+    //       <span
+    //         key={index}
+    //         className="card-skeleton"
+    //         css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
+    //       />
+    //     ))
+    //   }
+    //  </PoolListWrapper>;
+
     return <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
       {hasData &&
           data.map((info, index) => (
@@ -99,7 +111,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
           <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
         )}
     {showPagination &&
-      isFetched &&
+      isPoolFetched &&
       incentivizedPools.length > 0 &&
       !isLoading && (
         <div className="box-indicator">
