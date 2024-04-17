@@ -76,7 +76,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
     //   }
     //  </PoolListWrapper>;
 
-    return <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
+    return <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
       {hasData &&
           data.map((info, index) => (
             <IncentivizedPoolCard
