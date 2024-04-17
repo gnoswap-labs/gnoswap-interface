@@ -26,7 +26,7 @@ Default.args = {
   cardList: <IncentivizedPoolCardList
     currentIndex={1}
     incentivizedPools={[cardInfo]}
-    isFetched={true}
+    isPoolFetched={true}
     routeItem={action("routeItem")}
     mobile={false}
     loadMore={false}
