@@ -182,8 +182,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   
   /** Update Chart by data */
   function updateChart() {
-    console.log("update chart");
-    
     const tickSpacing = getTickSpacing();
     const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
 
@@ -208,7 +206,20 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     
     // Create a chart bar.
     const rects = d3.select(chartRef.current);
+
     rects.attr("clip-path", "url(#clip)");
+
+    // if (currentTick) {
+    //   rects.append("line")
+    //     .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
+    //     .attr("x2", centerPosition + tickSpacing / 2 - 0.5)
+    //     .attr("y1", 0)
+    //     .attr("y2", boundsHeight)
+    //     .attr("stroke-dasharray", 3)
+    //     .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
+    //     .attr("stroke-width", 1);
+    // }
+    
     rects.selectAll("rects")
       .data(resolvedBins)
       .enter()
@@ -229,16 +240,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         return boundsHeight - scaleYComputation + (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
       });
     // Create a line of current tick.
-    if (currentTick) {
-      rects.append("line")
-        .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
-        .attr("x2", centerPosition + tickSpacing / 2 - 0.5)
-        .attr("y1", 0)
-        .attr("y2", boundsHeight)
-        .attr("stroke-dasharray", 3)
-        .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
-        .attr("stroke-width", 1);
-    }
+    
   }
 
   function onMouseoverChartBin(event: MouseEvent) {
