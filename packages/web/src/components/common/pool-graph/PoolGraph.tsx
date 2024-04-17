@@ -228,13 +228,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .style("stroke-width", "0")
       .attr("class", "rects")
       .attr("x", bin => scaleX(bin.minTick))
-      // Error on this line
       .attr("y", bin => {
         const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
         return scaleYComputation - (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
       })
       .attr("width", tickSpacing - 1)
-      // Error on this line
       .attr("height", bin => {
         const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
         return boundsHeight - scaleYComputation + (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
