@@ -12,7 +12,6 @@ import ModalContainer from "@containers/modal-container/ModalContainer";
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import BackgroundContainer from "@containers/background-container/BackgroundContainer";
 import Notice from "@components/common/notice/NoticeToast";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -32,7 +31,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
       <Hydrate state={pageProps.dehydratedState}>
         <JotaiProvider>
           <GnoswapServiceProvider>
