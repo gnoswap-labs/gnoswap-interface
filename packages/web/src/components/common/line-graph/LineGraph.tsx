@@ -4,7 +4,6 @@ import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css } from "@emotion/react";
 import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
-import { useRouter } from "next/router";
 import { getLocalizeTime } from "@utils/chart";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
@@ -142,8 +141,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [currentPointIndex, setCurrentPointIndex] = useState<number>(-1);
   const [points, setPoints] = useState<Point[]>([]);
   const { height: customHeight = 0, locationTooltip } = customData;
-
-  const router = useRouter();
 
   const isFocus = useCallback(() => {
     return activated && cursor;
@@ -361,7 +358,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 <span className="date">
                   {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
                 </span>
-                {router.pathname !== "/dashboard" && <span className="time">
+                {location.pathname !== "/dashboard" && <span className="time">
                   
                   {currentPointIndex === datas.length - 1 ? parseTimeTVL(getLocalizeTime(new Date().toString())).time : parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
                 </span>}
