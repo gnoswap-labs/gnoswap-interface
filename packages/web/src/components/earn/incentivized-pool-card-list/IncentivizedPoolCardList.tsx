@@ -64,18 +64,6 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
     incentivizedPools.length > 0 &&
     incentivizedPools.length < 4;
     
-    // return <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
-    //   {
-    //     Array.from({ length: 8 }).map((_, index) => (
-    //       <span
-    //         key={index}
-    //         className="card-skeleton"
-    //         css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
-    //       />
-    //     ))
-    //   }
-    //  </PoolListWrapper>;
-
     return <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
       {hasData &&
           data.map((info, index) => (

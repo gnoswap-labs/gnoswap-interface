@@ -182,6 +182,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   
   /** Update Chart by data */
   function updateChart() {
+    console.log("update chart");
+    
     const tickSpacing = getTickSpacing();
     const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
 
@@ -365,7 +367,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("width", width)
       .attr("height", height);
 
-    updateChart();
+    if(!!width && !!height && !!scaleX && !!scaleY) {
+      updateChart();
+    }
   }, [width, height, scaleX, scaleY]);
 
   useEffect(() => {

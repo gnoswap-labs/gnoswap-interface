@@ -138,8 +138,6 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               </div>
             </div>
           </div>
-
-          
         </PoolCardWrapper>
       </div>
     </PoolCardWrapperWrapperBorder>
