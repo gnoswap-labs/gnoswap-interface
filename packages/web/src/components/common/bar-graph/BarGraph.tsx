@@ -329,7 +329,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
               <stop offset="100%" stopColor={redColor.end} />
             </linearGradient>
           </defs>
-          {/* {radiusBorder &&
+          {radiusBorder &&
             getGraphPoints().map((point, index) => (
               <path
                 key={index}
@@ -338,7 +338,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
                 } h-${getStrokeWidth()} v${-height + point.y + 10} Z`}
                 fill={getStorkeColor(index)}
               />
-            ))} */}
+            ))}
           {getGraphPoints().map((point, index) => (
             <rect
               key={index}

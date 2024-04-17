@@ -31,7 +31,7 @@ export interface SelectPriceRangeCutomControllerProps {
   changePrice: (price: number) => void;
   decrease: () => void;
   increase: () => void;
-  currentPriceStr: any;
+  currentPriceStr: JSX.Element | string;
   setIsChangeMinMax: (value: boolean) => void;
   priceRangeType: PriceRangeType | null;
 }
@@ -177,7 +177,7 @@ const SelectPriceRangeCutomController: React.FC<
       1 {token0Symbol} =&nbsp;{exchangePrice}&nbsp;{token1Symbol}
     </>
   );
-  console.log(currentValue, "123123");
+
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>

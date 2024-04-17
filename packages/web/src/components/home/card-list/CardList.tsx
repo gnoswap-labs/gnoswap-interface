@@ -23,7 +23,7 @@ const enum CardType {
   "pool",
 }
 
-function typeTokenInfo(
+function getTypeTokenInfo(
   info: CardListTokenInfo | CardListPoolInfo | CardListKeyStats,
 ): CardType {
   if ("token" in info) {
@@ -43,7 +43,7 @@ const CardList: React.FC<CardListProps> = ({
   return (
     <CardListWrapper>
       {list.map((item, index) =>
-        typeTokenInfo(item) === CardType.token ? (
+        getTypeTokenInfo(item) === CardType.token ? (
           <CardListTokenItem
             key={index}
             index={index + 1}
@@ -51,7 +51,7 @@ const CardList: React.FC<CardListProps> = ({
             onClickItem={onClickItem}
             isHiddenIndex={isHiddenIndex}
           />
-        ) : typeTokenInfo(item) === CardType.keyStats ? (
+        ) : getTypeTokenInfo(item) === CardType.keyStats ? (
           <CardListKeyStatsItem
             key={index}
             item={item as CardListKeyStats}

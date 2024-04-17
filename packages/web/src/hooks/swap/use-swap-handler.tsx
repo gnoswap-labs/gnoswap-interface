@@ -858,7 +858,6 @@ export const useSwapHandler = () => {
   
   useEffect(() => {
     if (!tokenA || !tokenB) {
-      // setIsLoading(false);
       return;
     }
     if (

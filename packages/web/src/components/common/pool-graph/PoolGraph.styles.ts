@@ -120,6 +120,9 @@ export const PoolGraphTooltipWrapper = styled.div`
         white-space: nowrap;
         word-break: break-all;
       }
+      & .small-font {
+        font-size: 12px;
+      }
       &.w-100 {
         min-width: 108px;
       }
@@ -141,6 +144,9 @@ export const PoolGraphTooltipWrapper = styled.div`
 
     .price-range {
       width: 100%;
+    }
+    .small-font {
+      font-size: 12px;
     }
     ${media.mobile} {
       max-width: max-content;
