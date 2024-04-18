@@ -11,7 +11,7 @@ import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { MyPositionClaimContent } from "../my-position-card/MyPositionCardClaimContent";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -379,7 +379,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const temp = claimableRewardInfo?.SWAP_FEE;
     const sumUSD =
       temp?.reduce((accum, current) => accum + current.claimableUsdValue, 0) || 0;
-    return formatUsdNumber(`${sumUSD}`, 2, true);
+    return toUnitFormat(`${sumUSD}`, true, true);
   }, [claimableRewardInfo]);
 
   const logoDaily = useMemo(() => {
@@ -398,14 +398,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const temp = claimableRewardInfo?.STAKING;
     const sumUSD =
       temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
-    return formatUsdNumber(`${sumUSD}`, 2, true);
+    return toUnitFormat(`${sumUSD}`, true, true);
   }, [claimableRewardInfo]);
 
   const rewardClaim = useMemo(() => {
     const temp = claimableRewardInfo?.STAKING;
     const sumUSD =
       temp?.reduce((accum, current) => accum + current.claimableAmount, 0) || 0;
-    return formatUsdNumber(`${sumUSD}`, 2, true);
+    return toUnitFormat(`${sumUSD}`, true, true);
   }, [claimableRewardInfo]);
 
   return (

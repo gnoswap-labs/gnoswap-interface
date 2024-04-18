@@ -31,7 +31,7 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition, loading } = usePositionData(address);
+  const { loading } = usePositionData(address);
 
   const isStaking = useMemo(() => {
     if (data?.incentivizedType === "INCENTIVIZED") {
@@ -43,9 +43,8 @@ export default function Pool() {
     return false;
   }, [data?.incentivizedType]);
 
-  const existsAddress = account?.address || address;
   useEffect(() => {
-    if (existsAddress && isFetchedPosition && !loading) {
+    if (!loading) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.getBoundingClientRect().top;
       if (!topPosition) {
@@ -55,7 +54,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [isFetchedPosition, loading, existsAddress]);
+  }, [loading]);
 
   return (
     <PoolLayout

@@ -116,7 +116,7 @@ export const useRepositionHandle = () => {
       0,
     );
   }, [selectedPosition]);
-
+  
   const selectPool = useSelectPool({
     tokenA,
     tokenB,
@@ -172,6 +172,9 @@ export const useRepositionHandle = () => {
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
+    if (priceRange.type !== "Custom") {
+      selectPool.setIsChangeMinMax(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -180,6 +183,12 @@ export const useRepositionHandle = () => {
     }
   }, [account, poolPath]);
 
+  useEffect(() => {
+    if (selectPool.isChangeMinMax) {
+      setPriceRange({ type: "Custom" });
+    }
+  }, [selectPool.isChangeMinMax]);
+  
   return {
     tokenA,
     tokenB,

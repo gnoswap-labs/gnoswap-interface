@@ -285,3 +285,24 @@ export const formatUSDWallet = (
 export function removeTrailingZeros(value: string) {
   return value.replace(/\.?0+$/, "");
 }
+
+function countZeros(decimalFraction: string) {
+  const scientificNotation = parseFloat(decimalFraction).toExponential();
+  const exponent = parseFloat(scientificNotation.split("e")[1]);
+  return Math.abs(exponent);
+}
+
+
+export function subscriptFormat(number: string | number) {
+  const numberStr = number.toString();
+  const numberOfZero = countZeros(numberStr);
+  if (numberStr[0] !== "0" || !numberStr.startsWith("0.00000")) {
+    if (Number(number) < 1) {
+      return removeTrailingZeros(Number(numberStr).toFixed(Math.min(numberOfZero - 1 + 5, 5)));
+    } else {
+      return removeTrailingZeros(Number(numberStr).toFixed(5));
+    }
+  }
+
+  return `0.0${String.fromCharCode(8320 + Number(numberOfZero - 1))}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
+}

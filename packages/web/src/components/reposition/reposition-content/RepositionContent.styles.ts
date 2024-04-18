@@ -31,9 +31,6 @@ export const RepositionContentWrapper = styled.div`
     width: 100%;
     max-width: 500px;
     gap: 4px;
-    .title {
-      margin-bottom: 8px;
-    }
   }
   .resposition-content-header {
     ${mixins.flexbox("row", "center", "center")};

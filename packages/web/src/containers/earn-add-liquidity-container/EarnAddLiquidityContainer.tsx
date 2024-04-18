@@ -18,9 +18,11 @@ import { usePool } from "@hooks/pool/use-pool";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
+import { makeQueryString } from "@hooks/common/use-url-param";
+import { isNumber } from "@utils/number-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -437,14 +439,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (fetching && !swapValue?.isEarnChanged) {
-      selectSwapFeeTier("FEE_3000");
+      if (router.query?.fee_tier) {
+        selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
+      } else {
+        selectSwapFeeTier("FEE_3000");
+      }
       setSwapValue({
         tokenA,
         tokenB,
         type: "EXACT_IN",
       });
     }
-  }, [fetching, swapValue?.isEarnChanged]);
+  }, [fetching, swapValue?.isEarnChanged, pools, priceRanges]);
 
   const handleSwapValue = useCallback(() => {
     const tempTokenA = swapValue.tokenA;
@@ -458,6 +464,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isKeepToken: !isKeepToken
     });
   }, [swapValue, setSwapValue, isKeepToken]);
+
+  useEffect(() => {
+    const queryString = makeQueryString({
+      tokenA: tokenA?.path,
+      tokenB: tokenB?.path,
+      fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
+      tickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
+      tickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
+    });
+    if (tokenA?.path && tokenB?.path) {
+      router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
+    }
+  }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition]);
 
   return (
     <EarnAddLiquidity

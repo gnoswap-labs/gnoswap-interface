@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 type DefaultObject = Record<string, string | number | null | undefined>;
 
-function makeQueryString(data: DefaultObject): string {
+export function makeQueryString(data: DefaultObject): string {
   const params: string[] = [];
   Object.keys(data).forEach(key => {
     const value = data[key];

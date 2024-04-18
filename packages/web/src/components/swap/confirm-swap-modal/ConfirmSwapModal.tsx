@@ -18,7 +18,6 @@ import {
 } from "@models/swap/swap-summary-info";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { numberToUSD, toNumberFormat } from "@utils/number-utils";
-import { numberToFormat } from "@utils/string-utils";
 import { usePositionModal } from "@hooks/common/use-position-modal";
 import { Overlay } from "@components/common/modal/Modal.styles";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
@@ -26,6 +25,8 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import { ToolTipContentWrapper } from "../swap-card-fee-info/SwapCardFeeInfo.styles";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDetail";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -52,7 +53,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate } = swapSummaryInfo;
-    return `1 ${tokenA.symbol} = ${numberToFormat(swapRate)} ${tokenB.symbol}`;
+    return <>1 {tokenA.symbol} = <ExchangeRate value={convertSwapRate(swapRate)}/> {tokenB.symbol}</>;
   }, [swapSummaryInfo]);
 
   const swapRateUSDStr = useMemo(() => {

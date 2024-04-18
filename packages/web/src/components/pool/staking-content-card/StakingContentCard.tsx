@@ -21,7 +21,6 @@ import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { formatUsdNumber } from "@utils/stake-position-utils";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -100,7 +99,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
     const usdValue = positions.reduce((accum, current) => {
       return Number(current.positionUsdValue) + accum;
     }, 0);
-    return `${formatUsdNumber(usdValue.toString())}`;
+    return `${toUnitFormat(usdValue, true, true)}`;
   }, [positions]);
 
   const positionRewards = useMemo(() => {
@@ -227,7 +226,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
     const usdValue = positions.reduce((accum, current) => {
       return Number(current.positionUsdValue) + accum;
     }, 0);
-    return `${formatUsdNumber(usdValue.toString())}`;
+    return `${toUnitFormat(usdValue, true, true)}`;
   }, [positions]);
 
   const totalStakedRewardUSD = useMemo(() => {

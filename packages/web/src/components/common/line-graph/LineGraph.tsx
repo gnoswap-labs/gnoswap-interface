@@ -4,6 +4,7 @@ import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css } from "@emotion/react";
 import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
+import { getLocalizeTime } from "@utils/chart";
 
 function calculateSmoothing(pointA: Point, pointB: Point) {
   const lengthX = pointB.x - pointA.x;
@@ -357,6 +358,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 <span className="date">
                   {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
                 </span>
+                {location.pathname !== "/dashboard" && <span className="time">
+                  
+                  {currentPointIndex === datas.length - 1 ? parseTimeTVL(getLocalizeTime(new Date().toString())).time : parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
+                </span>}
               </div>
               <div className="tooltip-header">
                 <span className="value">{`$${removeTrailingZeros(prettyNumber(

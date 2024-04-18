@@ -5,6 +5,7 @@ import React from "react";
 import LearnMoreModal from "../learn-more-modal/LearnMoreModal";
 import { StakingHeaderWrapper } from "./StakingHeader.styles";
 import { useState } from "react";
+
 interface StakingHeaderProps {
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
@@ -12,9 +13,10 @@ interface StakingHeaderProps {
   handleClickUnStakeRedirect: () => void;
   isUnstake: boolean;
   isOtherPosition: boolean;
+  isStaked: boolean;
 }
 
-const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleClickStakeRedirect, handleClickUnStakeRedirect, isUnstake, isOtherPosition }) => {
+const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleClickStakeRedirect, handleClickUnStakeRedirect, isUnstake, isOtherPosition, isStaked }) => {
   const [isShowLearnModal, setIsShowLearnModal] = useState(false);
   return (
     <StakingHeaderWrapper>
@@ -40,7 +42,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
             fontType: "p1",
           }}
         />}
-        <Button
+        {isStaked && <Button
           text="Stake Position"
           onClick={handleClickStakeRedirect}
           style={{
@@ -50,7 +52,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
             padding: "0px 16px",
             fontType: "p1",
           }}
-        />
+        />}
       </div>
       {isShowLearnModal && <LearnMoreModal setIsShowLearnMoreModal={setIsShowLearnModal} />}
     </StakingHeaderWrapper>

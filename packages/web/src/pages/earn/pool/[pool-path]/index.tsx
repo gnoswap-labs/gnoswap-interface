@@ -31,7 +31,8 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition, loading, getPositionsByPoolId } = usePositionData(address);
+  const { isFetchedPosition, loading, getPositionsByPoolId } =
+    usePositionData(address);
   const isStaking = useMemo(() => {
     if (data?.incentivizedType === "INCENTIVIZED") {
       return true;
@@ -46,14 +47,23 @@ export default function Pool() {
     }
     return false;
   }, [data?.incentivizedType]);
+  console.log(hash, "hash");
 
   useEffect(() => {
-    if (address && isFetchedPosition && !loading) {
+    if (hash === "staking" && !loading) {
+      const positionContainerElement = document.getElementById("staking");
+      const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      if (!topPosition) {
+        return;
+      }
+      window.scrollTo({
+        top: topPosition,
+      });
+    } else if (address && isFetchedPosition && !loading) {
       if (hash) {
-        const positionContainerElement = document.getElementById(
-          `${hash}`,
-        );
-        const topPosition = positionContainerElement?.getBoundingClientRect().top;
+        const positionContainerElement = document.getElementById(`${hash}`);
+        const topPosition =
+          positionContainerElement?.getBoundingClientRect().top;
         if (!topPosition) {
           return;
         }
@@ -61,8 +71,10 @@ export default function Pool() {
           top: topPosition,
         });
       } else {
-        const positionContainerElement = document.getElementById("liquidity-wrapper");
-        const topPosition = positionContainerElement?.getBoundingClientRect().top;
+        const positionContainerElement =
+          document.getElementById("liquidity-wrapper");
+        const topPosition =
+          positionContainerElement?.getBoundingClientRect().top;
         if (!topPosition) {
           return;
         }

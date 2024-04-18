@@ -76,7 +76,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       const poolPath = `${item.token.path}:${item?.tokenB?.path}:${Number(item.fee.slice(0, item.fee.length - 1)) * 10000}`;
       movePage(`/earn/pool/${makeId(poolPath)}`);
     } else {
-      const routePath = "/tokens/" + makeId(item.token.path) + "&direction=EXACT_IN";
+      const routePath = "/tokens/" + makeId(item.token.path);
       movePage(routePath);
     }
   };

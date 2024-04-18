@@ -32,14 +32,15 @@ export const HeaderWrapper = styled.div`
         align-items: center;
         justify-content: center;
         margin-left: 8px;
-        svg:hover {
-          * {
-            fill: ${({ theme }) => theme.color.icon07};
-          }
+        > svg * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+        > svg:hover * {
+          fill: ${({ theme }) => theme.color.icon07};
         }
       }
       .name {
-        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background: ${({ theme }) => theme.color.text32};
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-background-clip: text;

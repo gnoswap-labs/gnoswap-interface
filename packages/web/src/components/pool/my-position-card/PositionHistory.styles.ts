@@ -43,7 +43,7 @@ export const PositionHistoryWrapper = styled.div<Props>`
     .title {
       margin-bottom: 4px;
       ${fonts.p2}
-      margin: 4px 0 16px 0;
+      margin: 4px auto 16px auto;
     }
   }
 `;

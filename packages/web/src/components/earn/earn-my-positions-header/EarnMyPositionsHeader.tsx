@@ -70,7 +70,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
           checked={isClosed}
           onChange={handleChangeClosed}
           hasLabel={true}
-          labelText="Show closed positions"
+          labelText="Show closed"
         />}
       </div>
       <div className="button-wrapper">

@@ -160,7 +160,7 @@ export const useWallet = () => {
     updateWalletEvents,
     disconnectWallet,
     switchNetwork,
-    isSwitchNetwork: isSwitchNetwork,
+    isSwitchNetwork,
     loadingConnect,
     walletClient,
     setLoadingConnect,

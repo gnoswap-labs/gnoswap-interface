@@ -20,8 +20,6 @@ export interface TokenChartGraphProps {
   componentRef: React.RefObject<HTMLDivElement>;
   size: ComponentSize;
   breakpoint: DEVICE_TYPE;
-  right: number;
-  left: number;
 }
 
 const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
@@ -31,8 +29,6 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   componentRef,
   size,
   breakpoint,
-  left,
-  right,
 }) => {
   const theme = useTheme();
   const customData = useMemo(() => {
@@ -56,7 +52,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   }, [yAxisLabels]);
 
   return (
-    <TokenChartGraphWrapper left={Math.max(left, 12)} right={Math.max(right, 12)}>
+    <TokenChartGraphWrapper>
       <div className="data-wrapper" ref={componentRef}>
         <LineGraph
           cursor

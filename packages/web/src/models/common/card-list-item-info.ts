@@ -14,3 +14,8 @@ export interface CardListPoolInfo {
   upDown: UpDownType;
   content: string;
 }
+
+export interface CardListKeyStats {
+  label: string;
+  content: string;
+}
