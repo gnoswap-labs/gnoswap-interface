@@ -2,7 +2,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useEffect } from "react";
+import { useCallback, useMemo, useEffect, useState, useRef } from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeId } from "@utils/common";
 import { useGetPositionsByAddress } from "@query/positions";
@@ -11,17 +11,8 @@ import { useLoading } from "./use-loading";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import { PATH, PATH_10SECOND, PATH_60SECOND } from "@constants/common.constant";
-
-
-// loading
-// refetch -> have new data -> must loading
-// loading sync
-// back -> loading
-
-// cases to cover : default loading 1.5s or longer
-// go back -> have new data -> loading
-// default loading even have existed data
-// api error -> return 404 when empty data
+import { PositionModel } from "@models/position/position-model";
+import { AxiosError } from "axios";
 
 export const usePositionData = (address?: string) => {
   const router = useRouter();
@@ -30,6 +21,8 @@ export const usePositionData = (address?: string) => {
   const { back } = router.query;
   const { account, connected: walletConnected } = useWallet();
   const { pools, loading: isLoadingPool } = usePoolData();
+  const [shouldShowLoading, setShouldShowLoading] =  useState(false);
+  const cachedData = useRef<PositionModel[]>();
 
   const fetchedAddress = useMemo(() => {
     return address || account?.address;
@@ -55,6 +48,23 @@ export const usePositionData = (address?: string) => {
 
       return false;
     },
+    onSuccess(data) {
+      const haveNewData = JSON.stringify(data) !== JSON.stringify(cachedData.current);
+      if(haveNewData) {
+        cachedData.current = data;
+      }
+      setShouldShowLoading(haveNewData);
+    },
+    onError(err) {
+      if((err as AxiosError).response?.status === 404) {
+        const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current);
+  
+        if(haveNewData) {
+          cachedData.current = data;
+        }
+        setShouldShowLoading(haveNewData);
+      }
+    }
   });
 
   useEffect(() => {
@@ -221,7 +231,9 @@ export const usePositionData = (address?: string) => {
   );
 
   const loading = useMemo(() => {
-    return (isPositionLoading && walletConnected) || isLoadingCommon;
+    const shouldPositionLoading = shouldShowLoading && isPositionLoading;
+    
+    return (shouldPositionLoading && walletConnected) || isLoadingCommon;
   }, [walletConnected, isLoadingCommon, isPositionLoading]);
 
   return {
