@@ -50,7 +50,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
         <div className="value">
           <div>
             <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
-            <p>Unclaimed Fees {isNotMobile ? tokenA?.symbol : ""}</p>
+            <p>Unclaimed {isNotMobile ? tokenA?.symbol : ""} Fees</p>
           </div>
           <p>{pooledTokenInfos?.unClaimTokenAAmount}</p>
         </div>
@@ -60,7 +60,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
         <div className="value">
           <div>
             <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
-            <p>Unclaimed Fees {isNotMobile ? tokenB?.symbol : ""}</p>
+            <p>Unclaimed {isNotMobile ? tokenB?.symbol : ""} Fees</p>
           </div>
           <p>{pooledTokenInfos?.unClaimTokenBAmount}</p>
         </div>

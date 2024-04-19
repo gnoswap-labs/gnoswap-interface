@@ -45,6 +45,7 @@ import { useCopy } from "@hooks/common/use-copy";
 import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -276,12 +277,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const price = tickToPriceStr(position?.pool?.currentTick, 40);
 
     if (isSwap) {
-      return `1 ${tokenB?.symbol} = ${convertToKMB(
+      return <>1 {tokenB?.symbol} = <ExchangeRate value={convertToKMB(
         `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
         6,
-      )} ${tokenA?.symbol}`;
+      )}/> {tokenA?.symbol}</>;
     }
-    return `1 ${tokenA?.symbol} = ${price} ${tokenB?.symbol}`;
+    return <>1 {tokenA?.symbol} = <ExchangeRate value={price}/> {tokenB?.symbol}</>;
   }, [
     isSwap,
     tokenB?.symbol,
@@ -453,7 +454,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/reposition");
     }
   };
-
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
@@ -554,8 +554,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + "/add")}/>
-              {!isClosed && !isHiddenAddPosition && connected && (
+              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&type=Custom`)}/>
+              {!position.staked && !isClosed && !isHiddenAddPosition && connected && (
                 <SelectBox
                   current={"Manage"}
                   items={[
@@ -723,7 +723,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           {!loading && (
             <div className="convert-price">
               <div>
-                1 {(!isSwap ? tokenA : tokenB)?.symbol} = {minPriceStr}{" "}
+                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr}/>{" "}
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={startClass}>
                   {!isSwap ? minTickLabel : maxTickLabel}
@@ -744,7 +744,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 &nbsp;
               </div>
               <div>
-                ~ {maxPriceStr} {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                ~ <ExchangeRate value={maxPriceStr}/> {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}
                 </span>

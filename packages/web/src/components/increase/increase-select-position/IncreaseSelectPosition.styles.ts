@@ -37,6 +37,9 @@ export const IncreaseSelectPositionWrapper = styled.div<Props>`
   h5 {
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body12}
+    &.enter-increase-amount {
+      color: ${({ theme }) => theme.color.text10};
+    }
   }
   
   ${media.mobile} {

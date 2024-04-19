@@ -49,7 +49,7 @@ export const PoolGraphTooltipWrapper = styled.div`
       display: flex;
       flex-direction: row;
       width: 100%;
-      gap: 16px;
+      gap: 8px;
       & > span {
         display: flex;
         flex-direction: row;
@@ -120,8 +120,11 @@ export const PoolGraphTooltipWrapper = styled.div`
         white-space: nowrap;
         word-break: break-all;
       }
-      &.mr-3 {
-        margin-left: -8px;
+      & .small-font {
+        font-size: 12px;
+      }
+      &.w-100 {
+        min-width: 108px;
       }
       img {
         width: 20px;
@@ -141,6 +144,9 @@ export const PoolGraphTooltipWrapper = styled.div`
 
     .price-range {
       width: 100%;
+    }
+    .small-font {
+      font-size: 12px;
     }
     ${media.mobile} {
       max-width: max-content;

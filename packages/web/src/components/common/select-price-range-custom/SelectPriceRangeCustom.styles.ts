@@ -107,7 +107,11 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     gap: 8px;
     color: ${({ theme }) => theme.color.text10};
     > span:first-of-type {
+      display: flex;
       color: ${({ theme }) => theme.color.text04};
+    }
+    > span:last-of-type {
+      display: flex;
     }
     ${fonts.body12};
   }

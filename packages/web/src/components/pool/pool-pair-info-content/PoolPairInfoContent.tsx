@@ -25,6 +25,7 @@ import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -236,7 +237,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {currentPrice} {pool?.tokenB?.symbol}
+                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = <ExchangeRate value={currentPrice}/> {pool?.tokenB?.symbol}
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
@@ -256,7 +257,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = {convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 ))}`, 6)} {pool?.tokenA?.symbol}
+                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = <ExchangeRate value={convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 ))}`, 6)}/> {pool?.tokenA?.symbol}
               </div>}
             </div>
           </div>

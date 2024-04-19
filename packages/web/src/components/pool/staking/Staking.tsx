@@ -48,6 +48,7 @@ const Staking: React.FC<StakingProps> = ({
           handleClickUnStakeRedirect={handleClickUnStakeRedirect}
           isUnstake={positions.length > 0}
           isOtherPosition={isOtherPosition}
+          isStaked={(pool?.rewardTokens?.length || 0) > 0}
         />
         <StakingContent
           pool={pool}

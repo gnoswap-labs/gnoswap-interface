@@ -100,7 +100,7 @@ const EarnMyPositionContainer: React.FC<
     }, [router, address]);
 
     const moveEarnStake = useCallback(() => {
-      router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/stake");
+      router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/staking");
     }, [router]);
 
 
@@ -154,7 +154,7 @@ const EarnMyPositionContainer: React.FC<
         addressName={addressName}
         isOtherPosition={!!isOtherPosition}
         visiblePositions={visiblePositions}
-        positionLength={isSwitchNetwork ? 0 : positions.length}
+        positionLength={positions.length}
         connected={connected}
         availableStake={availableStake}
         connect={connect}

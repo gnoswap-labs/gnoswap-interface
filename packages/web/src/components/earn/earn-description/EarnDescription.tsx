@@ -1,8 +1,6 @@
 import React from "react";
 import { EarnDescriptionWrapper } from "./EarnDescription.styles";
 import IconArrowRight from "@components/common/icons/IconArrowRight";
-import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
-import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 
 const EarnDescription: React.FC = () => {
   return (
@@ -13,10 +11,10 @@ const EarnDescription: React.FC = () => {
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            Want to know about positions and how to create one?
+            Learn about positions and how to create one.
           </div>
           <div className="link-wrapper">
-            <span>Learn about Positions</span>
+            <span>Go to User Guide</span>
             <IconArrowRight />
           </div>
         </div>
@@ -29,25 +27,13 @@ const EarnDescription: React.FC = () => {
         <div className="content-wrapper">
           <div className="description-wrapper">
             <span className="text">
-              Stake your position and earn rewards up to&nbsp;
+              Stake your position and earn up to&nbsp;
               <span className="highlight">
-              89% APR&nbsp;
-              <span className="logo">
-                <OverlapLogo
-                  size={20}
-                  logos={[GNS_TOKEN.logoURI, GNOT_TOKEN.logoURI]}
-                />
-              </span>
+              89% APR.
             </span>
             </span>
             <span className="highlight">
-              89% APR&nbsp;
-              <span className="logo">
-                <OverlapLogo
-                  size={20}
-                  logos={[GNS_TOKEN.logoURI, GNOT_TOKEN.logoURI]}
-                />
-              </span>
+              89% APR.
             </span>
           </div>
           <div className="link-wrapper">
@@ -59,14 +45,14 @@ const EarnDescription: React.FC = () => {
 
       <div className="card">
         <div className="title-wrapper">
-          Incentivize Pool
+          Join Community
         </div>
         <div className="content-wrapper">
           <div className="description-wrapper">
-            Want to boost up incentives for your favorite pools?
+            Discuss how to optimize your LP strategy.
           </div>
           <div className="link-wrapper">
-            Go to Incentivize
+            Go to Discord
             <IconArrowRight />
           </div>
         </div>

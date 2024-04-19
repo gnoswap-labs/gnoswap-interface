@@ -44,6 +44,11 @@ export function numberToFormat(num: string | number, decimals?: number) {
   return BigNumber(num).toFormat(decimal || 0);
 }
 
+export function numberToString(num: string | number, decimals?: number) {
+  const decimal = Number.isInteger(Number(num)) ? 0 : decimals;
+  return BigNumber(num).toFixed(decimal || 0);
+}
+
 export function displayTickNumber(range: number[], tick: number) {
   const rangeGap = (range[1] - range[0]) / 10;
   const rangeGapSplit = `${rangeGap}`.split(".");

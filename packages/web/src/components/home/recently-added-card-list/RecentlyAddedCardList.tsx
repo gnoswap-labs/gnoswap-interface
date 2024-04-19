@@ -4,12 +4,15 @@ import {
   RecentlyAddedCardListwrapper,
   SkeletonItem,
 } from "./RecentlyAddedCardList.styles";
-import IconClock from "@components/common/icons/IconClock";
+import IconPieChart from "@components/common/icons/IconPieChart";
 import { DEVICE_TYPE } from "@styles/media";
-import { CardListTokenInfo } from "@models/common/card-list-item-info";
+import { CardListKeyStats } from "@models/common/card-list-item-info";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import Link from "next/link";
+
 interface RecentlyAddedCardListProps {
-  list: Array<CardListTokenInfo>;
+  list: Array<CardListKeyStats>;
   device: DEVICE_TYPE;
   onClickItem: (path: string) => void;
   loading: boolean;
@@ -18,7 +21,6 @@ interface RecentlyAddedCardListProps {
 const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
   list,
   device,
-  onClickItem,
   loading,
 }) => {
   const visible = useMemo(() => {
@@ -32,10 +34,14 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
           <span css={pulseSkeletonStyle({ w: "40%", h: 25 })} />
         </SkeletonItem>
       ) : (
-        <div>
+        <div className="header-wrapper">
           <h2>
-            <IconClock className="icon-clock" /> New Listings
+            <IconPieChart className="icon-clock" /> Key Stats
           </h2>
+          <Link href="/dashboard" className="link-to-dashboard">
+            Go to Dashboard
+            <IconStrokeArrowRight />
+          </Link>
         </div>
       )}
       {loading ? (
@@ -51,7 +57,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({
           </SkeletonItem>
         </>
       ) : (
-        <CardList list={list} onClickItem={onClickItem} isHiddenIndex />
+        <CardList list={list} onClickItem={() => {}} />
       )}
     </RecentlyAddedCardListwrapper>
   ) : null;

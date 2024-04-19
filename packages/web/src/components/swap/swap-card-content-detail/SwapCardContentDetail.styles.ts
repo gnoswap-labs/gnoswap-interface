@@ -53,6 +53,7 @@ export const DetailWrapper = styled.div<WrapperProps>`
           ${fonts.p2};
         }
         .swap-rate {
+          ${mixins.flexbox("row", "center", "flex-start")};
           cursor: pointer;
           color: ${({ theme }) => theme.color.text10};
         }

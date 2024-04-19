@@ -259,6 +259,11 @@ export const TransactionConfirmModalWrapper = styled.div`
       }
       .swap-message {
         ${fonts.body12};
+        text-align: center;
+        margin: 0 20px;
+        ${media.mobile} {
+          margin: 0 10px;
+        }
         color: ${({ theme }) => theme.color.text02};
       }
       .view-transaction {

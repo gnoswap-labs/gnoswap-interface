@@ -36,7 +36,10 @@ export const EarnDescriptionWrapper = styled.div`
       display: flex;
       flex-direction: row;
       align-items: center;
-      ${fonts.body11}
+      ${fonts.p2}
+      ${media.tablet} {
+        ${fonts.p4}
+      }
       color: ${({ theme }) => theme.color.text04};
       white-space: nowrap;
       .text {
@@ -53,7 +56,7 @@ export const EarnDescriptionWrapper = styled.div`
         flex-direction: row;
         align-items: center;
         height: 18px;
-        background: linear-gradient(308deg, #536cd7 0%, #a7b9f8 100%);
+        background: ${({ theme }) => theme.color.text32};
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-background-clip: text;
@@ -69,7 +72,7 @@ export const EarnDescriptionWrapper = styled.div`
       color: ${({ theme }) => theme.color.text08};
       display: flex;
       flex-direction: row;
-      ${fonts.body11}
+      ${fonts.p1}
       cursor: pointer;
       svg * {
         fill: ${({ theme }) => theme.color.text08};
@@ -98,12 +101,13 @@ export const EarnDescriptionWrapper = styled.div`
         }
       }
       .link-wrapper {
-        ${fonts.p1}
+        ${fonts.p3}
 
       }
     }
     ${media.mobile} {
-      min-width: 280px;
+      padding: 12px 12px 12px 16px;
+      min-width: 322px;
     }
   }
 `;

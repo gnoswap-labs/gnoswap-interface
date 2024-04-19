@@ -13,7 +13,7 @@ export function makeDisplayTokenAmount(
   token: TokenModel,
   amount: bigint | string | number,
 ) {
-  const number = BigNumber(Math.floor(Number(amount)));
+  const number = BigNumber(Number(amount));
   if (number.isNaN()) {
     return null;
   }

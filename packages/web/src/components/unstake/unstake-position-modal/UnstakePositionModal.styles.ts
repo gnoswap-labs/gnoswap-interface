@@ -145,6 +145,29 @@ export const UnstakePositionModalWrapper = styled.div`
               ${fonts.p4}
             }
           }
+          .protocal-wrapper {
+            .protocol {
+              margin-top: 8px;
+              ${mixins.flexbox("row", "center", "space-between")};
+              width: 100%;
+              gap: 4px;
+              color: ${({ theme }) => theme.color.text04};
+              > div {
+                ${mixins.flexbox("row", "center", "flex-start")};
+                gap: 4px;
+              }
+              span {
+                ${fonts.body12}
+               }
+              svg {
+                width: 16px;
+                height: 16px;
+                * {
+                  fill: ${({ theme }) => theme.color.icon03};
+                }
+              }
+            }
+          }
         }
       }
       > div {
@@ -191,8 +214,12 @@ export const Divider = styled.div`
   border-top: 1px solid ${({ theme }) => theme.color.border02};
 `;
 
-export const ToolTipContentWrapper = styled.div`
-  width: 268px;
+interface Props {
+  width?: string;
+}
+
+export const ToolTipContentWrapper = styled.div<Props>`
+  width: ${({ width }) => width ? width : "268px"};
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
 `;

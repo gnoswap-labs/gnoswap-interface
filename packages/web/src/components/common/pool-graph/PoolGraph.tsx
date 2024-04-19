@@ -494,7 +494,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
         <div className="row">
           <span className="token token-title">Token</span>
           <span className="amount total-amount">Total Amt.</span>
-          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount mr-3">Position{"'"}s Amt.</span> : ""}
+          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount w-100">Position{"'"}s Amt.</span> : ""}
           <span className="price-range">Price Range</span>
         </div>
       </div>
@@ -506,12 +506,12 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20} />
-            <span className="hidden">{tooltipInfo.tokenAAmount || "0"}</span>
+            <span className={`hidden ${(tooltipInfo.tokenAAmount || "0").length > 21 ? "small-font" : ""}`}>{tooltipInfo.tokenAAmount || "0"}</span>
           </span>
-          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount mr-3">
+          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount w-100">
             <span className="hidden">{tooltipInfo.myTokenAAmount || "0"}</span>
           </span> : ""}
-          <span className="price-range" style={tokenAPriceRangeStr.length > 21 ? { fontSize: "12px"} : {}}>{tokenAPriceRangeStr}</span>
+          <span className={`price-range ${(tokenAPriceRangeStr.length || "0") > 21 ? "small-font" : ""}`}>{tokenAPriceRangeStr}</span>
         </div>
         <div className="row">
           <span className="token">
@@ -520,12 +520,12 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20} />
-            <span className="hidden">{tooltipInfo.tokenBAmount || "0"}</span>
+            <span className={`hidden ${(tooltipInfo.tokenBAmount || "0").length > 21 ? "small-font" : ""}`}>{tooltipInfo.tokenBAmount || "0"}</span>
           </span>
-          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount  mr-3">
-            <span className="hidden">{tooltipInfo.myTokenBAmount || "0"}</span>
+          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount  w-100">
+            <span className="hidden" >{tooltipInfo.myTokenBAmount || "0"}</span>
           </span> : ""}
-          <span className="price-range" style={tokenBPriceRangeStr.length > 21 ? { fontSize: "12px"} : {}}>{tokenBPriceRangeStr}</span>
+          <span className={`price-range ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""}`}>{tokenBPriceRangeStr}</span>
         </div>
       </div>
     </div>
