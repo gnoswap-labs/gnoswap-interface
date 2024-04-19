@@ -232,7 +232,6 @@ export const usePositionData = (address?: string) => {
 
   const loading = useMemo(() => {
     const shouldPositionLoading = shouldShowLoading && isPositionLoading;
-    
     return (shouldPositionLoading && walletConnected) || isLoadingCommon;
   }, [walletConnected, isLoadingCommon, isPositionLoading]);
 
