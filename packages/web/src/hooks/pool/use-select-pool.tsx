@@ -17,6 +17,7 @@ interface Props {
   feeTier: SwapFeeTierType | null;
   isCreate?: boolean;
   startPrice?: number | null,
+  defaultPriceRange: [number | null, number | null]
 }
 
 export interface SelectPool {
@@ -64,14 +65,17 @@ export const useSelectPool = ({
   feeTier,
   isCreate = false,
   startPrice = null,
+  defaultPriceRange,
 }: Props) => {
+  const [ defaultMinPosition, defaultMaxPosition ] = defaultPriceRange;
+
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
   const [zoomLevel, setZoomLevel] = useState<number>(9);
   const { poolRepository } = useGnoswapContext();
-  const [minPosition, setMinPosition] = useState<number | null>(null);
-  const [maxPosition, setMaxPosition] = useState<number | null>(null);
+  const [minPosition, setMinPosition] = useState<number | null>(defaultMinPosition ?? null);
+  const [maxPosition, setMaxPosition] = useState<number | null>(defaultMaxPosition ?? null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
   const [poolInfo, setPoolInfo] = useState<PoolDetailRPCModel | null>(null);
   const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
@@ -360,6 +364,7 @@ export const useSelectPool = ({
       }
       const minNearTick = priceToNearTick(minPosition, tickSpacing);
       const maxNearTick = priceToNearTick(maxPosition, tickSpacing);
+      // Possible bug
       setMaxPosition(tickToPrice(minNearTick));
       setMaxPosition(tickToPrice(maxNearTick));
       setInteractionType("FINISH");

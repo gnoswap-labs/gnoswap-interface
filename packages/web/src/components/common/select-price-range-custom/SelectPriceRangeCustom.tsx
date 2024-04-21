@@ -53,7 +53,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   isKeepToken,
 }) => {
   const router = useRouter();
-  const { tickUpper, tickLower } = router?.query;
+  // const { tickUpper, tickLower } = router?.query;
 
   const { getGnotPath } = useGnotToGnot();
   const { isLoadingCommon } = useLoading();
@@ -61,17 +61,19 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const GRAPH_HEIGHT = 160;
   const [startingPriceValue, setStartingPriceValue] = useState<string>("");
   const [tempPrice, setTempPrice] = useState<string>("");
+
   function getPriceRange(price?: number | null) {
     const currentPriceRangeType = priceRangeType;
     const currentPrice = price || selectPool.currentPrice || 1;
     if (!selectPool.feeTier || !currentPriceRangeType) {
       return [0, currentPrice * 2];
     }
-
     const visibleRate = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType].max / 100;
     const range = currentPrice * visibleRate;
+
     return [currentPrice - range, currentPrice + range];
   }
+
   function getScaleRange() {
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
@@ -141,6 +143,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     }
     return <>1 {currentTokenA.symbol} =&nbsp;<ExchangeRate value={startingPriceValue}/>&nbsp; {currentTokenB.symbol}</>;
   }, [currentTokenA, currentTokenB, defaultPrice, selectPool.isCreate, startingPriceValue]);
+
+  useEffect(() => {
+    resetRange();
+  }, [priceRangeType]);
 
   const onClickTabItem = useCallback((symbol: string) => {
     const compareToken = tokenA.symbol === symbol ? tokenA : tokenB;
@@ -224,12 +230,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [tokenA]);
 
   useEffect(() => {
-        
-    if (tickUpper && tickLower && router.isReady) {
-      selectPool.setMinPosition(tickToPrice(Number(tickLower)));
-      selectPool.setMaxPosition(tickToPrice(Number(tickUpper)));
-      return;
-    }
     resetRange(priceRangeType);
   }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice, router.isReady]);
 
@@ -292,25 +292,25 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     selectType={getGnotPath(selectPool.compareToken)?.symbol || ""}
                     list={[!isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol, isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol]}
                     onClick={onClickTabItem}
-                  />
-                 <div className="button-option-contaier">
-                  <div className="graph-option-wrapper">
-                      <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
-                        <IconKeyboardArrowLeft />
-                      </span>
-                      <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
-                        <IconKeyboardArrowRight />
-                      </span>
-                    </div>
+                />
+                  <div className="button-option-contaier">
                     <div className="graph-option-wrapper">
-                      <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
-                        <IconRemove />
-                      </span>
-                      <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
-                        <IconAdd />
-                      </span>
-                    </div>
-                 </div>
+                        <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                          <IconKeyboardArrowLeft />
+                        </span>
+                        <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                          <IconKeyboardArrowRight />
+                        </span>
+                      </div>
+                      <div className="graph-option-wrapper">
+                        <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                          <IconRemove />
+                        </span>
+                        <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                          <IconAdd />
+                        </span>
+                      </div>
+                  </div>
                 </div>
               )}
 

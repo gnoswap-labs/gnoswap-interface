@@ -246,8 +246,9 @@ export interface PoolSelectionGraphProps {
   setIsChangeMinMax: (value: boolean) => void;
 }
 
-const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
-  feeTier,
+const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = (props) => {
+  const {
+    feeTier,
   scaleX,
   scaleY,
   liquidityOfTickPoints,
@@ -269,7 +270,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     bottom: 0,
   },
   setIsChangeMinMax,
-}) => {
+  } = props;
   const [selectionColor, setSelectionColor] = useState(getSelectionColor("0", "0"));
   const svgRef = useRef(null);
   const chartRef = useRef<SVGGElement | null>(null);
