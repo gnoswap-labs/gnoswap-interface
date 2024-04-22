@@ -182,7 +182,6 @@ const TokenChartContainer: React.FC = () => {
     refetchInterval: 1000 * 10,
   });
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
-
   useEffect(() => {
     if (tokenB) {
       const dataToday = checkPositivePrice(

@@ -40,7 +40,6 @@ export const useTokenData = () => {
   });
   const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
-
   const { account } = useWallet();
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
@@ -64,7 +63,7 @@ export const useTokenData = () => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
     if (tokens.length === 0 || isEmptyObject(balances)) return {};
     Object.keys(balances).forEach(key => {
-      const token = tokens.find(token => token.priceId === key);
+      const token = tokens.find(token => token.priceID === key);
       const balance = balances[key];
       const exist = token && balance !== null && balance !== undefined;
       tokenBalanceMap[key] = exist
@@ -92,8 +91,8 @@ export const useTokenData = () => {
         return 0;
       })
       .filter((_, index) => index < 3);
-    return sortedTokens.map(token => {
-      const tokenPrice = tokenPrices[token.priceId];
+      return sortedTokens.map(token => {
+      const tokenPrice = tokenPrices[token.priceID];
       if (
         !tokenPrice ||
         BigNumber(tokenPrice.pricesBefore.latestPrice).isNaN() ||
@@ -126,7 +125,6 @@ export const useTokenData = () => {
       };
     });
   }, [tokens, tokenPrices]);
-
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1, t2) => {
@@ -225,7 +223,7 @@ export const useTokenData = () => {
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balancesData[tokens[index].priceId] = result;
+        balancesData[tokens[index].priceID] = result;
       }
     });
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {

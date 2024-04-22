@@ -9,6 +9,7 @@ import { useAtom } from "jotai";
 import { SwapState } from "@states/index";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { toUnitFormat } from "@utils/number-utils";
 
 export interface LiquidityInfo {
   feeTier: string;
@@ -92,7 +93,7 @@ const SwapLiquidityContainer: React.FC = () => {
         count++;
         return {
           ..._,
-          volume: `$${convertToKMB(Number(poolItem[0].volume).toFixed(2).toString(), 2)}`,
+          volume: `${toUnitFormat(Number(poolItem[0].volume), true, true)}`,
           liquidity: `$${convertToKMB(poolItem[0].tvl.toString(), 2)}`,
           apr: !poolItem[0].apr ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
           active: true,

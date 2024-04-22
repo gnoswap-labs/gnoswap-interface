@@ -16,7 +16,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
   const router = useRouter();
   const { breakpoint } = useWindowSize();
-  const { loading } = useTokenData();
+  const { loading, isLoadingTokenPrice } = useTokenData();
   const { loading: isLoadingPoolData } = usePoolData();
   const { isLoadingCommon } = useLoading();
   const { data: tvlData } = useQuery<TvlResponse, Error>({
@@ -58,7 +58,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
       list={list}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={loading || isLoadingPoolData || isLoadingCommon}
+      loading={loading || isLoadingPoolData || isLoadingCommon || isLoadingTokenPrice}
     />
   );
 };

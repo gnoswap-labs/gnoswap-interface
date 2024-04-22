@@ -194,11 +194,11 @@ function changeLine(
   lineElement.select("svg").attr("x", 0);
 
 
-  const priceId = `${type}-price-${type === "start" ? selectionColor.startPercent : `${selectionColor.endPercent}`}`;
+  const priceID = `${type}-price-${type === "start" ? selectionColor.startPercent : `${selectionColor.endPercent}`}`;
   const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
   
   const margin = right === false ? (type === "end" ? -51 : -62) : (type === "end" ? 12 : 1);
-  const labelWrapper = lineElement.select(`#${priceId}`);
+  const labelWrapper = lineElement.select(`#${priceID}`);
   labelWrapper
     .select("rect")
     .attr("x", margin)

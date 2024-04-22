@@ -41,12 +41,17 @@ export const TABLE_HEAD = {
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 export const ACTIVITY_TYPE = {
-  ALL: "All",
-  SWAPS: "Swaps",
-  ADDS: "Adds",
-  REMOVES: "Removes",
-  STAKES: "Stakes",
-  UNSTAKE: "Unstakes",
+  ALL: "ALL",
+  SWAPS: "SWAP",
+  ADDS: "ADD",
+  REMOVES: "REMOVE",
+  STAKES: "STAKE",
+  UNSTAKE: "UNSTAKE",
+  INCREASE: "INCREASE",
+  DECREASE: "DECREASE",
+  CLAIM: "CLAIM",
+  WITHDRAW: "WITHDRAW",
+  REMOVE: "REMOVE",
 } as const;
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
@@ -114,7 +119,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const {
     isFetched,
     error,
-    data: activities,
+    data: activities = [],
   } = useQuery<OnchainActivityResponse, Error>({
     queryKey: [
       "activities",
@@ -134,7 +139,6 @@ const DashboardActivitiesContainer: React.FC = () => {
       ACTIVITY_TYPE["ALL"];
     setActivityType(activityType);
   }, []);
-
   const movePage = useCallback((newPage: number) => {
     setPage(newPage);
   }, []);

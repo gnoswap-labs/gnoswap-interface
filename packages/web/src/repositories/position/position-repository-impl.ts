@@ -43,7 +43,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
     const response = await this.networkClient.get<PositionListResponse>({
-      url: "/positions/" + address,
+      url: "/users/" + address + "/position",
     });
     return PositionMapper.fromList(response.data);
   };
