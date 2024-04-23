@@ -1,3 +1,3 @@
 export interface OnchainRequest {
-  type: "All" | "Swaps" | "Adds" | "Removes" | "Stakes" | "Unstakes";
+  type: "ALL" | "ADD" | "INCREASE" | "DECREASE" | "SWAP" | "STAKE" | "UNSTAKE" | "CLAIM" | "WITHDRAW" | "REMOVE";
 }

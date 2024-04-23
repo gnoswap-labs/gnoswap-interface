@@ -154,7 +154,6 @@ const VolumeChartContainer: React.FC = () => {
       CHART_TYPE["7D"];
     setVolumeChartType(volumeChartType);
   }, []);
-
   const chartData = useMemo(() => {
     if (!volumeData?.all)
       return {
@@ -162,20 +161,20 @@ const VolumeChartContainer: React.FC = () => {
         datas: [],
         times: [],
       } as VolumeChartInfo;
-    let chartData = volumeData?.last_7d;
+    let chartData = volumeData?.last7d;
 
     switch (volumeChartType) {
       case "30D":
-        chartData = volumeData?.last_1m;
+        chartData = volumeData?.last1m;
         break;
       case "90D":
-        chartData = volumeData?.last_1y;
+        chartData = volumeData?.last1y;
         break;
       case "ALL":
         chartData = volumeData?.all;
         break;
       default:
-        chartData = volumeData?.last_7d;
+        chartData = volumeData?.last7d;
         break;
     }
 
@@ -184,7 +183,7 @@ const VolumeChartContainer: React.FC = () => {
         const time = parseDate(next.date);
         return {
           xAxisLabels: [...pre.xAxisLabels, time],
-          datas: [...pre.datas, next.price],
+          datas: [...pre.datas, next.volumeUsd],
           times: [...pre.times, time],
         };
       },

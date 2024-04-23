@@ -206,7 +206,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     }
     try {
       const { data } = await this.networkClient.get<AccountActivity[]>({
-        url: "/onchain_all" + "/" + request.address,
+        url: "/users" + "/" + request.address + "/activity",
       });
 
       return data;

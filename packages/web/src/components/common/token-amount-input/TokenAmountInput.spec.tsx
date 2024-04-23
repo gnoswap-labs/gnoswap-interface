@@ -14,7 +14,7 @@ const token: TokenModel = {
   symbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
-  priceId: "gno.land/r/gns"
+  priceID: "gno.land/r/gns"
 };
 
 describe("TokenAmountInput Component", () => {

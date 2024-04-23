@@ -36,7 +36,7 @@ export function wait<T>(
 
 export function makeId(value: string) {
   // return CryptoJS.SHA256(value, "gnot").toString();
-  return value.replace(/\//g, "_");
+  return value?.replace(/\//g, "_");
 }
 
 export function encryptId(value: string) {
@@ -68,8 +68,8 @@ export const checkPositivePrice = (
 
   const value =
     checkPrice >= currentPrice
-      ? ((currentToNumber / checkToNumber - 1) * 100).toFixed(2)
-      : ((1 - currentToNumber / checkToNumber) * 100).toFixed(2);
+      ? ((currentToNumber / (checkToNumber - 1 || 1)) * 100).toFixed(2)
+      : ((1 - currentToNumber / (checkToNumber || 1)) * 100).toFixed(2);
   const isEmpty = !currentPrice || !checkPrice;
   const status = isEmpty
     ? MATH_NEGATIVE_TYPE.NONE
@@ -80,7 +80,7 @@ export const checkPositivePrice = (
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
       : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
-          Number(value)
+          Number(value || 0)
         ).toFixed(2)}%`;
   const price =
     status === MATH_NEGATIVE_TYPE.NONE

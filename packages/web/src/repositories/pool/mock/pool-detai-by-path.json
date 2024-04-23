@@ -9,7 +9,7 @@
         "decimals": 4,
         "symbol": "BAR",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-        "priceId": "gno.land/r/gns"
+        "priceID": "gno.land/r/gns"
     },
     "tokenB": {
         "type": "grc20",
@@ -20,7 +20,7 @@
         "decimals": 4,
         "symbol": "BAR",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-        "priceId": "gno.land/r/gns"
+        "priceID": "gno.land/r/gns"
     },
     "tvl": "0.0",
     "tvlChange": "0.0",

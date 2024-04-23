@@ -78,8 +78,8 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    const pools = response?.data?.pools ? 
-      response.data.pools.map(PoolMapper.fromResponse) :
+    const pools = response?.data?.data ? 
+      response.data.data.map(PoolMapper.fromResponse) :
       [];
     return pools;
   };
@@ -88,7 +88,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<PoolDetailModel> => {
     const pool = await this.networkClient.get<PoolResponse>({
-      url: "/pool_details/" + poolPath,
+      url: "/pools/" + poolPath,
     }).then(response => PoolMapper.detailFromResponse(response.data));
     return pool;
   };
@@ -307,7 +307,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<IPoolDetailResponse> => {
     const response = await this.networkClient.get<IPoolDetailResponse>({
-      url: "/pool_details/" + poolPath,
+      url: "/pools/" + poolPath,
     });
     return response.data;
   };
