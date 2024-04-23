@@ -143,7 +143,6 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
     } = request;
     const gasFee = 1;
-    const gasWanted = 2000000;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
     const messages = [];
@@ -195,7 +194,6 @@ export class PoolRepositoryImpl implements PoolRepository {
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee,
-      gasWanted,
     });
     if (result.code !== 0) {
       throw new Error(`${result}`);
@@ -239,7 +237,6 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
     } = request;
     const gasFee = 1;
-    const gasWanted = 2000000;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
     const messages = [];
@@ -282,7 +279,6 @@ export class PoolRepositoryImpl implements PoolRepository {
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee,
-      gasWanted,
     });
     const data = result.data as SendTransactionSuccessResponse<string[]>;
     if (data.data === null || !Array.isArray(data.data) || data.data.length < 4) {
@@ -348,7 +344,6 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
@@ -378,7 +373,6 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });

@@ -201,7 +201,6 @@ export class SwapRepositoryImpl implements SwapRepository {
           ],
         },
       ],
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });

@@ -188,7 +188,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     });
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
@@ -237,7 +236,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     );
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
@@ -265,7 +263,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     messages.push(makeWithdrawMessage(tokenPath, tokenAmountRaw, address));
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
