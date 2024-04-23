@@ -2,7 +2,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { EarnAddLiquidityWrapper, OutOfRangeWrapper } from "./EarnAddLiquidity.styles";
-import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType } from "@constants/option.constant";
+import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType, PriceRangeType } from "@constants/option.constant";
 import { AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
 import SelectPair from "@components/common/select-pair/SelectPair";
@@ -59,6 +59,8 @@ interface EarnAddLiquidityProps {
   fetching: boolean;
   handleSwapValue: () => void;
   isKeepToken: boolean;
+  setPriceRange: (type?: PriceRangeType) => void;
+  defaultPriceRange?: [number | null, number | null];
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -93,6 +95,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   fetching,
   handleSwapValue,
   isKeepToken,
+  setPriceRange,
+  defaultPriceRange,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -309,6 +313,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             handleSwapValue={handleSwapValue}
             isEmptyLiquidity={isEmptyObject(feetierOfLiquidityMap)}
             isKeepToken={isKeepToken}
+            setPriceRange={setPriceRange}
+            defaultPriceRange={defaultPriceRange}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
           {!isLoading && isShowOutRange && <OutOfRangeWrapper>

@@ -17,7 +17,7 @@ interface Props {
   feeTier: SwapFeeTierType | null;
   isCreate?: boolean;
   startPrice?: number | null,
-  defaultPriceRange: [number | null, number | null]
+  defaultPriceRange?: [number | null, number | null]
 }
 
 export interface SelectPool {
@@ -67,21 +67,31 @@ export const useSelectPool = ({
   startPrice = null,
   defaultPriceRange,
 }: Props) => {
-  const [ defaultMinPosition, defaultMaxPosition ] = defaultPriceRange;
+  const [ defaultMinPosition, defaultMaxPosition ] = defaultPriceRange ?? [null, null];
+  // const isInitialedPriceRange = useRef(false);
 
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
   const [zoomLevel, setZoomLevel] = useState<number>(9);
   const { poolRepository } = useGnoswapContext();
-  const [minPosition, setMinPosition] = useState<number | null>(defaultMinPosition ?? null);
-  const [maxPosition, setMaxPosition] = useState<number | null>(defaultMaxPosition ?? null);
+  const [minPosition, setMinPosition] = useState<number | null>(null);
+  const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
   const [poolInfo, setPoolInfo] = useState<PoolDetailRPCModel | null>(null);
   const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
+  // TODO Remove after all issue of the position form fixed
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
   const { isLoadingCommon } = useLoading();
+
+  // useEffect(() => {
+  //   if(defaultMinPosition && defaultMaxPosition && isInitialedPriceRange.current === false) {
+  //     setMinPosition(defaultMinPosition);
+  //     setMaxPosition(defaultMaxPosition);
+  //     isInitialedPriceRange.current = true;
+  //   }
+  // }, []);
 
   const poolPath = useMemo(() => {
     setCurrentPoolPath(latestPoolPath);
@@ -270,8 +280,8 @@ export const useSelectPool = ({
     excuteInteraction(() => {
       setZoomLevel(9);
       setFullRange(false);
-      changeMinPosition(null);
-      changeMaxPosition(null);
+      changeMinPosition(defaultMinPosition);
+      changeMaxPosition(defaultMaxPosition);
     });
   }, [interactionType]);
 

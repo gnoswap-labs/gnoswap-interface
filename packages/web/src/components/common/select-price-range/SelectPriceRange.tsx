@@ -1,4 +1,4 @@
-import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
+import { PriceRangeStr, PriceRangeTooltip, PriceRangeType } from "@constants/option.constant";
 import React, { useCallback, useMemo } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -23,6 +23,8 @@ interface SelectPriceRangeProps {
   handleSwapValue: () => void;
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
+  setPriceRange: (type?: PriceRangeType) => void;
+  defaultPriceRange?: [number | null, number | null];
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -39,6 +41,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   handleSwapValue,
   isEmptyLiquidity,
   isKeepToken,
+  setPriceRange,
+  defaultPriceRange,
 }) => {
   const selectedTokenPair = true;
 
@@ -72,6 +76,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           handleSwapValue={handleSwapValue}
           isEmptyLiquidity={isEmptyLiquidity}
           isKeepToken={isKeepToken}
+          setPriceRange={setPriceRange}
+          defaultPriceRange={defaultPriceRange}
         />
       )}
     </SelectPriceRangeWrapper>

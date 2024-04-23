@@ -18,12 +18,12 @@ import { usePool } from "@hooks/pool/use-pool";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
+// import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
-import { makeQueryString } from "@hooks/common/use-url-param";
-import { isNumber } from "@utils/number-utils";
-import { useSearchParams } from "next/navigation";
+// import { makeQueryString } from "@hooks/common/use-url-param";
+// import { isNumber } from "@utils/number-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -58,12 +58,7 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const router = useRouter();
-  const { customTickLower, customTickUpper } = router.query;
-  const searchParams = useSearchParams();
-
-  const defaultPriceRangeType = searchParams.get("price_range_type");
-
-  const [isEarnAdd, setIsEarnAdd] = useAtom(EarnState.isOneClick);
+  const [isEarnAdd, setIsEarnAdd] = useAtom(EarnState.isOneClick); // Not used any more
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isReverted, isKeepToken = false } = swapValue;
 
@@ -72,11 +67,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">("EXACT_IN");
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>("FEE_3000");
   const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(
-    () => {
-      return PRICE_RANGES.find(item => item.type === (defaultPriceRangeType || "Passive"))!;
-    }
-  );
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(null);
   const [initialized, setInitialized] = useState(false);
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
 
@@ -97,10 +88,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     feeTier: swapFeeTier, 
     isCreate: createOption.isCreate, 
     startPrice: createOption.startPrice,
-    defaultPriceRange: [ 
-      customTickLower ? tickToPrice(Number(customTickLower)) : null, 
-      customTickUpper ? tickToPrice(Number(customTickUpper)) : null
-    ],
   });
   const { fetching, pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken, isReverted });
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
@@ -193,34 +180,22 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return "CREATE_POOL";
   }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice, selectPool.compareToken?.path, selectPool.depositRatio]);
 
-  const selectSwapFeeTier = useCallback((swapFeeTier: SwapFeeTierType) => {
-    setSwapFeeTier(swapFeeTier);
-    const existsSwapFeeTiers = pools.map(pool => makeSwapFeeTier(pool.fee));
-    const existPool = existsSwapFeeTiers.includes(swapFeeTier);
+  const selectSwapFeeTier = useCallback((feeTier: SwapFeeTierType) => {
+    setSwapFeeTier(feeTier);
+    const poolFeeTier = pools.map(pool => makeSwapFeeTier(pool.fee));
+    const existPool = poolFeeTier.includes(feeTier);
 
     setCreateOption((prev) => ({
       isCreate: !existPool,
       startPrice: existPool ? null : prev.startPrice
     }));
-    // if (existPool) {
-    //   setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
-    // } else {
-    //   setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
-    // }
+
+    if (existPool) {
+      setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
+    } else {
+      setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
+    }
   }, [pools, priceRanges]);
-
-
-  // useEffect(() => {
-  //   const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
-
-  //   if(currentPrice && selectPool.feeTier && priceRange?.type) {
-  //     const currentPriceRange = SwapFeeTierPriceRange[selectPool.feeTier][priceRange.type];
-  //     const minRateAmount = currentPrice * (currentPriceRange.min / 100);
-  //     const maxRateAmount = currentPrice * (currentPriceRange.max / 100);
-  //     selectPool.setMinPosition(currentPrice + minRateAmount);
-  //     selectPool.setMaxPosition(currentPrice + maxRateAmount);
-  //   }
-  // }, [priceRange?.type, selectPool]);
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
@@ -236,8 +211,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [selectPool.isChangeMinMax]);
 
   useEffect(() => {
-    setPriceRange(PRICE_RANGES.find(item => item.type === (defaultPriceRangeType || "Passive")) || null);
-  }, [defaultPriceRangeType]);
+    if (priceRange?.type !== "Custom") {
+      selectPool.setIsChangeMinMax(false);
+    } else {
+      selectPool.setIsChangeMinMax(true);
+    }
+  }, [priceRange?.type]);
 
   const changeTokenA = useCallback((token: TokenModel) => {
     setSwapValue((prev) => {
@@ -472,8 +451,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [pools, selectPool.compareToken, tokenA, tokenB]);
 
-
-
   useEffect(() => {
     if (fetching && !swapValue?.isEarnChanged) {
       if (router.query?.fee_tier) {
@@ -502,21 +479,23 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
   }, [swapValue, setSwapValue, isKeepToken]);
 
-  useEffect(() => {
-    const queryString = makeQueryString({
-      tokenA: tokenA?.path,
-      tokenB: tokenB?.path,
-      fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
-      price_range_type: priceRange?.type,
-      ...((priceRange?.type === "Custom") && {
-        customTickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
-        customTickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
-      }),
-    });
-    if (tokenA?.path && tokenB?.path) {
-      router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
-    }
-  }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
+  // useEffect(() => {
+  //   const queryString = makeQueryString({
+  //     tokenA: tokenA?.path,
+  //     tokenB: tokenB?.path,
+  //     fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
+  //     price_range_type: priceRange?.type,
+  //     ...((priceRange?.type === "Custom") && {
+  //       customTickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
+  //       customTickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
+  //     }),
+  //   });
+  //   if (tokenA?.path && tokenB?.path) {
+  //     router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
+  //   }
+  // }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
+
+  console.log("🚀 ~ selectPool.isChangeMinMax:", selectPool.isChangeMinMax);
 
   return (
     <EarnAddLiquidity
@@ -555,6 +534,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
       fetching={fetching}
       handleSwapValue={handleSwapValue}
       isKeepToken={isKeepToken}
+      /// Update with provided price range, if receive undefine set to default price range
+      setPriceRange={(type) => {
+        setPriceRange(PRICE_RANGES.find(item => item.type === (type || "Passive")) ?? null);
+      } }
     />
   );
 };
