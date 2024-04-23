@@ -41,17 +41,12 @@ export const TABLE_HEAD = {
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 export const ACTIVITY_TYPE = {
-  ALL: "ALL",
-  SWAPS: "SWAP",
-  ADDS: "ADD",
-  REMOVES: "REMOVE",
-  STAKES: "STAKE",
-  UNSTAKE: "UNSTAKE",
-  INCREASE: "INCREASE",
-  DECREASE: "DECREASE",
-  CLAIM: "CLAIM",
-  WITHDRAW: "WITHDRAW",
-  REMOVE: "REMOVE",
+  ALL: "All",
+  SWAPS: "Swaps",
+  ADDS: "Adds",
+  REMOVES: "Removes",
+  STAKES: "Stakes",
+  UNSTAKE: "Unstakes",
 } as const;
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
@@ -182,24 +177,24 @@ const DashboardActivitiesContainer: React.FC = () => {
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res.txHash}`;
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
-        res.token0.symbol,
-      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.token1.symbol)}`,
-      totalValue: Number(res.totalUsdValue) < 0.01 && Number(res.totalUsdValue) ? "<$0.01" : `$${prettyNumber(res.totalUsdValue)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount, true)} ${replaceToken(
-        res.token0.symbol,
+        res.tokenA.symbol,
+      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.tokenB.symbol)}`,
+      totalValue: Number(res.totalUsd) < 0.01 && Number(res.totalUsd) ? "<$0.01" : `$${prettyNumber(res.totalUsd)}`,
+      tokenAmountOne: `${prettyNumberFloatInteger(res.tokenAAmount, true)} ${replaceToken(
+        res.tokenA.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount, true)} ${replaceToken(
-        res.token1.symbol,
+      tokenAmountTwo: `${prettyNumberFloatInteger(res.tokenBAmount, true)} ${replaceToken(
+        res.tokenB.symbol,
       )}`,
       account: res.account,
       time: res.time,
       explorerUrl,
     };
   };
-
   return (
     <ActivityList
       activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
+
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

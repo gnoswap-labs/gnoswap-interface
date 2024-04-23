@@ -22,7 +22,7 @@ Default.args = {
   activities: dummyTokenList,
   isFetched: true,
   error: null,
-  activityType: "ALL",
+  activityType: "All",
   changeActivityType: action("changeActivityType"),
   currentPage: 0,
   totalPage: 10,

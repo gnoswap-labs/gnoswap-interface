@@ -57,10 +57,10 @@ export class TokenRepositoryImpl implements TokenRepository {
     path: string,
   ): Promise<ITokenDetailResponse> => {
     const tempPath = path.replace(/\//g, "%2F");
-    const response = await this.networkClient.get<ITokenDetailResponse>({
+    const response = await this.networkClient.get<{ data: ITokenDetailResponse }>({
       url: `/tokens/${tempPath}/details`,
     });
-    return response.data;
+    return response.data.data;
   };
 
   public getChain = async (): Promise<IChainResponse> => {
