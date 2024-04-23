@@ -38,8 +38,8 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   themeKey,
   showLoadMore,
 }) => (
-  <CardListWrapper loading={isLoading}>
-    <GridWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
+  <CardListWrapper $loading={isLoading}>
+    <GridWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
       {!isLoading &&
         positions.length > 0 &&
         positions.map((position, idx) => (

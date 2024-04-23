@@ -35,12 +35,11 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
-  const { incentivizedPools, isFetchedPools, updatePools, loading } = usePoolData();
+  const { incentivizedPools, isFetchedPools, updatePools, loading: isLoadingPool } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
-  const { isLoadingCommon } = useLoading();
-  const { loading: loadingPosition } = usePositionData();
+  const { loading: isLoadingPosition, checkStakedPool } = usePositionData();
   
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -91,7 +90,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   return (
     <IncentivizedPoolCardList
       incentivizedPools={incentivizedPools}
-      isFetched={isFetchedPools}
+      isPoolFetched={isFetchedPools}
       loadMore={!!loadMore}
       onClickLoadMore={handleClickLoadMore}
       currentIndex={currentIndex}
@@ -103,7 +102,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       onScroll={handleScroll}
       showPagination={showPagination}
       width={width}
-      isLoading={isLoadingCommon || loading || loadingPosition}
+      isLoading={isLoadingPool || isLoadingPosition}
+      checkStakedPool={checkStakedPool}
     />
   );
 };

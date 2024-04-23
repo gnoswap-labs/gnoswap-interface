@@ -31,7 +31,7 @@ const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  isFetched: true,
+  isPoolFetched: true,
   routeItem: action("routeItem"),
   mobile: false,
   page: 1,
