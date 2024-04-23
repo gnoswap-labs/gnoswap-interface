@@ -1,3 +1,12 @@
 export interface OnchainRequest {
-  type: "ALL" | "ADD" | "INCREASE" | "DECREASE" | "SWAP" | "STAKE" | "UNSTAKE" | "CLAIM" | "WITHDRAW" | "REMOVE";
+  type: "All" | "Swaps" | "Adds" | "Removes" | "Stakes" | "Unstakes";
 }
+
+export const OnChainRequestMapping: Record<OnchainRequest["type"], string> = {
+  All: "ALL",
+  Swaps: "SWAP",
+  Adds: "ADD",
+  Removes: "REMOVE",
+  Stakes: "STAKE",
+  Unstakes: "UNSTAKE",
+};

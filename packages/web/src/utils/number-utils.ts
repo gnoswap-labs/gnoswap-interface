@@ -8,7 +8,7 @@ import { convertToKMB, convertToMB } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
-  const target = value.toString();
+  const target = value?.toString();
   return (
     reg.test(target) &&
     !isNaN(parseFloat(target)) &&

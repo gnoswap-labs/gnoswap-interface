@@ -181,6 +181,7 @@ const TokenChartContainer: React.FC = () => {
     enabled: !!path,
     refetchInterval: 1000 * 10,
   });
+
   const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon);
   useEffect(() => {
     if (tokenB) {
@@ -348,6 +349,7 @@ const TokenChartContainer: React.FC = () => {
     if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
     return uniqueLabel;
   };
+
   return (
     <TokenChart
       tokenInfo={tokenInfo}
