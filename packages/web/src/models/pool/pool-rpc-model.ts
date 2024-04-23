@@ -33,6 +33,18 @@ export interface PoolRPCModel {
 
   ticks: number[];
 
+  tickDetails: {
+    [key in number]: {
+      liquidityGross: number;
+      liquidityNet: number;
+      feeGrowthOutside0X128: number;
+      feeGrowthOutside1X128: number;
+      tickCumulativeOutside: number;
+      secondsPerLiquidityOutsideX: number;
+      secondsOutside: number;
+    };
+  };
+
   tickBitmaps: {
     [key in number]: string;
   };

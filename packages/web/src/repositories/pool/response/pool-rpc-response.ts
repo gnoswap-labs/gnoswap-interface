@@ -1,27 +1,57 @@
 export interface PoolRPCResponse {
-  pool_path: string;
-  token0_path: string;
-  token1_path: string;
+  poolPath: string;
+
+  token0Path: string;
+
+  token1Path: string;
+
+  token0Balance: string;
+
+  token1Balance: string;
+
   fee: number;
-  token0_balance: string;
-  token1_balance: string;
-  tick_spacing: number;
-  max_liquidity_per_tick: number;
-  sqrt_price_x96: string;
+
+  tickSpacing: number;
+
+  maxLiquidityPerTick: number;
+
+  sqrtPriceX96: string;
+
   tick: number;
-  fee_protocol: number;
-  token0_protocol_fee: number;
-  token1_protocol_fee: number;
+
+  feeProtocol: number;
+
+  feeGrowthGlobal0X128: number;
+
+  feeGrowthGlobal1X128: number;
+
+  token0ProtocolFee: number;
+
+  token1ProtocolFee: number;
+
   liquidity: string;
-  ticks: number[];
-  tick_bitmaps: { [key in number]: bigint };
+
+  ticks: {
+    [key in number]: {
+      liquidityGross: number;
+      liquidityNet: number;
+      feeGrowthOutside0X128: number;
+      feeGrowthOutside1X128: number;
+      tickCumulativeOutside: number;
+      secondsPerLiquidityOutsideX: number;
+      secondsOutside: number;
+    };
+  };
+
+  tickBitmaps: { [key in number]: bigint };
+
   positions: {
     owner: string;
-    tick_lower: number;
-    tick_upper: number;
+    tickLower: number;
+    tickUpper: number;
     liquidity: string;
-    token0_owed: string;
-    token1_owed: string;
+    token0Owed: string;
+    token1Owed: string;
   }[];
 }
 
