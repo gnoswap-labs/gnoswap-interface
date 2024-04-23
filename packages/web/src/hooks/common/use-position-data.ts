@@ -138,7 +138,7 @@ export const usePositionData = (address?: string) => {
   };
 
   const { isLoadingCommon } = useLoading({
-    shouldTrigger: shouldTriggerLoading(),
+    trigger: shouldTriggerLoading(),
   });
 
   const { getGnotPath } = useGnotToGnot();
@@ -172,7 +172,7 @@ export const usePositionData = (address?: string) => {
     return unstakedPositions.length > 0;
   }, [positions]);
 
-  const isStakedPool = useCallback(
+  const checkStakedPool = useCallback(
     (poolPath: string | null) => {
       if (!poolPath) {
         return false;
@@ -245,7 +245,7 @@ export const usePositionData = (address?: string) => {
     availableStake,
     isError,
     positions,
-    isStakedPool,
+    checkStakedPool,
     getPositions,
     getPositionsByPoolId,
     getPositionsByPoolPath,

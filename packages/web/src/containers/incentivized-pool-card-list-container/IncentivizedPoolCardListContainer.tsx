@@ -35,11 +35,11 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
-  const { incentivizedPools, isFetchedPools, updatePools, loading: loadingPool } = usePoolData();
+  const { incentivizedPools, isFetchedPools, updatePools, loading: isLoadingPool } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
-  const { loading: loadingPosition, isStakedPool } = usePositionData();
+  const { loading: isLoadingPosition, checkStakedPool } = usePositionData();
   
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -102,8 +102,8 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       onScroll={handleScroll}
       showPagination={showPagination}
       width={width}
-      isLoading={loadingPool || loadingPosition}
-      isStakedPool={isStakedPool}
+      isLoading={isLoadingPool || isLoadingPosition}
+      checkStakedPool={checkStakedPool}
     />
   );
 };
