@@ -11,7 +11,7 @@ import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 export interface IncentivizedPoolCardListProps {
   incentivizedPools: PoolCardInfo[];
   loadMore: boolean;
-  isFetched: boolean;
+  isPoolFetched: boolean;
   onClickLoadMore?: () => void;
   currentIndex: number;
   routeItem: (id: string) => void;
@@ -23,11 +23,12 @@ export interface IncentivizedPoolCardListProps {
   showPagination: boolean;
   width: number;
   isLoading: boolean;
+  checkStakedPool: (poolPath: string | null) => boolean
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   incentivizedPools,
-  isFetched,
+  isPoolFetched,
   onClickLoadMore,
   currentIndex,
   routeItem,
@@ -39,6 +40,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   showPagination,
   width,
   isLoading,
+  checkStakedPool,
 }) => {
   const data = useMemo(() => {
     if (page === 1) {
@@ -53,51 +55,66 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
       return incentivizedPools;
     }
   }, [page, incentivizedPools, width]);
-  return (
-    <IncentivizedWrapper>
-      <PoolListWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
-        {!isLoading &&
-          incentivizedPools.length > 0 &&
+
+  const renderPoolList = () => {
+    const hasData = !isLoading && incentivizedPools.length > 0;
+    const showLoading = !isPoolFetched || isLoading;
+    const showBlank = isPoolFetched &&
+    !isLoading &&
+    incentivizedPools.length > 0 &&
+    incentivizedPools.length < 4;
+    
+    return <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
+      {hasData &&
           data.map((info, index) => (
             <IncentivizedPoolCard
               pool={info}
               key={index}
               routeItem={routeItem}
               themeKey={themeKey}
+              checkStakedPool={checkStakedPool}
             />
           ))}
-        {isFetched &&
-          !isLoading &&
-          incentivizedPools.length > 0 &&
-          incentivizedPools.length < 4 &&
-          Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
-            .fill(1)
-            .map((_, index) => <BlankIncentivizedCard key={index} />)}
-        {(!isFetched || isLoading) &&
-          Array.from({ length: 8 }).map((_, index) => (
-            <span
-              key={index}
-              className="card-skeleton"
-              css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
-            />
-          ))}
-      </PoolListWrapper>
-      {!mobile &&
+      {showBlank &&
+        Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
+          .fill(1)
+          .map((_, index) => <BlankIncentivizedCard key={index} />)}
+      {showLoading &&
+        Array.from({ length: 8 }).map((_, index) => (
+          <span
+            key={index}
+            className="card-skeleton"
+            css={pulseSkeletonStyle({ w: "100%", h: "100%", tone: "600" })}
+          />
+        ))}
+    </PoolListWrapper>;
+  };
+
+  const renderLoadMore = () => {
+    return <>
+    {!mobile &&
         !isLoading &&
         incentivizedPools.length > 8 &&
         onClickLoadMore && (
           <LoadMoreButton show={page === 1} onClick={onClickLoadMore} />
         )}
-      {showPagination &&
-        isFetched &&
-        incentivizedPools.length > 0 &&
-        !isLoading && (
-          <div className="box-indicator">
-            <span className="current-page">{currentIndex}</span>
-            <span>/</span>
-            <span>{incentivizedPools.length}</span>
-          </div>
-        )}
+    {showPagination &&
+      isPoolFetched &&
+      incentivizedPools.length > 0 &&
+      !isLoading && (
+        <div className="box-indicator">
+          <span className="current-page">{currentIndex}</span>
+          <span>/</span>
+          <span>{incentivizedPools.length}</span>
+        </div>
+      )}
+    </>;
+  };
+
+  return (
+    <IncentivizedWrapper>
+      {renderPoolList()}
+      {renderLoadMore()}
     </IncentivizedWrapper>
   );
 };
