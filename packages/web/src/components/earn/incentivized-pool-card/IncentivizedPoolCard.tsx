@@ -17,20 +17,20 @@ export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
-  isStakedPool: (poolPath: string | null) => boolean
+  checkStakedPool: (poolPath: string | null) => boolean
 }
 
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   pool,
   routeItem,
   themeKey,
-  isStakedPool,
+  checkStakedPool,
 }) => {
   const { getGnotPath } = useGnotToGnot();
 
   const staked = useMemo(() => {
-    return isStakedPool(pool.poolPath || null);
-  }, [isStakedPool, pool.poolPath]);
+    return checkStakedPool(pool.poolPath || null);
+  }, [checkStakedPool, pool.poolPath]);
 
   const pairName = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;

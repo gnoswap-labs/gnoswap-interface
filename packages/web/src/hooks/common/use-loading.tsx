@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 interface UseLoadingProps {
-  shouldTrigger: boolean;
+  trigger: boolean;
 }
 
 export const useLoading = (params?: UseLoadingProps) => {
   const [isLoadingCommon, setIsLoadingCommon] = useState(true);
 
-  function triggerLoading() {
+  function startLoading() {
     setIsLoadingCommon(true);
     const timeout = setTimeout(() => {
       setIsLoadingCommon(false);
@@ -17,13 +17,13 @@ export const useLoading = (params?: UseLoadingProps) => {
   }
 
   useEffect(() => {
-    const timeout = (params?.shouldTrigger ?? true) ? triggerLoading() : undefined;
+    const timeout = (params?.trigger ?? true) ? startLoading() : undefined;
     return () => clearTimeout(timeout);
-  }, [params?.shouldTrigger]);
+  }, [params?.trigger]);
   
   return {
     isLoadingCommon: isLoadingCommon,
     setIsLoadingCommon,
-    triggerLoading,
+    startLoading,
   };
 };

@@ -37,6 +37,6 @@ Default.args = {
     width={1440}
     showPagination={false}
     isLoading={false}
-    isStakedPool={() => true}
+    checkStakedPool={() => true}
   />
 };
