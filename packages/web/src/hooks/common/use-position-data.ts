@@ -138,7 +138,7 @@ export const usePositionData = (address?: string) => {
   };
 
   const { isLoadingCommon } = useLoading({
-    trigger: shouldTriggerLoading(),
+    loadable: shouldTriggerLoading(),
   });
 
   const { getGnotPath } = useGnotToGnot();
