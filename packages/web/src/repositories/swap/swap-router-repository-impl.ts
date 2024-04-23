@@ -24,8 +24,9 @@ import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { SwapRouteResponse } from "./response/swap-route-response";
+import { PACKAGE_ROUTER_PATH } from "@common/clients/wallet-client/transaction-messages";
 
-const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
+const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;

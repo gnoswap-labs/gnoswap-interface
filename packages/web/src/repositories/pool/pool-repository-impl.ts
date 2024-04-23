@@ -28,7 +28,6 @@ import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeDepositMessage } from "@common/clients/wallet-client/transaction-messages/token";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
@@ -37,11 +36,11 @@ import { makeCreateIncentiveMessage, makeRemoveIncentiveMessage, makeStakerAppro
 import { makePositionMintMessage } from "@common/clients/wallet-client/transaction-messages/position";
 import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
+import { PACKAGE_POOL_ADDRESS, PACKAGE_POOL_PATH, GNS_TOKEN_PATH, CREATE_POOL_FEE,  } from "@common/clients/wallet-client/transaction-messages";
+import { tickToSqrtPriceX96 } from "@utils/math.utils";
 
-const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
-const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
-const GNS_TOKEN_PATH = process.env.NEXT_PUBLIC_GNS_TOKEN_PATH || "";
-const CREATE_POOL_FEE = process.env.NEXT_PUBLIC_CREATE_POOL_FEE || "";
+const POOL_PATH = PACKAGE_POOL_PATH || "";
+const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
 
 export class PoolRepositoryImpl implements PoolRepository {
   private networkClient: NetworkClient;
@@ -58,7 +57,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     this.walletClient = walletClient;
   }
   getRPCPools = async(): Promise<PoolRPCModel[]> => {
-    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    const poolPackagePath = PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
@@ -97,7 +96,7 @@ export class PoolRepositoryImpl implements PoolRepository {
   getPoolDetailRPCByPoolPath = async (
     poolPath: string,
   ): Promise<PoolDetailRPCModel> => {
-    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    const poolPackagePath = PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
