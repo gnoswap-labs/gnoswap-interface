@@ -495,8 +495,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
   //   }
   // }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
 
-  console.log("🚀 ~ selectPool.isChangeMinMax:", selectPool.isChangeMinMax);
-
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -537,7 +535,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       /// Update with provided price range, if receive undefine set to default price range
       setPriceRange={(type) => {
         setPriceRange(PRICE_RANGES.find(item => item.type === (type || "Passive")) ?? null);
-      } }
+      }}
+      defaultPriceRangeType={"Passive"}
     />
   );
 };

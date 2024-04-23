@@ -1,6 +1,6 @@
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { feeBoostRateByPrices, priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
@@ -65,9 +65,9 @@ export const useSelectPool = ({
   feeTier,
   isCreate = false,
   startPrice = null,
-  defaultPriceRange,
+  defaultPriceRange = [null, null],
 }: Props) => {
-  const [ defaultMinPosition, defaultMaxPosition ] = defaultPriceRange ?? [null, null];
+  const priceRangeRef = useRef<[number | null, number | null]>([...defaultPriceRange]);
   // const isInitialedPriceRange = useRef(false);
 
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
@@ -85,13 +85,9 @@ export const useSelectPool = ({
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
   const { isLoadingCommon } = useLoading();
 
-  // useEffect(() => {
-  //   if(defaultMinPosition && defaultMaxPosition && isInitialedPriceRange.current === false) {
-  //     setMinPosition(defaultMinPosition);
-  //     setMaxPosition(defaultMaxPosition);
-  //     isInitialedPriceRange.current = true;
-  //   }
-  // }, []);
+  useEffect(() => {
+    priceRangeRef.current = [...defaultPriceRange];
+  }, [defaultPriceRange]);
 
   const poolPath = useMemo(() => {
     setCurrentPoolPath(latestPoolPath);
@@ -277,6 +273,8 @@ export const useSelectPool = ({
   }, [maxPosition, poolInfo, interactionType]);
 
   const resetRange = useCallback(() => {
+    const [defaultMinPosition, defaultMaxPosition] = priceRangeRef.current;
+
     excuteInteraction(() => {
       setZoomLevel(9);
       setFullRange(false);

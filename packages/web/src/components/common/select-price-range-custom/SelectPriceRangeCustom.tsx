@@ -38,7 +38,8 @@ export interface SelectPriceRangeCustomProps {
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
-  defaultPriceRange?: [number | null, number | null];
+  defaultPriceRangeRef?: React.MutableRefObject<(number | null)[] | undefined>;
+  defaultPriceRangeType: PriceRangeType;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -52,8 +53,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   handleSwapValue,
   isEmptyLiquidity,
   isKeepToken,
-  setPriceRange,
-  defaultPriceRange,
+  defaultPriceRangeType,
+  defaultPriceRangeRef,
+  setPriceRange
 }) => {
   // const { tickUpper, tickLower } = router?.query;
 
@@ -67,11 +69,14 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   function getPriceRange(price?: number | null) {
     const currentPriceRangeType = priceRangeType;
     const currentPrice = price || selectPool.currentPrice || 1;
+    console.log("🚀 ~ getPriceRange ~ currentPrice:", currentPrice);
     if (!selectPool.feeTier || !currentPriceRangeType) {
       return [0, currentPrice * 2];
     }
     const visibleRate = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType].max / 100;
+    console.log("🚀 ~ getPriceRange ~ visibleRate:", visibleRate);
     const range = currentPrice * visibleRate;
+    console.log("🚀 ~ getPriceRange ~ range:", range);
 
     return [currentPrice - range, currentPrice + range];
   }
@@ -80,6 +85,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
     const rangeGap = max - min;
+    console.log("🚀 ~ getScaleRange ~ min:", min);
+    console.log("🚀 ~ getScaleRange ~ max:", max);
 
     return [currentPrice - rangeGap, currentPrice + rangeGap];
   }
@@ -163,17 +170,24 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     selectPool.selectFullRange();
   }, [selectPool]);
 
-  function initPriceRange(inputPriceRangeType?: PriceRangeType | null, defaultPriceRange: [number | null, number | null] = [null, null]) {
+  function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
     const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
-    const [defaultMinPrice, defaultMaxPrice] = defaultPriceRange;
+    const [defaultMinPrice, defaultMaxPrice] = defaultPriceRangeRef?.current ?? [null, null];
+
+    if (inputPriceRangeType === "Custom" && defaultMinPrice && defaultMinPrice) {
+      selectPool.setMinPosition(defaultMinPrice);
+      selectPool.setMaxPosition(defaultMaxPrice);
+      return;
+    }
 
     if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
       const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
       const minRateAmount = currentPrice * (priceRange.min / 100);
       const maxRateAmount = currentPrice * (priceRange.max / 100);
-      selectPool.setMinPosition(defaultMinPrice || currentPrice + minRateAmount);
-      selectPool.setMaxPosition(defaultMaxPrice || currentPrice + maxRateAmount);
+      selectPool.setMinPosition(currentPrice + minRateAmount);
+      selectPool.setMaxPosition(currentPrice + maxRateAmount);
+      return;
     }
   }
 
@@ -181,9 +195,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     adjustFn();
   }
 
-  function resetRange(priceRangeType?: PriceRangeType | null, defaultPriceRange?: [number | null, number | null]) {
+  function resetRange(priceRangeType?: PriceRangeType | null) {
+    // Reset zoom, min, max, full range
     selectPool.resetRange();
-    initPriceRange(priceRangeType, defaultPriceRange);
+    initPriceRange(priceRangeType);
     defaultScaleX.domain(getScaleRange());
     scaleX.domain(defaultScaleX.domain());
   }
@@ -229,8 +244,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [tokenA]);
 
   useEffect(() => {
-    resetRange(priceRangeType, defaultPriceRange);
-  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice, defaultPriceRange]);
+    resetRange(priceRangeType);
+  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice]);
 
   useEffect(() => {
     if (!selectPool.poolPath) {
@@ -386,8 +401,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     </div>
                     <div className="extra-wrapper">
                       <div className="icon-button reset" onClick={() => {
-                        setPriceRange();
-                        // resetRange();
+                        setPriceRange(defaultPriceRangeType);
+                        if(priceRangeType === defaultPriceRangeType) {
+                          resetRange(defaultPriceRangeType);
+                        }
                       }}>
                         <IconRefresh />
                         <span>Reset Range</span>

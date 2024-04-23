@@ -60,7 +60,8 @@ interface EarnAddLiquidityProps {
   handleSwapValue: () => void;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
-  defaultPriceRange?: [number | null, number | null];
+  defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
+  defaultPriceRangeType: PriceRangeType;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -96,7 +97,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   handleSwapValue,
   isKeepToken,
   setPriceRange,
-  defaultPriceRange,
+  defaultPriceRangeRef,
+  defaultPriceRangeType,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -314,7 +316,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             isEmptyLiquidity={isEmptyObject(feetierOfLiquidityMap)}
             isKeepToken={isKeepToken}
             setPriceRange={setPriceRange}
-            defaultPriceRange={defaultPriceRange}
+            defaultPriceRangeRef={defaultPriceRangeRef}
+            defaultPriceRangeType={defaultPriceRangeType}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
           {!isLoading && isShowOutRange && <OutOfRangeWrapper>

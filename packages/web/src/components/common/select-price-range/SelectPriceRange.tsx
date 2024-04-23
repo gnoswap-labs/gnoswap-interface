@@ -24,7 +24,8 @@ interface SelectPriceRangeProps {
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
-  defaultPriceRange?: [number | null, number | null];
+  defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
+  defaultPriceRangeType: PriceRangeType;
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -42,7 +43,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   isEmptyLiquidity,
   isKeepToken,
   setPriceRange,
-  defaultPriceRange,
+  defaultPriceRangeRef,
+  defaultPriceRangeType,
 }) => {
   const selectedTokenPair = true;
 
@@ -77,7 +79,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           isEmptyLiquidity={isEmptyLiquidity}
           isKeepToken={isKeepToken}
           setPriceRange={setPriceRange}
-          defaultPriceRange={defaultPriceRange}
+          defaultPriceRangeRef={defaultPriceRangeRef}
+          defaultPriceRangeType={defaultPriceRangeType}
         />
       )}
     </SelectPriceRangeWrapper>

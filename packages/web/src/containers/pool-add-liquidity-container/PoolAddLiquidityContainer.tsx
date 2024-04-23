@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   AddLiquiditySubmitType,
@@ -76,7 +76,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return PRICE_RANGES.find(item => item.type === ("Custom")) ?? null;
   });
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
-
+  const defaultPriceRangeRef = useRef<[number | null, number | null]>();
+  
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
   const {
@@ -94,10 +95,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     feeTier: swapFeeTier, 
     isCreate: createOption?.isCreate, 
     startPrice: createOption?.startPrice,
-    defaultPriceRange: [ 
-      tickLower ? tickToPrice(Number(tickLower)) : null, 
-      tickUpper ? tickToPrice(Number(tickUpper)) : null
-    ],
+    // defaultPriceRange: [ 
+    //   tickLower ? tickToPrice(Number(tickLower)) : null, 
+    //   tickUpper ? tickToPrice(Number(tickUpper)) : null
+    // ],
   });
   const { updatePools } = usePoolData();
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity, fetching } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
@@ -122,6 +123,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
     createPool,
     addLiquidity,
   });
+
+  useEffect(() => {
+    if(router.isReady && !defaultPriceRangeRef.current) {
+      defaultPriceRangeRef.current = [
+        tickLower ? tickToPrice(Number(tickLower)) : null, 
+        tickUpper ? tickToPrice(Number(tickUpper)) : null
+      ];
+      console.log(defaultPriceRangeRef.current);
+    }
+  }, [router.isReady, tickLower, tickUpper]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -423,23 +434,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
   }, [swapValue, setSwapValue, isKeepToken]);
 
-  // useEffect(() => {
-    // selectPool.resetRange();
-    // const queryString = makeQueryString({
-    //   tickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
-    //   tickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
-    // });
-    // if (tokenA?.path && tokenB?.path) {
-      //   router.push(`/earn/pool/${router.query["pool-path"]}/add?${queryString}`, undefined, { shallow: true });
-      // }
-    // }, [tickLower, tickUpper]);
-    
-
   useEffect(() => {
     if (selectPool.isChangeMinMax) {
       setPriceRange({ type: "Custom" });
     }
   }, [selectPool.isChangeMinMax]);
+
+  useEffect(() => {
+      selectPool.setIsChangeMinMax(priceRange?.type === "Custom");
+  }, [priceRange?.type]);
 
   return (
     <EarnAddLiquidity
@@ -479,10 +482,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       handleSwapValue={handleSwapValue}
       isKeepToken={isKeepToken}
       setPriceRange={(type) => setPriceRange(PRICE_RANGES.find(item => item.type === (type || ("Custom"))) ?? null)}
-      defaultPriceRange={[ 
-        tickLower ? tickToPrice(Number(tickLower)) : null, 
-        tickUpper ? tickToPrice(Number(tickUpper)) : null
-      ]}
+      defaultPriceRangeRef={defaultPriceRangeRef}
+      defaultPriceRangeType={"Custom"}
     />
   );
 };
