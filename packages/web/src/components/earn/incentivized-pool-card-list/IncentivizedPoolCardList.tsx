@@ -23,7 +23,7 @@ export interface IncentivizedPoolCardListProps {
   showPagination: boolean;
   width: number;
   isLoading: boolean;
-  isStakedPool: (poolPath: string | null) => boolean
+  checkStakedPool: (poolPath: string | null) => boolean
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -40,7 +40,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   showPagination,
   width,
   isLoading,
-  isStakedPool,
+  checkStakedPool,
 }) => {
   const data = useMemo(() => {
     if (page === 1) {
@@ -72,7 +72,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
               key={index}
               routeItem={routeItem}
               themeKey={themeKey}
-              isStakedPool={isStakedPool}
+              checkStakedPool={checkStakedPool}
             />
           ))}
       {showBlank &&
