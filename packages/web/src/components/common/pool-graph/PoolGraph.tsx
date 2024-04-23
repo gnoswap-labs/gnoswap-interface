@@ -148,7 +148,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .domain([0, maxHeight || 0])
       .range([boundsHeight, 0]);
   }, [boundsHeight, maxHeight]);
-  // const centerX = currentTick ?? ((minX && maxX) ? (minX + maxX) / 2 : 0);
+  const centerX = currentTick ?? ((minX && maxX) ? (minX + maxX) / 2 : 0);
 
   function getTickSpacing() {
     if (resolvedBins.length < 1) {
@@ -183,7 +183,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = getTickSpacing();
-    // const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
+    const centerPosition = scaleX(centerX - defaultMinX) - tickSpacing / 2;
 
     // Retrieves the colour of the chart bar at the current tick.
     function fillByBin(bin: PoolBinModel) {
@@ -209,16 +209,16 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     rects.attr("clip-path", "url(#clip)");
 
-    // if (currentTick) {
-    //   rects.append("line")
-    //     .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
-    //     .attr("x2", centerPosition + tickSpacing / 2 - 0.5)
-    //     .attr("y1", 0)
-    //     .attr("y2", boundsHeight)
-    //     .attr("stroke-dasharray", 3)
-    //     .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
-    //     .attr("stroke-width", 1);
-    // }
+    if (currentTick) {
+      rects.append("line")
+        .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
+        .attr("x2", centerPosition + tickSpacing / 2 - 0.5)
+        .attr("y1", 0)
+        .attr("y2", boundsHeight)
+        .attr("stroke-dasharray", 3)
+        .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
+        .attr("stroke-width", 1);
+    }
     
     rects.selectAll("rects")
       .data(resolvedBins)

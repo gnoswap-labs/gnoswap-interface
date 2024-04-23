@@ -49,7 +49,7 @@ export const usePositionData = (address?: string) => {
       return false;
     },
     onSuccess(data) {
-      const haveNewData = JSON.stringify(data) !== JSON.stringify(cachedData.current);
+      const haveNewData = JSON.stringify(data, transformData) !== JSON.stringify(cachedData.current, transformData);
       if(haveNewData) {
         cachedData.current = data;
       }
@@ -57,7 +57,7 @@ export const usePositionData = (address?: string) => {
     },
     onError(err) {
       if((err as AxiosError).response?.status === 404) {
-        const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current);
+        const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
   
         if(haveNewData) {
           cachedData.current = data;
@@ -66,6 +66,12 @@ export const usePositionData = (address?: string) => {
       }
     }
   });
+
+  function transformData(key: string, value: unknown) {
+    return typeof value === "bigint"
+            ? value.toString()
+            : value;
+  }
 
   useEffect(() => {
     if (isPositionLoading) {
