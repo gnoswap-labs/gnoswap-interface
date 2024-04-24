@@ -1,7 +1,7 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useMemo } from "react";
-import { RemoveLiquiditySelectListItemWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
+import { RemoveLiquiditySelectListItemWrapper, TokenTitleWrapper, TokenValueWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 // import { convertToMB } from "@utils/stake-position-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -13,7 +13,6 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import styled from "@emotion/styled";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -27,8 +26,7 @@ interface TooltipProps {
   disabled: boolean;
 }
 
-const TokenValueWrapper = styled.div``;
-const TokenTitleWrapper = styled.div``;
+
 
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
   const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint ) => {

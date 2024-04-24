@@ -3,6 +3,7 @@ import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { inputStyle } from "@components/unstake/unstake-liquidity/UnstakeLiquidity.styles";
 import { media } from "@styles/media";
+import styled from "@emotion/styled";
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`
@@ -100,4 +101,13 @@ ${fonts.body12}
     }
   }
 }
+`;
+
+export const TokenValueWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
+`;
+export const TokenTitleWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
 `;

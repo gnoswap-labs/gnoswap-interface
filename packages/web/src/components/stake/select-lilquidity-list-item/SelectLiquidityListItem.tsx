@@ -4,12 +4,11 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import React, { useMemo } from "react";
-import { tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
+import { TokenTitleWrapper, TokenValueWrapper, tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
 import { TokenModel } from "@models/token/token-model";
-import styled from "@emotion/styled";
 
 interface SelectLiquidityListItemProps {
   disabled?: boolean;
@@ -18,8 +17,7 @@ interface SelectLiquidityListItemProps {
   onCheckedItem: (checked: boolean, path: string) => void;
 }
 
-const TokenValueWrapper = styled.div``;
-const TokenTitleWrapper = styled.div``;
+
 
 const TooltipContent: React.FC<{ position: PoolPositionModel, disabled: boolean }> = ({ position, disabled }) => {
   const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint ) => {
