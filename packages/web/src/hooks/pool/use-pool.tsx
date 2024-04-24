@@ -1,4 +1,7 @@
-import { SwapFeeTierType } from "@constants/option.constant";
+import {
+  SwapFeeTierInfoMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
@@ -27,6 +30,27 @@ export const usePool = ({
   const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<
     { [key in string]: number } | null
   >(null);
+
+  const allPoolPaths = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return [];
+    }
+    const tokenATokenPath = checkGnotPath(tokenA.path)
+      ? tokenA.wrappedPath
+      : tokenA.path;
+    const tokenBTokenPath = checkGnotPath(tokenB.path)
+      ? tokenB.wrappedPath
+      : tokenB.path;
+
+    const tokenPair = [tokenATokenPath, tokenBTokenPath].sort();
+
+    return [
+      SwapFeeTierInfoMap.FEE_100,
+      SwapFeeTierInfoMap.FEE_500,
+      SwapFeeTierInfoMap.FEE_3000,
+      SwapFeeTierInfoMap.FEE_10000,
+    ].map(feeInfo => `${tokenPair[0]}:${tokenPair[1]}:${feeInfo.fee}`);
+  }, [tokenA, tokenB]);
 
   const currentPools: PoolModel[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -79,8 +103,8 @@ export const usePool = ({
     [compareToken, tokenA, tokenB],
   );
 
-  async function fetchPoolInfos(pools: PoolModel[]) {
-    const poolPaths = pools.map(pool => pool.path);
+  async function fetchPoolInfos() {
+    const poolPaths = allPoolPaths;
     return poolRepository
       .getRPCPools()
       .then(allPools =>
@@ -195,7 +219,7 @@ export const usePool = ({
     }
     setFeetierOfLiquidityMap(null);
     setFetching(true);
-    fetchPoolInfos(currentPools)
+    fetchPoolInfos()
       .then(infos => {
         const feetierOfLiquidityMap: { [key in string]: number } = {};
         const totalLiquidities = infos
@@ -206,9 +230,7 @@ export const usePool = ({
             totalLiquidities === 0n
               ? 0
               : (Number(info.liquidity) * 100) / Number(totalLiquidities);
-          const feeTier = currentPools.find(
-            pool => pool.path === info.poolPath,
-          )?.fee;
+          const feeTier = info.fee;
           if (feeTier) {
             feetierOfLiquidityMap[`${feeTier}`] = liquidityRate;
           }
@@ -221,7 +243,7 @@ export const usePool = ({
           setFetching(false);
         }, 1000);
       });
-  }, [currentPools, tokenA, tokenB, isReverted]);
+  }, [allPoolPaths, tokenA, tokenB, isReverted]);
 
   return {
     fetching,
