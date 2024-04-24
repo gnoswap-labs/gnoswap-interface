@@ -4,7 +4,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 interface Props {
-  loading: boolean;
+  $loading: boolean;
 }
 
 export const CardListWrapper = styled.div<Props>`

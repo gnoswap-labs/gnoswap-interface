@@ -13,6 +13,7 @@ import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapS
 import BackgroundContainer from "@containers/background-container/BackgroundContainer";
 import Notice from "@components/common/notice/NoticeToast";
 
+
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
     () =>

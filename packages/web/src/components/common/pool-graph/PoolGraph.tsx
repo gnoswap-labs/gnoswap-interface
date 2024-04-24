@@ -202,22 +202,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     // Clean child elements.
     d3.select(chartRef.current).selectChildren().remove();
+
     
     // Create a chart bar.
     const rects = d3.select(chartRef.current);
+
     rects.attr("clip-path", "url(#clip)");
-    rects.selectAll("rects")
-      .data(resolvedBins)
-      .enter()
-      .append("rect")
-      .style("fill", bin => fillByBin(bin))
-      .style("stroke-width", "0")
-      .attr("class", "rects")
-      .attr("x", bin => scaleX(bin.minTick))
-      .attr("y", bin => (scaleY(bin.reserveTokenMap)) - ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0))
-      .attr("width", tickSpacing - 1)
-      .attr("height", bin => boundsHeight - (scaleY(bin.reserveTokenMap)) + ((scaleY(bin.reserveTokenMap)) > (height - 3) && scaleY(bin.reserveTokenMap) !== height ? 3 : 0));
-    // Create a line of current tick.
+
     if (currentTick) {
       rects.append("line")
         .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
@@ -228,6 +219,26 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
         .attr("stroke-width", 1);
     }
+    
+    rects.selectAll("rects")
+      .data(resolvedBins)
+      .enter()
+      .append("rect")
+      .style("fill", bin => fillByBin(bin))
+      .style("stroke-width", "0")
+      .attr("class", "rects")
+      .attr("x", bin => scaleX(bin.minTick))
+      .attr("y", bin => {
+        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+        return scaleYComputation - (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
+      })
+      .attr("width", tickSpacing - 1)
+      .attr("height", bin => {
+        const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
+        return boundsHeight - scaleYComputation + (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
+      });
+    // Create a line of current tick.
+    
   }
 
   function onMouseoverChartBin(event: MouseEvent) {
@@ -356,7 +367,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("width", width)
       .attr("height", height);
 
-    updateChart();
+    if(!!width && !!height && !!scaleX && !!scaleY) {
+      updateChart();
+    }
   }, [width, height, scaleX, scaleY]);
 
   useEffect(() => {
