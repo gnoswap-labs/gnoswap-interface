@@ -25,6 +25,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import ExchangeRate from "../exchange-rate/ExchangeRate";
 import { subscriptFormat } from "@utils/number-utils";
+import { DefaultTick } from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -39,7 +40,8 @@ export interface SelectPriceRangeCustomProps {
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
   defaultPriceRangeRef?: React.MutableRefObject<(number | null)[] | undefined>;
-  defaultPriceRangeType: PriceRangeType;
+  resetPriceRangeTypeTarget: PriceRangeType;
+  defaultTicks?: DefaultTick;
 }
 
 const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
@@ -53,9 +55,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   handleSwapValue,
   isEmptyLiquidity,
   isKeepToken,
-  defaultPriceRangeType,
-  defaultPriceRangeRef,
-  setPriceRange
+  resetPriceRangeTypeTarget,
+  setPriceRange,
+  defaultTicks,
 }) => {
   // const { tickUpper, tickLower } = router?.query;
 
@@ -69,14 +71,11 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   function getPriceRange(price?: number | null) {
     const currentPriceRangeType = priceRangeType;
     const currentPrice = price || selectPool.currentPrice || 1;
-    console.log("🚀 ~ getPriceRange ~ currentPrice:", currentPrice);
     if (!selectPool.feeTier || !currentPriceRangeType) {
       return [0, currentPrice * 2];
     }
     const visibleRate = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType].max / 100;
-    console.log("🚀 ~ getPriceRange ~ visibleRate:", visibleRate);
     const range = currentPrice * visibleRate;
-    console.log("🚀 ~ getPriceRange ~ range:", range);
 
     return [currentPrice - range, currentPrice + range];
   }
@@ -85,8 +84,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
     const rangeGap = max - min;
-    console.log("🚀 ~ getScaleRange ~ min:", min);
-    console.log("🚀 ~ getScaleRange ~ max:", max);
 
     return [currentPrice - rangeGap, currentPrice + rangeGap];
   }
@@ -170,17 +167,18 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     selectPool.selectFullRange();
   }, [selectPool]);
 
+
   function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
     const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
-    const [defaultMinPrice, defaultMaxPrice] = defaultPriceRangeRef?.current ?? [null, null];
+    const {tickLower, tickUpper} = defaultTicks ?? {};
 
-    if (inputPriceRangeType === "Custom" && defaultMinPrice && defaultMinPrice) {
-      selectPool.setMinPosition(defaultMinPrice);
-      selectPool.setMaxPosition(defaultMaxPrice);
+    
+    if (inputPriceRangeType === "Custom" && tickLower && tickUpper) {
+      selectPool.setMinPosition(tickLower);
+      selectPool.setMaxPosition(tickUpper);
       return;
     }
-
     if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
       const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
       const minRateAmount = currentPrice * (priceRange.min / 100);
@@ -401,9 +399,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     </div>
                     <div className="extra-wrapper">
                       <div className="icon-button reset" onClick={() => {
-                        setPriceRange(defaultPriceRangeType);
-                        if(priceRangeType === defaultPriceRangeType) {
-                          resetRange(defaultPriceRangeType);
+                        if(priceRangeType !== resetPriceRangeTypeTarget) {
+                          setPriceRange(resetPriceRangeTypeTarget);
+                          resetRange(resetPriceRangeTypeTarget);
                         }
                       }}>
                         <IconRefresh />

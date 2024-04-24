@@ -22,6 +22,7 @@ import { SelectPool } from "@hooks/pool/use-select-pool";
 import IconFailed from "@components/common/icons/IconFailed";
 import { isEmptyObject } from "@utils/validation-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { DefaultTick } from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
 
 interface EarnAddLiquidityProps {
   mode: AddLiquidityType;
@@ -61,7 +62,8 @@ interface EarnAddLiquidityProps {
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
   defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
-  defaultPriceRangeType: PriceRangeType;
+  resetPriceRangeTypeTarget: PriceRangeType;
+  defaultTicks?: DefaultTick;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -97,8 +99,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   handleSwapValue,
   isKeepToken,
   setPriceRange,
-  defaultPriceRangeRef,
-  defaultPriceRangeType,
+  defaultTicks,
+  resetPriceRangeTypeTarget,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -316,8 +318,8 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             isEmptyLiquidity={isEmptyObject(feetierOfLiquidityMap)}
             isKeepToken={isKeepToken}
             setPriceRange={setPriceRange}
-            defaultPriceRangeRef={defaultPriceRangeRef}
-            defaultPriceRangeType={defaultPriceRangeType}
+            defaultTicks={defaultTicks}
+            resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
           {!isLoading && isShowOutRange && <OutOfRangeWrapper>

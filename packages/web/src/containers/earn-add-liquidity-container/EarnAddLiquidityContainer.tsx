@@ -18,12 +18,11 @@ import { usePool } from "@hooks/pool/use-pool";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
-// import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
-// import { makeQueryString } from "@hooks/common/use-url-param";
-// import { isNumber } from "@utils/number-utils";
+import { makeQueryString } from "@hooks/common/use-url-param";
+import { isNumber } from "@utils/number-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -388,14 +387,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     updateTokenPrices();
-  }, []);
-
-  useEffect(() => {
-    if (account?.address) {
-      updateBalances();
-    }
-  }, [account?.address]);
-  useEffect(() => {
     setSwapValue({
       tokenA: null,
       tokenB: null,
@@ -403,7 +394,21 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
     selectSwapFeeTier("NONE");
     setIsEarnAdd(false);
+
+    return () => {
+      setSwapValue({
+        tokenA: null,
+        tokenB: null,
+        type: "EXACT_IN",
+      });
+    };
   }, []);
+
+  useEffect(() => {
+    if (account?.address) {
+      updateBalances();
+    }
+  }, [account?.address]);
   useEffect(() => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {
       return;
@@ -479,21 +484,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
   }, [swapValue, setSwapValue, isKeepToken]);
 
-  // useEffect(() => {
-  //   const queryString = makeQueryString({
-  //     tokenA: tokenA?.path,
-  //     tokenB: tokenB?.path,
-  //     fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
-  //     price_range_type: priceRange?.type,
-  //     ...((priceRange?.type === "Custom") && {
-  //       customTickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
-  //       customTickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
-  //     }),
-  //   });
-  //   if (tokenA?.path && tokenB?.path) {
-  //     router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
-  //   }
-  // }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
+  useEffect(() => {
+    const queryString = makeQueryString({
+      tokenA: tokenA?.path,
+      tokenB: tokenB?.path,
+      fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
+      price_range_type: priceRange?.type,
+      tickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
+      tickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
+    });
+    if (tokenA?.path && tokenB?.path) {
+      router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
+    }
+  }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
 
   return (
     <EarnAddLiquidity
@@ -536,7 +539,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       setPriceRange={(type) => {
         setPriceRange(PRICE_RANGES.find(item => item.type === (type || "Passive")) ?? null);
       }}
-      defaultPriceRangeType={"Passive"}
+      resetPriceRangeTypeTarget={"Passive"}
     />
   );
 };

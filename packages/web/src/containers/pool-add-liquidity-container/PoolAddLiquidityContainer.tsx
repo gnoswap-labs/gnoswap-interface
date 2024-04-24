@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   AddLiquiditySubmitType,
@@ -19,14 +19,17 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
-// import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { encryptId } from "@utils/common";
-// import { makeQueryString } from "@hooks/common/use-url-param";
-// import { isNumber } from "@utils/number-utils";
+import { makeQueryString } from "@hooks/common/use-url-param";
+import { isNumber } from "@utils/number-utils";
 
+export interface DefaultTick {
+  tickLower?: number, 
+  tickUpper?: number
+}
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
   apr?: string;
@@ -65,18 +68,17 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isKeepToken = false } = swapValue;
   const router = useRouter(); 
   const { getGnotPath } = useGnotToGnot();
-  const { tickLower, tickUpper } = router.query;
+  
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">("EXACT_IN");
   const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
   const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(() => {
-    return PRICE_RANGES.find(item => item.type === ("Custom")) ?? null;
-  });
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(null);
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
-  const defaultPriceRangeRef = useRef<[number | null, number | null]>();
+  const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] = useState<PriceRangeType | null>();
+  const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
   
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
@@ -124,15 +126,11 @@ const EarnAddLiquidityContainer: React.FC = () => {
     addLiquidity,
   });
 
-  useEffect(() => {
-    if(router.isReady && !defaultPriceRangeRef.current) {
-      defaultPriceRangeRef.current = [
-        tickLower ? tickToPrice(Number(tickLower)) : null, 
-        tickUpper ? tickToPrice(Number(tickUpper)) : null
-      ];
-      console.log(defaultPriceRangeRef.current);
-    }
-  }, [router.isReady, tickLower, tickUpper]);
+  // useEffect(() => {
+  //   if(!initialized && router.isReady) {
+     
+  //   }
+  // }, [initialized, router.isReady, router.query]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -335,7 +333,20 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return;
     }
     if (!initialized) {
-      const convertPath = encryptId(router.query["pool-path"] as string);
+      setInitialized(true);
+      const query = router.query;
+
+      const { tickLower, tickUpper, price_range_type } = router.query;
+      if(type) {
+        setPriceRangeTypeFromUrl(type as PriceRangeType);
+        setPriceRange(PRICE_RANGES.find(item => item.type === (price_range_type ?? "Passive"))?? null);
+      }
+      setTickFromUrl({
+        tickLower: tickLower ? tickToPrice(Number(tickLower)) : undefined,
+        tickUpper: tickUpper ? tickToPrice(Number(tickUpper)) : undefined
+      });
+
+      const convertPath = encryptId(query["pool-path"] as string);
       const splitPath: string[] = convertPath.split(":") || [];
       const currentTokenA = tokens.find(token => token.path === splitPath[0]) || null;
       const currentTokenB = tokens.find(token => token.path === splitPath[1]) || null;
@@ -358,7 +369,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
           logoURI: getGnotPath(currentTokenB).logoURI,
         } : null,
       }));
-      setInitialized(true);
       return;
     }
   }, [initialized, router, tokenA?.path, tokenB?.path, tokens]);
@@ -444,6 +454,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
       selectPool.setIsChangeMinMax(priceRange?.type === "Custom");
   }, [priceRange?.type]);
 
+  useEffect(() => {
+    const queryString = makeQueryString({
+      price_range_type: priceRange?.type,
+      tickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
+      tickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
+    });
+    if (tokenA?.path && tokenB?.path) {
+      router.push(`/earn/pool/${router.query["pool-path"]}/add?${queryString}`, undefined, { shallow: true });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -481,9 +503,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
       fetching={fetching}
       handleSwapValue={handleSwapValue}
       isKeepToken={isKeepToken}
-      setPriceRange={(type) => setPriceRange(PRICE_RANGES.find(item => item.type === (type || ("Custom"))) ?? null)}
-      defaultPriceRangeRef={defaultPriceRangeRef}
-      defaultPriceRangeType={"Custom"}
+      setPriceRange={(type) => setPriceRange(PRICE_RANGES.find(item => item.type === (type)) ?? null)}
+      defaultTicks={ticksFromUrl}
+      resetPriceRangeTypeTarget={priceRangeTypeFromUrl ?? "Passive"}
     />
   );
 };

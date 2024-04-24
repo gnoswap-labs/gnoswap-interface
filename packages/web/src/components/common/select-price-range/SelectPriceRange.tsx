@@ -8,6 +8,7 @@ import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/
 import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustom";
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
+import { DefaultTick } from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
 
 interface SelectPriceRangeProps {
   opened: boolean;
@@ -25,7 +26,8 @@ interface SelectPriceRangeProps {
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
   defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
-  defaultPriceRangeType: PriceRangeType;
+  resetPriceRangeTypeTarget: PriceRangeType;
+  defaultTicks?: DefaultTick;
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -43,8 +45,8 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   isEmptyLiquidity,
   isKeepToken,
   setPriceRange,
-  defaultPriceRangeRef,
-  defaultPriceRangeType,
+  resetPriceRangeTypeTarget,
+  defaultTicks,
 }) => {
   const selectedTokenPair = true;
 
@@ -79,8 +81,9 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           isEmptyLiquidity={isEmptyLiquidity}
           isKeepToken={isKeepToken}
           setPriceRange={setPriceRange}
-          defaultPriceRangeRef={defaultPriceRangeRef}
-          defaultPriceRangeType={defaultPriceRangeType}
+          defaultTicks={defaultTicks}
+          resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
+          
         />
       )}
     </SelectPriceRangeWrapper>
