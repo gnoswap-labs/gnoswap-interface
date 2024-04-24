@@ -79,8 +79,6 @@ export const TooltipWrapperContent = styled.div`
     &:not(:first-of-type) {
       padding: 4px 0;
     }
-    width: 100%;
-    ${mixins.flexbox("column", "center", "space-between")};
     .title {
       color: ${({ theme }) => theme.color.text04};
     }
@@ -106,4 +104,13 @@ export const TooltipWrapperContent = styled.div`
     text-align: left;
     align-items: start;
   }
+`;
+
+export const TokenValueWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
+`;
+export const TokenTitleWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
 `;

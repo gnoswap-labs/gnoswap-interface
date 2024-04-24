@@ -1,17 +1,17 @@
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import React, { useMemo } from "react";
-import { RemoveLiquiditySelectListItemWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
+import { RemoveLiquiditySelectListItemWrapper, TokenTitleWrapper, TokenValueWrapper, TooltipWrapperContent } from "./RemoveLiquiditySelectListItem.styles";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 // import { convertToMB } from "@utils/stake-position-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { tooltipWrapper } from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { numberToUSD } from "@utils/number-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
+import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 
 interface RemoveLiquiditySelectListItemProps {
@@ -26,28 +26,40 @@ interface TooltipProps {
   disabled: boolean;
 }
 
+
+
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
+  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint ) => {
+    const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
+
+    return <TokenValueWrapper>
+      <div className="value">
+        <img src={imgUri} alt="token logo" />
+        {tokeSymbol}
+      </div>
+      <div className="value">{tokenBalanceByTokenDecimal}</div>
+    </TokenValueWrapper>;
+  };
+
   return (
     <TooltipWrapperContent>
       <div css={tooltipWrapper()}>
-        <div>
+        <TokenTitleWrapper>
           <div className="title">Token ID</div>
           <div className="title">#{position.id}</div>
-        </div>
-        <div>
-          <div className="value">
-            <img src={position.pool.tokenA.logoURI} alt="token logo" />
-            {position.pool.tokenA.symbol}
-          </div>
-          <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance) || 0).toFormat(2)}</div>
-        </div>
-        <div>
-          <div className="value">
-            <img src={position.pool.tokenB.logoURI} alt="token logo" />
-            {position.pool.tokenB.symbol}
-          </div>
-          <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance) || 0).toFormat(2)}</div>
-        </div>
+        </TokenTitleWrapper>
+        {renderTokenValue(
+          position.pool.tokenA.logoURI, 
+          position.pool.tokenA.symbol, 
+          position.pool.tokenA,
+          position.token0Balance,
+        )}
+        {renderTokenValue(
+          position.pool.tokenB.logoURI, 
+          position.pool.tokenB.symbol, 
+          position.pool.tokenB,
+          position.token1Balance,
+        )}
       </div>
       {disabled && <div className="divider"></div>}
       {disabled && (
@@ -79,8 +91,9 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    if (width < 400) return `$${convertToKMB(position.positionUsdValue)}`;
-    return numberToUSD(Number(position.positionUsdValue));
+    if (width < 400) return convertLiquidityUsdToKMB(position.positionUsdValue, { prefix: "$"});
+
+    return convertLiquidityUsdValue(Number(position.positionUsdValue));
   }, [position.positionUsdValue, width]);
 
   const feeStr = useMemo(() => {
