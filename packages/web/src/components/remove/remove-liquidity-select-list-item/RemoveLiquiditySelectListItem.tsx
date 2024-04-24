@@ -13,6 +13,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
+import styled from "@emotion/styled";
 
 interface RemoveLiquiditySelectListItemProps {
   position: PoolPositionModel;
@@ -26,26 +27,29 @@ interface TooltipProps {
   disabled: boolean;
 }
 
+const TokenValueWrapper = styled.div``;
+const TokenTitleWrapper = styled.div``;
+
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
   const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint ) => {
     const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
 
-    return <div>
+    return <TokenValueWrapper>
       <div className="value">
         <img src={imgUri} alt="token logo" />
         {tokeSymbol}
       </div>
       <div className="value">{tokenBalanceByTokenDecimal}</div>
-    </div>;
+    </TokenValueWrapper>;
   };
 
   return (
     <TooltipWrapperContent>
       <div css={tooltipWrapper()}>
-        <div>
+        <TokenTitleWrapper>
           <div className="title">Token ID</div>
           <div className="title">#{position.id}</div>
-        </div>
+        </TokenTitleWrapper>
         {renderTokenValue(
           position.pool.tokenA.logoURI, 
           position.pool.tokenA.symbol, 
@@ -89,7 +93,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    if (width < 400) return convertLiquidityUsdToKMB(position.positionUsdValue, undefined, undefined, "$");
+    if (width < 400) return convertLiquidityUsdToKMB(position.positionUsdValue, { prefix: "$"});
 
     return convertLiquidityUsdValue(Number(position.positionUsdValue));
   }, [position.positionUsdValue, width]);

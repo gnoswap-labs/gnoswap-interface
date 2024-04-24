@@ -84,10 +84,13 @@ export const convertToKMB = (
 
 export const convertLiquidityUsdToKMB = (
   price: string,
-  maximumFractionDigits?: number,
-  minimumFractionDigits?: number,
-  prefix?: string,
-) => {
+  options?: {
+    maximumFractionDigits?: number,
+    minimumFractionDigits?: number,
+    prefix?: string,
+  }) => {
+  const { prefix, maximumFractionDigits, minimumFractionDigits } = options ?? {};
+
   function withPrefix(value: string) {
     if(prefix) return prefix + value;
 
