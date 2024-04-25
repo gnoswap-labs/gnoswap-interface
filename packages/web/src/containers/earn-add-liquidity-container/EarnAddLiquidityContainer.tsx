@@ -57,6 +57,8 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 
 const EarnAddLiquidityContainer: React.FC = () => {
   const router = useRouter();
+
+ 
   const [isEarnAdd, setIsEarnAdd] = useAtom(EarnState.isOneClick); // Not used any more
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isReverted, isKeepToken = false } = swapValue;
@@ -483,6 +485,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isKeepToken: !isKeepToken
     });
   }, [swapValue, setSwapValue, isKeepToken]);
+
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ router.asPath:", router.asPath);
+  }, [router.asPath]);
+
+  useEffect(() => {
+    console.log("🚀 ~ selectPool.minPosition:", selectPool.minPosition);
+    console.log("🚀 ~ selectPool.maxPosition:", selectPool.maxPosition);
+  }, [selectPool.minPosition, selectPool.maxPosition]);
 
   useEffect(() => {
     const queryString = makeQueryString({
