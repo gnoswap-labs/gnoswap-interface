@@ -153,6 +153,7 @@ const SelectPriceRangeCutomController: React.FC<
     setValue(BigNumber(current).toFixed(10));
     setCurrentValue(BigNumber(current).toFixed(10));
   }, [current, feeTier]);
+  
   useEffect(() => {
     const divElement = divRef.current;
     const inputElement = inputRef.current;
@@ -166,6 +167,7 @@ const SelectPriceRangeCutomController: React.FC<
       );
     }
   }, [value]);
+
   const exchangePrice =
     Number(value) < 1 && Number(value) !== 0
       ? subscriptFormat(value)

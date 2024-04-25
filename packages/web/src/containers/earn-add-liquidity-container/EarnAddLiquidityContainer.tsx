@@ -487,23 +487,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [swapValue, setSwapValue, isKeepToken]);
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ router.asPath:", router.asPath);
-  }, [router.asPath]);
+    const nextTickLower = isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null;
+    const nextTickUpper = isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null;
 
-  useEffect(() => {
-    console.log("🚀 ~ selectPool.minPosition:", selectPool.minPosition);
-    console.log("🚀 ~ selectPool.maxPosition:", selectPool.maxPosition);
-  }, [selectPool.minPosition, selectPool.maxPosition]);
-
-  useEffect(() => {
     const queryString = makeQueryString({
       tokenA: tokenA?.path,
       tokenB: tokenB?.path,
       fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
       price_range_type: priceRange?.type,
-      tickLower: isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null,
-      tickUpper: isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null,
+      tickLower: nextTickLower,
+      tickUpper: nextTickUpper,
     });
+
     if (tokenA?.path && tokenB?.path) {
       router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
     }

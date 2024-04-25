@@ -389,7 +389,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                         feeTier={selectPool.feeTier || "NONE"}
                         selectedFullRange={selectPool.selectedFullRange}
                         onSelectCustomRange={onSelectCustomRangeByMax}
-                        changePrice={(tick) => adjustRangeManually(() => selectPool.setMinPosition(tick))}
+                        changePrice={(tick) => adjustRangeManually(() => selectPool.setMaxPosition(tick))}
                         decrease={() => adjustRangeManually(() => selectPool.decreaseMaxTick())}
                         increase={() => adjustRangeManually(() => selectPool.increaseMaxTick())}
                         currentPriceStr={currentPriceStrReverse}

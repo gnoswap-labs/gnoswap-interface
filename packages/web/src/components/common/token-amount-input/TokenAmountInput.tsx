@@ -17,7 +17,6 @@ export interface TokenAmountInputProps extends TokenAmountInputModel {
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   changable,
   token,
-  amount,
   balance,
   usdValue,
   changeAmount,
@@ -32,7 +31,8 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   const onChangeAmountInput = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (value !== "" && !isAmount(value)) return;
-    changeAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
+    const formattedValue = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
+    changeAmount(formattedValue);
   }, [changeAmount]);
 
   const handleFillBalance = useCallback(() => {
@@ -61,7 +61,6 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
         <input
           className="amount-text"
           type="number"
-          value={amount}
           onChange={onChangeAmountInput}
           placeholder="0"
         />

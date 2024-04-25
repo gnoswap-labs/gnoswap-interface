@@ -207,13 +207,12 @@ export const useEarnAddLiquidityConfirmModal = ({
     let minTick = MIN_TICK + minTickMod;
     let maxTick = MAX_TICK - maxTickMod;
 
-    if (selectPool.minPrice && selectPool.maxPrice) {
+    if (selectPool.minPrice != null && selectPool.maxPrice != null) {
       if (!selectPool.selectedFullRange) {
         minTick = priceToNearTick(selectPool.minPrice, selectPool.tickSpacing);
         maxTick = priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing);
       }
     }
-    
     broadcastLoading(makeBroadcastAddLiquidityMessage("pending", {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
