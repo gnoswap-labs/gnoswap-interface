@@ -37,7 +37,7 @@ export interface PoolResponse {
 
   tvlChange: number;
 
-  volume: number;
+  volume24h: number;
 
   volumeChange: number;
 

@@ -77,8 +77,8 @@ const OneClickStaking: React.FC<Props> = ({
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
-    return formatUsdNumber(Math.round(Number(pool.volume)).toString(), undefined, true);
-  }, [pool.volume]);
+    return formatUsdNumber(Math.round(Number(pool.volume24h)).toString(), undefined, true);
+  }, [pool.volume24h]);
 
   const feeChangedStr = useMemo((): string => {
     return `$${convertToKMB(`${Math.round(Number(pool.feeChange))}`, 2)}`;

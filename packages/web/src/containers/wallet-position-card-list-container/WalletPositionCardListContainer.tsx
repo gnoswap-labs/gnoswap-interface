@@ -18,14 +18,13 @@ const WalletPositionCardListContainer: React.FC = () => {
   const { loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const { connected, isSwitchNetwork } = useWallet();
+  const { isSwitchNetwork } = useWallet();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
       window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
-
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -54,7 +53,7 @@ const WalletPositionCardListContainer: React.FC = () => {
   };
 
   const sortedData = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-  if (!connected || isSwitchNetwork) return null;
+  if (!isFetchedPosition || isSwitchNetwork) return null;
 
   return (
     <MyPositionCardList

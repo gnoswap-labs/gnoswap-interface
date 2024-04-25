@@ -232,6 +232,9 @@ export function formatUsdNumber3Digits(val: string | number) {
   if (Number.isNaN(Number(val))) {
     return String(val);
   }
+  if (Number(val) === 0) {
+    return "0";
+  }
   if (Number(val) >= 1) {
     return (Math.floor((Number(val) + 0.005) * 100) / 100).toFixed(2);
   }

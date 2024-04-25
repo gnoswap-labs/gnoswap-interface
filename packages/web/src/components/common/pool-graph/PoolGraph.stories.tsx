@@ -1,9 +1,8 @@
 import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
 import { Meta, StoryObj } from "@storybook/react";
 import POOLS from "@repositories/pool/mock/pools.json";
-import { PoolModel } from "@models/pool/pool-model";
 
-const pool = POOLS.pools[0] as PoolModel;
+const pool = POOLS.pools[0] as any;
 
 export default {
   title: "common/PoolGraph",

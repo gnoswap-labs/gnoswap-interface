@@ -20,15 +20,15 @@ export interface PositionResponse {
 
   liquidity: string;
 
-  token0Balance: string;
+  tokenABalance: string;
 
-  token1Balance: string;
+  tokenBBalance: string;
 
   positionUsdValue: string;
 
-  unclaimedFee0Amount: string;
+  unclaimedFeeAAmount: string;
 
-  unclaimedFee1Amount: string;
+  unclaimedFeeBAmount: string;
 
   unclaimedFee0Usd: string;
 

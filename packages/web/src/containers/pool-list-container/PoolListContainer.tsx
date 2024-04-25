@@ -143,7 +143,6 @@ const PoolListContainer: React.FC = () => {
     setSearchIcon(prev => !prev);
     setIsInside(true);
   };
-
   const changePoolType = useCallback((newType: string) => {
     switch (newType) {
       case POOL_TYPE.ALL:

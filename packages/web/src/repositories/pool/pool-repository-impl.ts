@@ -38,6 +38,7 @@ import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
 import { PACKAGE_POOL_ADDRESS, PACKAGE_POOL_PATH, GNS_TOKEN_PATH, CREATE_POOL_FEE,  } from "@common/clients/wallet-client/transaction-messages";
 import { tickToSqrtPriceX96 } from "@utils/math.utils";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
@@ -87,9 +88,24 @@ export class PoolRepositoryImpl implements PoolRepository {
   getPoolDetailByPoolPath = async (
     poolPath: string,
   ): Promise<PoolDetailModel> => {
-    const pool = await this.networkClient.get<PoolResponse>({
-      url: "/pools/" + poolPath,
-    }).then(response => PoolMapper.detailFromResponse(response.data));
+    const tempPath = poolPath.replace(/\//g, "%2F");
+    const pool = await this.networkClient.get<{ data: PoolResponse }>({
+      url: "/pools/" + tempPath,
+    }).then(response => {
+      return PoolMapper.detailFromResponse(response.data.data);
+    });
+    return pool;
+  };
+
+  getBinsOfPoolByPath = async (
+    poolPath: string,
+  ): Promise<PoolBinModel[]> => {
+    const tempPath = poolPath.replace(/\//g, "%2F");
+    const pool = await this.networkClient.get<{ data: PoolBinModel[] }>({
+      url: "/pools/" + tempPath + "/bins?bins=40",
+    }).then(response => {
+      return response.data.data;
+    });
     return pool;
   };
 
