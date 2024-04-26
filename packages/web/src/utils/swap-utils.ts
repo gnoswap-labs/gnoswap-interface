@@ -53,7 +53,9 @@ export function findNearPrice(price: number, tickSpacing: number) {
   const previouTickAbs = tickAbs - mod;
   const nextTickAbs = tickAbs - mod + tickSpacing;
   const previousPrice = tickToPrice(previouTickAbs * sign);
+  console.log("🚀 ~ findNearPrice ~ previousPrice:", previousPrice);
   const nextPrice = tickToPrice(nextTickAbs * sign);
+  console.log("🚀 ~ findNearPrice ~ nextPrice:", nextPrice);
 
   if (
     Math.abs(previousPrice - currentPrice) > Math.abs(nextPrice - currentPrice)

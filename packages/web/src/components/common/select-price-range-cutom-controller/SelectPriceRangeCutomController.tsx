@@ -9,11 +9,11 @@ import BigNumber from "bignumber.js";
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useState,
   useRef,
   forwardRef,
   useImperativeHandle,
+  useMemo,
 } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
@@ -191,6 +191,24 @@ const SelectPriceRangeCustomController = forwardRef<
     </>
   );
 
+  const transformValue = useCallback(() => {
+    if(isNumber(currentValue) && Number(currentValue) > 1) {
+      return Number(value).toFixed(5);
+    }  
+    
+    if(currentValue) {
+      return subscriptFormat(currentValue);
+    } 
+    
+    if(value === "NaN") {
+      return "-";
+    }
+
+    // console.log("value");
+    
+    return value;
+  }, [currentValue, value]);
+
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
@@ -211,15 +229,7 @@ const SelectPriceRangeCustomController = forwardRef<
           <input
             style={{ fontSize: `${fontSize}px` }}
             className="value"
-            value={
-              isNumber(currentValue) && Number(currentValue) > 1
-                ? Number(value).toFixed(5)
-                : currentValue
-                ? subscriptFormat(currentValue)
-                : value === "NaN"
-                ? "-"
-                : value
-            }
+            value={transformValue()}
             onChange={onChangeValue}
             onBlur={onBlurUpdate}
             ref={inputRef}

@@ -91,6 +91,7 @@ export const useSelectPool = ({
     "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH"
   >("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
+  const [loadingPoolInfo , setLoadingPoolInfo] = useState<boolean>(false);
   const { isLoadingCommon } = useLoading();
 
   useEffect(() => {
@@ -109,18 +110,18 @@ export const useSelectPool = ({
     if (isCreate && startPrice === null) {
       return "CREATE";
     }
-    if (!poolInfo || (!isIgnoreDefaultLoading && isLoadingCommon)) {
+  if ( loadingPoolInfo || (!isIgnoreDefaultLoading && isLoadingCommon)) {
       return "LOADING";
     }
     return "DONE";
   }, [
     feeTier,
     isCreate,
-    poolInfo,
     startPrice,
     tokenA,
     tokenB,
     isLoadingCommon,
+    loadingPoolInfo
   ]);
 
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
@@ -376,9 +377,11 @@ export const useSelectPool = ({
         }
         return false;
       }) === 1;
+    setLoadingPoolInfo(true);
     poolRepository
       .getPoolDetailRPCByPoolPath(poolPath)
       .then(poolInfo => {
+
         const changedPoolInfo =
           reverse === false
             ? poolInfo
@@ -396,7 +399,12 @@ export const useSelectPool = ({
               };
         setPoolInfo(changedPoolInfo);
       })
-      .catch(() => setPoolInfo(null));
+      .catch(() => {
+        setPoolInfo(null);
+      })
+      .finally(() => {
+        setLoadingPoolInfo(false);
+      });
   }, [
     feeTier,
     tokenA,

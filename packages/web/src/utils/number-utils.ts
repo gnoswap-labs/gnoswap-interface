@@ -301,6 +301,11 @@ export function subscriptFormat(number: string | number) {
   const numberOfZero = countZeros(numberStr);
   if (numberStr[0] !== "0" || !numberStr.startsWith("0.00000")) {
     if (Number(number) < 1) {
+      if(numberOfZero === 5) {
+        console.log(Math.min(10, numberStr.length));
+        return Number(numberStr).toFixed(Math.min(9, numberStr.length));
+      }
+
       return removeTrailingZeros(Number(numberStr).toFixed(Math.min(numberOfZero - 1 + 5, 5)));
     } else {
       return removeTrailingZeros(Number(numberStr).toFixed(5));
