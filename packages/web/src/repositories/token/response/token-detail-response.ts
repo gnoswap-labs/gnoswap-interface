@@ -17,9 +17,9 @@ export interface IPriceResponse {
   
 export interface IMarketResponse {
   popularity: string
-  tvl: string
-  volume24h: string
-  fees24h: string
+  lockedTokensUsd: string
+  volumeUsd24h: string
+  feesUsd24h: string
 }
 
 export interface IBestPoolResponse {
@@ -27,7 +27,7 @@ export interface IBestPoolResponse {
   fee: string
   tokenA: ITokenA
   tokenB: ITokenB
-  tvl: string
+  tvlUsd: string
   apr: string
 }
   
