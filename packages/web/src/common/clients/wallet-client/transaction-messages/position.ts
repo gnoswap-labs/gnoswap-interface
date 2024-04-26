@@ -81,9 +81,9 @@ export function makePositionDecreaseLiquidityMessage(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
+      `${liquidityRatio}`, // Percentage of liquidity to reduce (0 ~ 100)
       "0", // Minimum quantity of tokenA to decrease liquidity
       "0", // Minimum quantity of tokenB to decrease liquidity
-      `${liquidityRatio}`, // Percentage of liquidity to reduce (0 ~ 100)
       "9999999999", // Deadline UTC time
       `${existWrappedToken}`, // Whether to receive wrapped tokens as native tokens
     ],
