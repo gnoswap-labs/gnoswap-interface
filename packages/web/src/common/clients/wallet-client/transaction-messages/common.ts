@@ -3,8 +3,8 @@ export const ENVIRONMENT = process.env.NEXT_PUBLIC_ENVIRONMENT || "preview";
 const isPreview = ENVIRONMENT === "preview";
 
 const PREVIEW_ENV_VARIABLES = {
-  DEFAULT_CHAIN_ID: "dev",
-  API_URL: "https://test.api.gnoswap.io/v1",
+  DEFAULT_CHAIN_ID: "dev.gnoswap",
+  API_URL: "https://dev.api.gnoswap.io/v1",
   PACKAGE_ROUTER_PATH: "gno.land/r/demo/router",
   PACKAGE_POOL_PATH: "gno.land/r/demo/pool",
   PACKAGE_POSITION_PATH: "gno.land/r/demo/position",
