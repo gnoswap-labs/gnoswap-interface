@@ -52,4 +52,6 @@ export interface PositionResponse {
 
   dailyRewards?: RewardResponse[];
   bins: PoolBinModel[];
+  closed: boolean;
+  totalDailyRewardsUsd: string;
 }

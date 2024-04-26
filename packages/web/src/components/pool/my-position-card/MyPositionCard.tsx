@@ -73,7 +73,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const [copied, setCopy] = useCopy();
 
-  const isClosed = position.status;
+  const isClosed = position.closed;
 
   const tokenA = useMemo(() => {
     return position.pool.tokenA;
@@ -685,7 +685,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <div className="range-badge">
                 <RangeBadge
                   status={
-                    position.status
+                    position.closed
                       ? RANGE_STATUS_OPTION.NONE
                       : inRange
                       ? RANGE_STATUS_OPTION.IN

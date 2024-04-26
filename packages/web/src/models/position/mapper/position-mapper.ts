@@ -9,6 +9,7 @@ import { RewardResponse } from "@repositories/position/response/reward-response"
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
+import { toUnitFormat } from "@utils/number-utils";
 
 export class PositionMapper {
   public static toTokenPairAmount(
@@ -64,8 +65,9 @@ export class PositionMapper {
       rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
       dailyRewards:
         position.dailyRewards?.map(PositionMapper.rewardFromResponse) || [],
-      status: false,
+      closed: position.closed,
       bins: position.bins,
+      totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
     };
   }
 
@@ -96,7 +98,6 @@ export class PositionMapper {
     return {
       ...positionModel,
       pool: poolModel,
-      status: false,
     };
   }
 }

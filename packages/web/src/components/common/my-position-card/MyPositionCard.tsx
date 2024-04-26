@@ -58,7 +58,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   // fake close
   const inRange: boolean | null = useMemo(() => {
-    if (position.status === true) return null;
+    if (position.closed === true) return null;
     return (
       pool.currentTick <= position.tickUpper &&
       pool.currentTick >= position.tickLower
@@ -67,7 +67,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     pool.currentTick,
     position.tickLower,
     position.tickUpper,
-    position.status,
+    position.closed,
   ]);
 
   const feeRateStr = useMemo(() => {
@@ -303,7 +303,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </span>
             </div>
             <div className="list-content">
-              <span>$0</span>
+              <span>{position.totalDailyRewardsUsd}</span>
               {claimableUSD}
             </div>
           </div>

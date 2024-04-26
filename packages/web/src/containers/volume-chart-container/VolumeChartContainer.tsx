@@ -148,7 +148,7 @@ const VolumeChartContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
-  const { volume : volumeData } = data || {};
+  const { volume : volumeData, allTime, fee } = data || {};
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
@@ -197,11 +197,11 @@ const VolumeChartContainer: React.FC = () => {
       volumeChartType={volumeChartType}
       changeVolumeChartType={changeVolumeChartType}
       volumePriceInfo={{
-        amount: volumeData?.latest
-          ? `$${Number(volumeData?.latest).toLocaleString()}`
+        amount: allTime
+          ? `$${Number(allTime).toLocaleString()}`
           : "-",
-        fee: volumeData?.fee
-          ? `$${Number(volumeData?.fee).toLocaleString()}`
+        fee: fee?.all
+          ? `$${Number(fee?.all).toLocaleString()}`
           : "-",
       }}
       volumeChartInfo={chartData}

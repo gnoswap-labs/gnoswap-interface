@@ -22,7 +22,7 @@ import {
   makeUnstakeMessage,
 } from "@common/clients/wallet-client/transaction-messages/staker";
 import {
-  makePositionBurnMessage,
+  makePositionDecreaseLiquidityMessage,
   makePositionCollectFeeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
 
@@ -42,7 +42,9 @@ export class PositionRepositoryImpl implements PositionRepository {
   }
 
   getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
-    const response = await this.networkClient.get<{ data: PositionListResponse }>({
+    const response = await this.networkClient.get<{
+      data: PositionListResponse;
+    }>({
       url: "/users/" + address + "/position",
     });
     return PositionMapper.fromList(response.data.data);
@@ -127,8 +129,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const { lpTokenIds, caller } = request;
+    const decreaseLiquidityRatio = 100;
     const messages = lpTokenIds.map(lpTokenId =>
-      makePositionBurnMessage(lpTokenId, caller),
+      makePositionDecreaseLiquidityMessage(
+        lpTokenId,
+        decreaseLiquidityRatio,
+        true,
+        caller,
+      ),
     );
     const result = await this.walletClient.sendTransaction({
       messages,

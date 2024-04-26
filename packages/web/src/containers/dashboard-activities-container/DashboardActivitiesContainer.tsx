@@ -97,7 +97,7 @@ export const dummyTokenList: Activity[] = [
 // }
 
 const replaceToken = (symbol: string) => {
-  if (symbol === "WGNOT") return "GNOT";
+  if (symbol === "wugnot") return "GNOT";
   return symbol;
 };
 
@@ -194,7 +194,6 @@ const DashboardActivitiesContainer: React.FC = () => {
   return (
     <ActivityList
       activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
-
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

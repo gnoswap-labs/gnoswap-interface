@@ -12,6 +12,7 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import { useGetUsernameByAddress } from "@query/address/queries";
 import { useLoading } from "@hooks/common/use-loading";
+import { PositionModel } from "@models/position/position-model";
 
 export const POSITION_CONTENT_LABEL = {
   VALUE: "Value",
@@ -128,14 +129,11 @@ const EarnMyPositionContainer: React.FC<
     }, [page]);
 
     const dataMapping = useMemo(() => {
-      let temp = positions.sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-      if (positions.length > 0 && isClosed) {
-        const fake = {
-          ...positions[0],
-          status: true,
-        };
-        temp = [...positions, fake, fake];
+      let temp = positions;
+      if (!isClosed) {
+        temp = positions.filter((_: PositionModel) => _.closed === false);
       }
+      temp = temp.sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
       if (page === 1) {
         if (width > 1180) {
           return temp.slice(0, 4);
@@ -148,7 +146,6 @@ const EarnMyPositionContainer: React.FC<
     const handleChangeClosed = () => {
       setIsClosed(!isClosed);
     };
-
     return (
       <EarnMyPositions
         address={address}
