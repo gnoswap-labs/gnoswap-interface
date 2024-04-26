@@ -234,7 +234,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     const { minPrice, maxPrice, currentPrice } = selectPool;
     return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0)); 
   }, [selectPool, tokenA, tokenB]);
-  const isLoading = useMemo(() => selectPool.renderState === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
+  const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
   
   return (
     <EarnAddLiquidityWrapper>

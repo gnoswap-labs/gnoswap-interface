@@ -184,7 +184,7 @@ const SelectPriceRangeCustomController = forwardRef<
       ? subscriptFormat(value)
       : value === "∞"
       ? value
-      : convertToKMB(Number(value).toFixed(4), 4);
+      : Number(value).toFixed(5);
   const priceValueString = (
     <>
       1 {token0Symbol} =&nbsp;{exchangePrice}&nbsp;{token1Symbol}
@@ -213,7 +213,7 @@ const SelectPriceRangeCustomController = forwardRef<
             className="value"
             value={
               isNumber(currentValue) && Number(currentValue) > 1
-                ? convertToKMB(Number(value).toFixed(4), 4)
+                ? Number(value).toFixed(5)
                 : currentValue
                 ? subscriptFormat(currentValue)
                 : value === "NaN"
@@ -231,7 +231,7 @@ const SelectPriceRangeCustomController = forwardRef<
             ref={divRef}
           >
             {isNumber(currentValue) && Number(currentValue) > 1
-              ? convertToKMB(Number(value).toFixed(4), 4)
+              ? convertToKMB(Number(value).toFixed(4))
               : currentValue
               ? subscriptFormat(currentValue)
               : value}

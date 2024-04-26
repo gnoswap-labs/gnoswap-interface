@@ -94,13 +94,13 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   const isCustom = true;
 
   const isLoading = useMemo(
-    () => selectPool.renderState === "LOADING" || isLoadingCommon,
+    () => selectPool.renderState() === "LOADING" || isLoadingCommon,
     [selectPool.renderState, isLoadingCommon],
   );
 
   const availSelect =
     Array.isArray(selectPool.liquidityOfTickPoints) &&
-    selectPool.renderState === "DONE";
+    selectPool.renderState() === "DONE";
 
   const comparedTokenA = selectPool.compareToken?.symbol !== tokenB.symbol;
 
@@ -219,7 +219,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     }
   }, [selectPool.currentPrice, selectPool.startPrice]);
 
-  if (selectPool.renderState === "NONE") {
+  if (selectPool.renderState() === "NONE") {
     return <></>;
   }
 

@@ -31,7 +31,7 @@ interface Props {
 export interface SelectPool {
   poolPath: string | null;
   isCreate: boolean;
-  renderState: RenderState;
+  renderState: (isIgnoreDefaultLoading?: boolean) => RenderState;
   startPrice: number | null;
   feeTier: SwapFeeTierType | null;
   tickSpacing: number;
@@ -102,14 +102,14 @@ export const useSelectPool = ({
     return latestPoolPath;
   }, [latestPoolPath, setCurrentPoolPath]);
 
-  const renderState: RenderState = useMemo(() => {
+  const renderState = useCallback((isIgnoreDefaultLoading = false) => {
     if (!tokenA || !tokenB || !feeTier) {
       return "NONE";
     }
     if (isCreate && startPrice === null) {
       return "CREATE";
     }
-    if (!poolInfo || isLoadingCommon) {
+    if (!poolInfo || (!isIgnoreDefaultLoading && isLoadingCommon)) {
       return "LOADING";
     }
     return "DONE";

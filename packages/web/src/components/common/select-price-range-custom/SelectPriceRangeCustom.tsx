@@ -109,9 +109,9 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
   const isCustom = true;
 
-  const isLoading = useMemo(() => selectPool.renderState === "LOADING", [selectPool.renderState]);
+  const isLoading = useMemo(() => selectPool.renderState() === "LOADING", [selectPool.renderState]);
 
-  const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState === "DONE";
+  const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 
   const comparedTokenA = selectPool.compareToken?.symbol !== tokenB.symbol;
 
@@ -276,7 +276,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }
   }, [selectPool.currentPrice, selectPool.startPrice]);
   
-  if (selectPool.renderState === "NONE") {
+  if (selectPool.renderState() === "NONE") {
     return <></>;
   }
 
@@ -341,7 +341,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                 </div>
               )}
 
-              {isLoading && (
+              {(selectPool.renderState(true) === "LOADING") && (
                 <div className="loading-wrapper">
                   <LoadingSpinner />
                 </div>
