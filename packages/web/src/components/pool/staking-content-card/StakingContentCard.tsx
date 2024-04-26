@@ -110,7 +110,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       if (current.rewardType !== "STAKING") {
         return accum;
       }
-      const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
+      const tokenUSD = tokenPrices[current.token.priceID]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
     return toUnitFormat(tempTotalStakedRewardUSD / (10 ** 6), true, true);
@@ -234,7 +234,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       if (current.rewardType !== "STAKING") {
         return accum;
       }
-      const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
+      const tokenUSD = tokenPrices[current.token.priceID]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);

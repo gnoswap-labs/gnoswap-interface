@@ -6,6 +6,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { CardListKeyStats } from "@models/common/card-list-item-info";
 import { TvlResponse } from "@repositories/dashboard";
+import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 import { useQuery } from "@tanstack/react-query";
 import { makeId } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
@@ -16,13 +17,20 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const { dashboardRepository } = useGnoswapContext();
   const router = useRouter();
   const { breakpoint } = useWindowSize();
-  const { loading } = useTokenData();
+  const { loading, isLoadingTokenPrice } = useTokenData();
   const { loading: isLoadingPoolData } = usePoolData();
   const { isLoadingCommon } = useLoading();
   const { data: tvlData } = useQuery<TvlResponse, Error>({
     queryKey: ["dashboardTvl"],
     queryFn: dashboardRepository.getDashboardTvl,
   });
+
+  const { data, isLoading: isLoadingVolume } = useQuery<IVolumeResponse, Error>({
+    queryKey: ["volumePriceInfo"],
+    queryFn: dashboardRepository.getDashboardVolume,
+    refetchInterval: 60 * 1000,
+  });
+  const { allTime = "0", fee } = data || {};
 
   const list: CardListKeyStats[] = [
     {
@@ -31,11 +39,11 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: "Swap Volume 24h",
-      content: "$0",
+      content: `$${allTime}`,
     },
     {
       label: "Swap Fees 24h",
-      content: "$0",
+      content: `$${fee?.all || "0"}`,
     },
   ];
 
@@ -58,7 +66,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
       list={list}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={loading || isLoadingPoolData || isLoadingCommon}
+      loading={loading || isLoadingPoolData || isLoadingCommon || isLoadingTokenPrice || isLoadingVolume}
     />
   );
 };

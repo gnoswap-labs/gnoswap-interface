@@ -12,7 +12,6 @@ interface Props {
 const TokenTradingModalContainer:React.FC<Props> = ({ onClickConfirm, token }) => {
   const clearModal = useClearModal();
   const [checked, setChecked] = useState(false);
-
   const handleChecked = async () => {
     try {
       const url = `https://gnoscan.io/tokens/${makeId(token?.path)}`;

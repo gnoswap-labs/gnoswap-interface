@@ -42,10 +42,10 @@ export class PositionRepositoryImpl implements PositionRepository {
   }
 
   getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
-    const response = await this.networkClient.get<PositionListResponse>({
-      url: "/positions/" + address,
+    const response = await this.networkClient.get<{ data: PositionListResponse }>({
+      url: "/users/" + address + "/position",
     });
-    return PositionMapper.fromList(response.data);
+    return PositionMapper.fromList(response.data.data);
   };
 
   claimAll = async (

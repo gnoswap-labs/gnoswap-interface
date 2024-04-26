@@ -1,9 +1,5 @@
 import { NetworkClient } from "@common/clients/network-client";
-import {
-  PoolResponse,
-  PoolListResponse,
-  PoolRepository,
-} from ".";
+import { PoolResponse, PoolListResponse, PoolRepository } from ".";
 import { WalletClient } from "@common/clients/wallet-client";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
@@ -11,13 +7,14 @@ import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { SendTransactionResponse, SendTransactionSuccessResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import {
+  SendTransactionResponse,
+  SendTransactionSuccessResponse,
+  WalletResponse,
+} from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import {
-  evaluateExpressionToObject,
-  makeABCIParams,
-} from "@utils/rpc-utils";
+import { evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolError } from "@common/errors/pool";
@@ -28,22 +25,34 @@ import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { tickToSqrtPriceX96 } from "@gnoswap-labs/swap-router";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { makeDepositMessage } from "@common/clients/wallet-client/transaction-messages/token";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
-import { makeCreateIncentiveMessage, makeRemoveIncentiveMessage, makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
+import {
+  makeCreateIncentiveMessage,
+  makeRemoveIncentiveMessage,
+  makeStakerApproveMessage,
+} from "@common/clients/wallet-client/transaction-messages/pool";
 import { makePositionMintMessage } from "@common/clients/wallet-client/transaction-messages/position";
 import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
+import {
+  PACKAGE_POOL_ADDRESS,
+  PACKAGE_POOL_PATH,
+  GNS_TOKEN_PATH,
+  CREATE_POOL_FEE,
+} from "@common/clients/wallet-client/transaction-messages";
+import { tickToSqrtPriceX96 } from "@utils/math.utils";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
 
-const POOL_PATH = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH || "";
-const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
-const GNS_TOKEN_PATH = process.env.NEXT_PUBLIC_GNS_TOKEN_PATH || "";
-const CREATE_POOL_FEE = process.env.NEXT_PUBLIC_CREATE_POOL_FEE || "";
+const POOL_PATH = PACKAGE_POOL_PATH || "";
+const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
 
 export class PoolRepositoryImpl implements PoolRepository {
+  private rpcPools: PoolRPCModel[];
+  private updatedAt: number;
+
   private networkClient: NetworkClient;
   private rpcProvider: GnoProvider | null;
   private walletClient: WalletClient | null;
@@ -53,25 +62,35 @@ export class PoolRepositoryImpl implements PoolRepository {
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
   ) {
+    this.updatedAt = 0;
+    this.rpcPools = [];
     this.networkClient = networkClient;
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
-  getRPCPools = async(): Promise<PoolRPCModel[]> => {
-    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+  getRPCPools = async (): Promise<PoolRPCModel[]> => {
+    if (Date.now() - this.updatedAt < 5_000) {
+      return this.rpcPools;
+    }
+    this.updatedAt = Date.now();
+
+    const poolPackagePath = PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
-    const param = makeABCIParams("RpcGetPools", []);
-    const result: PoolRPCModel[] = await this.rpcProvider.evaluateExpression(
-      poolPackagePath,
-      param,
-    ).then(evaluateExpressionToObject<PoolRPCResponse[]>)
-    .then(PoolRPCMapper.fromList)
-    .catch(e => {
-      console.error(e);
-      return [];
-    });
+    const param = makeABCIParams("ApiGetPools", []);
+    const result: PoolRPCModel[] = await this.rpcProvider
+      .evaluateExpression(poolPackagePath, param)
+      .then(evaluateExpressionToObject<{ response: PoolRPCResponse[] }>)
+      .then(data => {
+        const pools = PoolRPCMapper.fromList(data?.response || []);
+        this.rpcPools = pools;
+        return pools;
+      })
+      .catch(e => {
+        console.error(e);
+        return [];
+      });
     return result;
   };
 
@@ -79,55 +98,51 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    const pools = response?.data?.pools ? 
-      response.data.pools.map(PoolMapper.fromResponse) :
-      [];
+    const pools = response?.data?.data
+      ? response.data.data.map(PoolMapper.fromResponse)
+      : [];
     return pools;
   };
 
   getPoolDetailByPoolPath = async (
     poolPath: string,
   ): Promise<PoolDetailModel> => {
-    const pool = await this.networkClient.get<PoolResponse>({
-      url: "/pool_details/" + poolPath,
-    }).then(response => PoolMapper.detailFromResponse(response.data));
+    const pool = await this.networkClient
+      .get<PoolResponse>({
+        url: "/pools/" + encodeURIComponent(poolPath),
+      })
+      .then(response => PoolMapper.detailFromResponse(response.data));
+    return pool;
+  };
+
+  getBinsOfPoolByPath = async (poolPath: string): Promise<PoolBinModel[]> => {
+    const tempPath = poolPath.replace(/\//g, "%2F");
+    const pool = await this.networkClient
+      .get<{ data: PoolBinModel[] }>({
+        url: "/pools/" + tempPath + "/bins?bins=40",
+      })
+      .then(response => {
+        return response.data.data;
+      });
     return pool;
   };
 
   getPoolDetailRPCByPoolPath = async (
     poolPath: string,
   ): Promise<PoolDetailRPCModel> => {
-    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
-    if (!poolPackagePath || !this.rpcProvider) {
-      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
-    }
-    const param = makeABCIParams("ApiGetPool", [poolPath]);
-
-    const response = await this.rpcProvider.evaluateExpression(
-      poolPackagePath,
-      param,
-    ).then(evaluateExpressionToObject<{
-      response: {
-        data: PoolRPCResponse
-      }
-    }>)
-    .then(response => {
-      if (!response?.response?.data) {
-        return null;
-      }
-      return PoolRPCMapper.detailFrom(response?.response?.data);
-    })
-    .catch(e => {
-      console.error(e);
-      return null;
-    });
-    if (response === null) {
+    const pool = await this.getRPCPools()
+      .then(pools => pools.find(pool => pool?.poolPath === poolPath))
+      .catch(() => null);
+    if (!pool) {
       throw new PoolError("NOT_FOUND_POOL");
     }
-    return response;
+
+    return PoolRPCMapper.toDetail(pool);
   };
 
-  createPool = async (request: CreatePoolRequest): Promise<CreatePoolResponse> => {
+  createPool = async (
+    request: CreatePoolRequest,
+  ): Promise<CreatePoolResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -144,65 +159,85 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
     } = request;
     const gasFee = 1;
-    const gasWanted = 2000000;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
     const messages = [];
-    
+
     const tokenAPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPath = tokenB.wrappedPath || tokenB.path;
     if (isNativeToken(tokenA)) {
       messages.push(
-        makeDepositMessage(tokenA.wrappedPath, tokenAAmountRaw, "ugnot", request.caller),
+        makeDepositMessage(
+          tokenA.wrappedPath,
+          tokenAAmountRaw,
+          "ugnot",
+          request.caller,
+        ),
       );
     }
     if (isNativeToken(tokenB)) {
       messages.push(
-        makeDepositMessage(tokenB.wrappedPath, tokenBAmountRaw, "ugnot", request.caller),
+        makeDepositMessage(
+          tokenB.wrappedPath,
+          tokenBAmountRaw,
+          "ugnot",
+          request.caller,
+        ),
       );
     }
 
     messages.push(PoolRepositoryImpl.makeApproveGnosTokenMessage(caller));
-    messages.push(PoolRepositoryImpl.makeCreatePoolMessage(
-      tokenA,
-      tokenB,
-      feeTier,
-      startPrice,
-      caller,
-    ));
+    messages.push(
+      PoolRepositoryImpl.makeCreatePoolMessage(
+        tokenA,
+        tokenB,
+        feeTier,
+        startPrice,
+        caller,
+      ),
+    );
 
-    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
-      tokenAPath,
-      tokenAAmountRaw,
-      caller,
-    ));
-    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
-      tokenBPath,
-      tokenBAmountRaw,
-      caller,
-    ));
+    messages.push(
+      PoolRepositoryImpl.makeApproveTokenMessage(
+        tokenAPath,
+        tokenAAmountRaw,
+        caller,
+      ),
+    );
+    messages.push(
+      PoolRepositoryImpl.makeApproveTokenMessage(
+        tokenBPath,
+        tokenBAmountRaw,
+        caller,
+      ),
+    );
 
-    messages.push(makePositionMintMessage(
-      tokenA,
-      tokenB,
-      feeTier,
-      minTick,
-      maxTick,
-      tokenAAmountRaw,
-      tokenBAmountRaw,
-      slippage.toString(),
-      caller,
-    ));
+    messages.push(
+      makePositionMintMessage(
+        tokenA,
+        tokenB,
+        feeTier,
+        minTick,
+        maxTick,
+        tokenAAmountRaw,
+        tokenBAmountRaw,
+        slippage.toString(),
+        caller,
+      ),
+    );
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee,
-      gasWanted,
     });
     if (result.code !== 0) {
       throw new Error(`${result}`);
     }
     const data = result.data as SendTransactionSuccessResponse<string[]>;
-    if (data.data === null || !Array.isArray(data.data) || data.data.length < 4) {
+    if (
+      data.data === null ||
+      !Array.isArray(data.data) ||
+      data.data.length < 4
+    ) {
       return {
         code: result.code,
         hash: data.hash,
@@ -212,8 +247,10 @@ export class PoolRepositoryImpl implements PoolRepository {
         tokenBAmount: "0",
       };
     }
-    const resultTokenAAmount = makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
-    const resultTokenBAmount = makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
+    const resultTokenAAmount =
+      makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
+    const resultTokenBAmount =
+      makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
     return {
       code: result.code,
       hash: data.hash,
@@ -224,7 +261,9 @@ export class PoolRepositoryImpl implements PoolRepository {
     };
   };
 
-  addLiquidity = async (request: AddLiquidityRequest): Promise<AddLiquidityResponse> => {
+  addLiquidity = async (
+    request: AddLiquidityRequest,
+  ): Promise<AddLiquidityResponse> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -240,53 +279,71 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
     } = request;
     const gasFee = 1;
-    const gasWanted = 2000000;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
     const messages = [];
-    
+
     const tokenAPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPath = tokenB.wrappedPath || tokenB.path;
     if (isNativeToken(tokenA)) {
       messages.push(
-        makeDepositMessage(tokenA.wrappedPath, tokenAAmountRaw, "ugnot", request.caller),
+        makeDepositMessage(
+          tokenA.wrappedPath,
+          tokenAAmountRaw,
+          "ugnot",
+          request.caller,
+        ),
       );
     }
     if (isNativeToken(tokenB)) {
       messages.push(
-        makeDepositMessage(tokenB.wrappedPath, tokenBAmountRaw, "ugnot", request.caller),
+        makeDepositMessage(
+          tokenB.wrappedPath,
+          tokenBAmountRaw,
+          "ugnot",
+          request.caller,
+        ),
       );
     }
 
-    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
-      tokenAPath,
-      tokenAAmountRaw,
-      caller,
-    ));
-    messages.push(PoolRepositoryImpl.makeApproveTokenMessage(
-      tokenBPath,
-      tokenBAmountRaw,
-      caller,
-    ));
+    messages.push(
+      PoolRepositoryImpl.makeApproveTokenMessage(
+        tokenAPath,
+        tokenAAmountRaw,
+        caller,
+      ),
+    );
+    messages.push(
+      PoolRepositoryImpl.makeApproveTokenMessage(
+        tokenBPath,
+        tokenBAmountRaw,
+        caller,
+      ),
+    );
 
-    messages.push(makePositionMintMessage(
-      tokenA,
-      tokenB,
-      feeTier,
-      minTick,
-      maxTick,
-      tokenAAmountRaw,
-      tokenBAmountRaw,
-      slippage.toString(),
-      caller,
-    ));
+    messages.push(
+      makePositionMintMessage(
+        tokenA,
+        tokenB,
+        feeTier,
+        minTick,
+        maxTick,
+        tokenAAmountRaw,
+        tokenBAmountRaw,
+        slippage.toString(),
+        caller,
+      ),
+    );
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee,
-      gasWanted,
     });
     const data = result.data as SendTransactionSuccessResponse<string[]>;
-    if (data.data === null || !Array.isArray(data.data) || data.data.length < 4) {
+    if (
+      data.data === null ||
+      !Array.isArray(data.data) ||
+      data.data.length < 4
+    ) {
       return {
         code: result.code,
         hash: data.hash,
@@ -296,8 +353,10 @@ export class PoolRepositoryImpl implements PoolRepository {
         tokenBAmount: "0",
       };
     }
-    const resultTokenAAmount = makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
-    const resultTokenBAmount = makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
+    const resultTokenAAmount =
+      makeDisplayTokenAmount(tokenA, data.data[2]) || 0;
+    const resultTokenBAmount =
+      makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
     return {
       code: result.code,
       hash: data.hash,
@@ -312,29 +371,28 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<IPoolDetailResponse> => {
     const response = await this.networkClient.get<IPoolDetailResponse>({
-      url: "/pool_details/" + poolPath,
+      url: "/pools/" + poolPath,
     });
     return response.data;
   };
 
-  createExternalIncentive = async (request: CreateExternalIncentiveRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null> => {
+  createExternalIncentive = async (
+    request: CreateExternalIncentiveRequest,
+  ): Promise<WalletResponse<
+    SendTransactionResponse<string[] | null>
+  > | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const account = await this.walletClient.getAccount();
-    if (!account.data ) {
+    if (!account.data) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const { address } = account.data;
-    const {
-      poolPath,
-      rewardToken,
-      rewardAmount,
-      startTime,
-      endTime
-    } = request;
+    const { poolPath, rewardToken, rewardAmount, startTime, endTime } = request;
 
-    const rewardAmountRaw = makeRawTokenAmount(rewardToken, rewardAmount) || "0";
+    const rewardAmountRaw =
+      makeRawTokenAmount(rewardToken, rewardAmount) || "0";
 
     const messages = [];
     let tokenPath = rewardToken.path;
@@ -344,31 +402,40 @@ export class PoolRepositoryImpl implements PoolRepository {
         makeDepositMessage(tokenPath, rewardAmountRaw, "ugnot", address),
       );
     }
-    messages.push(makeStakerApproveMessage(tokenPath, rewardAmountRaw, address));
-    messages.push(makeCreateIncentiveMessage(poolPath, tokenPath, rewardAmountRaw, startTime, endTime, address));
+    messages.push(
+      makeStakerApproveMessage(tokenPath, rewardAmountRaw, address),
+    );
+    messages.push(
+      makeCreateIncentiveMessage(
+        poolPath,
+        tokenPath,
+        rewardAmountRaw,
+        startTime,
+        endTime,
+        address,
+      ),
+    );
 
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
     return response;
   };
 
-  removeExternalIncentive = async (request: RemoveExternalIncentiveRequest): Promise<string | null> => {
+  removeExternalIncentive = async (
+    request: RemoveExternalIncentiveRequest,
+  ): Promise<string | null> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const account = await this.walletClient.getAccount();
-    if (!account.data ) {
+    if (!account.data) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const { address } = account.data;
-    const {
-      poolPath,
-      rewardToken
-    } = request;
+    const { poolPath, rewardToken } = request;
 
     const messages = [];
     let tokenPath = rewardToken.path;
@@ -379,7 +446,6 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
@@ -400,7 +466,12 @@ export class PoolRepositoryImpl implements PoolRepository {
     const tokenAPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPath = tokenB.wrappedPath || tokenB.path;
     const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-    const startPriceSqrt = tickToSqrtPriceX96(priceToNearTick(Number(startPrice), SwapFeeTierInfoMap[feeTier].tickSpacing));
+    const startPriceSqrt = tickToSqrtPriceX96(
+      priceToNearTick(
+        Number(startPrice),
+        SwapFeeTierInfoMap[feeTier].tickSpacing,
+      ),
+    );
 
     return {
       caller,
@@ -412,7 +483,11 @@ export class PoolRepositoryImpl implements PoolRepository {
   }
 
   private static makeApproveGnosTokenMessage(caller: string) {
-    return this.makeApproveTokenMessage(GNS_TOKEN_PATH, CREATE_POOL_FEE, caller);
+    return this.makeApproveTokenMessage(
+      GNS_TOKEN_PATH,
+      CREATE_POOL_FEE,
+      caller,
+    );
   }
 
   private static makeApproveTokenMessage(

@@ -122,7 +122,6 @@ export const getLabelChartV2 = (data: any[], space: number) => {
   for(let i = 0; i < length; i+=space) {
     temp.push(data[i].slice(0,10));
   }
-  console.log(temp, data, space);
   return temp;
 };
 

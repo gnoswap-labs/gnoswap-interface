@@ -23,7 +23,7 @@ const getMapping: any = (symbol: any) => {
   return {
     "/earn/add": "Add Liquidity",
     "/earn/stake": "Stake Position",
-    "/tokens/[token-path]": `${symbol || "BTC"}`,
+    "/tokens/[token-path]": `${symbol || "Loading..."}`,
   };
 };
 

@@ -62,12 +62,12 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
   const resolvedBins = useMemo(() => {
     const length = 20;
     const poolLength = pool.bins.length;
+    if (poolLength <= 20) return pool?.bins || [];
     return Array.from({ length }, (_, index) => {
       if (index + 10 > poolLength - 1) return pool.bins[0];
       return pool.bins[10 + index];
     });
   }, [pool.bins]);
-
   const tdWidth =
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_TD_WIDTH_MOBILE
@@ -76,6 +76,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
       : breakpoint === DEVICE_TYPE.TABLET
       ? POOL_TD_WIDTH_TABLET
       : POOL_TD_WIDTH;
+
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>
       <TableColumn className="left" tdWidth={tdWidth[0]}>

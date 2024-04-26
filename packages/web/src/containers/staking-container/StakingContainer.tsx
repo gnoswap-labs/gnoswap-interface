@@ -20,7 +20,7 @@ const StakingContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
-  const { loading: loadingPool } = usePoolData();
+  const { loading: isLoadingPool } = usePoolData();
   const [type, setType] = useState(3);
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
@@ -41,7 +41,7 @@ const StakingContainer: React.FC = () => {
     }
     return address;
   }, [initializedData]);
-  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(address);
+  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData(address);
 
   const pool = useMemo(() => {
     if (!data) return null;
@@ -104,10 +104,10 @@ const StakingContainer: React.FC = () => {
       .reduce<{ [key in string]: TokenModel }>((accum, current) => {
         if (
           tokenPair.findIndex(
-            token => token.priceId === current.token.priceId,
+            token => token.priceID === current.token.priceID,
           ) > -1
         ) {
-          accum[current.token.priceId] = current.token;
+          accum[current.token.priceID] = current.token;
         }
         return accum;
       }, {});
@@ -187,7 +187,7 @@ const StakingContainer: React.FC = () => {
       type={type}
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-      loading={loadingPool || loadingPosition || isLoadingCommon}
+      loading={isLoadingPool || isLoadingPosition || isLoadingCommon}
       isOtherPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
     />
   );
