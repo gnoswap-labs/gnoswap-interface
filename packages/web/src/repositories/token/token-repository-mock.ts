@@ -34,7 +34,7 @@ export class TokenRepositoryMock implements TokenRepository {
   };
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {
-    return { prices: [] };
+    return { data : [] };
   };
 
   public getTokenDetailByPath = async (

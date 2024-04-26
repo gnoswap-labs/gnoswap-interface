@@ -40,6 +40,7 @@ export function makePositionMintMessage(
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
+      caller, // LP Token Receiver
     ],
   });
 }

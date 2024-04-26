@@ -9,6 +9,7 @@ import { RemoveExternalIncentiveRequest } from "./request/remove-external-incent
 import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
 import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 export interface PoolRepository {
   getPools: () => Promise<PoolModel[]>;
@@ -18,6 +19,8 @@ export interface PoolRepository {
   getPoolDetailRPCByPoolPath: (poolPath: string) => Promise<PoolDetailRPCModel>;
 
   getPoolDetailByPoolPath: (poolPath: string) => Promise<PoolDetailModel>;
+
+  getBinsOfPoolByPath: (poolPath: string) => Promise<PoolBinModel[]>;
 
   createPool: (request: CreatePoolRequest) => Promise<CreatePoolResponse>;
 

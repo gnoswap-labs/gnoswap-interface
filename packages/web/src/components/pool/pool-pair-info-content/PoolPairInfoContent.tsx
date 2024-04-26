@@ -72,8 +72,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
-    return toUnitFormat(pool.volume,  true, true);
-  }, [pool.volume]);
+    return toUnitFormat(pool.volume24h,  true, true);
+  }, [pool.volume24h]);
 
   const aprValue = useMemo(() => {
     if (!pool.totalApr) {

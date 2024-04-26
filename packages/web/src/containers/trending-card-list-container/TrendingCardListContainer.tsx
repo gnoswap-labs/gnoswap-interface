@@ -10,7 +10,7 @@ import React, { useCallback } from "react";
 const TrendingCardListContainer: React.FC = () => {
   const router = useRouter();
   const { breakpoint } = useWindowSize();
-  const { trendingTokens, loading } = useTokenData();
+  const { trendingTokens, loading, isLoadingTokenPrice } = useTokenData();
   const { loading: isLoadingPoolData } = usePoolData();
   const { isLoadingCommon } = useLoading();
 
@@ -27,7 +27,7 @@ const TrendingCardListContainer: React.FC = () => {
       list={trendingTokens}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={loading || isLoadingPoolData || isLoadingCommon}
+      loading={loading || isLoadingPoolData || isLoadingCommon || isLoadingTokenPrice}
     />
   );
 };

@@ -28,7 +28,7 @@ const token: TokenModel = {
   symbol: "FOO",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-  priceId: "gno.land/r/foo",
+  priceID: "gno.land/r/foo",
   address: "",
 };
 

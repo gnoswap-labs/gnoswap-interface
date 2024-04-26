@@ -67,7 +67,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
-      const tokenPrice = tokenPrices[token.priceId];
+      const tokenPrice = tokenPrices[token.path];
       if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
         return "-";
       }

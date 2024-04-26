@@ -19,6 +19,7 @@ export default function Pool() {
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
+
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });

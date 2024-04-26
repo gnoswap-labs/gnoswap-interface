@@ -1,6 +1,7 @@
 import { TokenPairInfo } from "@models/token/token-pair-info";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
+import { isNumber } from "./number-utils";
 
 /**
  * Shortens an address by N characters.
@@ -41,7 +42,7 @@ export function makePairName({
 
 export function numberToFormat(num: string | number, decimals?: number) {
   const decimal = Number.isInteger(Number(num)) ? 0 : decimals;
-  return BigNumber(num).toFormat(decimal || 0);
+  return isNumber(Number(num)) ? BigNumber(num).toFormat(decimal || 0) : "0";
 }
 
 export function numberToString(num: string | number, decimals?: number) {

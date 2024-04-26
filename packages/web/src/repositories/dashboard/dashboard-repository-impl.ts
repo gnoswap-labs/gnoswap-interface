@@ -3,9 +3,9 @@ import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
 import { DashboardRepository } from "./dashboard-repository";
 import { TvlResponse } from "./response";
-import { VolumeResponse } from "./response/volume-response";
+import { IVolumeResponse } from "./response/volume-response";
 import { DashboardTokenResponse } from "./response/token-response";
-import { OnchainAccountRequest, OnchainRequest } from "./request";
+import { OnChainRequestMapping, OnchainAccountRequest, OnchainRequest } from "./request";
 import { OnchainActivityResponse } from "./response/onchain-response";
 
 export class DashboardRepositoryImpl implements DashboardRepository {
@@ -21,20 +21,20 @@ export class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   public getDashboardTvl = async (): Promise<TvlResponse> => {
-    const { data } = await this.networkClient.get<TvlResponse>({
-      url: "/dashboard_tvl",
+    const { data } = await this.networkClient.get<{ data: TvlResponse}>({
+      url: "/dashboard/tvl",
     });
-    return data;
+    return data.data;
   };
-  public getDashboardVolume = async (): Promise<VolumeResponse> => {
-    const { data } = await this.networkClient.get<VolumeResponse>({
-      url: "/dashboard_volume",
+  public getDashboardVolume = async (): Promise<IVolumeResponse> => {
+    const { data } = await this.networkClient.get<{ data: IVolumeResponse }>({
+      url: "/dashboard/volume",
     });
-    return data;
+    return data.data;
   };
   public getDashboardToken = async (): Promise<DashboardTokenResponse> => {
     const { data } = await this.networkClient.get<DashboardTokenResponse>({
-      url: "/dashboard_gns_gnot",
+      url: "/dashboard/gns_gnot",
     });
     return data;
   };
@@ -42,19 +42,11 @@ export class DashboardRepositoryImpl implements DashboardRepository {
   public getDashboardOnchainActivity = async (
     request: OnchainRequest,
   ): Promise<OnchainActivityResponse> => {
-    const urlMapper: Record<OnchainRequest["type"], string> = {
-      All: "/onchain_all",
-      Swaps: "/onchain_swap",
-      Adds: "/onchain_add",
-      Removes: "/onchain_remove",
-      Stakes: "/onchain_stake",
-      Unstakes: "/onchain_unstake",
-    };
-
-    const { data } = await this.networkClient.get<OnchainActivityResponse>({
-      url: urlMapper[request.type],
+    // type: "ALL" | "ADD" | "INCREASE" | "DECREASE" | "SWAP" | "STAKE" | "UNSTAKE" | "CLAIM" | "WITHDRAW" | "REMOVE";
+    const { data } = await this.networkClient.get<{ data: OnchainActivityResponse }>({
+      url: `/activity?type=${OnChainRequestMapping[request.type]}`
     });
-    return data;
+    return data.data || [];
   };
 
   public getAccountOnchainActivity = async (
@@ -65,7 +57,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     }
 
     const { data } = await this.networkClient.get<OnchainActivityResponse>({
-      url: "/onchain_all" + "/" + "g16kvq0mra3atvr07lkdwc2x6jqmna8a4kt0e85d",
+      url: "/users/" + request.address + "/activity",
     });
     return data;
   };

@@ -6,7 +6,8 @@ import { useRouter } from "next/router";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
 import { useLoading } from "@hooks/common/use-loading";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
+import { WRAPPED_GNOT_PATH as ENV_WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
+const WRAPPED_GNOT_PATH = ENV_WRAPPED_GNOT_PATH || "";
 
 export const performanceInit = [
   {
