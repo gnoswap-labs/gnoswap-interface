@@ -8,7 +8,7 @@ import { convertToKMB, convertToMB } from "./stake-position-utils";
 
 export const isNumber = (value: BigNumber | string | number): boolean => {
   const reg = /^-?\d+\.?\d*$/;
-  const target = value.toString();
+  const target = value?.toString();
   return (
     reg.test(target) &&
     !isNaN(parseFloat(target)) &&
@@ -231,6 +231,9 @@ export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) 
 export function formatUsdNumber3Digits(val: string | number) {
   if (Number.isNaN(Number(val))) {
     return String(val);
+  }
+  if (Number(val) === 0) {
+    return "0";
   }
   if (Number(val) >= 1) {
     return (Math.floor((Number(val) + 0.005) * 100) / 100).toFixed(2);

@@ -23,8 +23,9 @@ import { SwapPoolResponse } from "./response/swap-pool-response";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
+import { PACKAGE_POOL_ADDRESS, PACKAGE_POOL_PATH } from "@common/clients/wallet-client/transaction-messages";
 
-const POOL_ADDRESS = process.env.NEXT_PUBLIC_PACKAGE_POOL_ADDRESS || "";
+const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
 
 export class SwapRepositoryImpl implements SwapRepository {
   private localStorageClient: StorageClient;
@@ -56,7 +57,7 @@ export class SwapRepositoryImpl implements SwapRepository {
   public findSwapPool = async (
     request: FindBestPoolRequest,
   ): Promise<SwapPoolResponse> => {
-    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    const poolPackagePath = PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
@@ -109,7 +110,7 @@ export class SwapRepositoryImpl implements SwapRepository {
   public getExpectedSwapResult = async (
     request: SwapRequest,
   ): Promise<SwapExpectedResultResponse> => {
-    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    const poolPackagePath = PACKAGE_POOL_PATH;
     if (!poolPackagePath || !this.rpcProvider) {
       return {
         tokenAAmount: 0,
@@ -169,7 +170,7 @@ export class SwapRepositoryImpl implements SwapRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const poolPackagePath = process.env.NEXT_PUBLIC_PACKAGE_POOL_PATH;
+    const poolPackagePath = PACKAGE_POOL_PATH;
     const account = await this.walletClient.getAccount();
     if (!account.data || !poolPackagePath) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
@@ -200,7 +201,6 @@ export class SwapRepositoryImpl implements SwapRepository {
           ],
         },
       ],
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });

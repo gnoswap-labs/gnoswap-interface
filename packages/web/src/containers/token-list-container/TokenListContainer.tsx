@@ -156,7 +156,7 @@ const TokenListContainer: React.FC = () => {
     setIsInside(true);
   };
 
-  const { tokens, isFetched, error, tokenPrices } = useTokenData();
+  const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice } = useTokenData();
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -247,8 +247,8 @@ const TokenListContainer: React.FC = () => {
         },
         last7days: [...(transferData?.last7Days?.map(item => Number(item.price || 0)) || []), Number(transferData?.pricesBefore?.latestPrice)],
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
-        liquidity: `$${Math.floor(Number(transferData.liquidity || 0)).toLocaleString()}`,
-        volume24h: `$${Math.floor(Number(transferData.volume || 0)).toLocaleString()}`,
+        liquidity: `$${Math.floor(Number(transferData.lockedTokensUsd || 0)).toLocaleString()}`,
+        volume24h: `$${Math.floor(Number(transferData.volumeUsd24h || 0)).toLocaleString()}`,
         price: convertLargePrice(usdFormat),
         priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
         priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
@@ -260,7 +260,6 @@ const TokenListContainer: React.FC = () => {
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({...item, idx: i}));
   }, [tokens, tokenPrices, tokenType]);
-    
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
     const temp = firstData.filter((item: Token) => ((item.token.path.includes(grc20))));
@@ -330,7 +329,7 @@ const TokenListContainer: React.FC = () => {
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={isFetched && !isLoadingCommon}
+      isFetched={isFetched && !isLoadingCommon && !isLoadingTokenPrice}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}

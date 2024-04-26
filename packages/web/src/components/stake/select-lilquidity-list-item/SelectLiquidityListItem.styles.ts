@@ -3,6 +3,7 @@ import { css, type Theme } from "@emotion/react";
 import mixins from "@styles/mixins";
 import { media } from "@styles/media";
 import { inputStyle } from "@components/stake/stake-position/StakePosition.styles";
+import styled from "@emotion/styled";
 
 export const wrapper = (checked: boolean) => (theme: Theme) =>
   css`
@@ -103,4 +104,13 @@ export const tooltipWrapper = () => (theme: Theme) =>
     padding: 0 !important;
     ${fonts.p4}
   }
+`;
+
+export const TokenValueWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
+`;
+export const TokenTitleWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "space-between")};
+  width: 100%;
 `;

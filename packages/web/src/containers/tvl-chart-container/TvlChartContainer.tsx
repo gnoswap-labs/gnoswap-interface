@@ -158,39 +158,37 @@ const TvlChartContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardTvl,
     refetchInterval: 60 * 1000,
   });
-  
   const changeTvlChartType = useCallback((newType: string) => {
     const tvlChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
       CHART_TYPE["7D"];
     setTvlChartType(tvlChartType);
   }, []);
-
   const chartData = useMemo(() => {
     if (!tvlData?.all)
       return {
         xAxisLabels: [],
         datas: [],
       };
-    let chartData = tvlData?.last_7d;
+    let chartData = tvlData?.last7d;
 
     switch (tvlChartType) {
       case "30D":
-        chartData = tvlData?.last_1m;
+        chartData = tvlData?.last1m;
         break;
       case "90D":
-        chartData = tvlData?.last_1y;
+        chartData = tvlData?.last1y;
         break;
       case "ALL":
         chartData = tvlData?.all;
         break;
       default:
-        chartData = tvlData?.last_7d;
+        chartData = tvlData?.last7d;
         break;
     }
 
     return chartData?.reduce(
-      (pre, next) => {
+      (pre: any, next: any) => {
         const time = parseDate(next.date);
         return {
           xAxisLabels: [...pre.xAxisLabels, time],
@@ -198,7 +196,7 @@ const TvlChartContainer: React.FC = () => {
             ...pre.datas,
             {
               amount: {
-                value: next.price,
+                value: next.tvlUsd || 0,
                 denom: "USD",
               },
               time: getLocalizeTime(next.date),

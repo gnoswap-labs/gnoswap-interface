@@ -6,7 +6,7 @@ export interface PoolListResponse {
     height: number;
     timestamp: string;
   };
-  pools: PoolResponse[];
+  data: PoolResponse[];
 }
 export interface PoolResponse {
   id?: string;
@@ -37,7 +37,7 @@ export interface PoolResponse {
 
   tvlChange: number;
 
-  volume: number;
+  volume24h: number;
 
   volumeChange: number;
 

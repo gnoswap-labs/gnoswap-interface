@@ -12,7 +12,7 @@ export interface TokenModel {
 
   address?: string;
 
-  priceId: string;
+  priceID: string;
 
   chainId: string;
 

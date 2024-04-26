@@ -114,15 +114,15 @@ export const useSwapHandler = () => {
   }, [estimatedRoutes, tokenA, tokenB]);
 
   const tokenABalance = useMemo(() => {
-    if (tokenA && !Number.isNaN(displayBalanceMap[tokenA.priceId])) {
-      return BigNumber(displayBalanceMap[tokenA.priceId] || 0).toFormat();
+    if (tokenA && !Number.isNaN(displayBalanceMap[tokenA.priceID])) {
+      return BigNumber(displayBalanceMap[tokenA.priceID] || 0).toFormat();
     }
     return "-";
   }, [displayBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
-    if (tokenB && !Number.isNaN(displayBalanceMap[tokenB.priceId])) {
-      return BigNumber(displayBalanceMap[tokenB.priceId] || 0).toFormat();
+    if (tokenB && !Number.isNaN(displayBalanceMap[tokenB.priceID])) {
+      return BigNumber(displayBalanceMap[tokenB.priceID] || 0).toFormat();
     }
     return "-";
   }, [displayBalanceMap, tokenB]);

@@ -31,7 +31,6 @@ import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 import ChainNetworkInfos from "@resources/chains.json";
 import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
 import { SwapRouterRepositoryImpl } from "@repositories/swap/swap-router-repository-impl";
-import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
 import { PositionRepository } from "@repositories/position/position-repository";
 import { PositionRepositoryImpl } from "@repositories/position/position-repository-impl";
 import {
@@ -51,6 +50,10 @@ import {
 } from "@states/common";
 import { LeaderboardRepositoryMock } from "@repositories/leaderboard/leaderboard-repository-mock";
 import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-repository";
+import {
+  API_URL,
+  DEFAULT_CHAIN_ID,
+} from "@common/clients/wallet-client/transaction-messages";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -68,8 +71,6 @@ interface GnoswapContextProps {
   walletRepository: WalletRepository;
   leaderboardRepository: LeaderboardRepository;
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const getSessionId = () => {
   const sessionId = sessionStorage.getItem(GNOSWAP_SESSION_ID_KEY);
@@ -141,7 +142,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [sessionId]);
 
   useEffect(() => {
-    const defaultChainId = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
+    const defaultChainId = DEFAULT_CHAIN_ID || "";
     const currentNetwork =
       network ||
       ChainNetworkInfos.find(info => info.chainId === defaultChainId);
@@ -215,8 +216,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, []);
 
   async function initNetwork() {
-    const defaultChainId =
-      process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
+    const defaultChainId = DEFAULT_CHAIN_ID;
     const currentNetwork =
       network ||
       ChainNetworkInfos.find(info => info.chainId === defaultChainId);

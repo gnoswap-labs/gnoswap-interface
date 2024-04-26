@@ -1,13 +1,26 @@
 export interface VolumeResponse {
   latest: string;
   fee: string;
-  last_7d: VolumeData[];
-  last_1m: VolumeData[];
-  last_1y: VolumeData[];
+  last7d: VolumeData[];
+  last1m: VolumeData[];
+  last1y: VolumeData[];
   all: VolumeData[];
 }
 
 interface VolumeData {
   date: string;
-  price: string;
+  volumeUsd: string;
+}
+
+export interface IVolumeResponse {
+  allTime: string
+  volume: VolumeResponse
+  fee: Fee
+}
+
+export interface Fee {
+  last7d: any
+  last1m: any
+  last1y: any
+  all: any
 }

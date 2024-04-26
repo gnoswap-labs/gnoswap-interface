@@ -2,13 +2,13 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { numberToUSD } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import React, { useMemo } from "react";
-import { tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
+import { TokenTitleWrapper, TokenValueWrapper, tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertLiquidityUsdToKMB, convertLiquidityUsdValue } from "@utils/stake-position-utils";
 import BigNumber from "bignumber.js";
+import { TokenModel } from "@models/token/token-model";
 
 interface SelectLiquidityListItemProps {
   disabled?: boolean;
@@ -17,27 +17,40 @@ interface SelectLiquidityListItemProps {
   onCheckedItem: (checked: boolean, path: string) => void;
 }
 
+
+
 const TooltipContent: React.FC<{ position: PoolPositionModel, disabled: boolean }> = ({ position, disabled }) => {
+  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint ) => {
+    const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
+
+    return <TokenValueWrapper>
+      <div className="value">
+        <img src={imgUri} alt="token logo" />
+        {tokeSymbol}
+      </div>
+      <div className="value">{tokenBalanceByTokenDecimal}</div>
+    </TokenValueWrapper>;
+  };
+
+
   return (
     <div css={tooltipWrapper()}>
-      <div>
+      <TokenTitleWrapper>
         <div className="title">Token ID</div>
         <div className="title">#{position.id}</div>
-      </div>
-      <div>
-        <div className="value">
-          <img src={position.pool.tokenA.logoURI} />
-          {position.pool.tokenA.symbol}
-        </div>
-        <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenA, position.token0Balance) || 0).toFormat(2)}</div>
-      </div>
-      <div>
-        <div className="value">
-          <img src={position.pool.tokenB.logoURI} />
-          {position.pool.tokenB.symbol}
-        </div>
-        <div className="value">{BigNumber(makeDisplayTokenAmount(position.pool.tokenB, position.token1Balance) || 0).toFormat(2)}</div>
-      </div>
+      </TokenTitleWrapper>
+      {renderTokenValue(
+        position.pool.tokenA.logoURI, 
+        position.pool.tokenA.symbol, 
+        position.pool.tokenA,
+        position.token0Balance,
+      )}
+      {renderTokenValue(
+        position.pool.tokenB.logoURI, 
+        position.pool.tokenB.symbol, 
+        position.pool.tokenB,
+        position.token1Balance,
+      )}
       {disabled && <div className="divider"></div>}
       {disabled && (
           <div className="unstake-description">
@@ -69,8 +82,9 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    if (width < 400) return `$${convertToKMB(position.positionUsdValue)}`;
-    return numberToUSD(Number(position.positionUsdValue));
+    if (width < 400) return convertLiquidityUsdToKMB(position.positionUsdValue, { prefix: "$"});
+
+    return convertLiquidityUsdValue(Number(position.positionUsdValue));
   }, [position.positionUsdValue, width]);
 
   return (

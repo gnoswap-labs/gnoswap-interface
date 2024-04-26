@@ -14,6 +14,7 @@ import {
 import { WalletClient } from "../wallet-client";
 import { Adena } from "./adena";
 import { parseTransactionResponse } from "./adena-client.util";
+import { DEFAULT_GAS_WANTED } from "@common/values";
 
 export class AdenaClient implements WalletClient {
   private adena: Adena | null;
@@ -66,6 +67,7 @@ export class AdenaClient implements WalletClient {
           value: message,
         };
       }),
+      gasWanted: transaction.gasWanted || DEFAULT_GAS_WANTED,
     };
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.getAdena()
