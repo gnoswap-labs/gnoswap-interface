@@ -213,12 +213,14 @@ export const useEarnAddLiquidityConfirmModal = ({
         maxTick = priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing);
       }
     }
+
     broadcastLoading(makeBroadcastAddLiquidityMessage("pending", {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
       tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
       tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})
     }));
+    
     const transaction = selectPool.isCreate ? createPool({
       tokenAAmount,
       tokenBAmount,

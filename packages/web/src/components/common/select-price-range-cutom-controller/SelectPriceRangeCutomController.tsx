@@ -12,6 +12,8 @@ import React, {
   useMemo,
   useState,
   useRef,
+  forwardRef,
+  useImperativeHandle,
 } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
@@ -36,9 +38,14 @@ export interface SelectPriceRangeCutomControllerProps {
   priceRangeType: PriceRangeType | null;
 }
 
-const SelectPriceRangeCutomController: React.FC<
+export interface SelectPriceRangeCustomControllerRef {
+  formatData: () => void;
+}
+
+const SelectPriceRangeCustomController = forwardRef<
+  SelectPriceRangeCustomControllerRef, 
   SelectPriceRangeCutomControllerProps
-> = ({
+>(({
   title,
   current,
   feeTier,
@@ -52,7 +59,7 @@ const SelectPriceRangeCutomController: React.FC<
   priceRangeType,
   token0Symbol,
   token1Symbol,
-}) => {
+}, ref) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [value, setValue] = useState("");
@@ -125,6 +132,10 @@ const SelectPriceRangeCutomController: React.FC<
       onSelectCustomRange();
     }
   }, [changed, value, tickSpacing, selectedFullRange, priceRangeType]);
+
+  useImperativeHandle(ref, () => {
+    return { formatData: () => setCurrentValue("") };
+  }, []);
 
   useEffect(() => {
     if (current === null || BigNumber(Number(current)).isNaN()) {
@@ -245,5 +256,8 @@ const SelectPriceRangeCutomController: React.FC<
       </div>
     </SelectPriceRangeCutomControllerWrapper>
   );
-};
-export default SelectPriceRangeCutomController;
+});
+
+SelectPriceRangeCustomController.displayName = "SelectPriceRangeCustomController";
+
+export default SelectPriceRangeCustomController;

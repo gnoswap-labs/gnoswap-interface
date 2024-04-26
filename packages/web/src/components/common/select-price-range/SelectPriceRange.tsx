@@ -1,5 +1,5 @@
 import { PriceRangeStr, PriceRangeTooltip, PriceRangeType } from "@constants/option.constant";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -48,10 +48,12 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   resetPriceRangeTypeTarget,
   defaultTicks,
 }) => {
+  const selectPriceRangeRef= useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
   const selectedTokenPair = true;
 
   const changePriceRangeWithClear = useCallback((priceRange: AddLiquidityPriceRage) => {
     changePriceRange(priceRange);
+    selectPriceRangeRef.current?.resetRange(priceRange.type);
   }, [changePriceRange]);
 
   return (
@@ -83,7 +85,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           setPriceRange={setPriceRange}
           defaultTicks={defaultTicks}
           resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
-          
+          ref={selectPriceRangeRef}
         />
       )}
     </SelectPriceRangeWrapper>

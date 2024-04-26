@@ -208,6 +208,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
+    if (priceRange.type !== "Custom") {
+      selectPool.setIsChangeMinMax(false);
+      selectPool.setFullRange(false);
+    }
   }, []);
 
   const changeTokenA = useCallback((token: TokenModel) => {

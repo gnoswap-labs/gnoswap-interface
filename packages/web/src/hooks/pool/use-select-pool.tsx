@@ -77,8 +77,6 @@ export const useSelectPool = ({
   defaultPriceRange = [null, null],
 }: Props) => {
   const priceRangeRef = useRef<[number | null, number | null]>([...defaultPriceRange]);
-  // const isInitialedPriceRange = useRef(false);
-
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
@@ -396,7 +394,6 @@ export const useSelectPool = ({
                   tickUpper: position.tickLower * -1,
                 })),
               };
-        console.log(changedPoolInfo);
         setPoolInfo(changedPoolInfo);
       })
       .catch(() => setPoolInfo(null));

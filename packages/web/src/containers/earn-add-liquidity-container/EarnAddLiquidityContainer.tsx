@@ -202,6 +202,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     setPriceRange(priceRange);
     if (priceRange.type !== "Custom") {
       selectPool.setIsChangeMinMax(false);
+      selectPool.setFullRange(false);
     }
   }, []);
 
