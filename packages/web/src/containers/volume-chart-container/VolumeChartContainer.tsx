@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import VolumeChart from "@components/dashboard/volume-chart/VolumeChart";
 import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { VolumeResponse } from "@repositories/dashboard/response/volume-response";
+import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 import dayjs from "dayjs";
 import { useLoading } from "@hooks/common/use-loading";
 
@@ -143,11 +143,12 @@ const VolumeChartContainer: React.FC = () => {
     CHART_TYPE["7D"],
   );
 
-  const { data: volumeData, isLoading } = useQuery<VolumeResponse, Error>({
+  const { data, isLoading } = useQuery<IVolumeResponse, Error>({
     queryKey: ["volumePriceInfo"],
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
+  const { volume : volumeData } = data || {};
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
