@@ -204,8 +204,6 @@ const SelectPriceRangeCustomController = forwardRef<
       return "-";
     }
 
-    // console.log("value");
-    
     return value;
   }, [currentValue, value]);
 
