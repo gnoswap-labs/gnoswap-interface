@@ -66,6 +66,7 @@ const SelectPriceRangeCustomController = forwardRef<
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
   const [currentValue, setCurrentValue] = useState("");
+  const cachedFontSizeRef = useRef<number | null>(null);
 
   const disabledController = useMemo(() => {
     return (
@@ -165,47 +166,54 @@ const SelectPriceRangeCustomController = forwardRef<
     setCurrentValue(BigNumber(current).toFixed(10));
   }, [current, feeTier]);
   
-  useEffect(() => {
-    const divElement = divRef.current;
-    const inputElement = inputRef.current;
+  
 
-    if (divElement && inputElement) {
-      setFontSize(
-        Math.min(
-          (inputElement.offsetWidth * fontSize) / divElement.offsetWidth,
-          24,
-        ),
-      );
+  const exchangePrice = useMemo(() => {
+    if (Number(value) < 1 && Number(value) !== 0) {
+      return subscriptFormat(value);
     }
+    
+    if (value === "∞") {
+      return value;
+    }
+    
+    return convertToKMB(Number(value).toFixed(5));
   }, [value]);
-
-  const exchangePrice =
-    Number(value) < 1 && Number(value) !== 0
-      ? subscriptFormat(value)
-      : value === "∞"
-      ? value
-      : Number(value).toFixed(5);
+    
+      
   const priceValueString = (
     <>
       1 {token0Symbol} =&nbsp;{exchangePrice}&nbsp;{token1Symbol}
     </>
   );
 
-  const transformValue = useCallback(() => {
-    if(isNumber(currentValue) && Number(currentValue) > 1) {
+  const transformValue = useMemo(() => {
+    if(isNumber(currentValue) && Number(currentValue) >= 1) {
       return Number(value).toFixed(5);
     }  
     
-    if(currentValue) {
+    if(isNumber(currentValue) && Number(currentValue) < 1) {
       return subscriptFormat(currentValue);
-    } 
+    }
     
     if(value === "NaN") {
+      title === "Min Price" && console.log("3");
       return "-";
     }
-
+    
     return value;
   }, [currentValue, value]);
+
+  useEffect(() => {
+    const maxDefaultLength = 7;
+
+    if(transformValue.length < maxDefaultLength) {
+      setFontSize(24);
+      return;
+    }
+
+    setFontSize((maxDefaultLength / transformValue.length) * 24);
+  }, [transformValue]);
 
   return (
     <SelectPriceRangeCutomControllerWrapper>
@@ -227,7 +235,7 @@ const SelectPriceRangeCustomController = forwardRef<
           <input
             style={{ fontSize: `${fontSize}px` }}
             className="value"
-            value={transformValue()}
+            value={transformValue}
             onChange={onChangeValue}
             onBlur={onBlurUpdate}
             ref={inputRef}

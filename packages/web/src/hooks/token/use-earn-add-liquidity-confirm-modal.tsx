@@ -160,7 +160,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     if (!selectPool.maxPrice || BigNumber(selectPool.maxPrice).isLessThan(currentPrice)) {
       inRange = false;
     }
-    if (!selectPool.minPrice || BigNumber(selectPool.minPrice).isGreaterThan(currentPrice)) {
+    if (selectPool.minPrice === null || BigNumber(selectPool.minPrice).isGreaterThan(currentPrice)) {
       inRange = false;
     }
     return {
