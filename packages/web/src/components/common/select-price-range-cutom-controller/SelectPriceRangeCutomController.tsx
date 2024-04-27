@@ -66,7 +66,6 @@ const SelectPriceRangeCustomController = forwardRef<
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
   const [currentValue, setCurrentValue] = useState("");
-  const cachedFontSizeRef = useRef<number | null>(null);
 
   const disabledController = useMemo(() => {
     return (
