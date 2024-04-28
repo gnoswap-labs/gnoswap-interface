@@ -189,11 +189,11 @@ const SelectPriceRangeCustomController = forwardRef<
   const transformValue = useMemo(() => {
     if(isNumber(currentValue) && Number(currentValue) >= 1) {
       const significantNumber = 5;
-      const [intPart] = value.split(".")
+      const [intPart] = value.split(".");
 
       if(intPart.length >= significantNumber) return Math.round(Number(value)).toString();
 
-      return Number(value).toFixed(significantNumber - intPart.length)
+      return Number(value).toFixed(significantNumber - intPart.length);
     }  
     
     if(isNumber(currentValue) && Number(currentValue) < 1) {
