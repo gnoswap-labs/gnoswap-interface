@@ -291,6 +291,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (selectPool.currentPrice === null) {
       return;
     }
+    if(/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
+      tokenBAmountInput.changeAmount("0");
+      return;
+    }
     const ordered = tokenA?.symbol === selectPool.compareToken?.symbol;
     const currentPrice = ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice;
     const depositRatioA = selectPool.depositRatio;
@@ -316,9 +320,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (selectPool.currentPrice === null) {
       return;
     }
+    if(/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
+      tokenAAmountInput.changeAmount("0");
+      return;
+    }
     const ordered = tokenB?.symbol === selectPool.compareToken?.symbol;
     const currentPrice = ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice;
     const depositRatioA = selectPool.depositRatio;
+    
+
     if (!selectPool.minPrice || !selectPool.maxPrice || depositRatioA === null) {
       tokenAAmountInput.changeAmount(BigNumber(amount).multipliedBy(currentPrice).toFixed(0));
     } else {
@@ -485,8 +495,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isKeepToken: !isKeepToken
     });
   }, [swapValue, setSwapValue, isKeepToken]);
-
-  console.log(router.asPath);
 
   useEffect(() => {
     const nextTickLower = isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null;

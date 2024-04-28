@@ -39,7 +39,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!token) {
       return;
     }
-
+    
     if(/^0\.0(?:0*)$/.test(value)) {
       setAmount(value);
       return;
