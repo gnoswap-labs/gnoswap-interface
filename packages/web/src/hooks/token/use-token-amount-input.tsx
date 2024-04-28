@@ -39,6 +39,12 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!token) {
       return;
     }
+
+    if(/^0\.0(?:0*)$/.test(value)) {
+      setAmount(value);
+      return;
+    }
+
     const amount = BigNumber(value);
     if (amount.isNaN() || !amount.isFinite()) {
       setAmount("0");

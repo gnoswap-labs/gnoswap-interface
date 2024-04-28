@@ -22,8 +22,8 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   changeAmount,
   changeToken,
   connected,
+  amount,
 }) => {
-
   const disabledSelectPair = useMemo(() => {
     return changable !== true;
   }, [changable]);
@@ -59,6 +59,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     <TokenAmountInputWrapper>
       <div className="amount">
         <input
+          value={amount}
           className="amount-text"
           type="number"
           onChange={onChangeAmountInput}

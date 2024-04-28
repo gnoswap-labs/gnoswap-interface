@@ -196,7 +196,6 @@ const SelectPriceRangeCustomController = forwardRef<
     }
     
     if(value === "NaN") {
-      title === "Min Price" && console.log("3");
       return "-";
     }
     

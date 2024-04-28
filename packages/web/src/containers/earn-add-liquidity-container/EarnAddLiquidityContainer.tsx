@@ -334,7 +334,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [selectPool.compareToken?.symbol, selectPool.currentPrice, tokenAAmountInput, tokenB?.symbol, selectPool.depositRatio]);
 
-
   const changeTokenAAmount = useCallback((amount: string) => {
     tokenAAmountInput.changeAmount(amount);
     setExactType("EXACT_IN");
@@ -550,5 +549,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     />
   );
 };
+  
 
 export default EarnAddLiquidityContainer;
