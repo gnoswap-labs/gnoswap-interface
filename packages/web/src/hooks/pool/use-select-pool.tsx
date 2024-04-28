@@ -398,7 +398,7 @@ export const useSelectPool = ({
       })
       .catch(() => {
         setPoolInfo(null);
-      })
+      });
   }, [
     feeTier,
     tokenA,
