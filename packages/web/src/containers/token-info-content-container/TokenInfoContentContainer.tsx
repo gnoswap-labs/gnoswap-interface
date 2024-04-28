@@ -6,7 +6,8 @@ import { useRouter } from "next/router";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { checkPositivePrice } from "@utils/common";
 import { useLoading } from "@hooks/common/use-loading";
-const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
+import { WRAPPED_GNOT_PATH as ENV_WRAPPED_GNOT_PATH } from "@common/clients/wallet-client/transaction-messages";
+const WRAPPED_GNOT_PATH = ENV_WRAPPED_GNOT_PATH || "";
 
 export const performanceInit = [
   {
@@ -100,6 +101,7 @@ const priceChangeDetailInit = {
 
 const TokenInfoContentContainer: React.FC = () => {
   const router = useRouter();
+  const path = router.query["token-path"];
   const {
     data: {
       market = marketInformationInit,
@@ -107,10 +109,8 @@ const TokenInfoContentContainer: React.FC = () => {
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(
-    router.query["tokenB"] === "gnot"
-      ? WRAPPED_GNOT_PATH
-      : (router.query["tokenB"] as string),
-    { enabled: !!router.query["tokenB"] },
+    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
+    { enabled: !!path },
   );
   const { isLoadingCommon } = useLoading();
 
@@ -231,7 +231,7 @@ const TokenInfoContentContainer: React.FC = () => {
       },
     ];
   }, [pricesBefore]);
-  
+
   return (
     <TokenInfoContent
       performance={pricePerformance}

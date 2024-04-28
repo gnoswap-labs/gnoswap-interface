@@ -1,6 +1,9 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { SendTransactionResponse, SendTransactionSuccessResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import {
+  SendTransactionResponse,
+  WalletResponse,
+} from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
@@ -8,7 +11,7 @@ import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PositionModel } from "@models/position/position-model";
 import { PositionRepository } from "./position-repository";
 import { ClaimAllRequest } from "./request/claim-all-request";
-import { RemoveLiquidityReqeust } from "./request/remove-liquidity-request";
+import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import { PositionListResponse } from "./response";
@@ -19,7 +22,7 @@ import {
   makeUnstakeMessage,
 } from "@common/clients/wallet-client/transaction-messages/staker";
 import {
-  makePositionBurnMessage,
+  makePositionDecreaseLiquidityMessage,
   makePositionCollectFeeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
 
@@ -39,17 +42,21 @@ export class PositionRepositoryImpl implements PositionRepository {
   }
 
   getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
-    const response = await this.networkClient.get<PositionListResponse>({
-      url: "/positions/" + address,
+    const response = await this.networkClient.get<{
+      data: PositionListResponse;
+    }>({
+      url: "/users/" + address + "/position",
     });
-    return PositionMapper.fromList(response.data);
+    return PositionMapper.fromList(response.data.data);
   };
 
-  claimAll = async (request: ClaimAllRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
+  claimAll = async (
+    request: ClaimAllRequest,
+  ): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { positions, receipient } = request;
+    const { positions, recipient } = request;
     const messages = positions.flatMap(position => {
       const messages = [];
       const hasSwapFee =
@@ -62,11 +69,11 @@ export class PositionRepositoryImpl implements PositionRepository {
         ) > -1;
       if (hasSwapFee) {
         messages.push(
-          makePositionCollectFeeMessage(position.lpTokenId, receipient),
+          makePositionCollectFeeMessage(position.lpTokenId, recipient),
         );
       }
       if (hasReward) {
-        messages.push(makeCollectRewardMessage(position.lpTokenId, receipient));
+        messages.push(makeCollectRewardMessage(position.lpTokenId, recipient));
       }
       return messages;
     });
@@ -99,7 +106,7 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   unstakePositions = async (
     request: UnstakePositionsRequest,
-  ): Promise<string | null> => {
+  ): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -112,22 +119,24 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
     });
-    const hash = (result.data as SendTransactionSuccessResponse)?.hash || null;
-    if (!hash) {
-      throw new Error(`${result}`);
-    }
-    return hash;
+    return result as WalletResponse<SendTransactionResponse<string[] | null>>;
   };
 
   removeLiquidity = async (
-    request: RemoveLiquidityReqeust,
+    request: RemoveLiquidityRequest,
   ): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
     const { lpTokenIds, caller } = request;
+    const decreaseLiquidityRatio = 100;
     const messages = lpTokenIds.map(lpTokenId =>
-      makePositionBurnMessage(lpTokenId, caller),
+      makePositionDecreaseLiquidityMessage(
+        lpTokenId,
+        decreaseLiquidityRatio,
+        true,
+        caller,
+      ),
     );
     const result = await this.walletClient.sendTransaction({
       messages,

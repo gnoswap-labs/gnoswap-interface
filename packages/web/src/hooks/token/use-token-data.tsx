@@ -10,7 +10,6 @@ import { TokenModel } from "@models/token/token-model";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { evaluateExpressionToNumber } from "@utils/rpc-utils";
-import { convertToMB } from "@utils/stake-position-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
@@ -18,8 +17,9 @@ import { useCallback, useMemo } from "react";
 import { useGnotToGnot } from "./use-gnot-wugnot";
 import { QUERY_KEY, useGetTokenPrices, useGetTokensList } from "@query/token";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { toUnitFormat } from "@utils/number-utils";
 import { useRouter } from "next/router";
+import { isEmptyObject } from "@utils/validation-utils";
 
 const PATH = ["/tokens/[token-path]", "/swap"];
 const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake"];
@@ -34,18 +34,20 @@ export const useTokenData = () => {
   } = useGetTokensList({
     refetchInterval: PATH.includes(router.pathname)
       ? 15 * 1000
-      : router.pathname === "/"
+      : router.pathname === "/" || router.pathname === "/earn/add"
       ? 10 * 1000
       : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
   });
-  const { data: tokenPrices = {} } = useGetTokenPrices();
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
-
   const { account } = useWallet();
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(
     TokenState.isLoadingBalances,
+  );
+  const [isChangeBalancesToken, setIsChangeBalancesToken] = useAtom(
+    TokenState.isChangeBalancesToken,
   );
   const { getGnotPath } = useGnotToGnot();
 
@@ -59,9 +61,10 @@ export const useTokenData = () => {
 
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
+    if (tokens.length === 0 || isEmptyObject(balances)) return {};
     Object.keys(balances).forEach(key => {
+      const token = tokens.find(token => token.priceID === key);
       const balance = balances[key];
-      const token = tokens.find(token => token.priceId === key);
       const exist = token && balance !== null && balance !== undefined;
       tokenBalanceMap[key] = exist
         ? makeDisplayTokenAmount(token, balance)
@@ -88,8 +91,8 @@ export const useTokenData = () => {
         return 0;
       })
       .filter((_, index) => index < 3);
-    return sortedTokens.map(token => {
-      const tokenPrice = tokenPrices[token.priceId];
+      return sortedTokens.map(token => {
+      const tokenPrice = tokenPrices[token.priceID];
       if (
         !tokenPrice ||
         BigNumber(tokenPrice.pricesBefore.latestPrice).isNaN() ||
@@ -122,7 +125,6 @@ export const useTokenData = () => {
       };
     });
   }, [tokens, tokenPrices]);
-
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1, t2) => {
@@ -142,10 +144,7 @@ export const useTokenData = () => {
                 logoURI: getGnotPath(token).logoURI,
               },
               upDown: "none" as UpDownType,
-              content: `$${convertToMB(
-                formatUsdNumber3Digits(tokenPrices[token.path].usd),
-                10,
-              )}`,
+              content: `${toUnitFormat(tokenPrices[token.path].usd, true, false)}`,
             }
           : {
               token: {
@@ -199,8 +198,9 @@ export const useTokenData = () => {
     if (!rpcProvider) {
       return;
     }
-
-    setLoadingBalance(true);
+    if (isEmptyObject(balances) && loadingBalance) {
+      setLoadingBalance(true);
+    }
     async function fetchTokenBalance(token: TokenModel) {
       if (!rpcProvider || !account) {
         return null;
@@ -218,14 +218,18 @@ export const useTokenData = () => {
       }
       return null;
     }
+    if (tokens.length === 0) return;
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
-    const balances: Record<string, number | null> = {};
+    const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balances[tokens[index].priceId] = result;
+        balancesData[tokens[index].priceID] = result;
       }
     });
-    setBalances(balances);
+    if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
+      setIsChangeBalancesToken(true);
+      setBalances(balancesData);
+    }
     setLoadingBalance(false);
   }
 
@@ -246,5 +250,8 @@ export const useTokenData = () => {
     loadingBalance,
     isFetched,
     error,
+    isLoadingTokenPrice,
+    isChangeBalancesToken,
+    setIsChangeBalancesToken,
   };
 };

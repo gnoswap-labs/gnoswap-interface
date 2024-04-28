@@ -9,7 +9,8 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@hooks/wallet/use-wallet";
-
+import { useMemo } from "react";
+import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 export interface TransactionGroupsType {
   title: string;
   txs: Array<TransactionModel>;
@@ -19,6 +20,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const { notificationRepository } = useGnoswapContext();
   const { account } = useWallet();
+  const [notificationHash, setNotificationHash] = useAtom(CommonState.notificationHash);
   const handleESC = () => {
     setToggle(prev => {
       if (prev.notification) {
@@ -28,7 +30,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     });
   };
   useEscCloseModal(handleESC);
-
+  usePreventScroll(toggle.notification);
   const { data: txsGroupsInformation, refetch, isFetched } = useQuery<
     TransactionGroupsType[],
     Error
@@ -41,11 +43,13 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     refetchInterval: 1000 * 10,
   });
 
-  const handleClearAll = () => {
-    const txs = (txsGroupsInformation ?? []).reduce((pre, next) => {
+  const txs = useMemo(() => {
+    return (txsGroupsInformation ?? []).reduce((pre, next) => {
       const allTxs = next.txs.flatMap(x => x.txHash);
       return [...pre, ...allTxs];
     }, [] as string[]);
+  }, [txsGroupsInformation]);
+  const handleClearAll = () => {
     notificationRepository.appendRemovedTx(txs);
     refetch();
   };
@@ -57,18 +61,24 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     }));
   };
 
+  const showIcon = txs.length > 0 && txs[0] !== notificationHash;
   return (
     <NotificationWrapper>
-      <AlertButton onClick={onListToggle}>
+      <AlertButton onClick={() => {
+        onListToggle();
+        setNotificationHash(txs?.[0] || "");
+      }}>
         <IconAlert className="notification-icon" />
-        {isFetched && txsGroupsInformation?.length !== 0 ? (
+        {showIcon && isFetched && txsGroupsInformation?.length !== 0 ? (
           <div className="point-unread" />
         ) : null}
       </AlertButton>
       {toggle.notification && (
         <NotificationList
           txsGroupsInformation={txsGroupsInformation ?? []}
-          onListToggle={onListToggle}
+          onListToggle={() => {
+            onListToggle();
+          }}
           breakpoint={breakpoint}
           onClearAll={handleClearAll}
         />

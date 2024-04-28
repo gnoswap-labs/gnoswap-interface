@@ -7,3 +7,4 @@ export * as RepositoryState from "./repository";
 export * as WalletState from "./wallet";
 export * as PoolState from "./pool";
 export * as EarnState from "./earn";
+export * as IncreaseState from "./increase";

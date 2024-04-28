@@ -12,6 +12,8 @@ import { StorageKeyType } from "@common/values";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
+import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
+import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient;
@@ -26,40 +28,53 @@ export class TokenRepositoryImpl implements TokenRepository {
   }
 
   public getTokenByPath = async (path: string): Promise<ITokenResponse> => {
-    const response = await this.networkClient.get<ITokenResponse>({
-      url: `/token/${path}`,
+    const tempPath = path.replace(/\//g, "%2F");
+    const response = await this.networkClient.get<{ data: ITokenResponse }>({
+      url: `/token-metas/${tempPath}`,
     });
-    return response.data;
+    return response.data.data;
   };
 
   public getTokens = async (): Promise<TokenListResponse> => {
-    const response = await this.networkClient.get<TokenListResponse>({
-      url: "/tokens",
+    const response = await this.networkClient.get<{ data: ITokenResponse[] }>({
+      url: "/token-metas",
     });
-    if (response.data.tokens === null) {
+    if (response.data.data === null) {
       return { tokens: [] };
     }
-    const tokens = response?.data?.tokens || [];
+    const tokens = response?.data?.data.sort(customSort) || [];
     return { tokens };
   };
 
   public getTokenPrices = async (): Promise<TokenPriceListResponse> => {
     const response = await this.networkClient.get<TokenPriceListResponse>({
-      url: "/token_prices",
+      url: "/tokens/prices",
     });
     return response.data;
   };
 
-  public getTokenDetailByPath = async (path: string): Promise<ITokenDetailResponse> => {
-    const response = await this.networkClient.get<ITokenDetailResponse>({
-      url: `/token_details/${path}`,
+  public getTokenDetailByPath = async (
+    path: string,
+  ): Promise<ITokenDetailResponse> => {
+    const tempPath = path.replace(/\//g, "%2F");
+    const response = await this.networkClient.get<{ data: ITokenDetailResponse }>({
+      url: `/tokens/${tempPath}/details`,
     });
-    return response.data;
+    return response.data.data;
   };
 
   public getChain = async (): Promise<IChainResponse> => {
     const response = await this.networkClient.get<IChainResponse>({
       url: "/chain",
+    });
+    return response.data;
+  };
+
+  public getBalancesByAddress = async (
+    address: string,
+  ): Promise<IBalancesByAddressResponse> => {
+    const response = await this.networkClient.get<IBalancesByAddressResponse>({
+      url: `/balances/${address}`,
     });
     return response.data;
   };

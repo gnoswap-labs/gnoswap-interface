@@ -15,6 +15,12 @@ import {
   MOBILE_ACTIVITY_TD_WIDTH,
 } from "@constants/skeleton.constant";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { formatAddress } from "@utils/string-utils";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { getLocalizeTime } from "@utils/chart";
+import { getDateUtcToLocal } from "@common/utils/date-util";
+dayjs.extend(relativeTime);
 
 interface ActivityInfoProps {
   item: Activity;
@@ -26,6 +32,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
+  const timeFormat = getDateUtcToLocal(time);
   return (
     <TokenInfoWrapper key={key}>
       <HoverSection>
@@ -70,11 +77,11 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                g1c4f5pn9zatmyxrndncv3zsq8qmk33vf4g9gm7h
+                {account}
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index tooltip-label">{account}</span>
+            <span className="token-index tooltip-label">{formatAddress(account || "")}</span>
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_TD_WIDTH[5]}>
@@ -82,11 +89,11 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                2023-06-13 18:05:11 (UTC+9)
+                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index tooltip-label">{time}</span>
+            <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span>
           </Tooltip>
         </TableColumn>
       </HoverSection>
@@ -102,6 +109,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
+  const timeFormat = getDateUtcToLocal(time);
   return (
     <TokenInfoWrapper key={key}>
       <HoverSection>
@@ -146,11 +154,11 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                g1c4f5pn9zatmyxrndncv3zsq8qmk33vf4g9gm7h
+                {account}
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index">{account}</span>
+            <span className="token-index">{formatAddress(account)}</span>
           </Tooltip>
         </TableColumn>
         <TableColumn className="right" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[5]}>
@@ -158,11 +166,11 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
             placement="top"
             FloatingContent={
               <TableColumnTooltipContent>
-                2023-06-13 18:05:11 (UTC+9)
+                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
               </TableColumnTooltipContent>
             }
           >
-            <span className="token-index">{time}</span>
+            <span className="token-index">{dayjs(time).fromNow()}</span>
           </Tooltip>
         </TableColumn>
       </HoverSection>

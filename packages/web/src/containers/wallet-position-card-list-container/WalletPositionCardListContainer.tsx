@@ -6,6 +6,7 @@ import { usePositionData } from "@hooks/common/use-position-data";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 const WalletPositionCardListContainer: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -17,13 +18,13 @@ const WalletPositionCardListContainer: React.FC = () => {
   const { loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
+  const { isSwitchNetwork } = useWallet();
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
       window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
-
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -51,9 +52,12 @@ const WalletPositionCardListContainer: React.FC = () => {
     }
   };
 
+  const sortedData = positions.sort((x,y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+  if (!isFetchedPosition || isSwitchNetwork) return null;
+
   return (
     <MyPositionCardList
-      positions={positions}
+      positions={sortedData}
       loadMore={false}
       isFetched={isFetchedPosition}
       isLoading={loading || loadingPosition}

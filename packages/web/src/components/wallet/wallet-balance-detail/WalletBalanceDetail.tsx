@@ -9,7 +9,8 @@ import WalletBalanceDetailInfo, {
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import BigNumber from "bignumber.js";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { formatUSDWallet } from "@utils/number-utils";
 
 interface WalletBalanceDetailProps {
   balanceDetailInfo: BalanceDetailInfo;
@@ -17,6 +18,7 @@ interface WalletBalanceDetailProps {
   isSwitchNetwork: boolean;
   claimAll: () => void;
   breakpoint: DEVICE_TYPE;
+  loadngTransactionClaim: boolean;
 }
 
 const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
@@ -25,6 +27,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   claimAll,
   breakpoint,
   isSwitchNetwork,
+  loadngTransactionClaim,
 }) => (
   <WalletBalanceDetailWrapper>
     <WalletBalanceDetailInfo
@@ -61,9 +64,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
               </div>
             ) : (
               <span className="value">
-                ${BigNumber(balanceDetailInfo.claimableRewards)
-                  .decimalPlaces(2)
-                  .toFormat()}
+                {formatUSDWallet(balanceDetailInfo.claimableRewards, true)}
               </span>
             )}
           </div>
@@ -71,6 +72,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         <div className="button-wrapper">
           <ClaimAllButton
             onClick={claimAll}
+            loadngTransactionClaim={loadngTransactionClaim}
             disabled={
               connected === false ||
               isSwitchNetwork ||
@@ -85,9 +87,11 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         title={"Claimable Rewards"}
         value={balanceDetailInfo.claimableRewards}
         tooltip={"Total sum of unclaimed rewards."}
+        className="claimable-rewards"
         button={
           <ClaimAllButton
             onClick={claimAll}
+            loadngTransactionClaim={loadngTransactionClaim}
             disabled={
               connected === false ||
               isSwitchNetwork ||
@@ -103,22 +107,29 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 interface ClaimAllButtonProps {
   disabled: boolean;
   onClick: () => void;
+  loadngTransactionClaim: boolean;
 }
 
 const ClaimAllButton: React.FC<ClaimAllButtonProps> = ({
   disabled,
   onClick,
+  loadngTransactionClaim,
 }) => (
   <Button
     style={{
       width: 86,
       fontType: "p1",
-      padding: "10px 16px",
+      padding: loadngTransactionClaim ? "8px 16px" : "10px 16px",
       hierarchy: ButtonHierarchy.Primary,
     }}
-    text={"Claim All"}
+    text={loadngTransactionClaim ? "" : "Claim All"}
     onClick={onClick}
     disabled={disabled}
+    leftIcon={
+      loadngTransactionClaim ? (
+        <LoadingSpinner className="loading-button" />
+      ) : undefined
+    }
   />
 );
 

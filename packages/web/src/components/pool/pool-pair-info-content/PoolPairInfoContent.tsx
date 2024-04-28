@@ -10,7 +10,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { numberToFormat } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { convertToKMB, formatUsdNumber } from "@utils/stake-position-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
@@ -24,6 +24,8 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { toUnitFormat } from "@utils/number-utils";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -66,12 +68,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [depositRatio]);
 
   const liquidityValue = useMemo((): string => {
-    return formatUsdNumber(Number(pool.tvl).toString(), undefined, true);
+    return toUnitFormat(pool.tvl,  true, true);
   }, [pool.tvl]);
 
   const volumeValue = useMemo((): string => {
-    return formatUsdNumber(Number(pool.volume).toString(), undefined, true);
-  }, [pool.volume]);
+    return toUnitFormat(pool.volume24h,  true, true);
+  }, [pool.volume24h]);
 
   const aprValue = useMemo(() => {
     if (!pool.totalApr) {
@@ -92,7 +94,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volumeChange]);
 
   const feeChangedStr = useMemo((): string => {
-    return `$${convertToKMB(`${Number(pool.feeChange)}`, 2)}`;
+    return toUnitFormat(pool.feeChange,  true, true);
   }, [pool.feeChange]);
 
   const rewardChangedStr = useMemo((): string => {
@@ -176,7 +178,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="section-info flex-row">
             <span>All-Time Volume</span>
             {!loading && <div className="section-image">
-              <span>${convertToKMB(`${Number(pool.totalVolume)}`)}</span>
+              <span>{toUnitFormat(pool.totalVolume, true, true)}</span>
             </div>}
 
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
@@ -235,7 +237,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = {currentPrice} {pool?.tokenB?.symbol}
+                {width >=768 && `1 ${pool?.tokenA?.symbol}`} = <ExchangeRate value={currentPrice}/> {pool?.tokenB?.symbol}
               </div>}
               {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
               <span
@@ -255,7 +257,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = {convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 ))}`, 6)} {pool?.tokenA?.symbol}
+                {width >=768 && `1 ${pool?.tokenB?.symbol}`} = <ExchangeRate value={convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2 ))}`, 6)}/> {pool?.tokenA?.symbol}
               </div>}
             </div>
           </div>

@@ -5,9 +5,9 @@ import mixins from "@styles/mixins";
 
 export const AssetInfoWrapper = styled.div`
   transition: background-color 0.3s ease;
-  cursor: pointer;
+  cursor: default;
   min-width: 100%;
-  height: 67px;
+  height: 68px;
   color: ${({ theme }) => theme.color.text01};
   ${mixins.flexbox("row", "center", "flex-start")};
   ${fonts.body11};
@@ -38,6 +38,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   min-width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
   ${mixins.flexbox("row", "center", "flex-end")};
+  &.pointer {
+    cursor: pointer;
+  }
   .missing-logo {
     ${mixins.flexbox("row", "center", "center")};
     width: 24px;
@@ -68,13 +71,13 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     }
   }
   .balance {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
   }
   .amount {
-    padding: 16px;
+    padding: 16px 0;
     ${media.tablet} {
       padding: 16px 0px;
     }
@@ -91,6 +94,9 @@ export const LoadButton = styled.button`
   gap: 4px;
   &.withdraw-pd {
     padding-right: 16px;
+    ${media.mobile} {
+      padding-right: 12px;
+    }
   }
   &,
   svg * {

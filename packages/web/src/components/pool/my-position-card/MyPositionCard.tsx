@@ -7,8 +7,10 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
 import React, { useMemo, useState } from "react";
 import {
+  CopyTooltip,
   ManageItem,
   MyPositionCardWrapper,
+  PositionCardAnchor,
   ToolTipContentWrapper,
 } from "./MyPositionCard.styles";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -22,37 +24,54 @@ import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.style
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import { ThemeState } from "@states/index";
-import { useAtomValue } from "jotai";
+import { IncreaseState, ThemeState } from "@states/index";
+import { useAtomValue, useAtom } from "jotai";
 import IconSwap from "@components/common/icons/IconSwap";
 import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import SelectBox from "@components/common/select-box/SelectBox";
 import { convertToKMB } from "@utils/stake-position-utils";
-import { tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import { estimateTick } from "@components/common/my-position-card/MyPositionCard";
 import { LoadingChart } from "../pool-pair-info-content/PoolPairInfoContent.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { numberToFormat } from "@utils/string-utils";
+import PositionHistory from "./PositionHistory";
+import { useRouter } from "next/router";
+import IconLinkPage from "@components/common/icons/IconLinkPage";
+import { useCopy } from "@hooks/common/use-copy";
+import BigNumber from "bignumber.js";
+import IconPolygon from "@components/common/icons/IconPolygon";
+import Button from "@components/common/button/Button";
+import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
+  address: string;
+  isHiddenAddPosition: boolean;
+  connected: boolean;
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
   position,
   breakpoint,
   loading,
+  address,
+  isHiddenAddPosition,
+  connected,
 }) => {
+  const router = useRouter();
   const { width } = useWindowSize();
   const { tokenPrices } = useTokenData();
   const [isSwap, setIsSwap] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const GRAPH_WIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
+  const [, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
+  const [copied, setCopy] = useCopy();
 
   const isClosed = position.status;
 
@@ -86,14 +105,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position]);
 
   const tokenABalanceUSD = useMemo(() => {
-    const tokenAUSD = Number(tokenPrices[tokenA.priceId]?.usd || "1");
+    const tokenAUSD = Number(tokenPrices[tokenA.priceID]?.usd || "1");
     const tokenABalance =
       makeDisplayTokenAmount(tokenA, position.token0Balance) || 0;
     return tokenAUSD * tokenABalance;
   }, [position.token0Balance, tokenA, tokenPrices]);
 
   const tokenBBalanceUSD = useMemo(() => {
-    const tokenBUSD = Number(tokenPrices[tokenB.priceId]?.usd || "1");
+    const tokenBUSD = Number(tokenPrices[tokenB.priceID]?.usd || "1");
     const tokenBBalance =
       makeDisplayTokenAmount(tokenB, position.token1Balance) || 0;
     return tokenBUSD * tokenBBalance;
@@ -102,6 +121,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const positionBalanceUSD = useMemo(() => {
     if (isClosed) {
       return "-";
+    }
+    if (BigNumber(position.positionUsdValue).isLessThan(0.01) && BigNumber(position.positionUsdValue).isGreaterThan(0)) {
+      return "<$0.01";
     }
     return `$${numberToFormat(`${position.positionUsdValue}`, 2)}`;
   }, [position.positionUsdValue, isClosed]);
@@ -168,7 +190,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             makeDisplayTokenAmount(current.token, current.totalAmount) || 0,
           balanceUSD:
             Number(current.totalAmount) *
-            Number(tokenPrices[current.token.priceId]?.usd || 0),
+            Number(tokenPrices[current.token.priceID]?.usd || 0),
           claimableUSD: Number(current.claimableUsdValue),
           accumulatedRewardOf1d:
             makeDisplayTokenAmount(
@@ -200,6 +222,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       .reduce((accum, current) => {
         return accum + current.claimableUSD;
       }, 0);
+    if (BigNumber(usdValue).isLessThan(0.01) && BigNumber(usdValue).isGreaterThan(0)) {
+      return "<$0.01";
+    }
     return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
@@ -216,6 +241,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       .reduce((accum, current) => {
         return accum + current.accumulatedRewardOf1d;
       }, 0);
+    if (BigNumber(usdValue).isLessThan(0.01) && BigNumber(usdValue).isGreaterThan(0)) {
+      return "<$0.01";
+    }
     return `$${numberToFormat(`${usdValue}`, 2)}`;
   }, [totalRewardInfo, isClosed]);
 
@@ -249,13 +277,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const price = tickToPriceStr(position?.pool?.currentTick, 40);
 
     if (isSwap) {
-      return `1 ${tokenB?.symbol} = ${convertToKMB(
+      return <>1 {tokenB?.symbol} = <ExchangeRate value={convertToKMB(
         `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
         6,
-      )} ${tokenA?.symbol}`;
+      )}/> {tokenA?.symbol}</>;
     }
-    return `1 ${tokenA?.symbol} = ${price} ${tokenB?.symbol}`;
-  }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.price, position?.pool?.currentTick]);
+    return <>1 {tokenA?.symbol} = <ExchangeRate value={price}/> {tokenB?.symbol}</>;
+  }, [
+    isSwap,
+    tokenB?.symbol,
+    tokenA?.symbol,
+    position?.pool?.price,
+    position?.pool?.currentTick,
+  ]);
 
   const tickRange = useMemo(() => {
     const ticks = bins.flatMap(bin => [bin.minTick, bin.maxTick]);
@@ -308,12 +342,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickPosition, maxTickPosition]);
 
   const minPriceStr = useMemo(() => {
+    const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
     const maxPrice = tickToPrice(position.tickUpper);
-    const minPrice = tickToPriceStr(position.tickLower, 40);
+    const minPrice = tickToPriceStr(position.tickLower, 40, isEndTick);
     const tokenAPriceStr = isFullRange
       ? "0 "
       : !isSwap
-      ? minPrice
+      ? Number(minPrice)
       : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
     return `${tokenAPriceStr}`;
   }, [
@@ -355,9 +390,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickUpper, isSwap]);
 
   const maxPriceStr = useMemo(() => {
+    const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
+
     const minPrice = tickToPrice(position.tickLower);
 
-    const maxPrice = tickToPriceStr(position.tickUpper, 40);
+    const maxPrice = tickToPriceStr(position.tickUpper, 40, isEndTick);
 
     const tokenBPriceStr = isFullRange
       ? "∞ "
@@ -379,7 +416,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const minTickLabel = useMemo(() => {
-    return (!isSwap ? minTickRate : -minTickRate) > 1000
+    return (!isSwap ? -minTickRate : minTickRate) > 1000
       ? ">999%"
       : `${minTickRate < -1 ? "+" : ""}${
           Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
@@ -405,44 +442,30 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const endClass = useMemo(() => {
     return (!isSwap ? maxTickRate : -minTickRate) > 0 ? "positive" : "negative";
   }, [maxTickRate, isSwap, minTickRate]);
-
+  const handleSelect = (text: string) => {
+    if (text == "Decrease Liquidity") {
+      setSelectedPosition(position);
+      router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/decrease-liquidity");
+    } else if (text === "Increase Liquidity") {
+      setSelectedPosition(position);
+      router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/increase-liquidity");
+    } else {
+      setSelectedPosition(position);
+      router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/reposition");
+    }
+  };
   return (
-    <MyPositionCardWrapper type={inRange} isClosed={isClosed}>
-      <div className="box-title">
-        <div className="box-header">
-          <div className="box-left">
-            {breakpoint !== DEVICE_TYPE.MOBILE ? (
-              <>
-                {loading && (
-                  <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
-                    <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-                  </SkeletonEarnDetailWrapper>
-                )}
-                {!loading && (
-                  <div className="coin-info">
-                    <MissingLogo
-                      symbol={tokenA.symbol}
-                      url={tokenA.logoURI}
-                      className="token-logo"
-                      width={36}
-                      mobileWidth={24}
-                    />
-                    <MissingLogo
-                      symbol={tokenB.symbol}
-                      url={tokenB.logoURI}
-                      className="token-logo"
-                      width={36}
-                      mobileWidth={24}
-                    />
-                  </div>
-                )}
-                {!loading && (
-                  <span className="product-id">ID #{position.id}</span>
-                )}
-              </>
-            ) : (
-              <>
-                <div className="mobile-container">
+    <>
+      <PositionCardAnchor id={`${position.id}`} />
+      <MyPositionCardWrapper
+        type={inRange}
+        isClosed={isClosed}
+      >
+        <div className="box-title">
+          <div className="box-header">
+            <div className="box-left">
+              {breakpoint !== DEVICE_TYPE.MOBILE ? (
+                <>
                   {loading && (
                     <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
                       <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
@@ -467,219 +490,284 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     </div>
                   )}
                   {!loading && (
-                    <span className="product-id">ID #{position.id}</span>
+                    <div className="link-page">
+                      <span className="product-id">ID #{position.id}</span>
+                      <div
+                        onClick={() =>
+                          setCopy(
+                            `${
+                              window.location.host + window.location.pathname
+                            }?addr=${address}#${position.id}`,
+                          )
+                        }
+                      >
+                        <IconLinkPage className="icon-link"/>
+                        {copied && (
+                          <CopyTooltip>
+                            <div className={`box ${themeKey}-shadow`}>
+                              <span>URL Copied!</span>
+                            </div>
+                            <IconPolygon className="polygon-icon" />
+                          </CopyTooltip>
+                        )}
+                      </div>
+                    </div>
                   )}
-                </div>
-              </>
-            )}
-            <Badge
-              type={BADGE_TYPE.PRIMARY}
-              leftIcon={<IconStaking />}
-              text={"Staked"}
-              className={!position.staked ? "visible-badge" : ""}
-            />
-          </div>
-          {!isClosed && (
-            <SelectBox
-              current={"Manage"}
-              items={["Reposition", "Increase Liquidity", "Decrease Liquidity"]}
-              select={() => {}}
-              render={period => <ManageItem>{period}</ManageItem>}
-              className={!inRange ? "out-range" : ""}
-            />
-          )}
-        </div>
-      </div>
-      <div className="info-wrap">
-        <div className="info-box">
-          <span className="symbol-text">Balance</span>
-          {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-            </SkeletonEarnDetailWrapper>
-          )}
-          {!isClosed && !loading ? (
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <div>
-                  <BalanceTooltipContent balances={balances} />
-                </div>
-              }
-            >
-              <span className="content-text">{positionBalanceUSD}</span>
-            </Tooltip>
-          ) : (
-            !loading && (
-              <span className="content-text disabled">
-                {positionBalanceUSD}
-              </span>
-            )
-          )}
-        </div>
-        <div className="info-box">
-          <span className="symbol-text">Daily Earnings</span>
-          {!isClosed && aprRewardInfo && !loading ? (
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <div>
-                  <MyPositionAprContent rewardInfo={aprRewardInfo} />
-                </div>
-              }
-            >
-              <span className="content-text">{totalDailyEarning}</span>
-            </Tooltip>
-          ) : (
-            !loading && (
-              <span className="content-text disabled">{totalDailyEarning}</span>
-            )
-          )}
-          {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-            </SkeletonEarnDetailWrapper>
-          )}
-        </div>
-        <div className="info-box">
-          <span className="symbol-text">Claimable Rewards</span>
-          {!isClosed && !loading && totalRewardInfo ? (
-            <Tooltip
-              placement="top"
-              FloatingContent={
-                <div>
-                  <MyPositionRewardContent rewardInfo={totalRewardInfo} />
-                </div>
-              }
-            >
-              <span className="content-text">{totalRewardUSD}</span>
-            </Tooltip>
-          ) : (
-            !loading && (
-              <span className="content-text disabled">{totalRewardUSD}</span>
-            )
-          )}
-          {loading && (
-            <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
-              <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
-            </SkeletonEarnDetailWrapper>
-          )}
-        </div>
-      </div>
-      <div className="position-wrapper-chart">
-        <div className="position-header">
-          <div>Current Price</div>
-          <div className="swap-price">
-            {!loading && (
-              <MissingLogo
-                symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
-                url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
-                width={20}
-                className="image-logo"
+                </>
+              ) : (
+                <>
+                  <div className="mobile-container">
+                    {loading && (
+                      <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
+                        <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+                      </SkeletonEarnDetailWrapper>
+                    )}
+                    {!loading && (
+                      <div className="coin-info">
+                        <MissingLogo
+                          symbol={tokenA.symbol}
+                          url={tokenA.logoURI}
+                          className="token-logo"
+                          width={36}
+                          mobileWidth={24}
+                        />
+                        <MissingLogo
+                          symbol={tokenB.symbol}
+                          url={tokenB.logoURI}
+                          className="token-logo"
+                          width={36}
+                          mobileWidth={24}
+                        />
+                      </div>
+                    )}
+                    {!loading && (
+                      <span className="product-id">ID #{position.id}</span>
+                    )}
+                  </div>
+                </>
+              )}
+              <Badge
+                type={BADGE_TYPE.PRIMARY}
+                leftIcon={<IconStaking />}
+                text={"Staked"}
+                className={!position.staked ? "visible-badge" : ""}
               />
+            </div>
+            <div className="flex-button">
+              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&type=Custom`)}/>
+              {!position.staked && !isClosed && !isHiddenAddPosition && connected && (
+                <SelectBox
+                  current={"Manage"}
+                  items={[
+                    "Reposition",
+                    "Increase Liquidity",
+                    "Decrease Liquidity",
+                  ]}
+                  select={handleSelect}
+                  render={period => <ManageItem>{period}</ManageItem>}
+                  className={!inRange ? "out-range" : ""}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="info-wrap">
+          <div className="info-box">
+            <span className="symbol-text">Balance</span>
+            {loading && (
+              <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+                <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+              </SkeletonEarnDetailWrapper>
             )}
-            {!loading && stringPrice}
+            {!isClosed && !loading ? (
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <div>
+                    <BalanceTooltipContent balances={balances} />
+                  </div>
+                }
+              >
+                <span className="content-text">{positionBalanceUSD}</span>
+              </Tooltip>
+            ) : (
+              !loading && (
+                <span className="content-text disabled">
+                  {positionBalanceUSD}
+                </span>
+              )
+            )}
+          </div>
+          <div className="info-box">
+            <span className="symbol-text">Daily Earnings</span>
+            {!isClosed && aprRewardInfo && !loading ? (
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <div>
+                    <MyPositionAprContent rewardInfo={aprRewardInfo} />
+                  </div>
+                }
+              >
+                <span className="content-text">{totalDailyEarning}</span>
+              </Tooltip>
+            ) : (
+              !loading && (
+                <span className="content-text disabled">
+                  {totalDailyEarning}
+                </span>
+              )
+            )}
+            {loading && (
+              <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+                <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+              </SkeletonEarnDetailWrapper>
+            )}
+          </div>
+          <div className="info-box">
+            <span className="symbol-text">Claimable Rewards</span>
+            {!isClosed && !loading && totalRewardInfo ? (
+              <Tooltip
+                placement="top"
+                FloatingContent={
+                  <div>
+                    <MyPositionRewardContent rewardInfo={totalRewardInfo} />
+                  </div>
+                }
+              >
+                <span className="content-text">{totalRewardUSD}</span>
+              </Tooltip>
+            ) : (
+              !loading && (
+                <span className="content-text disabled">{totalRewardUSD}</span>
+              )
+            )}
+            {loading && (
+              <SkeletonEarnDetailWrapper height={39} mobileHeight={25}>
+                <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
+              </SkeletonEarnDetailWrapper>
+            )}
+          </div>
+        </div>
+        <div className="position-wrapper-chart">
+          <div className="position-header">
+            <div>Current Price</div>
+            <div className="swap-price">
+              {!loading && (
+                <MissingLogo
+                  symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
+                  url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
+                  width={20}
+                  className="image-logo"
+                />
+              )}
+              {!loading && stringPrice}
+              {!loading && (
+                <div
+                  className="icon-wrapper"
+                  onClick={() => setIsSwap(!isSwap)}
+                >
+                  <IconSwap />
+                </div>
+              )}
+              {loading && (
+                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                </SkeletonEarnDetailWrapper>
+              )}
+              {loading && (
+                <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
+                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                </SkeletonEarnDetailWrapper>
+              )}
+            </div>
             {!loading && (
-              <div className="icon-wrapper" onClick={() => setIsSwap(!isSwap)}>
-                <IconSwap />
+              <div className="range-badge">
+                <RangeBadge
+                  status={
+                    position.status
+                      ? RANGE_STATUS_OPTION.NONE
+                      : inRange
+                      ? RANGE_STATUS_OPTION.IN
+                      : RANGE_STATUS_OPTION.OUT
+                  }
+                />
               </div>
-            )}
-            {loading && (
-              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-              </SkeletonEarnDetailWrapper>
-            )}
-            {loading && (
-              <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
-                <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-              </SkeletonEarnDetailWrapper>
             )}
           </div>
           {!loading && (
-            <div className="range-badge">
-              <RangeBadge
-                status={
-                  position.status
-                    ? RANGE_STATUS_OPTION.NONE
-                    : inRange
-                    ? RANGE_STATUS_OPTION.IN
-                    : RANGE_STATUS_OPTION.OUT
-                }
-              />
+            <PoolGraph
+              tokenA={tokenA}
+              tokenB={tokenB}
+              bins={bins}
+              currentTick={currentTick}
+              width={GRAPH_WIDTH}
+              height={150}
+              mouseover
+              themeKey={themeKey}
+              position="top"
+              offset={40}
+              poolPrice={price}
+              isPosition
+              minTickPosition={minTickPosition}
+              maxTickPosition={maxTickPosition}
+              binsMyAmount={position?.bins || []}
+              isSwap={isSwap}
+            />
+          )}
+          {loading && (
+            <LoadingChart>
+              <LoadingSpinner />
+            </LoadingChart>
+          )}
+          {!loading && (
+            <div className="convert-price">
+              <div>
+                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr}/>{" "}
+                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                <span className={startClass}>
+                  {!isSwap ? minTickLabel : maxTickLabel}
+                </span>
+                )&nbsp;
+                <Tooltip
+                  placement="top"
+                  FloatingContent={
+                    <ToolTipContentWrapper>
+                      The price at which the position will be converted entirely
+                      to&nbsp;
+                      {(!isSwap ? tokenA : tokenB)?.symbol}.
+                    </ToolTipContentWrapper>
+                  }
+                >
+                  <IconInfo />
+                </Tooltip>
+                &nbsp;
+              </div>
+              <div>
+                ~ <ExchangeRate value={maxPriceStr}/> {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                <span className={endClass}>
+                  {!isSwap ? maxTickLabel : minTickLabel}
+                </span>
+                )&nbsp;
+                <Tooltip
+                  placement="top"
+                  FloatingContent={
+                    <ToolTipContentWrapper>
+                      The price at which the position will be converted entirely
+                      to&nbsp;
+                      {(!isSwap ? tokenB : tokenA)?.symbol}.
+                    </ToolTipContentWrapper>
+                  }
+                >
+                  <IconInfo />
+                </Tooltip>
+              </div>
             </div>
           )}
         </div>
-        {!loading && (
-          <PoolGraph
-            tokenA={tokenA}
-            tokenB={tokenB}
-            bins={bins}
-            currentTick={currentTick}
-            width={GRAPH_WIDTH}
-            height={150}
-            mouseover
-            themeKey={themeKey}
-            position="top"
-            offset={40}
-            poolPrice={price}
-            isPosition
-            minTickPosition={minTickPosition}
-            maxTickPosition={maxTickPosition}
-            binsMyAmount={position?.bins || []}
-            isSwap={isSwap}
-          />
-        )}
-        {loading && (
-          <LoadingChart>
-            <LoadingSpinner />
-          </LoadingChart>
-        )}
-        {!loading && (
-          <div className="convert-price">
-            <div>
-              1 {(!isSwap ? tokenA : tokenB)?.symbol} = {minPriceStr}{" "}
-              {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-              <span className={startClass}>
-                {!isSwap ? minTickLabel : maxTickLabel}
-              </span>
-              )&nbsp;
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <ToolTipContentWrapper>
-                    The price at which the position will be converted entirely
-                    to&nbsp;
-                    {(!isSwap ? tokenA : tokenB)?.symbol}.
-                  </ToolTipContentWrapper>
-                }
-              >
-                <IconInfo />
-              </Tooltip>
-              &nbsp;
-            </div>
-            <div>
-              ~ {maxPriceStr} {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
-              <span className={endClass}>
-                {!isSwap ? maxTickLabel : minTickLabel}
-              </span>
-              )&nbsp;
-              <Tooltip
-                placement="top"
-                FloatingContent={
-                  <ToolTipContentWrapper>
-                    The price at which the position will be converted entirely
-                    to&nbsp;
-                    {(!isSwap ? tokenB : tokenA)?.symbol}.
-                  </ToolTipContentWrapper>
-                }
-              >
-                <IconInfo />
-              </Tooltip>
-            </div>
-          </div>
-        )}
-      </div>
-    </MyPositionCardWrapper>
+        <PositionHistory isClosed={isClosed} tokenA={tokenA} tokenB={tokenB}/>
+      </MyPositionCardWrapper>
+    </>
   );
 };
 

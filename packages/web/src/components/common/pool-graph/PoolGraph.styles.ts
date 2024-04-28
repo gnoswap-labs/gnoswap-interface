@@ -49,7 +49,7 @@ export const PoolGraphTooltipWrapper = styled.div`
       display: flex;
       flex-direction: row;
       width: 100%;
-      gap: 16px;
+      gap: 8px;
       & > span {
         display: flex;
         flex-direction: row;
@@ -110,10 +110,9 @@ export const PoolGraphTooltipWrapper = styled.div`
         display: none;
       }
     }
-
     .amount {
       flex-shrink: 0;
-      width: 80px;
+      min-width: 80px;
       & .hidden {
         display: inline;
         overflow: hidden;
@@ -121,8 +120,11 @@ export const PoolGraphTooltipWrapper = styled.div`
         white-space: nowrap;
         word-break: break-all;
       }
-      &.mr-3 {
-        margin-left: -8px;
+      & .small-font {
+        font-size: 12px;
+      }
+      &.w-100 {
+        min-width: 108px;
       }
       img {
         width: 20px;
@@ -143,9 +145,14 @@ export const PoolGraphTooltipWrapper = styled.div`
     .price-range {
       width: 100%;
     }
+    .small-font {
+      font-size: 12px;
+    }
     ${media.mobile} {
-      width: 336px;
-      max-width: 100%;
+      max-width: max-content;
+    }
+    @media (max-width: 360px){
+      max-width: 336px;
     }
   }
 `;

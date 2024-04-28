@@ -24,8 +24,9 @@ import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { SwapRouteResponse } from "./response/swap-route-response";
+import { PACKAGE_ROUTER_PATH } from "@common/clients/wallet-client/transaction-messages";
 
-const ROUTER_PACKAGE_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH;
+const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -91,16 +92,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       .evaluateExpression(ROUTER_PACKAGE_PATH, param)
       .then(evaluateExpressionToNumber);
 
-    console.log("estimateRouteParams", [
-      inputTokenPath,
-      outputTokenPath,
-      tokenAmountRaw || "0",
-      exactType,
-      routesQuery,
-      quotes,
-    ]);
+    // console.log("estimateRouteParams", [
+    //   inputTokenPath,
+    //   outputTokenPath,
+    //   tokenAmountRaw || "0",
+    //   exactType,
+    //   routesQuery,
+    //   quotes,
+    // ]);
 
-    console.log("estimateRouteParams:Result", result);
+    // console.log("estimateRouteParams:Result", result);
 
     if (result === null) {
       throw new SwapError("NOT_FOUND_SWAP_POOL");
@@ -187,7 +188,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     });
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
@@ -236,7 +236,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     );
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });
@@ -264,7 +263,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     messages.push(makeWithdrawMessage(tokenPath, tokenAmountRaw, address));
     const response = await this.walletClient.sendTransaction({
       messages,
-      gasWanted: 2000000,
       gasFee: 1,
       memo: "",
     });

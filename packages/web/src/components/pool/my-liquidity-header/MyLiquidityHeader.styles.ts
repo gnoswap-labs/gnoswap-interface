@@ -8,7 +8,6 @@ export const HeaderWrapper = styled.div`
   width: 100%;
   ${fonts.h5};
   color: ${({ theme }) => theme.color.text02};
-
   .header {
     ${mixins.flexbox("row", "center", "flex-start")};
     .hide-close-position {
@@ -20,6 +19,38 @@ export const HeaderWrapper = styled.div`
         display: flex;
       }
       ${mixins.flexbox("row", "center", "space-between")};
+    }
+
+    h2 {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      button {
+        display: inline-flex;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        > svg * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+        > svg:hover * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
+      .name {
+        background: ${({ theme }) => theme.color.text32};
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      button {
+        position: relative;
+      }
     }
   }
   ${media.mobile} {
@@ -48,7 +79,6 @@ export const HeaderWrapper = styled.div`
       button {
         width: 50%;
       }
-      
     }
     .full-width {
       width: 100%;

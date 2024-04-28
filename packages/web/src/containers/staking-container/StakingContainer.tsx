@@ -11,6 +11,8 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { useLoading } from "@hooks/common/use-loading";
 import { StakingPeriodType } from "@constants/option.constant";
+import useUrlParam from "@hooks/common/use-url-param";
+import { addressValidationCheck } from "@utils/validation-utils";
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const StakingContainer: React.FC = () => {
@@ -18,9 +20,11 @@ const StakingContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork } = useWallet();
-  const { loading: loadingPool } = usePoolData();
-  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData();
+  const { loading: isLoadingPool } = usePoolData();
   const [type, setType] = useState(3);
+  const { initializedData } = useUrlParam<{ addr: string | undefined }>({
+    addr: account?.address,
+  });
 
   const [allPosition, setAllPosition] = useState<PoolPositionModel[]>([]);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
@@ -29,6 +33,15 @@ const StakingContainer: React.FC = () => {
   const poolPath = router.query["pool-path"] || "";
   const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoadingCommon } = useLoading();
+
+  const address = useMemo(() => {
+    const address = initializedData?.addr;
+    if (!address || !addressValidationCheck(address)) {
+      return undefined;
+    }
+    return address;
+  }, [initializedData]);
+  const { getPositionsByPoolId, loading: isLoadingPosition } = usePositionData(address);
 
   const pool = useMemo(() => {
     if (!data) return null;
@@ -64,13 +77,13 @@ const StakingContainer: React.FC = () => {
     if (!poolPath) {
       return;
     }
-    if (account?.address) {
+    if (account?.address || address) {
       const temp = getPositionsByPoolId(poolPath);
       const stakedPositions = temp.filter(position => position.staked);
       setPositions(stakedPositions);
       setAllPosition(temp);
     }
-  }, [account?.address, router.query, getPositionsByPoolId]);
+  }, [account?.address, router.query, getPositionsByPoolId, address]);
 
   const isDisabledButton = useMemo(() => {
     return isSwitchNetwork || !connectedWallet || positions.length == 0;
@@ -91,10 +104,10 @@ const StakingContainer: React.FC = () => {
       .reduce<{ [key in string]: TokenModel }>((accum, current) => {
         if (
           tokenPair.findIndex(
-            token => token.priceId === current.token.priceId,
+            token => token.priceID === current.token.priceID,
           ) > -1
         ) {
-          accum[current.token.priceId] = current.token;
+          accum[current.token.priceID] = current.token;
         }
         return accum;
       }, {});
@@ -174,7 +187,8 @@ const StakingContainer: React.FC = () => {
       type={type}
       handleClickStakeRedirect={handleClickStakeRedirect}
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
-      loading={loadingPool || loadingPosition || isLoadingCommon}
+      loading={isLoadingPool || isLoadingPosition || isLoadingCommon}
+      isOtherPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
     />
   );
 };

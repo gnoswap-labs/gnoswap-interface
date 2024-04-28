@@ -36,10 +36,10 @@ export function wait<T>(
 
 export function makeId(value: string) {
   // return CryptoJS.SHA256(value, "gnot").toString();
-  return value.replace(/\//g, "_");
+  return value?.replace(/\//g, "_");
 }
 
-export function encriptId(value: string) {
+export function encryptId(value: string) {
   return (value || "").replace(/_/g, "/");
 }
 
@@ -65,12 +65,11 @@ export const checkPositivePrice = (
 ) => {
   const currentToNumber = Number(currentPrice);
   const checkToNumber = Number(checkPrice);
-
   const value =
     checkPrice >= currentPrice
-      ? ((currentToNumber / checkToNumber - 1) * 100).toFixed(2)
-      : ((1 - currentToNumber / checkToNumber) * 100).toFixed(2);
-  const isEmpty = !currentPrice || !checkPrice;
+      ? ((currentToNumber / (checkToNumber || 1) - 1) * 100).toFixed(2)
+      : ((1 - currentToNumber / (checkToNumber || 1)) * 100).toFixed(2);
+  const isEmpty = !Number(currentPrice) || !Number(checkPrice);
   const status = isEmpty
     ? MATH_NEGATIVE_TYPE.NONE
     : currentToNumber >= checkToNumber
@@ -80,7 +79,7 @@ export const checkPositivePrice = (
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
       : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
-          Number(value)
+          Number(value || 0)
         ).toFixed(2)}%`;
   const price =
     status === MATH_NEGATIVE_TYPE.NONE
@@ -132,7 +131,7 @@ export function countPoints(
 
   let count = 0;
 
-  while (currentDateTime <= endDate) {
+  while (currentDateTime < endDate) {
     count++;
     currentDateTime.setMinutes(currentDateTime.getMinutes() + intervalMinutes);
   }

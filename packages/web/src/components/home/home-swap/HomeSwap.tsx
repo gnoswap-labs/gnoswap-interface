@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
@@ -31,13 +31,16 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   changeTokenAAmount,
   connected,
   changeTokenBAmount,
-  swapValue,
 }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
-  const [fromAmount, setFromAmount] = useState(swapValue?.tokenAAmount ?? "0");
-  const [toAmount, setToAmount] = useState("0");
+  const [fromAmount, setFromAmount] = useState("");
+  const [toAmount, setToAmount] = useState("");
   
+  useEffect(() => {
+
+  }, []);
+
   const onChangeFromAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;

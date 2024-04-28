@@ -2,10 +2,7 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-interface Props {
-  left: number;
-  right: number;
-}
+interface Props {}
 
 export const TokenChartGraphWrapper = styled.div<Props>`
   display: flex;
@@ -43,9 +40,7 @@ export const TokenChartGraphWrapper = styled.div<Props>`
       height: 40px;
       width: 100%;
       align-items: center;
-      padding: ${({ left, right }) => {
-        return (left || right) ? `0 ${right}px 0 ${left}px` : "0 12px";
-      }};
+      padding: 0 12px;
       justify-content: space-between;
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
@@ -59,9 +54,7 @@ export const TokenChartGraphWrapper = styled.div<Props>`
       }
       ${media.mobile} {
         height: 30px;
-        padding: ${({ left, right }) => {
-          return (left || right) ? `0 ${right}px 0 ${left}px` : "0 12px";
-        }};
+        padding: 0 12px;
       }
     }
     .xaxis-wrapper-center {

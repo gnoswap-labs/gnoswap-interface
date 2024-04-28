@@ -4,7 +4,7 @@ import PoolPairInformation from "@components/pool/pool-pair-information/PoolPair
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useGetPoolDetailByPath } from "@query/pools";
+import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useLoading } from "@hooks/common/use-loading";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -34,7 +34,7 @@ export const initialPool: PoolDetailModel = {
     symbol: "",
     logoURI: "",
     type: "native",
-    priceId: "",
+    priceID: "",
   },
   tokenB: {
     chainId: "",
@@ -46,12 +46,12 @@ export const initialPool: PoolDetailModel = {
     symbol: "",
     logoURI: "",
     type: "native",
-    priceId: "",
+    priceID: "",
   },
   incentivizedType: "INCENTIVIZED",
   tvl: 0,
   tvlChange: 0,
-  volume: 0,
+  volume24h: 0,
   volumeChange: 0,
   totalVolume: 0,
   id: "",
@@ -70,17 +70,22 @@ export const initialPool: PoolDetailModel = {
   poolPath: ""
 };
 
+interface PoolPairInformationContainerProps {
+  address?: string | undefined;
+}
 
-const PoolPairInformationContainer = () => {
+const PoolPairInformationContainer:React.FC<PoolPairInformationContainerProps> = ({ address }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
   const { data = initialPool as PoolDetailModel, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoadingCommon } = useLoading();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId } = usePositionData();
+  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(address);
   const { connected: connectedWallet, account } = useWallet();
-
+  const { data: bins = [] } = useGetBinsByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
     if (!poolPath) {
@@ -117,8 +122,9 @@ const PoolPairInformationContainer = () => {
         symbol: getGnotPath(data.tokenB).symbol,
         logoURI: getGnotPath(data.tokenB).logoURI,
       },
+      bins: bins,
     };
-  }, [data]);
+  }, [data, bins]);
 
   const feeStr = useMemo(() => {
     if (!pool?.fee) {
@@ -133,7 +139,7 @@ const PoolPairInformationContainer = () => {
       menu={menu}
       onClickPath={onClickPath}
       feeStr={feeStr}
-      loading={loading || isLoadingCommon}
+      loading={loading || isLoadingCommon || loadingPosition}
       positions={connectedWallet ? positions : []}
     />
   );

@@ -5,7 +5,7 @@ import {
   PositionListResponse,
   PositionResponse,
 } from "@repositories/position/response";
-import { RewardResposne } from "@repositories/position/response/reward-response";
+import { RewardResponse } from "@repositories/position/response/reward-response";
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
@@ -47,15 +47,15 @@ export class PositionMapper {
       tickLower: Number(position.tickLower),
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
-      token0Balance: BigInt(position.token0Balance),
-      token1Balance: BigInt(position.token1Balance),
+      token0Balance: BigInt(position.tokenABalance),
+      token1Balance: BigInt(position.tokenBBalance),
       positionUsdValue: position.positionUsdValue,
-      unclaimedFee0Amount: BigInt(position.unclaimedFee0Amount),
-      unclaimedFee1Amount: BigInt(position.unclaimedFee1Amount),
+      unclaimedFee0Amount: BigInt(position.unclaimedFeeAAmount),
+      unclaimedFee1Amount: BigInt(position.unclaimedFeeBAmount),
       unclaimedFee0Usd: position.unclaimedFee0Usd,
-      unclaimedFee1Usd: position.unclaimedFee1Usd,
-      tokensOwed0Amount: BigInt(position.tokensOwed0Amount),
-      tokensOwed1Amount: BigInt(position.tokensOwed1Amount),
+      unclaimedFee1Usd: position.unclaimedFee0Usd,
+      tokensOwed0Amount: BigInt(0),
+      tokensOwed1Amount: BigInt(0),
       tokensOwed0Usd: position.tokensOwed0Usd,
       tokensOwed1Usd: position.tokensOwed1Usd,
       apr: `${position.apr}` ?? "",
@@ -73,7 +73,7 @@ export class PositionMapper {
     return positions.map(PositionMapper.from);
   }
 
-  public static rewardFromResponse(reward: RewardResposne): RewardModel {
+  public static rewardFromResponse(reward: RewardResponse): RewardModel {
     return {
       token: reward.rewardToken,
       accumulatedRewardOf1d:

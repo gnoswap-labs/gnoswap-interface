@@ -2,7 +2,7 @@ import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useCallback, useMemo, useEffect, useState } from "react";
+import { useCallback, useMemo, useEffect, useState, useRef } from "react";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { makeId } from "@utils/common";
 import { useGetPositionsByAddress } from "@query/positions";
@@ -10,57 +10,85 @@ import { useRouter } from "next/router";
 import { useLoading } from "./use-loading";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
+import { PATH, PATH_10SECOND, PATH_60SECOND } from "@constants/common.constant";
+import { PositionModel } from "@models/position/position-model";
+import { AxiosError } from "axios";
 
-const PATH = ["/earn/pool/[pool-path]", "/earn"];
-const PATH_10SECOND = "/earn/pool/[pool-path]/remove";
-const PATH_60SECOND = ["/wallet", "/earn/pool/[pool-path]/stake", "/earn/pool/[pool-path]/unstake"];
-
-export const usePositionData = () => {
+export const usePositionData = (address?: string) => {
   const router = useRouter();
+  // TODO Question > EarnState.initialData
   const [initialData, setInitialData] = useAtom(EarnState.initialDataData);
   const { back } = router.query;
-  const { account, connected } = useWallet();
+  const { account, connected: walletConnected } = useWallet();
   const { pools, loading: isLoadingPool } = usePoolData();
-  const [first404, setFirst404] = useState(false);
+  const [shouldShowLoading, setShouldShowLoading] =  useState(false);
+  const cachedData = useRef<PositionModel[]>();
+
+  const fetchedAddress = useMemo(() => {
+    return address || account?.address;
+  }, [account?.address, address]);
+
+  const secToMilliSec = useCallback((sec: number) => {
+    return sec * 1000;
+  }, []);
 
   const {
     data = [],
     isError,
-    isLoading: loading,
+    isLoading: isPositionLoading,
     isFetched: isFetchedPosition,
-    isFetching,
-  } = useGetPositionsByAddress(account?.address as string, {
-    enabled: !!account?.address && pools.length > 0 && connected,
-    refetchInterval: first404 ? false : PATH.includes(router.pathname)
-      ? (((back && !initialData.status) ? 3 : 15) * 1000)
-      : PATH_10SECOND === router.pathname ? 10 * 1000 : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
+  } = useGetPositionsByAddress(fetchedAddress as string, {
+    enabled: !!fetchedAddress && pools.length > 0,
+    refetchInterval: () => {
+      if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15) );
+
+      if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
+
+      if (PATH_60SECOND.includes(router.pathname)) return secToMilliSec(60);
+
+      return false;
+    },
+    onSuccess(data) {
+      const haveNewData = JSON.stringify(data, transformData) !== JSON.stringify(cachedData.current, transformData);
+      if(haveNewData) {
+        cachedData.current = data;
+      }
+      setShouldShowLoading(haveNewData);
+    },
+    onError(err) {
+      if((err as AxiosError).response?.status === 404) {
+        const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
+  
+        if(haveNewData) {
+          cachedData.current = data;
+        }
+        setShouldShowLoading(haveNewData);
+      }
+    }
   });
 
-  useEffect(() => {
-    if (data.length > 0) {
-      setFirst404(false);
-    } else
-    if (isError) {
-      setFirst404(true);
-    }
-  }, [isError, data.length, account?.address]);
+  function transformData(key: string, value: unknown) {
+    return typeof value === "bigint"
+            ? value.toString()
+            : value;
+  }
 
   useEffect(() => {
-    if (loading) {
+    if (isPositionLoading) {
       setInitialData(() => {
-        return  {
+        return {
           length: data.length,
           status: false,
           loadingCall: true,
         };
       });
     }
-  }, [loading]);
-  
+  }, [data.length, isPositionLoading, setInitialData]);
+ 
   useEffect(() => {
-    if (initialData.loadingCall && isFetchedPosition && !loading) {
+    if (initialData.loadingCall && isFetchedPosition && !isPositionLoading) {
       setInitialData(() => {
-        return  {
+        return {
           length: data.length,
           status: false,
           loadingCall: false,
@@ -68,7 +96,12 @@ export const usePositionData = () => {
       });
       return;
     }
-    if (initialData.length !== -1 && data.length !== initialData.length && isFetchedPosition && !loading) {
+    if (
+      initialData.length !== -1 &&
+      data.length !== initialData.length &&
+      isFetchedPosition &&
+      !isPositionLoading
+    ) {
       setInitialData(() => {
         return {
           length: data.length,
@@ -78,12 +111,38 @@ export const usePositionData = () => {
       });
       return;
     }
-  }, [initialData.loadingCall, data.length, isFetchedPosition, loading]);
+  }, [initialData.loadingCall, data.length, isFetchedPosition, isPositionLoading, initialData.length, setInitialData]);
+
+  const isEarnPath = PATH.includes(router.pathname);
   
-  const { isLoadingCommon } = useLoading({ connected: connected && PATH.includes(router.pathname) || first404, isLoading: loading && !first404, isFetching: isFetching, isBack: !!back, status: initialData.status});
-  
+  // * no need to force loading in another page
+  const isConnectedCheck = walletConnected && isEarnPath;
+
+  const shouldTriggerLoading = () => {
+    // * connected case
+    if(isConnectedCheck) {
+      return true;
+    }
+
+    // * not connected case
+    if(!isConnectedCheck && (isPositionLoading || !back)) {
+      return true;
+    }
+
+    // * [after go back] or [data change while interval refetch]
+    if (!!back || initialData.status) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const { isLoadingCommon } = useLoading({
+    loadable: shouldTriggerLoading(),
+  });
+
   const { getGnotPath } = useGnotToGnot();
-  
+
   const positions = useMemo(() => {
     const poolPositions: PoolPositionModel[] = [];
     data.forEach(position => {
@@ -106,14 +165,14 @@ export const usePositionData = () => {
       }
     });
     return poolPositions;
-  }, [data]);
+  }, [data, getGnotPath, pools]);
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
     return unstakedPositions.length > 0;
   }, [positions]);
 
-  const isStakedPool = useCallback(
+  const checkStakedPool = useCallback(
     (poolPath: string | null) => {
       if (!poolPath) {
         return false;
@@ -132,7 +191,7 @@ export const usePositionData = () => {
 
   const getPositionsByPoolId = useCallback(
     (poolId: string): PoolPositionModel[] => {
-      if (!account?.address) {
+      if (!fetchedAddress) {
         return [];
       }
       if (pools.length === 0) {
@@ -166,7 +225,7 @@ export const usePositionData = () => {
       });
       return poolPositions;
     },
-    [account?.address, pools, data],
+    [fetchedAddress, pools, data, getGnotPath],
   );
 
   const getPositionsByPoolPath = useCallback(
@@ -176,17 +235,22 @@ export const usePositionData = () => {
     },
     [getPositionsByPoolId],
   );
-  
+
+  const loading = useMemo(() => {
+    const shouldPositionLoading = shouldShowLoading && isPositionLoading;
+    return (shouldPositionLoading && walletConnected) || isLoadingCommon;
+  }, [walletConnected, isLoadingCommon, isPositionLoading]);
+
   return {
     availableStake,
     isError,
     positions,
-    isStakedPool,
+    checkStakedPool,
     getPositions,
     getPositionsByPoolId,
     getPositionsByPoolPath,
     isFetchedPosition,
-    loading: (loading && connected) || isLoadingCommon,
-    loadingPositionById: isLoadingPool || (loading && connected),
+    loading: loading,
+    loadingPositionById: isLoadingPool || ( isPositionLoading && walletConnected),
   };
 };

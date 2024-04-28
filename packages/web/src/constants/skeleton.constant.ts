@@ -50,21 +50,19 @@ const getPulseBackground = (
   }
 };
 
-export const pulseSkeletonStyle =
-  ({
-    w = "100%",
-    h = "18px",
-    tone = "200",
-    type = "rounded-square",
-    tabletWidth,
-    smallTableWidth,
-    mobileWidth,
-  }: PulseSkeletonParams) =>
-  (theme: Theme) => {
-    const width = typeof w === "number" ? `${w}px` : w;
-    const height = typeof h === "number" ? `${h}px` : h;
+export const pulseSkeletonStyle = ({
+  w = "100%",
+  h = "18px",
+  tone = "200",
+  type = "rounded-square",
+  tabletWidth,
+  smallTableWidth,
+  mobileWidth,
+}: PulseSkeletonParams) => (theme: Theme) => {
+  const width = typeof w === "number" ? `${w}px` : w;
+  const height = typeof h === "number" ? `${h}px` : h;
 
-    return css`
+  return css`
       position: relative;
       width: ${width};
       height: ${type === SHAPE_TYPES.CIRCLE ? `${width}px` : `${height}`};
@@ -93,188 +91,183 @@ export const pulseSkeletonStyle =
       }
       ${media.mobile} {
         width: ${w};
-        width: ${mobileWidth ? `${mobileWidth}px` : mobileWidth};
+        width: ${
+          typeof mobileWidth === "number" ? `${mobileWidth}px` : mobileWidth
+        };
         height: ${typeof height === "number" && height === 22 ? "22px" : h};
       }
     `;
-  };
+};
 
-export const skeletonStyle =
-  (skeletonWidth: CSSProperties["width"], type: SHAPE_TYPES) =>
-  (theme: Theme) =>
-    css`
-      position: relative;
+export const skeletonStyle = (
+  skeletonWidth: CSSProperties["width"],
+  type: SHAPE_TYPES,
+) => (theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
+    background: ${theme.color.background01};
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        0,
+        ${theme.color.backgroundGradient} 0%,
+        ${theme.color.backgroundGradient} 100%
+      );
+      animation: ${skeletonAni} 2s ease infinite;
+    }
+  `;
+
+export const skeletonTrendingStyle = (
+  skeletonWidth: CSSProperties["width"],
+  type: SHAPE_TYPES,
+  seconds?: number,
+) => (theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: 25px;
+    background: ${theme.color.background23};
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-100%);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        0,
+        ${theme.color.backgroundGradient} 0%,
+        ${theme.color.backgroundGradient} 100%
+      );
+      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+    }
+  `;
+
+export const skeletonTokenDetail = (
+  skeletonWidth: CSSProperties["width"],
+  type: SHAPE_TYPES,
+  seconds?: number,
+  tabletWidth?: CSSProperties["width"],
+  smallTableWidth?: CSSProperties["width"],
+) => (theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: 22px;
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    z-index: 1;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-100%);
+      width: 100%;
+      height: 100%;
+      background: ${theme.color.backgroundGradient6};
+      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+    }
+    ${media.tablet} {
+      width: ${tabletWidth
+        ? `${tabletWidth}px`
+        : typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+    }
+    ${media.tabletMiddle} {
+      width: ${smallTableWidth
+        ? `${smallTableWidth}px`
+        : typeof skeletonWidth === "number"
+        ? `${skeletonWidth}px`
+        : skeletonWidth};
+    }
+    ${media.mobile} {
       width: ${typeof skeletonWidth === "number"
         ? `${skeletonWidth}px`
         : skeletonWidth};
-      height: ${type === SHAPE_TYPES.CIRCLE ? `${skeletonWidth}px` : "18px"};
-      background: ${theme.color.background01};
-      overflow: hidden;
-      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0%;
-        top: 0;
-        transform: translateX(-50%);
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          0,
-          ${theme.color.backgroundGradient} 0%,
-          ${theme.color.backgroundGradient} 100%
-        );
-        animation: ${skeletonAni} 2s ease infinite;
-      }
-    `;
+      height: 18px;
+    }
+  `;
 
-export const skeletonTrendingStyle =
-  (
-    skeletonWidth: CSSProperties["width"],
-    type: SHAPE_TYPES,
-    seconds?: number,
-  ) =>
-  (theme: Theme) =>
-    css`
-      position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
-      height: 25px;
-      background: ${theme.color.background23};
-      overflow: hidden;
-      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0%;
-        top: 0;
-        transform: translateX(-100%);
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          0,
-          ${theme.color.backgroundGradient} 0%,
-          ${theme.color.backgroundGradient} 100%
-        );
-        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-      }
-    `;
+export const skeletonTotalBalance = (
+  skeletonWidth: CSSProperties["width"],
+  type: SHAPE_TYPES,
+  seconds?: number,
+) => (theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: 20px;
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    z-index: 1;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-100%);
+      width: 100%;
+      height: 100%;
+      background: ${theme.color.backgroundGradient6};
+      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+    }
+    ${media.mobile} {
+      height: 18px;
+    }
+  `;
 
-export const skeletonTokenDetail =
-  (
-    skeletonWidth: CSSProperties["width"],
-    type: SHAPE_TYPES,
-    seconds?: number,
-    tabletWidth?: CSSProperties["width"],
-    smallTableWidth?: CSSProperties["width"],
-  ) =>
-  (theme: Theme) =>
-    css`
-      position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
-      height: 22px;
-      overflow: hidden;
-      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-      z-index: 1;
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0%;
-        top: 0;
-        transform: translateX(-100%);
-        width: 100%;
-        height: 100%;
-        background: ${theme.color.backgroundGradient6};
-        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-      }
-      ${media.tablet} {
-        width: ${tabletWidth
-          ? `${tabletWidth}px`
-          : typeof skeletonWidth === "number"
-          ? `${skeletonWidth}px`
-          : skeletonWidth};
-      }
-      ${media.tabletMiddle} {
-        width: ${smallTableWidth
-          ? `${smallTableWidth}px`
-          : typeof skeletonWidth === "number"
-          ? `${skeletonWidth}px`
-          : skeletonWidth};
-      }
-      ${media.mobile} {
-        width: ${typeof skeletonWidth === "number"
-          ? `${skeletonWidth}px`
-          : skeletonWidth};
-        height: 18px;
-      }
-    `;
-
-export const skeletonTotalBalance =
-  (
-    skeletonWidth: CSSProperties["width"],
-    type: SHAPE_TYPES,
-    seconds?: number,
-  ) =>
-  (theme: Theme) =>
-    css`
-      position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
-      height: 20px;
-      overflow: hidden;
-      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-      z-index: 1;
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0%;
-        top: 0;
-        transform: translateX(-100%);
-        width: 100%;
-        height: 100%;
-        background: ${theme.color.backgroundGradient6};
-        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-      }
-      ${media.mobile} {
-        height: 18px;
-      }
-    `;
-
-export const skeletonBalanceDetail =
-  (
-    skeletonWidth: CSSProperties["width"],
-    type: SHAPE_TYPES,
-    seconds?: number,
-  ) =>
-  (theme: Theme) =>
-    css`
-      position: relative;
-      width: ${typeof skeletonWidth === "number"
-        ? `${skeletonWidth}px`
-        : skeletonWidth};
-      height: 20px;
-      overflow: hidden;
-      border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
-      z-index: 1;
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0%;
-        top: 0;
-        transform: translateX(-100%);
-        width: 100%;
-        height: 100%;
-        background: ${theme.color.backgroundGradient6};
-        animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
-      }
-      ${media.mobile} {
-        height: 18px;
-      }
-    `;
+export const skeletonBalanceDetail = (
+  skeletonWidth: CSSProperties["width"],
+  type: SHAPE_TYPES,
+  seconds?: number,
+) => (theme: Theme) =>
+  css`
+    position: relative;
+    width: ${typeof skeletonWidth === "number"
+      ? `${skeletonWidth}px`
+      : skeletonWidth};
+    height: 20px;
+    overflow: hidden;
+    border-radius: ${type === SHAPE_TYPES.CIRCLE ? "50%" : "2px"};
+    z-index: 1;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0%;
+      top: 0;
+      transform: translateX(-100%);
+      width: 100%;
+      height: 100%;
+      background: ${theme.color.backgroundGradient6};
+      animation: ${skeletonAni} ${seconds ? seconds : "3"}s ease infinite;
+    }
+    ${media.mobile} {
+      height: 18px;
+    }
+  `;
 
 export const POOL_TD_WIDTH = [240, 190, 190, 190, 170, 180, 198];
 export const POOL_TD_WIDTH_TABLET = [199, 150, 150, 150, 140, 150, 160];
@@ -283,13 +276,30 @@ export const POOL_TD_WIDTH_MOBILE = [210, 110, 140, 120, 100, 106, 160];
 export const TOKEN_SEARCH_WIDTH = [400];
 export const ASSET_TD_WIDTH = [240, 300, 280, 280, 120, 138];
 export const TABLET_ASSET_TD_WIDTH = [220, 240, 190, 190, 120, 138];
-export const MOBILE_ASSET_TD_WIDTH = [230, 230, 195, 195, 90, 118];
+export const MOBILE_ASSET_TD_WIDTH = [230, 230, 195, 195, 90, 120];
 export const TOKEN_TD_WIDTH = [
-  56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124,
+  56,
+  199,
+  105,
+  85,
+  85,
+  85,
+  140,
+  140,
+  138,
+  201,
+  124,
 ];
 export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
 export const MOBILE_ACTIVITY_TD_WIDTH = [210, 110, 140, 140, 160, 200];
 export const ACTIVITY_TD_WIDTH = [240, 230, 230, 230, 230, 198];
+export const POSITION_HISTORY_TD_WIDTH = [280, 280, 266, 266, 265];
+export const TABLET_POSITION_HISTORY_TD_WIDTH = [280, 240, 140, 220, 218];
+export const MOBILE_POSITION_HISTORY_TD_WIDTH = [160, 150, 120, 153, 151];
+
+export const LEADERBOARD_TD_WIDTH = [120, 400, 200, 200, 200, 240];
+export const MOBILE_LEADERBOARD_TD_WIDTH = [50, 150, 128];
+export const TABLET_LEADERBOARD_TD_WIDTH = [120, 300, 170, 170, 170, 170];
 
 export const SHAPE_TYPES = {
   CIRCLE: "circle",
@@ -303,6 +313,8 @@ export const TABLE_TITLE = {
   ASSET_TABLE: "asset-table",
   TOKEN_TABLE: "token-table",
   ACTIVITY_TABLE: "activity-table",
+  LEADERBOARD_TABLE: "leaderboard-table",
+  POSITION_HISTORY: "position-history-table",
 };
 export type TABLE_TITLE = ValuesType<typeof TABLE_TITLE>;
 
@@ -375,10 +387,68 @@ export const ASSET_INFO = {
   total: 15,
   tdWidth: ASSET_TD_WIDTH,
   list: [
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
-    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true, className: "" },
+    {
+      width: 161,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "left-padding",
+    },
+    {
+      width: 161,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "left-padding",
+    },
+  ],
+};
+export const ASSET_INFO_TABLET = {
+  title: TABLE_TITLE.ASSET_TABLE,
+  total: 15,
+  tdWidth: TABLET_ASSET_TD_WIDTH,
+  list: [
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "padding-12",
+    },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "left-padding",
+    },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "left-padding",
+    },
+  ],
+};
+
+export const ASSET_INFO_MOBILE = {
+  title: TABLE_TITLE.ASSET_TABLE,
+  total: 15,
+  tdWidth: MOBILE_ASSET_TD_WIDTH,
+  list: [
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "left-padding",
+    },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "left-padding",
+    },
   ],
 };
 
@@ -451,6 +521,110 @@ export const TOKEN_INFO = {
   ],
 };
 
+export const LEADER_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 15,
+  tdWidth: LEADERBOARD_TD_WIDTH,
+  list: [
+    {
+      width: 120 / 4,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "center",
+    },
+    {
+      width: 400 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 200 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 200 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 200 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 240 / 3,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "padding-50",
+    },
+  ],
+};
+
+export const TABLET_LEADER_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 15,
+  tdWidth: LEADERBOARD_TD_WIDTH,
+  list: [
+    {
+      width: 120 / 4,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+      className: "center",
+    },
+    {
+      width: 300 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 2,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 2,
+
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+    {
+      width: 170 / 3,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "padding-50",
+    },
+  ],
+};
+
+export const MOBILE_LEADER_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 15,
+  tdWidth: MOBILE_LEADERBOARD_TD_WIDTH,
+  list: [
+    { width: 50 / 2, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    {
+      width: 150,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "flex-grow start",
+    },
+    {
+      width: 128,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: true,
+    },
+  ],
+};
+
 export const MOBILE_TOKEN_INFO = {
   title: TABLE_TITLE.TOKEN_TABLE,
   total: 2,
@@ -460,6 +634,7 @@ export const MOBILE_TOKEN_INFO = {
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
   ],
 };
+
 export const TOKEN_SEARCH_INFO = {
   title: TABLE_TITLE.TOKEN_TABLE,
   total: 3,
@@ -477,6 +652,106 @@ export const ACTIVITY_INFO = {
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
     { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+  ],
+};
+
+export const LEADERBOARD_INFO = {
+  title: TABLE_TITLE.LEADERBOARD_TABLE,
+  total: 15,
+  tdWidth: LEADERBOARD_TD_WIDTH,
+  list: [
+    { width: 161, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+    { width: 80, type: SHAPE_TYPES.ROUNDED_SQUARE, left: false },
+  ],
+};
+
+export const POSITION_HISTORY_INFO = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  tdWidth: POSITION_HISTORY_TD_WIDTH,
+  list: [
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 150, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+    {
+      width: 120,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+  ],
+};
+
+export const TABLET_POSITION_HISTORY_INFO = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  tdWidth: TABLET_POSITION_HISTORY_TD_WIDTH,
+  list: [
+    { width: 224, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 184, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    {
+      width: 84,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+    {
+      width: 164,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+    ,
+    {
+      width: 162,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+    ,
+  ],
+};
+
+export const MOBILE_POSITION_HISTORY_INFO = {
+  title: TABLE_TITLE.POSITION_HISTORY,
+  total: 5,
+  tdWidth: MOBILE_POSITION_HISTORY_TD_WIDTH,
+  list: [
+    { width: 132, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    { width: 122, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },
+    {
+      width: 92,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+    {
+      width: 125,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
+    {
+      width: 123,
+      type: SHAPE_TYPES.ROUNDED_SQUARE,
+      left: false,
+      className: "right",
+    },
   ],
 };
 

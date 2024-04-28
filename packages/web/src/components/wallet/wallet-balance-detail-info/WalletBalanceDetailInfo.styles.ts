@@ -16,6 +16,7 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
     }
   }
   height: 116px;
+
   ${media.tablet} {
     padding: 23px;
     height: 118px;
@@ -103,6 +104,13 @@ export const WalletBalanceDetailInfoWrapper = styled.div`
       ${media.mobile} {
         ${fonts.body6};
       }
+    }
+    .hidden-value {
+      opacity: 0;
+      visibility: hidden;
+      position: absolute;
+      z-index: 0;
+      max-width: max-content;
     }
     .button-wrapper {
       flex-shrink: 0;

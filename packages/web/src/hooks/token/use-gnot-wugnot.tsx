@@ -4,7 +4,7 @@ import { useCallback } from "react";
 const GNOT_PATH = "gnot";
 
 export const useGnotToGnot = () => {
-  const { data: gnot } = useGetTokenByPath(GNOT_PATH);
+  const { data: gnot, isFetched } = useGetTokenByPath(GNOT_PATH);
   const { data: wugnot } = useGetTokenByPath(WRAPPED_GNOT_PATH);
 
   const getGnotPath = useCallback((token: any) => {
@@ -21,5 +21,6 @@ export const useGnotToGnot = () => {
     wugnot,
     wugnotPath: WRAPPED_GNOT_PATH,
     getGnotPath,
+    isFetched,
   };
 };

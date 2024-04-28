@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useTokenData } from "@hooks/token/use-token-data";
@@ -11,6 +11,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
 import { parseJson } from "@utils/common";
 import { GNOT_SYMBOL, GNS_SYMBOL } from "@common/values/token-constant";
+import { useWallet } from "@hooks/wallet/use-wallet";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -25,7 +26,7 @@ export interface SortedProps extends TokenModel {
 
 export const ORDER = [GNOT_SYMBOL, GNS_SYMBOL, "BAR", "BAZ"];
 
-const customSort = (a: TokenModel, b: TokenModel) => {
+export const customSort = (a: TokenModel, b: TokenModel) => {
   const symbolA = a.symbol.toUpperCase();
   const symbolB = b.symbol.toUpperCase();
 
@@ -64,8 +65,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const {
     tokens,
     balances,
-    updateTokens,
-    updateBalances,
     tokenPrices,
     displayBalanceMap,
   } = useTokenData();
@@ -74,6 +73,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const recentsData = useAtomValue(TokenState.selectRecents);
+  const { isSwitchNetwork } = useWallet();
 
   const recents = useMemo(() => {
     return parseJson(recentsData ? recentsData : "[]");
@@ -87,14 +87,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     },
   });
 
-  useEffect(() => {
-    updateTokens();
-  }, []);
-
-  useEffect(() => {
-    if (tokens.length > 0) updateBalances();
-  }, [tokens]);
-
   const defaultTokens = useMemo(() => {
     const temp = tokens;
     const sortedTokenList = temp.sort(customSort);
@@ -104,7 +96,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
     const temp: SortedProps[] = tokens.map((item: TokenModel) => {
-      const tokenPrice = balances[item.priceId];
+      const tokenPrice = balances[item.priceID];
       if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
         return {
           price: "-",
@@ -155,14 +147,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
 
   useEscCloseModal(close);
 
-  useEffect(() => {
-    updateTokens();
-  }, []);
-
-  useEffect(() => {
-    if (tokens.length > 0) updateBalances();
-  }, [tokens]);
-
   return (
     <SelectToken
       keyword={keyword}
@@ -176,6 +160,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       modalRef={modalRef}
       breakpoint={breakpoint}
       recents={recents}
+      isSwitchNetwork={isSwitchNetwork}
     />
   );
 };

@@ -1,6 +1,6 @@
 import { BalanceSummaryInfo } from "@containers/wallet-balance-container/WalletBalanceContainer";
 import { WalletBalanceSummaryInfoWrapper } from "./WalletBalanceSummaryInfo.styles";
-import PulseSkeleton from "@components/common/pulse-skeleton/PulseSkeleton";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface WalletBalanceSummaryInfoProps {
   balanceSummaryInfo: BalanceSummaryInfo;
@@ -13,9 +13,9 @@ const WalletBalanceSummaryInfo: React.FC<WalletBalanceSummaryInfoProps> = ({
 
   return (
     <WalletBalanceSummaryInfoWrapper>
-      <PulseSkeleton loading={balanceSummaryInfo.loading} w="200px" h={20} className="amount">
-        <span className="amount">{balanceSummaryInfo.amount}</span>
-      </PulseSkeleton>
+      {balanceSummaryInfo.loading && <div className="loading-wrapper"><div css={pulseSkeletonStyle({ w: "200px", h: 20 })} className="amount"/></div>}
+
+      {!balanceSummaryInfo.loading && <span className="amount">{balanceSummaryInfo.amount}</span>}
       {/* <span
         className={`${
           changeRate === 0

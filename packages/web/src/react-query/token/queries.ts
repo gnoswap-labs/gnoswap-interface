@@ -8,6 +8,8 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { QUERY_KEY } from "./types";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
+import { encryptId } from "@utils/common";
 
 export const useGetTokensList = (
   options?: UseQueryOptions<TokenListResponse, Error>,
@@ -29,7 +31,7 @@ export const useGetTokenPrices = (
     queryKey: [QUERY_KEY.tokenPrices],
     queryFn: async () => {
       const res = await tokenRepository.getTokenPrices();
-      const priceMap = res.prices.reduce<Record<string, TokenPriceModel>>(
+      const priceMap = res.data.reduce<Record<string, TokenPriceModel>>(
         (prev, current) => {
           prev[current.path] = current;
           return prev;
@@ -47,9 +49,11 @@ export const useGetTokenDetailByPath = (
   option?: UseQueryOptions<ITokenDetailResponse, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
+  const currentPath = encryptId(path);
+
   return useQuery<ITokenDetailResponse, Error>({
-    queryKey: [QUERY_KEY.tokenDetails, path],
-    queryFn: () => tokenRepository.getTokenDetailByPath(path),
+    queryKey: [QUERY_KEY.tokenDetails, currentPath],
+    queryFn: () => tokenRepository.getTokenDetailByPath(currentPath),
     ...option,
   });
 };
@@ -67,12 +71,25 @@ export const useGetChainList = (
 
 export const useGetTokenByPath = (
   path: string,
-  option?: UseQueryOptions<ITokenResponse, Error>
+  option?: UseQueryOptions<ITokenResponse, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
+  const currentPath = encryptId(path);
   return useQuery<ITokenResponse, Error>({
-    queryKey: [QUERY_KEY.tokenByPath, path],
-    queryFn: () => tokenRepository.getTokenByPath(path),
+    queryKey: [QUERY_KEY.tokenByPath, currentPath],
+    queryFn: () => tokenRepository.getTokenByPath(currentPath),
+    ...option,
+  });
+};
+
+export const useGetBalancesByAddress = (
+  address: string,
+  option?: UseQueryOptions<IBalancesByAddressResponse, Error>,
+) => {
+  const { tokenRepository } = useGnoswapContext();
+  return useQuery<IBalancesByAddressResponse, Error>({
+    queryKey: [QUERY_KEY.tokenBalancesByAddress, address],
+    queryFn: () => tokenRepository.getBalancesByAddress(address),
     ...option,
   });
 };

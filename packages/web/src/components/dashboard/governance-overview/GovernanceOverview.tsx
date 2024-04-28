@@ -16,7 +16,7 @@ interface GovernanceOverviewProps {
 const LoadingText = () => {
   return (
     <LoadingTextWrapper className="loading-text-wrapper">
-      <span css={pulseSkeletonStyle({ w: "150px" })} />
+      <span css={pulseSkeletonStyle({ w: "150px", mobileWidth: "120" })} />
     </LoadingTextWrapper>
   );
 };
@@ -43,7 +43,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
           <DashboardLabel tooltip="Total amount of xGNS currently issued through GNS-GNOT staking." />
         </div>
         {!loading ? (
-          <div>{governenceOverviewInfo.totalXgnosIssued}</div>
+          <div className="value">{governenceOverviewInfo.totalXgnosIssued}</div>
         ) : (
           <LoadingText />
         )}
@@ -54,7 +54,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
           <DashboardLabel tooltip="Number of accounts with at least 1 xGNS." />
         </div>
         {!loading ? (
-          <div>{governenceOverviewInfo.holders}</div>
+          <div className="value">{governenceOverviewInfo.holders}</div>
         ) : (
           <LoadingText />
         )}
@@ -64,7 +64,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
           <div>Passed Proposals</div>
         </div>
         {!loading ? (
-          <div>{governenceOverviewInfo.passedProposals}</div>
+          <div className="value">{governenceOverviewInfo.passedProposals}</div>
         ) : (
           <LoadingText />
         )}
@@ -75,7 +75,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
         </div>
         <div className="active-proposals-emissions-tooltip">
           {!loading ? (
-            <div>{governenceOverviewInfo.activeProposals}</div>
+            <div className="value">{governenceOverviewInfo.activeProposals}</div>
           ) : (
             <LoadingText />
           )}
@@ -97,7 +97,7 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({
           <DashboardLabel tooltip="Amount of GNS accumulated in the Community Pool from emissions." />
         </div>
         {!loading ? (
-          <div>{governenceOverviewInfo.communityPool}</div>
+          <div className="value">{governenceOverviewInfo.communityPool}</div>
         ) : (
           <LoadingText />
         )}

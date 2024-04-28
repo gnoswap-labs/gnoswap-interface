@@ -36,11 +36,13 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;
     width: 100%;
-    height: 172px;
-    top: calc(100vh - 172px);
+    height: fit-content;
+    top: auto;
+    bottom: 0;
     z-index: ${Z_INDEX.modal};
-    padding: 16px;
+    padding: 23px 15px;
     min-width: 360px;
+    gap: 0;
   }
 
   .button-container {
@@ -65,7 +67,11 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
       svg * {
         fill: ${({ theme }) => theme.color.icon03};
       }
-
+      :hover {
+        svg * {
+          fill: ${({ theme }) => theme.color.icon07};
+        }
+      }
     }
     ${media.mobile} {
       ${mixins.flexbox("column", "center", "center")};
@@ -111,6 +117,9 @@ export const AmountInfoBox = styled.div`
   border-radius: 8px;
   color: ${({ theme }) => theme.color.text03};
   margin-top: 16px;
+  ${media.mobile} {
+    height: 63px;
+  }
 `;
 
 export const ThemeSelector = styled.div`
@@ -119,7 +128,9 @@ export const ThemeSelector = styled.div`
   color: ${({ theme }) => theme.color.text05};
   width: 100%;
   height: 36px;
-  margin-top: 16px;
+  &.mt-16 {
+    margin-top: 16px;
+  }
 `;
 
 export const CopyTooltip = styled.div`

@@ -33,7 +33,7 @@ const DashboardInfo: React.FC<DashboardInfoProps> = ({
     )}
     {loading && (
       <div className="loading-spining">
-        <span css={pulseSkeletonStyle({ w: "400px" })} />
+        <span css={pulseSkeletonStyle({ w: "400px", mobileWidth: "150" })} />
       </div>
     )}
     <DashboardOverview

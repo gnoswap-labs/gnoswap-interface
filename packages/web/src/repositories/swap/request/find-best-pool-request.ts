@@ -1,6 +1,6 @@
 import { TokenModel } from "@models/token/token-model";
 
-export interface FindBestPoolReqeust {
+export interface FindBestPoolRequest {
   tokenA: TokenModel;
 
   tokenB: TokenModel;

@@ -40,6 +40,32 @@ export const RecentlyAddedCardListwrapper = styled.div<Props>`
       padding: 0px 16px 0px 16px;
     }
   }
+  .header-wrapper {
+    width: 100%;
+    ${mixins.flexbox("row", "center", "space-between")};
+    .link-to-dashboard {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      margin-right: 24px;
+      ${fonts.body11}
+      color: ${({ theme }) => theme.color.text04};
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+      svg * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+      &:hover {
+        color: ${({ theme }) => theme.color.text10};
+        svg * {
+          fill: ${({ theme }) => theme.color.icon15};
+        }
+      }
+      ${media.tablet} {
+        margin-right: 12px;
+      }
+    }
+  }
 
   .icon-clock {
     width: 25px;

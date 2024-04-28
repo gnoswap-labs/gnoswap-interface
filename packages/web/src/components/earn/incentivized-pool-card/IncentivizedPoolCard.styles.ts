@@ -179,6 +179,6 @@ export const PoolCardWrapper = styled.div`
     ${fonts.p4};
   }
   .value-text {
-    ${fonts.body10};
+    ${fonts.body9};
   }
 `;

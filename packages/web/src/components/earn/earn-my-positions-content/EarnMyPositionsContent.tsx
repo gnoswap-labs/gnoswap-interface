@@ -4,7 +4,9 @@ import EarnMyPositionsUnconnected from "../earn-my-positions-unconnected/EarnMyP
 import React from "react";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { AccountModel } from "@models/account/account-model";
+import OtherPositionNoLiquidity from "../other-positions-no-liquidity/OtherPositionNoLiquidity";
 export interface EarnMyPositionContentProps {
+  isOtherPosition: boolean;
   connected: boolean;
   fetched: boolean;
   loading: boolean;
@@ -27,6 +29,7 @@ export interface EarnMyPositionContentProps {
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
+  isOtherPosition,
   connected,
   fetched,
   loading,
@@ -46,18 +49,17 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   themeKey,
   account,
 }) => {
-
-  if (((!connected || isSwitchNetwork) && !loading)) {
+  if (isOtherPosition && positions.length === 0 && !loading) {
+    return <OtherPositionNoLiquidity account={account} />;
+  }
+  if ((!connected || isSwitchNetwork) && !loading && !isOtherPosition) {
     return (
-      <EarnMyPositionsUnconnected
-        connect={connect}
-        connected={connected}
-      />
+      <EarnMyPositionsUnconnected connect={connect} connected={connected} />
     );
   }
 
   if (connected && positions.length === 0 && !loading) {
-    return <EarnMyPositionNoLiquidity account={account}/>;
+    return <EarnMyPositionNoLiquidity account={account} />;
   }
 
   return (
@@ -78,6 +80,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       themeKey={themeKey}
     />
   );
+
 };
 
 export default EarnMyPositionsContent;

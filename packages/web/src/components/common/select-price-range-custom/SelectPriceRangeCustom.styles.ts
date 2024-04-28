@@ -45,7 +45,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         border-radius: 4px;
         justify-content: center;
         align-items: center;
-        background: ${({ theme }) => theme.color.background02};
+        background: ${({ theme }) => theme.color.background05};
         svg * {
           fill: ${({ theme }) => theme.color.icon05};
         }
@@ -107,7 +107,11 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     gap: 8px;
     color: ${({ theme }) => theme.color.text10};
     > span:first-of-type {
+      display: flex;
       color: ${({ theme }) => theme.color.text04};
+    }
+    > span:last-of-type {
+      display: flex;
     }
     ${fonts.body12};
   }
@@ -214,7 +218,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding-bottom: 16px;
+    padding: 16px 12px;
   }
 `;
 

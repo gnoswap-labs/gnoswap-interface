@@ -40,16 +40,53 @@ export function makePositionMintMessage(
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
+      caller, // LP Token Receiver
     ],
   });
 }
 
-export function makePositionBurnMessage(lpTokenId: string, caller: string) {
+export function makePositionIncreaseLiquidityMessage(
+  lpTokenId: string,
+  amount0Desired: number,
+  amount1Desired: number,
+  amount0Min: number,
+  amount1Min: number,
+  caller: string,
+) {
   return makeTransactionMessage({
     send: "",
-    func: "Burn",
+    func: "IncreaseLiquidity",
     packagePath: PACKAGE_POSITION_PATH,
-    args: [lpTokenId],
+    args: [
+      lpTokenId, // LP Token ID
+      `${amount0Desired}`, // Maximum amount of tokenA to offer
+      `${amount1Desired}`, // Maximum amount of tokenB to offer
+      `${amount0Min}`, // Minimum amount of tokenA to provide
+      `${amount1Min}`, // Minimum amount of tokenB to provide
+      "9999999999", // Deadline UTC time
+    ],
+    caller,
+  });
+}
+
+export function makePositionDecreaseLiquidityMessage(
+  lpTokenId: string,
+  liquidityRatio: number,
+  existWrappedToken: boolean,
+  caller: string,
+) {
+  return makeTransactionMessage({
+    send: "",
+    func: "DecreaseLiquidity",
+    packagePath: PACKAGE_POSITION_PATH,
+    args: [
+      lpTokenId, // LP Token ID
+      `${liquidityRatio}`, // Percentage of liquidity to reduce (0 ~ 100)
+      "0", // Minimum quantity of tokenA to decrease liquidity
+      "0", // Minimum quantity of tokenB to decrease liquidity
+      "9999999999", // Deadline UTC time
+      `${existWrappedToken}`, // Whether to receive wrapped tokens as native tokens
+    ],
     caller,
   });
 }

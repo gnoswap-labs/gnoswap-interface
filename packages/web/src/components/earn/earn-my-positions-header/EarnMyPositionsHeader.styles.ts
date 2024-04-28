@@ -25,6 +25,28 @@ export const PositionsWrapper = styled.div`
         display: inline-flex;
       }
     }
+
+    h2 {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      button {
+        display: inline-flex;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+      }
+      .name {
+        background: ${({ theme }) => theme.color.text32};
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        cursor: pointer;
+      }
+    }
   }
   .button-wrapper {
     ${mixins.flexbox("row", "center", "flex-end")};

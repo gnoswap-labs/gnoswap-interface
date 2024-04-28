@@ -23,6 +23,9 @@ import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
 import { useLoading } from "@hooks/common/use-loading";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import ExchangeRate from "../exchange-rate/ExchangeRate";
+import { subscriptFormat } from "@utils/number-utils";
+import { useRouter } from "next/router";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -49,11 +52,15 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   isEmptyLiquidity,
   isKeepToken,
 }) => {
+  const router = useRouter();
+  const { tickUpper, tickLower } = router?.query;
+
   const { getGnotPath } = useGnotToGnot();
   const { isLoadingCommon } = useLoading();
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
   const [startingPriceValue, setStartingPriceValue] = useState<string>("");
+  const [tempPrice, setTempPrice] = useState<string>("");
   function getPriceRange(price?: number | null) {
     const currentPriceRangeType = priceRangeType;
     const currentPrice = price || selectPool.currentPrice || 1;
@@ -65,7 +72,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     const range = currentPrice * visibleRate;
     return [currentPrice - range, currentPrice + range];
   }
-
   function getScaleRange() {
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
@@ -112,8 +118,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = convertToKMB(selectPool.currentPrice.toFixed(4), 4);
-    return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
+    return <>1 {currentTokenA.symbol} =&nbsp;{subscriptFormat(selectPool.currentPrice)}&nbsp;{currentTokenB.symbol}</>;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
   const currentPriceStrReverse = useMemo(() => {
@@ -132,9 +137,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       if (!defaultPrice || !selectPool.isCreate) {
         return "";
       }
-      return `1 ${currentTokenA.symbol} = ${numberToFormat(defaultPrice, 4)} ${currentTokenB.symbol}`;
+      return <>1 {currentTokenA.symbol} = &nbsp;<ExchangeRate value={numberToFormat(defaultPrice, 4)}/>&nbsp;{currentTokenB.symbol}</>;
     }
-    return `1 ${currentTokenA.symbol} = ${startingPriceValue} ${currentTokenB.symbol}`;
+    return <>1 {currentTokenA.symbol} =&nbsp;<ExchangeRate value={startingPriceValue}/>&nbsp; {currentTokenB.symbol}</>;
   }, [currentTokenA, currentTokenB, defaultPrice, selectPool.isCreate, startingPriceValue]);
 
   const onClickTabItem = useCallback((symbol: string) => {
@@ -156,6 +161,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
     // if (inputPriceRangeType === "Custom") return;
+
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
     const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
     if (currentPrice && selectPool.feeTier && currentPriceRangeType && !selectPool.isChangeMinMax) {
@@ -195,6 +201,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       changeStartingPrice("");
       return;
     }
+    setTempPrice(startingPriceValue);
     changeStartingPrice(startingPriceValue);
   }, [startingPriceValue]);
 
@@ -217,8 +224,14 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   }, [tokenA]);
 
   useEffect(() => {
+        
+    if (tickUpper && tickLower && router.isReady) {
+      selectPool.setMinPosition(tickToPrice(Number(tickLower)));
+      selectPool.setMaxPosition(tickToPrice(Number(tickUpper)));
+      return;
+    }
     resetRange(priceRangeType);
-  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice]);
+  }, [selectPool.poolPath, selectPool.feeTier, priceRangeType, selectPool.startPrice, router.isReady]);
 
   useEffect(() => {
     if (!selectPool.poolPath) {
@@ -260,9 +273,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
             </div>
             <input
               className="starting-price-input"
-              value={startingPriceValue}
+              value={tempPrice ? subscriptFormat(tempPrice) : startingPriceValue}
               onChange={onChangeStartingPrice}
               onBlur={updateStartingPrice}
+              onFocus={() => setTempPrice("")}
               placeholder="Enter price"
             />
           </StartingPriceWrapper>
@@ -380,7 +394,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       <div className="icon-button full" onClick={selectFullRange}>
                         <IconSwap />
                         <span>Full Price Range</span>
-                        <span>Full Price</span>
+                        <span>Full Range</span>
                       </div>
                     </div>
                     {showDim && <div className="dim-content-3" />}

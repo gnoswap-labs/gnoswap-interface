@@ -66,6 +66,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 }) => {
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
+  const direction = swapSummaryInfo?.swapDirection;
 
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,20 +119,22 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   }, [dataTokenInfo, isLoading]);
 
   const balanceADisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenABalance !== "-") {
       if (dataTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(2);
     }
     return "-";
-  }, [dataTokenInfo.tokenABalance, connected]);
+  }, [dataTokenInfo.tokenABalance, connected, isSwitchNetwork]);
 
   const balanceBDisplay = useMemo(() => {
+    if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenBBalance !== "-") {
       if (dataTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(2);
     }
     return "-";
-  }, [dataTokenInfo.tokenBBalance, connected]);
+  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork]);
 
   return (
     <div css={wrapper}>
@@ -143,7 +146,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             {copied && (
               <CopyTooltip>
                 <div className={`box ${themeKey}-shadow`}>
-                  <span>URL Copied!</span>
+                  <span>Swap URL Copied!</span>
                 </div>
                 <IconPolygon className="polygon-icon" />
               </CopyTooltip>
@@ -158,7 +161,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="from">
           <div className="amount">
             <input
-              className="amount-text"
+              className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
               value={dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
               placeholder="0"
@@ -168,7 +171,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{dataTokenInfo.tokenAUSDStr}</span>
+            <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenA}>
               Balance: {balanceADisplay}
             </span>
@@ -177,7 +180,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="to">
           <div className="amount">
             <input
-              className="amount-text"
+              className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
               value={dataTokenInfo.tokenBAmount}
               onChange={onChangeTokenBAmount}
               placeholder="0"
@@ -187,7 +190,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{dataTokenInfo.tokenBUSDStr}</span>
+            <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>{dataTokenInfo.tokenBUSDStr}</span>
             <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`} onClick={handleAutoFillTokenB}>
               Balance: {balanceBDisplay}
             </span>

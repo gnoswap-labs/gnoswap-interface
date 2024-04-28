@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import VolumeChart from "@components/dashboard/volume-chart/VolumeChart";
 import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { VolumeResponse } from "@repositories/dashboard/response/volume-response";
+import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 import dayjs from "dayjs";
 import { useLoading } from "@hooks/common/use-loading";
 
@@ -143,19 +143,18 @@ const VolumeChartContainer: React.FC = () => {
     CHART_TYPE["7D"],
   );
 
-  const { data: volumeData, isFetching } = useQuery<VolumeResponse, Error>({
+  const { data, isLoading } = useQuery<IVolumeResponse, Error>({
     queryKey: ["volumePriceInfo"],
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
-
+  const { volume : volumeData } = data || {};
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
       CHART_TYPE["7D"];
     setVolumeChartType(volumeChartType);
   }, []);
-
   const chartData = useMemo(() => {
     if (!volumeData?.all)
       return {
@@ -163,20 +162,20 @@ const VolumeChartContainer: React.FC = () => {
         datas: [],
         times: [],
       } as VolumeChartInfo;
-    let chartData = volumeData?.last_7d;
+    let chartData = volumeData?.last7d;
 
     switch (volumeChartType) {
-      case "1M":
-        chartData = volumeData?.last_1m;
+      case "30D":
+        chartData = volumeData?.last1m;
         break;
-      case "1Y":
-        chartData = volumeData?.last_1y;
+      case "90D":
+        chartData = volumeData?.last1y;
         break;
       case "ALL":
         chartData = volumeData?.all;
         break;
       default:
-        chartData = volumeData?.last_7d;
+        chartData = volumeData?.last7d;
         break;
     }
 
@@ -185,7 +184,7 @@ const VolumeChartContainer: React.FC = () => {
         const time = parseDate(next.date);
         return {
           xAxisLabels: [...pre.xAxisLabels, time],
-          datas: [...pre.datas, next.price],
+          datas: [...pre.datas, next.volumeUsd],
           times: [...pre.times, time],
         };
       },
@@ -206,7 +205,7 @@ const VolumeChartContainer: React.FC = () => {
           : "-",
       }}
       volumeChartInfo={chartData}
-      loading={isFetching || isLoadingCommon}
+      loading={isLoading || isLoadingCommon}
     />
   );
 };

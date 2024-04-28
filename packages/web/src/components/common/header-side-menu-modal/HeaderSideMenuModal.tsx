@@ -14,6 +14,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconAccountUser from "../icons/IconAccountUser";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
+import IconPulse from "../icons/IconPulse";
 
 interface HeaderSideMenuModalProps {
   onSideMenuToggle: () => void;
@@ -45,6 +46,16 @@ const HeaderSideMenuModal: React.FC<HeaderSideMenuModalProps> = ({
     <HeaderSideMenuModalWrapper ref={menuRef}>
       <Navigation>
         <ul>
+        <li onClick={() => router.push(SIDE_MENU_NAV.DASHBOARD.path)}>
+            <Link href={SIDE_MENU_NAV.DASHBOARD.path}>
+              <LeftIconMenu>
+                <LeftIcon>
+                  <IconPulse className="left-icon" />
+                </LeftIcon>
+                {SIDE_MENU_NAV.DASHBOARD.title}
+              </LeftIconMenu>
+            </Link>
+          </li>
           <li onClick={() => router.push(SIDE_MENU_NAV.GOVERNENCE.path)}>
             <Link href={SIDE_MENU_NAV.GOVERNENCE.path}>
               <LeftIconMenu>

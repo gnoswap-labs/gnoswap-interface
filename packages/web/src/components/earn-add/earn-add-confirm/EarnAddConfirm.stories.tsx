@@ -23,7 +23,7 @@ const tokenA: {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceId: "gno.land/r/foo",
+    priceID: "gno.land/r/foo",
     address: ""
   },
   amount: "12,211",
@@ -44,7 +44,7 @@ const tokenB: {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceId: "gno.land/r/foo",
+    priceID: "gno.land/r/foo",
     address: ""
   },
   amount: "12,211",
@@ -65,7 +65,8 @@ const priceRangeInfo = {
   minPrice: "123",
   maxPrice: "123",
   inRange: true,
-  priceLabel: "GNOS per ETH",
+  priceLabelMin: "GNOS per ETH",
+  priceLabelMax: "GNOS per ETH",
   currentPrice: "11 ETH per GNOT",
   feeBoost: "x10.23",
   estimatedAPR: "N/A",

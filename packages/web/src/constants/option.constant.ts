@@ -223,8 +223,8 @@ export type INCENTIVIZED_TYPE = ValuesType<typeof INCENTIVIZED_TYPE>;
 
 export const CHART_TYPE = {
   "7D": "7D",
-  "1M": "1M",
-  "1Y": "1Y",
+  "30D": "30D",
+  "90D": "90D",
   ALL: "ALL",
 } as const;
 export type CHART_TYPE = ValuesType<typeof CHART_TYPE>;

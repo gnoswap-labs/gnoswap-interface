@@ -32,7 +32,7 @@ export default function PoolIncentivize() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          breakpoint === DEVICE_TYPE.WEB
+          (breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB)
             ? `${data?.tokenA.symbol}/${data?.tokenB.symbol} (${Number(data?.fee) / 10000
             }%)`
             : "...",
@@ -40,7 +40,7 @@ export default function PoolIncentivize() {
       },
       { title: "Incentivize Pool", path: "" },
     ];
-  }, [data]);
+  }, [data, breakpoint]);
 
   return (
     <PoolIncentivizeLayout

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
 
 export const POSITION_CONTENT_LABEL = {
-  DAILY: "Dailiy Earnings",
+  DAILY: "Daily Earnings",
   BALANCE: "Balance",
   CLAIMABLE: "Claimable Rewards",
   VALUE: "Value",

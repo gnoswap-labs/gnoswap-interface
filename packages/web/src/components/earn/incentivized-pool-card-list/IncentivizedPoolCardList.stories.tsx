@@ -5,9 +5,8 @@ import IncentivizedPoolCardList from "./IncentivizedPoolCardList";
 import { action } from "@storybook/addon-actions";
 import POOLS from "@repositories/pool/mock/pools.json";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { PoolModel } from "@models/pool/pool-model";
 
-const pool = POOLS.pools[0] as PoolModel;
+const pool = POOLS.pools[0] as any;
 
 const cardInfo = PoolMapper.toCardInfo(pool);
 
@@ -31,7 +30,7 @@ const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
 
 export const Default = Template.bind({});
 Default.args = {
-  isFetched: true,
+  isPoolFetched: true,
   routeItem: action("routeItem"),
   mobile: false,
   page: 1,

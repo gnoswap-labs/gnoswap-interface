@@ -122,7 +122,7 @@ const Header: React.FC<HeaderProps> = ({
                             : ""
                         }
                       >
-                        <Link href={item.path}>{t(`${item.title}`)}</Link>
+                        <Link href={item.path} replace>{t(`${item.title}`)}</Link>
                       </li>
                     ))}
                   </ul>

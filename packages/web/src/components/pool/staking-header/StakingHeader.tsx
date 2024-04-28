@@ -5,29 +5,32 @@ import React from "react";
 import LearnMoreModal from "../learn-more-modal/LearnMoreModal";
 import { StakingHeaderWrapper } from "./StakingHeader.styles";
 import { useState } from "react";
+
 interface StakingHeaderProps {
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
   handleClickStakeRedirect: () => void;
   handleClickUnStakeRedirect: () => void;
   isUnstake: boolean;
+  isOtherPosition: boolean;
+  isStaked: boolean;
 }
 
-const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleClickStakeRedirect, handleClickUnStakeRedirect, isUnstake }) => {
+const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleClickStakeRedirect, handleClickUnStakeRedirect, isUnstake, isOtherPosition, isStaked }) => {
   const [isShowLearnModal, setIsShowLearnModal] = useState(false);
   return (
     <StakingHeaderWrapper>
       <div className="left-wrap">
         <h2>Staking</h2>
-          <div className="logo-wrap">
-            <span className="lean-more" onClick={() => setIsShowLearnModal(true)}>
+          <div className="logo-wrap" onClick={() => setIsShowLearnModal(true)}>
+            <span className="lean-more">
               Learn More
             </span>
             <IconNote className="icon-logo" />
           </div>
       </div>
       <div className="button-wrap">
-        {isUnstake && <Button
+        {isUnstake && !isOtherPosition && <Button
           disabled={isDisabledButton || !isUnstake}
           text="Unstake Position"
           onClick={handleClickUnStakeRedirect}
@@ -39,7 +42,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
             fontType: "p1",
           }}
         />}
-        <Button
+        {isStaked && <Button
           text="Stake Position"
           onClick={handleClickStakeRedirect}
           style={{
@@ -49,7 +52,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({ isDisabledButton, handleC
             padding: "0px 16px",
             fontType: "p1",
           }}
-        />
+        />}
       </div>
       {isShowLearnModal && <LearnMoreModal setIsShowLearnMoreModal={setIsShowLearnModal} />}
     </StakingHeaderWrapper>

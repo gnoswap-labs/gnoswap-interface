@@ -5,8 +5,9 @@ import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TvlResponse } from "@repositories/dashboard";
 import dayjs from "dayjs";
-import { prettyNumber } from "@utils/number-utils";
+import { prettyNumber, removeTrailingZeros } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { getLocalizeTime } from "@utils/chart";
 
 export interface TvlPriceInfo {
   amount: string;
@@ -157,39 +158,37 @@ const TvlChartContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardTvl,
     refetchInterval: 60 * 1000,
   });
-  
   const changeTvlChartType = useCallback((newType: string) => {
     const tvlChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
       CHART_TYPE["7D"];
     setTvlChartType(tvlChartType);
   }, []);
-
   const chartData = useMemo(() => {
     if (!tvlData?.all)
       return {
         xAxisLabels: [],
         datas: [],
       };
-    let chartData = tvlData?.last_7d;
+    let chartData = tvlData?.last7d;
 
     switch (tvlChartType) {
-      case "1M":
-        chartData = tvlData?.last_1m;
+      case "30D":
+        chartData = tvlData?.last1m;
         break;
-      case "1Y":
-        chartData = tvlData?.last_1y;
+      case "90D":
+        chartData = tvlData?.last1y;
         break;
       case "ALL":
         chartData = tvlData?.all;
         break;
       default:
-        chartData = tvlData?.last_7d;
+        chartData = tvlData?.last7d;
         break;
     }
 
     return chartData?.reduce(
-      (pre, next) => {
+      (pre: any, next: any) => {
         const time = parseDate(next.date);
         return {
           xAxisLabels: [...pre.xAxisLabels, time],
@@ -197,10 +196,10 @@ const TvlChartContainer: React.FC = () => {
             ...pre.datas,
             {
               amount: {
-                value: next.price,
+                value: next.tvlUsd || 0,
                 denom: "USD",
               },
-              time,
+              time: getLocalizeTime(next.date),
             },
           ],
         };
@@ -214,7 +213,7 @@ const TvlChartContainer: React.FC = () => {
       tvlChartType={tvlChartType}
       changeTvlChartType={changeTvlChartType}
       tvlPriceInfo={{
-        amount: tvlData?.latest ? `$${prettyNumber(tvlData?.latest)}` : "-",
+        amount: tvlData?.latest ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}` : "-",
       }}
       tvlChartInfo={chartData}
       loading={isLoading || isLoadingCommon}

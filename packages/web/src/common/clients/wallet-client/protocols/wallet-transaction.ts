@@ -9,7 +9,7 @@ export interface WalletTransactionMethod {
 export interface SendTransactionRequestParam {
   messages: Array<TransactionMessage>;
   gasFee: number;
-  gasWanted: number;
+  gasWanted?: number;
   memo?: string;
 }
 

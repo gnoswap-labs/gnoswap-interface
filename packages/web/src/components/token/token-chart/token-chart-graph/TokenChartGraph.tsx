@@ -20,8 +20,6 @@ export interface TokenChartGraphProps {
   componentRef: React.RefObject<HTMLDivElement>;
   size: ComponentSize;
   breakpoint: DEVICE_TYPE;
-  right: number;
-  left: number;
 }
 
 const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
@@ -31,8 +29,6 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   componentRef,
   size,
   breakpoint,
-  left,
-  right,
 }) => {
   const theme = useTheme();
   const customData = useMemo(() => {
@@ -45,7 +41,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
 
   const typeYAxis = useMemo(() => {
     if (yAxisLabels.length > 0) {
-      const leng = yAxisLabels[0].length;
+      const leng = Math.max(...yAxisLabels.map(x => x.length), 0);
       if (leng > 0) {
         if (leng <=3 ) return "large-text";
         if (leng === 4) return "medium-text";
@@ -55,15 +51,8 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return "small-text";
   }, [yAxisLabels]);
 
-  const paddingLeft = useMemo(() => {
-    return Math.max(0, Math.floor(size?.width / datas.length * left - 27));
-  }, [size, datas.length, left]);
-  const paddingRight = useMemo(() => {
-    return Math.max(0, Math.floor(size?.width / datas.length * right - 27));
-  }, [size, datas.length, right]);
-  
   return (
-    <TokenChartGraphWrapper left={paddingLeft} right={paddingRight}>
+    <TokenChartGraphWrapper>
       <div className="data-wrapper" ref={componentRef}>
         <LineGraph
           cursor

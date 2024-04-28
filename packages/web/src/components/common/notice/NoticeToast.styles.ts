@@ -127,6 +127,9 @@ export const NoticeUIWrapper = styled.div`
           ${fonts.body7}
         }
       }
+      .waiting-confirmation {
+        color: ${({ theme }) => theme.color.text19};
+      }
       .description {
         ${fonts.body12}
         color: ${({ theme }) => theme.color.text22};

@@ -11,6 +11,7 @@ import TrendingCryptoCardListContainer from "@containers/trending-crypto-card-li
 import TrendingCryptos from "@components/token/trending-cryptos/TrendingCryptos";
 import GainerAndLoserContainer from "@containers/gainer-and-loser-container/GainerAndLoserContainer";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useLoading } from "@hooks/common/use-loading";
 
 export async function getServerSideProps({ locale }: { locale: string}) {
   return {
@@ -20,10 +21,11 @@ export async function getServerSideProps({ locale }: { locale: string}) {
   };
 }
 export default function Token() {
+  const { isLoadingCommon } = useLoading();
   return (
     <TokenLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer />}
+      breadcrumbs={<BreadcrumbsContainer isLoading={isLoadingCommon} w="102px"/>}
       chart={<TokenChartContainer />}
       info={<TokenInfoContentContainer />}
       description={<TokenDescriptionContainer />}

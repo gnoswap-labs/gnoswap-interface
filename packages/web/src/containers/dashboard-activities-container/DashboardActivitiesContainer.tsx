@@ -8,7 +8,6 @@ import {
   OnchainActivityData,
   OnchainActivityResponse,
 } from "@repositories/dashboard/response/onchain-response";
-import { formatAddress } from "@utils/string-utils";
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -115,7 +114,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const {
     isFetched,
     error,
-    data: activities,
+    data: activities = [],
   } = useQuery<OnchainActivityResponse, Error>({
     queryKey: [
       "activities",
@@ -135,7 +134,6 @@ const DashboardActivitiesContainer: React.FC = () => {
       ACTIVITY_TYPE["ALL"];
     setActivityType(activityType);
   }, []);
-
   const movePage = useCallback((newPage: number) => {
     setPage(newPage);
   }, []);
@@ -179,24 +177,24 @@ const DashboardActivitiesContainer: React.FC = () => {
     const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res.txHash}`;
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
-        res.token0.symbol,
-      )} and ${replaceToken(res.token1.symbol)}`,
-      totalValue: `$${prettyNumber(res.totalUsdValue)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(res.token0Amount)} ${replaceToken(
-        res.token0.symbol,
+        res.tokenA.symbol,
+      )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.tokenB.symbol)}`,
+      totalValue: Number(res.totalUsd) < 0.01 && Number(res.totalUsd) ? "<$0.01" : `$${prettyNumber(res.totalUsd)}`,
+      tokenAmountOne: `${prettyNumberFloatInteger(res.tokenAAmount, true)} ${replaceToken(
+        res.tokenA.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(res.token1Amount)} ${replaceToken(
-        res.token1.symbol,
+      tokenAmountTwo: `${prettyNumberFloatInteger(res.tokenBAmount, true)} ${replaceToken(
+        res.tokenB.symbol,
       )}`,
-      account: formatAddress(res.account),
-      time: dayjs(res.time).fromNow(),
+      account: res.account,
+      time: res.time,
       explorerUrl,
     };
   };
-
   return (
     <ActivityList
       activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
+
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

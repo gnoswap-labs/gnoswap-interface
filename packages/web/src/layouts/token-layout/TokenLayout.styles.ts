@@ -87,6 +87,7 @@ export const wrapper = (theme: Theme) => css`
       @media (max-width: 930px) {
         max-width: 100%;
         min-width: auto;
+        width: 100%;
       }
       .chart {
         width: 100%;

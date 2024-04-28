@@ -6,11 +6,15 @@ import { CommonState, WalletState } from "@states/index";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import NetworkData from "@resources/chains.json";
-import { DEFAULT_NETWORK_ID } from "@constants/common.constant";
 import * as uuid from "uuid";
-import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KEY } from "@states/common";
+import {
+  ACCOUNT_SESSION_INFO_KEY,
+  GNOSWAP_SESSION_ID_KEY,
+  GNOWSWAP_CONNECTED_KEY,
+} from "@states/common";
+import { DEFAULT_CHAIN_ID } from "@common/clients/wallet-client/transaction-messages";
 
-const CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || DEFAULT_NETWORK_ID;
+const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
@@ -24,7 +28,7 @@ export const useWallet = () => {
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
   }, [walletAccount]);
-  
+
   const wallet = useMemo(() => {
     if (!connected) {
       return null;
@@ -87,22 +91,25 @@ export const useWallet = () => {
     setLoadingConnect("done");
   }, [accountRepository, setWalletAccount]);
 
-  const connectAdenaClient = useCallback((isInit?: boolean) => {
-    if (!isInit) {
-      setLoadingConnect("loading");
-    }
-    const adena = AdenaClient.createAdenaClient();
-    if (adena !== null) {
-      adena.initAdena();
-    } else {
-      window.open("https://adena.app/");
-    }
-    setWalletClient(adena);
-  }, [sessionId, setWalletClient, setLoadingConnect]);
+  const connectAdenaClient = useCallback(
+    (isInit?: boolean) => {
+      if (!isInit) {
+        setLoadingConnect("loading");
+      }
+      const adena = AdenaClient.createAdenaClient();
+      if (adena !== null) {
+        adena.initAdena();
+      } else {
+        window.open("https://adena.app/");
+      }
+      setWalletClient(adena);
+    },
+    [sessionId, setWalletClient, setLoadingConnect],
+  );
 
   const connectAccount = async () => {
-      setLoadingConnect("loading");
-      const established = await accountRepository
+    setLoadingConnect("loading");
+    const established = await accountRepository
       .addEstablishedSite()
       .catch(() => null);
 
@@ -149,7 +156,7 @@ export const useWallet = () => {
       sessionStorage.setItem(GNOSWAP_SESSION_ID_KEY, sessionId);
     }
   }, [walletClient]);
-  
+
   return {
     wallet,
     account: walletAccount,
@@ -160,7 +167,7 @@ export const useWallet = () => {
     updateWalletEvents,
     disconnectWallet,
     switchNetwork,
-    isSwitchNetwork: isSwitchNetwork,
+    isSwitchNetwork,
     loadingConnect,
     walletClient,
     setLoadingConnect,

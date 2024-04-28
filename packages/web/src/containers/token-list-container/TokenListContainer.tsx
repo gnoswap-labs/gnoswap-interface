@@ -9,7 +9,6 @@ import useClickOutside from "@hooks/common/use-click-outside";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
-import { convertToMB } from "@utils/stake-position-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { convertLargePrice, formatUsdNumber3Digits } from "@utils/number-utils";
@@ -157,7 +156,7 @@ const TokenListContainer: React.FC = () => {
     setIsInside(true);
   };
 
-  const { tokens, isFetched, error, tokenPrices } = useTokenData();
+  const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice } = useTokenData();
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -205,7 +204,9 @@ const TokenListContainer: React.FC = () => {
   );
 
   const firstData = useMemo(() => {
-    const temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
+    const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
+
+    let temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
       const isGnot = item.path === "gnot";
       const temp: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
@@ -218,8 +219,6 @@ const TokenListContainer: React.FC = () => {
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
-      const marketCapTemp = Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0));
-      const liquidityTemp = Math.floor(Number(transferData.liquidity || 0));
       return {
         ...transferData,
         token: {
@@ -246,11 +245,11 @@ const TokenListContainer: React.FC = () => {
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
         },
-        last7days: transferData?.last7Days?.map(item => Number(item.price || 0)) || [],
-        marketCap: `${convertLargePrice(marketCapTemp)}`,
-        liquidity: `${convertLargePrice(liquidityTemp)}`,
-        volume24h: `$${Math.floor(Number(transferData.volume || 0)).toLocaleString()}`,
-        price: `$${convertToMB((usdFormat || "0.00"), 10)}`,
+        last7days: [...(transferData?.last7Days?.map(item => Number(item.price || 0)) || []), Number(transferData?.pricesBefore?.latestPrice)],
+        marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
+        liquidity: `$${Math.floor(Number(transferData.lockedTokensUsd || 0)).toLocaleString()}`,
+        volume24h: `$${Math.floor(Number(transferData.volumeUsd24h || 0)).toLocaleString()}`,
+        price: convertLargePrice(usdFormat),
         priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
         priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
         priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
@@ -258,9 +257,9 @@ const TokenListContainer: React.FC = () => {
       };
     });
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
+    temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({...item, idx: i}));
-  }, [tokens, tokenPrices]);
-    
+  }, [tokens, tokenPrices, tokenType]);
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
     const temp = firstData.filter((item: Token) => ((item.token.path.includes(grc20))));
@@ -324,13 +323,13 @@ const TokenListContainer: React.FC = () => {
         }
       }
     }
-    return temp.slice(page * 15, (page +1 ) * 15);
+    return temp.slice(page * 15, (page + 1) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
   
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={isFetched && !isLoadingCommon}
+      isFetched={isFetched && !isLoadingCommon && !isLoadingTokenPrice}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}

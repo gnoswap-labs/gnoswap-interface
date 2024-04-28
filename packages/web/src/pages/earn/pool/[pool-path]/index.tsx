@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import PoolLayout from "@layouts/pool-layout/PoolLayout";
@@ -7,6 +7,10 @@ import PoolPairInformationContainer from "@containers/pool-pair-information-cont
 import MyLiquidityContainer from "@containers/my-liquidity-container/MyLiquidityContainer";
 import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "@query/pools";
+import useUrlParam from "@hooks/common/use-url-param";
+import { useWallet } from "@hooks/wallet/use-wallet";
+import { addressValidationCheck } from "@utils/validation-utils";
+import { usePositionData } from "@hooks/common/use-position-data";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getServerSideProps({ locale }:{ locale: string }) {
@@ -16,14 +20,35 @@ export async function getServerSideProps({ locale }:{ locale: string }) {
     }
   };
 }
-
 export default function Pool() {
   const router = useRouter();
+  const { account } = useWallet();
   const poolPath = router.query["pool-path"] || "";
-  const { data = null } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  
+  const { data = null } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
+
+  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
+    addr: account?.address,
+  });
+
+  const address = useMemo(() => {
+    const address = initializedData?.addr;
+    if (!address || !addressValidationCheck(address)) {
+      return undefined;
+    }
+    return address;
+  }, [initializedData]);
+
+  const { isFetchedPosition, loading, getPositionsByPoolId } =
+    usePositionData(address);
   const isStaking = useMemo(() => {
     if (data?.incentivizedType === "INCENTIVIZED") {
+      return true;
+    }
+    const temp = getPositionsByPoolId(poolPath as string);
+    const stakedPositions = temp.filter(position => position.staked);
+    if (stakedPositions.length > 0) {
       return true;
     }
     if (data?.incentivizedType === "EXTERNAL_INCENTIVIZED") {
@@ -31,12 +56,49 @@ export default function Pool() {
     }
     return false;
   }, [data?.incentivizedType]);
+  console.log(hash, "hash");
+
+  useEffect(() => {
+    if (hash === "staking" && !loading) {
+      const positionContainerElement = document.getElementById("staking");
+      const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      if (!topPosition) {
+        return;
+      }
+      window.scrollTo({
+        top: topPosition,
+      });
+    } else if (address && isFetchedPosition && !loading) {
+      if (hash) {
+        const positionContainerElement = document.getElementById(`${hash}`);
+        const topPosition =
+          positionContainerElement?.getBoundingClientRect().top;
+        if (!topPosition) {
+          return;
+        }
+        window.scrollTo({
+          top: topPosition,
+        });
+      } else {
+        const positionContainerElement =
+          document.getElementById("liquidity-wrapper");
+        const topPosition =
+          positionContainerElement?.getBoundingClientRect().top;
+        if (!topPosition) {
+          return;
+        }
+        window.scrollTo({
+          top: topPosition,
+        });
+      }
+    }
+  }, [isFetchedPosition, hash, address, loading]);
 
   return (
     <PoolLayout
       header={<HeaderContainer />}
       poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={<MyLiquidityContainer />}
+      liquidity={<MyLiquidityContainer address={address} />}
       staking={isStaking ? <StakingContainer /> : null}
       footer={<Footer />}
       isStaking={isStaking}

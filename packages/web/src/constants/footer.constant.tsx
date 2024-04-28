@@ -53,7 +53,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:stakePosi",
-        path: "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000",
+        path: "/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000#staking",
         newTab: false,
       },
       {
