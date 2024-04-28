@@ -46,7 +46,6 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       window.innerWidth < 920 ? setMobile(true) : setMobile(false);
     }
   };
-
   useEffect(() => {
     handleResize();
     updatePools();

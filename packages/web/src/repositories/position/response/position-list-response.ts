@@ -24,7 +24,7 @@ export interface PositionResponse {
 
   tokenBBalance: string;
 
-  positionUsdValue: string;
+  usdValue: string;
 
   unclaimedFeeAAmount: string;
 
@@ -50,7 +50,7 @@ export interface PositionResponse {
 
   rewards?: RewardResponse[];
 
-  dailyRewards?: RewardResponse[];
+  reward?: RewardResponse[];
   bins: PoolBinModel[];
   closed: boolean;
   totalDailyRewardsUsd: string;

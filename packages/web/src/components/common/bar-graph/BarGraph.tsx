@@ -8,6 +8,7 @@ import {
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { Global, css } from "@emotion/react";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
+import { toUnitFormat } from "@utils/number-utils";
 
 export interface BarGraphProps {
   className?: string;
@@ -272,9 +273,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
               </div>
               <div className="tooltip-header">
                 <span className="label">Trading Volume</span>
-                <span className="value">{`$${Number(
-                  BigNumber(datas[currentPointIndex]),
-                ).toLocaleString()}`}</span>
+                <span className="value">{toUnitFormat(datas[currentPointIndex], true, false, false)}</span>
               </div>
               <div className="tooltip-header">
                 <span className="label">Fees</span>

@@ -84,8 +84,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.pool.tokenB]);
 
   const bins = useMemo(() => {
-    return position.pool.bins || [];
-  }, [position.pool.bins]);
+    return position.bins || [];
+  }, [position.bins]);
 
   const currentTick = useMemo(() => {
     return position.pool.currentTick || null;
@@ -236,16 +236,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return "$0";
     }
 
-    const usdValue = Object.values(totalRewardInfo)
-      .flatMap(item => item)
-      .reduce((accum, current) => {
-        return accum + current.accumulatedRewardOf1d;
-      }, 0);
-    if (BigNumber(usdValue).isLessThan(0.01) && BigNumber(usdValue).isGreaterThan(0)) {
-      return "<$0.01";
-    }
-    return `$${numberToFormat(`${usdValue}`, 2)}`;
-  }, [totalRewardInfo, isClosed]);
+    return position.totalDailyRewardsUsd;
+  }, [position?.totalDailyRewardsUsd, isClosed]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {

@@ -27,7 +27,6 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   checkStakedPool,
 }) => {
   const { getGnotPath } = useGnotToGnot();
-
   const staked = useMemo(() => {
     return checkStakedPool(pool.poolPath || null);
   }, [checkStakedPool, pool.poolPath]);

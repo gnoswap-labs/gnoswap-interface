@@ -6,6 +6,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 import dayjs from "dayjs";
 import { useLoading } from "@hooks/common/use-loading";
+import { toUnitFormat } from "@utils/number-utils";
 
 export interface VolumePriceInfo {
   amount: string;
@@ -198,10 +199,10 @@ const VolumeChartContainer: React.FC = () => {
       changeVolumeChartType={changeVolumeChartType}
       volumePriceInfo={{
         amount: allTime
-          ? `$${Number(allTime).toLocaleString()}`
+          ? toUnitFormat(Number(allTime), true, false, false)
           : "-",
         fee: fee?.all
-          ? `$${Number(fee?.all).toLocaleString()}`
+          ? toUnitFormat(Number(fee?.all), true, false, false)
           : "-",
       }}
       volumeChartInfo={chartData}

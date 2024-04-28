@@ -146,6 +146,7 @@ const EarnMyPositionContainer: React.FC<
     const handleChangeClosed = () => {
       setIsClosed(!isClosed);
     };
+
     return (
       <EarnMyPositions
         address={address}
@@ -156,7 +157,7 @@ const EarnMyPositionContainer: React.FC<
         connected={connected}
         availableStake={availableStake}
         connect={connect}
-        loading={isLoadingPool || isLoadingPosition || isLoadingCommon || !isFetchedPosition}
+        loading={isLoadingPool || isLoadingCommon || (connected ? (isLoadingPosition || !isFetchedPosition) : false)}
         fetched={isFetchedPools && isFetchedPosition}
         isError={isError}
         positions={dataMapping}
