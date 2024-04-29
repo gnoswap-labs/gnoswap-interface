@@ -10,6 +10,7 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 
 const DAY_TIME = 24 * 60 * 60;
+const MILLISECONDS = 1000;
 
 const IncentivizePoolModalContainer = () => {
   const { broadcastSuccess, broadcastPending, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
@@ -31,8 +32,11 @@ const IncentivizePoolModalContainer = () => {
       return null;
     }
     const startUTCDate = Date.UTC(startDate.year, startDate.month - 1, startDate.date, 0, 0, 0, 0);
-    const startTime = new Date(startUTCDate).getTime();
+    // `startTime` is current UTC time to Unix timestamp
+    const startTime = new Date(startUTCDate).getTime() / MILLISECONDS;
+    // `endTime` adds the period time to the start unix time.
     const endTime = startTime + period * DAY_TIME;
+
     broadcastLoading(makeBroadcastIncentivizeMessage("pending", { tokenAmount: dataModal.amount, tokenSymbol: dataModal?.token?.symbol }));
 
     return poolRepository.createExternalIncentive({
