@@ -108,10 +108,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<PoolDetailModel> => {
     const pool = await this.networkClient
-      .get<PoolResponse>({
+      .get<{ data: PoolResponse }>({
         url: "/pools/" + encodeURIComponent(poolPath),
       })
-      .then(response => PoolMapper.detailFromResponse(response.data));
+      .then(response => PoolMapper.detailFromResponse(response.data.data));
     return pool;
   };
 

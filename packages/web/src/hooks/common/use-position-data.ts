@@ -58,7 +58,6 @@ export const usePositionData = (address?: string) => {
     onError(err) {
       if((err as AxiosError).response?.status === 404) {
         const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
-  
         if(haveNewData) {
           cachedData.current = data;
         }

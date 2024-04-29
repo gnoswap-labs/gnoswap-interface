@@ -53,8 +53,9 @@ export interface PositionModel {
 
   dailyRewards: RewardModel[];
   
-  // fake status
-  status: boolean;
   bins: PoolBinModel[];
+
+  closed: boolean;
+  totalDailyRewardsUsd: string;
 
 }

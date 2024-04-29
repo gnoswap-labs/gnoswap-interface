@@ -33,10 +33,10 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     return data.data;
   };
   public getDashboardToken = async (): Promise<DashboardTokenResponse> => {
-    const { data } = await this.networkClient.get<DashboardTokenResponse>({
+    const { data } = await this.networkClient.get<{ data: DashboardTokenResponse }>({
       url: "/dashboard/gns_gnot",
     });
-    return data;
+    return data.data;
   };
 
   public getDashboardOnchainActivity = async (

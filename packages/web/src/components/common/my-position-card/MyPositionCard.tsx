@@ -58,7 +58,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   // fake close
   const inRange: boolean | null = useMemo(() => {
-    if (position.status === true) return null;
+    if (position.closed === true) return null;
     return (
       pool.currentTick <= position.tickUpper &&
       pool.currentTick >= position.tickLower
@@ -67,7 +67,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     pool.currentTick,
     position.tickLower,
     position.tickUpper,
-    position.status,
+    position.closed,
   ]);
 
   const feeRateStr = useMemo(() => {
@@ -245,11 +245,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return maxTickRate > 0 ? "positive" : "negative";
   }, [getMaxTick, maxTickRate]);
-
   const claimableUSD = useMemo(() => {
-    return toUnitFormat(Number(position.unclaimedFee0Usd) + Number(position.unclaimedFee1Usd), true, true);
-  }, [position.unclaimedFee0Usd, position.unclaimedFee1Usd]);
-
+    const temp = position.rewards.reduce((acc, cur) => Number(cur.claimableUsdValue) + acc, 0);
+    return toUnitFormat(temp, true, true);
+  }, [position.rewards]);
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked && inRange !== null ? "special-card" : ""}`}
@@ -303,7 +302,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               </span>
             </div>
             <div className="list-content">
-              <span>$0</span>
+              <span>{position.totalDailyRewardsUsd}</span>
               {claimableUSD}
             </div>
           </div>
@@ -332,7 +331,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 maxLabel={maxTickLabel}
                 minTick={minTickPosition}
                 maxTick={maxTickPosition}
-                bins={pool.bins}
+                bins={position.bins}
                 tokenA={tokenA}
                 tokenB={tokenB}
                 isHiddenStart={isHiddenStart}

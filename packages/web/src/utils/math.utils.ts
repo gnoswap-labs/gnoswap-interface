@@ -127,7 +127,7 @@ export function LSB(x: number | bigint): bigint {
 }
 
 export function tickToSqrtPriceX96(tick: number): bigint {
-  const absTick = BigInt(Math.abs(tick));
+  const absTick = BigInt(Math.abs(tick || 0));
 
   let ratio = 0x100000000000000000000000000000000n;
   if (Number(absTick & 0x1n) !== 0) {
