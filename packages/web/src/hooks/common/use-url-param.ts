@@ -7,10 +7,12 @@ export function makeQueryString(data: DefaultObject): string {
   Object.keys(data).forEach(key => {
     const value = data[key];
     if (value === null || value === undefined || value === "") {
-      return;
+
+    } else {
+      const param = `${key}=${data[key]}`;
+      params.push(param);
     }
-    const param = `${key}=${data[key]}`;
-    params.push(param);
+
   });
   return params.join("&");
 }

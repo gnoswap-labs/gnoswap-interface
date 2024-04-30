@@ -500,16 +500,22 @@ const EarnAddLiquidityContainer: React.FC = () => {
     const nextTickLower = isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null;
     const nextTickUpper = isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null;
 
-    const queryString = makeQueryString({
-      tokenA: tokenA?.path,
-      tokenB: tokenB?.path,
-      fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
-      price_range_type: priceRange?.type,
-      tickLower: nextTickLower,
-      tickUpper: nextTickUpper,
-    });
+
 
     if (tokenA?.path && tokenB?.path) {
+
+      const queryString = makeQueryString({
+        tokenA: tokenA?.path,
+        tokenB: tokenB?.path,
+        fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
+        price_range_type: priceRange?.type,
+        tickLower: nextTickLower,
+        tickUpper: nextTickUpper,
+      });
+      // log ni luoon phai ko , hinh nhu tui cung log rooi
+      console.log("🚀 ~ useEffect ~ queryString:", queryString);
+
+
       router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
     }
   }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
