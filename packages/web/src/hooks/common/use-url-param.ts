@@ -9,7 +9,11 @@ export function makeQueryString(data: DefaultObject): string {
     if (value === null || value === undefined || value === "") {
 
     } else {
-      const param = `${key}=${data[key]}`;
+      let value = data[key];
+      if (typeof data[key] === "string") {
+        value = encodeURIComponent(data[key] as string);
+      }
+      const param = `${key}=${value}`;
       params.push(param);
     }
 
