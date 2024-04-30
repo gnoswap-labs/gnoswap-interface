@@ -11,7 +11,7 @@ export function makeQueryString(data: DefaultObject): string {
     } else {
       let value = data[key];
       if (typeof data[key] === "string") {
-        value = encodeURIComponent(data[key] as string);
+        value = encodeURIComponent((data[key] ?? "") as string);
       }
       const param = `${key}=${value}`;
       params.push(param);
