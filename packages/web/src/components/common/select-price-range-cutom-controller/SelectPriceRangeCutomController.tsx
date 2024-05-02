@@ -242,7 +242,7 @@ const SelectPriceRangeCustomController = forwardRef<
             onChange={onChangeValue}
             onBlur={onBlurUpdate}
             ref={inputRef}
-            onFocus={() => setCurrentValue("")}
+            // onFocus={() => setCurrentValue("")}
           />
           <div
             style={{ fontSize: `${fontSize}px` }}

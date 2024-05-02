@@ -69,29 +69,24 @@ export class PoolRepositoryImpl implements PoolRepository {
     this.walletClient = walletClient;
   }
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
-    if (Date.now() - this.updatedAt < 5_000) {
-      return this.rpcPools;
-    }
-    this.updatedAt = Date.now();
+    try {
+      this.updatedAt = Date.now();
+  
+      const poolPackagePath = PACKAGE_POOL_PATH;
 
-    const poolPackagePath = PACKAGE_POOL_PATH;
-    if (!poolPackagePath || !this.rpcProvider) {
-      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      if (!poolPackagePath || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("ApiGetPools", []);
+      const res =  await this.rpcProvider.evaluateExpression(poolPackagePath, param);
+      const pools =  PoolRPCMapper.fromList(evaluateExpressionToObject<{ response: PoolRPCResponse[] }>(res)?.response || []);
+      this.rpcPools = pools;
+      
+      return pools;
+    } catch (error) {
+      return [];
     }
-    const param = makeABCIParams("ApiGetPools", []);
-    const result: PoolRPCModel[] = await this.rpcProvider
-      .evaluateExpression(poolPackagePath, param)
-      .then(evaluateExpressionToObject<{ response: PoolRPCResponse[] }>)
-      .then(data => {
-        const pools = PoolRPCMapper.fromList(data?.response || []);
-        this.rpcPools = pools;
-        return pools;
-      })
-      .catch(e => {
-        console.error(e);
-        return [];
-      });
-    return result;
   };
 
   getPools = async (): Promise<PoolModel[]> => {
@@ -130,9 +125,10 @@ export class PoolRepositoryImpl implements PoolRepository {
   getPoolDetailRPCByPoolPath = async (
     poolPath: string,
   ): Promise<PoolDetailRPCModel> => {
-    const pool = await this.getRPCPools()
-      .then(pools => pools.find(pool => pool?.poolPath === poolPath))
-      .catch(() => null);
+    const pools = await this.getRPCPools();
+    const pool = pools?.find(item => {
+      return item.poolPath === poolPath;
+    });
     if (!pool) {
       throw new PoolError("NOT_FOUND_POOL");
     }
