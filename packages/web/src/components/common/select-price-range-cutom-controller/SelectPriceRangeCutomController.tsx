@@ -1,5 +1,4 @@
 import {
-  PriceRangeType,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
@@ -12,14 +11,15 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useMemo,
+  useRef,
 } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
 import IconRemove from "../icons/IconRemove";
 import { convertToKMB } from "@utils/stake-position-utils";
-import { isNumber, subscriptFormat } from "@utils/number-utils";
+import { isNumber, removeTrailingZeros, subscriptFormat } from "@utils/number-utils";
 
-export interface SelectPriceRangeCutomControllerProps {
+export interface SelectPriceRangeCustomControllerProps {
   title: string;
   token0Symbol: string;
   token1Symbol: string;
@@ -33,7 +33,6 @@ export interface SelectPriceRangeCutomControllerProps {
   increase: () => void;
   currentPriceStr: JSX.Element | string;
   setIsChangeMinMax: (value: boolean) => void;
-  priceRangeType: PriceRangeType | null;
 }
 
 export interface SelectPriceRangeCustomControllerRef {
@@ -42,7 +41,7 @@ export interface SelectPriceRangeCustomControllerRef {
 
 const SelectPriceRangeCustomController = forwardRef<
   SelectPriceRangeCustomControllerRef, 
-  SelectPriceRangeCutomControllerProps
+  SelectPriceRangeCustomControllerProps
 >(({
   title,
   current,
@@ -54,13 +53,14 @@ const SelectPriceRangeCustomController = forwardRef<
   selectedFullRange,
   onSelectCustomRange,
   setIsChangeMinMax,
-  priceRangeType,
   token0Symbol,
   token1Symbol,
 }, ref) => {
   const [displayValue, setDisplayValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
+  
+  const submitCountRef = useRef(0);
 
   const disabledController = useMemo(() => {
     return (
@@ -87,41 +87,17 @@ const SelectPriceRangeCustomController = forwardRef<
       const value = event.target.value;
       const formattedValue = value.replace(/[^0-9.]/, "");
       setDisplayValue(formattedValue);
-      if (displayValue !== formattedValue) {
-        setChanged(true);
-      }
+      setChanged(true);
     },
-    [displayValue],
+    [],
   );
 
-  const onBlur = useCallback(() => {
-    if (!changed) {
-      return;
-    }
-    setChanged(false);
-    const currentValue = BigNumber(Number(displayValue.replace(",", "")));
-   
-    const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
-    changePrice(nearPrice);
-    setIsChangeMinMax(true);
-
-    if (selectedFullRange) {
-      onSelectCustomRange();
-    }
-  }, [changed, displayValue, tickSpacing, selectedFullRange, priceRangeType]);
-
-  useImperativeHandle(ref, () => {
-    return { formatData: () => {
-      return;
-    }};
-  }, []);
-
-  useEffect(() => {
-    if (current === null || BigNumber(Number(current)).isNaN()) {
+  const formatControllerValue = useCallback((value: number | null) => {
+    if (value === null || BigNumber(Number(value)).isNaN()) {
       setDisplayValue("-");
       return;
     }
-    const currentValue = BigNumber(current).toNumber();
+    const currentValue = BigNumber(value).toNumber();
     if (currentValue < 0.00000001) {
       setDisplayValue("0");
       return;
@@ -136,32 +112,63 @@ const SelectPriceRangeCustomController = forwardRef<
       return;
     }
     if (currentValue >= 1) {
-      setDisplayValue(greaterThan1Transform(BigNumber(current).toFixed()));
+      setDisplayValue(greaterThan1Transform(BigNumber(value).toFixed()));
       return;
     }
     
-    setDisplayValue(subscriptFormat(BigNumber(current).toFixed()));
-  }, [current, feeTier]);
+    setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
+  },[feeTier]);
+
+  const onBlur = useCallback(() => {
+    if (!changed) {
+      return;
+    }
+    setChanged(false);
+    const currentValue = BigNumber(Number(displayValue));
+   
+    const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
+
+    if(nearPrice !== current) {
+      changePrice(nearPrice);
+    } else {
+      formatControllerValue(nearPrice);
+    }
+    submitCountRef.current = submitCountRef.current++;
+    setIsChangeMinMax(true);
+
+    if (selectedFullRange) {
+      onSelectCustomRange();
+    }
+  }, [changed, displayValue, tickSpacing, current, setIsChangeMinMax, selectedFullRange, changePrice, formatControllerValue, onSelectCustomRange]);
+
+  useImperativeHandle(ref, () => {
+    return { formatData: () => {
+      return;
+    }};
+  }, []);
+
+  useEffect(() => {
+    formatControllerValue(current);
+  }, [current, formatControllerValue]);
   
 
   const exchangePrice = useMemo(() => {
     if (current === null || BigNumber(Number(current)).isNaN()) {
-      setDisplayValue("-");
-      return;
+      return "-";
     }
     
-    const currentValue = Number(current);
+    const currentValue = BigNumber(current).toNumber();
     const { maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
-
-    if (Number(current) < 1 && Number(current) !== 0) {
-      return subscriptFormat(Number(current));
+    
+    if (currentValue < 1 &&  currentValue !== 0) {
+      return subscriptFormat(BigNumber(current).toFixed());
     }
     
     if (currentValue / maxPrice > 0.9) {
       return "∞";
     }
     
-    return convertToKMB(Number(current).toFixed(5));
+    return convertToKMB(Number(current).toFixed());
   }, [current, feeTier]);
       
   const priceValueString = (
@@ -185,7 +192,7 @@ const SelectPriceRangeCustomController = forwardRef<
       return numberWith5SignificantNumber;
     }
 
-    return number.toFixed(significantNumber - intPart.length);
+    return removeTrailingZeros(number.toFixed(significantNumber - intPart.length));
   }
 
   useEffect(() => {
