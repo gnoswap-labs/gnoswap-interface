@@ -497,8 +497,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [swapValue, setSwapValue, isKeepToken]);
 
   useEffect(() => {
-    const nextTickLower = isNumber(selectPool.minPosition || "") ? priceToTick(selectPool.minPosition || 0) : null;
-    const nextTickUpper = isNumber(selectPool.maxPosition || "") ? priceToTick(selectPool.maxPosition || 0) : null;
+    const nextTickLower = (isNumber(selectPool.minPosition || "") || isFinite(selectPool.minPosition || 0)) ? priceToTick(selectPool.minPosition || 0) : null;
+    const nextTickUpper = (isNumber(selectPool.maxPosition || "") || isFinite(selectPool.maxPosition || 0)) ? priceToTick(selectPool.maxPosition || 0) : null;
 
     if (tokenA?.path && tokenB?.path) {
       const queryString = makeQueryString({

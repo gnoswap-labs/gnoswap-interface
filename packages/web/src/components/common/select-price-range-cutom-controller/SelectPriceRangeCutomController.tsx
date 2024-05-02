@@ -9,7 +9,6 @@ import React, {
   useCallback,
   useEffect,
   useState,
-  useRef,
   forwardRef,
   useImperativeHandle,
   useMemo,
@@ -59,8 +58,6 @@ const SelectPriceRangeCustomController = forwardRef<
   token0Symbol,
   token1Symbol,
 }, ref) => {
-  const divRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [displayValue, setDisplayValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
@@ -69,7 +66,6 @@ const SelectPriceRangeCustomController = forwardRef<
     return (
       displayValue === "" ||
       displayValue === "-" ||
-      BigNumber(displayValue).isNaN() ||
       displayValue === "NaN" ||
       displayValue === "0" ||
       displayValue === "∞"
@@ -88,9 +84,10 @@ const SelectPriceRangeCustomController = forwardRef<
 
   const onChangeValue = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = event.target.value;
-      setDisplayValue(newValue);
-      if (displayValue !== newValue) {
+      const value = event.target.value;
+      const formattedValue = value.replace(/[^0-9.]/, "");
+      setDisplayValue(formattedValue);
+      if (displayValue !== formattedValue) {
         setChanged(true);
       }
     },
@@ -148,17 +145,24 @@ const SelectPriceRangeCustomController = forwardRef<
   
 
   const exchangePrice = useMemo(() => {
-    if (Number(displayValue) < 1 && Number(displayValue) !== 0) {
-      return subscriptFormat(displayValue);
+    if (current === null || BigNumber(Number(current)).isNaN()) {
+      setDisplayValue("-");
+      return;
     }
     
-    if (displayValue === "∞") {
-      return displayValue;
+    const currentValue = Number(current);
+    const { maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+
+    if (Number(current) < 1 && Number(current) !== 0) {
+      return subscriptFormat(Number(current));
     }
     
-    return convertToKMB(Number(displayValue).toFixed(5));
-  }, [displayValue]);
+    if (currentValue / maxPrice > 0.9) {
+      return "∞";
+    }
     
+    return convertToKMB(Number(current).toFixed(5));
+  }, [current, feeTier]);
       
   const priceValueString = (
     <>
@@ -195,6 +199,18 @@ const SelectPriceRangeCustomController = forwardRef<
     setFontSize((maxDefaultLength / displayValue.length) * 24);
   }, [displayValue]);
 
+  const ratioDisplay = useMemo(() => {
+    if(isNumber(current ?? "") && Number(current) >= 1) {
+      return convertToKMB(Number(current).toFixed(4));
+    }
+    
+    if(current) {
+      return subscriptFormat(current);
+    }
+    
+    return displayValue;
+  }, [current, displayValue]);
+
   return (
     <SelectPriceRangeCutomControllerWrapper>
       <span className="title">{title}</span>
@@ -218,18 +234,12 @@ const SelectPriceRangeCustomController = forwardRef<
             value={displayValue}
             onChange={onChangeValue}
             onBlur={onBlur}
-            ref={inputRef}
           />
           <div
             style={{ fontSize: `${fontSize}px` }}
             className="fake-input"
-            ref={divRef}
           >
-            {isNumber(current ?? "") && Number(current) > 1
-              ? convertToKMB(Number(displayValue).toFixed(4))
-              : current
-              ? subscriptFormat(current)
-              : displayValue}
+            {ratioDisplay}
           </div>
         </div>
         <div
