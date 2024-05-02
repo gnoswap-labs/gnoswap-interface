@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GraphWrapper, PoolSelectionGraphWrapper } from "./PoolSelectionGraph.styles";
 import * as d3 from "d3";
 import { displayTickNumber } from "@utils/string-utils";
@@ -506,18 +506,19 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = (props) => {
       .attr("class", d => "resize handle--custom handle--" + d.type);
   }, [boundsHeight, brush, brushRef]);
 
-  /** Zoom */
-  const zoom: d3.ZoomBehavior<any, unknown> = d3
-    .zoom()
-    .scaleExtent([0.01, 2 ** 20])
-    .on("zoom", onZoom);
-
-  function onZoom(event: d3.D3ZoomEvent<SVGElement, null>) {
+  const onZoom = useCallback(() => (event: d3.D3ZoomEvent<SVGElement, null>) => {
     const blocks = ["brush", "click"];
     if (event?.sourceEvent && blocks.includes(event.sourceEvent.type)) return; // ignore zoom-by-brush
     const transform = event.transform;
     scaleX.domain(transform.rescaleX(defaultScaleX).domain());
-  }
+  }, [defaultScaleX, scaleX]);
+
+  /** Zoom */
+  const zoom: d3.ZoomBehavior<any, unknown> = useMemo(() => d3
+  .zoom()
+  .scaleExtent([0.01, 2 ** 20])
+  .on("zoom", onZoom), 
+  [onZoom]);
 
   function initZoom() {
     const svgElement = d3.select(svgRef.current);
