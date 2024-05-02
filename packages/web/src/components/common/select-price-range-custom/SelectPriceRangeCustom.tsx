@@ -393,7 +393,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                         increase={() => adjustRangeManually(() => selectPool.increaseMinTick())}
                         currentPriceStr={currentPriceStr}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                        priceRangeType={priceRangeType}
+                        // priceRangeType={priceRangeType}
                         ref={minPriceRangeCustomRef}
                       />
                       <SelectPriceRangeCustomController
@@ -410,7 +410,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                         increase={() => adjustRangeManually(() => selectPool.increaseMaxTick())}
                         currentPriceStr={currentPriceStrReverse}
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                        priceRangeType={priceRangeType}
+                        // priceRangeType={priceRangeType}
                         ref={maxPriceRangeCustomRef}
                       />
                     </div>
