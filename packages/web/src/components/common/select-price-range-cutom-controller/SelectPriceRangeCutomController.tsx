@@ -3,7 +3,6 @@ import {
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { numberToFormat } from "@utils/string-utils";
 import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import React, {
@@ -62,21 +61,20 @@ const SelectPriceRangeCustomController = forwardRef<
 }, ref) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [value, setValue] = useState("");
+  const [displayValue, setDisplayValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
-  const [currentValue, setCurrentValue] = useState("");
 
   const disabledController = useMemo(() => {
     return (
-      value === "" ||
-      value === "-" ||
-      BigNumber(value).isNaN() ||
-      value === "NaN" ||
-      value === "0" ||
-      value === "∞"
+      displayValue === "" ||
+      displayValue === "-" ||
+      BigNumber(displayValue).isNaN() ||
+      displayValue === "NaN" ||
+      displayValue === "0" ||
+      displayValue === "∞"
     );
-  }, [value]);
+  }, [displayValue]);
 
   const onClickDecrease = useCallback(() => {
     decrease();
@@ -91,93 +89,75 @@ const SelectPriceRangeCustomController = forwardRef<
   const onChangeValue = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      setValue(newValue);
-      if (value !== newValue) {
+      setDisplayValue(newValue);
+      if (displayValue !== newValue) {
         setChanged(true);
       }
     },
-    [value],
+    [displayValue],
   );
 
-  const onBlurUpdate = useCallback(() => {
+  const onBlur = useCallback(() => {
     if (!changed) {
       return;
     }
     setChanged(false);
-    if (value === "∞" || value === "-") {
-      return;
-    }
-    const currentValue = BigNumber(Number(value.replace(",", "")));
-    if (currentValue.isNaN()) {
-      setValue("-");
-      setCurrentValue("-");
-      return;
-    }
-    if (currentValue.isLessThanOrEqualTo(0.00000001)) {
-      setValue("0");
-      setCurrentValue("0");
-      return;
-    }
+    const currentValue = BigNumber(Number(displayValue.replace(",", "")));
+   
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
     changePrice(nearPrice);
     setIsChangeMinMax(true);
-    if (nearPrice > 1) {
-      setValue(numberToFormat(nearPrice, 4));
-      setCurrentValue(numberToFormat(nearPrice, 4));
-    } else {
-      setValue(nearPrice.toString());
-      setCurrentValue(nearPrice.toString());
-    }
+
     if (selectedFullRange) {
       onSelectCustomRange();
     }
-  }, [changed, value, tickSpacing, selectedFullRange, priceRangeType]);
+  }, [changed, displayValue, tickSpacing, selectedFullRange, priceRangeType]);
 
   useImperativeHandle(ref, () => {
-    return { formatData: () => setCurrentValue("") };
+    return { formatData: () => {
+      return;
+    }};
   }, []);
 
   useEffect(() => {
     if (current === null || BigNumber(Number(current)).isNaN()) {
-      setValue("-");
+      setDisplayValue("-");
       return;
     }
     const currentValue = BigNumber(current).toNumber();
     if (currentValue < 0.00000001) {
-      setValue("0");
+      setDisplayValue("0");
       return;
     }
     const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
     if (currentValue <= minPrice) {
-      setValue("0");
+      setDisplayValue("0");
       return;
     }
     if (currentValue / maxPrice > 0.9) {
-      setValue("∞");
+      setDisplayValue("∞");
       return;
     }
     if (currentValue >= 1) {
-      setValue(BigNumber(current).toFixed(4));
-      setCurrentValue(BigNumber(current).toFixed(10));
+      setDisplayValue(greaterThan1Transform(BigNumber(current).toFixed()));
       return;
     }
-    setValue(BigNumber(current).toFixed(10));
-    setCurrentValue(BigNumber(current).toFixed(10));
+    
+    setDisplayValue(subscriptFormat(BigNumber(current).toFixed()));
   }, [current, feeTier]);
-  
   
 
   const exchangePrice = useMemo(() => {
-    if (Number(value) < 1 && Number(value) !== 0) {
-      return subscriptFormat(value);
+    if (Number(displayValue) < 1 && Number(displayValue) !== 0) {
+      return subscriptFormat(displayValue);
     }
     
-    if (value === "∞") {
-      return value;
+    if (displayValue === "∞") {
+      return displayValue;
     }
     
-    return convertToKMB(Number(value).toFixed(5));
-  }, [value]);
+    return convertToKMB(Number(displayValue).toFixed(5));
+  }, [displayValue]);
     
       
   const priceValueString = (
@@ -186,37 +166,34 @@ const SelectPriceRangeCustomController = forwardRef<
     </>
   );
 
-  const transformValue = useMemo(() => {
-    if(isNumber(currentValue) && Number(currentValue) >= 1) {
-      const significantNumber = 5;
-      const [intPart] = value.split(".");
+  function greaterThan1Transform(numStr: string) {
+    const number = Number(numStr);
 
-      if(intPart.length >= significantNumber) return Math.round(Number(value)).toString();
+    const significantNumber = 5;
+      const [intPart] = numStr.split(".");
 
-      return Number(value).toFixed(significantNumber - intPart.length);
-    }  
-    
-    if(isNumber(currentValue) && Number(currentValue) < 1) {
-      return subscriptFormat(currentValue);
+    if(intPart.length >= significantNumber) {
+      const originalNumber = number;
+      const digitCountRatio = Math.pow(10, intPart.length - significantNumber);
+
+      const numberWith5SignificantNumber = (Math.round(originalNumber / digitCountRatio) * digitCountRatio).toString();
+
+      return numberWith5SignificantNumber;
     }
-    
-    if(value === "NaN") {
-      return "-";
-    }
-    
-    return value;
-  }, [currentValue, value]);
+
+    return number.toFixed(significantNumber - intPart.length);
+  }
 
   useEffect(() => {
     const maxDefaultLength = 7;
 
-    if(transformValue.length < maxDefaultLength) {
+    if(displayValue.length < maxDefaultLength) {
       setFontSize(24);
       return;
     }
 
-    setFontSize((maxDefaultLength / transformValue.length) * 24);
-  }, [transformValue]);
+    setFontSize((maxDefaultLength / displayValue.length) * 24);
+  }, [displayValue]);
 
   return (
     <SelectPriceRangeCutomControllerWrapper>
@@ -238,22 +215,21 @@ const SelectPriceRangeCustomController = forwardRef<
           <input
             style={{ fontSize: `${fontSize}px` }}
             className="value"
-            value={transformValue}
+            value={displayValue}
             onChange={onChangeValue}
-            onBlur={onBlurUpdate}
+            onBlur={onBlur}
             ref={inputRef}
-            // onFocus={() => setCurrentValue("")}
           />
           <div
             style={{ fontSize: `${fontSize}px` }}
             className="fake-input"
             ref={divRef}
           >
-            {isNumber(currentValue) && Number(currentValue) > 1
-              ? convertToKMB(Number(value).toFixed(4))
-              : currentValue
-              ? subscriptFormat(currentValue)
-              : value}
+            {isNumber(current ?? "") && Number(current) > 1
+              ? convertToKMB(Number(displayValue).toFixed(4))
+              : current
+              ? subscriptFormat(current)
+              : displayValue}
           </div>
         </div>
         <div
