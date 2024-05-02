@@ -354,7 +354,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       increase={selectPool.increaseMinTick}
                       currentPriceStr={currentPriceStr}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                      priceRangeType={priceRangeType}
+                      // priceRangeType={priceRangeType}
                     />
                     <SelectPriceRangeCutomController
                       title="Max Price"
@@ -370,7 +370,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       increase={selectPool.increaseMaxTick}
                       currentPriceStr={currentPriceStrReverse}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                      priceRangeType={priceRangeType}
+                      // priceRangeType={priceRangeType}
                     />
                   </div>
                   <div className="extra-wrapper">
