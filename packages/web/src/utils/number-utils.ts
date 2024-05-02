@@ -86,6 +86,7 @@ export const toUnitFormat = (
   value: BigNumber | string | number,
   usd = false,
   isKMB = false,
+  isFormat = true,
 ): string => {
   if (!isNumber(value)) {
     // TODO : Error Check
@@ -101,20 +102,20 @@ export const toUnitFormat = (
   //     bigNumber.dividedBy(Math.pow(10, 12)).decimalPlaces(2) +
   //     unitsUpperCase.trillion
   //   );
-  if (wholeNumberLength >= 10)
+  if (wholeNumberLength >= 10 && isFormat)
     return (
       (usd ? "$" : "") +
       bigNumber.dividedBy(Math.pow(10, 9)).decimalPlaces(2) +
       unitsUpperCase.billion
     );
-  if (wholeNumberLength >= 7)
+  if (wholeNumberLength >= 7 && isFormat)
     return (
       (usd ? "$" : "") +
       bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
       unitsUpperCase.million
     );
   if (isKMB) {
-    if (wholeNumberLength >= 4)
+    if (wholeNumberLength >= 4 && isFormat)
     return (
       (usd ? "$" : "") +
       bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +

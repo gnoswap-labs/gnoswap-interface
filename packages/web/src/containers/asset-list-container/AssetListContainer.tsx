@@ -485,7 +485,7 @@ const AssetListContainer: React.FC = () => {
     );
     closeWithdraw();
   };
-
+  console.log(filteredTokens, "filteredTokens");
   return (
     <>
       <AssetList

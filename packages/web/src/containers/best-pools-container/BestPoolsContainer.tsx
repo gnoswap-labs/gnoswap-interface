@@ -96,7 +96,7 @@ const BestPoolsContainer: React.FC = () => {
         poolPath: temp?.poolPath || "",
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
-        tvl: `${toUnitFormat(item.tvl, true, true)}`,
+        tvl: `${toUnitFormat(item.tvlUsd, true, true)}`,
         apr: `${item.apr === "" ? "-" : `${Number(item.apr).toFixed(2)}%`}`,
       };
     });

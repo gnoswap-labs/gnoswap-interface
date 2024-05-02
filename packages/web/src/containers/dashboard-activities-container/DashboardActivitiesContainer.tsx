@@ -97,7 +97,7 @@ export const dummyTokenList: Activity[] = [
 // }
 
 const replaceToken = (symbol: string) => {
-  if (symbol === "WGNOT") return "GNOT";
+  if (symbol === "wugnot") return "GNOT";
   return symbol;
 };
 
@@ -180,10 +180,10 @@ const DashboardActivitiesContainer: React.FC = () => {
         res.tokenA.symbol,
       )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.tokenB.symbol)}`,
       totalValue: Number(res.totalUsd) < 0.01 && Number(res.totalUsd) ? "<$0.01" : `$${prettyNumber(res.totalUsd)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(res.tokenAAmount, true)} ${replaceToken(
+      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount) / Number(res.tokenA?.decimals)}`, true)} ${replaceToken(
         res.tokenA.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(res.tokenBAmount, true)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount) / Number(res.tokenB?.decimals)}`, true)} ${replaceToken(
         res.tokenB.symbol,
       )}`,
       account: res.account,
@@ -191,10 +191,10 @@ const DashboardActivitiesContainer: React.FC = () => {
       explorerUrl,
     };
   };
+
   return (
     <ActivityList
       activities={(activities ?? []).slice(0, 30).map(x => formatActivity(x))}
-
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

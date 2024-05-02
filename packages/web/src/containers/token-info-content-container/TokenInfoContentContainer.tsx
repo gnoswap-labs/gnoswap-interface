@@ -77,9 +77,9 @@ export const priceInfomationInit = {
 
 export const marketInformationInit = {
   popularity: "",
-  tvl: "",
-  volume24h: "",
-  fees24h: "",
+  lockedTokensUsd: "",
+  volumeUsd24h: "",
+  feesUsd24h: "",
 };
 
 const priceChangeDetailInit = {
@@ -106,6 +106,7 @@ const TokenInfoContentContainer: React.FC = () => {
     data: {
       market = marketInformationInit,
       pricesBefore = priceChangeDetailInit,
+      currentPrice = "0",
     } = {},
     isLoading,
   } = useGetTokenDetailByPath(
@@ -117,29 +118,29 @@ const TokenInfoContentContainer: React.FC = () => {
   const marketInformation = useMemo(() => {
     return {
       popularity: market.popularity ? `#${Number(market.popularity)}` : "-",
-      tvl: market.tvl ? `$${convertToKMB(market.tvl)}` : "-",
-      volume24h: market.volume24h
-        ? `$${convertToKMB(Number(market.volume24h).toString())}`
+      tvl: market.lockedTokensUsd ? `$${convertToKMB(market.lockedTokensUsd)}` : "-",
+      volume24h: market.volumeUsd24h
+        ? `$${convertToKMB(Number(market.volumeUsd24h).toString())}`
         : "-",
-      fees24h: market.fees24h ? `$${convertToKMB(market.fees24h)}` : "-",
+      fees24h: market.feesUsd24h ? `$${convertToKMB(market.feesUsd24h)}` : "-",
     };
   }, [market]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.price1h,
     );
     const data1D = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.price1d,
     );
     const data7D = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.price7d,
     );
     const data30D = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.price30d,
     );
 
@@ -165,22 +166,22 @@ const TokenInfoContentContainer: React.FC = () => {
 
   const pricePerformance = useMemo(() => {
     const dataToday = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.priceToday,
       6,
     );
     const data30day = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.price30d,
       6,
     );
     const data60day = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.price60d,
       6,
     );
     const data90day = checkPositivePrice(
-      pricesBefore.latestPrice,
+      currentPrice,
       pricesBefore.price90d,
       6,
     );

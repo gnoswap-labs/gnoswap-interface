@@ -394,9 +394,9 @@
     },
     "market": {
         "popularity": "3",
-        "tvl": "1497967405.025258",
-        "volume24h": "250020.459150",
-        "fees24h": "0"
+        "lockedTokensUsd": "1497967405.025258",
+        "volumeUsd24h": "250020.459150",
+        "feesUsd24h": "0"
     },
     "bestPools": [
         {
@@ -416,7 +416,7 @@
                 "symbol": "GNOT",
                 "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg"
             },
-            "tvl": "1998051479.954414",
+            "tvlUsd": "1998051479.954414",
             "apr": "0.000000"
         },
         {
@@ -436,7 +436,7 @@
                 "symbol": "BAZ",
                 "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_baz.svg"
             },
-            "tvl": "1000069655.690114",
+            "tvlUsd": "1000069655.690114",
             "apr": "0.000000"
         }
     ]

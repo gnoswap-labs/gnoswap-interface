@@ -51,7 +51,6 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   pool,
   binsMyAmount,
 }) => {
-
   return (
     <BarAreaGraphWrapper
       className={className}

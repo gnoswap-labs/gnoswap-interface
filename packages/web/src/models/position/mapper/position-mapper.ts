@@ -9,6 +9,7 @@ import { RewardResponse } from "@repositories/position/response/reward-response"
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
+import { toUnitFormat } from "@utils/number-utils";
 
 export class PositionMapper {
   public static toTokenPairAmount(
@@ -49,7 +50,7 @@ export class PositionMapper {
       liquidity: BigInt(position.liquidity),
       token0Balance: BigInt(position.tokenABalance),
       token1Balance: BigInt(position.tokenBBalance),
-      positionUsdValue: position.positionUsdValue,
+      positionUsdValue: position.usdValue,
       unclaimedFee0Amount: BigInt(position.unclaimedFeeAAmount),
       unclaimedFee1Amount: BigInt(position.unclaimedFeeBAmount),
       unclaimedFee0Usd: position.unclaimedFee0Usd,
@@ -61,11 +62,12 @@ export class PositionMapper {
       apr: `${position.apr}` ?? "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsdValue || "0",
-      rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
+      rewards: position.reward?.map(PositionMapper.rewardFromResponse) || [],
       dailyRewards:
-        position.dailyRewards?.map(PositionMapper.rewardFromResponse) || [],
-      status: false,
+        position.reward?.map(PositionMapper.rewardFromResponse) || [],
+      closed: position.closed,
       bins: position.bins,
+      totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
     };
   }
 
@@ -84,7 +86,7 @@ export class PositionMapper {
       aprOf7d: reward.apr7d !== "" ? Number(reward.apr7d) : null,
       totalAmount: BigInt(reward.totalAmount),
       claimableAmount: BigInt(reward.claimableAmount),
-      claimableUsdValue: reward.claimableUsdValue,
+      claimableUsdValue: reward.claimableUsd,
       rewardType: reward.rewardType,
     };
   }
@@ -96,7 +98,6 @@ export class PositionMapper {
     return {
       ...positionModel,
       pool: poolModel,
-      status: false,
     };
   }
 }
