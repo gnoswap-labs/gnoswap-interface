@@ -39,7 +39,7 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
-      liquidity: `$${Math.floor(Number(tvl || 0)).toLocaleString()}`,
+      liquidity: `$${BigNumber(tvl).toFormat(0)}`,
       volume24h: `$${Math.floor(Number(volume24h || 0)).toLocaleString()}`,
       fees24h: `$${Math.floor(Number(feeVolume || 0)).toLocaleString()}`,
       rewardTokens,

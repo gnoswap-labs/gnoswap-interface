@@ -39,7 +39,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: "Swap Volume 24h",
-      content: `$${allTime}`,
+      content: toUnitFormat(allTime, true, true),
     },
     {
       label: "Swap Fees 24h",

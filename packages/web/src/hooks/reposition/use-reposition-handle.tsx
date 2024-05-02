@@ -102,7 +102,7 @@ export const useRepositionHandle = () => {
   }, [selectedPosition]);
 
   const rangeStatus = useMemo(() => {
-    return selectedPosition?.status
+    return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
       ? RANGE_STATUS_OPTION.IN

@@ -245,7 +245,7 @@ const TokenListContainer: React.FC = () => {
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
         },
-        last7days: [...(transferData?.last7Days?.map(item => Number(item.price || 0)) || []), Number(transferData?.pricesBefore?.latestPrice)],
+        last7days: [...(transferData?.last7d?.map(item => Number(item.price || 0)) || []), Number(transferData?.pricesBefore?.latestPrice)],
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(transferData.lockedTokensUsd || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(transferData.volumeUsd24h || 0)).toLocaleString()}`,
@@ -325,7 +325,7 @@ const TokenListContainer: React.FC = () => {
     }
     return temp.slice(page * 15, (page + 1) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
-  
+
   return (
     <TokenList
       tokens={getDatas()}

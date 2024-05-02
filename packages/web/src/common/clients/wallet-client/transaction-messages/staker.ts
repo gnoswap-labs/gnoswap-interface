@@ -12,7 +12,7 @@ export function makeApporveStakeTokenMessage(
 ) {
   return makeApproveMessage(
     PACKAGE_NFT_PATH,
-    [PACKAGE_STAKER_ADDRESS, lpTokenId],
+    [PACKAGE_STAKER_ADDRESS, lpTokenId.toString()],
     caller,
   );
 }
@@ -22,7 +22,7 @@ export function makeCollectRewardMessage(lpTokenId: string, caller: string) {
     send: "",
     func: "CollectReward",
     packagePath: PACKAGE_STAKER_PATH,
-    args: [lpTokenId],
+    args: [lpTokenId.toString()],
     caller,
   });
 }
@@ -32,7 +32,7 @@ export function makeStakeMessage(lpTokenId: string, caller: string) {
     send: "",
     func: "StakeToken",
     packagePath: PACKAGE_STAKER_PATH,
-    args: [lpTokenId],
+    args: [lpTokenId.toString()],
     caller,
   });
 }
@@ -42,7 +42,7 @@ export function makeUnstakeMessage(lpTokenId: string, caller: string) {
     send: "",
     func: "UnstakeToken",
     packagePath: PACKAGE_STAKER_PATH,
-    args: [lpTokenId],
+    args: [lpTokenId.toString()],
     caller,
   });
 }

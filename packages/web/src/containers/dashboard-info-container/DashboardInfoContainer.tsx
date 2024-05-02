@@ -83,12 +83,13 @@ const DashboardInfoContainer: React.FC = () => {
     const percent = Math.min((circSupply / totalSupply) * 100, 100);
     return `${percent}%`;
   }, [tokenData]);
-
   const stakingRatio = useMemo(() => {
     if (!tokenData) return "-";
     const circSupply = Number(tokenData?.gnsCirculatingSupply);
     const totalStaked = Number(tokenData?.gnsTotalStaked);
+
     if (circSupply === 0) return "0%";
+    if (totalStaked * 100 / circSupply < 0.1) return "0.1%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
     return `${prettyNumber(ratio)}%`;
   }, [tokenData]);

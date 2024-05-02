@@ -27,7 +27,7 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({
           <div className="balance-container">{balance}</div>
           <LinkButton>
             <span>Create a position to start earning rewards</span>
-            <Link href="/earn/add">
+            <Link href="/earn/add?tokenA=gnot&tokenB=gno.land/r/demo/gns&fee_tier=3000">
               Click here <IconStrokeArrowRight className="link-icon" />
             </Link>
           </LinkButton>

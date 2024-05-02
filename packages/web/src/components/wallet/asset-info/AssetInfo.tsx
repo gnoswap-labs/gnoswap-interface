@@ -19,7 +19,7 @@ interface AssetInfoProps {
   breakpoint: DEVICE_TYPE;
 }
 function removeTrailingZeros(value: string) {
-  return value.replace(/\.?0+$/, "");
+  return value.replace(/(\.\d*?[1-9])0+$/, "$1").replace(/\.$/, "");
 }
 
 const AssetInfo: React.FC<AssetInfoProps> = ({

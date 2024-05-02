@@ -10,7 +10,7 @@ export interface RewardResponse {
 
   claimableAmount: string;
 
-  claimableUsdValue: string;
+  claimableUsd: string;
 
   accuReward1d: string;
 

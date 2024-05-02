@@ -255,10 +255,12 @@ const TokenChartContainer: React.FC = () => {
     return temp.map(item => ({
       ...item,
       date: item.date,
-    }));
+    })).reverse();
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
   const getChartInfo = useCallback(() => {
+
+    // You will ask me why the code is like this. old data it needs like that
     const length =
       currentTab === TokenChartGraphPeriods[0]
         ? 144
@@ -277,7 +279,6 @@ const TokenChartContainer: React.FC = () => {
       getLocalizeTime(chartData[currentLength - 1]?.date),
       countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
     );
-
     const labelWidth =
       breakpoint === DEVICE_TYPE.MOBILE
         ? DEFAULT_X_LABEL_WIDTH_MOBILE
