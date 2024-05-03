@@ -1,4 +1,4 @@
-import SelectPriceRangeCutomController, { type SelectPriceRangeCutomControllerProps } from "./SelectPriceRangeCutomController";
+import SelectPriceRangeCutomController, { type SelectPriceRangeCustomControllerProps } from "./SelectPriceRangeCutomController";
 import { Meta, StoryObj } from "@storybook/react";
 
 export default {
@@ -6,7 +6,7 @@ export default {
   component: SelectPriceRangeCutomController,
 } as Meta<typeof SelectPriceRangeCutomController>;
 
-export const Default: StoryObj<SelectPriceRangeCutomControllerProps> = {
+export const Default: StoryObj<SelectPriceRangeCustomControllerProps> = {
   args: {
     current: 123123,
     title: "GNOS per GNOT"
