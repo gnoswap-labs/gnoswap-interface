@@ -7,7 +7,15 @@ import EarnAddLiquidityContainer from "@containers/earn-add-liquidity-container/
 import OneClickStakingContainer from "@containers/one-click-staking-container/OneClickStakingContainer";
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string}) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "Main"]))
+    }
+  };
+}
 export default function EarnAdd() {
   const [isEarnAdd] = useAtom(EarnState.isOneClick);
   const listBreadcrumb = [

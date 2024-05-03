@@ -6,7 +6,15 @@ import Custom500Layout from "@layouts/custom-500/Custom500Layout";
 import { useRouter } from "next/router";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string}) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "Main"]))
+    }
+  };
+}
 export default function Custom500() {
   const router = useRouter();
   const goBackClick = () => router.back();

@@ -9,6 +9,15 @@ import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useLoading } from "@hooks/common/use-loading";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getServerSideProps({ locale }:{ locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["HeaderFooter", "Main"])),
+    }
+  };
+}
 
 export default function PoolIncentivize() {
   const { breakpoint } = useWindowSize();

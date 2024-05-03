@@ -24,6 +24,7 @@ import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDow
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import { DEVICE_TYPE } from "@styles/media";
 import MobileTokenInfo from "../mobile-token-info/MobileTokenInfo";
+import { useTranslation } from "next-i18next";
 
 interface TokenListTableProps {
   tokens: Token[];
@@ -42,6 +43,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
   isFetched,
   breakpoint,
 }) => {
+  const { t } = useTranslation();
   const isAscendingOption = useCallback(
     (head: TABLE_HEAD) => {
       return sortOption?.key === head && sortOption.direction === "asc" && !sortOption.firstActive;
@@ -99,7 +101,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
                 {isDescendingOption(head) && (
                   <IconTriangleArrowDown className="icon desc" />
                 )}
-                {head}
+                {t(head)}
               </span>
             </TableHeader>
           ))}
@@ -140,7 +142,7 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
                 {isDescendingOption(head) && (
                   <IconTriangleArrowDown className="icon desc" />
                 )}
-                {head}
+                {t(head)}
               </span>
             </MobileTableHeader>
           ))}

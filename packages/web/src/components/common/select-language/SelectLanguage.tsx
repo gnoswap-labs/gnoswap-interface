@@ -3,67 +3,45 @@ import { SelectLanguageWrapper } from "./SelectLanguage.styles";
 import IconStrokeArrowLeft from "../icons/IconStrokeArrowLeft";
 import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import { Overlay } from "../wallet-connector-menu/WalletConnectorMenu.styles";
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 
 interface Props {
   onClickChangeLanguage: () => void;
 }
 
+const LAGUAGES = [
+  {code: "en", name: "English"},
+  {code: "af", name: "Afrikaans"},
+  {code: "ar", name: "Arabic"},
+  {code: "ca", name: "Catalan"},
+];
+
 const SelectLanguage: React.FC<Props> = ({
   onClickChangeLanguage,
 }) => {
+  const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <>
     <SelectLanguageWrapper width={window?.innerWidth}>
       <div className="header">
         <div onClick={onClickChangeLanguage}><IconStrokeArrowLeft /></div>
-        <p>Language</p>
+        <p>{t("HeaderFooter:language")}</p>
         <div></div>
       </div>
       <div className="list">
-        <div>
-          <p>English</p>
-          <IconCircleInCheck />
-        </div>
-        <div>
-          <p>Afrikaans</p>
-        </div>
-        <div>
-          <p>العربية</p>
-        </div>
-        <div>
-          <p>Català</p>
-        </div>
-        <div>
-          <p>Algeria</p>
-        </div>
-        <div>
-          <p>Angola</p>
-        </div>
-        <div>
-          <p>Benin</p>
-        </div>
-        <div>
-          <p>Botswana</p>
-        </div>
-        <div>
-          <p>Burkina Faso</p>
-        </div>
-        <div>
-          <p>Burundi</p>
-        </div>
-        <div>
-          <p>Cabo Verde</p>
-        </div>
-        <div>
-          <p>Cameroon</p>
-        </div>
-        <div>
-          <p>Chad</p>
-        </div>
-        <div>
-          <p>Congo</p>
-        </div>
+        {LAGUAGES.map((item) => {
+          return (
+            <div key={item.code} onClick={() =>router.push("/", "/", { locale: item.code })}>
+              <p>{item.name}</p>
+              {router.locale === item.code && <IconCircleInCheck />}
+            </div>
+          );
+        })
+
+        }
       </div>
     </SelectLanguageWrapper>
     <Overlay onClick={onClickChangeLanguage} />

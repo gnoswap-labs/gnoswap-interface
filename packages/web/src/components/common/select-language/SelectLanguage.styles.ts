@@ -96,7 +96,6 @@ export const SelectLanguageWrapper = styled.div<Props>`
     ${media.mobile} {
       width: 100%;
       max-height: 180px;
-
     }
   }
 

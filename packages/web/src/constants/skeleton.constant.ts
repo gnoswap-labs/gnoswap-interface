@@ -627,7 +627,7 @@ export const MOBILE_LEADER_INFO = {
 
 export const MOBILE_TOKEN_INFO = {
   title: TABLE_TITLE.TOKEN_TABLE,
-  total: 15,
+  total: 2,
   tdWidth: MOBILE_TOKEN_TD_WIDTH,
   list: [
     { width: 120, type: SHAPE_TYPES.ROUNDED_SQUARE, left: true },

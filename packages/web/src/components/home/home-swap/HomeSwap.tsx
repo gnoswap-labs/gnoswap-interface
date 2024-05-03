@@ -7,6 +7,7 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
 import { SwapValue } from "@states/swap";
+import { useTranslation } from "next-i18next";
 
 interface HomeSwapProps {
   changeTokenAAmount: (value: string) => void;
@@ -31,6 +32,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   connected,
   changeTokenBAmount,
 }) => {
+  const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
@@ -115,7 +117,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
       <div className="header">
-        <span className="title">Swap</span>
+        <span className="title">{t("Main:swap")}</span>
       </div>
       <div className="inputs">
         <div className="from">
@@ -142,7 +144,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenA}
             >
-              {`Balance: ${balanceADisplay}`}
+              {`${t("Main:balance")}: ${balanceADisplay}`}
             </span>
           </div>
         </div>
@@ -170,7 +172,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               }`}
               onClick={handleAutoFillTokenB}
             >
-              Balance: {balanceBDisplay}
+              {t("Main:balance")}: {balanceBDisplay}
             </span>
           </div>
         </div>
