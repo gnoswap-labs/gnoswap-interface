@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { removeTrailingZeros } from "./number-utils";
 
 export const convertToMB = (price: string, maximumFractionDigits?: number) => {
   if (Number.isNaN(Number(price))) return "-";
@@ -40,14 +41,22 @@ export const convertToKMB = (
   minimumFractionDigits?: number,
 ) => {
   if (Number.isNaN(Number(price))) return "-";
-  if (Math.floor(Number(price)).toString().length < 4) {
+
+  const significantNumber = 5;
+  const convertOffset = 999;
+  const intPart = Math.trunc(Number(price));
+  
+  if (intPart < convertOffset) {
     if (Number.isInteger(Number(price))) return `${Number(price)}`;
     if (Number(price) < 0.000001 && Number(price) !== 0) return "0.000001";
     if (Number(price) < 1) return `${Number(Number(price).toFixed(6))}`;
-    return Number(price).toLocaleString("en-US", {
-      maximumFractionDigits: maximumFractionDigits ?? 2,
-      minimumFractionDigits: minimumFractionDigits ?? 2,
-    });
+    
+    const defaultDecimalDigit = significantNumber - intPart.toString().length;
+
+    return removeTrailingZeros(Number(price).toLocaleString("en-US", {
+      maximumFractionDigits: maximumFractionDigits ?? defaultDecimalDigit,
+      minimumFractionDigits: minimumFractionDigits ?? defaultDecimalDigit,
+    }));
   } else {
     const temp = Math.floor(Number(price));
     if (temp >= 1e9) {

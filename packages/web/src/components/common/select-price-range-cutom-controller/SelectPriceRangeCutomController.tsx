@@ -40,7 +40,7 @@ export interface SelectPriceRangeCustomControllerRef {
 }
 
 const SelectPriceRangeCustomController = forwardRef<
-  SelectPriceRangeCustomControllerRef, 
+  SelectPriceRangeCustomControllerRef,
   SelectPriceRangeCustomControllerProps
 >(({
   title,
@@ -59,7 +59,7 @@ const SelectPriceRangeCustomController = forwardRef<
   const [displayValue, setDisplayValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
-  
+
   const submitCountRef = useRef(0);
 
   const disabledController = useMemo(() => {
@@ -115,9 +115,9 @@ const SelectPriceRangeCustomController = forwardRef<
       setDisplayValue(greaterThan1Transform(BigNumber(value).toFixed()));
       return;
     }
-    
+
     setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
-  },[feeTier]);
+  }, [feeTier]);
 
   const onBlur = useCallback(() => {
     if (!changed) {
@@ -125,10 +125,10 @@ const SelectPriceRangeCustomController = forwardRef<
     }
     setChanged(false);
     const currentValue = BigNumber(Number(displayValue));
-   
+
     const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
 
-    if(nearPrice !== current) {
+    if (nearPrice !== current) {
       changePrice(nearPrice);
     } else {
       formatControllerValue(nearPrice);
@@ -142,35 +142,37 @@ const SelectPriceRangeCustomController = forwardRef<
   }, [changed, displayValue, tickSpacing, current, setIsChangeMinMax, selectedFullRange, changePrice, formatControllerValue, onSelectCustomRange]);
 
   useImperativeHandle(ref, () => {
-    return { formatData: () => {
-      return;
-    }};
+    return {
+      formatData: () => {
+        return;
+      }
+    };
   }, []);
 
   useEffect(() => {
     formatControllerValue(current);
   }, [current, formatControllerValue]);
-  
+
 
   const exchangePrice = useMemo(() => {
     if (current === null || BigNumber(Number(current)).isNaN()) {
       return "-";
     }
-    
+
     const currentValue = BigNumber(current).toNumber();
     const { maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
-    
-    if (currentValue < 1 &&  currentValue !== 0) {
+
+    if (currentValue < 1 && currentValue !== 0) {
       return subscriptFormat(BigNumber(current).toFixed());
     }
-    
+
     if (currentValue / maxPrice > 0.9) {
       return "∞";
     }
-    
+
     return convertToKMB(Number(current).toFixed());
   }, [current, feeTier]);
-      
+
   const priceValueString = (
     <>
       1 {token0Symbol} =&nbsp;{exchangePrice}&nbsp;{token1Symbol}
@@ -181,9 +183,9 @@ const SelectPriceRangeCustomController = forwardRef<
     const number = Number(numStr);
 
     const significantNumber = 5;
-      const [intPart] = numStr.split(".");
+    const [intPart] = numStr.split(".");
 
-    if(intPart.length >= significantNumber) {
+    if (intPart.length >= significantNumber) {
       const originalNumber = number;
       const digitCountRatio = Math.pow(10, intPart.length - significantNumber);
 
@@ -198,7 +200,7 @@ const SelectPriceRangeCustomController = forwardRef<
   useEffect(() => {
     const maxDefaultLength = 7;
 
-    if(displayValue.length < maxDefaultLength) {
+    if (displayValue.length < maxDefaultLength) {
       setFontSize(24);
       return;
     }
@@ -207,14 +209,14 @@ const SelectPriceRangeCustomController = forwardRef<
   }, [displayValue]);
 
   const ratioDisplay = useMemo(() => {
-    if(isNumber(current ?? "") && Number(current) >= 1) {
+    if (isNumber(current ?? "") && Number(current) >= 1) {
       return convertToKMB(Number(current).toFixed(4));
     }
-    
-    if(current) {
+
+    if (current) {
       return subscriptFormat(current);
     }
-    
+
     return displayValue;
   }, [current, displayValue]);
 
