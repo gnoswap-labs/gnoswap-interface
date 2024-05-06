@@ -14,7 +14,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
+    priceId: "gno.land/r/foo",
     address: ""
   },
   tokenB: {
@@ -26,7 +26,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
+    priceId: "gno.land/r/foo",
     address: ""
   },
   swapDirection: "EXACT_IN",

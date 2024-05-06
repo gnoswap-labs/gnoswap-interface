@@ -13,7 +13,7 @@ describe("getTokens", () => {
     // expect(response.tokens).toBeTruthy();
     // expect(typeof response.tokens[0].path).toBe("string");
     // expect(typeof response.tokens[0].address).toBe("string");
-    // expect(typeof response.tokens[0].priceID).toBe("string");
+    // expect(typeof response.tokens[0].priceId).toBe("string");
     // expect(typeof response.tokens[0].chainId).toBe("string");
     // expect(typeof response.tokens[0].name).toBe("string");
     // expect(typeof response.tokens[0].symbol).toBe("string");
@@ -40,7 +40,7 @@ describe("createSearchLog", () => {
       path: "path",
       address: "address",
       type: "grc20",
-      priceID: "priceID",
+      priceId: "priceId",
       chainId: "chainId",
       name: "name",
       symbol: "symbol",
@@ -74,7 +74,7 @@ describe("getSearchLogs", () => {
       path: "path",
       address: "address",
       type: "grc20",
-      priceID: "priceID",
+      priceId: "priceId",
       chainId: "chainId",
       name: "name",
       symbol: "symbol",

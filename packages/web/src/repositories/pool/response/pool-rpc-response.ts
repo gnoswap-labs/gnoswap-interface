@@ -5,9 +5,9 @@ export interface PoolRPCResponse {
 
   token1Path: string;
 
-  token0Balance: string;
+  tokenABalance: string;
 
-  token1Balance: string;
+  tokenBBalance: string;
 
   fee: number;
 

@@ -60,7 +60,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     });
     return filteredArray;
   }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
-  
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -89,7 +89,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   )}
                 </div>
               </div>
-             
+
             </div>
             <div className="list-wrapper">
               <div className="list-header">
@@ -119,7 +119,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
-                bins={pool.bins}
+                bins={pool.bins40 ?? []}
                 currentTick={pool.currentTick}
                 width={258}
                 height={80}

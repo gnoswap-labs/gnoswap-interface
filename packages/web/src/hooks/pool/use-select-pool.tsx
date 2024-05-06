@@ -25,7 +25,7 @@ interface Props {
   feeTier: SwapFeeTierType | null;
   isCreate?: boolean;
   startPrice?: number | null,
-  defaultPriceRange: [number | null, number | null]
+  defaultPriceRange?: [number | null, number | null]
 }
 
 export interface SelectPool {
@@ -76,7 +76,7 @@ export const useSelectPool = ({
   startPrice = null,
   defaultPriceRange,
 }: Props) => {
-  const [ defaultMinPosition, defaultMaxPosition ] = defaultPriceRange;
+  const [defaultMinPosition, defaultMaxPosition] = defaultPriceRange ?? [null, null];
 
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
@@ -359,9 +359,8 @@ export const useSelectPool = ({
     const tokenAPoolPath = tokenA.wrappedPath || tokenA.path;
     const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
     const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
-    const poolPath = `${tokenPair.join(":")}:${
-      SwapFeeTierInfoMap[feeTier].fee
-    }`;
+    const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
+      }`;
     const reverse =
       tokenPair.findIndex(path => {
         if (compareToken) {
@@ -378,17 +377,17 @@ export const useSelectPool = ({
           reverse === false
             ? poolInfo
             : {
-                ...poolInfo,
-                price: 1 / poolInfo.price,
-                ticks: Object.keys(poolInfo.ticks).map(
-                  tick => Number(tick) * -1,
-                ),
-                positions: poolInfo.positions.map(position => ({
-                  ...position,
-                  tickLower: position.tickUpper * -1,
-                  tickUpper: position.tickLower * -1,
-                })),
-              };
+              ...poolInfo,
+              price: 1 / poolInfo.price,
+              ticks: Object.keys(poolInfo.ticks).map(
+                tick => Number(tick) * -1,
+              ),
+              positions: poolInfo.positions.map(position => ({
+                ...position,
+                tickLower: position.tickUpper * -1,
+                tickUpper: position.tickLower * -1,
+              })),
+            };
         console.log(changedPoolInfo);
         setPoolInfo(changedPoolInfo);
       })

@@ -49,7 +49,7 @@
           "decimals": 4,
           "symbol": "FOO",
           "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-          "priceID": "gno.land/r/foo",
+          "priceId": "gno.land/r/foo",
           "address": ""
         },
         "tokenB": {
@@ -61,7 +61,7 @@
           "decimals": 4,
           "symbol": "FOO",
           "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-          "priceID": "gno.land/r/foo",
+          "priceId": "gno.land/r/foo",
           "address": ""
         },
         "tvl": {
@@ -80,7 +80,7 @@
         },
         "id": "0xd0b2f5018b5d22759724af6d4281ac0b13266360",
         "fee": 0.00002,
-        "feeVolume": 1563.3775664056654,
+        "feeUsd24h": 1563.3775664056654,
         "feeChange": 0.42223748811178985,
         "currentTick": -1,
         "[ANF] price": 0.9999619903866392,
@@ -124,7 +124,7 @@
           "decimals": 4,
           "symbol": "FOO",
           "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-          "priceID": "gno.land/r/foo",
+          "priceId": "gno.land/r/foo",
           "address": ""
         },
         "tokenPrice": 1612.64,

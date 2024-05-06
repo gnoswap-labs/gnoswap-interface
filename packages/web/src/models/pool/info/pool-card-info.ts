@@ -33,6 +33,8 @@ export interface PoolCardInfo {
 
   bins: PoolBinModel[];
 
+  bins40: PoolBinModel[];
+
   poolPath?: string;
 
   tvl: number;

@@ -1,6 +1,7 @@
 import { IncentivizedOptions } from "@common/values";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
+import { IPoolPriceRatio } from "./pool-price-ratio.model";
 
 export interface PoolModel {
   id: string;
@@ -20,12 +21,14 @@ export interface PoolModel {
   tokenABalance: number;
 
   tokenBBalance: number;
-
+  
   tickSpacing: number;
 
   currentTick: number;
 
   bins: PoolBinModel[];
+
+  bins40: PoolBinModel[];
 
   tvl: number;
 
@@ -37,9 +40,9 @@ export interface PoolModel {
 
   totalVolume: number;
 
-  fee: string;
+  feeUsd24h: number;
 
-  feeVolume: number;
+  fee: string;
 
   feeChange: number;
 
@@ -49,7 +52,9 @@ export interface PoolModel {
   poolPath?: string;
 
   rewardTokens: TokenModel[];
+
   feeApr?: any;
+
   stakingApr?: any;
 }
 
@@ -64,7 +69,7 @@ export interface IPoolDetailResponse {
   totalVolume: string;
   apr: string;
   fee: string;
-  feeVolume: string;
+  feeUsd24h: string;
   feeChange: string;
   currentTick: string;
   price: string;
@@ -72,6 +77,7 @@ export interface IPoolDetailResponse {
   tokenBBalance: string;
   tickSpacing: string;
   bins: IBin[];
+  priceRatio: IPoolPriceRatio;
 }
 
 export interface ITokenA {
@@ -83,7 +89,7 @@ export interface ITokenA {
   decimals: number;
   symbol: string;
   logoURI: string;
-  priceID: string;
+  priceId: string;
 }
 
 export interface ITokenB {
@@ -95,7 +101,7 @@ export interface ITokenB {
   decimals: number;
   symbol: string;
   logoURI: string;
-  priceID: string;
+  priceId: string;
 }
 
 export interface IBin {

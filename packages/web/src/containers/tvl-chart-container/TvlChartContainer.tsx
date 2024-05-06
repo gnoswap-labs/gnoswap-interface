@@ -174,14 +174,15 @@ const TvlChartContainer: React.FC = () => {
 
     switch (tvlChartType) {
       case "30D":
-        chartData = tvlData?.last1m;
+        chartData = tvlData?.last30d;
         break;
       case "90D":
-        chartData = tvlData?.last1y;
+        chartData = tvlData?.last90d;
         break;
       case "ALL":
         chartData = tvlData?.all;
         break;
+      case "7D":
       default:
         chartData = tvlData?.last7d;
         break;

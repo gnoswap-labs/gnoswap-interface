@@ -152,7 +152,7 @@ function makeLabel(
 ) {
   // const id = right === false ? "start-price" : "end-price";
   const id = right === false ? `start-price-${Math.round(selectionColor.startPercent)}` : `end-price-${BigNumber(selectionColor.endPercent).toString()}`;
-  
+
   // const color = right === false ? "#EA3943B2" : "#16C78AB2";
   const color = right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
   if (refer.select(`#${id}`)) {
@@ -194,11 +194,11 @@ function changeLine(
   lineElement.select("svg").attr("x", 0);
 
 
-  const priceID = `${type}-price-${type === "start" ? selectionColor.startPercent : `${selectionColor.endPercent}`}`;
+  const priceId = `${type}-price-${type === "start" ? selectionColor.startPercent : `${selectionColor.endPercent}`}`;
   const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
-  
+
   const margin = right === false ? (type === "end" ? -51 : -62) : (type === "end" ? 12 : 1);
-  const labelWrapper = lineElement.select(`#${priceID}`);
+  const labelWrapper = lineElement.select(`#${priceId}`);
   labelWrapper
     .select("rect")
     .attr("x", margin)
@@ -249,27 +249,27 @@ export interface PoolSelectionGraphProps {
 const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = (props) => {
   const {
     feeTier,
-  scaleX,
-  scaleY,
-  liquidityOfTickPoints,
-  currentPrice = null,
-  displayLabels = 8,
-  width,
-  height,
-  minPrice,
-  maxPrice,
-  setMinPrice,
-  setMaxPrice,
-  selectedFullRange,
-  focusPosition,
-  zoomLevel,
-  margin = {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  },
-  setIsChangeMinMax,
+    scaleX,
+    scaleY,
+    liquidityOfTickPoints,
+    currentPrice = null,
+    displayLabels = 8,
+    width,
+    height,
+    minPrice,
+    maxPrice,
+    setMinPrice,
+    setMaxPrice,
+    selectedFullRange,
+    focusPosition,
+    zoomLevel,
+    margin = {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+    setIsChangeMinMax,
   } = props;
   const [selectionColor, setSelectionColor] = useState(getSelectionColor("0", "0"));
   const svgRef = useRef(null);
@@ -441,7 +441,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = (props) => {
       selectedFullRange,
       selectionColor,
     );
-  
+
   }
 
   function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
@@ -461,27 +461,27 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = (props) => {
       const startPosition = selection[0] as number;
       const endPosition = selection[1] as number;
       const startRate = currentPrice
-      ? ((scaleX.invert(startPosition) - currentPrice) / currentPrice) * 100
-      : 0;
-    const endRate = currentPrice
-      ? ((scaleX.invert(endPosition) - currentPrice) / currentPrice) * 100
-      : 0;
+        ? ((scaleX.invert(startPosition) - currentPrice) / currentPrice) * 100
+        : 0;
+      const endRate = currentPrice
+        ? ((scaleX.invert(endPosition) - currentPrice) / currentPrice) * 100
+        : 0;
       setSelectionColor(getSelectionColor(BigNumber(startRate).toFixed(0).toString(), BigNumber(endRate).toFixed(0).toString()));
       const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN()
         ? tickToPrice(
-            priceToNearTick(
-              scaleX.invert(startPosition),
-              feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2,
-            ),
-          )
+          priceToNearTick(
+            scaleX.invert(startPosition),
+            feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2,
+          ),
+        )
         : 0;
       const maxPrice = !BigNumber(scaleX.invert(endPosition)).isNaN()
         ? tickToPrice(
-            priceToNearTick(
-              scaleX.invert(endPosition),
-              feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2,
-            ),
-          )
+          priceToNearTick(
+            scaleX.invert(endPosition),
+            feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2,
+          ),
+        )
         : 0;
       setMinPrice(minPrice);
       setMaxPrice(maxPrice);
@@ -581,7 +581,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = (props) => {
         if (selectedFullRange) {
           brush?.move(d3.select(brushRef.current), [zeroPosition, width]);
         }
-      } catch {}
+      } catch { }
     }
   }
 
@@ -700,12 +700,12 @@ const TooltipContent = () => {
     </div>
     <div className="content">
       <div className="item">
-        <div className="logo"><MissingLogo symbol="GNS" url="" width={20}/> GNS</div>
+        <div className="logo"><MissingLogo symbol="GNS" url="" width={20} /> GNS</div>
         <div className="amount">4.84K</div>
         <div className="price">1.441522 - 1.741584 USDC</div>
       </div>
       <div className="item">
-        <div className="logo"><MissingLogo symbol="GNS" url="" width={20}/> GNS</div>
+        <div className="logo"><MissingLogo symbol="GNS" url="" width={20} /> GNS</div>
         <div className="amount">4.84K</div>
         <div className="price">1.441522 - 1.741584 USDC</div>
       </div>

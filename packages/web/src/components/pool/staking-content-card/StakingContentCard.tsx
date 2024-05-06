@@ -110,7 +110,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
       if (current.rewardType !== "STAKING") {
         return accum;
       }
-      const tokenUSD = tokenPrices[current.token.priceID]?.usd || 0;
+      const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
     return toUnitFormat(tempTotalStakedRewardUSD / (10 ** 6), true, true);
@@ -155,7 +155,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth: 300, mobileWidth: 100 })}
+              css={pulseSkeletonStyle({ h: 22, w: "400px", tabletWidth: 300, mobileWidth: 100 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -177,7 +177,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth: 140, mobileWidth: 50 })}
+              css={pulseSkeletonStyle({ h: 22, w: "200px", tabletWidth: 140, mobileWidth: 50 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">
@@ -234,7 +234,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       if (current.rewardType !== "STAKING") {
         return accum;
       }
-      const tokenUSD = tokenPrices[current.token.priceID]?.usd || 0;
+      const tokenUSD = tokenPrices[current.token.priceId]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
@@ -270,7 +270,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth:  300, mobileWidth: 100 })}
+              css={pulseSkeletonStyle({ h: 22, w: "400px", tabletWidth: 300, mobileWidth: 100 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -292,7 +292,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth:  140, mobileWidth: 50 })}
+              css={pulseSkeletonStyle({ h: 22, w: "200px", tabletWidth: 140, mobileWidth: 50 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">

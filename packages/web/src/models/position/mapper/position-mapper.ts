@@ -22,11 +22,11 @@ export class PositionMapper {
       tokenA,
       tokenB,
       tokenAAmount: {
-        amount: Number(position.token0Balance),
+        amount: Number(position.tokenABalance),
         currency: tokenA.symbol,
       },
       tokenBAmount: {
-        amount: Number(position.token1Balance),
+        amount: Number(position.tokenBBalance),
         currency: tokenB.symbol,
       },
     };
@@ -48,11 +48,11 @@ export class PositionMapper {
       tickLower: Number(position.tickLower),
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
-      token0Balance: BigInt(position.tokenABalance),
-      token1Balance: BigInt(position.tokenBBalance),
+      tokenABalance: BigInt(Number(position.tokenABalance)),
+      tokenBBalance: BigInt(Number(position.tokenBBalance)),
       positionUsdValue: position.usdValue,
-      unclaimedFee0Amount: BigInt(position.unclaimedFeeAAmount),
-      unclaimedFee1Amount: BigInt(position.unclaimedFeeBAmount),
+      unclaimedFeeAAmount: BigInt(Number(position.unclaimedFeeAAmount)),
+      unclaimedFeeBAmount: BigInt(Number(position.unclaimedFeeBAmount)),
       unclaimedFee0Usd: position.unclaimedFee0Usd,
       unclaimedFee1Usd: position.unclaimedFee0Usd,
       tokensOwed0Amount: BigInt(0),
@@ -68,6 +68,8 @@ export class PositionMapper {
       closed: position.closed,
       bins: position.bins,
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
+      bins40: position.bins40,
+      totalClaimedUsd: position.totalClaimedUsd,
     };
   }
 
@@ -84,8 +86,8 @@ export class PositionMapper {
         reward.accuReward7d !== "" ? reward.accuReward7d : null,
       apr: reward.apr !== "" ? Number(reward.apr) : null,
       aprOf7d: reward.apr7d !== "" ? Number(reward.apr7d) : null,
-      totalAmount: BigInt(reward.totalAmount),
-      claimableAmount: BigInt(reward.claimableAmount),
+      totalAmount: BigInt(Number(reward.totalAmount)),
+      claimableAmount: BigInt(Number(reward.claimableAmount)),
       claimableUsdValue: reward.claimableUsd,
       rewardType: reward.rewardType,
     };

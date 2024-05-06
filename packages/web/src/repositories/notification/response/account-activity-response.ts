@@ -13,8 +13,8 @@ export interface AccountActivity {
   actionType: TxType | (string & {});
   token0: OnchainToken;
   token1: OnchainToken;
-  token0Amount: string;
-  token1Amount: string;
+  tokenAAmount: string;
+  tokenBAmount: string;
   totalUsdValue: string;
   account: string;
   time: string;
@@ -29,5 +29,5 @@ export interface OnchainToken {
   decimals: number;
   symbol: string;
   logoURI: string;
-  priceID: string;
+  priceId: string;
 }

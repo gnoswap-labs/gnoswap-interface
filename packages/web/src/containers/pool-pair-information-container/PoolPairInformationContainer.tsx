@@ -34,7 +34,7 @@ export const initialPool: PoolDetailModel = {
     symbol: "",
     logoURI: "",
     type: "native",
-    priceID: "",
+    priceId: "",
   },
   tokenB: {
     chainId: "",
@@ -46,7 +46,7 @@ export const initialPool: PoolDetailModel = {
     symbol: "",
     logoURI: "",
     type: "native",
-    priceID: "",
+    priceId: "",
   },
   incentivizedType: "INCENTIVIZED",
   tvl: 0,
@@ -57,7 +57,7 @@ export const initialPool: PoolDetailModel = {
   id: "",
   apr: 0,
   fee: "",
-  feeVolume: 0,
+  feeUsd24h: 0,
   feeChange: 0,
   currentTick: 0,
   price: 0,
@@ -65,6 +65,7 @@ export const initialPool: PoolDetailModel = {
   tokenBBalance: 0,
   tickSpacing: 0,
   bins: [],
+  bins40: [],
   rewardTokens: [],
   totalApr: 0,
   poolPath: ""
@@ -74,7 +75,7 @@ interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
-const PoolPairInformationContainer:React.FC<PoolPairInformationContainerProps> = ({ address }) => {
+const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ address }) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
@@ -100,11 +101,11 @@ const PoolPairInformationContainer:React.FC<PoolPairInformationContainerProps> =
     }
 
   }, [account?.address, router.query, getPositionsByPoolId, connectedWallet]);
-  
+
   const onClickPath = (path: string) => {
     router.push(path);
   };
-  
+
   const pool = useMemo(() => {
     return {
       ...data,

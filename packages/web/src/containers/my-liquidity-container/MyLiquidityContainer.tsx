@@ -115,7 +115,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => {},
+            () => { },
             true,
           );
           setLoadingTransactionClaim(false);
@@ -146,8 +146,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         claimableUsdValue: 0,
         rewards: [],
         positionUsdValue: "0",
-        token0Balance: 0n,
-        token1Balance: 0n,
+        tokenABalance: 0n,
+        tokenBBalance: 0n,
       };
       setPositions([...temp, fake, fake]);
       return;

@@ -21,15 +21,15 @@ export interface PositionModel {
 
   liquidity: bigint;
 
-  token0Balance: bigint;
+  tokenABalance: bigint;
 
-  token1Balance: bigint;
+  tokenBBalance: bigint;
 
   positionUsdValue: string;
 
-  unclaimedFee0Amount: bigint;
+  unclaimedFeeAAmount: bigint;
 
-  unclaimedFee1Amount: bigint;
+  unclaimedFeeBAmount: bigint;
 
   unclaimedFee0Usd: string;
 
@@ -55,7 +55,12 @@ export interface PositionModel {
   
   bins: PoolBinModel[];
 
+  bins40: PoolBinModel[];
+
   closed: boolean;
+
   totalDailyRewardsUsd: string;
 
+  totalClaimedUsd: string;
 }
+

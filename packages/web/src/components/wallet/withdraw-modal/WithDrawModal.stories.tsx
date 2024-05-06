@@ -27,7 +27,7 @@ Default.args = {
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     type: "grc20",
-    priceID: "gno.land/r/gns",
+    priceId: "gno.land/r/gns",
   },
   connected: true,
   changeToken: action("changeToken"),

@@ -23,10 +23,10 @@ export class PoolMapper {
       volume24h,
       tvl,
       fee,
-      feeVolume,
       apr,
       bins,
       rewardTokens,
+      feeUsd24h,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
@@ -41,7 +41,7 @@ export class PoolMapper {
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
       liquidity: `$${BigNumber(tvl).toFormat(0)}`,
       volume24h: `$${Math.floor(Number(volume24h || 0)).toLocaleString()}`,
-      fees24h: `$${Math.floor(Number(feeVolume || 0)).toLocaleString()}`,
+      fees24h: `$${Math.floor(Number(feeUsd24h || 0)).toLocaleString()}`,
       rewardTokens,
       currentTick,
       price,
@@ -75,11 +75,12 @@ export class PoolMapper {
       tvl,
       volume24h,
       fee,
-      feeVolume,
       apr,
       bins,
       poolPath,
       rewardTokens,
+      bins40,
+      feeUsd24h,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee,
@@ -94,11 +95,12 @@ export class PoolMapper {
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
       liquidity: `${convertToKMB(Math.round(tvl).toString(), 2)}`,
       volume24h: `${customVolume.replace(REGEX_NUMBER_FORMAT, "$1")}`,
-      fees24h: `${convertToMB(Number(feeVolume).toString(), 2)}`,
+      fees24h: `${convertToMB(Number(feeUsd24h).toString(), 2)}`,
       rewardTokens,
       currentTick,
       price,
       bins,
+      bins40,
       poolPath: poolPath,
       tvl: tvl,
     };
@@ -117,6 +119,7 @@ export class PoolMapper {
       bins,
       rewardTokens: pool.rewardTokens || [],
       apr: !pool.apr ? Number(pool.apr) : null,
+      bins40: pool.bins40,
     };
   }
 

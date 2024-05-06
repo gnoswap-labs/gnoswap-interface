@@ -3,10 +3,10 @@ import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
 import { DashboardRepository } from "./dashboard-repository";
 import { TvlResponse } from "./response";
-import { IVolumeResponse } from "./response/volume-response";
 import { DashboardTokenResponse } from "./response/token-response";
 import { OnChainRequestMapping, OnchainAccountRequest, OnchainRequest } from "./request";
 import { OnchainActivityResponse } from "./response/onchain-response";
+import { IVolumeResponse } from "./response/volume-response";
 
 export class DashboardRepositoryImpl implements DashboardRepository {
   private networkClient: NetworkClient;

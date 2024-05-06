@@ -6,7 +6,7 @@ const DEFAULT_TOKEN: TokenModel = {
   path: "",
   address: "",
   type: "grc20",
-  priceID: "",
+  priceId: "",
   chainId: "",
   name: "",
   symbol: "",

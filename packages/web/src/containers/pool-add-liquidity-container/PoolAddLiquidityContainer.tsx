@@ -59,12 +59,12 @@ const PRICE_RANGES: AddLiquidityPriceRage[] = [
 
 
 const EarnAddLiquidityContainer: React.FC = () => {
+  const router = useRouter();
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isKeepToken = false } = swapValue;
-  const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
-  
+
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">("EXACT_IN");
@@ -86,7 +86,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
-  const selectPool = useSelectPool({ tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice });
+  const selectPool = useSelectPool({
+    tokenA, tokenB, feeTier: swapFeeTier, isCreate: createOption?.isCreate, startPrice: createOption?.startPrice
+  });
   const { updatePools } = usePoolData();
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity, fetching } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
   const { openModal: openOneClickModal } = useOneClickStakingModal({

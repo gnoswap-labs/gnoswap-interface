@@ -12,7 +12,7 @@
       "symbol": "BAR",
       "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
       "type": "grc20",
-      "priceID": "gno.land/r/bar"
+      "priceId": "gno.land/r/bar"
     },
     "tokenB": {
       "chainId": "dev",
@@ -24,7 +24,7 @@
       "symbol": "FOO",
       "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       "type": "grc20",
-      "priceID": "gno.land/r/foo"
+      "priceId": "gno.land/r/foo"
     },
     "incentivizedType": "INCENTIVIZED",
     "tvl": 1182782.0,
@@ -35,7 +35,7 @@
     "id": "bar_foo_500",
     "apr": 0.12345,
     "fee": "0.05%",
-    "feeVolume": 131.937491,
+    "feeUsd24h": 131.937491,
     "feeChange": 13193.749143,
     "currentTick": 8090,
     "price": 1.49859,
@@ -43,6 +43,7 @@
     "tokenBBalance": 2777571,
     "tickSpacing": 10,
     "bins": [],
+    "bins40": [],
     "topBin": null,
     "resolvedBins": [],
     "totalApr": 0,

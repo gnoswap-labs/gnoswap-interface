@@ -12,8 +12,6 @@ export interface TokenModel {
 
   address?: string;
 
-  priceID: string;
-
   chainId: string;
 
   name: string;
@@ -37,6 +35,8 @@ export interface TokenModel {
   wrappedPath?: string;
 
   denom?: string;
+
+  priceId: string
 }
 
 export interface NativeTokenModel extends TokenModel {

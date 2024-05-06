@@ -83,10 +83,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   };
 
   private getNotificationMessage = (tx: AccountActivity) => {
-    const token0Amount = prettyNumberFloatInteger(tx?.token0Amount);
+    const token0Amount = prettyNumberFloatInteger(tx?.tokenAAmount);
     const token0symbol = this.replaceToken(tx?.token0?.symbol);
 
-    const token1Amount = prettyNumberFloatInteger(tx?.token1Amount);
+    const token1Amount = prettyNumberFloatInteger(tx?.tokenBAmount);
     const token1symbol = this.replaceToken(tx?.token1?.symbol);
 
     switch (tx.actionType) {
@@ -108,7 +108,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
         return `Received <span>${token0Amount}</span> <span>${token0symbol}</span>`;
       default:
         return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumberFloatInteger(
-          tx.token0Amount,
+          tx.tokenAAmount,
         )} ${this.replaceToken(tx.token0.symbol ?? tx.token1.symbol)}`;
     }
   };

@@ -30,8 +30,8 @@ const SubmitPositionModalContainer = ({
     }
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce((accum, position) => accum + position.token0Balance, 0n);
-    const pooledTokenBAmount = positions.reduce((accum, position) => accum + position.token1Balance, 0n);
+    const pooledTokenAAmount = positions.reduce((accum, position) => accum + position.tokenABalance, 0n);
+    const pooledTokenBAmount = positions.reduce((accum, position) => accum + position.tokenBBalance, 0n);
     const tokenAAmount = makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
     const tokenBAmount = makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
     return [{
@@ -55,8 +55,8 @@ const SubmitPositionModalContainer = ({
     broadcastLoading(makeBroadcastStakingMessage("pending", {
       tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
       tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
     }));
     const result = await positionRepository.stakePositions({
       lpTokenIds,
@@ -70,10 +70,10 @@ const SubmitPositionModalContainer = ({
           broadcastSuccess(makeBroadcastStakingMessage("success", {
             tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
             tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
           }));
-          
+
         }, 1000);
         const pathName = router.pathname;
         if (pathName === "/earn/stake") {
@@ -85,15 +85,15 @@ const SubmitPositionModalContainer = ({
         broadcastError(makeBroadcastStakingMessage("error", {
           tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
           tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
         }));
       } else {
         broadcastRejected(makeBroadcastStakingMessage("error", {
           tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
           tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
+          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 }),
+          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6 })
         }));
       }
     }

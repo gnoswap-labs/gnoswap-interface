@@ -35,8 +35,8 @@ export const useTokenData = () => {
     refetchInterval: PATH.includes(router.pathname)
       ? 15 * 1000
       : router.pathname === "/" || router.pathname === "/earn/add"
-      ? 10 * 1000
-      : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
+        ? 10 * 1000
+        : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
   });
   const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
@@ -63,7 +63,7 @@ export const useTokenData = () => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
     if (tokens.length === 0 || isEmptyObject(balances)) return {};
     Object.keys(balances).forEach(key => {
-      const token = tokens.find(token => token.priceID === key);
+      const token = tokens.find(token => token.priceId === key);
       const balance = balances[key];
       const exist = token && balance !== null && balance !== undefined;
       tokenBalanceMap[key] = exist
@@ -91,8 +91,8 @@ export const useTokenData = () => {
         return 0;
       })
       .filter((_, index) => index < 3);
-      return sortedTokens.map(token => {
-      const tokenPrice = tokenPrices[token.priceID];
+    return sortedTokens.map(token => {
+      const tokenPrice = tokenPrices[token.priceId];
       if (
         !tokenPrice ||
         BigNumber(tokenPrice.pricesBefore.latestPrice).isNaN() ||
@@ -137,25 +137,25 @@ export const useTokenData = () => {
       .map(token =>
         tokenPrices[token.path]
           ? {
-              token: {
-                ...token,
-                symbol: getGnotPath(token).symbol,
-                name: getGnotPath(token).name,
-                logoURI: getGnotPath(token).logoURI,
-              },
-              upDown: "none" as UpDownType,
-              content: `${toUnitFormat(tokenPrices[token.path].usd, true, false)}`,
-            }
-          : {
-              token: {
-                ...token,
-                symbol: getGnotPath(token).symbol,
-                name: getGnotPath(token).name,
-                logoURI: getGnotPath(token).logoURI,
-              },
-              upDown: "none" as UpDownType,
-              content: "-",
+            token: {
+              ...token,
+              symbol: getGnotPath(token).symbol,
+              name: getGnotPath(token).name,
+              logoURI: getGnotPath(token).logoURI,
             },
+            upDown: "none" as UpDownType,
+            content: `${toUnitFormat(tokenPrices[token.path].usd, true, false)}`,
+          }
+          : {
+            token: {
+              ...token,
+              symbol: getGnotPath(token).symbol,
+              name: getGnotPath(token).name,
+              logoURI: getGnotPath(token).logoURI,
+            },
+            upDown: "none" as UpDownType,
+            content: "-",
+          },
       )
       .filter((_: CardListTokenInfo) => _.content !== "-")
       .slice(0, 3);
@@ -223,7 +223,7 @@ export const useTokenData = () => {
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balancesData[tokens[index].priceID] = result;
+        balancesData[tokens[index].priceId] = result;
       }
     });
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {

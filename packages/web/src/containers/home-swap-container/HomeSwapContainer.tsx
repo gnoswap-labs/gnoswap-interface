@@ -26,7 +26,7 @@ const TOKEN_A: TokenModel = {
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "native",
-  priceID: "gnot",
+  priceId: "gnot",
 };
 const TOKEN_B: TokenModel = {
   chainId: "dev",
@@ -38,7 +38,7 @@ const TOKEN_B: TokenModel = {
   symbol: "GNS",
   logoURI: "/gnos.svg",
   type: "grc20",
-  priceID: GNOS_PATH,
+  priceId: GNOS_PATH,
 };
 
 const HomeSwapContainer: React.FC = () => {
@@ -56,8 +56,8 @@ const HomeSwapContainer: React.FC = () => {
 
   const tokenABalance = useMemo(() => {
     if (!connected || isSwitchNetwork) return "-";
-    if (tokenA && displayBalanceMap[tokenA.priceID]) {
-      const balance = displayBalanceMap[tokenA.priceID] || 0;
+    if (tokenA && displayBalanceMap[tokenA.priceId]) {
+      const balance = displayBalanceMap[tokenA.priceId] || 0;
       return BigNumber(balance).toFormat(tokenA.decimals);
     }
     if (isEmptyObject(displayBalanceMap)) {
@@ -71,27 +71,27 @@ const HomeSwapContainer: React.FC = () => {
     if (isEmptyObject(displayBalanceMap)) {
       return "-";
     }
-    if (tokenB && displayBalanceMap[tokenB.priceID]) {
-      const balance = displayBalanceMap[tokenB.priceID] || 0;
+    if (tokenB && displayBalanceMap[tokenB.priceId]) {
+      const balance = displayBalanceMap[tokenB.priceId] || 0;
       return BigNumber(balance).toFormat(tokenB.decimals);
     }
     return "0";
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
-  
+
   const tokenAUSD = useMemo(() => {
-    if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
+    if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceId)]) {
       return Number.NaN;
     }
     return BigNumber(tokenAAmount)
-      .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceId)].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
   const tokenBUSD = useMemo(() => {
-    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
+    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceId)]) {
       return Number.NaN;
     }
     return BigNumber(tokenBAmount)
-      .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
+      .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceId)].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {

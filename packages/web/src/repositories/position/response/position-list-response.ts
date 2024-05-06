@@ -51,7 +51,20 @@ export interface PositionResponse {
   rewards?: RewardResponse[];
 
   reward?: RewardResponse[];
+  
   bins: PoolBinModel[];
+  
+  bins40: PoolBinModel[];
+
   closed: boolean;
+  
   totalDailyRewardsUsd: string;
+
+  totalClaimedUsd: string;
+
+  incentiveType: string;
+
+  unclaimedFeeAUsd: string;
+
+  unclaimedFeeBUsd: string;
 }

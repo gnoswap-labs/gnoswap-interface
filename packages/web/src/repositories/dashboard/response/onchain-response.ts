@@ -21,5 +21,5 @@ export interface OnchainToken {
   decimals: number;
   symbol: string;
   logoURI: string;
-  priceID: string;
+  priceId: string;
 }
