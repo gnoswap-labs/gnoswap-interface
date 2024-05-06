@@ -297,15 +297,26 @@ export function countZeros(decimalFraction: string) {
   return Math.abs(exponent);
 }
 
-export function subscriptFormat(number: string | number) {
+export function subscriptFormat(
+  number: string | number, 
+  options?: {
+    significantDigits?: number,
+    subscriptOffset?: number
+  }
+) {
   const numberStr = number.toString();
   const numberOfZero = countZeros(numberStr);
+  const significantDigits = options?.significantDigits || 5;
+  const zeroCountOffset = options?.subscriptOffset ? (options?.subscriptOffset + 1) : 5;
+  const subscriptZeroCharCode = 8320;
   
-  if(numberOfZero <= 5) {
-    return removeTrailingZeros(Number(numberStr).toFixed(Math.min((numberOfZero - 1) + 5, numberStr.length)));
+  if(numberOfZero <= zeroCountOffset) {
+    return removeTrailingZeros(Number(numberStr).toLocaleString("en-US", {
+      maximumSignificantDigits: significantDigits
+    }));
   }
   
-  const result = `0.0${String.fromCharCode(8320 + Number(numberOfZero - 1))}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
+  const result = `0.0${String.fromCharCode(subscriptZeroCharCode + Number(numberOfZero - 1))}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
   return result;
 }
 

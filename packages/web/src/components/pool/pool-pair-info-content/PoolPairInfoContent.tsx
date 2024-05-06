@@ -257,7 +257,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   width={20}
                   className="image-logo"
                 />
-                {width >= 768 && `1 ${pool?.tokenB?.symbol}`} = <ExchangeRate value={convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2))}`, 6)} /> {pool?.tokenA?.symbol}
+                {width >= 768 && `1 ${pool?.tokenB?.symbol}`} = <ExchangeRate value={convertToKMB(`${Number((Number(1 / pool.price)).toFixed(width > 400 ? 6 : 2))}`, { maximumFractionDigits: 6 })} /> {pool?.tokenA?.symbol}
               </div>}
             </div>
           </div>

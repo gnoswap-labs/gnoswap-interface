@@ -271,7 +271,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (isSwap) {
       return <>1 {tokenB?.symbol} = <ExchangeRate value={convertToKMB(
         `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
-        6,
+        { maximumFractionDigits: 6 },
       )} /> {tokenA?.symbol}</>;
     }
     return <>1 {tokenA?.symbol} = <ExchangeRate value={price} /> {tokenB?.symbol}</>;
@@ -341,7 +341,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       ? "0 "
       : !isSwap
         ? Number(minPrice)
-        : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
+        : convertToKMB(`${Number(1 / Number(maxPrice))}`, { maximumFractionDigits: 6 });
     return `${tokenAPriceStr}`;
   }, [
     position.tickUpper,
@@ -392,7 +392,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       ? "∞ "
       : !isSwap
         ? maxPrice
-        : convertToKMB(`${Number(1 / Number(minPrice))}`, 6);
+        : convertToKMB(`${Number(1 / Number(minPrice))}`, { maximumFractionDigits: 6 });
     return `${tokenBPriceStr}`;
   }, [
     position.tickLower,

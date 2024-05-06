@@ -168,8 +168,8 @@ export const useEarnAddLiquidityConfirmModal = ({
       inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
-      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞" ? minPriceStr : convertToKMB(Number(minPriceStr).toFixed(4), 4)} ${tokenBSymbol}`,
-      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞" ? maxPriceStr : convertToKMB(Number(maxPriceStr).toFixed(4), 4)} ${tokenBSymbol}`,
+      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞" ? minPriceStr : convertToKMB(Number(minPriceStr).toFixed(4), { maximumFractionDigits: 4 })} ${tokenBSymbol}`,
+      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞" ? maxPriceStr : convertToKMB(Number(maxPriceStr).toFixed(4), { maximumFractionDigits: 4 })} ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
     };
@@ -217,10 +217,10 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastLoading(makeBroadcastAddLiquidityMessage("pending", {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
-      tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})
+      tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6 }),
+      tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6 })
     }));
-    
+
     const transaction = selectPool.isCreate ? createPool({
       tokenAAmount,
       tokenBAmount,
@@ -245,8 +245,8 @@ export const useEarnAddLiquidityConfirmModal = ({
             broadcastSuccess(makeBroadcastAddLiquidityMessage("success", {
               tokenASymbol: result.tokenA.symbol,
               tokenBSymbol: result.tokenB.symbol,
-              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
-              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
+              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6 }),
+              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6 }),
             }), moveToBack);
           }, 1000);
           return true;
@@ -254,8 +254,8 @@ export const useEarnAddLiquidityConfirmModal = ({
           broadcastRejected(makeBroadcastAddLiquidityMessage("error", {
             tokenASymbol: tokenA.symbol,
             tokenBSymbol: tokenB.symbol,
-            tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
-            tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})
+            tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6 }),
+            tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6 })
           }));
           return true;
         }
@@ -269,8 +269,8 @@ export const useEarnAddLiquidityConfirmModal = ({
         broadcastError(makeBroadcastAddLiquidityMessage("error", {
           tokenASymbol: tokenA.symbol,
           tokenBSymbol: tokenB.symbol,
-          tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6}),
-          tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6})
+          tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", { maximumFractionDigits: 6 }),
+          tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6 })
         }));
       });
   }, [tokenA, tokenB, swapFeeTier, selectPool.tickSpacing, selectPool.minPrice, selectPool.maxPrice, selectPool.isCreate, selectPool.selectedFullRange, selectPool.startPrice, addLiquidity, tokenAAmount, tokenBAmount, slippage, createPool]);

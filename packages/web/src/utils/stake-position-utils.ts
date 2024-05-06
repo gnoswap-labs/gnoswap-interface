@@ -37,12 +37,15 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
 
 export const convertToKMB = (
   price: string,
-  maximumFractionDigits?: number,
-  minimumFractionDigits?: number,
-) => {
+  options?: {
+    maximumFractionDigits?: number,
+    minimumFractionDigits?: number,
+    minimumSignificantDigits?: number,
+    maximumSignificantDigits?: number,
+}) => {
   if (Number.isNaN(Number(price))) return "-";
-
-  const significantNumber = 5;
+  
+  const maximumSignificantDigits = options?.maximumSignificantDigits || 5;
   const convertOffset = 999;
   const intPart = Math.trunc(Number(price));
   
@@ -51,12 +54,16 @@ export const convertToKMB = (
     if (Number(price) < 0.000001 && Number(price) !== 0) return "0.000001";
     if (Number(price) < 1) return `${Number(Number(price).toFixed(6))}`;
     
-    const defaultDecimalDigit = significantNumber - intPart.toString().length;
-
-    return removeTrailingZeros(Number(price).toLocaleString("en-US", {
-      maximumFractionDigits: maximumFractionDigits ?? defaultDecimalDigit,
-      minimumFractionDigits: minimumFractionDigits ?? defaultDecimalDigit,
+    const result = removeTrailingZeros(Number(price).toLocaleString("en-US", {
+      maximumSignificantDigits: maximumSignificantDigits,
+      minimumSignificantDigits: options?.minimumSignificantDigits,
+      maximumFractionDigits: options?.maximumFractionDigits,
+      minimumFractionDigits: options?.minimumFractionDigits,
     }));
+    console.log("🚀 ~ result ~ result:", result);
+
+
+    return result;
   } else {
     const temp = Math.floor(Number(price));
     if (temp >= 1e9) {
@@ -85,8 +92,8 @@ export const convertToKMB = (
       );
     }
     return Number.isInteger(price) ? `${Number(price)}` : Number(price).toLocaleString("en-US", {
-      maximumFractionDigits: maximumFractionDigits ?? 2,
-      minimumFractionDigits: minimumFractionDigits ?? 2,
+      maximumFractionDigits: options?.maximumFractionDigits ?? 2,
+      minimumFractionDigits: options?.minimumFractionDigits ?? 2,
     });
   }
 };

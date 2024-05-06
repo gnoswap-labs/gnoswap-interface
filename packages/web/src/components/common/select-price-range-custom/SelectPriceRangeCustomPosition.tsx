@@ -116,7 +116,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = convertToKMB(selectPool.currentPrice.toFixed(4), 4);
+    const currentPrice = convertToKMB(selectPool.currentPrice.toFixed(4), { maximumFractionDigits: 4 });
     return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
@@ -126,7 +126,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     }
     const currentPrice = convertToKMB(
       (1 / selectPool.currentPrice).toString(),
-      4,
+      { maximumFractionDigits: 4 },
     );
     return `1 ${currentTokenB.symbol} = ${currentPrice} ${currentTokenA.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
@@ -251,17 +251,15 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="button-option-contaier">
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${
-                        isLoading || showDim ? "disabled-option" : ""
-                      }`}
+                      className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""
+                        }`}
                       onClick={selectPool.zoomIn}
                     >
                       <IconKeyboardArrowLeft />
                     </span>
                     <span
-                      className={`graph-option-item increase ${
-                        isLoading || showDim ? "disabled-option" : ""
-                      }`}
+                      className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""
+                        }`}
                       onClick={selectPool.zoomOut}
                     >
                       <IconKeyboardArrowRight />
@@ -269,17 +267,15 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   </div>
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${
-                        isLoading || showDim ? "disabled-option" : ""
-                      }`}
+                      className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""
+                        }`}
                       onClick={selectPool.zoomIn}
                     >
                       <IconRemove />
                     </span>
                     <span
-                      className={`graph-option-item increase ${
-                        isLoading || showDim ? "disabled-option" : ""
-                      }`}
+                      className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""
+                        }`}
                       onClick={selectPool.zoomOut}
                     >
                       <IconAdd />
@@ -354,7 +350,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       increase={selectPool.increaseMinTick}
                       currentPriceStr={currentPriceStr}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                      // priceRangeType={priceRangeType}
+                    // priceRangeType={priceRangeType}
                     />
                     <SelectPriceRangeCutomController
                       title="Max Price"
@@ -370,7 +366,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       increase={selectPool.increaseMaxTick}
                       currentPriceStr={currentPriceStrReverse}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                      // priceRangeType={priceRangeType}
+                    // priceRangeType={priceRangeType}
                     />
                   </div>
                   <div className="extra-wrapper">

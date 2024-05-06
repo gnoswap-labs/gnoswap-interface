@@ -195,10 +195,16 @@ const LineGraph = ({
         const currentBaseLineValue = bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
 
         if (currentBaseLineValue < 1) {
-          return subscriptFormat(currentBaseLineValue.toString());
+          return subscriptFormat(currentBaseLineValue.toString(), { significantDigits: 3, subscriptOffset: 3 });
         }
 
-        return convertToKMB(currentBaseLineValue.toString());
+        if (currentBaseLineValue >= 1 && currentBaseLineValue < 100) {
+          return convertToKMB(currentBaseLineValue.toString(), { maximumSignificantDigits: 4 });
+        }
+
+        const result = Math.round(currentBaseLineValue).toString();
+
+        return convertToKMB(result, { maximumFractionDigits: 0, minimumFractionDigits: 0 });
       });
 
       setBaseLineYAxis([...baseLineData]);
@@ -215,7 +221,7 @@ const LineGraph = ({
           return prev;
         });
 
-        return longestNumber.length / maxLength * 44;
+        return longestNumber.length / maxLength * 52;
       })();
 
       setBaseLineNumberWidth(baseLineNumberWidthComputation);
@@ -402,7 +408,8 @@ const LineGraph = ({
     return path;
   }, [height, points, smooth]);
 
-  const offsetPixel = useMemo(() => 5, []);
+  const offsetPixel = useMemo(() => 3, []);
+  const isLightTheme = theme.themeKey === "light";
 
   return (
     <LineGraphWrapper
@@ -445,7 +452,9 @@ const LineGraph = ({
               gradientTransform="rotate(90)"
             >
               <stop offset="0%" stopColor={gradientStartColor} />
-              <stop offset="100%" stopColor={gradientEndColor} />
+              {isLightTheme
+                ? <stop offset="100%" stopColor={"white"} stopOpacity={0} />
+                : <stop offset="100%" stopColor={gradientEndColor} />}
             </linearGradient>
           </defs>
           <g ref={chartRef} height={height + (customHeight || 0)} width={width} className="line-chart-g">

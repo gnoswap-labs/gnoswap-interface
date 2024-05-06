@@ -44,7 +44,7 @@ export interface SelectPriceRangeCustomProps {
 
 export interface SelectPriceRangeCustomHandle {
   resetRange: (priceRangeType?: PriceRangeType | null) => void;
-} 
+}
 
 const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPriceRangeCustomProps>(({
   tokenA,
@@ -138,7 +138,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = convertToKMB((1 / selectPool.currentPrice).toString(), 4);
+    const currentPrice = convertToKMB((1 / selectPool.currentPrice).toString(), { maximumFractionDigits: 4 });
     return `1 ${currentTokenB.symbol} = ${currentPrice} ${currentTokenA.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
@@ -150,9 +150,9 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       if (!defaultPrice || !selectPool.isCreate) {
         return "";
       }
-      return <>1 {currentTokenA.symbol} = &nbsp;<ExchangeRate value={numberToFormat(defaultPrice, 4)}/>&nbsp;{currentTokenB.symbol}</>;
+      return <>1 {currentTokenA.symbol} = &nbsp;<ExchangeRate value={numberToFormat(defaultPrice, 4)} />&nbsp;{currentTokenB.symbol}</>;
     }
-    return <>1 {currentTokenA.symbol} =&nbsp;<ExchangeRate value={startingPriceValue}/>&nbsp; {currentTokenB.symbol}</>;
+    return <>1 {currentTokenA.symbol} =&nbsp;<ExchangeRate value={startingPriceValue} />&nbsp; {currentTokenB.symbol}</>;
   }, [currentTokenA, currentTokenB, defaultPrice, selectPool.isCreate, startingPriceValue]);
 
   const onClickTabItem = useCallback((symbol: string) => {
@@ -175,7 +175,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
   function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
     const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
-    const {tickLower, tickUpper} = defaultTicks ?? {};
+    const { tickLower, tickUpper } = defaultTicks ?? {};
 
     if (inputPriceRangeType === "Custom" && tickLower && tickUpper) {
       selectPool.setMinPosition(tickLower);
@@ -197,7 +197,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
   }
 
   useEffect(() => {
-    if(selectPool.selectedFullRange) {
+    if (selectPool.selectedFullRange) {
       setPriceRange("Custom");
     }
   }, [selectPool.selectedFullRange]);
@@ -259,8 +259,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }
   }, [selectPool.poolPath, priceRangeType]);
 
-  useEffect(()=> {
-    if(selectPool.selectedFullRange) {
+  useEffect(() => {
+    if (selectPool.selectedFullRange) {
       minPriceRangeCustomRef.current?.formatData();
       maxPriceRangeCustomRef.current?.formatData();
     }
@@ -275,7 +275,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       selectPool.setFocusPosition(scaleX(Number(selectPool.startPrice)));
     }
   }, [selectPool.currentPrice, selectPool.startPrice]);
-  
+
   if (selectPool.renderState() === "NONE") {
     return <></>;
   }
@@ -319,24 +319,24 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                     selectType={getGnotPath(selectPool.compareToken)?.symbol || ""}
                     list={[!isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol, isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol]}
                     onClick={onClickTabItem}
-                />
+                  />
                   <div className="button-option-contaier">
                     <div className="graph-option-wrapper">
-                        <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
-                          <IconKeyboardArrowLeft />
-                        </span>
-                        <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
-                          <IconKeyboardArrowRight />
-                        </span>
-                      </div>
-                      <div className="graph-option-wrapper">
-                        <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
-                          <IconRemove />
-                        </span>
-                        <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
-                          <IconAdd />
-                        </span>
-                      </div>
+                      <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                        <IconKeyboardArrowLeft />
+                      </span>
+                      <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                        <IconKeyboardArrowRight />
+                      </span>
+                    </div>
+                    <div className="graph-option-wrapper">
+                      <span className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomIn}>
+                        <IconRemove />
+                      </span>
+                      <span className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""}`} onClick={selectPool.zoomOut}>
+                        <IconAdd />
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -416,7 +416,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                     </div>
                     <div className="extra-wrapper">
                       <div className="icon-button reset" onClick={() => {
-                        if(priceRangeType !== resetPriceRangeTypeTarget) {
+                        if (priceRangeType !== resetPriceRangeTypeTarget) {
                           setPriceRange(resetPriceRangeTypeTarget);
                           resetRange(resetPriceRangeTypeTarget);
                         }

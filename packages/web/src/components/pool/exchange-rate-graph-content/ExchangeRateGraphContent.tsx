@@ -159,7 +159,6 @@ function ExchangeRateGraphContent({
           }}
           showBaseLine
           renderBottom={(baseLineNumberWidth) => {
-            console.log("🚀 ~ baseLineNumberWidth:", baseLineNumberWidth);
             return <ExchangeRateGraphXAxisWrapper innerWidth={(baseLineNumberWidth !== 0) ? `calc(100% - ${baseLineNumberWidth}px)` : "100%"}>
               <div className="exchange-rate-graph-xaxis">
                 {labelIndicesToShow.map((x, i) => (

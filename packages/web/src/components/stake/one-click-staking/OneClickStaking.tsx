@@ -28,7 +28,7 @@ const OneClickStaking: React.FC<Props> = ({
   const [swapValue] = useAtom(SwapState.swap);
   const { getGnotPath } = useGnotToGnot();
   const { tokenA: tokenAInfo = null, tokenB: tokenBInfo = null } = swapValue;
-  const [initialized, setInitialized] = useState<{tokenA: TokenModel | null, tokenB: TokenModel | null}>({ tokenA: null, tokenB: null }); 
+  const [initialized, setInitialized] = useState<{ tokenA: TokenModel | null, tokenB: TokenModel | null }>({ tokenA: null, tokenB: null });
 
   const tokenA = tokenAInfo ? {
     ...tokenAInfo,
@@ -50,12 +50,12 @@ const OneClickStaking: React.FC<Props> = ({
     const temp = [initialized?.tokenA?.symbol, initialized?.tokenB?.symbol].sort();
     const tempToken = [tokenA?.symbol, tokenB?.symbol].sort();
     const condition = temp[0] === tempToken[0] && temp[1] === tempToken[1];
-    
+
     if (!condition) {
-      setInitialized({ tokenA, tokenB});
+      setInitialized({ tokenA, tokenB });
     }
   }, [tokenA?.symbol, tokenB?.symbol, initialized]);
-  
+
   const isStakedPositions = useMemo(() => {
     return stakedPositions.length > 0;
   }, [stakedPositions]);
@@ -81,7 +81,7 @@ const OneClickStaking: React.FC<Props> = ({
   }, [pool.volume24h]);
 
   const feeChangedStr = useMemo((): string => {
-    return `$${convertToKMB(`${Math.round(Number(pool.feeChange))}`, 2)}`;
+    return `$${convertToKMB(`${Math.round(Number(pool.feeChange))}`, { maximumFractionDigits: 2 })}`;
   }, [pool.feeChange]);
 
   const rewardTokens = useMemo(() => {
@@ -133,7 +133,7 @@ const OneClickStaking: React.FC<Props> = ({
         <div>
           <div className="label">Staking APR</div>
           <div className="value">
-            <OverlapLogo logos={rewardTokens} size={24}/>
+            <OverlapLogo logos={rewardTokens} size={24} />
             {pool.stakingApr || "-"}
           </div>
         </div>
