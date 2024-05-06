@@ -174,10 +174,10 @@ const TvlChartContainer: React.FC = () => {
 
     switch (tvlChartType) {
       case "30D":
-        chartData = tvlData?.last1m;
+        chartData = tvlData?.last30d;
         break;
       case "90D":
-        chartData = tvlData?.last1y;
+        chartData = tvlData?.last90d;
         break;
       case "ALL":
         chartData = tvlData?.all;
@@ -206,6 +206,7 @@ const TvlChartContainer: React.FC = () => {
       },
       { xAxisLabels: [], datas: [] } as TvlChartInfo,
     );
+
   }, [tvlChartType, tvlData]);
 
   return (
@@ -215,7 +216,7 @@ const TvlChartContainer: React.FC = () => {
       tvlPriceInfo={{
         amount: tvlData?.latest ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}` : "-",
       }}
-      tvlChartInfo={chartData}
+      tvlChartInfo={chartData ?? { xAxisLabels: [], datas: [] }}
       loading={isLoading || isLoadingCommon}
     />
   );

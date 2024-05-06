@@ -13,7 +13,7 @@ export const EarnAddLiquidityWrapper = styled.section`
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: ${({ theme }) => theme.color.shadow01};
-  padding: 23px;
+  padding: 24px;
   .button-submit {
     height: 57px;
     span {

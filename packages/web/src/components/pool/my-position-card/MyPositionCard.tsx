@@ -142,7 +142,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       sumOfBalances === 0
         ? 0.5
         : token0Balance /
-          (token0Balance + token1Balance / position?.pool?.price);
+        (token0Balance + token1Balance / position?.pool?.price);
     return [
       {
         token: tokenA,
@@ -272,9 +272,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return <>1 {tokenB?.symbol} = <ExchangeRate value={convertToKMB(
         `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
         6,
-      )}/> {tokenA?.symbol}</>;
+      )} /> {tokenA?.symbol}</>;
     }
-    return <>1 {tokenA?.symbol} = <ExchangeRate value={price}/> {tokenB?.symbol}</>;
+    return <>1 {tokenA?.symbol} = <ExchangeRate value={price} /> {tokenB?.symbol}</>;
   }, [
     isSwap,
     tokenB?.symbol,
@@ -303,7 +303,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -321,7 +321,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -340,8 +340,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const tokenAPriceStr = isFullRange
       ? "0 "
       : !isSwap
-      ? Number(minPrice)
-      : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
+        ? Number(minPrice)
+        : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
     return `${tokenAPriceStr}`;
   }, [
     position.tickUpper,
@@ -391,8 +391,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     const tokenBPriceStr = isFullRange
       ? "∞ "
       : !isSwap
-      ? maxPrice
-      : convertToKMB(`${Number(1 / Number(minPrice))}`, 6);
+        ? maxPrice
+        : convertToKMB(`${Number(1 / Number(minPrice))}`, 6);
     return `${tokenBPriceStr}`;
   }, [
     position.tickLower,
@@ -410,20 +410,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return (!isSwap ? -minTickRate : minTickRate) > 1000
       ? ">999%"
-      : `${minTickRate < -1 ? "+" : ""}${
-          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-            ? "<1"
-            : Math.round(minTickRate * -1)
-        }%`;
+      : `${minTickRate < -1 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+        ? "<1"
+        : Math.round(minTickRate * -1)
+      }%`;
   }, [minTickRate, isSwap]);
 
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999
       ? `>${maxTickRate}%`
       : maxTickRate >= 1000
-      ? ">999%"
-      : `${maxTickRate > 1 ? "+" : ""}${
-          Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
+        ? ">999%"
+        : `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
         }%`;
   }, [maxTickRate]);
 
@@ -487,13 +485,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                       <div
                         onClick={() =>
                           setCopy(
-                            `${
-                              window.location.host + window.location.pathname
+                            `${window.location.host + window.location.pathname
                             }?addr=${address}#${position.id}`,
                           )
                         }
                       >
-                        <IconLinkPage className="icon-link"/>
+                        <IconLinkPage className="icon-link" />
                         {copied && (
                           <CopyTooltip>
                             <div className={`box ${themeKey}-shadow`}>
@@ -546,7 +543,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`)}/>
+              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`)} />
               {!position.staked && !isClosed && !isHiddenAddPosition && connected && (
                 <SelectBox
                   current={"Manage"}
@@ -680,8 +677,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     position.closed
                       ? RANGE_STATUS_OPTION.NONE
                       : inRange
-                      ? RANGE_STATUS_OPTION.IN
-                      : RANGE_STATUS_OPTION.OUT
+                        ? RANGE_STATUS_OPTION.IN
+                        : RANGE_STATUS_OPTION.OUT
                   }
                 />
               </div>
@@ -715,7 +712,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           {!loading && (
             <div className="convert-price">
               <div>
-                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr}/>{" "}
+                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr} />{" "}
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={startClass}>
                   {!isSwap ? minTickLabel : maxTickLabel}
@@ -736,7 +733,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 &nbsp;
               </div>
               <div>
-                ~ <ExchangeRate value={maxPriceStr}/> {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                ~ <ExchangeRate value={maxPriceStr} /> {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}
                 </span>
@@ -757,7 +754,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
           )}
         </div>
-        <PositionHistory isClosed={isClosed} tokenA={tokenA} tokenB={tokenB}/>
+        <PositionHistory isClosed={isClosed} tokenA={tokenA} tokenB={tokenB} />
       </MyPositionCardWrapper>
     </>
   );
