@@ -30,8 +30,6 @@ export interface PoolModel {
 
   bins40: PoolBinModel[];
 
-  allTimeVolumeUsd: number;
-
   tvl: number;
 
   tvlChange: number;
