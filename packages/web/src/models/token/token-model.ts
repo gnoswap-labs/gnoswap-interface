@@ -36,7 +36,7 @@ export interface TokenModel {
 
   denom?: string;
 
-  priceId: string
+  priceID: string
 }
 
 export interface NativeTokenModel extends TokenModel {

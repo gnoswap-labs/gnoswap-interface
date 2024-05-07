@@ -187,8 +187,8 @@ export const useDecreaseHandle = () => {
     const unClaimTokenA = selectedPosition.unclaimedFeeAAmount;
     const unClaimTokenB = selectedPosition.unclaimedFeeBAmount;
 
-    const tokenAPrice = tokenPrices[tokenA.priceId]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceId]?.usd || 0;
+    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
+    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
 
     const tokenAAmount =
       makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;

@@ -22,7 +22,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
   close,
 }) => {
   const getTokenPrice = useCallback((token: TokenModel) => {
-    const tokenPrice = tokenPrices[token.priceId];
+    const tokenPrice = tokenPrices[token.priceID];
     if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
       return "-";
     }

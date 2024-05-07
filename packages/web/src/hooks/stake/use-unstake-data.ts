@@ -25,8 +25,8 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
       (accum, position) => accum + position.tokenBBalance,
       0n,
     );
-    const tokenAPrice = tokenPrices[tokenA.priceId]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceId]?.usd || 0;
+    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
+    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount =
       makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
     const tokenBAmount =
@@ -59,8 +59,8 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
       (accum, position) => accum + position.unclaimedFeeBAmount,
       0n,
     );
-    const tokenAPrice = tokenPrices[tokenA.priceId]?.usd || 0;
-    const tokenBPrice = tokenPrices[tokenB.priceId]?.usd || 0;
+    const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
+    const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount =
       makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
     const tokenBAmount =

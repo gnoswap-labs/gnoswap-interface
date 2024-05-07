@@ -96,7 +96,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
     const temp: SortedProps[] = tokens.map((item: TokenModel) => {
-      const tokenPrice = balances[item.priceId];
+      const tokenPrice = balances[item.priceID];
       if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
         return {
           price: "-",

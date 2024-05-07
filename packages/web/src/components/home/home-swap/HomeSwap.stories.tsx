@@ -26,7 +26,7 @@ Default.args = {
       symbol: "FOO",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       type: "grc20",
-      priceId: "gno.land/r/foo"
+      priceID: "gno.land/r/foo"
     },
     tokenAAmount: "0",
     tokenABalance: "0",
@@ -42,7 +42,7 @@ Default.args = {
       symbol: "FOO",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       type: "grc20",
-      priceId: "gno.land/r/foo"
+      priceID: "gno.land/r/foo"
     },
     tokenBAmount: "0",
     tokenBBalance: "0",

@@ -34,7 +34,7 @@ export const initialPool: PoolDetailModel = {
     symbol: "",
     logoURI: "",
     type: "native",
-    priceId: "",
+    priceID: "",
   },
   tokenB: {
     chainId: "",
@@ -46,7 +46,7 @@ export const initialPool: PoolDetailModel = {
     symbol: "",
     logoURI: "",
     type: "native",
-    priceId: "",
+    priceID: "",
   },
   incentivizedType: "INCENTIVIZED",
   tvl: 0,

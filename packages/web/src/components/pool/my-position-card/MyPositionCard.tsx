@@ -105,14 +105,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position]);
 
   const tokenABalanceUSD = useMemo(() => {
-    const tokenAUSD = Number(tokenPrices[tokenA.priceId]?.usd || "1");
+    const tokenAUSD = Number(tokenPrices[tokenA.priceID]?.usd || "1");
     const tokenABalance =
       makeDisplayTokenAmount(tokenA, position.tokenABalance) || 0;
     return tokenAUSD * tokenABalance;
   }, [position.tokenABalance, tokenA, tokenPrices]);
 
   const tokenBBalanceUSD = useMemo(() => {
-    const tokenBUSD = Number(tokenPrices[tokenB.priceId]?.usd || "1");
+    const tokenBUSD = Number(tokenPrices[tokenB.priceID]?.usd || "1");
     const tokenBBalance =
       makeDisplayTokenAmount(tokenB, position.tokenBBalance) || 0;
     return tokenBUSD * tokenBBalance;
@@ -190,7 +190,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             makeDisplayTokenAmount(current.token, current.totalAmount) || 0,
           balanceUSD:
             Number(current.totalAmount) *
-            Number(tokenPrices[current.token.priceId]?.usd || 0),
+            Number(tokenPrices[current.token.priceID]?.usd || 0),
           claimableUSD: Number(current.claimableUsdValue),
           accumulatedRewardOf1d:
             makeDisplayTokenAmount(

@@ -89,7 +89,7 @@ export interface ITokenA {
   decimals: number;
   symbol: string;
   logoURI: string;
-  priceId: string;
+  priceID: string;
 }
 
 export interface ITokenB {
@@ -101,7 +101,7 @@ export interface ITokenB {
   decimals: number;
   symbol: string;
   logoURI: string;
-  priceId: string;
+  priceID: string;
 }
 
 export interface IBin {

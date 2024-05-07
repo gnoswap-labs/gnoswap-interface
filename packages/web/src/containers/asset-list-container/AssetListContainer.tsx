@@ -71,7 +71,7 @@ export const dummyAssetList: Asset[] = [
     symbol: "BAR",
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
-    priceId: "gno.land/r/bar",
+    priceID: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
     price: "0",
@@ -86,7 +86,7 @@ export const dummyAssetList: Asset[] = [
     symbol: "BAR",
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
-    priceId: "gno.land/r/bar",
+    priceID: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
     price: "0",
@@ -127,7 +127,7 @@ const DEPOSIT_INFO: TokenModel = {
   symbol: "ATOM",
   logoURI: "/atom.svg",
   type: "grc20",
-  priceId: "gno.land/r/gns",
+  priceID: "gno.land/r/gns",
 };
 
 const INIT_GNOT = {
@@ -140,7 +140,7 @@ const INIT_GNOT = {
   symbol: "GNOT",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
-  priceId: "gnot",
+  priceID: "gnot",
   description:
     "Gno.land is a platform to write smart contracts in Gnolang (Gno). Using an interpreted version of the general-purpose programming language Golang (Go), developers can write smart contracts and other blockchain apps without having to learn a language that’s exclusive to a single ecosystem. Web2 developers can easily contribute to web3 and start building a more transparent, accountable world.\n\nThe Gno transaction token, GNOT, and the contributor memberships power the platform, which runs on a variation of Proof of Stake. Proof of Contribution rewards contributors from technical and non-technical backgrounds, fairly and for life with GNOT. This consensus mechanism also achieves higher security with fewer validators, optimizing resources for a greener, more sustainable, and enduring blockchain ecosystem.\n\nAny blockchain using Gnolang achieves succinctness, composability, expressivity, and completeness not found in any other smart contract platform. By observing a minimal structure, the design can endure over time and challenge the regime of information censorship we’re living in today.",
   websiteURL: "https://gno.land/",
@@ -159,7 +159,7 @@ const INIT_GNS = {
   symbol: "GNS",
   logoURI:
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  priceId: "gno.land/r/demo/gns",
+  priceID: "gno.land/r/demo/gns",
   description: "GNS is a GRC20 token issued solely for testing purposes.",
   websiteURL: "https://beta.gnoswap.io",
   displayPath: "gno.land/r/demo/gns",
@@ -291,7 +291,7 @@ const AssetListContainer: React.FC = () => {
     const COLLAPSED_LENGTH = 15;
     const temp: SortedProps[] = tokens
       .map(item => {
-        const tokenPrice = balances[item.priceId];
+        const tokenPrice = balances[item.priceID];
         if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
           return {
             price: "-",
