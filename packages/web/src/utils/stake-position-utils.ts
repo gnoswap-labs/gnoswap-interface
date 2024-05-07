@@ -45,7 +45,9 @@ export const convertToKMB = (
 }) => {
   if (Number.isNaN(Number(price))) return "-";
   
-  const maximumSignificantDigits = options?.maximumSignificantDigits || 5;
+  const defaultMaximumSignificantDigits = 5;
+  const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits; 
+  const maximumSignificantDigits = options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
   const convertOffset = 999;
   const intPart = Math.trunc(Number(price));
   

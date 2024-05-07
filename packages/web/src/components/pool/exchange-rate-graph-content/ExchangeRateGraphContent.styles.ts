@@ -6,7 +6,6 @@ import mixins from "@styles/mixins";
 export const ExchangeRateGraphContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
-  background-color: ${({ theme }) => theme.color.background15};
   border-radius: 8px;
   padding: 0 0 12px 0;
   ${media.mobile} {

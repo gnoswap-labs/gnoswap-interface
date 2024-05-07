@@ -199,7 +199,7 @@ const LineGraph = ({
         }
 
         if (currentBaseLineValue >= 1 && currentBaseLineValue < 100) {
-          return convertToKMB(currentBaseLineValue.toString(), { maximumSignificantDigits: 4 });
+          return convertToKMB(currentBaseLineValue.toString(), { maximumFractionDigits: 2, minimumFractionDigits: 2, });
         }
 
         const result = Math.round(currentBaseLineValue).toString();
