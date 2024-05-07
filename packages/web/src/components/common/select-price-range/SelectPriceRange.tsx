@@ -1,4 +1,4 @@
-import { PriceRangeStr, PriceRangeTooltip, PriceRangeType } from "@constants/option.constant";
+import { DefaultTick, PriceRangeStr, PriceRangeTooltip, PriceRangeType } from "@constants/option.constant";
 import React, { useCallback, useMemo, useRef } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -8,7 +8,6 @@ import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/
 import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustom";
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
-import { DefaultTick } from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
 
 interface SelectPriceRangeProps {
   opened: boolean;
@@ -48,7 +47,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   resetPriceRangeTypeTarget,
   defaultTicks,
 }) => {
-  const selectPriceRangeRef= useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
+  const selectPriceRangeRef = useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
   const selectedTokenPair = true;
 
   const changePriceRangeWithClear = useCallback((priceRange: AddLiquidityPriceRage) => {
@@ -107,7 +106,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   changePriceRange,
   priceRangeStr,
 }) => {
-  
+
   const aprStr = useMemo(() => {
     const apr = priceRange.apr;
     if (apr) {
