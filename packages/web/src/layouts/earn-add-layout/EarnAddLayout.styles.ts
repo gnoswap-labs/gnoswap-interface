@@ -33,12 +33,18 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 
+  .additional-info-section {
+    padding: 0 24px 0 16px;
+  }
+
   .add-liquidity-section {
     margin: 0 auto;
     height: 100%;
   }
   .one-click-staking {
-    padding: 0 24px 0 16px;
+    &.margin-bottom {
+      margin-bottom: 16px;
+    }
     .fake-div {
     }
   }
@@ -62,11 +68,20 @@ export const wrapper = (theme: Theme) => css`
         ${fonts.h4};
       }
     }
+    .additional-info-section {
+      width: 100%;
+      margin: auto;
+      padding: 0;
+    }
+    .exchange-rate-graph {
+      margin: auto;
+      max-width: 500px;
+      width: 100%;
+    }
     .add-liquidity-section {
       margin: auto;
     }
     .one-click-staking {
-      padding: 0;
       margin: 16px auto 0;
       width: 100%;
       max-width: 500px;
@@ -97,6 +112,7 @@ export const wrapper = (theme: Theme) => css`
     .add-liquidity-section {
       margin: none;
     }
+    
   }
   ${media.mobile} {
     .content-wrap {

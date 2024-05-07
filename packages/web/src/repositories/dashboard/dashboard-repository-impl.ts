@@ -24,6 +24,7 @@ export class DashboardRepositoryImpl implements DashboardRepository {
     const { data } = await this.networkClient.get<{ data: TvlResponse}>({
       url: "/dashboard/tvl",
     });
+
     return data.data;
   };
   public getDashboardVolume = async (): Promise<IVolumeResponse> => {

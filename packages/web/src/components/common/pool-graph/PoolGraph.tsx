@@ -94,9 +94,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
+  // D3 - Dimension Definition 
   const minX = d3.min(bins, (bin) => bin.minTick - defaultMinX) || 0;
   const maxX = d3.max(bins, (bin) => bin.maxTick - defaultMinX) || 0;
-  
+
   const resolvedBins = useMemo(() => {
     const length = bins.length / 2;
     const convertReserveBins = bins.map((item, index) => {
@@ -110,7 +111,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         index: index,
       };
     });
-    
+
     const maxHeight = d3.max(convertReserveBins, (bin) => bin.reserveTokenAMap) || 0;
     const temp = convertReserveBins.sort((b1, b2) => b1.minTick - b2.minTick).map(bin => {
       return {
@@ -122,19 +123,21 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         maxTickSwap: bin.maxTick - defaultMinX,
       };
     });
-    const revereTemp = temp.map((item, i) => ({...temp[length * 2 - i - 1], minTick: item.minTick, maxTick: item.maxTick, minTickSwap: temp[length * 2 - i - 1].minTick, maxTickSwap: temp[length * 2 - i - 1].maxTick}));
+    const revereTemp = temp.map((item, i) => ({
+      ...temp[length * 2 - i - 1],
+      minTick: item.minTick,
+      maxTick: item.maxTick,
+      minTickSwap: temp[length * 2 - i - 1].minTick,
+      maxTickSwap: temp[length * 2 - i - 1].maxTick
+    }));
     return !isSwap ? temp : revereTemp;
-    
+
   }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap]);
-  
+
   const maxHeight = d3.max(resolvedBins, (bin) => bin.reserveTokenMap) || 0;
 
-  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
-  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
-  const [positionX, setPositionX] = useState<number | null>(null);
-  const [positionY, setPositionY] = useState<number | null>(null);
 
-  /** D3 Variables */
+  // D3 - Scale Definition
   const defaultScaleX = d3
     .scaleLinear()
     .domain([0, maxX - minX])
@@ -149,6 +152,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .range([boundsHeight, 0]);
   }, [boundsHeight, maxHeight]);
   const centerX = currentTick ?? ((minX && maxX) ? (minX + maxX) / 2 : 0);
+
+  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
+  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
+  const [positionX, setPositionX] = useState<number | null>(null);
+  const [positionY, setPositionY] = useState<number | null>(null);
 
   function getTickSpacing() {
     if (resolvedBins.length < 1) {
@@ -179,7 +187,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     return `${isStart ? "right" : "left"}`;
   }, [width, height, positionX, positionY, position]);
   const random = Math.random().toString();
-  
+
   /** Update Chart by data */
   function updateChart() {
     const tickSpacing = getTickSpacing();
@@ -192,7 +200,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (isSwap) {
         isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing || scaleX(bin.minTick) > scaleX(maxX) - minTickPosition));
       }
-      if (isBlackBar) 
+      if (isBlackBar)
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       if (currentTick && (bin.minTick) < Number(currentTick - defaultMinX)) {
         return `url(#gradient-bar-green-${random})`;
@@ -203,12 +211,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     // Clean child elements.
     d3.select(chartRef.current).selectChildren().remove();
 
-    
+
     // Create a chart bar.
     const rects = d3.select(chartRef.current);
 
     rects.attr("clip-path", "url(#clip)");
 
+    // D3 - Draw Current tick (middle line)
     if (currentTick) {
       rects.append("line")
         .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
@@ -219,7 +228,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
         .attr("stroke-width", 1);
     }
-    
+
+    // D3 - Draw bins as bars 
     rects.selectAll("rects")
       .data(resolvedBins)
       .enter()
@@ -238,7 +248,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         return boundsHeight - scaleYComputation + (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
       });
     // Create a line of current tick.
-    
+
   }
 
   function onMouseoverChartBin(event: MouseEvent) {
@@ -258,7 +268,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }
       return mouseX >= minX && mouseX <= maxX;
     });
-    
+
     if (!bin) {
       setPositionX(null);
       setPositionY(null);
@@ -351,8 +361,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }).then(setTickOfPrices);
     }
   }, [bins]);
-  
+
   useEffect(() => {
+    //  D3 - Draw bin and define interaction
     const svgElement = d3.select(svgRef.current)
       .attr("width", width)
       .attr("height", height)
@@ -367,7 +378,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .attr("width", width)
       .attr("height", height);
 
-    if(!!width && !!height && !!scaleX && !!scaleY) {
+    if (!!width && !!height && !!scaleX && !!scaleY) {
       updateChart();
     }
   }, [width, height, scaleX, scaleY]);
@@ -396,7 +407,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         content={
           tooltipInfo ? (
             <PoolGraphTooltipWrapper ref={tooltipRef} className={`tooltip-container ${themeKey}-shadow}`}>
-              <PoolGraphBinTooptip tooltipInfo={tooltipInfo} isPosition={isPosition}/>
+              <PoolGraphBinTooptip tooltipInfo={tooltipInfo} isPosition={isPosition} />
             </PoolGraphTooltipWrapper>
           ) : null
         }>

@@ -2,7 +2,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectFeeTier from "@components/common/select-fee-tier/SelectFeeTier";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { EarnAddLiquidityWrapper, OutOfRangeWrapper } from "./EarnAddLiquidity.styles";
-import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType } from "@constants/option.constant";
+import { AddLiquidityType, SwapFeeTierType, SwapFeeTierInfoMap, AddLiquiditySubmitType, PriceRangeType, DefaultTick } from "@constants/option.constant";
 import { AddLiquidityPriceRage, PoolTick, PriceRangeSummary } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import LiquidityEnterAmounts from "@components/common/liquidity-enter-amounts/LiquidityEnterAmounts";
 import SelectPair from "@components/common/select-pair/SelectPair";
@@ -59,6 +59,10 @@ interface EarnAddLiquidityProps {
   fetching: boolean;
   handleSwapValue: () => void;
   isKeepToken: boolean;
+  setPriceRange: (type?: PriceRangeType) => void;
+  defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
+  resetPriceRangeTypeTarget: PriceRangeType;
+  defaultTicks?: DefaultTick;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -93,6 +97,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   fetching,
   handleSwapValue,
   isKeepToken,
+  setPriceRange,
+  defaultTicks,
+  resetPriceRangeTypeTarget,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -224,10 +231,10 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     if (!tokenA || !tokenB)
       return false;
     const { minPrice, maxPrice, currentPrice } = selectPool;
-    return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0)); 
+    return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0));
   }, [selectPool, tokenA, tokenB]);
-  const isLoading = useMemo(() => selectPool.renderState === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
-  
+  const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
+
   return (
     <EarnAddLiquidityWrapper>
       <h3>Add Position</h3>
@@ -309,6 +316,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             handleSwapValue={handleSwapValue}
             isEmptyLiquidity={isEmptyObject(feetierOfLiquidityMap)}
             isKeepToken={isKeepToken}
+            setPriceRange={setPriceRange}
+            defaultTicks={defaultTicks}
+            resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
           {!isLoading && isShowOutRange && <OutOfRangeWrapper>

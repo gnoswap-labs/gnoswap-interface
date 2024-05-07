@@ -34,13 +34,14 @@ export default function EarnAdd() {
       { title: "Add Position", path: "" },
     ];
   }, [data, width]);
-  
+
   return (
     <PoolAddLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading}/>}
+      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading} />}
       addLiquidity={<PoolAddLiquidityContainer />}
       oneStaking={<OneClickStakingContainer />}
+      exchangeRateGraph={null}
       footer={<Footer />}
     />
   );

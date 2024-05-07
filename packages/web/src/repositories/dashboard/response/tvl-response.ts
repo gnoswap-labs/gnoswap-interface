@@ -1,8 +1,8 @@
 export interface TvlResponse {
   latest: string;
   last7d: TvlData[];
-  last1m: TvlData[];
-  last1y: TvlData[];
+  last30d: TvlData[];
+  last90d: TvlData[];
   all: TvlData[];
 }
 
