@@ -4,7 +4,7 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import {
   feeBoostRateByPrices,
@@ -16,6 +16,7 @@ import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
+import { useQuery } from "@tanstack/react-query";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -31,7 +32,7 @@ interface Props {
 export interface SelectPool {
   poolPath: string | null;
   isCreate: boolean;
-  renderState: RenderState;
+  renderState: (isIgnoreDefaultLoading?: boolean) => RenderState;
   startPrice: number | null;
   feeTier: SwapFeeTierType | null;
   tickSpacing: number;
@@ -74,19 +75,17 @@ export const useSelectPool = ({
   feeTier,
   isCreate = false,
   startPrice = null,
-  defaultPriceRange,
+  defaultPriceRange = [null, null],
 }: Props) => {
-  const [defaultMinPosition, defaultMaxPosition] = defaultPriceRange ?? [null, null];
-
+  const priceRangeRef = useRef<[number | null, number | null]>([...defaultPriceRange]);
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
   const [zoomLevel, setZoomLevel] = useState<number>(9);
   const { poolRepository } = useGnoswapContext();
-  const [minPosition, setMinPosition] = useState<number | null>(defaultMinPosition ?? null);
-  const [maxPosition, setMaxPosition] = useState<number | null>(defaultMaxPosition ?? null);
+  const [minPosition, setMinPosition] = useState<number | null>(null);
+  const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
-  const [poolInfo, setPoolInfo] = useState<PoolDetailRPCModel | null>(null);
   const [latestPoolPath, setLatestPoolPath] = useState<string | null>(null);
   const [interactionType, setInteractionType] = useState<
     "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH"
@@ -94,30 +93,115 @@ export const useSelectPool = ({
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
   const { isLoadingCommon } = useLoading();
 
+  const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [tokenA?.path, tokenA?.wrappedPath]);
+  const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [tokenB?.path, tokenB?.wrappedPath]);
+
+  const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
+    PoolDetailRPCModel | null,
+    Error
+  >({
+    queryKey: ["poolInfo", tokenAPath, tokenBPath, feeTier, isCreate, startPrice],
+    queryFn: async () => {
+      if (!tokenA || !tokenB || !feeTier) {
+        return await Promise.resolve<PoolDetailRPCModel | null>(null);
+      }
+
+      if (isCreate) {
+        if (!startPrice) {
+          return await Promise.resolve<PoolDetailRPCModel | null>(null);
+        }
+        const poolInfo: PoolDetailRPCModel = {
+          poolPath: "",
+          tokenAPath: "",
+          tokenBPath: "",
+          fee: 0,
+          tokenABalance: 0n,
+          tokenBBalance: 0n,
+          tickSpacing: SwapFeeTierInfoMap[feeTier].tickSpacing,
+          maxLiquidityPerTick: 0,
+          price: startPrice,
+          sqrtPriceX96: 0n,
+          tick: 0,
+          feeProtocol: 0,
+          tokenAProtocolFee: 0,
+          tokenBProtocolFee: 0,
+          liquidity: 0n,
+          ticks: [],
+          tickDetails: {},
+          tickBitmaps: [],
+          positions: [],
+        };
+
+        return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
+      }
+
+      const tokenAPoolPath = tokenAPath;
+      const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
+      const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
+      const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
+        }`;
+
+      const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
+
+      const reverse =
+        tokenPair.findIndex(path => {
+          if (compareToken) {
+            return isNativeToken(compareToken)
+              ? compareToken.wrappedPath === path
+              : compareToken.path === path;
+          }
+          return false;
+        }) === 1;
+
+      const changedPoolInfo =
+        reverse === false
+          ? poolRes
+          : {
+            ...poolRes,
+            price: 1 / poolRes.price,
+            ticks: Object.keys(poolRes.ticks).map(
+              tick => Number(tick) * -1,
+            ),
+            positions: poolRes.positions.map(position => ({
+              ...position,
+              tickLower: position.tickUpper * -1,
+              tickUpper: position.tickLower * -1,
+            })),
+          };
+
+      return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
+    },
+    staleTime: 5_000
+  });
+
+  useEffect(() => {
+    priceRangeRef.current = [...defaultPriceRange];
+  }, [defaultPriceRange]);
+
   const poolPath = useMemo(() => {
     setCurrentPoolPath(latestPoolPath);
     return latestPoolPath;
   }, [latestPoolPath, setCurrentPoolPath]);
 
-  const renderState: RenderState = useMemo(() => {
+  const renderState = useCallback((isIgnoreDefaultLoading = false) => {
     if (!tokenA || !tokenB || !feeTier) {
       return "NONE";
     }
     if (isCreate && startPrice === null) {
       return "CREATE";
     }
-    if (!poolInfo || isLoadingCommon) {
+    if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoadingCommon : null)) {
       return "LOADING";
     }
     return "DONE";
   }, [
     feeTier,
     isCreate,
-    poolInfo,
     startPrice,
     tokenA,
     tokenB,
     isLoadingCommon,
+    isLoadingPoolInfo,
   ]);
 
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
@@ -292,11 +376,13 @@ export const useSelectPool = ({
   }, [maxPosition, poolInfo, interactionType]);
 
   const resetRange = useCallback(() => {
+    const [defaultMinPosition, defaultMaxPosition] = priceRangeRef.current;
+
     excuteInteraction(() => {
       setZoomLevel(9);
       setFullRange(false);
-      changeMinPosition(null);
-      changeMaxPosition(null);
+      changeMinPosition(defaultMinPosition);
+      changeMaxPosition(defaultMaxPosition);
     });
   }, [interactionType]);
 
@@ -319,88 +405,6 @@ export const useSelectPool = ({
     setMaxPosition(maxPriceRange.maxPrice);
     setFullRange(true);
   }, [feeTier]);
-
-  useEffect(() => {
-    if (!tokenA || !tokenB || !feeTier) {
-      return;
-    }
-    setPoolInfo(null);
-
-    if (isCreate) {
-      if (!startPrice) {
-        setPoolInfo(null);
-        return;
-      }
-      const poolInfo: PoolDetailRPCModel = {
-        poolPath: "",
-        tokenAPath: "",
-        tokenBPath: "",
-        fee: 0,
-        tokenABalance: 0n,
-        tokenBBalance: 0n,
-        tickSpacing: SwapFeeTierInfoMap[feeTier].tickSpacing,
-        maxLiquidityPerTick: 0,
-        price: startPrice,
-        sqrtPriceX96: 0n,
-        tick: 0,
-        feeProtocol: 0,
-        tokenAProtocolFee: 0,
-        tokenBProtocolFee: 0,
-        liquidity: 0n,
-        ticks: [],
-        tickDetails: {},
-        tickBitmaps: [],
-        positions: [],
-      };
-      setPoolInfo(poolInfo);
-      return;
-    }
-
-    const tokenAPoolPath = tokenA.wrappedPath || tokenA.path;
-    const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
-    const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
-    const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
-      }`;
-    const reverse =
-      tokenPair.findIndex(path => {
-        if (compareToken) {
-          return isNativeToken(compareToken)
-            ? compareToken.wrappedPath === path
-            : compareToken.path === path;
-        }
-        return false;
-      }) === 1;
-    poolRepository
-      .getPoolDetailRPCByPoolPath(poolPath)
-      .then(poolInfo => {
-        const changedPoolInfo =
-          reverse === false
-            ? poolInfo
-            : {
-              ...poolInfo,
-              price: 1 / poolInfo.price,
-              ticks: Object.keys(poolInfo.ticks).map(
-                tick => Number(tick) * -1,
-              ),
-              positions: poolInfo.positions.map(position => ({
-                ...position,
-                tickLower: position.tickUpper * -1,
-                tickUpper: position.tickLower * -1,
-              })),
-            };
-        console.log(changedPoolInfo);
-        setPoolInfo(changedPoolInfo);
-      })
-      .catch(() => setPoolInfo(null));
-  }, [
-    feeTier,
-    tokenA,
-    tokenB,
-    compareToken,
-    isCreate,
-    startPrice,
-    poolRepository,
-  ]);
 
   useEffect(() => {
     if (interactionType === "TICK_UPDATE") {

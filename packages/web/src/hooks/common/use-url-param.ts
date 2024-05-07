@@ -7,10 +7,16 @@ export function makeQueryString(data: DefaultObject): string {
   Object.keys(data).forEach(key => {
     const value = data[key];
     if (value === null || value === undefined || value === "") {
-      return;
+
+    } else {
+      let value = data[key];
+      if (typeof data[key] === "string") {
+        value = encodeURIComponent((data[key] ?? "") as string);
+      }
+      const param = `${key}=${value}`;
+      params.push(param);
     }
-    const param = `${key}=${data[key]}`;
-    params.push(param);
+
   });
   return params.join("&");
 }

@@ -225,9 +225,17 @@ export const CHART_TYPE = {
   "7D": "7D",
   "30D": "30D",
   "90D": "90D",
-  ALL: "ALL",
+  "ALL": "ALL",
 } as const;
 export type CHART_TYPE = ValuesType<typeof CHART_TYPE>;
+
+export const CHART_DAY_SCOPE_TYPE = {
+  "7D": "7D",
+  "30D": "30D",
+  "ALL": "ALL",
+} as const;
+
+export type CHART_DAY_SCOPE_TYPE = ValuesType<typeof CHART_DAY_SCOPE_TYPE>;
 
 export type AddLiquidityType = "POOL" | "LIQUIDITY";
 
@@ -366,3 +374,8 @@ export const STAKING_PERIOD_INFO: {
     period: -1,
   },
 } as const;
+
+export interface DefaultTick {
+  tickLower?: number,
+  tickUpper?: number
+}

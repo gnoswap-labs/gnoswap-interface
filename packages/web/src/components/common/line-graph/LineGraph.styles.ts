@@ -24,6 +24,9 @@ export const LineGraphWrapper = styled.div`
     ${media.mobile} {
       height: 252px;
     }
+    .y-axis-number {
+      ${fonts.p6}
+    }
   }
 `;
 

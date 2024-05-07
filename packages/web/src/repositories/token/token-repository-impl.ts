@@ -14,6 +14,8 @@ import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
 import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
 import { customSort } from "@containers/select-token-container/SelectTokenContainer";
+import mockedExchangeRateGraph from  "./mock/token-exchange-rate-graph.json";
+import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient;
@@ -26,6 +28,10 @@ export class TokenRepositoryImpl implements TokenRepository {
     this.networkClient = networkClient;
     this.localStorageClient = localStorageClient;
   }
+
+  public getExchangeRateGraph = async (): Promise<TokenExchangeRateGraphResponse> => {
+    return mockedExchangeRateGraph;
+  };
 
   public getTokenByPath = async (path: string): Promise<ITokenResponse> => {
     const tempPath = path.replace(/\//g, "%2F");

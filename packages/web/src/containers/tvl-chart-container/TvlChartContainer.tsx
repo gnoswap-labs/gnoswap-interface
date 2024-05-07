@@ -207,6 +207,7 @@ const TvlChartContainer: React.FC = () => {
       },
       { xAxisLabels: [], datas: [] } as TvlChartInfo,
     );
+
   }, [tvlChartType, tvlData]);
 
   return (
@@ -216,7 +217,7 @@ const TvlChartContainer: React.FC = () => {
       tvlPriceInfo={{
         amount: tvlData?.latest ? `$${removeTrailingZeros(prettyNumber(tvlData?.latest))}` : "-",
       }}
-      tvlChartInfo={chartData}
+      tvlChartInfo={chartData ?? { xAxisLabels: [], datas: [] }}
       loading={isLoading || isLoadingCommon}
     />
   );

@@ -94,6 +94,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
+  // D3 - Dimension Definition 
   const minX = d3.min(bins, (bin) => bin.minTick - defaultMinX) || 0;
   const maxX = d3.max(bins, (bin) => bin.maxTick - defaultMinX) || 0;
 
@@ -122,19 +123,21 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         maxTickSwap: bin.maxTick - defaultMinX,
       };
     });
-    const revereTemp = temp.map((item, i) => ({ ...temp[length * 2 - i - 1], minTick: item.minTick, maxTick: item.maxTick, minTickSwap: temp[length * 2 - i - 1].minTick, maxTickSwap: temp[length * 2 - i - 1].maxTick }));
+    const revereTemp = temp.map((item, i) => ({
+      ...temp[length * 2 - i - 1],
+      minTick: item.minTick,
+      maxTick: item.maxTick,
+      minTickSwap: temp[length * 2 - i - 1].minTick,
+      maxTickSwap: temp[length * 2 - i - 1].maxTick
+    }));
     return !isSwap ? temp : revereTemp;
 
   }, [bins, boundsHeight, defaultMinX, poolPrice, isSwap]);
 
   const maxHeight = d3.max(resolvedBins, (bin) => bin.reserveTokenMap) || 0;
 
-  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
-  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
-  const [positionX, setPositionX] = useState<number | null>(null);
-  const [positionY, setPositionY] = useState<number | null>(null);
 
-  /** D3 Variables */
+  // D3 - Scale Definition
   const defaultScaleX = d3
     .scaleLinear()
     .domain([0, maxX - minX])
@@ -149,6 +152,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .range([boundsHeight, 0]);
   }, [boundsHeight, maxHeight]);
   const centerX = currentTick ?? ((minX && maxX) ? (minX + maxX) / 2 : 0);
+
+  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
+  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
+  const [positionX, setPositionX] = useState<number | null>(null);
+  const [positionY, setPositionY] = useState<number | null>(null);
 
   function getTickSpacing() {
     if (resolvedBins.length < 1) {
@@ -209,6 +217,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
     rects.attr("clip-path", "url(#clip)");
 
+    // D3 - Draw Current tick (middle line)
     if (currentTick) {
       rects.append("line")
         .attr("x1", centerPosition + tickSpacing / 2 - 0.5)
@@ -220,6 +229,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("stroke-width", 1);
     }
 
+    // D3 - Draw bins as bars
     rects.selectAll("rects")
       .data(resolvedBins)
       .enter()
@@ -353,6 +363,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }, [bins]);
 
   useEffect(() => {
+    //  D3 - Draw bin and define interaction
     const svgElement = d3.select(svgRef.current)
       .attr("width", width)
       .attr("height", height)

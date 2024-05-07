@@ -271,7 +271,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (isSwap) {
       return <>1 {tokenB?.symbol} = <ExchangeRate value={convertToKMB(
         `${Number(Number(1 / position?.pool?.price).toFixed(6))}`,
-        6,
+        { maximumFractionDigits: 6 },
       )} /> {tokenA?.symbol}</>;
     }
     return <>1 {tokenA?.symbol} = <ExchangeRate value={price} /> {tokenB?.symbol}</>;
@@ -341,7 +341,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       ? "0 "
       : !isSwap
         ? Number(minPrice)
-        : convertToKMB(`${Number(1 / Number(maxPrice))}`, 6);
+        : convertToKMB(`${Number(1 / Number(maxPrice))}`, { maximumFractionDigits: 6 });
     return `${tokenAPriceStr}`;
   }, [
     position.tickUpper,
@@ -392,7 +392,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       ? "∞ "
       : !isSwap
         ? maxPrice
-        : convertToKMB(`${Number(1 / Number(minPrice))}`, 6);
+        : convertToKMB(`${Number(1 / Number(minPrice))}`, { maximumFractionDigits: 6 });
     return `${tokenBPriceStr}`;
   }, [
     position.tickLower,
@@ -543,23 +543,25 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               />
             </div>
             <div className="flex-button">
-              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&type=Custom`)} />
-              {!position.staked && !isClosed && !isHiddenAddPosition && connected && (
-                <SelectBox
-                  current={"Manage"}
-                  items={[
-                    "Reposition",
-                    "Increase Liquidity",
-                    "Decrease Liquidity",
-                  ]}
-                  select={handleSelect}
-                  render={period => <ManageItem>{period}</ManageItem>}
-                  className={!inRange ? "out-range" : ""}
-                />
-              )}
-            </div>
-          </div>
-        </div>
+              <Button text="Copy Positioning" className="copy-button" style={{}} onClick={() => router.push(router.asPath + `/add?tickLower=${position.tickLower}&tickUpper=${position.tickUpper}&price_range_type=Custom`)} />
+              {
+                !position.staked && !isClosed && !isHiddenAddPosition && connected && (
+                  <SelectBox
+                    current={"Manage"}
+                    items={[
+                      "Reposition",
+                      "Increase Liquidity",
+                      "Decrease Liquidity",
+                    ]}
+                    select={handleSelect}
+                    render={period => <ManageItem>{period}</ManageItem>}
+                    className={!inRange ? "out-range" : ""}
+                  />
+                )
+              }
+            </div >
+          </div >
+        </div >
         <div className="info-wrap">
           <div className="info-box">
             <span className="symbol-text">Balance</span>
@@ -755,7 +757,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           )}
         </div>
         <PositionHistory isClosed={isClosed} tokenA={tokenA} tokenB={tokenB} />
-      </MyPositionCardWrapper>
+      </MyPositionCardWrapper >
     </>
   );
 };
