@@ -20,33 +20,6 @@ interface ExchangeRateGraphContentProps {
   data?: TokenExchangeRateGraphResponse
 }
 
-const calculateMiddleIndices = (totalLabels = 0, countXAxis = 0) => {
-  const indices = new Set<number>();
-  // Helper function to add indices
-  const addIndices = (start: number, end: number) => {
-    const mid = Math.floor((start + end) / 2);
-    if (!indices.has(mid)) {
-      indices.add(mid);
-      if (indices.size < countXAxis) {
-        // Add midpoint of the left subarray
-        addIndices(start, mid - 1);
-        // Add midpoint of the right subarray
-        addIndices(mid + 1, end);
-      }
-    }
-  };
-
-  // Always include the first and last labels
-  indices.add(0);
-  indices.add(totalLabels - 1);
-
-  // Begin by adding the middle of the entire array
-  addIndices(0, totalLabels - 1);
-
-  // Convert to array and sort to ensure the correct order
-  return Array.from(indices).sort((a, b) => b - a);
-};
-
 function ExchangeRateGraphContent({
   tokenA,
   tokenB,
@@ -124,7 +97,8 @@ function ExchangeRateGraphContent({
   }, [size.width, breakpoint]);
 
   const labelIndicesToShow = useMemo(() => {
-    return calculateMiddleIndices(xAxisLabels?.length, Math.min(countXAxis, 4));
+    const spacing = ((xAxisLabels?.length ?? 0) - 1) / (countXAxis - 1);
+    return Array.from({ length: countXAxis }, (_, index) => Math.floor(spacing * index)).reverse();
   }, [countXAxis, xAxisLabels?.length]);
 
   return (<ExchangeRateGraphContentWrapper>
@@ -161,7 +135,7 @@ function ExchangeRateGraphContent({
           renderBottom={(baseLineNumberWidth) => {
             return <ExchangeRateGraphXAxisWrapper innerWidth={(baseLineNumberWidth !== 0) ? `calc(100% - ${baseLineNumberWidth}px)` : "100%"}>
               <div className="exchange-rate-graph-xaxis">
-                {labelIndicesToShow.map((x, i) => (
+                {labelIndicesToShow?.map((x, i) => (
                   <span key={i}>{xAxisLabels?.[x]}</span>
                 ))}
               </div>

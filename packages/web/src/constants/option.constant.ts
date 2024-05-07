@@ -374,3 +374,8 @@ export const STAKING_PERIOD_INFO: {
     period: -1,
   },
 } as const;
+
+export interface DefaultTick {
+  tickLower?: number,
+  tickUpper?: number
+}

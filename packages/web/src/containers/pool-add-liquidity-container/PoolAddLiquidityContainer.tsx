@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   AddLiquiditySubmitType,
+  DefaultTick,
   PriceRangeType,
   SwapFeeTierType,
 } from "@constants/option.constant";
@@ -26,10 +27,6 @@ import { encryptId } from "@utils/common";
 import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
 
-export interface DefaultTick {
-  tickLower?: number, 
-  tickUpper?: number
-}
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
   apr?: string;
@@ -66,9 +63,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [initialized, setInitialized] = useState(false);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isKeepToken = false } = swapValue;
-  const router = useRouter(); 
+  const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
-  
+
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
@@ -79,7 +76,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
   const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] = useState<PriceRangeType | null>();
   const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
-  
+
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
   const {
@@ -91,16 +88,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
   const [createOption, setCreateOption] = useState<{ startPrice: number | null, isCreate: boolean }>({ isCreate: false, startPrice: null });
-  const selectPool = useSelectPool({ 
-    tokenA, 
-    tokenB, 
-    feeTier: swapFeeTier, 
-    isCreate: createOption?.isCreate, 
+  const selectPool = useSelectPool({
+    tokenA,
+    tokenB,
+    feeTier: swapFeeTier,
+    isCreate: createOption?.isCreate,
     startPrice: createOption?.startPrice,
-    // defaultPriceRange: [ 
-    //   tickLower ? tickToPrice(Number(tickLower)) : null, 
-    //   tickUpper ? tickToPrice(Number(tickUpper)) : null
-    // ],
   });
   const { updatePools } = usePoolData();
   const { pools, feetierOfLiquidityMap, createPool, addLiquidity, fetching } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
@@ -125,12 +118,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     createPool,
     addLiquidity,
   });
-
-  // useEffect(() => {
-  //   if(!initialized && router.isReady) {
-     
-  //   }
-  // }, [initialized, router.isReady, router.query]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -341,9 +328,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const query = router.query;
 
       const { tickLower, tickUpper, price_range_type } = router.query;
-      if(type) {
+      if (type) {
         setPriceRangeTypeFromUrl(type as PriceRangeType);
-        setPriceRange(PRICE_RANGES.find(item => item.type === (price_range_type ?? "Passive"))?? null);
+        setPriceRange(PRICE_RANGES.find(item => item.type === (price_range_type ?? "Passive")) ?? null);
       }
       setTickFromUrl({
         tickLower: tickLower ? tickToPrice(Number(tickLower)) : undefined,
@@ -455,7 +442,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [selectPool.isChangeMinMax]);
 
   useEffect(() => {
-      selectPool.setIsChangeMinMax(priceRange?.type === "Custom");
+    selectPool.setIsChangeMinMax(priceRange?.type === "Custom");
   }, [priceRange?.type]);
 
   useEffect(() => {
@@ -467,7 +454,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (tokenA?.path && tokenB?.path) {
       router.push(`/earn/pool/${router.query["pool-path"]}/add?${queryString}`, undefined, { shallow: true });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
 
   return (

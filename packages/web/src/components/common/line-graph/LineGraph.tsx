@@ -125,7 +125,7 @@ function parseTimeTVL(time: string) {
   };
 }
 
-const LineGraph = ({
+const LineGraph: React.FC<LineGraphProps> = ({
   className = "",
   cursor,
   color,

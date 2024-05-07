@@ -62,8 +62,6 @@ export const convertToKMB = (
       maximumFractionDigits: options?.maximumFractionDigits,
       minimumFractionDigits: options?.minimumFractionDigits,
     }));
-    console.log("🚀 ~ result ~ result:", result);
-
 
     return result;
   } else {

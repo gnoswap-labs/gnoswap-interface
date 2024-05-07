@@ -7,8 +7,6 @@ interface Props {
 }
 
 const ExchangeRate: React.FC<Props> = ({ value }) => {
-  value >= 147 && console.log(value);
-
   const exchangePrice = useMemo(() => formatExchangeRate(value), [value]);
 
   return (

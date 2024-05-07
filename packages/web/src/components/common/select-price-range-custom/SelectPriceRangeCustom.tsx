@@ -8,7 +8,7 @@ import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
 import * as d3 from "d3";
-import { PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
+import { DefaultTick, PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { tickToPrice } from "@utils/swap-utils";
 import { MAX_TICK } from "@constants/swap.constant";
@@ -24,7 +24,6 @@ import Tooltip from "../tooltip/Tooltip";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import ExchangeRate from "../exchange-rate/ExchangeRate";
 import { subscriptFormat } from "@utils/number-utils";
-import { DefaultTick } from "@containers/pool-add-liquidity-container/PoolAddLiquidityContainer";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;

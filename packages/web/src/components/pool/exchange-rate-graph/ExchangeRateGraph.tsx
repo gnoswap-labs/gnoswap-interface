@@ -20,19 +20,17 @@ function ExchangeRateGraph({
   onSwap,
   data,
 }: ExchangeRateGraphProps) {
-  return (<ExchangeRateGraphWrapper>
+  return <ExchangeRateGraphWrapper>
     <ExchangeRateGraphHeaderWrapper>
       <p className="title">Exchange Rate</p>
-      {true && (
-        <div className="tooltip-wrap">
-          <Tooltip
-            placement="top"
-            FloatingContent={<TooltipContentWrapper>Exchange rate for the selected token pair.</TooltipContentWrapper>}
-          >
-            <IconInfo className="tooltip-icon" />
-          </Tooltip>
-        </div>
-      )}
+      {<div className="tooltip-wrap">
+        <Tooltip
+          placement="top"
+          FloatingContent={<TooltipContentWrapper>Exchange rate for the selected token pair.</TooltipContentWrapper>}
+        >
+          <IconInfo className="tooltip-icon" />
+        </Tooltip>
+      </div>}
     </ExchangeRateGraphHeaderWrapper>
     <ExchangeRateGraphContent
       onSwap={onSwap}
@@ -41,7 +39,7 @@ function ExchangeRateGraph({
       feeTier={feeTier}
       data={data}
     />
-  </ExchangeRateGraphWrapper>);
+  </ExchangeRateGraphWrapper>;
 }
 
 export default ExchangeRateGraph;
