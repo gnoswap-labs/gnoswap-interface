@@ -19,11 +19,11 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
       (accum, position) => accum + position.tokenABalance,
-      0n,
+      0,
     );
     const pooledTokenBAmount = positions.reduce(
       (accum, position) => accum + position.tokenBBalance,
-      0n,
+      0,
     );
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
@@ -53,11 +53,11 @@ export const useStakeData = ({ positions }: StakeDataProps) => {
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
       (accum, position) => accum + position.unclaimedFeeAAmount,
-      0n,
+      0,
     );
     const pooledTokenBAmount = positions.reduce(
       (accum, position) => accum + position.unclaimedFeeBAmount,
-      0n,
+      0,
     );
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;

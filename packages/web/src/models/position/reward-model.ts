@@ -6,9 +6,9 @@ export interface RewardModel {
 
   token: TokenModel;
 
-  totalAmount: bigint;
+  totalAmount: number;
 
-  claimableAmount: bigint;
+  claimableAmount: number;
 
   claimableUsdValue: string;
 

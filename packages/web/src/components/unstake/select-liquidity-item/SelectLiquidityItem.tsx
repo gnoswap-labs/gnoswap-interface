@@ -18,7 +18,7 @@ interface SelectLiquidityItemProps {
 }
 
 const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({ position }) => {
-  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint) => {
+  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: number) => {
     const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
 
     return <TokenValueWrapper>

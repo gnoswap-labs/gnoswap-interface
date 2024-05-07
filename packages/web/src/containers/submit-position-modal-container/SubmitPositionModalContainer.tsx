@@ -30,8 +30,8 @@ const SubmitPositionModalContainer = ({
     }
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce((accum, position) => accum + position.tokenABalance, 0n);
-    const pooledTokenBAmount = positions.reduce((accum, position) => accum + position.tokenBBalance, 0n);
+    const pooledTokenAAmount = positions.reduce((accum, position) => accum + position.tokenABalance, 0);
+    const pooledTokenBAmount = positions.reduce((accum, position) => accum + position.tokenBBalance, 0);
     const tokenAAmount = makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
     const tokenBAmount = makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
     return [{

@@ -29,7 +29,7 @@ interface TooltipProps {
 
 
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
-  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint) => {
+  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: number) => {
     const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
 
     return <TokenValueWrapper>

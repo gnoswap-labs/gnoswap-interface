@@ -106,7 +106,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         ...item,
         reserveTokenAMyAmount: binsMyAmount?.[index]?.reserveTokenA || 0,
         reserveTokenBMyAmount: binsMyAmount?.[index]?.reserveTokenB || 0,
-        reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
+        reserveTokenAMap: index < (length - 1) ? reserveTokenAMap : reserveTokenBMap,
         index: index,
       };
     });

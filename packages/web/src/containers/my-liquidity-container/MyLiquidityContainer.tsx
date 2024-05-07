@@ -146,8 +146,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         claimableUsdValue: 0,
         rewards: [],
         positionUsdValue: "0",
-        tokenABalance: 0n,
-        tokenBBalance: 0n,
+        tokenABalance: 0,
+        tokenBBalance: 0,
       };
       setPositions([...temp, fake, fake]);
       return;

@@ -40,7 +40,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
   const { loading: isLoadingPosition, checkStakedPool } = usePositionData();
-  
+
   const handleResize = () => {
     if (typeof window !== "undefined") {
       window.innerWidth < 920 ? setMobile(true) : setMobile(false);
