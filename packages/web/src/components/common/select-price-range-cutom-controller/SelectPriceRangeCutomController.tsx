@@ -1,25 +1,25 @@
 import {
-  PriceRangeType,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { numberToFormat } from "@utils/string-utils";
 import { findNearPrice } from "@utils/swap-utils";
 import BigNumber from "bignumber.js";
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useState,
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
   useRef,
 } from "react";
 import { SelectPriceRangeCutomControllerWrapper } from "./SelectPriceRangeCutomController.styles";
 import IconAdd from "../icons/IconAdd";
 import IconRemove from "../icons/IconRemove";
 import { convertToKMB } from "@utils/stake-position-utils";
-import { isNumber, subscriptFormat } from "@utils/number-utils";
+import { isNumber, removeTrailingZeros, subscriptFormat } from "@utils/number-utils";
 
-export interface SelectPriceRangeCutomControllerProps {
+export interface SelectPriceRangeCustomControllerProps {
   title: string;
   token0Symbol: string;
   token1Symbol: string;
@@ -33,12 +33,16 @@ export interface SelectPriceRangeCutomControllerProps {
   increase: () => void;
   currentPriceStr: JSX.Element | string;
   setIsChangeMinMax: (value: boolean) => void;
-  priceRangeType: PriceRangeType | null;
 }
 
-const SelectPriceRangeCutomController: React.FC<
-  SelectPriceRangeCutomControllerProps
-> = ({
+export interface SelectPriceRangeCustomControllerRef {
+  formatData: () => void;
+}
+
+const SelectPriceRangeCustomController = forwardRef<
+  SelectPriceRangeCustomControllerRef,
+  SelectPriceRangeCustomControllerProps
+>(({
   title,
   current,
   feeTier,
@@ -49,27 +53,24 @@ const SelectPriceRangeCutomController: React.FC<
   selectedFullRange,
   onSelectCustomRange,
   setIsChangeMinMax,
-  priceRangeType,
   token0Symbol,
   token1Symbol,
-}) => {
-  const divRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [value, setValue] = useState("");
+}, ref) => {
+  const [displayValue, setDisplayValue] = useState("");
   const [changed, setChanged] = useState(false);
   const [fontSize, setFontSize] = useState(24);
-  const [currentValue, setCurrentValue] = useState("");
+
+  const submitCountRef = useRef(0);
 
   const disabledController = useMemo(() => {
     return (
-      value === "" ||
-      value === "-" ||
-      BigNumber(value).isNaN() ||
-      value === "NaN" ||
-      value === "0" ||
-      value === "∞"
+      displayValue === "" ||
+      displayValue === "-" ||
+      displayValue === "NaN" ||
+      displayValue === "0" ||
+      displayValue === "∞"
     );
-  }, [value]);
+  }, [displayValue]);
 
   const onClickDecrease = useCallback(() => {
     decrease();
@@ -83,100 +84,141 @@ const SelectPriceRangeCutomController: React.FC<
 
   const onChangeValue = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = event.target.value;
-      setValue(newValue);
-      if (value !== newValue) {
-        setChanged(true);
-      }
+      const value = event.target.value;
+      const formattedValue = value.replace(/[^0-9.]/, "");
+      setDisplayValue(formattedValue);
+      setChanged(true);
     },
-    [value],
+    [],
   );
 
-  const onBlurUpdate = useCallback(() => {
-    if (!changed) {
+  const formatControllerValue = useCallback((value: number | null) => {
+    if (value === null || BigNumber(Number(value)).isNaN()) {
+      setDisplayValue("-");
       return;
     }
-    setChanged(false);
-    if (value === "∞" || value === "-") {
-      return;
-    }
-    const currentValue = BigNumber(Number(value.replace(",", "")));
-    if (currentValue.isNaN()) {
-      setValue("-");
-      setCurrentValue("-");
-      return;
-    }
-    if (currentValue.isLessThanOrEqualTo(0.00000001)) {
-      setValue("0");
-      setCurrentValue("0");
-      return;
-    }
-    const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
-    changePrice(nearPrice);
-    setIsChangeMinMax(true);
-    if (nearPrice > 1) {
-      setValue(numberToFormat(nearPrice, 4));
-      setCurrentValue(numberToFormat(nearPrice, 4));
-    } else {
-      setValue(nearPrice.toString());
-      setCurrentValue(nearPrice.toString());
-    }
-    if (selectedFullRange) {
-      onSelectCustomRange();
-    }
-  }, [changed, value, tickSpacing, selectedFullRange, priceRangeType]);
-
-  useEffect(() => {
-    if (current === null || BigNumber(Number(current)).isNaN()) {
-      setValue("-");
-      return;
-    }
-    const currentValue = BigNumber(current).toNumber();
+    const currentValue = BigNumber(value).toNumber();
     if (currentValue < 0.00000001) {
-      setValue("0");
+      setDisplayValue("0");
       return;
     }
     const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
     if (currentValue <= minPrice) {
-      setValue("0");
+      setDisplayValue("0");
       return;
     }
     if (currentValue / maxPrice > 0.9) {
-      setValue("∞");
+      setDisplayValue("∞");
       return;
     }
     if (currentValue >= 1) {
-      setValue(BigNumber(current).toFixed(4));
-      setCurrentValue(BigNumber(current).toFixed(10));
+      setDisplayValue(greaterThan1Transform(BigNumber(value).toFixed()));
       return;
     }
-    setValue(BigNumber(current).toFixed(10));
-    setCurrentValue(BigNumber(current).toFixed(10));
-  }, [current, feeTier]);
-  useEffect(() => {
-    const divElement = divRef.current;
-    const inputElement = inputRef.current;
 
-    if (divElement && inputElement) {
-      setFontSize(
-        Math.min(
-          (inputElement.offsetWidth * fontSize) / divElement.offsetWidth,
-          24,
-        ),
-      );
+    setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
+  }, [feeTier]);
+
+  const onBlur = useCallback(() => {
+    if (!changed) {
+      return;
     }
-  }, [value]);
-  const exchangePrice =
-    Number(value) < 1 && Number(value) !== 0
-      ? subscriptFormat(value)
-      : value === "∞"
-      ? value
-      : convertToKMB(Number(value).toFixed(4), 4);
+    setChanged(false);
+    const currentValue = BigNumber(Number(displayValue));
+
+    const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
+
+    if (nearPrice !== current) {
+      changePrice(nearPrice);
+    } else {
+      formatControllerValue(nearPrice);
+    }
+    submitCountRef.current = submitCountRef.current++;
+    setIsChangeMinMax(true);
+
+    if (selectedFullRange) {
+      onSelectCustomRange();
+    }
+  }, [changed, displayValue, tickSpacing, current, setIsChangeMinMax, selectedFullRange, changePrice, formatControllerValue, onSelectCustomRange]);
+
+  useImperativeHandle(ref, () => {
+    return {
+      formatData: () => {
+        return;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    formatControllerValue(current);
+  }, [current, formatControllerValue]);
+
+
+  const exchangePrice = useMemo(() => {
+    if (current === null || BigNumber(Number(current)).isNaN()) {
+      return "-";
+    }
+
+    const currentValue = BigNumber(current).toNumber();
+    const { maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+
+    if (currentValue < 1 && currentValue !== 0) {
+      return subscriptFormat(BigNumber(current).toFixed());
+    }
+
+    if (currentValue / maxPrice > 0.9) {
+      return "∞";
+    }
+
+    return convertToKMB(Number(current).toFixed());
+  }, [current, feeTier]);
+
   const priceValueString = (
     <>
       1 {token0Symbol} =&nbsp;{exchangePrice}&nbsp;{token1Symbol}
     </>
   );
+
+  function greaterThan1Transform(numStr: string) {
+    const number = Number(numStr);
+
+    const significantNumber = 5;
+    const [intPart] = numStr.split(".");
+
+    if (intPart.length >= significantNumber) {
+      const originalNumber = number;
+      const digitCountRatio = Math.pow(10, intPart.length - significantNumber);
+
+      const numberWith5SignificantNumber = (Math.round(originalNumber / digitCountRatio) * digitCountRatio).toString();
+
+      return numberWith5SignificantNumber;
+    }
+
+    return removeTrailingZeros(number.toFixed(significantNumber - intPart.length));
+  }
+
+  useEffect(() => {
+    const maxDefaultLength = 7;
+
+    if (displayValue.length < maxDefaultLength) {
+      setFontSize(24);
+      return;
+    }
+
+    setFontSize((maxDefaultLength / displayValue.length) * 24);
+  }, [displayValue]);
+
+  const ratioDisplay = useMemo(() => {
+    if (isNumber(current ?? "") && Number(current) >= 1) {
+      return convertToKMB(Number(current).toFixed(4));
+    }
+
+    if (current) {
+      return subscriptFormat(current);
+    }
+
+    return displayValue;
+  }, [current, displayValue]);
 
   return (
     <SelectPriceRangeCutomControllerWrapper>
@@ -198,30 +240,15 @@ const SelectPriceRangeCutomController: React.FC<
           <input
             style={{ fontSize: `${fontSize}px` }}
             className="value"
-            value={
-              isNumber(currentValue) && Number(currentValue) > 1
-                ? convertToKMB(Number(value).toFixed(4), 4)
-                : currentValue
-                ? subscriptFormat(currentValue)
-                : value === "NaN"
-                ? "-"
-                : value
-            }
+            value={displayValue}
             onChange={onChangeValue}
-            onBlur={onBlurUpdate}
-            ref={inputRef}
-            onFocus={() => setCurrentValue("")}
+            onBlur={onBlur}
           />
           <div
             style={{ fontSize: `${fontSize}px` }}
             className="fake-input"
-            ref={divRef}
           >
-            {isNumber(currentValue) && Number(currentValue) > 1
-              ? convertToKMB(Number(value).toFixed(4), 4)
-              : currentValue
-              ? subscriptFormat(currentValue)
-              : value}
+            {ratioDisplay}
           </div>
         </div>
         <div
@@ -243,5 +270,8 @@ const SelectPriceRangeCutomController: React.FC<
       </div>
     </SelectPriceRangeCutomControllerWrapper>
   );
-};
-export default SelectPriceRangeCutomController;
+});
+
+SelectPriceRangeCustomController.displayName = "SelectPriceRangeCustomController";
+
+export default SelectPriceRangeCustomController;

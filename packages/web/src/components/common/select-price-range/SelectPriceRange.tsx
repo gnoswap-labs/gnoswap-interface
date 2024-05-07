@@ -1,5 +1,5 @@
-import { PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
-import React, { useCallback, useMemo } from "react";
+import { DefaultTick, PriceRangeStr, PriceRangeTooltip, PriceRangeType } from "@constants/option.constant";
+import React, { useCallback, useMemo, useRef } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -23,6 +23,10 @@ interface SelectPriceRangeProps {
   handleSwapValue: () => void;
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
+  setPriceRange: (type?: PriceRangeType) => void;
+  defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
+  resetPriceRangeTypeTarget: PriceRangeType;
+  defaultTicks?: DefaultTick;
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -39,11 +43,16 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   handleSwapValue,
   isEmptyLiquidity,
   isKeepToken,
+  setPriceRange,
+  resetPriceRangeTypeTarget,
+  defaultTicks,
 }) => {
+  const selectPriceRangeRef = useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
   const selectedTokenPair = true;
 
   const changePriceRangeWithClear = useCallback((priceRange: AddLiquidityPriceRage) => {
     changePriceRange(priceRange);
+    selectPriceRangeRef.current?.resetRange(priceRange.type);
   }, [changePriceRange]);
 
   return (
@@ -72,6 +81,10 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           handleSwapValue={handleSwapValue}
           isEmptyLiquidity={isEmptyLiquidity}
           isKeepToken={isKeepToken}
+          setPriceRange={setPriceRange}
+          defaultTicks={defaultTicks}
+          resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
+          ref={selectPriceRangeRef}
         />
       )}
     </SelectPriceRangeWrapper>
@@ -93,7 +106,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   changePriceRange,
   priceRangeStr,
 }) => {
-  
+
   const aprStr = useMemo(() => {
     const apr = priceRange.apr;
     if (apr) {

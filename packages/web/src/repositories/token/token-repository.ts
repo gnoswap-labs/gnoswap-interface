@@ -8,6 +8,7 @@ import {
   TokenSearchLogListResponse,
 } from "./response";
 import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
+import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export interface TokenRepository {
   getTokens: () => Promise<TokenListResponse>;
@@ -25,6 +26,8 @@ export interface TokenRepository {
   clearSearchLogs: () => Promise<boolean>;
 
   getChain: () => Promise<IChainResponse>;
+
+  getExchangeRateGraph: () => Promise<TokenExchangeRateGraphResponse>;
 
   getBalancesByAddress: (
     address: string,

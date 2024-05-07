@@ -6,6 +6,7 @@ interface PoolAddLayoutProps {
   breadcrumbs: React.ReactNode;
   addLiquidity: React.ReactNode;
   oneStaking: React.ReactNode;
+  exchangeRateGraph: React.ReactNode;
   footer: React.ReactNode;
 }
 

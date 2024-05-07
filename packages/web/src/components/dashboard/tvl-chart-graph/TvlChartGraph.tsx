@@ -78,7 +78,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
             cursor
             className="graph"
             width={size.width}
-            height={size.height - 36}
+            height={size.height}
             color={theme.color.background04Hover}
             strokeWidth={1}
             datas={getDatas()}

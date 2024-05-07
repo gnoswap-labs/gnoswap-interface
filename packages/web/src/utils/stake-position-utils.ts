@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { removeTrailingZeros } from "./number-utils";
 
 export const convertToMB = (price: string, maximumFractionDigits?: number) => {
   if (Number.isNaN(Number(price))) return "-";
@@ -36,18 +37,33 @@ export const convertToMB = (price: string, maximumFractionDigits?: number) => {
 
 export const convertToKMB = (
   price: string,
-  maximumFractionDigits?: number,
-  minimumFractionDigits?: number,
-) => {
+  options?: {
+    maximumFractionDigits?: number,
+    minimumFractionDigits?: number,
+    minimumSignificantDigits?: number,
+    maximumSignificantDigits?: number,
+}) => {
   if (Number.isNaN(Number(price))) return "-";
-  if (Math.floor(Number(price)).toString().length < 4) {
+  
+  const defaultMaximumSignificantDigits = 5;
+  const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits; 
+  const maximumSignificantDigits = options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
+  const convertOffset = 999;
+  const intPart = Math.trunc(Number(price));
+  
+  if (intPart < convertOffset) {
     if (Number.isInteger(Number(price))) return `${Number(price)}`;
     if (Number(price) < 0.000001 && Number(price) !== 0) return "0.000001";
     if (Number(price) < 1) return `${Number(Number(price).toFixed(6))}`;
-    return Number(price).toLocaleString("en-US", {
-      maximumFractionDigits: maximumFractionDigits ?? 2,
-      minimumFractionDigits: minimumFractionDigits ?? 2,
-    });
+    
+    const result = removeTrailingZeros(Number(price).toLocaleString("en-US", {
+      maximumSignificantDigits: maximumSignificantDigits,
+      minimumSignificantDigits: options?.minimumSignificantDigits,
+      maximumFractionDigits: options?.maximumFractionDigits,
+      minimumFractionDigits: options?.minimumFractionDigits,
+    }));
+
+    return result;
   } else {
     const temp = Math.floor(Number(price));
     if (temp >= 1e9) {
@@ -76,8 +92,8 @@ export const convertToKMB = (
       );
     }
     return Number.isInteger(price) ? `${Number(price)}` : Number(price).toLocaleString("en-US", {
-      maximumFractionDigits: maximumFractionDigits ?? 2,
-      minimumFractionDigits: minimumFractionDigits ?? 2,
+      maximumFractionDigits: options?.maximumFractionDigits ?? 2,
+      minimumFractionDigits: options?.minimumFractionDigits ?? 2,
     });
   }
 };
