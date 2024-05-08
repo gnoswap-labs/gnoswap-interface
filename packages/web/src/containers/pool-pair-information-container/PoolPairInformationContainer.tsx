@@ -68,7 +68,8 @@ export const initialPool: PoolDetailModel = {
   bins40: [],
   rewardTokens: [],
   totalApr: 0,
-  poolPath: ""
+  poolPath: "",
+  liquidity: ""
 };
 
 interface PoolPairInformationContainerProps {

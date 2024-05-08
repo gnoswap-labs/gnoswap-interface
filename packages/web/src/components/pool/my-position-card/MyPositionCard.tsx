@@ -449,7 +449,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <PositionCardAnchor id={`${position.id}`} />
       <MyPositionCardWrapper
         type={inRange}
-        isClosed={isClosed}
+        $isClosed={isClosed}
       >
         <div className="box-title">
           <div className="box-header">
@@ -688,6 +688,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           {!loading && (
             <PoolGraph
+              liquidity={position.liquidity.toString()}
               tokenA={tokenA}
               tokenB={tokenB}
               bins={bins ?? []}

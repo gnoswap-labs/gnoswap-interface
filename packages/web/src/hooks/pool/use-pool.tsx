@@ -242,6 +242,9 @@ export const usePool = ({
         setTimeout(() => {
           setFetching(false);
         }, 1000);
+      })
+      .finally(() => {
+        setFetching(false);
       });
   }, [allPoolPaths, tokenA, tokenB, isReverted]);
 

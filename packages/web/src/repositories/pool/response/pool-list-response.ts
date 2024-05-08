@@ -1,5 +1,5 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { IPoolPriceRatio } from "@models/pool/pool-price-ratio.model";
+import { IPoolPriceRatio } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolListResponse {
@@ -59,5 +59,7 @@ export interface PoolResponse {
   rewardTokens?: TokenModel[];
 
   priceRatio: IPoolPriceRatio;
+
+  liquidity: string;
 }
 

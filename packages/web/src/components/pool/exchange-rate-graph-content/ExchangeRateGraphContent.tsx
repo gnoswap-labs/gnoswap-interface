@@ -1,52 +1,53 @@
 import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
 import LineGraph from "@components/common/line-graph/LineGraph";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { TokenModel } from "@models/token/token-model";
-import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
 import { useMemo, useState } from "react";
 import PairRatio from "../../common/pair-ratio/PairRatio";
-import { ExchangeRateGraphContentHeader, ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
+import { ExchangeRateGraphContentHeader, ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper, LoadingExchangeRateChartWrapper } from "./ExchangeRateGraphContent.styles";
 
 interface ExchangeRateGraphContentProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
+  poolData: PoolDetailModel
   feeTier: string;
   onSwap?: (swap: boolean) => void
-  data?: TokenExchangeRateGraphResponse
+  isLoading: boolean
 }
 
 function ExchangeRateGraphContent({
-  tokenA,
-  tokenB,
   onSwap,
-  data,
+  poolData,
+  isLoading,
 }: ExchangeRateGraphContentProps) {
+
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
 
   const dataMemo = useMemo(() => {
+    const data = poolData.priceRatio;
+
     const getCurrentData = () => {
       switch (selectedScope) {
         case "30D":
-          return data?.last1m;
+          return data?.["30d"];
         case "ALL":
           return data?.all;
         case "7D":
         default:
-          return data?.last7d;
+          return data?.["7d"];
       }
     };
 
     return getCurrentData()?.map(item => ({
-      time: item.time,
-      value: item.value.toString()
+      time: item.date,
+      value: item.ratio,
     })).sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     }).reduce(
@@ -61,24 +62,26 @@ function ExchangeRateGraphContent({
       },
       [],
     );
-  }, [data, selectedScope]);
+  }, [poolData.priceRatio, selectedScope]);
 
   const xAxisLabels = useMemo(() => {
+    const data = poolData.priceRatio;
+
     const getCurrentData = () => {
       switch (selectedScope) {
         case "30D":
-          return data?.last1m;
+          return data?.["30d"];
         case "ALL":
-          return data?.all;
+          return data?.["all"];
         case "7D":
         default:
-          return data?.last7d;
+          return data?.["7d"];
       }
     };
 
     return getCurrentData()?.map(item => ({
-      time: item.time,
-      value: item.value.toString()
+      time: item.date,
+      value: item.ratio.toString()
     })).sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     }).reduce(
@@ -88,7 +91,7 @@ function ExchangeRateGraphContent({
       },
       [],
     );
-  }, [data, selectedScope]);
+  }, [poolData.priceRatio, selectedScope]);
 
   const countXAxis = useMemo(() => {
     if (breakpoint !== DEVICE_TYPE.MOBILE)
@@ -105,8 +108,8 @@ function ExchangeRateGraphContent({
     <ExchangeRateGraphContentHeader>
       <PairRatio
         onSwap={onSwap}
-        tokenA={tokenA}
-        tokenB={tokenB}
+        tokenA={poolData.tokenA}
+        tokenB={poolData.tokenB}
         feeTier={""}
       />
       <ChartScopeSelectTab
@@ -118,7 +121,7 @@ function ExchangeRateGraphContent({
     </ExchangeRateGraphContentHeader>
     <div className="data-wrapper">
       <div className="graph-wrap" ref={componentRef}>
-        <LineGraph
+        {!isLoading && <LineGraph
           cursor
           className="graph"
           width={size.width}
@@ -141,7 +144,10 @@ function ExchangeRateGraphContent({
               </div>
             </ExchangeRateGraphXAxisWrapper>;
           }}
-        />
+        />}
+        {isLoading && <LoadingExchangeRateChartWrapper>
+          <LoadingSpinner />
+        </LoadingExchangeRateChartWrapper>}
       </div>
     </div>
   </ExchangeRateGraphContentWrapper>);

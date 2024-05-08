@@ -185,11 +185,16 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     let baseLineNumberWidthComputation = 0;
 
+    const minMaxGap = (maxValue - minValue) !== 0 ? (maxValue - minValue) : (maxValue / 5);
+
     if (showBaseLine) {
       const baseLineData = new Array(baseLineCount).fill("").map((value, index) => {
-        const minMaxGap = maxValue - minValue;
-        const additionalGap = minMaxGap * (gapRatio / 2);
+
+        // Gap from lowest value or highest value  to baseline
+        const additionalGap = (minMaxGap !== 0) ? minMaxGap * (gapRatio / 2) : (minMaxGap / 2);
+        // Gap between bottom and top base line
         const baseLineGap = minMaxGap * (1 + gapRatio);
+        // Lowest baseline value
         const bottomBaseLineValue = minValue - additionalGap;
 
         const currentBaseLineValue = bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
@@ -234,17 +239,11 @@ const LineGraph: React.FC<LineGraphProps> = ({
       // Subtract 5% from the top baseline
       const topFrontierHeight = showBaseLine ? height * (1.05 / 1.1) : height;
 
-      return (
-        // (top frontier height) - (distance from point to bottom) = (point top top)
-        topFrontierHeight -
-        // gap between point and bottom
-        new BigNumber(value - minValue)
-          // gap ratio between gap to bottom and largest gap (max - min)
-          .dividedBy(maxValue - minValue)
-          // precise distance from point to bottom
-          .multipliedBy(graphHeight)
-          .toNumber()
-      );
+      const result = (() => {
+        return topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap;
+      })();
+
+      return result;
     };
 
     const optimizeTime = function (time: number, width: number) {

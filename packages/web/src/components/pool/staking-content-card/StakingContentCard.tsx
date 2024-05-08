@@ -17,7 +17,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { STAKING_PERIOD_INFO, StakingPeriodType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { numberToUSD, toUnitFormat } from "@utils/number-utils";
-import { calculateRemainTime, getLocalDateString } from "@common/utils/date-util";
+import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
@@ -33,9 +33,8 @@ interface StakingContentCardProps {
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionModel[], period: number }) => {
-  console.log("🚀 ~ PriceTooltipContent ~ period:", period);
   const getRemainTime = useCallback((position: PositionModel) => {
-    const stakedTime = Number(position.stakedAt) * 1000;
+    const stakedTime = new Date(position.stakedAt).getTime();
     const passedTime = (new Date().getTime() - stakedTime);
     const remainTime = period * DAY_TIME - passedTime;
     const { day, hours, minutes, seconds } = calculateRemainTime(remainTime);
@@ -61,7 +60,7 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
           </div>
           <div className="list">
             <span className="label">Staked Date</span>
-            <span className="content">{getLocalDateString(new Date(position.stakedAt).getTime())}</span>
+            <span className="content">{timeToDateStr(new Date(position.stakedAt).getTime())}</span>
           </div>
           <div className="list">
             <span className="label">Next Tier</span>

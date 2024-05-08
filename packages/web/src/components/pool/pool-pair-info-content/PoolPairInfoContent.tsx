@@ -262,6 +262,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </div>
           </div>
           {!loading && <PoolGraph
+            liquidity={pool.liquidity}
             tokenA={pool?.tokenA}
             tokenB={pool?.tokenB}
             bins={pool?.bins40 ?? []}

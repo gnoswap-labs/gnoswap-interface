@@ -1,24 +1,23 @@
 import ExchangeRateGraphContent from "@components/pool/exchange-rate-graph-content/ExchangeRateGraphContent";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { TokenModel } from "@models/token/token-model";
 import { ExchangeRateGraphHeaderWrapper, ExchangeRateGraphWrapper, TooltipContentWrapper } from "./ExchangeRateGraph.styles";
 import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
+import { PoolModel } from "@models/pool/pool-model";
 
 interface ExchangeRateGraphProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
+  poolData: PoolModel;
   feeTier: string;
   onSwap?: (swap: boolean) => void;
   data?: TokenExchangeRateGraphResponse;
+  isLoading: boolean;
 }
 
 const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
-  tokenA,
-  tokenB,
+  poolData,
   feeTier,
   onSwap,
-  data,
+  isLoading,
 }) => {
   return <ExchangeRateGraphWrapper>
     <ExchangeRateGraphHeaderWrapper>
@@ -34,10 +33,9 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
     </ExchangeRateGraphHeaderWrapper>
     <ExchangeRateGraphContent
       onSwap={onSwap}
-      tokenA={tokenA}
-      tokenB={tokenB}
       feeTier={feeTier}
-      data={data}
+      poolData={poolData}
+      isLoading={isLoading}
     />
   </ExchangeRateGraphWrapper>;
 };

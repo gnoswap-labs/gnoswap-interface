@@ -114,6 +114,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
             currentTick={pool.currentTick}
             bins={bins ?? []}
             mouseover
+            liquidity={pool.liquidity}
             themeKey={themeKey}
             position="top"
             nextSpacing

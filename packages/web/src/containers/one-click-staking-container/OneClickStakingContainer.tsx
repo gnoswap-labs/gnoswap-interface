@@ -21,7 +21,7 @@ const OneClickStakingContainer: React.FC = () => {
   const poolId = router.query?.["pool-path"] === undefined ? null : `${router.query?.["pool-path"]}`;
   const poolPath = currentPoolPath;
   const { data = initialPool as PoolDetailModel } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  
+
   const stakedPositions = useMemo(() => {
     if (!poolPath) return [];
     return positions.filter(position => position.staked);

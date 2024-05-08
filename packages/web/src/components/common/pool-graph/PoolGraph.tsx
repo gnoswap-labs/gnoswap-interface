@@ -37,6 +37,7 @@ export interface PoolGraphProps {
   isPosition?: boolean;
   binsMyAmount?: PoolBinModel[];
   isSwap?: boolean;
+  liquidity?: string
 }
 
 interface TooltipInfo {
@@ -83,6 +84,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   isPosition = false,
   binsMyAmount = [],
   isSwap = false,
+  liquidity,
 }) => {
   const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
@@ -230,6 +232,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }
 
     // D3 - Draw bins as bars
+    if (!liquidity || liquidity === "0") {
+      return;
+    }
+
     rects.selectAll("rects")
       .data(resolvedBins)
       .enter()

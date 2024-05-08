@@ -56,7 +56,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
 
   const stakingPositionMap = useMemo(() => {
     return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
-      const stakedTime = Number(current.stakedAt) * 1000;
+      const stakedTime = new Date(current.stakedAt).getTime();
       const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
       let periodType: StakingPeriodType = "MAX";
       if (difference < 5) {

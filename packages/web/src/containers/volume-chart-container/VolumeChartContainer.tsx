@@ -156,7 +156,6 @@ const VolumeChartContainer: React.FC = () => {
       CHART_TYPE["7D"];
     setVolumeChartType(volumeChartType);
   }, []);
-  console.log("🚀 ~ volumeData:", volumeData);
   const chartData = useMemo(() => {
     if (!volumeData?.all)
       return {

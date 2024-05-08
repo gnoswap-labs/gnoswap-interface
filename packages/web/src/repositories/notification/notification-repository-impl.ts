@@ -8,6 +8,7 @@ import { TransactionGroupsType } from "@components/common/notification-button/No
 import { TransactionModel } from "@models/account/account-history-model";
 import dayjs from "dayjs";
 import { prettyNumberFloatInteger } from "@utils/number-utils";
+import { DeleteAccountActivityRequest } from "./request/delete-account-activity-request";
 
 export class NotificationRepositoryImpl implements NotificationRepository {
   private networkClient: NetworkClient;
@@ -84,10 +85,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
 
   private getNotificationMessage = (tx: AccountActivity) => {
     const token0Amount = prettyNumberFloatInteger(tx?.tokenAAmount);
-    const token0symbol = this.replaceToken(tx?.token0?.symbol);
+    const token0symbol = this.replaceToken(tx?.tokenA?.symbol);
 
     const token1Amount = prettyNumberFloatInteger(tx?.tokenBAmount);
-    const token1symbol = this.replaceToken(tx?.token1?.symbol);
+    const token1symbol = this.replaceToken(tx?.tokenB?.symbol);
 
     switch (tx.actionType) {
       case "SWAP":
@@ -109,7 +110,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       default:
         return `${this.capitalizeFirstLetter(tx.actionType)} ${prettyNumberFloatInteger(
           tx.tokenAAmount,
-        )} ${this.replaceToken(tx.token0.symbol ?? tx.token1.symbol)}`;
+        )} ${this.replaceToken(tx.tokenA.symbol ?? tx.tokenB.symbol)}`;
     }
   };
 
@@ -126,26 +127,26 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     const removedTxs = this.getRemovedTx();
     const seenTxs = this.getSeenTx();
 
-    for (const tx of transactions) {
+    for (const tx of transactions ?? []) {
       /**
        * *If tx is removed then ignore it
        **/
       if (removedTxs.includes(tx.txHash)) continue;
 
       const tokenA = {
-        ...tx.token0,
-        symbol: this.replaceToken(tx.token0?.symbol),
-        logoURI: this.replaceUri(tx.token0?.symbol, tx.token0?.logoURI),
+        ...tx.tokenA,
+        symbol: this.replaceToken(tx.tokenA?.symbol),
+        logoURI: this.replaceUri(tx.tokenA?.symbol, tx.tokenA?.logoURI),
       };
       const tokenB = {
-        ...tx.token1,
-        symbol: this.replaceToken(tx.token1?.symbol),
-        logoURI: this.replaceUri(tx.token1?.symbol, tx.token1?.logoURI),
+        ...tx.tokenB,
+        symbol: this.replaceToken(tx.tokenB?.symbol),
+        logoURI: this.replaceUri(tx.tokenB?.symbol, tx.tokenB?.logoURI),
       };
 
       const transactionDate = dayjs(tx.time);
       const txModel: TransactionModel = {
-        txType: tx.token1.name ? 1 : 0,
+        txType: tx.tokenB.name ? 1 : 0,
         txHash: tx.txHash,
         tokenInfo: { tokenA, tokenB },
         status: "SUCCESS",
@@ -205,11 +206,11 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       return [];
     }
     try {
-      const { data } = await this.networkClient.get<AccountActivity[]>({
-        url: "/users" + "/" + request.address + "/activity",
+      const { data } = await this.networkClient.get<{data: AccountActivity[],error: any}>({
+        url: "/users/" + request.address + "/activity",
       });
 
-      return data;
+      return data.data;
     } catch (error) {
       return [];
     }
@@ -218,7 +219,15 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   public getGroupedNotification = async (
     request: AccountActivityRequest,
   ): Promise<TransactionGroupsType[]> => {
-    const data = await this.getAccountOnchainActivity(request);
-    return this.groupTransactionsByDate(data);
+      const data = await this.getAccountOnchainActivity(request) ;
+      return this.groupTransactionsByDate(data);
+  };
+
+  public clearNotification = async (
+    request: DeleteAccountActivityRequest,
+  ): Promise<void> => {
+    await this.networkClient.delete({
+      url: "/users/" + request.address + "/activity",
+    });
   };
 }

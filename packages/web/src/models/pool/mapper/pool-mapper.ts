@@ -119,6 +119,7 @@ export class PoolMapper {
       rewardTokens: pool.rewardTokens || [],
       apr: !pool.apr ? Number(pool.apr) : null,
       bins40: pool.bins40,
+      liquidity: pool.liquidity,
     };
   }
 

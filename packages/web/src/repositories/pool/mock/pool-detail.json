@@ -47,6 +47,7 @@
     "topBin": null,
     "resolvedBins": [],
     "totalApr": 0,
-    "rewardTokens": []
+    "rewardTokens": [],
+    "liquidity": ""
   }
 }

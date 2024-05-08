@@ -1,7 +1,6 @@
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
-import { IPoolPriceRatio } from "./pool-price-ratio.model";
 
 export interface PoolModel {
   id: string;
@@ -62,6 +61,10 @@ export interface PoolModel {
   rewardsUsd24h?: any;
 
   usdValue?: any;
+
+  priceRatio?: IPoolPriceRatio;
+  
+  liquidity: string;
 }
 
 export interface IPoolDetailResponse {
@@ -84,6 +87,17 @@ export interface IPoolDetailResponse {
   tickSpacing: string;
   bins: IBin[];
   priceRatio: IPoolPriceRatio;
+}
+
+export interface IPoolPriceRatioItem {
+  date: string;
+  ratio: string;
+}
+
+export interface IPoolPriceRatio {
+  "7d": IPoolPriceRatioItem[];
+  "30d": IPoolPriceRatioItem[];
+  "all": IPoolPriceRatioItem[];
 }
 
 export interface ITokenA {

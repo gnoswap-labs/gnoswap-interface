@@ -489,7 +489,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       handleClickOneStaking={() => null}
       changeStartingPrice={changeStartingPrice}
       createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
-      fetching={fetching}
+      isFetchingPools={fetching}
       handleSwapValue={handleSwapValue}
       isKeepToken={isKeepToken}
       setPriceRange={(type) => setPriceRange(PRICE_RANGES.find(item => item.type === (type)) ?? null)}
