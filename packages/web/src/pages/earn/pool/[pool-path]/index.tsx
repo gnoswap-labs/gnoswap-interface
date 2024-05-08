@@ -35,7 +35,7 @@ export default function Pool() {
   const { isFetchedPosition, loading, getPositionsByPoolId } =
     usePositionData(address);
   const isStaking = useMemo(() => {
-    if (data?.incentivizedType === "INCENTIVIZED") {
+    if (data?.incentiveType === "INCENTIVIZED") {
       return true;
     }
     const temp = getPositionsByPoolId(poolPath as string);
@@ -43,11 +43,11 @@ export default function Pool() {
     if (stakedPositions.length > 0) {
       return true;
     }
-    if (data?.incentivizedType === "EXTERNAL_INCENTIVIZED") {
+    if (data?.incentiveType === "EXTERNAL") {
       return true;
     }
     return false;
-  }, [data?.incentivizedType]);
+  }, [data?.incentiveType]);
   console.log(hash, "hash");
 
   useEffect(() => {

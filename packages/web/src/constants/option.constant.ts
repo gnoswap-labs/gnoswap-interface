@@ -214,12 +214,12 @@ export const MATH_NEGATIVE_TYPE = {
 } as const;
 export type MATH_NEGATIVE_TYPE = ValuesType<typeof MATH_NEGATIVE_TYPE>;
 
-export const INCENTIVIZED_TYPE = {
+export const INCENTIVE_TYPE_MAPPER = {
   INCENTIVIZED: "Incentivized",
   NONE_INCENTIVIZED: "Non-Incentivized",
-  EXTERNAL_INCENTIVIZED: "External-Incentivized",
+  EXTERNAL: "External-Incentivized",
 } as const;
-export type INCENTIVIZED_TYPE = ValuesType<typeof INCENTIVIZED_TYPE>;
+export type INCENTIVE_TYPE = "INCENTIVIZED" | "NONE_INCENTIVIZED" | "EXTERNAL";
 
 export const CHART_TYPE = {
   "7D": "7D",
@@ -366,7 +366,7 @@ export const STAKING_PERIOD_INFO: {
       "During this staking period, you will only receive 70% of your maximum staking rewards. Keep your position staked to increase your rewards.",
     period: 30,
   },
-  MAX: {
+  "MAX": {
     title: "Staked more than 30 days",
     description: "Receiving Max Rewards",
     tooltipContent:

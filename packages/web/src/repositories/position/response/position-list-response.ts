@@ -10,8 +10,6 @@ export interface PositionResponse {
 
   staked: boolean;
 
-  incentivized: boolean;
-
   operator: string;
 
   tickLower: string;

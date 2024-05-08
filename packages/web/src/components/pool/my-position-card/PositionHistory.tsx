@@ -4,14 +4,16 @@ import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import PositionHistoryContainer from "@containers/position-history-container/PositionHistoryContainer";
 import { TokenModel } from "@models/token/token-model";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface Props {
   isClosed: boolean;
   tokenA: TokenModel;
   tokenB: TokenModel;
+  position: PoolPositionModel;
 }
 
-const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA }) => {
+const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA, position }) => {
   const [openedSelector, setOpenedSelector] = useState(false);
   return (
     <PositionHistoryWrapper isClosed={isClosed}>
@@ -25,7 +27,7 @@ const PositionHistory: FC<Props> = ({ isClosed, tokenB, tokenA }) => {
           )}
         </div>
       </div>
-      {openedSelector && <PositionHistoryContainer tokenA={tokenA} tokenB={tokenB}/>}
+      {openedSelector && <PositionHistoryContainer position={position} tokenA={tokenA} tokenB={tokenB} />}
     </PositionHistoryWrapper>
   );
 };

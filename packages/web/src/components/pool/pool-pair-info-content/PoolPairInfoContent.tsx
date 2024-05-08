@@ -86,20 +86,20 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.totalApr]);
 
   const liquidityChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.tvlChange, 2)}%`;
-  }, [pool.tvlChange]);
+    return `${numberToFormat(pool.tvlChange / pool.tvl * 100, 2)}%`;
+  }, [pool.tvl, pool.tvlChange]);
 
   const volumeChangedStr = useMemo((): string => {
     return `${numberToFormat(pool.volumeChange, 2)}%`;
   }, [pool.volumeChange]);
 
   const feeChangedStr = useMemo((): string => {
-    return toUnitFormat(pool.feeChange, true, true);
-  }, [pool.feeChange]);
+    return toUnitFormat(pool.feeUsd24h, true, true);
+  }, [pool.feeUsd24h]);
 
   const rewardChangedStr = useMemo((): string => {
-    return "$0";
-  }, []);
+    return toUnitFormat(pool.rewardsUsd24h, true, true);
+  }, [pool.rewardsUsd24h]);
 
   const isWrapText = useMemo(() => {
     return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
@@ -178,7 +178,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="section-info flex-row">
             <span>All-Time Volume</span>
             {!loading && <div className="section-image">
-              <span>{toUnitFormat(pool.totalVolume, true, true)}</span>
+              <span>{toUnitFormat((pool.allTimeVolumeUsd ?? 0), true, true)}</span>
             </div>}
 
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>

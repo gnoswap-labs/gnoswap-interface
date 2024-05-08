@@ -7,6 +7,7 @@ import {
   SendTransactionResponse,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
 
 export interface PositionRepository {
   getPositionsByAddress: (address: string) => Promise<PositionModel[]>;
@@ -26,4 +27,6 @@ export interface PositionRepository {
   removeLiquidity: (
     request: RemoveLiquidityRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
+
+  getPositionHistory: (lpTokenId: string) => Promise<IPositionHistoryModel[]>;
 }

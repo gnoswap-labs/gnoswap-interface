@@ -13,13 +13,13 @@ interface ExchangeRateGraphProps {
   data?: TokenExchangeRateGraphResponse;
 }
 
-function ExchangeRateGraph({
+const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   tokenA,
   tokenB,
   feeTier,
   onSwap,
   data,
-}: ExchangeRateGraphProps) {
+}) => {
   return <ExchangeRateGraphWrapper>
     <ExchangeRateGraphHeaderWrapper>
       <p className="title">Exchange Rate</p>
@@ -40,6 +40,6 @@ function ExchangeRateGraph({
       data={data}
     />
   </ExchangeRateGraphWrapper>;
-}
+};
 
 export default ExchangeRateGraph;

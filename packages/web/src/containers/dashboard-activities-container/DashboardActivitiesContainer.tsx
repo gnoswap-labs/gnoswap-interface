@@ -50,14 +50,6 @@ export const ACTIVITY_TYPE = {
 } as const;
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
-// const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-//   Action: "action",
-//   "Total Value": "total_value",
-//   "Token amount": "token_amount",
-//   "Token amount ": "token_amount ",
-//   Account: "Account",
-//   Time: "Time",
-// };
 
 export const dummyTokenList: Activity[] = [
   {
@@ -71,30 +63,6 @@ export const dummyTokenList: Activity[] = [
       "https://gnoscan.io/transactions/details?txhash=hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
   },
 ];
-
-// async function fetchActivities(
-//   type: ACTIVITY_TYPE, // eslint-disable-line
-//   page: number, // eslint-disable-line
-//   sortKey?: string, // eslint-disable-line
-//   direction?: string, // eslint-disable-line
-// ): Promise<Activity[]> {
-//   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-//     Promise.resolve([
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//     ]),
-//   );
-// }
 
 const replaceToken = (symbol: string) => {
   if (symbol === "wugnot") return "GNOT";
@@ -125,7 +93,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     ],
     queryFn: () =>
       dashboardRepository.getDashboardOnchainActivity({ type: activityType }),
-      refetchInterval: 60 * 1000,
+    refetchInterval: 60 * 1000,
   });
 
   const changeActivityType = useCallback((newType: string) => {
@@ -157,8 +125,8 @@ const DashboardActivitiesContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,

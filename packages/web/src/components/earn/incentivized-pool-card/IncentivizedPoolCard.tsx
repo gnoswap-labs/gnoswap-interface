@@ -6,7 +6,7 @@ import {
 } from "./IncentivizedPoolCard.styles";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
-import { INCENTIVIZED_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
+import { INCENTIVE_TYPE_MAPPER, SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
@@ -36,11 +36,11 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
 
   const incentivizedLabel = useMemo(() => {
-    if (pool.incentivizedType === "NONE_INCENTIVIZED") {
+    if (pool.incentiveType === "NONE_INCENTIVIZED") {
       return null;
     }
-    return INCENTIVIZED_TYPE["INCENTIVIZED"];
-  }, [pool.incentivizedType]);
+    return INCENTIVE_TYPE_MAPPER["INCENTIVIZED"];
+  }, [pool.incentiveType]);
 
   const rewardTokensInfo = useMemo(() => {
     const allRewardTokens = pool.rewardTokens;

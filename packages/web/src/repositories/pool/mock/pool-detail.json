@@ -26,7 +26,7 @@
       "type": "grc20",
       "priceID": "gno.land/r/foo"
     },
-    "incentivizedType": "INCENTIVIZED",
+    "incentiveType": "INCENTIVIZED",
     "tvl": 1182782.0,
     "tvlChange": 118278200.0,
     "volume24h": 1182797.0,

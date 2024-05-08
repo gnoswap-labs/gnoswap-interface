@@ -17,7 +17,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { STAKING_PERIOD_INFO, StakingPeriodType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { numberToUSD, toUnitFormat } from "@utils/number-utils";
-import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
+import { calculateRemainTime, getLocalDateString } from "@common/utils/date-util";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PositionModel } from "@models/position/position-model";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
@@ -33,6 +33,7 @@ interface StakingContentCardProps {
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionModel[], period: number }) => {
+  console.log("🚀 ~ PriceTooltipContent ~ period:", period);
   const getRemainTime = useCallback((position: PositionModel) => {
     const stakedTime = Number(position.stakedAt) * 1000;
     const passedTime = (new Date().getTime() - stakedTime);
@@ -41,10 +42,11 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
     return `${day}d ${hours}h ${minutes}m ${seconds}s`;
   }, [period]);
 
+
   return (
     <PriceTooltipContentWrapper>
-      {positions.map((position, index) => (
-        <React.Fragment key={index}>
+      {positions.map((position, index) => {
+        return <React.Fragment key={index}>
           <div className="list list-logo">
             <DoubleLogo
               size={18}
@@ -55,21 +57,21 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
           </div>
           <div className="list">
             <span className="label">Total Value</span>
-            <span className="content">{numberToUSD(Number(position.stakedUsdValue))}</span>
+            <span className="content">{numberToUSD(Number(position.usdValue))}</span>
           </div>
           <div className="list">
             <span className="label">Staked Date</span>
-            <span className="content">{timeToDateStr(position.stakedAt, 1000)}</span>
+            <span className="content">{getLocalDateString(new Date(position.stakedAt).getTime())}</span>
           </div>
           <div className="list">
             <span className="label">Next Tier</span>
-            <span className="content">in {getRemainTime(position)}</span>
+            <span className="content">{(period === -1) ? "-" : `in ${getRemainTime(position)}`}</span>
           </div>
           {index < positions.length - 1 && (
             <TooltipDivider />
           )}
-        </React.Fragment>
-      ))}
+        </React.Fragment>;
+      })}
     </PriceTooltipContentWrapper>
   );
 };

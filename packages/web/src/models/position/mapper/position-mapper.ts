@@ -1,4 +1,3 @@
-import { IncentivizedOptions } from "@common/values";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenPairAmountInfo } from "@models/token/token-pair-amount-info";
 import {
@@ -10,6 +9,7 @@ import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
 import { toUnitFormat } from "@utils/number-utils";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 export class PositionMapper {
   public static toTokenPairAmount(
@@ -34,14 +34,10 @@ export class PositionMapper {
 
   public static from(position: PositionResponse): PositionModel {
     const id = position.lpTokenId;
-    const incentivizedType: IncentivizedOptions = position.incentivized
-      ? "INCENTIVIZED"
-      : "NONE_INCENTIVIZED";
 
     return {
       id,
       lpTokenId: position.lpTokenId,
-      incentivizedType,
       poolPath: position.poolPath,
       staked: position.staked,
       operator: position.operator,
@@ -70,6 +66,8 @@ export class PositionMapper {
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
       bins40: position.bins40,
       totalClaimedUsd: position.totalClaimedUsd,
+      usdValue: Number(position.usdValue),
+      incentiveType: position.incentiveType as INCENTIVE_TYPE,
     };
   }
 

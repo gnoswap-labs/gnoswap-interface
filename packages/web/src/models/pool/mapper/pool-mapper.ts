@@ -1,11 +1,10 @@
 import BigNumber from "bignumber.js";
 import { PoolListInfo } from "../info/pool-list-info";
 import { PoolModel } from "../pool-model";
-import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { INCENTIVE_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { PoolCardInfo } from "../info/pool-card-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
-import { IncentivizedOptions } from "@common/values";
 import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
 import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
@@ -15,7 +14,7 @@ export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
     const {
       id,
-      incentivizedType,
+      incentiveType,
       currentTick,
       price,
       tokenA,
@@ -34,7 +33,7 @@ export class PoolMapper {
 
     return {
       poolId: id,
-      incentivizedType,
+      incentiveType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
@@ -68,7 +67,7 @@ export class PoolMapper {
     const {
       id,
       currentTick,
-      incentivizedType,
+      incentiveType,
       price,
       tokenA,
       tokenB,
@@ -88,7 +87,7 @@ export class PoolMapper {
     const customVolume = convertToMB(Number(volume24h).toString(), 2);
     return {
       poolId: id,
-      incentivizedType,
+      incentiveType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
@@ -115,7 +114,7 @@ export class PoolMapper {
       ...pool,
       id,
       path: pool.poolPath,
-      incentivizedType: pool.incentiveType as IncentivizedOptions,
+      incentiveType: pool.incentiveType as INCENTIVE_TYPE,
       bins,
       rewardTokens: pool.rewardTokens || [],
       apr: !pool.apr ? Number(pool.apr) : null,
@@ -132,7 +131,7 @@ export class PoolMapper {
       ...pool,
       id,
       path: pool.poolPath,
-      incentivizedType: pool.incentiveType as IncentivizedOptions,
+      incentiveType: pool.incentiveType as INCENTIVE_TYPE,
       bins: [],
       rewardTokens: pool.rewardTokens || [],
       apr: !pool.apr ? Number(pool.apr) : null,

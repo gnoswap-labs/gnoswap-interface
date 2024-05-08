@@ -1,4 +1,4 @@
-import { IncentivizedOptions } from "@common/values";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
 import { IPoolPriceRatio } from "./pool-price-ratio.model";
@@ -8,7 +8,7 @@ export interface PoolModel {
 
   path: string;
 
-  incentivizedType: IncentivizedOptions;
+  incentiveType: INCENTIVE_TYPE;
 
   name: string;
 
@@ -56,6 +56,12 @@ export interface PoolModel {
   feeApr?: any;
 
   stakingApr?: any;
+  
+  allTimeVolumeUsd?: number;
+
+  rewardsUsd24h?: any;
+
+  usdValue?: any;
 }
 
 export interface IPoolDetailResponse {

@@ -48,7 +48,7 @@ export const initialPool: PoolDetailModel = {
     type: "native",
     priceID: "",
   },
-  incentivizedType: "INCENTIVIZED",
+  incentiveType: "INCENTIVIZED",
   tvl: 0,
   tvlChange: 0,
   volume24h: 0,

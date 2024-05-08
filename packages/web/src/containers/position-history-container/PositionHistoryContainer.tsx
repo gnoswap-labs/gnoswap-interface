@@ -3,17 +3,10 @@ import React from "react";
 import { ValuesType } from "utility-types";
 
 import PositionHistoryList from "@components/pool/position-history-list/PositionHistoryList";
-import { useLoading } from "@hooks/common/use-loading";
 import { TokenModel } from "@models/token/token-model";
-
-export interface IHistory {
-  timeStamp: string;
-  action: string;
-  value: string;
-  gnsAmount: string;
-  gnotAmount: string;
-}
-
+import { useGetPositionHistory } from "@query/positions";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { useLoading } from "@hooks/common/use-loading";
 export interface SortOption {
   key: TABLE_HEAD;
   direction: "asc" | "desc";
@@ -23,62 +16,27 @@ export const TABLE_HEAD = {
   TIMESTAMP: "Timestamp",
   ACTION: "Action",
   VALUE: "Value",
-  GNS_AMOUNT: "GNS Amount",
-  GNOT_AMOUNT: "GNOT Amount",
+  GNS_AMOUNT: "Token Amount",
+  GNOT_AMOUNT: "Token Amount",
 } as const;
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
-export const dummyList: IHistory[] = [
-  {
-    timeStamp: "Jan 17 2024, 13:12:42",
-    action: "Stake Position",
-    value: "$12,090.12",
-    gnsAmount: "241.240124 GNS",
-    gnotAmount: "1.124121 GNOT",
-  },
-  {
-    timeStamp: "Jan 17 2024, 13:12:42",
-    action: "Stake Position",
-    value: "$12,090.12",
-    gnsAmount: "241.240124 GNS",
-    gnotAmount: "1.124121 GNOT",
-  },
-  {
-    timeStamp: "Jan 17 2024, 13:12:42",
-    action: "Stake Position",
-    value: "$12,090.12",
-    gnsAmount: "241.240124 GNS",
-    gnotAmount: "1.124121 GNOT",
-  },
-  {
-    timeStamp: "Jan 17 2024, 13:12:42",
-    action: "Stake Position",
-    value: "$12,090.12",
-    gnsAmount: "241.240124 GNS",
-    gnotAmount: "1.124121 GNOT",
-  },
-  {
-    timeStamp: "Jan 17 2024, 13:12:42",
-    action: "Stake Position",
-    value: "$12,090.12",
-    gnsAmount: "241.240124 GNS",
-    gnotAmount: "1.124121 GNOT",
-  },
-];
-
-interface Props {
+interface PositionHistoryContainerProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
+  position: PoolPositionModel;
 }
 
-const PositionHistoryContainer: React.FC<Props> = ({ tokenA, tokenB }) => {
+const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({ tokenA, tokenB, position }) => {
   const { breakpoint } = useWindowSize();
   const { isLoadingCommon } = useLoading();
+  const { data: historyList = [], isFetched, isLoading } = useGetPositionHistory(position?.lpTokenId);
 
   return (
     <PositionHistoryList
-      list={dummyList}
-      isFetched={!isLoadingCommon}
+      list={historyList}
+      isLoading={isLoading || isLoadingCommon}
+      isFetched={isFetched}
       breakpoint={breakpoint}
       tokenA={tokenA}
       tokenB={tokenB}

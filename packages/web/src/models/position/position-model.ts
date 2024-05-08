@@ -1,13 +1,11 @@
-import { IncentivizedOptions } from "@common/values";
 import { RewardModel } from "./reward-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 export interface PositionModel {
   id: string;
 
   lpTokenId: string;
-
-  incentivizedType: IncentivizedOptions;
 
   poolPath: string;
 
@@ -62,5 +60,9 @@ export interface PositionModel {
   totalDailyRewardsUsd: string;
 
   totalClaimedUsd: string;
+
+  usdValue: any;
+
+  incentiveType: INCENTIVE_TYPE;
 }
 

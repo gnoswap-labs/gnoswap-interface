@@ -38,7 +38,7 @@ const pool: PoolCardInfo = {
   volume24h: "$1,182,797",
   fees24h: "$131.937491",
   rewardTokens: [],
-  incentivizedType: "INCENTIVIZED",
+  incentiveType: "INCENTIVIZED",
   currentTick: 0,
   price: 0,
   bins: [],

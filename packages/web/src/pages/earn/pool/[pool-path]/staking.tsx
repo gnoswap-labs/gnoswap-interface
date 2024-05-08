@@ -34,14 +34,14 @@ export default function Pool() {
   const { loading } = usePositionData(address);
 
   const isStaking = useMemo(() => {
-    if (data?.incentivizedType === "INCENTIVIZED") {
+    if (data?.incentiveType === "INCENTIVIZED") {
       return true;
     }
-    if (data?.incentivizedType === "EXTERNAL_INCENTIVIZED") {
+    if (data?.incentiveType === "EXTERNAL") {
       return true;
     }
     return false;
-  }, [data?.incentivizedType]);
+  }, [data?.incentiveType]);
 
   useEffect(() => {
     if (!loading) {

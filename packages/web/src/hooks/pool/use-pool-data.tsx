@@ -88,7 +88,7 @@ export const usePoolData = () => {
 
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     const mappedPools = pools
-      .filter(pool => pool.incentivizedType !== "NONE_INCENTIVIZED")
+      .filter(pool => pool.incentiveType !== "NONE_INCENTIVIZED")
       .map(PoolMapper.toCardInfo);
     mappedPools.sort((x, y) => Number(y.tvl) - Number(x.tvl));
     return mappedPools.map((item: PoolCardInfo) => {
