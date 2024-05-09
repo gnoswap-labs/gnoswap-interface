@@ -117,7 +117,6 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
             </div>
             <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
               <PoolGraph
-                liquidity={pool.liquidity}
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
                 bins={pool.bins40 ?? []}

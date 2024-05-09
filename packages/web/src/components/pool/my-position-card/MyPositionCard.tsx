@@ -688,7 +688,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           </div>
           {!loading && (
             <PoolGraph
-              liquidity={position.liquidity.toString()}
               tokenA={tokenA}
               tokenB={tokenB}
               bins={bins ?? []}

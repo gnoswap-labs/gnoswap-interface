@@ -58,7 +58,6 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
       height={height}
     >
       <PoolGraph
-        liquidity={pool.liquidity}
         currentTick={currentTick !== undefined ? currentTick : null}
         width={width}
         height={height}
