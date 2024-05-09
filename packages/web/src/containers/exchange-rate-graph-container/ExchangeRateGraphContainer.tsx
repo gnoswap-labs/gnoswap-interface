@@ -1,9 +1,11 @@
 import ExchangeRateGraph from "@components/pool/exchange-rate-graph/ExchangeRateGraph";
 import { useLoading } from "@hooks/common/use-loading";
 import { PoolModel } from "@models/pool/pool-model";
+import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
+import { useMemo } from "react";
 
 export const initialPool: PoolModel = {
   name: "",
@@ -58,15 +60,38 @@ export const initialPool: PoolModel = {
 
 const ExchangeRateGraphContainer: React.FC = () => {
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
+  const [compareToken] = useAtom(EarnState.currentCompareToken);
+
+  const tokenPair = currentPoolPath?.split(":");
 
   const poolPath = currentPoolPath;
   const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoadingCommon } = useLoading();
 
+  const reverse = useMemo(() => {
+    return tokenPair?.findIndex(path => {
+      if (compareToken) {
+        return isNativeToken(compareToken)
+          ? compareToken.wrappedPath === path
+          : compareToken.path === path;
+      }
+      return false;
+    }) === 1;
+  }, [compareToken, tokenPair]);
+
+  const changedPoolInfo = useMemo(() => {
+    return reverse === false
+      ? poolData
+      : {
+        ...poolData,
+        price: 1 / poolData.price,
+      };
+  }, [poolData, reverse]);
+
   return (<ExchangeRateGraph
-    poolData={poolData}
-    feeTier={""}
+    poolData={changedPoolInfo}
     isLoading={isLoading || isLoadingCommon}
+    reverse={reverse}
   />);
 };
 

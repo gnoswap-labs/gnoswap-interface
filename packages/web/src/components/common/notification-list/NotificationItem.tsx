@@ -66,7 +66,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                     />
                   </DoubleLogo>
                 )}
-                <div className="content-wrap" dangerouslySetInnerHTML={{ __html: item.content || ""}} />
+                <div className="content-wrap" dangerouslySetInnerHTML={{ __html: item.content || "" }} />
               </div>
             </div>
             {item.status === "SUCCESS" ? (
@@ -116,7 +116,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
                 />
               </DoubleLogoWrapperTest>
             )}
-            <div className="summary-content" dangerouslySetInnerHTML={{ __html: item.content || ""}} />
+            <div className="summary-content" dangerouslySetInnerHTML={{ __html: item.content || "" }} />
             {item.status === "SUCCESS" ? (
               <IconCircleInCheck className="success-icon status-icon" />
             ) : item.status === "FAILED" ? (

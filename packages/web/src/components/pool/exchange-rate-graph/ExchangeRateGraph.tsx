@@ -7,18 +7,20 @@ import { PoolModel } from "@models/pool/pool-model";
 
 interface ExchangeRateGraphProps {
   poolData: PoolModel;
-  feeTier: string;
   onSwap?: (swap: boolean) => void;
   data?: TokenExchangeRateGraphResponse;
   isLoading: boolean;
+  reverse: boolean;
 }
 
 const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   poolData,
-  feeTier,
   onSwap,
   isLoading,
+  reverse,
 }) => {
+  console.log("🚀 ~ poolData:", poolData);
+
   return <ExchangeRateGraphWrapper>
     <ExchangeRateGraphHeaderWrapper>
       <p className="title">Exchange Rate</p>
@@ -33,9 +35,9 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
     </ExchangeRateGraphHeaderWrapper>
     <ExchangeRateGraphContent
       onSwap={onSwap}
-      feeTier={feeTier}
       poolData={poolData}
       isLoading={isLoading}
+      reverse={reverse}
     />
   </ExchangeRateGraphWrapper>;
 };

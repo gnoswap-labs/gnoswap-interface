@@ -41,7 +41,9 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
-  const convertBalance = removeTrailingZeros(BigNumber((balance ?? "").toString()).toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6)) || 0;
+  const convertBalance = removeTrailingZeros(BigNumber((balance ?? "").toString())
+    .dividedBy(Math.pow(10, asset.decimals ?? 0))
+    .toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6)) || 0;
   const priceData = ["-", "<$0.01"].includes(price) ? price : `$${price}`;
 
   return breakpoint === DEVICE_TYPE.WEB ? (

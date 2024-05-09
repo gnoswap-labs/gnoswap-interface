@@ -149,6 +149,7 @@ const VolumeChartContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
+  console.log("🚀 ~ volumeEntity:", volumeEntity);
   const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd } = volumeEntity || {};
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
@@ -181,7 +182,7 @@ const VolumeChartContainer: React.FC = () => {
         break;
     }
 
-    return chartData?.reduce(
+    return chartData?.sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime()).reduce(
       (pre, next) => {
         const time = parseDate(next.date);
         return {
@@ -193,6 +194,9 @@ const VolumeChartContainer: React.FC = () => {
       { xAxisLabels: [], datas: [], times: [] } as VolumeChartInfo,
     );
   }, [volumeChartType, volumeData]);
+
+  console.log("🚀 ~ chartData ~ chartData:", chartData);
+
 
   return (
     <VolumeChart

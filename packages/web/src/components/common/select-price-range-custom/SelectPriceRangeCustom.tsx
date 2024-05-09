@@ -39,6 +39,7 @@ export interface SelectPriceRangeCustomProps {
   setPriceRange: (type?: PriceRangeType) => void;
   resetPriceRangeTypeTarget: PriceRangeType;
   defaultTicks?: DefaultTick;
+  isLoadingSelectPriceRange: boolean;
 }
 
 export interface SelectPriceRangeCustomHandle {
@@ -59,6 +60,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
   resetPriceRangeTypeTarget,
   setPriceRange,
   defaultTicks,
+  isLoadingSelectPriceRange,
 }, ref) => {
   const { getGnotPath } = useGnotToGnot();
   const GRAPH_WIDTH = 388;
@@ -108,7 +110,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
   const isCustom = true;
 
-  const isLoading = useMemo(() => selectPool.renderState() === "LOADING", [selectPool.renderState]);
+  const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange, [selectPool.renderState, isLoadingSelectPriceRange]);
 
   const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 

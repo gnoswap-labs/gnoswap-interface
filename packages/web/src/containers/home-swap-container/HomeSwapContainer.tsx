@@ -86,6 +86,7 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
+
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
       return Number.NaN;
@@ -94,6 +95,7 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
+
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
       tokenA,
@@ -108,19 +110,10 @@ const HomeSwapContainer: React.FC = () => {
       tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
       direction: swapDirection,
       slippage,
+      tokenADecimals: tokenA?.decimals,
+      tokenBDecimals: tokenB?.decimals,
     };
-  }, [
-    slippage,
-    swapDirection,
-    tokenA,
-    tokenAAmount,
-    tokenABalance,
-    tokenAUSD,
-    tokenB,
-    tokenBAmount,
-    tokenBBalance,
-    tokenBUSD,
-  ]);
+  }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapNow = useCallback(() => {
     if (swapDirection === "EXACT_IN" && !!Number(tokenAAmount)) {

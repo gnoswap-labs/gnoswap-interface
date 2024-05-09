@@ -1,6 +1,7 @@
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { atom } from "jotai";
 import { PoolModel } from "@models/pool/pool-model";
+import { TokenModel } from "@models/token/token-model";
 
 interface DistributionPeriodDate {
   year: number;
@@ -16,6 +17,7 @@ const DefaultDate = {
 
 export const isOneClick = atom<boolean>(false);
 export const currentPoolPath = atom<string | null>(null);
+export const currentCompareToken = atom<TokenModel | null>(null);
 export const period = atom<number>(90);
 export const dataModal = atom<TokenAmountInputModel | null>(null);
 export const date = atom<DistributionPeriodDate>(DefaultDate);

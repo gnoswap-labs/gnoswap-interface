@@ -34,7 +34,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   const { breakpoint } = useWindowSize();
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
-  
+
   useEffect(() => {
 
   }, []);
@@ -95,22 +95,22 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   const balanceADisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(
-        2,
-      );
+      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
+        .dividedBy(Math.pow(10, swapTokenInfo.tokenBDecimals ?? 0))
+        .toFormat(2);
     }
     return "-";
-  }, [swapTokenInfo.tokenABalance, connected]);
+  }, [connected, swapTokenInfo.tokenABalance, swapTokenInfo.tokenBDecimals]);
 
   const balanceBDisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(
-        2,
-      );
+      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, ""))
+        .dividedBy(Math.pow(10, swapTokenInfo.tokenBDecimals ?? 0))
+        .toFormat(2);
     }
     return "-";
-  }, [swapTokenInfo.tokenBBalance, connected]);
+  }, [connected, swapTokenInfo.tokenBBalance, swapTokenInfo.tokenBDecimals]);
 
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
@@ -137,9 +137,8 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span
-              className={`balance-text ${
-                connected ? "balance-text-disabled" : ""
-              }`}
+              className={`balance-text ${connected ? "balance-text-disabled" : ""
+                }`}
               onClick={handleAutoFillTokenA}
             >
               {`Balance: ${balanceADisplay}`}
@@ -165,9 +164,8 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
             <span
-              className={`balance-text ${
-                connected ? "balance-text-disabled" : ""
-              }`}
+              className={`balance-text ${connected ? "balance-text-disabled" : ""
+                }`}
               onClick={handleAutoFillTokenB}
             >
               Balance: {balanceBDisplay}

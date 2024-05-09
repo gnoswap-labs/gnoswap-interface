@@ -71,7 +71,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
         return "-";
       }
-      return BigNumber(tokenPrice).toFormat();
+      return BigNumber(tokenPrice).dividedBy(Math.pow(10, token.decimals ?? 0)).toFormat();
     },
     [tokenPrices, isSwitchNetwork],
   );
@@ -194,9 +194,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="token-select">
           {getTokensRecent.map((token, index) => (
             <div
-              className={`token-button ${
-                themeKey === "dark" && "border-button-none"
-              }`}
+              className={`token-button ${themeKey === "dark" && "border-button-none"
+                }`}
               key={index}
               onClick={() => onClickToken(token)}
             >
@@ -214,9 +213,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       </div>
       <Divider />
       <div
-        className={`token-list-wrapper ${
-          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-        }`}
+        className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+          }`}
       >
         {tokens.length > 0 &&
           tokens.map((token, index) => (

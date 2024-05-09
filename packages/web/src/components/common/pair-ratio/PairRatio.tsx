@@ -1,7 +1,8 @@
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
-import { TokenModel } from "@models/token/token-model";
+import { PoolModel } from "@models/pool/pool-model";
 import { formatExchangeRate } from "@utils/number-utils";
+import { useMemo } from "react";
 import IconSwap from "../icons/IconSwap";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { PairRatioWrapper } from "./PairRatio.styles";
@@ -10,30 +11,36 @@ interface PairRatioProps {
   loading?: boolean;
   onSwap?: (swap: boolean) => void;
   isSwap?: boolean;
-  tokenA: TokenModel;
-  tokenB: TokenModel;
   showSwapBtn?: boolean;
-  feeTier: string;
+  pool: PoolModel;
 }
 
 export function PairRatio({
   loading = false,
   isSwap = false,
   onSwap,
-  tokenA,
-  tokenB,
   showSwapBtn,
+  pool,
 }: PairRatioProps) {
+  const displayTokenSymbol = useMemo(
+    () => (!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
+    [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
+  );
+  const secondTokenSymbol = useMemo(
+    () => (isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
+    [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
+  );
+
   return (<PairRatioWrapper>
     {!loading && (
       <MissingLogo
-        symbol={!isSwap ? tokenA?.symbol : tokenB?.symbol}
-        url={!isSwap ? tokenA?.logoURI : tokenB?.logoURI}
+        symbol={displayTokenSymbol}
+        url={!isSwap ? pool.tokenA?.logoURI : pool.tokenB?.logoURI}
         width={20}
         className="image-logo"
       />
     )}
-    {!loading && <div>1 {tokenA.symbol} =&nbsp;{formatExchangeRate(1.123812783)}&nbsp;{tokenB.symbol}</div>}
+    {!loading && <div>1 {displayTokenSymbol} =&nbsp;{formatExchangeRate(pool.price)}&nbsp;{secondTokenSymbol}</div>}
     {showSwapBtn && !loading && (
       <div
         className="icon-wrapper"

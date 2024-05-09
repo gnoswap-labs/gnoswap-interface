@@ -51,6 +51,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
 }) => {
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
+  console.log("🚀 ~ size:", size);
   const { breakpoint } = useWindowSize();
 
   const getDatas = useCallback(() => {

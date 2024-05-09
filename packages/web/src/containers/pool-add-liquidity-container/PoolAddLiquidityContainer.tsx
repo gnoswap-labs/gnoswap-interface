@@ -26,6 +26,8 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { encryptId } from "@utils/common";
 import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
+import { isFetchedPools } from "@states/pool";
+import { useLoading } from "@hooks/common/use-loading";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -94,7 +96,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
     startPrice: createOption?.startPrice,
   });
   const { updatePools } = usePoolData();
-  const { pools, feetierOfLiquidityMap, createPool, addLiquidity, fetching } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
+  const { pools,
+    feetierOfLiquidityMap,
+    createPool,
+    addLiquidity,
+    isFetchingPools,
+    fetching: isFetchingFeetierOfLiquidityMap
+  } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
   const { openModal: openOneClickModal } = useOneClickStakingModal({
     tokenA,
     tokenB,
@@ -116,6 +124,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     createPool,
     addLiquidity,
   });
+  const { isLoadingCommon } = useLoading();
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -455,6 +464,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
 
+  const showDim = useMemo(() => {
+    return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice && isFetchedPools);
+  }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
+
+  const isLoadingSelectFeeTier = useMemo(() => {
+    return isFetchingFeetierOfLiquidityMap || isFetchingPools || isLoadingCommon;
+  }, [isFetchingFeetierOfLiquidityMap, isFetchingPools, isLoadingCommon]);
+
+  const isLoadingSelectPriceRange = useMemo(() => {
+    return isFetchingPools || isLoadingCommon;
+  }, [isFetchingPools, isLoadingCommon]);
+
   return (
     <EarnAddLiquidity
       mode={"POOL"}
@@ -489,12 +510,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
       handleClickOneStaking={() => null}
       changeStartingPrice={changeStartingPrice}
       createOption={{ isCreate: createOption?.isCreate || false, startPrice: createOption?.startPrice || null }}
-      isFetchingPools={fetching}
       handleSwapValue={handleSwapValue}
       isKeepToken={isKeepToken}
       setPriceRange={(type) => setPriceRange(PRICE_RANGES.find(item => item.type === (type)) ?? null)}
       defaultTicks={ticksFromUrl}
       resetPriceRangeTypeTarget={priceRangeTypeFromUrl ?? "Passive"}
+      showDim={showDim}
+      isLoadingSelectFeeTier={isLoadingSelectFeeTier}
+      isLoadingSelectPriceRange={isLoadingSelectPriceRange}
     />
   );
 };

@@ -67,6 +67,7 @@ export interface SelectPool {
   ) => void;
   isChangeMinMax: boolean;
   setIsChangeMinMax: (value: boolean) => void;
+  poolInfo: PoolDetailRPCModel | null | undefined
 }
 
 export const useSelectPool = ({
@@ -77,6 +78,8 @@ export const useSelectPool = ({
   startPrice = null,
   defaultPriceRange = [null, null],
 }: Props) => {
+  console.log("🚀 useSelectPool ~ tokenB:", tokenB);
+  console.log("🚀 useSelectPool ~ tokenA:", tokenA);
   const priceRangeRef = useRef<[number | null, number | null]>([...defaultPriceRange]);
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
@@ -92,6 +95,7 @@ export const useSelectPool = ({
   >("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
   const { isLoadingCommon } = useLoading();
+  const [, setGlobalCompareToken] = useAtom(EarnState.currentCompareToken);
 
   const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [tokenA?.path, tokenA?.wrappedPath]);
   const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [tokenB?.path, tokenB?.wrappedPath]);
@@ -140,8 +144,8 @@ export const useSelectPool = ({
       const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
       const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
         }`;
-
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
+      console.log("🚀 ~ queryFn: ~ poolRes:", poolRes);
 
       const reverse =
         tokenPair.findIndex(path => {
@@ -440,7 +444,10 @@ export const useSelectPool = ({
     maxPosition,
     setMaxPosition: changeMaxPosition,
     compareToken,
-    setCompareToken,
+    setCompareToken: (token: TokenModel | null) => {
+      setCompareToken(token);
+      setGlobalCompareToken(token);
+    },
     currentPrice: price,
     minPrice,
     maxPrice,
@@ -465,5 +472,6 @@ export const useSelectPool = ({
     setInteractionType,
     isChangeMinMax,
     setIsChangeMinMax,
+    poolInfo,
   };
 };

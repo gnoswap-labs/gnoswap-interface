@@ -90,7 +90,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isCreate: createOption.isCreate,
     startPrice: createOption.startPrice,
   });
-  const { fetching: isFetchingPools, pools, feetierOfLiquidityMap, createPool, addLiquidity } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken, isReverted });
+  const { fetching: isFetchingFeetierOfLiquidityMap, pools, feetierOfLiquidityMap, createPool, addLiquidity, isFetchedPools, isFetchingPools } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken, isReverted });
   const { openModal: openConfirmModal } = useEarnAddLiquidityConfirmModal({
     tokenA,
     tokenB,
@@ -222,7 +222,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [priceRange?.type]);
 
   const changeTokenA = useCallback((token: TokenModel) => {
-    console.log("🚀 ~ changeTokenA ~ token:", token);
     setSwapValue((prev) => {
       if (token.wrappedPath === prev.tokenB?.wrappedPath) {
         return {
@@ -471,14 +470,32 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [pools, selectPool.compareToken, tokenA, tokenB]);
 
+  // useEffect(() => {
+  //   if (!(isFetchingPools || isLoadingCommon)) {
+  //     setSwapFeeTier("FEE_3000");
+  //   }
+  // }, [isFetchingPools, isLoadingCommon]);
+
+  // useEffect(() => {
+  //   if (isFetchingPools && !swapValue?.isEarnChanged) {
+  //     if (router.query?.fee_tier) {
+  //       selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
+  //     } else {
+  //       selectSwapFeeTier("FEE_3000");
+  //     }
+  //     setSwapValue({
+  //       tokenA,
+  //       tokenB,
+  //       type: "EXACT_IN",
+  //     });
+  //   }
+  // }, [isFetchingPools, swapValue?.isEarnChanged, pools, priceRanges]);
+
   useEffect(() => {
-    selectSwapFeeTier("FEE_3000");
-    // setSwapValue({
-    //   tokenA,
-    //   tokenB,
-    //   type: "EXACT_IN",
-    // });
-  }, [swapValue?.isEarnChanged, pools, priceRanges]);
+    if (!!tokenA && !!tokenB && isFetchedPools) {
+      selectSwapFeeTier("FEE_3000");
+    }
+  }, [tokenA, tokenB, isFetchedPools]);
 
   const handleSwapValue = useCallback(() => {
     const tempTokenA = swapValue.tokenA;
@@ -510,14 +527,21 @@ const EarnAddLiquidityContainer: React.FC = () => {
   //   }
   // }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
 
-  const isLoadingAll = useMemo(
-    () => isFetchingPools || selectPool.renderState() === "LOADING" || !router.isReady || isLoadingCommon,
-    [isFetchingPools, router.isReady, selectPool.renderState, isLoadingCommon]);
+  const showDim = useMemo(() => {
+    return isFetchedPools && !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
+  }, [isFetchedPools, tokenA, tokenB, selectPool.isCreate, createOption.startPrice]);
+
+  const isLoadingSelectFeeTier = useMemo(() => {
+    return isFetchingFeetierOfLiquidityMap || isFetchingPools || isLoadingCommon;
+  }, [isFetchingFeetierOfLiquidityMap, isFetchingPools, isLoadingCommon]);
+
+  const isLoadingSelectPriceRange = useMemo(() => {
+    return isFetchingPools || isLoadingCommon;
+  }, [isFetchingPools, isLoadingCommon]);
 
   return (
     <EarnAddLiquidity
       isLoadingTokens={isLoadingTokens}
-      isLoadingAll={isLoadingAll}
       mode={"POOL"}
       defaultPrice={defaultPrice}
       tokenA={tokenA}
@@ -550,7 +574,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       selectPool={selectPool}
       changeStartingPrice={changeStartingPrice}
       createOption={createOption}
-      isFetchingPools={isFetchingPools}
       handleSwapValue={handleSwapValue}
       isKeepToken={isKeepToken}
       /// Update with provided price range, if receive undefine set to default price range
@@ -558,6 +581,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
         setPriceRange(PRICE_RANGES.find(item => item.type === (type || "Passive")) ?? null);
       }}
       resetPriceRangeTypeTarget={"Passive"}
+      showDim={showDim}
+      isLoadingSelectFeeTier={isLoadingSelectFeeTier}
+      isLoadingSelectPriceRange={isLoadingSelectPriceRange}
     />
   );
 };

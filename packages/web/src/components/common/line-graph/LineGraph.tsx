@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
@@ -72,6 +72,7 @@ export interface LineGraphProps {
   centerLineColor?: string;
   showBaseLine?: boolean;
   renderBottom?: (baseLineNumberWidth: number) => React.ReactElement
+  isShowTooltip?: boolean;
 }
 
 export interface LineGraphRef {
@@ -142,6 +143,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine,
   renderBottom,
+  isShowTooltip = true,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -151,8 +153,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [points, setPoints] = useState<Point[]>([]);
   const [baseLineYAxis, setBaseLineYAxis] = useState<string[]>([]);
   const [baseLineNumberWidth, setBaseLineNumberWidth] = useState<number>(0);
+  console.log("🚀 ~ .padStart ~ baseLineNumberWidth:", baseLineNumberWidth);
   const { height: customHeight = 0, locationTooltip } = customData;
-  const chartRef = useRef<SVGGElement | null>(null);
   const baseLineCount = useMemo(() => 4, []);
   const theme = useTheme();
 
@@ -162,7 +164,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   useEffect(() => {
     updatePoints(datas, width, height);
-  }, [datas, width, height]);
+  }, [datas, width, height, baseLineNumberWidth]);
 
   const updatePoints = (
     datas: LineGraphData[],
@@ -248,7 +250,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     const optimizeTime = function (time: number, width: number) {
       return new BigNumber(time - minTime)
-        .multipliedBy(width - baseLineNumberWidthComputation)
+        .multipliedBy((width) - baseLineNumberWidthComputation)
         .dividedBy(maxTime - minTime)
         .toNumber();
     };
@@ -424,7 +426,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
         isHiddenArrow
         position={locationTooltipPosition}
         content={
-          currentPointIndex > -1 ? (
+          (isShowTooltip && currentPointIndex > -1) ? (
             <LineGraphTooltipWrapper>
               <div className="tooltip-body">
                 <span className="date">
@@ -456,7 +458,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 : <stop offset="100%" stopColor={gradientEndColor} />}
             </linearGradient>
           </defs>
-          <g ref={chartRef} height={height + (customHeight || 0)} width={width} className="line-chart-g">
+          <g width={width} className="line-chart-g">
             {showBaseLine && <>
               {
                 baseLineYAxis.map((value, index) => {

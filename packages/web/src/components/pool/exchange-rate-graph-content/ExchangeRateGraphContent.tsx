@@ -14,15 +14,16 @@ import { ExchangeRateGraphContentHeader, ExchangeRateGraphContentWrapper, Exchan
 
 interface ExchangeRateGraphContentProps {
   poolData: PoolDetailModel
-  feeTier: string;
   onSwap?: (swap: boolean) => void
   isLoading: boolean
+  reverse: boolean
 }
 
 function ExchangeRateGraphContent({
   onSwap,
   poolData,
   isLoading,
+  reverse,
 }: ExchangeRateGraphContentProps) {
 
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
@@ -108,9 +109,9 @@ function ExchangeRateGraphContent({
     <ExchangeRateGraphContentHeader>
       <PairRatio
         onSwap={onSwap}
-        tokenA={poolData.tokenA}
-        tokenB={poolData.tokenB}
-        feeTier={""}
+        pool={poolData}
+        loading={isLoading}
+        isSwap={reverse}
       />
       <ChartScopeSelectTab
         size={"SMALL"}
@@ -135,6 +136,7 @@ function ExchangeRateGraphContent({
             locationTooltip: 170,
           }}
           showBaseLine
+          isShowTooltip={false}
           renderBottom={(baseLineNumberWidth) => {
             return <ExchangeRateGraphXAxisWrapper innerWidth={(baseLineNumberWidth !== 0) ? `calc(100% - ${baseLineNumberWidth}px)` : "100%"}>
               <div className="exchange-rate-graph-xaxis">

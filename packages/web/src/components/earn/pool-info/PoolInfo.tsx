@@ -114,7 +114,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
             currentTick={pool.currentTick}
             bins={bins ?? []}
             mouseover
-            liquidity={pool.liquidity}
+            showBar={!pool.liquidity || pool.liquidity === "$0" || pool.liquidity === "0"}
             themeKey={themeKey}
             position="top"
             nextSpacing

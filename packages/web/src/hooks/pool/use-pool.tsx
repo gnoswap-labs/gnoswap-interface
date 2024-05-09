@@ -26,7 +26,7 @@ export const usePool = ({
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
   const [fetching, setFetching] = useState(false);
-  const { pools, updatePools } = usePoolData();
+  const { pools, updatePools, isFetchedPools, loading } = usePoolData();
   const [feetierOfLiquidityMap, setFeetierOfLiquidityMap] = useState<
     { [key in string]: number } | null
   >(null);
@@ -254,5 +254,7 @@ export const usePool = ({
     feetierOfLiquidityMap: feetierOfLiquidityMap || {},
     createPool,
     addLiquidity,
+    isFetchedPools,
+    isFetchingPools: loading,
   };
 };
