@@ -145,6 +145,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   renderBottom,
   isShowTooltip = true,
 }: LineGraphProps) => {
+  console.log("🚀 ~ .padStart ~ height:", height);
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
@@ -186,7 +187,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     let baseLineNumberWidthComputation = 0;
 
-    const minMaxGap = (maxValue - minValue) !== 0 ? (maxValue - minValue) : (maxValue / 5);
+    const minMaxGap = (maxValue - minValue) !== 0 ? (maxValue - minValue) : (maxValue / 10);
 
     if (showBaseLine) {
       const baseLineData = new Array(baseLineCount).fill("").map((value, index) => {

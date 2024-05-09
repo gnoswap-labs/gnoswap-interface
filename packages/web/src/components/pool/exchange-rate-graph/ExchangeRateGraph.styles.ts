@@ -47,3 +47,30 @@ export const TooltipContentWrapper = styled.div`
     ${fonts.body12}
     color: ${({ theme }) => theme.color.text02};
 `;
+
+export const LoadingExchangeRateChartWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "center")}
+  width: 100%;
+  height: 246px;
+  background-color: ${({ theme }) => theme.color.background15};
+  border-radius: 8px;
+  > div {
+    width: 60px;
+    height: 60px;
+    &::before {
+      width: 48px;
+      height: 48px;
+    }
+    &::after {
+      ${mixins.positionCenter()};
+      content: "";
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      background-color: ${({ theme }) => theme.color.background15};
+    }
+  }
+  ${media.mobile} {
+    height: 224px;
+  }
+`;

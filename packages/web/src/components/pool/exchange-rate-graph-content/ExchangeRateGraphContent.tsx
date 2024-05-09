@@ -1,6 +1,5 @@
 import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
 import LineGraph from "@components/common/line-graph/LineGraph";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
@@ -10,13 +9,13 @@ import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
 import { useMemo, useState } from "react";
 import PairRatio from "../../common/pair-ratio/PairRatio";
-import { ExchangeRateGraphContentHeader, ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper, LoadingExchangeRateChartWrapper } from "./ExchangeRateGraphContent.styles";
+import { ExchangeRateGraphContentHeader, ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
 
 interface ExchangeRateGraphContentProps {
   poolData: PoolDetailModel
   onSwap?: (swap: boolean) => void
-  isLoading: boolean
-  reverse: boolean
+  reverse: boolean,
+  isLoading: boolean,
 }
 
 function ExchangeRateGraphContent({
@@ -105,6 +104,9 @@ function ExchangeRateGraphContent({
     return Array.from({ length: countXAxis }, (_, index) => Math.floor(spacing * index)).reverse();
   }, [countXAxis, xAxisLabels?.length]);
 
+  console.log("🚀 ~ size.height:", size.height);
+
+
   return (<ExchangeRateGraphContentWrapper>
     <ExchangeRateGraphContentHeader>
       <PairRatio
@@ -122,7 +124,7 @@ function ExchangeRateGraphContent({
     </ExchangeRateGraphContentHeader>
     <div className="data-wrapper">
       <div className="graph-wrap" ref={componentRef}>
-        {!isLoading && <LineGraph
+        <LineGraph
           cursor
           className="graph"
           width={size.width}
@@ -146,10 +148,7 @@ function ExchangeRateGraphContent({
               </div>
             </ExchangeRateGraphXAxisWrapper>;
           }}
-        />}
-        {isLoading && <LoadingExchangeRateChartWrapper>
-          <LoadingSpinner />
-        </LoadingExchangeRateChartWrapper>}
+        />
       </div>
     </div>
   </ExchangeRateGraphContentWrapper>);
