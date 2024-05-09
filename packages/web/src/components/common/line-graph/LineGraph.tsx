@@ -153,7 +153,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [points, setPoints] = useState<Point[]>([]);
   const [baseLineYAxis, setBaseLineYAxis] = useState<string[]>([]);
   const [baseLineNumberWidth, setBaseLineNumberWidth] = useState<number>(0);
-  console.log("🚀 ~ .padStart ~ baseLineNumberWidth:", baseLineNumberWidth);
   const { height: customHeight = 0, locationTooltip } = customData;
   const baseLineCount = useMemo(() => 4, []);
   const theme = useTheme();

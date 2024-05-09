@@ -78,8 +78,6 @@ export const useSelectPool = ({
   startPrice = null,
   defaultPriceRange = [null, null],
 }: Props) => {
-  console.log("🚀 useSelectPool ~ tokenB:", tokenB);
-  console.log("🚀 useSelectPool ~ tokenA:", tokenA);
   const priceRangeRef = useRef<[number | null, number | null]>([...defaultPriceRange]);
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
@@ -145,8 +143,6 @@ export const useSelectPool = ({
       const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
         }`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
-      console.log("🚀 ~ queryFn: ~ poolRes:", poolRes);
-
       const reverse =
         tokenPair.findIndex(path => {
           if (compareToken) {

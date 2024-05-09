@@ -149,7 +149,6 @@ const VolumeChartContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
-  console.log("🚀 ~ volumeEntity:", volumeEntity);
   const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd } = volumeEntity || {};
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
@@ -194,9 +193,6 @@ const VolumeChartContainer: React.FC = () => {
       { xAxisLabels: [], datas: [], times: [] } as VolumeChartInfo,
     );
   }, [volumeChartType, volumeData]);
-
-  console.log("🚀 ~ chartData ~ chartData:", chartData);
-
 
   return (
     <VolumeChart

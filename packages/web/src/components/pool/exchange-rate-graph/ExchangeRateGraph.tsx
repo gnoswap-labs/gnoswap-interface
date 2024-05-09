@@ -19,8 +19,6 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   isLoading,
   reverse,
 }) => {
-  console.log("🚀 ~ poolData:", poolData);
-
   return <ExchangeRateGraphWrapper>
     <ExchangeRateGraphHeaderWrapper>
       <p className="title">Exchange Rate</p>
