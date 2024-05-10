@@ -409,7 +409,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
     return path;
   }, [height, points, smooth]);
 
-  const offsetPixel = useMemo(() => 3, []);
   const isLightTheme = theme.themeKey === "light";
 
   return (
@@ -466,7 +465,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
                   return <>
                     <line x1={baseLineNumberWidth} x2={width} y1={currentHeight} y2={currentHeight} stroke="grey" stroke-width="1" strokeDasharray={3} opacity={0.2} />
-                    <text className="y-axis-number" x="" y={currentHeight + offsetPixel} fill={theme.color.text04}>{value}</text>
+                    <text alignmentBaseline="central" className="y-axis-number" x="" y={currentHeight} fill={theme.color.text04}>{value}</text>
                   </>;
                 })
               }

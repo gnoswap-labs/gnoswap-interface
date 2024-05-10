@@ -1,4 +1,3 @@
-import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useTheme } from "@emotion/react";
@@ -7,25 +6,26 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
-import { useMemo, useState } from "react";
-import PairRatio from "../../common/pair-ratio/PairRatio";
-import { ExchangeRateGraphContentHeader, ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
+import { useMemo } from "react";
+import { ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
 
 interface ExchangeRateGraphContentProps {
   poolData: PoolDetailModel
   onSwap?: (swap: boolean) => void
   reverse: boolean,
   isLoading: boolean,
+  selectedScope: CHART_DAY_SCOPE_TYPE,
 }
 
-function ExchangeRateGraphContent({
-  onSwap,
+export function ExchangeRateGraphContent({
+  // onSwap,
   poolData,
-  isLoading,
-  reverse,
+  // isLoading,
+  // reverse,
+  selectedScope
 }: ExchangeRateGraphContentProps) {
 
-  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
+
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
@@ -108,7 +108,7 @@ function ExchangeRateGraphContent({
 
 
   return (<ExchangeRateGraphContentWrapper>
-    <ExchangeRateGraphContentHeader>
+    {/* <ExchangeRateGraphContentHeader>
       <PairRatio
         onSwap={onSwap}
         pool={poolData}
@@ -121,7 +121,7 @@ function ExchangeRateGraphContent({
         selected={selectedScope}
         onChange={(value) => setSelectedScope(value)}
       />
-    </ExchangeRateGraphContentHeader>
+    </ExchangeRateGraphContentHeader> */}
     <div className="data-wrapper">
       <div className="graph-wrap" ref={componentRef}>
         <LineGraph

@@ -194,6 +194,30 @@ export const useTokenData = () => {
     forceRefect({ queryKey: [QUERY_KEY.tokenPrices] });
   }
 
+  async function fetchTokenBalance(token: TokenModel) {
+    if (!rpcProvider || !account) {
+      return null;
+    }
+    if (token.type === "native") {
+      const res = await rpcProvider
+        .getBalance(account.address, token.denom || "ugnot")
+        .catch(() => null);
+      console.log("🚀 ~ fetchTokenBalance ~ res:if", token.name);
+      console.log("🚀 ~ fetchTokenBalance ~ res:if", token.denom);
+      console.log("🚀 ~ fetchTokenBalance ~ res:if", res);
+      return res;
+    } else if (token.type === "grc20") {
+      const param = `BalanceOf("${account.address}")`;
+      const res = await rpcProvider
+        .evaluateExpression(token.path, param)
+        .then(evaluateExpressionToNumber)
+        .catch(() => null);
+      console.log("🚀 ~ fetchTokenBalance ~ res:else", token.name);
+      return res;
+    }
+    return null;
+  }
+
   async function updateBalances() {
     if (!rpcProvider) {
       return;
@@ -201,23 +225,7 @@ export const useTokenData = () => {
     if (isEmptyObject(balances) && loadingBalance) {
       setLoadingBalance(true);
     }
-    async function fetchTokenBalance(token: TokenModel) {
-      if (!rpcProvider || !account) {
-        return null;
-      }
-      if (token.type === "native") {
-        return rpcProvider
-          .getBalance(account.address, token.denom || "ugnot")
-          .catch(() => null);
-      } else if (token.type === "grc20") {
-        const param = `BalanceOf("${account.address}")`;
-        return rpcProvider
-          .evaluateExpression(token.path, param)
-          .then(evaluateExpressionToNumber)
-          .catch(() => null);
-      }
-      return null;
-    }
+
     if (tokens.length === 0) return;
     const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
     const balancesData: Record<string, number | null> = {};
@@ -226,6 +234,7 @@ export const useTokenData = () => {
         balancesData[tokens[index].priceID] = result;
       }
     });
+    console.log("🚀 ~ updateBalances ~ balancesData:", balancesData);
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
       setIsChangeBalancesToken(true);
       setBalances(balancesData);

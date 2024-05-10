@@ -114,6 +114,7 @@ export const useSwapHandler = () => {
   }, [estimatedRoutes, tokenA, tokenB]);
 
   const tokenABalance = useMemo(() => {
+    console.log("🚀 ~ tokenABalance ~ displayBalanceMap:", displayBalanceMap);
     if (tokenA && !Number.isNaN(displayBalanceMap[tokenA.priceID])) {
       return BigNumber(displayBalanceMap[tokenA.priceID] || 0).toFormat();
     }

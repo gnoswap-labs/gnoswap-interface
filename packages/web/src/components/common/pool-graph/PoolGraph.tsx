@@ -86,6 +86,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   isSwap = false,
   showBar = true,
 }) => {
+  console.log("🚀 ~ bins:", bins);
   const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
@@ -102,6 +103,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   const resolvedBins = useMemo(() => {
     const length = bins.length / 2;
+    const fullLength = length * 2;
     const convertReserveBins = bins.map((item, index) => {
       const reserveTokenAMap = Number(item.reserveTokenB) / (Number(poolPrice) || 1);
       const reserveTokenBMap = Number(item.reserveTokenA);
@@ -109,7 +111,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         ...item,
         reserveTokenAMyAmount: binsMyAmount?.[index]?.reserveTokenA || 0,
         reserveTokenBMyAmount: binsMyAmount?.[index]?.reserveTokenB || 0,
-        reserveTokenAMap: index < (length - 1) ? reserveTokenAMap : reserveTokenBMap,
+        reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
         index: index,
       };
     });
@@ -129,8 +131,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       ...temp[length * 2 - i - 1],
       minTick: item.minTick,
       maxTick: item.maxTick,
-      minTickSwap: temp[length * 2 - i - 1].minTick,
-      maxTickSwap: temp[length * 2 - i - 1].maxTick
+      minTickSwap: temp[fullLength - i - 1].minTick,
+      maxTickSwap: temp[fullLength - i - 1].maxTick
     }));
     return !isSwap ? temp : revereTemp;
 
@@ -253,7 +255,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
         return boundsHeight - scaleYComputation + (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
       });
-    // Create a line of current tick.
 
   }
 
@@ -274,6 +275,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }
       return mouseX >= minX && mouseX <= maxX;
     });
+    console.log("🚀 ~ bin ~ bin:", bin);
 
     if (!bin) {
       setPositionX(null);

@@ -78,6 +78,11 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
           ? POOL_TD_WIDTH_TABLET
           : POOL_TD_WIDTH;
 
+  const isShowBar = !!liquidity && liquidity !== "$0" && liquidity !== "0";
+  console.log("🚀 ~ liquidity:", liquidity)
+  console.log("🚀 ~ isShowBar:", isShowBar)
+  console.log("🚀 ~ bins:", bins.length)
+
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>
       <TableColumn className="left" tdWidth={tdWidth[0]}>
@@ -114,7 +119,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
             currentTick={pool.currentTick}
             bins={bins ?? []}
             mouseover
-            showBar={!pool.liquidity || pool.liquidity === "$0" || pool.liquidity === "0"}
+            showBar={isShowBar}
             themeKey={themeKey}
             position="top"
             nextSpacing

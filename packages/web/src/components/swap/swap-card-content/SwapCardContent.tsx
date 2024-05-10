@@ -99,20 +99,20 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (isSwitchNetwork) return "-";
     if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(
-        2,
-      );
+      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
+        .dividedBy(Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0))
+        .toFormat(2);
     }
     return "-";
-  }, [swapTokenInfo.tokenABalance, connectedWallet, isSwitchNetwork]);
+  }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance, swapTokenInfo.tokenADecimals]);
 
   const balanceBDisplay = useMemo(() => {
     if (isSwitchNetwork) return "-";
     if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(
-        2,
-      );
+      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, ""))
+        .dividedBy(Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0))
+        .toFormat(2);
     }
     return "-";
   }, [swapTokenInfo.tokenBBalance, connectedWallet, isSwitchNetwork]);
@@ -134,9 +134,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-info">
           <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>{swapTokenInfo.tokenAUSDStr}</span>
           <span
-            className={`balance-text ${
-              tokenA && connectedWallet && "balance-text-disabled"
-            }`}
+            className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"
+              }`}
             onClick={handleAutoFillTokenA}
           >
             Balance: {balanceADisplay}
@@ -163,9 +162,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-info">
           <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>{swapTokenInfo.tokenBUSDStr}</span>
           <span
-            className={`balance-text ${
-              tokenB && connectedWallet && "balance-text-disabled"
-            }`}
+            className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"
+              }`}
             onClick={handleAutoFillTokenB}
           >
             Balance: {balanceBDisplay}

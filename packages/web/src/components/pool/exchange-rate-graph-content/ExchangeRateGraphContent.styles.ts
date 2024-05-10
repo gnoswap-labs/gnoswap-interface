@@ -45,12 +45,6 @@ export const ExchangeRateGraphContentWrapper = styled.div`
   }
 `;
 
-export const ExchangeRateGraphContentHeader = styled.div`
-  display: flex;
-  width: 100%;
-  ${mixins.flexbox("row", "center", "space-between")}
-`;
-
 export const ExchangeRateGraphXAxisWrapper = styled.div<{ innerWidth: string }>`
   width: 100%;
   ${mixins.flexbox("row", "center", "end")}

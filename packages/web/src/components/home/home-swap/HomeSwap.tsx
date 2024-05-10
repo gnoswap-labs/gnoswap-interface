@@ -93,14 +93,15 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   }, [swapTokenInfo.tokenBBalance, connected, setToAmount, changeTokenBAmount]);
 
   const balanceADisplay = useMemo(() => {
+    console.log("🚀 ~ balanceADisplay ~ swapTokenInfo.tokenABalance:", swapTokenInfo.tokenABalance);
     if (connected && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, swapTokenInfo.tokenBDecimals ?? 0))
+        .dividedBy(Math.pow(10, swapTokenInfo.tokenADecimals ?? 0))
         .toFormat(2);
     }
     return "-";
-  }, [connected, swapTokenInfo.tokenABalance, swapTokenInfo.tokenBDecimals]);
+  }, [connected, swapTokenInfo.tokenABalance, swapTokenInfo.tokenADecimals]);
 
   const balanceBDisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenBBalance !== "-") {

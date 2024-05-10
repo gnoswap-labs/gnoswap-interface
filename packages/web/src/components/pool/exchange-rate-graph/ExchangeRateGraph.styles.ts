@@ -21,7 +21,8 @@ export const ExchangeRateGraphWrapper = styled.div`
 export const ExchangeRateGraphHeaderWrapper = styled.div`
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text04};
-  ${mixins.flexbox("row")};
+  ${mixins.flexbox("column", "start", "space-between")};
+  width: 100%;
 
   .title {
     margin-right: 4px;
@@ -52,7 +53,6 @@ export const LoadingExchangeRateChartWrapper = styled.div`
   ${mixins.flexbox("row", "center", "center")}
   width: 100%;
   height: 246px;
-  background-color: ${({ theme }) => theme.color.background15};
   border-radius: 8px;
   > div {
     width: 60px;
@@ -73,4 +73,15 @@ export const LoadingExchangeRateChartWrapper = styled.div`
   ${media.mobile} {
     height: 224px;
   }
+`;
+
+export const ExchangeRateGraphController = styled.div`
+  display: flex;
+  width: 100%;
+  ${mixins.flexbox("row", "center", "space-between")}
+`;
+
+export const ExchangeRateGraphTitleWrapper = styled.div`
+  ${mixins.flexbox("row", "center", "start")}
+  margin-bottom: 12px
 `;

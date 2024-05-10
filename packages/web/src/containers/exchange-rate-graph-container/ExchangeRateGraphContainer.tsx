@@ -1,11 +1,12 @@
 import ExchangeRateGraph from "@components/pool/exchange-rate-graph/ExchangeRateGraph";
+import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useLoading } from "@hooks/common/use-loading";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export const initialPool: PoolModel = {
   name: "",
@@ -66,6 +67,8 @@ const ExchangeRateGraphContainer: React.FC = () => {
 
   const poolPath = currentPoolPath;
   const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
+
   const { isLoadingCommon } = useLoading();
 
   const reverse = useMemo(() => {
@@ -91,8 +94,7 @@ const ExchangeRateGraphContainer: React.FC = () => {
   return (<ExchangeRateGraph
     poolData={changedPoolInfo}
     isLoading={isLoading || isLoadingCommon}
-    reverse={reverse}
-  />);
+    reverse={reverse} selectedScope={selectedScope} setSelectedScope={setSelectedScope} />);
 };
 
 export default ExchangeRateGraphContainer;
