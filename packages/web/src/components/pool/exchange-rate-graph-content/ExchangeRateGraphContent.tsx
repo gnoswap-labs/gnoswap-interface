@@ -104,24 +104,8 @@ export function ExchangeRateGraphContent({
     return Array.from({ length: countXAxis }, (_, index) => Math.floor(spacing * index)).reverse();
   }, [countXAxis, xAxisLabels?.length]);
 
-  console.log("🚀 ~ size.height:", size.height);
-
 
   return (<ExchangeRateGraphContentWrapper>
-    {/* <ExchangeRateGraphContentHeader>
-      <PairRatio
-        onSwap={onSwap}
-        pool={poolData}
-        loading={isLoading}
-        isSwap={reverse}
-      />
-      <ChartScopeSelectTab
-        size={"SMALL"}
-        list={Object.values(CHART_DAY_SCOPE_TYPE)}
-        selected={selectedScope}
-        onChange={(value) => setSelectedScope(value)}
-      />
-    </ExchangeRateGraphContentHeader> */}
     <div className="data-wrapper">
       <div className="graph-wrap" ref={componentRef}>
         <LineGraph

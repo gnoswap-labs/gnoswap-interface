@@ -3,68 +3,75 @@ import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
 
 export interface PoolModel {
-  id: string;
 
-  path: string;
+  rewards24hUsd: number;
 
+  volumeChange24h: number;
+  
   incentiveType: INCENTIVE_TYPE;
-
-  name: string;
-
+  
   price: number;
-
+  
   tokenA: TokenModel;
-
+  
   tokenB: TokenModel;
-
+  
   tokenABalance: number;
-
+  
   tokenBBalance: number;
   
   tickSpacing: number;
-
-  currentTick: number;
-
-  bins: PoolBinModel[];
-
-  bins40: PoolBinModel[];
-
-  tvl: number;
-
-  tvlChange: number;
-
-  volume24h: number;
-
-  volumeChange: number;
-
-  totalVolume: number;
-
-  feeUsd24h: number;
-
-  fee: string;
-
-  feeChange: number;
-
-  apr: number | string | null;
-  totalApr: number | string | null;
-
-  poolPath?: string;
-
-  rewardTokens: TokenModel[];
-
-  feeApr?: any;
-
-  stakingApr?: any;
   
-  allTimeVolumeUsd?: number;
-
-  rewardsUsd24h?: any;
-
-  usdValue?: any;
-
-  priceRatio?: IPoolPriceRatio;
+  currentTick: number;
+  
+  bins: PoolBinModel[];
+  
+  bins40: PoolBinModel[];
+  
+  tvl: number;
+  
+  tvlChange: number;
+  
+  volume24h: number;
+  
+  feeUsd24h: number;
+  
+  fee: string;
+  
+  apr: number | string | null;
+  
+  totalApr: number | string | null;
+  
+  poolPath: string;
+  
+  rewardTokens: TokenModel[];
+  
+  feeApr: string;
+  
+  stakingApr: string;
+  
+  allTimeVolumeUsd: number;
+  
+  priceRatio: IPoolPriceRatio;
   
   liquidity: string;
+
+  //TODO Remove later
+  // feeChange: number;
+  
+  volumeChange: number;
+  
+  // totalVolume: number;
+  
+  id: string;
+  
+  // path: string;
+
+  // name: string;
+
+  // rewardsUsd24h?: any;
+
+  // usdValue?: any;
 }
 
 export interface IPoolDetailResponse {

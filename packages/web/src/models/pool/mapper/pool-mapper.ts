@@ -28,7 +28,7 @@ export class PoolMapper {
       feeUsd24h,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
-      info => `${info.fee}` === fee,
+      info => info.fee.toString() === fee,
     );
 
     return {
@@ -50,7 +50,7 @@ export class PoolMapper {
 
   public static toPoolSelectItemInfo(pool: PoolModel): PoolSelectItemInfo {
     const feeRate =
-      Object.values(SwapFeeTierInfoMap).find(info => `${info.fee}` === pool.fee)
+      Object.values(SwapFeeTierInfoMap).find(info => info.fee.toString() === pool.fee)
         ?.rateStr || "-";
 
     return {
@@ -59,7 +59,7 @@ export class PoolMapper {
       feeRate,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
-      fee: pool.fee,
+      fee: pool.fee.toString(),
     };
   }
 
@@ -82,7 +82,7 @@ export class PoolMapper {
       feeUsd24h,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
-      info => `${info.fee}` === fee,
+      info => `${info.fee}` === fee.toString(),
     );
     const customVolume = convertToMB(Number(volume24h).toString(), 2);
     return {
@@ -113,30 +113,27 @@ export class PoolMapper {
     return {
       ...pool,
       id,
-      path: pool.poolPath,
       incentiveType: pool.incentiveType as INCENTIVE_TYPE,
       bins,
       rewardTokens: pool.rewardTokens || [],
       apr: !pool.apr ? Number(pool.apr) : null,
       bins40: pool.bins40,
       liquidity: pool.liquidity,
+      allTimeVolumeUsd: pool.allTimeVolumeUsd,
     };
   }
 
   public static detailFromResponse(pool: PoolResponse): PoolDetailModel {
-    // const bins = pool.bins.map(bin => ({
-    //   ...bin,
-    // }));
     const id = pool.id ?? makeId(pool.poolPath);
     return {
       ...pool,
       id,
-      path: pool.poolPath,
       incentiveType: pool.incentiveType as INCENTIVE_TYPE,
       bins: [],
       rewardTokens: pool.rewardTokens || [],
       apr: !pool.apr ? Number(pool.apr) : null,
       totalApr: !pool.totalApr ? Number(pool.totalApr) : null,
+      allTimeVolumeUsd: Number(pool.allTimeVolumeUsd),
     };
   }
 }

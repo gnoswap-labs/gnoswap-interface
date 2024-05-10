@@ -274,7 +274,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }
       return mouseX >= minX && mouseX <= maxX;
     });
-    console.log("🚀 ~ bin ~ bin:", bin);
 
     if (!bin) {
       setPositionX(null);

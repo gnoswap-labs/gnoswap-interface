@@ -113,7 +113,6 @@ export const wrapper = (theme: Theme) => css`
     .add-liquidity-section {
       margin: none;
     }
-    
   }
   ${media.mobile} {
     .content-wrap {

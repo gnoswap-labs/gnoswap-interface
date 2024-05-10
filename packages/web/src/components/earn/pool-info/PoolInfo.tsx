@@ -79,9 +79,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
           : POOL_TD_WIDTH;
 
   const isShowBar = !!liquidity && liquidity !== "$0" && liquidity !== "0";
-  console.log("🚀 ~ liquidity:", liquidity)
-  console.log("🚀 ~ isShowBar:", isShowBar)
-  console.log("🚀 ~ bins:", bins.length)
 
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>

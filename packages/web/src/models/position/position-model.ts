@@ -29,40 +29,41 @@ export interface PositionModel {
 
   unclaimedFeeBAmount: number;
 
-  unclaimedFee0Usd: string;
-
-  unclaimedFee1Usd: string;
-
-  tokensOwed0Amount: bigint;
-
-  tokensOwed1Amount: bigint;
-
-  tokensOwed0Usd: string;
-
-  tokensOwed1Usd: string;
-
   apr: string;
 
   stakedAt: string;
 
-  stakedUsdValue: string;
-
   rewards: RewardModel[];
-
-  dailyRewards: RewardModel[];
-  
-  bins: PoolBinModel[];
 
   bins40: PoolBinModel[];
 
   closed: boolean;
-
-  totalDailyRewardsUsd: string;
 
   totalClaimedUsd: string;
 
   usdValue: any;
 
   incentiveType: INCENTIVE_TYPE;
+
+  // TODO: Remove later
+  // dailyRewards: RewardModel[];
+
+  // bins: PoolBinModel[];
+
+  totalDailyRewardsUsd: string;
+
+  // unclaimedFee0Usd: string;
+
+  // unclaimedFee1Usd: string;
+
+  // tokensOwed0Amount: bigint;
+
+  // tokensOwed1Amount: bigint;
+
+  // tokensOwed0Usd: string;
+
+  // tokensOwed1Usd: string;
+
+  stakedUsdValue: string;
 }
 

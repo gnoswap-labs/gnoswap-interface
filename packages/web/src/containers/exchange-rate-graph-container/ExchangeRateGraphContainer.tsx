@@ -9,8 +9,8 @@ import { useAtom } from "jotai";
 import { useMemo, useState } from "react";
 
 export const initialPool: PoolModel = {
-  name: "",
-  path: "",
+  // name: "",
+  // path: "",
   tokenA: {
     chainId: "",
     createdAt: "",
@@ -40,12 +40,12 @@ export const initialPool: PoolModel = {
   tvlChange: 0,
   volume24h: 0,
   volumeChange: 0,
-  totalVolume: 0,
+  // totalVolume: 0,
   id: "",
   apr: 0,
   fee: "",
   feeUsd24h: 0,
-  feeChange: 0,
+  // feeChange: 0,
   currentTick: 0,
   price: 0,
   tokenABalance: 0,
@@ -57,6 +57,16 @@ export const initialPool: PoolModel = {
   totalApr: 0,
   poolPath: "",
   liquidity: "",
+  rewards24hUsd: 0,
+  volumeChange24h: 0,
+  feeApr: "",
+  stakingApr: "",
+  allTimeVolumeUsd: 0,
+  priceRatio: {
+    "7d": [],
+    "30d": [],
+    "all": [],
+  }
 };
 
 const ExchangeRateGraphContainer: React.FC = () => {

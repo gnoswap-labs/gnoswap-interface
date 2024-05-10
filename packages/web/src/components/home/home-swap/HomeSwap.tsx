@@ -93,7 +93,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   }, [swapTokenInfo.tokenBBalance, connected, setToAmount, changeTokenBAmount]);
 
   const balanceADisplay = useMemo(() => {
-    console.log("🚀 ~ balanceADisplay ~ swapTokenInfo.tokenABalance:", swapTokenInfo.tokenABalance);
     if (connected && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))

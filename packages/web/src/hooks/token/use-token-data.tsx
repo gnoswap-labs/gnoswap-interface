@@ -202,9 +202,6 @@ export const useTokenData = () => {
       const res = await rpcProvider
         .getBalance(account.address, token.denom || "ugnot")
         .catch(() => null);
-      console.log("🚀 ~ fetchTokenBalance ~ res:if", token.name);
-      console.log("🚀 ~ fetchTokenBalance ~ res:if", token.denom);
-      console.log("🚀 ~ fetchTokenBalance ~ res:if", res);
       return res;
     } else if (token.type === "grc20") {
       const param = `BalanceOf("${account.address}")`;
@@ -212,7 +209,6 @@ export const useTokenData = () => {
         .evaluateExpression(token.path, param)
         .then(evaluateExpressionToNumber)
         .catch(() => null);
-      console.log("🚀 ~ fetchTokenBalance ~ res:else", token.name);
       return res;
     }
     return null;
@@ -234,7 +230,6 @@ export const useTokenData = () => {
         balancesData[tokens[index].priceID] = result;
       }
     });
-    console.log("🚀 ~ updateBalances ~ balancesData:", balancesData);
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
       setIsChangeBalancesToken(true);
       setBalances(balancesData);

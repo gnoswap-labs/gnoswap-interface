@@ -127,7 +127,7 @@ const WalletBalanceContainer: React.FC = () => {
 
       cur.rewards.forEach(x => {
         acc.claimableRewards = BigNumber(acc.claimableRewards)
-          .plus(x.claimableUsdValue ?? "0")
+          .plus(x.claimableUsd ?? "0")
           .toNumber();
       });
       return acc;

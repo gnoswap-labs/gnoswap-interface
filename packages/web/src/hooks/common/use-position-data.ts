@@ -145,7 +145,7 @@ export const usePositionData = (address?: string) => {
   const positions = useMemo(() => {
     const poolPositions: PoolPositionModel[] = [];
     data.forEach(position => {
-      const pool = pools.find(pool => pool.path === position.poolPath);
+      const pool = pools.find(pool => pool.poolPath === position.poolPath);
       if (pool) {
         const temp = {
           ...pool,
@@ -199,7 +199,7 @@ export const usePositionData = (address?: string) => {
       const poolPositions: PoolPositionModel[] = [];
       data.forEach(position => {
         const pool = pools.find(
-          pool => pool.path === position.poolPath && pool.id === poolId,
+          pool => pool.poolPath === position.poolPath && pool.id === poolId,
         );
         if (pool) {
           const temp = {

@@ -1,7 +1,6 @@
 {
   "pool": {
-    "name": "bar_foo_500",
-    "path": "gno.land/r/bar:gno.land/r/bar:500",
+    "poolPath": "gno.land/r/bar:gno.land/r/bar:500",
     "tokenA": {
       "chainId": "dev",
       "createdAt": "2023-10-12T06:56:10+09:00",
@@ -48,6 +47,16 @@
     "resolvedBins": [],
     "totalApr": 0,
     "rewardTokens": [],
-    "liquidity": ""
+    "liquidity": "",
+    "rewards24hUsd": 0,
+    "volumeChange24h": 0,
+    "feeApr": "0",
+    "stakingApr": "0",
+    "allTimeVolumeUsd": 0,
+    "priceRatio": {
+      "7d": [],
+      "30d": [],
+      "all": []
+    }
   }
 }

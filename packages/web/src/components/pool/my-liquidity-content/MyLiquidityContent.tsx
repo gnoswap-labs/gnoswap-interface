@@ -41,7 +41,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   loadngTransactionClaim,
   isOtherPosition,
 }) => {
-  console.log("🚀 ~ positions:", positions);
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
@@ -158,20 +157,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     positions
       .flatMap(position => position.rewards)
       .map(reward => ({
-        token: reward.token,
+        token: reward.rewardToken,
         rewardType: reward.rewardType,
-        balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
+        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) || 0,
         balanceUSD:
           makeDisplayTokenAmount(
-            reward.token,
+            reward.rewardToken,
             Number(reward.totalAmount) *
-            Number(tokenPrices[reward.token.priceID]?.usd),
+            Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
         claimableAmount:
-          makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
-        claimableUSD: Number(reward.claimableUsdValue),
-        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
-        claimableUsdValue: Number(reward.claimableUsdValue),
+          makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) || 0,
+        claimableUSD: Number(reward.claimableUsd),
+        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D || 0) || 0,
+        claimableUsdValue: Number(reward.claimableUsd),
         aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach(rewardInfo => {
@@ -216,7 +215,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     positions
       .flatMap(position => position.rewards)
       .map(reward => ({
-        token: reward.token,
+        token: reward.rewardToken,
         rewardType: reward.rewardType,
         tokenAmountOf7d: Number(reward.accumulatedRewardOf7d),
         aprOf7d: Number(reward.aprOf7d),
@@ -267,20 +266,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     positions
       .flatMap(position => position.rewards)
       .map(reward => ({
-        token: reward.token,
+        token: reward.rewardToken,
         rewardType: reward.rewardType,
-        balance: makeDisplayTokenAmount(reward.token, reward.totalAmount) || 0,
+        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) || 0,
         balanceUSD:
           makeDisplayTokenAmount(
-            reward.token,
+            reward.rewardToken,
             Number(reward.totalAmount) *
-            Number(tokenPrices[reward.token.priceID]?.usd || 0),
+            Number(tokenPrices[reward.rewardToken.priceID]?.usd || 0),
           ) || 0,
         claimableAmount:
-          makeDisplayTokenAmount(reward.token, reward.claimableAmount) || 0,
-        claimableUSD: Number(reward.claimableUsdValue),
-        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.token, reward.accumulatedRewardOf1d || 0) || 0,
-        claimableUsdValue: Number(reward.claimableUsdValue),
+          makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) || 0,
+        claimableUSD: Number(reward.claimableUsd),
+        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D || 0) || 0,
+        claimableUsdValue: Number(reward.claimableUsd),
         aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach(rewardInfo => {
@@ -308,16 +307,25 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!isDisplay) {
       return "-";
     }
-    const claimableUsdValue = claimableRewardInfo
-      ? Object.values(claimableRewardInfo)
-        .flatMap(item => item)
-        .reduce((accum, current) => {
-          return accum + Number(current.claimableUsdValue);
-        }, 0)
-      : 0;
 
+    const claimableUsdValue = positions.reduce((positionAcc, positionCurrent) => {
+      const currentPositionDailyReward = positionCurrent.rewards.reduce((rewardAcc, rewardCurrent) => {
+        return rewardAcc + Number(rewardCurrent.claimableUsd);
+      }, 0);
+
+      return positionAcc + currentPositionDailyReward;
+    }, 0);
     return toUnitFormat(claimableUsdValue, true, true);
-  }, [claimableRewardInfo, isDisplay]);
+    // const claimableUsdValue = claimableRewardInfo
+    //   ? Object.values(claimableRewardInfo)
+    //     .flatMap(item => item)
+    //     .reduce((accum, current) => {
+    //       return accum + Number(current.claimableUsdValue);
+    //     }, 0)
+    //   : 0;
+
+    // return toUnitFormat(claimableUsdValue, true, true);
+  }, [isDisplay, positions]);
 
   const claimable = useMemo(() => {
     if (!isDisplay || unclaimedRewardInfo === null) {
@@ -398,11 +406,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo, getGnotPath, positionData]);
 
   const rewardDaily = useMemo(() => {
-    const temp = claimableRewardInfo?.STAKING;
-    const sumUSD =
-      temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
-    return toUnitFormat(`${sumUSD}`, true, true);
-  }, [claimableRewardInfo]);
+    // const temp = claimableRewardInfo?.STAKING;
+    // const sumUSD =
+    //   temp?.reduce((accum, current) => accum + current.balance, 0) || 0;
+    // return toUnitFormat(`${sumUSD}`, true, true);
+
+    const sumRewardDaily = positions.reduce((positionAcc, positionCurrent) => {
+      const currentPositionDailyReward = positionCurrent.rewards.reduce((rewardAcc, rewardCurrent) => {
+        return rewardAcc + Number(rewardCurrent.accuReward1D);
+      }, 0);
+
+      return positionAcc + currentPositionDailyReward;
+    }, 0);
+    return toUnitFormat(`${sumRewardDaily}`, true, true);
+  }, [positions]);
 
   const rewardClaim = useMemo(() => {
     const temp = claimableRewardInfo?.STAKING;

@@ -184,18 +184,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         }
         accum[current.rewardType].push({
           claimableAmount:
-            makeDisplayTokenAmount(current.token, current.claimableAmount) || 0,
-          token: current.token,
+            makeDisplayTokenAmount(current.rewardToken, current.claimableAmount) || 0,
+          token: current.rewardToken,
           balance:
-            makeDisplayTokenAmount(current.token, current.totalAmount) || 0,
+            makeDisplayTokenAmount(current.rewardToken, current.totalAmount) || 0,
           balanceUSD:
             Number(current.totalAmount) *
-            Number(tokenPrices[current.token.priceID]?.usd || 0),
-          claimableUSD: Number(current.claimableUsdValue),
+            Number(tokenPrices[current.rewardToken.priceID]?.usd || 0),
+          claimableUSD: Number(current.claimableUsd),
           accumulatedRewardOf1d:
             makeDisplayTokenAmount(
-              current.token,
-              current.accumulatedRewardOf1d || 0,
+              current.rewardToken,
+              current.accuReward1D || 0,
             ) || 0,
         });
         return accum;
@@ -249,7 +249,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             accum[current.rewardType] = [];
           }
           accum[current.rewardType].push({
-            token: current.token,
+            token: current.rewardToken,
             rewardType: current.rewardType,
             tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
             aprOf7d: Number(current.aprOf7d),

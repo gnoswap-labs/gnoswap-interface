@@ -245,7 +245,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return maxTickRate > 0 ? "positive" : "negative";
   }, [getMaxTick, maxTickRate]);
   const claimableUSD = useMemo(() => {
-    const temp = position.rewards.reduce((acc, cur) => Number(cur.claimableUsdValue) + acc, 0);
+    const temp = position.rewards.reduce((acc, cur) => Number(cur.claimableUsd) + acc, 0);
     return toUnitFormat(temp, true, true);
   }, [position.rewards]);
   return (

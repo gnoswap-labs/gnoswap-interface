@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiquidity";
 import {
   AddLiquiditySubmitType,
@@ -18,12 +18,14 @@ import { usePool } from "@hooks/pool/use-pool";
 import { useOneClickStakingModal } from "@hooks/earn/use-one-click-staking-modal";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
-import { makeSwapFeeTier, priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
 // import { makeQueryString } from "@hooks/common/use-url-param";
 // import { isNumber } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
+import { makeQueryString } from "@hooks/common/use-url-param";
+import { isNumber } from "@utils/number-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -66,11 +68,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
   const [exactType, setExactType] = useState<"EXACT_IN" | "EXACT_OUT">("EXACT_IN");
-  const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>("FEE_3000");
+  const [swapFeeTier, setSwapFeeTier] = useState<SwapFeeTierType | null>(null);
   const [priceRanges] = useState<AddLiquidityPriceRage[]>(PRICE_RANGES);
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>(null);
-  // const [initialized, setInitialized] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
+  const initializedFeeTier = useRef<string>();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
@@ -224,36 +227,47 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const changeTokenA = useCallback((token: TokenModel) => {
     setSwapValue((prev) => {
       if (token.wrappedPath === prev.tokenB?.wrappedPath) {
+        selectSwapFeeTier("NONE");
         return {
           tokenA: token,
           tokenB: null,
           type: type,
         };
       }
+      const nextTokenA = prev.tokenB?.symbol === token.symbol ? prev.tokenB : token;
+      const nextTokenB = prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB;
       selectPool.setCompareToken(token);
+      if (!nextTokenA || !nextTokenB) {
+        selectSwapFeeTier("NONE");
+      }
       return {
-        tokenA: prev.tokenB?.symbol === token.symbol ? prev.tokenB : token,
-        tokenB: prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB,
+        tokenA: nextTokenA,
+        tokenB: nextTokenB,
         type: type,
         isReverted: false,
         isKeepToken: !isKeepToken,
       };
     });
-    selectSwapFeeTier("NONE");
   }, [type, isKeepToken]);
 
   const changeTokenB = useCallback((token: TokenModel) => {
     setSwapValue((prev) => {
       if (token.wrappedPath === prev.tokenA?.wrappedPath) {
+        selectSwapFeeTier("NONE");
         return {
           tokenA: null,
           tokenB: token,
           type: type,
         };
       }
+      const nextTokenA = prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA;
+      const nextTokenB = prev.tokenA?.symbol === token.symbol ? prev.tokenA : token;
+      if (!nextTokenA || !nextTokenB) {
+        selectSwapFeeTier("NONE");
+      }
       return {
-        tokenB: prev.tokenA?.symbol === token.symbol ? prev.tokenA : token,
-        tokenA: prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA,
+        tokenB: nextTokenB,
+        tokenA: nextTokenA,
         type: type,
         isReverted: false,
       };
@@ -405,7 +419,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenB: null,
       type: "EXACT_IN",
     });
-    selectSwapFeeTier("NONE");
+    // selectSwapFeeTier("NONE");
     setIsEarnAdd(false);
 
     return () => {
@@ -426,20 +440,19 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {
       return;
     }
-    // if (!initialized) {
-    // setInitialized(true);
-    // const query = router.query;
-    // const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
-    // const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
-    // setSwapValue({
-    //   tokenA: currentTokenA,
-    //   tokenB: currentTokenB,
-    //   type: "EXACT_IN",
-    // });
-    // return;
-    // }
-  }, [router, tokens]);
-  // }, [initialized, router, tokens]);
+    if (!initialized) {
+      setInitialized(true);
+      const query = router.query;
+      const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
+      const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
+      setSwapValue({
+        tokenA: currentTokenA,
+        tokenB: currentTokenB,
+        type: "EXACT_IN",
+      });
+      return;
+    }
+  }, [initialized, router, tokens]);
 
   useEffect(() => {
     const isEarnAdd = swapValue.tokenA !== null && swapValue.tokenB !== null;
@@ -470,32 +483,26 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [pools, selectPool.compareToken, tokenA, tokenB]);
 
-  // useEffect(() => {
-  //   if (!(isFetchingPools || isLoadingCommon)) {
-  //     setSwapFeeTier("FEE_3000");
-  //   }
-  // }, [isFetchingPools, isLoadingCommon]);
-
-  // useEffect(() => {
-  //   if (isFetchingPools && !swapValue?.isEarnChanged) {
-  //     if (router.query?.fee_tier) {
-  //       selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
-  //     } else {
-  //       selectSwapFeeTier("FEE_3000");
-  //     }
-  //     setSwapValue({
-  //       tokenA,
-  //       tokenB,
-  //       type: "EXACT_IN",
-  //     });
-  //   }
-  // }, [isFetchingPools, swapValue?.isEarnChanged, pools, priceRanges]);
-
   useEffect(() => {
     if (!!tokenA && !!tokenB && isFetchedPools) {
-      selectSwapFeeTier("FEE_3000");
+      if (router.query?.fee_tier) {
+        selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
+      } else {
+        selectSwapFeeTier("FEE_3000");
+      }
+      setSwapValue({
+        tokenA,
+        tokenB,
+        type: "EXACT_IN",
+      });
     }
-  }, [tokenA, tokenB, isFetchedPools]);
+  }, [tokenA, tokenB, isFetchedPools, router.query?.fee_tier]);
+
+  useEffect(() => {
+    if (!initializedFeeTier.current) {
+      initializedFeeTier.current = swapFeeTier as string;
+    }
+  }, [swapFeeTier]);
 
   const handleSwapValue = useCallback(() => {
     const tempTokenA = swapValue.tokenA;
@@ -510,22 +517,24 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
   }, [swapValue, setSwapValue, isKeepToken]);
 
-  // useEffect(() => {
-  //   const nextTickLower = (isNumber(selectPool.minPosition || "") || isFinite(selectPool.minPosition || 0)) ? priceToTick(selectPool.minPosition || 0) : null;
-  //   const nextTickUpper = (isNumber(selectPool.maxPosition || "") || isFinite(selectPool.maxPosition || 0)) ? priceToTick(selectPool.maxPosition || 0) : null;
+  useEffect(() => {
+    const nextTickLower = (isNumber(selectPool.minPosition || "") || isFinite(selectPool.minPosition || 0)) ? priceToTick(selectPool.minPosition || 0) : null;
+    const nextTickUpper = (isNumber(selectPool.maxPosition || "") || isFinite(selectPool.maxPosition || 0)) ? priceToTick(selectPool.maxPosition || 0) : null;
 
-  //   if (tokenA?.path && tokenB?.path) {
-  //     const queryString = makeQueryString({
-  //       tokenA: tokenA?.path,
-  //       tokenB: tokenB?.path,
-  //       fee_tier: swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4),
-  //       price_range_type: priceRange?.type,
-  //       tickLower: nextTickLower,
-  //       tickUpper: nextTickUpper,
-  //     });
-  //     router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
-  //   }
-  // }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
+    const computedFeeTier = (!initializedFeeTier.current ? router.query.fee_tier : swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4)) as string;
+
+    if (tokenA?.path && tokenB?.path && router.isReady) {
+      const queryString = makeQueryString({
+        tokenA: tokenA?.path,
+        tokenB: tokenB?.path,
+        fee_tier: computedFeeTier,
+        price_range_type: priceRange?.type,
+        tickLower: nextTickLower,
+        tickUpper: nextTickUpper,
+      });
+      router.push(`/earn/add${queryString ? "?" + queryString : ""}`, undefined, { shallow: true });
+    }
+  }, [swapFeeTier, tokenA, tokenB, selectPool.minPosition, selectPool.maxPosition, priceRange?.type, router.query.fee_tier, router.isReady]);
 
   const showDim = useMemo(() => {
     return isFetchedPools && !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);

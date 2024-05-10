@@ -145,7 +145,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   renderBottom,
   isShowTooltip = true,
 }: LineGraphProps) => {
-  console.log("🚀 ~ .padStart ~ height:", height);
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();

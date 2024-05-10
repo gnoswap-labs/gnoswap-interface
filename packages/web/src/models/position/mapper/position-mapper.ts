@@ -49,20 +49,20 @@ export class PositionMapper {
       positionUsdValue: position.usdValue,
       unclaimedFeeAAmount: Number(position.unclaimedFeeAAmount),
       unclaimedFeeBAmount: Number(position.unclaimedFeeBAmount),
-      unclaimedFee0Usd: position.unclaimedFee0Usd,
-      unclaimedFee1Usd: position.unclaimedFee0Usd,
-      tokensOwed0Amount: BigInt(0),
-      tokensOwed1Amount: BigInt(0),
-      tokensOwed0Usd: position.tokensOwed0Usd,
-      tokensOwed1Usd: position.tokensOwed1Usd,
+      // unclaimedFee0Usd: position.unclaimedFee0Usd,
+      // unclaimedFee1Usd: position.unclaimedFee0Usd,
+      // tokensOwed0Amount: BigInt(0),
+      // tokensOwed1Amount: BigInt(0),
+      // tokensOwed0Usd: position.tokensOwed0Usd,
+      // tokensOwed1Usd: position.tokensOwed1Usd,
       apr: `${position.apr}` ?? "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsdValue || "0",
-      rewards: position.reward?.map(PositionMapper.rewardFromResponse) || [],
-      dailyRewards:
-        position.reward?.map(PositionMapper.rewardFromResponse) || [],
+      rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
+      // dailyRewards:
+      //   position.reward?.map(PositionMapper.rewardFromResponse) || [],
       closed: position.closed,
-      bins: position.bins,
+      // bins: position.bins,
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
       bins40: position.bins40,
       totalClaimedUsd: position.totalClaimedUsd,
@@ -77,8 +77,8 @@ export class PositionMapper {
 
   public static rewardFromResponse(reward: RewardResponse): RewardModel {
     return {
-      token: reward.rewardToken,
-      accumulatedRewardOf1d:
+      rewardToken: reward.rewardToken,
+      accuReward1D:
         reward.accuReward1d !== "" ? reward.accuReward1d : null,
       accumulatedRewardOf7d:
         reward.accuReward7d !== "" ? reward.accuReward7d : null,
@@ -86,7 +86,7 @@ export class PositionMapper {
       aprOf7d: reward.apr7d !== "" ? Number(reward.apr7d) : null,
       totalAmount: Number(reward.totalAmount),
       claimableAmount: Number(reward.claimableAmount),
-      claimableUsdValue: reward.claimableUsd,
+      claimableUsd: reward.claimableUsd,
       rewardType: reward.rewardType,
     };
   }

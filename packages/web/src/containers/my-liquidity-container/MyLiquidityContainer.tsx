@@ -89,7 +89,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   };
 
   const claimAllReward = useCallback(() => {
-    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableUsdValue), 0);
+    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
     const data = {
       amount: toUnitFormat(amount, true, true),
     };

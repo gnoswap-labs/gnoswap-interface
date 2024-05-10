@@ -89,13 +89,11 @@ const OneClickStaking: React.FC<Props> = ({
   }, [pool.rewardTokens]);
 
   const feeApr = useMemo(() => {
-    console.log("🚀 ~ feeApr ~ pool.feeApr:", Number(pool.feeApr));
     if (Number(pool.feeApr) === 0) return "-";
     return pool.feeApr;
   }, [pool.feeApr]);
 
   const stakingApr = useMemo(() => {
-    console.log("🚀 ~ feeApr ~ pool.feeApr:", Number(pool.feeApr));
     if (Number(pool.stakingApr) === 0) return "-";
     return pool.stakingApr;
   }, [pool.stakingApr]);

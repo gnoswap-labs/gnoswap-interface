@@ -104,10 +104,10 @@ const StakingContainer: React.FC = () => {
       .reduce<{ [key in string]: TokenModel }>((accum, current) => {
         if (
           tokenPair.findIndex(
-            token => token.priceID === current.token.priceID,
+            token => token.priceID === current.rewardToken.priceID,
           ) > -1
         ) {
-          accum[current.token.priceID] = current.token;
+          accum[current.rewardToken.priceID] = current.rewardToken;
         }
         return accum;
       }, {});

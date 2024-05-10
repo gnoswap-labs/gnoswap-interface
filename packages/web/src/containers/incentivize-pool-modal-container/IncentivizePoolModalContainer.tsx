@@ -63,7 +63,7 @@ const IncentivizePoolModalContainer = () => {
 
     return poolRepository
       .createExternalIncentive({
-        poolPath: pool.path,
+        poolPath: pool.poolPath,
         rewardToken: dataModal.token,
         rewardAmount: dataModal.amount || "0",
         startTime,

@@ -98,8 +98,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.feeUsd24h]);
 
   const rewardChangedStr = useMemo((): string => {
-    return toUnitFormat(pool.rewardsUsd24h, true, true);
-  }, [pool.rewardsUsd24h]);
+    return toUnitFormat(pool.rewards24hUsd, true, true);
+  }, [pool.rewards24hUsd]);
 
   const isWrapText = useMemo(() => {
     return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;

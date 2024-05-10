@@ -28,35 +28,15 @@ export interface PositionResponse {
 
   unclaimedFeeBAmount: string;
 
-  unclaimedFee0Usd: string;
-
-  unclaimedFee1Usd: string;
-
-  tokensOwed0Amount: string;
-
-  tokensOwed1Amount: string;
-
-  tokensOwed0Usd: string;
-
-  tokensOwed1Usd: string;
-
   apr?: number;
 
   stakedAt?: string;
 
-  stakedUsdValue?: string;
-
   rewards?: RewardResponse[];
 
-  reward?: RewardResponse[];
-  
-  bins: PoolBinModel[];
-  
   bins40: PoolBinModel[];
 
   closed: boolean;
-  
-  totalDailyRewardsUsd: string;
 
   totalClaimedUsd: string;
 
@@ -65,4 +45,25 @@ export interface PositionResponse {
   unclaimedFeeAUsd: string;
 
   unclaimedFeeBUsd: string;
+
+  // TODO: Remove later
+  // reward?: RewardResponse[];
+
+  // unclaimedFee0Usd: string;
+
+  // tokensOwed1Usd: string;
+
+  // tokensOwed0Amount: string;
+
+  // tokensOwed1Amount: string;
+
+  // tokensOwed0Usd: string;
+
+  // bins: PoolBinModel[];
+
+  totalDailyRewardsUsd: string;
+
+  stakedUsdValue?: string;
+
+  // unclaimedFee1Usd: string;
 }
