@@ -227,6 +227,8 @@ export const useSwapHandler = () => {
       tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
       direction: type,
       slippage,
+      tokenADecimals: tokenA?.decimals,
+      tokenBDecimals: tokenB?.decimals,
     };
   }, [
     slippage,

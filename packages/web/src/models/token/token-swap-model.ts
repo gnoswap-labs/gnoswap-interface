@@ -17,4 +17,6 @@ export interface DataTokenInfo {
   direction: SwapDirectionType;
   tokenAUSDStr: string;
   tokenBUSDStr: string;
+  tokenADecimals?: number;
+  tokenBDecimals?: number;
 }

@@ -113,7 +113,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     }
     swapNow();
   }, [connected, connectWallet, swapNow, isSwitchNetwork]);
-  
+
   const isShowInfoSection = useMemo(() => {
     return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
   }, [dataTokenInfo, isLoading]);
@@ -122,19 +122,23 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenABalance !== "-") {
       if (dataTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFormat(2);
+      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, ""))
+        .dividedBy(Math.pow(10, dataTokenInfo.tokenADecimals ?? 0))
+        .toFormat(2);
     }
     return "-";
-  }, [dataTokenInfo.tokenABalance, connected, isSwitchNetwork]);
+  }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance, dataTokenInfo.tokenADecimals]);
 
   const balanceBDisplay = useMemo(() => {
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenBBalance !== "-") {
       if (dataTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toFormat(2);
+      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, ""))
+        .dividedBy(Math.pow(10, dataTokenInfo.tokenBDecimals ?? 0))
+        .toFormat(2);
     }
     return "-";
-  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork]);
+  }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork, dataTokenInfo.tokenBDecimals]);
 
   return (
     <div css={wrapper}>
@@ -167,7 +171,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={tokenA} changeToken={changeTokenA}/>
+              <SelectPairButton token={tokenA} changeToken={changeTokenA} />
             </div>
           </div>
           <div className="info">
@@ -186,7 +190,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               placeholder="0"
             />
             <div className="token">
-              <SelectPairButton token={tokenB} changeToken={changeTokenB}/>
+              <SelectPairButton token={tokenB} changeToken={changeTokenB} />
             </div>
           </div>
           <div className="info">
