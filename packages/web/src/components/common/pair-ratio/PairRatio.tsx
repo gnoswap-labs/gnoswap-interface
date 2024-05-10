@@ -7,6 +7,11 @@ import IconSwap from "../icons/IconSwap";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { PairRatioWrapper } from "./PairRatio.styles";
 
+function replaceGnotSymbol(symbol: string) {
+  if (symbol === "WGNOT") return "GNOT";
+  return symbol;
+}
+
 interface PairRatioProps {
   loading?: boolean;
   onSwap?: (swap: boolean) => void;
@@ -23,11 +28,11 @@ export function PairRatio({
   pool,
 }: PairRatioProps) {
   const displayTokenSymbol = useMemo(
-    () => (!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
+    () => replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
     [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
   );
   const secondTokenSymbol = useMemo(
-    () => (isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
+    () => replaceGnotSymbol(isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
     [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
   );
 

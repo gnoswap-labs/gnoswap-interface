@@ -690,7 +690,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <PoolGraph
               tokenA={tokenA}
               tokenB={tokenB}
-              bins={bins ?? []}
+              bins={position.pool.bins40}
               currentTick={currentTick}
               width={GRAPH_WIDTH}
               height={150}

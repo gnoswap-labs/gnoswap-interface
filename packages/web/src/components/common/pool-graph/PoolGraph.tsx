@@ -86,7 +86,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   isSwap = false,
   showBar = true,
 }) => {
-  console.log("🚀 ~ bins:", bins);
   const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);

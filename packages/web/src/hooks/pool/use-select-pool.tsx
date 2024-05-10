@@ -140,8 +140,7 @@ export const useSelectPool = ({
       const tokenAPoolPath = tokenAPath;
       const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
       const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
-      const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
-        }`;
+      const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
       const reverse =
         tokenPair.findIndex(path => {

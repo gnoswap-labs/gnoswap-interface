@@ -8,7 +8,6 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { RewardType } from "@constants/option.constant";
 import { PositionClaimInfo } from "@models/position/info/position-claim-info";
-import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -42,6 +41,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   loadngTransactionClaim,
   isOtherPosition,
 }) => {
+  console.log("🚀 ~ positions:", positions);
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
@@ -51,93 +51,96 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return connected === true || positions.length > 0;
   }, [connected, positions]);
 
-  const allBalances = useMemo(() => {
-    if (!isDisplay) {
-      return null;
-    }
-    return positions.reduce<{ [key in string]: PositionBalanceInfo }>(
-      (balanceMap, position) => {
-        const sumOfBalances = Number(position.tokenABalance) + Number(position.tokenBBalance);
-        const depositRatio = sumOfBalances === 0 ? 0.5 : Number(position.tokenABalance) / sumOfBalances;
-        const tokenABalance =
-          makeDisplayTokenAmount(
-            position.pool.tokenA,
-            position.tokenABalance,
-          ) || 0;
-        const tokenBBalance =
-          makeDisplayTokenAmount(
-            position.pool.tokenB,
-            position.tokenBBalance,
-          ) || 0;
-        const tokenABalanceInfo = {
-          token: position.pool.tokenA,
-          balanceUSD:
-            tokenABalance *
-            Number(tokenPrices[position.pool.tokenA.priceID]?.usd || 1),
-          percent: `${Math.round(depositRatio * 100)}%`,
-        };
-        const tokenBBalanceInfo = {
-          token: position.pool.tokenB,
-          balanceUSD:
-            tokenBBalance *
-            Number(tokenPrices[position.pool.tokenB.priceID]?.usd || 1),
-          percent: `${Math.round((1 - depositRatio) * 100)}%`,
-        };
-        if (!balanceMap[tokenABalanceInfo.token.priceID]) {
-          balanceMap[tokenABalanceInfo.token.priceID] = {
-            ...tokenABalanceInfo,
-            balance: 0,
-            balanceUSD: 0,
-          };
-        }
-        if (!balanceMap[tokenBBalanceInfo.token.priceID]) {
-          balanceMap[tokenBBalanceInfo.token.priceID] = {
-            ...tokenBBalanceInfo,
-            balance: 0,
-            balanceUSD: 0,
-          };
-        }
-        const changedTokenABalanceUSD =
-          balanceMap[tokenABalanceInfo.token.priceID].balanceUSD +
-          tokenABalanceInfo.balanceUSD;
-        const changedTokenABalance =
-          balanceMap[tokenABalanceInfo.token.priceID].balance +
-          Number(position.tokenABalance);
-        balanceMap[tokenABalanceInfo.token.priceID] = {
-          ...tokenABalanceInfo,
-          balance: changedTokenABalance,
-          balanceUSD: changedTokenABalanceUSD,
-        };
-        const changedTokenBBalanceUSD =
-          balanceMap[tokenBBalanceInfo.token.priceID].balanceUSD +
-          tokenBBalanceInfo.balanceUSD;
-        const changedTokenBBalance =
-          balanceMap[tokenBBalanceInfo.token.priceID].balance +
-          Number(position.tokenBBalance);
-        balanceMap[tokenBBalanceInfo.token.priceID] = {
-          ...tokenBBalanceInfo,
-          balance: changedTokenBBalance,
-          balanceUSD: changedTokenBBalanceUSD,
-        };
-        return balanceMap;
-      },
-      {},
-    );
-  }, [isDisplay, positions, tokenPrices]);
+  // const allBalances = useMemo(() => {
+  //   if (!isDisplay) {
+  //     return null;
+  //   }
+  //   return positions.reduce<{ [key in string]: PositionBalanceInfo }>(
+  //     (balanceMap, position) => {
+  //       const sumOfBalances = Number(position.tokenABalance) + Number(position.tokenBBalance);
+  //       const depositRatio = sumOfBalances === 0 ? 0.5 : Number(position.tokenABalance) / sumOfBalances;
+  //       const tokenABalance =
+  //         makeDisplayTokenAmount(
+  //           position.pool.tokenA,
+  //           position.tokenABalance,
+  //         ) || 0;
+  //       const tokenBBalance =
+  //         makeDisplayTokenAmount(
+  //           position.pool.tokenB,
+  //           position.tokenBBalance,
+  //         ) || 0;
+  //       const tokenABalanceInfo = {
+  //         token: position.pool.tokenA,
+  //         balanceUSD:
+  //           tokenABalance *
+  //           Number(tokenPrices[position.pool.tokenA.priceID]?.usd || 1),
+  //         percent: `${Math.round(depositRatio * 100)}%`,
+  //       };
+  //       const tokenBBalanceInfo = {
+  //         token: position.pool.tokenB,
+  //         balanceUSD:
+  //           tokenBBalance *
+  //           Number(tokenPrices[position.pool.tokenB.priceID]?.usd || 1),
+  //         percent: `${Math.round((1 - depositRatio) * 100)}%`,
+  //       };
+  //       if (!balanceMap[tokenABalanceInfo.token.priceID]) {
+  //         balanceMap[tokenABalanceInfo.token.priceID] = {
+  //           ...tokenABalanceInfo,
+  //           balance: 0,
+  //           balanceUSD: 0,
+  //         };
+  //       }
+  //       if (!balanceMap[tokenBBalanceInfo.token.priceID]) {
+  //         balanceMap[tokenBBalanceInfo.token.priceID] = {
+  //           ...tokenBBalanceInfo,
+  //           balance: 0,
+  //           balanceUSD: 0,
+  //         };
+  //       }
+  //       const changedTokenABalanceUSD =
+  //         balanceMap[tokenABalanceInfo.token.priceID].balanceUSD +
+  //         tokenABalanceInfo.balanceUSD;
+  //       const changedTokenABalance =
+  //         balanceMap[tokenABalanceInfo.token.priceID].balance +
+  //         Number(position.tokenABalance);
+  //       balanceMap[tokenABalanceInfo.token.priceID] = {
+  //         ...tokenABalanceInfo,
+  //         balance: changedTokenABalance,
+  //         balanceUSD: changedTokenABalanceUSD,
+  //       };
+  //       const changedTokenBBalanceUSD =
+  //         balanceMap[tokenBBalanceInfo.token.priceID].balanceUSD +
+  //         tokenBBalanceInfo.balanceUSD;
+  //       const changedTokenBBalance =
+  //         balanceMap[tokenBBalanceInfo.token.priceID].balance +
+  //         Number(position.tokenBBalance);
+  //       balanceMap[tokenBBalanceInfo.token.priceID] = {
+  //         ...tokenBBalanceInfo,
+  //         balance: changedTokenBBalance,
+  //         balanceUSD: changedTokenBBalanceUSD,
+  //       };
+  //       return balanceMap;
+  //     },
+  //     {},
+  //   );
+  // }, [isDisplay, positions, tokenPrices]);
 
   const totalBalance = useMemo(() => {
     if (!isDisplay) {
       return "-";
     }
-    if (!allBalances) {
-      return "$0";
-    }
-    const balance = Object.values(allBalances).reduce(
-      (acc, current) => (acc += current.balanceUSD),
-      0,
-    );
+    // if (!allBalances) {
+    //   return "$0";
+    // }
+    // const balance = Object.values(allBalances).reduce(
+    //   (acc, current) => (acc += current.balanceUSD),
+    //   0,
+    // );
+    const balance = positions.reduce((current, next) => {
+      return current + next.usdValue;
+    }, 0);
     return `$${numberToFormat(`${balance}`, 2)}`;
-  }, [allBalances, isDisplay]);
+  }, [isDisplay, positions]);
 
   const claimableRewardInfo = useMemo(():
     | { [key in RewardType]: PositionClaimInfo[] }

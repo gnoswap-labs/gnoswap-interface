@@ -11,6 +11,7 @@ import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { DeviceSize } from "@styles/media";
+import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
 
 export default function EarnAdd() {
   const { width } = useWindowSize();
@@ -41,7 +42,7 @@ export default function EarnAdd() {
       breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading} />}
       addLiquidity={<PoolAddLiquidityContainer />}
       oneStaking={<OneClickStakingContainer />}
-      exchangeRateGraph={null}
+      exchangeRateGraph={<ExchangeRateGraphContainer />}
       footer={<Footer />}
     />
   );

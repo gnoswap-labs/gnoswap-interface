@@ -82,6 +82,7 @@ export const wrapper = (theme: Theme) => css`
       margin: auto;
     }
     .one-click-staking {
+      padding: 0;
       margin: 16px auto 0;
       width: 100%;
       max-width: 500px;

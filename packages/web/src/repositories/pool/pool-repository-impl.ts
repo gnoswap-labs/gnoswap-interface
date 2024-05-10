@@ -126,6 +126,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<PoolDetailRPCModel> => {
     const pools = await this.getRPCPools();
+    console.log("🚀 ~ PoolRepositoryImpl ~ pools:", pools);
     const pool = pools?.find(item => {
       return item.poolPath === poolPath;
     });

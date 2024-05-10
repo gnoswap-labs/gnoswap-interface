@@ -65,7 +65,7 @@ export const dummyTokenList: Activity[] = [
 ];
 
 const replaceToken = (symbol: string) => {
-  if (symbol === "wugnot") return "GNOT";
+  if (symbol === "wugnot" || symbol === "WGNOT") return "GNOT";
   return symbol;
 };
 
