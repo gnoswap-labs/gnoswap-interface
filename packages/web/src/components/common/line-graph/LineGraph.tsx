@@ -186,15 +186,15 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     let baseLineNumberWidthComputation = 0;
 
-    const minMaxGap = (maxValue - minValue) !== 0 ? (maxValue - minValue) : (maxValue / 10);
+    const minMaxGap = (maxValue - minValue) !== 0 ? (maxValue - minValue) : (maxValue * gapRatio);
 
     if (showBaseLine) {
       const baseLineData = new Array(baseLineCount).fill("").map((value, index) => {
 
         // Gap from lowest value or highest value  to baseline
-        const additionalGap = (minMaxGap !== 0) ? minMaxGap * (gapRatio / 2) : (minMaxGap / 2);
+        const additionalGap = (maxValue - minValue !== 0) ? minMaxGap * (gapRatio / 2) : (minMaxGap / 2);
         // Gap between bottom and top base line
-        const baseLineGap = minMaxGap * (1 + gapRatio);
+        const baseLineGap = (maxValue - minValue !== 0) ? minMaxGap * (1 + gapRatio) : minMaxGap;
         // Lowest baseline value
         const bottomBaseLineValue = minValue - additionalGap;
 
@@ -235,12 +235,22 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     const optimizeValue = function (value: number, height: number) {
       // The base line wrapper will > top and bottom of graph 10 % so the height will be 110% of graph height
-      const graphHeight = showBaseLine ? height * (1 / 1.1) : height;
+      const graphHeight = (() => {
+        if (showBaseLine) {
+          return height * (1 / 1.1);
+        }
+
+        return height;
+      })();
 
       // Subtract 5% from the top baseline
       const topFrontierHeight = showBaseLine ? height * (1.05 / 1.1) : height;
 
       const result = (() => {
+        if (maxValue - minValue === 0) {
+          return topFrontierHeight - ((value - (value * 0.95)) * graphHeight) / minMaxGap;
+        }
+
         return topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap;
       })();
 

@@ -77,7 +77,6 @@ const ExchangeRateGraphContainer: React.FC = () => {
 
   const poolPath = currentPoolPath;
   const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
-  console.log("🚀 ~ poolData:", poolData);
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
 
 
