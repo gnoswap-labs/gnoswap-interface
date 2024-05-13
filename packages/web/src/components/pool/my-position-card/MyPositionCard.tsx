@@ -253,6 +253,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             rewardType: current.rewardType,
             tokenAmountOf7d: Number(current.accumulatedRewardOf7d),
             aprOf7d: Number(current.aprOf7d),
+            accuReward1D: Number(current.accuReward1D),
+            apr: Number(current.apr),
           });
           return accum;
         },

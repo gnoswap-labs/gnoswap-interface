@@ -20,6 +20,7 @@ export function ExchangeRateGraphContent({
   selectedScope,
   isReversed,
 }: ExchangeRateGraphContentProps) {
+  console.log("🚀 ~ poolData:", poolData.priceRatio);
 
 
   const theme = useTheme();
