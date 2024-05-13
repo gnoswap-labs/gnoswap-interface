@@ -67,3 +67,6 @@ const OneClickStakingContainer: React.FC = () => {
   );
 };
 export default OneClickStakingContainer;
+
+// gno.land/r/demo/gns:gno.land/r/demo/wugnot:3000
+// gno.land/r/demo/gns:gno.land/r/demo/wugnot:3000

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import IconDownload from "@components/common/icons/IconDownload";
 import IconUpload from "@components/common/icons/IconUpload";
 import { Asset } from "@containers/asset-list-container/AssetListContainer";
@@ -41,9 +41,13 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
     withdraw(asset);
   }, [withdraw, asset]);
 
-  const convertBalance = removeTrailingZeros(BigNumber((balance ?? "").toString())
-    .dividedBy(Math.pow(10, asset.decimals ?? 0))
-    .toFormat(BigNumber((balance ?? "")).isInteger() ? 0 : 6)) || 0;
+  const convertBalance = useMemo(() => {
+    const bigNumberBalanceWithDecimals = BigNumber((balance ?? "").toString())
+      .dividedBy(Math.pow(10, asset.decimals ?? 0));
+
+    return removeTrailingZeros(bigNumberBalanceWithDecimals.toFormat(bigNumberBalanceWithDecimals.isInteger() ? 0 : 6)) || 0;
+  }, [asset.decimals, balance]);
+
   const priceData = ["-", "<$0.01"].includes(price) ? price : `$${price}`;
 
   return breakpoint === DEVICE_TYPE.WEB ? (

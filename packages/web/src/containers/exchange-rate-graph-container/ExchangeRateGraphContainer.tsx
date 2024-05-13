@@ -1,6 +1,7 @@
 import ExchangeRateGraph from "@components/pool/exchange-rate-graph/ExchangeRateGraph";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useLoading } from "@hooks/common/use-loading";
+import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
@@ -9,8 +10,6 @@ import { useAtom } from "jotai";
 import { useMemo, useState } from "react";
 
 export const initialPool: PoolModel = {
-  // name: "",
-  // path: "",
   tokenA: {
     chainId: "",
     createdAt: "",
@@ -74,10 +73,12 @@ const ExchangeRateGraphContainer: React.FC = () => {
   const [compareToken] = useAtom(EarnState.currentCompareToken);
 
   const tokenPair = currentPoolPath?.split(":");
+  const { getGnotPath } = useGnotToGnot();
 
   const poolPath = currentPoolPath;
   const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
+
 
   const { isLoadingCommon } = useLoading();
 
@@ -97,9 +98,23 @@ const ExchangeRateGraphContainer: React.FC = () => {
       ? poolData
       : {
         ...poolData,
+        tokenA: {
+          ...poolData.tokenA,
+          logoURI: getGnotPath(poolData.tokenA).logoURI,
+          path: getGnotPath(poolData.tokenA).path,
+          name: getGnotPath(poolData.tokenA).name,
+          symbol: getGnotPath(poolData.tokenA).symbol,
+        },
+        tokenB: {
+          ...poolData.tokenB,
+          logoURI: getGnotPath(poolData.tokenB).logoURI,
+          path: getGnotPath(poolData.tokenB).path,
+          name: getGnotPath(poolData.tokenB).name,
+          symbol: getGnotPath(poolData.tokenB).symbol,
+        },
         price: 1 / poolData.price,
       };
-  }, [poolData, reverse]);
+  }, [getGnotPath, poolData, reverse]);
 
   return (<ExchangeRateGraph
     poolData={changedPoolInfo}

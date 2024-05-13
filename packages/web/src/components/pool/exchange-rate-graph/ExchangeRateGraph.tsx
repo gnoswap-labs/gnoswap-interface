@@ -57,10 +57,8 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
       </ExchangeRateGraphController>
     </ExchangeRateGraphHeaderWrapper>
     {!isLoading && <ExchangeRateGraphContent
-      onSwap={onSwap}
       poolData={poolData}
-      isLoading={isLoading}
-      reverse={reverse} selectedScope={selectedScope} />}
+      selectedScope={selectedScope} />}
     {isLoading && <LoadingExchangeRateChartWrapper>
       <LoadingSpinner />
     </LoadingExchangeRateChartWrapper>}

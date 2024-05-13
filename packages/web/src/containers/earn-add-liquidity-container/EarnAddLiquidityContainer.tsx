@@ -272,7 +272,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         isReverted: false,
       };
     });
-    selectSwapFeeTier("NONE");
   }, [type]);
 
   const changeStartingPrice = useCallback((price: string) => {
@@ -414,6 +413,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     updateTokenPrices();
+
     setSwapValue({
       tokenA: null,
       tokenB: null,
@@ -445,6 +445,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const query = router.query;
       const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
       const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
+
       setSwapValue({
         tokenA: currentTokenA,
         tokenB: currentTokenB,
@@ -490,11 +491,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
       } else {
         selectSwapFeeTier("FEE_3000");
       }
-      setSwapValue({
+      setSwapValue((prev) => ({
+        ...prev,
         tokenA,
         tokenB,
         type: "EXACT_IN",
-      });
+      }));
     }
   }, [tokenA, tokenB, isFetchedPools, router.query?.fee_tier]);
 
@@ -505,17 +507,17 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [swapFeeTier]);
 
   const handleSwapValue = useCallback(() => {
-    const tempTokenA = swapValue.tokenA;
-    const tempTokenB = swapValue.tokenB;
-    setSwapValue({
-      ...swapValue,
-      tokenA: tempTokenB,
-      tokenB: tempTokenA,
-      isEarnChanged: true,
-      isReverted: true,
-      isKeepToken: !isKeepToken
+    setSwapValue((prev) => {
+      return {
+        ...prev,
+        tokenA: prev.tokenB,
+        tokenB: prev.tokenA,
+        isEarnChanged: true,
+        isReverted: true,
+        isKeepToken: !prev.isKeepToken
+      };
     });
-  }, [swapValue, setSwapValue, isKeepToken]);
+  }, [setSwapValue]);
 
   useEffect(() => {
     const nextTickLower = (isNumber(selectPool.minPosition || "") || isFinite(selectPool.minPosition || 0)) ? priceToTick(selectPool.minPosition || 0) : null;

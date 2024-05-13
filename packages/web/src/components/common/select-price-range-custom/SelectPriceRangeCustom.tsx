@@ -281,6 +281,15 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }
   }, [selectPool.currentPrice, selectPool.startPrice]);
 
+
+  const selectTokenPair = useMemo(() => {
+    if (isKeepToken) {
+      return [getGnotPath(tokenB).symbol, getGnotPath(tokenA).symbol];
+    }
+
+    return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
+  }, [tokenA, tokenB, isKeepToken]);
+
   if (selectPool.renderState() === "NONE") {
     return <></>;
   }
@@ -322,7 +331,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                 <div className="option-wrapper">
                   <SelectTab
                     selectType={getGnotPath(selectPool.compareToken)?.symbol || ""}
-                    list={[!isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol, isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol]}
+                    list={selectTokenPair}
                     onClick={onClickTabItem}
                   />
                   <div className="button-option-contaier">

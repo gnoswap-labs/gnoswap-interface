@@ -11,17 +11,11 @@ import { ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "
 
 interface ExchangeRateGraphContentProps {
   poolData: PoolDetailModel
-  onSwap?: (swap: boolean) => void
-  reverse: boolean,
-  isLoading: boolean,
   selectedScope: CHART_DAY_SCOPE_TYPE,
 }
 
 export function ExchangeRateGraphContent({
-  // onSwap,
   poolData,
-  // isLoading,
-  // reverse,
   selectedScope
 }: ExchangeRateGraphContentProps) {
 
@@ -103,7 +97,6 @@ export function ExchangeRateGraphContent({
     const spacing = ((xAxisLabels?.length ?? 0) - 1) / (countXAxis - 1);
     return Array.from({ length: countXAxis }, (_, index) => Math.floor(spacing * index)).reverse();
   }, [countXAxis, xAxisLabels?.length]);
-
 
   return (<ExchangeRateGraphContentWrapper>
     <div className="data-wrapper">

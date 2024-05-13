@@ -8,16 +8,17 @@ import OneClickStakingContainer from "@containers/one-click-staking-container/On
 import { useAtom } from "jotai";
 import { EarnState } from "@states/index";
 import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-container/ExchangeRateGraphContainer";
+import { useRouter } from "next/router";
 
 export default function EarnAdd() {
+  const query = useRouter().query;
   const [isEarnAdd] = useAtom(EarnState.isOneClick);
-  const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
     { title: "Earn", path: "/earn" },
     { title: "Add Position", path: "" },
   ];
 
-  const showExchangeRate = useMemo(() => currentPoolPath, [currentPoolPath]);
+  const showExchangeRate = useMemo(() => query.tokenA && query.tokenB, [query.tokenA, query.tokenB]);
 
   return (
     <EarnAddLayout

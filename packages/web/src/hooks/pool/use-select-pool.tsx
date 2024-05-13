@@ -17,6 +17,7 @@ import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
 import { useQuery } from "@tanstack/react-query";
+import { encryptId } from "@utils/common";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -98,6 +99,28 @@ export const useSelectPool = ({
   const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [tokenA?.path, tokenA?.wrappedPath]);
   const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [tokenB?.path, tokenB?.wrappedPath]);
 
+  const tokenPair = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return null;
+    }
+
+    const tokenAPoolPath = tokenAPath;
+    const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
+    return [tokenAPoolPath, tokenBPoolPath].sort();
+  }, [tokenA, tokenAPath, tokenB]);
+
+  const isReverse = useMemo(() => {
+    return tokenPair?.findIndex(path => {
+      if (compareToken) {
+        return isNativeToken(compareToken)
+          ? compareToken.wrappedPath === path
+          : compareToken.path === path;
+      }
+      return false;
+    }) === 1;
+  }, [compareToken, tokenPair]);
+
+
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
     PoolDetailRPCModel | null,
     Error
@@ -137,27 +160,18 @@ export const useSelectPool = ({
         return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
       }
 
-      const tokenAPoolPath = tokenAPath;
-      const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
-      const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
-      const poolPath = `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
+      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
-      const reverse =
-        tokenPair.findIndex(path => {
-          if (compareToken) {
-            return isNativeToken(compareToken)
-              ? compareToken.wrappedPath === path
-              : compareToken.path === path;
-          }
-          return false;
-        }) === 1;
+
+      const convertPath = encryptId(poolPath);
+      const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(convertPath);
 
       const changedPoolInfo =
-        reverse === false
+        isReverse === false
           ? poolRes
           : {
             ...poolRes,
-            price: 1 / poolRes.price,
+            price: 1 / poolResFromDb.price,
             ticks: Object.keys(poolRes.ticks).map(
               tick => Number(tick) * -1,
             ),
@@ -169,6 +183,7 @@ export const useSelectPool = ({
           };
 
       return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
+
     },
     staleTime: 5_000
   });
