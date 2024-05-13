@@ -41,6 +41,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   loadngTransactionClaim,
   isOtherPosition,
 }) => {
+  console.log("🚀 ~ positions:", positions);
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
@@ -155,7 +156,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL: {},
     };
     positions
-      .flatMap(position => position.rewards)
+      .flatMap(position => position.reward)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
@@ -192,6 +193,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
         }
       });
+    console.log("🚀 ~ infoMap:", infoMap["SWAP_FEE"]);
+
+
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       STAKING: Object.values(infoMap["STAKING"]),
@@ -213,12 +217,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL: {},
     };
     positions
-      .flatMap(position => position.rewards)
+      .flatMap(position => position.reward)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
         tokenAmountOf7d: Number(reward.accumulatedRewardOf7d),
         aprOf7d: Number(reward.aprOf7d),
+        accuReward1D: Number(reward.accuReward1D),
+        apr: Number(reward.apr),
       }))
       .forEach(rewardInfo => {
         const existReward =
@@ -228,6 +234,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             ...existReward,
             tokenAmountOf7d: existReward.tokenAmountOf7d + rewardInfo.tokenAmountOf7d,
             aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
+            accuReward1D: existReward.accuReward1D + rewardInfo.accuReward1D,
+            apr: existReward.apr + rewardInfo.apr,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
@@ -264,7 +272,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     }
     const infoMap: { [key in string]: PositionClaimInfo } = {};
     positions
-      .flatMap(position => position.rewards)
+      .flatMap(position => position.reward)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
@@ -309,7 +317,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     }
 
     const claimableUsdValue = positions.reduce((positionAcc, positionCurrent) => {
-      const currentPositionDailyReward = positionCurrent.rewards.reduce((rewardAcc, rewardCurrent) => {
+      const currentPositionDailyReward = positionCurrent.reward.reduce((rewardAcc, rewardCurrent) => {
         return rewardAcc + Number(rewardCurrent.claimableUsd);
       }, 0);
 
@@ -412,7 +420,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     // return toUnitFormat(`${sumUSD}`, true, true);
 
     const sumRewardDaily = positions.reduce((positionAcc, positionCurrent) => {
-      const currentPositionDailyReward = positionCurrent.rewards.reduce((rewardAcc, rewardCurrent) => {
+      const currentPositionDailyReward = positionCurrent.reward.reduce((rewardAcc, rewardCurrent) => {
         return rewardAcc + Number(rewardCurrent.accuReward1D);
       }, 0);
 

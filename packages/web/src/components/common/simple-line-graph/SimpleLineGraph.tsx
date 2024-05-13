@@ -28,6 +28,7 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
       value: `${data}`
     }));
   }, [datas]);
+  console.log("🚀 ~ getChartDatas ~ getChartDatas:", getChartDatas());
 
   const getStatus = useCallback((): "UP" | "DOWN" => {
     if (datas.length < 2) {

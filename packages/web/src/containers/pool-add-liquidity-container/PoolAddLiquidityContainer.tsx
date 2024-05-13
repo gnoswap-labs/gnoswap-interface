@@ -244,6 +244,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (selectPool.currentPrice === null) {
       return;
     }
+    if (/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
+      tokenBAmountInput.changeAmount("0");
+      return;
+    }
     const ordered = tokenA?.symbol === selectPool.compareToken?.symbol;
     const currentPrice = ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice;
     const depositRatioA = selectPool.depositRatio;

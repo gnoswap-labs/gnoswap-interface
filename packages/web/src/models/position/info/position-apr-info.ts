@@ -6,4 +6,6 @@ export interface PositionAPRInfo {
   tokenAmountOf7d: number;
   aprOf7d: number;
   rewardType: RewardType;
+  accuReward1D: number;
+  apr: number;
 }

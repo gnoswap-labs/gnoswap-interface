@@ -169,12 +169,12 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
+      Number(tokenAAmount) > (Number(parseFloat(tokenABalance.replace(/,/g, "")) / Math.pow(10, tokenA.decimals)))
     ) {
       return "Insufficient Balance";
     }
     if (
-      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, ""))) && type === "EXACT_OUT"
+      Number(tokenBAmount) > (Number(parseFloat(tokenBBalance.replace(/,/g, ""))) / Math.pow(10, tokenB.decimals)) && type === "EXACT_OUT"
     ) {
       return "Insufficient Balance";
     }
@@ -891,6 +891,7 @@ export const useSwapHandler = () => {
       estimateSwapRoute(changedAmount).then(result => {
         const isError = result === null;
         const expectedAmount = isError ? "" : result.amount;
+        console.log("🚀 ~ estimateSwapRoute ~ expectedAmount:", expectedAmount);
         if (isError) {
           if (isExactIn) {
             setTokenBAmount("0");

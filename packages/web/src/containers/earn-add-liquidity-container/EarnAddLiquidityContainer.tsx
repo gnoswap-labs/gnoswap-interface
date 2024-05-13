@@ -167,10 +167,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (Number(tokenAAmountInput.amount) < 0.000001 && Number(tokenBAmountInput.amount) < 0.000001) {
       return "AMOUNT_TOO_LOW";
     }
-    if (Number(tokenAAmountInput.amount) > Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, "")))) {
+    if (Number(tokenAAmountInput.amount) > Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, ""))) / Math.pow(10, tokenA.decimals)) {
       return "INSUFFICIENT_BALANCE";
     }
-    if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))) {
+    if (Number(tokenBAmountInput.amount) > Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, ""))) / Math.pow(10, tokenB.decimals)) {
       return "INSUFFICIENT_BALANCE";
     }
     const ordered = selectPool.compareToken?.path === tokenA?.path;
@@ -321,7 +321,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      console.log("2349230498230");
       const depositRatioB = 100 - depositRatioA;
       const ratio = ordered ? depositRatioB / depositRatioA : depositRatioA / depositRatioB;
       const changedAmount = BigNumber(amount).multipliedBy(currentPrice * ratio);
@@ -510,7 +509,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const handleSwapValue = useCallback(() => {
     setSwapValue((prev) => {
-      console.log("🚀 ~ setSwapValue ~ prev:", prev.isKeepToken);
       return {
         ...prev,
         tokenA: prev.tokenB,

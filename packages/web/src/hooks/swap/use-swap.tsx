@@ -59,6 +59,7 @@ export const useSwap = ({
   }, [direction, estimatedAmount, slippage, tokenA]);
 
   const estimateSwapRoute = async (amount: string) => {
+    console.log("🚀 ~ estimateSwapRoute ~ amount:", amount);
     if (!selectedTokenPair) {
       setSwapState("NONE");
       return null;
@@ -82,6 +83,7 @@ export const useSwap = ({
       exactType: direction,
       tokenAmount: Number(amount)
     }).then(response => {
+      console.log("🚀 ~ estimateSwapRoute ~ response:", response);
       if (response.amount === "0" || response.amount === "") {
         setSwapState("NO_LIQUIDITY");
         setEstimatedRoutes([]);

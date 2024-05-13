@@ -39,7 +39,6 @@ export const useTokenData = () => {
         : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
   });
   const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice } = useGetTokenPrices();
-  console.log("🚀 ~ useTokenData ~ tokenPrices:", tokenPrices);
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
   const { rpcProvider } = useGnoswapContext();

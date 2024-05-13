@@ -32,7 +32,7 @@ export interface PositionResponse {
 
   stakedAt?: string;
 
-  rewards?: RewardResponse[];
+  reward?: RewardResponse[];
 
   bins40: PoolBinModel[];
 

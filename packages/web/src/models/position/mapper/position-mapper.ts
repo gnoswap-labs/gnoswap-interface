@@ -45,7 +45,7 @@ export class PositionMapper {
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
       tokenABalance: Number(position.tokenABalance),
-      tokenBBalance: Number(position.tokenBBalance),
+      tokenBBalance: Number(position.tokenBBalance),  
       positionUsdValue: position.usdValue,
       unclaimedFeeAAmount: Number(position.unclaimedFeeAAmount),
       unclaimedFeeBAmount: Number(position.unclaimedFeeBAmount),
@@ -58,7 +58,7 @@ export class PositionMapper {
       apr: `${position.apr}` ?? "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsdValue || "0",
-      rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
+      reward: position.reward?.map(PositionMapper.rewardFromResponse) || [],
       // dailyRewards:
       //   position.reward?.map(PositionMapper.rewardFromResponse) || [],
       closed: position.closed,
@@ -72,6 +72,7 @@ export class PositionMapper {
   }
 
   public static fromList(positions: PositionListResponse): PositionModel[] {
+    console.log("🚀 ~ PositionMapper ~ fromList ~ positions:", positions);
     return positions.map(PositionMapper.from);
   }
 
@@ -79,7 +80,7 @@ export class PositionMapper {
     return {
       rewardToken: reward.rewardToken,
       accuReward1D:
-        reward.accuReward1d !== "" ? reward.accuReward1d : null,
+        reward.accuReward1D !== "" ? reward.accuReward1D : null,
       accumulatedRewardOf7d:
         reward.accuReward7d !== "" ? reward.accuReward7d : null,
       apr: reward.apr !== "" ? Number(reward.apr) : null,

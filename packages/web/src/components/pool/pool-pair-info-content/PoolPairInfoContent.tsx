@@ -26,6 +26,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -86,7 +87,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.totalApr]);
 
   const liquidityChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.tvlChange / pool.tvl * 100, 2)}%`;
+    return `${numberToFormat(pool.tvlChange / (pool.tvl - pool.tvlChange) * 100, 2)}%`;
   }, [pool.tvl, pool.tvlChange]);
 
   const volumeChangedStr = useMemo((): string => {
@@ -130,7 +131,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && <div className="wrapper-value">
             <strong>{liquidityValue}</strong>
             <div>
-              {pool.tvlChange >= 0 ? <IconTriangleArrowUpV2 /> : ""}  <span className={pool.tvlChange >= 0 ? "positive" : "negative"}> {liquidityChangedStr}</span>
+              {pool.tvlChange >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}  <span className={pool.tvlChange >= 0 ? "positive" : "negative"}> {liquidityChangedStr}</span>
             </div>
           </div>}
           <div className="section-info">

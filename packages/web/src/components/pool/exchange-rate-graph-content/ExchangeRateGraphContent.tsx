@@ -67,7 +67,6 @@ export function ExchangeRateGraphContent({
       [],
     );
   }, [isReversed, poolData.priceRatio, selectedScope]);
-  console.log("🚀 ~ dataMemo ~ dataMemo:", dataMemo);
 
   const xAxisLabels = useMemo(() => {
     const data = poolData.priceRatio;

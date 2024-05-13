@@ -71,10 +71,10 @@ export class PositionRepositoryImpl implements PositionRepository {
     const messages = positions.flatMap(position => {
       const messages = [];
       const hasSwapFee =
-        position.rewards.findIndex(reward => reward.rewardType === "SWAP_FEE") >
+        position.reward.findIndex(reward => reward.rewardType === "SWAP_FEE") >
         -1;
       const hasReward =
-        position.rewards.findIndex(
+        position.reward.findIndex(
           reward =>
             reward.rewardType === "STAKING" || reward.rewardType === "EXTERNAL",
         ) > -1;

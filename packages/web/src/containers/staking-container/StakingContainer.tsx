@@ -100,7 +100,7 @@ const StakingContainer: React.FC = () => {
       tokenPair.push(pool.tokenB);
     }
     const rewardTokenMap = positions
-      .flatMap(position => position.rewards)
+      .flatMap(position => position.reward)
       .reduce<{ [key in string]: TokenModel }>((accum, current) => {
         if (
           tokenPair.findIndex(

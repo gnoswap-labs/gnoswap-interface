@@ -170,12 +170,12 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const totalRewardInfo = useMemo(():
     | { [key in RewardType]: PositionRewardInfo[] }
     | null => {
-    const rewards = position.rewards;
+    const rewards = position.reward;
     if (rewards.length === 0) {
       return null;
     }
 
-    const totalRewardInfo = position.rewards.reduce<{
+    const totalRewardInfo = position.reward.reduce<{
       [key in RewardType]: PositionRewardInfo[];
     }>(
       (accum, current) => {
@@ -207,7 +207,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       },
     );
     return totalRewardInfo;
-  }, [position.rewards, tokenPrices]);
+  }, [position.reward, tokenPrices]);
 
   const totalRewardUSD = useMemo(() => {
     if (isClosed) {
@@ -241,7 +241,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null =
     useMemo(() => {
-      const aprRewardInfo = position.rewards.reduce<{
+      const aprRewardInfo = position.reward.reduce<{
         [key in RewardType]: PositionAPRInfo[];
       }>(
         (accum, current) => {

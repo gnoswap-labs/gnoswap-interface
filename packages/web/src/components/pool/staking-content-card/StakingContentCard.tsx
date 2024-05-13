@@ -104,7 +104,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positions]);
 
   const positionRewards = useMemo(() => {
-    return positions.flatMap(position => position.rewards);
+    return positions.flatMap(position => position.reward);
   }, [positions]);
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards.filter(_ => ["EXTERNAL", "STAKING"].includes(_.rewardType)).reduce((accum, current) => {
@@ -217,7 +217,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [period]);
 
   const positionRewards = useMemo(() => {
-    return positions.flatMap(position => position.rewards);
+    return positions.flatMap(position => position.reward);
   }, [positions]);
 
   const totalUSD = useMemo(() => {

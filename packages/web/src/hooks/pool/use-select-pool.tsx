@@ -16,8 +16,9 @@ import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { encryptId } from "@utils/common";
+import { QUERY_KEY } from "@query/pools";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -120,6 +121,8 @@ export const useSelectPool = ({
     }) === 1;
   }, [compareToken, tokenPair]);
 
+  const queryClient = useQueryClient();
+
 
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
     PoolDetailRPCModel | null,
@@ -164,8 +167,12 @@ export const useSelectPool = ({
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
 
       const convertPath = encryptId(poolPath);
+
+      await queryClient.prefetchQuery({
+        queryKey: [QUERY_KEY.poolDetail, convertPath],
+        queryFn: () => poolRepository.getPoolDetailByPoolPath(poolPath)
+      });
       const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(convertPath);
-      console.log("🚀 ~ queryFn: ~ poolResFromDb:", poolResFromDb);
 
       const changedPoolInfo =
         isReverse === false

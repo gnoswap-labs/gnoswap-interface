@@ -33,7 +33,7 @@ export interface PositionModel {
 
   stakedAt: string;
 
-  rewards: RewardModel[];
+  reward: RewardModel[];
 
   bins40: PoolBinModel[];
 

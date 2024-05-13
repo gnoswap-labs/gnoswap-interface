@@ -60,6 +60,8 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     mostLiquidPool,
     last7days,
   } = item;
+  token.name === "Gnoswap" && console.log("🚀 ~ last7days:", last7days)
+  token.name === "Gnoswap" && console.log("🚀 ~ last7days:", token.name)
   const router = useRouter();
 
   const onClickItem = (path: string) => {
@@ -80,7 +82,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
-          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
+          <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24} />
           <strong className="token-name">{token.name}</strong>
           <span className="token-symbol">{token.symbol}</span>
         </TableColumn>
@@ -139,7 +141,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         tdWidth={TOKEN_TD_WIDTH[10]}
         className="right-padding-12 last7days-graph"
       >
-        <SimpleLineGraph width={100} height={33} datas={last7days} status={priceOf7d.status}/>
+        <SimpleLineGraph width={100} height={33} datas={last7days} status={priceOf7d.status} />
         <ChartGlobalTooltip />
       </TableColumn>
     </TokenInfoWrapper>

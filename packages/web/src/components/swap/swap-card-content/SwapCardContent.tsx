@@ -69,18 +69,18 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connectedWallet) {
-      const formatValue = parseFloat(
+      const formatValue = (parseFloat(
         swapTokenInfo.tokenABalance.replace(/,/g, ""),
-      ).toString();
+      ) / Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0)).toString();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
 
   const handleAutoFillTokenB = useCallback(() => {
     if (connectedWallet) {
-      const formatValue = parseFloat(
+      const formatValue = (parseFloat(
         swapTokenInfo.tokenBBalance.replace(/,/g, ""),
-      ).toString();
+      ) / Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0)).toString();
       changeTokenBAmount(formatValue);
     }
   }, [changeTokenBAmount, connectedWallet, swapTokenInfo]);
