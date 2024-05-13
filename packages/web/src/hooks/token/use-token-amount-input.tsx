@@ -18,6 +18,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const [balance, setBalance] = useState<string>("0");
   const [usd, setUSD] = useState<number>();
   const { displayBalanceMap, tokenPrices } = useTokenData();
+  console.log("🚀 ~ useTokenAmountInput ~ tokenPrices:", tokenPrices);
 
   useEffect(() => {
     if (token && displayBalanceMap[token.path]) {
@@ -29,6 +30,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {
+
     if (!usd || !(Number(amount))) {
       return "-";
     }
@@ -36,11 +38,13 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [usd, amount]);
 
   const changeAmount = useCallback((value: string) => {
+    console.log("🚀 changeAmount ~ token:", token);
+    console.log("🚀 changeAmount ~ changeAmount ~ value:", value);
     if (!token) {
       return;
     }
-    
-    if(/^0\.0(?:0*)$/.test(value)) {
+
+    if (/^0\.0(?:0*)$/.test(value)) {
       setAmount(value);
       return;
     }
@@ -51,7 +55,6 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       return;
     }
     setAmount(amount.toString());
-
     if (tokenPrices[checkGnotPath(token.path)]) {
       const usd = BigNumber(tokenPrices[checkGnotPath(token.path)].usd).multipliedBy(value.toString()).toNumber();
       setUSD(usd);

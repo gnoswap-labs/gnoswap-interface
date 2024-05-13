@@ -320,6 +320,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tokenBAmountInput.changeAmount("0");
         return;
       }
+
+      console.log("2349230498230");
       const depositRatioB = 100 - depositRatioA;
       const ratio = ordered ? depositRatioB / depositRatioA : depositRatioA / depositRatioB;
       const changedAmount = BigNumber(amount).multipliedBy(currentPrice * ratio);
@@ -508,6 +510,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const handleSwapValue = useCallback(() => {
     setSwapValue((prev) => {
+      console.log("🚀 ~ setSwapValue ~ prev:", prev.isKeepToken);
       return {
         ...prev,
         tokenA: prev.tokenB,

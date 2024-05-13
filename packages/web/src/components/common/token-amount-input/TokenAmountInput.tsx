@@ -24,6 +24,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   connected,
   amount,
 }) => {
+  console.log("🚀 ~ usdValue:", usdValue);
   const disabledSelectPair = useMemo(() => {
     return changable !== true;
   }, [changable]);
@@ -39,10 +40,12 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     if (connected) {
       const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
       if (token && isNativeToken(token)) {
-        const nativeFullBalance = BigNumber(formatValue).minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0).toString();
+        const nativeFullBalance = BigNumber(formatValue)
+          .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
+          .dividedBy(Math.pow(10, token?.decimals ?? 0)).toString();
         changeAmount(nativeFullBalance);
       } else {
-        changeAmount(formatValue);
+        changeAmount(BigNumber(formatValue).dividedBy(Math.pow(10, token?.decimals ?? 0)).toString());
       }
     }
   }, [connected, balance, token, changeAmount]);
