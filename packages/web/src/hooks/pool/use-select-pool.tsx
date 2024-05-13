@@ -168,7 +168,10 @@ export const useSelectPool = ({
 
       const changedPoolInfo =
         isReverse === false
-          ? poolRes
+          ? {
+            ...poolRes,
+            price: poolResFromDb.price,
+          }
           : {
             ...poolRes,
             price: 1 / poolResFromDb.price,

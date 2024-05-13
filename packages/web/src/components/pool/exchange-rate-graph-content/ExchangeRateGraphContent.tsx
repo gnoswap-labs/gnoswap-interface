@@ -12,11 +12,13 @@ import { ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "
 interface ExchangeRateGraphContentProps {
   poolData: PoolDetailModel
   selectedScope: CHART_DAY_SCOPE_TYPE,
+  isReversed: boolean;
 }
 
 export function ExchangeRateGraphContent({
   poolData,
-  selectedScope
+  selectedScope,
+  isReversed,
 }: ExchangeRateGraphContentProps) {
 
 
@@ -46,17 +48,26 @@ export function ExchangeRateGraphContent({
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     }).reduce(
       (pre: any, next: any) => {
+        const value = (() => {
+          if (!next.value || next.value === 0) return 0;
+
+          if (isReversed) return (1 / Number(next.value)).toString();
+
+          return next.value;
+        })();
+
         return [
           ...pre,
           {
-            value: next.value || 0,
+            value: value,
             time: getLocalizeTime(next.time),
           },
         ];
       },
       [],
     );
-  }, [poolData.priceRatio, selectedScope]);
+  }, [isReversed, poolData.priceRatio, selectedScope]);
+  console.log("🚀 ~ dataMemo ~ dataMemo:", dataMemo);
 
   const xAxisLabels = useMemo(() => {
     const data = poolData.priceRatio;

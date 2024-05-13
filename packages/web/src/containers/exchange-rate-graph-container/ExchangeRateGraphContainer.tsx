@@ -77,12 +77,13 @@ const ExchangeRateGraphContainer: React.FC = () => {
 
   const poolPath = currentPoolPath;
   const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  console.log("🚀 ~ poolData:", poolData);
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
 
 
   const { isLoadingCommon } = useLoading();
 
-  const reverse = useMemo(() => {
+  const isReversed = useMemo(() => {
     return tokenPair?.findIndex(path => {
       if (compareToken) {
         return isNativeToken(compareToken)
@@ -93,8 +94,9 @@ const ExchangeRateGraphContainer: React.FC = () => {
     }) === 1;
   }, [compareToken, tokenPair]);
 
+
   const changedPoolInfo = useMemo(() => {
-    return reverse === false
+    return isReversed === false
       ? poolData
       : {
         ...poolData,
@@ -114,12 +116,15 @@ const ExchangeRateGraphContainer: React.FC = () => {
         },
         price: 1 / poolData.price,
       };
-  }, [getGnotPath, poolData, reverse]);
+  }, [getGnotPath, poolData, isReversed]);
 
   return (<ExchangeRateGraph
     poolData={changedPoolInfo}
     isLoading={isLoading || isLoadingCommon}
-    reverse={reverse} selectedScope={selectedScope} setSelectedScope={setSelectedScope} />);
+    isReversed={isReversed}
+    selectedScope={selectedScope}
+    setSelectedScope={setSelectedScope}
+  />);
 };
 
 export default ExchangeRateGraphContainer;

@@ -14,7 +14,7 @@ interface ExchangeRateGraphProps {
   onSwap?: (swap: boolean) => void;
   data?: TokenExchangeRateGraphResponse;
   isLoading: boolean;
-  reverse: boolean;
+  isReversed: boolean;
   selectedScope: CHART_DAY_SCOPE_TYPE;
   setSelectedScope: (type: CHART_DAY_SCOPE_TYPE) => void;
 }
@@ -23,7 +23,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   poolData,
   onSwap,
   isLoading,
-  reverse,
+  isReversed,
   setSelectedScope,
   selectedScope,
 }) => {
@@ -46,7 +46,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
           onSwap={onSwap}
           pool={poolData}
           loading={isLoading}
-          isSwap={reverse}
+          isSwap={isReversed}
         />
         <ChartScopeSelectTab
           size={"SMALL"}
@@ -58,7 +58,8 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
     </ExchangeRateGraphHeaderWrapper>
     {!isLoading && <ExchangeRateGraphContent
       poolData={poolData}
-      selectedScope={selectedScope} />}
+      selectedScope={selectedScope}
+      isReversed={isReversed} />}
     {isLoading && <LoadingExchangeRateChartWrapper>
       <LoadingSpinner />
     </LoadingExchangeRateChartWrapper>}

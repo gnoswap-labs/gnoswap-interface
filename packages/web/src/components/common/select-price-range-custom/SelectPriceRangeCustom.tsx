@@ -409,6 +409,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         // priceRangeType={priceRangeType}
                         ref={minPriceRangeCustomRef}
+                        priceRatio={tokenA.decimals / tokenB.decimals}
+
                       />
                       <SelectPriceRangeCustomController
                         title="Max Price"
@@ -426,6 +428,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         // priceRangeType={priceRangeType}
                         ref={maxPriceRangeCustomRef}
+                        priceRatio={tokenA.decimals / tokenB.decimals}
                       />
                     </div>
                     <div className="extra-wrapper">
