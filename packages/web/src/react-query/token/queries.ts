@@ -31,7 +31,6 @@ export const useGetTokenPrices = (
     queryKey: [QUERY_KEY.tokenPrices],
     queryFn: async () => {
       const res = await tokenRepository.getTokenPrices();
-      console.log("🚀 ~ queryFn: ~ res:", res);
       const priceMap = res.data.reduce<Record<string, TokenPriceModel>>(
         (prev, current) => {
           prev[current.path] = current;

@@ -165,6 +165,7 @@ export const useSelectPool = ({
 
       const convertPath = encryptId(poolPath);
       const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(convertPath);
+      console.log("🚀 ~ queryFn: ~ poolResFromDb:", poolResFromDb);
 
       const changedPoolInfo =
         isReverse === false

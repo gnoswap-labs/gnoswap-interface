@@ -128,6 +128,11 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     if (!selectPool.currentPrice) {
       return "-";
     }
+
+    if (selectPool.currentPrice > 1) {
+      return <>1 {currentTokenA.symbol} =&nbsp;{convertToKMB(selectPool.currentPrice.toString())}&nbsp;{currentTokenB.symbol}</>;
+    }
+
     return <>1 {currentTokenA.symbol} =&nbsp;{subscriptFormat(selectPool.currentPrice)}&nbsp;{currentTokenB.symbol}</>;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
