@@ -20,12 +20,13 @@ export class PoolMapper {
       tokenA,
       tokenB,
       volume24h,
-      tvl,
+      // tvl,
       fee,
       apr,
       bins,
       rewardTokens,
       feeUsd24h,
+      liquidity,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => info.fee.toString() === fee,
@@ -38,7 +39,7 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
-      liquidity: `$${BigNumber(tvl).toFormat(0)}`,
+      liquidity: `$${BigNumber(liquidity).toFormat(0)}`,
       volume24h: `$${Math.floor(Number(volume24h || 0)).toLocaleString()}`,
       fees24h: `$${Math.floor(Number(feeUsd24h || 0)).toLocaleString()}`,
       rewardTokens,

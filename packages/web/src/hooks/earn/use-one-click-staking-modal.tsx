@@ -99,13 +99,13 @@ export const useOneClickStakingModal = ({
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
-      minPriceStr = numberToFormat(selectPool.minPrice, 4);
+      minPriceStr = numberToFormat(selectPool.minPrice, { decimals: 4 });
     }
     if (selectPool.maxPrice) {
       if (selectPool.maxPrice / maxPrice > 0.9) {
         maxPriceStr = "∞";
       } else {
-        maxPriceStr = numberToFormat(selectPool.maxPrice, 4);
+        maxPriceStr = numberToFormat(selectPool.maxPrice, { decimals: 4 });
       }
     }
     const feeBoost =

@@ -125,7 +125,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (BigNumber(position.positionUsdValue).isLessThan(0.01) && BigNumber(position.positionUsdValue).isGreaterThan(0)) {
       return "<$0.01";
     }
-    return `$${numberToFormat(`${position.positionUsdValue}`, 2)}`;
+    return `$${numberToFormat(`${position.positionUsdValue}`, { decimals: 2 })}`;
   }, [position.positionUsdValue, isClosed]);
 
   const balances = useMemo((): {
@@ -225,7 +225,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (BigNumber(usdValue).isLessThan(0.01) && BigNumber(usdValue).isGreaterThan(0)) {
       return "<$0.01";
     }
-    return `$${numberToFormat(`${usdValue}`, 2)}`;
+    return `$${numberToFormat(`${usdValue}`, { decimals: 2 })}`;
   }, [totalRewardInfo, isClosed]);
 
   const totalDailyEarning = useMemo(() => {
@@ -245,15 +245,26 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         [key in RewardType]: PositionAPRInfo[];
       }>(
         (accum, current) => {
-          if (!accum[current.rewardType]) {
+          const currentTypeRewards = accum[current.rewardType];
+
+          if (!currentTypeRewards) {
             accum[current.rewardType] = [];
           }
-          accum[current.rewardType].push({
-            token: current.rewardToken,
-            rewardType: current.rewardType,
-            accuReward1D: Number(current.accuReward1D),
-            apr: Number(current.apr),
-          });
+          const index = accum[current.rewardType].findIndex((item) => item.token.priceId === current.rewardToken.priceId);
+          if (index != -1) {
+            accum[current.rewardType][index] = {
+              ...accum[current.rewardType][index],
+              accuReward1D: accum[current.rewardType][index].accuReward1D + Number(current.accuReward1D),
+              apr: accum[current.rewardType][index].apr + Number(current.apr),
+            };
+          } else {
+            accum[current.rewardType].push({
+              token: current.rewardToken,
+              rewardType: current.rewardType,
+              accuReward1D: Number(current.accuReward1D),
+              apr: Number(current.apr),
+            });
+          }
           return accum;
         },
         {

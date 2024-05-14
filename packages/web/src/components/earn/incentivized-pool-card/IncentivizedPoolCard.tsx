@@ -133,7 +133,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">
                   {"Current Price"}
                 </span>
-                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, 2)} ${pool.tokenB.symbol}`}</span>
+                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, { decimals: 2 })} ${pool.tokenB.symbol}`}</span>
               </div>
             </div>
           </div>

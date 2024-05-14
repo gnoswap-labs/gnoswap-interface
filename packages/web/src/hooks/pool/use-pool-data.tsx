@@ -21,8 +21,8 @@ export const usePoolData = () => {
   } = useGetPoolList({
     refetchInterval: router.pathname === "/" ? 10 * 1000 : router.pathname === PATH_60SECOND ? 60 * 1000 : false,
   });
-  const forceRefetch = useForceRefetchQuery();
 
+  const forceRefetch = useForceRefetchQuery();
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(
     PoolState.isFetchedPositions,
   );
@@ -52,6 +52,7 @@ export const usePoolData = () => {
       };
     });
   }, [pools, wugnotPath, gnot]);
+
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools

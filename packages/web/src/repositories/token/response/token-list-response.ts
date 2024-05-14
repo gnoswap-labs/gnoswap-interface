@@ -14,6 +14,7 @@ export interface ITokenResponse {
   symbol: string;
   logoURI: string;
   priceID: string;
+  priceId: string;
   description: string;
   websiteURL: string;
   displayPath: string;

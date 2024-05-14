@@ -160,7 +160,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       if (!defaultPrice || !selectPool.isCreate) {
         return "";
       }
-      return <>1 {currentTokenA.symbol} = &nbsp;<ExchangeRate value={numberToFormat(defaultPrice, 4)} />&nbsp;{currentTokenB.symbol}</>;
+      return <>1 {currentTokenA.symbol} = &nbsp;<ExchangeRate value={numberToFormat(defaultPrice, { decimals: 4 })} />&nbsp;{currentTokenB.symbol}</>;
     }
     return <>1 {currentTokenA.symbol} =&nbsp;<ExchangeRate value={startingPriceValue} />&nbsp; {currentTokenB.symbol}</>;
   }, [currentTokenA, currentTokenB, defaultPrice, selectPool.isCreate, startingPriceValue]);

@@ -49,11 +49,11 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                   className="token-logo"
                 />
                 <span className="position">
-                  {numberToFormat(reward.accuReward1D, 2)} / day
+                  {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, 0)}%
+                {numberToFormat(reward.apr, { decimals: 0 })}%
               </span>
             </div>
           ))}
@@ -75,11 +75,11 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                   className="token-logo"
                 />
                 <span className="position">
-                  {numberToFormat(reward.accuReward1D, 2)} / day
+                  {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, 2)}%
+                {numberToFormat(reward.apr, { decimals: 2 })}%
               </span>
             </div>
           ))}
@@ -101,11 +101,11 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
                   className="token-logo"
                 />
                 <span className="position">
-                  {numberToFormat(reward.accuReward1D, 2)} / day
+                  {numberToFormat(reward.accuReward1D, { decimals: 2 })} / day
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.apr, 2)}%
+                {numberToFormat(reward.apr, { decimals: 2 })}%
               </span>
             </div>
           ))}
