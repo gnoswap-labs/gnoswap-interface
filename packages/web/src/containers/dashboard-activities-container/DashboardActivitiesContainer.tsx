@@ -148,10 +148,10 @@ const DashboardActivitiesContainer: React.FC = () => {
         res.tokenA.symbol,
       )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.tokenB.symbol)}`,
       totalValue: Number(res.totalUsd) < 0.01 && Number(res.totalUsd) ? "<$0.01" : `$${prettyNumber(res.totalUsd)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount) / Math.pow(10, Number(res.tokenA?.decimals) ?? 0)}`, true)} ${replaceToken(
+      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount)}`, true)} ${replaceToken(
         res.tokenA.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount) / Math.pow(10, Number(res.tokenB?.decimals) ?? 0)}`, true)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount)}`, true)} ${replaceToken(
         res.tokenB.symbol,
       )}`,
       account: res.account,
