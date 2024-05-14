@@ -172,7 +172,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableUSD: Number(reward.claimableUsd),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D || 0) || 0,
         claimableUsdValue: Number(reward.claimableUsd),
-        aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach(rewardInfo => {
         const existReward =
@@ -187,14 +186,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
             accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
             claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-            aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
           };
         } else {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
         }
       });
-    console.log("🚀 ~ infoMap:", infoMap["SWAP_FEE"]);
-
 
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
@@ -221,8 +217,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        tokenAmountOf7d: Number(reward.accumulatedRewardOf7d),
-        aprOf7d: Number(reward.aprOf7d),
         accuReward1D: Number(reward.accuReward1D),
         apr: Number(reward.apr),
       }))
@@ -232,8 +226,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         if (existReward) {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
-            tokenAmountOf7d: existReward.tokenAmountOf7d + rewardInfo.tokenAmountOf7d,
-            aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
             accuReward1D: existReward.accuReward1D + rewardInfo.accuReward1D,
             apr: existReward.apr + rewardInfo.apr,
           };
@@ -288,7 +280,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableUSD: Number(reward.claimableUsd),
         accumulatedRewardOf1d: makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D || 0) || 0,
         claimableUsdValue: Number(reward.claimableUsd),
-        aprOf7d: Number(reward.aprOf7d),
+        // aprOf7d: Number(reward.aprOf7d),
       }))
       .forEach(rewardInfo => {
         if (rewardInfo.claimableAmount > 0) {
@@ -301,7 +293,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               claimableUSD: existReward.claimableUSD + rewardInfo.claimableUSD,
               accumulatedRewardOf1d: existReward.accumulatedRewardOf1d + rewardInfo.accumulatedRewardOf1d,
               claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
-              aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
+              // aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
             };
           } else {
             infoMap[rewardInfo.token.priceID] = rewardInfo;

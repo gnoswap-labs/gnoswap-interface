@@ -26,7 +26,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
     if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
       return "-";
     }
-    return BigNumber(tokenPrice).toFormat();
+    return BigNumber(tokenPrice).dividedBy(Math.pow(10, token.decimals ?? 0)).toFormat();
   }, [tokenPrices]);
 
   const onClickClose = useCallback(() => {

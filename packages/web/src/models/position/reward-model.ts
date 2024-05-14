@@ -17,7 +17,7 @@ export interface RewardModel {
   apr: number | null;
 
   // Deprecated or will be Deprecated
-  aprOf7d: number | null;
+  // aprOf7d: number | null;
   
-  accumulatedRewardOf7d: string | null;
+  // accumulatedRewardOf7d: string | null;
 }

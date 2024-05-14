@@ -26,12 +26,24 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
     return rewardInfo.STAKING;
   }, [rewardInfo.STAKING]);
 
+  const externalRewards = useMemo(() => {
+    if (rewardInfo.EXTERNAL.length === 0) {
+      return null;
+    }
+    return rewardInfo.EXTERNAL;
+  }, [rewardInfo.EXTERNAL]);
+
   const swapFeeRewardUSD = useMemo(() => {
     const sumUSD = rewardInfo.SWAP_FEE.reduce((accum, current) => accum + current.claimableUSD, 0);
     return toLowerUnitFormat(sumUSD, true);
   }, [rewardInfo.SWAP_FEE]);
 
   const stakingRewardUSD = useMemo(() => {
+    const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.claimableUSD, 0);
+    return toLowerUnitFormat(sumUSD, true);
+  }, [rewardInfo.STAKING]);
+
+  const externalRewardUSD = useMemo(() => {
     const sumUSD = rewardInfo.STAKING.reduce((accum, current) => accum + current.claimableUSD, 0);
     return toLowerUnitFormat(sumUSD, true);
   }, [rewardInfo.STAKING]);
@@ -57,7 +69,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                 </span>
               </div>
               <span className="position">
-                {prettyNumberFloatInteger(reward.balance)}
+                {prettyNumberFloatInteger(reward.claimableAmount)}
               </span>
             </div>
           ))}
@@ -89,7 +101,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
           ))}
         </React.Fragment>
       )}
-      {/* {externalRewards && <div className="divider" />}
+      {externalRewards && <div className="divider" />}
       {externalRewards && (
         <React.Fragment>
           <div className="list">
@@ -114,7 +126,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
             </div>
           ))}
         </React.Fragment>
-      )} */}
+      )}
     </RewardsContent>
   );
 };

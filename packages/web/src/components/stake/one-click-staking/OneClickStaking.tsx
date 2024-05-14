@@ -85,7 +85,7 @@ const OneClickStaking: React.FC<Props> = ({
   }, [pool.feeUsd24h]);
 
   const rewardTokens = useMemo(() => {
-    return pool?.rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
+    return [...new Set(pool?.rewardTokens?.map(item => getGnotPath(item).logoURI) || [])];
   }, [pool.rewardTokens]);
 
   const feeApr = useMemo(() => {

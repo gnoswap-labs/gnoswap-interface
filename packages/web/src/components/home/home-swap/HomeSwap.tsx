@@ -74,9 +74,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connected) {
-      const formatValue = parseFloat(
+      const formatValue = (parseFloat(
         swapTokenInfo.tokenABalance.replace(/,/g, ""),
-      ).toString();
+      ) / Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0)).toString();
       setFromAmount(formatValue);
       changeTokenAAmount(formatValue);
     }
@@ -84,9 +84,9 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
   const handleAutoFillTokenB = useCallback(() => {
     if (connected) {
-      const formatValue = parseFloat(
+      const formatValue = (parseFloat(
         swapTokenInfo.tokenBBalance.replace(/,/g, ""),
-      ).toString();
+      ) / Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0)).toString();
       setToAmount(formatValue);
       changeTokenBAmount(formatValue);
     }

@@ -36,12 +36,22 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
     return rewardInfo.STAKING;
   }, [rewardInfo]);
 
+  const externalRewards = useMemo(() => {
+    if (!rewardInfo) {
+      return null;
+    }
+    if (rewardInfo.EXTERNAL.length === 0) {
+      return null;
+    }
+    return rewardInfo.EXTERNAL;
+  }, [rewardInfo]);
+
   const swapFeeRewardUSD = useMemo(() => {
     if (!rewardInfo) {
       return 0;
     }
     const sumUSD = rewardInfo.SWAP_FEE.reduce(
-      (accum, current) => accum + current.balanceUSD,
+      (accum, current) => accum + current.claimableUSD,
       0,
     );
     return toUnitFormat(sumUSD, true);
@@ -52,7 +62,18 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       return 0;
     }
     const sumUSD = rewardInfo.STAKING.reduce(
-      (accum, current) => accum + current.balanceUSD,
+      (accum, current) => accum + current.claimableUSD,
+      0,
+    );
+    return toUnitFormat(sumUSD, true);
+  }, [rewardInfo]);
+
+  const externalRewardUSD = useMemo(() => {
+    if (!rewardInfo) {
+      return 0;
+    }
+    const sumUSD = rewardInfo.EXTERNAL.reduce(
+      (accum, current) => accum + current.claimableUSD,
       0,
     );
     return toUnitFormat(sumUSD, true);
@@ -116,7 +137,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
           ))}
         </React.Fragment>
       )}
-      {/* {externalRewards && <TooltipDivider />}
+      {externalRewards && <TooltipDivider />}
 
       {externalRewards && (
         <React.Fragment>
@@ -127,18 +148,18 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
           {externalRewards.map((reward, index) => (
             <div key={index} className="list">
               <div className="coin-info">
-                <MissingLogo symbol={getGnotPath(reward.token).symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20}/>
+                <MissingLogo symbol={getGnotPath(reward.token).symbol} url={getGnotPath(reward.token).logoURI} className="token-logo" width={20} mobileWidth={20} />
                 <span className="position">
                   {getGnotPath(reward.token).symbol}
                 </span>
               </div>
               <span className="position">
-                {numberToFormat(reward.balance, reward.token.decimals)}
+                {convertToKMB(`${Number(reward.claimableAmount)}`)}
               </span>
             </div>
           ))}
         </React.Fragment>
-      )} */}
+      )}
       {/* {unclaimedRewards && <TooltipDivider />}
       {unclaimedRewards && (
         <React.Fragment>

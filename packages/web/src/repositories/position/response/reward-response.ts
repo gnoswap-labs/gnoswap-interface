@@ -18,9 +18,5 @@ export interface RewardResponse {
 
   apr: string;
 
-  apr7d: string;
-
-  aprOf7d: number;
-
   accuReward1D: string
 }

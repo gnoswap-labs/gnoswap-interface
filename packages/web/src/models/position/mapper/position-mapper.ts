@@ -81,10 +81,7 @@ export class PositionMapper {
       rewardToken: reward.rewardToken,
       accuReward1D:
         reward.accuReward1D !== "" ? reward.accuReward1D : null,
-      accumulatedRewardOf7d:
-        reward.accuReward7d !== "" ? reward.accuReward7d : null,
       apr: reward.apr !== "" ? Number(reward.apr) : null,
-      aprOf7d: reward.apr7d !== "" ? Number(reward.apr7d) : null,
       totalAmount: Number(reward.totalAmount),
       claimableAmount: Number(reward.claimableAmount),
       claimableUsd: reward.claimableUsd,

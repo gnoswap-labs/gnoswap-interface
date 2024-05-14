@@ -33,9 +33,8 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   }, [incentivizedType]);
 
   const rewardTokenLogos = useMemo(() => {
-    const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
-    return temp;
-  }, [rewardTokens]);
+    return [...new Set(rewardTokens.map(token => getGnotPath(token).logoURI))];
+  }, [getGnotPath, rewardTokens]);
 
   return (
     <PoolInfoHeaderWrapper>
