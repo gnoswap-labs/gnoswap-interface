@@ -70,7 +70,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
   const minPriceRangeCustomRef = useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
   const maxPriceRangeCustomRef = useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
 
-  function getPriceRange(price?: number | null) {
+  const getPriceRange = useCallback((price?: number | null) => {
     const currentPriceRangeType = priceRangeType;
     const currentPrice = price || selectPool.currentPrice || 1;
     if (!selectPool.feeTier || !currentPriceRangeType) {
@@ -80,33 +80,37 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     const range = currentPrice * visibleRate;
 
     return [currentPrice - range, currentPrice + range];
-  }
+  }, [priceRangeType, selectPool.currentPrice, selectPool.feeTier]);
 
-  function getScaleRange() {
+  const getScaleRange = useCallback(() => {
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
     const rangeGap = max - min;
 
     return [currentPrice - rangeGap, currentPrice + rangeGap];
-  }
+  }, [getPriceRange, selectPool.currentPrice]);
 
-  function getHeightRange() {
+  const getHeightRange = useCallback(() => {
     const [, maxY] = d3.extent(selectPool.liquidityOfTickPoints.map(point => point[1]));
     return [0, maxY || 0];
-  }
+  }, [selectPool.liquidityOfTickPoints]);
 
   /** D3 Variables */
-  const defaultScaleX = d3
+  const defaultScaleX = useMemo(() => d3
     .scaleLinear()
     .domain(getScaleRange())
-    .range([0, GRAPH_WIDTH]);
+    .range([0, GRAPH_WIDTH]),
+    [getScaleRange]
+  );
 
   const scaleX = defaultScaleX.copy();
 
-  const scaleY = d3
+  const scaleY = useMemo(() => d3
     .scaleLinear()
     .domain(getHeightRange())
-    .range([GRAPH_HEIGHT, 0]);
+    .range([GRAPH_HEIGHT, 0]),
+    [getHeightRange]
+  );
 
   const isCustom = true;
 
@@ -160,10 +164,6 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }
     return <>1 {currentTokenA.symbol} =&nbsp;<ExchangeRate value={startingPriceValue} />&nbsp; {currentTokenB.symbol}</>;
   }, [currentTokenA, currentTokenB, defaultPrice, selectPool.isCreate, startingPriceValue]);
-
-  useEffect(() => {
-    resetRange();
-  }, [priceRangeType]);
 
   const onClickTabItem = useCallback((symbol: string) => {
     const compareToken = tokenA.symbol === symbol ? tokenA : tokenB;

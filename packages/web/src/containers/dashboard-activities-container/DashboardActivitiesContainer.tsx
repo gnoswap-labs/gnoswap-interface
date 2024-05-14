@@ -142,16 +142,16 @@ const DashboardActivitiesContainer: React.FC = () => {
   };
 
   const formatActivity = (res: OnchainActivityData): Activity => {
-    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res.txHash}`;
+    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
         res.tokenA.symbol,
       )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.tokenB.symbol)}`,
       totalValue: Number(res.totalUsd) < 0.01 && Number(res.totalUsd) ? "<$0.01" : `$${prettyNumber(res.totalUsd)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount) / Number(res.tokenA?.decimals)}`, true)} ${replaceToken(
+      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount) / Math.pow(10, Number(res.tokenA?.decimals) ?? 0)}`, true)} ${replaceToken(
         res.tokenA.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount) / Number(res.tokenB?.decimals)}`, true)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount) / Math.pow(10, Number(res.tokenB?.decimals) ?? 0)}`, true)} ${replaceToken(
         res.tokenB.symbol,
       )}`,
       account: res.account,
