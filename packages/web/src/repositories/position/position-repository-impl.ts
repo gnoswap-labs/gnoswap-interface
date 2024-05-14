@@ -25,6 +25,11 @@ import {
   makePositionDecreaseLiquidityMessage,
   makePositionCollectFeeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
+import {
+  PACKAGE_POOL_ADDRESS,
+  makeApproveMessage,
+} from "@common/clients/wallet-client/transaction-messages";
+import { MAX_INT256 } from "@utils/math.utils";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -128,9 +133,20 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, caller } = request;
+    const { lpTokenIds, tokenPaths, caller } = request;
     const decreaseLiquidityRatio = 100;
-    const messages = lpTokenIds.map(lpTokenId =>
+
+    // Make Approve messages that can be managed by a Pool package of tokens.
+    const approveMessages = tokenPaths.map(tokenPath =>
+      makeApproveMessage(
+        tokenPath,
+        [PACKAGE_POOL_ADDRESS, MAX_INT256.toString()],
+        caller,
+      ),
+    );
+
+    // Make Decrease liquidity messages
+    const decreaseLiquidityMessages = lpTokenIds.map(lpTokenId =>
       makePositionDecreaseLiquidityMessage(
         lpTokenId,
         decreaseLiquidityRatio,
@@ -138,6 +154,9 @@ export class PositionRepositoryImpl implements PositionRepository {
         caller,
       ),
     );
+
+    const messages = [...approveMessages, ...decreaseLiquidityMessages];
+
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee: DEFAULT_GAS_FEE,
