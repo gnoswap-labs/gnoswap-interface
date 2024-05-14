@@ -195,7 +195,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       startPrice: existPool ? null : prev.startPrice
     }));
 
-    if (initializedFeeTier.current) { return }
+    if (initializedFeeTier.current) { return; }
 
     if (existPool) {
       setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
