@@ -72,7 +72,6 @@ export class PositionMapper {
   }
 
   public static fromList(positions: PositionListResponse): PositionModel[] {
-    console.log("🚀 ~ PositionMapper ~ fromList ~ positions:", positions);
     return positions.map(PositionMapper.from);
   }
 

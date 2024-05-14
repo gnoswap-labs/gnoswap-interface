@@ -20,9 +20,6 @@ export function ExchangeRateGraphContent({
   selectedScope,
   isReversed,
 }: ExchangeRateGraphContentProps) {
-  console.log("🚀 ~ poolData:", poolData.priceRatio);
-
-
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();

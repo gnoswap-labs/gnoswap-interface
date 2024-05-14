@@ -35,8 +35,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading, positions: allPosition } = usePositionData(address);
-  console.log("🚀 ~ allPosition:", allPosition);
+  const { getPositionsByPoolId, loading } = usePositionData(address);
   const { isLoadingCommon } = useLoading();
   const { claimAll } = usePosition(positions);
   const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);

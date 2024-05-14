@@ -388,7 +388,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                       setMinPrice={(tick) => adjustRangeManually(() => selectPool.setMinPosition(tick))}
                       setMaxPrice={(tick) => adjustRangeManually(() => selectPool.setMaxPosition(tick))}
                       liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
-                      currentPrice={selectPool.currentPrice}
+                      currentPrice={selectPool.currentPrice ? Number(selectPool.currentPrice) : null}
                       focusPosition={selectPool.focusPosition}
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}

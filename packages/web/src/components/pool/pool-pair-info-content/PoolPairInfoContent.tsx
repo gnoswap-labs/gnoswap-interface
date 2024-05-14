@@ -87,7 +87,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.totalApr]);
 
   const liquidityChangedStr = useMemo((): string => {
-    return `${pool.tvlChange}%`;
+    return `${numberToFormat(pool.tvlChange, 2)}%`;
   }, [pool.tvlChange]);
 
   const volumeChangedStr = useMemo((): string => {

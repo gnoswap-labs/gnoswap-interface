@@ -182,7 +182,7 @@ export const useSelectPool = ({
           }
           : {
             ...poolRes,
-            price: 1 / poolResFromDb.price,
+            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
             ticks: Object.keys(poolRes.ticks).map(
               tick => Number(tick) * -1,
             ),

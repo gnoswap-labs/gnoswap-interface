@@ -891,7 +891,6 @@ export const useSwapHandler = () => {
       estimateSwapRoute(changedAmount).then(result => {
         const isError = result === null;
         const expectedAmount = isError ? "" : result.amount;
-        console.log("🚀 ~ estimateSwapRoute ~ expectedAmount:", expectedAmount);
         if (isError) {
           if (isExactIn) {
             setTokenBAmount("0");

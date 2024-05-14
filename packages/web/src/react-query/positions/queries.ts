@@ -14,7 +14,6 @@ export const useGetPositionsByAddress = (
     queryKey: [QUERY_KEY.positions, address],
     queryFn: async () => {
       const data = await positionRepository.getPositionsByAddress(address);
-      console.log("🚀 ~ queryFn: ~ data:", data);
       return data;
     },
     ...options,

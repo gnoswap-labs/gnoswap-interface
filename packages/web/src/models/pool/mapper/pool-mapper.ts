@@ -120,6 +120,7 @@ export class PoolMapper {
       bins40: pool.bins40,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
+      price: Number(pool.price),
     };
   }
 
@@ -134,6 +135,7 @@ export class PoolMapper {
       apr: !pool.apr ? Number(pool.apr) : null,
       totalApr: !pool.totalApr ? Number(pool.totalApr) : null,
       allTimeVolumeUsd: Number(pool.allTimeVolumeUsd),
+      price: Number(pool.price)
     };
   }
 }

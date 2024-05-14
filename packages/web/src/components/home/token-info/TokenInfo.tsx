@@ -60,8 +60,6 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     mostLiquidPool,
     last7days,
   } = item;
-  token.name === "Gnoswap" && console.log("🚀 ~ last7days:", last7days)
-  token.name === "Gnoswap" && console.log("🚀 ~ last7days:", token.name)
   const router = useRouter();
 
   const onClickItem = (path: string) => {

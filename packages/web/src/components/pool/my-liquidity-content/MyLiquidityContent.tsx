@@ -41,7 +41,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   loadngTransactionClaim,
   isOtherPosition,
 }) => {
-  console.log("🚀 ~ positions:", positions);
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
