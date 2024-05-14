@@ -175,29 +175,39 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return null;
     }
 
-    const totalRewardInfo = position.reward.reduce<{
+    const totalRewardInfo = rewards.reduce<{
       [key in RewardType]: PositionRewardInfo[];
     }>(
       (accum, current) => {
         if (!accum[current.rewardType]) {
           accum[current.rewardType] = [];
         }
-        accum[current.rewardType].push({
-          claimableAmount:
-            makeDisplayTokenAmount(current.rewardToken, current.claimableAmount) || 0,
-          token: current.rewardToken,
-          balance:
-            makeDisplayTokenAmount(current.rewardToken, current.totalAmount) || 0,
-          balanceUSD:
-            Number(current.totalAmount) *
-            Number(tokenPrices[current.rewardToken.priceID]?.usd || 0),
-          claimableUSD: Number(current.claimableUsd),
-          accumulatedRewardOf1d:
-            makeDisplayTokenAmount(
-              current.rewardToken,
-              current.accuReward1D || 0,
-            ) || 0,
-        });
+
+        const index = accum[current.rewardType].findIndex((item) => item.token.priceId === current.rewardToken.priceId);
+        if (index !== -1) {
+          accum[current.rewardType][index] = {
+            ...accum[current.rewardType][index],
+            claimableAmount: accum[current.rewardType][index].claimableAmount + current.claimableAmount,
+            claimableUSD: accum[current.rewardType][index].claimableUSD + 1,
+          };
+        } else {
+          accum[current.rewardType].push({
+            claimableAmount:
+              current.claimableAmount || 0,
+            token: current.rewardToken,
+            balance:
+              makeDisplayTokenAmount(current.rewardToken, current.totalAmount) || 0,
+            balanceUSD:
+              Number(current.totalAmount) *
+              Number(tokenPrices[current.rewardToken.priceID]?.usd || 0),
+            claimableUSD: Number(current.claimableUsd) || 0,
+            accumulatedRewardOf1d:
+              makeDisplayTokenAmount(
+                current.rewardToken,
+                current.accuReward1D || 0,
+              ) || 0,
+          });
+        }
         return accum;
       },
       {
@@ -206,27 +216,28 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         EXTERNAL: [],
       },
     );
+
     return totalRewardInfo;
   }, [position.reward, tokenPrices]);
+
 
   const totalRewardUSD = useMemo(() => {
     if (isClosed) {
       return "-";
     }
-    if (!totalRewardInfo) {
+    const reward = position.reward;
+    if (reward.length === 0 || !reward) {
       return "$0";
     }
 
-    const usdValue = Object.values(totalRewardInfo)
-      .flatMap(item => item)
-      .reduce((accum, current) => {
-        return accum + current.claimableUSD;
-      }, 0);
+    const usdValue = reward.reduce<number>((acc, current) => acc + Number(current.claimableUsd), 0);
+
     if (BigNumber(usdValue).isLessThan(0.01) && BigNumber(usdValue).isGreaterThan(0)) {
       return "<$0.01";
     }
+
     return `$${numberToFormat(`${usdValue}`, { decimals: 2 })}`;
-  }, [totalRewardInfo, isClosed]);
+  }, [isClosed, position.reward]);
 
   const totalDailyEarning = useMemo(() => {
     if (isClosed) {

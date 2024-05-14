@@ -95,7 +95,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                 </span>
               </div>
               <span className="position">
-                {prettyNumberFloatInteger(reward.balance)}
+                {prettyNumberFloatInteger(reward.claimableAmount)}
               </span>
             </div>
           ))}
@@ -121,7 +121,7 @@ export const MyPositionRewardContent: React.FC<MyPositionRewardContentProps> = (
                 </span>
               </div>
               <span className="position">
-                {prettyNumberFloatInteger(reward.balance)}
+                {prettyNumberFloatInteger(reward.claimableAmount)}
               </span>
             </div>
           ))}
