@@ -40,7 +40,6 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
   tokenASymbol,
   tokenBSymbol,
 }) => {
-  console.log("🚀 ~ item:", item)
   const { time, type, usdValue, amountA, amountB, txHash } = item;
   const td =
     breakpoint === DEVICE_TYPE.MOBILE

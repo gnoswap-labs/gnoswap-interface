@@ -186,9 +186,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return "CREATE_POOL";
   }, [connectedWallet, isSwitchNetwork, tokenA, tokenB, tokenAAmountInput.amount, tokenAAmountInput.balance, tokenBAmountInput.amount, tokenBAmountInput.balance, selectPool.minPrice, selectPool.maxPrice, selectPool.compareToken?.path, selectPool.depositRatio]);
 
-  const selectSwapFeeTier = useCallback((feeTier: SwapFeeTierType, from: string) => {
-    console.log("🚀 ~ selectSwapFeeTier ~ from:", from);
-    console.log("🚀 ~ selectSwapFeeTier ~ feeTier:", feeTier);
+  const selectSwapFeeTier = useCallback((feeTier: SwapFeeTierType) => {
     setSwapFeeTier(feeTier);
     const poolFeeTier = pools.map(pool => makeSwapFeeTier(pool.fee));
     const existPool = poolFeeTier.includes(feeTier);
@@ -251,7 +249,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const nextTokenB = prev.tokenB?.symbol === token.symbol ? prev.tokenA : prev.tokenB;
       selectPool.setCompareToken(token);
       if (!nextTokenA || !nextTokenB) {
-        selectSwapFeeTier("NONE", "changeTokenA");
+        selectSwapFeeTier("NONE");
       }
       return {
         tokenA: nextTokenA,
@@ -275,9 +273,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const nextTokenA = prev.tokenA?.symbol === token.symbol ? prev.tokenB : prev.tokenA;
       const nextTokenB = prev.tokenA?.symbol === token.symbol ? prev.tokenA : token;
       if (!nextTokenA || !nextTokenB) {
-        console.log("🚀 ~ setSwapValue ~ nextTokenB:", nextTokenB);
-        console.log("🚀 ~ setSwapValue ~ nextTokenA:", nextTokenA);
-        selectSwapFeeTier("NONE", "changeTokenB");
+        selectSwapFeeTier("NONE");
       }
       return {
         tokenB: nextTokenB,
@@ -523,9 +519,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     if (!!tokenA && !!tokenB && isFetchedPools) {
       if (router.query?.fee_tier) {
-        selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType, "useEffect");
+        selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
       } else {
-        selectSwapFeeTier("FEE_3000", "useEffect");
+        selectSwapFeeTier("FEE_3000");
       }
       setSwapValue((prev) => ({
         ...prev,
@@ -623,7 +619,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       feetierOfLiquidityMap={feetierOfLiquidityMap}
       feeTier={swapFeeTier}
       selectFeeTier={(fee) => {
-        selectSwapFeeTier(fee, "EarnAddLiquidity");
+        selectSwapFeeTier(fee);
       }}
       priceRanges={priceRanges}
       priceRange={priceRange}

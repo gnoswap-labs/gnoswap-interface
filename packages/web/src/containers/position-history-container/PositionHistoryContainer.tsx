@@ -31,7 +31,6 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({ tok
   const { breakpoint } = useWindowSize();
   const { isLoadingCommon } = useLoading();
   const { data: historyList = [], isFetched, isLoading } = useGetPositionHistory(position?.lpTokenId);
-  console.log("🚀 ~ historyList:", historyList);
 
   return (
     <PositionHistoryList
