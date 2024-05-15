@@ -97,7 +97,7 @@ export function makeTransactionMessage({
     send: send,
     pkg_path: packagePath,
     func: func,
-    args: args,
+    args: args ? args.map(arg => `${arg}`) : null,
   };
 }
 
