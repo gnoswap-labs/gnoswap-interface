@@ -21,8 +21,6 @@ import BigNumber from "bignumber.js";
 import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
-// import { makeQueryString } from "@hooks/common/use-url-param";
-// import { isNumber } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
