@@ -22,8 +22,6 @@ export const menu = {
 };
 
 export const initialPool: PoolDetailModel = {
-  // name: "",
-  // path: "",
   tokenA: {
     chainId: "",
     createdAt: "",
@@ -56,12 +54,10 @@ export const initialPool: PoolDetailModel = {
   volume24h: 0,
   volumeChange: 0,
   rewards24hUsd: 0,
-  // totalVolume: 0,
   id: "",
   apr: 0,
   fee: "",
   feeUsd24h: 0,
-  // feeChange: 0,
   currentTick: 0,
   price: 0,
   tokenABalance: 0,

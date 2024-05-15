@@ -18,10 +18,6 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
 }) => {
   const theme = useTheme();
 
-  // const checkSameData = useMemo(() => {
-  //   return datas.length > 0 && datas.every(element => element === datas[0]);
-  // }, [datas]);
-
   const getChartDatas = useCallback(() => {
     return datas.map((data, index) => ({
       time: `${index + 1000}`,
@@ -75,7 +71,6 @@ const SimpleLineGraph: React.FC<SimpleLineGraphProps> = ({
       gradientEndColor={getGradientColor().end}
       width={width}
       height={height}
-    // centerLineColor={checkSameData ? getColor() : undefined}
     />
   );
 };

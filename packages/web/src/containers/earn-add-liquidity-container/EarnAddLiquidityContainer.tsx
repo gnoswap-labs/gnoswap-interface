@@ -21,8 +21,6 @@ import BigNumber from "bignumber.js";
 import { makeSwapFeeTier, priceToNearTick, priceToTick, tickToPrice } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
-// import { makeQueryString } from "@hooks/common/use-url-param";
-// import { isNumber } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
@@ -195,23 +193,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isCreate: !existPool,
       startPrice: existPool ? null : prev.startPrice
     }));
-
-    // if (initializedFeeTier.current) {
-    //   if (!priceRange) {
-    //     if (existPool) {
-    //       setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
-    //     } else {
-    //       setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
-    //     }
-    //   }
-    //   return;
-    // }
-
-    // if (existPool) {
-    //   setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
-    // } else {
-    //   setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
-    // }
   }, [pools]);
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
