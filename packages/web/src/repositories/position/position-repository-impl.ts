@@ -32,7 +32,7 @@ import {
   PACKAGE_POOL_ADDRESS,
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import { MAX_INT256 } from "@utils/math.utils";
+import { MAX_INT64 } from "@utils/math.utils";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -48,7 +48,9 @@ export class PositionRepositoryImpl implements PositionRepository {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
-  getPositionHistory = async (lpTokenId: string) : Promise<IPositionHistoryModel[]> => {
+  getPositionHistory = async (
+    lpTokenId: string,
+  ): Promise<IPositionHistoryModel[]> => {
     const response = await this.networkClient.get<{
       data: IPositionHistoryResponse[];
     }>({
@@ -151,7 +153,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     const approveMessages = tokenPaths.map(tokenPath =>
       makeApproveMessage(
         tokenPath,
-        [PACKAGE_POOL_ADDRESS, MAX_INT256.toString()],
+        [PACKAGE_POOL_ADDRESS, MAX_INT64.toString()],
         caller,
       ),
     );
