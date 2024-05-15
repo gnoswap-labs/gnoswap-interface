@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 
 const IncreaseLiquidityContainer: React.FC = () => {
   const {
+    selectedPosition,
     tokenA,
     tokenB,
     fee,
@@ -25,6 +26,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
   } = useIncreaseHandle();
 
   const { openModal } = useIncreasePositionModal({
+    selectedPosition,
     tokenA,
     tokenB,
     tokenAAmountInput,
@@ -41,12 +43,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
       selectPool.setMinPosition(Number(minPriceStr));
       selectPool.setMaxPosition(Number(maxPriceStr));
     }
-  }, [
-    fee,
-    minPriceStr,
-    maxPriceStr,
-    selectPool.feeTier,
-  ]);
+  }, [fee, minPriceStr, maxPriceStr, selectPool.feeTier]);
 
   const onSubmit = () => {
     openModal();

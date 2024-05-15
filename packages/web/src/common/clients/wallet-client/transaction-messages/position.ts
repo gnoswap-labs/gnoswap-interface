@@ -47,10 +47,10 @@ export function makePositionMintMessage(
 
 export function makePositionIncreaseLiquidityMessage(
   lpTokenId: string,
-  amount0Desired: number,
-  amount1Desired: number,
-  amount0Min: number,
-  amount1Min: number,
+  amount0Desired: string,
+  amount1Desired: string,
+  amount0Min: string,
+  amount1Min: string,
   caller: string,
 ) {
   return makeTransactionMessage({

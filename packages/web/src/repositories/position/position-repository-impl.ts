@@ -2,6 +2,7 @@ import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionResponse,
+  SendTransactionSuccessResponse,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
@@ -14,7 +15,7 @@ import { ClaimAllRequest } from "./request/claim-all-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
-import { PositionListResponse } from "./response";
+import { IncreaseLiquidityResponse, PositionListResponse } from "./response";
 import {
   makeApporveStakeTokenMessage,
   makeCollectRewardMessage,
@@ -24,6 +25,7 @@ import {
 import {
   makePositionDecreaseLiquidityMessage,
   makePositionCollectFeeMessage,
+  makePositionIncreaseLiquidityMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
@@ -33,6 +35,9 @@ import {
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
 import { MAX_INT64 } from "@utils/math.utils";
+import { IncreaseLiquidityRequest } from "./request";
+import { checkGnotPath } from "@utils/common";
+import { makeRawTokenAmount } from "@utils/token-utils";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -138,6 +143,82 @@ export class PositionRepositoryImpl implements PositionRepository {
       gasWanted: DEFAULT_GAS_WANTED,
     });
     return result as WalletResponse<SendTransactionResponse<string[] | null>>;
+  };
+
+  increaseLiquidity = async (
+    request: IncreaseLiquidityRequest,
+  ): Promise<WalletResponse<IncreaseLiquidityResponse | null>> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const { lpTokenId, tokenA, tokenB, tokenAAmount, tokenBAmount, caller } =
+      request;
+
+    const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
+    const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
+
+    const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
+    const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
+
+    // Make Approve messages that can be managed by a Pool package of tokens.
+    const approveMessages = [
+      makeApproveMessage(
+        tokenAWrappedPath,
+        [PACKAGE_POOL_ADDRESS, tokenAAmountRaw],
+        caller,
+      ),
+      makeApproveMessage(
+        tokenBWrappedPath,
+        [PACKAGE_POOL_ADDRESS, tokenBAmountRaw],
+        caller,
+      ),
+    ];
+
+    const increaseLiquidityMessage = makePositionIncreaseLiquidityMessage(
+      lpTokenId,
+      tokenAAmountRaw,
+      tokenBAmountRaw,
+      "0",
+      "0",
+      caller,
+    );
+
+    const messages = [...approveMessages, increaseLiquidityMessage];
+
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    const result = response as WalletResponse;
+    if (result.code !== 0 || !result.data) {
+      return {
+        ...result,
+        data: null,
+      };
+    }
+
+    const data = (
+      result.data as SendTransactionSuccessResponse<string[] | null>
+    ).data;
+    if (!data || data.length < 5) {
+      return {
+        ...result,
+        data: null,
+      };
+    }
+
+    return {
+      ...result,
+      data: {
+        tokenID: data[0],
+        liquidity: data[1],
+        tokenAAmount: data[2],
+        tokenBAmount: data[3],
+        poolPath: data[4],
+      },
+    };
   };
 
   removeLiquidity = async (

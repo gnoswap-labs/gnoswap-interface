@@ -8,6 +8,7 @@ import IncreaseMaxMin from "@components/increase/increase-max-min/IncreaseMaxMin
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 
 interface Props {
+  confirm: () => void;
   close: () => void;
   amountInfo: {
     tokenA: {
@@ -28,6 +29,7 @@ interface Props {
 }
 
 const IncreasePositionModal: React.FC<Props> = ({
+  confirm,
   close,
   amountInfo,
   minPriceStr,
@@ -60,7 +62,7 @@ const IncreasePositionModal: React.FC<Props> = ({
           </div>
           <div>
             <Button
-              onClick={close}
+              onClick={confirm}
               text="Confirm Increase Liquidity"
               style={{
                 hierarchy: ButtonHierarchy.Primary,

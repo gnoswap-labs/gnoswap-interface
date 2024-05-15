@@ -21,6 +21,7 @@ interface Props {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
+  confirm: () => void;
 }
 
 const IncreasePositionModalContainer: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const IncreasePositionModalContainer: React.FC<Props> = ({
   maxPriceStr,
   minPriceStr,
   rangeStatus,
+  confirm,
 }) => {
   const clearModal = useClearModal();
 
@@ -37,6 +39,7 @@ const IncreasePositionModalContainer: React.FC<Props> = ({
 
   return (
     <IncreasePositionModal
+      confirm={confirm}
       close={close}
       amountInfo={amountInfo}
       maxPriceStr={maxPriceStr}
