@@ -32,7 +32,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 interface HeaderProps {
   pathname?: string;
   sideMenuToggle: boolean;
-  onSideMenuToggle: () => void;
+  onSideMenuToggle: (value: boolean) => void;
   searchMenuToggle: boolean;
   onSearchMenuToggle: () => void;
   tokens: Token[];

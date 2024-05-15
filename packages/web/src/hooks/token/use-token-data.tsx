@@ -67,7 +67,7 @@ export const useTokenData = () => {
       const balance = balances[key];
       const exist = token && balance !== null && balance !== undefined;
       tokenBalanceMap[key] = exist
-        ? makeDisplayTokenAmount(token, balance)
+        ? makeDisplayTokenAmount(token, balance, { decimalsWithoutRounding: 2 })
         : null;
     });
     return tokenBalanceMap;

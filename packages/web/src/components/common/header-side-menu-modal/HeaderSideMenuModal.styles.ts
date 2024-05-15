@@ -5,9 +5,9 @@ import { media } from "@styles/media";
 
 export const HeaderSideMenuModalWrapper = styled.div`
   position: absolute;
-  top: 45px;
+  top: 52px;
   ${media.tablet} {
-    top: 44px;
+    top: 48px;
   }
 
   right: 0px;
@@ -31,7 +31,7 @@ export const Navigation = styled.nav`
   ul {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    gap: 4px;
+    gap: 0px;
     &:last-of-type {
       li {
         padding: 10px 16px;
@@ -49,6 +49,7 @@ export const Navigation = styled.nav`
       border-bottom-right-radius: 8px;
       border-bottom-left-radius: 8px;
     }
+    height: 41px;
     padding: 8px 16px;
     color: ${({ theme }) => theme.color.text04};
     &.selected,
@@ -69,6 +70,7 @@ export const Navigation = styled.nav`
       }
     },
   }
+}
 `;
 
 export const LeftIcon = styled.div`

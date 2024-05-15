@@ -53,10 +53,10 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
 
   const balanceADisplay = useMemo(() => {
     if (connected && balance !== "-") {
+      console.log("🚀 ~ balanceADisplay ~ balance:", balance);
       if (balance === "0") return 0;
       return BigNumber(balance.replace(/,/g, ""))
-        // .dividedBy(Math.pow(10, token?.decimals ?? 0))
-        .toFormat(2);
+        .toFormat();
     }
     return "-";
   }, [balance, connected, token?.decimals]);

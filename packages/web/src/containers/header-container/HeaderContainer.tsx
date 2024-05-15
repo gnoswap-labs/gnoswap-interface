@@ -164,7 +164,7 @@ const HeaderContainer: React.FC = () => {
         const usdFormat = formatUsdNumber3Digits(transferData.usd);
         return {
           ...item,
-          price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat: convertToMB(usdFormat || "0", 10)}`,
+          price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat : convertToMB(usdFormat || "0", 10)}`,
           priceOf1d: {
             status: dataToday.status,
             value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
@@ -216,10 +216,10 @@ const HeaderContainer: React.FC = () => {
         liquidity: Number(item ? item.tvl : "0"),
       };
     })
-    .sort((a, b) => b.liquidity - a.liquidity)
-    .slice(0, 3);
+      .sort((a, b) => b.liquidity - a.liquidity)
+      .slice(0, 3);
   }, [poolList, keyword, tokenPrices, gnot]);
-  
+
   const popularTokens = useMemo(() => {
     let temp = listTokens;
     if (keyword) {
@@ -235,7 +235,7 @@ const HeaderContainer: React.FC = () => {
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const usdFormat = formatUsdNumber3Digits(transferData.usd);
-      
+
       return {
         path: "",
         searchType: "",
@@ -245,7 +245,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat: convertToMB(usdFormat || "0", 10)}`,
+        price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat : convertToMB(usdFormat || "0", 10)}`,
         priceOf1d: {
           status: dataToday.status,
           value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
@@ -263,7 +263,7 @@ const HeaderContainer: React.FC = () => {
       };
     }).sort((a, b) => Number(b.volume) - Number(a.volume)).slice(0, keyword ? 6 : 6 - recents.length);
   }, [listTokens, recents.length, keyword, tokenPrices]);
-  
+
   const { openModal } = useConnectWalletModal();
 
   const handleESC = () => {
@@ -272,8 +272,8 @@ const HeaderContainer: React.FC = () => {
   }
   useEscCloseModal(handleESC);
 
-  const onSideMenuToggle = () => {
-    setSideMenuToggle(prev => !prev);
+  const onSideMenuToggle = (value: boolean) => {
+    setSideMenuToggle(value);
   };
 
   const onSearchMenuToggle = () => {

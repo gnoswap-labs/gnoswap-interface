@@ -272,7 +272,6 @@ const AssetListContainer: React.FC = () => {
     isFetched,
     updateBalances,
   } = useTokenData();
-  console.log("🚀 ~ displayBalanceMap:", displayBalanceMap)
 
   useEffect(() => {
     const interval = setInterval(() => {

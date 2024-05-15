@@ -11,7 +11,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { convertLargePrice, formatUsdNumber3Digits } from "@utils/number-utils";
+import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 
 interface NegativeStatusType {
@@ -25,7 +25,7 @@ export interface MostLiquidPool {
   feeRate: string;
 }
 
-export interface Token{
+export interface Token {
   path: string;
   token: TokenInfo;
   price: string;
@@ -239,8 +239,8 @@ const TokenListContainer: React.FC = () => {
             tokenB: {
               path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
               name: getGnotPath(tempTokenB?.[0]).name,
-              symbol:  getGnotPath(tempTokenB?.[0]).symbol,
-              logoURI:  getGnotPath(tempTokenB?.[0]).logoURI,
+              symbol: getGnotPath(tempTokenB?.[0]).symbol,
+              logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
             },
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
@@ -249,16 +249,16 @@ const TokenListContainer: React.FC = () => {
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(transferData.lockedTokensUsd || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(transferData.volumeUsd24h || 0)).toLocaleString()}`,
-        price: convertLargePrice(usdFormat),
-        priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
-        priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
-        priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
+        price: toPriceFormat(usdFormat, { usd: true }),
+        priceOf1d: { status: dataToday.status, value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
+        priceOf7d: { status: data7day.status, value: data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
+        priceOf30d: { status: data30D.status, value: data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
         idx: 1,
       };
     });
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
-    return temp.map((item: Token, i: number) => ({...item, idx: i}));
+    return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
   }, [tokens, tokenPrices, tokenType]);
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
@@ -267,7 +267,7 @@ const TokenListContainer: React.FC = () => {
       return temp.filter((item: Token) => (item.token.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.token.symbol.toLowerCase()).includes(keyword.toLowerCase()));
     }
     if (sortOption) {
-      if(sortOption.key === TABLE_HEAD.NAME) {
+      if (sortOption.key === TABLE_HEAD.NAME) {
         if (sortOption.direction === "asc") {
           temp.sort((a: Token, b: Token) => b.token.name.localeCompare(a.token.name));
         } else {
