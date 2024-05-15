@@ -195,23 +195,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       isCreate: !existPool,
       startPrice: existPool ? null : prev.startPrice
     }));
-
-    // if (initializedFeeTier.current) {
-    //   if (!priceRange) {
-    //     if (existPool) {
-    //       setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
-    //     } else {
-    //       setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
-    //     }
-    //   }
-    //   return;
-    // }
-
-    // if (existPool) {
-    //   setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
-    // } else {
-    //   setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
-    // }
   }, [pools]);
 
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {

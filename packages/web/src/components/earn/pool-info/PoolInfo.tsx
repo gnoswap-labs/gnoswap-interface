@@ -59,16 +59,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
     return <OverlapLogo logos={logos} size={20} />;
   }, [rewardTokens, tokenA, tokenB]);
 
-  // const resolvedBins = useMemo(() => {
-  //   const length = 20;
-  //   const poolLength = pool.bins.length;
-  //   if (poolLength <= 20) return pool?.bins || [];
-  //   return Array.from({ length }, (_, index) => {
-  //     if (index + 10 > poolLength - 1) return pool.bins[0];
-  //     return pool.bins[10 + index];
-  //   });
-  // }, [pool.bins]);
-
   const tdWidth =
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_TD_WIDTH_MOBILE
