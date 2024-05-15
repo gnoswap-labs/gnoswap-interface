@@ -34,7 +34,10 @@ import {
   makeRemoveIncentiveMessage,
   makeStakerApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages/pool";
-import { makePositionMintMessage } from "@common/clients/wallet-client/transaction-messages/position";
+import {
+  makePositionMintMessage,
+  makePositionMintWithStakeMessage,
+} from "@common/clients/wallet-client/transaction-messages/position";
 import { AddLiquidityResponse } from "./response/add-liquidity-response";
 import { CreatePoolResponse } from "./response/create-pool-response";
 import {
@@ -45,6 +48,7 @@ import {
 } from "@common/clients/wallet-client/transaction-messages";
 import { tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { checkGnotPath } from "@utils/common";
 
 const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
@@ -71,7 +75,7 @@ export class PoolRepositoryImpl implements PoolRepository {
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
     try {
       this.updatedAt = Date.now();
-  
+
       const poolPackagePath = PACKAGE_POOL_PATH;
 
       if (!poolPackagePath || !this.rpcProvider) {
@@ -79,10 +83,16 @@ export class PoolRepositoryImpl implements PoolRepository {
       }
 
       const param = makeABCIParams("ApiGetPools", []);
-      const res =  await this.rpcProvider.evaluateExpression(poolPackagePath, param);
-      const pools =  PoolRPCMapper.fromList(evaluateExpressionToObject<{ response: PoolRPCResponse[] }>(res)?.response || []);
+      const res = await this.rpcProvider.evaluateExpression(
+        poolPackagePath,
+        param,
+      );
+      const pools = PoolRPCMapper.fromList(
+        evaluateExpressionToObject<{ response: PoolRPCResponse[] }>(res)
+          ?.response || [],
+      );
       this.rpcPools = pools;
-      
+
       return pools;
     } catch (error) {
       return [];
@@ -103,10 +113,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<PoolDetailModel> => {
     const pool = await this.networkClient
-    .get<{ data: PoolResponse }>({
-      url: "/pools/" + encodeURIComponent(poolPath),
-    })
-    .then(response => PoolMapper.detailFromResponse(response.data.data));
+      .get<{ data: PoolResponse }>({
+        url: "/pools/" + encodeURIComponent(poolPath),
+      })
+      .then(response => PoolMapper.detailFromResponse(response.data.data));
     return pool;
   };
 
@@ -153,74 +163,64 @@ export class PoolRepositoryImpl implements PoolRepository {
       startPrice,
       slippage,
       caller,
+      withStaking,
     } = request;
     const gasFee = 1;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
-    const messages = [];
 
-    const tokenAPath = tokenA.wrappedPath || tokenA.path;
-    const tokenBPath = tokenB.wrappedPath || tokenB.path;
-    if (isNativeToken(tokenA)) {
-      messages.push(
-        makeDepositMessage(
-          tokenA.wrappedPath,
-          tokenAAmountRaw,
-          "ugnot",
-          request.caller,
-        ),
-      );
-    }
-    if (isNativeToken(tokenB)) {
-      messages.push(
-        makeDepositMessage(
-          tokenB.wrappedPath,
-          tokenBAmountRaw,
-          "ugnot",
-          request.caller,
-        ),
-      );
-    }
+    const tokenAPath = tokenA.path;
+    const tokenBPath = tokenB.path;
 
-    messages.push(PoolRepositoryImpl.makeApproveGnosTokenMessage(caller));
-    messages.push(
-      PoolRepositoryImpl.makeCreatePoolMessage(
-        tokenA,
-        tokenB,
-        feeTier,
-        startPrice,
-        caller,
-      ),
+    const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
+    const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
+
+    // When GNOT, make a send to the pool contract.
+    const sendAmount: string | null = isNativeToken(tokenA)
+      ? tokenAAmountRaw
+      : isNativeToken(tokenB)
+      ? tokenBAmountRaw
+      : null;
+
+    const createPoolMessage = PoolRepositoryImpl.makeCreatePoolMessage(
+      tokenA,
+      tokenB,
+      feeTier,
+      startPrice,
+      caller,
     );
 
-    messages.push(
+    const approveMessages = [
       PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenAPath,
+        tokenAWrappedPath,
         tokenAAmountRaw,
         caller,
       ),
-    );
-    messages.push(
       PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenBPath,
+        tokenBWrappedPath,
         tokenBAmountRaw,
         caller,
       ),
+    ];
+
+    const makeMintMessage = withStaking
+      ? makePositionMintWithStakeMessage
+      : makePositionMintMessage;
+
+    const mintMessage = makeMintMessage(
+      tokenAPath,
+      tokenBPath,
+      feeTier,
+      minTick,
+      maxTick,
+      tokenAAmountRaw,
+      tokenBAmountRaw,
+      slippage.toString(),
+      caller,
+      sendAmount,
     );
 
-    messages.push(
-      makePositionMintMessage(
-        tokenA,
-        tokenB,
-        feeTier,
-        minTick,
-        maxTick,
-        tokenAAmountRaw,
-        tokenBAmountRaw,
-        slippage.toString(),
-        caller,
-      ),
-    );
+    const messages = [createPoolMessage, ...approveMessages, mintMessage];
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee,
@@ -273,63 +273,57 @@ export class PoolRepositoryImpl implements PoolRepository {
       maxTick,
       slippage,
       caller,
+      withStaking,
     } = request;
     const gasFee = 1;
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
-    const messages = [];
 
-    const tokenAPath = tokenA.wrappedPath || tokenA.path;
-    const tokenBPath = tokenB.wrappedPath || tokenB.path;
-    if (isNativeToken(tokenA)) {
-      messages.push(
-        makeDepositMessage(
-          tokenA.wrappedPath,
-          tokenAAmountRaw,
-          "ugnot",
-          request.caller,
-        ),
-      );
-    }
-    if (isNativeToken(tokenB)) {
-      messages.push(
-        makeDepositMessage(
-          tokenB.wrappedPath,
-          tokenBAmountRaw,
-          "ugnot",
-          request.caller,
-        ),
-      );
-    }
+    const tokenAPath = tokenA.path;
+    const tokenBPath = tokenB.path;
 
-    messages.push(
+    const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
+    const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
+
+    // When GNOT, make a send to the pool contract.
+    const sendAmount: string | null = isNativeToken(tokenA)
+      ? tokenAAmountRaw
+      : isNativeToken(tokenB)
+      ? tokenBAmountRaw
+      : null;
+
+    const approveMessages = [
       PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenAPath,
+        tokenAWrappedPath,
         tokenAAmountRaw,
         caller,
       ),
-    );
-    messages.push(
       PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenBPath,
+        tokenBWrappedPath,
         tokenBAmountRaw,
         caller,
       ),
+    ];
+
+    const makeMintMessage = withStaking
+      ? makePositionMintWithStakeMessage
+      : makePositionMintMessage;
+
+    const mintMessage = makeMintMessage(
+      tokenAPath,
+      tokenBPath,
+      feeTier,
+      minTick,
+      maxTick,
+      tokenAAmountRaw,
+      tokenBAmountRaw,
+      slippage.toString(),
+      caller,
+      sendAmount,
     );
 
-    messages.push(
-      makePositionMintMessage(
-        tokenA,
-        tokenB,
-        feeTier,
-        minTick,
-        maxTick,
-        tokenAAmountRaw,
-        tokenBAmountRaw,
-        slippage.toString(),
-        caller,
-      ),
-    );
+    const messages = [...approveMessages, mintMessage];
+
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee,
