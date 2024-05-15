@@ -17,5 +17,5 @@ export function makeDisplayTokenAmount(
   if (number.isNaN()) {
     return null;
   }
-  return number.toNumber();
+  return number.shiftedBy(-token.decimals).toNumber();
 }
