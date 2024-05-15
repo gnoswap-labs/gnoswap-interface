@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, useEffect } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
@@ -34,10 +34,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   const { breakpoint } = useWindowSize();
   const [fromAmount, setFromAmount] = useState("");
   const [toAmount, setToAmount] = useState("");
-
-  useEffect(() => {
-
-  }, []);
 
   const onChangeFromAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +72,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     if (connected) {
       const formatValue = (parseFloat(
         swapTokenInfo.tokenABalance.replace(/,/g, ""),
-      ) / Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0)).toString();
+      )).toString();
       setFromAmount(formatValue);
       changeTokenAAmount(formatValue);
     }
@@ -86,7 +82,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     if (connected) {
       const formatValue = (parseFloat(
         swapTokenInfo.tokenBBalance.replace(/,/g, ""),
-      ) / Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0)).toString();
+      )).toString();
       setToAmount(formatValue);
       changeTokenBAmount(formatValue);
     }
@@ -96,7 +92,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     if (connected && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, swapTokenInfo.tokenADecimals ?? 0))
         .toFormat(2);
     }
     return "-";
@@ -106,7 +101,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
     if (connected && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, swapTokenInfo.tokenBDecimals ?? 0))
         .toFormat(2);
     }
     return "-";

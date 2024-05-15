@@ -148,6 +148,31 @@ export const useWallet = () => {
     const network = walletAccount.chainId === CHAIN_ID;
     return network ? false : true;
   }, [walletAccount]);
+  
+  const refreshWallet = useCallback(async () => {
+    if(!walletClient || !connected) {
+      return;
+    }
+
+    const account = await accountRepository.getAccount();
+    setWalletAccount(account);
+  }, [connected, walletClient]);
+
+  useEffect(() => {
+    if(!walletClient || !connected) return;
+
+    const interval = setInterval( () => {
+      if(!connected || !walletClient) {
+        clearInterval(interval);
+      }
+      refreshWallet();
+    }, 5_000);
+
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [connected, refreshWallet]); 
 
   useEffect(() => {
     if (!sessionId) {

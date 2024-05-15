@@ -71,7 +71,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (connectedWallet) {
       const formatValue = (parseFloat(
         swapTokenInfo.tokenABalance.replace(/,/g, ""),
-      ) / Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0)).toString();
+      )).toString();
+      // ) / Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0)).toString();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
@@ -80,7 +81,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (connectedWallet) {
       const formatValue = (parseFloat(
         swapTokenInfo.tokenBBalance.replace(/,/g, ""),
-      ) / Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0)).toString();
+      ))
+        // ) / Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0))
+        .toString();
       changeTokenBAmount(formatValue);
     }
   }, [changeTokenBAmount, connectedWallet, swapTokenInfo]);
@@ -100,7 +103,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0))
+        // .dividedBy(Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0))
         .toFormat(2);
     }
     return "-";
@@ -111,7 +114,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0))
+        // .dividedBy(Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0))
         .toFormat(2);
     }
     return "-";

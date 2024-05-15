@@ -41,10 +41,12 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       if (token && isNativeToken(token)) {
         const nativeFullBalance = BigNumber(formatValue)
           .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
-          .dividedBy(Math.pow(10, token?.decimals ?? 0)).toString();
+          .toString();
+        // .dividedBy(Math.pow(10, token?.decimals ?? 0)).toString();
         changeAmount(nativeFullBalance);
       } else {
-        changeAmount(BigNumber(formatValue).dividedBy(Math.pow(10, token?.decimals ?? 0)).toString());
+        changeAmount(BigNumber(formatValue).toString());
+        // changeAmount(BigNumber(formatValue).dividedBy(Math.pow(10, token?.decimals ?? 0)).toString());
       }
     }
   }, [connected, balance, token, changeAmount]);
@@ -53,7 +55,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     if (connected && balance !== "-") {
       if (balance === "0") return 0;
       return BigNumber(balance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, token?.decimals ?? 0))
+        // .dividedBy(Math.pow(10, token?.decimals ?? 0))
         .toFormat(2);
     }
     return "-";

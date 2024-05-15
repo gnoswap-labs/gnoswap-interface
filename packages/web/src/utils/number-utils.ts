@@ -223,6 +223,7 @@ export function prettyNumber(val: string | number) {
 
 export function prettyNumberFloatInteger(val: string | number, isKMB?: boolean) {
   const func = isKMB ? convertToKMB : convertToMB;
+
   if (Number.isInteger(Number(val))) {
     return func(val.toString());
   } else {

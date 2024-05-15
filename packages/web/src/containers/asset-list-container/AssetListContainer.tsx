@@ -239,6 +239,7 @@ const AssetListContainer: React.FC = () => {
   const { data: { tokens = [] } = {}, isLoading } = useGetTokensList({
     refetchInterval: 60 * 1000,
   });
+  console.log("🚀 ~ data:", tokens)
   const { loading: loadingPositions } = usePositionData();
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
@@ -271,6 +272,7 @@ const AssetListContainer: React.FC = () => {
     isFetched,
     updateBalances,
   } = useTokenData();
+  console.log("🚀 ~ displayBalanceMap:", displayBalanceMap)
 
   useEffect(() => {
     const interval = setInterval(() => {

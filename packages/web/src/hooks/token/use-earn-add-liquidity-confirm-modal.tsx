@@ -221,17 +221,21 @@ export const useEarnAddLiquidityConfirmModal = ({
       tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", { maximumFractionDigits: 6 })
     }));
 
+    const transactionTokenAAmount = (Number(tokenAAmount) * Math.pow(10, tokenA.decimals)).toString();
+    const transactionTokenBAmount = (Number(tokenBAmount) * Math.pow(10, tokenB.decimals)).toString();
+
+
     const transaction = selectPool.isCreate ? createPool({
-      tokenAAmount,
-      tokenBAmount,
+      tokenAAmount: transactionTokenAAmount,
+      tokenBAmount: transactionTokenBAmount,
       minTick,
       maxTick,
       slippage,
       startPrice: `${selectPool.startPrice || 1}`,
       swapFeeTier,
     }) : addLiquidity({
-      tokenAAmount,
-      tokenBAmount,
+      tokenAAmount: transactionTokenAAmount,
+      tokenBAmount: transactionTokenBAmount,
       minTick,
       maxTick,
       slippage,

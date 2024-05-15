@@ -24,6 +24,7 @@ import { AccountModel } from "@models/account/account-model";
 import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
+import { cutDecimalNumberWithoutRounding } from "@utils/regex";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -106,7 +107,9 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 5 })} GNOT` || "0 GNOT", [account?.balances]);
+  const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toString().match(cutDecimalNumberWithoutRounding(6))} GNOT` || "0 GNOT", [account?.balances]);
+  // const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toString().match(re)} GNOT` || "0 GNOT", [account?.balances]);
+  // const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 6 })} GNOT` || "0 GNOT", [account?.balances]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();
@@ -171,7 +174,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             />
           </div>
         )}
-        
+
         <div className="theme-container">
           <ThemeSelector className="mt-16">
             <span>Language</span>
