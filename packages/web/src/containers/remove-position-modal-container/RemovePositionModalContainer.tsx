@@ -1,6 +1,9 @@
 import { ERROR_VALUE } from "@common/errors/adena";
 import RemovePositionModal from "@components/remove/remove-position-modal/RemovePositionModal";
-import { makeBroadcastRemoveMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import {
+  makeBroadcastRemoveMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
@@ -20,7 +23,13 @@ const RemovePositionModalContainer = ({
   const { positionRepository } = useGnoswapContext();
   const router = useRouter();
   const clearModal = useClearModal();
-  const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError, broadcastPending } = useBroadcastHandler();
+  const {
+    broadcastRejected,
+    broadcastSuccess,
+    broadcastLoading,
+    broadcastError,
+    broadcastPending,
+  } = useBroadcastHandler();
   const { pooledTokenInfos } = useRemoveData({ positions });
 
   const close = useCallback(() => {
@@ -33,53 +42,104 @@ const RemovePositionModalContainer = ({
       return null;
     }
     const lpTokenIds = positions.map(position => position.id);
-    broadcastLoading(makeBroadcastRemoveMessage("pending", {
-      tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-      tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-      tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-      tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
-    }));
+    const approveTokenPaths = [
+      ...new Set(
+        positions.flatMap(position => [
+          position.pool.tokenA.wrappedPath || position.pool.tokenA.path,
+          position.pool.tokenB.wrappedPath || position.pool.tokenB.path,
+        ]),
+      ),
+    ];
 
-    const result = await positionRepository.removeLiquidity({
-      lpTokenIds,
-      caller: address
-    }).catch(() => null);
+    broadcastLoading(
+      makeBroadcastRemoveMessage("pending", {
+        tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+        tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+        tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", {
+          maximumFractionDigits: 6,
+        }),
+        tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", {
+          maximumFractionDigits: 6,
+        }),
+      }),
+    );
+
+    const result = await positionRepository
+      .removeLiquidity({
+        lpTokenIds,
+        tokenPaths: approveTokenPaths,
+        caller: address,
+      })
+      .catch(() => null);
     if (result) {
       if (result.code === 0) {
         broadcastPending();
         setTimeout(() => {
-          broadcastSuccess(makeBroadcastRemoveMessage("success", {
-            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
-          }));
+          broadcastSuccess(
+            makeBroadcastRemoveMessage("success", {
+              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+            }),
+          );
           router.push(router.asPath.replace("/remove", ""));
           clearModal();
         }, 1000);
-      } else if (result.code === 4000 && result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type) {
+      } else if (
+        result.code === 4000 &&
+        result.type !== ERROR_VALUE.TRANSACTION_REJECTED.type
+      ) {
         broadcastPending();
         setTimeout(() => {
-          broadcastError(makeBroadcastRemoveMessage("error", {
-            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
-          }));
+          broadcastError(
+            makeBroadcastRemoveMessage("error", {
+              tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+              tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+              tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+              tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
+                "en-US",
+                { maximumFractionDigits: 6 },
+              ),
+            }),
+          );
           clearModal();
         }, 1000);
       } else {
-        broadcastRejected(makeBroadcastRemoveMessage("error", {
-          tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
-          tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
-          tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6}),
-          tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
-        }));
+        broadcastRejected(
+          makeBroadcastRemoveMessage("error", {
+            tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
+            tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
+            tokenAAmount: pooledTokenInfos?.[0]?.amount.toLocaleString(
+              "en-US",
+              { maximumFractionDigits: 6 },
+            ),
+            tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString(
+              "en-US",
+              { maximumFractionDigits: 6 },
+            ),
+          }),
+        );
       }
     }
   }, [account?.address, clearModal, positionRepository, positions, router]);
 
-  return <RemovePositionModal positions={positions} close={close} onSubmit={onSubmit} />;
+  return (
+    <RemovePositionModal
+      positions={positions}
+      close={close}
+      onSubmit={onSubmit}
+    />
+  );
 };
 
 export default RemovePositionModalContainer;
