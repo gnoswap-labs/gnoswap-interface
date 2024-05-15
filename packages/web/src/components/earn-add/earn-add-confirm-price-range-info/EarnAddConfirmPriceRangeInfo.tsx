@@ -1,4 +1,4 @@
-import React, { useMemo, useState} from "react";
+import React, { useMemo, useState } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -36,12 +36,12 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
   tokenB
 }) => {
     const [swap, setSwap] = useState(false);
-  
+
     const currentPriceStr = useMemo(() => {
       if (!swap) {
-        return `1 ${tokenA.info.symbol} = ${numberToFormat(currentPrice, 4)} ${tokenB.info.symbol}`;
+        return `1 ${tokenA.info.symbol} = ${numberToFormat(currentPrice, { decimals: 4 })} ${tokenB.info.symbol}`;
       }
-      return `1 ${tokenB.info.symbol} = ${numberToFormat(1 / Number(currentPrice), 4)} ${tokenA.info.symbol}`;
+      return `1 ${tokenB.info.symbol} = ${numberToFormat(1 / Number(currentPrice), { decimals: 4 })} ${tokenA.info.symbol}`;
     }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol, swap]);
 
     const rangeStatus = useMemo(() => {

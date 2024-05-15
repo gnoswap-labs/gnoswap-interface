@@ -75,7 +75,7 @@ const WalletBalanceContainer: React.FC = () => {
     if (!address) return;
   }, [connected, address]);
   const claimAllReward = useCallback(() => {
-    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableAmount), 0);
+    const amount = positions.flatMap(item => item.reward).reduce((acc, item) => acc + Number(item.claimableAmount), 0);
     const data = {
       amount: toUnitFormat(amount, true, true),
     };
@@ -95,7 +95,7 @@ const WalletBalanceContainer: React.FC = () => {
           openModal();
         } else {
           openModal();
-          broadcastRejected(makeBroadcastClaimMessage("error", data), () => {}, true);
+          broadcastRejected(makeBroadcastClaimMessage("error", data), () => { }, true);
           setLoadingTransactionClaim(false);
         }
       }
@@ -106,7 +106,7 @@ const WalletBalanceContainer: React.FC = () => {
   }, [loadingPositions, loadingConnect, isLoadingCommon, account?.address, balancesPrice]);
 
   const availableBalance = useMemo(() => {
-    return  Object.entries(balancesPrice).reduce((acc, [key, value]) => {
+    return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
       const path = key === "gnot" ? WRAPPED_GNOT_PATH : key;
       const balance = BigNumber(value || 0).multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0).dividedBy(10 ** 6).toNumber() || 0;
       return BigNumber(acc).plus(balance).toNumber();
@@ -121,13 +121,13 @@ const WalletBalanceContainer: React.FC = () => {
           .toNumber();
       } else {
         acc.unStakedBalance = BigNumber(acc.unStakedBalance)
-          .plus(cur.stakedUsdValue ?? "0")
+          .plus(cur.totalClaimedUsd ?? "0")
           .toNumber();
       }
 
-      cur.rewards.forEach(x => {
+      cur.reward.forEach(x => {
         acc.claimableRewards = BigNumber(acc.claimableRewards)
-          .plus(x.claimableUsdValue ?? "0")
+          .plus(x.claimableUsd ?? "0")
           .toNumber();
       });
       return acc;
@@ -158,7 +158,7 @@ const WalletBalanceContainer: React.FC = () => {
   };
 
   usePreventScroll(isShowDepositModal || isShowWithdrawModal);
-  
+
   const {
     isConfirm,
     setIsConfirm,
@@ -170,10 +170,10 @@ const WalletBalanceContainer: React.FC = () => {
     handleSubmit({
       fromAddress: account.address,
       toAddress: address,
-      token: withdrawInfo, 
+      token: withdrawInfo,
       tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
     },
-    withdrawInfo.type,);
+      withdrawInfo.type,);
     closeWithdraw();
   }
   return (

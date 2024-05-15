@@ -52,7 +52,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   return (
     <>
       <MyLiquidityWrapperAnchor id="liquidity-wrapper" />
-    
+
       <MyLiquidityWrapper>
         <div className="liquidity-wrap">
           <MyLiquidityHeader

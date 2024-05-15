@@ -89,7 +89,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   };
 
   const claimAllReward = useCallback(() => {
-    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableUsdValue), 0);
+    const amount = positions.flatMap(item => item.reward).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
     const data = {
       amount: toUnitFormat(amount, true, true),
     };
@@ -115,7 +115,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
           openModal();
           broadcastRejected(
             makeBroadcastClaimMessage("error", data),
-            () => {},
+            () => { },
             true,
           );
           setLoadingTransactionClaim(false);
@@ -146,8 +146,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
         claimableUsdValue: 0,
         rewards: [],
         positionUsdValue: "0",
-        token0Balance: 0n,
-        token1Balance: 0n,
+        tokenABalance: 0,
+        tokenBBalance: 0,
       };
       setPositions([...temp, fake, fake]);
       return;

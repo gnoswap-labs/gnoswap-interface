@@ -48,7 +48,7 @@ const handleSort = (list: SortedProps[]) => {
     const priceB = parseFloat(b.price.replace(/,/g, ""));
     return priceB - priceA;
   });
-  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a,b) => b.tokenPrice - a.tokenPrice);
+  const amountOfBalance = list.filter(a => a.price !== "-" && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a) && a.tokenPrice > 0).sort((a, b) => b.tokenPrice - a.tokenPrice);
   const alphabest = list.filter(a => !amountOfBalance.includes(a) && a.symbol !== GNOT_SYMBOL && a.symbol !== GNS_SYMBOL && !valueOfBalance.includes(a)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
   const rs = [];
   gnot && rs.push(gnot);
@@ -120,7 +120,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
         token.path.toLowerCase().includes(lowerKeyword),
     );
   }, [keyword, tokens, balances, tokenPrices]);
-  
+
   const selectToken = useCallback(
     (token: TokenModel) => {
       if (!changeToken) {

@@ -11,11 +11,11 @@ type TxType =
 export interface AccountActivity {
   txHash: string;
   actionType: TxType | (string & {});
-  token0: OnchainToken;
-  token1: OnchainToken;
-  token0Amount: string;
-  token1Amount: string;
-  totalUsdValue: string;
+  tokenA: OnchainToken;
+  tokenB: OnchainToken;
+  tokenAAmount: string;
+  tokenBAmount: string;
+  totalUsd: string;
   account: string;
   time: string;
 }

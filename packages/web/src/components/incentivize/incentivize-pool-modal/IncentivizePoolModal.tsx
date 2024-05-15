@@ -30,7 +30,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
-  
+
   return (
     <IncentivizePoolModalWrapper>
       <div className="modal-body">
@@ -53,7 +53,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                     size={24}
                   />
                   <div className="value">{pool ? pool?.tokenA.symbol : ""}/{pool ? pool?.tokenB.symbol : ""}</div>
-                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text={"0.3%"} />
+                  <Badge type={BADGE_TYPE.DARK_DEFAULT} text={`${Number(pool?.fee) / 10000}%`} />
                 </div>
               </div>
               <div>
@@ -67,7 +67,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                 <div className="label">Period</div>
                 <div className="value-content value-content-column">
                   <div className="value">{formatDate(date, 0)} <br />
-                  - {formatDate(date, period)}</div>
+                    - {formatDate(date, period)}</div>
                   <div className="sub-value">{Number((Number(data?.amount || 0) / period).toFixed(2)).toLocaleString()} {data?.token?.symbol} will be distributed daily</div>
                 </div>
               </div>

@@ -1,56 +1,77 @@
-import { IncentivizedOptions } from "@common/values";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { PoolBinModel } from "./pool-bin-model";
 
 export interface PoolModel {
-  id: string;
 
-  path: string;
+  rewards24hUsd: number;
 
-  incentivizedType: IncentivizedOptions;
-
-  name: string;
-
+  volumeChange24h: number;
+  
+  incentiveType: INCENTIVE_TYPE;
+  
   price: number;
-
+  
   tokenA: TokenModel;
-
+  
   tokenB: TokenModel;
-
+  
   tokenABalance: number;
-
+  
   tokenBBalance: number;
-
+  
   tickSpacing: number;
-
+  
   currentTick: number;
-
+  
   bins: PoolBinModel[];
-
+  
+  bins40: PoolBinModel[];
+  
   tvl: number;
-
+  
   tvlChange: number;
-
+  
   volume24h: number;
-
-  volumeChange: number;
-
-  totalVolume: number;
-
+  
+  feeUsd24h: number;
+  
   fee: string;
-
-  feeVolume: number;
-
-  feeChange: number;
-
+  
   apr: number | string | null;
+  
   totalApr: number | string | null;
-
-  poolPath?: string;
-
+  
+  poolPath: string;
+  
   rewardTokens: TokenModel[];
-  feeApr?: any;
-  stakingApr?: any;
+  
+  feeApr: string;
+  
+  stakingApr: string;
+  
+  allTimeVolumeUsd: number;
+  
+  priceRatio: IPoolPriceRatio;
+  
+  liquidity: string;
+
+  //TODO Remove later
+  // feeChange: number;
+  
+  volumeChange: number;
+  
+  // totalVolume: number;
+  
+  id: string;
+  
+  // path: string;
+
+  // name: string;
+
+  // rewardsUsd24h?: any;
+
+  // usdValue?: any;
 }
 
 export interface IPoolDetailResponse {
@@ -64,7 +85,7 @@ export interface IPoolDetailResponse {
   totalVolume: string;
   apr: string;
   fee: string;
-  feeVolume: string;
+  feeUsd24h: string;
   feeChange: string;
   currentTick: string;
   price: string;
@@ -72,6 +93,18 @@ export interface IPoolDetailResponse {
   tokenBBalance: string;
   tickSpacing: string;
   bins: IBin[];
+  priceRatio: IPoolPriceRatio;
+}
+
+export interface IPoolPriceRatioItem {
+  date: string;
+  ratio: string;
+}
+
+export interface IPoolPriceRatio {
+  "7d": IPoolPriceRatioItem[];
+  "30d": IPoolPriceRatioItem[];
+  "all": IPoolPriceRatioItem[];
 }
 
 export interface ITokenA {

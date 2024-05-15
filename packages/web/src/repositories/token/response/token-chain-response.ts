@@ -1,10 +1,8 @@
 export interface IChainResponse {
-    tvl: string;
-    volume: string;
-    totalVolume: string;
     trending: ITrending[];
     gainers: IGainer[];
     losers: ILoser[];
+    stat: IChainStat;
   }
   
   export interface ITrending {
@@ -23,5 +21,11 @@ export interface IChainResponse {
     tokenPath: string;
     tokenPrice: string;
     tokenPriceChange: string;
+  }
+
+  export interface IChainStat {
+    allTimeVolumeUsd: string;
+    tvlUsd: string;
+    volume24hUsd: string;
   }
   

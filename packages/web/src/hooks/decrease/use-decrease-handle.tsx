@@ -107,13 +107,13 @@ export const useDecreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
+        ? RANGE_STATUS_OPTION.IN
+        : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
-    return selectedPosition?.rewards.reduce(
+    return selectedPosition?.reward.reduce(
       (acc, item) => acc + Number(item.apr || 0),
       0,
     );
@@ -175,25 +175,25 @@ export const useDecreaseHandle = () => {
   const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
     setPriceRange(priceRange);
   }, []);
-  
+
   const pooledTokenInfos = useMemo(() => {
     if (!selectedPosition) {
       return null;
     }
     const tokenA = selectedPosition.pool.tokenA;
     const tokenB = selectedPosition.pool.tokenB;
-    const pooledTokenAAmount = selectedPosition.token0Balance;
-    const pooledTokenBAmount = selectedPosition.token1Balance;
-    const unClaimTokenA = selectedPosition.unclaimedFee0Amount;
-    const unClaimTokenB = selectedPosition.unclaimedFee1Amount;
+    const pooledTokenAAmount = selectedPosition.tokenABalance;
+    const pooledTokenBAmount = selectedPosition.tokenBBalance;
+    const unClaimTokenA = selectedPosition.unclaimedFeeAAmount;
+    const unClaimTokenB = selectedPosition.unclaimedFeeBAmount;
 
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
 
     const tokenAAmount =
-    makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
+      makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
     const tokenBAmount =
-    makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
+      makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
     const unClaimTokenAAmount =
       makeDisplayTokenAmount(tokenA, Number(unClaimTokenA)) || 0;
     const unClaimTokenBAmount =

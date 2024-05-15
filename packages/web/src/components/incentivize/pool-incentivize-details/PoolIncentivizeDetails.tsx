@@ -29,7 +29,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
   amount,
   token,
 }) => {
-  
+
   return (
     <div css={wrapper}>
       <section>
@@ -45,7 +45,7 @@ const PoolIncentivizeDetails: React.FC<PoolIncentivizeDetailsProps> = ({
           <span className="pair-symbol">
             {makePairName(details)}
           </span>
-          <Badge text="0.3%" type={BADGE_TYPE.DARK_DEFAULT} />
+          <Badge text={`${(Number(details.fee) ?? 0) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
         </div> : <div className="section-info">-</div>}
       </section>
       <section>

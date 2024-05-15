@@ -37,6 +37,7 @@ export interface PoolGraphProps {
   isPosition?: boolean;
   binsMyAmount?: PoolBinModel[];
   isSwap?: boolean;
+  showBar?: boolean;
 }
 
 interface TooltipInfo {
@@ -62,7 +63,7 @@ interface TooltipInfo {
 const PoolGraph: React.FC<PoolGraphProps> = ({
   tokenA,
   tokenB,
-  bins,
+  bins = [],
   currentTick = null,
   mouseover,
   width,
@@ -83,8 +84,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   isPosition = false,
   binsMyAmount = [],
   isSwap = false,
+  showBar = true,
 }) => {
-  const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
+  const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -100,6 +102,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   const resolvedBins = useMemo(() => {
     const length = bins.length / 2;
+    const fullLength = length * 2;
     const convertReserveBins = bins.map((item, index) => {
       const reserveTokenAMap = Number(item.reserveTokenB) / (Number(poolPrice) || 1);
       const reserveTokenBMap = Number(item.reserveTokenA);
@@ -127,8 +130,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       ...temp[length * 2 - i - 1],
       minTick: item.minTick,
       maxTick: item.maxTick,
-      minTickSwap: temp[length * 2 - i - 1].minTick,
-      maxTickSwap: temp[length * 2 - i - 1].maxTick
+      minTickSwap: temp[fullLength - i - 1].minTick,
+      maxTickSwap: temp[fullLength - i - 1].maxTick
     }));
     return !isSwap ? temp : revereTemp;
 
@@ -229,7 +232,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         .attr("stroke-width", 1);
     }
 
-    // D3 - Draw bins as bars 
+    // D3 - Draw bins as bars
+    if (!showBar) {
+      return;
+    }
+
     rects.selectAll("rects")
       .data(resolvedBins)
       .enter()
@@ -247,7 +254,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
         return boundsHeight - scaleYComputation + (scaleYComputation > (height - 3) && scaleYComputation !== height ? 3 : 0);
       });
-    // Create a line of current tick.
 
   }
 

@@ -29,6 +29,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {
+
     if (!usd || !(Number(amount))) {
       return "-";
     }
@@ -39,8 +40,8 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
     if (!token) {
       return;
     }
-    
-    if(/^0\.0(?:0*)$/.test(value)) {
+
+    if (/^0\.0(?:0*)$/.test(value)) {
       setAmount(value);
       return;
     }
@@ -51,7 +52,6 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
       return;
     }
     setAmount(amount.toString());
-
     if (tokenPrices[checkGnotPath(token.path)]) {
       const usd = BigNumber(tokenPrices[checkGnotPath(token.path)].usd).multipliedBy(value.toString()).toNumber();
       setUSD(usd);

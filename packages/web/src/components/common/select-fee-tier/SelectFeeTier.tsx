@@ -18,7 +18,6 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
   feetierOfLiquidityMap,
   feeTiers,
   feeTier,
-  pools,
   selectFeeTier,
   fetching,
   openedFeeTier,
@@ -35,7 +34,6 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
           key={index}
           selected={feeTier === item}
           feeTier={item}
-          pools={pools}
           liquidityRange={feetierOfLiquidityMap[SwapFeeTierInfoMap[item].fee]}
           onClick={() => onClickFeeTierItem(item)}
           fetching={fetching}
@@ -48,7 +46,6 @@ const SelectFeeTier: React.FC<SelectFeeTierProps> = ({
 interface SelectFeeTierItemProps {
   selected: boolean;
   feeTier: SwapFeeTierType;
-  pools: PoolModel[];
   liquidityRange: number | undefined | null;
   onClick: () => void;
   fetching: boolean;

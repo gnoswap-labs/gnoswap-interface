@@ -25,6 +25,9 @@ import {
   makePositionDecreaseLiquidityMessage,
   makePositionCollectFeeMessage,
 } from "@common/clients/wallet-client/transaction-messages/position";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
+import { IPositionHistoryResponse } from "./response/position-history-response";
 import {
   PACKAGE_POOL_ADDRESS,
   makeApproveMessage,
@@ -45,6 +48,14 @@ export class PositionRepositoryImpl implements PositionRepository {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
+  getPositionHistory = async (lpTokenId: string) : Promise<IPositionHistoryModel[]> => {
+    const response = await this.networkClient.get<{
+      data: IPositionHistoryResponse[];
+    }>({
+      url: "/positions/" + lpTokenId + "/history",
+    });
+    return PositionHistoryMapper.fromList(response.data.data);
+  };
 
   getPositionsByAddress = async (address: string): Promise<PositionModel[]> => {
     const response = await this.networkClient.get<{
@@ -65,10 +76,10 @@ export class PositionRepositoryImpl implements PositionRepository {
     const messages = positions.flatMap(position => {
       const messages = [];
       const hasSwapFee =
-        position.rewards.findIndex(reward => reward.rewardType === "SWAP_FEE") >
+        position.reward.findIndex(reward => reward.rewardType === "SWAP_FEE") >
         -1;
       const hasReward =
-        position.rewards.findIndex(
+        position.reward.findIndex(
           reward =>
             reward.rewardType === "STAKING" || reward.rewardType === "EXTERNAL",
         ) > -1;

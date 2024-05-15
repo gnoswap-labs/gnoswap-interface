@@ -26,7 +26,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
     if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
       return "-";
     }
-    return BigNumber(tokenPrice).toFormat();
+    return BigNumber(tokenPrice).dividedBy(Math.pow(10, token.decimals ?? 0)).toFormat();
   }, [tokenPrices]);
 
   const onClickClose = useCallback(() => {
@@ -49,9 +49,8 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
         </div>
       </div>
       <div
-        className={`token-list-wrapper ${
-          tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
-        }`}
+        className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""
+          }`}
       >
         {tokens.length > 0 &&
           tokens.map((token, index) => (
@@ -61,7 +60,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({
               onClick={() => onClickToken(token)}
             >
               <div className="token-info">
-                <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24}/>
+                <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24} />
                 <span className="token-name">{token.name}</span>
                 <span className="token-symbol">{token.symbol}</span>
               </div>

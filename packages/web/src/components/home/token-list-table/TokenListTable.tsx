@@ -78,10 +78,10 @@ const TokenListTable: React.FC<TokenListTableProps> = ({
                 idx >= 7
                   ? "right-padding-12"
                   : idx >= 2
-                  ? "right-padding-16"
-                  : idx === 1
-                  ? "left-padding"
-                  : "",
+                    ? "right-padding-16"
+                    : idx === 1
+                      ? "left-padding"
+                      : "",
                 {
                   left: isAlignLeft(head),
                   sort: isSortOption(head),

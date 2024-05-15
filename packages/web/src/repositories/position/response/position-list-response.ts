@@ -10,8 +10,6 @@ export interface PositionResponse {
 
   staked: boolean;
 
-  incentivized: boolean;
-
   operator: string;
 
   tickLower: string;
@@ -30,28 +28,42 @@ export interface PositionResponse {
 
   unclaimedFeeBAmount: string;
 
-  unclaimedFee0Usd: string;
-
-  unclaimedFee1Usd: string;
-
-  tokensOwed0Amount: string;
-
-  tokensOwed1Amount: string;
-
-  tokensOwed0Usd: string;
-
-  tokensOwed1Usd: string;
-
   apr?: number;
 
   stakedAt?: string;
 
+  reward?: RewardResponse[];
+
+  bins40: PoolBinModel[];
+
+  closed: boolean;
+
+  totalClaimedUsd: string;
+
+  incentiveType: string;
+
+  unclaimedFeeAUsd: string;
+
+  unclaimedFeeBUsd: string;
+
+  // TODO: Remove later
+  // reward?: RewardResponse[];
+
+  // unclaimedFee0Usd: string;
+
+  // tokensOwed1Usd: string;
+
+  // tokensOwed0Amount: string;
+
+  // tokensOwed1Amount: string;
+
+  // tokensOwed0Usd: string;
+
+  // bins: PoolBinModel[];
+
+  totalDailyRewardsUsd: string;
+
   stakedUsdValue?: string;
 
-  rewards?: RewardResponse[];
-
-  reward?: RewardResponse[];
-  bins: PoolBinModel[];
-  closed: boolean;
-  totalDailyRewardsUsd: string;
+  // unclaimedFee1Usd: string;
 }

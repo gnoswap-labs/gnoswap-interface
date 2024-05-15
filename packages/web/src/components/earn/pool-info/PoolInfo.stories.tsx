@@ -18,7 +18,8 @@ const pool: PoolCardInfo = {
     symbol: "BAR",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     type: "grc20",
-    priceID: "gno.land/r/bar"
+    priceID: "gno.land/r/bar",
+    priceId: "gno.land/r/bar"
   },
   tokenB: {
     chainId: "dev",
@@ -30,7 +31,8 @@ const pool: PoolCardInfo = {
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     type: "grc20",
-    priceID: "gno.land/r/foo"
+    priceID: "gno.land/r/foo",
+    priceId: "gno.land/r/foo",
   },
   feeTier: "FEE_500",
   liquidity: "$1,182,797",
@@ -38,11 +40,12 @@ const pool: PoolCardInfo = {
   volume24h: "$1,182,797",
   fees24h: "$131.937491",
   rewardTokens: [],
-  incentivizedType: "INCENTIVIZED",
+  incentiveType: "INCENTIVIZED",
   currentTick: 0,
   price: 0,
   bins: [],
   tvl: 0,
+  bins40: [],
 };
 
 export default {

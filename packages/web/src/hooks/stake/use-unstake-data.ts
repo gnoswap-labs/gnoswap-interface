@@ -18,12 +18,12 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + position.token0Balance,
-      0n,
+      (accum, position) => accum + position.tokenABalance,
+      0,
     );
     const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + position.token1Balance,
-      0n,
+      (accum, position) => accum + position.tokenBBalance,
+      0,
     );
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
@@ -52,12 +52,12 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenA = positions[0].pool.tokenA;
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce(
-      (accum, position) => accum + position.unclaimedFee0Amount,
-      0n,
+      (accum, position) => accum + position.unclaimedFeeAAmount,
+      0,
     );
     const pooledTokenBAmount = positions.reduce(
-      (accum, position) => accum + position.unclaimedFee1Amount,
-      0n,
+      (accum, position) => accum + position.unclaimedFeeBAmount,
+      0,
     );
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;

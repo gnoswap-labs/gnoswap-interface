@@ -40,8 +40,8 @@ export function makePairName({
   return `${symbolA}/${symbolB}`;
 }
 
-export function numberToFormat(num: string | number, decimals?: number) {
-  const decimal = Number.isInteger(Number(num)) ? 0 : decimals;
+export function numberToFormat(num: string | number, options?: { decimals?: number, forceDecimals?: boolean }) {
+  const decimal = options?.forceDecimals ? options?.decimals : (Number.isInteger(Number(num)) ? 0 : options?.decimals);
   return isNumber(Number(num)) ? BigNumber(num).toFormat(decimal || 0) : "0";
 }
 

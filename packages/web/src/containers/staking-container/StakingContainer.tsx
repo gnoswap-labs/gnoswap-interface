@@ -100,14 +100,14 @@ const StakingContainer: React.FC = () => {
       tokenPair.push(pool.tokenB);
     }
     const rewardTokenMap = positions
-      .flatMap(position => position.rewards)
+      .flatMap(position => position.reward)
       .reduce<{ [key in string]: TokenModel }>((accum, current) => {
         if (
           tokenPair.findIndex(
-            token => token.priceID === current.token.priceID,
+            token => token.priceID === current.rewardToken.priceID,
           ) > -1
         ) {
-          accum[current.token.priceID] = current.token;
+          accum[current.rewardToken.priceID] = current.rewardToken;
         }
         return accum;
       }, {});
@@ -130,7 +130,7 @@ const StakingContainer: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  
+
   const stakingPositionMap = useMemo(() => {
     return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
       const stakedTime = Number(current.stakedAt) * 1000;
@@ -172,7 +172,7 @@ const StakingContainer: React.FC = () => {
       return;
     }
     setType(0);
-    
+
   }, [allPosition.length, positions.length, stakingPositionMap["MAX"].length]);
 
   return (

@@ -81,16 +81,27 @@ const OneClickStaking: React.FC<Props> = ({
   }, [pool.volume24h]);
 
   const feeChangedStr = useMemo((): string => {
-    return `$${convertToKMB(`${Math.round(Number(pool.feeChange))}`, { maximumFractionDigits: 2 })}`;
-  }, [pool.feeChange]);
+    return `$${convertToKMB(`${Math.round(Number(pool.feeUsd24h))}`, { maximumFractionDigits: 2 })}`;
+  }, [pool.feeUsd24h]);
 
   const rewardTokens = useMemo(() => {
-    return pool?.rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
+    return [...new Set(pool?.rewardTokens?.map(item => getGnotPath(item).logoURI) || [])];
   }, [pool.rewardTokens]);
+
+  const feeApr = useMemo(() => {
+    if (Number(pool.feeApr) === 0) return "-";
+    return pool.feeApr;
+  }, [pool.feeApr]);
+
+  const stakingApr = useMemo(() => {
+    if (Number(pool.stakingApr) === 0) return "-";
+    return pool.stakingApr;
+  }, [pool.stakingApr]);
 
   if (!tokenA || !tokenB || !tokenARevert || !tokenBRevert) {
     return <></>;
   }
+
 
   return (
     <OneClickStakingWrapper>
@@ -127,14 +138,14 @@ const OneClickStaking: React.FC<Props> = ({
               leftSymbol={tokenARevert?.symbol || ""}
               rightSymbol={tokenBRevert?.symbol || ""}
             />
-            {pool.feeApr || "-"}
+            {feeApr}
           </div>
         </div>
         <div>
           <div className="label">Staking APR</div>
           <div className="value">
             <OverlapLogo logos={rewardTokens} size={24} />
-            {pool.stakingApr || "-"}
+            {stakingApr}
           </div>
         </div>
       </div>

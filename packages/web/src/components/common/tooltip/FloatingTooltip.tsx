@@ -1,7 +1,7 @@
 import { FloatingPortal, FloatingArrow } from "@floating-ui/react";
 
 import type { ElementRef } from "react";
-import React, { cloneElement, forwardRef, useEffect, useRef} from "react";
+import React, { cloneElement, forwardRef, useEffect, useRef } from "react";
 
 import { useMergedRef } from "@hooks/common/use-merged-ref";
 import {
@@ -21,6 +21,7 @@ interface TooltipProps {
   className?: string;
   isHiddenArrow?: boolean;
   children?: any;
+  enabled?: boolean;
 }
 
 const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
@@ -76,7 +77,7 @@ const FloatingTooltip = forwardRef<ElementRef<"div">, TooltipProps>(
         document.removeEventListener("scroll", handleScroll);
       };
     }, [breakpoint]);
-    
+
     return (
       <>
         {cloneElement(children, {

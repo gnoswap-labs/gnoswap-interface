@@ -1,84 +1,89 @@
-import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { TokenModel } from "@models/token/token-model";
-import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
-import { useMemo, useState } from "react";
-import PairRatio from "../../common/pair-ratio/PairRatio";
-import { ExchangeRateGraphContentHeader, ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
+import { useMemo } from "react";
+import { ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
 
 interface ExchangeRateGraphContentProps {
-  tokenA: TokenModel;
-  tokenB: TokenModel;
-  feeTier: string;
-  onSwap?: (swap: boolean) => void
-  data?: TokenExchangeRateGraphResponse
+  poolData: PoolDetailModel
+  selectedScope: CHART_DAY_SCOPE_TYPE,
+  isReversed: boolean;
 }
 
-function ExchangeRateGraphContent({
-  tokenA,
-  tokenB,
-  onSwap,
-  data,
+export function ExchangeRateGraphContent({
+  poolData,
+  selectedScope,
+  isReversed,
 }: ExchangeRateGraphContentProps) {
-  const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(CHART_DAY_SCOPE_TYPE["7D"]);
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
 
   const dataMemo = useMemo(() => {
+    const data = poolData.priceRatio;
+
     const getCurrentData = () => {
       switch (selectedScope) {
         case "30D":
-          return data?.last1m;
+          return data?.["30d"];
         case "ALL":
           return data?.all;
         case "7D":
         default:
-          return data?.last7d;
+          return data?.["7d"];
       }
     };
 
     return getCurrentData()?.map(item => ({
-      time: item.time,
-      value: item.value.toString()
+      time: item.date,
+      value: item.ratio,
     })).sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     }).reduce(
       (pre: any, next: any) => {
+        const value = (() => {
+          if (!next.value || next.value === 0) return 0;
+
+          if (isReversed) return (1 / Number(next.value)).toString();
+
+          return next.value;
+        })();
+
         return [
           ...pre,
           {
-            value: next.value || 0,
+            value: value,
             time: getLocalizeTime(next.time),
           },
         ];
       },
       [],
     );
-  }, [data, selectedScope]);
+  }, [isReversed, poolData.priceRatio, selectedScope]);
 
   const xAxisLabels = useMemo(() => {
+    const data = poolData.priceRatio;
+
     const getCurrentData = () => {
       switch (selectedScope) {
         case "30D":
-          return data?.last1m;
+          return data?.["30d"];
         case "ALL":
-          return data?.all;
+          return data?.["all"];
         case "7D":
         default:
-          return data?.last7d;
+          return data?.["7d"];
       }
     };
 
     return getCurrentData()?.map(item => ({
-      time: item.time,
-      value: item.value.toString()
+      time: item.date,
+      value: item.ratio.toString()
     })).sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     }).reduce(
@@ -88,7 +93,7 @@ function ExchangeRateGraphContent({
       },
       [],
     );
-  }, [data, selectedScope]);
+  }, [poolData.priceRatio, selectedScope]);
 
   const countXAxis = useMemo(() => {
     if (breakpoint !== DEVICE_TYPE.MOBILE)
@@ -102,20 +107,6 @@ function ExchangeRateGraphContent({
   }, [countXAxis, xAxisLabels?.length]);
 
   return (<ExchangeRateGraphContentWrapper>
-    <ExchangeRateGraphContentHeader>
-      <PairRatio
-        onSwap={onSwap}
-        tokenA={tokenA}
-        tokenB={tokenB}
-        feeTier={""}
-      />
-      <ChartScopeSelectTab
-        size={"SMALL"}
-        list={Object.values(CHART_DAY_SCOPE_TYPE)}
-        selected={selectedScope}
-        onChange={(value) => setSelectedScope(value)}
-      />
-    </ExchangeRateGraphContentHeader>
     <div className="data-wrapper">
       <div className="graph-wrap" ref={componentRef}>
         <LineGraph
@@ -132,6 +123,7 @@ function ExchangeRateGraphContent({
             locationTooltip: 170,
           }}
           showBaseLine
+          isShowTooltip={false}
           renderBottom={(baseLineNumberWidth) => {
             return <ExchangeRateGraphXAxisWrapper innerWidth={(baseLineNumberWidth !== 0) ? `calc(100% - ${baseLineNumberWidth}px)` : "100%"}>
               <div className="exchange-rate-graph-xaxis">

@@ -16,7 +16,9 @@ import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { encryptId } from "@utils/common";
+import { QUERY_KEY } from "@query/pools";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -67,6 +69,7 @@ export interface SelectPool {
   ) => void;
   isChangeMinMax: boolean;
   setIsChangeMinMax: (value: boolean) => void;
+  poolInfo: PoolDetailRPCModel | null | undefined
 }
 
 export const useSelectPool = ({
@@ -92,9 +95,34 @@ export const useSelectPool = ({
   >("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
   const { isLoadingCommon } = useLoading();
+  const [, setGlobalCompareToken] = useAtom(EarnState.currentCompareToken);
 
-  const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path , [tokenA?.path, tokenA?.wrappedPath]);
-  const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path , [tokenB?.path, tokenB?.wrappedPath]);
+  const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [tokenA?.path, tokenA?.wrappedPath]);
+  const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [tokenB?.path, tokenB?.wrappedPath]);
+
+  const tokenPair = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return null;
+    }
+
+    const tokenAPoolPath = tokenAPath;
+    const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
+    return [tokenAPoolPath, tokenBPoolPath].sort();
+  }, [tokenA, tokenAPath, tokenB]);
+
+  const isReverse = useMemo(() => {
+    return tokenPair?.findIndex(path => {
+      if (compareToken) {
+        return isNativeToken(compareToken)
+          ? compareToken.wrappedPath === path
+          : compareToken.path === path;
+      }
+      return false;
+    }) === 1;
+  }, [compareToken, tokenPair]);
+
+  const queryClient = useQueryClient();
+
 
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
     PoolDetailRPCModel | null,
@@ -102,7 +130,7 @@ export const useSelectPool = ({
   >({
     queryKey: ["poolInfo", tokenAPath, tokenBPath, feeTier, isCreate, startPrice],
     queryFn: async () => {
-      if(!tokenA || !tokenB || !feeTier) {
+      if (!tokenA || !tokenB || !feeTier) {
         return await Promise.resolve<PoolDetailRPCModel | null>(null);
       }
 
@@ -135,42 +163,38 @@ export const useSelectPool = ({
         return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
       }
 
-      const tokenAPoolPath = tokenAPath;
-      const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
-      const tokenPair = [tokenAPoolPath, tokenBPoolPath].sort();
-      const poolPath = `${tokenPair.join(":")}:${
-        SwapFeeTierInfoMap[feeTier].fee
-      }`;
-
+      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
 
-      const reverse =
-      tokenPair.findIndex(path => {
-        if (compareToken) {
-          return isNativeToken(compareToken)
-          ? compareToken.wrappedPath === path
-          : compareToken.path === path;
-        }
-        return false;
-      }) === 1;
+      const convertPath = encryptId(poolPath);
 
-     const changedPoolInfo =
-      reverse === false
-      ? poolRes
-      : {
-        ...poolRes,
-        price: 1 / poolRes.price,
-        ticks: Object.keys(poolRes.ticks).map(
-          tick => Number(tick) * -1,
-        ),
-        positions: poolRes.positions.map(position => ({
-          ...position,
-          tickLower: position.tickUpper * -1,
-          tickUpper: position.tickLower * -1,
-        })),
-      };
-      
+      await queryClient.prefetchQuery({
+        queryKey: [QUERY_KEY.poolDetail, convertPath],
+        queryFn: () => poolRepository.getPoolDetailByPoolPath(poolPath)
+      });
+      const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(convertPath);
+
+      const changedPoolInfo =
+        isReverse === false
+          ? {
+            ...poolRes,
+            price: poolResFromDb.price,
+          }
+          : {
+            ...poolRes,
+            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+            ticks: Object.keys(poolRes.ticks).map(
+              tick => Number(tick) * -1,
+            ),
+            positions: poolRes.positions.map(position => ({
+              ...position,
+              tickLower: position.tickUpper * -1,
+              tickUpper: position.tickLower * -1,
+            })),
+          };
+
       return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
+
     },
     staleTime: 5_000
   });
@@ -191,7 +215,7 @@ export const useSelectPool = ({
     if (isCreate && startPrice === null) {
       return "CREATE";
     }
-  if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoadingCommon : null)) {
+    if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoadingCommon : null)) {
       return "LOADING";
     }
     return "DONE";
@@ -441,7 +465,10 @@ export const useSelectPool = ({
     maxPosition,
     setMaxPosition: changeMaxPosition,
     compareToken,
-    setCompareToken,
+    setCompareToken: (token: TokenModel | null) => {
+      setCompareToken(token);
+      setGlobalCompareToken(token);
+    },
     currentPrice: price,
     minPrice,
     maxPrice,
@@ -466,5 +493,6 @@ export const useSelectPool = ({
     setInteractionType,
     isChangeMinMax,
     setIsChangeMinMax,
+    poolInfo,
   };
 };

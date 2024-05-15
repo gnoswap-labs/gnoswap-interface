@@ -1,7 +1,7 @@
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { TvlChartGraphWrapper } from "./TvlChartGraph.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
@@ -53,7 +53,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
 
-  const getDatas = useCallback(() => {
+  const mappedData = useMemo(() => {
     return datas.map(data => ({
       value: data.amount.value,
       time: data.time,
@@ -78,10 +78,10 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
             cursor
             className="graph"
             width={size.width}
-            height={size.height}
+            height={size.height - 36}
             color={theme.color.background04Hover}
             strokeWidth={1}
-            datas={getDatas()}
+            datas={mappedData}
             typeOfChart="tvl"
             customData={{
               height: 36,

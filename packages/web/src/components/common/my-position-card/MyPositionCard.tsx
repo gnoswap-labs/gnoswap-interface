@@ -108,19 +108,18 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minTickLabel = useMemo(() => {
     return minTickRate * -1 > 1000
       ? ">999%"
-      : `${minTickRate < 0 ? "+" : ""}${
-          Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-            ? "<1"
-            : Math.round(minTickRate * -1)
-        }%`;
+      : `${minTickRate < 0 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
+        ? "<1"
+        : Math.round(minTickRate * -1)
+      }%`;
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
     return maxTickRate === 999
       ? `>${maxTickRate}%`
       : maxTickRate >= 1000
-      ? ">999%"
-      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
+        ? ">999%"
+        : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {
@@ -143,7 +142,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickLower - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
@@ -161,7 +160,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return (
       ((position.tickUpper - currentTick) / (max - currentTick)) *
-        (GRAPH_WIDTH / 2) +
+      (GRAPH_WIDTH / 2) +
       GRAPH_WIDTH / 2
     );
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
@@ -246,9 +245,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return maxTickRate > 0 ? "positive" : "negative";
   }, [getMaxTick, maxTickRate]);
   const claimableUSD = useMemo(() => {
-    const temp = position.rewards.reduce((acc, cur) => Number(cur.claimableUsdValue) + acc, 0);
+    const temp = position.reward.reduce((acc, cur) => Number(cur.claimableUsd) + acc, 0);
     return toUnitFormat(temp, true, true);
-  }, [position.rewards]);
+  }, [position.reward]);
   return (
     <MyPositionCardWrapperBorder
       className={`${position.staked && inRange !== null ? "special-card" : ""}`}
@@ -281,8 +280,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 inRange === null
                   ? RANGE_STATUS_OPTION.NONE
                   : inRange
-                  ? RANGE_STATUS_OPTION.IN
-                  : RANGE_STATUS_OPTION.OUT
+                    ? RANGE_STATUS_OPTION.IN
+                    : RANGE_STATUS_OPTION.OUT
               }
             />
           </div>
@@ -331,7 +330,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 maxLabel={maxTickLabel}
                 minTick={minTickPosition}
                 maxTick={maxTickPosition}
-                bins={position.bins}
+                bins={pool.bins40}
                 tokenA={tokenA}
                 tokenB={tokenB}
                 isHiddenStart={isHiddenStart}
@@ -340,7 +339,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 minTickRate={minTickRate}
                 maxTickRate={maxTickRate}
                 pool={pool}
-                binsMyAmount={position.bins}
+                binsMyAmount={position.bins40}
               />
             </div>
             <div className="min-max-price">

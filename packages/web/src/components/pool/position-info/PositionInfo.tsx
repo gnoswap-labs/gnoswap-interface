@@ -7,7 +7,6 @@ import {
   POSITION_HISTORY_TD_WIDTH,
   TABLET_POSITION_HISTORY_TD_WIDTH,
 } from "@constants/skeleton.constant";
-import { IHistory } from "@containers/position-history-container/PositionHistoryContainer";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import React from "react";
@@ -16,41 +15,61 @@ import {
   IconButton,
   PositionInfoWrapper,
   TableColumn,
+  TableColumnTooltipContent,
 } from "./PositionInfo.styles";
 import { DEVICE_TYPE } from "@styles/media";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { getDateUtcToLocal } from "@common/utils/date-util";
+
 dayjs.extend(relativeTime);
 
 interface PositionInfoProps {
-  item: IHistory;
+  item: IPositionHistoryModel;
   key?: number;
   breakpoint: DEVICE_TYPE;
+  tokenASymbol: string;
+  tokenBSymbol: string;
 }
 
 const PositionInfo: React.FC<PositionInfoProps> = ({
   item,
   key,
   breakpoint,
+  tokenASymbol,
+  tokenBSymbol,
 }) => {
-  const { timeStamp, action, value, gnsAmount, gnotAmount } = item;
+  const { time, type, usdValue, amountA, amountB, txHash } = item;
   const td =
     breakpoint === DEVICE_TYPE.MOBILE
       ? MOBILE_POSITION_HISTORY_TD_WIDTH
       : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
-      ? TABLET_POSITION_HISTORY_TD_WIDTH
-      : POSITION_HISTORY_TD_WIDTH;
+        ? TABLET_POSITION_HISTORY_TD_WIDTH
+        : POSITION_HISTORY_TD_WIDTH;
+  const timeFormat = getDateUtcToLocal(time);
 
   return (
     <PositionInfoWrapper key={key}>
       <HoverSection>
         <TableColumn className="left" tdWidth={td[0]}>
-          <span className="position-index">{timeStamp}</span>
+          <Tooltip
+            placement="top"
+            FloatingContent={
+              <TableColumnTooltipContent>
+                {`${timeFormat.value} (UTC+${timeFormat.offsetHours})`}
+              </TableColumnTooltipContent>
+            }
+          >
+            <span className="token-index">{dayjs(time).fromNow()}</span>
+          </Tooltip>
         </TableColumn>
         <TableColumn className="left" tdWidth={td[1]}>
           <span className="position-index">
-            {action}
+            {type}
             <IconButton
               onClick={() => {
-                window.open("/", "_blank");
+                window.open(`https://gnoscan.io/transactions/details?txhash=${txHash}`, "_blank");
               }}
             >
               <IconOpenLink className="action-icon" />
@@ -58,13 +77,13 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
           </span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[2]}>
-          <span className="position-index">{value}</span>
+          <span className="position-index">{Number(item.usdValue) < 0.01 && Number(usdValue) ? "<$0.01" : `$${prettyNumber(item.usdValue)}`}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[3]}>
-          <span className="position-index">{gnsAmount}</span>
+          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(amountA)}`, true)} ${tokenASymbol}`}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[4]}>
-          <span className="position-index">{gnotAmount}</span>
+          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(amountB)}`, true)} ${tokenBSymbol}`}</span>
         </TableColumn>
       </HoverSection>
     </PositionInfoWrapper>

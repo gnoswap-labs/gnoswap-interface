@@ -105,18 +105,18 @@ export const useRepositionHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
+        ? RANGE_STATUS_OPTION.IN
+        : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
-    return selectedPosition?.rewards.reduce(
+    return selectedPosition?.reward.reduce(
       (acc, item) => acc + Number(item.apr || 0),
       0,
     );
   }, [selectedPosition]);
-  
+
   const selectPool = useSelectPool({
     tokenA,
     tokenB,
@@ -188,7 +188,7 @@ export const useRepositionHandle = () => {
       setPriceRange({ type: "Custom" });
     }
   }, [selectPool.isChangeMinMax]);
-  
+
   return {
     tokenA,
     tokenB,

@@ -1,17 +1,18 @@
 // TODO : remove eslint-disable after work
 /* eslint-disable */
-import { IHistory } from "@containers/position-history-container/PositionHistoryContainer";
 import { DEVICE_TYPE } from "@styles/media";
 import React from "react";
 import PositionHistoryTable from "../position-history-table/PositionHistoryTable";
 import { PositionHistoryListWrapper } from "./PositionHistoryList.styles";
 import { TokenModel } from "@models/token/token-model";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
 interface IPositionHistoryList {
-  list: IHistory[];
+  list: IPositionHistoryModel[];
   isFetched: boolean;
   breakpoint: DEVICE_TYPE;
   tokenA: TokenModel;
   tokenB: TokenModel;
+  isLoading: boolean;
 }
 
 const PositionHistoryList: React.FC<IPositionHistoryList> = ({
@@ -20,6 +21,7 @@ const PositionHistoryList: React.FC<IPositionHistoryList> = ({
   breakpoint,
   tokenA,
   tokenB,
+  isLoading,
 }) => {
   return (
     <PositionHistoryListWrapper>
@@ -29,6 +31,7 @@ const PositionHistoryList: React.FC<IPositionHistoryList> = ({
         breakpoint={breakpoint}
         tokenA={tokenA}
         tokenB={tokenB}
+        isLoading={isLoading}
       />
     </PositionHistoryListWrapper>
   );

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { IncentivizedOptions, type FeeOptions } from "@common/values/data-constant";
+import { type FeeOptions } from "@common/values/data-constant";
 import PoolList from "@components/earn/pool-list/PoolList";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { ValuesType } from "utility-types";
@@ -11,6 +11,7 @@ import useClickOutside from "@hooks/common/use-click-outside";
 import { ThemeState } from "@states/index";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { useLoading } from "@hooks/common/use-loading";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 export interface Pool {
   poolId: string;
   tokenPair: TokenPairInfo;
@@ -77,9 +78,9 @@ const PoolListContainer: React.FC = () => {
       }
     }
   }, [isClickOutside, keyword]);
-  
+
   const sortedPoolListInfos = useMemo(() => {
-    function filteredPoolType(poolType: POOL_TYPE, incentivizedType: IncentivizedOptions) {
+    function filteredPoolType(poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) {
       switch (poolType) {
         case "Incentivized":
           return incentivizedType !== "NONE_INCENTIVIZED";
@@ -129,13 +130,13 @@ const PoolListContainer: React.FC = () => {
     } else {
       temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
     }
-    return temp.filter((info) => filteredPoolType(poolType, info.incentivizedType));
+    return temp.filter((info) => filteredPoolType(poolType, info.incentiveType));
   }, [keyword, poolListInfos, poolType, sortOption]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPoolListInfos.length / 15);
   }, [sortedPoolListInfos.length]);
-  
+
   const routeItem = (id: string) => {
     router.push(`/earn/pool/${id}`);
   };

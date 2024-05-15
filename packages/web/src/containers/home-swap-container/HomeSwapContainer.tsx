@@ -27,6 +27,7 @@ const TOKEN_A: TokenModel = {
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "native",
   priceID: "gnot",
+  priceId: "gnot",
 };
 const TOKEN_B: TokenModel = {
   chainId: "dev",
@@ -39,6 +40,7 @@ const TOKEN_B: TokenModel = {
   logoURI: "/gnos.svg",
   type: "grc20",
   priceID: GNOS_PATH,
+  priceId: GNOS_PATH,
 };
 
 const HomeSwapContainer: React.FC = () => {
@@ -77,7 +79,7 @@ const HomeSwapContainer: React.FC = () => {
     }
     return "0";
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
-  
+
   const tokenAUSD = useMemo(() => {
     if (!tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
       return Number.NaN;
@@ -86,6 +88,7 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
       .toNumber();
   }, [tokenA, tokenAAmount, tokenPrices]);
+
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
       return Number.NaN;
@@ -94,6 +97,7 @@ const HomeSwapContainer: React.FC = () => {
       .multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd)
       .toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
+
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
       tokenA,
@@ -108,19 +112,10 @@ const HomeSwapContainer: React.FC = () => {
       tokenBUSDStr: formatUsdNumber(tokenBUSD.toString()),
       direction: swapDirection,
       slippage,
+      tokenADecimals: tokenA?.decimals,
+      tokenBDecimals: tokenB?.decimals,
     };
-  }, [
-    slippage,
-    swapDirection,
-    tokenA,
-    tokenAAmount,
-    tokenABalance,
-    tokenAUSD,
-    tokenB,
-    tokenBAmount,
-    tokenBBalance,
-    tokenBUSD,
-  ]);
+  }, [slippage, swapDirection, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapNow = useCallback(() => {
     if (swapDirection === "EXACT_IN" && !!Number(tokenAAmount)) {

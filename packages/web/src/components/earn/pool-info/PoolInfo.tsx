@@ -59,23 +59,16 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
     return <OverlapLogo logos={logos} size={20} />;
   }, [rewardTokens, tokenA, tokenB]);
 
-  const resolvedBins = useMemo(() => {
-    const length = 20;
-    const poolLength = pool.bins.length;
-    if (poolLength <= 20) return pool?.bins || [];
-    return Array.from({ length }, (_, index) => {
-      if (index + 10 > poolLength - 1) return pool.bins[0];
-      return pool.bins[10 + index];
-    });
-  }, [pool.bins]);
   const tdWidth =
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_TD_WIDTH_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-      ? POOL_TD_WIDTH_SMALL_TABLET
-      : breakpoint === DEVICE_TYPE.TABLET
-      ? POOL_TD_WIDTH_TABLET
-      : POOL_TD_WIDTH;
+        ? POOL_TD_WIDTH_SMALL_TABLET
+        : breakpoint === DEVICE_TYPE.TABLET
+          ? POOL_TD_WIDTH_TABLET
+          : POOL_TD_WIDTH;
+
+  const isShowBar = !!liquidity && liquidity !== "$0" && liquidity !== "0";
 
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>
@@ -111,8 +104,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
             tokenA={tokenA}
             tokenB={tokenB}
             currentTick={pool.currentTick}
-            bins={resolvedBins}
+            bins={bins ?? []}
             mouseover
+            showBar={isShowBar}
             themeKey={themeKey}
             position="top"
             nextSpacing

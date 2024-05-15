@@ -34,17 +34,18 @@ const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionModel[], period: number }) => {
   const getRemainTime = useCallback((position: PositionModel) => {
-    const stakedTime = Number(position.stakedAt) * 1000;
+    const stakedTime = new Date(position.stakedAt).getTime();
     const passedTime = (new Date().getTime() - stakedTime);
     const remainTime = period * DAY_TIME - passedTime;
     const { day, hours, minutes, seconds } = calculateRemainTime(remainTime);
     return `${day}d ${hours}h ${minutes}m ${seconds}s`;
   }, [period]);
 
+
   return (
     <PriceTooltipContentWrapper>
-      {positions.map((position, index) => (
-        <React.Fragment key={index}>
+      {positions.map((position, index) => {
+        return <React.Fragment key={index}>
           <div className="list list-logo">
             <DoubleLogo
               size={18}
@@ -55,21 +56,21 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
           </div>
           <div className="list">
             <span className="label">Total Value</span>
-            <span className="content">{numberToUSD(Number(position.stakedUsdValue))}</span>
+            <span className="content">{numberToUSD(Number(position.usdValue))}</span>
           </div>
           <div className="list">
             <span className="label">Staked Date</span>
-            <span className="content">{timeToDateStr(position.stakedAt, 1000)}</span>
+            <span className="content">{timeToDateStr(new Date(position.stakedAt).getTime())}</span>
           </div>
           <div className="list">
             <span className="label">Next Tier</span>
-            <span className="content">in {getRemainTime(position)}</span>
+            <span className="content">{(period === -1) ? "-" : `in ${getRemainTime(position)}`}</span>
           </div>
           {index < positions.length - 1 && (
             <TooltipDivider />
           )}
-        </React.Fragment>
-      ))}
+        </React.Fragment>;
+      })}
     </PriceTooltipContentWrapper>
   );
 };
@@ -103,14 +104,14 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positions]);
 
   const positionRewards = useMemo(() => {
-    return positions.flatMap(position => position.rewards);
+    return positions.flatMap(position => position.reward);
   }, [positions]);
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards.filter(_ => ["EXTERNAL", "STAKING"].includes(_.rewardType)).reduce((accum, current) => {
       if (current.rewardType !== "STAKING") {
         return accum;
       }
-      const tokenUSD = tokenPrices[current.token.priceID]?.usd || 0;
+      const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
     return toUnitFormat(tempTotalStakedRewardUSD / (10 ** 6), true, true);
@@ -155,7 +156,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth: 300, mobileWidth: 100 })}
+              css={pulseSkeletonStyle({ h: 22, w: "400px", tabletWidth: 300, mobileWidth: 100 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -177,7 +178,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth: 140, mobileWidth: 50 })}
+              css={pulseSkeletonStyle({ h: 22, w: "200px", tabletWidth: 140, mobileWidth: 50 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">
@@ -216,7 +217,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [period]);
 
   const positionRewards = useMemo(() => {
-    return positions.flatMap(position => position.rewards);
+    return positions.flatMap(position => position.reward);
   }, [positions]);
 
   const totalUSD = useMemo(() => {
@@ -234,7 +235,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
       if (current.rewardType !== "STAKING") {
         return accum;
       }
-      const tokenUSD = tokenPrices[current.token.priceID]?.usd || 0;
+      const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
       return (Number(current.totalAmount) * Number(tokenUSD)) + accum;
     }, 0);
     return toUnitFormat(tempTotalStakedRewardUSD / 10 ** 6, true, true);
@@ -270,7 +271,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
         <div className="contents">
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"400px", tabletWidth:  300, mobileWidth: 100 })}
+              css={pulseSkeletonStyle({ h: 22, w: "400px", tabletWidth: 300, mobileWidth: 100 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="price">
@@ -292,7 +293,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
           </div>}
           {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
             <span
-              css={pulseSkeletonStyle({ h: 22, w:"200px", tabletWidth:  140, mobileWidth: 50 })}
+              css={pulseSkeletonStyle({ h: 22, w: "200px", tabletWidth: 140, mobileWidth: 50 })}
             />
           </SkeletonEarnDetailWrapper>}
           {!loading && <div className="apr">

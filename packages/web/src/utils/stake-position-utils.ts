@@ -56,14 +56,15 @@ export const convertToKMB = (
     if (Number(price) < 0.000001 && Number(price) !== 0) return "0.000001";
     if (Number(price) < 1) return `${Number(Number(price).toFixed(6))}`;
     
-    const result = removeTrailingZeros(Number(price).toLocaleString("en-US", {
+    
+    const result = Number(price).toLocaleString("en-US", {
       maximumSignificantDigits: maximumSignificantDigits,
       minimumSignificantDigits: options?.minimumSignificantDigits,
       maximumFractionDigits: options?.maximumFractionDigits,
       minimumFractionDigits: options?.minimumFractionDigits,
-    }));
+    });
 
-    return result;
+    return Number.isInteger(result) ? result : removeTrailingZeros(result);
   } else {
     const temp = Math.floor(Number(price));
     if (temp >= 1e9) {

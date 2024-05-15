@@ -56,13 +56,16 @@ interface EarnAddLiquidityProps {
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
   createOption: { startPrice: number | null, isCreate: boolean };
-  fetching: boolean;
   handleSwapValue: () => void;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
   defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
   resetPriceRangeTypeTarget: PriceRangeType;
   defaultTicks?: DefaultTick;
+  isLoadingTokens?: boolean;
+  showDim: boolean;
+  isLoadingSelectFeeTier: boolean;
+  isLoadingSelectPriceRange: boolean;
 }
 
 const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
@@ -93,13 +96,15 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
   openModal,
   selectPool,
   changeStartingPrice,
-  createOption,
-  fetching,
   handleSwapValue,
   isKeepToken,
   setPriceRange,
   defaultTicks,
   resetPriceRangeTypeTarget,
+  isLoadingTokens = false,
+  showDim,
+  isLoadingSelectFeeTier,
+  isLoadingSelectPriceRange,
 }) => {
   const [openedSelectPair] = useState(isEarnAdd ? true : false);
   const [openedFeeTier, setOpenedFeeTier] = useState(false);
@@ -223,16 +228,13 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
     setOpenedSetting(() => false);
   }, []);
 
-  const showDim = useMemo(() => {
-    return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
-  }, [selectPool.isCreate, tokenA, tokenB, createOption.startPrice]);
-
   const isShowOutRange = useMemo(() => {
     if (!tokenA || !tokenB)
       return false;
     const { minPrice, maxPrice, currentPrice } = selectPool;
     return ((minPrice || 0) > (currentPrice || 0) && (maxPrice || 0) > (currentPrice || 0)) || ((minPrice || 0) < (currentPrice || 0) && (maxPrice || 0) < (currentPrice || 0));
   }, [selectPool, tokenA, tokenB]);
+
   const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingCommon, [selectPool.renderState, isLoadingCommon]);
 
   return (
@@ -258,6 +260,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
               tokenB={tokenB}
               changeTokenA={handleChangeTokenA}
               changeTokenB={handleChangeTokenB}
+              disabled={isLoadingTokens}
             />
           )}
         </article>
@@ -283,7 +286,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             feeTier={feeTier}
             pools={pools}
             selectFeeTier={handleSelectFeeTier}
-            fetching={fetching}
+            fetching={isLoadingSelectFeeTier}
             openedFeeTier={openedFeeTier}
           />
         </article>
@@ -319,6 +322,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
             setPriceRange={setPriceRange}
             defaultTicks={defaultTicks}
             resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
+            isLoadingSelectPriceRange={isLoadingSelectPriceRange}
           />
           {selectedPriceRange && existTokenPair && selectedFeeRate && !showDim && <SelectPriceRangeSummary {...priceRangeSummary} />}
           {!isLoading && isShowOutRange && <OutOfRangeWrapper>

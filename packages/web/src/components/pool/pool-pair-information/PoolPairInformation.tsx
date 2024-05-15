@@ -34,7 +34,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   const tokenInfo = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol} (${feeStr || "0"})`;
   }, [feeStr, pool.tokenA.symbol, pool.tokenB.symbol]);
-  
+
   return (
     <PoolPairInformationWrapper>
       <BreadcrumbsWrapper>
@@ -46,20 +46,20 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             {tokenInfo}
           </span>
         </div>}
-        {loading && <div css={pulseSkeletonStyle({ w: "150px", h: 26 })} className="pulse-skeleton"/>}
+        {loading && <div css={pulseSkeletonStyle({ w: "150px", h: 26 })} className="pulse-skeleton" />}
       </BreadcrumbsWrapper>
       <div className="token-status">
         {loading && <SkeletonEarnDetailWrapper height={36} mobileHeight={24}>
           <span css={pulseSkeletonStyle({ w: "200px", h: 20 })} />
-          </SkeletonEarnDetailWrapper>}
+        </SkeletonEarnDetailWrapper>}
         {!loading && <PoolPairInfoHeader
           tokenA={pool.tokenA}
           tokenB={pool.tokenB}
-          incentivizedType={pool.incentivizedType}
+          incentivizedType={pool.incentiveType}
           rewardTokens={pool.rewardTokens}
           feeStr={feeStr || ""}
         />}
-        <PoolPairInfoContent pool={pool} loading={loading} positions={positions}/>
+        <PoolPairInfoContent pool={pool} loading={loading} positions={positions} />
       </div>
     </PoolPairInformationWrapper>
   );

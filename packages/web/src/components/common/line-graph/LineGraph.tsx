@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
@@ -72,6 +72,7 @@ export interface LineGraphProps {
   centerLineColor?: string;
   showBaseLine?: boolean;
   renderBottom?: (baseLineNumberWidth: number) => React.ReactElement
+  isShowTooltip?: boolean;
 }
 
 export interface LineGraphRef {
@@ -142,6 +143,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine,
   renderBottom,
+  isShowTooltip = true,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -152,7 +154,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [baseLineYAxis, setBaseLineYAxis] = useState<string[]>([]);
   const [baseLineNumberWidth, setBaseLineNumberWidth] = useState<number>(0);
   const { height: customHeight = 0, locationTooltip } = customData;
-  const chartRef = useRef<SVGGElement | null>(null);
   const baseLineCount = useMemo(() => 4, []);
   const theme = useTheme();
 
@@ -162,7 +163,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   useEffect(() => {
     updatePoints(datas, width, height);
-  }, [datas, width, height]);
+  }, [datas, width, height, baseLineNumberWidth]);
 
   const updatePoints = (
     datas: LineGraphData[],
@@ -185,11 +186,16 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     let baseLineNumberWidthComputation = 0;
 
+    const minMaxGap = (maxValue - minValue) !== 0 ? (maxValue - minValue) : (maxValue * gapRatio);
+
     if (showBaseLine) {
       const baseLineData = new Array(baseLineCount).fill("").map((value, index) => {
-        const minMaxGap = maxValue - minValue;
-        const additionalGap = minMaxGap * (gapRatio / 2);
-        const baseLineGap = minMaxGap * (1 + gapRatio);
+
+        // Gap from lowest value or highest value  to baseline
+        const additionalGap = (maxValue - minValue !== 0) ? minMaxGap * (gapRatio / 2) : (minMaxGap / 2);
+        // Gap between bottom and top base line
+        const baseLineGap = (maxValue - minValue !== 0) ? minMaxGap * (1 + gapRatio) : minMaxGap;
+        // Lowest baseline value
         const bottomBaseLineValue = minValue - additionalGap;
 
         const currentBaseLineValue = bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
@@ -229,27 +235,31 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     const optimizeValue = function (value: number, height: number) {
       // The base line wrapper will > top and bottom of graph 10 % so the height will be 110% of graph height
-      const graphHeight = showBaseLine ? height * (1 / 1.1) : height;
+      const graphHeight = (() => {
+        if (showBaseLine) {
+          return height * (1 / 1.1);
+        }
+
+        return height;
+      })();
 
       // Subtract 5% from the top baseline
       const topFrontierHeight = showBaseLine ? height * (1.05 / 1.1) : height;
 
-      return (
-        // (top frontier height) - (distance from point to bottom) = (point top top)
-        topFrontierHeight -
-        // gap between point and bottom
-        new BigNumber(value - minValue)
-          // gap ratio between gap to bottom and largest gap (max - min)
-          .dividedBy(maxValue - minValue)
-          // precise distance from point to bottom
-          .multipliedBy(graphHeight)
-          .toNumber()
-      );
+      const result = (() => {
+        if (maxValue - minValue === 0) {
+          return topFrontierHeight - ((value - (value * 0.95)) * graphHeight) / minMaxGap;
+        }
+
+        return topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap;
+      })();
+
+      return result;
     };
 
     const optimizeTime = function (time: number, width: number) {
       return new BigNumber(time - minTime)
-        .multipliedBy(width - baseLineNumberWidthComputation)
+        .multipliedBy((width) - baseLineNumberWidthComputation)
         .dividedBy(maxTime - minTime)
         .toNumber();
     };
@@ -408,7 +418,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
     return path;
   }, [height, points, smooth]);
 
-  const offsetPixel = useMemo(() => 3, []);
   const isLightTheme = theme.themeKey === "light";
 
   return (
@@ -425,7 +434,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
         isHiddenArrow
         position={locationTooltipPosition}
         content={
-          currentPointIndex > -1 ? (
+          (isShowTooltip && currentPointIndex > -1) ? (
             <LineGraphTooltipWrapper>
               <div className="tooltip-body">
                 <span className="date">
@@ -457,7 +466,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 : <stop offset="100%" stopColor={gradientEndColor} />}
             </linearGradient>
           </defs>
-          <g ref={chartRef} height={height + (customHeight || 0)} width={width} className="line-chart-g">
+          <g width={width} className="line-chart-g">
             {showBaseLine && <>
               {
                 baseLineYAxis.map((value, index) => {
@@ -465,7 +474,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
                   return <>
                     <line x1={baseLineNumberWidth} x2={width} y1={currentHeight} y2={currentHeight} stroke="grey" stroke-width="1" strokeDasharray={3} opacity={0.2} />
-                    <text className="y-axis-number" x="" y={currentHeight + offsetPixel} fill={theme.color.text04}>{value}</text>
+                    <text alignmentBaseline="central" className="y-axis-number" x="" y={currentHeight} fill={theme.color.text04}>{value}</text>
                   </>;
                 })
               }

@@ -21,8 +21,8 @@ export const usePoolData = () => {
   } = useGetPoolList({
     refetchInterval: router.pathname === "/" ? 10 * 1000 : router.pathname === PATH_60SECOND ? 60 * 1000 : false,
   });
-  const forceRefect = useForceRefetchQuery();
-  
+
+  const forceRefetch = useForceRefetchQuery();
   const [isFetchedPositions, setIsFetchedPositions] = useAtom(
     PoolState.isFetchedPositions,
   );
@@ -35,23 +35,24 @@ export const usePoolData = () => {
         ...item,
         tokenA: item.tokenA
           ? {
-              ...item.tokenA,
-              symbol: getGnotPath(item.tokenA).symbol,
-              logoURI: getGnotPath(item.tokenA).logoURI,
-              name: getGnotPath(item.tokenA).name,
-            }
+            ...item.tokenA,
+            symbol: getGnotPath(item.tokenA).symbol,
+            logoURI: getGnotPath(item.tokenA).logoURI,
+            name: getGnotPath(item.tokenA).name,
+          }
           : item.tokenA,
         tokenB: item.tokenB
           ? {
-              ...item.tokenB,
-              symbol: getGnotPath(item.tokenB).symbol,
-              logoURI: getGnotPath(item.tokenB).logoURI,
-              name: getGnotPath(item.tokenB).name,
-            }
+            ...item.tokenB,
+            symbol: getGnotPath(item.tokenB).symbol,
+            logoURI: getGnotPath(item.tokenB).logoURI,
+            name: getGnotPath(item.tokenB).name,
+          }
           : item.tokenB,
       };
     });
   }, [pools, wugnotPath, gnot]);
+
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools
@@ -88,7 +89,7 @@ export const usePoolData = () => {
 
   const incentivizedPools: PoolCardInfo[] = useMemo(() => {
     const mappedPools = pools
-      .filter(pool => pool.incentivizedType !== "NONE_INCENTIVIZED")
+      .filter(pool => pool.incentiveType !== "NONE_INCENTIVIZED")
       .map(PoolMapper.toCardInfo);
     mappedPools.sort((x, y) => Number(y.tvl) - Number(x.tvl));
     return mappedPools.map((item: PoolCardInfo) => {
@@ -111,7 +112,7 @@ export const usePoolData = () => {
   }, [pools, gnot]);
 
   async function updatePools() {
-    forceRefect({ queryKey: [QUERY_KEY.pools] });
+    forceRefetch({ queryKey: [QUERY_KEY.pools] });
   }
 
   return {

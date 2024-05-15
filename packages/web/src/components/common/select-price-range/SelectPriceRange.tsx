@@ -8,6 +8,7 @@ import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/
 import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustom";
 import { TokenModel } from "@models/token/token-model";
 import { SelectPool } from "@hooks/pool/use-select-pool";
+import { isFetchedPools } from "@states/pool";
 
 interface SelectPriceRangeProps {
   opened: boolean;
@@ -27,6 +28,7 @@ interface SelectPriceRangeProps {
   defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
   resetPriceRangeTypeTarget: PriceRangeType;
   defaultTicks?: DefaultTick;
+  isLoadingSelectPriceRange: boolean;
 }
 
 const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
@@ -46,6 +48,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   setPriceRange,
   resetPriceRangeTypeTarget,
   defaultTicks,
+  isLoadingSelectPriceRange,
 }) => {
   const selectPriceRangeRef = useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
   const selectedTokenPair = true;
@@ -69,7 +72,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           />
         ))}
       </div>}
-      {(selectedTokenPair && tokenA && tokenB) && (
+      {(selectedTokenPair && tokenA && tokenB && isFetchedPools) && (
         <SelectPriceRangeCustom
           tokenA={tokenA}
           tokenB={tokenB}
@@ -85,6 +88,7 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
           defaultTicks={defaultTicks}
           resetPriceRangeTypeTarget={resetPriceRangeTypeTarget}
           ref={selectPriceRangeRef}
+          isLoadingSelectPriceRange={isLoadingSelectPriceRange}
         />
       )}
     </SelectPriceRangeWrapper>

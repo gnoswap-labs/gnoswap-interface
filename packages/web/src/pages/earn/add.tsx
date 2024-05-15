@@ -11,15 +11,15 @@ import ExchangeRateGraphContainer from "@containers/exchange-rate-graph-containe
 import { useRouter } from "next/router";
 
 export default function EarnAdd() {
-  const router = useRouter();
-  const query = router.query;
+  const query = useRouter().query;
   const [isEarnAdd] = useAtom(EarnState.isOneClick);
+  const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
     { title: "Earn", path: "/earn" },
     { title: "Add Position", path: "" },
   ];
 
-  const showExchangeRate = useMemo(() => query.tokenA && query.tokenB, [query.tokenA, query.tokenB]);
+  const showExchangeRate = useMemo(() => query.tokenA && query.tokenB && !!currentPoolPath, [currentPoolPath, query.tokenA, query.tokenB]);
 
   return (
     <EarnAddLayout

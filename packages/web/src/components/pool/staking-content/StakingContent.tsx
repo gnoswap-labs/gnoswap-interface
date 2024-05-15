@@ -53,10 +53,10 @@ const StakingContent: React.FC<StakingContentProps> = ({
     const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
     return [...new Set([...temp, ...rewardLogo])];
   }, [rewardTokens, pool]);
-  
+
   const stakingPositionMap = useMemo(() => {
     return positions.reduce<{ [key in StakingPeriodType]: PoolPositionModel[] }>((accum, current) => {
-      const stakedTime = Number(current.stakedAt) * 1000;
+      const stakedTime = new Date(current.stakedAt).getTime();
       const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
       let periodType: StakingPeriodType = "MAX";
       if (difference < 5) {
@@ -75,7 +75,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       "MAX": [],
     });
   }, [positions]);
-  
+
   const checkPoints = useMemo((): StakingPeriodType[] => {
     let checkPointIndex = -1;
     STAKING_PERIOS.forEach((period, index) => {
@@ -137,7 +137,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
       <div className="button-wrap">
         <div className="empty-content"></div>
         {loading && <div className="loading-wrapper">
-            <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
+          <SkeletonEarnDetailWrapper className="loading-button" height={36} mobileHeight={24}>
             <span
               css={pulseSkeletonStyle({ h: 22, w: "400px", mobileWidth: 150 })}
             />
@@ -160,7 +160,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             gap: "8px",
           }}
           className={type < 3 ? "change-weight" : "receive-button"}
-          onClick={() => {}}
+          onClick={() => { }}
         />}
       </div>
     </StakingContentWrapper>

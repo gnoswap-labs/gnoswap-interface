@@ -8,7 +8,6 @@ import {
   TABLET_POSITION_HISTORY_TD_WIDTH
 } from "@constants/skeleton.constant";
 import {
-  IHistory,
   TABLE_HEAD,
 } from "@containers/position-history-container/PositionHistoryContainer";
 import { cx } from "@emotion/css";
@@ -21,13 +20,15 @@ import {
   noDataText
 } from "./PositionHistoryTable.styles";
 import { TokenModel } from "@models/token/token-model";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
 
 interface PositionHistoryTableProps {
-  list: IHistory[];
+  list: IPositionHistoryModel[];
   isFetched: boolean;
   breakpoint: DEVICE_TYPE;
   tokenA: TokenModel;
   tokenB: TokenModel;
+  isLoading: boolean;
 }
 
 const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
@@ -36,20 +37,21 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
   breakpoint,
   tokenA,
   tokenB,
+  isLoading,
 }) => {
   const td =
-  breakpoint === DEVICE_TYPE.MOBILE
-    ? MOBILE_POSITION_HISTORY_TD_WIDTH
-    : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
-    ? TABLET_POSITION_HISTORY_TD_WIDTH
-    : POSITION_HISTORY_TD_WIDTH;
+    breakpoint === DEVICE_TYPE.MOBILE
+      ? MOBILE_POSITION_HISTORY_TD_WIDTH
+      : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
+        ? TABLET_POSITION_HISTORY_TD_WIDTH
+        : POSITION_HISTORY_TD_WIDTH;
 
-  const sekeleton: any = 
-  breakpoint === DEVICE_TYPE.MOBILE
-  ? MOBILE_POSITION_HISTORY_INFO
-  : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
-  ? TABLET_POSITION_HISTORY_INFO
-  : POSITION_HISTORY_INFO;
+  const sekeleton: any =
+    breakpoint === DEVICE_TYPE.MOBILE
+      ? MOBILE_POSITION_HISTORY_INFO
+      : breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M
+        ? TABLET_POSITION_HISTORY_INFO
+        : POSITION_HISTORY_INFO;
   return (
     <TableWrapper>
       <div className="scroll-wrapper">
@@ -73,12 +75,17 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
           {isFetched && list.length === 0 && (
             <div css={noDataText}>No position history found</div>
           )}
-          {isFetched &&
+          {(isFetched && !isLoading) &&
             list.length > 0 &&
-            list.map((item, idx) => (
-              <PositionInfo item={item} key={idx} breakpoint={breakpoint}/>
-            ))}
-          {!isFetched && (
+            list.map((item, idx) =>
+              <PositionInfo
+                item={item}
+                key={idx}
+                breakpoint={breakpoint}
+                tokenASymbol={tokenA.symbol}
+                tokenBSymbol={tokenB.symbol} />
+            )}
+          {isLoading && (
             <TableSkeleton
               info={sekeleton}
               className="position-history-table"

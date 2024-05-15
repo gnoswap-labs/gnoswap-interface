@@ -1,4 +1,3 @@
-import { IncentivizedOptions } from "@common/values";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenPairAmountInfo } from "@models/token/token-pair-amount-info";
 import {
@@ -10,6 +9,7 @@ import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
 import { toUnitFormat } from "@utils/number-utils";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 export class PositionMapper {
   public static toTokenPairAmount(
@@ -22,11 +22,11 @@ export class PositionMapper {
       tokenA,
       tokenB,
       tokenAAmount: {
-        amount: Number(position.token0Balance),
+        amount: Number(position.tokenABalance),
         currency: tokenA.symbol,
       },
       tokenBAmount: {
-        amount: Number(position.token1Balance),
+        amount: Number(position.tokenBBalance),
         currency: tokenB.symbol,
       },
     };
@@ -34,40 +34,40 @@ export class PositionMapper {
 
   public static from(position: PositionResponse): PositionModel {
     const id = position.lpTokenId;
-    const incentivizedType: IncentivizedOptions = position.incentivized
-      ? "INCENTIVIZED"
-      : "NONE_INCENTIVIZED";
 
     return {
       id,
       lpTokenId: position.lpTokenId,
-      incentivizedType,
       poolPath: position.poolPath,
       staked: position.staked,
       operator: position.operator,
       tickLower: Number(position.tickLower),
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
-      token0Balance: BigInt(position.tokenABalance),
-      token1Balance: BigInt(position.tokenBBalance),
+      tokenABalance: Number(position.tokenABalance),
+      tokenBBalance: Number(position.tokenBBalance),  
       positionUsdValue: position.usdValue,
-      unclaimedFee0Amount: BigInt(position.unclaimedFeeAAmount),
-      unclaimedFee1Amount: BigInt(position.unclaimedFeeBAmount),
-      unclaimedFee0Usd: position.unclaimedFee0Usd,
-      unclaimedFee1Usd: position.unclaimedFee0Usd,
-      tokensOwed0Amount: BigInt(0),
-      tokensOwed1Amount: BigInt(0),
-      tokensOwed0Usd: position.tokensOwed0Usd,
-      tokensOwed1Usd: position.tokensOwed1Usd,
+      unclaimedFeeAAmount: Number(position.unclaimedFeeAAmount),
+      unclaimedFeeBAmount: Number(position.unclaimedFeeBAmount),
+      // unclaimedFee0Usd: position.unclaimedFee0Usd,
+      // unclaimedFee1Usd: position.unclaimedFee0Usd,
+      // tokensOwed0Amount: BigInt(0),
+      // tokensOwed1Amount: BigInt(0),
+      // tokensOwed0Usd: position.tokensOwed0Usd,
+      // tokensOwed1Usd: position.tokensOwed1Usd,
       apr: `${position.apr}` ?? "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsdValue || "0",
-      rewards: position.reward?.map(PositionMapper.rewardFromResponse) || [],
-      dailyRewards:
-        position.reward?.map(PositionMapper.rewardFromResponse) || [],
+      reward: position.reward?.map(PositionMapper.rewardFromResponse) || [],
+      // dailyRewards:
+      //   position.reward?.map(PositionMapper.rewardFromResponse) || [],
       closed: position.closed,
-      bins: position.bins,
+      // bins: position.bins,
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
+      bins40: position.bins40,
+      totalClaimedUsd: position.totalClaimedUsd,
+      usdValue: Number(position.usdValue),
+      incentiveType: position.incentiveType as INCENTIVE_TYPE,
     };
   }
 
@@ -77,16 +77,13 @@ export class PositionMapper {
 
   public static rewardFromResponse(reward: RewardResponse): RewardModel {
     return {
-      token: reward.rewardToken,
-      accumulatedRewardOf1d:
-        reward.accuReward1d !== "" ? reward.accuReward1d : null,
-      accumulatedRewardOf7d:
-        reward.accuReward7d !== "" ? reward.accuReward7d : null,
+      rewardToken: reward.rewardToken,
+      accuReward1D:
+        reward.accuReward1D !== "" ? reward.accuReward1D : null,
       apr: reward.apr !== "" ? Number(reward.apr) : null,
-      aprOf7d: reward.apr7d !== "" ? Number(reward.apr7d) : null,
-      totalAmount: BigInt(reward.totalAmount),
-      claimableAmount: BigInt(reward.claimableAmount),
-      claimableUsdValue: reward.claimableUsd,
+      totalAmount: Number(reward.totalAmount),
+      claimableAmount: Number(reward.claimableAmount),
+      claimableUsd: reward.claimableUsd,
       rewardType: reward.rewardType,
     };
   }

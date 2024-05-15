@@ -25,7 +25,7 @@ Default.args = {
   tokenA: pool.tokenA,
   tokenB: pool.tokenB,
   feeStr: "0.01%",
-  incentivizedType: pool.incentivizedType,
+  incentivizedType: pool.incentiveType,
   rewardTokens: [],
 };
 

@@ -50,14 +50,6 @@ export const ACTIVITY_TYPE = {
 } as const;
 export type ACTIVITY_TYPE = ValuesType<typeof ACTIVITY_TYPE>;
 
-// const SORT_PARAMS: { [key in TABLE_HEAD]: string } = {
-//   Action: "action",
-//   "Total Value": "total_value",
-//   "Token amount": "token_amount",
-//   "Token amount ": "token_amount ",
-//   Account: "Account",
-//   Time: "Time",
-// };
 
 export const dummyTokenList: Activity[] = [
   {
@@ -72,32 +64,8 @@ export const dummyTokenList: Activity[] = [
   },
 ];
 
-// async function fetchActivities(
-//   type: ACTIVITY_TYPE, // eslint-disable-line
-//   page: number, // eslint-disable-line
-//   sortKey?: string, // eslint-disable-line
-//   direction?: string, // eslint-disable-line
-// ): Promise<Activity[]> {
-//   return new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-//     Promise.resolve([
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//       ...dummyTokenList,
-//     ]),
-//   );
-// }
-
 const replaceToken = (symbol: string) => {
-  if (symbol === "wugnot") return "GNOT";
+  if (symbol === "wugnot" || symbol === "WGNOT") return "GNOT";
   return symbol;
 };
 
@@ -125,7 +93,7 @@ const DashboardActivitiesContainer: React.FC = () => {
     ],
     queryFn: () =>
       dashboardRepository.getDashboardOnchainActivity({ type: activityType }),
-      refetchInterval: 60 * 1000,
+    refetchInterval: 60 * 1000,
   });
 
   const changeActivityType = useCallback((newType: string) => {
@@ -157,8 +125,8 @@ const DashboardActivitiesContainer: React.FC = () => {
         sortOption?.key !== item
           ? "desc"
           : sortOption.direction === "asc"
-          ? "desc"
-          : "asc";
+            ? "desc"
+            : "asc";
 
       setSortOption({
         key,
@@ -174,16 +142,16 @@ const DashboardActivitiesContainer: React.FC = () => {
   };
 
   const formatActivity = (res: OnchainActivityData): Activity => {
-    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res.txHash}`;
+    const explorerUrl = `https://gnoscan.io/transactions/details?txhash=${res?.txHash}`;
     return {
       action: `${capitalizeFirstLetter(res.actionType)} ${replaceToken(
         res.tokenA.symbol,
       )} ${res.actionType === "SWAP" ? "for" : "and"} ${replaceToken(res.tokenB.symbol)}`,
       totalValue: Number(res.totalUsd) < 0.01 && Number(res.totalUsd) ? "<$0.01" : `$${prettyNumber(res.totalUsd)}`,
-      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount) / Number(res.tokenA?.decimals)}`, true)} ${replaceToken(
+      tokenAmountOne: `${prettyNumberFloatInteger(`${Number(res.tokenAAmount)}`, true)} ${replaceToken(
         res.tokenA.symbol,
       )}`,
-      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount) / Number(res.tokenB?.decimals)}`, true)} ${replaceToken(
+      tokenAmountTwo: `${prettyNumberFloatInteger(`${Number(res.tokenBAmount)}`, true)} ${replaceToken(
         res.tokenB.symbol,
       )}`,
       account: res.account,

@@ -33,6 +33,7 @@ export interface SelectPriceRangeCustomControllerProps {
   increase: () => void;
   currentPriceStr: JSX.Element | string;
   setIsChangeMinMax: (value: boolean) => void;
+  priceRatio?: number;
 }
 
 export interface SelectPriceRangeCustomControllerRef {
@@ -55,6 +56,7 @@ const SelectPriceRangeCustomController = forwardRef<
   setIsChangeMinMax,
   token0Symbol,
   token1Symbol,
+  priceRatio,
 }, ref) => {
   const [displayValue, setDisplayValue] = useState("");
   const [changed, setChanged] = useState(false);
@@ -97,7 +99,7 @@ const SelectPriceRangeCustomController = forwardRef<
       setDisplayValue("-");
       return;
     }
-    const currentValue = BigNumber(value).toNumber();
+    const currentValue = BigNumber(value).multipliedBy(priceRatio ?? 1).toNumber();
     if (currentValue < 0.00000001) {
       setDisplayValue("0");
       return;
@@ -117,7 +119,7 @@ const SelectPriceRangeCustomController = forwardRef<
     }
 
     setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
-  }, [feeTier]);
+  }, [feeTier, priceRatio]);
 
   const onBlur = useCallback(() => {
     if (!changed) {

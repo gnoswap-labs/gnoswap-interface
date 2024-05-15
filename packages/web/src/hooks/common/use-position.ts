@@ -15,7 +15,7 @@ export const usePosition = (positions: PoolPositionModel[]) => {
 
     const claimablePositions = positions.filter(
       position =>
-        position.rewards.reduce(
+        position.reward.reduce(
           (accum, current) => accum + Number(current.claimableAmount),
           0,
         ) > 0,

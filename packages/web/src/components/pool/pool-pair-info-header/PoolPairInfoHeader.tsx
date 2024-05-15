@@ -1,15 +1,15 @@
-import { IncentivizedOptions } from "@common/values";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { TokenModel } from "@models/token/token-model";
 import React, { useMemo } from "react";
 import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  incentivizedType: IncentivizedOptions;
+  incentivizedType: INCENTIVE_TYPE;
   rewardTokens: TokenModel[];
   feeStr: string;
 }
@@ -26,17 +26,16 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
     if (incentivizedType === "INCENTIVIZED") {
       return "Incentive";
     }
-    if (incentivizedType === "EXTERNAL_INCENTIVIZED") {
+    if (incentivizedType === "EXTERNAL") {
       return "Incentive";
     }
     return "";
   }, [incentivizedType]);
 
   const rewardTokenLogos = useMemo(() => {
-    const temp = rewardTokens.map(token => getGnotPath(token).logoURI);
-    return temp;
-  }, [rewardTokens]);
-  
+    return [...new Set(rewardTokens.map(token => getGnotPath(token).logoURI))];
+  }, [getGnotPath, rewardTokens]);
+
   return (
     <PoolInfoHeaderWrapper>
       <div className="left-wrap">

@@ -4,19 +4,20 @@ import { TokenModel } from "@models/token/token-model";
 export interface RewardModel {
   rewardType: RewardType;
 
-  token: TokenModel;
+  rewardToken: TokenModel;
 
-  totalAmount: bigint;
+  totalAmount: number;
 
-  claimableAmount: bigint;
+  claimableAmount: number;
 
-  claimableUsdValue: string;
+  claimableUsd: string;
 
-  accumulatedRewardOf1d: string | null;
-
-  accumulatedRewardOf7d: string | null;
+  accuReward1D: string | null;
 
   apr: number | null;
 
-  aprOf7d: number | null;
+  // Deprecated or will be Deprecated
+  // aprOf7d: number | null;
+  
+  // accumulatedRewardOf7d: string | null;
 }

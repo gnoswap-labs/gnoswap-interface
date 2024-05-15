@@ -29,7 +29,7 @@ interface TooltipProps {
 
 
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
-  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: bigint ) => {
+  const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: number) => {
     const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
 
     return <TokenValueWrapper>
@@ -49,16 +49,16 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
           <div className="title">#{position.id}</div>
         </TokenTitleWrapper>
         {renderTokenValue(
-          position.pool.tokenA.logoURI, 
-          position.pool.tokenA.symbol, 
+          position.pool.tokenA.logoURI,
+          position.pool.tokenA.symbol,
           position.pool.tokenA,
-          position.token0Balance,
+          position.tokenABalance,
         )}
         {renderTokenValue(
-          position.pool.tokenB.logoURI, 
-          position.pool.tokenB.symbol, 
+          position.pool.tokenB.logoURI,
+          position.pool.tokenB.symbol,
           position.pool.tokenB,
-          position.token1Balance,
+          position.tokenBBalance,
         )}
       </div>
       {disabled && <div className="divider"></div>}
@@ -91,7 +91,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
   }, [position.pool.tokenB]);
 
   const liquidityUSD = useMemo(() => {
-    if (width < 400) return convertLiquidityUsdToKMB(position.positionUsdValue, { prefix: "$"});
+    if (width < 400) return convertLiquidityUsdToKMB(position.positionUsdValue, { prefix: "$" });
 
     return convertLiquidityUsdValue(Number(position.positionUsdValue));
   }, [position.positionUsdValue, width]);
@@ -116,7 +116,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
           FloatingContent={<TooltipContent position={position} disabled={disabled} />}
         >
           <div className="logo-wrapper">
-            <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol}/>
+            <DoubleLogo left={tokenA.logoURI} right={tokenB.logoURI} size={24} leftSymbol={tokenA.symbol} rightSymbol={tokenB.symbol} />
             {width > 768 && <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>}
             <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
           </div>

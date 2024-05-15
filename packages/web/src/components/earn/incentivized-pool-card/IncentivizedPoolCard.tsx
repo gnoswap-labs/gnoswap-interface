@@ -6,7 +6,7 @@ import {
 } from "./IncentivizedPoolCard.styles";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
-import { INCENTIVIZED_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
+import { INCENTIVE_TYPE_MAPPER, SwapFeeTierInfoMap } from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
@@ -36,11 +36,11 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
 
   const incentivizedLabel = useMemo(() => {
-    if (pool.incentivizedType === "NONE_INCENTIVIZED") {
+    if (pool.incentiveType === "NONE_INCENTIVIZED") {
       return null;
     }
-    return INCENTIVIZED_TYPE["INCENTIVIZED"];
-  }, [pool.incentivizedType]);
+    return INCENTIVE_TYPE_MAPPER["INCENTIVIZED"];
+  }, [pool.incentiveType]);
 
   const rewardTokensInfo = useMemo(() => {
     const allRewardTokens = pool.rewardTokens;
@@ -60,7 +60,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     });
     return filteredArray;
   }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
-  
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -89,7 +89,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   )}
                 </div>
               </div>
-             
+
             </div>
             <div className="list-wrapper">
               <div className="list-header">
@@ -119,7 +119,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
-                bins={pool.bins}
+                bins={pool.bins40 ?? []}
                 currentTick={pool.currentTick}
                 width={258}
                 height={80}
@@ -133,7 +133,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">
                   {"Current Price"}
                 </span>
-                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, 2)} ${pool.tokenB.symbol}`}</span>
+                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, { decimals: 2 })} ${pool.tokenB.symbol}`}</span>
               </div>
             </div>
           </div>

@@ -113,7 +113,7 @@ const WithDrawModal: React.FC<Props> = ({
   };
 
   const currentAvailableBalance =
-  displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null;
+    displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null;
 
   const isDisabledWithdraw =
     !Number(amount ?? 0) ||
@@ -129,12 +129,12 @@ const WithDrawModal: React.FC<Props> = ({
   const estimatePrice =
     withdrawInfo?.wrappedPath && !!amount && amount !== "0"
       ? convertToMB(
-          BigNumber(+amount)
-            .multipliedBy(
-              Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
-            )
-            .toString(),
-        )
+        BigNumber(+amount)
+          .multipliedBy(
+            Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"),
+          )
+          .toString(),
+      )
       : undefined;
 
 
@@ -204,13 +204,12 @@ const WithDrawModal: React.FC<Props> = ({
                   <span
                     className="balance-text"
                     onClick={handleEnterAllBalanceAvailable}
-                  >{`Available: ${
-                    currentAvailableBalance
+                  >{`Available: ${currentAvailableBalance
                       ? BigNumber(currentAvailableBalance)
-                          .decimalPlaces(2)
-                          .toFormat()
+                        .decimalPlaces(2)
+                        .toFormat()
                       : "-"
-                  }`}</span>
+                    }`}</span>
                 </div>
               </div>
             </WithdrawContent>
@@ -281,9 +280,8 @@ const WithDrawModal: React.FC<Props> = ({
             <WithdrawContent>
               <div className="estimate-box">
                 <p className="estimate-fee">Estimated Network Fee</p>
-                <p className="tokens-fee">{`${estimateFee} GNOT${
-                  estimateFeeUSD !== 0 ? ` ($${estimateFeeUSD})` : ""
-                }`}</p>
+                <p className="tokens-fee">{`${estimateFee} GNOT${estimateFeeUSD !== 0 ? ` ($${estimateFeeUSD})` : ""
+                  }`}</p>
               </div>
             </WithdrawContent>
 

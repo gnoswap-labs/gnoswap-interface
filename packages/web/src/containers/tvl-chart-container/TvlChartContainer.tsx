@@ -182,6 +182,7 @@ const TvlChartContainer: React.FC = () => {
       case "ALL":
         chartData = tvlData?.all;
         break;
+      case "7D":
       default:
         chartData = tvlData?.last7d;
         break;

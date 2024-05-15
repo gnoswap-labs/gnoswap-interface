@@ -39,6 +39,7 @@ export interface SelectPriceRangeCustomProps {
   setPriceRange: (type?: PriceRangeType) => void;
   resetPriceRangeTypeTarget: PriceRangeType;
   defaultTicks?: DefaultTick;
+  isLoadingSelectPriceRange: boolean;
 }
 
 export interface SelectPriceRangeCustomHandle {
@@ -59,6 +60,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
   resetPriceRangeTypeTarget,
   setPriceRange,
   defaultTicks,
+  isLoadingSelectPriceRange,
 }, ref) => {
   const { getGnotPath } = useGnotToGnot();
   const GRAPH_WIDTH = 388;
@@ -68,7 +70,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
   const minPriceRangeCustomRef = useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
   const maxPriceRangeCustomRef = useRef<React.ElementRef<typeof SelectPriceRangeCustomController>>(null);
 
-  function getPriceRange(price?: number | null) {
+  const getPriceRange = useCallback((price?: number | null) => {
     const currentPriceRangeType = priceRangeType;
     const currentPrice = price || selectPool.currentPrice || 1;
     if (!selectPool.feeTier || !currentPriceRangeType) {
@@ -78,37 +80,41 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     const range = currentPrice * visibleRate;
 
     return [currentPrice - range, currentPrice + range];
-  }
+  }, [priceRangeType, selectPool.currentPrice, selectPool.feeTier]);
 
-  function getScaleRange() {
+  const getScaleRange = useCallback(() => {
     const currentPrice = selectPool.currentPrice || 1;
     const [min, max] = getPriceRange();
     const rangeGap = max - min;
 
     return [currentPrice - rangeGap, currentPrice + rangeGap];
-  }
+  }, [getPriceRange, selectPool.currentPrice]);
 
-  function getHeightRange() {
+  const getHeightRange = useCallback(() => {
     const [, maxY] = d3.extent(selectPool.liquidityOfTickPoints.map(point => point[1]));
     return [0, maxY || 0];
-  }
+  }, [selectPool.liquidityOfTickPoints]);
 
   /** D3 Variables */
-  const defaultScaleX = d3
+  const defaultScaleX = useMemo(() => d3
     .scaleLinear()
     .domain(getScaleRange())
-    .range([0, GRAPH_WIDTH]);
+    .range([0, GRAPH_WIDTH]),
+    [getScaleRange]
+  );
 
   const scaleX = defaultScaleX.copy();
 
-  const scaleY = d3
+  const scaleY = useMemo(() => d3
     .scaleLinear()
     .domain(getHeightRange())
-    .range([GRAPH_HEIGHT, 0]);
+    .range([GRAPH_HEIGHT, 0]),
+    [getHeightRange]
+  );
 
   const isCustom = true;
 
-  const isLoading = useMemo(() => selectPool.renderState() === "LOADING", [selectPool.renderState]);
+  const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange, [selectPool.renderState, isLoadingSelectPriceRange]);
 
   const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 
@@ -126,6 +132,11 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     if (!selectPool.currentPrice) {
       return "-";
     }
+
+    if (selectPool.currentPrice > 1) {
+      return <>1 {currentTokenA.symbol} =&nbsp;{convertToKMB(selectPool.currentPrice.toString())}&nbsp;{currentTokenB.symbol}</>;
+    }
+
     return <>1 {currentTokenA.symbol} =&nbsp;{subscriptFormat(selectPool.currentPrice)}&nbsp;{currentTokenB.symbol}</>;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
@@ -149,7 +160,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       if (!defaultPrice || !selectPool.isCreate) {
         return "";
       }
-      return <>1 {currentTokenA.symbol} = &nbsp;<ExchangeRate value={numberToFormat(defaultPrice, 4)} />&nbsp;{currentTokenB.symbol}</>;
+      return <>1 {currentTokenA.symbol} = &nbsp;<ExchangeRate value={numberToFormat(defaultPrice, { decimals: 4 })} />&nbsp;{currentTokenB.symbol}</>;
     }
     return <>1 {currentTokenA.symbol} =&nbsp;<ExchangeRate value={startingPriceValue} />&nbsp; {currentTokenB.symbol}</>;
   }, [currentTokenA, currentTokenB, defaultPrice, selectPool.isCreate, startingPriceValue]);
@@ -275,6 +286,15 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }
   }, [selectPool.currentPrice, selectPool.startPrice]);
 
+
+  const selectTokenPair = useMemo(() => {
+    if (isKeepToken) {
+      return [getGnotPath(tokenB).symbol, getGnotPath(tokenA).symbol];
+    }
+
+    return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
+  }, [tokenA, tokenB, isKeepToken]);
+
   if (selectPool.renderState() === "NONE") {
     return <></>;
   }
@@ -316,7 +336,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                 <div className="option-wrapper">
                   <SelectTab
                     selectType={getGnotPath(selectPool.compareToken)?.symbol || ""}
-                    list={[!isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol, isKeepToken ? getGnotPath(tokenA).symbol : getGnotPath(tokenB).symbol]}
+                    list={selectTokenPair}
                     onClick={onClickTabItem}
                   />
                   <div className="button-option-contaier">
@@ -368,7 +388,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                       setMinPrice={(tick) => adjustRangeManually(() => selectPool.setMinPosition(tick))}
                       setMaxPrice={(tick) => adjustRangeManually(() => selectPool.setMaxPosition(tick))}
                       liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
-                      currentPrice={selectPool.currentPrice}
+                      currentPrice={selectPool.currentPrice ? Number(selectPool.currentPrice) : null}
                       focusPosition={selectPool.focusPosition}
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}
@@ -394,6 +414,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         // priceRangeType={priceRangeType}
                         ref={minPriceRangeCustomRef}
+                        priceRatio={tokenA.decimals / tokenB.decimals}
+
                       />
                       <SelectPriceRangeCustomController
                         title="Max Price"
@@ -411,6 +433,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                         setIsChangeMinMax={selectPool.setIsChangeMinMax}
                         // priceRangeType={priceRangeType}
                         ref={maxPriceRangeCustomRef}
+                        priceRatio={tokenA.decimals / tokenB.decimals}
                       />
                     </div>
                     <div className="extra-wrapper">

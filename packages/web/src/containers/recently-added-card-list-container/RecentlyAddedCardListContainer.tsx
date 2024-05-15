@@ -30,7 +30,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
-  const { allTime = "0", fee } = data || {};
+  const { allTimeVolumeUsd = "0", fees24hUsd } = data || {};
 
   const list: CardListKeyStats[] = [
     {
@@ -39,11 +39,11 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: "Swap Volume 24h",
-      content: toUnitFormat(allTime, true, true),
+      content: toUnitFormat(allTimeVolumeUsd, true, true),
     },
     {
       label: "Swap Fees 24h",
-      content: `$${fee?.all || "0"}`,
+      content: `$${fees24hUsd || "0"}`,
     },
   ];
 

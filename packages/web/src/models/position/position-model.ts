@@ -1,13 +1,11 @@
-import { IncentivizedOptions } from "@common/values";
 import { RewardModel } from "./reward-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 export interface PositionModel {
   id: string;
 
   lpTokenId: string;
-
-  incentivizedType: IncentivizedOptions;
 
   poolPath: string;
 
@@ -21,41 +19,51 @@ export interface PositionModel {
 
   liquidity: bigint;
 
-  token0Balance: bigint;
+  tokenABalance: number;
 
-  token1Balance: bigint;
+  tokenBBalance: number;
 
   positionUsdValue: string;
 
-  unclaimedFee0Amount: bigint;
+  unclaimedFeeAAmount: number;
 
-  unclaimedFee1Amount: bigint;
-
-  unclaimedFee0Usd: string;
-
-  unclaimedFee1Usd: string;
-
-  tokensOwed0Amount: bigint;
-
-  tokensOwed1Amount: bigint;
-
-  tokensOwed0Usd: string;
-
-  tokensOwed1Usd: string;
+  unclaimedFeeBAmount: number;
 
   apr: string;
 
   stakedAt: string;
 
-  stakedUsdValue: string;
+  reward: RewardModel[];
 
-  rewards: RewardModel[];
-
-  dailyRewards: RewardModel[];
-  
-  bins: PoolBinModel[];
+  bins40: PoolBinModel[];
 
   closed: boolean;
+
+  totalClaimedUsd: string;
+
+  usdValue: any;
+
+  incentiveType: INCENTIVE_TYPE;
+
+  // TODO: Remove later
+  // dailyRewards: RewardModel[];
+
+  // bins: PoolBinModel[];
+
   totalDailyRewardsUsd: string;
 
+  // unclaimedFee0Usd: string;
+
+  // unclaimedFee1Usd: string;
+
+  // tokensOwed0Amount: bigint;
+
+  // tokensOwed1Amount: bigint;
+
+  // tokensOwed0Usd: string;
+
+  // tokensOwed1Usd: string;
+
+  stakedUsdValue: string;
 }
+

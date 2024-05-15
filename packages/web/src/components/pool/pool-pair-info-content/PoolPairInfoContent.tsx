@@ -26,6 +26,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -86,20 +87,20 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.totalApr]);
 
   const liquidityChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.tvlChange, 2)}%`;
+    return `${numberToFormat(Math.abs(pool.tvlChange), { decimals: 2, forceDecimals: true })}%`;
   }, [pool.tvlChange]);
 
   const volumeChangedStr = useMemo((): string => {
-    return `${numberToFormat(pool.volumeChange, 2)}%`;
-  }, [pool.volumeChange]);
+    return `${numberToFormat(pool.volumeChange24h, { decimals: 2, forceDecimals: true })}%`;
+  }, [pool.volumeChange24h]);
 
   const feeChangedStr = useMemo((): string => {
-    return toUnitFormat(pool.feeChange, true, true);
-  }, [pool.feeChange]);
+    return toUnitFormat(pool.feeUsd24h, true, true);
+  }, [pool.feeUsd24h]);
 
   const rewardChangedStr = useMemo((): string => {
-    return "$0";
-  }, []);
+    return toUnitFormat(pool.rewards24hUsd, true, true);
+  }, [pool.rewards24hUsd]);
 
   const isWrapText = useMemo(() => {
     return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
@@ -130,7 +131,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && <div className="wrapper-value">
             <strong>{liquidityValue}</strong>
             <div>
-              {pool.tvlChange >= 0 ? <IconTriangleArrowUpV2 /> : ""}  <span className={pool.tvlChange >= 0 ? "positive" : "negative"}> {liquidityChangedStr}</span>
+              {pool.tvlChange >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}  <span className={pool.tvlChange >= 0 ? "positive" : "negative"}> {liquidityChangedStr}</span>
             </div>
           </div>}
           <div className="section-info">
@@ -178,7 +179,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div className="section-info flex-row">
             <span>All-Time Volume</span>
             {!loading && <div className="section-image">
-              <span>{toUnitFormat(pool.totalVolume, true, true)}</span>
+              <span>{toUnitFormat((pool.allTimeVolumeUsd ?? 0), true, true)}</span>
             </div>}
 
             {loading && <SkeletonEarnDetailWrapper height={18} mobileHeight={18}>
@@ -264,7 +265,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading && <PoolGraph
             tokenA={pool?.tokenA}
             tokenB={pool?.tokenB}
-            bins={pool?.bins}
+            bins={pool?.bins40 ?? []}
             currentTick={pool?.currentTick}
             width={GRAPWIDTH}
             height={150}

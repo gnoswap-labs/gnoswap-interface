@@ -3,10 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import VolumeChart from "@components/dashboard/volume-chart/VolumeChart";
 import { CHART_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 import dayjs from "dayjs";
 import { useLoading } from "@hooks/common/use-loading";
 import { toUnitFormat } from "@utils/number-utils";
+import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 
 export interface VolumePriceInfo {
   amount: string;
@@ -144,12 +144,12 @@ const VolumeChartContainer: React.FC = () => {
     CHART_TYPE["7D"],
   );
 
-  const { data, isLoading } = useQuery<IVolumeResponse, Error>({
+  const { data: volumeEntity, isLoading } = useQuery<IVolumeResponse, Error>({
     queryKey: ["volumePriceInfo"],
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
-  const { volume : volumeData, allTime, fee } = data || {};
+  const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd } = volumeEntity || {};
   const changeVolumeChartType = useCallback((newType: string) => {
     const volumeChartType =
       Object.values(CHART_TYPE).find(type => type === newType) ||
@@ -167,20 +167,21 @@ const VolumeChartContainer: React.FC = () => {
 
     switch (volumeChartType) {
       case "30D":
-        chartData = volumeData?.last1m;
+        chartData = volumeData?.last30d;
         break;
       case "90D":
-        chartData = volumeData?.last1y;
+        chartData = volumeData?.last90d;
         break;
       case "ALL":
         chartData = volumeData?.all;
         break;
+      case "7D":
       default:
         chartData = volumeData?.last7d;
         break;
     }
 
-    return chartData?.reduce(
+    return chartData?.sort((a, b) => (new Date(a.date)).getTime() - (new Date(b.date)).getTime()).reduce(
       (pre, next) => {
         const time = parseDate(next.date);
         return {
@@ -198,11 +199,11 @@ const VolumeChartContainer: React.FC = () => {
       volumeChartType={volumeChartType}
       changeVolumeChartType={changeVolumeChartType}
       volumePriceInfo={{
-        amount: allTime
-          ? toUnitFormat(Number(allTime), true, false, false)
+        amount: allTimeVolumeUsd
+          ? toUnitFormat(Number(allTimeVolumeUsd), true, false, false)
           : "-",
-        fee: fee?.all
-          ? toUnitFormat(Number(fee?.all), true, false, false)
+        fee: allTimeFeeUsd
+          ? toUnitFormat(Number(allTimeFeeUsd), true, false, false)
           : "-",
       }}
       volumeChartInfo={chartData}

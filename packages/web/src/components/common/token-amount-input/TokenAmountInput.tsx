@@ -39,10 +39,12 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     if (connected) {
       const formatValue = parseFloat(balance.replace(/,/g, "")).toString();
       if (token && isNativeToken(token)) {
-        const nativeFullBalance = BigNumber(formatValue).minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0).toString();
+        const nativeFullBalance = BigNumber(formatValue)
+          .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
+          .dividedBy(Math.pow(10, token?.decimals ?? 0)).toString();
         changeAmount(nativeFullBalance);
       } else {
-        changeAmount(formatValue);
+        changeAmount(BigNumber(formatValue).dividedBy(Math.pow(10, token?.decimals ?? 0)).toString());
       }
     }
   }, [connected, balance, token, changeAmount]);
@@ -50,10 +52,12 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   const balanceADisplay = useMemo(() => {
     if (connected && balance !== "-") {
       if (balance === "0") return 0;
-      return BigNumber(balance.replace(/,/g, "")).toFormat(2);
+      return BigNumber(balance.replace(/,/g, ""))
+        .dividedBy(Math.pow(10, token?.decimals ?? 0))
+        .toFormat(2);
     }
     return "-";
-  }, [balance, connected]);
+  }, [balance, connected, token?.decimals]);
 
   return (
     <TokenAmountInputWrapper>
