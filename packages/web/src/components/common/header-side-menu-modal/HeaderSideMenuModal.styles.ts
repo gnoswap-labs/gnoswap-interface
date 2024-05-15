@@ -5,9 +5,9 @@ import { media } from "@styles/media";
 
 export const HeaderSideMenuModalWrapper = styled.div`
   position: absolute;
-  top: 52px;
+  top: 63.5px;
   ${media.tablet} {
-    top: 48px;
+    top: 63.5px;
   }
 
   right: 0px;
@@ -16,6 +16,22 @@ export const HeaderSideMenuModalWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.background01};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  ${media.mobile} {
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+    top: initial;
+  }
+`;
+
+export const FakeSpaceWrapper = styled.div`
+  position: absolute;
+  height: 63.5px;
+  top:0px;
+
+  right: 0px;
+  width: 240px;
   ${media.mobile} {
     width: 100%;
     left: 0;
@@ -109,3 +125,4 @@ export const MenuDivider = styled.div`
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
 `;
+

@@ -25,6 +25,7 @@ import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
 import { cutDecimalNumberWithoutRounding } from "@utils/regex";
+import BigNumber from "bignumber.js";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -107,9 +108,14 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toString().match(cutDecimalNumberWithoutRounding(6))} GNOT` || "0 GNOT", [account?.balances]);
-  // const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toString().match(re)} GNOT` || "0 GNOT", [account?.balances]);
-  // const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 6 })} GNOT` || "0 GNOT", [account?.balances]);
+  const balanceText = useMemo(() => {
+    const rawPriceNumber = Number(account?.balances[0].amount);
+    const formattedPrice = (rawPriceNumber / 1000000).toString().match(cutDecimalNumberWithoutRounding(6))?.toString() ?? 0;
+
+    const price = BigNumber(formattedPrice).toFormat();
+
+    return `${price} GNOT` || "0 GNOT";
+  }, [account?.balances]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();

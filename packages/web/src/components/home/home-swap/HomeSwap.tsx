@@ -7,6 +7,7 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import BigNumber from "bignumber.js";
 import { SwapValue } from "@states/swap";
+import { cutDecimalNumberWithoutRounding } from "@utils/regex";
 
 interface HomeSwapProps {
   changeTokenAAmount: (value: string) => void;
@@ -91,20 +92,20 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
   const balanceADisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
-        .toFormat(2);
+      return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "").match(cutDecimalNumberWithoutRounding(2))?.toString() ?? 0)
+        .toFormat();
     }
     return "-";
-  }, [connected, swapTokenInfo.tokenABalance, swapTokenInfo.tokenADecimals]);
+  }, [connected, swapTokenInfo.tokenABalance]);
 
   const balanceBDisplay = useMemo(() => {
     if (connected && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, ""))
-        .toFormat(2);
+      return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, "").match(cutDecimalNumberWithoutRounding(2))?.toString() ?? 0)
+        .toFormat();
     }
     return "-";
-  }, [connected, swapTokenInfo.tokenBBalance, swapTokenInfo.tokenBDecimals]);
+  }, [connected, swapTokenInfo.tokenBBalance]);
 
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>

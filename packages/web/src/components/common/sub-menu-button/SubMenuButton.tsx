@@ -4,6 +4,7 @@ import HeaderSideMenuModal from "../header-side-menu-modal/HeaderSideMenuModal";
 import IconArrowUp from "../icons/IconArrowUp";
 import IconArrowDown from "../icons/IconArrowDown";
 import { useTheme } from "@emotion/react";
+import { FakeSpaceWrapper } from "../header-side-menu-modal/HeaderSideMenuModal.styles";
 
 interface SubMenuButtonProps {
   sideMenuToggle: boolean;
@@ -19,12 +20,15 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
   return (
     <SubMenuButtonWrapper
       onMouseEnter={() => onSideMenuToggle(true)}
-      onBlur={() => onSideMenuToggle(false)}
+      onMouseLeave={() => onSideMenuToggle(false)}
       className={`${sideMenuToggle ? "selected" : ""}`}
     >
-      {sideMenuToggle ? <IconArrowUp fill={theme.color.text04} /> : <IconArrowDown fill={theme.color.text04} />}
+      {sideMenuToggle ? <IconArrowUp fill={theme.color.text16} /> : <IconArrowDown fill={theme.color.text04} />}
       {sideMenuToggle && (
-        <HeaderSideMenuModal onSideMenuToggle={() => onSideMenuToggle(false)} />
+        <>
+          <FakeSpaceWrapper></FakeSpaceWrapper>
+          <HeaderSideMenuModal onSideMenuToggle={() => onSideMenuToggle(false)} />
+        </>
       )}
     </SubMenuButtonWrapper>
   );

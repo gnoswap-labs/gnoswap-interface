@@ -7,6 +7,7 @@ import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncenti
 import BigNumber from "bignumber.js";
 import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { cutDecimalNumberWithoutRounding } from "@utils/regex";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -42,21 +43,21 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
         const nativeFullBalance = BigNumber(formatValue)
           .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
           .toString();
-        // .dividedBy(Math.pow(10, token?.decimals ?? 0)).toString();
         changeAmount(nativeFullBalance);
       } else {
         changeAmount(BigNumber(formatValue).toString());
-        // changeAmount(BigNumber(formatValue).dividedBy(Math.pow(10, token?.decimals ?? 0)).toString());
       }
     }
   }, [connected, balance, token, changeAmount]);
 
   const balanceADisplay = useMemo(() => {
     if (connected && balance !== "-") {
-      console.log("🚀 ~ balanceADisplay ~ balance:", balance);
       if (balance === "0") return 0;
-      return BigNumber(balance.replace(/,/g, ""))
-        .toFormat();
+
+      const result = BigNumber((balance.replace(/,/g, "")
+        .toString().match(cutDecimalNumberWithoutRounding(2)))?.toString() ?? 0).toFormat();
+
+      return result;
     }
     return "-";
   }, [balance, connected, token?.decimals]);

@@ -9,6 +9,7 @@ import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import BigNumber from "bignumber.js";
+import { cutDecimalNumberWithoutRounding } from "@utils/regex";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -72,7 +73,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
       const formatValue = (parseFloat(
         swapTokenInfo.tokenABalance.replace(/,/g, ""),
       )).toString();
-      // ) / Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0)).toString();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
@@ -82,7 +82,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
       const formatValue = (parseFloat(
         swapTokenInfo.tokenBBalance.replace(/,/g, ""),
       ))
-        // ) / Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0))
         .toString();
       changeTokenBAmount(formatValue);
     }
@@ -103,11 +102,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
-        // .dividedBy(Math.pow(10, swapTokenInfo.tokenA?.decimals ?? 0))
-        .toFormat(2);
+        .toString().match(cutDecimalNumberWithoutRounding(2));
     }
     return "-";
-  }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance, swapTokenInfo.tokenADecimals]);
+  }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance]);
 
   const balanceBDisplay = useMemo(() => {
     if (isSwitchNetwork) return "-";

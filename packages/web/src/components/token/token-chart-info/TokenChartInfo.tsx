@@ -32,13 +32,13 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
   const isIncreasePrice = useCallback(() => {
     return priceInfo.amount.status === MATH_NEGATIVE_TYPE.POSITIVE;
   }, [priceInfo.amount.status]);
-  
+
   return (
     <TokenChartInfoWrapper>
       <div className="token-info-wrapper">
         <div className="token-info">
-          {loading && <div css={pulseSkeletonStyle({ w: "207px", h: 20 })} className="loading-skeleton"/>}
-          {!loading && <MissingLogo symbol={token.symbol} url={token.image} className="token-image" width={36} mobileWidth={36}/>}
+          {loading && <div css={pulseSkeletonStyle({ w: "207px", h: 20 })} className="loading-skeleton" />}
+          {!loading && <MissingLogo symbol={token.symbol} url={token.image} className="token-image" width={36} mobileWidth={36} />}
           {!loading && <div>
             <span className="token-name">{token.name}</span>
             <span className="token-symbol">{token.symbol}</span>
@@ -54,7 +54,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
             }
             <span>{priceInfo.changedRate.toFixed(2)}%</span>
           </div> : <></>}
-          {(loading || !priceInfo.amount.value)&& <div className="change-rate-wrapper">&nbsp;</div>}
+          {(loading || !priceInfo.amount.value) && <div className="change-rate-wrapper">&nbsp;</div>}
         </div>
       </div>
     </TokenChartInfoWrapper>

@@ -67,7 +67,7 @@ export const useTokenData = () => {
       const balance = balances[key];
       const exist = token && balance !== null && balance !== undefined;
       tokenBalanceMap[key] = exist
-        ? makeDisplayTokenAmount(token, balance, { decimalsWithoutRounding: 2 })
+        ? makeDisplayTokenAmount(token, balance)
         : null;
     });
     return tokenBalanceMap;
@@ -113,6 +113,7 @@ export const useTokenData = () => {
         tokenPrice.pricesBefore.latestPrice,
         tokenPrice.pricesBefore.priceToday,
       );
+
       return {
         token: {
           ...token,
@@ -125,6 +126,8 @@ export const useTokenData = () => {
       };
     });
   }, [tokens, tokenPrices]);
+
+
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1, t2) => {

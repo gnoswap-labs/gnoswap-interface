@@ -260,6 +260,7 @@ const TokenListContainer: React.FC = () => {
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
   }, [tokens, tokenPrices, tokenType]);
+
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
     const temp = firstData.filter((item: Token) => ((item.token.path.includes(grc20))));
