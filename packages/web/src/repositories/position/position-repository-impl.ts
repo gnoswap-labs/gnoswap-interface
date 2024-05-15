@@ -15,7 +15,11 @@ import { ClaimAllRequest } from "./request/claim-all-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
 import { StakePositionsRequest } from "./request/stake-positions-request";
 import { UnstakePositionsRequest } from "./request/unstake-positions-request";
-import { IncreaseLiquidityResponse, PositionListResponse } from "./response";
+import {
+  DecreaseLiquidityResponse,
+  IncreaseLiquidityResponse,
+  PositionListResponse,
+} from "./response";
 import {
   makeApporveStakeTokenMessage,
   makeCollectRewardMessage,
@@ -35,7 +39,7 @@ import {
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
 import { MAX_INT64 } from "@utils/math.utils";
-import { IncreaseLiquidityRequest } from "./request";
+import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { checkGnotPath } from "@utils/common";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
@@ -217,6 +221,78 @@ export class PositionRepositoryImpl implements PositionRepository {
         tokenAAmount: data[2],
         tokenBAmount: data[3],
         poolPath: data[4],
+      },
+    };
+  };
+
+  decreaseLiquidity = async (
+    request: DecreaseLiquidityRequest,
+  ): Promise<WalletResponse<DecreaseLiquidityResponse | null>> => {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const { lpTokenId, tokenA, tokenB, decreaseRatio, caller } = request;
+
+    const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
+    const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
+
+    // Make Approve messages that can be managed by a Pool package of tokens.
+    const approveMessages = [
+      makeApproveMessage(
+        tokenAWrappedPath,
+        [PACKAGE_POOL_ADDRESS, MAX_INT64.toString()],
+        caller,
+      ),
+      makeApproveMessage(
+        tokenBWrappedPath,
+        [PACKAGE_POOL_ADDRESS, MAX_INT64.toString()],
+        caller,
+      ),
+    ];
+
+    const decreaseLiquidityMessage = makePositionDecreaseLiquidityMessage(
+      lpTokenId,
+      decreaseRatio,
+      true,
+      caller,
+    );
+
+    const messages = [...approveMessages, decreaseLiquidityMessage];
+
+    const response = await this.walletClient.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    const result = response as WalletResponse;
+    if (result.code !== 0 || !result.data) {
+      return {
+        ...result,
+        data: null,
+      };
+    }
+
+    const data = (
+      result.data as SendTransactionSuccessResponse<string[] | null>
+    ).data;
+    if (!data || data.length < 7) {
+      return {
+        ...result,
+        data: null,
+      };
+    }
+
+    return {
+      ...result,
+      data: {
+        tokenID: data[0],
+        removedLiquidity: data[1],
+        collectedTokenAFee: data[2],
+        collectedTokenBFee: data[3],
+        removedTokenAAmount: data[4],
+        removedTokenBAmount: data[5],
+        poolPath: data[6],
       },
     };
   };

@@ -23,24 +23,28 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type DeCREASE_BUTTON_TYPE =
-  | "ENTER_AMOUNT"
-  | "INCREASE_LIQUIDITY"
+export type DeCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
 
 export const useDecreaseHandle = () => {
   const router = useRouter();
-  const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
+  const [selectedPosition, setSelectedPosition] = useAtom(
+    IncreaseState.selectedPosition,
+  );
   const poolPath = router.query["pool-path"] as string;
   const positionId = router.query["position-id"] as string;
   const { getGnotPath } = useGnotToGnot();
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Custom" });
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
+    type: "Custom",
+  });
   const [percent, setPercent] = useState<number>(50);
   const { tokenPrices } = useTokenData();
 
   const { positions } = usePositionData();
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId && poolPath) {
-      const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
+      const position = positions.filter(
+        (_: PoolPositionModel) => _.id === positionId,
+      )?.[0];
       if (position) {
         setSelectedPosition(position);
       } else {
@@ -107,8 +111,8 @@ export const useDecreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -166,7 +170,10 @@ export const useDecreaseHandle = () => {
   );
 
   const buttonType: DeCREASE_BUTTON_TYPE = useMemo(() => {
-    if (!Number(tokenAAmountInput.amount) || !Number(tokenBAmountInput.amount)) {
+    if (
+      !Number(tokenAAmountInput.amount) ||
+      !Number(tokenBAmountInput.amount)
+    ) {
       return "ENTER_AMOUNT";
     }
     return "INCREASE_LIQUIDITY";
@@ -199,14 +206,28 @@ export const useDecreaseHandle = () => {
     const unClaimTokenBAmount =
       makeDisplayTokenAmount(tokenB, Number(unClaimTokenB)) || 0;
     return {
-      poolAmountA: BigNumber(tokenAAmount).multipliedBy(percent).dividedBy(100).toFormat(),
-      poolAmountUSDA: numberToUSD(tokenAAmount * Number(tokenAPrice) * percent / 100),
-      poolAmountB: BigNumber(tokenBAmount).multipliedBy(percent).dividedBy(100).toFormat(),
-      poolAmountUSDB: numberToUSD(tokenBAmount * Number(tokenBPrice) * percent / 100),
+      poolAmountA: BigNumber(tokenAAmount)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toFormat(),
+      poolAmountUSDA: numberToUSD(
+        (tokenAAmount * Number(tokenAPrice) * percent) / 100,
+      ),
+      poolAmountB: BigNumber(tokenBAmount)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toFormat(),
+      poolAmountUSDB: numberToUSD(
+        (tokenBAmount * Number(tokenBPrice) * percent) / 100,
+      ),
       unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
       unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
-      unClaimTokenAAmountUSD: numberToUSD(unClaimTokenAAmount * Number(tokenAPrice)),
-      unClaimTokenBAmountUSD: numberToUSD(unClaimTokenBAmount * Number(tokenBPrice)),
+      unClaimTokenAAmountUSD: numberToUSD(
+        unClaimTokenAAmount * Number(tokenAPrice),
+      ),
+      unClaimTokenBAmountUSD: numberToUSD(
+        unClaimTokenBAmount * Number(tokenBPrice),
+      ),
     };
   }, [selectedPosition, tokenPrices, percent]);
 

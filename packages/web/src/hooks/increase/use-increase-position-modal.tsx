@@ -15,6 +15,7 @@ import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
@@ -107,21 +108,35 @@ export const useIncreasePositionModal = ({
       })
       .catch(() => null);
 
-    const resultData = result?.data;
-    if (resultData) {
-      if (result.code === 0) {
+    if (result) {
+      const resultData = result?.data;
+      if (result.code === 0 && resultData) {
         broadcastPending();
         setTimeout(() => {
+          // Make display token amount
+          const tokenAAmount = (
+            makeDisplayTokenAmount(
+              selectedPosition.pool.tokenA,
+              resultData.tokenAAmount,
+            ) || 0
+          ).toLocaleString("en-US", {
+            maximumFractionDigits: 6,
+          });
+          const tokenBAmount = (
+            makeDisplayTokenAmount(
+              selectedPosition.pool.tokenB,
+              resultData.tokenBAmount,
+            ) || 0
+          ).toLocaleString("en-US", {
+            maximumFractionDigits: 6,
+          });
+
           broadcastSuccess(
             makeBroadcastAddLiquidityMessage("success", {
               tokenASymbol: selectedPosition.pool.tokenA.symbol,
               tokenBSymbol: selectedPosition.pool.tokenB.symbol,
-              tokenAAmount: Number(
-                resultData.tokenAAmount,
-              ).toLocaleString("en-US", { maximumFractionDigits: 6 }),
-              tokenBAmount: Number(
-                resultData.tokenBAmount,
-              ).toLocaleString("en-US", { maximumFractionDigits: 6 }),
+              tokenAAmount,
+              tokenBAmount,
             }),
           );
         }, 1000);
@@ -134,12 +149,18 @@ export const useIncreasePositionModal = ({
           makeBroadcastAddLiquidityMessage("error", {
             tokenASymbol: selectedPosition.pool.tokenA.symbol,
             tokenBSymbol: selectedPosition.pool.tokenB.symbol,
-            tokenAAmount: Number(
-              resultData.tokenAAmount,
-            ).toLocaleString("en-US", { maximumFractionDigits: 6 }),
-            tokenBAmount: Number(
-              resultData.tokenBAmount,
-            ).toLocaleString("en-US", { maximumFractionDigits: 6 }),
+            tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
+              "en-US",
+              {
+                maximumFractionDigits: 6,
+              },
+            ),
+            tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
+              "en-US",
+              {
+                maximumFractionDigits: 6,
+              },
+            ),
           }),
         );
       } else {
@@ -147,12 +168,18 @@ export const useIncreasePositionModal = ({
           makeBroadcastAddLiquidityMessage("error", {
             tokenASymbol: selectedPosition.pool.tokenA.symbol,
             tokenBSymbol: selectedPosition.pool.tokenB.symbol,
-            tokenAAmount: Number(
-              resultData.tokenAAmount,
-            ).toLocaleString("en-US", { maximumFractionDigits: 6 }),
-            tokenBAmount: Number(
-              resultData.tokenBAmount,
-            ).toLocaleString("en-US", { maximumFractionDigits: 6 }),
+            tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString(
+              "en-US",
+              {
+                maximumFractionDigits: 6,
+              },
+            ),
+            tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString(
+              "en-US",
+              {
+                maximumFractionDigits: 6,
+              },
+            ),
           }),
         );
       }
