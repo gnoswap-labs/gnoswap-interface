@@ -134,6 +134,9 @@ export const toUnitFormat = (
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
 };
 
+/**
+ * version 2 of @toUnitFormat
+ */
 export const toPriceFormat = (
   value: BigNumber | string | number,
   options: {
