@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import {
   feeBoostRateByPrices,
+  getDepositAmountsByAmountA,
   priceToNearTick,
   tickToPrice,
 } from "@utils/swap-utils";
@@ -19,6 +20,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { encryptId } from "@utils/common";
 import { QUERY_KEY } from "@query/pools";
+import BigNumber from "bignumber.js";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -27,8 +29,8 @@ interface Props {
   tokenB: TokenModel | null;
   feeTier: SwapFeeTierType | null;
   isCreate?: boolean;
-  startPrice?: number | null,
-  defaultPriceRange?: [number | null, number | null]
+  startPrice?: number | null;
+  defaultPriceRange?: [number | null, number | null];
 }
 
 export interface SelectPool {
@@ -69,7 +71,7 @@ export interface SelectPool {
   ) => void;
   isChangeMinMax: boolean;
   setIsChangeMinMax: (value: boolean) => void;
-  poolInfo: PoolDetailRPCModel | null | undefined
+  poolInfo: PoolDetailRPCModel | null | undefined;
 }
 
 export const useSelectPool = ({
@@ -80,7 +82,9 @@ export const useSelectPool = ({
   startPrice = null,
   defaultPriceRange = [null, null],
 }: Props) => {
-  const priceRangeRef = useRef<[number | null, number | null]>([...defaultPriceRange]);
+  const priceRangeRef = useRef<[number | null, number | null]>([
+    ...defaultPriceRange,
+  ]);
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
@@ -97,8 +101,14 @@ export const useSelectPool = ({
   const { isLoadingCommon } = useLoading();
   const [, setGlobalCompareToken] = useAtom(EarnState.currentCompareToken);
 
-  const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [tokenA?.path, tokenA?.wrappedPath]);
-  const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [tokenB?.path, tokenB?.wrappedPath]);
+  const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [
+    tokenA?.path,
+    tokenA?.wrappedPath,
+  ]);
+  const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [
+    tokenB?.path,
+    tokenB?.wrappedPath,
+  ]);
 
   const tokenPair = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -111,24 +121,32 @@ export const useSelectPool = ({
   }, [tokenA, tokenAPath, tokenB]);
 
   const isReverse = useMemo(() => {
-    return tokenPair?.findIndex(path => {
-      if (compareToken) {
-        return isNativeToken(compareToken)
-          ? compareToken.wrappedPath === path
-          : compareToken.path === path;
-      }
-      return false;
-    }) === 1;
+    return (
+      tokenPair?.findIndex(path => {
+        if (compareToken) {
+          return isNativeToken(compareToken)
+            ? compareToken.wrappedPath === path
+            : compareToken.path === path;
+        }
+        return false;
+      }) === 1
+    );
   }, [compareToken, tokenPair]);
 
   const queryClient = useQueryClient();
-
 
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
     PoolDetailRPCModel | null,
     Error
   >({
-    queryKey: ["poolInfo", tokenAPath, tokenBPath, feeTier, isCreate, startPrice],
+    queryKey: [
+      "poolInfo",
+      tokenAPath,
+      tokenBPath,
+      feeTier,
+      isCreate,
+      startPrice,
+    ],
     queryFn: async () => {
       if (!tokenA || !tokenB || !feeTier) {
         return await Promise.resolve<PoolDetailRPCModel | null>(null);
@@ -163,40 +181,41 @@ export const useSelectPool = ({
         return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
+      const poolPath = `${tokenPair?.join(":")}:${
+        SwapFeeTierInfoMap[feeTier].fee
+      }`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
 
       const convertPath = encryptId(poolPath);
 
       await queryClient.prefetchQuery({
         queryKey: [QUERY_KEY.poolDetail, convertPath],
-        queryFn: () => poolRepository.getPoolDetailByPoolPath(poolPath)
+        queryFn: () => poolRepository.getPoolDetailByPoolPath(poolPath),
       });
-      const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(convertPath);
+      const poolResFromDb = await poolRepository.getPoolDetailByPoolPath(
+        convertPath,
+      );
 
       const changedPoolInfo =
         isReverse === false
           ? {
-            ...poolRes,
-            price: poolResFromDb.price,
-          }
+              ...poolRes,
+              price: poolResFromDb.price,
+            }
           : {
-            ...poolRes,
-            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-            ticks: Object.keys(poolRes.ticks).map(
-              tick => Number(tick) * -1,
-            ),
-            positions: poolRes.positions.map(position => ({
-              ...position,
-              tickLower: position.tickUpper * -1,
-              tickUpper: position.tickLower * -1,
-            })),
-          };
+              ...poolRes,
+              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
+              positions: poolRes.positions.map(position => ({
+                ...position,
+                tickLower: position.tickUpper * -1,
+                tickUpper: position.tickLower * -1,
+              })),
+            };
 
       return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
-
     },
-    staleTime: 5_000
+    staleTime: 5_000,
   });
 
   useEffect(() => {
@@ -208,26 +227,32 @@ export const useSelectPool = ({
     return latestPoolPath;
   }, [latestPoolPath, setCurrentPoolPath]);
 
-  const renderState = useCallback((isIgnoreDefaultLoading = false) => {
-    if (!tokenA || !tokenB || !feeTier) {
-      return "NONE";
-    }
-    if (isCreate && startPrice === null) {
-      return "CREATE";
-    }
-    if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoadingCommon : null)) {
-      return "LOADING";
-    }
-    return "DONE";
-  }, [
-    feeTier,
-    isCreate,
-    startPrice,
-    tokenA,
-    tokenB,
-    isLoadingCommon,
-    isLoadingPoolInfo,
-  ]);
+  const renderState = useCallback(
+    (isIgnoreDefaultLoading = false) => {
+      if (!tokenA || !tokenB || !feeTier) {
+        return "NONE";
+      }
+      if (isCreate && startPrice === null) {
+        return "CREATE";
+      }
+      if (
+        isLoadingPoolInfo ||
+        (isIgnoreDefaultLoading ? isLoadingCommon : null)
+      ) {
+        return "LOADING";
+      }
+      return "DONE";
+    },
+    [
+      feeTier,
+      isCreate,
+      startPrice,
+      tokenA,
+      tokenB,
+      isLoadingCommon,
+      isLoadingPoolInfo,
+    ],
+  );
 
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
     if (!poolInfo || poolInfo.ticks.length === 0) {
@@ -276,22 +301,19 @@ export const useSelectPool = ({
       return 50;
     }
 
-    const minPriceGap = currentPrice - minPrice;
-    const maxPriceGap = maxPrice - currentPrice;
+    const adjustAmountA = 1_000_000_000n;
 
-    if (maxPriceGap < 0) {
-      return 0;
-    }
-    if (minPriceGap < 0) {
-      return 100;
-    }
-
-    const logMin =
-      minPrice <= 0
-        ? Math.log(currentPrice / Number(0.0000000001))
-        : Math.log(currentPrice / minPrice);
-    const logMax = Math.log(maxPrice / currentPrice);
-    return (logMax * 100) / (logMin + logMax);
+    const { amountA, amountB } = getDepositAmountsByAmountA(
+      currentPrice,
+      minPrice,
+      maxPrice,
+      adjustAmountA,
+    );
+    const sumOfAmounts = amountA + amountB;
+    return BigNumber(amountA.toString())
+      .dividedBy(sumOfAmounts.toString())
+      .multipliedBy(100)
+      .toNumber();
   }, [maxPrice, minPrice, price, fullRange, startPrice, isCreate]);
 
   const feeBoost = useMemo(() => {

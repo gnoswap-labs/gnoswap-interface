@@ -9,7 +9,13 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
-import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
+import {
+  getDepositAmountsByAmountA,
+  getDepositAmountsByAmountB,
+  isEndTickBy,
+  tickToPriceStr,
+} from "@utils/swap-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
@@ -21,24 +27,27 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type INCREASE_BUTTON_TYPE =
-  | "ENTER_AMOUNT"
-  | "INCREASE_LIQUIDITY"
+export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
 
 export const useIncreaseHandle = () => {
   const router = useRouter();
-  const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
+  const [selectedPosition, setSelectedPosition] = useAtom(
+    IncreaseState.selectedPosition,
+  );
   const poolPath = router.query["pool-path"] as string;
   const positionId = router.query["position-id"] as string;
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Custom" });
-
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
+    type: "Custom",
+  });
 
   const { positions } = usePositionData();
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId) {
-      const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
+      const position = positions.filter(
+        (_: PoolPositionModel) => _.id === positionId,
+      )?.[0];
       if (position) {
         setSelectedPosition(position);
       } else {
@@ -105,8 +114,8 @@ export const useIncreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -150,22 +159,66 @@ export const useIncreaseHandle = () => {
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
+
   const changeTokenAAmount = useCallback(
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
+
+      if (
+        !selectPool ||
+        !tokenA ||
+        !tokenB ||
+        Number.isNaN(amount) ||
+        Number(amount) <= 0
+      ) {
+        return;
+      }
+      const amountAAmountRaw = makeRawTokenAmount(tokenA, amount) || "0";
+      const { amountB } = getDepositAmountsByAmountA(
+        selectPool.currentPrice,
+        selectPool.minPrice || 0,
+        selectPool.maxPrice || 0,
+        BigInt(amountAAmountRaw),
+      );
+
+      const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
+      tokenBAmountInput.changeAmount(tokenBAmount.toString());
     },
-    [tokenAAmountInput],
+    [tokenAAmountInput, selectPool, tokenA, tokenB],
   );
 
   const changeTokenBAmount = useCallback(
     (amount: string) => {
       tokenBAmountInput.changeAmount(amount);
+
+      if (
+        !selectPool ||
+        !tokenA ||
+        !tokenB ||
+        Number.isNaN(amount) ||
+        Number(amount) <= 0
+      ) {
+        return;
+      }
+      const amountBAmountRaw = makeRawTokenAmount(tokenB, amount) || "0";
+      const { amountA } = getDepositAmountsByAmountB(
+        selectPool.currentPrice,
+        selectPool.minPrice || 0,
+        selectPool.maxPrice || 0,
+        BigInt(amountBAmountRaw),
+      );
+
+      const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
+      tokenAAmountInput.changeAmount(tokenAAmount.toString());
     },
-    [tokenBAmountInput],
+    [tokenBAmountInput, selectPool, tokenA, tokenB],
   );
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
-    if (!Number(tokenAAmountInput.amount) || !Number(tokenBAmountInput.amount)) {
+    if (
+      !Number(tokenAAmountInput.amount) ||
+      !Number(tokenBAmountInput.amount)
+    ) {
       return "ENTER_AMOUNT";
     }
     return "INCREASE_LIQUIDITY";
@@ -180,7 +233,6 @@ export const useIncreaseHandle = () => {
       router.push(`/earn/pool/${poolPath}`);
     }
   }, [account, poolPath]);
-
 
   return {
     tokenA,
