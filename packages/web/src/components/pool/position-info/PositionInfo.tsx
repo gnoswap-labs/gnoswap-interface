@@ -40,6 +40,7 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
   tokenASymbol,
   tokenBSymbol,
 }) => {
+  console.log("🚀 ~ item:", item)
   const { time, type, usdValue, amountA, amountB, txHash } = item;
   const td =
     breakpoint === DEVICE_TYPE.MOBILE
@@ -77,13 +78,13 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
           </span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[2]}>
-          <span className="position-index">{Number(item.usdValue) < 0.01 && Number(item.usdValue) ? "<$0.01" : `$${prettyNumber(item.usdValue)}`}</span>
+          <span className="position-index">{Number(item.usdValue) < 0.01 && Number(usdValue) ? "<$0.01" : `$${prettyNumber(item.usdValue)}`}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[3]}>
-          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(item.amountA)}`, true)} ${tokenASymbol}`}</span>
+          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(amountA)}`, true)} ${tokenASymbol}`}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[4]}>
-          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(item.amountB)}`, true)} ${tokenBSymbol}`}</span>
+          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(amountB)}`, true)} ${tokenBSymbol}`}</span>
         </TableColumn>
       </HoverSection>
     </PositionInfoWrapper>
