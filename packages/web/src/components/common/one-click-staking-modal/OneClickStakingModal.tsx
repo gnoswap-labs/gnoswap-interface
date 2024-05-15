@@ -5,9 +5,10 @@ import Button, { ButtonHierarchy } from "../button/Button";
 import EarnAddConfirmPriceRangeInfo from "@components/earn-add/earn-add-confirm-price-range-info/EarnAddConfirmPriceRangeInfo";
 import { TokenModel } from "@models/token/token-model";
 import EarnAddConfirmAmountInfo from "@components/earn-add/earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
+import EarnAddConfirmFeeInfo from "@components/earn-add/earn-add-confirm-fee-info/EarnAddConfirmFeeInfo";
 
 interface Props {
-  close: () => void;
+  isPoolCreation?: boolean;
   amountInfo: {
     tokenA: {
       info: TokenModel;
@@ -31,9 +32,22 @@ interface Props {
     feeBoost: string;
     estimatedAPR: string;
   };
+  feeInfo: {
+    token: TokenModel;
+    fee: string;
+  };
+  confirm: () => void;
+  close: () => void;
 }
 
-const OneClickStakingModal: React.FC<Props> = ({ close, amountInfo, priceRangeInfo }) => {
+const OneClickStakingModal: React.FC<Props> = ({
+  isPoolCreation,
+  amountInfo,
+  priceRangeInfo,
+  feeInfo,
+  confirm,
+  close,
+}) => {
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -51,7 +65,14 @@ const OneClickStakingModal: React.FC<Props> = ({ close, amountInfo, priceRangeIn
           <div>
             <EarnAddConfirmAmountInfo {...amountInfo} />
           </div>
-          <EarnAddConfirmPriceRangeInfo {...priceRangeInfo} isShowStaking {...amountInfo}/>
+          <EarnAddConfirmPriceRangeInfo
+            {...priceRangeInfo}
+            isShowStaking
+            {...amountInfo}
+          />
+
+          {isPoolCreation && <EarnAddConfirmFeeInfo {...feeInfo} />}
+
           <div>
             <Button
               text="Confirm One-Click Staking"
@@ -60,6 +81,7 @@ const OneClickStakingModal: React.FC<Props> = ({ close, amountInfo, priceRangeIn
                 fullWidth: true,
               }}
               className="button-confirm"
+              onClick={confirm}
             />
           </div>
         </div>

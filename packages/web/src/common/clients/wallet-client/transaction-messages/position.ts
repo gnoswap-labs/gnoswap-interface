@@ -1,4 +1,8 @@
-import { makeTransactionMessage, PACKAGE_POSITION_PATH } from "./common";
+import {
+  makeTransactionMessage,
+  PACKAGE_POSITION_PATH,
+  PACKAGE_STAKER_PATH,
+} from "./common";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
@@ -62,7 +66,7 @@ export function makePositionMintWithStakeMessage(
   return makeTransactionMessage({
     caller,
     send,
-    packagePath: PACKAGE_POSITION_PATH,
+    packagePath: PACKAGE_STAKER_PATH,
     func: "MintAndStake",
     args: [
       tokenAPath,

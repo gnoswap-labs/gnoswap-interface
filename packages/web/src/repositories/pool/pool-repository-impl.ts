@@ -45,10 +45,11 @@ import {
   PACKAGE_POOL_PATH,
   GNS_TOKEN_PATH,
   CREATE_POOL_FEE,
+  PACKAGE_POSITION_ADDRESS,
 } from "@common/clients/wallet-client/transaction-messages";
 import { tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { checkGnotPath } from "@utils/common";
+import { checkGnotPath, isWrapped, toNativePath } from "@utils/common";
 
 const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
@@ -169,26 +170,29 @@ export class PoolRepositoryImpl implements PoolRepository {
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
-    const tokenAPath = tokenA.path;
-    const tokenBPath = tokenB.path;
+    const tokenAPath = toNativePath(tokenA.path);
+    const tokenBPath = toNativePath(tokenB.path);
 
     const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
     const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
 
     // When GNOT, make a send to the pool contract.
-    const sendAmount: string | null = isNativeToken(tokenA)
+    const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
-      : isNativeToken(tokenB)
+      : isWrapped(tokenBWrappedPath)
       ? tokenBAmountRaw
       : null;
 
-    const createPoolMessage = PoolRepositoryImpl.makeCreatePoolMessage(
-      tokenA,
-      tokenB,
-      feeTier,
-      startPrice,
-      caller,
-    );
+    const createPoolMessages = [
+      PoolRepositoryImpl.makeApproveGnosTokenMessage(caller),
+      PoolRepositoryImpl.makeCreatePoolMessage(
+        tokenA,
+        tokenB,
+        feeTier,
+        startPrice,
+        caller,
+      ),
+    ];
 
     const approveMessages = [
       PoolRepositoryImpl.makeApproveTokenMessage(
@@ -206,7 +210,6 @@ export class PoolRepositoryImpl implements PoolRepository {
     const makeMintMessage = withStaking
       ? makePositionMintWithStakeMessage
       : makePositionMintMessage;
-
     const mintMessage = makeMintMessage(
       tokenAPath,
       tokenBPath,
@@ -220,7 +223,13 @@ export class PoolRepositoryImpl implements PoolRepository {
       sendAmount,
     );
 
-    const messages = [createPoolMessage, ...approveMessages, mintMessage];
+    const mintMessages = [mintMessage];
+
+    const messages = [
+      ...createPoolMessages,
+      ...approveMessages,
+      ...mintMessages,
+    ];
     const result = await this.walletClient.sendTransaction({
       messages,
       gasFee,
@@ -279,16 +288,16 @@ export class PoolRepositoryImpl implements PoolRepository {
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
-    const tokenAPath = tokenA.path;
-    const tokenBPath = tokenB.path;
+    const tokenAPath = toNativePath(tokenA.path);
+    const tokenBPath = toNativePath(tokenB.path);
 
     const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
     const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
 
     // When GNOT, make a send to the pool contract.
-    const sendAmount: string | null = isNativeToken(tokenA)
+    const sendAmount: string | null = isWrapped(tokenAWrappedPath)
       ? tokenAAmountRaw
-      : isNativeToken(tokenB)
+      : isWrapped(tokenBWrappedPath)
       ? tokenBAmountRaw
       : null;
 
@@ -305,10 +314,10 @@ export class PoolRepositoryImpl implements PoolRepository {
       ),
     ];
 
+    // Make mint transaction message
     const makeMintMessage = withStaking
       ? makePositionMintWithStakeMessage
       : makePositionMintMessage;
-
     const mintMessage = makeMintMessage(
       tokenAPath,
       tokenBPath,
@@ -321,8 +330,9 @@ export class PoolRepositoryImpl implements PoolRepository {
       caller,
       sendAmount,
     );
+    const mintMessages = [mintMessage];
 
-    const messages = [...approveMessages, mintMessage];
+    const messages = [...approveMessages, ...mintMessages];
 
     const result = await this.walletClient.sendTransaction({
       messages,
@@ -491,6 +501,20 @@ export class PoolRepositoryImpl implements PoolRepository {
       pkg_path: tokenPath,
       func: "Approve",
       args: [POOL_ADDRESS, amount],
+    };
+  }
+
+  private static makeApproveTokenToPositionMessage(
+    tokenPath: string,
+    amount: string,
+    caller: string,
+  ) {
+    return {
+      caller,
+      send: "",
+      pkg_path: tokenPath,
+      func: "Approve",
+      args: [PACKAGE_POSITION_ADDRESS, amount],
     };
   }
 }
