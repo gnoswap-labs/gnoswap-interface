@@ -38,6 +38,7 @@ export interface Token {
   mostLiquidPool: MostLiquidPool;
   last7days: number[];
   idx: number;
+  graphStatus: MATH_NEGATIVE_TYPE;
 }
 
 export interface SortOption {
@@ -125,6 +126,7 @@ export const createDummyTokenList = (): Token[] => [
       Math.round(Math.random() * 100),
     ),
     idx: 1,
+    graphStatus: MATH_NEGATIVE_TYPE.POSITIVE
   },
 ];
 
@@ -221,6 +223,8 @@ const TokenListContainer: React.FC = () => {
       const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
+      const graphStatus = checkPositivePrice((transferData.pricesBefore?.latestPrice), (tempTokenPrice.last7d?.[0].price)).status;
+
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
 
@@ -262,13 +266,14 @@ const TokenListContainer: React.FC = () => {
         priceOf7d: { status: data7day.status, value: data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
         priceOf30d: { status: data30D.status, value: data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
         idx: 1,
+        graphStatus,
       };
     });
 
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
-  }, [tokens, tokenPrices, tokenType]);
+  }, [tokenType, tokens, wugnotPath, tokenPrices]);
 
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
@@ -339,7 +344,7 @@ const TokenListContainer: React.FC = () => {
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={isFetched && !isLoadingCommon && isFetchedTokenPrices}
+      isFetched={isFetched && !isLoadingCommon && isFetchedTokenPrices && !isLoadingTokenPrice}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}
