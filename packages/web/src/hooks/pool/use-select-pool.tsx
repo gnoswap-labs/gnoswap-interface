@@ -9,11 +9,17 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import {
   feeBoostRateByPrices,
   getDepositAmountsByAmountA,
+  isEndTickBy,
   priceToNearTick,
   tickToPrice,
 } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
-import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
+import {
+  MAX_PRICE,
+  MAX_TICK,
+  MIN_PRICE,
+  MIN_TICK,
+} from "@constants/swap.constant";
 import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
@@ -31,6 +37,10 @@ interface Props {
   isCreate?: boolean;
   startPrice?: number | null;
   defaultPriceRange?: [number | null, number | null];
+  options?: {
+    tickLower: number;
+    tickUpper: number;
+  } | null;
 }
 
 export interface SelectPool {
@@ -81,6 +91,7 @@ export const useSelectPool = ({
   isCreate = false,
   startPrice = null,
   defaultPriceRange = [null, null],
+  options,
 }: Props) => {
   const priceRangeRef = useRef<[number | null, number | null]>([
     ...defaultPriceRange,
@@ -297,16 +308,15 @@ export const useSelectPool = ({
       return null;
     }
 
-    if (fullRange) {
-      return 50;
-    }
+    const currentMinPrice = fullRange ? MIN_PRICE : minPrice;
+    const currentMaxPrice = fullRange ? MAX_PRICE : maxPrice;
 
     const adjustAmountA = 1_000_000_000n;
 
     const { amountA, amountB } = getDepositAmountsByAmountA(
       currentPrice,
-      minPrice,
-      maxPrice,
+      currentMinPrice,
+      currentMaxPrice,
       adjustAmountA,
     );
 
@@ -484,6 +494,22 @@ export const useSelectPool = ({
       setLatestPoolPath(poolInfo.poolPath);
     }
   }, [isCreate, poolInfo, startPrice]);
+
+  useEffect(() => {
+    if (!options || !feeTier) {
+      return;
+    }
+
+    const feeStr = `${SwapFeeTierInfoMap[feeTier].fee}`;
+    const isEndMinTick = isEndTickBy(options.tickLower, feeStr);
+    const isEndMaxTick = isEndTickBy(options.tickUpper, feeStr);
+    setMinPosition(isEndMinTick ? MIN_PRICE : tickToPrice(options.tickLower));
+    setMaxPosition(isEndMaxTick ? MAX_PRICE : tickToPrice(options.tickUpper));
+
+    if (isEndMinTick && isEndMaxTick) {
+      setFullRange(true);
+    }
+  }, [options, feeTier]);
 
   return {
     startPrice,

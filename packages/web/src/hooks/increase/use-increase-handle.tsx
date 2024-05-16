@@ -1,4 +1,7 @@
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import {
+  RANGE_STATUS_OPTION,
+  SwapFeeTierInfoMap,
+} from "@constants/option.constant";
 import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { usePositionData } from "@hooks/common/use-position-data";
@@ -7,14 +10,15 @@ import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   isEndTickBy,
+  makeSwapFeeTier,
   priceToTick,
+  tickToPrice,
   tickToPriceStr,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -43,22 +47,26 @@ export const useIncreaseHandle = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
     type: "Custom",
   });
+  const [loading, setLoading] = useState(true);
 
   const { positions } = usePositionData();
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId) {
-      const position = positions.filter(
-        (_: PoolPositionModel) => _.id === positionId,
-      )?.[0];
-      if (position) {
-        setSelectedPosition(position);
-      } else {
+      const position = positions.find(
+        position => position.lpTokenId.toString() === positionId,
+      );
+
+      if (!position) {
         router.push(`/earn/pool/${poolPath}`);
+        return;
       }
+
+      setSelectedPosition(position);
+      setLoading(false);
     }
   }, [selectedPosition, positions, positionId, poolPath]);
 
-  const { connected, account } = useWallet();
+  const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(
@@ -81,7 +89,10 @@ export const useIncreaseHandle = () => {
     return maxPrice;
   }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);
 
-  const fee = poolPath?.split(":")[2];
+  const feeTier = useMemo(() => {
+    return selectedPosition ? makeSwapFeeTier(selectedPosition.pool.fee) : null;
+  }, [selectedPosition]);
+
   const tokenA: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
     return {
@@ -131,28 +142,38 @@ export const useIncreaseHandle = () => {
   const selectPool = useSelectPool({
     tokenA,
     tokenB,
-    feeTier: `FEE_${fee}` as any,
-    startPrice: 1,
+    feeTier,
+    startPrice: selectedPosition
+      ? tickToPrice(selectedPosition.pool.currentTick)
+      : null,
     isCreate: false,
+    options: selectedPosition
+      ? {
+          tickLower: selectedPosition.tickLower,
+          tickUpper: selectedPosition.tickUpper,
+        }
+      : null,
   });
+
+  const currentTick = useMemo(() => {
+    return priceToTick(selectPool.currentPrice);
+  }, [selectPool.currentPrice]);
 
   const isDepositTokenA = useMemo(() => {
     if (!selectedPosition?.tickUpper) {
       return false;
     }
 
-    const currentTick = priceToTick(selectPool.currentPrice);
     return selectedPosition.tickUpper > currentTick;
-  }, [selectedPosition?.tickUpper, selectPool.currentPrice]);
+  }, [selectedPosition?.tickUpper, currentTick]);
 
   const isDepositTokenB = useMemo(() => {
     if (!selectedPosition?.tickLower) {
       return false;
     }
 
-    const currentTick = priceToTick(selectPool.currentPrice);
     return selectedPosition.tickLower < currentTick;
-  }, [selectedPosition?.tickLower, selectPool.currentPrice]);
+  }, [selectedPosition?.tickLower, currentTick]);
 
   const priceRangeSummary: IPriceRange = useMemo(() => {
     let tokenARatioStr = "-";
@@ -280,15 +301,20 @@ export const useIncreaseHandle = () => {
   }, []);
 
   useEffect(() => {
+    if (!["done", "error", "failure"].includes(loadingConnect)) {
+      return;
+    }
+
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
-  }, [account, poolPath]);
+  }, [account, poolPath, loadingConnect]);
 
   return {
+    loading,
     tokenA,
     tokenB,
-    fee: fee,
+    fee: SwapFeeTierInfoMap[feeTier || "NONE"].fee,
     maxPriceStr,
     minPriceStr,
     rangeStatus,

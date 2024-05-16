@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import IncreaseLiquidity from "@components/increase/increase-liquidity/IncreaseLiquidity";
 import { useIncreaseHandle } from "@hooks/increase/use-increase-handle";
 import { useIncreasePositionModal } from "@hooks/increase/use-increase-position-modal";
+import IncreaseLiquidityLoading from "@components/increase/increase-liquidity/IncreaseLiquidityLoading";
 
 const IncreaseLiquidityContainer: React.FC = () => {
   const {
@@ -25,6 +26,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
     selectPool,
     isDepositTokenA,
     isDepositTokenB,
+    loading,
   } = useIncreaseHandle();
 
   const { openModal } = useIncreasePositionModal({
@@ -53,7 +55,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
     openModal();
   };
 
-  if (!tokenA || !tokenB) return <></>;
+  if (!tokenA || !tokenB || loading) return <IncreaseLiquidityLoading />;
 
   return (
     <IncreaseLiquidity

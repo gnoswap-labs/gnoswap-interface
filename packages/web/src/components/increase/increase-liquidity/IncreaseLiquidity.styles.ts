@@ -35,9 +35,8 @@ export const IncreaseLiquidityWrapper = styled.div`
     .title {
       margin-bottom: 8px;
     }
-
   }
-  
+
   article {
     ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
@@ -116,4 +115,12 @@ export const IncreaseLiquidityBoxStyle = (theme: Theme) => css`
     color: ${theme.color.text05};
     ${fonts.body12}
   }
+`;
+
+export const LoadingWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "center")};
+  width: 100%;
+  margin: 80px auto;
+  align-items: center;
+  justify-content: center;
 `;
