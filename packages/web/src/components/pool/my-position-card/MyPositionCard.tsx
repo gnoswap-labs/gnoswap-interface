@@ -183,7 +183,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           accum[current.rewardType] = [];
         }
 
-        const index = accum[current.rewardType].findIndex((item) => item.token.priceId === current.rewardToken.priceId);
+        const index = accum[current.rewardType].findIndex((item) => item.token.priceID === current.rewardToken.priceID);
         if (index !== -1) {
           accum[current.rewardType][index] = {
             ...accum[current.rewardType][index],
@@ -261,7 +261,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           if (!currentTypeRewards) {
             accum[current.rewardType] = [];
           }
-          const index = accum[current.rewardType].findIndex((item) => item.token.priceId === current.rewardToken.priceId);
+          const index = accum[current.rewardType].findIndex((item) => item.token.priceID === current.rewardToken.priceID);
           if (index != -1) {
             accum[current.rewardType][index] = {
               ...accum[current.rewardType][index],

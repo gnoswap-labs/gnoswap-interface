@@ -20,7 +20,6 @@ export const initialPool: PoolModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   tokenB: {
     chainId: "",
@@ -33,7 +32,6 @@ export const initialPool: PoolModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   incentiveType: "INCENTIVIZED",
   tvl: 0,

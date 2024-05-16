@@ -205,10 +205,10 @@ const WithDrawModal: React.FC<Props> = ({
                     className="balance-text"
                     onClick={handleEnterAllBalanceAvailable}
                   >{`Available: ${currentAvailableBalance
-                      ? BigNumber(currentAvailableBalance)
-                        .decimalPlaces(2)
-                        .toFormat()
-                      : "-"
+                    ? BigNumber(currentAvailableBalance)
+                      .decimalPlaces(2)
+                      .toFormat()
+                    : "-"
                     }`}</span>
                 </div>
               </div>

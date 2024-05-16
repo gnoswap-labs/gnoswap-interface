@@ -24,7 +24,6 @@ const tokenA: TokenModel = {
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
   priceID: "gno.land/r/gns",
-  priceId: "gno.land/r/gns"
 };
 const tokenB: TokenModel = {
   chainId: "dev",
@@ -37,7 +36,6 @@ const tokenB: TokenModel = {
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
   priceID: "gno.land/r/gns",
-  priceId: "gno.land/r/gns"
 };
 
 export const Default = Template.bind({});

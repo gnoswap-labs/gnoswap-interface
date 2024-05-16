@@ -19,7 +19,6 @@ const pool: PoolCardInfo = {
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     type: "grc20",
     priceID: "gno.land/r/bar",
-    priceId: "gno.land/r/bar"
   },
   tokenB: {
     chainId: "dev",
@@ -32,7 +31,6 @@ const pool: PoolCardInfo = {
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     type: "grc20",
     priceID: "gno.land/r/foo",
-    priceId: "gno.land/r/foo",
   },
   feeTier: "FEE_500",
   liquidity: "$1,182,797",

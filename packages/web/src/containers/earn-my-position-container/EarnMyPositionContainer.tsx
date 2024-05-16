@@ -153,7 +153,7 @@ const EarnMyPositionContainer: React.FC<
         addressName={addressName}
         isOtherPosition={!!isOtherPosition}
         visiblePositions={visiblePositions}
-        positionLength={positions.length}
+        positionLength={dataMapping.length}
         connected={connected}
         availableStake={availableStake}
         connect={connect}
