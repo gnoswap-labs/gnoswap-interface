@@ -32,7 +32,6 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     refetchInterval: 60 * 1000,
   });
   const { data: chainData, isLoading: isLoadingChain } = useGetChainList();
-  console.log("🚀 ~ chainData:", chainData);
 
   const { fees24hUsd } = data || {};
 
@@ -43,7 +42,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: "Swap Volume 24h",
-      content: toUnitFormat(Number(chainData?.stat?.allTimeVolumeUsd ?? 0), true, true),
+      content: toUnitFormat(Number(chainData?.stat?.volume24hUsd ?? 0), true, true),
     },
     {
       label: "Swap Fees 24h",
