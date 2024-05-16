@@ -243,7 +243,6 @@ const HeaderContainer: React.FC = () => {
       const usdFormat = formatUsdNumber3Digits(transferData.usd);
       const price = toPriceFormat(usdFormat || "0", { usd: true });
 
-      console.log("🚀 ~ returntemp.map ~ price:", price)
       return {
         path: "",
         searchType: "",

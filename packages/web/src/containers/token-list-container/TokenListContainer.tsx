@@ -156,8 +156,10 @@ const TokenListContainer: React.FC = () => {
     setIsInside(true);
   };
 
-  const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice } = useTokenData();
-  console.log("🚀 ~ tokenPrices:", tokenPrices);
+  const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice, isFetchedTokenPrices } = useTokenData();
+  console.log("🚀 TokenListContainer ~ isLoadingTokenPrice:", isLoadingTokenPrice);
+  console.log("🚀 TokenListContainer ~ tokenPrices:", tokenPrices);
+  console.log("🚀 TokenListContainer ~ isFetched:", isFetched);
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -333,13 +335,10 @@ const TokenListContainer: React.FC = () => {
     return temp.slice(page * 15, (page + 1) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
 
-  console.log("🚀 ~ getDatas ~ getDatas:", getDatas());
-
-
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={isFetched && !isLoadingCommon && !isLoadingTokenPrice}
+      isFetched={isFetched && !isLoadingCommon && isFetchedTokenPrices}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}

@@ -239,7 +239,6 @@ const AssetListContainer: React.FC = () => {
   const { data: { tokens = [] } = {}, isLoading } = useGetTokensList({
     refetchInterval: 60 * 1000,
   });
-  console.log("🚀 ~ data:", tokens)
   const { loading: loadingPositions } = usePositionData();
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {

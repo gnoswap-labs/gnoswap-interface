@@ -60,9 +60,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     mostLiquidPool,
     last7days,
   } = item;
-  (token.symbol === "GNS") && console.log("🚀 ~ last7days:", last7days)
   const router = useRouter();
-
 
   const onClickItem = (path: string) => {
     router.push("/tokens/" + makeId(path));
