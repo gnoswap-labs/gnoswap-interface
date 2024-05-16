@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import IncreaseLiquidity from "@components/increase/increase-liquidity/IncreaseLiquidity";
-import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import { useIncreaseHandle } from "@hooks/increase/use-increase-handle";
 import { useIncreasePositionModal } from "@hooks/increase/use-increase-position-modal";
 
