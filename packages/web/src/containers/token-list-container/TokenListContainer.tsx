@@ -220,9 +220,9 @@ const TokenListContainer: React.FC = () => {
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
       const graphStatus = checkPositivePrice((transferData.pricesBefore?.latestPrice), (tempTokenPrice.last7d?.[0].price)).status;
-      console.log("🚀 34928340923 ~ temp ~ tempTokenPrice.last7d?.[0].price:", tempTokenPrice.last7d?.[0].price);
-      console.log("🚀 34928340923 ~ temp ~ transferData.pricesBefore?.latestPrice:", transferData.pricesBefore?.latestPrice);
-      console.log("🚀 34928340923 ~ temp ~ graphStatus:", graphStatus);
+      (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ tempTokenPrice.last7d?.[0].price:", tempTokenPrice.last7d?.[0].price);
+      (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ transferData.pricesBefore?.latestPrice:", transferData.pricesBefore?.latestPrice);
+      (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ graphStatus:", graphStatus);
 
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
