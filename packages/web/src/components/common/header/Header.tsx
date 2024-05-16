@@ -53,6 +53,8 @@ interface HeaderProps {
   popularTokens: Token[];
   recents: Token[];
   movePage: (path: string) => void;
+  gnotBalance?: number;
+  isLoadingGnotBalance?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -78,6 +80,8 @@ const Header: React.FC<HeaderProps> = ({
   popularTokens,
   recents,
   movePage,
+  gnotBalance,
+  isLoadingGnotBalance,
 }) => {
   const { width } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -152,6 +156,8 @@ const Header: React.FC<HeaderProps> = ({
                 switchNetwork={switchNetwork}
                 isSwitchNetwork={isSwitchNetwork}
                 loadingConnect={loadingConnect}
+                gnotBalance={gnotBalance}
+                isLoadingGnotBalance={isLoadingGnotBalance}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />

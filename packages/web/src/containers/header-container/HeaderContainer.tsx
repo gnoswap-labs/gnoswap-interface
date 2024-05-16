@@ -145,7 +145,7 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
+  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect, isLoadingGnotBalance, gnotBalance } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
@@ -328,6 +328,8 @@ const HeaderContainer: React.FC = () => {
       popularTokens={popularTokens}
       recents={recents}
       movePage={movePage}
+      gnotBalance={gnotBalance}
+      isLoadingGnotBalance={isLoadingGnotBalance}
     />
   );
 };

@@ -77,6 +77,8 @@ interface WalletConnectorMenuProps {
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
   onClickChangeLanguage: () => void;
+  gnotBalance?: number;
+  isLoadingGnotBalance?: boolean;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -89,6 +91,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   switchNetwork,
   isSwitchNetwork,
   onClickChangeLanguage,
+  gnotBalance,
 }) => {
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -109,13 +112,14 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const balanceText = useMemo(() => {
-    const rawPriceNumber = Number(account?.balances[0].amount);
-    const formattedPrice = (rawPriceNumber / 1000000).toString().match(cutDecimalNumberWithoutRounding(6))?.toString() ?? 0;
+    const balance = gnotBalance || account?.balances?.[0].amount;
+
+    const formattedPrice = ((balance ?? 0) / 1000000).toString().match(cutDecimalNumberWithoutRounding(6))?.toString() ?? 0;
 
     const price = BigNumber(formattedPrice).toFormat();
 
     return `${price} GNOT` || "0 GNOT";
-  }, [account?.balances]);
+  }, [account?.balances, gnotBalance]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();

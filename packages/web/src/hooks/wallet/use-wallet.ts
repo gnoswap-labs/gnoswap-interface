@@ -13,6 +13,7 @@ import {
   GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
 import { DEFAULT_CHAIN_ID } from "@common/clients/wallet-client/transaction-messages";
+import { useQuery } from "@tanstack/react-query";
 
 const CHAIN_ID = DEFAULT_CHAIN_ID;
 
@@ -25,9 +26,17 @@ export const useWallet = () => {
   const [loadingConnect, setLoadingConnect] = useAtom(
     WalletState.loadingConnect,
   );
+  const { rpcProvider } = useGnoswapContext();
+
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
   }, [walletAccount]);
+
+  const { data: balance, isLoading: isLoadingBalance } = useQuery({
+    queryKey: ["token-balance", "ugnot"],
+    queryFn: () => rpcProvider?.getBalance(walletAccount?.address || "", "ugnot"),
+    refetchInterval: 5_000,
+  });
 
   const wallet = useMemo(() => {
     if (!connected) {
@@ -140,7 +149,7 @@ export const useWallet = () => {
     try {
       walletClient.addEventChangedAccount(() => connectAdenaClient());
       walletClient.addEventChangedNetwork(() => connectAdenaClient());
-    } catch {}
+    } catch { }
   }
 
   const isSwitchNetwork = useMemo(() => {
@@ -148,31 +157,6 @@ export const useWallet = () => {
     const network = walletAccount.chainId === CHAIN_ID;
     return network ? false : true;
   }, [walletAccount]);
-  
-  const refreshWallet = useCallback(async () => {
-    if(!walletClient || !connected) {
-      return;
-    }
-
-    const account = await accountRepository.getAccount();
-    setWalletAccount(account);
-  }, [connected, walletClient]);
-
-  useEffect(() => {
-    if(!walletClient || !connected) return;
-
-    const interval = setInterval( () => {
-      if(!connected || !walletClient) {
-        clearInterval(interval);
-      }
-      refreshWallet();
-    }, 5_000);
-
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [connected, refreshWallet]); 
 
   useEffect(() => {
     if (!sessionId) {
@@ -196,5 +180,7 @@ export const useWallet = () => {
     loadingConnect,
     walletClient,
     setLoadingConnect,
+    gnotBalance: balance,
+    isLoadingGnotBalance: isLoadingBalance,
   };
 };

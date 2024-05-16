@@ -5,12 +5,12 @@ import { media } from "@styles/media";
 
 export const HeaderSideMenuModalWrapper = styled.div`
   position: absolute;
-  top: 63.5px;
+  top: 44px;
   ${media.tablet} {
-    top: 63.5px;
+    top: 44px;
   }
 
-  right: 0px;
+  left: 0px;
   width: 240px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background01};
@@ -27,7 +27,7 @@ export const HeaderSideMenuModalWrapper = styled.div`
 
 export const FakeSpaceWrapper = styled.div`
   position: absolute;
-  height: 63.5px;
+  height: 44px;
   top:0px;
 
   right: 0px;

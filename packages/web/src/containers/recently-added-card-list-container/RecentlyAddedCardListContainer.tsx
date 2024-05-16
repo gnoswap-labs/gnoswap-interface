@@ -5,6 +5,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/use-pool-data";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { CardListKeyStats } from "@models/common/card-list-item-info";
+import { useGetChainList } from "@query/token";
 import { TvlResponse } from "@repositories/dashboard";
 import { IVolumeResponse } from "@repositories/dashboard/response/volume-response";
 import { useQuery } from "@tanstack/react-query";
@@ -30,7 +31,10 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     queryFn: dashboardRepository.getDashboardVolume,
     refetchInterval: 60 * 1000,
   });
-  const { allTimeVolumeUsd = "0", fees24hUsd } = data || {};
+  const { data: chainData, isLoading: isLoadingChain } = useGetChainList();
+  console.log("🚀 ~ chainData:", chainData);
+
+  const { fees24hUsd } = data || {};
 
   const list: CardListKeyStats[] = [
     {
@@ -39,7 +43,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: "Swap Volume 24h",
-      content: toUnitFormat(allTimeVolumeUsd, true, true),
+      content: toUnitFormat(Number(chainData?.stat?.allTimeVolumeUsd ?? 0), true, true),
     },
     {
       label: "Swap Fees 24h",
@@ -66,7 +70,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
       list={list}
       device={breakpoint}
       onClickItem={onClickItem}
-      loading={loading || isLoadingPoolData || isLoadingCommon || isLoadingTokenPrice || isLoadingVolume}
+      loading={loading || isLoadingPoolData || isLoadingCommon || isLoadingTokenPrice || isLoadingVolume || isLoadingChain}
     />
   );
 };

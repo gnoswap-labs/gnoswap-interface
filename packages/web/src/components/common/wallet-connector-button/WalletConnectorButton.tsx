@@ -27,6 +27,8 @@ interface WalletConnectProps {
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
   loadingConnect: string;
+  gnotBalance?: number;
+  isLoadingGnotBalance?: boolean
 }
 
 const ToolTipGlobalStyle = () => {
@@ -63,6 +65,8 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   switchNetwork,
   isSwitchNetwork,
   loadingConnect,
+  gnotBalance,
+  isLoadingGnotBalance,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const handleESC = () => {
@@ -76,7 +80,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       return prev;
     });
   };
-  
+
   useEscCloseModal(() => handleESC());
 
   const address = useMemo(() => {
@@ -141,7 +145,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       ) : (
         <Button
           text={isLoading ? "" : "Wallet Login"}
-          rightIcon={isLoading ? <LoadingSpinner className="loading-button"/> : <IconStrokeArrowDown className="arrow-icon" />}
+          rightIcon={isLoading ? <LoadingSpinner className="loading-button" /> : <IconStrokeArrowDown className="arrow-icon" />}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
@@ -164,9 +168,11 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           switchNetwork={switchNetwork}
           isSwitchNetwork={isSwitchNetwork}
           onClickChangeLanguage={onClickChangeLanguage}
+          gnotBalance={gnotBalance}
+          isLoadingGnotBalance={isLoadingGnotBalance}
         />
       )}
-      {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage}/>}
+      {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}
       <ToolTipGlobalStyle />
     </WalletConnectorButtonWrapper>
   );

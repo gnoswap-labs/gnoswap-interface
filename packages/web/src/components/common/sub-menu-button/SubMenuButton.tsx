@@ -1,10 +1,10 @@
 import React from "react";
 import { SubMenuButtonWrapper } from "./SubMenuButton.styles";
 import HeaderSideMenuModal from "../header-side-menu-modal/HeaderSideMenuModal";
-import IconArrowUp from "../icons/IconArrowUp";
-import IconArrowDown from "../icons/IconArrowDown";
 import { useTheme } from "@emotion/react";
 import { FakeSpaceWrapper } from "../header-side-menu-modal/HeaderSideMenuModal.styles";
+import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
+import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 
 interface SubMenuButtonProps {
   sideMenuToggle: boolean;
@@ -23,7 +23,9 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
       onMouseLeave={() => onSideMenuToggle(false)}
       className={`${sideMenuToggle ? "selected" : ""}`}
     >
-      {sideMenuToggle ? <IconArrowUp fill={theme.color.text16} /> : <IconArrowDown fill={theme.color.text04} />}
+      {sideMenuToggle
+        ? <IconStrokeArrowUp className="popup-icon-button" svgProps={{ fill: theme.color.text16 }} />
+        : <IconStrokeArrowDown className="popup-icon-button" svgProps={{ fill: theme.color.text04 }} />}
       {sideMenuToggle && (
         <>
           <FakeSpaceWrapper></FakeSpaceWrapper>
