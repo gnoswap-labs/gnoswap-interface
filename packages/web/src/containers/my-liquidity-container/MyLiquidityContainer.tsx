@@ -54,7 +54,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   }, [account?.address, address]);
 
   const visiblePositions = useMemo(() => {
-    if (!connectedWallet && !address) {
+
+    if ((!connectedWallet && !address)) {
       return false;
     }
     return true;
@@ -65,11 +66,13 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   });
 
   const availableRemovePosition = useMemo(() => {
-    if (!connectedWallet || isSwitchNetwork) {
+    const noClosedPosition = positions.every(item => !item.closed);
+
+    if (!connectedWallet || isSwitchNetwork || !noClosedPosition) {
       return false;
     }
     return positions.length > 0;
-  }, [connectedWallet, isSwitchNetwork, positions.length]);
+  }, [connectedWallet, isSwitchNetwork, positions]);
 
   const handleClickAddPosition = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-path"]}/add`);

@@ -54,12 +54,7 @@ const EarnMyPositionContainer: React.FC<
     const [isClosed, setIsClosed] = useState(false);
     const { isLoadingCommon } = useLoading();
 
-    const visiblePositions = useMemo(() => {
-      if (!connected && !address) {
-        return false;
-      }
-      return true;
-    }, [address, connected]);
+
 
     const { data: addressName = "" } = useGetUsernameByAddress(address || "", { enabled: !!address });
 
@@ -149,6 +144,15 @@ const EarnMyPositionContainer: React.FC<
 
     const allPositionLength = useMemo(() => positions.length, [positions]);
     const openPositionLength = useMemo(() => positions.filter((_: PositionModel) => _.closed === false).length, [positions]);
+
+    const visiblePositions = useMemo(() => {
+      const noClosedPosition = positions.every(item => !item.closed);
+
+      if ((!connected && !address) || noClosedPosition) {
+        return false;
+      }
+      return true;
+    }, [address, connected, positions]);
 
     return (
       <EarnMyPositions
