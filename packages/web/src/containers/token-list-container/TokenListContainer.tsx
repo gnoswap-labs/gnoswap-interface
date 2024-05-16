@@ -209,15 +209,15 @@ const TokenListContainer: React.FC = () => {
 
     let temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
       const isGnot = item.path === "gnot";
-      const temp: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
+      const tempTokenPrice: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
-      const transferData = isGnot ? tempWuGnot : temp;
-      const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
+      const transferData = isGnot ? tempWuGnot : tempTokenPrice;
+      const splitMostLiquidity: string[] = tempTokenPrice?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
       const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
       const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
-      const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
+      const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (tempTokenPrice.last7d?.[0].price));
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
 
