@@ -112,7 +112,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (connectedWallet && swapTokenInfo.tokenBBalance !== "-") {
       if (swapTokenInfo.tokenBBalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenBBalance.replace(/,/g, ""))
-        // .dividedBy(Math.pow(10, swapTokenInfo.tokenB?.decimals ?? 0))
         .toFormat(2);
     }
     return "-";

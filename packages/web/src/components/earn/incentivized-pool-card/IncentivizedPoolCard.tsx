@@ -61,6 +61,13 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     return filteredArray;
   }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
 
+  const isHideBar = useMemo(() => {
+    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+
+    return isAllReserveZeroBin40 && isAllReserveZeroBin;
+  }, [pool.bins, pool.bins40]);
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -128,6 +135,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 position="top"
                 offset={40}
                 poolPrice={pool?.price || 1}
+                showBar={!isHideBar}
               />
               <div className="price-section">
                 <span className="label-text">

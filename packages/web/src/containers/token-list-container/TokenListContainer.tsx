@@ -74,62 +74,6 @@ export const TOKEN_TYPE = {
 } as const;
 export type TOKEN_TYPE = ValuesType<typeof TOKEN_TYPE>;
 
-export const createDummyTokenList = (): Token[] => [
-  {
-    path: Math.floor(Math.random() * 50 + 1).toString(),
-    token: {
-      path: "1",
-      name: "Bitcoin",
-      symbol: "BTC",
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
-    },
-    price: "$12,090.09",
-    priceOf1d: {
-      status: MATH_NEGATIVE_TYPE.POSITIVE,
-      value: "12.08%",
-      realValue: 0,
-    },
-    priceOf7d: {
-      status: MATH_NEGATIVE_TYPE.NEGATIVE,
-      value: "19.92%",
-      realValue: 0,
-    },
-    priceOf30d: {
-      status: MATH_NEGATIVE_TYPE.NEGATIVE,
-      value: "19.12%",
-      realValue: 0,
-    },
-    marketCap: "$311,421,241,255",
-    liquidity: "$1,421,241,255",
-    volume24h: "$311,421,241",
-    mostLiquidPool: {
-      poolId: Math.floor(Math.random() * 50 + 1).toString(),
-      tokenPair: {
-        tokenA: {
-          path: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "HEX",
-          symbol: "HEX",
-          logoURI:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
-        },
-        tokenB: {
-          path: Math.floor(Math.random() * 50 + 1).toString(),
-          name: "USDCoin",
-          symbol: "USDC",
-          logoURI:
-            "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-        },
-      },
-      feeRate: "0.05%",
-    },
-    last7days: Array.from({ length: 40 }, () =>
-      Math.round(Math.random() * 100),
-    ),
-    idx: 1,
-    graphStatus: MATH_NEGATIVE_TYPE.POSITIVE
-  },
-];
-
 const TokenListContainer: React.FC = () => {
   const [tokenType, setTokenType] = useState<TOKEN_TYPE>(TOKEN_TYPE.ALL);
   const [page, setPage] = useState(0);
@@ -158,11 +102,7 @@ const TokenListContainer: React.FC = () => {
     setIsInside(true);
   };
 
-  const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice, isFetchedTokenPrices } = useTokenData();
-  console.log("🚀 TokenListContainer ~ isFetchedTokenPrices:", isFetchedTokenPrices);
-  console.log("🚀 TokenListContainer ~ isLoadingTokenPrice:", isLoadingTokenPrice);
-  console.log("🚀 TokenListContainer ~ tokenPrices:", tokenPrices);
-  console.log("🚀 TokenListContainer ~ isFetched:", isFetched);
+  const { tokens, isFetched, error, tokenPrices, isFetchedTokenPrices } = useTokenData();
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -341,10 +281,11 @@ const TokenListContainer: React.FC = () => {
     return temp.slice(page * 15, (page + 1) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
 
+
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={isFetched && !isLoadingCommon && isFetchedTokenPrices && !isLoadingTokenPrice}
+      isFetched={isFetched && !isLoadingCommon && isFetchedTokenPrices}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}

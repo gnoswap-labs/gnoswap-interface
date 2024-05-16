@@ -9,6 +9,7 @@ import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
 import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
 import { REGEX_NUMBER_FORMAT } from "@utils/regex";
+import { toUnitFormat } from "@utils/number-utils";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -20,17 +21,26 @@ export class PoolMapper {
       tokenA,
       tokenB,
       volume24h,
-      // tvl,
+      tvl,
       fee,
       apr,
       bins,
       rewardTokens,
       feeUsd24h,
       liquidity,
+      bins40,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => info.fee.toString() === fee,
     );
+
+    function getApr() {
+      if (apr === 0 || apr === "") return "$0";
+
+      if (!apr) return "-";
+
+      return `${BigNumber(apr || 0).toFormat(2)}%`;
+    }
 
     return {
       poolId: id,
@@ -38,14 +48,16 @@ export class PoolMapper {
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
+      apr: getApr(),
       liquidity: `$${BigNumber(liquidity).toFormat(0)}`,
-      volume24h: `$${Math.floor(Number(volume24h || 0)).toLocaleString()}`,
+      volume24h: toUnitFormat(Number(volume24h ?? 0), true, true),
       fees24h: `$${Math.floor(Number(feeUsd24h || 0)).toLocaleString()}`,
       rewardTokens,
       currentTick,
       price,
       bins,
+      bins40,
+      tvl: toUnitFormat(tvl || "0", true, true),
     };
   }
 

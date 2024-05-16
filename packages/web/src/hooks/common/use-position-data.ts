@@ -21,7 +21,7 @@ export const usePositionData = (address?: string) => {
   const { back } = router.query;
   const { account, connected: walletConnected } = useWallet();
   const { pools, loading: isLoadingPool } = usePoolData();
-  const [shouldShowLoading, setShouldShowLoading] =  useState(false);
+  const [shouldShowLoading, setShouldShowLoading] = useState(false);
   const cachedData = useRef<PositionModel[]>();
 
   const fetchedAddress = useMemo(() => {
@@ -40,7 +40,7 @@ export const usePositionData = (address?: string) => {
   } = useGetPositionsByAddress(fetchedAddress as string, {
     enabled: !!fetchedAddress && pools.length > 0,
     refetchInterval: () => {
-      if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15) );
+      if (PATH.includes(router.pathname)) return (secToMilliSec((back && !initialData.status) ? 3 : 15));
 
       if (PATH_10SECOND.includes(router.pathname)) return secToMilliSec(10);
 
@@ -50,15 +50,15 @@ export const usePositionData = (address?: string) => {
     },
     onSuccess(data) {
       const haveNewData = JSON.stringify(data, transformData) !== JSON.stringify(cachedData.current, transformData);
-      if(haveNewData) {
+      if (haveNewData) {
         cachedData.current = data;
       }
       setShouldShowLoading(haveNewData);
     },
     onError(err) {
-      if((err as AxiosError).response?.status === 404) {
+      if ((err as AxiosError).response?.status === 404) {
         const haveNewData = JSON.stringify([]) !== JSON.stringify(cachedData.current, transformData);
-        if(haveNewData) {
+        if (haveNewData) {
           cachedData.current = data;
         }
         setShouldShowLoading(haveNewData);
@@ -68,8 +68,8 @@ export const usePositionData = (address?: string) => {
 
   function transformData(key: string, value: unknown) {
     return typeof value === "bigint"
-            ? value.toString()
-            : value;
+      ? value.toString()
+      : value;
   }
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export const usePositionData = (address?: string) => {
       });
     }
   }, [data.length, isPositionLoading, setInitialData]);
- 
+
   useEffect(() => {
     if (initialData.loadingCall && isFetchedPosition && !isPositionLoading) {
       setInitialData(() => {
@@ -113,18 +113,18 @@ export const usePositionData = (address?: string) => {
   }, [initialData.loadingCall, data.length, isFetchedPosition, isPositionLoading, initialData.length, setInitialData]);
 
   const isEarnPath = PATH.includes(router.pathname);
-  
+
   // * no need to force loading in another page
   const isConnectedCheck = walletConnected && isEarnPath;
 
   const shouldTriggerLoading = () => {
     // * connected case
-    if(isConnectedCheck) {
+    if (isConnectedCheck) {
       return true;
     }
 
     // * not connected case
-    if(!isConnectedCheck && (isPositionLoading || !back)) {
+    if (!isConnectedCheck && (isPositionLoading || !back)) {
       return true;
     }
 
@@ -145,7 +145,9 @@ export const usePositionData = (address?: string) => {
   const positions = useMemo(() => {
     const poolPositions: PoolPositionModel[] = [];
     data.forEach(position => {
-      const pool = pools.find(pool => pool.poolPath === position.poolPath);
+      const pool = pools.find(pool => {
+        return pool.poolPath === position.poolPath;
+      });
       if (pool) {
         const temp = {
           ...pool,
@@ -161,10 +163,15 @@ export const usePositionData = (address?: string) => {
           },
         };
         poolPositions.push(PositionMapper.makePoolPosition(position, temp));
+      } else {
+        console.log("🚀 34234234 ~ pool ~ pool:", pools.map(item => item.poolPath));
+        console.log("🚀 34234234 ~ positions ~ position:", position.poolPath);
       }
     });
     return poolPositions;
   }, [data, getGnotPath, pools]);
+  console.log("🚀 ~ positions ~ positions:", positions);
+
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);
@@ -250,6 +257,6 @@ export const usePositionData = (address?: string) => {
     getPositionsByPoolPath,
     isFetchedPosition,
     loading: loading,
-    loadingPositionById: isLoadingPool || ( isPositionLoading && walletConnected),
+    loadingPositionById: isLoadingPool || (isPositionLoading && walletConnected),
   };
 };

@@ -118,6 +118,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     return pool?.rewardTokens?.map((item) => getGnotPath(item)?.logoURI);
   }, [pool?.rewardTokens]);
 
+  const isHideBar = useMemo(() => {
+    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+
+    return (isAllReserveZeroBin40 && isAllReserveZeroBin);
+  }, [pool.bins, pool.bins40]);
+
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
@@ -274,6 +281,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             position="top"
             offset={40}
             poolPrice={pool?.price || 1}
+            showBar={!isHideBar}
           />}
           {loading && <LoadingChart>
             <LoadingSpinner />

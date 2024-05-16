@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useLayoutEffect, useMemo } from "react";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import PoolLayout from "@layouts/pool-layout/PoolLayout";
@@ -31,7 +31,7 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { loading } = usePositionData(address);
+  const { loading, isFetchedPosition } = usePositionData(address);
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
@@ -43,8 +43,8 @@ export default function Pool() {
     return false;
   }, [data?.incentiveType]);
 
-  useEffect(() => {
-    if (!loading) {
+  useLayoutEffect(() => {
+    if (!loading && isFetchedPosition) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.getBoundingClientRect().top;
       if (!topPosition) {
@@ -54,7 +54,7 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [loading]);
+  }, [loading, isFetchedPosition]);
 
   return (
     <PoolLayout

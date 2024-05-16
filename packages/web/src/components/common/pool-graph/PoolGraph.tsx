@@ -5,7 +5,6 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { tickToPriceStr } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
@@ -304,10 +303,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     };
     const index = bin.index;
 
-    const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
-    const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
-    const myTokenAAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenAMyAmount);
-    const myTokenBAmountStr = makeDisplayTokenAmount(tokenB, bin?.reserveTokenBMyAmount);
+    const tokenAAmountStr = bin.reserveTokenA;
+    const tokenBAmountStr = bin.reserveTokenB;
+    const myTokenAAmountStr = bin?.reserveTokenAMyAmount;
+    const myTokenBAmountStr = bin?.reserveTokenBMyAmount;
     const tickSpacing = getTickSpacing();
     let isBlackBar = !!(maxTickPosition && minTickPosition && (scaleX(bin.minTick) < minTickPosition - tickSpacing || scaleX(bin.minTick) > maxTickPosition));
     if (isSwap) {

@@ -147,13 +147,16 @@ const EarnMyPositionContainer: React.FC<
       setIsClosed(!isClosed);
     };
 
+    const allPositionLength = useMemo(() => positions.length, [positions]);
+    const openPositionLength = useMemo(() => positions.filter((_: PositionModel) => _.closed === false).length, [positions]);
+
     return (
       <EarnMyPositions
         address={address}
         addressName={addressName}
         isOtherPosition={!!isOtherPosition}
         visiblePositions={visiblePositions}
-        positionLength={dataMapping.length}
+        positionLength={isClosed ? allPositionLength : openPositionLength}
         connected={connected}
         availableStake={availableStake}
         connect={connect}
