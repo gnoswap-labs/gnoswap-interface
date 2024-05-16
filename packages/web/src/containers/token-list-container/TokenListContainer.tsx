@@ -211,19 +211,20 @@ const TokenListContainer: React.FC = () => {
     let temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
       const isGnot = item.path === "gnot";
       const tempTokenPrice: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
+      // (item.symbol === "GNS") && console.log("🚀 ~ temp ~ tempTokenPrice:", tempTokenPrice);
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
       const transferData = isGnot ? tempWuGnot : tempTokenPrice;
-      (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ transferData:", transferData.path);
+      // (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ transferData:", transferData.path);
       const splitMostLiquidity: string[] = tempTokenPrice?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
       const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
       const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
-      const graphStatus = checkPositivePrice((transferData.pricesBefore?.latestPrice), (tempTokenPrice.last7d?.[0].price)).status;
-      (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ tempTokenPrice.last7d?.[0].price:", tempTokenPrice.last7d?.[0].price);
-      (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ transferData.pricesBefore?.latestPrice:", transferData.pricesBefore?.latestPrice);
-      (item.symbol === "GNS") && console.log("🚀 34928340923 ~ temp ~ graphStatus:", graphStatus);
+      const graphStatus = checkPositivePrice(
+        (transferData.pricesBefore?.latestPrice),
+        tempTokenPrice.last7d?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())?.[0].price
+      ).status;
 
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
