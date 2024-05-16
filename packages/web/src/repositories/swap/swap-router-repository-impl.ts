@@ -4,7 +4,6 @@ import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
-import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
 import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
@@ -18,13 +17,20 @@ import {
   makeDepositMessage,
   makeWithdrawMessage,
 } from "@common/clients/wallet-client/transaction-messages/token";
-import { makePoolTokenApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
+import {
+  makePoolTokenApproveMessage,
+  makeRouterTokenApproveMessage,
+} from "@common/clients/wallet-client/transaction-messages/pool";
 import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { SwapRouteResponse } from "./response/swap-route-response";
-import { PACKAGE_ROUTER_PATH } from "@common/clients/wallet-client/transaction-messages";
+import {
+  PACKAGE_ROUTER_PATH,
+  TransactionMessage,
+} from "@common/clients/wallet-client/transaction-messages";
+import { checkGnotPath, toNativePath } from "@utils/common";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
@@ -70,6 +76,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       tokenAmount,
     );
 
+    /**
+     * XXX: Router API
+     */
     const estimatedRoutes = swapRouter.estimateSwapRoute(
       inputTokenPath,
       outputTokenPath,
@@ -77,39 +86,23 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       exactType,
     );
 
-    const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
-    const quotes = estimatedRoutes.map(route => route.quote).join(",");
-    const param = makeABCIParams("DrySwapRoute", [
-      inputTokenPath,
-      outputTokenPath,
-      tokenAmountRaw || "0",
-      exactType,
-      routesQuery,
-      quotes,
-    ]);
+    const result = estimatedRoutes.reduce(
+      (acc, current) =>
+        acc + exactType === "EXACT_IN"
+          ? Number(current.amountOut)
+          : Number(current.amountIn),
+      0,
+    );
 
-    const result = await this.rpcProvider
-      .evaluateExpression(ROUTER_PACKAGE_PATH, param)
-      .then(evaluateExpressionToNumber);
-
-    // console.log("estimateRouteParams", [
-    //   inputTokenPath,
-    //   outputTokenPath,
-    //   tokenAmountRaw || "0",
-    //   exactType,
-    //   routesQuery,
-    //   quotes,
-    // ]);
-
-    // console.log("estimateRouteParams:Result", result);
-
-    if (result === null) {
+    if (estimatedRoutes.length === 0) {
       throw new SwapError("NOT_FOUND_SWAP_POOL");
     }
+
     const resultAmount = makeDisplayTokenAmount(
       exactType === "EXACT_IN" ? outputToken : inputToken,
       result,
     );
+
     return {
       amount: resultAmount?.toString() || "0",
       estimatedRoutes,
@@ -143,37 +136,39 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
     const routesQuery = makeRoutesQuery(estimatedRoutes, inputToken.path);
     const quotes = estimatedRoutes.map(route => route.quote).join(",");
-    const inputTokenPath = isNativeToken(inputToken)
-      ? inputToken.wrappedPath
-      : inputToken.path;
-    const outputTokenPath = isNativeToken(outputToken)
-      ? outputToken.wrappedPath
-      : outputToken.path;
-    const messages = [];
+
+    const inputTokenWrappedPath = checkGnotPath(inputToken.path);
+    const outputTokenWrappedPath = checkGnotPath(outputToken.path);
+
+    const inputTokenPath = toNativePath(inputTokenWrappedPath);
+    const outputTokenPath = toNativePath(outputTokenWrappedPath);
+
+    const approveMessages: TransactionMessage[] = [
+      makePoolTokenApproveMessage(
+        inputTokenWrappedPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+      makeRouterTokenApproveMessage(
+        inputTokenWrappedPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+      makeRouterTokenApproveMessage(
+        outputTokenWrappedPath,
+        MAX_UINT64.toString(),
+        address,
+      ),
+    ];
+
     const sendTokenAmount =
       exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
-    if (isNativeToken(inputToken)) {
-      messages.push(
-        makeDepositMessage(inputTokenPath, sendTokenAmount, "ugnot", address),
-      );
-    }
-    messages.push(
-      makePoolTokenApproveMessage(
-        inputTokenPath,
-        MAX_UINT64.toString(),
-        address,
-      ),
-    );
-    messages.push(
-      makePoolTokenApproveMessage(
-        outputTokenPath,
-        MAX_UINT64.toString(),
-        address,
-      ),
-    );
-    messages.push({
+
+    const send = inputTokenPath === "gnot" ? `${sendTokenAmount}ugnot` : "";
+
+    const swapMessage = {
       caller: address,
-      send: "",
+      send,
       pkg_path: ROUTER_PACKAGE_PATH,
       func: "SwapRoute",
       args: [
@@ -185,7 +180,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         `${quotes}`,
         tokenAmountLimitRaw.toString(),
       ],
-    });
+    };
+
+    const messages = [...approveMessages, swapMessage];
     const response = await this.walletClient.sendTransaction({
       messages,
       gasFee: 1,
@@ -198,6 +195,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     if (data.data === null || data.data.length === 0) {
       throw new SwapError("SWAP_FAILED");
     }
+
     const resultAmount =
       makeDisplayTokenAmount(resultToken, data.data[0])?.toString() || "0";
     const slippageAmount =
@@ -205,6 +203,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         resultToken,
         sendTokenAmount.toString(),
       )?.toString() || "0";
+
     return {
       hash: data.hash,
       height: data.height,

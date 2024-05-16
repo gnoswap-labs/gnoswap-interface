@@ -2,6 +2,7 @@ import {
   makeApproveMessage,
   makeTransactionMessage,
   PACKAGE_POOL_ADDRESS,
+  PACKAGE_ROUTER_ADDRESS,
   PACKAGE_STAKER_ADDRESS,
   PACKAGE_STAKER_PATH,
 } from "./common";
@@ -14,6 +15,18 @@ export function makePoolTokenApproveMessage(
   return makeApproveMessage(
     packagePath,
     [PACKAGE_POOL_ADDRESS, amount],
+    caller,
+  );
+}
+
+export function makeRouterTokenApproveMessage(
+  packagePath: string,
+  amount: string,
+  caller: string,
+) {
+  return makeApproveMessage(
+    packagePath,
+    [PACKAGE_ROUTER_ADDRESS, amount],
     caller,
   );
 }
