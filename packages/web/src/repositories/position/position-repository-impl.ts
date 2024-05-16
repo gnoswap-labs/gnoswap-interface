@@ -39,7 +39,7 @@ import {
   WRAPPED_GNOT_PATH,
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import { MAX_INT64 } from "@utils/math.utils";
+import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
 import { checkGnotPath } from "@utils/common";
 import { makeRawTokenAmount } from "@utils/token-utils";
@@ -86,7 +86,6 @@ export class PositionRepositoryImpl implements PositionRepository {
     }
     const { positions, recipient } = request;
     const messages = positions.flatMap(position => {
-      const messages = [];
       const hasSwapFee =
         position.reward.findIndex(reward => reward.rewardType === "SWAP_FEE") >
         -1;
@@ -95,14 +94,43 @@ export class PositionRepositoryImpl implements PositionRepository {
           reward =>
             reward.rewardType === "STAKING" || reward.rewardType === "EXTERNAL",
         ) > -1;
-      if (hasSwapFee) {
-        messages.push(
+
+      const approveMessages = [];
+      const collectMessages = [];
+      const tokenPaths = position.poolPath.split(":");
+      if (hasSwapFee && tokenPaths.length === 3) {
+        approveMessages.push(
+          makeApproveMessage(
+            tokenPaths[0],
+            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
+            recipient,
+          ),
+        );
+        approveMessages.push(
+          makeApproveMessage(
+            tokenPaths[1],
+            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
+            recipient,
+          ),
+        );
+        collectMessages.push(
           makePositionCollectFeeMessage(position.lpTokenId, recipient),
         );
       }
       if (hasReward) {
-        messages.push(makeCollectRewardMessage(position.lpTokenId, recipient));
+        const rewardTokenMessages = position.reward.map(reward =>
+          makeApproveMessage(
+            checkGnotPath(reward.rewardToken.path),
+            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
+            recipient,
+          ),
+        );
+        approveMessages.push(...rewardTokenMessages);
+        collectMessages.push(
+          makeCollectRewardMessage(position.lpTokenId, recipient),
+        );
       }
+      const messages = [...approveMessages, ...collectMessages];
       return messages;
     });
     const result = await this.walletClient.sendTransaction({

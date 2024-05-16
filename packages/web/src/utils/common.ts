@@ -57,11 +57,10 @@ export const parseJson = (data: string) => {
   }
 };
 
-
 export const checkPositivePrice = (
   currentPrice: string,
   checkPrice: string,
-  fixedPrice?: number
+  fixedPrice?: number,
 ) => {
   const currentToNumber = Number(currentPrice);
   const checkToNumber = Number(checkPrice);
@@ -79,16 +78,16 @@ export const checkPositivePrice = (
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
       : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}${Math.abs(
-          Number(value || 0)
+          Number(value || 0),
         ).toFixed(2)}%`;
   const price =
     status === MATH_NEGATIVE_TYPE.NONE
       ? "-"
-      : `${
-          status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"
-        }$${convertToMB(
-          formatUsdNumber3Digits(Math.abs(checkToNumber - currentToNumber).toString()),
-          fixedPrice ?? 2
+      : `${status === MATH_NEGATIVE_TYPE.NEGATIVE ? "-" : "+"}$${convertToMB(
+          formatUsdNumber3Digits(
+            Math.abs(checkToNumber - currentToNumber).toString(),
+          ),
+          fixedPrice ?? 2,
         )}`;
   return {
     status: status,
@@ -162,6 +161,18 @@ export function randomData() {
 export const checkGnotPath = (path: string) => {
   if (path === "gnot") {
     return WRAPPED_GNOT_PATH;
+  } else {
+    return path;
+  }
+};
+
+export const isWrapped = (path: string) => {
+  return path === WRAPPED_GNOT_PATH;
+};
+
+export const toNativePath = (path: string) => {
+  if (isWrapped(path)) {
+    return "gnot";
   } else {
     return path;
   }

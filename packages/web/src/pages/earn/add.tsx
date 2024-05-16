@@ -12,14 +12,17 @@ import { useRouter } from "next/router";
 
 export default function EarnAdd() {
   const query = useRouter().query;
-  const [isEarnAdd] = useAtom(EarnState.isOneClick);
+  const [isEarnAdd] = useAtom(EarnState.isEarnAdd);
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const listBreadcrumb = [
     { title: "Earn", path: "/earn" },
     { title: "Add Position", path: "" },
   ];
 
-  const showExchangeRate = useMemo(() => query.tokenA && query.tokenB && !!currentPoolPath, [currentPoolPath, query.tokenA, query.tokenB]);
+  const showExchangeRate = useMemo(
+    () => query.tokenA && query.tokenB && !!currentPoolPath,
+    [currentPoolPath, query.tokenA, query.tokenB],
+  );
 
   return (
     <EarnAddLayout
@@ -27,7 +30,9 @@ export default function EarnAdd() {
       breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} />}
       addLiquidity={<EarnAddLiquidityContainer />}
       oneStaking={isEarnAdd ? <OneClickStakingContainer /> : null}
-      exchangeRateGraph={showExchangeRate ? <ExchangeRateGraphContainer /> : null}
+      exchangeRateGraph={
+        showExchangeRate ? <ExchangeRateGraphContainer /> : null
+      }
       footer={<Footer />}
     />
   );

@@ -79,6 +79,24 @@ export interface TransactionMessage {
   args: string[] | null;
 }
 
+export function makeBankSendGNOTMessage({
+  from,
+  to,
+  sendAmount,
+}: {
+  from: string;
+  to: string;
+  sendAmount: string;
+}): TransactionBankMessage {
+  const amount = `${sendAmount}ugnot`;
+
+  return {
+    from_address: from,
+    to_address: to,
+    amount,
+  };
+}
+
 export function makeTransactionMessage({
   caller,
   send,
