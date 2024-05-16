@@ -12,4 +12,5 @@ export interface CreatePoolRequest {
   maxTick: number;
   slippage: string;
   caller: string;
+  withStaking?: boolean;
 }

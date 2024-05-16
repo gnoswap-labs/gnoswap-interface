@@ -16,6 +16,7 @@ const DefaultDate = {
 };
 
 export const isOneClick = atom<boolean>(false);
+export const isEarnAdd = atom<boolean>(false);
 export const currentPoolPath = atom<string | null>(null);
 export const currentCompareToken = atom<TokenModel | null>(null);
 export const period = atom<number>(90);
