@@ -1,4 +1,5 @@
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
@@ -13,6 +14,7 @@ import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   isEndTickBy,
+  priceToTick,
   tickToPriceStr,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -134,6 +136,24 @@ export const useIncreaseHandle = () => {
     isCreate: false,
   });
 
+  const isDepositTokenA = useMemo(() => {
+    if (!selectedPosition?.tickUpper) {
+      return false;
+    }
+
+    const currentTick = priceToTick(selectPool.currentPrice);
+    return selectedPosition.tickUpper > currentTick;
+  }, [selectedPosition?.tickUpper, selectPool.currentPrice]);
+
+  const isDepositTokenB = useMemo(() => {
+    if (!selectedPosition?.tickLower) {
+      return false;
+    }
+
+    const currentTick = priceToTick(selectPool.currentPrice);
+    return selectedPosition.tickLower < currentTick;
+  }, [selectedPosition?.tickLower, selectPool.currentPrice]);
+
   const priceRangeSummary: IPriceRange = useMemo(() => {
     let tokenARatioStr = "-";
     let tokenBRatioStr = "-";
@@ -160,6 +180,22 @@ export const useIncreaseHandle = () => {
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
 
+  const minPrice = useMemo(() => {
+    if (selectPool.selectedFullRange || !selectPool.minPrice) {
+      return MIN_PRICE;
+    }
+
+    return selectPool.minPrice;
+  }, [selectPool.minPrice, selectPool.selectedFullRange]);
+
+  const maxPrice = useMemo(() => {
+    if (selectPool.selectedFullRange || !selectPool.maxPrice) {
+      return MAX_PRICE;
+    }
+
+    return selectPool.maxPrice;
+  }, [selectPool.maxPrice, selectPool.selectedFullRange]);
+
   const changeTokenAAmount = useCallback(
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
@@ -176,15 +212,22 @@ export const useIncreaseHandle = () => {
       const amountAAmountRaw = makeRawTokenAmount(tokenA, amount) || "0";
       const { amountB } = getDepositAmountsByAmountA(
         selectPool.currentPrice,
-        selectPool.minPrice || 0,
-        selectPool.maxPrice || 0,
+        minPrice,
+        maxPrice,
         BigInt(amountAAmountRaw),
       );
 
       const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
       tokenBAmountInput.changeAmount(tokenBAmount.toString());
     },
-    [tokenAAmountInput, selectPool, tokenA, tokenB],
+    [
+      tokenAAmountInput,
+      selectPool.currentPrice,
+      tokenA,
+      tokenB,
+      minPrice,
+      maxPrice,
+    ],
   );
 
   const changeTokenBAmount = useCallback(
@@ -200,18 +243,26 @@ export const useIncreaseHandle = () => {
       ) {
         return;
       }
+
       const amountBAmountRaw = makeRawTokenAmount(tokenB, amount) || "0";
       const { amountA } = getDepositAmountsByAmountB(
         selectPool.currentPrice,
-        selectPool.minPrice || 0,
-        selectPool.maxPrice || 0,
+        minPrice,
+        maxPrice,
         BigInt(amountBAmountRaw),
       );
 
       const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(tokenAAmount.toString());
     },
-    [tokenBAmountInput, selectPool, tokenA, tokenB],
+    [
+      tokenBAmountInput,
+      selectPool.currentPrice,
+      tokenA,
+      tokenB,
+      minPrice,
+      maxPrice,
+    ],
   );
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
@@ -255,5 +306,7 @@ export const useIncreaseHandle = () => {
     priceRange,
     changePriceRange,
     selectedPosition,
+    isDepositTokenA,
+    isDepositTokenB,
   };
 };

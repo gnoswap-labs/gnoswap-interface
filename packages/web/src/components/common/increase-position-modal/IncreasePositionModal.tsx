@@ -26,6 +26,8 @@ interface Props {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
+  isDepositTokenA: boolean;
+  isDepositTokenB: boolean;
 }
 
 const IncreasePositionModal: React.FC<Props> = ({
@@ -35,6 +37,8 @@ const IncreasePositionModal: React.FC<Props> = ({
   minPriceStr,
   maxPriceStr,
   rangeStatus,
+  isDepositTokenA,
+  isDepositTokenB,
 }) => {
   const onClickClose = useCallback(() => {
     close();
@@ -58,7 +62,11 @@ const IncreasePositionModal: React.FC<Props> = ({
           />
           <div>
             <p className="label-increase">Increasing Amount</p>
-            <IncreaseAmountInfo {...amountInfo} />
+            <IncreaseAmountInfo
+              {...amountInfo}
+              isDepositTokenA={isDepositTokenA}
+              isDepositTokenB={isDepositTokenB}
+            />
           </div>
           <div>
             <Button

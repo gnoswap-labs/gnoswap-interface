@@ -98,6 +98,9 @@ export function priceToNearTick(price: number, tickSpacing: number) {
 }
 
 export function priceToSqrtX96(price: number): bigint {
+  if (Number.isNaN(price)) {
+    return 0n;
+  }
   return BigInt(
     BigNumber(Math.sqrt(price)).multipliedBy(Q96.toString()).toFixed(0),
   );

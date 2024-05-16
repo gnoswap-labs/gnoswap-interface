@@ -1,7 +1,8 @@
+import React, { useEffect, useMemo } from "react";
 import IncreaseLiquidity from "@components/increase/increase-liquidity/IncreaseLiquidity";
+import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import { useIncreaseHandle } from "@hooks/increase/use-increase-handle";
 import { useIncreasePositionModal } from "@hooks/increase/use-increase-position-modal";
-import React, { useEffect } from "react";
 
 const IncreaseLiquidityContainer: React.FC = () => {
   const {
@@ -23,6 +24,8 @@ const IncreaseLiquidityContainer: React.FC = () => {
     changeSlippage,
     buttonType,
     selectPool,
+    isDepositTokenA,
+    isDepositTokenB,
   } = useIncreaseHandle();
 
   const { openModal } = useIncreasePositionModal({
@@ -35,6 +38,8 @@ const IncreaseLiquidityContainer: React.FC = () => {
     minPriceStr,
     maxPriceStr,
     rangeStatus,
+    isDepositTokenA,
+    isDepositTokenB,
   });
 
   useEffect(() => {
@@ -55,6 +60,8 @@ const IncreaseLiquidityContainer: React.FC = () => {
     <IncreaseLiquidity
       tokenA={tokenA}
       tokenB={tokenB}
+      isDepositTokenA={isDepositTokenA}
+      isDepositTokenB={isDepositTokenB}
       fee={`${Number(fee) / 10000}%`}
       minPriceStr={minPriceStr}
       maxPriceStr={maxPriceStr}

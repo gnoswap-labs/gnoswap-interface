@@ -5,6 +5,10 @@ export function liquidityAmountsGetLiquidityForAmount0(
   sqrtRatioBX96: bigint,
   amount0: bigint,
 ): bigint {
+  if (sqrtRatioAX96 === sqrtRatioBX96) {
+    return 0n;
+  }
+
   let currentSqrtRatioAX96 = sqrtRatioAX96;
   let currentSqrtRatioBX96 = sqrtRatioBX96;
   if (sqrtRatioAX96 > sqrtRatioBX96) {
@@ -24,6 +28,10 @@ export function liquidityAmountsGetLiquidityForAmount1(
   sqrtRatioBX96: bigint,
   amount1: bigint,
 ): bigint {
+  if (sqrtRatioAX96 === sqrtRatioBX96) {
+    return 0n;
+  }
+
   let currentSqrtRatioAX96 = sqrtRatioAX96;
   let currentSqrtRatioBX96 = sqrtRatioBX96;
   if (sqrtRatioAX96 > sqrtRatioBX96) {
@@ -88,6 +96,9 @@ export function liquidityAmountsGetAmount0ForLiquidity(
   sqrtRatioBX96: bigint,
   liquidity: bigint,
 ): bigint {
+  if (sqrtRatioAX96 === 0n || sqrtRatioBX96 === 0n) {
+    return 0n;
+  }
   let currentSqrtRatioAX96 = sqrtRatioAX96;
   let currentSqrtRatioBX96 = sqrtRatioBX96;
   if (sqrtRatioAX96 > sqrtRatioBX96) {

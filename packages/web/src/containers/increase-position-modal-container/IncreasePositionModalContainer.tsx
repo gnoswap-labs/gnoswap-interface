@@ -21,6 +21,8 @@ interface Props {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
+  isDepositTokenA: boolean;
+  isDepositTokenB: boolean;
   confirm: () => void;
 }
 
@@ -29,6 +31,8 @@ const IncreasePositionModalContainer: React.FC<Props> = ({
   maxPriceStr,
   minPriceStr,
   rangeStatus,
+  isDepositTokenA,
+  isDepositTokenB,
   confirm,
 }) => {
   const clearModal = useClearModal();
@@ -45,6 +49,8 @@ const IncreasePositionModalContainer: React.FC<Props> = ({
       maxPriceStr={maxPriceStr}
       minPriceStr={minPriceStr}
       rangeStatus={rangeStatus}
+      isDepositTokenA={isDepositTokenA}
+      isDepositTokenB={isDepositTokenB}
     />
   );
 };

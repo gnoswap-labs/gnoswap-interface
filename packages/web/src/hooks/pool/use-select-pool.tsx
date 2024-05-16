@@ -309,6 +309,15 @@ export const useSelectPool = ({
       maxPrice,
       adjustAmountA,
     );
+
+    if (maxPrice < currentPrice) {
+      return 0;
+    }
+
+    if (minPrice > currentPrice) {
+      return 100;
+    }
+
     const sumOfAmounts = amountA + amountB;
     return BigNumber(amountA.toString())
       .dividedBy(sumOfAmounts.toString())

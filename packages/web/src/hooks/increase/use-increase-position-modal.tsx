@@ -34,6 +34,8 @@ export interface IncreasePositionModal {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
+  isDepositTokenA: boolean;
+  isDepositTokenB: boolean;
 }
 
 export const useIncreasePositionModal = ({
@@ -46,6 +48,8 @@ export const useIncreasePositionModal = ({
   minPriceStr,
   maxPriceStr,
   rangeStatus,
+  isDepositTokenA,
+  isDepositTokenB,
 }: IncreasePositionModal): Props => {
   const {
     broadcastRejected,
@@ -205,10 +209,19 @@ export const useIncreasePositionModal = ({
         minPriceStr={minPriceStr}
         maxPriceStr={maxPriceStr}
         rangeStatus={rangeStatus}
+        isDepositTokenA={isDepositTokenA}
+        isDepositTokenB={isDepositTokenB}
         confirm={confirm}
       />,
     );
-  }, [setModalContent, setOpenedModal, confirm, amountInfo]);
+  }, [
+    setModalContent,
+    setOpenedModal,
+    confirm,
+    amountInfo,
+    isDepositTokenA,
+    isDepositTokenB,
+  ]);
 
   return {
     openModal,
