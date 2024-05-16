@@ -6,7 +6,6 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import { numberToUSD } from "@utils/number-utils";
@@ -40,20 +39,27 @@ export const useDecreaseHandle = () => {
   const { tokenPrices } = useTokenData();
 
   const { positions } = usePositionData();
+
+  const loading = useMemo(() => {
+    return !selectedPosition;
+  }, [selectedPosition]);
+
   useEffect(() => {
-    if (!selectedPosition && positions.length > 0 && positionId && poolPath) {
-      const position = positions.filter(
-        (_: PoolPositionModel) => _.id === positionId,
-      )?.[0];
-      if (position) {
-        setSelectedPosition(position);
-      } else {
+    if (!selectedPosition && positions.length > 0 && positionId) {
+      const position = positions.find(
+        position => position.lpTokenId.toString() === positionId,
+      );
+
+      if (!position) {
         router.push(`/earn/pool/${poolPath}`);
+        return;
       }
+
+      setSelectedPosition(position);
     }
   }, [selectedPosition, positions, positionId, poolPath]);
 
-  const { connected, account } = useWallet();
+  const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(
@@ -232,12 +238,17 @@ export const useDecreaseHandle = () => {
   }, [selectedPosition, tokenPrices, percent]);
 
   useEffect(() => {
+    if (!["done", "error", "failure"].includes(loadingConnect)) {
+      return;
+    }
+
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
-  }, [account, poolPath]);
+  }, [account, poolPath, loadingConnect]);
 
   return {
+    loading,
     tokenA,
     tokenB,
     fee: fee,

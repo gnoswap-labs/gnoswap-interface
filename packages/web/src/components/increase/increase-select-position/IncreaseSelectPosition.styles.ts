@@ -41,7 +41,7 @@ export const IncreaseSelectPositionWrapper = styled.div<Props>`
       color: ${({ theme }) => theme.color.text10};
     }
   }
-  
+
   ${media.mobile} {
     gap: 2px;
   }
@@ -142,7 +142,7 @@ export const IncreaseSelectPositionWrapper = styled.div<Props>`
       ${mixins.flexbox("row", "center", "center")};
       ${mixins.positionCenter()};
       width: 100%;
-  
+
       .shape {
         ${mixins.flexbox("row", "center", "center")};
         width: 40px;
@@ -150,7 +150,7 @@ export const IncreaseSelectPositionWrapper = styled.div<Props>`
         background-color: ${({ theme }) => theme.color.background01};
         border: 1px solid ${({ theme }) => theme.color.border02};
         border-radius: 50%;
-  
+
         .add-icon {
           width: 16px;
           height: 16px;
@@ -167,4 +167,11 @@ export const ToolTipContentWrapper = styled.div`
   width: 250px;
   ${fonts.body12}
   color: ${({ theme }) => theme.color.text02};
+`;
+
+export const LoadingWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  justify-content: center;
+  align-items: center;
+  margin: 50px auto;
 `;

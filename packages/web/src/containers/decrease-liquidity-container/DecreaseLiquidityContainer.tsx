@@ -1,4 +1,5 @@
 import DecreaseLiquidity from "@components/decrease/decrease-liquidity/DecreaseLiquidity";
+import DecreaseLiquidityLoading from "@components/decrease/decrease-liquidity/DecreaseLiquidityLoading";
 import { useDecreaseHandle } from "@hooks/decrease/use-decrease-handle";
 import { useDecreasePositionModal } from "@hooks/decrease/use-decrease-position-modal";
 import { useRouter } from "next/router";
@@ -12,6 +13,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
       : router.query["position-id"]) || "";
 
   const {
+    loading,
     tokenA,
     tokenB,
     fee,
@@ -41,7 +43,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     openModal();
   };
 
-  if (!tokenA || !tokenB) return <></>;
+  if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;
 
   return (
     <DecreaseLiquidity

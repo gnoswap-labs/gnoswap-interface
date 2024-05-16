@@ -117,10 +117,51 @@ export const IncreaseLiquidityBoxStyle = (theme: Theme) => css`
   }
 `;
 
-export const LoadingWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "center")};
-  width: 100%;
-  margin: 80px auto;
-  align-items: center;
-  justify-content: center;
+export const IncreaseLiquidityLoadingWrapper = styled(IncreaseLiquidityWrapper)`
+  .header-wrapper {
+    ${mixins.flexbox("row", "center", "space-between")};
+    position: relative;
+    width: 100%;
+
+    ${media.mobile} {
+      margin-bottom: 6px;
+    }
+
+    .setting-button {
+      width: 24px;
+      height: 24px;
+      .setting-icon * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+      .setting-icon:hover * {
+        fill: ${({ theme }) => theme.color.icon07};
+      }
+    }
+  }
+
+  h5 {
+    color: ${({ theme }) => theme.color.text04};
+    ${fonts.body12}
+    &.enter-increase-amount {
+      color: ${({ theme }) => theme.color.text10};
+    }
+  }
+
+  .loading-wrapper {
+    ${mixins.flexbox("column", "flex-start", "center")};
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+    border: 1px solid ${({ theme }) => theme.color.border02};
+
+    &.position {
+      height: 285px;
+    }
+
+    &.amount {
+      height: 200px;
+    }
+  }
 `;
