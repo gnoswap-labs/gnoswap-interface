@@ -55,7 +55,7 @@ export const Navigation = styled.nav`
     }
   }
   li {
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
     &.first-side-menu {
       border-top-left-radius: 8px;

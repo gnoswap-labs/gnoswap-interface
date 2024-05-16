@@ -26,7 +26,7 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
       {sideMenuToggle
         ? <IconStrokeArrowUp className="popup-icon-button" svgProps={{ fill: theme.color.text16 }} />
         : <IconStrokeArrowDown className="popup-icon-button" svgProps={{ fill: theme.color.text04 }} />}
-      {true && (
+      {sideMenuToggle && (
         <>
           <FakeSpaceWrapper></FakeSpaceWrapper>
           <HeaderSideMenuModal onSideMenuToggle={() => onSideMenuToggle(false)} />
