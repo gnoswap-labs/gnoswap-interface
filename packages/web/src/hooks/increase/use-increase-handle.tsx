@@ -47,7 +47,10 @@ export const useIncreaseHandle = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
     type: "Custom",
   });
-  const [loading, setLoading] = useState(true);
+
+  const loading = useMemo(() => {
+    return !selectedPosition;
+  }, [selectedPosition]);
 
   const { positions } = usePositionData();
   useEffect(() => {
@@ -62,7 +65,6 @@ export const useIncreaseHandle = () => {
       }
 
       setSelectedPosition(position);
-      setLoading(false);
     }
   }, [selectedPosition, positions, positionId, poolPath]);
 
