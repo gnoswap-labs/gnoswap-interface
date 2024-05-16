@@ -55,9 +55,6 @@ const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
 
 export class PoolRepositoryImpl implements PoolRepository {
-  private rpcPools: PoolRPCModel[];
-  private updatedAt: number;
-
   private networkClient: NetworkClient;
   private rpcProvider: GnoProvider | null;
   private walletClient: WalletClient | null;
@@ -67,16 +64,12 @@ export class PoolRepositoryImpl implements PoolRepository {
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
   ) {
-    this.updatedAt = 0;
-    this.rpcPools = [];
     this.networkClient = networkClient;
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
   }
   getRPCPools = async (): Promise<PoolRPCModel[]> => {
     try {
-      this.updatedAt = Date.now();
-
       const poolPackagePath = PACKAGE_POOL_PATH;
 
       if (!poolPackagePath || !this.rpcProvider) {
@@ -92,7 +85,6 @@ export class PoolRepositoryImpl implements PoolRepository {
         evaluateExpressionToObject<{ response: PoolRPCResponse[] }>(res)
           ?.response || [],
       );
-      this.rpcPools = pools;
 
       return pools;
     } catch (error) {
