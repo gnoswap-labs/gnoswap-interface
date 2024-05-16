@@ -157,6 +157,7 @@ const TokenListContainer: React.FC = () => {
   };
 
   const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice } = useTokenData();
+  console.log("🚀 ~ tokenPrices:", tokenPrices);
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -219,6 +220,7 @@ const TokenListContainer: React.FC = () => {
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
+
       return {
         ...transferData,
         token: {
@@ -245,7 +247,10 @@ const TokenListContainer: React.FC = () => {
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
         },
-        last7days: [...(transferData?.last7d?.map(item => Number(item.price || 0)) || []), Number(transferData?.pricesBefore?.latestPrice)],
+        last7days: [
+          ...(transferData?.last7d?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(item => Number(item.price || 0)) || []),
+          Number(transferData?.pricesBefore?.latestPrice)
+        ],
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(transferData.lockedTokensUsd || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(transferData.volumeUsd24h || 0)).toLocaleString()}`,
@@ -256,6 +261,7 @@ const TokenListContainer: React.FC = () => {
         idx: 1,
       };
     });
+
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
@@ -326,6 +332,9 @@ const TokenListContainer: React.FC = () => {
     }
     return temp.slice(page * 15, (page + 1) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
+
+  console.log("🚀 ~ getDatas ~ getDatas:", getDatas());
+
 
   return (
     <TokenList
