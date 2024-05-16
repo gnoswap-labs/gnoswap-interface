@@ -157,6 +157,7 @@ const TokenListContainer: React.FC = () => {
   };
 
   const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice, isFetchedTokenPrices } = useTokenData();
+  console.log("🚀 TokenListContainer ~ isFetchedTokenPrices:", isFetchedTokenPrices);
   console.log("🚀 TokenListContainer ~ isLoadingTokenPrice:", isLoadingTokenPrice);
   console.log("🚀 TokenListContainer ~ tokenPrices:", tokenPrices);
   console.log("🚀 TokenListContainer ~ isFetched:", isFetched);
@@ -219,7 +220,7 @@ const TokenListContainer: React.FC = () => {
       const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
       const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
-      const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (tempTokenPrice.last7d?.[0].price));
+      const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
 
