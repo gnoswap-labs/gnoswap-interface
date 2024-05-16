@@ -46,10 +46,14 @@ import {
   GNS_TOKEN_PATH,
   CREATE_POOL_FEE,
   PACKAGE_POSITION_ADDRESS,
+  makeApproveMessage,
+  WRAPPED_GNOT_PATH,
+  TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import { tickToSqrtPriceX96 } from "@utils/math.utils";
+import { MAX_UINT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { checkGnotPath, isWrapped, toNativePath } from "@utils/common";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 const POOL_PATH = PACKAGE_POOL_PATH || "";
 const POOL_ADDRESS = PACKAGE_POOL_ADDRESS || "";
@@ -186,7 +190,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       ),
     ];
 
-    const approveMessages = [
+    const approveMessages: TransactionMessage[] = [
       PoolRepositoryImpl.makeApproveTokenMessage(
         tokenAWrappedPath,
         tokenAAmountRaw,
@@ -198,6 +202,19 @@ export class PoolRepositoryImpl implements PoolRepository {
         caller,
       ),
     ];
+
+    // If withStaking, approve WUGNOT to the Position contract.
+    if (withStaking) {
+      if ([tokenAPath, tokenBPath].includes(GNOT_TOKEN.path)) {
+        approveMessages.push(
+          makeApproveMessage(
+            WRAPPED_GNOT_PATH,
+            [PACKAGE_POSITION_ADDRESS, MAX_UINT64.toString()],
+            caller,
+          ),
+        );
+      }
+    }
 
     const makeMintMessage = withStaking
       ? makePositionMintWithStakeMessage
@@ -293,7 +310,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       ? tokenBAmountRaw
       : null;
 
-    const approveMessages = [
+    const approveMessages: TransactionMessage[] = [
       PoolRepositoryImpl.makeApproveTokenMessage(
         tokenAWrappedPath,
         tokenAAmountRaw,
@@ -305,6 +322,19 @@ export class PoolRepositoryImpl implements PoolRepository {
         caller,
       ),
     ];
+
+    // If withStaking and use GNOT, approve WUGNOT to the Position contract.
+    if (withStaking) {
+      if ([tokenAPath, tokenBPath].includes(GNOT_TOKEN.path)) {
+        approveMessages.push(
+          makeApproveMessage(
+            WRAPPED_GNOT_PATH,
+            [PACKAGE_POSITION_ADDRESS, MAX_UINT64.toString()],
+            caller,
+          ),
+        );
+      }
+    }
 
     // Make mint transaction message
     const makeMintMessage = withStaking
