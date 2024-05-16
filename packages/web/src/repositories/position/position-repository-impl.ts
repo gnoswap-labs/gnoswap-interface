@@ -36,6 +36,7 @@ import { PositionHistoryMapper } from "@models/position/mapper/position-history-
 import { IPositionHistoryResponse } from "./response/position-history-response";
 import {
   PACKAGE_POOL_ADDRESS,
+  WRAPPED_GNOT_PATH,
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
 import { MAX_INT64 } from "@utils/math.utils";
@@ -164,6 +165,13 @@ export class PositionRepositoryImpl implements PositionRepository {
     const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
     const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
+    const sendAmount =
+      tokenAWrappedPath === WRAPPED_GNOT_PATH
+        ? tokenAAmountRaw
+        : tokenBWrappedPath
+        ? tokenBAmountRaw
+        : null;
+
     // Make Approve messages that can be managed by a Pool package of tokens.
     const approveMessages = [
       makeApproveMessage(
@@ -185,6 +193,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       "0",
       "0",
       caller,
+      sendAmount,
     );
 
     const messages = [...approveMessages, increaseLiquidityMessage];

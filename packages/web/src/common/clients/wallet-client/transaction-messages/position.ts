@@ -52,9 +52,12 @@ export function makePositionIncreaseLiquidityMessage(
   amount0Min: string,
   amount1Min: string,
   caller: string,
+  sendAmount: string | null,
 ) {
+  const send = sendAmount ? `${sendAmount}ugnot` : "";
+
   return makeTransactionMessage({
-    send: "",
+    send,
     func: "IncreaseLiquidity",
     packagePath: PACKAGE_POSITION_PATH,
     args: [
