@@ -53,7 +53,7 @@ export default {
 
 const Template: ComponentStory<typeof PoolInfo> = args => (
   <div css={wrapper}>
-    <PoolInfo {...args} pool={pool} />
+    <PoolInfo {...args} pool={{ ...pool, tvl: "0" }} />
   </div>
 );
 
