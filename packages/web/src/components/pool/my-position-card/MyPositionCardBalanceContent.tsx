@@ -1,7 +1,6 @@
 import React from "react";
 import { TooltipContent } from "./MyPositionCard.styles";
 import { PositionBalanceInfo } from "@models/position/info/position-balance-info";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { prettyNumberFloatInteger } from "@utils/number-utils";
 
 export interface BalanceTooltipContentProps {
@@ -24,7 +23,7 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ ba
               {balance.token.symbol}
             </span>
           </div>
-          <span className="position">{prettyNumberFloatInteger(makeDisplayTokenAmount(balance.token, balance.balance) || 0)} ({balance.percent})</span>
+          <span className="position">{prettyNumberFloatInteger(balance.balance || 0)} ({balance.percent})</span>
         </div>
       ))}
     </TooltipContent>

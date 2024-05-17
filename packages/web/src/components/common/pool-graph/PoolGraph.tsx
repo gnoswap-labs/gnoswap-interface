@@ -556,7 +556,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount w-100">
             <span className="token-amount-value hidden" >{(tooltipInfo.myTokenBAmount || "0")}</span>
-          </span> : "-"}
+          </span> : ""}
           <span className={`price-range ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""}`}>{tokenBPriceRangeStr}</span>
         </div>
       </div>

@@ -39,6 +39,7 @@ const PositionHistoryTable: React.FC<PositionHistoryTableProps> = ({
   tokenB,
   isLoading,
 }) => {
+  console.log("🚀 ~ list:", list);
   const td =
     breakpoint === DEVICE_TYPE.MOBILE
       ? MOBILE_POSITION_HISTORY_TD_WIDTH

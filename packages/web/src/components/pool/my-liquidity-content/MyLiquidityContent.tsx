@@ -128,13 +128,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!isDisplay) {
       return "-";
     }
-    // if (!allBalances) {
-    //   return "$0";
-    // }
-    // const balance = Object.values(allBalances).reduce(
-    //   (acc, current) => (acc += current.balanceUSD),
-    //   0,
-    // );
     const balance = positions.reduce((current, next) => {
       return current + next.usdValue;
     }, 0);
@@ -340,14 +333,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const tokenABalance = useMemo(() => {
     if (!positionData) return 0;
     const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.tokenABalance), 0);
-    return makeDisplayTokenAmount(positionData?.tokenA, sum) || 0;
-  }, [positionData?.tokenA, positionData?.tokenABalance]);
+    return sum || 0;
+  }, [positionData, positions]);
 
   const tokenBBalance = useMemo(() => {
     if (!positionData) return 0;
     const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.tokenBBalance), 0);
-    return makeDisplayTokenAmount(positionData?.tokenB, sum) || 0;
-  }, [positionData?.tokenB, positionData?.tokenBBalance]);
+    return sum || 0;
+  }, [positionData, positions]);
 
   const depositRatio = useMemo(() => {
     const sumOfBalances = tokenABalance + tokenBBalance;

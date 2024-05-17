@@ -18,7 +18,6 @@ import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { tickToPriceStr } from "@utils/swap-utils";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
@@ -27,6 +26,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
+import BigNumber from "bignumber.js";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -43,12 +43,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
 
   const tokenABalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
-  }, [pool.tokenA, pool.tokenABalance]);
+    return pool.tokenABalance || 0;
+  }, [pool.tokenABalance]);
 
   const tokenBBalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenB, pool.tokenBBalance) || 0;
-  }, [pool.tokenB, pool.tokenBBalance]);
+    return pool.tokenBBalance || 0;
+  }, [pool.tokenBBalance]);
 
   const depositRatio = useMemo(() => {
     const sumOfBalances = tokenABalance + tokenBBalance;
@@ -201,7 +201,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading &&
             <Tooltip
               placement="top"
-              FloatingContent={<TooltipAPR feeAPR={pool?.feeApr} stakingAPR={pool?.stakingApr} feeLogo={feeLogo} stakeLogo={stakeLogo} />}
+              FloatingContent={<TooltipAPR
+                feeAPR={(Number(pool?.feeApr) === 0) ? "0" : BigNumber(pool?.feeApr ?? 0).toFixed(2)}
+                stakingAPR={(Number(pool?.stakingApr) === 0) ? "0" : BigNumber(pool?.stakingApr ?? 0).toFixed(2)}
+                feeLogo={feeLogo}
+                stakeLogo={stakeLogo} />}
             >
               <strong>{aprValue}</strong>
             </Tooltip>}

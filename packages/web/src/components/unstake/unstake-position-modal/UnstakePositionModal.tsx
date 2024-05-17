@@ -75,18 +75,18 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                   <div className="sub-value">{rewardInfo.amountUSD}</div>
                 </div>
               ))}
-               <div className="protocal-wrapper">
-                  <Divider />
-                  <div className="protocol">
-                    <div>
-                      <span className="">Protocol Fee</span>
-                      <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper width="251px">The amount of fees charged on each claim that goes to the protocol.</ToolTipContentWrapper>}>
-                        <IconInfo />
-                      </Tooltip>
-                    </div>
-                    <span className="white-text">0%</span>
+              <div className="protocal-wrapper">
+                <Divider />
+                <div className="protocol">
+                  <div>
+                    <span className="">Protocol Fee</span>
+                    <Tooltip placement="top" FloatingContent={<ToolTipContentWrapper width="251px">The amount of fees charged on each claim that goes to the protocol.</ToolTipContentWrapper>}>
+                      <IconInfo />
+                    </Tooltip>
                   </div>
+                  <span className="white-text">0%</span>
                 </div>
+              </div>
             </div>
           </div>
           <Divider />

@@ -46,6 +46,7 @@ export const convertToKMB = (
     minimumSignificantDigits?: number,
     maximumSignificantDigits?: number,
     convertOffset?: number,
+    forceFractionDigit?: number,
   }) => {
   if (Number.isNaN(Number(price))) return "-";
 
@@ -70,7 +71,17 @@ export const convertToKMB = (
       minimumFractionDigits: options?.minimumFractionDigits,
     });
 
-    return Number.isInteger(result) ? result : removeTrailingZeros(result);
+    function rmTrailingZeros(value: string) {
+      if (value.includes(".")) return removeTrailingZeros(value);
+
+      return options?.forceFractionDigit ? BigNumber(value).toFixed(options?.forceFractionDigit) : value;
+    }
+
+    function forceFractionDigit(value: string) {
+      return options?.forceFractionDigit ? BigNumber(value).toFixed(options?.forceFractionDigit) : value;
+    }
+
+    return Number.isInteger(result) ? forceFractionDigit(result) : rmTrailingZeros(result);
   } else {
     const temp = Math.floor(Number(price));
     if (temp >= 1e9) {

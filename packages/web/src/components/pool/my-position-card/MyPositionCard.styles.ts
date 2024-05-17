@@ -28,7 +28,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border01};
-  background-color: ${({ theme, $isClosed }) => $isClosed ?  theme.color.background29 :  theme.color.background03};
+  background-color: ${({ theme, $isClosed }) => $isClosed ? theme.color.background29 : theme.color.background03};
   ${media.tablet} {
     padding: 24px 24px 0 24px;
     border-radius: 10px;
@@ -526,6 +526,7 @@ export const CopyTooltip = styled.div`
   position: absolute;
   top: -65px;
   left: -45px;
+  z-index: 2;
   .box {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 115px;

@@ -560,7 +560,27 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                       </div>
                     )}
                     {!loading && (
-                      <span className="product-id">ID #{position.id}</span>
+                      <div className="link-page">
+                        <span className="product-id">ID #{position.id}</span>
+                        <div
+                          onClick={() =>
+                            setCopy(
+                              `${window.location.host + window.location.pathname
+                              }?addr=${address}#${position.id}`,
+                            )
+                          }
+                        >
+                          <IconLinkPage className="icon-link" />
+                          {copied && (
+                            <CopyTooltip>
+                              <div className={`box ${themeKey}-shadow`}>
+                                <span>URL Copied!</span>
+                              </div>
+                              <IconPolygon className="polygon-icon" />
+                            </CopyTooltip>
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </>
@@ -745,7 +765,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           {!loading && (
             <div className="convert-price">
               <div>
-                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr} />{" "}
+                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr} />&nbsp;
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={startClass}>
                   {!isSwap ? minTickLabel : maxTickLabel}
@@ -766,7 +786,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 &nbsp;
               </div>
               <div>
-                ~ <ExchangeRate value={maxPriceStr} /> {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                ~ <ExchangeRate value={maxPriceStr} /> &nbsp;{(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}
                 </span>
