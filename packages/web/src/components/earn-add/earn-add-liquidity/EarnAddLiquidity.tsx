@@ -57,7 +57,6 @@ interface EarnAddLiquidityProps {
   priceRange: AddLiquidityPriceRage | null;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
   priceRangeSummary: PriceRangeSummary;
-  ticks: PoolTick[];
   currentTick: PoolTick | null;
   submitType: AddLiquiditySubmitType;
   submit: () => void;

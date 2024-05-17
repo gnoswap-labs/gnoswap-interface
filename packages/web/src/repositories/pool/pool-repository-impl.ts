@@ -117,16 +117,15 @@ export class PoolRepositoryImpl implements PoolRepository {
     return pool;
   };
 
-  getBinsOfPoolByPath = async (poolPath: string): Promise<PoolBinModel[]> => {
-    const tempPath = poolPath.replace(/\//g, "%2F");
-    const pool = await this.networkClient
+  getBinsOfPoolByPath = async (
+    poolPath: string,
+    count?: number,
+  ): Promise<PoolBinModel[]> => {
+    return this.networkClient
       .get<{ data: PoolBinModel[] }>({
-        url: "/pools/" + tempPath + "/bins?bins=40",
+        url: `/pools/${encodeURIComponent(poolPath)}/bins?bins=${count || 40}`,
       })
-      .then(response => {
-        return response.data.data;
-      });
-    return pool;
+      .then(response => response.data.data);
   };
 
   getPoolDetailRPCByPoolPath = async (

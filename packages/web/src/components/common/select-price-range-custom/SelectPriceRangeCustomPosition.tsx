@@ -9,8 +9,7 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { tickToPrice } from "@utils/swap-utils";
-import * as d3 from "d3";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import IconAdd from "../icons/IconAdd";
 import IconKeyboardArrowLeft from "../icons/IconKeyboardArrowLeft";
 import IconKeyboardArrowRight from "../icons/IconKeyboardArrowRight";
@@ -18,10 +17,12 @@ import IconRefresh from "../icons/IconRefresh";
 import IconRemove from "../icons/IconRemove";
 import IconSwap from "../icons/IconSwap";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import SelectPriceRangeCutomController from "../select-price-range-cutom-controller/SelectPriceRangeCutomController";
 import SelectTab from "../select-tab/SelectTab";
 import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
+import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
+import { ZOOL_VALUES } from "@constants/graph.constant";
+import { checkGnotPath } from "@utils/common";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -46,50 +47,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   isKeepToken,
 }) => {
   const { getGnotPath } = useGnotToGnot();
+  const [shiftPosition, setShiftPosition] = useState(0);
   const { isLoadingCommon } = useLoading();
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
-  function getPriceRange(price?: number | null) {
-    const currentPriceRangeType = priceRangeType;
-    const currentPrice = price || selectPool.currentPrice || 1;
-    if (!selectPool.feeTier || !currentPriceRangeType) {
-      return [0, currentPrice * 2];
-    }
-
-    const visibleRate =
-      SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType].max /
-      100;
-    const range = currentPrice * visibleRate;
-    return [currentPrice - range, currentPrice + range];
-  }
-
-  function getScaleRange() {
-    const currentPrice = selectPool.currentPrice || 1;
-    const [min, max] = getPriceRange();
-    const rangeGap = max - min;
-
-    return [currentPrice - rangeGap, currentPrice + rangeGap];
-  }
-
-  function getHeightRange() {
-    const [, maxY] = d3.extent(
-      selectPool.liquidityOfTickPoints.map(point => point[1]),
-    );
-    return [0, maxY || 0];
-  }
-
-  /** D3 Variables */
-  const defaultScaleX = d3
-    .scaleLinear()
-    .domain(getScaleRange())
-    .range([0, GRAPH_WIDTH]);
-
-  const scaleX = defaultScaleX.copy();
-
-  const scaleY = d3
-    .scaleLinear()
-    .domain(getHeightRange())
-    .range([GRAPH_HEIGHT, 0]);
 
   const isCustom = true;
 
@@ -116,7 +77,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     if (!selectPool.currentPrice) {
       return "-";
     }
-    const currentPrice = convertToKMB(selectPool.currentPrice.toFixed(4), { maximumFractionDigits: 4 });
+    const currentPrice = convertToKMB(selectPool.currentPrice.toFixed(4), {
+      maximumFractionDigits: 4,
+    });
     return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
@@ -130,6 +93,60 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     );
     return `1 ${currentTokenB.symbol} = ${currentPrice} ${currentTokenA.symbol}`;
   }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
+
+  const availZoomIn = useMemo(() => {
+    return selectPool.zoomLevel < ZOOL_VALUES.length - 1;
+  }, [selectPool.zoomLevel]);
+
+  const availZoomOut = useMemo(() => {
+    return selectPool.zoomLevel > 0;
+  }, [selectPool.zoomLevel]);
+
+  const availMoveLeft = useMemo(() => {
+    if (!selectPool.bins) {
+      return false;
+    }
+    const moveRange = selectPool.bins.length / 2 - 20;
+    return shiftPosition + moveRange > 0;
+  }, [selectPool.bins, shiftPosition]);
+
+  const availMoveRight = useMemo(() => {
+    if (!selectPool.bins) {
+      return false;
+    }
+    const moveRange = selectPool.bins.length / 2 - 20;
+    return moveRange - shiftPosition > 0;
+  }, [selectPool.bins, shiftPosition]);
+
+  const zoomIn = useCallback(() => {
+    if (!availZoomIn) {
+      return;
+    }
+    selectPool.zoomIn();
+    setShiftPosition(0);
+  }, [availZoomIn, selectPool]);
+
+  const zoomOut = useCallback(() => {
+    if (!availZoomOut) {
+      return;
+    }
+    selectPool.zoomOut();
+    setShiftPosition(0);
+  }, [availZoomOut, selectPool]);
+
+  const moveLeft = useCallback(() => {
+    if (!availMoveLeft) {
+      return;
+    }
+    setShiftPosition(value => value - 1);
+  }, [availMoveLeft]);
+
+  const moveRight = useCallback(() => {
+    if (!availMoveRight) {
+      return;
+    }
+    setShiftPosition(value => value + 1);
+  }, [availMoveRight]);
 
   const onClickTabItem = useCallback(
     (symbol: string) => {
@@ -178,10 +195,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
   function resetRange(priceRangeType?: PriceRangeType | null) {
     selectPool.resetRange();
     initPriceRange(priceRangeType);
-    defaultScaleX.domain(getScaleRange());
-    scaleX.domain(defaultScaleX.domain());
   }
-
 
   const finishMove = useCallback(() => {
     // Considering whether to adjust ticks at the end of a graph event
@@ -209,15 +223,6 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     priceRangeType,
     selectPool.startPrice,
   ]);
-
-  useEffect(() => {
-    if (selectPool.currentPrice) {
-      selectPool.setFocusPosition(scaleX(selectPool.currentPrice));
-    }
-    if (selectPool.isCreate && selectPool.startPrice !== null) {
-      selectPool.setFocusPosition(scaleX(Number(selectPool.startPrice)));
-    }
-  }, [selectPool.currentPrice, selectPool.startPrice]);
 
   if (selectPool.renderState() === "NONE") {
     return <></>;
@@ -251,32 +256,36 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 <div className="button-option-contaier">
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""
-                        }`}
-                      onClick={selectPool.zoomIn}
+                      className={`graph-option-item decrease ${
+                        isLoading || showDim ? "disabled-option" : ""
+                      }`}
+                      onClick={moveLeft}
                     >
                       <IconKeyboardArrowLeft />
                     </span>
                     <span
-                      className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""
-                        }`}
-                      onClick={selectPool.zoomOut}
+                      className={`graph-option-item increase ${
+                        isLoading || showDim ? "disabled-option" : ""
+                      }`}
+                      onClick={moveRight}
                     >
                       <IconKeyboardArrowRight />
                     </span>
                   </div>
                   <div className="graph-option-wrapper">
                     <span
-                      className={`graph-option-item decrease ${isLoading || showDim ? "disabled-option" : ""
-                        }`}
-                      onClick={selectPool.zoomIn}
+                      className={`graph-option-item decrease ${
+                        isLoading || showDim ? "disabled-option" : ""
+                      }`}
+                      onClick={zoomOut}
                     >
                       <IconRemove />
                     </span>
                     <span
-                      className={`graph-option-item increase ${isLoading || showDim ? "disabled-option" : ""
-                        }`}
-                      onClick={selectPool.zoomOut}
+                      className={`graph-option-item increase ${
+                        isLoading || showDim ? "disabled-option" : ""
+                      }`}
+                      onClick={zoomIn}
                     >
                       <IconAdd />
                     </span>
@@ -315,22 +324,32 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                 {!showDim && (
                   <div className="range-graph-wrapper">
                     <PoolSelectionGraph
-                      feeTier={selectPool.feeTier}
-                      scaleX={scaleX}
-                      scaleY={scaleY}
-                      selectedFullRange={selectPool.selectedFullRange}
+                      tokenA={tokenA}
+                      tokenB={tokenB}
+                      bins={selectPool.bins || []}
+                      width={GRAPH_WIDTH}
+                      height={GRAPH_HEIGHT}
+                      position="top"
+                      offset={selectPool.bins?.length}
+                      price={
+                        selectPool.startPrice
+                          ? selectPool.startPrice
+                          : selectPool.currentPrice || 1
+                      }
+                      flip={
+                        [
+                          checkGnotPath(tokenA.path),
+                          checkGnotPath(tokenB.path),
+                        ].sort()[0] !== checkGnotPath(tokenA.path)
+                      }
+                      fullRange={selectPool.selectedFullRange}
                       zoomLevel={selectPool.zoomLevel}
                       minPrice={selectPool.minPrice}
                       maxPrice={selectPool.maxPrice}
                       setMinPrice={selectPool.setMinPosition}
                       setMaxPrice={selectPool.setMaxPosition}
-                      liquidityOfTickPoints={selectPool.liquidityOfTickPoints}
-                      currentPrice={selectPool.currentPrice}
-                      focusPosition={selectPool.focusPosition}
-                      width={GRAPH_WIDTH}
-                      height={GRAPH_HEIGHT}
-                      finishMove={finishMove}
-                      setIsChangeMinMax={selectPool.setIsChangeMinMax}
+                      shiftIndex={shiftPosition}
+                      onFinishMove={finishMove}
                     />
                   </div>
                 )}
@@ -350,7 +369,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       increase={selectPool.increaseMinTick}
                       currentPriceStr={currentPriceStr}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                    // priceRangeType={priceRangeType}
+                      // priceRangeType={priceRangeType}
                     />
                     <SelectPriceRangeCutomController
                       title="Max Price"
@@ -366,7 +385,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       increase={selectPool.increaseMaxTick}
                       currentPriceStr={currentPriceStrReverse}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
-                    // priceRangeType={priceRangeType}
+                      // priceRangeType={priceRangeType}
                     />
                   </div>
                   <div className="extra-wrapper">

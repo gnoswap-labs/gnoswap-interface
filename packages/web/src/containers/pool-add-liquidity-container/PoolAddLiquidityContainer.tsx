@@ -86,7 +86,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     null,
   );
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
-  const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] = useState<PriceRangeType | null>();
+  const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] =
+    useState<PriceRangeType | null>();
   const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
@@ -98,12 +99,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isSwitchNetwork,
   } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const {
-    tokens,
-    updateTokens,
-    updateBalances,
-    updateTokenPrices,
-  } = useTokenData();
+  const { tokens, updateTokens, updateBalances, updateTokenPrices } =
+    useTokenData();
   const [createOption, setCreateOption] = useState<{
     startPrice: number | null;
     isCreate: boolean;
@@ -125,20 +122,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
     fetching: isFetchingFeetierOfLiquidityMap,
   } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
 
-  const {
-    openAddPositionModal,
-    openAddPositionWithStakingModal,
-  } = useEarnAddLiquidityConfirmModal({
-    tokenA,
-    tokenB,
-    tokenAAmountInput,
-    tokenBAmountInput,
-    selectPool,
-    slippage,
-    swapFeeTier,
-    createPool,
-    addLiquidity,
-  });
+  const { openAddPositionModal, openAddPositionWithStakingModal } =
+    useEarnAddLiquidityConfirmModal({
+      tokenA,
+      tokenB,
+      tokenAAmountInput,
+      tokenBAmountInput,
+      selectPool,
+      slippage,
+      swapFeeTier,
+      createPool,
+      addLiquidity,
+    });
   const { isLoadingCommon } = useLoading();
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -487,8 +482,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const query = router.query;
 
       const { tickLower, tickUpper, price_range_type } = router.query;
-      if (type) {
-        setPriceRangeTypeFromUrl(type as PriceRangeType);
+      if (price_range_type) {
+        setPriceRangeTypeFromUrl(price_range_type as PriceRangeType);
         setPriceRange(
           PRICE_RANGES.find(
             item => item.type === (price_range_type ?? "Passive"),
@@ -686,7 +681,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       priceRange={priceRange}
       priceRangeSummary={priceRangeSummary}
       changePriceRange={changePriceRange}
-      ticks={[]}
       pools={pools}
       currentTick={null}
       submitType={submitType}
