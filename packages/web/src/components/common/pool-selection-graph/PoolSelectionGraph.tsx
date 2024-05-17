@@ -452,7 +452,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
 
     const bin = resolvedDisplayBins.find(bin => {
-      if (mouseY < 0.000001 || mouseYTick > bin.height) {
+      if (mouseY < 0.000001 || mouseYTick - bin.height > 1) {
         return false;
       }
       if (bin.height < 0 || !bin.height) {
@@ -464,21 +464,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (!bin) {
       setPositionX(null);
       setPositionY(null);
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
-      return;
-    }
-
-    if (
-      Math.abs(height - mouseY - 0.0001) >
-      boundsHeight -
-        scaleY(bin.height) +
-        (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
-          ? 5
-          : 0)
-    ) {
-      setPositionX(null);
-      setPositionX(null);
       setTooltipInfo(null);
       setHoverBarIndex(null);
       return;
