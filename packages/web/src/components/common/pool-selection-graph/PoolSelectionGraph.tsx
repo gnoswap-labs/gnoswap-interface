@@ -469,6 +469,21 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return;
     }
 
+    if (
+      Math.abs(height - mouseY - 0.0001) >
+      boundsHeight -
+        scaleY(bin.height) +
+        (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
+          ? 5
+          : 0)
+    ) {
+      setPositionX(null);
+      setPositionX(null);
+      setTooltipInfo(null);
+      setHoverBarIndex(null);
+      return;
+    }
+
     setHoverBarIndex(bin.index);
 
     const minTick = bin.minTick;
