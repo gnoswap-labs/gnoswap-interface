@@ -64,7 +64,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   tokenA,
   tokenB,
   bins = [],
-  mouseover,
   width,
   height,
   zoomLevel,
@@ -421,13 +420,21 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   // mouse over event
   function onMouseoverChartBin(event: MouseEvent) {
-    if (!mouseover) {
-      return;
-    }
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const mouseXTick = scaleX.invert(event.offsetX) + defaultMinX;
     const mouseYTick = scaleX.invert(event.offsetY);
+
+    if (minPrice && maxPrice) {
+      if (
+        priceToTick(minPrice) < mouseXTick &&
+        priceToTick(maxPrice) > mouseXTick
+      ) {
+        setTooltipInfo(null);
+        return;
+      }
+    }
+
     const bin = resolvedDisplayBins.find(bin => {
       if (mouseYTick < 0.000001 || mouseYTick > bin.height) {
         return false;
@@ -495,6 +502,23 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   function onMouseoutChartBin() {
     setPositionX(null);
     setPositionY(null);
+  }
+
+  function onMouseoverClear(event: MouseEvent) {
+    const { clientX, clientY } = event;
+    if (!svgRef.current?.getClientRects()[0]) {
+      setTooltipInfo(null);
+      return;
+    }
+    const { left, right, top, bottom } = svgRef.current?.getClientRects()[0];
+    if (
+      clientX < left ||
+      clientX > right ||
+      clientY < top ||
+      clientY > bottom
+    ) {
+      setTooltipInfo(null);
+    }
   }
 
   // Lazy initialize price of tick
@@ -607,11 +631,11 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
   }, [tooltipInfo]);
 
-  // On scroll, remove tooltip
+  // On mouse move, clear
   useEffect(() => {
     if (tooltipInfo) {
-      window.addEventListener("scroll", onMouseoutChartBin);
-      return () => window.removeEventListener("scroll", onMouseoutChartBin);
+      window.addEventListener("mousemove", onMouseoverClear);
+      return () => window.removeEventListener("mousemove", onMouseoverClear);
     }
   }, [tooltipInfo]);
 
