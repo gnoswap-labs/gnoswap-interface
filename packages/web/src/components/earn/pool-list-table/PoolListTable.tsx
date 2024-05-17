@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import {
   PoolSortOption,
+  SORT_SUPPORT_HEAD,
   TABLE_HEAD,
 } from "@containers/pool-list-container/PoolListContainer";
 import PoolInfo from "@components/earn/pool-info/PoolInfo";
@@ -72,24 +73,26 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_TD_WIDTH_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-      ? POOL_TD_WIDTH_SMALL_TABLET
-      : breakpoint === DEVICE_TYPE.TABLET
-      ? POOL_TD_WIDTH_TABLET
-      : POOL_TD_WIDTH;
+        ? POOL_TD_WIDTH_SMALL_TABLET
+        : breakpoint === DEVICE_TYPE.TABLET
+          ? POOL_TD_WIDTH_TABLET
+          : POOL_TD_WIDTH;
   const poolInfo =
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_INFO_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-      ? POOL_INFO_SMALL_TABLET
-      : breakpoint === DEVICE_TYPE.TABLET
-      ? POOL_INFO_TABLET
-      : POOL_INFO;
+        ? POOL_INFO_SMALL_TABLET
+        : breakpoint === DEVICE_TYPE.TABLET
+          ? POOL_INFO_TABLET
+          : POOL_INFO;
 
   return (
     <TableWrapper>
       <div className="pool-list-head">
-        {Object.values(TABLE_HEAD).map((head, idx) => (
-          <TableColumn
+        {Object.values(TABLE_HEAD).map((head, idx) => {
+          const canSort = SORT_SUPPORT_HEAD.includes(head);
+
+          return <TableColumn
             key={idx}
             className={cx({
               left: isAlignLeft(head),
@@ -99,18 +102,20 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
           >
             <span
               className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
-              onClick={() => onClickTableHead(head)}
+              onClick={canSort ? () => onClickTableHead(head) : undefined}
             >
-              {isAscendingOption(head) && (
-                <IconTriangleArrowUp className="icon asc" />
-              )}
-              {isDescendingOption(head) && (
-                <IconTriangleArrowDown className="icon desc" />
-              )}
+              {canSort && <>
+                {isAscendingOption(head) && (
+                  <IconTriangleArrowUp className="icon asc" />
+                )}
+                {isDescendingOption(head) && (
+                  <IconTriangleArrowDown className="icon desc" />
+                )}
+              </>}
               {head}
             </span>
-          </TableColumn>
-        ))}
+          </TableColumn>;
+        })}
       </div>
       <div className="pool-list-body">
         {isFetched && pools.length === 0 && (

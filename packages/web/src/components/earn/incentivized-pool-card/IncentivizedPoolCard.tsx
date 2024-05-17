@@ -106,7 +106,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
               </div>
               <div className="list-content">
-                <span className="value-text">${pool.liquidity}</span>
+                <span className="value-text">{pool.liquidity}</span>
                 <span className="value-text">{pool.apr}</span>
               </div>
             </div>
@@ -118,8 +118,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">{POOL_CONTENT_TITLE.FEE}</span>
               </div>
               <div className="volume-content">
-                <span className="value-text">${pool.volume24h}</span>
-                <span className="value-text">${pool.fees24h}</span>
+                <span className="value-text">{pool.volume24h}</span>
+                <span className="value-text">{pool.fees24h}</span>
               </div>
             </div>
             <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>

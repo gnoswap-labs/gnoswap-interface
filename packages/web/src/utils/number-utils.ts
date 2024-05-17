@@ -117,11 +117,10 @@ export const toUnitFormat = (
     );
   if (isKMB) {
     if (wholeNumberLength >= 4 && isFormat)
-      return (
-        (usd ? "$" : "") +
-        bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
-        unitsUpperCase.thousand
-      );
+      return (usd ? "$" : "") + convertToKMB(bigNumber.toString(), {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      });
   }
 
   // TODO : Else Return Type

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
 import PoolLayout from "@layouts/pool-layout/PoolLayout";
@@ -11,6 +11,7 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useLoading } from "@hooks/common/use-loading";
 
 export default function Pool() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function Pool() {
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
+  const { isLoadingCommon } = useLoading();
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -43,10 +45,10 @@ export default function Pool() {
     return false;
   }, [data?.incentiveType]);
 
-  useLayoutEffect(() => {
-    if (!loading && isFetchedPosition) {
+  useEffect(() => {
+    if (!loading && isFetchedPosition && !isLoadingCommon) {
       const positionContainerElement = document.getElementById("staking");
-      const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
         return;
       }
@@ -54,7 +56,8 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [loading, isFetchedPosition]);
+  }, [loading, isFetchedPosition, isLoadingCommon]);
+
 
   return (
     <PoolLayout

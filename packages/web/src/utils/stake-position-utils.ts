@@ -46,15 +46,15 @@ export const convertToKMB = (
     minimumSignificantDigits?: number,
     maximumSignificantDigits?: number,
     convertOffset?: number,
-}) => {
+  }) => {
   if (Number.isNaN(Number(price))) return "-";
-  
+
   const defaultMaximumSignificantDigits = 5;
-  const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits; 
+  const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits;
   const maximumSignificantDigits = options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
   const convertOffset = options?.convertOffset || 999;
   const intPart = Math.trunc(Number(price));
-  
+
   if (intPart < convertOffset) {
     if (Number.isInteger(Number(price))) return Number(price).toLocaleString("en-US", {
       maximumFractionDigits: 0,
@@ -62,7 +62,7 @@ export const convertToKMB = (
     });
     if (Number(price) < 0.000001 && Number(price) !== 0) return "0.000001";
     if (Number(price) < 1) return `${Number(Number(price).toFixed(6))}`;
-    
+
     const result = Number(price).toLocaleString("en-US", {
       maximumSignificantDigits: maximumSignificantDigits,
       minimumSignificantDigits: options?.minimumSignificantDigits,
@@ -115,7 +115,7 @@ export const convertLiquidityUsdToKMB = (
   const { prefix, maximumFractionDigits, minimumFractionDigits } = options ?? {};
 
   function withPrefix(value: string) {
-    if(prefix) return prefix + value;
+    if (prefix) return prefix + value;
 
     return value;
   }
@@ -177,13 +177,13 @@ export const formatUsdNumber = (
 };
 
 export function convertLiquidityUsdValue(value: number) {
-  if(Number.isNaN(value)) return "-";
+  if (Number.isNaN(value)) return "-";
 
   const valueInNumber = Number(value);
 
-  if(valueInNumber === 0) return "$0";
+  if (valueInNumber === 0) return "$0";
 
-  if(valueInNumber > 0 && valueInNumber < 0.01) return "<$0.01";
+  if (valueInNumber > 0 && valueInNumber < 0.01) return "<$0.01";
 
   return "$" + BigNumber(value).toFormat(2);
 }

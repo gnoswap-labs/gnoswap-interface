@@ -451,6 +451,9 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
   tooltipInfo,
   isPosition,
 }) => {
+  console.log("🚀 324234 ~ isPosition:", isPosition);
+  console.log("🚀 324234 ~ myTokenBAmount:", tooltipInfo?.myTokenBAmount);
+
   const tokenAPriceString = useMemo(() => {
     if (tooltipInfo === null) {
       return "-";
@@ -551,9 +554,9 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20} />
             <span className={`token-amount-value hidden ${(tooltipInfo.tokenBAmount || "0").length > 21 ? "small-font" : ""}`}>{tooltipInfo.tokenBAmount || "0"}</span>
           </span>
-          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount  w-100">
-            <span className="hidden" >{(tooltipInfo.myTokenBAmount || "0").length > 21 ? "small-font" : ""}</span>
-          </span> : ""}
+          {isPosition && !tooltipInfo.isBlackBar ? <span className="amount w-100">
+            <span className="token-amount-value hidden" >{(tooltipInfo.myTokenBAmount || "0")}</span>
+          </span> : "-"}
           <span className={`price-range ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""}`}>{tokenBPriceRangeStr}</span>
         </div>
       </div>

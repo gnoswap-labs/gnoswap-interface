@@ -44,6 +44,8 @@ export const TABLE_HEAD = {
   LIQUIDITY_PLOT: "Liquidity Plot",
 } as const;
 
+export const SORT_SUPPORT_HEAD = ["POOL_NAME", "TVL", "VOLUME", "FEES", "APR"];
+
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
 export const POOL_TYPE = {
@@ -80,6 +82,7 @@ const PoolListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
+  // 10K -> 10000, 20M -> 2000000 ...
   const convertKMBtoNumber = (kmbValue: string) => {
     const sizesMap: { [key: string]: number; } = {
       K: 1_000,
@@ -103,8 +106,8 @@ const PoolListContainer: React.FC = () => {
     const formattedNumber = value.replace(/,/g, "").slice(1);
     const lastChar = formattedNumber.charAt(formattedNumber.length - 1);
 
-    if (value === "<&0.01") {
-      return -1;
+    if (value === "<$0.01") {
+      return 0.009;
     }
 
     if (["K", "M", "B"].some(item => item === lastChar)) {
@@ -112,7 +115,7 @@ const PoolListContainer: React.FC = () => {
     }
 
     if (!isNumber(formattedNumber)) {
-      return -2;
+      return -1;
     }
 
     return Number(value.replace(/,/g, "").slice(1));

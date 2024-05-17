@@ -7,8 +7,6 @@ import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
 import { makeId } from "@utils/common";
 import { PoolDetailModel } from "../pool-detail-model";
-import { convertToKMB, convertToMB } from "@utils/stake-position-utils";
-import { REGEX_NUMBER_FORMAT } from "@utils/regex";
 import { toUnitFormat } from "@utils/number-utils";
 
 export class PoolMapper {
@@ -50,8 +48,8 @@ export class PoolMapper {
       feeTier: feeTierInfo?.type || "NONE",
       apr: getApr(),
       liquidity: `$${BigNumber(liquidity).toFormat(0)}`,
-      volume24h: toUnitFormat(Number(volume24h ?? 0), true, true),
-      fees24h: `$${Math.floor(Number(feeUsd24h || 0)).toLocaleString()}`,
+      volume24h: toUnitFormat(volume24h || "0", true, true),
+      fees24h: toUnitFormat(feeUsd24h || "0", true, true),
       rewardTokens,
       currentTick,
       price,
@@ -97,24 +95,32 @@ export class PoolMapper {
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(
       info => `${info.fee}` === fee.toString(),
     );
-    const customVolume = convertToMB(Number(volume24h).toString(), 2);
+
+    function getApr() {
+      if (apr === 0 || apr === "") return "$0";
+
+      if (!apr) return "-";
+
+      return `${BigNumber(apr || 0).toFormat(2)}%`;
+    }
+
     return {
       poolId: id,
       incentiveType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: !apr ? "-" : `${BigNumber(apr || 0).toFormat(2)}%`,
-      liquidity: `${convertToKMB(Math.round(tvl).toString(), { maximumFractionDigits: 2 })}`,
-      volume24h: `${customVolume.replace(REGEX_NUMBER_FORMAT, "$1")}`,
-      fees24h: `${convertToMB(Number(feeUsd24h).toString(), 2)}`,
+      apr: getApr(),
+      liquidity: toUnitFormat(tvl || "0", true, true),
+      volume24h: toUnitFormat(volume24h || "0", true, true),
+      fees24h: toUnitFormat(feeUsd24h || "0", true, true),
       rewardTokens,
       currentTick,
       price,
       bins,
       bins40,
       poolPath: poolPath,
-      tvl: tvl,
+      tvl: tvl.toString(),
     };
   }
 

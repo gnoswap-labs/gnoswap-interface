@@ -163,15 +163,10 @@ export const usePositionData = (address?: string) => {
           },
         };
         poolPositions.push(PositionMapper.makePoolPosition(position, temp));
-      } else {
-        console.log("🚀 34234234 ~ pool ~ pool:", pools.map(item => item.poolPath));
-        console.log("🚀 34234234 ~ positions ~ position:", position.poolPath);
       }
     });
     return poolPositions;
   }, [data, getGnotPath, pools]);
-  console.log("🚀 ~ positions ~ positions:", positions);
-
 
   const availableStake = useMemo(() => {
     const unstakedPositions = positions.filter(position => !position.staked);

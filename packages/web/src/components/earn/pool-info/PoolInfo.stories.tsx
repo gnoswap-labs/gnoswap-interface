@@ -42,7 +42,7 @@ const pool: PoolCardInfo = {
   currentTick: 0,
   price: 0,
   bins: [],
-  tvl: 0,
+  tvl: "0",
   bins40: [],
 };
 
