@@ -97,6 +97,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
+  const [hoverBarIndex, setHoverBarIndex] = useState<number | null>(null);
 
   const { redColor, greenColor } = useColorGraph();
 
@@ -107,9 +108,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
-  // Display bins is bins slice data.
-  const displayBins = useMemo(() => {
-    const adjustBins = flip
+  const adjustBins = useMemo(() => {
+    return flip
       ? bins
           .map(bin => ({
             ...bin,
@@ -117,9 +117,23 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             minTick: -1 * bin.maxTick,
             reserveTokenA: bin.reserveTokenB,
             reserveTokenB: bin.reserveTokenA,
+            height: BigNumber(bin.reserveTokenB)
+              .multipliedBy(price)
+              .plus(bin.reserveTokenA)
+              .toNumber(),
           }))
           .reverse()
-      : bins;
+      : bins.map(bin => ({
+          ...bin,
+          height: BigNumber(bin.reserveTokenA)
+            .multipliedBy(price)
+            .plus(bin.reserveTokenB)
+            .toNumber(),
+        }));
+  }, [bins, price, flip]);
+
+  // Display bins is bins slice data.
+  const displayBins = useMemo(() => {
     const centerIndex = adjustBins.length / 2;
     const displaySideBinCount = displayBinCount / 2;
 
@@ -134,7 +148,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         : adjustBins.length;
 
     return adjustBins.slice(sliceStartIndex, sliceEndIndex);
-  }, [bins, displayBinCount, flip, shiftIndex]);
+  }, [adjustBins, displayBinCount, shiftIndex]);
 
   const currentTick = useMemo(() => {
     if (Number.isNaN(price)) {
@@ -156,7 +170,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     () => Math.max(...displayBins.map(bin => bin.maxTick)),
     [displayBins],
   );
-  const maxLiquidity = Math.max(...bins.map(bin => bin.liquidity));
+  const maxLiquidity = Math.max(...adjustBins.map(bin => bin.height));
 
   // D3 - Scale Definition
   const defaultScaleX = d3
@@ -173,10 +187,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const resolvedDisplayBins: ResolveBinModel[] = useMemo(() => {
     return displayBins.map((bin, index) => {
-      const height = bin.liquidity;
       return {
         index,
-        height,
+        height: bin.height,
         positionX: bin.minTick - defaultMinX,
         minTick: bin.minTick,
         maxTick: bin.maxTick,
@@ -394,6 +407,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       .append("rect")
       .style("fill", bin => fillByBin(bin))
       .style("stroke-width", "0")
+      .style("opacity", bin => (bin.index === hoverBarIndex ? "0.4" : "1"))
+      .attr("id", bin => `bar-${bin.index}`)
       .attr("class", "rects bar")
       .attr("x", bin => scaleX(bin.positionX))
       .attr("y", bin => {
@@ -423,7 +438,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const mouseXTick = scaleX.invert(event.offsetX) + defaultMinX;
-    const mouseYTick = scaleX.invert(event.offsetY);
+    const mouseYTick = scaleY.invert(event.offsetY);
 
     if (minPrice && maxPrice) {
       if (
@@ -431,12 +446,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         priceToTick(maxPrice) > mouseXTick
       ) {
         setTooltipInfo(null);
+        setHoverBarIndex(null);
         return;
       }
     }
 
     const bin = resolvedDisplayBins.find(bin => {
-      if (mouseYTick < 0.000001 || mouseYTick > bin.height) {
+      if (mouseY < 0.000001 || mouseYTick > bin.height) {
         return false;
       }
       if (bin.height < 0 || !bin.height) {
@@ -449,6 +465,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       setPositionX(null);
       setPositionY(null);
       setTooltipInfo(null);
+      setHoverBarIndex(null);
       return;
     }
 
@@ -463,8 +480,11 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);
+      setHoverBarIndex(null);
       return;
     }
+
+    setHoverBarIndex(bin.index);
 
     const minTick = bin.minTick;
     const maxTick = bin.maxTick;
@@ -502,12 +522,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   function onMouseoutChartBin() {
     setPositionX(null);
     setPositionY(null);
+    setHoverBarIndex(null);
   }
 
   function onMouseoverClear(event: MouseEvent) {
     const { clientX, clientY } = event;
     if (!svgRef.current?.getClientRects()[0]) {
       setTooltipInfo(null);
+      setHoverBarIndex(null);
       return;
     }
     const { left, right, top, bottom } = svgRef.current?.getClientRects()[0];
@@ -518,6 +540,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       clientY > bottom
     ) {
       setTooltipInfo(null);
+      setHoverBarIndex(null);
     }
   }
 

@@ -23,7 +23,7 @@ export const PoolSelectionGraphWrapper = styled.div`
 
   .bar {
     stroke: ${({ theme }) => theme.color.background06};
-    &:hover {
+    &.active {
       opacity: 0.4;
     }
   }
