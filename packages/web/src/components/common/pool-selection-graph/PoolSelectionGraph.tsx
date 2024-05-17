@@ -916,7 +916,7 @@ function changeLine(
     type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
 
   const margin =
-    right === false ? (type === "end" ? -61 : -73) : type === "end" ? 14 : 1;
+    right === false ? (type === "end" ? -61 : -73) : type === "end" ? 13 : 1;
   const labelWrapper = lineElement.select(`#${priceID}`);
 
   const labelText = !selectedFullRange
@@ -936,7 +936,7 @@ function changeLine(
   labelWrapper
     .select("text")
     .attr("x", margin + 30)
-    .attr("y", "3")
+    .attr("y", "2")
     .attr("dy", "15")
     .attr("text-anchor", "middle")
     .style("fill", "#FFF")
