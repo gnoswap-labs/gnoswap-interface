@@ -867,10 +867,7 @@ function makeLabel(
   reverse = false,
   selectionColor: any,
 ) {
-  // const id = right === false ? "start-price" : "end-price";
   const id = right === false ? "start-price" : "end-price";
-
-  // const color = right === false ? "#EA3943B2" : "#16C78AB2";
   const color =
     right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
   if (refer.select(`#${id}`)) {
@@ -884,14 +881,14 @@ function makeLabel(
     .append("rect")
     .attr("x", margin)
     .attr("y", "0")
-    .attr("width", "50")
+    .attr("width", "70")
     .attr("height", "23")
     .attr("rx", 5)
     .style("fill", color);
   labelWrapper
     .append("text")
-    .attr("x", margin + 25)
-    .attr("y", "0")
+    .attr("x", margin + 30)
+    .attr("y", "2")
     .attr("dy", "15")
     .attr("text-anchor", "middle")
     .style("fill", "#FFF");
@@ -919,7 +916,7 @@ function changeLine(
     type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
 
   const margin =
-    right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
+    right === false ? (type === "end" ? -61 : -73) : type === "end" ? 14 : 1;
   const labelWrapper = lineElement.select(`#${priceID}`);
 
   const labelText = !selectedFullRange
@@ -932,14 +929,14 @@ function changeLine(
     .select("rect")
     .attr("x", margin)
     .attr("y", "0")
-    .attr("width", "50")
+    .attr("width", "60")
     .attr("height", "23")
     .attr("rx", 5)
     .style("fill", color);
   labelWrapper
     .select("text")
-    .attr("x", margin + 25)
-    .attr("y", "0")
+    .attr("x", margin + 30)
+    .attr("y", "3")
     .attr("dy", "15")
     .attr("text-anchor", "middle")
     .style("fill", "#FFF")
