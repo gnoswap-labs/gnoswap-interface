@@ -451,9 +451,6 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
   tooltipInfo,
   isPosition,
 }) => {
-  console.log("🚀 324234 ~ isPosition:", isPosition);
-  console.log("🚀 324234 ~ myTokenBAmount:", tooltipInfo?.myTokenBAmount);
-
   const tokenAPriceString = useMemo(() => {
     if (tooltipInfo === null) {
       return "-";
