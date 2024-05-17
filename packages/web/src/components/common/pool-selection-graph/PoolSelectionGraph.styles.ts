@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
-import mixins from "@styles/mixins";
+import { media } from "@styles/media";
 
 export const PoolSelectionGraphWrapper = styled.div`
   position: relative;
@@ -8,95 +8,23 @@ export const PoolSelectionGraphWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: auto;
+  overflow: visible;
+
+  .dark-shadow {
+    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
 
   svg {
     overflow: overlay;
   }
-    
-  text {
-    ${fonts.p4}
-    color: ${({ theme }) => theme.color.text02};
-  }
 
-  .tooltip-container {
-    position: absolute;
-    pointer-events: none;
-
-    .tooltip-wrapper {
-      display: flex;
-      flex-direction: column;
-      width: 390px;
-      background-color: ${({ theme }) => theme.color.background02};
-      padding: 16px;
-      align-items: flex-start;
-      border-radius: 8px;
-      gap: 8px;
-      ${fonts.body12};
-      line-height: 1em;
-
-      .row {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        gap: 16px;
-
-        & > span {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-        }
-      }
-
-      .header {
-        display: flex;
-        flex-direction: column;
-        color: ${({ theme }) => theme.color.text04};
-        margin-bottom: 5px;
-      }
-
-      .content {
-        display: flex;
-        flex-direction: column;
-        color: ${({ theme }) => theme.color.text02};
-        gap: 8px;
-      }
-
-      .token {
-        flex-shrink: 0;
-        width: 80px;
-        gap: 8px;
-
-        img {
-          width: 20px;
-          height: 20px;
-        }
-      }
-
-      .amount {
-        flex-shrink: 0;
-        width: 80px;
-
-        & .hidden {
-          display: inline;
-          overflow: hidden;
-          text-overflow: clip;
-          white-space: nowrap;
-          word-break: break-all;
-        }
-      }
-
-      .price-range {
-        width: 100%;
-      }
-    }
-  }
-  .domain {
-    color: #596782;
-  }
-  .tick {
-    text {
-      ${fonts.p7}
-      color: ${({ theme }) => theme.color.text04};
+  .bar {
+    stroke: ${({ theme }) => theme.color.background06};
+    &:hover {
+      opacity: 0.4;
     }
   }
 
@@ -112,52 +40,133 @@ export const PoolSelectionGraphWrapper = styled.div`
   }
 `;
 
-export const GraphWrapper = styled.div`
-  ${mixins.flexbox("column", "flex-start", "flex-start")}
-  gap: 8px;
-  min-width: 360px;
-  .header {
-    width: 100%;
-    ${fonts.body12}
-    color: ${({ theme }) => theme.color.text04};
-    ${mixins.flexbox("row", "center", "flex-start")}
+export const PoolSelectionGraphTooltipWrapper = styled.div`
+  padding: 0;
+  pointer-events: none;
+  border-radius: 8px;
 
-    .token, .amount {
-      width: 80px;
-      margin-right: 8px;
-    }
-    .price {
-      text-align: right;
-      margin-left: 8px;
-      flex: 1;
-    }
+  &.disabled {
+    display: none;
   }
-  .content {
-    width: 100%;
-    ${mixins.flexbox("column", "flex-start", "flex-start")}
+
+  .tooltip-wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: ${({ theme }) => theme.color.background02};
+    align-items: flex-start;
+    border-radius: 8px;
     gap: 8px;
-      .item {
-        height: 28px;
-        ${fonts.body12}
-        color: ${({ theme }) => theme.color.text02};
-        width: 100%;
-        ${mixins.flexbox("row", "center", "flex-start")}
-      }
-      .logo {
-        ${mixins.flexbox("row", "center", "flex-start")}
-        gap: 8px;
-        width: 80px;
-        margin-right: 8px;
-      }
-      .amount {
-        width: 80px;
-        margin-right: 8px;
-      }
-      .price {
-        text-align: right;
-        margin-left: 8px;
-        flex: 1;
-      }
-  }
+    ${fonts.body12};
+    line-height: 1em;
 
+    .row {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      gap: 8px;
+      & > span {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        &.price-range {
+          justify-content: flex-end;
+        }
+        &.token-title {
+          ${media.mobile} {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      color: ${({ theme }) => theme.color.text04};
+      justify-content: space-between;
+      width: 100%;
+      &.mt-8 {
+        margin-top: 8px;
+      }
+      .row {
+        padding: 3px 0;
+      }
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      color: ${({ theme }) => theme.color.text02};
+      gap: 8px;
+      width: 100%;
+      .row {
+        padding: 4px 0;
+      }
+      &:last-of-type {
+        .token {
+          ${media.mobile} {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .token {
+      flex-shrink: 0;
+      min-width: 80px;
+      gap: 8px;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+      ${media.mobile} {
+        display: none;
+      }
+    }
+    .amount {
+      flex-shrink: 0;
+      min-width: 80px;
+      & .hidden {
+        display: inline;
+        overflow: hidden;
+        text-overflow: clip;
+        white-space: nowrap;
+        word-break: break-all;
+      }
+      & .small-font {
+        font-size: 12px;
+      }
+      &.w-100 {
+        min-width: 108px;
+      }
+      img {
+        width: 20px;
+        height: 20px;
+        display: none;
+      }
+      ${media.mobile} {
+        &.total-amount {
+          width: 85px;
+          gap: 8px;
+        }
+        img {
+          display: block;
+        }
+      }
+    }
+
+    .price-range {
+      width: 100%;
+    }
+    .small-font {
+      font-size: 12px;
+    }
+    ${media.mobile} {
+      max-width: max-content;
+    }
+    @media (max-width: 360px) {
+      max-width: 336px;
+    }
+  }
 `;

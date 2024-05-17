@@ -24,9 +24,11 @@ import { EarnState } from "@states/index";
 import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { encryptId } from "@utils/common";
-import { QUERY_KEY } from "@query/pools";
+import { checkGnotPath, encryptId } from "@utils/common";
+import { QUERY_KEY, useGetBinsByPath } from "@query/pools";
 import BigNumber from "bignumber.js";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { ZOOL_VALUES } from "@constants/graph.constant";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -44,6 +46,7 @@ interface Props {
 }
 
 export interface SelectPool {
+  bins: PoolBinModel[] | undefined;
   poolPath: string | null;
   isCreate: boolean;
   renderState: (isIgnoreDefaultLoading?: boolean) => RenderState;
@@ -99,7 +102,7 @@ export const useSelectPool = ({
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
-  const [zoomLevel, setZoomLevel] = useState<number>(9);
+  const [zoomLevel, setZoomLevel] = useState<number>(0);
   const { poolRepository } = useGnoswapContext();
   const [minPosition, setMinPosition] = useState<number | null>(null);
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
@@ -112,24 +115,22 @@ export const useSelectPool = ({
   const { isLoadingCommon } = useLoading();
   const [, setGlobalCompareToken] = useAtom(EarnState.currentCompareToken);
 
-  const tokenAPath = useMemo(() => tokenA?.wrappedPath || tokenA?.path, [
-    tokenA?.path,
-    tokenA?.wrappedPath,
-  ]);
-  const tokenBPath = useMemo(() => tokenB?.wrappedPath || tokenB?.path, [
-    tokenB?.path,
-    tokenB?.wrappedPath,
-  ]);
+  const tokenAPath = useMemo(
+    () => tokenA?.wrappedPath || tokenA?.path,
+    [tokenA?.path, tokenA?.wrappedPath],
+  );
+  const tokenBPath = useMemo(
+    () => tokenB?.wrappedPath || tokenB?.path,
+    [tokenB?.path, tokenB?.wrappedPath],
+  );
 
   const tokenPair = useMemo(() => {
     if (!tokenA || !tokenB) {
       return null;
     }
 
-    const tokenAPoolPath = tokenAPath;
-    const tokenBPoolPath = tokenB.wrappedPath || tokenB.path;
-    return [tokenAPoolPath, tokenBPoolPath].sort();
-  }, [tokenA, tokenAPath, tokenB]);
+    return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
+  }, [tokenA, tokenB]);
 
   const isReverse = useMemo(() => {
     return (
@@ -144,7 +145,24 @@ export const useSelectPool = ({
     );
   }, [compareToken, tokenPair]);
 
+  const calculatedPoolPath = useMemo(() => {
+    if (!tokenPair || !feeTier) {
+      return null;
+    }
+
+    return [...tokenPair, SwapFeeTierInfoMap[feeTier].fee].join(":");
+  }, [tokenPair, feeTier]);
+
   const queryClient = useQueryClient();
+
+  const { data: bins } = useGetBinsByPath(
+    calculatedPoolPath || "",
+    ZOOL_VALUES[zoomLevel],
+    {
+      enabled: !!calculatedPoolPath,
+      queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel],
+    },
+  );
 
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
     PoolDetailRPCModel | null,
@@ -351,9 +369,10 @@ export const useSelectPool = ({
     return null;
   }, []);
 
-  const tickSpacing = useMemo(() => poolInfo?.tickSpacing || 2, [
-    poolInfo?.tickSpacing,
-  ]);
+  const tickSpacing = useMemo(
+    () => poolInfo?.tickSpacing || 2,
+    [poolInfo?.tickSpacing],
+  );
 
   function excuteInteraction(callback: () => void) {
     if (interactionType === "INTERACTION") {
@@ -445,7 +464,7 @@ export const useSelectPool = ({
     const [defaultMinPosition, defaultMaxPosition] = priceRangeRef.current;
 
     excuteInteraction(() => {
-      setZoomLevel(9);
+      setZoomLevel(0);
       setFullRange(false);
       changeMinPosition(defaultMinPosition);
       changeMaxPosition(defaultMaxPosition);
@@ -453,14 +472,14 @@ export const useSelectPool = ({
   }, [interactionType]);
 
   const zoomIn = useCallback(() => {
-    if (zoomLevel > 1) {
-      setZoomLevel(zoomLevel - 1);
+    if (zoomLevel + 1 < ZOOL_VALUES.length) {
+      setZoomLevel(zoomLevel + 1);
     }
   }, [zoomLevel]);
 
   const zoomOut = useCallback(() => {
-    if (zoomLevel < 20) {
-      setZoomLevel(zoomLevel + 1);
+    if (zoomLevel > 0) {
+      setZoomLevel(zoomLevel - 1);
     }
   }, [zoomLevel]);
 
@@ -513,6 +532,7 @@ export const useSelectPool = ({
 
   return {
     startPrice,
+    bins,
     poolPath,
     renderState,
     feeTier,

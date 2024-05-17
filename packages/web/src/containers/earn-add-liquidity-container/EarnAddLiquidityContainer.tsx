@@ -134,20 +134,18 @@ const EarnAddLiquidityContainer: React.FC = () => {
     compareToken: selectPool.compareToken,
     isReverted,
   });
-  const {
-    openAddPositionModal,
-    openAddPositionWithStakingModal,
-  } = useEarnAddLiquidityConfirmModal({
-    tokenA,
-    tokenB,
-    tokenAAmountInput,
-    tokenBAmountInput,
-    selectPool,
-    slippage,
-    swapFeeTier,
-    createPool,
-    addLiquidity,
-  });
+  const { openAddPositionModal, openAddPositionWithStakingModal } =
+    useEarnAddLiquidityConfirmModal({
+      tokenA,
+      tokenB,
+      tokenAAmountInput,
+      tokenBAmountInput,
+      selectPool,
+      slippage,
+      swapFeeTier,
+      createPool,
+      addLiquidity,
+    });
 
   const { isLoadingCommon } = useLoading();
 
@@ -841,7 +839,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       priceRange={priceRange}
       priceRangeSummary={priceRangeSummary}
       changePriceRange={changePriceRange}
-      ticks={[]}
       pools={pools}
       currentTick={null}
       submitType={submitType}

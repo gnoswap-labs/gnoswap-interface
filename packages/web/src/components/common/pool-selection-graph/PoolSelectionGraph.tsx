@@ -1,19 +1,689 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { GraphWrapper, PoolSelectionGraphWrapper } from "./PoolSelectionGraph.styles";
-import * as d3 from "d3";
-import { displayTickNumber } from "@utils/string-utils";
-import BigNumber from "bignumber.js";
-import { useColorGraph } from "@hooks/common/use-color-graph";
-import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
-import { useAtomValue } from "jotai";
-import { ThemeState } from "@states/index";
+  PoolSelectionGraphTooltipWrapper,
+  PoolSelectionGraphWrapper,
+} from "./PoolSelectionGraph.styles";
+import * as d3 from "d3";
+import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { TokenModel } from "@models/token/token-model";
+import { useColorGraph } from "@hooks/common/use-color-graph";
+import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
-import MissingLogo from "../missing-logo/MissingLogo";
-BigNumber.config({ EXPONENTIAL_AT: 1e9 });
+import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
+import { convertToKMB } from "@utils/stake-position-utils";
+import {
+  PoolSelectionGraphBinTooptip,
+  TooltipInfo,
+} from "./PoolSelectionGraphBinTooltip";
+import { useTheme } from "@emotion/react";
+import BigNumber from "bignumber.js";
+
+interface ResolveBinModel {
+  index: number;
+  height: number;
+  positionX: number;
+  minTick: number;
+  maxTick: number;
+  reserveTokenA: number;
+  reserveTokenB: number;
+}
+
+export interface PoolSelectionGraphProps {
+  tokenA: TokenModel;
+  tokenB: TokenModel;
+  bins: PoolBinModel[];
+  mouseover?: boolean;
+  zoomLevel: number;
+  zoomable?: boolean;
+  visibleLabel?: boolean;
+  width: number;
+  height: number;
+  margin?: {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+  };
+  position?: FloatingPosition;
+  offset?: number;
+  price: number;
+  flip?: boolean;
+  showBar?: boolean;
+  displayBinCount?: number;
+  shiftIndex?: number;
+  minPrice: number | null;
+  maxPrice: number | null;
+  fullRange: boolean;
+  setMinPrice: (price: number | null) => void;
+  setMaxPrice: (price: number | null) => void;
+  onFinishMove?: () => void;
+}
+
+const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
+  tokenA,
+  tokenB,
+  bins = [],
+  mouseover,
+  width,
+  height,
+  zoomLevel,
+  margin = {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  position,
+  price,
+  flip,
+  displayBinCount = 40,
+  shiftIndex = 0,
+  fullRange,
+  minPrice,
+  maxPrice,
+  setMinPrice,
+  setMaxPrice,
+  onFinishMove,
+}) => {
+  const { themeKey } = useTheme();
+  const svgRef = useRef<SVGSVGElement>(null);
+  const chartRef = useRef(null);
+  const brushRef = useRef<SVGGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const [priceOfTick, setPriceOfTick] = useState<{ [key in number]: string }>(
+    {},
+  );
+  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
+  const [positionX, setPositionX] = useState<number | null>(null);
+  const [positionY, setPositionY] = useState<number | null>(null);
+
+  const { redColor, greenColor } = useColorGraph();
+
+  const [selectionColor, setSelectionColor] = useState(
+    getSelectionColor("0", "0"),
+  );
+
+  const boundsWidth = width - margin.right - margin.left;
+  const boundsHeight = height - margin.top - margin.bottom;
+
+  // Display bins is bins slice data.
+  const displayBins = useMemo(() => {
+    const adjustBins = flip
+      ? bins
+          .map(bin => ({
+            ...bin,
+            maxTick: -1 * bin.minTick,
+            minTick: -1 * bin.maxTick,
+            reserveTokenA: bin.reserveTokenB,
+            reserveTokenB: bin.reserveTokenA,
+          }))
+          .reverse()
+      : bins;
+    const centerIndex = adjustBins.length / 2;
+    const displaySideBinCount = displayBinCount / 2;
+
+    const sliceStartIndex =
+      centerIndex - displaySideBinCount + shiftIndex >= 0
+        ? centerIndex - displaySideBinCount + shiftIndex
+        : 0;
+
+    const sliceEndIndex =
+      centerIndex + displaySideBinCount + shiftIndex < adjustBins.length
+        ? centerIndex + displaySideBinCount + shiftIndex
+        : adjustBins.length;
+
+    return adjustBins.slice(sliceStartIndex, sliceEndIndex);
+  }, [bins, displayBinCount, flip, shiftIndex]);
+
+  const currentTick = useMemo(() => {
+    if (Number.isNaN(price)) {
+      return 0;
+    }
+    return priceToTick(price);
+  }, [price]);
+
+  const defaultMinX = useMemo(() => {
+    return Math.min(...displayBins.map(bin => bin.minTick));
+  }, [displayBins]);
+
+  // D3 - Dimension Definition
+  const minX = useMemo(
+    () => Math.min(...displayBins.map(bin => bin.minTick)),
+    [displayBins],
+  );
+  const maxX = useMemo(
+    () => Math.max(...displayBins.map(bin => bin.maxTick)),
+    [displayBins],
+  );
+  const maxLiquidity = Math.max(...bins.map(bin => bin.liquidity));
+
+  // D3 - Scale Definition
+  const defaultScaleX = d3
+    .scaleLinear()
+    .domain([0, maxX - minX])
+    .range([margin.left, boundsWidth]);
+
+  const scaleX = defaultScaleX.copy();
+
+  const scaleY = d3
+    .scaleLinear()
+    .domain([0, maxLiquidity])
+    .range([boundsHeight, 0]);
+
+  const resolvedDisplayBins: ResolveBinModel[] = useMemo(() => {
+    return displayBins.map((bin, index) => {
+      const height = bin.liquidity;
+      return {
+        index,
+        height,
+        positionX: bin.minTick - defaultMinX,
+        minTick: bin.minTick,
+        maxTick: bin.maxTick,
+        reserveTokenA: bin.reserveTokenA || 0,
+        reserveTokenB: bin.reserveTokenB || 0,
+      };
+    });
+  }, [displayBins, defaultMinX]);
+
+  const tickSpacing = useMemo(() => {
+    return boundsWidth / displayBins.length;
+  }, [boundsWidth, displayBins.length]);
+
+  const tooltipPosition = useMemo((): FloatingPosition => {
+    if (position) {
+      return position;
+    }
+    if (!positionX || !positionY) {
+      return "top-start";
+    }
+    const isTop = positionY > height * 0.6;
+    const isStart = positionX < width - 50;
+    if (isTop) {
+      return `top-${isStart ? "start" : "end"}`;
+    }
+    return `${isStart ? "right" : "left"}`;
+  }, [width, height, positionX, positionY, position]);
+  const random = Math.random().toString();
+
+  const brush = d3
+    .brushX()
+    .extent([
+      [0, 0],
+      [boundsWidth, boundsHeight],
+    ])
+    .on("start brush", onBrushMove)
+    .on("end", onBrushEnd);
+
+  function onBrushMove(this: SVGGElement, event: d3.D3BrushEvent<null>) {
+    if (!brushRef.current) {
+      return;
+    }
+    const selection = event.selection ? event.selection : [0, 0];
+    const startPosition = selection[0] as number;
+    const endPosition = selection[1] as number;
+
+    const currentPricePosition = scaleX(currentTick - defaultMinX);
+    const selectionColor = getSelectionColor(
+      startPosition >= currentPricePosition ? "1" : "-1",
+      endPosition >= currentPricePosition ? "1" : "-1",
+    );
+    setSelectionColor(selectionColor);
+
+    const brushElement = d3.select(brushRef.current);
+    if (event.type === "start") {
+      /** Start Line */
+      brushElement.select("#start").selectChildren().remove();
+      const startLineElement = brushElement.select("#start").insert("svg");
+      startLineElement
+        .append("line")
+        .attr("y1", 0)
+        .attr("y2", boundsHeight)
+        .style("stroke", selectionColor.lineStart)
+        .attr("stroke-width", 2);
+      makeLeftBadge(startLineElement, false, selectionColor);
+
+      /** End Line */
+      brushElement.select("#end").selectChildren().remove();
+      const endLineElement = brushElement.select("#end").insert("svg");
+      endLineElement
+        .append("line")
+        .attr("y1", boundsHeight)
+        .attr("y2", 0)
+        .style("stroke", selectionColor.lineEnd)
+        .attr("stroke-width", 2);
+
+      makeRightBadge(endLineElement, fullRange, selectionColor);
+    }
+
+    brushElement
+      .selectAll(".resize")
+      .attr("x", data => (data === "w" ? startPosition : endPosition));
+
+    const startPrice = tickToPrice(
+      Math.round(scaleX.invert(startPosition) + defaultMinX),
+    );
+    const endPrice = tickToPrice(
+      Math.round(scaleX.invert(endPosition) + defaultMinX),
+    );
+
+    const startRate = price ? ((Number(startPrice) - price) / price) * 100 : 0;
+    const endRate = price ? ((Number(endPrice) - price) / price) * 100 : 0;
+
+    const isRightStartLine = startPosition - 75 < 0;
+    const isRightEndLine = endPosition + 75 < boundsWidth;
+    changeLine(
+      brushElement,
+      "start",
+      startPosition as number,
+      startRate,
+      isRightStartLine,
+      fullRange,
+      selectionColor,
+    );
+    changeLine(
+      brushElement,
+      "end",
+      endPosition as number,
+      endRate,
+      isRightEndLine,
+      fullRange, //selectedFullRange,
+      selectionColor,
+    );
+  }
+
+  function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
+    if (!brushRef.current || event.mode === undefined) {
+      return;
+    }
+
+    onFinishMove && onFinishMove();
+    if (fullRange) {
+      setMinPrice(null);
+      setMaxPrice(null);
+      return;
+    }
+
+    if (!event.selection) {
+      d3.select(brushRef.current)
+        .selectAll(".resize")
+        .selectChildren()
+        .remove();
+      setMinPrice(null);
+      setMaxPrice(null);
+    } else {
+      const selection = event.selection ? event.selection : [0, 0];
+      const startPosition = selection[0] as number;
+      const endPosition = selection[1] as number;
+
+      const currentPricePosition = scaleX(currentTick - defaultMinX);
+
+      const selectionColor = getSelectionColor(
+        startPosition >= currentPricePosition ? "1" : "-1",
+        endPosition >= currentPricePosition ? "1" : "-1",
+      );
+      setSelectionColor(selectionColor);
+      const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN()
+        ? tickToPrice(Math.round(scaleX.invert(startPosition)) + defaultMinX)
+        : 0;
+      const maxPrice = !BigNumber(scaleX.invert(endPosition)).isNaN()
+        ? tickToPrice(Math.round(scaleX.invert(endPosition)) + defaultMinX)
+        : 0;
+      setMinPrice(minPrice);
+      setMaxPrice(maxPrice);
+    }
+  }
+
+  useEffect(() => {
+    if (!brushRef.current) {
+      return;
+    }
+    const brushElement = d3.select(brushRef.current).call(brush);
+    brushElement
+      .selectAll(".resize")
+      .data([{ type: "w" }, { type: "e" }])
+      .enter()
+      .append("svg")
+      .attr("id", d => (d.type === "w" ? "start" : "end"))
+      .attr("width", "10")
+      .attr("height", boundsHeight)
+      .attr("cursor", "ew-resize")
+      .attr("class", d => "resize handle--custom handle--" + d.type);
+  }, [boundsHeight, brush, brushRef]);
+
+  /** Update Chart by data */
+  function updateChart() {
+    const currentLinePosition = scaleX(currentTick - defaultMinX) - 0.5;
+
+    // Retrieves the colour of the chart bar at the current tick.
+    function fillByBin(bin: ResolveBinModel) {
+      if (bin.height === 0) {
+        return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
+      }
+      if (currentTick && Number(bin.maxTick) - 1 < currentTick) {
+        return `url(#gradient-bar-green-${random})`;
+      }
+      return `url(#gradient-bar-red-${random})`;
+    }
+
+    // Clean child elements.
+    d3.select(chartRef.current).selectChildren().remove();
+
+    // Create a chart bar.
+    const rects = d3.select(chartRef.current);
+
+    rects.attr("clip-path", "url(#clip)");
+
+    // D3 - Draw Current tick (middle line)
+    if (currentTick && displayBins.length === displayBinCount) {
+      rects
+        .append("line")
+        .attr("x1", currentLinePosition)
+        .attr("x2", currentLinePosition)
+        .attr("y1", 0)
+        .attr("y2", boundsHeight)
+        .attr("stroke-dasharray", 3)
+        .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
+        .attr("stroke-width", 1);
+    }
+
+    rects
+      .selectAll("rects")
+      .data(resolvedDisplayBins)
+      .enter()
+      .append("rect")
+      .style("fill", bin => fillByBin(bin))
+      .style("stroke-width", "0")
+      .attr("class", "rects bar")
+      .attr("x", bin => scaleX(bin.positionX))
+      .attr("y", bin => {
+        const scaleYComputation = scaleY(bin.height) ?? 0;
+        return (
+          scaleYComputation -
+          (scaleYComputation > height - 5 && scaleYComputation !== height
+            ? 5
+            : 0)
+        );
+      })
+      .attr("width", tickSpacing - 1)
+      .attr("height", bin => {
+        const scaleYComputation = scaleY(bin.height) ?? 0;
+        return (
+          boundsHeight -
+          scaleYComputation +
+          (scaleYComputation > height - 5 && scaleYComputation !== height
+            ? 5
+            : 0)
+        );
+      });
+  }
+
+  // mouse over event
+  function onMouseoverChartBin(event: MouseEvent) {
+    if (!mouseover) {
+      return;
+    }
+    const mouseX = event.offsetX;
+    const mouseY = event.offsetY;
+    const mouseXTick = scaleX.invert(event.offsetX) + defaultMinX;
+    const mouseYTick = scaleX.invert(event.offsetY);
+    const bin = resolvedDisplayBins.find(bin => {
+      if (mouseYTick < 0.000001 || mouseYTick > bin.height) {
+        return false;
+      }
+      if (bin.height < 0 || !bin.height) {
+        return false;
+      }
+      return mouseXTick >= bin.minTick && mouseXTick <= bin.maxTick;
+    });
+
+    if (!bin) {
+      setPositionX(null);
+      setPositionY(null);
+      setTooltipInfo(null);
+      return;
+    }
+
+    if (
+      Math.abs(height - mouseY - 0.0001) >
+      boundsHeight -
+        scaleY(bin.height) +
+        (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
+          ? 5
+          : 0)
+    ) {
+      setPositionX(null);
+      setPositionX(null);
+      setTooltipInfo(null);
+      return;
+    }
+
+    const minTick = bin.minTick;
+    const maxTick = bin.maxTick;
+
+    const tokenARange = {
+      min: priceOfTick[minTick] || null,
+      max: priceOfTick[maxTick] || null,
+    };
+    const tokenBRange = {
+      min: priceOfTick[-minTick] || null,
+      max: priceOfTick[-maxTick] || null,
+    };
+
+    const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
+    const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
+
+    setTooltipInfo({
+      tokenA: tokenA,
+      tokenB: tokenB,
+      tokenAAmount: tokenAAmountStr
+        ? convertToKMB(tokenAAmountStr.toString())
+        : "-",
+      tokenBAmount: tokenBAmountStr
+        ? convertToKMB(tokenBAmountStr.toString())
+        : "-",
+      tokenARange: tokenARange,
+      tokenBRange: tokenBRange,
+      tokenAPrice: priceOfTick[currentTick || 0],
+      tokenBPrice: priceOfTick[-(currentTick || 0)],
+    });
+    setPositionX(mouseX);
+    setPositionY(mouseY);
+  }
+
+  function onMouseoutChartBin() {
+    setPositionX(null);
+    setPositionY(null);
+  }
+
+  // Lazy initialize price of tick
+  useEffect(() => {
+    if (resolvedDisplayBins.length > 0) {
+      new Promise<{ [key in number]: string }>(resolve => {
+        const priceOfTick = resolvedDisplayBins
+          .flatMap(bin => {
+            const minTick = bin.minTick;
+            const maxTick = bin.maxTick;
+            return [minTick, maxTick, -minTick, -maxTick];
+          })
+          .reduce<{ [key in number]: string }>((acc, current) => {
+            if (!acc[current]) {
+              acc[current] = tickToPriceStr(current, 40).toString();
+            }
+            return acc;
+          }, {});
+        resolve(priceOfTick);
+      }).then(setPriceOfTick);
+    }
+  }, [resolvedDisplayBins]);
+
+  useEffect(() => {
+    //  D3 - Draw bin and define interaction
+    const svgElement = d3
+      .select(svgRef.current)
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto;")
+      .on("mousemove", onMouseoverChartBin)
+      .on("mouseout", onMouseoutChartBin);
+
+    svgElement
+      .append("defs")
+      .append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
+      .attr("width", width)
+      .attr("height", height);
+
+    const defElement = svgElement.select("defs");
+    const existClipPath = defElement.select("clipPath").empty();
+
+    if (existClipPath) {
+      defElement
+        .append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
+    }
+
+    if (!!width && !!height && !!scaleX && !!scaleY) {
+      updateChart();
+    }
+  }, [width, height, scaleX, scaleY]);
+
+  // Brush settings, on price change, zoom, move ...
+  useEffect(() => {
+    if (
+      minPrice === null ||
+      maxPrice === null ||
+      displayBins.length !== displayBinCount
+    ) {
+      return;
+    }
+    if (!brushRef?.current) {
+      return;
+    }
+    const brushElement = d3.select(brushRef.current);
+
+    if (fullRange) {
+      brush.move(brushElement, [0, boundsWidth]);
+    } else {
+      brush.move(brushElement, [
+        scaleX(priceToTick(minPrice) - defaultMinX),
+        scaleX(priceToTick(maxPrice) - defaultMinX),
+      ]);
+    }
+  }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins]);
+
+  useEffect(() => {
+    if (!brushRef.current) {
+      return;
+    }
+
+    const brushElement = d3.select(brushRef.current).call(brush);
+    brushElement
+      .selectAll(".resize")
+      .data([{ type: "w" }, { type: "e" }])
+      .enter()
+      .append("svg")
+      .attr("id", d => (d.type === "w" ? "start" : "end"))
+      .attr("width", "10")
+      .attr("height", boundsHeight)
+      .attr("cursor", "ew-resize")
+      .attr("class", d => "resize handle--custom handle--" + d.type);
+
+    const selectionElement = brushElement.select(".selection");
+    selectionElement.style("fill", "url(#gradient-selection-area)");
+  }, [boundsHeight, brush, brushRef, scaleX]);
+
+  // On scroll, remove tooltip
+  useEffect(() => {
+    if (tooltipInfo) {
+      window.addEventListener("scroll", onMouseoutChartBin);
+      return () => window.removeEventListener("scroll", onMouseoutChartBin);
+    }
+  }, [tooltipInfo]);
+
+  // On scroll, remove tooltip
+  useEffect(() => {
+    if (tooltipInfo) {
+      window.addEventListener("scroll", onMouseoutChartBin);
+      return () => window.removeEventListener("scroll", onMouseoutChartBin);
+    }
+  }, [tooltipInfo]);
+
+  return (
+    <PoolSelectionGraphWrapper>
+      <FloatingTooltip
+        className="chart-tooltip"
+        isHiddenArrow
+        position={tooltipPosition}
+        offset={0}
+        content={
+          tooltipInfo ? (
+            <PoolSelectionGraphTooltipWrapper
+              ref={tooltipRef}
+              className={`tooltip-container ${themeKey}-shadow}`}
+            >
+              <PoolSelectionGraphBinTooptip tooltipInfo={tooltipInfo} />
+            </PoolSelectionGraphTooltipWrapper>
+          ) : null
+        }
+      >
+        <svg ref={svgRef}>
+          <defs>
+            <linearGradient
+              id={`gradient-bar-green-${random}`}
+              x1="0"
+              x2="0"
+              y1="0"
+              y2="1"
+            >
+              <stop offset="0%" stopColor={greenColor.start} />
+              <stop offset="100%" stopColor={greenColor.end} />
+            </linearGradient>
+            <linearGradient
+              id={`gradient-bar-red-${random}`}
+              x1="0"
+              x2="0"
+              y1="0"
+              y2="1"
+            >
+              <stop offset="0%" stopColor={redColor.start} />
+              <stop offset="100%" stopColor={redColor.end} />
+            </linearGradient>
+            <linearGradient
+              id="gradient-selection-area"
+              gradientTransform="rotate(0)"
+            >
+              <stop offset="0%" stopColor={selectionColor.start} />
+              <stop offset="100%" stopColor={selectionColor.end} />
+            </linearGradient>
+          </defs>
+          <g
+            ref={chartRef}
+            width={boundsWidth}
+            height={boundsHeight}
+            transform={`translate(${[margin.left, margin.top].join(",")})`}
+          />
+          <g
+            ref={brushRef}
+            className={"brush"}
+            width={boundsWidth}
+            height={boundsHeight}
+            transform={`translate(${[margin.left, margin.top].join(",")})`}
+          />
+        </svg>
+      </FloatingTooltip>
+    </PoolSelectionGraphWrapper>
+  );
+};
+
+export default React.memo(PoolSelectionGraph);
+
 const getSelectionColor = (start: string, end: string) => {
   const startPercent = Number(start);
   const endPercent = Number(end);
@@ -71,7 +741,7 @@ const getSelectionColor = (start: string, end: string) => {
 function makeLeftBadge(
   refer: d3.Selection<any, unknown, null, undefined>,
   reverse = false,
-  selectionColor: any
+  selectionColor: any,
 ) {
   const badge = refer
     .append("svg")
@@ -109,7 +779,7 @@ function makeLeftBadge(
 function makeRightBadge(
   refer: d3.Selection<any, unknown, null, undefined>,
   reverse = false,
-  selectionColor: any
+  selectionColor: any,
 ) {
   const badge = refer
     .append("svg")
@@ -148,13 +818,14 @@ function makeLabel(
   refer: d3.Selection<any, unknown, null, undefined>,
   right = false,
   reverse = false,
-  selectionColor: any
+  selectionColor: any,
 ) {
   // const id = right === false ? "start-price" : "end-price";
-  const id = right === false ? `start-price-${Math.round(selectionColor.startPercent)}` : `end-price-${BigNumber(selectionColor.endPercent).toString()}`;
+  const id = right === false ? "start-price" : "end-price";
 
   // const color = right === false ? "#EA3943B2" : "#16C78AB2";
-  const color = right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
+  const color =
+    right === false ? selectionColor.badgeStart : selectionColor.badgeEnd;
   if (refer.select(`#${id}`)) {
     refer.append("g").attr("id", id);
   }
@@ -190,15 +861,26 @@ function changeLine(
 ) {
   const hidden = type === "end" && selectedFullRange === true;
   const rateStr = `${rate > 0 ? "+" : ""}${Math.round(rate).toFixed(0)}%`;
+  const lineColor =
+    type === "start" ? selectionColor.lineStart : selectionColor.lineEnd;
   const lineElement = selectionElement.select(`#${type}`).attr("x", x);
   lineElement.select("svg").attr("x", 0);
+  lineElement.select("svg").select("line").style("stroke", lineColor);
 
+  const priceID = `${type}-price`;
+  const color =
+    type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
 
-  const priceID = `${type}-price-${type === "start" ? selectionColor.startPercent : `${selectionColor.endPercent}`}`;
-  const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
-
-  const margin = right === false ? (type === "end" ? -51 : -62) : (type === "end" ? 12 : 1);
+  const margin =
+    right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
   const labelWrapper = lineElement.select(`#${priceID}`);
+
+  const labelText = !selectedFullRange
+    ? rateStr
+    : type === "start"
+    ? "-100%"
+    : "∞";
+
   labelWrapper
     .select("rect")
     .attr("x", margin)
@@ -214,502 +896,8 @@ function changeLine(
     .attr("dy", "15")
     .attr("text-anchor", "middle")
     .style("fill", "#FFF")
-    .html(rateStr);
+    .html(labelText);
   if (hidden) {
     labelWrapper.attr("display", "none");
   }
 }
-
-export interface PoolSelectionGraphProps {
-  feeTier: SwapFeeTierType | null;
-  scaleX: d3.ScaleLinear<number, number, never>;
-  scaleY: d3.ScaleLinear<number, number, never>;
-  liquidityOfTickPoints: [number, number][];
-  currentPrice: number | null;
-  zoomLevel: number;
-  displayLabels?: number;
-  minPrice: number | null;
-  maxPrice: number | null;
-  setMinPrice: (tick: number | null) => void;
-  setMaxPrice: (tick: number | null) => void;
-  selectedFullRange: boolean;
-  finishMove: () => void;
-  focusPosition: number | null;
-  width: number;
-  height: number;
-  margin?: {
-    left: number;
-    right: number;
-    top: number;
-    bottom: number;
-  };
-  setIsChangeMinMax: (value: boolean) => void;
-}
-
-const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = (props) => {
-  const {
-    feeTier,
-    scaleX,
-    scaleY,
-    liquidityOfTickPoints,
-    currentPrice = null,
-    displayLabels = 8,
-    width,
-    height,
-    minPrice,
-    maxPrice,
-    setMinPrice,
-    setMaxPrice,
-    selectedFullRange,
-    focusPosition,
-    zoomLevel,
-    margin = {
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    },
-    setIsChangeMinMax,
-  } = props;
-  const [selectionColor, setSelectionColor] = useState(getSelectionColor("0", "0"));
-  const svgRef = useRef(null);
-  const chartRef = useRef<SVGGElement | null>(null);
-  const brushRef = useRef<SVGGElement | null>(null);
-  const labelHeight = displayLabels > 0 ? 20 : 0;
-  const themeKey = useAtomValue(ThemeState.themeKey);
-  const paddingHeight = 0;
-  const boundsWidth = width - margin.right - margin.left;
-  const boundsHeight =
-    height - margin.top - margin.bottom - labelHeight - paddingHeight;
-
-  const getRange = () => {
-    return scaleX.domain();
-  };
-
-  const getBinWidth = () => {
-    return width / 40;
-  };
-
-  const { redColor, greenColor } = useColorGraph();
-
-  function getInvertX(x: number) {
-    return Number(BigNumber(scaleX.invert(x)).toFixed(16));
-  }
-
-  const resolvedBins = () => {
-    const binWidth = getBinWidth();
-    const startXPosition = (getInvertX(0) % binWidth) * -1;
-
-    return Array.from({ length: 40 }, (_, index) => {
-      const x: number = startXPosition + binWidth * index;
-      const y: number =
-        liquidityOfTickPoints.find((point, pIndex) => {
-          const pointPosition = scaleX(point[0]);
-          if (liquidityOfTickPoints.length <= pIndex + 1) {
-            return x >= pointPosition;
-          }
-          const nextPointPosition = scaleX(
-            liquidityOfTickPoints[pIndex + 1][0],
-          );
-          if (nextPointPosition > x && x >= pointPosition) {
-            return true;
-          }
-          return false;
-        })?.[1] || 0;
-
-      return {
-        x,
-        y,
-        width: binWidth,
-      };
-    });
-  };
-
-  /** D3 Variables */
-  const defaultScaleX = scaleX.copy();
-
-  const xAxis = d3
-    .axisBottom(scaleX)
-    .tickSize(0)
-
-    .tickPadding(4)
-    .tickFormat(tick =>
-      displayTickNumber([getInvertX(0), getInvertX(width)], Number(tick)),
-    )
-    .tickArguments([displayLabels]);
-
-  const binData = () => {
-    const currentPricePosition = currentPrice ? scaleX(currentPrice) : null;
-    function fillByBin(bin: { x: number; y: number; width: number }) {
-      if (bin.y === 0) {
-        return "#4c4c4c";
-      }
-      const centerX = bin.x + bin.width / 2;
-      if (currentPricePosition && centerX < currentPricePosition) {
-        return "url(#gradient-bar-green)";
-      }
-      return "url(#gradient-bar-red)";
-    }
-
-    return resolvedBins().map(bin => {
-      const x = bin.x + 1;
-      const y = bin.y > 0 ? scaleY(bin.y) : 0;
-      const fill = fillByBin(bin);
-      const width = bin.width - 1;
-      const height = bin.y > 0 ? boundsHeight - y : 0;
-
-      return {
-        x,
-        y,
-        fill,
-        width: width > 0 ? width : 0,
-        height: height > 0 ? height : 0,
-      };
-    });
-  };
-
-  const brush = d3
-    .brushX()
-    .extent([
-      [scaleX(0), 0],
-      [boundsWidth, boundsHeight + paddingHeight],
-    ])
-    .on("start brush", onBrushMove)
-    .on("end", onBrushEnd);
-
-  function onBrushMove(this: SVGGElement, event: d3.D3BrushEvent<null>) {
-    if (!brushRef.current) {
-      return;
-    }
-    const brushElement = d3.select(brushRef.current);
-    if (event.type === "start") {
-      /** Start Line */
-      brushElement.select("#start").selectChildren().remove();
-      const startLineElement = brushElement.select("#start").insert("svg");
-      startLineElement
-        .append("line")
-        .attr("y1", 0)
-        .attr("y2", boundsHeight + paddingHeight)
-        .style("stroke", selectionColor.lineStart)
-        .attr("stroke-width", 2);
-      makeLeftBadge(startLineElement, false, selectionColor);
-
-      /** End Line */
-      brushElement.select("#end").selectChildren().remove();
-      const endLineElement = brushElement.select("#end").insert("svg");
-      endLineElement
-        .append("line")
-        .attr("y1", boundsHeight + paddingHeight)
-        .attr("y2", 0)
-        .style("stroke", selectionColor.lineEnd)
-        .attr("stroke-width", 2);
-
-      makeRightBadge(endLineElement, false, selectionColor);
-    }
-
-    const selection = event.selection ? event.selection : [0, 0];
-    const startPosition = selection[0] as number;
-    const endPosition = selection[1] as number;
-    brushElement
-      .selectAll(".resize")
-      .attr("x", data => (data === "w" ? startPosition : endPosition));
-
-    const startRate = currentPrice
-      ? ((scaleX.invert(startPosition) - currentPrice) / currentPrice) * 100
-      : 0;
-    const endRate = currentPrice
-      ? ((scaleX.invert(endPosition) - currentPrice) / currentPrice) * 100
-      : 0;
-
-    const isRightStartLine = startPosition - 75 < 0;
-    const isRightEndLine = endPosition + 75 < boundsWidth;
-    changeLine(
-      brushElement,
-      "start",
-      startPosition as number,
-      startRate,
-      isRightStartLine,
-      false,
-      selectionColor,
-    );
-    changeLine(
-      brushElement,
-      "end",
-      endPosition as number,
-      endRate,
-      isRightEndLine,
-      selectedFullRange,
-      selectionColor,
-    );
-
-  }
-
-  function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<any>) {
-    if (!brushRef.current || event.mode === undefined) {
-      return;
-    }
-
-    if (!event.selection) {
-      d3.select(brushRef.current)
-        .selectAll(".resize")
-        .selectChildren()
-        .remove();
-      setMinPrice(null);
-      setMaxPrice(null);
-    } else {
-      const selection = event.selection ? event.selection : [0, 0];
-      const startPosition = selection[0] as number;
-      const endPosition = selection[1] as number;
-      const startRate = currentPrice
-        ? ((scaleX.invert(startPosition) - currentPrice) / currentPrice) * 100
-        : 0;
-      const endRate = currentPrice
-        ? ((scaleX.invert(endPosition) - currentPrice) / currentPrice) * 100
-        : 0;
-      setSelectionColor(getSelectionColor(BigNumber(startRate).toFixed(0).toString(), BigNumber(endRate).toFixed(0).toString()));
-      const minPrice = !BigNumber(scaleX.invert(startPosition)).isNaN()
-        ? tickToPrice(
-          priceToNearTick(
-            scaleX.invert(startPosition),
-            feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2,
-          ),
-        )
-        : 0;
-      const maxPrice = !BigNumber(scaleX.invert(endPosition)).isNaN()
-        ? tickToPrice(
-          priceToNearTick(
-            scaleX.invert(endPosition),
-            feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 2,
-          ),
-        )
-        : 0;
-      setMinPrice(minPrice);
-      setMaxPrice(maxPrice);
-      setIsChangeMinMax(true);
-    }
-  }
-
-  useEffect(() => {
-    if (!brushRef.current) {
-      return;
-    }
-    const brushElement = d3.select(brushRef.current).call(brush);
-    brushElement
-      .selectAll(".resize")
-      .data([{ type: "w" }, { type: "e" }])
-      .enter()
-      .append("svg")
-      .attr("id", d => (d.type === "w" ? "start" : "end"))
-      .attr("width", "10")
-      .attr("height", boundsHeight)
-      .attr("cursor", "ew-resize")
-      .attr("class", d => "resize handle--custom handle--" + d.type);
-  }, [boundsHeight, brush, brushRef]);
-
-  const onZoom = useCallback(() => (event: d3.D3ZoomEvent<SVGElement, null>) => {
-    const blocks = ["brush", "click"];
-    if (event?.sourceEvent && blocks.includes(event.sourceEvent.type)) return; // ignore zoom-by-brush
-    const transform = event.transform;
-    scaleX.domain(transform.rescaleX(defaultScaleX).domain());
-  }, [defaultScaleX, scaleX]);
-
-  /** Zoom */
-  const zoom: d3.ZoomBehavior<any, unknown> = useMemo(() => d3
-    .zoom()
-    .scaleExtent([0.01, 2 ** 20])
-    .on("zoom", onZoom),
-    [onZoom]);
-
-  function initZoom() {
-    const svgElement = d3.select(svgRef.current);
-    const scaleRate = 2 ** (zoomLevel - 10);
-    zoom.scaleTo(svgElement, scaleRate, [0, 0]);
-    const [x1, x2] = getRange();
-    zoom.translateTo(svgElement, scaleX((x1 + x2) / 2), 0);
-
-    brush.extent([
-      [scaleX(0), 0],
-      [boundsWidth, boundsHeight + paddingHeight],
-    ]);
-  }
-
-  function updateChart() {
-    d3.select(chartRef.current).selectChildren().remove();
-
-    const rects = d3.select(chartRef.current);
-    rects.attr("clip-path", "url(#clip)");
-    rects
-      .selectAll("rects")
-      .data(binData())
-      .enter()
-      .append("rect")
-      .style("fill", bin => bin.fill)
-      .attr("class", "rects")
-      .attr("x", bin => bin.x)
-      .attr("y", bin => bin.y)
-      .attr("width", bin => bin.width)
-      .attr("height", bin => bin.height);
-
-    if (displayLabels > 0) {
-      rects
-        .append("g")
-        .attr("transform", `translate(0,${boundsHeight})`)
-        .call(xAxis);
-    }
-
-    // Create a line of current tick.
-    const currentPricePosition = currentPrice ? scaleX(currentPrice) : null;
-    if (currentPricePosition) {
-      if (d3.select(svgRef.current).select("#current-price").empty()) {
-        d3.select(svgRef.current).append("line").attr("id", "current-price");
-      }
-      d3.select(svgRef.current)
-        .select("#current-price")
-        .attr("x1", currentPricePosition)
-        .attr("x2", currentPricePosition)
-        .attr("y1", boundsHeight + paddingHeight)
-        .attr("y2", 0)
-        .attr("stroke-dasharray", 4)
-        .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
-        .attr("stroke-width", 1);
-    }
-  }
-
-  function interactChart() {
-    if (brushRef.current) {
-      try {
-        const zeroPosition = Number(BigNumber(scaleX(0)).toFixed(10));
-        if (selectedFullRange) {
-          brush?.move(d3.select(brushRef.current), [zeroPosition, width]);
-        }
-      } catch { }
-    }
-  }
-
-  useEffect(() => {
-    initZoom();
-    interactChart();
-    updateChart();
-  }, [zoomLevel, focusPosition, selectedFullRange]);
-
-  useEffect(() => {
-    initZoom();
-    if (!brushRef.current || minPrice === null || maxPrice === null) {
-      return;
-    }
-    const zeroPosition = scaleX(0);
-    const brushElement = d3.select(brushRef.current);
-    const minPricePosition = selectedFullRange
-      ? zeroPosition
-      : scaleX(minPrice);
-    brush.move(brushElement, [
-      minPricePosition > zeroPosition ? minPricePosition : zeroPosition,
-      scaleX(maxPrice),
-    ]);
-    updateChart();
-  }, [minPrice, maxPrice, scaleX, selectedFullRange, brush, currentPrice]);
-
-  useEffect(() => {
-    const svgElement = d3
-      .select(svgRef.current)
-      .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "height: 160px;");
-
-    const defElement = svgElement.select("defs");
-    const existClipPath = defElement.select("clipPath").empty();
-
-    if (existClipPath) {
-      defElement
-        .append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-        .attr("width", width)
-        .attr("height", height);
-    }
-
-    if (brushRef.current) {
-      const brushElement = d3.select(brushRef.current);
-      brushElement.call(brush);
-      const selectionElement = brushElement.select(".selection");
-      selectionElement.style("fill", "url(#gradient-selection-area)");
-    }
-  }, [scaleX, scaleY]);
-
-  return (
-    <PoolSelectionGraphWrapper>
-      <FloatingTooltip
-        className="chart-tooltip"
-        isHiddenArrow
-        position={"top"}
-        offset={20}
-        content={<TooltipContent />}
-      >
-        <svg ref={svgRef}>
-          <defs>
-            <linearGradient id="gradient-bar-green" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor={greenColor.start} />
-              <stop offset="100%" stopColor={greenColor.end} />
-            </linearGradient>
-            <linearGradient id="gradient-bar-red" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor={redColor.start} />
-              <stop offset="100%" stopColor={redColor.end} />
-            </linearGradient>
-            <linearGradient
-              id="gradient-selection-area"
-              gradientTransform="rotate(0)"
-            >
-              <stop offset="0%" stopColor={selectionColor.start} />
-              {/* <stop
-                id="gradient-selection-current-position"
-                offset="50%"
-                stopColor={"#697A1C33"}
-              /> */}
-              <stop offset="100%" stopColor={selectionColor.end} />
-            </linearGradient>
-          </defs>
-          <g
-            ref={chartRef}
-            width={boundsWidth}
-            height={boundsHeight}
-            transform={`translate(${[
-              margin.left,
-              margin.top + paddingHeight,
-            ].join(",")})`}
-          />
-          <g
-            ref={brushRef}
-            className={"brush"}
-            width={boundsWidth}
-            height={boundsHeight + paddingHeight}
-            transform={`translate(${[margin.left, margin.top].join(",")})`}
-          />
-        </svg>
-      </FloatingTooltip>
-    </PoolSelectionGraphWrapper>
-  );
-};
-
-export default PoolSelectionGraph;
-
-const TooltipContent = () => {
-  return <GraphWrapper>
-    <div className="header">
-      <div className="token">Token</div>
-      <div className="amount">Amount</div>
-      <div className="price">Price Range</div>
-    </div>
-    <div className="content">
-      <div className="item">
-        <div className="logo"><MissingLogo symbol="GNS" url="" width={20} /> GNS</div>
-        <div className="amount">4.84K</div>
-        <div className="price">1.441522 - 1.741584 USDC</div>
-      </div>
-      <div className="item">
-        <div className="logo"><MissingLogo symbol="GNS" url="" width={20} /> GNS</div>
-        <div className="amount">4.84K</div>
-        <div className="price">1.441522 - 1.741584 USDC</div>
-      </div>
-    </div>
-  </GraphWrapper>;
-};
