@@ -283,7 +283,7 @@ const SelectPriceRangeCustom = forwardRef<
     }, [selectPool]);
 
     const availZoomIn = useMemo(() => {
-      return selectPool.zoomLevel < ZOOL_VALUES.length - 2;
+      return selectPool.zoomLevel < ZOOL_VALUES.length - 1;
     }, [selectPool.zoomLevel]);
 
     const availZoomOut = useMemo(() => {
