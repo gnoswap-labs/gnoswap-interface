@@ -466,6 +466,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/reposition");
     }
   };
+
+  const isHideBar = useMemo(() => {
+    const isAllReserveZeroBin40 = position.pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = position.pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+
+    return isAllReserveZeroBin40 && isAllReserveZeroBin;
+  }, [position.pool.bins, position.pool.bins40]);
+
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
@@ -726,6 +734,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               maxTickPosition={maxTickPosition}
               binsMyAmount={bins ?? []}
               isSwap={isSwap}
+              showBar={!isHideBar}
             />
           )}
           {loading && (

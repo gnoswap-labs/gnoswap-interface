@@ -535,10 +535,10 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <MissingLogo symbol={tooltipInfo.tokenA.symbol} url={tooltipInfo.tokenA.logoURI} className="logo" width={20} mobileWidth={20} />
-            <span className={`hidden ${(tooltipInfo.tokenAAmount || "0").length > 21 ? "small-font" : ""}`}>{tooltipInfo.tokenAAmount || "0"}</span>
+            <span className={`token-amount-value hidden ${(tooltipInfo.tokenAAmount || "0").length > 21 ? "small-font" : ""}`}>{tooltipInfo.tokenAAmount || "0"}</span>
           </span>
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount w-100">
-            <span className="hidden">{tooltipInfo.myTokenAAmount || "0"}</span>
+            <span className="token-amount-value hidden">{tooltipInfo.myTokenAAmount || "0"}</span>
           </span> : ""}
           <span className={`price-range ${(tokenAPriceRangeStr.length || "0") > 21 ? "small-font" : ""}`}>{tokenAPriceRangeStr}</span>
         </div>
@@ -549,10 +549,10 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           </span>
           <span className="amount total-amount">
             <MissingLogo symbol={tooltipInfo.tokenB.symbol} url={tooltipInfo.tokenB.logoURI} className="logo" width={20} mobileWidth={20} />
-            <span className={`hidden ${(tooltipInfo.tokenBAmount || "0").length > 21 ? "small-font" : ""}`}>{tooltipInfo.tokenBAmount || "0"}</span>
+            <span className={`token-amount-value hidden ${(tooltipInfo.tokenBAmount || "0").length > 21 ? "small-font" : ""}`}>{tooltipInfo.tokenBAmount || "0"}</span>
           </span>
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount  w-100">
-            <span className="hidden" >{tooltipInfo.myTokenBAmount || "0"}</span>
+            <span className="hidden" >{(tooltipInfo.myTokenBAmount || "0").length > 21 ? "small-font" : ""}</span>
           </span> : ""}
           <span className={`price-range ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""}`}>{tokenBPriceRangeStr}</span>
         </div>

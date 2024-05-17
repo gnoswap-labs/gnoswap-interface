@@ -12,6 +12,7 @@ import { ThemeState } from "@states/index";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { useLoading } from "@hooks/common/use-loading";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
+import { isNumber } from "@utils/number-utils";
 export interface Pool {
   poolId: string;
   tokenPair: TokenPairInfo;
@@ -35,7 +36,7 @@ export interface PoolSortOption {
 
 export const TABLE_HEAD = {
   POOL_NAME: "Pool Name",
-  LIQUIDITY: "TVL",
+  TVL: "TVL",
   VOLUME: "Volume (24h)",
   FEES: "Fees (24h)",
   APR: "APR",
@@ -79,6 +80,44 @@ const PoolListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
+  const convertKMBtoNumber = (kmbValue: string) => {
+    const sizesMap: { [key: string]: number; } = {
+      K: 1_000,
+      M: 1_000_000,
+      B: 1_000_000_000,
+    };
+
+    const lastChar = kmbValue.charAt(kmbValue.length - 1);
+    let currentValue = Number(kmbValue.slice(0, kmbValue.length - 1));
+
+    for (const sizeKey in sizesMap) {
+      if (sizeKey === lastChar) {
+        currentValue = sizesMap[sizeKey] * currentValue;
+      }
+    }
+
+    return currentValue;
+  };
+
+  const sortValueTransform = (value: string) => {
+    const formattedNumber = value.replace(/,/g, "").slice(1);
+    const lastChar = formattedNumber.charAt(formattedNumber.length - 1);
+
+    if (value === "<&0.01") {
+      return -1;
+    }
+
+    if (["K", "M", "B"].some(item => item === lastChar)) {
+      return convertKMBtoNumber(formattedNumber);
+    }
+
+    if (!isNumber(formattedNumber)) {
+      return -2;
+    }
+
+    return Number(value.replace(/,/g, "").slice(1));
+  };
+
   const sortedPoolListInfos = useMemo(() => {
     function filteredPoolType(poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) {
       switch (poolType) {
@@ -108,27 +147,33 @@ const PoolListContainer: React.FC = () => {
         } else {
           temp.sort((a: PoolListInfo, b: PoolListInfo) => a.tokenA.name.localeCompare(b.tokenA.name));
         }
-      } else if (sortOption.key === TABLE_HEAD.LIQUIDITY) {
+      } else if (sortOption.key === TABLE_HEAD.TVL) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => Number(a.liquidity.replace(/,/g, "").slice(1)) - Number(b.liquidity.replace(/,/g, "").slice(1)));
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.tvl) - sortValueTransform(b.tvl));
         } else {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => - sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
         }
       } else if (sortOption.key === TABLE_HEAD.VOLUME) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => Number(a.volume24h.replace(/,/g, "").slice(1)) - Number(b.volume24h.replace(/,/g, "").slice(1)));
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.volume24h) - sortValueTransform(b.volume24h));
         } else {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.volume24h.replace(/,/g, "").slice(1)) + Number(b.volume24h.replace(/,/g, "").slice(1)));
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => - sortValueTransform(a.volume24h) + sortValueTransform(b.volume24h));
         }
       } else if (sortOption.key === TABLE_HEAD.FEES) {
         if (sortOption.direction === "asc") {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => Number(a.fees24h.replace(/,/g, "").slice(1)) - Number(b.fees24h.replace(/,/g, "").slice(1)));
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.fees24h) - sortValueTransform(b.fees24h));
         } else {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.fees24h.replace(/,/g, "").slice(1)) + Number(b.fees24h.replace(/,/g, "").slice(1)));
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => - sortValueTransform(a.fees24h) + sortValueTransform(b.fees24h));
+        }
+      } else if (sortOption.key === TABLE_HEAD.APR) {
+        if (sortOption.direction === "asc") {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.apr) - sortValueTransform(b.apr));
+        } else {
+          temp.sort((a: PoolListInfo, b: PoolListInfo) => - sortValueTransform(a.apr) + sortValueTransform(b.apr));
         }
       }
     } else {
-      temp.sort((a: PoolListInfo, b: PoolListInfo) => - Number(a.liquidity.replace(/,/g, "").slice(1)) + Number(b.liquidity.replace(/,/g, "").slice(1)));
+      temp.sort((a: PoolListInfo, b: PoolListInfo) => - sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
     }
     return temp.filter((info) => filteredPoolType(poolType, info.incentiveType));
   }, [keyword, poolListInfos, poolType, sortOption]);
