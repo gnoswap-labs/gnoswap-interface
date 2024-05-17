@@ -153,7 +153,7 @@ export const PoolGraphTooltipWrapper = styled.div`
 
     ${customMediaQuery(360)} {
       .price-range {
-        &.small-font {
+        &.price-range-value{
         font-size: 10px;
       }
       }
