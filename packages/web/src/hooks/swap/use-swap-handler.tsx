@@ -22,6 +22,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 import { useRouter } from "next/router";
 import { isEmptyObject } from "@utils/validation-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 const findKeyByValue = (
   value: string,
@@ -47,7 +48,9 @@ export const useSwapHandler = () => {
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
   );
-  const [tokenBAmount, setTokenBAmount] = useState<string>(!defaultTokenAAmount && defaultTokenBAmount ? defaultTokenBAmount : "");
+  const [tokenBAmount, setTokenBAmount] = useState<string>(
+    !defaultTokenAAmount && defaultTokenBAmount ? defaultTokenBAmount : "",
+  );
   const [submitted, setSubmitted] = useState(false);
 
   const [copied, setCopied] = useState(false);
@@ -169,12 +172,19 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) > (Number(parseFloat(tokenABalance.replace(/,/g, "")) / Math.pow(10, tokenA.decimals)))
+      Number(tokenAAmount) >
+      Number(
+        parseFloat(tokenABalance.replace(/,/g, "")) /
+          Math.pow(10, tokenA.decimals),
+      )
     ) {
       return "Insufficient Balance";
     }
     if (
-      Number(tokenBAmount) > (Number(parseFloat(tokenBBalance.replace(/,/g, ""))) / Math.pow(10, tokenB.decimals)) && type === "EXACT_OUT"
+      Number(tokenBAmount) >
+        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) /
+          Math.pow(10, tokenB.decimals) &&
+      type === "EXACT_OUT"
     ) {
       return "Insufficient Balance";
     }
@@ -270,9 +280,15 @@ export const useSwapHandler = () => {
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
-    const inputAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
+
+    const tokenAUSDAmount =
+      (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
+      Number(tokenAUSDValue);
+    const tokenBUSDAmount =
+      (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) *
+      Number(tokenBUSDValue);
 
     const swapRate =
       swapRateAction === "ATOB"
@@ -282,13 +298,9 @@ export const useSwapHandler = () => {
       type === "EXACT_IN"
         ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
         : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const tokenRate = BigNumber(tokenBUSDValue)
-      .dividedBy(tokenAUSDValue)
-      .toNumber();
-    const expectedAmount = tokenRate * Number(inputAmount);
-    const priceImpactNum = BigNumber(expectedAmount - Number(tokenBAmount))
+    const priceImpactNum = BigNumber(tokenBUSDAmount - tokenAUSDAmount)
       .multipliedBy(100)
-      .dividedBy(expectedAmount);
+      .dividedBy(tokenAUSDAmount);
     const priceImpact = priceImpactNum.isGreaterThan(100)
       ? 100
       : Number(priceImpactNum.toFixed(2));
@@ -349,7 +361,9 @@ export const useSwapHandler = () => {
       return false;
     }
     if (
-      Number(tokenBAmount) > Number(parseFloat(tokenBBalance.replace(/,/g, ""))) && type === "EXACT_OUT"
+      Number(tokenBAmount) >
+        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
+      type === "EXACT_OUT"
     ) {
       return false;
     }
@@ -380,7 +394,6 @@ export const useSwapHandler = () => {
     tokenABalance,
     tokenBBalance,
   ]);
-
 
   const openConfirmModal = useCallback(() => {
     setOpenedConfirModal(true);
@@ -683,11 +696,13 @@ export const useSwapHandler = () => {
                   swapTokenInfo.tokenAAmount,
                 ).toLocaleString("en-US", {
                   maximumFractionDigits: 6,
-                })}</span> <span>${swapTokenInfo?.tokenA?.symbol
-                  }</span> for <sp${Number(
-                    swapTokenInfo.tokenBAmount,
-                  ).toLocaleString("en-US", { maximumFractionDigits: 6 })} ${swapTokenInfo?.tokenB?.symbol
-                  }`,
+                })}</span> <span>${
+                  swapTokenInfo?.tokenA?.symbol
+                }</span> for <sp${Number(
+                  swapTokenInfo.tokenBAmount,
+                ).toLocaleString("en-US", { maximumFractionDigits: 6 })} ${
+                  swapTokenInfo?.tokenB?.symbol
+                }`,
               },
               {
                 timeout: 50000,
@@ -704,12 +719,13 @@ export const useSwapHandler = () => {
                   swapTokenInfo.tokenAAmount,
                 ).toLocaleString("en-US", {
                   maximumFractionDigits: 6,
-                })}</span> <span>${swapTokenInfo?.tokenA?.symbol
-                  }</span> for <span>${Number(
-                    swapTokenInfo.tokenBAmount,
-                  ).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                })}</span> <span>${
+                  swapTokenInfo?.tokenA?.symbol
+                }</span> for <span>${Number(
+                  swapTokenInfo.tokenBAmount,
+                ).toLocaleString("en-US", {
+                  maximumFractionDigits: 6,
+                })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
               },
               {
                 timeout: 50000,
@@ -756,12 +772,13 @@ export const useSwapHandler = () => {
                     swapTokenInfo.tokenAAmount,
                   ).toLocaleString("en-US", {
                     maximumFractionDigits: 6,
-                  })}</span> <span>${swapTokenInfo?.tokenA?.symbol
-                    }</span> for <span>${Number(
-                      swapTokenInfo.tokenBAmount,
-                    ).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
-                    })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                  })}</span> <span>${
+                    swapTokenInfo?.tokenA?.symbol
+                  }</span> for <span>${Number(
+                    swapTokenInfo.tokenBAmount,
+                  ).toLocaleString("en-US", {
+                    maximumFractionDigits: 6,
+                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
                 },
                 {
                   timeout: 50000,
@@ -778,12 +795,13 @@ export const useSwapHandler = () => {
                     swapTokenInfo.tokenAAmount,
                   ).toLocaleString("en-US", {
                     maximumFractionDigits: 6,
-                  })}</span> <span>${swapTokenInfo?.tokenA?.symbol
-                    }</span> for <span>${Number(
-                      swapTokenInfo.tokenBAmount,
-                    ).toLocaleString("en-US", {
-                      maximumFractionDigits: 6,
-                    })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
+                  })}</span> <span>${
+                    swapTokenInfo?.tokenA?.symbol
+                  }</span> for <span>${Number(
+                    swapTokenInfo.tokenBAmount,
+                  ).toLocaleString("en-US", {
+                    maximumFractionDigits: 6,
+                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
                 },
                 {
                   timeout: 50000,
@@ -821,7 +839,7 @@ export const useSwapHandler = () => {
     }
     if (
       memorizeTokenSwap?.[
-      `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_IN"
     ) {
@@ -829,7 +847,7 @@ export const useSwapHandler = () => {
     }
     if (
       memorizeTokenSwap?.[
-      `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`
+        `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`
       ] &&
       type === "EXACT_OUT"
     ) {
@@ -859,7 +877,7 @@ export const useSwapHandler = () => {
     }
     if (
       memorizeTokenSwap?.[
-      `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_IN"
     ) {
@@ -868,7 +886,7 @@ export const useSwapHandler = () => {
     }
     if (
       memorizeTokenSwap?.[
-      `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
+        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
       ] &&
       type === "EXACT_OUT"
     ) {
@@ -938,7 +956,14 @@ export const useSwapHandler = () => {
   ]);
 
   useEffect(() => {
-    if (!Number(tokenAAmount) || !Number(tokenBAmount) || !tokenA?.symbol || !tokenB?.symbol || !isChangeBalancesToken) return;
+    if (
+      !Number(tokenAAmount) ||
+      !Number(tokenBAmount) ||
+      !tokenA?.symbol ||
+      !tokenB?.symbol ||
+      !isChangeBalancesToken
+    )
+      return;
     const isExactIn = type === "EXACT_IN";
     const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
     estimateSwapRoute(changedAmount).then(result => {
@@ -961,7 +986,14 @@ export const useSwapHandler = () => {
         setIsChangeBalancesToken(false);
       }
     });
-  }, [tokenAAmount, tokenBAmount, type, tokenA?.symbol, tokenB?.symbol, isChangeBalancesToken]);
+  }, [
+    tokenAAmount,
+    tokenBAmount,
+    type,
+    tokenA?.symbol,
+    tokenB?.symbol,
+    isChangeBalancesToken,
+  ]);
   return {
     slippage,
     connectedWallet,
