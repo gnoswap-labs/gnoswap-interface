@@ -540,7 +540,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount w-100">
             <span className="token-amount-value hidden">{tooltipInfo.myTokenAAmount || "0"}</span>
           </span> : ""}
-          <span className={`price-range ${(tokenAPriceRangeStr.length || "0") > 21 ? "small-font" : ""}`}>{tokenAPriceRangeStr}</span>
+          <span className={`price-range price-range-value ${(tokenAPriceRangeStr.length || "0") > 21 ? "small-font" : ""}`}>{tokenAPriceRangeStr}</span>
         </div>
         <div className="row">
           <span className="token">
@@ -554,7 +554,7 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
           {isPosition && !tooltipInfo.isBlackBar ? <span className="amount w-100">
             <span className="token-amount-value hidden" >{(tooltipInfo.myTokenBAmount || "0")}</span>
           </span> : ""}
-          <span className={`price-range ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""}`}>{tokenBPriceRangeStr}</span>
+          <span className={`price-range price-range-value ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""}`}>{tokenBPriceRangeStr}</span>
         </div>
       </div>
     </div>

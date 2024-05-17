@@ -40,13 +40,12 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
         {isLoading && <div css={loadingWrapper}>
           <LoadingSpinner />
         </div>}
-        {!isLoading && unstakedPositions.map((position, index) => (
+        {!isLoading && stakedPositions.map((position, index) => (
           <SelectLiquidityItem
             position={position}
             checkedList={checkedList}
             onCheckedItem={onCheckedItem}
             key={index}
-            disabled
           />
         ))}
         {!isLoading && unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}

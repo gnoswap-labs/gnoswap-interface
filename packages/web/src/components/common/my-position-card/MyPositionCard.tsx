@@ -115,11 +115,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
-    return maxTickRate === 999
-      ? `>${maxTickRate}%`
-      : maxTickRate >= 1000
-        ? ">999%"
-        : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
+    if (maxTickRate === 999) return `>${maxTickRate}`;
+
+    if (maxTickRate >= 1000) return ">999%";
+
+    return maxTickRate >= 1000
+      ? ">999%"
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {

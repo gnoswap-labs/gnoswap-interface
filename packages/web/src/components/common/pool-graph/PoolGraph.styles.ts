@@ -112,7 +112,7 @@ export const PoolGraphTooltipWrapper = styled.div`
     }
     .amount {
       flex-shrink: 0;
-      min-width: 80px;
+      min-width: 76px;
       & .hidden {
         display: inline;
         overflow: hidden;
@@ -121,7 +121,7 @@ export const PoolGraphTooltipWrapper = styled.div`
         word-break: break-all;
       }
       & .small-font {
-        font-size: 12px;
+        font-size: 10px;
       }
       &.w-100 {
         min-width: 108px;
@@ -150,6 +150,16 @@ export const PoolGraphTooltipWrapper = styled.div`
         }
       }
     }
+
+    ${customMediaQuery(360)} {
+      .price-range {
+        &.small-font {
+        font-size: 10px;
+      }
+      }
+    }
+
+   
 
     .price-range {
       width: 100%;

@@ -136,6 +136,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       return;
     }
     const temp = getPositionsByPoolId(poolPath);
+    console.log("🚀 ~ useEffect ~ temp:", temp);
     if (temp.length > 0 && isShowClosePosition) {
       const fake = {
         ...temp[0],

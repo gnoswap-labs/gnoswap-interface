@@ -49,6 +49,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   handleSetIsClosePosition,
   isHiddenAddPosition,
 }) => {
+  console.log("🚀 ~ positions:", positions);
   return (
     <>
       <MyLiquidityWrapperAnchor id="liquidity-wrapper" />
@@ -84,7 +85,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           positions.map((position: PoolPositionModel, index: number) => (
             <MyPositionCard
               position={position}
-              key={index}
+              key={index.toString() + position.id}
               breakpoint={breakpoint}
               loading={loading}
               address={address || ""}
@@ -99,7 +100,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                 {positions.map((position: PoolPositionModel, index: number) => (
                   <MyPositionCard
                     position={position}
-                    key={index}
+                    key={index.toString() + position.id}
                     breakpoint={breakpoint}
                     loading={loading}
                     address={address || ""}
