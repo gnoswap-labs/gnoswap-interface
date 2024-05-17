@@ -1,4 +1,8 @@
-import { RANGE_STATUS_OPTION } from "@constants/option.constant";
+import {
+  RANGE_STATUS_OPTION,
+  SwapFeeTierInfoMap,
+} from "@constants/option.constant";
+import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
@@ -6,10 +10,18 @@ import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
-import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
+import {
+  getDepositAmountsByAmountA,
+  getDepositAmountsByAmountB,
+  isEndTickBy,
+  makeSwapFeeTier,
+  priceToTick,
+  tickToPrice,
+  tickToPriceStr,
+} from "@utils/swap-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
@@ -21,33 +33,42 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type INCREASE_BUTTON_TYPE =
-  | "ENTER_AMOUNT"
-  | "INCREASE_LIQUIDITY"
+export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
 
 export const useIncreaseHandle = () => {
   const router = useRouter();
-  const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
+  const [selectedPosition, setSelectedPosition] = useAtom(
+    IncreaseState.selectedPosition,
+  );
   const poolPath = router.query["pool-path"] as string;
   const positionId = router.query["position-id"] as string;
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Custom" });
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
+    type: "Custom",
+  });
 
+  const loading = useMemo(() => {
+    return !selectedPosition;
+  }, [selectedPosition]);
 
   const { positions } = usePositionData();
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId) {
-      const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
-      if (position) {
-        setSelectedPosition(position);
-      } else {
+      const position = positions.find(
+        position => position.lpTokenId.toString() === positionId,
+      );
+
+      if (!position) {
         router.push(`/earn/pool/${poolPath}`);
+        return;
       }
+
+      setSelectedPosition(position);
     }
   }, [selectedPosition, positions, positionId, poolPath]);
 
-  const { connected, account } = useWallet();
+  const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(
@@ -70,7 +91,10 @@ export const useIncreaseHandle = () => {
     return maxPrice;
   }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);
 
-  const fee = poolPath?.split(":")[2];
+  const feeTier = useMemo(() => {
+    return selectedPosition ? makeSwapFeeTier(selectedPosition.pool.fee) : null;
+  }, [selectedPosition]);
+
   const tokenA: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
     return {
@@ -105,8 +129,8 @@ export const useIncreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -120,10 +144,38 @@ export const useIncreaseHandle = () => {
   const selectPool = useSelectPool({
     tokenA,
     tokenB,
-    feeTier: `FEE_${fee}` as any,
-    startPrice: 1,
+    feeTier,
+    startPrice: selectedPosition
+      ? tickToPrice(selectedPosition.pool.currentTick)
+      : null,
     isCreate: false,
+    options: selectedPosition
+      ? {
+          tickLower: selectedPosition.tickLower,
+          tickUpper: selectedPosition.tickUpper,
+        }
+      : null,
   });
+
+  const currentTick = useMemo(() => {
+    return priceToTick(selectPool.currentPrice);
+  }, [selectPool.currentPrice]);
+
+  const isDepositTokenA = useMemo(() => {
+    if (!selectedPosition?.tickUpper) {
+      return false;
+    }
+
+    return selectedPosition.tickUpper > currentTick;
+  }, [selectedPosition?.tickUpper, currentTick]);
+
+  const isDepositTokenB = useMemo(() => {
+    if (!selectedPosition?.tickLower) {
+      return false;
+    }
+
+    return selectedPosition.tickLower < currentTick;
+  }, [selectedPosition?.tickLower, currentTick]);
 
   const priceRangeSummary: IPriceRange = useMemo(() => {
     let tokenARatioStr = "-";
@@ -150,22 +202,97 @@ export const useIncreaseHandle = () => {
 
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
+
+  const minPrice = useMemo(() => {
+    if (selectPool.selectedFullRange || !selectPool.minPrice) {
+      return MIN_PRICE;
+    }
+
+    return selectPool.minPrice;
+  }, [selectPool.minPrice, selectPool.selectedFullRange]);
+
+  const maxPrice = useMemo(() => {
+    if (selectPool.selectedFullRange || !selectPool.maxPrice) {
+      return MAX_PRICE;
+    }
+
+    return selectPool.maxPrice;
+  }, [selectPool.maxPrice, selectPool.selectedFullRange]);
+
   const changeTokenAAmount = useCallback(
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
+
+      if (
+        !selectPool ||
+        !tokenA ||
+        !tokenB ||
+        Number.isNaN(amount) ||
+        Number(amount) <= 0
+      ) {
+        return;
+      }
+      const amountAAmountRaw = makeRawTokenAmount(tokenA, amount) || "0";
+      const { amountB } = getDepositAmountsByAmountA(
+        selectPool.currentPrice,
+        minPrice,
+        maxPrice,
+        BigInt(amountAAmountRaw),
+      );
+
+      const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
+      tokenBAmountInput.changeAmount(tokenBAmount.toString());
     },
-    [tokenAAmountInput],
+    [
+      tokenAAmountInput,
+      selectPool.currentPrice,
+      tokenA,
+      tokenB,
+      minPrice,
+      maxPrice,
+    ],
   );
 
   const changeTokenBAmount = useCallback(
     (amount: string) => {
       tokenBAmountInput.changeAmount(amount);
+
+      if (
+        !selectPool ||
+        !tokenA ||
+        !tokenB ||
+        Number.isNaN(amount) ||
+        Number(amount) <= 0
+      ) {
+        return;
+      }
+
+      const amountBAmountRaw = makeRawTokenAmount(tokenB, amount) || "0";
+      const { amountA } = getDepositAmountsByAmountB(
+        selectPool.currentPrice,
+        minPrice,
+        maxPrice,
+        BigInt(amountBAmountRaw),
+      );
+
+      const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
+      tokenAAmountInput.changeAmount(tokenAAmount.toString());
     },
-    [tokenBAmountInput],
+    [
+      tokenBAmountInput,
+      selectPool.currentPrice,
+      tokenA,
+      tokenB,
+      minPrice,
+      maxPrice,
+    ],
   );
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
-    if (!Number(tokenAAmountInput.amount) || !Number(tokenBAmountInput.amount)) {
+    if (
+      !Number(tokenAAmountInput.amount) ||
+      !Number(tokenBAmountInput.amount)
+    ) {
       return "ENTER_AMOUNT";
     }
     return "INCREASE_LIQUIDITY";
@@ -176,16 +303,20 @@ export const useIncreaseHandle = () => {
   }, []);
 
   useEffect(() => {
+    if (!["done", "error", "failure"].includes(loadingConnect)) {
+      return;
+    }
+
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
-  }, [account, poolPath]);
-
+  }, [account, poolPath, loadingConnect]);
 
   return {
+    loading,
     tokenA,
     tokenB,
-    fee: fee,
+    fee: SwapFeeTierInfoMap[feeTier || "NONE"].fee,
     maxPriceStr,
     minPriceStr,
     rangeStatus,
@@ -203,5 +334,7 @@ export const useIncreaseHandle = () => {
     priceRange,
     changePriceRange,
     selectedPosition,
+    isDepositTokenA,
+    isDepositTokenB,
   };
 };

@@ -15,9 +15,11 @@ interface Props {
   rangeStatus: RANGE_STATUS_OPTION;
   percent: number;
   pooledTokenInfos: any;
+  confirm: () => void;
 }
 
 const DecreasePositionModalContainer: React.FC<Props> = ({
+  confirm,
   amountInfo,
   maxPriceStr,
   minPriceStr,
@@ -33,6 +35,7 @@ const DecreasePositionModalContainer: React.FC<Props> = ({
 
   return (
     <DecreasePositionModal
+      confirm={confirm}
       close={close}
       amountInfo={amountInfo}
       maxPriceStr={maxPriceStr}

@@ -15,7 +15,9 @@ export default function DecreaseLiquidity() {
   const { width } = useWindowSize();
   const router = useRouter();
   const poolPath = router.query["pool-path"] || "";
-  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const { data, isLoading } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
   const { getGnotPath } = useGnotToGnot();
   const { isLoadingCommon } = useLoading();
 
@@ -24,20 +26,26 @@ export default function DecreaseLiquidity() {
       { title: "Earn", path: "/earn" },
       {
         title:
-          (width > DeviceSize.mediumWeb)
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000
-            }%)`
+          width > DeviceSize.mediumWeb
+            ? `${getGnotPath(data?.tokenA).symbol}/${
+                getGnotPath(data?.tokenB).symbol
+              } (${Number(data?.fee) / 10000}%)`
             : "...",
         path: `/earn/pool/${router.query["pool-path"]}`,
       },
       { title: "Decrease Liquidity", path: "" },
     ];
   }, [data, width]);
-  
+
   return (
     <IncreaseLiquidityLayout
       header={<HeaderContainer />}
-      breadcrumbs={<BreadcrumbsContainer listBreadcrumb={listBreadcrumb} isLoading={isLoadingCommon || isLoading}/>}
+      breadcrumbs={
+        <BreadcrumbsContainer
+          listBreadcrumb={listBreadcrumb}
+          isLoading={isLoadingCommon || isLoading}
+        />
+      }
       increaseLiquidity={<DecreaseLiquidityContainer />}
       footer={<Footer />}
     />

@@ -36,7 +36,7 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
     }};
     ${fonts.body12}
   }
-  
+
   ${media.mobile} {
     gap: 2px;
   }
@@ -144,7 +144,7 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
       ${mixins.flexbox("row", "center", "center")};
       ${mixins.positionCenter()};
       width: 100%;
-  
+
       .shape {
         ${mixins.flexbox("row", "center", "center")};
         width: 40px;
@@ -152,7 +152,7 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
         background-color: ${({ theme }) => theme.color.background01};
         border: 1px solid ${({ theme }) => theme.color.border02};
         border-radius: 50%;
-  
+
         .add-icon {
           width: 16px;
           height: 16px;
@@ -169,7 +169,7 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
     > p {
       font-size: 35px;
       font-weight: 500;
-      line-height: 42pxl
+      line-height: 42px;
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
         ${fonts.body3}
@@ -202,6 +202,19 @@ export const DecreaseSelectPositionWrapper = styled.div<Props>`
     width: 100%;
     margin-top: 24px;
     display: flex;
+  }
+
+  .loading-wrapper {
+    ${mixins.flexbox("column", "center", "center")};
+    width: 100%;
+
+    &.position {
+      height: 165px;
+    }
+
+    &.amount {
+      height: 236px;
+    }
   }
 `;
 

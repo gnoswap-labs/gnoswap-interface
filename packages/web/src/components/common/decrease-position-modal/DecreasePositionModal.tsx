@@ -9,6 +9,7 @@ import { DecreasePositionModalWrapper } from "./DecreasePositionModal.styles";
 import BalanceChange from "@components/decrease/balance-change/BalanceChange";
 
 interface Props {
+  confirm: () => void;
   close: () => void;
   amountInfo: {
     tokenA: TokenModel;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const DecreasePositionModal: React.FC<Props> = ({
+  confirm,
   close,
   amountInfo,
   minPriceStr,
@@ -52,13 +54,17 @@ const DecreasePositionModal: React.FC<Props> = ({
           />
           <div>
             <p className="label">Decreasing Amount</p>
-            <DecreasePoolInfo {...amountInfo} isShowProtocolFee pooledTokenInfos={pooledTokenInfos}/>
+            <DecreasePoolInfo
+              {...amountInfo}
+              isShowProtocolFee
+              pooledTokenInfos={pooledTokenInfos}
+            />
           </div>
 
-          <BalanceChange {...amountInfo} title="Balance Changes"/>
+          <BalanceChange {...amountInfo} title="Balance Changes" />
           <div>
             <Button
-              onClick={close}
+              onClick={confirm}
               text="Confirm Decrease Liquidity"
               style={{
                 hierarchy: ButtonHierarchy.Primary,

@@ -8,6 +8,7 @@ import IncreaseMaxMin from "@components/increase/increase-max-min/IncreaseMaxMin
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 
 interface Props {
+  confirm: () => void;
   close: () => void;
   amountInfo: {
     tokenA: {
@@ -25,14 +26,19 @@ interface Props {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
+  isDepositTokenA: boolean;
+  isDepositTokenB: boolean;
 }
 
 const IncreasePositionModal: React.FC<Props> = ({
+  confirm,
   close,
   amountInfo,
   minPriceStr,
   maxPriceStr,
   rangeStatus,
+  isDepositTokenA,
+  isDepositTokenB,
 }) => {
   const onClickClose = useCallback(() => {
     close();
@@ -56,11 +62,15 @@ const IncreasePositionModal: React.FC<Props> = ({
           />
           <div>
             <p className="label-increase">Increasing Amount</p>
-            <IncreaseAmountInfo {...amountInfo} />
+            <IncreaseAmountInfo
+              {...amountInfo}
+              isDepositTokenA={isDepositTokenA}
+              isDepositTokenB={isDepositTokenB}
+            />
           </div>
           <div>
             <Button
-              onClick={close}
+              onClick={confirm}
               text="Confirm Increase Liquidity"
               style={{
                 hierarchy: ButtonHierarchy.Primary,

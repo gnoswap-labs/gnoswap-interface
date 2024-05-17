@@ -85,14 +85,17 @@ export function makePositionMintWithStakeMessage(
 
 export function makePositionIncreaseLiquidityMessage(
   lpTokenId: string,
-  amount0Desired: number,
-  amount1Desired: number,
-  amount0Min: number,
-  amount1Min: number,
+  amount0Desired: string,
+  amount1Desired: string,
+  amount0Min: string,
+  amount1Min: string,
   caller: string,
+  sendAmount: string | null,
 ) {
+  const send = sendAmount ? `${sendAmount}ugnot` : "";
+
   return makeTransactionMessage({
-    send: "",
+    send,
     func: "IncreaseLiquidity",
     packagePath: PACKAGE_POSITION_PATH,
     args: [

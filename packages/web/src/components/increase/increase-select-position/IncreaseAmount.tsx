@@ -5,14 +5,14 @@ import SettingMenuModal from "@components/swap/setting-menu-modal/SettingMenuMod
 import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import React, { useState } from "react";
-import {
-  IncreaseSelectPositionWrapper
-} from "./IncreaseSelectPosition.styles";
+import { IncreaseSelectPositionWrapper } from "./IncreaseSelectPosition.styles";
 
 export interface IncreaseSelectPositionProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   connected: boolean;
+  isDepositTokenA: boolean;
+  isDepositTokenB: boolean;
   tokenAAmountInput: TokenAmountInputModel;
   tokenBAmountInput: TokenAmountInputModel;
   changeTokenAAmount: (amount: string) => void;
@@ -25,6 +25,8 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
   tokenA,
   tokenB,
   connected,
+  isDepositTokenA,
+  isDepositTokenB,
   tokenAAmountInput,
   tokenBAmountInput,
   changeTokenAAmount,
@@ -53,25 +55,31 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
         )}
       </div>
       <div className="increase-amount-wrapper">
-        <TokenAmountInput
-          {...tokenAAmountInput}
-          token={tokenA}
-          connected={connected}
-          changeAmount={changeTokenAAmount}
-          changeToken={() => {}}
-        />
-        <TokenAmountInput
-          {...tokenBAmountInput}
-          token={tokenB}
-          connected={connected}
-          changeAmount={changeTokenBAmount}
-          changeToken={() => {}}
-        />
-        <div className="arrow">
-          <div className="shape">
-            <IconAdd className="add-icon" />
+        {isDepositTokenA && (
+          <TokenAmountInput
+            {...tokenAAmountInput}
+            token={tokenA}
+            connected={connected}
+            changeAmount={changeTokenAAmount}
+            changeToken={() => {}}
+          />
+        )}
+        {isDepositTokenB && (
+          <TokenAmountInput
+            {...tokenBAmountInput}
+            token={tokenB}
+            connected={connected}
+            changeAmount={changeTokenBAmount}
+            changeToken={() => {}}
+          />
+        )}
+        {isDepositTokenA && isDepositTokenB && (
+          <div className="arrow">
+            <div className="shape">
+              <IconAdd className="add-icon" />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </IncreaseSelectPositionWrapper>
   );
