@@ -22,6 +22,7 @@ import SelectTab from "../select-tab/SelectTab";
 import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
+import { checkGnotPath } from "@utils/common";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -336,7 +337,10 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                           : selectPool.currentPrice || 1
                       }
                       flip={
-                        [tokenA.path, tokenB.path].sort()[0] !== tokenA.path
+                        [
+                          checkGnotPath(tokenA.path),
+                          checkGnotPath(tokenB.path),
+                        ].sort()[0] !== checkGnotPath(tokenA.path)
                       }
                       fullRange={selectPool.selectedFullRange}
                       zoomLevel={selectPool.zoomLevel}

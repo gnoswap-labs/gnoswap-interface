@@ -373,7 +373,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       if (bin.height === 0) {
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       }
-      if (currentTick && Number(bin.maxTick) - 1 < currentTick) {
+      if (currentTick && Number(bin.maxTick) - 2 < currentTick) {
         return `url(#gradient-bar-green-${random})`;
       }
       return `url(#gradient-bar-red-${random})`;
