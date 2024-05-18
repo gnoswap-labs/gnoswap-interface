@@ -72,7 +72,6 @@ export const dummyAssetList: Asset[] = [
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     priceID: "gno.land/r/bar",
-    priceId: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
     price: "0",
@@ -88,7 +87,6 @@ export const dummyAssetList: Asset[] = [
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     priceID: "gno.land/r/bar",
-    priceId: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
     price: "0",
@@ -130,7 +128,6 @@ const DEPOSIT_INFO: TokenModel = {
   logoURI: "/atom.svg",
   type: "grc20",
   priceID: "gno.land/r/gns",
-  priceId: "gno.land/r/gns",
 };
 
 const INIT_GNOT = {
