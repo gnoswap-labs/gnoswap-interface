@@ -21,7 +21,8 @@ const tokenA: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "GNS",
-  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
   priceID: "gno.land/r/gns",
 };
@@ -33,7 +34,8 @@ const tokenB: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "GNS",
-  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
+  logoURI:
+    "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "grc20",
   priceID: "gno.land/r/gns",
 };
@@ -47,5 +49,4 @@ Default.args = {
   selectFeeTier: action("selectFeeTier"),
   priceRanges: [],
   changePriceRange: action("selectPriceRange"),
-  ticks: [],
 };

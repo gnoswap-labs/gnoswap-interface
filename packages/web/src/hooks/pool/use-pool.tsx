@@ -123,6 +123,7 @@ export const usePool = ({
       minTick,
       maxTick,
       slippage,
+      withStaking,
     }: {
       tokenAAmount: string;
       tokenBAmount: string;
@@ -131,6 +132,7 @@ export const usePool = ({
       minTick: number;
       maxTick: number;
       slippage: string;
+      withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account) {
         return null;
@@ -154,6 +156,7 @@ export const usePool = ({
           maxTick,
           slippage,
           caller: account.address,
+          withStaking,
         })
         .catch(e => {
           console.error(e);
@@ -171,6 +174,7 @@ export const usePool = ({
       minTick,
       maxTick,
       slippage,
+      withStaking,
     }: {
       tokenAAmount: string;
       tokenBAmount: string;
@@ -178,6 +182,7 @@ export const usePool = ({
       minTick: number;
       maxTick: number;
       slippage: string;
+      withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account) {
         return null;
@@ -200,6 +205,7 @@ export const usePool = ({
           maxTick,
           slippage: Number(slippage),
           caller: account.address,
+          withStaking,
         })
         .catch(e => {
           console.error(e);

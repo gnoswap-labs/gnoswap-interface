@@ -11,4 +11,5 @@ export interface AddLiquidityRequest {
   maxTick: number;
   slippage: number;
   caller: string;
+  withStaking?: boolean;
 }

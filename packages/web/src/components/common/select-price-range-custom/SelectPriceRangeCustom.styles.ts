@@ -36,6 +36,11 @@ export const SelectPriceRangeCustomWrapper = styled.div`
       display: flex;
       align-items: flex-start;
       gap: 4px;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      user-select: none;
 
       .graph-option-item {
         display: flex;

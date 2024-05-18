@@ -29,6 +29,7 @@ Default.args = {
     logoURI:
       "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     priceID: "gno.land/r/bar",
+    priceId: "gno.land/r/bar",
     description: "this_is_desc_section",
     websiteURL: "https://website~~~~",
     balance: 0.0,

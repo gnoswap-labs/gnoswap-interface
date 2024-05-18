@@ -7,7 +7,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 export const useGetPoolList = (
-  options?: UseQueryOptions<PoolModel[], Error>
+  options?: UseQueryOptions<PoolModel[], Error>,
 ) => {
   const { poolRepository } = useGnoswapContext();
 
@@ -15,7 +15,9 @@ export const useGetPoolList = (
     queryKey: [QUERY_KEY.pools],
     queryFn: async () => {
       const data = await poolRepository.getPools();
-      data.sort((a: PoolModel, b: PoolModel) => - Number(a.price) + Number(b.price));
+      data.sort(
+        (a: PoolModel, b: PoolModel) => -Number(a.price) + Number(b.price),
+      );
       return data;
     },
     ...options,
@@ -24,7 +26,7 @@ export const useGetPoolList = (
 
 export const useGetPoolDetailByPath = (
   path: string,
-  options?: UseQueryOptions<PoolDetailModel, Error>
+  options?: UseQueryOptions<PoolDetailModel, Error>,
 ) => {
   const { poolRepository } = useGnoswapContext();
   const convertPath = encryptId(path);
@@ -40,15 +42,15 @@ export const useGetPoolDetailByPath = (
 
 export const useGetBinsByPath = (
   path: string,
-  options?: UseQueryOptions<PoolBinModel[], Error>
+  count?: number,
+  options?: UseQueryOptions<PoolBinModel[], Error>,
 ) => {
   const { poolRepository } = useGnoswapContext();
   const convertPath = encryptId(path);
   return useQuery<PoolBinModel[], Error>({
     queryKey: [QUERY_KEY.bins, convertPath],
     queryFn: async () => {
-      const data = await poolRepository.getBinsOfPoolByPath(convertPath);
-      return data;
+      return poolRepository.getBinsOfPoolByPath(convertPath, count);
     },
     ...options,
   });

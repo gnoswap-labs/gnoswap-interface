@@ -9,6 +9,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useRemoveData } from "@hooks/stake/use-remove-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { checkGnotPath } from "@utils/common";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 
@@ -45,8 +46,10 @@ const RemovePositionModalContainer = ({
     const approveTokenPaths = [
       ...new Set(
         positions.flatMap(position => [
-          position.pool.tokenA.wrappedPath || position.pool.tokenA.path,
-          position.pool.tokenB.wrappedPath || position.pool.tokenB.path,
+          position.pool.tokenA.wrappedPath ||
+            checkGnotPath(position.pool.tokenA.path),
+          position.pool.tokenB.wrappedPath ||
+            checkGnotPath(position.pool.tokenB.path),
         ]),
       ),
     ];

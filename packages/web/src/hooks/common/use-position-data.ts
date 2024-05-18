@@ -145,9 +145,7 @@ export const usePositionData = (address?: string) => {
   const positions = useMemo(() => {
     const poolPositions: PoolPositionModel[] = [];
     data.forEach(position => {
-      const pool = pools.find(pool => {
-        return pool.poolPath === position.poolPath;
-      });
+      const pool = pools.find(pool => pool.poolPath === position.poolPath);
       if (pool) {
         const temp = {
           ...pool,

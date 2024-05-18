@@ -1,5 +1,8 @@
-import { TokenModel } from "@models/token/token-model";
-import { makeTransactionMessage, PACKAGE_POSITION_PATH } from "./common";
+import {
+  makeTransactionMessage,
+  PACKAGE_POSITION_PATH,
+  PACKAGE_STAKER_PATH,
+} from "./common";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
@@ -8,8 +11,8 @@ import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
 import BigNumber from "bignumber.js";
 
 export function makePositionMintMessage(
-  tokenA: TokenModel,
-  tokenB: TokenModel,
+  tokenAPath: string,
+  tokenBPath: string,
   feeTier: SwapFeeTierType,
   minTick: number,
   maxTick: number,
@@ -17,16 +20,15 @@ export function makePositionMintMessage(
   tokenBAmount: string,
   slippage: string,
   caller: string,
+  sendAmount: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = 0;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
-  const tokenAPath = tokenA.wrappedPath || tokenA.path;
-  const tokenBPath = tokenB.wrappedPath || tokenB.path;
-  const sendAmount = "";
+  const send = sendAmount ? sendAmount + "ugnot" : "";
   return makeTransactionMessage({
     caller,
-    send: sendAmount,
+    send,
     packagePath: PACKAGE_POSITION_PATH,
     func: "Mint",
     args: [
@@ -45,16 +47,55 @@ export function makePositionMintMessage(
   });
 }
 
+export function makePositionMintWithStakeMessage(
+  tokenAPath: string,
+  tokenBPath: string,
+  feeTier: SwapFeeTierType,
+  minTick: number,
+  maxTick: number,
+  tokenAAmount: string,
+  tokenBAmount: string,
+  slippage: string,
+  caller: string,
+  sendAmount: string | null,
+) {
+  const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
+  const slippageRatio = 0;
+  const deadline = DEFAULT_TRANSACTION_DEADLINE;
+  const send = sendAmount ? sendAmount + "ugnot" : "";
+  return makeTransactionMessage({
+    caller,
+    send,
+    packagePath: PACKAGE_STAKER_PATH,
+    func: "MintAndStake",
+    args: [
+      tokenAPath,
+      tokenBPath,
+      fee,
+      `${minTick}`,
+      `${maxTick}`,
+      tokenAAmount,
+      tokenBAmount,
+      BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
+      BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
+      deadline,
+    ],
+  });
+}
+
 export function makePositionIncreaseLiquidityMessage(
   lpTokenId: string,
-  amount0Desired: number,
-  amount1Desired: number,
-  amount0Min: number,
-  amount1Min: number,
+  amount0Desired: string,
+  amount1Desired: string,
+  amount0Min: string,
+  amount1Min: string,
   caller: string,
+  sendAmount: string | null,
 ) {
+  const send = sendAmount ? `${sendAmount}ugnot` : "";
+
   return makeTransactionMessage({
-    send: "",
+    send,
     func: "IncreaseLiquidity",
     packagePath: PACKAGE_POSITION_PATH,
     args: [

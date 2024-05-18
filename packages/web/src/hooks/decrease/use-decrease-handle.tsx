@@ -6,7 +6,6 @@ import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
 import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
-import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import { numberToUSD } from "@utils/number-utils";
@@ -23,33 +22,44 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type DeCREASE_BUTTON_TYPE =
-  | "ENTER_AMOUNT"
-  | "INCREASE_LIQUIDITY"
+export type DeCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
 
 export const useDecreaseHandle = () => {
   const router = useRouter();
-  const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
+  const [selectedPosition, setSelectedPosition] = useAtom(
+    IncreaseState.selectedPosition,
+  );
   const poolPath = router.query["pool-path"] as string;
   const positionId = router.query["position-id"] as string;
   const { getGnotPath } = useGnotToGnot();
-  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({ type: "Custom" });
+  const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
+    type: "Custom",
+  });
   const [percent, setPercent] = useState<number>(50);
   const { tokenPrices } = useTokenData();
 
   const { positions } = usePositionData();
+
+  const loading = useMemo(() => {
+    return !selectedPosition;
+  }, [selectedPosition]);
+
   useEffect(() => {
-    if (!selectedPosition && positions.length > 0 && positionId && poolPath) {
-      const position = positions.filter((_: PoolPositionModel) => _.id === positionId)?.[0];
-      if (position) {
-        setSelectedPosition(position);
-      } else {
+    if (!selectedPosition && positions.length > 0 && positionId) {
+      const position = positions.find(
+        position => position.lpTokenId.toString() === positionId,
+      );
+
+      if (!position) {
         router.push(`/earn/pool/${poolPath}`);
+        return;
       }
+
+      setSelectedPosition(position);
     }
   }, [selectedPosition, positions, positionId, poolPath]);
 
-  const { connected, account } = useWallet();
+  const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(
@@ -166,7 +176,10 @@ export const useDecreaseHandle = () => {
   );
 
   const buttonType: DeCREASE_BUTTON_TYPE = useMemo(() => {
-    if (!Number(tokenAAmountInput.amount) || !Number(tokenBAmountInput.amount)) {
+    if (
+      !Number(tokenAAmountInput.amount) ||
+      !Number(tokenBAmountInput.amount)
+    ) {
       return "ENTER_AMOUNT";
     }
     return "INCREASE_LIQUIDITY";
@@ -199,24 +212,43 @@ export const useDecreaseHandle = () => {
     const unClaimTokenBAmount =
       makeDisplayTokenAmount(tokenB, Number(unClaimTokenB)) || 0;
     return {
-      poolAmountA: BigNumber(tokenAAmount).multipliedBy(percent).dividedBy(100).toFormat(),
-      poolAmountUSDA: numberToUSD(tokenAAmount * Number(tokenAPrice) * percent / 100),
-      poolAmountB: BigNumber(tokenBAmount).multipliedBy(percent).dividedBy(100).toFormat(),
-      poolAmountUSDB: numberToUSD(tokenBAmount * Number(tokenBPrice) * percent / 100),
+      poolAmountA: BigNumber(tokenAAmount)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toFormat(),
+      poolAmountUSDA: numberToUSD(
+        (tokenAAmount * Number(tokenAPrice) * percent) / 100,
+      ),
+      poolAmountB: BigNumber(tokenBAmount)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toFormat(),
+      poolAmountUSDB: numberToUSD(
+        (tokenBAmount * Number(tokenBPrice) * percent) / 100,
+      ),
       unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
       unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
-      unClaimTokenAAmountUSD: numberToUSD(unClaimTokenAAmount * Number(tokenAPrice)),
-      unClaimTokenBAmountUSD: numberToUSD(unClaimTokenBAmount * Number(tokenBPrice)),
+      unClaimTokenAAmountUSD: numberToUSD(
+        unClaimTokenAAmount * Number(tokenAPrice),
+      ),
+      unClaimTokenBAmountUSD: numberToUSD(
+        unClaimTokenBAmount * Number(tokenBPrice),
+      ),
     };
   }, [selectedPosition, tokenPrices, percent]);
 
   useEffect(() => {
+    if (!["done", "error", "failure"].includes(loadingConnect)) {
+      return;
+    }
+
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
-  }, [account, poolPath]);
+  }, [account, poolPath, loadingConnect]);
 
   return {
+    loading,
     tokenA,
     tokenB,
     fee: fee,

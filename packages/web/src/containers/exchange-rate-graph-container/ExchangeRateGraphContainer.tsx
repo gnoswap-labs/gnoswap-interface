@@ -39,7 +39,7 @@ export const initialPool: PoolModel = {
   volume24h: 0,
   volumeChange: 0,
   // totalVolume: 0,
-  id: "34509348593485093",
+  id: "",
   apr: 0,
   fee: "",
   feeUsd24h: 0,
@@ -75,7 +75,6 @@ const ExchangeRateGraphContainer: React.FC = () => {
   const { getGnotPath } = useGnotToGnot();
 
   const poolPath = currentPoolPath;
-  console.log("🚀 ~ poolPath:", poolPath);
   const { data: poolData = initialPool, isLoading } = useGetPoolDetailByPath(
     poolPath as string, {
     enabled: !!poolPath,
