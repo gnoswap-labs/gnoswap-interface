@@ -226,11 +226,17 @@ export const useTokenData = () => {
     }
 
     if (tokens.length === 0) return;
-    const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
+    const fetchResults = await Promise.all(tokens.map(async (token) => {
+      const result = await fetchTokenBalance(token);
+      return {
+        priceID: token.priceID,
+        balance: result,
+      };
+    }));
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balancesData[tokens[index].priceID] = result;
+        balancesData[result.priceID] = result.balance;
       }
     });
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
