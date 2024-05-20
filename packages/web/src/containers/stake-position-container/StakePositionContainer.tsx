@@ -63,13 +63,13 @@ const StakePositionContainer: React.FC = () => {
     } else {
       openModal();
     }
-    
+
   }, [openModal, connected, connectAccount]);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
     if (!account?.address) {
-        return;
+      return;
     }
     if (!poolPath) {
       setPositions(positionData);
@@ -79,9 +79,9 @@ const StakePositionContainer: React.FC = () => {
   }, [account?.address, getPositionsByPoolId, router.query]);
   const isEmpty = useMemo(() => {
     if (!connected) return true;
-    return stakedPositions.length === 0 && unstakedPositions.length === 0 && isFetched;
-  }, [stakedPositions.length, unstakedPositions.length, isFetched, connected]);
-  
+    return unstakedPositions.filter(item => item.closed === false).length === 0 && isFetched;
+  }, [connected, isFetched, unstakedPositions]);
+
   return (
     <StakePosition
       stakedPositions={stakedPositions}

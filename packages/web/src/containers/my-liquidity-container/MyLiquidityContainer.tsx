@@ -64,10 +64,19 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     enabled: !!address,
   });
 
-  const availableRemovePosition = useMemo(() => {
+  const showClosePositionButton = useMemo(() => {
     const haveClosedPosition = positions.some(item => item.closed);
 
     if (!connectedWallet || isSwitchNetwork || !haveClosedPosition) {
+      return false;
+    }
+    return positions.length > 0;
+  }, [connectedWallet, isSwitchNetwork, positions]);
+  console.log("🚀 ~ showClosePositionButton ~ positions:", positions.map(item => item.closed));
+
+  const availableRemovePosition = useMemo(() => {
+
+    if (!connectedWallet || isSwitchNetwork) {
       return false;
     }
     return positions.length > 0;
@@ -147,10 +156,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
 
     return positions.filter(item => item.closed === false);
   }, [isShowClosePosition, positions]);
+  console.log("🚀 ~ filteredPosition ~ filteredPosition:", filteredPosition);
 
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
   };
+
 
   return (
     <MyLiquidity
@@ -173,6 +184,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
       isHiddenAddPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
+      showClosePositionButton={showClosePositionButton}
     />
   );
 };

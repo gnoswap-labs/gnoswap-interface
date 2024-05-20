@@ -1,7 +1,6 @@
 import { useTokenData } from "@hooks/token/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { numberToUSD } from "@utils/number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useMemo } from "react";
 
 export interface UnstakeDataProps {
@@ -27,10 +26,8 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     );
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
-    const tokenAAmount =
-      makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
-    const tokenBAmount =
-      makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
+    const tokenAAmount = Number(pooledTokenAAmount) || 0;
+    const tokenBAmount = Number(pooledTokenBAmount) || 0;
     return [
       {
         token: tokenA,
@@ -62,9 +59,8 @@ export const useUnstakeData = ({ positions }: UnstakeDataProps) => {
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
     const tokenAAmount =
-      makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
-    const tokenBAmount =
-      makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
+      Number(pooledTokenAAmount) || 0;
+    const tokenBAmount = Number(pooledTokenBAmount) || 0;
     return [
       {
         token: tokenA,

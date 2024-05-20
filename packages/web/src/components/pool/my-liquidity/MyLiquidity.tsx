@@ -26,6 +26,7 @@ interface MyLiquidityProps {
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
+  showClosePositionButton: boolean;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -48,6 +49,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isShowClosePosition,
   handleSetIsClosePosition,
   isHiddenAddPosition,
+  showClosePositionButton,
 }) => {
   return (
     <>
@@ -67,6 +69,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             isShowClosePosition={isShowClosePosition}
             handleSetIsClosePosition={handleSetIsClosePosition}
             isHiddenAddPosition={isHiddenAddPosition}
+            showClosePositionButton={showClosePositionButton}
           />
           <MyLiquidityContent
             connected={connected}

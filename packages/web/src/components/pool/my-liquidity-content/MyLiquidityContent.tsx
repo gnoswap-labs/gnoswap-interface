@@ -232,6 +232,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     };
   }, [isDisplay, positions, tokenPrices]);
 
+  const isShowRewardInfoTooltip = useMemo(() => {
+    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.STAKING.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
+  }, [aprRewardInfo]);
+
   const dailyEarning = useMemo(() => {
     if (!isDisplay) {
       return "-";
@@ -294,6 +298,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       });
     return Object.values(infoMap);
   }, [isDisplay, positions, tokenPrices]);
+
+  const isShowClaimableRewardInfo = useMemo(() => {
+    return claimableRewardInfo && (claimableRewardInfo?.EXTERNAL.length !== 0 || claimableRewardInfo?.STAKING.length !== 0 || claimableRewardInfo?.SWAP_FEE.length !== 0);
+  }, [claimableRewardInfo]);
+
+  const isShowUnclaimableRewardInfo = useMemo(() => {
+    return unclaimedRewardInfo && unclaimedRewardInfo.length > 0;
+  }, [unclaimedRewardInfo]);
 
   const claimableUSD = useMemo(() => {
     if (!isDisplay) {
@@ -487,12 +499,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       </section>
       <section>
         <h4>Total Daily Earnings</h4>
-        {!loading && aprRewardInfo ? (
+        {!loading && isShowRewardInfoTooltip ? (
           <Tooltip
             placement="top"
             FloatingContent={
               <div>
-                <MyPositionAprContent rewardInfo={aprRewardInfo} />
+                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+                <MyPositionAprContent rewardInfo={aprRewardInfo!} />
               </div>
             }
           >
@@ -542,7 +555,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <h4>Total Claimable Rewards</h4>
               {!loading && (
                 <div className="claim-wrap">
-                  {claimableRewardInfo || unclaimedRewardInfo ? (
+                  {(isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
                     <Tooltip
                       placement="top"
                       FloatingContent={
@@ -599,7 +612,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <>
             <h4>Total Claimable Rewards</h4>
             <div className="claim-wrap">
-              {!loading && (claimableRewardInfo || unclaimedRewardInfo) ? (
+              {!loading && (isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
                 <Tooltip
                   placement="top"
                   FloatingContent={

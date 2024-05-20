@@ -23,6 +23,7 @@ interface MyLiquidityHeaderProps {
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
+  showClosePositionButton: boolean;
 }
 
 const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
@@ -37,6 +38,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   isShowClosePosition,
   handleSetIsClosePosition,
   isHiddenAddPosition,
+  showClosePositionButton,
 }) => {
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -90,7 +92,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
           )}
         </button>}
       </h2>
-      {availableRemovePosition && (
+      {showClosePositionButton && (
         <div className="hide-close-position">
           <Switch
             checked={isShowClosePosition}
@@ -107,7 +109,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
     <HeaderWrapper>
       {renderPositionHeader()}
       <div className="button-wrap">
-        {availableRemovePosition && (
+        {showClosePositionButton && (
           <div className="hide-close-position">
             <Switch
               checked={isShowClosePosition}
