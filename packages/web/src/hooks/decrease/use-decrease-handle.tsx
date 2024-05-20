@@ -204,34 +204,33 @@ export const useDecreaseHandle = () => {
 
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
+    console.log("🚀 ~ pooledTokenInfos ~ tokenBAmount:", tokenBAmount);
     const unClaimTokenAAmount = Number(unClaimTokenA) || 0;
     const unClaimTokenBAmount = Number(unClaimTokenB) || 0;
     return {
       poolAmountA: BigNumber(tokenAAmount)
         .multipliedBy(percent)
         .dividedBy(100)
-        .toFormat(),
+        .toNumber()
+        .toString(),
       poolAmountUSDA: numberToUSD(
         (tokenAAmount * Number(tokenAPrice) * percent) / 100,
-        { decimalDigit: tokenA.decimals }
       ),
       poolAmountB: BigNumber(tokenBAmount)
         .multipliedBy(percent)
         .dividedBy(100)
-        .toFormat(),
+        .toNumber()
+        .toString(),
       poolAmountUSDB: numberToUSD(
         (tokenBAmount * Number(tokenBPrice) * percent) / 100,
-        { decimalDigit: tokenA.decimals }
       ),
       unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
       unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
       unClaimTokenAAmountUSD: numberToUSD(
         unClaimTokenAAmount * Number(tokenAPrice),
-        { decimalDigit: tokenA.decimals }
       ),
       unClaimTokenBAmountUSD: numberToUSD(
         unClaimTokenBAmount * Number(tokenBPrice),
-        { decimalDigit: tokenA.decimals }
       ),
     };
   }, [selectedPosition, tokenPrices, percent]);

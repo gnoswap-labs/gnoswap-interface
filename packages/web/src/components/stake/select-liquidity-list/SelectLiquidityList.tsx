@@ -17,9 +17,9 @@ interface SelectLiquidityProps {
 
 const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
   stakedPositions,
-  unstakedPositions,
+  // unstakedPositions,
   checkedList,
-  onCheckedItem,
+  // onCheckedItem,
   onCheckedAll,
   checkedAll,
   isEmpty,
@@ -44,15 +44,15 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
         {isLoading && <div css={loadingWrapper}>
           <LoadingSpinner />
         </div>}
-        {!isLoading && unstakedPositions.map((position, index) => (
+        {/* {!isLoading && unstakedPositions.map((position, index) => (
           <SelectLiquidityListItem
             position={position}
             checkedList={checkedList}
             onCheckedItem={onCheckedItem}
             key={index}
           />
-        ))}
-        {!isLoading && stakedPositions.map((position, index) => (
+        ))} */}
+        {!isLoading && stakedPositions.filter(item => item.closed === false).map((position, index) => (
           <SelectLiquidityListItem
             position={position}
             checkedList={checkedList}

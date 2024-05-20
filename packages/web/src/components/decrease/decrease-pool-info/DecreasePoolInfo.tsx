@@ -1,13 +1,14 @@
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { DecreasePoolInfoWrapper } from "./DecreasePoolInfo.styles";
 import { TokenModel } from "@models/token/token-model";
-import React from "react";
+import React, { useMemo } from "react";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
 import BigNumber from "bignumber.js";
+import { removeTrailingZeros } from "@utils/number-utils";
 
 interface Props {
   tokenA: TokenModel;
@@ -24,6 +25,38 @@ const DecreasePoolInfo: React.FC<Props> = ({
 }) => {
   const { breakpoint } = useWindowSize();
 
+  const poolAMount = useMemo(() => {
+    if (Number.isInteger(Number(pooledTokenInfos?.poolAmountA))) {
+      return BigNumber(pooledTokenInfos?.poolAmountA).toFormat();
+    }
+
+    return removeTrailingZeros(BigNumber(pooledTokenInfos?.poolAmountA).toFormat(tokenA.decimals));
+  }, [pooledTokenInfos?.poolAmountA, tokenA.decimals]);
+
+  const poolBMount = useMemo(() => {
+    if (Number.isInteger(Number(pooledTokenInfos?.poolAmountB))) {
+      return BigNumber(pooledTokenInfos?.poolAmountB).toFormat();
+    }
+
+    return removeTrailingZeros(BigNumber(pooledTokenInfos?.poolAmountB).toFormat(tokenB.decimals));
+  }, [pooledTokenInfos?.poolAmountB, tokenB.decimals]);
+
+  const unclaimedPoolAAMount = useMemo(() => {
+    if (Number.isInteger(Number(pooledTokenInfos?.unClaimTokenAAmount))) {
+      return BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFormat();
+    }
+
+    return BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFormat(tokenA.decimals);
+  }, [pooledTokenInfos?.unClaimTokenAAmount, tokenA.decimals]);
+
+  const unclaimedPoolBAMount = useMemo(() => {
+    if (Number.isInteger(Number(pooledTokenInfos?.unClaimTokenBAmount))) {
+      return BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFormat();
+    }
+
+    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFormat(tokenA.decimals);
+  }, [pooledTokenInfos?.unClaimTokenBAmount, tokenA.decimals]);
+
   const isNotMobile = breakpoint !== DEVICE_TYPE.MOBILE;
   return (
     <DecreasePoolInfoWrapper>
@@ -33,7 +66,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
             <p>Pooled {isNotMobile ? tokenA?.symbol : ""}</p>
           </div>
-          <p>{BigNumber(pooledTokenInfos?.poolAmountA).toFixed(tokenA.decimals)}</p>
+          <p>{poolAMount}</p>
         </div>
         <div className="usd">{pooledTokenInfos?.poolAmountUSDA}</div>
       </div>
@@ -43,7 +76,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
             <p>Pooled {isNotMobile ? tokenB?.symbol : ""}</p>
           </div>
-          <p>{BigNumber(pooledTokenInfos?.poolAmountB).toFixed(tokenB.decimals)}</p>
+          <p>{poolBMount}</p>
         </div>
         <div className="usd">{pooledTokenInfos?.poolAmountUSDB}</div>
       </div>
@@ -53,7 +86,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenA?.symbol} url={tokenA?.logoURI} width={24} />
             <p>Unclaimed {isNotMobile ? tokenA?.symbol : ""} Fees</p>
           </div>
-          <p>{BigNumber(pooledTokenInfos?.unClaimTokenAAmount).toFixed(tokenA.decimals)}</p>
+          <p>{unclaimedPoolAAMount}</p>
         </div>
         <div className="usd">{pooledTokenInfos?.unClaimTokenAAmountUSD}</div>
       </div>
@@ -63,7 +96,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <MissingLogo symbol={tokenB?.symbol} url={tokenB?.logoURI} width={24} />
             <p>Unclaimed {isNotMobile ? tokenB?.symbol : ""} Fees</p>
           </div>
-          <p>{BigNumber(pooledTokenInfos?.unClaimTokenBAmount).toFixed(tokenB.decimals)}</p>
+          <p>{unclaimedPoolBAMount}</p>
         </div>
         <div className="usd">{pooledTokenInfos?.unClaimTokenBAmountUSD}</div>
       </div>

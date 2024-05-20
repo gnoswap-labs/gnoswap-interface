@@ -54,7 +54,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   }, [account?.address, address]);
 
   const visiblePositions = useMemo(() => {
-
     if ((!connectedWallet && !address)) {
       return false;
     }
@@ -136,31 +135,18 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       return;
     }
     const temp = getPositionsByPoolId(poolPath);
-    // if (temp.length > 0 && isShowClosePosition) {
-    //   const fake = {
-    //     ...temp[0],
-    //     status: true,
-    //     balance: 0,
-    //     balanceUSD: 0,
-    //     claimableAmount: 0,
-    //     claimableUSD: 0,
-    //     accumulatedRewardOf1d: 0,
-    //     aprOf7d: 0,
-    //     claimableUsdValue: 0,
-    //     rewards: [],
-    //     positionUsdValue: "0",
-    //     tokenABalance: 0,
-    //     tokenBBalance: 0,
-    //   };
-    //   setPositions([...temp, fake, fake]);
-    //   return;
-    // }
     setPositions(temp);
   }, [
     router.query,
     visiblePositions,
     getPositionsByPoolId,
   ]);
+
+  const filteredPosition = useMemo(() => {
+    if (isShowClosePosition) return positions;
+
+    return positions.filter(item => item.closed === false);
+  }, [isShowClosePosition, positions]);
 
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);
@@ -171,7 +157,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       address={address || account?.address || null}
       addressName={addressName}
       isOtherPosition={isOtherPosition}
-      positions={visiblePositions ? positions : []}
+      positions={visiblePositions ? filteredPosition : []}
       breakpoint={breakpoint}
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}
