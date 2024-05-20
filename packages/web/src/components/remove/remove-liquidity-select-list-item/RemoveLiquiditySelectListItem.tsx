@@ -6,7 +6,6 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 // import { convertToMB } from "@utils/stake-position-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { tooltipWrapper } from "@components/stake/select-lilquidity-list-item/SelectLiquidityListItem.styles";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -30,7 +29,7 @@ interface TooltipProps {
 
 const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
   const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: number) => {
-    const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
+    const tokenBalanceByTokenDecimal = BigNumber(tokenBalance || 0).toFormat();
 
     return <TokenValueWrapper>
       <div className="value">

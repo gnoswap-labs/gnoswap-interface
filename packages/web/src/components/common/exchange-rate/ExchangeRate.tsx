@@ -9,7 +9,6 @@ interface Props {
 const ExchangeRate: React.FC<Props> = ({ value }) => {
   const exchangePrice = useMemo(() => {
     const newVal = formatExchangeRate(value);
-    console.log("🚀 ~ exchangePrice ~ newVal:", newVal);
 
     return newVal;
   },

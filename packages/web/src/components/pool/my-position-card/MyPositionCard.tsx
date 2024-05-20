@@ -46,6 +46,7 @@ import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
+import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -430,21 +431,23 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const minTickLabel = useMemo(() => {
-    return (!isSwap ? -minTickRate : minTickRate) > 1000
-      ? ">999%"
-      : `${minTickRate < -1 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-        ? "<1"
-        : Math.round(minTickRate * -1)
-      }%`;
+    if (Math.abs(minTickRate) >= 1000) return ">999%";
+
+    if (Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1) {
+      return "<1%";
+    }
+
+    return (minTickRate < -1 ? "+" : "") + Math.round(minTickRate * -1) + "%";
   }, [minTickRate, isSwap]);
 
   const maxTickLabel = useMemo(() => {
-    return maxTickRate === 999
-      ? `>${maxTickRate}%`
-      : maxTickRate >= 1000
-        ? ">999%"
-        : `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-        }%`;
+    if (maxTickRate === 999) return "+999%";
+
+    if (maxTickRate >= 1000) return ">999%";
+
+    if (Math.abs(maxTickRate) < 1) return "<1%";
+
+    return (maxTickRate > 1 ? "+" : "") + Math.round(maxTickRate) + "%";
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
@@ -571,14 +574,24 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                           }
                         >
                           <IconLinkPage className="icon-link" />
-                          {copied && (
+                          <FloatingTooltip
+                            position={"top"}
+                            content={<>
+                              <div className={`box ${themeKey}-shadow`}>
+                                <span>URL Copied!</span>
+                              </div>
+                              <IconPolygon className="polygon-icon" />
+                            </>
+                            }>
+                          </FloatingTooltip>
+                          {/* {copied && (
                             <CopyTooltip>
                               <div className={`box ${themeKey}-shadow`}>
                                 <span>URL Copied!</span>
                               </div>
                               <IconPolygon className="polygon-icon" />
                             </CopyTooltip>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     )}

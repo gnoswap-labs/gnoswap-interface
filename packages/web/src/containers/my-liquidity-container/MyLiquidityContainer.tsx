@@ -66,9 +66,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   });
 
   const availableRemovePosition = useMemo(() => {
-    const noClosedPosition = positions.every(item => !item.closed);
+    const haveClosedPosition = positions.some(item => item.closed);
 
-    if (!connectedWallet || isSwitchNetwork || !noClosedPosition) {
+    if (!connectedWallet || isSwitchNetwork || !haveClosedPosition) {
       return false;
     }
     return positions.length > 0;
@@ -136,30 +136,28 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       return;
     }
     const temp = getPositionsByPoolId(poolPath);
-    console.log("🚀 ~ useEffect ~ temp:", temp);
-    if (temp.length > 0 && isShowClosePosition) {
-      const fake = {
-        ...temp[0],
-        status: true,
-        balance: 0,
-        balanceUSD: 0,
-        claimableAmount: 0,
-        claimableUSD: 0,
-        accumulatedRewardOf1d: 0,
-        aprOf7d: 0,
-        claimableUsdValue: 0,
-        rewards: [],
-        positionUsdValue: "0",
-        tokenABalance: 0,
-        tokenBBalance: 0,
-      };
-      setPositions([...temp, fake, fake]);
-      return;
-    }
+    // if (temp.length > 0 && isShowClosePosition) {
+    //   const fake = {
+    //     ...temp[0],
+    //     status: true,
+    //     balance: 0,
+    //     balanceUSD: 0,
+    //     claimableAmount: 0,
+    //     claimableUSD: 0,
+    //     accumulatedRewardOf1d: 0,
+    //     aprOf7d: 0,
+    //     claimableUsdValue: 0,
+    //     rewards: [],
+    //     positionUsdValue: "0",
+    //     tokenABalance: 0,
+    //     tokenBBalance: 0,
+    //   };
+    //   setPositions([...temp, fake, fake]);
+    //   return;
+    // }
     setPositions(temp);
   }, [
     router.query,
-    isShowClosePosition,
     visiblePositions,
     getPositionsByPoolId,
   ]);

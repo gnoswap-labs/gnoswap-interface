@@ -49,7 +49,6 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   handleSetIsClosePosition,
   isHiddenAddPosition,
 }) => {
-  console.log("🚀 ~ positions:", positions);
   return (
     <>
       <MyLiquidityWrapperAnchor id="liquidity-wrapper" />

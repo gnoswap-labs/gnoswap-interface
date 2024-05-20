@@ -25,8 +25,6 @@ import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 import { toUnitFormat } from "@utils/number-utils";
-// import { makeDisplayTokenAmount } from "@utils/token-utils";
-// import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;

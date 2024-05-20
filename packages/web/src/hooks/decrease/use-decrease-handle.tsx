@@ -10,7 +10,6 @@ import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import { numberToUSD } from "@utils/number-utils";
 import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
@@ -203,14 +202,10 @@ export const useDecreaseHandle = () => {
     const tokenAPrice = tokenPrices[tokenA.priceID]?.usd || 0;
     const tokenBPrice = tokenPrices[tokenB.priceID]?.usd || 0;
 
-    const tokenAAmount =
-      makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
-    const tokenBAmount =
-      makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
-    const unClaimTokenAAmount =
-      makeDisplayTokenAmount(tokenA, Number(unClaimTokenA)) || 0;
-    const unClaimTokenBAmount =
-      makeDisplayTokenAmount(tokenB, Number(unClaimTokenB)) || 0;
+    const tokenAAmount = Number(pooledTokenAAmount) || 0;
+    const tokenBAmount = Number(pooledTokenBAmount) || 0;
+    const unClaimTokenAAmount = Number(unClaimTokenA) || 0;
+    const unClaimTokenBAmount = Number(unClaimTokenB) || 0;
     return {
       poolAmountA: BigNumber(tokenAAmount)
         .multipliedBy(percent)
@@ -218,6 +213,7 @@ export const useDecreaseHandle = () => {
         .toFormat(),
       poolAmountUSDA: numberToUSD(
         (tokenAAmount * Number(tokenAPrice) * percent) / 100,
+        { decimalDigit: tokenA.decimals }
       ),
       poolAmountB: BigNumber(tokenBAmount)
         .multipliedBy(percent)
@@ -225,14 +221,17 @@ export const useDecreaseHandle = () => {
         .toFormat(),
       poolAmountUSDB: numberToUSD(
         (tokenBAmount * Number(tokenBPrice) * percent) / 100,
+        { decimalDigit: tokenA.decimals }
       ),
       unClaimTokenAAmount: unClaimTokenAAmount.toLocaleString(),
       unClaimTokenBAmount: unClaimTokenBAmount.toLocaleString(),
       unClaimTokenAAmountUSD: numberToUSD(
         unClaimTokenAAmount * Number(tokenAPrice),
+        { decimalDigit: tokenA.decimals }
       ),
       unClaimTokenBAmountUSD: numberToUSD(
         unClaimTokenBAmount * Number(tokenBPrice),
+        { decimalDigit: tokenA.decimals }
       ),
     };
   }, [selectedPosition, tokenPrices, percent]);

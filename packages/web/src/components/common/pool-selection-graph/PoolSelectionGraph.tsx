@@ -8,7 +8,6 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -498,8 +497,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       max: priceOfTick[-maxTick] || null,
     };
 
-    const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
-    const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
+    const tokenAAmountStr = bin.reserveTokenA;
+    const tokenBAmountStr = bin.reserveTokenB;
 
     setTooltipInfo({
       tokenA: tokenA,

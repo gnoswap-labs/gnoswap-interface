@@ -269,8 +269,8 @@ export function toDecimalNumber(
   return Math.round(num * powers) / powers;
 }
 
-export function numberToUSD(value: number) {
-  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat(2)}`;
+export function numberToUSD(value: number, options?: { decimalDigit?: number }) {
+  return Number.isNaN(value) ? "-" : `$${BigNumber(value).toFormat(options?.decimalDigit || 2)}`;
 }
 
 export function numberToUSDV2(value: number) {
