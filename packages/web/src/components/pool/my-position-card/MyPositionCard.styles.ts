@@ -547,4 +547,18 @@ export const CopyTooltip = styled.div`
   .polygon-icon * {
     fill: ${({ theme }) => theme.color.background02};
   }
+
+  ${media.mobile} {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    top: -8px;
+    left: 20px;
+    .box {
+      padding: 12px;
+    }
+
+    & .rotate-90 {
+        transform: rotate(90deg);
+        margin-right: -10px;
+    }
+  }
 `;

@@ -35,7 +35,7 @@ const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerP
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [currentPool] = useAtom(EarnState.pool);
-  
+
   useEffect(() => {
     updateTokens();
   }, []);

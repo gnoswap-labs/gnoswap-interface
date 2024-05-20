@@ -77,6 +77,8 @@ export interface LineGraphProps {
   showBaseLine?: boolean;
   renderBottom?: (baseLineNumberWidth: number) => React.ReactElement;
   isShowTooltip?: boolean;
+  onMouseMove?: (LineGraphData?: LineGraphData) => void;
+  onMouseOut?: ((active: boolean) => void);
 }
 
 export interface LineGraphRef {
@@ -148,6 +150,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
   showBaseLine,
   renderBottom,
   isShowTooltip = true,
+  onMouseMove: onLineGraphMouseMove,
+  onMouseOut: onLineGraphMouseOut,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -169,6 +173,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
     updatePoints(datas, width, height);
   }, [datas, width, height, baseLineNumberWidth]);
 
+  useEffect(() => {
+    onLineGraphMouseMove?.(datas[currentPointIndex]);
+  }, [currentPointIndex, datas]);
+
+  useEffect(() => {
+    onLineGraphMouseOut?.(activated);
+  }, [activated]);
+
   const updatePoints = (
     datas: LineGraphData[],
     width: number,
@@ -188,10 +200,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
     const minTime = Math.min(...times);
     const maxTime = Math.max(...times);
 
+
+    const minValueBigNumber = BigNumber(minValue);
+    const maxValueBigNumber = BigNumber(maxValue);
+
     let baseLineNumberWidthComputation = 0;
 
-    const minMaxGap =
-      maxValue - minValue !== 0 ? maxValue - minValue : maxValue * gapRatio;
+
+    // const minMaxGap =
+    //   maxValue - minValue !== 0 ? maxValue - minValue : maxValue * gapRatio;
+
+    const minMaxGap = maxValueBigNumber.minus(minValueBigNumber) ? maxValueBigNumber.minus(minValueBigNumber) : maxValueBigNumber.multipliedBy(gapRatio);
 
     if (showBaseLine) {
       const baseLineData = new Array(baseLineCount)
@@ -199,37 +218,52 @@ const LineGraph: React.FC<LineGraphProps> = ({
         .map((value, index) => {
           // Gap from lowest value or highest value  to baseline
           const additionalGap =
-            maxValue - minValue !== 0
-              ? minMaxGap * (gapRatio / 2)
-              : minMaxGap / 2;
+            !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
+              ? minMaxGap.multipliedBy(gapRatio / 2)
+              : minMaxGap.dividedBy(2);
           // Gap between bottom and top base line
           const baseLineGap =
-            maxValue - minValue !== 0 ? minMaxGap * (1 + gapRatio) : minMaxGap;
+            !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0) ? minMaxGap.multipliedBy(1 + gapRatio) : minMaxGap;
           // Lowest baseline value
-          const bottomBaseLineValue = minValue - additionalGap;
+          const bottomBaseLineValue = minValueBigNumber.minus(additionalGap);
 
-          const currentBaseLineValue =
-            bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
+          const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
+          // const currentBaseLineValue =
+          //   bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
 
-          if (currentBaseLineValue < 1) {
+          if (currentBaseLineValue.isLessThan(-1)) {
+            return "-" + convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            });
+          }
+
+          if (currentBaseLineValue.isGreaterThan(-1) && currentBaseLineValue.isLessThan(0)) {
+            return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
+          }
+
+
+          if (currentBaseLineValue.isLessThan(1)) {
             return subscriptFormat(currentBaseLineValue.toString(), {
               significantDigits: 3,
               subscriptOffset: 3,
             });
           }
 
-          if (currentBaseLineValue >= 1 && currentBaseLineValue < 100) {
+          if (currentBaseLineValue.isGreaterThanOrEqualTo(1) && currentBaseLineValue.isLessThan(100)) {
             return convertToKMB(currentBaseLineValue.toString(), {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             });
           }
 
-          const result = Math.round(currentBaseLineValue).toString();
+          const result = Math.round(currentBaseLineValue.toNumber()).toString();
+
+          if (currentBaseLineValue.isLessThan(1)) return subscriptFormat(currentBaseLineValue.toFixed());
 
           return convertToKMB(result, {
-            maximumFractionDigits: 0,
-            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
           });
         });
 
@@ -270,12 +304,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
         if (maxValue - minValue === 0) {
           return (
             topFrontierHeight -
-            ((value - value * 0.95) * graphHeight) / minMaxGap
+            ((value - value * 0.95) * graphHeight) / minMaxGap.toNumber()
           );
         }
 
         return (
-          topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap
+          topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap.toNumber()
         );
       })();
 
@@ -451,7 +485,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
       className={className}
       onMouseMove={onMouseMove}
       onMouseEnter={() => setActivated(true)}
-      onMouseLeave={() => setActivated(false)}
+      onMouseLeave={() => {
+        setActivated(false);
+      }}
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
     >

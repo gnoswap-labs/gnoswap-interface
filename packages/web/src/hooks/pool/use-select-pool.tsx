@@ -99,7 +99,11 @@ export const useSelectPool = ({
   const priceRangeRef = useRef<[number | null, number | null]>([
     ...defaultPriceRange,
   ]);
+
+  // Global state
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
+  const [, setPoolInfoQuery] = useAtom(EarnState.poolInfoQuery);
+
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
   const [zoomLevel, setZoomLevel] = useState<number>(0);
@@ -246,6 +250,13 @@ export const useSelectPool = ({
     },
     staleTime: 5_000,
   });
+
+  useEffect(() => {
+    setPoolInfoQuery({
+      isLoading: isLoadingPoolInfo,
+      data: poolInfo,
+    });
+  }, [isLoadingPoolInfo, poolInfo]);
 
   useEffect(() => {
     priceRangeRef.current = [...defaultPriceRange];

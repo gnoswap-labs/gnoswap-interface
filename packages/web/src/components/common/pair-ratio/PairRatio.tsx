@@ -18,6 +18,7 @@ interface PairRatioProps {
   isSwap?: boolean;
   showSwapBtn?: boolean;
   pool: PoolModel;
+  overrideValue?: number;
 }
 
 export function PairRatio({
@@ -26,6 +27,7 @@ export function PairRatio({
   onSwap,
   showSwapBtn,
   pool,
+  overrideValue,
 }: PairRatioProps) {
   const displayTokenSymbol = useMemo(
     () => replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
@@ -45,7 +47,7 @@ export function PairRatio({
         className="image-logo"
       />
     )}
-    {!loading && <div>1 {displayTokenSymbol} =&nbsp;{formatExchangeRate(pool.price)}&nbsp;{secondTokenSymbol}</div>}
+    {!loading && <div>1 {displayTokenSymbol} =&nbsp;{formatExchangeRate(overrideValue || pool.price)}&nbsp;{secondTokenSymbol}</div>}
     {showSwapBtn && !loading && (
       <div
         className="icon-wrapper"

@@ -364,6 +364,21 @@ export function countZeros(decimalFraction: string) {
   return Math.abs(exponent);
 }
 
+const getSubcriptChars = (number: string) => {
+  let temp = "";
+  const subscriptZeroCharCode = 8320;
+  const numberOfZeroString = countZeros(number).toString();
+
+  for (let index = 0; index < numberOfZeroString.length; index++) {
+    const currentChar = Number(numberOfZeroString[index]);
+    const lastChar = index === numberOfZeroString.length - 1;
+    const singleSubscriptNumber = String.fromCharCode(subscriptZeroCharCode + Number(lastChar ? currentChar - 1 : currentChar));
+    temp += singleSubscriptNumber;
+  }
+
+  return temp;
+};
+
 export function subscriptFormat(
   number: string | number,
   options?: {
@@ -371,11 +386,13 @@ export function subscriptFormat(
     subscriptOffset?: number
   }
 ) {
-  const numberStr = number.toString();
+  console.log("🚀 ~ number:", number);
+  const numberStr = BigNumber(number).toFormat();
+  console.log("🚀 ~ numberStr:", numberStr);
   const numberOfZero = countZeros(numberStr);
   const significantDigits = options?.significantDigits || 5;
   const zeroCountOffset = options?.subscriptOffset ? (options?.subscriptOffset + 1) : 5;
-  const subscriptZeroCharCode = 8320;
+
 
   if (numberOfZero <= zeroCountOffset) {
     return removeTrailingZeros(Number(numberStr).toLocaleString("en-US", {
@@ -383,7 +400,7 @@ export function subscriptFormat(
     }));
   }
 
-  const result = `0.0${String.fromCharCode(subscriptZeroCharCode + Number(numberOfZero - 1))}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
+  const result = `0.0${getSubcriptChars(numberStr)}${removeTrailingZeros(numberStr.slice(numberOfZero + 1, numberOfZero + 6))}`;
   return result;
 }
 

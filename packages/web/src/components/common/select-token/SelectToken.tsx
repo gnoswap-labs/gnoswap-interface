@@ -71,7 +71,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
         return "-";
       }
-      return BigNumber(tokenPrice).dividedBy(Math.pow(10, token.decimals ?? 0)).toFormat();
+      return BigNumber(tokenPrice).toFormat();
     },
     [tokenPrices, isSwitchNetwork],
   );

@@ -229,15 +229,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
     if (
       Number(tokenAAmountInput.amount) >
-      Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, ""))) /
-      Math.pow(10, tokenA.decimals)
+      Number(parseFloat(tokenAAmountInput.balance.replace(/,/g, "")))
     ) {
       return "INSUFFICIENT_BALANCE";
     }
     if (
       Number(tokenBAmountInput.amount) >
-      Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, ""))) /
-      Math.pow(10, tokenB.decimals)
+      Number(parseFloat(tokenBAmountInput.balance.replace(/,/g, "")))
     ) {
       return "INSUFFICIENT_BALANCE";
     }

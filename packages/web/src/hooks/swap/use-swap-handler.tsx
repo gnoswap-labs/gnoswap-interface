@@ -173,17 +173,13 @@ export const useSwapHandler = () => {
 
     if (
       Number(tokenAAmount) >
-      Number(
-        parseFloat(tokenABalance.replace(/,/g, "")) /
-        Math.pow(10, tokenA.decimals),
-      )
+      Number(parseFloat(tokenABalance.replace(/,/g, "")))
     ) {
       return "Insufficient Balance";
     }
     if (
       Number(tokenBAmount) >
-      Number(parseFloat(tokenBBalance.replace(/,/g, ""))) /
-      Math.pow(10, tokenB.decimals) &&
+      Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
       type === "EXACT_OUT"
     ) {
       return "Insufficient Balance";

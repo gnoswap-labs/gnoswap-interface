@@ -428,8 +428,8 @@ const SelectPriceRangeCustom = forwardRef<
                     <div className="graph-option-wrapper">
                       <span
                         className={`graph-option-item decrease ${isLoading || showDim || !availMoveLeft
-                            ? "disabled-option"
-                            : ""
+                          ? "disabled-option"
+                          : ""
                           }`}
                         onClick={moveLeft}
                       >
@@ -437,8 +437,8 @@ const SelectPriceRangeCustom = forwardRef<
                       </span>
                       <span
                         className={`graph-option-item increase ${isLoading || showDim || !availMoveRight
-                            ? "disabled-option"
-                            : ""
+                          ? "disabled-option"
+                          : ""
                           }`}
                         onClick={moveRight}
                       >
@@ -448,8 +448,8 @@ const SelectPriceRangeCustom = forwardRef<
                     <div className="graph-option-wrapper">
                       <span
                         className={`graph-option-item decrease ${isLoading || showDim || !availZoomOut
-                            ? "disabled-option"
-                            : ""
+                          ? "disabled-option"
+                          : ""
                           }`}
                         onClick={zoomOut}
                       >
@@ -457,8 +457,8 @@ const SelectPriceRangeCustom = forwardRef<
                       </span>
                       <span
                         className={`graph-option-item increase ${isLoading || showDim || !availZoomIn
-                            ? "disabled-option"
-                            : ""
+                          ? "disabled-option"
+                          : ""
                           }`}
                         onClick={zoomIn}
                       >

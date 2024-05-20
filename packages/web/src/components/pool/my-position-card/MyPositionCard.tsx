@@ -46,7 +46,6 @@ import BigNumber from "bignumber.js";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Button from "@components/common/button/Button";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
-import FloatingTooltip from "@components/common/tooltip/FloatingTooltip";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -574,24 +573,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                           }
                         >
                           <IconLinkPage className="icon-link" />
-                          <FloatingTooltip
-                            position={"top"}
-                            content={<>
-                              <div className={`box ${themeKey}-shadow`}>
-                                <span>URL Copied!</span>
-                              </div>
-                              <IconPolygon className="polygon-icon" />
-                            </>
-                            }>
-                          </FloatingTooltip>
-                          {/* {copied && (
+                          {true && (
                             <CopyTooltip>
+                              {breakpoint === DEVICE_TYPE.MOBILE && <IconPolygon className="polygon-icon rotate-90" />}
                               <div className={`box ${themeKey}-shadow`}>
                                 <span>URL Copied!</span>
                               </div>
-                              <IconPolygon className="polygon-icon" />
+                              {breakpoint !== DEVICE_TYPE.MOBILE && <IconPolygon className="polygon-icon" />}
                             </CopyTooltip>
-                          )} */}
+                          )}
                         </div>
                       </div>
                     )}
