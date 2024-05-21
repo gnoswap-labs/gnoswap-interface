@@ -117,7 +117,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const balanceText = useMemo(() => {
     const balance = gnotBalance || account?.balances?.[0].amount;
 
-    const formattedPrice = ((balance ?? 0) / (gnotToken?.decimals ?? 1)).toString().match(roundDownDecimalNumber(6))?.toString() ?? 0;
+    const formattedPrice = ((balance ?? 0) / (Math.pow(10, gnotToken?.decimals ?? 1))).toString().match(roundDownDecimalNumber(6))?.toString() ?? 0;
 
     const price = BigNumber(formattedPrice).toFormat();
 
