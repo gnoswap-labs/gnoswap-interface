@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 export const ENVIRONMENT = process.env.NEXT_PUBLIC_ENVIRONMENT || "preview";
 
 const isPreview = ENVIRONMENT === "preview";
@@ -131,4 +133,11 @@ export function makeApproveMessage(
     func: "Approve",
     args,
   });
+}
+
+export function makeGNOTSendAmount(amount: string | number | null): string {
+  if (!amount || BigNumber(amount).isZero()) {
+    return "";
+  }
+  return BigNumber(amount).toString() + "ugnot";
 }
