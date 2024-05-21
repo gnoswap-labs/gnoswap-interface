@@ -30,7 +30,6 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
 }) => {
   const [currentPoint, setCurrentPoint] = useState<string | null>();
   const [active, setActive] = useState<boolean>(false);
-  console.log("🚀 ~ currentPoint:", currentPoint);
 
   return <ExchangeRateGraphWrapper>
     <ExchangeRateGraphHeaderWrapper>
