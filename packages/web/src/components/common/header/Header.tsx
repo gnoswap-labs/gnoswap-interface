@@ -28,6 +28,7 @@ import {
   SearchContainer,
 } from "./Header.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { ITokenResponse } from "@repositories/token";
 
 interface HeaderProps {
   pathname?: string;
@@ -55,6 +56,7 @@ interface HeaderProps {
   movePage: (path: string) => void;
   gnotBalance?: number;
   isLoadingGnotBalance?: boolean;
+  gnotToken?: ITokenResponse;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -82,6 +84,7 @@ const Header: React.FC<HeaderProps> = ({
   movePage,
   gnotBalance,
   isLoadingGnotBalance,
+  gnotToken,
 }) => {
   const { width } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -158,6 +161,7 @@ const Header: React.FC<HeaderProps> = ({
                 loadingConnect={loadingConnect}
                 gnotBalance={gnotBalance}
                 isLoadingGnotBalance={isLoadingGnotBalance}
+                gnotToken={gnotToken}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />

@@ -173,8 +173,8 @@ const HeaderContainer: React.FC = () => {
         }
       } else {
         const item_ = poolList.filter((_) => _.tokenA.symbol === item.token.symbol && _.tokenB.symbol === item.tokenB.symbol)?.[0];
-        const price = toPriceFormat(item_.tvl || "0", { usd: true });
         if (!item_) return item;
+        const price = toPriceFormat(item_?.tvl || "0", { usd: true });
         return {
           ...item,
           apr: `${!item_.apr ? "-" : Number(item_.apr) > 10 ? `${item_.apr}% APR` : `${Number(item_.apr).toFixed(2)}% APR`}`,
@@ -329,6 +329,7 @@ const HeaderContainer: React.FC = () => {
       movePage={movePage}
       gnotBalance={gnotBalance}
       isLoadingGnotBalance={isLoadingGnotBalance}
+      gnotToken={gnot}
     />
   );
 };

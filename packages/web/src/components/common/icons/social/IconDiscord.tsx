@@ -1,4 +1,4 @@
-const IconDiscode = ({ className }: { className?: string }) => (
+const IconDiscord = ({ className }: { className?: string }) => (
   <svg
     width="25"
     height="24"
@@ -14,4 +14,4 @@ const IconDiscode = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default IconDiscode;
+export default IconDiscord;

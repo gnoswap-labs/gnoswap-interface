@@ -2,7 +2,7 @@ import IconGithub from "@components/common/icons/social/IconGithub";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
-import IconDiscode from "@components/common/icons/social/IconDiscode";
+import IconDiscord from "@components/common/icons/social/IconDiscord";
 
 export const FOOTER_LEFT_NAV = {
   content:
@@ -20,7 +20,7 @@ export const FOOTER_LEFT_NAV = {
     },
     {
       title: "discord",
-      icon: <IconDiscode />,
+      icon: <IconDiscord />,
       path: "https://discord.gg/u4bdGHStb2",
     },
     {

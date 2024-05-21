@@ -1,6 +1,6 @@
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
-import { cutDecimalNumberWithoutRounding } from "./regex";
+import { roundDownDecimalNumber } from "./regex";
 
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
   const number = BigNumber(amount.toString());
@@ -12,7 +12,7 @@ export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
 
 export function makeDisplayTokenAmount(
   token: TokenModel,
-  amount: bigint | string | number, 
+  amount: bigint | string | number,
   options?: { decimalsWithoutRounding?: number }
 ) {
   const number = BigNumber(Number(amount));
@@ -20,8 +20,8 @@ export function makeDisplayTokenAmount(
     return null;
   }
 
-  if(options?.decimalsWithoutRounding) {
-    return Number(number.shiftedBy(-token.decimals).toString().match(cutDecimalNumberWithoutRounding(options?.decimalsWithoutRounding)));
+  if (options?.decimalsWithoutRounding) {
+    return Number(number.shiftedBy(-token.decimals).toString().match(roundDownDecimalNumber(options?.decimalsWithoutRounding)));
   }
 
   return number.shiftedBy(-token.decimals).toNumber();

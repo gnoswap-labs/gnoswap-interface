@@ -17,6 +17,7 @@ import { Global, css } from "@emotion/react";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import SelectLanguage from "../select-language/SelectLanguage";
+import { ITokenResponse } from "@repositories/token";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -29,6 +30,7 @@ interface WalletConnectProps {
   loadingConnect: string;
   gnotBalance?: number;
   isLoadingGnotBalance?: boolean
+  gnotToken?: ITokenResponse;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -67,6 +69,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   loadingConnect,
   gnotBalance,
   isLoadingGnotBalance,
+  gnotToken,
 }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const handleESC = () => {
@@ -170,6 +173,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           onClickChangeLanguage={onClickChangeLanguage}
           gnotBalance={gnotBalance}
           isLoadingGnotBalance={isLoadingGnotBalance}
+          gnotToken={gnotToken}
         />
       )}
       {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}

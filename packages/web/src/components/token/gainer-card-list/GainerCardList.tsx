@@ -12,7 +12,7 @@ interface GainerCardListProps {
   loadingGain: boolean;
 }
 
-const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain }) => {
+const GainerCardList: React.FC<GainerCardListProps> = ({ gainers = [], loadingGain }) => {
   return (
     <section css={cardStyle}>
       <h2 className="card-title">Top 3 Gainers</h2>
@@ -26,7 +26,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain })
         <Link href={`/tokens/${makeId(gainer.path)}`} key={idx}>
           <div className="card-wrap">
             <div>
-              <MissingLogo symbol={gainer.symbol} url={gainer.logoURI} className="token-image" width={20} mobileWidth={20}/>
+              <MissingLogo symbol={gainer.symbol} url={gainer.logoURI} className="token-image" width={20} mobileWidth={20} />
               <span className="name">{gainer.name}</span>
               <span className="symbol">{gainer.symbol}</span>
             </div>
@@ -40,7 +40,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain })
             </span>
           </div>
         </Link>
-        ))}
+      ))}
     </section>
   );
 };

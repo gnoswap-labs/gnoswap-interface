@@ -9,7 +9,7 @@ import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import BigNumber from "bignumber.js";
-import { cutDecimalNumberWithoutRounding } from "@utils/regex";
+import { roundDownDecimalNumber } from "@utils/regex";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -102,7 +102,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
     if (connectedWallet && swapTokenInfo.tokenABalance !== "-") {
       if (swapTokenInfo.tokenABalance === "0") return 0;
       return BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, ""))
-        .toString().match(cutDecimalNumberWithoutRounding(2));
+        .toString().match(roundDownDecimalNumber(2));
     }
     return "-";
   }, [isSwitchNetwork, connectedWallet, swapTokenInfo.tokenABalance]);

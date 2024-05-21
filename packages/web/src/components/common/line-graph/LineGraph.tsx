@@ -145,7 +145,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
   firstPointColor,
-  // centerLineColor,
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine,
   renderBottom,
@@ -209,9 +208,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
     const maxValueBigNumber = BigNumber(maxValue);
 
     let baseLineNumberWidthComputation = 0;
-
-
-    //   maxValue - minValue !== 0 ? maxValue - minValue : maxValue * gapRatio;
 
     const minMaxGap = !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
       ? maxValueBigNumber.minus(minValueBigNumber) : maxValueBigNumber.multipliedBy(gapRatio);
