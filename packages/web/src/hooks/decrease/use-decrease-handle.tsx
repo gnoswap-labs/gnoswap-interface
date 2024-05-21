@@ -204,7 +204,6 @@ export const useDecreaseHandle = () => {
 
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
-    console.log("🚀 ~ pooledTokenInfos ~ tokenBAmount:", tokenBAmount);
     const unClaimTokenAAmount = Number(unClaimTokenA) || 0;
     const unClaimTokenBAmount = Number(unClaimTokenB) || 0;
     return {

@@ -72,7 +72,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     }
     return positions.length > 0;
   }, [connectedWallet, isSwitchNetwork, positions]);
-  console.log("🚀 ~ showClosePositionButton ~ positions:", positions.map(item => item.closed));
 
   const availableRemovePosition = useMemo(() => {
 
@@ -156,7 +155,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
 
     return positions.filter(item => item.closed === false);
   }, [isShowClosePosition, positions]);
-  console.log("🚀 ~ filteredPosition ~ filteredPosition:", filteredPosition);
 
   const handleSetIsClosePosition = () => {
     setIsShowClosedPosition(!isShowClosePosition);

@@ -116,11 +116,13 @@ export const toUnitFormat = (
       unitsUpperCase.million
     );
   if (isKMB) {
-    if (wholeNumberLength >= 4 && isFormat)
-      return (usd ? "$" : "") + convertToKMB(bigNumber.toString(), {
+
+    if (wholeNumberLength >= 4 && isFormat) {
+      return (usd ? "$" : "") + convertToKMB(bigNumber.toNumber().toString(), {
         maximumFractionDigits: 2,
         minimumFractionDigits: 2,
       });
+    }
   }
 
   // TODO : Else Return Type
@@ -386,9 +388,7 @@ export function subscriptFormat(
     subscriptOffset?: number
   }
 ) {
-  console.log("🚀 ~ number:", number);
   const numberStr = BigNumber(number).toFormat();
-  console.log("🚀 ~ numberStr:", numberStr);
   const numberOfZero = countZeros(numberStr);
   const significantDigits = options?.significantDigits || 5;
   const zeroCountOffset = options?.subscriptOffset ? (options?.subscriptOffset + 1) : 5;

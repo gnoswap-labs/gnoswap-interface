@@ -49,22 +49,26 @@ export const convertToKMB = (
     forceFractionDigit?: number,
   }) => {
   if (Number.isNaN(Number(price))) return "-";
+  const numberPrice = Number(price);
+  const numberPriceAbs = Math.abs(Number(price));
+  const isNegative = numberPrice < 0;
+  const negativeSymbol = isNegative ? "-" : "";
 
   const defaultMaximumSignificantDigits = 5;
   const isDefaultSignificantDigits = !options?.maximumFractionDigits && !options?.minimumFractionDigits;
   const maximumSignificantDigits = options?.maximumSignificantDigits || (isDefaultSignificantDigits ? defaultMaximumSignificantDigits : undefined);
   const convertOffset = options?.convertOffset || 999;
-  const intPart = Math.trunc(Number(price));
+  const intPart = Math.trunc(numberPrice);
 
-  if (intPart < convertOffset) {
-    if (Number.isInteger(Number(price))) return Number(price).toLocaleString("en-US", {
+  if (Math.abs(intPart) < convertOffset) {
+    if (Number.isInteger(numberPrice)) return numberPrice.toLocaleString("en-US", {
       maximumFractionDigits: 0,
       minimumFractionDigits: 0,
     });
-    if (Number(price) < 0.000001 && Number(price) !== 0) return "0.000001";
-    if (Number(price) < 1) return `${Number(Number(price).toFixed(6))}`;
+    if (numberPrice < 0.000001 && numberPrice >= 0) return "0.000001";
+    if (numberPrice < 1 && numberPrice >= 0) return `${Number(numberPrice.toFixed(6))}`;
 
-    const result = Number(price).toLocaleString("en-US", {
+    const result = numberPrice.toLocaleString("en-US", {
       maximumSignificantDigits: maximumSignificantDigits,
       minimumSignificantDigits: options?.minimumSignificantDigits,
       maximumFractionDigits: options?.maximumFractionDigits,
@@ -83,11 +87,11 @@ export const convertToKMB = (
 
     return Number.isInteger(result) ? forceFractionDigit(result) : rmTrailingZeros(result);
   } else {
-    const temp = Math.floor(Number(price));
+    const temp = Math.floor(numberPriceAbs);
     if (temp >= 1e9) {
       if (temp > 999.99 * 1e9) return "999.99B";
       return (
-        (temp / 1e9).toLocaleString("en-US", {
+        negativeSymbol + (temp / 1e9).toLocaleString("en-US", {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
         }) + "B"
@@ -95,7 +99,7 @@ export const convertToKMB = (
     }
     if (temp >= 1e6) {
       return (
-        (temp / 1e6).toLocaleString("en-US", {
+        negativeSymbol + (temp / 1e6).toLocaleString("en-US", {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
         }) + "M"
@@ -103,16 +107,16 @@ export const convertToKMB = (
     }
     if (temp >= 1e3) {
       return (
-        (temp / 1e3).toLocaleString("en-US", {
+        negativeSymbol + (temp / 1e3).toLocaleString("en-US", {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
         }) + "K"
       );
     }
-    return Number.isInteger(price) ? `${Number(price)}` : Number(price).toLocaleString("en-US", {
+    return (Number.isInteger(price) ? `${numberPrice}` : numberPrice.toLocaleString("en-US", {
       maximumFractionDigits: options?.maximumFractionDigits ?? 2,
       minimumFractionDigits: options?.minimumFractionDigits ?? 2,
-    });
+    }));
   }
 };
 
