@@ -17,6 +17,7 @@ import {
 } from "./PoolSelectionGraphBinTooltip";
 import { useTheme } from "@emotion/react";
 import BigNumber from "bignumber.js";
+import { displayTickNumber } from "@utils/string-utils";
 
 interface ResolveBinModel {
   index: number;
@@ -104,8 +105,11 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     getSelectionColor("0", "0"),
   );
 
+  const displayLabels = 8;
+  const labelHeight = displayLabels > 0 ? 20 : 0;
+
   const boundsWidth = width - margin.right - margin.left;
-  const boundsHeight = height - margin.top - margin.bottom;
+  const boundsHeight = height - margin.top - margin.bottom - labelHeight;
 
   const adjustBins = useMemo(() => {
     return flip
@@ -175,9 +179,21 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const defaultScaleX = d3
     .scaleLinear()
     .domain([0, maxX - minX])
-    .range([margin.left, boundsWidth]);
+    .range([0, boundsWidth]);
 
   const scaleX = defaultScaleX.copy();
+
+  const xAxis = d3
+    .axisBottom(scaleX)
+    .tickSize(4)
+    .tickPadding(4)
+    .tickFormat(tick =>
+      displayTickNumber(
+        [getInvertX(0) + defaultMinX, getInvertX(width) + defaultMinX],
+        Number(tick) + defaultMinX,
+      ),
+    )
+    .tickArguments([displayLabels]);
 
   const scaleY = d3
     .scaleLinear()
@@ -226,6 +242,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     ])
     .on("start brush", onBrushMove)
     .on("end", onBrushEnd);
+
+  function getInvertX(x: number) {
+    return Number(BigNumber(scaleX.invert(x)).toFixed(16));
+  }
 
   function onBrushMove(this: SVGGElement, event: d3.D3BrushEvent<null>) {
     if (!brushRef.current) {
@@ -430,6 +450,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             : 0)
         );
       });
+
+    if (displayLabels > 0) {
+      rects
+        .append("g")
+        .attr("transform", `translate(0,${boundsHeight})`)
+        .call(xAxis);
+    }
   }
 
   // mouse over event
@@ -915,7 +942,7 @@ function changeLine(
     type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
 
   const margin =
-    right === false ? (type === "end" ? -61 : -73) : type === "end" ? 13 : 1;
+    right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
   const labelWrapper = lineElement.select(`#${priceID}`);
 
   const labelText = !selectedFullRange
@@ -928,14 +955,14 @@ function changeLine(
     .select("rect")
     .attr("x", margin)
     .attr("y", "0")
-    .attr("width", "60")
+    .attr("width", "50")
     .attr("height", "23")
     .attr("rx", 5)
     .style("fill", color);
   labelWrapper
     .select("text")
-    .attr("x", margin + 30)
-    .attr("y", "2")
+    .attr("x", margin + 25)
+    .attr("y", "0")
     .attr("dy", "15")
     .attr("text-anchor", "middle")
     .style("fill", "#FFF")

@@ -19,6 +19,22 @@ export const PoolSelectionGraphWrapper = styled.div`
 
   svg {
     overflow: overlay;
+
+    text {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 15px;
+      color: #e0e8f4;
+    }
+
+    .tick {
+      text {
+        font-size: 9px;
+        font-weight: 400;
+        line-height: 11px;
+        color: ${({ theme }) => theme.color.border15};
+      }
+    }
   }
 
   .bar {
