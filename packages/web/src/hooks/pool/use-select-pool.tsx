@@ -518,7 +518,7 @@ export const useSelectPool = ({
 
   const selectFullRange = useCallback(() => {
     const maxPriceRange = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
-    setZoomLevel(9);
+    setZoomLevel(0);
     setMinPosition(maxPriceRange.minPrice);
     setMaxPosition(maxPriceRange.maxPrice);
     setFullRange(true);

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  EventBlocker,
   PoolSelectionGraphTooltipWrapper,
   PoolSelectionGraphWrapper,
 } from "./PoolSelectionGraph.styles";
@@ -753,6 +754,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
           />
         </svg>
       </FloatingTooltip>
+      {fullRange && <EventBlocker />}
     </PoolSelectionGraphWrapper>
   );
 };
