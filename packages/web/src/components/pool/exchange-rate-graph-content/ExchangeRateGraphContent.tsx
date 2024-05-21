@@ -139,6 +139,7 @@ export function ExchangeRateGraphContent({
               locationTooltip: 170,
             }}
             showBaseLine
+            showBaseLineLabels
             isShowTooltip={false}
             renderBottom={baseLineNumberWidth => {
               return (

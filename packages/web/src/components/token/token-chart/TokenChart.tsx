@@ -30,15 +30,16 @@ const TokenChart: React.FC<TokenChartProps> = ({
   size,
   breakpoint,
 }) => {
-  
+  const isAllZero = chartInfo?.datas.every(item => Number(item.amount.value) === 0);
+
   return (
     <TokenChartWrapper>
-      <TokenChartInfo {...tokenInfo} loading={loading}/>
+      <TokenChartInfo {...tokenInfo} loading={loading} />
       <TokenChartGraphTab
         currentTab={currentTab}
         changeTab={changeTab}
       />
-      {chartInfo?.datas.length === 0 && !loading && <ChartNotFound>
+      {(chartInfo?.datas.length === 0 && !loading) || isAllZero && <ChartNotFound>
         No data
       </ChartNotFound>}
       {loading && <LoadingChart>

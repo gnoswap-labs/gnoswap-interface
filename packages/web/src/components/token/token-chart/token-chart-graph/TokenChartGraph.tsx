@@ -43,7 +43,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     if (yAxisLabels.length > 0) {
       const leng = Math.max(...yAxisLabels.map(x => x.length), 0);
       if (leng > 0) {
-        if (leng <=3 ) return "large-text";
+        if (leng <= 3) return "large-text";
         if (leng === 4) return "medium-text";
         return "small-text";
       }
@@ -65,6 +65,8 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
             value: data.amount.value,
             time: data.time,
           }))}
+          showBaseLine
+          baseLineMap={[true, false, false, true]}
           firstPointColor={theme.color.border05}
           customData={customData}
         />
@@ -79,7 +81,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       <div className="yaxis-wrapper">
         {yAxisLabels.map((label, index) => (
           <span key={index} className={`label ${typeYAxis}`}>
-            ${label}
+            ${0}
           </span>
         ))}
       </div>

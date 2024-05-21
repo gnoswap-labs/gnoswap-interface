@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 
-interface Props {}
+interface Props { }
 
 export const TokenChartGraphWrapper = styled.div<Props>`
   display: flex;
@@ -44,9 +44,10 @@ export const TokenChartGraphWrapper = styled.div<Props>`
       justify-content: space-between;
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
-      
+
       span {
-        ${fonts.body12};
+        /* white-space: nowrap; */
+        ${fonts.p4};
         color: ${({ theme }) => theme.color.text04};
         ${media.mobile} {
           ${fonts.p4};
