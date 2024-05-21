@@ -145,7 +145,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
   firstPointColor,
-  centerLineColor,
+  // centerLineColor,
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine,
   renderBottom,
