@@ -95,6 +95,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   onClickChangeLanguage,
   gnotBalance,
   gnotToken,
+  isLoadingGnotBalance,
 }) => {
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -115,7 +116,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const balanceText = useMemo(() => {
-    const balance = gnotBalance || account?.balances?.[0].amount;
+    const balance = isLoadingGnotBalance ? account?.balances?.[0].amount : gnotBalance;
 
     const formattedPrice = ((balance ?? 0) / (Math.pow(10, gnotToken?.decimals ?? 1))).toString().match(roundDownDecimalNumber(6))?.toString() ?? 0;
 
