@@ -1,8 +1,8 @@
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
-import IconTelegram from "@components/common/icons/social/IconTelegram";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
+import IconDiscode from "@components/common/icons/social/IconDiscode";
 
 export const FOOTER_LEFT_NAV = {
   content:
@@ -19,9 +19,9 @@ export const FOOTER_LEFT_NAV = {
       path: "https://docs.gnoswap.io/",
     },
     {
-      title: "telegram",
-      icon: <IconTelegram />,
-      path: "https://t.me/gnoswap",
+      title: "discord",
+      icon: <IconDiscode />,
+      path: "https://discord.gg/u4bdGHStb2",
     },
     {
       title: "medium",

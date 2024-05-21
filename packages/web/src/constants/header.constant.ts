@@ -30,7 +30,7 @@ export const SIDE_MENU_NAV = {
   },
   HELPCENTER: {
     title: "Help Center",
-    path: "https://t.me/gnoswap",
+    path: "https://discord.gg/u4bdGHStb2",
   },
   DOCUMENTATION: {
     title: "Documentation",
