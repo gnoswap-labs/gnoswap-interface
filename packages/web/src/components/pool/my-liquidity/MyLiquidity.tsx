@@ -26,6 +26,7 @@ interface MyLiquidityProps {
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
+  showClosePositionButton: boolean;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -48,6 +49,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isShowClosePosition,
   handleSetIsClosePosition,
   isHiddenAddPosition,
+  showClosePositionButton,
 }) => {
   return (
     <>
@@ -67,6 +69,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             isShowClosePosition={isShowClosePosition}
             handleSetIsClosePosition={handleSetIsClosePosition}
             isHiddenAddPosition={isHiddenAddPosition}
+            showClosePositionButton={showClosePositionButton}
           />
           <MyLiquidityContent
             connected={connected}
@@ -84,7 +87,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           positions.map((position: PoolPositionModel, index: number) => (
             <MyPositionCard
               position={position}
-              key={index}
+              key={index.toString() + position.id}
               breakpoint={breakpoint}
               loading={loading}
               address={address || ""}
@@ -94,12 +97,12 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           ))
         ) : (
           <>
-            <div className="slider-wrap" ref={divRef} onScroll={onScroll}>
+            <div className="slider-wrap clearfix" ref={divRef} onScroll={onScroll}>
               <div className={"box-slider full-width"}>
                 {positions.map((position: PoolPositionModel, index: number) => (
                   <MyPositionCard
                     position={position}
-                    key={index}
+                    key={index.toString() + position.id}
                     breakpoint={breakpoint}
                     loading={loading}
                     address={address || ""}

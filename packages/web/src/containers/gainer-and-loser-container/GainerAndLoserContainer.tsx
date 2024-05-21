@@ -108,37 +108,39 @@ const GainerAndLoserContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const gainersList = useMemo(() => {
-    return gainers.map((item: IGainer) => {
+    return gainers?.slice(0, 3).map((item: IGainer) => {
+      const isGnotPath = item.tokenPath === wugnotPath;
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
-        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
-        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
-        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
-        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
+        path: isGnotPath ? (gnot?.path || "") : item.tokenPath,
+        name: isGnotPath ? (gnot?.name || "") : temp.name,
+        symbol: isGnotPath ? (gnot?.symbol || "") : temp.symbol,
+        logoURI: isGnotPath ? (gnot?.logoURI || "") : temp.logoURI,
         price: `${(toUnitFormat(item.tokenPrice, true, false))}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
         }
       };
-    }).slice(0, 3);
+    });
   }, [tokens, gainers]);
 
   const loserList = useMemo(() => {
-    return losers.map((item: IGainer) => {
+    return losers?.slice(0, 3)?.map((item: IGainer) => {
+      const isGnotPath = item.tokenPath === wugnotPath;
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
-        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
-        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
-        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
-        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
+        path: isGnotPath ? (gnot?.path || "") : item.tokenPath,
+        name: isGnotPath ? (gnot?.name || "") : temp.name,
+        symbol: isGnotPath ? (gnot?.symbol || "") : temp.symbol,
+        logoURI: isGnotPath ? (gnot?.logoURI || "") : temp.logoURI,
         price: `${(toUnitFormat(item.tokenPrice, true, false))}`,
         change: {
           status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
           value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
         }
       };
-    }).slice(0, 3);
+    });
   }, [tokens, losers]);
 
   return (

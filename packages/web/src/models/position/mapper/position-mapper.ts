@@ -9,7 +9,7 @@ import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
 import { toUnitFormat } from "@utils/number-utils";
-import { INCENTIVE_TYPE } from "@constants/option.constant";
+import { INCENTIVE_TYPE, RewardType } from "@constants/option.constant";
 
 export class PositionMapper {
   public static toTokenPairAmount(
@@ -45,7 +45,7 @@ export class PositionMapper {
       tickUpper: Number(position.tickUpper),
       liquidity: BigInt(position.liquidity),
       tokenABalance: Number(position.tokenABalance),
-      tokenBBalance: Number(position.tokenBBalance),  
+      tokenBBalance: Number(position.tokenBBalance),
       positionUsdValue: position.usdValue,
       unclaimedFeeAAmount: Number(position.unclaimedFeeAAmount),
       unclaimedFeeBAmount: Number(position.unclaimedFeeBAmount),
@@ -84,7 +84,7 @@ export class PositionMapper {
       totalAmount: Number(reward.totalAmount),
       claimableAmount: Number(reward.claimableAmount),
       claimableUsd: reward.claimableUsd,
-      rewardType: reward.rewardType,
+      rewardType: reward.rewardType.toUpperCase() as RewardType,
     };
   }
 

@@ -54,12 +54,7 @@ const EarnMyPositionContainer: React.FC<
     const [isClosed, setIsClosed] = useState(false);
     const { isLoadingCommon } = useLoading();
 
-    const visiblePositions = useMemo(() => {
-      if (!connected && !address) {
-        return false;
-      }
-      return true;
-    }, [address, connected]);
+
 
     const { data: addressName = "" } = useGetUsernameByAddress(address || "", { enabled: !!address });
 
@@ -101,7 +96,7 @@ const EarnMyPositionContainer: React.FC<
     }, [router, address]);
 
     const moveEarnStake = useCallback(() => {
-      router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/staking");
+      router.push("/earn/pool/gno.land_r_demo_gns:gno.land_r_demo_wugnot:3000/#staking");
     }, [router]);
 
 
@@ -147,13 +142,25 @@ const EarnMyPositionContainer: React.FC<
       setIsClosed(!isClosed);
     };
 
+    const allPositionLength = useMemo(() => positions.length, [positions]);
+    const openPositionLength = useMemo(() => positions.filter((_: PositionModel) => _.closed === false).length, [positions]);
+
+    const visiblePositions = useMemo(() => {
+      const noClosedPosition = positions.every(item => !item.closed);
+
+      if ((!connected && !address) || noClosedPosition) {
+        return false;
+      }
+      return true;
+    }, [address, connected, positions]);
+
     return (
       <EarnMyPositions
         address={address}
         addressName={addressName}
         isOtherPosition={!!isOtherPosition}
         visiblePositions={visiblePositions}
-        positionLength={positions.length}
+        positionLength={isClosed ? allPositionLength : openPositionLength}
         connected={connected}
         availableStake={availableStake}
         connect={connect}

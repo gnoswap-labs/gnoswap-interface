@@ -183,7 +183,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           accum[current.rewardType] = [];
         }
 
-        const index = accum[current.rewardType].findIndex((item) => item.token.priceId === current.rewardToken.priceId);
+        const index = accum[current.rewardType].findIndex((item) => item.token.priceID === current.rewardToken.priceID);
         if (index !== -1) {
           accum[current.rewardType][index] = {
             ...accum[current.rewardType][index],
@@ -261,7 +261,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           if (!currentTypeRewards) {
             accum[current.rewardType] = [];
           }
-          const index = accum[current.rewardType].findIndex((item) => item.token.priceId === current.rewardToken.priceId);
+          const index = accum[current.rewardType].findIndex((item) => item.token.priceID === current.rewardToken.priceID);
           if (index != -1) {
             accum[current.rewardType][index] = {
               ...accum[current.rewardType][index],
@@ -430,21 +430,23 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   ]);
 
   const minTickLabel = useMemo(() => {
-    return (!isSwap ? -minTickRate : minTickRate) > 1000
-      ? ">999%"
-      : `${minTickRate < -1 ? "+" : ""}${Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1
-        ? "<1"
-        : Math.round(minTickRate * -1)
-      }%`;
+    if (Math.abs(minTickRate) >= 1000) return ">999%";
+
+    if (Math.abs(minTickRate) > 0 && Math.abs(minTickRate) < 1) {
+      return "<1%";
+    }
+
+    return (minTickRate < -1 ? "+" : "") + Math.round(minTickRate * -1) + "%";
   }, [minTickRate, isSwap]);
 
   const maxTickLabel = useMemo(() => {
-    return maxTickRate === 999
-      ? `>${maxTickRate}%`
-      : maxTickRate >= 1000
-        ? ">999%"
-        : `${maxTickRate > 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)
-        }%`;
+    if (maxTickRate === 999) return "+999%";
+
+    if (maxTickRate >= 1000) return ">999%";
+
+    if (Math.abs(maxTickRate) < 1) return "<1%";
+
+    return (maxTickRate > 1 ? "+" : "") + Math.round(maxTickRate) + "%";
   }, [maxTickRate]);
 
   const startClass = useMemo(() => {
@@ -466,6 +468,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       router.push("/earn/pool/" + router.query["pool-path"] + "/" + position?.id + "/reposition");
     }
   };
+
+  const isHideBar = useMemo(() => {
+    const isAllReserveZeroBin40 = position.pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = position.pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+
+    return isAllReserveZeroBin40 && isAllReserveZeroBin;
+  }, [position.pool.bins, position.pool.bins40]);
+
   return (
     <>
       <PositionCardAnchor id={`${position.id}`} />
@@ -552,7 +562,28 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                       </div>
                     )}
                     {!loading && (
-                      <span className="product-id">ID #{position.id}</span>
+                      <div className="link-page">
+                        <span className="product-id">ID #{position.id}</span>
+                        <div
+                          onClick={() =>
+                            setCopy(
+                              `${window.location.host + window.location.pathname
+                              }?addr=${address}#${position.id}`,
+                            )
+                          }
+                        >
+                          <IconLinkPage className="icon-link" />
+                          {copied && (
+                            <CopyTooltip>
+                              {breakpoint === DEVICE_TYPE.MOBILE && <IconPolygon className="polygon-icon rotate-90" />}
+                              <div className={`box ${themeKey}-shadow`}>
+                                <span>URL Copied!</span>
+                              </div>
+                              {breakpoint !== DEVICE_TYPE.MOBILE && <IconPolygon className="polygon-icon" />}
+                            </CopyTooltip>
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </>
@@ -726,6 +757,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               maxTickPosition={maxTickPosition}
               binsMyAmount={bins ?? []}
               isSwap={isSwap}
+              showBar={!isHideBar}
             />
           )}
           {loading && (
@@ -736,7 +768,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           {!loading && (
             <div className="convert-price">
               <div>
-                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr} />{" "}
+                1 {(!isSwap ? tokenA : tokenB)?.symbol} = <ExchangeRate value={minPriceStr} />&nbsp;
                 {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={startClass}>
                   {!isSwap ? minTickLabel : maxTickLabel}
@@ -757,7 +789,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 &nbsp;
               </div>
               <div>
-                ~ <ExchangeRate value={maxPriceStr} /> {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                ~ <ExchangeRate value={maxPriceStr} /> &nbsp;{(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
                 <span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}
                 </span>

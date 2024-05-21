@@ -129,8 +129,8 @@ export const useIncreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
+        ? RANGE_STATUS_OPTION.IN
+        : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -151,9 +151,9 @@ export const useIncreaseHandle = () => {
     isCreate: false,
     options: selectedPosition
       ? {
-          tickLower: selectedPosition.tickLower,
-          tickUpper: selectedPosition.tickUpper,
-        }
+        tickLower: selectedPosition.tickLower,
+        tickUpper: selectedPosition.tickUpper,
+      }
       : null,
   });
 

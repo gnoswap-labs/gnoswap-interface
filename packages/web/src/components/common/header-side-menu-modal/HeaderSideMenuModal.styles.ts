@@ -5,17 +5,33 @@ import { media } from "@styles/media";
 
 export const HeaderSideMenuModalWrapper = styled.div`
   position: absolute;
-  top: 45px;
+  top: 44px;
   ${media.tablet} {
     top: 44px;
   }
 
-  right: 0px;
+  left: 0px;
   width: 240px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.background01};
   border: 1px solid ${({ theme }) => theme.color.border02};
   box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+  ${media.mobile} {
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+    top: initial;
+  }
+`;
+
+export const FakeSpaceWrapper = styled.div`
+  position: absolute;
+  height: 44px;
+  top:0px;
+
+  right: 0px;
+  width: 240px;
   ${media.mobile} {
     width: 100%;
     left: 0;
@@ -31,7 +47,7 @@ export const Navigation = styled.nav`
   ul {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    gap: 4px;
+    gap: 0px;
     &:last-of-type {
       li {
         padding: 10px 16px;
@@ -39,7 +55,7 @@ export const Navigation = styled.nav`
     }
   }
   li {
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    ${mixins.flexbox("column", "flex-start", "center")};
     width: 100%;
     &.first-side-menu {
       border-top-left-radius: 8px;
@@ -49,6 +65,7 @@ export const Navigation = styled.nav`
       border-bottom-right-radius: 8px;
       border-bottom-left-radius: 8px;
     }
+    height: 41px;
     padding: 8px 16px;
     color: ${({ theme }) => theme.color.text04};
     &.selected,
@@ -69,6 +86,7 @@ export const Navigation = styled.nav`
       }
     },
   }
+}
 `;
 
 export const LeftIcon = styled.div`
@@ -103,7 +121,7 @@ export const MenuDivider = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   width: 100%;
   height: 1px;
-  margin: 4px 0px;
   align-self: stretch;
   background: ${({ theme }) => theme.color.border02};
 `;
+

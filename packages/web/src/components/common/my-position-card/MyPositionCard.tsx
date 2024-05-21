@@ -25,8 +25,6 @@ import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 import { toUnitFormat } from "@utils/number-utils";
-// import { makeDisplayTokenAmount } from "@utils/token-utils";
-// import { PositionClaimInfo } from "@models/position/info/position-claim-info";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -115,11 +113,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickRate]);
 
   const maxTickLabel = useMemo(() => {
-    return maxTickRate === 999
-      ? `>${maxTickRate}%`
-      : maxTickRate >= 1000
-        ? ">999%"
-        : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
+    if (maxTickRate === 999) return `>${maxTickRate}`;
+
+    if (maxTickRate >= 1000) return ">999%";
+
+    return maxTickRate >= 1000
+      ? ">999%"
+      : `${maxTickRate > 0 && maxTickRate >= 1 ? "+" : ""}${Math.abs(maxTickRate) < 1 ? "<1" : Math.round(maxTickRate)}%`;
   }, [maxTickRate]);
 
   const tickRange = useMemo(() => {

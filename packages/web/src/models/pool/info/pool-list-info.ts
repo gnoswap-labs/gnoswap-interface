@@ -28,4 +28,8 @@ export interface PoolListInfo {
   currentTick: number;
 
   bins: PoolBinModel[];
+
+  bins40: PoolBinModel[];
+
+  tvl: string;
 }

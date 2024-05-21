@@ -20,7 +20,6 @@ export const initialPool: PoolModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   tokenB: {
     chainId: "",
@@ -33,7 +32,6 @@ export const initialPool: PoolModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   incentiveType: "INCENTIVIZED",
   tvl: 0,
@@ -69,9 +67,15 @@ export const initialPool: PoolModel = {
   }
 };
 
+export interface LineGraphData {
+  value: string;
+  time: string;
+}
+
 const ExchangeRateGraphContainer: React.FC = () => {
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [compareToken] = useAtom(EarnState.currentCompareToken);
+  const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
 
   const tokenPair = currentPoolPath?.split(":");
   const { getGnotPath } = useGnotToGnot();
@@ -137,7 +141,7 @@ const ExchangeRateGraphContainer: React.FC = () => {
 
   return (<ExchangeRateGraph
     poolData={changedPoolInfo}
-    isLoading={(!!poolPath && isLoading)}
+    isLoading={isLoading || isLoadingRPCPoolInfo}
     isReversed={isReversed}
     selectedScope={selectedScope}
     setSelectedScope={setSelectedScope}

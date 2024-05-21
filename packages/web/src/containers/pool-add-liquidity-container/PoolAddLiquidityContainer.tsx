@@ -507,21 +507,21 @@ const EarnAddLiquidityContainer: React.FC = () => {
         ...prev,
         tokenA: currentTokenA
           ? {
-              ...currentTokenA,
-              path: getGnotPath(currentTokenA).path,
-              name: getGnotPath(currentTokenA).name,
-              symbol: getGnotPath(currentTokenA).symbol,
-              logoURI: getGnotPath(currentTokenA).logoURI,
-            }
+            ...currentTokenA,
+            path: getGnotPath(currentTokenA).path,
+            name: getGnotPath(currentTokenA).name,
+            symbol: getGnotPath(currentTokenA).symbol,
+            logoURI: getGnotPath(currentTokenA).logoURI,
+          }
           : null,
         tokenB: currentTokenB
           ? {
-              ...currentTokenB,
-              path: getGnotPath(currentTokenB).path,
-              name: getGnotPath(currentTokenB).name,
-              symbol: getGnotPath(currentTokenB).symbol,
-              logoURI: getGnotPath(currentTokenB).logoURI,
-            }
+            ...currentTokenB,
+            path: getGnotPath(currentTokenB).path,
+            name: getGnotPath(currentTokenB).name,
+            symbol: getGnotPath(currentTokenB).symbol,
+            logoURI: getGnotPath(currentTokenB).logoURI,
+          }
           : null,
       }));
       return;
@@ -620,6 +620,45 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     selectPool.setIsChangeMinMax(priceRange?.type === "Custom");
   }, [priceRange?.type]);
+
+  useEffect(() => {
+    if (
+      !isFetchedPools ||
+      !swapFeeTier ||
+      !tokenA ||
+      !tokenB ||
+      swapFeeTier === "NONE"
+    ) {
+      return;
+    }
+
+    const poolFeeTier = pools.map(pool => makeSwapFeeTier(pool.fee));
+    const existPool = poolFeeTier.includes(swapFeeTier);
+
+    if (existPool) {
+      if (router.query.price_range_type) {
+        setPriceRange(
+          priceRanges.find(
+            range => range.type === router.query.price_range_type,
+          ) || null,
+        );
+        return;
+      }
+      setPriceRange(
+        priceRanges.find(range => range.type === "Passive") || null,
+      );
+    } else {
+      setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
+    }
+  }, [
+    swapFeeTier,
+    pools,
+    isFetchedPools,
+    priceRanges,
+    tokenA,
+    tokenB,
+    router.query.price_range_type,
+  ]);
 
   useEffect(() => {
     const queryString = makeQueryString({

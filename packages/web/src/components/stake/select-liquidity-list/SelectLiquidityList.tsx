@@ -16,7 +16,7 @@ interface SelectLiquidityProps {
 }
 
 const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
-  stakedPositions,
+  // stakedPositions,
   unstakedPositions,
   checkedList,
   onCheckedItem,
@@ -44,7 +44,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
         {isLoading && <div css={loadingWrapper}>
           <LoadingSpinner />
         </div>}
-        {!isLoading && unstakedPositions.map((position, index) => (
+        {!isLoading && unstakedPositions.filter(item => item.closed === false).map((position, index) => (
           <SelectLiquidityListItem
             position={position}
             checkedList={checkedList}
@@ -52,7 +52,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             key={index}
           />
         ))}
-        {!isLoading && stakedPositions.map((position, index) => (
+        {/* {!isLoading && stakedPositions.filter(item => item.closed === false).map((position, index) => (
           <SelectLiquidityListItem
             position={position}
             checkedList={checkedList}
@@ -60,7 +60,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             key={index}
             disabled
           />
-        ))}
+        ))} */}
         {!isLoading && isEmpty && <div className="no-position">No Position</div>}
       </ul>
     </div>

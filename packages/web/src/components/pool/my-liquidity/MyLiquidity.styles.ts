@@ -23,7 +23,7 @@ export const MyLiquidityWrapper = styled.div`
   .slider-wrap {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    overflow-x: auto;
+    overflow: overlay;
     gap: 12px;
     .box-slider {
       ${mixins.flexbox("row", "flex-start", "flex-start")};

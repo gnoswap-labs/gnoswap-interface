@@ -42,11 +42,10 @@ const AssetInfo: React.FC<AssetInfoProps> = ({
   }, [withdraw, asset]);
 
   const convertBalance = useMemo(() => {
-    const bigNumberBalanceWithDecimals = BigNumber((balance ?? "").toString())
-      .dividedBy(Math.pow(10, asset.decimals ?? 0));
+    const bigNumberBalance = BigNumber((balance ?? "").toString());
 
-    return removeTrailingZeros(bigNumberBalanceWithDecimals.toFormat(bigNumberBalanceWithDecimals.isInteger() ? 0 : 6)) || 0;
-  }, [asset.decimals, balance]);
+    return removeTrailingZeros(bigNumberBalance.toFormat(bigNumberBalance.isInteger() ? 0 : 6)) || 0;
+  }, [balance]);
 
   const priceData = ["-", "<$0.01"].includes(price) ? price : `$${price}`;
 

@@ -13,7 +13,6 @@ import {
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState } from "@states/index";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useMemo } from "react";
@@ -112,12 +111,12 @@ export const useDecreasePositionModal = ({
         setTimeout(() => {
           // Make display token amount
           const tokenAAmount = (
-            makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
+            resultData.removedTokenAAmount || 0
           ).toLocaleString("en-US", {
             maximumFractionDigits: 6,
           });
           const tokenBAmount = (
-            makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
+            resultData.removedTokenBAmount || 0
           ).toLocaleString("en-US", {
             maximumFractionDigits: 6,
           });

@@ -28,11 +28,12 @@ import {
   SearchContainer,
 } from "./Header.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { ITokenResponse } from "@repositories/token";
 
 interface HeaderProps {
   pathname?: string;
   sideMenuToggle: boolean;
-  onSideMenuToggle: () => void;
+  onSideMenuToggle: (value: boolean) => void;
   searchMenuToggle: boolean;
   onSearchMenuToggle: () => void;
   tokens: Token[];
@@ -53,6 +54,9 @@ interface HeaderProps {
   popularTokens: Token[];
   recents: Token[];
   movePage: (path: string) => void;
+  gnotBalance?: number;
+  isLoadingGnotBalance?: boolean;
+  gnotToken?: ITokenResponse;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -78,6 +82,9 @@ const Header: React.FC<HeaderProps> = ({
   popularTokens,
   recents,
   movePage,
+  gnotBalance,
+  isLoadingGnotBalance,
+  gnotToken,
 }) => {
   const { width } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -152,6 +159,9 @@ const Header: React.FC<HeaderProps> = ({
                 switchNetwork={switchNetwork}
                 isSwitchNetwork={isSwitchNetwork}
                 loadingConnect={loadingConnect}
+                gnotBalance={gnotBalance}
+                isLoadingGnotBalance={isLoadingGnotBalance}
+                gnotToken={gnotToken}
               />
             </SearchContainer>
             <NotificationButton breakpoint={breakpoint} />

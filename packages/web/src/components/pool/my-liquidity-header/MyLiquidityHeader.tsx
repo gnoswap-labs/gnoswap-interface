@@ -23,6 +23,7 @@ interface MyLiquidityHeaderProps {
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
+  showClosePositionButton: boolean;
 }
 
 const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
@@ -37,6 +38,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   isShowClosePosition,
   handleSetIsClosePosition,
   isHiddenAddPosition,
+  showClosePositionButton,
 }) => {
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -58,56 +60,56 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
     }
   };
 
+  const renderPositionHeader = () => {
+    const positionTitle = () => {
+      if (isOtherPosition) {
+        return <>
+          <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
+          <span>{`’s Positions (${positionLength})`}</span>
+        </>
+      }
+
+      if (connectedWallet) {
+        return <span>{`My Positions (${positionLength})`}</span>
+      }
+
+      return <span>{"My Positions"}</span>
+    }
+
+    const canCopy = (isOtherPosition || connectedWallet);
+
+    return <div className="header">
+      <h2>
+        {positionTitle()}
+        {canCopy && <button onClick={onClickCopy}><IconLinkPage />
+          {copied && (
+            <CopyTooltip>
+              <div className={`box ${themeKey}-shadow`}>
+                <span>URL Copied!</span>
+              </div>
+              <IconPolygon className="polygon-icon" />
+            </CopyTooltip>
+          )}
+        </button>}
+      </h2>
+      {showClosePositionButton && (
+        <div className="hide-close-position">
+          <Switch
+            checked={isShowClosePosition}
+            onChange={handleSetIsClosePosition}
+            hasLabel={true}
+            labelText="Show closed positions"
+          />
+        </div>
+      )}
+    </div>
+  }
+
   return (
     <HeaderWrapper>
-      <div className="header">
-        {isOtherPosition ? (
-          <h2>
-            <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
-            <span>{`’s Positions (${positionLength})`}</span>
-            <button onClick={onClickCopy}><IconLinkPage />
-            {copied && (
-              <CopyTooltip>
-                <div className={`box ${themeKey}-shadow`}>
-                  <span>URL Copied!</span>
-                </div>
-                <IconPolygon className="polygon-icon" />
-              </CopyTooltip>
-            )}
-            </button>
-          </h2>
-        ) : connectedWallet ? (
-          <h2>
-            <span>{`My Positions (${positionLength})`}</span>
-            <button onClick={onClickCopy}><IconLinkPage />
-            {copied && (
-              <CopyTooltip>
-                <div className={`box ${themeKey}-shadow`}>
-                  <span>URL Copied!</span>
-                </div>
-                <IconPolygon className="polygon-icon" />
-              </CopyTooltip>
-            )}
-            </button>
-          </h2>
-        ) : (
-          <h2>
-            <span>{"My Positions"}</span>
-          </h2>
-        )}
-        {availableRemovePosition && (
-          <div className="hide-close-position">
-            <Switch
-              checked={isShowClosePosition}
-              onChange={handleSetIsClosePosition}
-              hasLabel={true}
-              labelText="Show closed positions"
-            />
-          </div>
-        )}
-      </div>
+      {renderPositionHeader()}
       <div className="button-wrap">
-        {availableRemovePosition && (
+        {showClosePositionButton && (
           <div className="hide-close-position">
             <Switch
               checked={isShowClosePosition}

@@ -12,7 +12,7 @@ interface LoserCardListProps {
   loadingLose: boolean;
 }
 
-const LoserCard: React.FC<LoserCardListProps> = ({ losers, loadingLose }) => {
+const LoserCard: React.FC<LoserCardListProps> = ({ losers = [], loadingLose }) => {
   return (
     <section css={cardStyle}>
       <h2 className="card-title">Top 3 Losers</h2>
@@ -26,7 +26,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers, loadingLose }) => {
         <Link href={`/tokens/${makeId(loser.path)}`} key={idx}>
           <div className="card-wrap">
             <div>
-              <MissingLogo symbol={loser.symbol} url={loser.logoURI} className="logo" width={20} mobileWidth={20}/>
+              <MissingLogo symbol={loser.symbol} url={loser.logoURI} className="logo" width={20} mobileWidth={20} />
               <span className="name">{loser.name}</span>
               <span className="symbol">{loser.symbol}</span>
             </div>

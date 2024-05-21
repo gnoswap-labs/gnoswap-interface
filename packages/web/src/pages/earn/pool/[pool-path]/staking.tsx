@@ -11,6 +11,7 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useLoading } from "@hooks/common/use-loading";
 
 export default function Pool() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function Pool() {
   const { initializedData } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
   });
+  const { isLoadingCommon } = useLoading();
 
   const address = useMemo(() => {
     const address = initializedData?.addr;
@@ -31,7 +33,7 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { loading } = usePositionData(address);
+  const { loading, isFetchedPosition } = usePositionData(address);
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
@@ -44,9 +46,9 @@ export default function Pool() {
   }, [data?.incentiveType]);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && isFetchedPosition && !isLoadingCommon) {
       const positionContainerElement = document.getElementById("staking");
-      const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
         return;
       }
@@ -54,7 +56,8 @@ export default function Pool() {
         top: topPosition,
       });
     }
-  }, [loading]);
+  }, [loading, isFetchedPosition, isLoadingCommon]);
+
 
   return (
     <PoolLayout

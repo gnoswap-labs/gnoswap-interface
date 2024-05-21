@@ -38,7 +38,7 @@ export const useTokenData = () => {
         ? 10 * 1000
         : PATH_60SECOND.includes(router.pathname) ? 60 * 1000 : false,
   });
-  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice } = useGetTokenPrices();
+  const { data: tokenPrices = {}, isLoading: isLoadingTokenPrice, isFetched: isFetchedTokenPrices } = useGetTokenPrices();
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
   const { rpcProvider } = useGnoswapContext();
@@ -113,6 +113,7 @@ export const useTokenData = () => {
         tokenPrice.pricesBefore.latestPrice,
         tokenPrice.pricesBefore.priceToday,
       );
+
       return {
         token: {
           ...token,
@@ -125,6 +126,8 @@ export const useTokenData = () => {
       };
     });
   }, [tokens, tokenPrices]);
+
+
   const recentlyAddedTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1, t2) => {
@@ -223,11 +226,17 @@ export const useTokenData = () => {
     }
 
     if (tokens.length === 0) return;
-    const fetchResults = await Promise.all(tokens.map(fetchTokenBalance));
+    const fetchResults = await Promise.all(tokens.map(async (token) => {
+      const result = await fetchTokenBalance(token);
+      return {
+        priceID: token.priceID,
+        balance: result,
+      };
+    }));
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
-        balancesData[tokens[index].priceID] = result;
+        balancesData[result.priceID] = result.balance;
       }
     });
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
@@ -253,6 +262,7 @@ export const useTokenData = () => {
     loading,
     loadingBalance,
     isFetched,
+    isFetchedTokenPrices,
     error,
     isLoadingTokenPrice,
     isChangeBalancesToken,

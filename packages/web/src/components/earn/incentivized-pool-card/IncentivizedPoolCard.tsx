@@ -61,6 +61,13 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
     return filteredArray;
   }, [pool.rewardTokens, pool.tokenA, pool.tokenB]);
 
+  const isHideBar = useMemo(() => {
+    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+
+    return isAllReserveZeroBin40 && isAllReserveZeroBin;
+  }, [pool.bins, pool.bins40]);
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -99,7 +106,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
               </div>
               <div className="list-content">
-                <span className="value-text">${pool.liquidity}</span>
+                <span className="value-text">{pool.liquidity}</span>
                 <span className="value-text">{pool.apr}</span>
               </div>
             </div>
@@ -111,8 +118,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="label-text">{POOL_CONTENT_TITLE.FEE}</span>
               </div>
               <div className="volume-content">
-                <span className="value-text">${pool.volume24h}</span>
-                <span className="value-text">${pool.fees24h}</span>
+                <span className="value-text">{pool.volume24h}</span>
+                <span className="value-text">{pool.fees24h}</span>
               </div>
             </div>
             <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
@@ -128,6 +135,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 position="top"
                 offset={40}
                 poolPrice={pool?.price || 1}
+                showBar={!isHideBar}
               />
               <div className="price-section">
                 <span className="label-text">

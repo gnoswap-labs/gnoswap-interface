@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import { makeBroadcastStakingMessage, useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 interface SubmitPositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -32,8 +31,8 @@ const SubmitPositionModalContainer = ({
     const tokenB = positions[0].pool.tokenB;
     const pooledTokenAAmount = positions.reduce((accum, position) => accum + position.tokenABalance, 0);
     const pooledTokenBAmount = positions.reduce((accum, position) => accum + position.tokenBBalance, 0);
-    const tokenAAmount = makeDisplayTokenAmount(tokenA, Number(pooledTokenAAmount)) || 0;
-    const tokenBAmount = makeDisplayTokenAmount(tokenB, Number(pooledTokenBAmount)) || 0;
+    const tokenAAmount = Number(pooledTokenAAmount) || 0;
+    const tokenBAmount = Number(pooledTokenBAmount) || 0;
     return [{
       token: tokenA,
       amount: tokenAAmount,

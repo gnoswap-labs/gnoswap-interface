@@ -224,20 +224,18 @@ export const useEarnAddLiquidityConfirmModal = ({
       inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
-      priceLabelMin: `1 ${tokenASymbol} = ${
-        minPriceStr === "∞"
+      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞"
           ? minPriceStr
           : convertToKMB(Number(minPriceStr).toFixed(4), {
-              maximumFractionDigits: 4,
-            })
-      } ${tokenBSymbol}`,
-      priceLabelMax: `1 ${tokenASymbol} = ${
-        maxPriceStr === "∞"
+            maximumFractionDigits: 4,
+          })
+        } ${tokenBSymbol}`,
+      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞"
           ? maxPriceStr
           : convertToKMB(Number(maxPriceStr).toFixed(4), {
-              maximumFractionDigits: 4,
-            })
-      } ${tokenBSymbol}`,
+            maximumFractionDigits: 4,
+          })
+        } ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
     };
@@ -265,7 +263,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     }
   }, [close, router]);
 
-  const confirm = useCallback((options?: {withStaking?: boolean}) => {
+  const confirm = useCallback((options?: { withStaking?: boolean }) => {
     if (!tokenA || !tokenB || !swapFeeTier) {
       return;
     }
@@ -297,24 +295,24 @@ export const useEarnAddLiquidityConfirmModal = ({
 
     const transaction = selectPool.isCreate
       ? createPool({
-          tokenAAmount,
-          tokenBAmount,
-          minTick,
-          maxTick,
-          slippage,
-          startPrice: `${selectPool.startPrice || 1}`,
-          swapFeeTier,
-          withStaking: options?.withStaking,
-        })
+        tokenAAmount,
+        tokenBAmount,
+        minTick,
+        maxTick,
+        slippage,
+        startPrice: `${selectPool.startPrice || 1}`,
+        swapFeeTier,
+        withStaking: options?.withStaking,
+      })
       : addLiquidity({
-          tokenAAmount,
-          tokenBAmount,
-          minTick,
-          maxTick,
-          slippage,
-          swapFeeTier,
-          withStaking: options?.withStaking,
-        });
+        tokenAAmount,
+        tokenBAmount,
+        minTick,
+        maxTick,
+        slippage,
+        swapFeeTier,
+        withStaking: options?.withStaking,
+      });
     transaction
       .then(result => {
         if (result) {
@@ -426,7 +424,7 @@ export const useEarnAddLiquidityConfirmModal = ({
         amountInfo={amountInfo}
         priceRangeInfo={priceRangeInfo}
         feeInfo={feeInfo}
-        confirm={() => confirm({withStaking: true})}
+        confirm={() => confirm({ withStaking: true })}
         close={close}
       />,
     );

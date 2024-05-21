@@ -33,7 +33,6 @@ export const initialPool: PoolDetailModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   tokenB: {
     chainId: "",
@@ -46,7 +45,6 @@ export const initialPool: PoolDetailModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   incentiveType: "INCENTIVIZED",
   tvl: 0,
@@ -76,8 +74,8 @@ export const initialPool: PoolDetailModel = {
   priceRatio: {
     "7d": [],
     "30d": [],
-    all: [],
-  },
+    "all": []
+  }
 };
 
 interface PoolPairInformationContainerProps {

@@ -49,23 +49,27 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
     moveEarnAdd();
   }, [moveEarnAdd]);
 
+  const renderMyPositionTitle = () => {
+    if (isOtherPosition) return <h2>
+      <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
+      <span>{`’s Positions (${positionLength})`}</span>
+    </h2>;
+
+    if (connected) return (
+      <h2>
+        <span>{`My Positions (${positionLength})`}</span>
+      </h2>
+    );
+
+    return <h2>
+      <span>{"My Positions"}</span>
+    </h2>;
+  };
+
   return (
     <PositionsWrapper>
       <div className="header-content">
-        {isOtherPosition ? (
-          <h2>
-            <span className="name" onClick={onClickAddressPosition}>{addressName}</span>
-            <span>{`’s Positions (${positionLength})`}</span>
-          </h2>
-        ) : connected ? (
-          <h2>
-            <span>{`My Positions (${positionLength})`}</span>
-          </h2>
-        ) : (
-          <h2>
-            <span>{"My Positions"}</span>
-          </h2>
-        )}
+        {renderMyPositionTitle()}
         {visiblePositions && <Switch
           checked={isClosed}
           onChange={handleChangeClosed}

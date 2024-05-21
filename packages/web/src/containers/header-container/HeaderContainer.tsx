@@ -20,7 +20,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
-import { formatUsdNumber3Digits, toUnitFormat } from "@utils/number-utils";
+import { formatUsdNumber3Digits, toPriceFormat, toUnitFormat } from "@utils/number-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -145,7 +145,7 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect } = useWallet();
+  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect, isLoadingGnotBalance, gnotBalance } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
@@ -162,9 +162,10 @@ const HeaderContainer: React.FC = () => {
         const transferData = isGnot ? tempWuGnot : temp;
         const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
         const usdFormat = formatUsdNumber3Digits(transferData.usd);
+        const price = toPriceFormat(usdFormat || "0", { usd: true });
         return {
           ...item,
-          price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat: convertToMB(usdFormat || "0", 10)}`,
+          price: price,
           priceOf1d: {
             status: dataToday.status,
             value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
@@ -173,10 +174,11 @@ const HeaderContainer: React.FC = () => {
       } else {
         const item_ = poolList.filter((_) => _.tokenA.symbol === item.token.symbol && _.tokenB.symbol === item.tokenB.symbol)?.[0];
         if (!item_) return item;
+        const price = toPriceFormat(item_?.tvl || "0", { usd: true });
         return {
           ...item,
           apr: `${!item_.apr ? "-" : Number(item_.apr) > 10 ? `${item_.apr}% APR` : `${Number(item_.apr).toFixed(2)}% APR`}`,
-          price: toUnitFormat(item_.tvl, true, true),
+          price: price,
         };
       }
     });
@@ -189,7 +191,11 @@ const HeaderContainer: React.FC = () => {
         || (item.tokenB.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenB.symbol.toLowerCase()).includes(keyword.toLowerCase())
       );
     }
+
+
     return temp.map((item: PoolModel) => {
+      const price = toPriceFormat(item.tvl || "0", { usd: true });
+
       return {
         path: "",
         searchType: "popular",
@@ -199,7 +205,7 @@ const HeaderContainer: React.FC = () => {
           symbol: getGnotPath(item.tokenA).symbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
         },
-        price: toUnitFormat(item.tvl, true, true),
+        price: price,
         priceOf1d: {
           status: MATH_NEGATIVE_TYPE.NEGATIVE,
           value: "",
@@ -216,10 +222,10 @@ const HeaderContainer: React.FC = () => {
         liquidity: Number(item ? item.tvl : "0"),
       };
     })
-    .sort((a, b) => b.liquidity - a.liquidity)
-    .slice(0, 3);
+      .sort((a, b) => b.liquidity - a.liquidity)
+      .slice(0, 3);
   }, [poolList, keyword, tokenPrices, gnot]);
-  
+
   const popularTokens = useMemo(() => {
     let temp = listTokens;
     if (keyword) {
@@ -235,7 +241,8 @@ const HeaderContainer: React.FC = () => {
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const usdFormat = formatUsdNumber3Digits(transferData.usd);
-      
+      const price = toPriceFormat(usdFormat || "0", { usd: true });
+
       return {
         path: "",
         searchType: "",
@@ -245,7 +252,7 @@ const HeaderContainer: React.FC = () => {
           symbol: item.symbol,
           logoURI: item.logoURI,
         },
-        price: `$${Number.isInteger(Number(usdFormat)) ? usdFormat: convertToMB(usdFormat || "0", 10)}`,
+        price: price,
         priceOf1d: {
           status: dataToday.status,
           value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
@@ -263,7 +270,7 @@ const HeaderContainer: React.FC = () => {
       };
     }).sort((a, b) => Number(b.volume) - Number(a.volume)).slice(0, keyword ? 6 : 6 - recents.length);
   }, [listTokens, recents.length, keyword, tokenPrices]);
-  
+
   const { openModal } = useConnectWalletModal();
 
   const handleESC = () => {
@@ -272,8 +279,8 @@ const HeaderContainer: React.FC = () => {
   }
   useEscCloseModal(handleESC);
 
-  const onSideMenuToggle = () => {
-    setSideMenuToggle(prev => !prev);
+  const onSideMenuToggle = (value: boolean) => {
+    setSideMenuToggle(value);
   };
 
   const onSearchMenuToggle = () => {
@@ -320,6 +327,9 @@ const HeaderContainer: React.FC = () => {
       popularTokens={popularTokens}
       recents={recents}
       movePage={movePage}
+      gnotBalance={gnotBalance}
+      isLoadingGnotBalance={isLoadingGnotBalance}
+      gnotToken={gnot}
     />
   );
 };

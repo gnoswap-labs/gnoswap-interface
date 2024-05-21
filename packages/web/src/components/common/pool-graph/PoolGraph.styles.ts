@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
-import { media } from "@styles/media";
+import { customMediaQuery, media } from "@styles/media";
 
 export const PoolGraphWrapper = styled.div`
   position: relative;
@@ -112,7 +112,7 @@ export const PoolGraphTooltipWrapper = styled.div`
     }
     .amount {
       flex-shrink: 0;
-      min-width: 80px;
+      min-width: 76px;
       & .hidden {
         display: inline;
         overflow: hidden;
@@ -121,7 +121,7 @@ export const PoolGraphTooltipWrapper = styled.div`
         word-break: break-all;
       }
       & .small-font {
-        font-size: 12px;
+        font-size: 10px;
       }
       &.w-100 {
         min-width: 108px;
@@ -131,6 +131,7 @@ export const PoolGraphTooltipWrapper = styled.div`
         height: 20px;
         display: none;
       }
+      
       ${media.mobile} {
         &.total-amount {
           width: 85px;
@@ -141,6 +142,24 @@ export const PoolGraphTooltipWrapper = styled.div`
         }
       }
     }
+
+    ${customMediaQuery(400)} {
+      .amount {
+        .token-amount-value {
+          font-size: 12px;
+        }
+      }
+    }
+
+    ${customMediaQuery(360)} {
+      .price-range {
+        &.price-range-value{
+        font-size: 10px;
+      }
+      }
+    }
+
+   
 
     .price-range {
       width: 100%;

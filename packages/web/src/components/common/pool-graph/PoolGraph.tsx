@@ -5,7 +5,6 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { tickToPriceStr } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import MissingLogo from "../missing-logo/MissingLogo";
@@ -86,7 +85,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   isSwap = false,
   showBar = true,
 }) => {
-  const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
+  const defaultMinX = Math.min(...(bins).map(bin => bin.minTick));
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -310,11 +309,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (
       Math.abs(height - mouseY - 0.0001) >
       boundsHeight -
-        scaleY(bin.reserveTokenMap) +
-        (scaleY(bin.reserveTokenMap) > height - 3 &&
+      scaleY(bin.reserveTokenMap) +
+      (scaleY(bin.reserveTokenMap) > height - 3 &&
         scaleY(bin.reserveTokenMap) !== height
-          ? 3
-          : 0)
+        ? 3
+        : 0)
     ) {
       setPositionX(null);
       setPositionX(null);
@@ -337,16 +336,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     };
     const index = bin.index;
 
-    const tokenAAmountStr = makeDisplayTokenAmount(tokenA, bin.reserveTokenA);
-    const tokenBAmountStr = makeDisplayTokenAmount(tokenB, bin.reserveTokenB);
-    const myTokenAAmountStr = makeDisplayTokenAmount(
-      tokenB,
-      bin?.reserveTokenAMyAmount,
-    );
-    const myTokenBAmountStr = makeDisplayTokenAmount(
-      tokenB,
-      bin?.reserveTokenBMyAmount,
-    );
+    const tokenAAmountStr = bin.reserveTokenA;
+    const tokenBAmountStr = bin.reserveTokenB;
+    const myTokenAAmountStr = bin?.reserveTokenAMyAmount;
+    const myTokenBAmountStr = bin?.reserveTokenBMyAmount;
     const tickSpacing = getTickSpacing();
     let isBlackBar = !!(
       maxTickPosition &&
@@ -375,14 +368,14 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         index < 20
           ? "-"
           : index > 19 && `${bin.reserveTokenAMyAmount}` === "0"
-          ? "<0.000001"
-          : convertToKMB((myTokenAAmountStr || "-").toString()) || "-",
+            ? "<0.000001"
+            : convertToKMB((myTokenAAmountStr || "-").toString()) || "-",
       myTokenBAmount:
         index > 19
           ? "-"
           : index < 20 && `${bin.reserveTokenBMyAmount}` === "0"
-          ? "<0.000001"
-          : convertToKMB((myTokenBAmountStr || "-").toString()) || "-",
+            ? "<0.000001"
+            : convertToKMB((myTokenBAmountStr || "-").toString()) || "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
       tokenAPrice: tickOfPrices[currentTick || 0],
@@ -652,18 +645,17 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
               mobileWidth={20}
             />
             <span
-              className={`hidden ${
-                (tooltipInfo.tokenAAmount || "0").length > 21
-                  ? "small-font"
-                  : ""
-              }`}
+              className={`token-amount-value hidden ${(tooltipInfo.tokenAAmount || "0").length > 21
+                ? "small-font"
+                : ""
+                }`}
             >
               {tooltipInfo.tokenAAmount || "0"}
             </span>
           </span>
           {isPosition && !tooltipInfo.isBlackBar ? (
             <span className="amount w-100">
-              <span className="hidden">
+              <span className="token-amount-value hidden">
                 {tooltipInfo.myTokenAAmount || "0"}
               </span>
             </span>
@@ -671,13 +663,12 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             ""
           )}
           <span
-            className={`price-range ${
-              (tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""
-            }`}
+            className={`price-range price-range-value ${(tokenAPriceRangeStr.length || 0) > 21 ? "small-font" : ""
+              }`}
           >
             {tokenAPriceRangeStr}
           </span>
-        </div>
+        </div >
         <div className="row">
           <span className="token">
             <MissingLogo
@@ -698,18 +689,17 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
               mobileWidth={20}
             />
             <span
-              className={`hidden ${
-                (tooltipInfo.tokenBAmount || "0").length > 21
+              className={`token-amount-value hidden ${(tooltipInfo.tokenBAmount || "0").length > 21
                   ? "small-font"
                   : ""
-              }`}
+                }`}
             >
               {tooltipInfo.tokenBAmount || "0"}
             </span>
           </span>
           {isPosition && !tooltipInfo.isBlackBar ? (
-            <span className="amount  w-100">
-              <span className="hidden">
+            <span className="amount w-100">
+              <span className="token-amount-value hidden">
                 {tooltipInfo.myTokenBAmount || "0"}
               </span>
             </span>
@@ -717,15 +707,14 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             ""
           )}
           <span
-            className={`price-range ${
-              (tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""
-            }`}
+            className={`price-range price-range-value ${(tokenBPriceRangeStr || "0").length > 21 ? "small-font" : ""
+              }`}
           >
             {tokenBPriceRangeStr}
           </span>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   ) : (
     <></>
   );

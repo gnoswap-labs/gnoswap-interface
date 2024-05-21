@@ -27,7 +27,6 @@ const TOKEN_A: TokenModel = {
     "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
   type: "native",
   priceID: "gnot",
-  priceId: "gnot",
 };
 const TOKEN_B: TokenModel = {
   chainId: "dev",
@@ -40,7 +39,6 @@ const TOKEN_B: TokenModel = {
   logoURI: "/gnos.svg",
   type: "grc20",
   priceID: GNOS_PATH,
-  priceId: GNOS_PATH,
 };
 
 const HomeSwapContainer: React.FC = () => {

@@ -18,7 +18,6 @@ import { ThemeState } from "@states/index";
 import { useAtomValue } from "jotai";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { tickToPriceStr } from "@utils/swap-utils";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import TooltipAPR from "./TooltipAPR";
@@ -27,6 +26,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
+import BigNumber from "bignumber.js";
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -43,23 +43,23 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
 
   const tokenABalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenA, pool.tokenABalance) || 0;
-  }, [pool.tokenA, pool.tokenABalance]);
+    return pool.tokenABalance || 0;
+  }, [pool.tokenABalance]);
 
   const tokenBBalance = useMemo(() => {
-    return makeDisplayTokenAmount(pool.tokenB, pool.tokenBBalance) || 0;
-  }, [pool.tokenB, pool.tokenBBalance]);
+    return pool.tokenBBalance || 0;
+  }, [pool.tokenBBalance]);
 
   const depositRatio = useMemo(() => {
-    const sumOfBalances = tokenABalance + tokenBBalance;
+    const sumOfBalances = Number(tokenABalance) + Number(tokenBBalance);
     if (sumOfBalances === 0) {
       return 0.5;
     }
-    return tokenABalance / (tokenABalance + tokenBBalance / pool.price);
+    return Number(tokenABalance) / (Number(tokenABalance) + Number(tokenBBalance) / pool.price);
   }, [tokenABalance, tokenBBalance, pool.price]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
-    const depositStr = `${Math.round(depositRatio * 100)}%`;
+    const depositStr = `${Math.round((depositRatio) * 100)}%`;
     return `(${depositStr})`;
   }, [depositRatio]);
 
@@ -117,6 +117,13 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const stakeLogo = useMemo(() => {
     return pool?.rewardTokens?.map((item) => getGnotPath(item)?.logoURI);
   }, [pool?.rewardTokens]);
+
+  const isHideBar = useMemo(() => {
+    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+
+    return (isAllReserveZeroBin40 && isAllReserveZeroBin);
+  }, [pool.bins, pool.bins40]);
 
   return (
     <ContentWrapper>
@@ -194,7 +201,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           {!loading &&
             <Tooltip
               placement="top"
-              FloatingContent={<TooltipAPR feeAPR={pool?.feeApr} stakingAPR={pool?.stakingApr} feeLogo={feeLogo} stakeLogo={stakeLogo} />}
+              FloatingContent={<TooltipAPR
+                feeAPR={(Number(pool?.feeApr) === 0) ? "0" : BigNumber(pool?.feeApr ?? 0).toFixed(2)}
+                stakingAPR={(Number(pool?.stakingApr) === 0) ? "0" : BigNumber(pool?.stakingApr ?? 0).toFixed(2)}
+                feeLogo={feeLogo}
+                stakeLogo={stakeLogo} />}
             >
               <strong>{aprValue}</strong>
             </Tooltip>}
@@ -274,6 +285,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             position="top"
             offset={40}
             poolPrice={pool?.price || 1}
+            showBar={!isHideBar}
           />}
           {loading && <LoadingChart>
             <LoadingSpinner />

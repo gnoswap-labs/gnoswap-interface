@@ -12,16 +12,25 @@ import {
   ExchangeRateGraphXAxisWrapper,
 } from "./ExchangeRateGraphContent.styles";
 
+interface LineGraphData {
+  value: string;
+  time: string;
+}
+
 interface ExchangeRateGraphContentProps {
   poolData: PoolDetailModel;
   selectedScope: CHART_DAY_SCOPE_TYPE;
   isReversed: boolean;
+  onMouseMove?: ((data?: LineGraphData) => void);
+  onMouseOut?: ((active: boolean) => void);
 }
 
 export function ExchangeRateGraphContent({
   poolData,
   selectedScope,
   isReversed,
+  onMouseMove,
+  onMouseOut,
 }: ExchangeRateGraphContentProps) {
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
@@ -116,6 +125,7 @@ export function ExchangeRateGraphContent({
       <div className="data-wrapper">
         <div className="graph-wrap" ref={componentRef}>
           <LineGraph
+            onMouseMove={onMouseMove}
             cursor
             className="graph"
             width={size.width}
@@ -147,6 +157,7 @@ export function ExchangeRateGraphContent({
                 </ExchangeRateGraphXAxisWrapper>
               );
             }}
+            onMouseOut={onMouseOut}
           />
         </div>
       </div>

@@ -99,7 +99,11 @@ export const useSelectPool = ({
   const priceRangeRef = useRef<[number | null, number | null]>([
     ...defaultPriceRange,
   ]);
+
+  // Global state
   const [, setCurrentPoolPath] = useAtom(EarnState.currentPoolPath);
+  const [, setPoolInfoQuery] = useAtom(EarnState.poolInfoQuery);
+
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
   const [zoomLevel, setZoomLevel] = useState<number>(0);
@@ -210,9 +214,8 @@ export const useSelectPool = ({
         return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${
-        SwapFeeTierInfoMap[feeTier].fee
-      }`;
+      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
+        }`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
 
       const convertPath = encryptId(poolPath);
@@ -228,24 +231,32 @@ export const useSelectPool = ({
       const changedPoolInfo =
         isReverse === false
           ? {
-              ...poolRes,
-              price: poolResFromDb.price,
-            }
+            ...poolRes,
+            price: poolResFromDb.price,
+          }
           : {
-              ...poolRes,
-              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
-              positions: poolRes.positions.map(position => ({
-                ...position,
-                tickLower: position.tickUpper * -1,
-                tickUpper: position.tickLower * -1,
-              })),
-            };
+            ...poolRes,
+            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+            ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
+            positions: poolRes.positions.map(position => ({
+              ...position,
+              tickLower: position.tickUpper * -1,
+              tickUpper: position.tickLower * -1,
+            })),
+          };
 
       return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
+
     },
     staleTime: 5_000,
   });
+
+  useEffect(() => {
+    setPoolInfoQuery({
+      isLoading: isLoadingPoolInfo,
+      data: poolInfo,
+    });
+  }, [isLoadingPoolInfo, poolInfo]);
 
   useEffect(() => {
     priceRangeRef.current = [...defaultPriceRange];

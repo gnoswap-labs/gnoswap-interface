@@ -197,8 +197,8 @@ export class PositionRepositoryImpl implements PositionRepository {
       tokenAWrappedPath === WRAPPED_GNOT_PATH
         ? tokenAAmountRaw
         : tokenBWrappedPath
-        ? tokenBAmountRaw
-        : null;
+          ? tokenBAmountRaw
+          : null;
 
     // Make Approve messages that can be managed by a Pool package of tokens.
     const approveMessages = [

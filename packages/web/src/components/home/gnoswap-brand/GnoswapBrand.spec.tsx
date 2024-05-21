@@ -8,7 +8,7 @@ describe("Gnoswap Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <GnoswapBrand onClickSns={() => { }} />
+          <GnoswapBrand onClickSns={() => { }} windowSize={0} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
