@@ -25,7 +25,7 @@ import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { checkGnotPath, encryptId } from "@utils/common";
-import { QUERY_KEY, useGetBinsByPath } from "@query/pools";
+import { QUERY_KEY, useGetBinsByPath, useInitializeBins } from "@query/pools";
 import BigNumber from "bignumber.js";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ZOOL_VALUES } from "@constants/graph.constant";
@@ -163,8 +163,30 @@ export const useSelectPool = ({
     calculatedPoolPath || "",
     ZOOL_VALUES[zoomLevel],
     {
-      enabled: !!calculatedPoolPath,
-      queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel],
+      enabled: !!calculatedPoolPath && !isCreate,
+      queryKey: [
+        "useSelectPool/getBins",
+        calculatedPoolPath,
+        zoomLevel,
+        isCreate,
+      ],
+    },
+  );
+
+  const { data: initializeBins } = useInitializeBins(
+    feeTier,
+    startPrice,
+    ZOOL_VALUES[zoomLevel],
+    isReverse,
+    {
+      enabled: !!feeTier && !!startPrice && !!isCreate,
+      queryKey: [
+        QUERY_KEY.initializeBins,
+        feeTier,
+        startPrice,
+        zoomLevel,
+        isReverse,
+      ],
     },
   );
 
@@ -214,8 +236,9 @@ export const useSelectPool = ({
         return Promise.resolve<PoolDetailRPCModel | null>(poolInfo);
       }
 
-      const poolPath = `${tokenPair?.join(":")}:${SwapFeeTierInfoMap[feeTier].fee
-        }`;
+      const poolPath = `${tokenPair?.join(":")}:${
+        SwapFeeTierInfoMap[feeTier].fee
+      }`;
       const poolRes = await poolRepository.getPoolDetailRPCByPoolPath(poolPath);
 
       const convertPath = encryptId(poolPath);
@@ -231,22 +254,21 @@ export const useSelectPool = ({
       const changedPoolInfo =
         isReverse === false
           ? {
-            ...poolRes,
-            price: poolResFromDb.price,
-          }
+              ...poolRes,
+              price: poolResFromDb.price,
+            }
           : {
-            ...poolRes,
-            price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
-            ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
-            positions: poolRes.positions.map(position => ({
-              ...position,
-              tickLower: position.tickUpper * -1,
-              tickUpper: position.tickLower * -1,
-            })),
-          };
+              ...poolRes,
+              price: poolResFromDb.price === 0 ? 0 : 1 / poolResFromDb.price,
+              ticks: Object.keys(poolRes.ticks).map(tick => Number(tick) * -1),
+              positions: poolRes.positions.map(position => ({
+                ...position,
+                tickLower: position.tickUpper * -1,
+                tickUpper: position.tickLower * -1,
+              })),
+            };
 
       return Promise.resolve<PoolDetailRPCModel | null>(changedPoolInfo);
-
     },
     staleTime: 5_000,
   });
@@ -543,7 +565,7 @@ export const useSelectPool = ({
 
   return {
     startPrice,
-    bins,
+    bins: isCreate ? initializeBins : bins,
     poolPath,
     renderState,
     feeTier,

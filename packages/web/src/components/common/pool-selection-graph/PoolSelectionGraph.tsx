@@ -407,7 +407,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     rects.attr("clip-path", "url(#clip)");
 
     // D3 - Draw Current tick (middle line)
-    if (currentTick && displayBins.length === displayBinCount) {
+    if (currentTick !== null && displayBins.length === displayBinCount) {
       rects
         .append("line")
         .attr("x1", currentLinePosition)
@@ -419,37 +419,39 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .attr("stroke-width", 1);
     }
 
-    rects
-      .selectAll("rects")
-      .data(resolvedDisplayBins)
-      .enter()
-      .append("rect")
-      .style("fill", bin => fillByBin(bin))
-      .style("stroke-width", "0")
-      .style("opacity", bin => (bin.index === hoverBarIndex ? "0.4" : "1"))
-      .attr("id", bin => `bar-${bin.index}`)
-      .attr("class", "rects bar")
-      .attr("x", bin => scaleX(bin.positionX))
-      .attr("y", bin => {
-        const scaleYComputation = scaleY(bin.height) ?? 0;
-        return (
-          scaleYComputation -
-          (scaleYComputation > height - 5 && scaleYComputation !== height
-            ? 5
-            : 0)
-        );
-      })
-      .attr("width", tickSpacing - 1)
-      .attr("height", bin => {
-        const scaleYComputation = scaleY(bin.height) ?? 0;
-        return (
-          boundsHeight -
-          scaleYComputation +
-          (scaleYComputation > height - 5 && scaleYComputation !== height
-            ? 5
-            : 0)
-        );
-      });
+    if (maxLiquidity > 0) {
+      rects
+        .selectAll("rects")
+        .data(resolvedDisplayBins)
+        .enter()
+        .append("rect")
+        .style("fill", bin => fillByBin(bin))
+        .style("stroke-width", "0")
+        .style("opacity", bin => (bin.index === hoverBarIndex ? "0.4" : "1"))
+        .attr("id", bin => `bar-${bin.index}`)
+        .attr("class", "rects bar")
+        .attr("x", bin => scaleX(bin.positionX))
+        .attr("y", bin => {
+          const scaleYComputation = scaleY(bin.height) ?? 0;
+          return (
+            scaleYComputation -
+            (scaleYComputation > height - 5 && scaleYComputation !== height
+              ? 5
+              : 0)
+          );
+        })
+        .attr("width", tickSpacing - 1)
+        .attr("height", bin => {
+          const scaleYComputation = scaleY(bin.height) ?? 0;
+          return (
+            boundsHeight -
+            scaleYComputation +
+            (scaleYComputation > height - 5 && scaleYComputation !== height
+              ? 5
+              : 0)
+          );
+        });
+    }
 
     if (displayLabels > 0) {
       rects
