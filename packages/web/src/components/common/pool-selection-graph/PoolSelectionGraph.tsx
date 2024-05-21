@@ -457,6 +457,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (displayLabels > 0) {
       rects
         .append("g")
+        .attr("class", "x-axis")
         .attr("transform", `translate(0,${boundsHeight})`)
         .call(xAxis);
     }

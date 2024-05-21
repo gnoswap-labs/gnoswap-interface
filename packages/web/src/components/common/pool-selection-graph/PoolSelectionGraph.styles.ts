@@ -27,12 +27,16 @@ export const PoolSelectionGraphWrapper = styled.div`
       color: #e0e8f4;
     }
 
-    .tick {
-      text {
-        font-size: 9px;
-        font-weight: 400;
-        line-height: 11px;
-        color: ${({ theme }) => theme.color.border15};
+    .x-axis {
+      color: ${({ theme }) => theme.color.border05};
+
+      .tick {
+        text {
+          font-size: 9px;
+          font-weight: 400;
+          line-height: 11px;
+          color: ${({ theme }) => theme.color.border05};
+        }
       }
     }
   }
