@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { NetworkClient } from "@common/clients/network-client";
 import { PoolResponse, PoolListResponse, PoolRepository } from ".";
 import { WalletClient } from "@common/clients/wallet-client";
@@ -110,10 +111,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     poolPath: string,
   ): Promise<PoolDetailModel> => {
     const pool = await this.networkClient
-    .get<{ data: PoolResponse }>({
-      url: "/pools/" + encodeURIComponent(poolPath),
-    })
-    .then(response => PoolMapper.detailFromResponse(response.data.data));
+      .get<{ data: PoolResponse }>({
+        url: "/pools/" + encodeURIComponent(poolPath),
+      })
+      .then(response => PoolMapper.detailFromResponse(response.data.data));
     return pool;
   };
 
@@ -189,18 +190,28 @@ export class PoolRepositoryImpl implements PoolRepository {
       ),
     ];
 
-    const approveMessages: TransactionMessage[] = [
-      PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenAWrappedPath,
-        tokenAAmountRaw,
-        caller,
-      ),
-      PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenBWrappedPath,
-        tokenBAmountRaw,
-        caller,
-      ),
-    ];
+    const approveMessages: TransactionMessage[] = [];
+
+    if (BigNumber(tokenAAmountRaw).isGreaterThan(0)) {
+      approveMessages.push(
+        PoolRepositoryImpl.makeApproveTokenMessage(
+          tokenAWrappedPath,
+          tokenAAmountRaw,
+          caller,
+        ),
+      );
+    }
+    console.log(tokenAAmountRaw);
+    console.log(tokenBAmountRaw);
+    if (BigNumber(tokenBAmountRaw).isGreaterThan(0)) {
+      approveMessages.push(
+        PoolRepositoryImpl.makeApproveTokenMessage(
+          tokenBWrappedPath,
+          tokenBAmountRaw,
+          caller,
+        ),
+      );
+    }
 
     // If withStaking, approve WUGNOT to the Position contract.
     if (withStaking) {
@@ -309,18 +320,27 @@ export class PoolRepositoryImpl implements PoolRepository {
       ? tokenBAmountRaw
       : null;
 
-    const approveMessages: TransactionMessage[] = [
-      PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenAWrappedPath,
-        tokenAAmountRaw,
-        caller,
-      ),
-      PoolRepositoryImpl.makeApproveTokenMessage(
-        tokenBWrappedPath,
-        tokenBAmountRaw,
-        caller,
-      ),
-    ];
+    const approveMessages: TransactionMessage[] = [];
+
+    if (BigNumber(tokenAAmountRaw).isGreaterThan(0)) {
+      approveMessages.push(
+        PoolRepositoryImpl.makeApproveTokenMessage(
+          tokenAWrappedPath,
+          tokenAAmountRaw,
+          caller,
+        ),
+      );
+    }
+
+    if (BigNumber(tokenBAmountRaw).isGreaterThan(0)) {
+      approveMessages.push(
+        PoolRepositoryImpl.makeApproveTokenMessage(
+          tokenBWrappedPath,
+          tokenBAmountRaw,
+          caller,
+        ),
+      );
+    }
 
     // If withStaking and use GNOT, approve WUGNOT to the Position contract.
     if (withStaking) {
