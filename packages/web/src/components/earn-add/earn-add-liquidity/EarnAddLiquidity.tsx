@@ -67,7 +67,7 @@ interface EarnAddLiquidityProps {
   submitOneClickStaking: () => void;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
-  createOption: { startPrice: number | null, isCreate: boolean };
+  createOption: { startPrice: number | null; isCreate: boolean };
   handleSwapValue: () => void;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
@@ -255,14 +255,29 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   const isShowOutRange = useMemo(() => {
     if (!tokenA || !tokenB) return false;
+
+    if (!selectPool.selectedFullRange) {
+      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
+        return false;
+      }
+    }
+
     const { minPrice, maxPrice, currentPrice } = selectPool;
+
     return (
       ((minPrice || 0) > (currentPrice || 0) &&
         (maxPrice || 0) > (currentPrice || 0)) ||
       ((minPrice || 0) < (currentPrice || 0) &&
         (maxPrice || 0) < (currentPrice || 0))
     );
-  }, [selectPool, tokenA, tokenB]);
+  }, [
+    selectPool.selectedFullRange,
+    selectPool.minPrice,
+    selectPool.maxPrice,
+    selectPool.currentPrice,
+    tokenA,
+    tokenB,
+  ]);
 
   const isLoading = useMemo(
     () => selectPool.renderState() === "LOADING" || isLoadingCommon,
@@ -275,8 +290,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       <div className="select-content">
         <article className="selector-wrapper">
           <div
-            className={`header-wrapper default-cursor ${!isEarnAdd ? "disable-text" : ""
-              }`}
+            className={`header-wrapper default-cursor ${
+              !isEarnAdd ? "disable-text" : ""
+            }`}
           >
             <h5>1. Select Pair</h5>
             {!isEarnAdd && existTokenPair && (
@@ -302,8 +318,9 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
         <article className="selector-wrapper selector-wrapper-fee-tier">
           <div
-            className={`header-wrapper ${!isEarnAdd || !existTokenPair ? "default-cursor" : ""
-              } ${!isEarnAdd && "disable-text"}`}
+            className={`header-wrapper ${
+              !isEarnAdd || !existTokenPair ? "default-cursor" : ""
+            } ${!isEarnAdd && "disable-text"}`}
             onClick={toggleFeeTier}
           >
             <div className="header-wrapper-title">
@@ -333,12 +350,14 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
         </article>
 
         <article
-          className={`selector-wrapper ${!openedPriceRange ? "selector-wrapper-price-range" : ""
-            }`}
+          className={`selector-wrapper ${
+            !openedPriceRange ? "selector-wrapper-price-range" : ""
+          }`}
         >
           <div
-            className={`header-wrapper ${!existTokenPair ? "default-cursor" : ""
-              }`}
+            className={`header-wrapper ${
+              !existTokenPair ? "default-cursor" : ""
+            }`}
             onClick={togglePriceRange}
           >
             <div className="header-wrapper-title">

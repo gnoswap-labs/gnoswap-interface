@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  EventBlocker,
   PoolSelectionGraphTooltipWrapper,
   PoolSelectionGraphWrapper,
 } from "./PoolSelectionGraph.styles";
@@ -7,7 +8,12 @@ import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import { useColorGraph } from "@hooks/common/use-color-graph";
-import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import {
+  priceToNearTick,
+  priceToTick,
+  tickToPrice,
+  tickToPriceStr,
+} from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -17,6 +23,7 @@ import {
 } from "./PoolSelectionGraphBinTooltip";
 import { useTheme } from "@emotion/react";
 import BigNumber from "bignumber.js";
+import { displayTickNumber } from "@utils/string-utils";
 
 interface ResolveBinModel {
   index: number;
@@ -104,31 +111,34 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     getSelectionColor("0", "0"),
   );
 
+  const displayLabels = 8;
+  const labelHeight = displayLabels > 0 ? 20 : 0;
+
   const boundsWidth = width - margin.right - margin.left;
-  const boundsHeight = height - margin.top - margin.bottom;
+  const boundsHeight = height - margin.top - margin.bottom - labelHeight;
 
   const adjustBins = useMemo(() => {
     return flip
       ? bins
-        .map(bin => ({
-          ...bin,
-          maxTick: -1 * bin.minTick,
-          minTick: -1 * bin.maxTick,
-          reserveTokenA: bin.reserveTokenB,
-          reserveTokenB: bin.reserveTokenA,
-          height: BigNumber(bin.reserveTokenB)
-            .multipliedBy(price)
-            .plus(bin.reserveTokenA)
-            .toNumber(),
-        }))
-        .reverse()
+          .map(bin => ({
+            ...bin,
+            maxTick: -1 * bin.minTick,
+            minTick: -1 * bin.maxTick,
+            reserveTokenA: bin.reserveTokenB,
+            reserveTokenB: bin.reserveTokenA,
+            height: BigNumber(bin.reserveTokenB)
+              .multipliedBy(price)
+              .plus(bin.reserveTokenA)
+              .toNumber(),
+          }))
+          .reverse()
       : bins.map(bin => ({
-        ...bin,
-        height: BigNumber(bin.reserveTokenA)
-          .multipliedBy(price)
-          .plus(bin.reserveTokenB)
-          .toNumber(),
-      }));
+          ...bin,
+          height: BigNumber(bin.reserveTokenA)
+            .multipliedBy(price)
+            .plus(bin.reserveTokenB)
+            .toNumber(),
+        }));
   }, [bins, price, flip]);
 
   // Display bins is bins slice data.
@@ -149,13 +159,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     return adjustBins.slice(sliceStartIndex, sliceEndIndex);
   }, [adjustBins, displayBinCount, shiftIndex]);
 
-  const currentTick = useMemo(() => {
-    if (Number.isNaN(price)) {
-      return 0;
-    }
-    return priceToTick(price);
-  }, [price]);
-
   const defaultMinX = useMemo(() => {
     return Math.min(...displayBins.map(bin => bin.minTick));
   }, [displayBins]);
@@ -175,9 +178,21 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const defaultScaleX = d3
     .scaleLinear()
     .domain([0, maxX - minX])
-    .range([margin.left, boundsWidth]);
+    .range([0, boundsWidth]);
 
   const scaleX = defaultScaleX.copy();
+
+  const xAxis = d3
+    .axisBottom(scaleX)
+    .tickSize(4)
+    .tickPadding(4)
+    .tickFormat(tick =>
+      displayTickNumber(
+        [getInvertX(0) + defaultMinX, getInvertX(width) + defaultMinX],
+        Number(tick) + defaultMinX,
+      ),
+    )
+    .tickArguments([displayLabels]);
 
   const scaleY = d3
     .scaleLinear()
@@ -201,6 +216,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const tickSpacing = useMemo(() => {
     return boundsWidth / displayBins.length;
   }, [boundsWidth, displayBins.length]);
+
+  const currentTick = useMemo(() => {
+    if (Number.isNaN(price)) {
+      return 0;
+    }
+    return priceToNearTick(price, tickSpacing);
+  }, [price, tickSpacing]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -226,6 +248,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     ])
     .on("start brush", onBrushMove)
     .on("end", onBrushEnd);
+
+  function getInvertX(x: number) {
+    return Number(BigNumber(scaleX.invert(x)).toFixed(16));
+  }
 
   function onBrushMove(this: SVGGElement, event: d3.D3BrushEvent<null>) {
     if (!brushRef.current) {
@@ -387,7 +413,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     rects.attr("clip-path", "url(#clip)");
 
     // D3 - Draw Current tick (middle line)
-    if (currentTick && displayBins.length === displayBinCount) {
+    if (currentTick !== null && displayBins.length === displayBinCount) {
       rects
         .append("line")
         .attr("x1", currentLinePosition)
@@ -399,37 +425,47 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         .attr("stroke-width", 1);
     }
 
-    rects
-      .selectAll("rects")
-      .data(resolvedDisplayBins)
-      .enter()
-      .append("rect")
-      .style("fill", bin => fillByBin(bin))
-      .style("stroke-width", "0")
-      .style("opacity", bin => (bin.index === hoverBarIndex ? "0.4" : "1"))
-      .attr("id", bin => `bar-${bin.index}`)
-      .attr("class", "rects bar")
-      .attr("x", bin => scaleX(bin.positionX))
-      .attr("y", bin => {
-        const scaleYComputation = scaleY(bin.height) ?? 0;
-        return (
-          scaleYComputation -
-          (scaleYComputation > height - 5 && scaleYComputation !== height
-            ? 5
-            : 0)
-        );
-      })
-      .attr("width", tickSpacing - 1)
-      .attr("height", bin => {
-        const scaleYComputation = scaleY(bin.height) ?? 0;
-        return (
-          boundsHeight -
-          scaleYComputation +
-          (scaleYComputation > height - 5 && scaleYComputation !== height
-            ? 5
-            : 0)
-        );
-      });
+    if (maxLiquidity > 0) {
+      rects
+        .selectAll("rects")
+        .data(resolvedDisplayBins)
+        .enter()
+        .append("rect")
+        .style("fill", bin => fillByBin(bin))
+        .style("stroke-width", "0")
+        .style("opacity", bin => (bin.index === hoverBarIndex ? "0.4" : "1"))
+        .attr("id", bin => `bar-${bin.index}`)
+        .attr("class", "rects bar")
+        .attr("x", bin => scaleX(bin.positionX))
+        .attr("y", bin => {
+          const scaleYComputation = scaleY(bin.height) ?? 0;
+          return (
+            scaleYComputation -
+            (scaleYComputation > height - 5 && scaleYComputation !== height
+              ? 5
+              : 0)
+          );
+        })
+        .attr("width", tickSpacing - 1)
+        .attr("height", bin => {
+          const scaleYComputation = scaleY(bin.height) ?? 0;
+          return (
+            boundsHeight -
+            scaleYComputation +
+            (scaleYComputation > height - 5 && scaleYComputation !== height
+              ? 5
+              : 0)
+          );
+        });
+    }
+
+    if (displayLabels > 0) {
+      rects
+        .append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0,${boundsHeight})`)
+        .call(xAxis);
+    }
   }
 
   // mouse over event
@@ -471,10 +507,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (
       Math.abs(height - mouseY - 0.0001) >
       boundsHeight -
-      scaleY(bin.height) +
-      (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
-        ? 5
-        : 0)
+        scaleY(bin.height) +
+        (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
+          ? 5
+          : 0)
     ) {
       setPositionX(null);
       setPositionX(null);
@@ -667,7 +703,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         className="chart-tooltip"
         isHiddenArrow
         position={tooltipPosition}
-        offset={0}
+        offset={40}
         content={
           tooltipInfo ? (
             <PoolSelectionGraphTooltipWrapper
@@ -724,6 +760,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
           />
         </svg>
       </FloatingTooltip>
+      {fullRange && <EventBlocker />}
     </PoolSelectionGraphWrapper>
   );
 };
@@ -915,27 +952,27 @@ function changeLine(
     type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
 
   const margin =
-    right === false ? (type === "end" ? -61 : -73) : type === "end" ? 13 : 1;
+    right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
   const labelWrapper = lineElement.select(`#${priceID}`);
 
   const labelText = !selectedFullRange
     ? rateStr
     : type === "start"
-      ? "-100%"
-      : "∞";
+    ? "-100%"
+    : "∞";
 
   labelWrapper
     .select("rect")
     .attr("x", margin)
     .attr("y", "0")
-    .attr("width", "60")
+    .attr("width", "50")
     .attr("height", "23")
     .attr("rx", 5)
     .style("fill", color);
   labelWrapper
     .select("text")
-    .attr("x", margin + 30)
-    .attr("y", "2")
+    .attr("x", margin + 25)
+    .attr("y", "0")
     .attr("dy", "15")
     .attr("text-anchor", "middle")
     .style("fill", "#FFF")

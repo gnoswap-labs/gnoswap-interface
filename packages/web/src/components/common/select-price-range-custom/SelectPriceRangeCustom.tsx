@@ -206,6 +206,7 @@ const SelectPriceRangeCustom = forwardRef<
 
     const selectFullRange = useCallback(() => {
       selectPool.selectFullRange();
+      setShiftPosition(0);
     }, [selectPool]);
 
     function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
@@ -244,6 +245,7 @@ const SelectPriceRangeCustom = forwardRef<
 
     function resetRange(priceRangeType?: PriceRangeType | null) {
       selectPool.resetRange();
+      setShiftPosition(0);
       initPriceRange(priceRangeType);
     }
 
@@ -427,19 +429,21 @@ const SelectPriceRangeCustom = forwardRef<
                   <div className="button-option-contaier">
                     <div className="graph-option-wrapper">
                       <span
-                        className={`graph-option-item decrease ${isLoading || showDim || !availMoveLeft
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item decrease ${
+                          isLoading || showDim || !availMoveLeft
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={moveLeft}
                       >
                         <IconKeyboardArrowLeft />
                       </span>
                       <span
-                        className={`graph-option-item increase ${isLoading || showDim || !availMoveRight
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item increase ${
+                          isLoading || showDim || !availMoveRight
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={moveRight}
                       >
                         <IconKeyboardArrowRight />
@@ -447,19 +451,21 @@ const SelectPriceRangeCustom = forwardRef<
                     </div>
                     <div className="graph-option-wrapper">
                       <span
-                        className={`graph-option-item decrease ${isLoading || showDim || !availZoomOut
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item decrease ${
+                          isLoading || showDim || !availZoomOut
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={zoomOut}
                       >
                         <IconRemove />
                       </span>
                       <span
-                        className={`graph-option-item increase ${isLoading || showDim || !availZoomIn
-                          ? "disabled-option"
-                          : ""
-                          }`}
+                        className={`graph-option-item increase ${
+                          isLoading || showDim || !availZoomIn
+                            ? "disabled-option"
+                            : ""
+                        }`}
                         onClick={zoomIn}
                       >
                         <IconAdd />

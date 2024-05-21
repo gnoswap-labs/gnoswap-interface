@@ -2,6 +2,7 @@ import { TokenPairInfo } from "@models/token/token-pair-info";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { isNumber } from "./number-utils";
+import { tickToPrice, tickToPriceStr } from "./swap-utils";
 
 /**
  * Shortens an address by N characters.
@@ -40,8 +41,15 @@ export function makePairName({
   return `${symbolA}/${symbolB}`;
 }
 
-export function numberToFormat(num: string | number, options?: { decimals?: number, forceDecimals?: boolean }) {
-  const decimal = options?.forceDecimals ? options?.decimals : (Number.isInteger(Number(num)) ? 0 : options?.decimals);
+export function numberToFormat(
+  num: string | number,
+  options?: { decimals?: number; forceDecimals?: boolean },
+) {
+  const decimal = options?.forceDecimals
+    ? options?.decimals
+    : Number.isInteger(Number(num))
+    ? 0
+    : options?.decimals;
   return isNumber(Number(num)) ? BigNumber(num).toFormat(decimal || 0) : "0";
 }
 
@@ -51,11 +59,12 @@ export function numberToString(num: string | number, decimals?: number) {
 }
 
 export function displayTickNumber(range: number[], tick: number) {
-  const rangeGap = (range[1] - range[0]) / 10;
+  const priceRange = range.map(tickToPrice);
+  const rangeGap = (priceRange[1] - priceRange[0]) / 10;
   const rangeGapSplit = `${rangeGap}`.split(".");
-  if (rangeGap > 1) {
+  if (rangeGap > 0.1) {
     const fixedPosition = rangeGapSplit[0].length;
-    return BigNumber(tick)
+    BigNumber(tick)
       .shiftedBy(fixedPosition)
       .shiftedBy(-fixedPosition)
       .toFormat(0);
@@ -65,5 +74,5 @@ export function displayTickNumber(range: number[], tick: number) {
   }
   const fixedPosition =
     Array.from(rangeGapSplit[1], v => v).findIndex(v => v !== "0") + 1;
-  return tick.toFixed(fixedPosition);
+  return tickToPriceStr(tick, fixedPosition + 1);
 }

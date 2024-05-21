@@ -9,6 +9,7 @@ import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiq
 import {
   AddLiquiditySubmitType,
   PriceRangeType,
+  SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
@@ -282,13 +283,22 @@ const EarnAddLiquidityContainer: React.FC = () => {
     [pools],
   );
 
-  const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
-    setPriceRange(priceRange);
-    if (priceRange.type !== "Custom") {
-      selectPool.setIsChangeMinMax(false);
-      selectPool.setFullRange(false);
-    }
-  }, []);
+  const changePriceRange = useCallback(
+    (priceRange: AddLiquidityPriceRage) => {
+      setPriceRange(priceRange);
+
+      if (priceRange.type !== "Custom") {
+        selectPool.setIsChangeMinMax(false);
+        selectPool.setFullRange(false);
+      }
+
+      // If you've already set a starting price, update it to apply tick spacing.
+      if (createOption.isCreate && createOption.startPrice) {
+        changeStartingPrice(createOption.startPrice.toString());
+      }
+    },
+    [createOption],
+  );
 
   useEffect(() => {
     if (selectPool.isChangeMinMax) {
@@ -364,7 +374,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback(
     (price: string) => {
-      if (price === "") {
+      if (price === "" || !swapFeeTier) {
         setCreateOption(prev => ({
           ...prev,
           startPrice: null,
@@ -379,14 +389,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
+      const tickSpacing = SwapFeeTierInfoMap[swapFeeTier].tickSpacing;
+      const tick = priceToNearTick(priceNum, tickSpacing);
       const nearStartPrice = tickToPrice(tick);
+
       setCreateOption(prev => ({
         ...prev,
         startPrice: nearStartPrice,
       }));
     },
-    [selectPool.tickSpacing],
+    [swapFeeTier],
   );
 
   const updateTokenBAmountByTokenA = useCallback(
@@ -740,12 +752,12 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     const nextTickLower =
       isNumber(selectPool.minPosition || "") ||
-        isFinite(selectPool.minPosition || 0)
+      isFinite(selectPool.minPosition || 0)
         ? priceToTick(selectPool.minPosition || 0)
         : null;
     const nextTickUpper =
       isNumber(selectPool.maxPosition || "") ||
-        isFinite(selectPool.maxPosition || 0)
+      isFinite(selectPool.maxPosition || 0)
         ? priceToTick(selectPool.maxPosition || 0)
         : null;
 
