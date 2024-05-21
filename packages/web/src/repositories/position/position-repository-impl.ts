@@ -36,6 +36,8 @@ import { PositionHistoryMapper } from "@models/position/mapper/position-history-
 import { IPositionHistoryResponse } from "./response/position-history-response";
 import {
   PACKAGE_POOL_ADDRESS,
+  PACKAGE_STAKER_ADDRESS,
+  TransactionMessage,
   WRAPPED_GNOT_PATH,
   makeApproveMessage,
 } from "@common/clients/wallet-client/transaction-messages";
@@ -118,13 +120,28 @@ export class PositionRepositoryImpl implements PositionRepository {
         );
       }
       if (hasReward) {
-        const rewardTokenMessages = position.reward.map(reward =>
-          makeApproveMessage(
-            checkGnotPath(reward.rewardToken.path),
-            [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
-            recipient,
-          ),
-        );
+        // Reward token approve to Pool and Staker(When GNOT token)
+        const rewardTokenMessages = position.reward.flatMap(reward => {
+          const approveMessages: TransactionMessage[] = [];
+          approveMessages.push(
+            makeApproveMessage(
+              checkGnotPath(reward.rewardToken.path),
+              [PACKAGE_POOL_ADDRESS, MAX_UINT64.toString()],
+              recipient,
+            ),
+          );
+
+          if (reward.rewardToken.path === WRAPPED_GNOT_PATH) {
+            approveMessages.push(
+              makeApproveMessage(
+                checkGnotPath(WRAPPED_GNOT_PATH),
+                [PACKAGE_STAKER_ADDRESS, MAX_UINT64.toString()],
+                recipient,
+              ),
+            );
+          }
+          return approveMessages;
+        });
         approveMessages.push(...rewardTokenMessages);
         collectMessages.push(
           makeCollectRewardMessage(position.lpTokenId, recipient),
