@@ -110,25 +110,25 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const adjustBins = useMemo(() => {
     return flip
       ? bins
-        .map(bin => ({
-          ...bin,
-          maxTick: -1 * bin.minTick,
-          minTick: -1 * bin.maxTick,
-          reserveTokenA: bin.reserveTokenB,
-          reserveTokenB: bin.reserveTokenA,
-          height: BigNumber(bin.reserveTokenB)
-            .multipliedBy(price)
-            .plus(bin.reserveTokenA)
-            .toNumber(),
-        }))
-        .reverse()
+          .map(bin => ({
+            ...bin,
+            maxTick: -1 * bin.minTick,
+            minTick: -1 * bin.maxTick,
+            reserveTokenA: bin.reserveTokenB,
+            reserveTokenB: bin.reserveTokenA,
+            height: BigNumber(bin.reserveTokenB)
+              .multipliedBy(price)
+              .plus(bin.reserveTokenA)
+              .toNumber(),
+          }))
+          .reverse()
       : bins.map(bin => ({
-        ...bin,
-        height: BigNumber(bin.reserveTokenA)
-          .multipliedBy(price)
-          .plus(bin.reserveTokenB)
-          .toNumber(),
-      }));
+          ...bin,
+          height: BigNumber(bin.reserveTokenA)
+            .multipliedBy(price)
+            .plus(bin.reserveTokenB)
+            .toNumber(),
+        }));
   }, [bins, price, flip]);
 
   // Display bins is bins slice data.
@@ -471,10 +471,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (
       Math.abs(height - mouseY - 0.0001) >
       boundsHeight -
-      scaleY(bin.height) +
-      (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
-        ? 5
-        : 0)
+        scaleY(bin.height) +
+        (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
+          ? 5
+          : 0)
     ) {
       setPositionX(null);
       setPositionX(null);
@@ -667,7 +667,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         className="chart-tooltip"
         isHiddenArrow
         position={tooltipPosition}
-        offset={0}
+        offset={40}
         content={
           tooltipInfo ? (
             <PoolSelectionGraphTooltipWrapper
@@ -921,8 +921,8 @@ function changeLine(
   const labelText = !selectedFullRange
     ? rateStr
     : type === "start"
-      ? "-100%"
-      : "∞";
+    ? "-100%"
+    : "∞";
 
   labelWrapper
     .select("rect")
