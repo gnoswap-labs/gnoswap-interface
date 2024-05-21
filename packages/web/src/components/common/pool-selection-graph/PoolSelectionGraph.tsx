@@ -8,7 +8,12 @@ import * as d3 from "d3";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
 import { useColorGraph } from "@hooks/common/use-color-graph";
-import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import {
+  priceToNearTick,
+  priceToTick,
+  tickToPrice,
+  tickToPriceStr,
+} from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -154,13 +159,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     return adjustBins.slice(sliceStartIndex, sliceEndIndex);
   }, [adjustBins, displayBinCount, shiftIndex]);
 
-  const currentTick = useMemo(() => {
-    if (Number.isNaN(price)) {
-      return 0;
-    }
-    return priceToTick(price);
-  }, [price]);
-
   const defaultMinX = useMemo(() => {
     return Math.min(...displayBins.map(bin => bin.minTick));
   }, [displayBins]);
@@ -218,6 +216,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const tickSpacing = useMemo(() => {
     return boundsWidth / displayBins.length;
   }, [boundsWidth, displayBins.length]);
+
+  const currentTick = useMemo(() => {
+    if (Number.isNaN(price)) {
+      return 0;
+    }
+    return priceToNearTick(price, tickSpacing);
+  }, [price, tickSpacing]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
