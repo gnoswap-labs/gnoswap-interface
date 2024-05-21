@@ -43,8 +43,9 @@ import {
 } from "@common/clients/wallet-client/transaction-messages";
 import { MAX_INT64, MAX_UINT64 } from "@utils/math.utils";
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest } from "./request";
-import { checkGnotPath } from "@utils/common";
+import { checkGnotPath, isGNOTPath } from "@utils/common";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { makeStakerApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient;
@@ -183,9 +184,29 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, caller } = request;
-    const messages = lpTokenIds.map(lpTokenId =>
-      makeUnstakeMessage(lpTokenId, caller),
+    const { positions, caller } = request;
+    const messages: TransactionMessage[] = [];
+
+    const hasGNOTToken = positions.find(
+      position =>
+        isGNOTPath(position.pool.tokenA.path) ||
+        isGNOTPath(position.pool.tokenB.path),
+    );
+
+    if (hasGNOTToken) {
+      messages.push(
+        makeStakerApproveMessage(
+          WRAPPED_GNOT_PATH,
+          MAX_UINT64.toString(),
+          caller,
+        ),
+      );
+    }
+
+    messages.push(
+      ...positions.map(position =>
+        makeUnstakeMessage(position.lpTokenId, caller),
+      ),
     );
     const result = await this.walletClient.sendTransaction({
       messages,
@@ -214,8 +235,8 @@ export class PositionRepositoryImpl implements PositionRepository {
       tokenAWrappedPath === WRAPPED_GNOT_PATH
         ? tokenAAmountRaw
         : tokenBWrappedPath
-          ? tokenBAmountRaw
-          : null;
+        ? tokenBAmountRaw
+        : null;
 
     // Make Approve messages that can be managed by a Pool package of tokens.
     const approveMessages = [
