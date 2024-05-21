@@ -4,7 +4,6 @@ import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
 import {
-  removeTrailingZeros,
   subscriptFormat,
   toPriceFormat,
 } from "@utils/number-utils";
