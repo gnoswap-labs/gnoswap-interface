@@ -39,7 +39,7 @@ export const useWallet = () => {
     queryFn: () => rpcProvider?.getBalance(walletAccount?.address || "", "ugnot"),
     refetchInterval: 5_000,
   });
-  const { data: balance, isLoading: isLoadingBalance, isStale } = balanceQuery;
+  const { data: balance, isLoading: isLoadingBalance, isStale: isBalanceStale } = balanceQuery;
 
   const wallet = useMemo(() => {
     if (!connected) {
@@ -189,6 +189,6 @@ export const useWallet = () => {
     walletClient,
     setLoadingConnect,
     gnotBalance: balance,
-    isLoadingGnotBalance: isLoadingBalance || isStale,
+    isLoadingGnotBalance: isLoadingBalance || isBalanceStale,
   };
 };
