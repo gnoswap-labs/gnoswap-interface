@@ -181,6 +181,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
     onLineGraphMouseOut?.(activated);
   }, [activated]);
 
+  const isSameData = useMemo(() => {
+    return datas.length > 0 && datas.every(item => item.value === datas[0].value);
+  }, [datas]);
+
   const updatePoints = (
     datas: LineGraphData[],
     width: number,
@@ -209,7 +213,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     //   maxValue - minValue !== 0 ? maxValue - minValue : maxValue * gapRatio;
 
-    const minMaxGap = !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0) ? maxValueBigNumber.minus(minValueBigNumber) : maxValueBigNumber.multipliedBy(gapRatio);
+    const minMaxGap = !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
+      ? maxValueBigNumber.minus(minValueBigNumber) : maxValueBigNumber.multipliedBy(gapRatio);
 
     if (showBaseLine) {
       const baseLineData = new Array(baseLineCount)
@@ -567,12 +572,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 })}
               </>
             )}
-            <path
+            {!isSameData && <path
               fill={`url(#gradient${COMPONENT_ID})`}
               stroke={color}
               strokeWidth={0}
               d={areaPath}
-            />
+            />}
             <path
               fill="none"
               stroke={color}
@@ -608,7 +613,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   />
                 )
               }
-              {
+              {/* {
                 centerLineColor && (
                   <line
                     stroke={centerLineColor}
@@ -621,7 +626,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                     className="center-line"
                   />
                 )
-              }
+              } */}
               {
                 isFocus() && currentPoint && (
                   <line
