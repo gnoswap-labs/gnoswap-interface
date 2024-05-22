@@ -352,6 +352,14 @@ const TokenChartContainer: React.FC = () => {
     // const minPoint = tempMinPoint.isLessThan(0) ? BigNumber(0) : tempMinPoint;
     // const maxPoint = maxValue.plus(maxValue.minus(minValue).multipliedBy(0.05));
 
+    if (datas.every(item => item === datas[0])) {
+      return [
+        toPriceFormat(minValue.multipliedBy(0.95)),
+        toPriceFormat(minValue),
+        toPriceFormat(minValue.multipliedBy(1.05)),
+      ];
+    }
+
     const gap = maxPoint.minus(minPoint);
     const space = gap.dividedBy(5);
     const temp = [toPriceFormat(minPoint)];
