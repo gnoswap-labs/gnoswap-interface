@@ -114,7 +114,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
             showBar={!isHideBar}
             themeKey={themeKey}
             position="top"
-            nextSpacing
+            nextSpacing={false}
             poolPrice={Number(price)}
           />
         </div>

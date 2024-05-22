@@ -298,6 +298,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }
       return mouseX >= minX && mouseX <= maxX;
     });
+    console.log("🚀 ~ bin ~ bin:", bin);
 
     if (!bin) {
       setPositionX(null);
@@ -473,7 +474,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         position={tooltipPosition}
         offset={offset}
         content={
-          tooltipInfo ? (
+          (showBar && tooltipInfo) ? (
             <PoolGraphTooltipWrapper
               ref={tooltipRef}
               className={`tooltip-container ${themeKey}-shadow}`}
@@ -690,8 +691,8 @@ export const PoolGraphBinTooptip: React.FC<PoolGraphBinTooptipProps> = ({
             />
             <span
               className={`token-amount-value hidden ${(tooltipInfo.tokenBAmount || "0").length > 21
-                  ? "small-font"
-                  : ""
+                ? "small-font"
+                : ""
                 }`}
             >
               {tooltipInfo.tokenBAmount || "0"}
