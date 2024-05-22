@@ -5,11 +5,8 @@ import { QUERY_KEY } from "./types";
 import { encryptId } from "@utils/common";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { priceToNearTick } from "@utils/swap-utils";
-import {
-  SwapFeeTierInfoMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { priceToTick } from "@utils/swap-utils";
+import { SwapFeeTierType } from "@constants/option.constant";
 
 export const useGetPoolList = (
   options?: UseQueryOptions<PoolModel[], Error>,
@@ -75,9 +72,8 @@ export const useInitializeBins = (
       }
       const price = isReverse ? 1 / startPrice : startPrice;
       const initializeCount = count ?? 40;
-      const tickSpacing = SwapFeeTierInfoMap[feeTier].tickSpacing;
-      const currentTick = priceToNearTick(price, tickSpacing);
-      const maxBinTick = priceToNearTick(price * 4, tickSpacing);
+      const currentTick = priceToTick(price);
+      const maxBinTick = priceToTick(price * 4);
 
       const center = initializeCount / 2;
       const tickGap = Math.round(
