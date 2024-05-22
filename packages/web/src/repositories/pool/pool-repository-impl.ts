@@ -3,7 +3,7 @@ import { NetworkClient } from "@common/clients/network-client";
 import { PoolResponse, PoolListResponse, PoolRepository } from ".";
 import { WalletClient } from "@common/clients/wallet-client";
 import { CreatePoolRequest } from "./request/create-pool-request";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenModel } from "@models/token/token-model";
 import {
   SwapFeeTierInfoMap,
   SwapFeeTierType,
@@ -27,7 +27,6 @@ import { priceToNearTick } from "@utils/swap-utils";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { makeDepositMessage } from "@common/clients/wallet-client/transaction-messages/token";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import {
@@ -53,7 +52,12 @@ import {
 } from "@common/clients/wallet-client/transaction-messages";
 import { MAX_UINT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { checkGnotPath, isWrapped, toNativePath } from "@utils/common";
+import {
+  checkGnotPath,
+  isGNOTPath,
+  isWrapped,
+  toNativePath,
+} from "@utils/common";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 
 const POOL_PATH = PACKAGE_POOL_PATH || "";
@@ -436,13 +440,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       makeRawTokenAmount(rewardToken, rewardAmount) || "0";
 
     const messages = [];
-    let tokenPath = rewardToken.path;
-    if (isNativeToken(rewardToken)) {
-      tokenPath = rewardToken.wrappedPath;
-      messages.push(
-        makeDepositMessage(tokenPath, rewardAmountRaw, "ugnot", address),
-      );
-    }
+    const tokenPath = checkGnotPath(rewardToken.path);
     messages.push(
       makeStakerApproveMessage(tokenPath, rewardAmountRaw, address),
     );
@@ -454,6 +452,7 @@ export class PoolRepositoryImpl implements PoolRepository {
         startTime,
         endTime,
         address,
+        isGNOTPath(tokenPath),
       ),
     );
 
@@ -479,9 +478,10 @@ export class PoolRepositoryImpl implements PoolRepository {
     const { poolPath, rewardToken } = request;
 
     const messages = [];
-    let tokenPath = rewardToken.path;
-    if (isNativeToken(rewardToken)) {
-      tokenPath = rewardToken.wrappedPath;
+    const tokenPath = checkGnotPath(rewardToken.path);
+
+    if (isGNOTPath(tokenPath)) {
+      messages.push(makeStakerApproveMessage(tokenPath, tokenPath, address));
     }
     messages.push(makeRemoveIncentiveMessage(poolPath, tokenPath, address));
 
@@ -542,20 +542,6 @@ export class PoolRepositoryImpl implements PoolRepository {
       pkg_path: tokenPath,
       func: "Approve",
       args: [POOL_ADDRESS, amount],
-    };
-  }
-
-  private static makeApproveTokenToPositionMessage(
-    tokenPath: string,
-    amount: string,
-    caller: string,
-  ) {
-    return {
-      caller,
-      send: "",
-      pkg_path: tokenPath,
-      func: "Approve",
-      args: [PACKAGE_POSITION_ADDRESS, amount],
     };
   }
 }

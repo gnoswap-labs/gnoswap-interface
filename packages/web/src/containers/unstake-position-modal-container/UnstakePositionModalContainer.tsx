@@ -34,7 +34,6 @@ const UnstakePositionModalContainer = ({
     if (!address) {
       return null;
     }
-    const lpTokenIds = positions.map(position => position.id);
     broadcastLoading(makeBroadcastUnStakingMessage("pending", {
       tokenASymbol: pooledTokenInfos?.[0]?.token?.symbol,
       tokenBSymbol: pooledTokenInfos?.[1]?.token?.symbol,
@@ -42,7 +41,7 @@ const UnstakePositionModalContainer = ({
       tokenBAmount: pooledTokenInfos?.[1]?.amount.toLocaleString("en-US", { maximumFractionDigits: 6})
     }));
     const result = await positionRepository.unstakePositions({
-      lpTokenIds,
+      positions,
       caller: address
     }).catch(() => null);
     if (result) {
