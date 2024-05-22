@@ -30,11 +30,10 @@ const TokenChart: React.FC<TokenChartProps> = ({
   size,
   breakpoint,
 }) => {
+  console.log("🚀 ~ tokenInfo:", tokenInfo);
   const isAllZero = (chartInfo?.datas?.length ?? 0) > 0 && chartInfo?.datas.every(item => {
     Number(item.amount.value) === 0;
   });
-  console.log("🚀 ~ isAllZero ~ chartInfo:", chartInfo?.datas);
-
 
   return (
     <TokenChartWrapper>

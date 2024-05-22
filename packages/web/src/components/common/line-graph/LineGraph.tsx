@@ -161,6 +161,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   baseLineLabelsTransform,
   baseLineLabelsStyle,
 }: LineGraphProps) => {
+  console.log("🚀 ~ .padStart ~ datas:", datas);
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
@@ -202,6 +203,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       value: new BigNumber(data.value).toNumber(),
       time: new Date(data.time).getTime(),
     }));
+    console.log("🚀 ~ mappedDatas ~ mappedDatas:", mappedDatas.length);
     const gapRatio = 0.1;
 
     const values = mappedDatas.map(data => data.value);
@@ -338,6 +340,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
       y: optimizeValue(data.value, height),
     }));
+    console.log("🚀 ~ points ~ points:", points);
+
     setPoints(points);
   };
 

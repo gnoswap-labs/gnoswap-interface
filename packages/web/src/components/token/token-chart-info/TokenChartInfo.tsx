@@ -30,6 +30,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({
   priceInfo,
   loading,
 }) => {
+  console.log("🚀 ~ priceInfo:", priceInfo);
   const isIncreasePrice = useCallback(() => {
     return priceInfo.amount.status === MATH_NEGATIVE_TYPE.POSITIVE;
   }, [priceInfo.amount.status]);

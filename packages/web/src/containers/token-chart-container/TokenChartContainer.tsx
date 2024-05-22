@@ -204,7 +204,7 @@ const TokenChartContainer: React.FC = () => {
         priceInfo: {
           amount: {
             value: currentPrice
-              ? Number(formatUsdNumber3Digits(currentPrice))
+              ? toPriceFormat(currentPrice)
               : "",
             denom: "USD",
             status: dataToday.status,
@@ -302,7 +302,8 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-
+    const lastDate = new Date(chartData[chartData.length - 1]?.date);
+    lastDate.setMinutes(lastDate.getMinutes() + 1);
 
     const datas =
       chartData?.length > 0
@@ -322,12 +323,11 @@ const TokenChartContainer: React.FC = () => {
               value: `${currentPrice}`,
               denom: "",
             },
-            time: getLocalizeTime(chartData[chartData.length - 1].date),
+            time: getLocalizeTime(lastDate),
           },
         ]
         :
         [];
-    console.log("🚀 ~ getChartInfo ~ chartData:", chartData.length);
 
     console.log("🚀 ~ getChartInfo ~ datas:", datas.length);
 
