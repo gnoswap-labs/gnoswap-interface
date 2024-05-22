@@ -13,7 +13,7 @@ import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenByPath, useGetTokenDetailByPath } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
+import { toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import dayjs from "dayjs";
 import {
