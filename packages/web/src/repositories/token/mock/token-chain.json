@@ -8,21 +8,21 @@
     {
       "tokenPath": "gno.land/r/qux",
       "tokenPrice": "161.1816",
-      "tokenPriceChange": "0.0681"
+      "tokenPrice24hChange": "0.0681"
     }
   ],
   "gainers": [
     {
       "tokenPath": "gno.land/r/qux",
       "tokenPrice": "161.1816",
-      "tokenPriceChange": "0.0681"
+      "tokenPrice24hChange": "0.0681"
     }
   ],
   "losers": [
     {
       "tokenPath": "gno.land/r/qux",
       "tokenPrice": "161.1816",
-      "tokenPriceChange": "0.0681"
+      "tokenPrice24hChange": "0.0681"
     }
   ]
 }
