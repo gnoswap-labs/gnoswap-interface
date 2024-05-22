@@ -63,12 +63,15 @@ export const TokenChartGraphWrapper = styled.div<Props>`
     }
   }
 
-  .yaxis-wrapper {
+  
+`;
+
+export const YAxisLabelWrapper = styled.div<{ width: number }>`
     text-align: center;
     display: flex;
     flex-direction: column-reverse;
-    min-width: 50px;
-    margin-bottom: 40px;
+    min-width: ${({ width }) => width};
+    margin-bottom: 44px;
     padding: 8px 0;
     justify-content: space-between;
     span {

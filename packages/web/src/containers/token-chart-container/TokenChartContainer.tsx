@@ -13,7 +13,7 @@ import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGetTokenByPath, useGetTokenDetailByPath } from "@query/token";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { formatUsdNumber3Digits } from "@utils/number-utils";
+import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 import dayjs from "dayjs";
 import {
@@ -234,7 +234,6 @@ const TokenChartContainer: React.FC = () => {
         (currentTab === TokenChartGraphPeriods[0] ? 80 : 100),
       );
 
-
     return Math.floor(
       ((size.width || 0) + 20 - 8) /
       (currentTab === TokenChartGraphPeriods[0] ? 70 : 90),
@@ -282,6 +281,7 @@ const TokenChartContainer: React.FC = () => {
       getLocalizeTime(chartData[currentLength - 1]?.date),
       countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
     );
+
     const labelWidth =
       breakpoint === DEVICE_TYPE.MOBILE
         ? DEFAULT_X_LABEL_WIDTH_MOBILE
@@ -301,11 +301,13 @@ const TokenChartContainer: React.FC = () => {
       temp,
       spaceBetweenLeftYAxisWithFirstLabel,
     );
+
+
+
     const datas =
       chartData?.length > 0
         ? [
           ...chartData
-            .slice(startTime, chartData.length - 1)
             .map((item: IPriceResponse) => {
               return {
                 amount: {
@@ -323,7 +325,12 @@ const TokenChartContainer: React.FC = () => {
             time: getLocalizeTime(chartData[chartData.length - 1].date),
           },
         ]
-        : [];
+        :
+        [];
+    console.log("🚀 ~ getChartInfo ~ chartData:", chartData.length);
+
+    console.log("🚀 ~ getChartInfo ~ datas:", datas.length);
+
 
     const yAxisLabels = getYAxisLabels(
       datas.map(item => BigNumber(item.amount.value).toFormat(6)),
@@ -350,15 +357,16 @@ const TokenChartContainer: React.FC = () => {
 
     const gap = maxPoint.minus(minPoint);
     const space = gap.dividedBy(5);
-    const temp = [minPoint.toString()];
+    const temp = [minPoint.toFormat()];
     for (
       let i = minPoint.plus(space);
       i.isLessThan(maxPoint);
       i = i.plus(space)
     ) {
-      temp.push(`${BigNumber(i).toFormat(6)}`);
+      temp.push(`${toPriceFormat(i)}`);
     }
     temp.push(maxPoint.toString());
+
     const uniqueLabel = [...new Set(temp)];
     if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
     return uniqueLabel;

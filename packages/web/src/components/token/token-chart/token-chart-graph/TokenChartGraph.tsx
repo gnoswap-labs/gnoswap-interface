@@ -1,7 +1,7 @@
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
 import React, { useMemo } from "react";
-import { TokenChartGraphWrapper } from "./TokenChartGraph.styles";
+import { TokenChartGraphWrapper, YAxisLabelWrapper } from "./TokenChartGraph.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { TokenChartGraphPeriodType } from "@containers/token-chart-container/TokenChartContainer";
 import { ComponentSize } from "@hooks/common/use-component-size";
@@ -51,6 +51,16 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return "small-text";
   }, [yAxisLabels]);
 
+  const longestYAxisValue = useMemo(() => {
+    return yAxisLabels.reduce((current, next) => {
+      if (next.length > current.length) {
+        return next;
+      }
+
+      return current;
+    });
+  }, [yAxisLabels]);
+
   return (
     <TokenChartGraphWrapper>
       <div className="data-wrapper" ref={componentRef}>
@@ -78,13 +88,13 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           ))}
         </div>
       </div>
-      <div className="yaxis-wrapper">
+      <YAxisLabelWrapper width={Number(longestYAxisValue.length) / 8 * 50}>
         {yAxisLabels.map((label, index) => (
           <span key={index} className={`label ${typeYAxis}`}>
-            ${0}
+            ${label}
           </span>
         ))}
-      </div>
+      </YAxisLabelWrapper>
     </TokenChartGraphWrapper>
   );
 };

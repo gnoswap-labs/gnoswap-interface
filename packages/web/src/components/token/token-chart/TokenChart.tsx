@@ -30,7 +30,11 @@ const TokenChart: React.FC<TokenChartProps> = ({
   size,
   breakpoint,
 }) => {
-  const isAllZero = chartInfo?.datas.every(item => Number(item.amount.value) === 0);
+  const isAllZero = (chartInfo?.datas?.length ?? 0) > 0 && chartInfo?.datas.every(item => {
+    Number(item.amount.value) === 0;
+  });
+  console.log("🚀 ~ isAllZero ~ chartInfo:", chartInfo?.datas);
+
 
   return (
     <TokenChartWrapper>
@@ -39,13 +43,13 @@ const TokenChart: React.FC<TokenChartProps> = ({
         currentTab={currentTab}
         changeTab={changeTab}
       />
-      {(chartInfo?.datas.length === 0 && !loading) || isAllZero && <ChartNotFound>
+      {(chartInfo?.datas.length === 0 && !loading) && <ChartNotFound>
         No data
       </ChartNotFound>}
       {loading && <LoadingChart>
         <LoadingSpinner />
       </LoadingChart>}
-      {chartInfo?.datas.length !== 0 && !loading && <TokenChartGraph
+      {((chartInfo?.datas.length !== 0 && !loading) || isAllZero) && <TokenChartGraph
         xAxisLabels={chartInfo?.xAxisLabels || []}
         yAxisLabels={chartInfo?.yAxisLabels || []}
         datas={chartInfo?.datas || []}
