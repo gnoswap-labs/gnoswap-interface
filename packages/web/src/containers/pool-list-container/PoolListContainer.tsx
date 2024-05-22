@@ -44,7 +44,7 @@ export const TABLE_HEAD = {
   LIQUIDITY_PLOT: "Liquidity Plot",
 } as const;
 
-export const SORT_SUPPORT_HEAD = ["POOL_NAME", "TVL", "VOLUME", "FEES", "APR"];
+export const SORT_SUPPORT_HEAD = ["Pool Name", "TVL", "Volume (24h)", "Fees (24h)", "APR"];
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
 
@@ -193,6 +193,8 @@ const PoolListContainer: React.FC = () => {
     setIsInside(true);
   };
   const changePoolType = useCallback((newType: string) => {
+    setPage(0);
+
     switch (newType) {
       case POOL_TYPE.ALL:
         setPoolType(POOL_TYPE.ALL);

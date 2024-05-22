@@ -32,7 +32,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
     tokenA,
     tokenB,
     feeTier,
-    liquidity,
     apr,
     volume24h,
     fees24h,
@@ -67,10 +66,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
     const isAllReserveZeroBin = bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const liquidityNotZero = !!liquidity && liquidity !== "$0" && liquidity !== "0";
 
-    return (isAllReserveZeroBin40 && isAllReserveZeroBin) || !liquidityNotZero;
-  }, [bins, bins40, liquidity]);
+    return (isAllReserveZeroBin40 && isAllReserveZeroBin);
+  }, [bins, bins40]);
 
 
   return (
