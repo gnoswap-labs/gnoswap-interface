@@ -192,9 +192,9 @@ export function getDepositAmountsByAmountA(
   maxPrice: number,
   amount: bigint,
 ) {
-  const currentPriceX96 = priceToSqrtX96(currentPrice);
-  const minPriceX96 = priceToSqrtX96(minPrice);
-  const maxPriceX96 = priceToSqrtX96(maxPrice);
+  const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
+  const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
+  const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
   const liquidity = liquidityAmountsGetLiquidityForAmount0(
     currentPriceX96,
@@ -220,9 +220,9 @@ export function getDepositAmountsByAmountB(
   maxPrice: number,
   amount: bigint,
 ) {
-  const currentPriceX96 = priceToSqrtX96(currentPrice);
-  const minPriceX96 = priceToSqrtX96(minPrice);
-  const maxPriceX96 = priceToSqrtX96(maxPrice);
+  const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
+  const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
+  const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
   const liquidity = liquidityAmountsGetLiquidityForAmount1(
     currentPriceX96,

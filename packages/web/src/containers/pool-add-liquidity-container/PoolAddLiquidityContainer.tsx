@@ -316,7 +316,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
-      if (selectPool.currentPrice === null) {
+      if (!selectPool.currentPrice) {
         return;
       }
 
@@ -367,7 +367,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (selectPool.currentPrice === null) {
+      if (!selectPool.currentPrice) {
         return;
       }
 
