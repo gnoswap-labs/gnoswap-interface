@@ -285,9 +285,8 @@ export const useSelectPool = ({
   }, [defaultPriceRange]);
 
   const poolPath = useMemo(() => {
-    setCurrentPoolPath(latestPoolPath);
     return latestPoolPath;
-  }, [latestPoolPath, setCurrentPoolPath]);
+  }, [latestPoolPath]);
 
   const renderState = useCallback(
     (isIgnoreDefaultLoading = false) => {
@@ -562,6 +561,10 @@ export const useSelectPool = ({
       setFullRange(true);
     }
   }, [options, feeTier]);
+
+  useEffect(() => {
+    setCurrentPoolPath(latestPoolPath);
+  }, [poolPath]);
 
   return {
     startPrice,

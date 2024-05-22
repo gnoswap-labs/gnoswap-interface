@@ -20,6 +20,8 @@ import { useTokenData } from "@hooks/token/use-token-data";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
 import {
+  getDepositAmountsByAmountA,
+  getDepositAmountsByAmountB,
   makeSwapFeeTier,
   priceToNearTick,
   priceToTick,
@@ -32,6 +34,7 @@ import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
 import { isFetchedPools } from "@states/pool";
 import { useLoading } from "@hooks/common/use-loading";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -316,47 +319,45 @@ const EarnAddLiquidityContainer: React.FC = () => {
       if (selectPool.currentPrice === null) {
         return;
       }
+
       if (/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
         tokenBAmountInput.changeAmount("0");
         return;
       }
+
+      if (!amount || !tokenA || !tokenB) {
+        return;
+      }
+
       const ordered = tokenA?.symbol === selectPool.compareToken?.symbol;
       const currentPrice = ordered
         ? selectPool.currentPrice
         : 1 / selectPool.currentPrice;
-      const depositRatioA = selectPool.depositRatio;
-      if (
-        selectPool.minPrice === null ||
-        selectPool.maxPrice === null ||
-        depositRatioA === null
-      ) {
+
+      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
         tokenBAmountInput.changeAmount(
           BigNumber(amount).multipliedBy(currentPrice).toFixed(0),
         );
-      } else {
-        const isZero = ordered ? depositRatioA === 100 : depositRatioA === 0;
-        if (isZero) {
-          tokenBAmountInput.changeAmount("0");
-          return;
-        }
-        const depositRatioB = 100 - depositRatioA;
-        const ratio = ordered
-          ? depositRatioB / depositRatioA
-          : depositRatioA / depositRatioB;
-        const changedAmount = BigNumber(amount).multipliedBy(
-          currentPrice * ratio,
-        );
-        tokenBAmountInput.changeAmount(
-          changedAmount.toFixed(tokenB?.decimals || 0, BigNumber.ROUND_FLOOR),
-        );
+        return;
       }
+
+      const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
+      const { amountB } = getDepositAmountsByAmountA(
+        currentPrice,
+        selectPool.minPrice,
+        selectPool.maxPrice,
+        BigInt(amountRaw),
+      );
+      const expectedTokenAmount =
+        makeDisplayTokenAmount(tokenB, amountB) || "0";
+      tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
-      selectPool.compareToken?.symbol,
       selectPool.currentPrice,
+      selectPool.compareToken?.symbol,
+      selectPool.minPrice,
+      selectPool.maxPrice,
       tokenA?.symbol,
-      tokenBAmountInput,
-      selectPool.depositRatio,
     ],
   );
 
@@ -365,46 +366,44 @@ const EarnAddLiquidityContainer: React.FC = () => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
+
       if (selectPool.currentPrice === null) {
         return;
       }
+
+      if (!amount || !tokenA || !tokenB) {
+        return;
+      }
+
       const ordered = tokenB?.symbol === selectPool.compareToken?.symbol;
       const currentPrice = ordered
         ? selectPool.currentPrice
         : 1 / selectPool.currentPrice;
-      const depositRatioA = selectPool.depositRatio;
-      if (
-        !selectPool.minPrice ||
-        !selectPool.maxPrice ||
-        depositRatioA === null
-      ) {
+
+      if (!selectPool.minPrice || !selectPool.maxPrice) {
         tokenAAmountInput.changeAmount(
           BigNumber(amount).multipliedBy(currentPrice).toFixed(0),
         );
-      } else {
-        const isZero = ordered ? depositRatioA === 100 : depositRatioA === 0;
-        if (isZero) {
-          tokenAAmountInput.changeAmount("0");
-          return;
-        }
-        const depositRatioB = 100 - depositRatioA;
-        const ratio = ordered
-          ? depositRatioB / depositRatioA
-          : depositRatioA / depositRatioB;
-        const changedAmount = BigNumber(amount).multipliedBy(
-          currentPrice * ratio,
-        );
-        tokenAAmountInput.changeAmount(
-          changedAmount.toFixed(tokenA?.decimals || 0, BigNumber.ROUND_FLOOR),
-        );
+        return;
       }
+
+      const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
+      const { amountA } = getDepositAmountsByAmountB(
+        currentPrice,
+        selectPool.minPrice,
+        selectPool.maxPrice,
+        BigInt(amountRaw),
+      );
+      const expectedTokenAmount =
+        makeDisplayTokenAmount(tokenA, amountA) || "0";
+      tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
-      selectPool.compareToken?.symbol,
       selectPool.currentPrice,
-      tokenAAmountInput,
+      selectPool.compareToken?.symbol,
+      selectPool.minPrice,
+      selectPool.maxPrice,
       tokenB?.symbol,
-      selectPool.depositRatio,
     ],
   );
 
@@ -507,21 +506,21 @@ const EarnAddLiquidityContainer: React.FC = () => {
         ...prev,
         tokenA: currentTokenA
           ? {
-            ...currentTokenA,
-            path: getGnotPath(currentTokenA).path,
-            name: getGnotPath(currentTokenA).name,
-            symbol: getGnotPath(currentTokenA).symbol,
-            logoURI: getGnotPath(currentTokenA).logoURI,
-          }
+              ...currentTokenA,
+              path: getGnotPath(currentTokenA).path,
+              name: getGnotPath(currentTokenA).name,
+              symbol: getGnotPath(currentTokenA).symbol,
+              logoURI: getGnotPath(currentTokenA).logoURI,
+            }
           : null,
         tokenB: currentTokenB
           ? {
-            ...currentTokenB,
-            path: getGnotPath(currentTokenB).path,
-            name: getGnotPath(currentTokenB).name,
-            symbol: getGnotPath(currentTokenB).symbol,
-            logoURI: getGnotPath(currentTokenB).logoURI,
-          }
+              ...currentTokenB,
+              path: getGnotPath(currentTokenB).path,
+              name: getGnotPath(currentTokenB).name,
+              symbol: getGnotPath(currentTokenB).symbol,
+              logoURI: getGnotPath(currentTokenB).logoURI,
+            }
           : null,
       }));
       return;
