@@ -357,7 +357,7 @@ const TokenChartContainer: React.FC = () => {
 
     const gap = maxPoint.minus(minPoint);
     const space = gap.dividedBy(5);
-    const temp = [minPoint.toFormat()];
+    const temp = [toPriceFormat(minPoint)];
     for (
       let i = minPoint.plus(space);
       i.isLessThan(maxPoint);
@@ -365,7 +365,7 @@ const TokenChartContainer: React.FC = () => {
     ) {
       temp.push(`${toPriceFormat(i)}`);
     }
-    temp.push(maxPoint.toString());
+    temp.push(toPriceFormat(maxPoint));
 
     const uniqueLabel = [...new Set(temp)];
     if (uniqueLabel.length === 1) uniqueLabel.unshift("0");

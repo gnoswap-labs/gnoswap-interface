@@ -88,7 +88,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           ))}
         </div>
       </div>
-      <YAxisLabelWrapper width={Number(longestYAxisValue.length) / 8 * 50}>
+      <YAxisLabelWrapper width={Number(longestYAxisValue.length) / 8 * 58}>
         {yAxisLabels.map((label, index) => (
           <span key={index} className={`label ${typeYAxis}`}>
             ${label}
