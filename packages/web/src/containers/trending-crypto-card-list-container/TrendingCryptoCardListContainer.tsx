@@ -63,6 +63,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
 
   const trendingCryptoList = useMemo(() => {
     return (trending ?? [])?.map((item: ITrending) => {
+      console.log("🚀 ~ return ~ item:", item);
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
         path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
@@ -71,8 +72,8 @@ const TrendingCryptoCardListContainer: React.FC = () => {
         logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
         price: `${(toPriceFormat(item.tokenPrice, { usd: true }))}`,
         change: {
-          status: Number(item.tokenPriceChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${Number(item.tokenPriceChange) >= 0 ? "+" : ""}${Number(item.tokenPriceChange).toFixed(2)}%`,
+          status: Number(item.tokenPrice24hChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(item.tokenPrice24hChange) >= 0 ? "+" : ""}${Number(item.tokenPrice24hChange).toFixed(2)}%`,
         }
       };
     }).slice(0, 5);
