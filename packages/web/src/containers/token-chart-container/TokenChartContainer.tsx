@@ -345,12 +345,12 @@ const TokenChartContainer: React.FC = () => {
     const minValue = BigNumber(Math.min(...convertNumber));
     const maxValue = BigNumber(Math.max(...convertNumber));
 
-    // const tempMinPoint = minValue.minus(maxValue.minus(minValue).multipliedBy(0.05));
+    const tempMinPoint = minValue.minus(maxValue.minus(minValue).multipliedBy(0.05));
 
-    const minPoint = minValue.multipliedBy(0.95);
-    const maxPoint = maxValue.multipliedBy(1.05);
-    // const minPoint = tempMinPoint.isLessThan(0) ? BigNumber(0) : tempMinPoint;
-    // const maxPoint = maxValue.plus(maxValue.minus(minValue).multipliedBy(0.05));
+    // const minPoint = minValue.multipliedBy(0.95);
+    // const maxPoint = maxValue.multipliedBy(1.05);
+    const minPoint = tempMinPoint.isLessThan(0) ? BigNumber(0) : tempMinPoint;
+    const maxPoint = maxValue.plus(maxValue.minus(minValue).multipliedBy(0.05));
 
     const gap = maxPoint.minus(minPoint);
     const space = gap.dividedBy(5);

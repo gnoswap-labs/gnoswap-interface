@@ -203,7 +203,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
       value: new BigNumber(data.value).toNumber(),
       time: new Date(data.time).getTime(),
     }));
-    console.log("🚀 ~ mappedDatas ~ mappedDatas:", mappedDatas.length);
     const gapRatio = 0.1;
 
     const values = mappedDatas.map(data => data.value);
@@ -223,26 +222,38 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     //   maxValue - minValue !== 0 ? maxValue - minValue : maxValue * gapRatio;
 
-    const minMaxGap = !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
-      ? maxValueBigNumber.minus(minValueBigNumber) : maxValueBigNumber.multipliedBy(gapRatio);
+    const minMaxGap = (() => {
+      if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return maxValueBigNumber.multipliedBy(gapRatio);
+
+      if (minValueBigNumber.isLessThan(0)) return maxValueBigNumber;
+
+      return maxValueBigNumber.minus(minValueBigNumber);
+    })();
 
     const baseLineData = new Array(baseLineCount)
       .fill("")
       .map((value, index) => {
         // Gap from lowest value or highest value  to baseline
-        const additionalGap =
-          !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
-            ? minMaxGap.multipliedBy(gapRatio / 2)
-            : minMaxGap.dividedBy(2);
+        const additionalGap = (() => {
+          if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return minMaxGap.dividedBy(2);
+
+          return minMaxGap.multipliedBy(gapRatio / 2);
+        })();
+
         // Gap between bottom and top base line
-        const baseLineGap =
-          !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0) ? minMaxGap.multipliedBy(1 + gapRatio) : minMaxGap;
+        const baseLineGap = (() => {
+          if (maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)) return minMaxGap;
+
+          if (minValueBigNumber.isLessThanOrEqualTo(0)) return maxValueBigNumber;
+
+          return minMaxGap.multipliedBy(1 + gapRatio);
+        })();
+
         // Lowest baseline value
-        const bottomBaseLineValue = minValueBigNumber.minus(additionalGap);
+        const tempBottomBaseLineValue = minValueBigNumber.minus(additionalGap);
+        const bottomBaseLineValue = tempBottomBaseLineValue.isLessThanOrEqualTo(0) ? BigNumber(0) : tempBottomBaseLineValue;
 
         const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
-        // const currentBaseLineValue =
-        //   bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
 
         if (currentBaseLineValue.isLessThan(-1)) {
           return "-" + convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
@@ -304,6 +315,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
       // The base line wrapper will > top and bottom of graph 10 % so the height will be 110% of graph height
       const graphHeight = (() => {
         if (showBaseLine) {
+          if (minValueBigNumber.isEqualTo(0)) {
+            return height * (1 / 1.05);
+          }
+
           return height * (1 / 1.1);
         }
 
@@ -311,13 +326,19 @@ const LineGraph: React.FC<LineGraphProps> = ({
       })();
 
       // Subtract 5% from the top baseline
-      const topFrontierHeight = showBaseLine ? height * (1.05 / 1.1) : height;
+      const topFrontierHeight = (() => {
+        return showBaseLine ? height * (1.05 / 1.1) : height;
+      })();
 
       const result = (() => {
+        if (minValue === 0) {
+          return topFrontierHeight + (graphHeight * (0.05 / 1.05)) - ((value - minValue) * graphHeight) / minMaxGap.toNumber();
+        }
+
         if (maxValue - minValue === 0) {
           return (
             topFrontierHeight -
-            ((value - value * 0.95) * graphHeight) / minMaxGap.toNumber()
+            ((value * 0.05) * graphHeight) / minMaxGap.toNumber()
           );
         }
 
@@ -340,7 +361,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
       y: optimizeValue(data.value, height),
     }));
-    console.log("🚀 ~ points ~ points:", points);
+    console.log("🚀 ~ points ~ mappedDatas:", mappedDatas);
 
     setPoints(points);
   };
@@ -532,7 +553,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 )}
               </div>
               <div className="tooltip-header">
-                <span className="value">{`$${toPriceFormat(BigNumber(datas[currentPointIndex]?.value).toFormat())}`}</span>
+                <span className="value">{`$${toPriceFormat(BigNumber(datas[currentPointIndex]?.value).toString())}`}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null

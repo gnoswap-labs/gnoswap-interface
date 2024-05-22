@@ -157,6 +157,8 @@ export const toPriceFormat = (
   }
 
   const bigNumber = BigNumber(value);
+  console.log("🚀 2398472387 ~ value:", value);
+  console.log("🚀 2398472387~ value:", bigNumber.toFormat());
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
 
   // if (wholeNumberLength >= 13)
@@ -178,6 +180,8 @@ export const toPriceFormat = (
       unitsUpperCase.million
     );
   if (options.isKMB) {
+
+
     if (wholeNumberLength >= 4 && options.isFormat)
       return (
         (options.usd ? "$" : "") +
@@ -194,6 +198,7 @@ export const toPriceFormat = (
     return (options.usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
   }
   if (Number(bigNumber) < 1) {
+
     return (options.usd ? "$" : "") + bigNumber.toNumber().toLocaleString("en-US", {
       maximumSignificantDigits: 3
     });

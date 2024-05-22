@@ -74,11 +74,12 @@ export const YAxisLabelWrapper = styled.div<{ width: number }>`
     padding: 8px 0;
     justify-content: space-between;
     margin: 0 4px;
-    margin-bottom: 44px;
+    margin-bottom: 50px;
+    margin-top: 8px;
     span {
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
-      text-align: left;
+      text-align: center;
     }
     .large-text {
       ${fonts.body12};
