@@ -75,7 +75,7 @@ export const YAxisLabelWrapper = styled.div<{ width: number }>`
     justify-content: space-between;
     margin: 0 4px;
     margin-bottom: 50px;
-    margin-top: 8px;
+    /* margin-top: 8px; */
     span {
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
