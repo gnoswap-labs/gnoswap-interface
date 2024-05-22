@@ -354,7 +354,7 @@ export const useSelectPool = ({
       return null;
     }
     const currentPrice = isCreate ? startPrice : price;
-    if (currentPrice === undefined || currentPrice === null) {
+    if (!currentPrice) {
       return null;
     }
 
