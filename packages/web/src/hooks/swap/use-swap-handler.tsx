@@ -408,6 +408,7 @@ export const useSwapHandler = () => {
     setTokenBAmount("0");
   }, [updateBalances]);
 
+  // Auto refetch
   useEffect(() => {
     updateBalances();
     const interval = setInterval(() => {
@@ -415,6 +416,7 @@ export const useSwapHandler = () => {
     }, 10000);
     return () => clearInterval(interval);
   }, [tokens]);
+
   const changeTokenAAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenB =
@@ -456,6 +458,7 @@ export const useSwapHandler = () => {
     },
     [isSameToken, memorizeTokenSwap, tokenA],
   );
+
   useEffect(() => {
     setSwapValue(prev => ({
       ...prev,
@@ -463,6 +466,7 @@ export const useSwapHandler = () => {
       tokenBAmount,
     }));
   }, [setSwapValue, tokenAAmount, tokenBAmount]);
+
   const changeTokenBAmount = useCallback(
     (value: string, none?: boolean) => {
       const memoryzeTokenA =

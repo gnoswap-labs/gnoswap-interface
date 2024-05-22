@@ -160,6 +160,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   baseLineLabelsPosition = "left",
   baseLineLabelsTransform,
   baseLineLabelsStyle,
+  firstPointColor,
 }: LineGraphProps) => {
   console.log("🚀 ~ .padStart ~ datas:", datas);
   const COMPONENT_ID = (Math.random() * 100000).toString();
@@ -446,12 +447,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
   //   [getGraphLine, height, width],
   // );
 
-  // const firstPoint = useMemo(() => {
-  //   if (points.length === 0) {
-  //     return { x: 0, y: 0 };
-  //   }
-  //   return points[0];
-  // }, [points]);
+  const firstPoint = useMemo(() => {
+    if (points.length === 0) {
+      return { x: 0, y: 0 };
+    }
+    return points[0];
+  }, [points]);
   const locationTooltipPosition = useMemo(() => {
     if ((chartPoint?.y || 0) > customHeight + height - 25) {
       if (width < (currentPoint?.x || 0) + locationTooltip) {
@@ -636,7 +637,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
           </g >
           {
             <g>
-              {/* {
+              {
                 firstPointColor && (
                   <line
                     stroke={firstPointColor ? firstPointColor : color}
@@ -649,7 +650,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                     className="first-line"
                   />
                 )
-              } */}
+              }
               {/* {
                 centerLineColor && (
                   <line
