@@ -1,3 +1,5 @@
+"use client";
+
 import { AxiosClient } from "@common/clients/network-client/axios-client";
 import { WebStorageClient } from "@common/clients/storage-client";
 import {
@@ -17,13 +19,7 @@ import {
 import { SwapRepository } from "@repositories/swap";
 import { TokenRepository } from "@repositories/token";
 import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
-import {
-  createContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
 import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
@@ -233,14 +229,14 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
     return false;
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
       setSessionStorageClient(WebStorageClient.createSessionStorageClient());
     }
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     initNetwork();
   }, [network]);
 
