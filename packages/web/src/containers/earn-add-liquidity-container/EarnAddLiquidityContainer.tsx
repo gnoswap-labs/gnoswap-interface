@@ -416,23 +416,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const ordered = tokenA?.symbol === selectPool.compareToken?.symbol;
-      const currentPrice = ordered
-        ? selectPool.currentPrice
-        : 1 / selectPool.currentPrice;
-
-      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
-        tokenBAmountInput.changeAmount(
-          BigNumber(amount).multipliedBy(currentPrice).toFixed(0),
-        );
+      if (!selectPool.minPrice || !selectPool.maxPrice) {
         return;
       }
 
+      const decimals = tokenB.decimals - tokenA.decimals;
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
-        currentPrice,
-        selectPool.minPrice,
-        selectPool.maxPrice,
+        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
       );
       const expectedTokenAmount =
@@ -462,23 +455,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const ordered = tokenB?.symbol === selectPool.compareToken?.symbol;
-      const currentPrice = ordered
-        ? selectPool.currentPrice
-        : 1 / selectPool.currentPrice;
-
       if (!selectPool.minPrice || !selectPool.maxPrice) {
-        tokenAAmountInput.changeAmount(
-          BigNumber(amount).multipliedBy(currentPrice).toFixed(0),
-        );
         return;
       }
 
+      const decimals = tokenB.decimals - tokenA.decimals;
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
-        currentPrice,
-        selectPool.minPrice,
-        selectPool.maxPrice,
+        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
       );
       const expectedTokenAmount =
@@ -599,6 +585,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       updateBalances();
     }
   }, [account?.address]);
+
   useEffect(() => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {
       return;
