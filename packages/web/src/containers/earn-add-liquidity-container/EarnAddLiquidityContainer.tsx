@@ -9,7 +9,6 @@ import EarnAddLiquidity from "@components/earn-add/earn-add-liquidity/EarnAddLiq
 import {
   AddLiquiditySubmitType,
   PriceRangeType,
-  SwapFeeTierInfoMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
@@ -28,9 +27,7 @@ import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
-  priceToNearTick,
   priceToTick,
-  tickToPrice,
 } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
@@ -392,13 +389,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const tickSpacing = SwapFeeTierInfoMap[swapFeeTier].tickSpacing;
-      const tick = priceToNearTick(priceNum, tickSpacing);
-      const nearStartPrice = tickToPrice(tick);
 
       setCreateOption(prev => ({
         ...prev,
-        startPrice: nearStartPrice,
+        startPrice: priceNum,
       }));
     },
     [swapFeeTier],
