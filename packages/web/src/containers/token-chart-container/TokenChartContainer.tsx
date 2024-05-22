@@ -329,9 +329,6 @@ const TokenChartContainer: React.FC = () => {
         :
         [];
 
-    console.log("🚀 ~ getChartInfo ~ datas:", datas.length);
-
-
     const yAxisLabels = getYAxisLabels(
       datas.map(item => BigNumber(item.amount.value).toFormat(6)),
     );

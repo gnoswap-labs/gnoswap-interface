@@ -71,10 +71,10 @@ export const YAxisLabelWrapper = styled.div<{ width: number }>`
     display: flex;
     flex-direction: column-reverse;
     min-width: ${({ width }) => width};
-    margin-bottom: 44px;
     padding: 8px 0;
     justify-content: space-between;
     margin: 0 4px;
+    margin-bottom: 44px;
     span {
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
