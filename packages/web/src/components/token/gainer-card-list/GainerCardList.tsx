@@ -13,7 +13,6 @@ interface GainerCardListProps {
 }
 
 const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain }) => {
-  console.log("🚀 ~ gainers:", gainers);
   return (
     <section css={cardStyle}>
       <h2 className="card-title">Top 3 Gainers</h2>

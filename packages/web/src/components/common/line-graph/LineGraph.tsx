@@ -162,7 +162,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   baseLineLabelsStyle,
   firstPointColor,
 }: LineGraphProps) => {
-  console.log("🚀 ~ .padStart ~ datas:", datas);
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
@@ -362,7 +361,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
       y: optimizeValue(data.value, height),
     }));
-    console.log("🚀 ~ points ~ mappedDatas:", mappedDatas);
 
     setPoints(points);
   };

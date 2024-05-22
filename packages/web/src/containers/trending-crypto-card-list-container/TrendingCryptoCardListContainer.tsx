@@ -63,7 +63,6 @@ const TrendingCryptoCardListContainer: React.FC = () => {
 
   const trendingCryptoList = useMemo(() => {
     return (trending ?? [])?.map((item: ITrending) => {
-      console.log("🚀 ~ return ~ item:", item);
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
         path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,

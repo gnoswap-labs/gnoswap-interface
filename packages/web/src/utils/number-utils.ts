@@ -157,8 +157,6 @@ export const toPriceFormat = (
   }
 
   const bigNumber = BigNumber(value);
-  console.log("🚀 2398472387 ~ value:", value);
-  console.log("🚀 2398472387~ value:", bigNumber.toFormat());
   const wholeNumberLength = bigNumber.decimalPlaces(0).toString().length;
 
   // if (wholeNumberLength >= 13)

@@ -48,6 +48,7 @@ const SwapContainer: React.FC = () => {
       setInitialized(true);
     }
   }, [tokens]);
+
   useEffect(() => {
     if (router.pathname !== router.asPath) return;
     setSwapValue({
@@ -78,6 +79,7 @@ const SwapContainer: React.FC = () => {
       tokenBAmount: "",
     });
   }, [initialized]);
+
   return (
     <SwapCard
       connectedWallet={connectedWallet}

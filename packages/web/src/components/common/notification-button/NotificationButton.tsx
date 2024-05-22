@@ -64,7 +64,7 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
       });
       refetch();
     } catch (e) {
-      console.log("🚀 ~ handleClearAll ~ e:", e);
+      console.log("handleClearAll ~ e:", e);
     }
   };
 

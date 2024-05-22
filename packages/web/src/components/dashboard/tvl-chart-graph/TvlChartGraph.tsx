@@ -59,7 +59,6 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({
       time: data.time,
     }));
   }, [datas]);
-  console.log("🚀 ~ mappedData ~ mappedData:", mappedData);
 
   const countXAxis = useMemo(() => {
     if (breakpoint !== DEVICE_TYPE.MOBILE)
