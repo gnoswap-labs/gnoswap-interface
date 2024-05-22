@@ -491,6 +491,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const isLightTheme = theme.themeKey === "light";
 
+  const hasTooltipContent = useMemo(() => {
+    return datas[currentPointIndex]?.time && datas[currentPointIndex]?.value;
+  }, [currentPointIndex, datas]);
+
   return (
     <LineGraphWrapper
       className={className}
@@ -507,7 +511,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
         isHiddenArrow
         position={locationTooltipPosition}
         content={
-          (isShowTooltip && currentPointIndex > -1) ? (
+          (hasTooltipContent && isShowTooltip && currentPointIndex > -1) ? (
             <LineGraphTooltipWrapper>
               <div className="tooltip-body">
                 <span className="date">
