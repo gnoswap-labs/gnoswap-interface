@@ -303,7 +303,7 @@ const TokenChartContainer: React.FC = () => {
     );
 
     const lastDate = new Date(chartData[chartData.length - 1]?.date);
-    lastDate.setMinutes(lastDate.getMinutes() + 1);
+    lastDate.setMinutes(lastDate.getMinutes() + 30);
 
     const datas =
       chartData?.length > 0
