@@ -29,6 +29,7 @@ import { QUERY_KEY, useGetBinsByPath, useInitializeBins } from "@query/pools";
 import BigNumber from "bignumber.js";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ZOOL_VALUES } from "@constants/graph.constant";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -350,25 +351,14 @@ export const useSelectPool = ({
   }, [fullRange, maxPosition]);
 
   const depositRatio = useMemo(() => {
-    if (minPrice === null || maxPrice === null) {
+    if (!tokenA || !tokenB || minPrice === null || maxPrice === null) {
       return null;
     }
+
     const currentPrice = isCreate ? startPrice : price;
     if (!currentPrice) {
       return null;
     }
-
-    const currentMinPrice = fullRange ? MIN_PRICE : minPrice;
-    const currentMaxPrice = fullRange ? MAX_PRICE : maxPrice;
-
-    const adjustAmountA = 1_000_000_000n;
-
-    const { amountA, amountB } = getDepositAmountsByAmountA(
-      currentPrice,
-      currentMinPrice,
-      currentMaxPrice,
-      adjustAmountA,
-    );
 
     if (maxPrice < currentPrice) {
       return 0;
@@ -378,8 +368,24 @@ export const useSelectPool = ({
       return 100;
     }
 
-    const sumOfAmounts = amountA + amountB;
-    return BigNumber(amountA.toString())
+    const currentMinPrice = fullRange ? MIN_PRICE : minPrice;
+    const currentMaxPrice = fullRange ? MAX_PRICE : maxPrice;
+
+    const adjustAmountA = 1_000_000_000n;
+
+    const decimals = tokenB.decimals - tokenA.decimals;
+    const { amountA, amountB } = getDepositAmountsByAmountA(
+      BigNumber(currentPrice).shiftedBy(decimals).toNumber(),
+      BigNumber(currentMinPrice).shiftedBy(decimals).toNumber(),
+      BigNumber(currentMaxPrice).shiftedBy(decimals).toNumber(),
+      adjustAmountA,
+    );
+
+    const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || 0;
+    const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || 0;
+
+    const sumOfAmounts = tokenAAmount + tokenBAmount;
+    return BigNumber(tokenAAmount.toString())
       .dividedBy(sumOfAmounts.toString())
       .multipliedBy(100)
       .toNumber();
