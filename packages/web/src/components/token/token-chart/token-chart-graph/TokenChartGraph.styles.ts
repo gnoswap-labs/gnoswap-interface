@@ -111,10 +111,12 @@ export const TokenChartGraphXLabel = styled.span<{
 }>`
   position: absolute;
   display: block;
+  min-width: 80px;
   left: ${({ x }) => `${x}px`};
   ${fonts.body12};
   color: ${({ theme }) => theme.color.text04};
   transform: translate(-50%, 0);
+  text-align: center;
   overflow: visible;
   word-break: keep-all;
   white-space: nowrap;

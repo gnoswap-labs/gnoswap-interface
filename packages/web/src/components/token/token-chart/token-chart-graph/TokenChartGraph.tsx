@@ -37,7 +37,7 @@ const DATE_HOUR_VALUE = 60 * DATE_MINUTE_VALUE;
 
 const FORMAT_HOUR = "h:ss A";
 const FORMAT_DATE = "MMM D, YYYY";
-const FORMAT_HOUR_LENGTH = 60;
+const FORMAT_HOUR_LENGTH = 70;
 const FORMAT_DATE_LENGTH = 95;
 
 function makeTimePeriodFormatInfo(period: TokenChartGraphPeriodType) {
@@ -108,6 +108,14 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     [size.width, xAxisRange.maxX, xAxisRange.minX],
   );
 
+  const revertX = useCallback(
+    (value: number) => {
+      const range = xAxisRange.maxX - xAxisRange.minX;
+      return (value * range) / size.width + xAxisRange.minX;
+    },
+    [size.width, xAxisRange.maxX, xAxisRange.minX],
+  );
+
   /**
    * The x-axis label data.
    * Generate labels with a minimum reference time per axis.
@@ -117,23 +125,33 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     const formatInfo = makeTimePeriodFormatInfo(currentTab);
 
     // Find the maximum number of labels and time intervals for each graph container size.
-    const maxLabelCount = Math.floor(size.width / formatInfo.textLength);
+    const maxLabelCount = Math.floor((size.width - 24) / formatInfo.textLength);
     const spacingCount = Math.ceil(
       Math.ceil((maxX - minX) / formatInfo.minimumSpacing) / maxLabelCount,
     );
 
     // Get the time data for the first label and generate a list of labels.
     const timeDiff = formatInfo.minimumSpacing * spacingCount;
-    const startX =
-      xAxisRange.minX % timeDiff === 0
-        ? xAxisRange.minX
-        : xAxisRange.minX + timeDiff - (xAxisRange.minX % timeDiff);
-    const startXWithOffset = startX + formatInfo.offset * DATE_MINUTE_VALUE;
-    const length =
-      Math.ceil((xAxisRange.maxX - startXWithOffset) / timeDiff) + 2;
+
+    const minPositionX = revertX(24 + formatInfo.textLength / 2);
+    const startX = minPositionX - (minPositionX % formatInfo.minimumSpacing);
+
+    let startXWithOffset = startX;
+
+    if (formatInfo.minimumSpacing >= DATE_HOUR_VALUE * 24) {
+      const offsetValue = formatInfo.offset * DATE_MINUTE_VALUE;
+
+      if (startX + offsetValue > minPositionX) {
+        startXWithOffset = startX + offsetValue;
+      } else {
+        startXWithOffset = startX + offsetValue + timeDiff;
+      }
+    }
+
+    const length = Math.ceil((maxX - minX) / timeDiff);
 
     return Array.from({ length }, (_, index) => {
-      const datetime = startXWithOffset + (index - 1) * timeDiff;
+      const datetime = startXWithOffset + index * timeDiff;
       return {
         position: scaleX(datetime),
         value: datetime,
@@ -145,7 +163,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   // Filter the list of X-axis labels to display
   const displayXAxisLabels: XAxisLabel[] = useMemo(() => {
     const formatInfo = makeTimePeriodFormatInfo(currentTab);
-    const minimumXAxis = formatInfo.textLength / 2 + 10; // text size and padding
+    const minimumXAxis = formatInfo.textLength / 2; // text size and padding
 
     return xAxisLabels.filter(
       label =>
