@@ -89,6 +89,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const lastHoverBinIndexRef = useRef<number | undefined>();
 
   const { redColor, greenColor } = useColorGraph();
 
@@ -287,20 +288,23 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
-    const bin = resolvedBins.find(bin => {
+    const currentBin = resolvedBins.find(bin => {
       const minX = scaleX(bin.minTick);
-      const maxX = scaleX(bin.maxTick + 1);
+      const maxX = Math.floor(scaleX(bin.maxTick));
       if (mouseY < 0.000001 || mouseY > height) {
         return false;
       }
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      return mouseX >= minX && mouseX <= maxX;
+      return mouseX > minX && mouseX < maxX - 1;
     });
-    console.log("🚀 ~ bin ~ bin:", bin);
 
-    if (!bin) {
+    if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {
+      lastHoverBinIndexRef.current = currentBin?.index;
+    }
+
+    if (!currentBin) {
       setPositionX(null);
       setPositionY(null);
       !nextSpacing && setTooltipInfo(null);
@@ -310,9 +314,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (
       Math.abs(height - mouseY - 0.0001) >
       boundsHeight -
-      scaleY(bin.reserveTokenMap) +
-      (scaleY(bin.reserveTokenMap) > height - 3 &&
-        scaleY(bin.reserveTokenMap) !== height
+      scaleY(currentBin.reserveTokenMap) +
+      (scaleY(currentBin.reserveTokenMap) > height - 3 &&
+        scaleY(currentBin.reserveTokenMap) !== height
         ? 3
         : 0)
     ) {
@@ -321,11 +325,11 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       setTooltipInfo(null);
       return;
     }
-    const minTick = bin.minTick + defaultMinX;
-    const maxTick = bin.maxTick + defaultMinX;
+    const minTick = currentBin.minTick + defaultMinX;
+    const maxTick = currentBin.maxTick + defaultMinX;
 
-    const minTickSwap = bin.minTickSwap + defaultMinX;
-    const maxTickSwap = bin.maxTickSwap + defaultMinX;
+    const minTickSwap = currentBin.minTickSwap + defaultMinX;
+    const maxTickSwap = currentBin.maxTickSwap + defaultMinX;
 
     const tokenARange = {
       min: tickOfPrices[!isSwap ? minTick : minTickSwap] || null,
@@ -335,25 +339,25 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       min: tickOfPrices[!isSwap ? -minTick : -minTickSwap] || null,
       max: tickOfPrices[!isSwap ? -maxTick : -maxTickSwap] || null,
     };
-    const index = bin.index;
+    const index = currentBin.index;
 
-    const tokenAAmountStr = bin.reserveTokenA;
-    const tokenBAmountStr = bin.reserveTokenB;
-    const myTokenAAmountStr = bin?.reserveTokenAMyAmount;
-    const myTokenBAmountStr = bin?.reserveTokenBMyAmount;
+    const tokenAAmountStr = currentBin.reserveTokenA;
+    const tokenBAmountStr = currentBin.reserveTokenB;
+    const myTokenAAmountStr = currentBin?.reserveTokenAMyAmount;
+    const myTokenBAmountStr = currentBin?.reserveTokenBMyAmount;
     const tickSpacing = getTickSpacing();
     let isBlackBar = !!(
       maxTickPosition &&
       minTickPosition &&
-      (scaleX(bin.minTick) < minTickPosition - tickSpacing ||
-        scaleX(bin.minTick) > maxTickPosition)
+      (scaleX(currentBin.minTick) < minTickPosition - tickSpacing ||
+        scaleX(currentBin.minTick) > maxTickPosition)
     );
     if (isSwap) {
       isBlackBar = !!(
         maxTickPosition &&
         minTickPosition &&
-        (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing ||
-          scaleX(bin.minTick) > scaleX(maxX) - minTickPosition)
+        (scaleX(currentBin.minTick) < scaleX(maxX) - maxTickPosition - tickSpacing ||
+          scaleX(currentBin.minTick) > scaleX(maxX) - minTickPosition)
       );
     }
     setTooltipInfo({
@@ -368,13 +372,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       myTokenAAmount:
         index < 20
           ? "-"
-          : index > 19 && `${bin.reserveTokenAMyAmount}` === "0"
+          : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
             ? "<0.000001"
             : convertToKMB((myTokenAAmountStr || "-").toString()) || "-",
       myTokenBAmount:
         index > 19
           ? "-"
-          : index < 20 && `${bin.reserveTokenBMyAmount}` === "0"
+          : index < 20 && `${currentBin.reserveTokenBMyAmount}` === "0"
             ? "<0.000001"
             : convertToKMB((myTokenBAmountStr || "-").toString()) || "-",
       tokenARange: tokenARange,

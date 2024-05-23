@@ -9,6 +9,7 @@ import { useSlippage } from "@hooks/common/use-slippage";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
+import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
@@ -33,7 +34,7 @@ export interface IPriceRange {
   feeBoost: string;
 }
 
-export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
+export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY" | "INSUFFICIENT_BALANCE";
 
 export const useIncreaseHandle = () => {
   const router = useRouter();
@@ -47,6 +48,7 @@ export const useIncreaseHandle = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
     type: "Custom",
   });
+  const { displayBalanceMap } = useTokenData();
 
   const loading = useMemo(() => {
     return !selectedPosition;
@@ -289,12 +291,22 @@ export const useIncreaseHandle = () => {
   );
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
+    console.log("🚀 ~ constbuttonType:INCREASE_BUTTON_TYPE=useMemo ~ tokenAAmountInput.amount:", tokenAAmountInput.amount);
+    console.log("🚀 ~ constbuttonType:INCREASE_BUTTON_TYPE=useMemo ~ tokenAAmountInput.amount:", tokenBAmountInput.amount);
+
     if (
       !Number(tokenAAmountInput.amount) ||
       !Number(tokenBAmountInput.amount)
     ) {
       return "ENTER_AMOUNT";
     }
+    if (
+      (!!tokenA && Number(tokenAAmountInput.amount) > (displayBalanceMap?.[tokenA.priceID] ?? 0))
+      || (!!tokenB && Number(tokenBAmountInput.amount) > (displayBalanceMap?.[tokenB.priceID] ?? 0))
+    ) {
+      return "INSUFFICIENT_BALANCE";
+    }
+
     return "INCREASE_LIQUIDITY";
   }, [tokenAAmountInput, tokenBAmountInput]);
 
