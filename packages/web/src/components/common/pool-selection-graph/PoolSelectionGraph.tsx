@@ -117,6 +117,17 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom - labelHeight;
 
+  const currentPrice = useMemo(() => {
+    if (flip) {
+      if (price === 0) {
+        return 0;
+      }
+
+      return 1 / price;
+    }
+    return price;
+  }, [flip, price]);
+
   const adjustBins = useMemo(() => {
     return flip
       ? bins
@@ -127,7 +138,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             reserveTokenA: bin.reserveTokenB,
             reserveTokenB: bin.reserveTokenA,
             height: BigNumber(bin.reserveTokenB)
-              .multipliedBy(price)
+              .multipliedBy(currentPrice)
               .plus(bin.reserveTokenA)
               .toNumber(),
           }))
@@ -135,11 +146,11 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       : bins.map(bin => ({
           ...bin,
           height: BigNumber(bin.reserveTokenA)
-            .multipliedBy(price)
+            .multipliedBy(currentPrice)
             .plus(bin.reserveTokenB)
             .toNumber(),
         }));
-  }, [bins, price, flip]);
+  }, [bins, currentPrice, flip]);
 
   // Display bins is bins slice data.
   const displayBins = useMemo(() => {
@@ -218,11 +229,11 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   }, [boundsWidth, displayBins.length]);
 
   const currentTick = useMemo(() => {
-    if (Number.isNaN(price)) {
+    if (Number.isNaN(currentPrice)) {
       return 0;
     }
-    return priceToNearTick(price, tickSpacing);
-  }, [price, tickSpacing]);
+    return priceToNearTick(currentPrice, tickSpacing);
+  }, [currentPrice, tickSpacing]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -305,8 +316,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       Math.round(scaleX.invert(endPosition) + defaultMinX),
     );
 
-    const startRate = price ? ((Number(startPrice) - price) / price) * 100 : 0;
-    const endRate = price ? ((Number(endPrice) - price) / price) * 100 : 0;
+    const startRate = currentPrice
+      ? ((Number(startPrice) - currentPrice) / currentPrice) * 100
+      : 0;
+    const endRate = currentPrice
+      ? ((Number(endPrice) - currentPrice) / currentPrice) * 100
+      : 0;
 
     const isRightStartLine = startPosition - 75 < 0;
     const isRightEndLine = endPosition + 75 < boundsWidth;
@@ -398,7 +413,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       if (bin.height === 0) {
         return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
       }
-      if (currentTick && Number(bin.maxTick) - 2 < currentTick) {
+      if (currentTick && Number(bin.maxTick) - 5 < currentTick) {
         return `url(#gradient-bar-green-${random})`;
       }
       return `url(#gradient-bar-red-${random})`;
@@ -506,11 +521,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
     if (
       Math.abs(height - mouseY - 0.0001) >
-      boundsHeight -
+      boundsHeight +
+        15 -
         scaleY(bin.height) +
-        (scaleY(bin.height) > height - 5 && scaleY(bin.height) !== height
-          ? 5
-          : 0)
+        (scaleY(bin.height) > height && scaleY(bin.height) !== height ? 0 : 0)
     ) {
       setPositionX(null);
       setPositionX(null);
@@ -579,7 +593,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
   }
 
-  // Lazy initialize price of tick
+  // Lazy initialize currentPrice of tick
   useEffect(() => {
     if (resolvedDisplayBins.length > 0) {
       new Promise<{ [key in number]: string }>(resolve => {
@@ -636,7 +650,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
   }, [width, height, scaleX, scaleY]);
 
-  // Brush settings, on price change, zoom, move ...
+  // Brush settings, on currentPrice change, zoom, move ...
   useEffect(() => {
     if (
       minPrice === null ||

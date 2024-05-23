@@ -40,6 +40,7 @@ import ExchangeRate from "../exchange-rate/ExchangeRate";
 import { subscriptFormat } from "@utils/number-utils";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
+import { checkGnotPath } from "@utils/common";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -107,26 +108,48 @@ const SelectPriceRangeCustom = forwardRef<
       Array.isArray(selectPool.liquidityOfTickPoints) &&
       selectPool.renderState() === "DONE";
 
-    const comparedTokenA = selectPool.compareToken?.symbol !== tokenB.symbol;
+    const flip = useMemo(() => {
+      if (!selectPool.compareToken) {
+        return false;
+      }
+      const compareTokenPaths = [
+        checkGnotPath(tokenA.path),
+        checkGnotPath(tokenB.path),
+      ];
+      return (
+        compareTokenPaths.sort()[0] !==
+        checkGnotPath(selectPool.compareToken.path)
+      );
+    }, [selectPool.compareToken, tokenA.path, tokenB.path]);
 
     const currentTokenA = useMemo(() => {
-      return comparedTokenA ? getGnotPath(tokenA) : getGnotPath(tokenB);
-    }, [comparedTokenA, tokenA, tokenB]);
+      return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
+    }, [flip, tokenA, tokenB]);
 
     const currentTokenB = useMemo(() => {
-      return comparedTokenA ? getGnotPath(tokenB) : getGnotPath(tokenA);
-    }, [comparedTokenA, tokenA, tokenB]);
+      return flip ? getGnotPath(tokenA) : getGnotPath(tokenB);
+    }, [flip, tokenA, tokenB]);
+
+    const currentPrice = useMemo(() => {
+      if (flip) {
+        if (!selectPool.currentPrice) {
+          return 0;
+        }
+        return 1 / selectPool.currentPrice;
+      }
+      return selectPool.currentPrice;
+    }, [flip, selectPool.currentPrice]);
 
     const currentPriceStr = useMemo(() => {
-      if (!selectPool.currentPrice) {
+      if (!currentPrice) {
         return "-";
       }
 
-      if (selectPool.currentPrice > 1) {
+      if (currentPrice > 1) {
         return (
           <>
             1 {currentTokenA.symbol} =&nbsp;
-            {convertToKMB(selectPool.currentPrice.toString())}&nbsp;
+            {convertToKMB(currentPrice.toString())}&nbsp;
             {currentTokenB.symbol}
           </>
         );
@@ -135,10 +158,10 @@ const SelectPriceRangeCustom = forwardRef<
       return (
         <>
           1 {currentTokenA.symbol} =&nbsp;
-          {subscriptFormat(selectPool.currentPrice)}&nbsp;{currentTokenB.symbol}
+          {subscriptFormat(currentPrice)}&nbsp;{currentTokenB.symbol}
         </>
       );
-    }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
+    }, [currentTokenA.symbol, currentTokenB.symbol, currentPrice]);
 
     useImperativeHandle(ref, () => {
       return { resetRange };
@@ -517,9 +540,7 @@ const SelectPriceRangeCustom = forwardRef<
                             ? selectPool.startPrice
                             : selectPool.currentPrice || 1
                         }
-                        flip={
-                          [tokenA.path, tokenB.path].sort()[0] !== tokenA.path
-                        }
+                        flip={flip}
                         fullRange={selectPool.selectedFullRange}
                         zoomLevel={selectPool.zoomLevel}
                         minPrice={selectPool.minPrice}

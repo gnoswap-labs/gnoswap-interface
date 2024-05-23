@@ -146,4 +146,11 @@ export const RepositionModalWrapper = styled.div`
   .balance-text {
     opacity: 0;
   }
+
+  hr {
+    width: 100%;
+    height: 1px;
+    background-color: ${({ theme }) => theme.color.border02};
+    border: 0;
+  }
 `;
