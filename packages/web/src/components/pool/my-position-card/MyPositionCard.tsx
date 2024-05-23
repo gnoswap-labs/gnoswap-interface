@@ -388,9 +388,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position?.pool.currentTick, isSwap]);
 
   const minTickRate = useMemo(() => {
-    if (isMinTick(position.tickLower)) {
-      return 0;
-    }
+    // if (isMinTick(position.tickLower)) {
+    //   return 0;
+    // }
     const minPrice = !isSwap
       ? tickToPrice(position.tickLower)
       : 1 / tickToPrice(position.tickLower);
@@ -398,9 +398,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [currentPrice, position.tickLower, isSwap]);
 
   const maxTickRate = useMemo(() => {
-    if (isMaxTick(position.tickUpper)) {
-      return 999;
-    }
+    // if (isMaxTick(position.tickUpper)) {
+    //   return 999;
+    // }
     const maxPrice = !isSwap
       ? tickToPrice(position.tickUpper)
       : 1 / tickToPrice(position.tickUpper);
