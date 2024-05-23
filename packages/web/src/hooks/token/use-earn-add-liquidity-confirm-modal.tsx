@@ -225,16 +225,16 @@ export const useEarnAddLiquidityConfirmModal = ({
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
       priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞"
-          ? minPriceStr
-          : convertToKMB(Number(minPriceStr).toFixed(4), {
-            maximumFractionDigits: 4,
-          })
+        ? minPriceStr
+        : convertToKMB(Number(minPriceStr).toFixed(4), {
+          maximumFractionDigits: 4,
+        })
         } ${tokenBSymbol}`,
       priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞"
-          ? maxPriceStr
-          : convertToKMB(Number(maxPriceStr).toFixed(4), {
-            maximumFractionDigits: 4,
-          })
+        ? maxPriceStr
+        : convertToKMB(Number(maxPriceStr).toFixed(4), {
+          maximumFractionDigits: 4,
+        })
         } ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
@@ -313,11 +313,11 @@ export const useEarnAddLiquidityConfirmModal = ({
         swapFeeTier,
         withStaking: options?.withStaking,
       });
+    broadcastPending();
     transaction
       .then(result => {
         if (result) {
           if (result.code === 0) {
-            broadcastPending();
             setTimeout(() => {
               broadcastSuccess(
                 makeBroadcastAddLiquidityMessage("success", {

@@ -4,7 +4,7 @@ import SelectLiquidityList from "@components/stake/select-liquidity-list/SelectL
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 interface SelectLiquidityProps {
-  stakedPositions: PoolPositionModel[];
+  // stakedPositions: PoolPositionModel[];
   unstakedPositions: PoolPositionModel[];
   checkedList: string[];
   onCheckedItem: (checked: boolean, path: string) => void;
@@ -16,7 +16,7 @@ interface SelectLiquidityProps {
 }
 
 const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
-  stakedPositions,
+  // stakedPositions,
   unstakedPositions,
   checkedList,
   onCheckedItem,
@@ -30,7 +30,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
     <section css={wrapper}>
       {!isHiddenTitle && <h5 className="section-title">2. Select Liquidity</h5>}
       <SelectLiquidityList
-        stakedPositions={stakedPositions}
+        // stakedPositions={stakedPositions}
         unstakedPositions={unstakedPositions}
         checkedList={checkedList}
         onCheckedItem={onCheckedItem}

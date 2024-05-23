@@ -14,7 +14,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { getPositionsByPoolId, loadingPositionById } = usePositionData();
   const { openModal } = useRemovePositionModal({
-    positions,
+    positions: positions.filter(item => !item.closed),
     selectedIds: checkedList,
   });
   const { isLoadingCommon } = useLoading();
@@ -67,7 +67,8 @@ const RemoveLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      setPositions(getPositionsByPoolId(poolPath));
+      const postions_ = getPositionsByPoolId(poolPath);
+      setPositions(postions_);
       return;
     }
   }, [account?.address, getPositionsByPoolId, router.query]);

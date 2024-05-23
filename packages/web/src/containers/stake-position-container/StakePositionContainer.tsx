@@ -19,15 +19,16 @@ const StakePositionContainer: React.FC = () => {
   });
   const { isLoadingCommon } = useLoading();
 
-  const stakedPositions = useMemo(() => {
-    if (!connected) return [];
-    return positions.filter(position => position.staked);
-  }, [positions, connected]);
+  // const stakedPositions = useMemo(() => {
+  //   if (!connected) return [];
+  //   return positions.filter(position => position.staked);
+  // }, [positions, connected]);
 
   const unstakedPositions = useMemo(() => {
     if (!connected) return [];
-    return positions.filter(position => !position.staked);
+    return positions.filter(position => !position.staked && !position.closed);
   }, [positions, connected]);
+  console.log("🚀 ~ unstakedPositions ~ unstakedPositions:", unstakedPositions);
 
   const checkedAll = useMemo(() => {
     if (unstakedPositions.length === 0) {
@@ -56,6 +57,7 @@ const StakePositionContainer: React.FC = () => {
     const checkedList = unstakedPositions.map(position => position.id);
     setCheckedList(checkedList);
   }, [checkedAll, unstakedPositions]);
+  console.log("🚀 ~ onCheckedAll ~ checkedList:", checkedList);
 
   const submitPosition = useCallback(() => {
     if (!connected) {
@@ -72,7 +74,7 @@ const StakePositionContainer: React.FC = () => {
       return;
     }
     if (!poolPath) {
-      setPositions(positionData);
+      setPositions(positionData.filter(item => !item.staked));
       return;
     }
     setPositions(getPositionsByPoolId(poolPath));
@@ -84,7 +86,7 @@ const StakePositionContainer: React.FC = () => {
 
   return (
     <StakePosition
-      stakedPositions={stakedPositions}
+      // stakedPositions={stakedPositions}
       unstakedPositions={unstakedPositions}
       checkedList={checkedList}
       onCheckedItem={onCheckedItem}
