@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { RemoveLiquiditySelectListWrapper } from "./RemoveLiquiditySelectList.styles";
 import RemoveLiquiditySelectListItem from "../remove-liquidity-select-list-item/RemoveLiquiditySelectListItem";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -24,6 +24,8 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
   checkedAll,
   isLoading,
 }) => {
+  const displayedStakedPosition = useMemo(() => stakedPositions.filter(item => !item.closed), [stakedPositions]);
+  const displayedUnstakedPosition = useMemo(() => unstakedPositions.filter(item => !item.closed), [unstakedPositions]);
 
   return (
     <RemoveLiquiditySelectListWrapper>
@@ -44,7 +46,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
         {isLoading && <div css={loadingWrapper}>
           <LoadingSpinner />
         </div>}
-        {!isLoading && unstakedPositions.map((position, index) => (
+        {!isLoading && displayedUnstakedPosition.map((position, index) => (
           <RemoveLiquiditySelectListItem
             position={position}
             checkedList={checkedList}
@@ -52,7 +54,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             key={index}
           />
         ))}
-        {!isLoading && stakedPositions.map((position, index) => (
+        {!isLoading && displayedStakedPosition.map((position, index) => (
           <RemoveLiquiditySelectListItem
             position={position}
             checkedList={checkedList}
@@ -61,7 +63,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             disabled
           />
         ))}
-        {!isLoading && unstakedPositions.length === 0 && stakedPositions.length === 0 && <div className="no-position">No Position</div>}
+        {!isLoading && displayedUnstakedPosition.length === 0 && displayedStakedPosition.length === 0 && <div className="no-position">No Position</div>}
       </ul>
     </RemoveLiquiditySelectListWrapper>
   );

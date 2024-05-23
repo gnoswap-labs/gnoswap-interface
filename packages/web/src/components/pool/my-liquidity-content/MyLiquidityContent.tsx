@@ -27,9 +27,9 @@ interface MyLiquidityContentProps {
   breakpoint: DEVICE_TYPE;
   isDisabledButton: boolean;
   claimAll: () => void;
-  loading: boolean;
-  loadngTransactionClaim: boolean;
+  loadingTransactionClaim: boolean;
   isOtherPosition: boolean;
+  isLoadingPositionsById: boolean;
 }
 
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
@@ -37,9 +37,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   positions,
   breakpoint,
   claimAll,
-  loading,
-  loadngTransactionClaim,
+  loadingTransactionClaim,
   isOtherPosition,
+  isLoadingPositionsById: loading,
 }) => {
   const { tokenPrices } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
@@ -152,7 +152,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
-        balance: makeDisplayTokenAmount(reward.rewardToken, reward.totalAmount) || 0,
+        balance: reward.totalAmount || 0,
         balanceUSD:
           makeDisplayTokenAmount(
             reward.rewardToken,
@@ -160,9 +160,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
         claimableAmount:
-          makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) || 0,
+          Number(reward.claimableAmount) || 0,
         claimableUSD: Number(reward.claimableUsd),
-        accumulatedRewardOf1d: makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D || 0) || 0,
+        accumulatedRewardOf1d: Number(reward.accuReward1D) || 0,
         claimableUsdValue: Number(reward.claimableUsd),
       }))
       .forEach(rewardInfo => {
@@ -591,7 +591,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <Button
                 className="button-claim"
                 disabled={!claimable}
-                text={loadngTransactionClaim ? "" : "Claim All"}
+                text={loadingTransactionClaim ? "" : "Claim All"}
                 style={{
                   hierarchy: ButtonHierarchy.Primary,
                   width: 86,
@@ -600,7 +600,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   fontType: "p1",
                 }}
                 leftIcon={
-                  loadngTransactionClaim ? (
+                  loadingTransactionClaim ? (
                     <LoadingSpinner className="loading-button" />
                   ) : undefined
                 }
@@ -649,7 +649,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                 <Button
                   className="button-claim"
                   disabled={!claimable}
-                  text={loadngTransactionClaim ? "" : "Claim All"}
+                  text={loadingTransactionClaim ? "" : "Claim All"}
                   style={{
                     hierarchy: ButtonHierarchy.Primary,
                     height: 36,
@@ -658,7 +658,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                   }}
                   onClick={claimAll}
                   leftIcon={
-                    loadngTransactionClaim ? (
+                    loadingTransactionClaim ? (
                       <LoadingSpinner className="loading-button" />
                     ) : undefined
                   }

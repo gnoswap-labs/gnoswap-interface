@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { usePosition } from "@hooks/common/use-position";
-import { useLoading } from "@hooks/common/use-loading";
 import {
   makeBroadcastClaimMessage,
   useBroadcastHandler,
@@ -35,10 +34,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading } = usePositionData(address);
-  const { isLoadingCommon } = useLoading();
+  const { getPositionsByPoolId, loading, loadingPositionById } = usePositionData(address);
   const { claimAll } = usePosition(positions);
-  const [loadngTransactionClaim, setLoadingTransactionClaim] = useState(false);
+  const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
 
@@ -64,22 +62,29 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     enabled: !!address,
   });
 
+  const haveClosedPosition = useMemo(() => positions.some(item => item.closed), [positions]);
+  const haveNotClosedPosition = useMemo(() => positions.some(item => !item.closed), [positions]);
+
   const showClosePositionButton = useMemo(() => {
-    const haveClosedPosition = positions.some(item => item.closed);
-
-    if (!connectedWallet || isSwitchNetwork || !haveClosedPosition) {
-      return false;
-    }
-    return positions.length > 0;
-  }, [connectedWallet, isSwitchNetwork, positions]);
-
-  const availableRemovePosition = useMemo(() => {
-
     if (!connectedWallet || isSwitchNetwork) {
       return false;
     }
-    return positions.length > 0;
-  }, [connectedWallet, isSwitchNetwork, positions]);
+    return haveClosedPosition;
+  }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
+
+  // const availableRemovePosition = useMemo(() => {
+  //   if (!connectedWallet || isSwitchNetwork) {
+  //     return false;
+  //   }
+  //   return !haveClosedPosition;
+  // }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
+
+  const isShowRemovePositionButton = useMemo(() => {
+    if (!connectedWallet || isSwitchNetwork) {
+      return false;
+    }
+    return haveNotClosedPosition;
+  }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
 
   const handleClickAddPosition = useCallback(() => {
     router.push(`/earn/pool/${router.query["pool-path"]}/add`);
@@ -160,7 +165,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     setIsShowClosedPosition(!isShowClosePosition);
   };
 
-
   return (
     <MyLiquidity
       address={address || account?.address || null}
@@ -176,13 +180,15 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       onScroll={handleScroll}
       currentIndex={currentIndex}
       claimAll={claimAllReward}
-      availableRemovePosition={availableRemovePosition}
-      loading={loading || isLoadingCommon}
-      loadngTransactionClaim={loadngTransactionClaim}
+      // availableRemovePosition={availableRemovePosition}
+      isShowRemovePositionButton={isShowRemovePositionButton}
+      loading={loading}
+      loadingTransactionClaim={loadingTransactionClaim}
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
       isHiddenAddPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
       showClosePositionButton={showClosePositionButton}
+      isLoadingPositionsById={loadingPositionById}
     />
   );
 };

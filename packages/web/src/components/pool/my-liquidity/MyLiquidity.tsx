@@ -20,13 +20,15 @@ interface MyLiquidityProps {
   onScroll: () => void;
   currentIndex: number;
   claimAll: () => void;
-  availableRemovePosition: boolean;
+  // availableRemovePosition: boolean;
+  isShowRemovePositionButton: boolean;
   loading: boolean;
-  loadngTransactionClaim: boolean;
+  loadingTransactionClaim: boolean;
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
   showClosePositionButton: boolean;
+  isLoadingPositionsById: boolean;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -43,14 +45,17 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   onScroll,
   currentIndex,
   claimAll,
-  availableRemovePosition,
+  // availableRemovePosition,
+  isShowRemovePositionButton,
   loading,
-  loadngTransactionClaim,
+  loadingTransactionClaim,
   isShowClosePosition,
   handleSetIsClosePosition,
   isHiddenAddPosition,
   showClosePositionButton,
+  isLoadingPositionsById,
 }) => {
+  console.log("🚀 2348923489 ~ MyLiquidity ~ positions:", positions);
   return (
     <>
       <MyLiquidityWrapperAnchor id="liquidity-wrapper" />
@@ -63,13 +68,15 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             address={address}
             addressName={addressName}
             positionLength={positions.length}
-            availableRemovePosition={availableRemovePosition}
+            // availableRemovePosition={availableRemovePosition}
+            isShowRemovePositionButton={isShowRemovePositionButton}
             handleClickAddPosition={handleClickAddPosition}
             handleClickRemovePosition={handleClickRemovePosition}
             isShowClosePosition={isShowClosePosition}
             handleSetIsClosePosition={handleSetIsClosePosition}
             isHiddenAddPosition={isHiddenAddPosition}
             showClosePositionButton={showClosePositionButton}
+            isLoadingPositionsById={isLoadingPositionsById}
           />
           <MyLiquidityContent
             connected={connected}
@@ -77,9 +84,9 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             breakpoint={breakpoint}
             isDisabledButton={isSwitchNetwork || !connected}
             claimAll={claimAll}
-            loading={loading}
-            loadngTransactionClaim={loadngTransactionClaim}
+            loadingTransactionClaim={loadingTransactionClaim}
             isOtherPosition={isHiddenAddPosition}
+            isLoadingPositionsById={isLoadingPositionsById}
           />
         </div>
         {positions.length > 0 && <PoolDivider />}

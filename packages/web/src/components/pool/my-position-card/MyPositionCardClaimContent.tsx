@@ -142,7 +142,7 @@ export const MyPositionClaimContent: React.FC<MyPositionClaimContentProps> = ({
       {externalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">External Fees</span>
+            <span className="title">External Rewards</span>
             <span className="title">{externalRewardUSD}</span>
           </div>
           {externalRewards.map((reward, index) => (

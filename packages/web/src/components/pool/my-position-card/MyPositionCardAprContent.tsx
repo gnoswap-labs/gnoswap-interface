@@ -39,6 +39,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
         <React.Fragment>
           <div className="list">
             <span className="title">Swap Fees</span>
+            <span className="note">Based on 7d avg</span>
           </div>
           {swapFeeRewards.map((reward, index) => (
             <div key={index} className="list">
@@ -89,7 +90,7 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
       {externalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">External Fees</span>
+            <span className="title">External Rewards</span>
             <span className="title"></span>
           </div>
           {externalRewards.map((reward, index) => (

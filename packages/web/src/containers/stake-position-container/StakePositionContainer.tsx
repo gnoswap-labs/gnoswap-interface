@@ -14,7 +14,7 @@ const StakePositionContainer: React.FC = () => {
   const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useSubmitPositionModal({
-    positions,
+    positions: positions.filter(item => !item.closed),
     selectedIds: checkedList
   });
   const { isLoadingCommon } = useLoading();
