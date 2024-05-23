@@ -16,7 +16,7 @@ export interface UseTransactionConfirmModalProps {
   closeCallback?: () => void;
 }
 
-export const useTransactionConfirmModal = (props: UseTransactionConfirmModalProps): TransactionConfirmModalResponse => {
+export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalProps): TransactionConfirmModalResponse => {
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
   const [transactionModalData, setTransactionModalData] = useAtom(CommonState.transactionModalData);
