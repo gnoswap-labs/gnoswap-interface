@@ -297,7 +297,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       if (bin.reserveTokenMap < 0 || !bin.reserveTokenMap) {
         return false;
       }
-      return mouseX > minX && mouseX < maxX - 1;
+      return mouseX > minX + 4 && mouseX < maxX - 1;
     });
 
     if (currentBin?.index && (currentBin?.index !== lastHoverBinIndexRef.current)) {

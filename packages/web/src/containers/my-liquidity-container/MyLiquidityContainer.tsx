@@ -34,8 +34,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
   const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId } = usePositionData(address);
-  // const { getPositionsByPoolId, loading, loadingPositionById } = usePositionData(address);
+  // const { getPositionsByPoolId } = usePositionData(address);
+  const { getPositionsByPoolId, loading, loadingPositionById } = usePositionData(address);
   // console.log("🚀 ~ loadingPositionById:", loadingPositionById);
   const { claimAll } = usePosition(positions);
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
@@ -48,8 +48,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     broadcastError,
     broadcastRejected,
   } = useBroadcastHandler();
-
-  const loading = false;
 
   const isOtherPosition = useMemo(() => {
     return Boolean(address) && address !== account?.address;
@@ -193,7 +191,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
       handleSetIsClosePosition={handleSetIsClosePosition}
       isHiddenAddPosition={!!(address && account?.address && address !== account?.address || !account?.address)}
       showClosePositionButton={showClosePositionButton}
-      isLoadingPositionsById={false}
+      isLoadingPositionsById={loadingPositionById}
     />
   );
 };
