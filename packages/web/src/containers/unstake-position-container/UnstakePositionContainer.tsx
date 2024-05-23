@@ -9,7 +9,7 @@ import { useLoading } from "@hooks/common/use-loading";
 
 const UnstakeLiquidityContainer: React.FC = () => {
   const router = useRouter();
-  const { account, connected } = useWallet();
+  const { account } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
   const { getPositionsByPoolId, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
@@ -19,22 +19,12 @@ const UnstakeLiquidityContainer: React.FC = () => {
   });
   const { isLoadingCommon } = useLoading();
 
-  const stakedPositions = useMemo(() => {
-    if (!connected) return [];
-    return positions.filter(position => position.staked);
-  }, [positions, connected]);
-
-  const unstakedPositions = useMemo(() => {
-    if (!connected) return [];
-    return positions.filter(position => !position.staked);
-  }, [positions, connected]);
-
   const checkedAll = useMemo(() => {
-    if (stakedPositions.length === 0) {
+    if (positions.length === 0) {
       return false;
     }
-    return stakedPositions.length === checkedList.length;
-  }, [stakedPositions, checkedList]);
+    return positions.length === checkedList.length;
+  }, [positions, checkedList]);
 
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
@@ -53,9 +43,9 @@ const UnstakeLiquidityContainer: React.FC = () => {
       setCheckedList([]);
       return;
     }
-    const checkedList = stakedPositions.map(position => position.id);
+    const checkedList = positions.map(position => position.id);
     setCheckedList(checkedList);
-  }, [checkedAll, stakedPositions]);
+  }, [checkedAll, positions]);
 
   useEffect(() => {
     const poolPath = router.query["pool-path"] as string;
@@ -63,7 +53,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
       return;
     }
     if (account?.address) {
-      setPositions(getPositionsByPoolId(poolPath));
+      setPositions(getPositionsByPoolId(poolPath).filter(item => item.staked));
     }
   }, [account?.address, getPositionsByPoolId, router.query]);
 
@@ -73,8 +63,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
 
   return (
     <UnstakeLiquidity
-      stakedPositions={stakedPositions}
-      unstakedPositions={unstakedPositions}
+      stakedPositions={positions}
       checkedList={checkedList}
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}

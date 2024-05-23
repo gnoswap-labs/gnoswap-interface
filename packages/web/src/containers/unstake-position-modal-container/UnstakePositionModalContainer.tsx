@@ -23,7 +23,9 @@ const UnstakePositionModalContainer = ({
   const clearModal = useClearModal();
   const { broadcastRejected, broadcastSuccess, broadcastPending, broadcastError, broadcastLoading } = useBroadcastHandler();
   const { pooledTokenInfos } = useUnstakeData({ positions });
-  const { openModal } = useTransactionConfirmModal();
+  const { openModal } = useTransactionConfirmModal({
+    confirmCallback: () => router.push(router.asPath.replace("/unstake", ""))
+  });
 
   const close = useCallback(() => {
     clearModal();

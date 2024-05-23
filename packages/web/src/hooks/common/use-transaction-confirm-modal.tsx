@@ -11,7 +11,12 @@ export interface TransactionConfirmModalResponse {
   closeModal: () => void;
 }
 
-export const useTransactionConfirmModal = (callback?: () => void): TransactionConfirmModalResponse => {
+export interface UseTransactionConfirmModalProps {
+  confirmCallback?: () => void;
+  closeCallback?: () => void;
+}
+
+export const useTransactionConfirmModal = (props: UseTransactionConfirmModalProps): TransactionConfirmModalResponse => {
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
   const [transactionModalData, setTransactionModalData] = useAtom(CommonState.transactionModalData);
@@ -22,12 +27,13 @@ export const useTransactionConfirmModal = (callback?: () => void): TransactionCo
     setOpenedModal(false);
     setModalContent(null);
     setTransactionModalData(null);
-    callback?.();
+    props?.closeCallback?.();
   }, [setModalContent, setOpenedModal, setTransactionModalData, transactionModalData]);
 
   const confirm = useCallback(() => {
     closeModal();
-    forceRefect({queryKey: [QUERY_KEY.positions, account?.address || ""]});
+    props?.confirmCallback?.();
+    forceRefect({ queryKey: [QUERY_KEY.positions, account?.address || ""] });
     if (transactionModalData?.callback) {
       transactionModalData?.callback();
     }

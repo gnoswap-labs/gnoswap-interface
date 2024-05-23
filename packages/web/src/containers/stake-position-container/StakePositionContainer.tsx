@@ -11,31 +11,21 @@ const StakePositionContainer: React.FC = () => {
   const router = useRouter();
   const { account, connected, connectAccount } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { positions: positionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
+  console.log("🚀 ~ positions:", positions);
+  const { positions: allPositionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useSubmitPositionModal({
-    positions: positions.filter(item => !item.closed),
+    positions: positions,
     selectedIds: checkedList
   });
   const { isLoadingCommon } = useLoading();
 
-  // const stakedPositions = useMemo(() => {
-  //   if (!connected) return [];
-  //   return positions.filter(position => position.staked);
-  // }, [positions, connected]);
-
-  const unstakedPositions = useMemo(() => {
-    if (!connected) return [];
-    return positions.filter(position => !position.staked && !position.closed);
-  }, [positions, connected]);
-  console.log("🚀 ~ unstakedPositions ~ unstakedPositions:", unstakedPositions);
-
   const checkedAll = useMemo(() => {
-    if (unstakedPositions.length === 0) {
+    if (positions.length === 0) {
       return false;
     }
-    return unstakedPositions.length === checkedList.length;
-  }, [unstakedPositions, checkedList]);
+    return positions.length === checkedList.length;
+  }, [positions, checkedList]);
 
   const onCheckedItem = useCallback(
     (isChecked: boolean, path: string) => {
@@ -54,10 +44,9 @@ const StakePositionContainer: React.FC = () => {
       setCheckedList([]);
       return;
     }
-    const checkedList = unstakedPositions.map(position => position.id);
+    const checkedList = positions.map(position => position.id);
     setCheckedList(checkedList);
-  }, [checkedAll, unstakedPositions]);
-  console.log("🚀 ~ onCheckedAll ~ checkedList:", checkedList);
+  }, [checkedAll, positions]);
 
   const submitPosition = useCallback(() => {
     if (!connected) {
@@ -69,25 +58,26 @@ const StakePositionContainer: React.FC = () => {
   }, [openModal, connected, connectAccount]);
 
   useEffect(() => {
+    // For this domain only show `closed = false` && `staked = false` position
     const poolPath = router.query["pool-path"] as string;
     if (!account?.address) {
       return;
     }
     if (!poolPath) {
-      setPositions(positionData.filter(item => !item.staked));
+      setPositions(allPositionData.filter(item => !item.staked && !item.closed));
       return;
     }
-    setPositions(getPositionsByPoolId(poolPath));
-  }, [account?.address, getPositionsByPoolId, router.query]);
+    setPositions(getPositionsByPoolId(poolPath).filter(item => !item.staked && !item.closed));
+  }, [account?.address, getPositionsByPoolId, allPositionData, router.query]);
+
   const isEmpty = useMemo(() => {
     if (!connected) return true;
-    return unstakedPositions.filter(item => item.closed === false).length === 0 && isFetched;
-  }, [connected, isFetched, unstakedPositions]);
+    return positions.length === 0 && isFetched;
+  }, [connected, isFetched, positions]);
 
   return (
     <StakePosition
-      // stakedPositions={stakedPositions}
-      unstakedPositions={unstakedPositions}
+      unstakedPositions={positions}
       checkedList={checkedList}
       onCheckedItem={onCheckedItem}
       onCheckedAll={onCheckedAll}

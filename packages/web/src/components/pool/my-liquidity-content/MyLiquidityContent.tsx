@@ -426,7 +426,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [positions]);
 
   const rewardClaim = useMemo(() => {
-    const temp = claimableRewardInfo?.STAKING;
+    const temp = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.STAKING ?? [])];
     const sumUSD =
       temp?.reduce((accum, current) => accum + current.claimableAmount, 0) || 0;
     return toUnitFormat(`${sumUSD}`, true, true);
