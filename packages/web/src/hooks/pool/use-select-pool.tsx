@@ -351,11 +351,19 @@ export const useSelectPool = ({
   }, [fullRange, maxPosition]);
 
   const depositRatio = useMemo(() => {
-    if (!tokenA || !tokenB || minPrice === null || maxPrice === null) {
+    if (
+      !tokenA ||
+      !tokenB ||
+      minPrice === null ||
+      maxPrice === null ||
+      !compareToken
+    ) {
       return null;
     }
 
-    const currentPrice = isCreate ? startPrice : price;
+    const ordered =
+      checkGnotPath(compareToken.path) === checkGnotPath(tokenA.path);
+    const currentPrice = isCreate ? startPrice : ordered ? price : 1 / price;
     if (!currentPrice) {
       return null;
     }
@@ -389,7 +397,16 @@ export const useSelectPool = ({
       .dividedBy(sumOfAmounts.toString())
       .multipliedBy(100)
       .toNumber();
-  }, [maxPrice, minPrice, price, fullRange, startPrice, isCreate]);
+  }, [
+    tokenA,
+    tokenB,
+    minPrice,
+    maxPrice,
+    isCreate,
+    startPrice,
+    price,
+    fullRange,
+  ]);
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
