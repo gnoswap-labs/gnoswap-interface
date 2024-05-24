@@ -214,6 +214,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         SWAP_FEE: [],
         STAKING: [],
         EXTERNAL: [],
+        INTERNAL: [],
       },
     );
 
@@ -282,6 +283,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           SWAP_FEE: [],
           STAKING: [],
           EXTERNAL: [],
+          INTERNAL: [],
         },
       );
       return aprRewardInfo;
