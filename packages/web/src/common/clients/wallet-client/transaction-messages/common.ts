@@ -7,7 +7,7 @@ const isPreview = ENVIRONMENT === "preview";
 const PREVIEW_ENV_VARIABLES = {
   DEFAULT_CHAIN_ID: "dev.gnoswap",
   API_URL: "https://dev.api.gnoswap.io/v1",
-  ROUTER_API_URL: "https://dev.simulate.gnoswap.io/v1",
+  ROUTER_API_URL: "https://gnoswap-route-api.in.onbloc.xyz",
   PACKAGE_ROUTER_PATH: "gno.land/r/demo/router",
   PACKAGE_POOL_PATH: "gno.land/r/demo/pool",
   PACKAGE_POSITION_PATH: "gno.land/r/demo/position",

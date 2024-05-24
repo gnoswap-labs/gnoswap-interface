@@ -1,9 +1,9 @@
 import { SwapDirectionType } from "@common/values";
-import { EstimatedRoute } from "@gnoswap-labs/swap-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";

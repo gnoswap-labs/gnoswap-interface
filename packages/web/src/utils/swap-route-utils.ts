@@ -1,18 +1,17 @@
-import { EstimatedRoute } from "@gnoswap-labs/swap-router";
-import { Route } from "@repositories/swap/response/estimate-swap-route-response";
+import { EstimatedRoute, Route } from "@models/swap/swap-route-info";
 
 export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
   const POOL_DIVIDER = "*POOL*";
   return routes
     .map(route => {
-      let curreentFromPath = fromPath;
+      let currentFromPath = fromPath;
       return route.pools
         .map(pool => {
-          const { tokenAPath, tokenBPath, fee } = pool;
-          const ordered = curreentFromPath === tokenAPath;
-          const inputTokenPath = ordered ? tokenAPath : tokenBPath;
-          const outputTokenPath = ordered ? tokenBPath : tokenAPath;
-          curreentFromPath = outputTokenPath;
+          const { tokenA, tokenB, fee } = pool;
+          const ordered = currentFromPath === tokenA;
+          const inputTokenPath = ordered ? tokenA : tokenB;
+          const outputTokenPath = ordered ? tokenB : tokenA;
+          currentFromPath = outputTokenPath;
           return `${inputTokenPath}:${outputTokenPath}:${fee}`;
         })
         .join(POOL_DIVIDER);

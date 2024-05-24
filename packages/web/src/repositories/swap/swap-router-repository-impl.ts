@@ -6,10 +6,7 @@ import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
-import {
-  EstimatedRoute,
-  EstimateSwapRouteResponse,
-} from "./response/estimate-swap-route-response";
+import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -38,6 +35,7 @@ import {
 import { checkGnotPath, toNativePath } from "@utils/common";
 import { NetworkClient } from "@common/clients/network-client";
 import { makeQueryParameter } from "@utils/network.utils";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
@@ -86,7 +84,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     });
 
     const response = await this.networkClient.get<EstimateSwapRouteResponse>({
-      url: "dry_swap_route" + queryParameter,
+      url: "swap" + queryParameter,
     });
 
     if (response.status !== 200) {
