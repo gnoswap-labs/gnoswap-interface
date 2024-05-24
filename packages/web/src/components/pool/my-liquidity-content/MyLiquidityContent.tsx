@@ -144,8 +144,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       [key in RewardType]: { [key in string]: PositionClaimInfo };
     } = {
       SWAP_FEE: {},
-      STAKING: {},
+      INTERNAL: {},
       EXTERNAL: {},
+      STAKING: {},
     };
     positions
       .flatMap(position => position.reward)
@@ -168,6 +169,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .forEach(rewardInfo => {
         const existReward =
           infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
+        console.log("🚀 ~ existReward:", existReward);
         if (existReward) {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
@@ -180,14 +182,18 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
           };
         } else {
+
+          console.log("🚀 ~ infoMap[rewardInfo.rewardType]:", rewardInfo.rewardType);
+          console.log("🚀 ~ infoMap[rewardInfo.rewardType]:", infoMap[rewardInfo.rewardType]);
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
         }
       });
 
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      STAKING: Object.values(infoMap["STAKING"]),
+      INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
@@ -201,8 +207,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       [key in RewardType]: { [key in string]: PositionAPRInfo };
     } = {
       SWAP_FEE: {},
-      STAKING: {},
+      INTERNAL: {},
       EXTERNAL: {},
+      STAKING: {},
     };
     positions
       .flatMap(position => position.reward)
@@ -227,13 +234,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       });
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      STAKING: Object.values(infoMap["STAKING"]),
+      INTERNAL: Object.values(infoMap["INTERNAL"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      STAKING: Object.values(infoMap["STAKING"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
-    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.STAKING.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
+    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.INTERNAL.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
   }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
@@ -300,7 +308,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [isDisplay, positions, tokenPrices]);
 
   const isShowClaimableRewardInfo = useMemo(() => {
-    return claimableRewardInfo && (claimableRewardInfo?.EXTERNAL.length !== 0 || claimableRewardInfo?.STAKING.length !== 0 || claimableRewardInfo?.SWAP_FEE.length !== 0);
+    return claimableRewardInfo && (claimableRewardInfo?.EXTERNAL.length !== 0 || claimableRewardInfo?.INTERNAL.length !== 0 || claimableRewardInfo?.SWAP_FEE.length !== 0);
   }, [claimableRewardInfo]);
 
   const isShowUnclaimableRewardInfo = useMemo(() => {
@@ -403,7 +411,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo]);
 
   const logoReward = useMemo(() => {
-    const temp = claimableRewardInfo?.STAKING;
+    const temp = claimableRewardInfo?.INTERNAL;
     const rewardTokens = positionData?.rewardTokens || [];
     const rewardLogo = rewardTokens?.map(item => getGnotPath(item).logoURI) || [];
     return [...new Set([...rewardLogo, ...temp?.map(item => getGnotPath(item.token).logoURI) || []])];
@@ -426,7 +434,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [positions]);
 
   const rewardClaim = useMemo(() => {
-    const temp = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.STAKING ?? [])];
+    const temp = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.INTERNAL ?? [])];
     const sumUSD =
       temp?.reduce((accum, current) => accum + current.claimableUsdValue, 0) || 0;
     return toUnitFormat(`${sumUSD}`, true, true);

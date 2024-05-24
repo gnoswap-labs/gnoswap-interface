@@ -215,7 +215,7 @@ export const toPriceFormat = (
   const [, decimalPart] = tempNum.split(".");
 
   if (!options.isRounding && !bigNumber.isInteger() && decimalPart?.length >= 3) {
-    return (options.usd ? "$" : "") + tempNum.substring(0, tempNum.length - 2);
+    return (options.usd ? "$" : "") + tempNum.substring(0, tempNum.length - 1);
   }
 
   return (options.usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });

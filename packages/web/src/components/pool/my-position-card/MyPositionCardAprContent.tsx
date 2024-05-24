@@ -20,11 +20,11 @@ export const MyPositionAprContent: React.FC<MyPositionAprContentProps> = ({ rewa
   }, [rewardInfo.SWAP_FEE]);
 
   const stakingRewards = useMemo(() => {
-    if (rewardInfo.STAKING.length === 0) {
+    if (rewardInfo.INTERNAL.length === 0) {
       return null;
     }
-    return rewardInfo.STAKING;
-  }, [rewardInfo.STAKING]);
+    return rewardInfo.INTERNAL;
+  }, [rewardInfo.INTERNAL]);
 
   const externalRewards = useMemo(() => {
     if (rewardInfo.EXTERNAL.length === 0) {
