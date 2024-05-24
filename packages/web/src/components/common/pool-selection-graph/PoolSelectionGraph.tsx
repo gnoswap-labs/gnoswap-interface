@@ -484,7 +484,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     const mouseXTick = scaleX.invert(event.offsetX) + defaultMinX;
-    const mouseYTick = scaleY.invert(event.offsetY);
 
     if (minPrice && maxPrice) {
       if (
@@ -498,7 +497,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     }
 
     const bin = resolvedDisplayBins.find(bin => {
-      if (mouseY < 0.000001 || mouseYTick - bin.height > 1) {
+      if (mouseY < 0.000001 || boundsHeight < mouseY) {
         return false;
       }
       if (bin.height < 0 || !bin.height) {
@@ -515,13 +514,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return;
     }
 
-    if (
-      Math.abs(height - mouseY - 0.0001) >
-      boundsHeight +
-        15 -
-        scaleY(bin.height) +
-        (scaleY(bin.height) > height && scaleY(bin.height) !== height ? 0 : 0)
-    ) {
+    // To reduce the computation of scaleY, the Y-axis condition check is done separately.
+    if (mouseY < scaleY(bin.height)) {
       setPositionX(null);
       setPositionX(null);
       setTooltipInfo(null);
