@@ -291,9 +291,6 @@ export const useIncreaseHandle = () => {
   );
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
-    console.log("🚀 ~ constbuttonType:INCREASE_BUTTON_TYPE=useMemo ~ tokenAAmountInput.amount:", tokenAAmountInput.amount);
-    console.log("🚀 ~ constbuttonType:INCREASE_BUTTON_TYPE=useMemo ~ tokenAAmountInput.amount:", tokenBAmountInput.amount);
-
     if (
       !Number(tokenAAmountInput.amount) ||
       !Number(tokenBAmountInput.amount)
@@ -301,8 +298,8 @@ export const useIncreaseHandle = () => {
       return "ENTER_AMOUNT";
     }
     if (
-      (!!tokenA && Number(tokenAAmountInput.amount) > (displayBalanceMap?.[tokenA.priceID] ?? 0))
-      || (!!tokenB && Number(tokenBAmountInput.amount) > (displayBalanceMap?.[tokenB.priceID] ?? 0))
+      (isDepositTokenA && !!tokenA && Number(tokenAAmountInput.amount) > (displayBalanceMap?.[tokenA.priceID] ?? 0))
+      || (isDepositTokenB && !!tokenB && Number(tokenBAmountInput.amount) > (displayBalanceMap?.[tokenB.priceID] ?? 0))
     ) {
       return "INSUFFICIENT_BALANCE";
     }

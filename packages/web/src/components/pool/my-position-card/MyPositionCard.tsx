@@ -349,15 +349,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
 
   const isFullRange = useMemo(() => {
-    console.log("🚀 ~ isFullRange ~ estimateTick(minTickPosition, GRAPH_WIDTH):", estimateTick(minTickPosition, GRAPH_WIDTH));
-    console.log("🚀 ~ isFullRange ~ estimateTick(maxTickPosition, GRAPH_WIDTH):", estimateTick(maxTickPosition, GRAPH_WIDTH));
-    console.log("🚀 ~ isFullRange ~ GRAPH_WIDTH:", GRAPH_WIDTH);
     return (
       estimateTick(minTickPosition, GRAPH_WIDTH) === 0 &&
       estimateTick(maxTickPosition, GRAPH_WIDTH) === GRAPH_WIDTH
     );
   }, [minTickPosition, maxTickPosition]);
-  console.log("🚀 ~ isFullRange ~ isFullRange:", isFullRange);
 
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
@@ -445,9 +441,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     isFullRange,
     isSwap,
   ]);
-
-  console.log("🚀 ~ maxPriceStr ~ maxPriceStr:", maxPriceStr);
-
 
   const minTickLabel = useMemo(() => {
     if (Math.abs(minTickRate) >= 1000) return ">999%";

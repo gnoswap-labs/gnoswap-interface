@@ -51,12 +51,10 @@ export const useSwapHandler = () => {
   const [tokenAAmount, setTokenAAmount] = useState<string>(
     defaultTokenAAmount ?? "",
   );
-  console.log("🚀 ~ useSwapHandler ~ tokenAAmount:", tokenAAmount);
   const [tokenBAmount, setTokenBAmount] = useState<string>(
     !defaultTokenAAmount && defaultTokenBAmount ? defaultTokenBAmount : "",
   );
   const [submitted, setSubmitted] = useState(false);
-  console.log("🚀 ~ useSwapHandler ~ tokenBAmount:", tokenBAmount);
 
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
@@ -415,7 +413,6 @@ export const useSwapHandler = () => {
 
   // Auto refetch
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ Auto refetch:");
     updateBalances();
     const interval = setInterval(() => {
       updateBalances();
@@ -445,7 +442,6 @@ export const useSwapHandler = () => {
         return;
       }
       if (none) {
-        console.log("🚀 ~ useSwapHandler ~ changeTokenAAmount ~ none ~ OFF");
         setIsLoading(false);
         return;
       }
@@ -453,7 +449,6 @@ export const useSwapHandler = () => {
         return;
       }
       if (!!Number(value) && tokenB?.symbol) {
-        console.log("🚀 ~ useSwapHandler ~ changeTokenAAmount ~ none ~ ON");
         setIsLoading(true);
       } else {
         setTokenBAmount("0");
@@ -469,7 +464,6 @@ export const useSwapHandler = () => {
 
   // Update amount
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ Update amount");
     setSwapValue(prev => ({
       ...prev,
       tokenAAmount,
@@ -498,7 +492,6 @@ export const useSwapHandler = () => {
         return;
       }
       if (none) {
-        console.log("🚀 ~ useSwapHandler ~ changeTokenAAmount ~ none ~ OFF");
         setIsLoading(false);
         return;
       }
@@ -506,7 +499,6 @@ export const useSwapHandler = () => {
         return;
       }
       if (!!Number(value) && tokenA?.symbol) {
-        console.log("🚀 ~ useSwapHandler ~ changeTokenAAmount ~ none ~ ON");
         setIsLoading(true);
       } else {
         setTokenAAmount("0");
@@ -535,7 +527,6 @@ export const useSwapHandler = () => {
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {
-        console.log("🚀 ~ useSwapHandler ~ changeTokenA ~ ON");
         setIsLoading(true);
       }
     },
@@ -557,7 +548,6 @@ export const useSwapHandler = () => {
         type: changedSwapDirection,
       }));
       if (!!Number(tokenAAmount)) {
-        console.log("🚀 ~ useSwapHandler ~ changeTokenB ~ ON");
         setIsLoading(true);
       }
     },
@@ -601,7 +591,6 @@ export const useSwapHandler = () => {
       }
     }
     if (!!Number(tokenAAmount || 0) && !!Number(tokenBAmount || 0)) {
-      console.log("🚀 ~ useSwapHandler ~ switchSwapDirection ~ ON");
       setIsLoading(true);
     }
     if (changedSwapDirection === "EXACT_IN") {
@@ -841,14 +830,12 @@ export const useSwapHandler = () => {
       (defaultTokenAAmount || defaultTokenBAmount) &&
       (!!Number(tokenAAmount) || !!Number(tokenBAmount))
     ) {
-      console.log("🚀 ~ any of both ~ ON:");
       setIsLoading(true);
     }
   }, [defaultTokenAAmount, defaultTokenBAmount, tokenAAmount, tokenBAmount]);
 
   // Component did mount
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ Component did mount");
     updateTokens();
     updateTokenPrices();
     if (defaultTokenAAmount || defaultTokenBAmount) {
@@ -885,7 +872,6 @@ export const useSwapHandler = () => {
       (defaultTokenAAmount || defaultTokenBAmount) &&
       (!!Number(tokenAAmount) || !!Number(tokenBAmount))
     ) {
-      console.log("🚀 ~ any of both ~ ON:");
       setIsLoading(true);
     }
   }, [
@@ -901,7 +887,6 @@ export const useSwapHandler = () => {
 
   // Estimate the token amount => stop loading
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ Estimate the token amount => stop loading");
     if (!tokenA || !tokenB) {
       return;
     }
@@ -924,7 +909,6 @@ export const useSwapHandler = () => {
       return;
     }
     if (isSameToken) {
-      console.log("🚀 ~ useSwapHandler ~ same token ~ OFF");
       setIsLoading(() => false);
       return;
     }
@@ -953,7 +937,6 @@ export const useSwapHandler = () => {
             setTokenAAmount(expectedAmount);
           }
         }
-        console.log("🚀 ~ useSwapHandler ~ done estimate ~ OFF");
         setIsLoading(() => false);
       });
     }, 2000);
@@ -963,7 +946,6 @@ export const useSwapHandler = () => {
         !!Number(tokenAAmount || 0) &&
         !!Number(tokenBAmount || 0)
       ) {
-        console.log("🚀 ~ useSwapHandler ~ setMemorizeTokenSwap ~ 834789237");
         setMemorizeTokenSwap(prev => ({
           ...prev,
           [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
@@ -971,7 +953,6 @@ export const useSwapHandler = () => {
         setIsChangeBalancesToken(false);
       } else {
         setIsChangeBalancesToken(false);
-        console.log("🚀 ~ useSwapHandler ~ setMemorizeTokenSwap ~ 5345345345");
         setMemorizeTokenSwap(prev => ({
           ...prev,
           [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
@@ -991,7 +972,6 @@ export const useSwapHandler = () => {
 
   // Estimate the token Value
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ Estimate the token Value");
     if (
       !Number(tokenAAmount) ||
       !Number(tokenBAmount) ||
@@ -1009,13 +989,11 @@ export const useSwapHandler = () => {
       if (!isError) {
         if (isExactIn) {
           setTokenBAmount(expectedAmount);
-          console.log("🚀 ~ useSwapHandler ~ setMemorizeTokenSwap ~ 12390147017");
           setMemorizeTokenSwap(prev => ({
             ...prev,
             [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
           }));
         } else {
-          console.log("🚀 ~ useSwapHandler ~ setMemorizeTokenSwap ~ 28934820592");
           setMemorizeTokenSwap(prev => ({
             ...prev,
             [`${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`]: `${tokenA?.symbol}:${tokenAAmount}`,

@@ -393,8 +393,6 @@ export const useBroadcastHandler = () => {
 
   const broadcastSuccess = useCallback(
     (content?: INoticeContent, callback?: () => void) => {
-      console.log("🚀 ~ useBroadcastHandler ~ content:", content);
-
       setTransactionModalData({
         status: "success",
         description: content?.description || null,

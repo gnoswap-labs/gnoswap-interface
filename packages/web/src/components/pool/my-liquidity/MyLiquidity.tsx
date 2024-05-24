@@ -55,7 +55,6 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   showClosePositionButton,
   isLoadingPositionsById,
 }) => {
-  console.log("🚀 2348923489 ~ MyLiquidity ~ positions:", positions);
   return (
     <>
       <MyLiquidityWrapperAnchor id="liquidity-wrapper" />

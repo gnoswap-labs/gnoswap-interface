@@ -11,7 +11,6 @@ const StakePositionContainer: React.FC = () => {
   const router = useRouter();
   const { account, connected, connectAccount } = useWallet();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  console.log("🚀 ~ positions:", positions);
   const { positions: allPositionData, getPositionsByPoolId, isFetchedPosition: isFetched, loadingPositionById } = usePositionData();
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const { openModal } = useSubmitPositionModal({
