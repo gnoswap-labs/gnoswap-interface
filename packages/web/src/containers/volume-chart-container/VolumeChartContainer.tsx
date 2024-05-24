@@ -194,9 +194,6 @@ const VolumeChartContainer: React.FC = () => {
     );
   }, [volumeChartType, volumeData]);
 
-  console.log("🚀 ~ allTimeVolumeUsd:", allTimeVolumeUsd);
-
-
   return (
     <VolumeChart
       volumeChartType={volumeChartType}

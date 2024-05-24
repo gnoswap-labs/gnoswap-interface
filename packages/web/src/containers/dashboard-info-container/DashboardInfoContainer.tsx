@@ -75,9 +75,6 @@ const DashboardInfoContainer: React.FC = () => {
     refetchInterval: 60 * 1000,
   });
 
-  console.log("🚀 ~ formatPrice(tokenData?.gnsPrice):", formatPrice(tokenData?.gnotPrice));
-
-
   const progressBar = useMemo(() => {
     if (!tokenData) return "0%";
     const circSupply = Number(tokenData?.gnsCirculatingSupply);
@@ -92,7 +89,7 @@ const DashboardInfoContainer: React.FC = () => {
     const totalStaked = Number(tokenData?.gnsTotalStaked);
 
     if (circSupply === 0) return "0%";
-    if (totalStaked * 100 / circSupply < 0.1) return "0.1%";
+    if (totalStaked * 100 / circSupply < 0.1) return "<0.1%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(2);
     return `${prettyNumber(ratio)}%`;
   }, [tokenData]);

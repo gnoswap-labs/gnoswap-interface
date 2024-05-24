@@ -1,5 +1,4 @@
 export const mapMessageByTemplate = (template: string, data: object) => {
-  console.log("🚀 ~ mapMessageByTemplate ~ data:", data);
   let mappedTemplate = template;
   // Replace placeholders in the template with data values
   for (const [key, value] of Object.entries(data)) {

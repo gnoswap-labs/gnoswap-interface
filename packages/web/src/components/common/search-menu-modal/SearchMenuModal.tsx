@@ -50,7 +50,6 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   popularTokens,
   recents,
 }) => {
-  console.log("🚀 ~ recents:", recents)
   const [, setRecentsData] = useAtom(TokenState.recents);
   const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => (0)));
   const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => (0)));

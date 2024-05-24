@@ -169,7 +169,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .forEach(rewardInfo => {
         const existReward =
           infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
-        console.log("🚀 ~ existReward:", existReward);
         if (existReward) {
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
@@ -182,9 +181,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
           };
         } else {
-
-          console.log("🚀 ~ infoMap[rewardInfo.rewardType]:", rewardInfo.rewardType);
-          console.log("🚀 ~ infoMap[rewardInfo.rewardType]:", infoMap[rewardInfo.rewardType]);
           infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
         }
       });

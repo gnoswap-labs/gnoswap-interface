@@ -18,7 +18,6 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const [balance, setBalance] = useState<string>("0");
   const [usd, setUSD] = useState<number>();
   const { displayBalanceMap, tokenPrices } = useTokenData();
-  console.log("🚀 ~ useTokenAmountInput ~ displayBalanceMap:", displayBalanceMap);
 
   useEffect(() => {
     if (token && displayBalanceMap[token.path]) {

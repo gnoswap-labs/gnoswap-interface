@@ -160,7 +160,6 @@ const HeaderContainer: React.FC = () => {
         const isGnot = item?.token?.path === "gnot";
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : temp;
-        console.log("🚀 ~ returnstorageData.map ~ transferData:", transferData.usd)
         const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
         const usdFormat = formatUsdNumber3Digits(transferData.usd);
         const price = toPriceFormat(usdFormat || "0", { usd: true, isRounding: false });
@@ -175,7 +174,6 @@ const HeaderContainer: React.FC = () => {
       } else {
         const item_ = poolList.filter((_) => _.tokenA.symbol === item.token.symbol && _.tokenB.symbol === item.tokenB.symbol)?.[0];
         if (!item_) return item;
-        console.log("🚀 ~ returnstorageData.map ~ price:", item_.tvl)
         const price = toPriceFormat(item_.tvl || "0", { usd: true, isRounding: false });
         return {
           ...item,
@@ -197,7 +195,6 @@ const HeaderContainer: React.FC = () => {
 
     return temp.map((item: PoolModel) => {
       const price = toPriceFormat(item.tvl || "0", { usd: true, isRounding: false });
-      console.log("🚀 ~ returnstorageData.map ~ price:", item.tvl)
 
       return {
         path: "",
@@ -245,8 +242,6 @@ const HeaderContainer: React.FC = () => {
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const usdFormat = formatUsdNumber3Digits(transferData.usd);
       const price = toPriceFormat(usdFormat || "0", { usd: true, isRounding: false });
-      console.log("🚀 34234 ~ returnstorageData.map ~ price:", usdFormat)
-      console.log("🚀 34234 ~ returntemp.map ~ price:", price)
 
       return {
         path: "",
