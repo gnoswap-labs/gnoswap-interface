@@ -53,6 +53,7 @@ import { LeaderboardRepository } from "@repositories/leaderboard/leaderboard-rep
 import {
   API_URL,
   DEFAULT_CHAIN_ID,
+  ROUTER_API_URL,
 } from "@common/clients/wallet-client/transaction-messages";
 
 interface GnoswapContextProps {
@@ -106,6 +107,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   const [, setStatus] = useAtom(WalletState.status);
 
   const [networkClient] = useState(new AxiosClient(API_URL));
+  const [routerAPIClient] = useState(new AxiosClient(ROUTER_API_URL));
 
   const [localStorageClient, setLocalStorageClient] = useState(
     WebStorageClient.createLocalStorageClient(),
@@ -189,8 +191,12 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
   }, [localStorageClient, rpcProvider, walletClient]);
 
   const swapRouterRepository = useMemo(() => {
-    return new SwapRouterRepositoryImpl(rpcProvider, walletClient);
-  }, [rpcProvider, walletClient]);
+    return new SwapRouterRepositoryImpl(
+      rpcProvider,
+      walletClient,
+      routerAPIClient,
+    );
+  }, [rpcProvider, walletClient, routerAPIClient]);
 
   const tokenRepository = useMemo(() => {
     return new TokenRepositoryImpl(networkClient, localStorageClient);

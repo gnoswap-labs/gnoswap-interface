@@ -1,13 +1,15 @@
 import { WalletClient } from "@common/clients/wallet-client";
 import { SwapRouterRepository } from "./swap-router-repository";
-import { makeRoutesQuery } from "@utils/swap-route-utils";
+import { makeRouteKey, makeRoutesQuery } from "@utils/swap-route-utils";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
-import { EstimateSwapRouteResponse } from "./response/estimate-swap-route-response";
-import { SwapRouter } from "@gnoswap-labs/swap-router";
+import {
+  EstimatedRoute,
+  EstimateSwapRouteResponse,
+} from "./response/estimate-swap-route-response";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import BigNumber from "bignumber.js";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -31,21 +33,26 @@ import {
   TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
 import { checkGnotPath, toNativePath } from "@utils/common";
+import { NetworkClient } from "@common/clients/network-client";
+import { makeQueryParameter } from "@utils/network.utils";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
+  private networkClient: NetworkClient;
   private walletClient: WalletClient | null;
   private pools: PoolRPCModel[];
 
   constructor(
     rpcProvider: GnoProvider | null,
     walletClient: WalletClient | null,
+    networkClient: NetworkClient,
   ) {
     this.rpcProvider = rpcProvider;
     this.walletClient = walletClient;
     this.pools = [];
+    this.networkClient = networkClient;
   }
 
   public updatePools(pools: PoolRPCModel[]) {
@@ -55,9 +62,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public estimateSwapRoute = async (
     request: EstimateSwapRouteRequest,
   ): Promise<EstimateSwapRouteResponse> => {
-    if (!ROUTER_PACKAGE_PATH || !this.rpcProvider) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
-    }
     const { inputToken, outputToken, exactType, tokenAmount } = request;
 
     if (BigNumber(tokenAmount).isNaN()) {
@@ -70,43 +74,27 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const outputTokenPath = isNativeToken(outputToken)
       ? outputToken.wrappedPath
       : outputToken.path;
-    const swapRouter = new SwapRouter(this.pools);
-    const tokenAmountRaw = makeRawTokenAmount(
-      exactType === "EXACT_IN" ? inputToken : outputToken,
-      tokenAmount,
-    );
 
-    /**
-     * XXX: Router API
-     */
-    const estimatedRoutes = swapRouter.estimateSwapRoute(
-      inputTokenPath,
-      outputTokenPath,
-      BigInt(tokenAmountRaw || 0),
+    const queryParameter = makeQueryParameter({
+      inputTokenPath: inputTokenPath,
+      outputTokenPath: outputTokenPath,
       exactType,
-    );
+      tokenAmount,
+    });
 
-    const result = estimatedRoutes.reduce(
-      (acc, current) =>
-        acc + exactType === "EXACT_IN"
-          ? Number(current.amountOut)
-          : Number(current.amountIn),
-      0,
-    );
+    const response = await this.networkClient.get<EstimateSwapRouteResponse>({
+      url: "dry_swap_route" + queryParameter,
+    });
 
-    if (estimatedRoutes.length === 0) {
-      throw new SwapError("NOT_FOUND_SWAP_POOL");
+    if (response.status !== 200) {
+      throw new SwapError("SWAP_FAILED");
     }
 
-    const resultAmount = makeDisplayTokenAmount(
-      exactType === "EXACT_IN" ? outputToken : inputToken,
-      result,
+    const estimatedRoutes = response.data.estimatedRoutes.map(
+      makeEstimatedRouteWithRouteKey,
     );
 
-    return {
-      amount: resultAmount?.toString() || "0",
-      estimatedRoutes,
-    };
+    return { ...response.data, estimatedRoutes };
   };
 
   public swapRoute = async (
@@ -270,4 +258,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
     return response.status;
   };
+}
+
+function makeEstimatedRouteWithRouteKey(
+  estimatedRoute: EstimatedRoute,
+): EstimatedRoute {
+  const routeKey = makeRouteKey(estimatedRoute);
+  return { ...estimatedRoute, routeKey };
 }

@@ -1,4 +1,5 @@
 import { EstimatedRoute } from "@gnoswap-labs/swap-router";
+import { Route } from "@repositories/swap/response/estimate-swap-route-response";
 
 export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
   const POOL_DIVIDER = "*POOL*";
@@ -17,4 +18,8 @@ export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
         .join(POOL_DIVIDER);
     })
     .join(",");
+}
+
+export function makeRouteKey(route: Route) {
+  return route.pools.map(p => p.poolPath).join("*POOL*");
 }
