@@ -146,6 +146,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       STAKING: {},
       EXTERNAL: {},
+      INTERNAL: {},
     };
     positions
       .flatMap(position => position.reward)
@@ -188,6 +189,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       STAKING: Object.values(infoMap["STAKING"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      INTERNAL: Object.values(infoMap["INTERNAL"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
@@ -203,6 +205,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: {},
       STAKING: {},
       EXTERNAL: {},
+      INTERNAL: {},
     };
     positions
       .flatMap(position => position.reward)
@@ -229,6 +232,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       STAKING: Object.values(infoMap["STAKING"]),
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      INTERNAL: Object.values(infoMap["INTERNAL"]),
     };
   }, [isDisplay, positions, tokenPrices]);
 
