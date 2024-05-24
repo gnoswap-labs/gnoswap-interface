@@ -21,7 +21,7 @@ export interface TokenChartGraphProps {
   xAxisLabels: string[];
   yAxisLabels: string[];
   currentTab: TokenChartGraphPeriodType;
-  componentRef: React.RefObject<HTMLDivElement>;
+  componentRef: React.RefObject<HTMLDivElement> | null;
   size: ComponentSize;
   breakpoint: DEVICE_TYPE;
 }
