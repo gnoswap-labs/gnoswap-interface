@@ -9,7 +9,6 @@ import { useSlippage } from "@hooks/common/use-slippage";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import { useTokenData } from "@hooks/token/use-token-data";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
