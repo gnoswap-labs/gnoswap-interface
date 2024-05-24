@@ -162,7 +162,7 @@ const HeaderContainer: React.FC = () => {
         const transferData = isGnot ? tempWuGnot : temp;
         const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
         const usdFormat = formatUsdNumber3Digits(transferData.usd);
-        const price = toPriceFormat(usdFormat || "0", { usd: true });
+        const price = toPriceFormat(usdFormat || "0", { usd: true, isRounding: false });
         return {
           ...item,
           price: price,
@@ -174,7 +174,7 @@ const HeaderContainer: React.FC = () => {
       } else {
         const item_ = poolList.filter((_) => _.tokenA.symbol === item.token.symbol && _.tokenB.symbol === item.tokenB.symbol)?.[0];
         if (!item_) return item;
-        const price = toPriceFormat(item_.tvl || "0", { usd: true });
+        const price = toPriceFormat(item_.tvl || "0", { usd: true, isRounding: false });
         return {
           ...item,
           apr: `${!item_.apr ? "-" : Number(item_.apr) > 10 ? `${item_.apr}% APR` : `${Number(item_.apr).toFixed(2)}% APR`}`,

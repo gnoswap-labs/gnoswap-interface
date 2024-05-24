@@ -142,13 +142,11 @@ export const toPriceFormat = (
   value: BigNumber | string | number,
   options: {
     usd?: boolean,
-    isKMB?: boolean,
     isFormat?: boolean,
     isSmallValueShorten?: boolean,
     isRounding?: boolean,
   } | undefined = {
       usd: false,
-      isKMB: false,
       isFormat: true,
       isSmallValueShorten: false,
       isRounding: true
@@ -179,16 +177,13 @@ export const toPriceFormat = (
       bigNumber.dividedBy(Math.pow(10, 6)).decimalPlaces(2) +
       unitsUpperCase.million
     );
-  if (options.isKMB) {
 
-
-    if (wholeNumberLength >= 4 && options.isFormat)
-      return (
-        (options.usd ? "$" : "") +
-        bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
-        unitsUpperCase.thousand
-      );
-  }
+  if (wholeNumberLength >= 4 && options.isFormat)
+    return (
+      (options.usd ? "$" : "") +
+      bigNumber.dividedBy(Math.pow(10, 3)).decimalPlaces(2) +
+      unitsUpperCase.thousand
+    );
 
   // TODO : Else Return Type
   if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0) && options.isSmallValueShorten) {
