@@ -31,6 +31,25 @@ const findKeyByValue = (
   return Object.keys(record).find(key => record[key] === value);
 };
 
+function handleAmount(changed: string, token: TokenModel | null) {
+  let value = changed;
+  const decimals = token?.decimals || 0;
+  if (!value || BigNumber(value).isZero()) {
+    value = changed;
+  } else {
+    value = BigNumber(value).toFixed(decimals || 0, 1);
+  }
+
+  if (BigNumber(changed).isEqualTo(value)) {
+    const dotIndex = changed.indexOf(".");
+    if (dotIndex === -1 || changed.length - dotIndex - 1 < decimals) {
+      value = changed;
+    }
+  }
+
+  return value;
+}
+
 export const useSwapHandler = () => {
   const [memorizeTokenSwap, setMemorizeTokenSwap] = useAtom(
     SwapState.memorizeTokenSwap,
@@ -405,8 +424,10 @@ export const useSwapHandler = () => {
     }, 10000);
     return () => clearInterval(interval);
   }, [tokens]);
+
   const changeTokenAAmount = useCallback(
-    (value: string, none?: boolean) => {
+    (changed: string, none?: boolean) => {
+      const value = handleAmount(changed, tokenA);
       const memoryzeTokenB =
         memorizeTokenSwap?.[`${tokenA?.symbol}:${value}:${tokenB?.symbol}`];
       if (memoryzeTokenB) {
@@ -454,7 +475,8 @@ export const useSwapHandler = () => {
     }));
   }, [setSwapValue, tokenAAmount, tokenBAmount]);
   const changeTokenBAmount = useCallback(
-    (value: string, none?: boolean) => {
+    (changed: string, none?: boolean) => {
+      const value = handleAmount(changed, tokenA);
       const memoryzeTokenA =
         memorizeTokenSwap?.[`${tokenB?.symbol}:${value}:${tokenB?.symbol}`];
       if (memoryzeTokenA) {
