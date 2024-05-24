@@ -557,8 +557,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         : "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
-      tokenAPrice: priceOfTick[currentTick || 0],
-      tokenBPrice: priceOfTick[-(currentTick || 0)],
+      tokenAPrice: priceOfTick[currentTick] || "0",
+      tokenBPrice: priceOfTick[-currentTick] || "0",
     });
     setPositionX(mouseX);
     setPositionY(mouseY);
@@ -605,6 +605,14 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             }
             return acc;
           }, {});
+        priceOfTick[currentTick] = tickToPriceStr(
+          Math.round(currentTick),
+          40,
+        ).toString();
+        priceOfTick[-currentTick] = tickToPriceStr(
+          -Math.round(currentTick),
+          40,
+        ).toString();
         resolve(priceOfTick);
       }).then(setPriceOfTick);
     }

@@ -138,30 +138,16 @@ const SelectPriceRangeCustom = forwardRef<
       return flip ? getGnotPath(tokenA) : getGnotPath(tokenB);
     }, [flip, tokenA, tokenB]);
 
-    const currentPrice = useMemo(() => {
-      if (selectPool.startPrice) {
-        return selectPool.startPrice;
-      }
-
-      if (flip) {
-        if (!selectPool.currentPrice) {
-          return 0;
-        }
-        return 1 / selectPool.currentPrice;
-      }
-      return selectPool.currentPrice;
-    }, [flip, selectPool.currentPrice, selectPool.startPrice]);
-
     const currentPriceStr = useMemo(() => {
-      if (!currentPrice) {
+      if (!selectPool.currentPrice) {
         return "-";
       }
 
-      if (currentPrice > 1) {
+      if (selectPool.currentPrice > 1) {
         return (
           <>
             1 {currentTokenA.symbol} =&nbsp;
-            {convertToKMB(currentPrice.toString())}&nbsp;
+            {convertToKMB(selectPool.currentPrice.toString())}&nbsp;
             {currentTokenB.symbol}
           </>
         );
@@ -170,10 +156,10 @@ const SelectPriceRangeCustom = forwardRef<
       return (
         <>
           1 {currentTokenA.symbol} =&nbsp;
-          {subscriptFormat(currentPrice)}&nbsp;{currentTokenB.symbol}
+          {subscriptFormat(selectPool.currentPrice)}&nbsp;{currentTokenB.symbol}
         </>
       );
-    }, [currentTokenA.symbol, currentTokenB.symbol, currentPrice]);
+    }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
 
     useImperativeHandle(ref, () => {
       return { resetRange };
@@ -547,7 +533,7 @@ const SelectPriceRangeCustom = forwardRef<
                         height={GRAPH_HEIGHT}
                         position="top"
                         offset={selectPool.bins?.length}
-                        price={currentPrice || 1}
+                        price={selectPool.currentPrice || 1}
                         flip={flip}
                         fullRange={selectPool.selectedFullRange}
                         zoomLevel={selectPool.zoomLevel}
