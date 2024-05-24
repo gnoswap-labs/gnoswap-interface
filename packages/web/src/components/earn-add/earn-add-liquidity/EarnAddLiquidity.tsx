@@ -202,7 +202,7 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
       case "SWITCH_NETWORK":
         return "Switch to Gnoland";
       case "INVALID_PAIR":
-        return "Invalid Pair";
+        return "Select a pair";
       case "INSUFFICIENT_BALANCE":
         return "Insufficient Balance";
       case "INVALID_RANGE":

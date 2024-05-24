@@ -392,6 +392,18 @@ const SelectPriceRangeCustom = forwardRef<
       return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
     }, [tokenA, tokenB, isKeepToken]);
 
+    const formatStartingPrice = useMemo(() => {
+      if (tempPrice) {
+        if (Number(tempPrice) < 1) {
+          return subscriptFormat(tempPrice);
+        }
+
+        return tempPrice;
+      }
+
+      return startingPriceValue;
+    }, [startingPriceValue, tempPrice]);
+
     if (selectPool.renderState() === "NONE") {
       return <></>;
     }
@@ -425,9 +437,7 @@ const SelectPriceRangeCustom = forwardRef<
             </div>
             <input
               className="starting-price-input"
-              value={
-                tempPrice ? subscriptFormat(tempPrice) : startingPriceValue
-              }
+              value={formatStartingPrice}
               onChange={onChangeStartingPrice}
               onBlur={updateStartingPrice}
               onFocus={() => setTempPrice("")}

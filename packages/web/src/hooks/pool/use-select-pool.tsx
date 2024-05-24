@@ -590,7 +590,7 @@ export const useSelectPool = ({
 
   useEffect(() => {
     setCurrentPoolPath(latestPoolPath);
-  }, [poolPath]);
+  }, [latestPoolPath]);
 
   return {
     startPrice,

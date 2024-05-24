@@ -26,6 +26,7 @@ import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-
 import { convertToKMB } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { CREATE_POOL_FEE, GNS_TOKEN_PATH } from "@common/clients/wallet-client/transaction-messages";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -86,7 +87,7 @@ export const useEarnAddLiquidityConfirmModal = ({
     broadcastPending,
     broadcastError,
   } = useBroadcastHandler();
-  const { gnotToken } = useTokenData();
+  const { tokens } = useTokenData();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const router = useRouter();
@@ -241,12 +242,14 @@ export const useEarnAddLiquidityConfirmModal = ({
     };
   }, [selectPool, tokenA, tokenB]);
 
-  const feeInfo = useMemo((): { token: TokenModel; fee: string } => {
+  const gnsToken = tokens.find(item => item.priceID === GNS_TOKEN_PATH);
+
+  const feeInfo = useMemo((): { token?: TokenModel; fee: string } => {
     return {
-      token: gnotToken,
-      fee: `${makeDisplayTokenAmount(gnotToken, 1)}` || "",
+      token: gnsToken,
+      fee: gnsToken ? `${makeDisplayTokenAmount(gnsToken, CREATE_POOL_FEE)}` : "",
     };
-  }, [gnotToken]);
+  }, [gnsToken]);
 
   const close = useCallback(() => {
     setOpenedModal(false);
