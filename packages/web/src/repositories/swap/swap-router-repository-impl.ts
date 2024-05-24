@@ -34,7 +34,6 @@ import {
 } from "@common/clients/wallet-client/transaction-messages";
 import { checkGnotPath, toNativePath } from "@utils/common";
 import { NetworkClient } from "@common/clients/network-client";
-import { makeQueryParameter } from "@utils/network.utils";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 
 const ROUTER_PACKAGE_PATH = PACKAGE_ROUTER_PATH;
@@ -81,15 +80,22 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         ? makeRawTokenAmount(inputToken, tokenAmount)
         : makeRawTokenAmount(inputToken, tokenAmount);
 
-    const queryParameter = makeQueryParameter({
-      tokenIn: inputTokenPath,
-      tokenOut: outputTokenPath,
-      tradeType: exactType === "EXACT_IN" ? "EXACT_INPUT" : "EXACT_OUTPUT",
-      amount: tokenAmountRaw?.toString() || "0",
-    });
-
-    const response = await this.networkClient.get<EstimateSwapRouteResponse>({
-      url: "swap" + queryParameter,
+    const response = await this.networkClient.post<
+      {
+        inputTokenPath: string;
+        outputTokenPath: string;
+        exactType: string;
+        amount: number;
+      },
+      EstimateSwapRouteResponse
+    >({
+      url: "routes",
+      body: {
+        inputTokenPath,
+        outputTokenPath,
+        exactType,
+        amount: Number(tokenAmountRaw || 0),
+      },
     });
 
     if (response.status !== 200) {
