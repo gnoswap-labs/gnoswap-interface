@@ -1,8 +1,8 @@
-import IconTelegram from "@components/common/icons/social/IconTelegram";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
+import IconDiscord from "@components/common/icons/social/IconDiscord";
 import { DeviceSize } from "@styles/media";
 import React, { useCallback } from "react";
 import { ValuesType } from "utility-types";
@@ -18,7 +18,7 @@ import {
 export const SNS_TYPE = {
   GITHUB: "github",
   GITBOOK: "gitbook",
-  DISCODE: "discode",
+  DISCORD: "discord",
   TELEGRAM: "telegram",
   MEDIUM: "medium",
   TWITTER: "twitter",
@@ -44,8 +44,8 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
     [onClickSns],
   );
 
-  const onClickTelegram = useCallback(
-    () => onClickSns(SNS_TYPE.TELEGRAM),
+  const onClickDiscord = useCallback(
+    () => onClickSns(SNS_TYPE.DISCORD),
     [onClickSns],
   );
 
@@ -78,8 +78,8 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
             <button onClick={onClickGitbook}>
               <IconGitbook className="icon" />
             </button>
-            <button onClick={onClickTelegram}>
-              <IconTelegram className="icon" />
+            <button onClick={onClickDiscord}>
+              <IconDiscord className="icon" />
             </button>
             <button onClick={onClickMedium}>
               <IconMedium className="icon" />

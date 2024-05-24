@@ -1,6 +1,9 @@
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import { INCREASE_BUTTON_TYPE, IPriceRange } from "@hooks/increase/use-increase-handle";
+import {
+  INCREASE_BUTTON_TYPE,
+  IPriceRange,
+} from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import React, { useMemo } from "react";
 import IncreaseAmountPosition from "../increase-select-position/IncreaseAmount";
@@ -12,6 +15,8 @@ interface IncreaseLiquidityProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   fee: string;
+  isDepositTokenA: boolean;
+  isDepositTokenB: boolean;
   maxPriceStr: string;
   minPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
@@ -38,6 +43,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   aprFee,
   priceRangeSummary,
   connected,
+  isDepositTokenA,
+  isDepositTokenB,
   tokenAAmountInput,
   tokenBAmountInput,
   changeTokenAAmount,
@@ -85,6 +92,8 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
           tokenA={tokenA}
           tokenB={tokenB}
           connected={connected}
+          isDepositTokenA={isDepositTokenA}
+          isDepositTokenB={isDepositTokenB}
           changeTokenBAmount={changeTokenBAmount}
           tokenAAmountInput={tokenAAmountInput}
           tokenBAmountInput={tokenBAmountInput}
@@ -97,7 +106,9 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
         onClick={onSubmit}
         text={textButton}
         style={{
-          hierarchy: activatedSubmit ? ButtonHierarchy.Primary : ButtonHierarchy.Gray,
+          hierarchy: activatedSubmit
+            ? ButtonHierarchy.Primary
+            : ButtonHierarchy.Gray,
 
           fullWidth: true,
         }}

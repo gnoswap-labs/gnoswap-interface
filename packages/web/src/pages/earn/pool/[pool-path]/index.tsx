@@ -11,6 +11,7 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/use-wallet";
 import { addressValidationCheck } from "@utils/validation-utils";
 import { usePositionData } from "@hooks/common/use-position-data";
+import { useLoading } from "@hooks/common/use-loading";
 
 export default function Pool() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function Pool() {
   const { data = null } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
+  const { isLoadingCommon } = useLoading();
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({
     addr: account?.address,
@@ -32,8 +34,8 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition, loading, getPositionsByPoolId } =
-    usePositionData(address);
+  const { isFetchedPosition, loading, getPositionsByPoolId, positions } = usePositionData(address);
+
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
       return true;
@@ -51,9 +53,22 @@ export default function Pool() {
   console.log(hash, "hash");
 
   useEffect(() => {
-    if (hash === "staking" && !loading) {
+    if (hash === "staking" && isFetchedPosition && !loading && !isLoadingCommon) {
       const positionContainerElement = document.getElementById("staking");
-      const topPosition = positionContainerElement?.getBoundingClientRect().top;
+      const topPosition = positionContainerElement?.offsetTop;
+      if (!topPosition) {
+        return;
+      }
+      window.scrollTo({
+        top: topPosition,
+      });
+    }
+  }, [hash, isFetchedPosition, isLoadingCommon, loading, positions]);
+
+  useEffect(() => {
+    if (hash === "staking" && !loading && isFetchedPosition && positions.length === 0) {
+      const positionContainerElement = document.getElementById("staking");
+      const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
         return;
       }

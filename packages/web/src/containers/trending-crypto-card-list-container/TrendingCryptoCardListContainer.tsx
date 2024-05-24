@@ -62,7 +62,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const trendingCryptoList = useMemo(() => {
-    return trending.map((item: ITrending) => {
+    return (trending ?? [])?.map((item: ITrending) => {
       const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
       return {
         path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,

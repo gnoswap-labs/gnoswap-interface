@@ -11,7 +11,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/use-token-data";
-import { convertLargePrice, formatUsdNumber3Digits } from "@utils/number-utils";
+import { formatUsdNumber3Digits, toPriceFormat } from "@utils/number-utils";
 import { useLoading } from "@hooks/common/use-loading";
 
 interface NegativeStatusType {
@@ -25,7 +25,7 @@ export interface MostLiquidPool {
   feeRate: string;
 }
 
-export interface Token{
+export interface Token {
   path: string;
   token: TokenInfo;
   price: string;
@@ -38,6 +38,7 @@ export interface Token{
   mostLiquidPool: MostLiquidPool;
   last7days: number[];
   idx: number;
+  graphStatus: MATH_NEGATIVE_TYPE;
 }
 
 export interface SortOption {
@@ -125,6 +126,7 @@ export const createDummyTokenList = (): Token[] => [
       Math.round(Math.random() * 100),
     ),
     idx: 1,
+    graphStatus: MATH_NEGATIVE_TYPE.POSITIVE
   },
 ];
 
@@ -156,7 +158,7 @@ const TokenListContainer: React.FC = () => {
     setIsInside(true);
   };
 
-  const { tokens, isFetched, error, tokenPrices, isLoadingTokenPrice } = useTokenData();
+  const { tokens, isFetched, error, tokenPrices, isFetchedTokenPrices } = useTokenData();
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -208,17 +210,23 @@ const TokenListContainer: React.FC = () => {
 
     let temp = tokens.filter(((token: TokenModel) => token.path !== wugnotPath)).map((item: TokenModel) => {
       const isGnot = item.path === "gnot";
-      const temp: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
+      const tempTokenPrice: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
-      const transferData = isGnot ? tempWuGnot : temp;
-      const splitMostLiquidity: string[] = temp?.mostLiquidityPool?.split(":") || [];
+      const transferData = isGnot ? tempWuGnot : tempTokenPrice;
+      const splitMostLiquidity: string[] = tempTokenPrice?.mostLiquidityPool?.split(":") || [];
       const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
       const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
       const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
       const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
       const data7day = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price7d));
+      const graphStatus = checkPositivePrice(
+        (transferData.pricesBefore?.latestPrice),
+        tempTokenPrice.last7d?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())?.[0].price
+      ).status;
+
       const data30D = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.price30d));
       const usdFormat = formatUsdNumber3Digits(transferData.usd || "0.00");
+
       return {
         ...transferData,
         token: {
@@ -239,27 +247,33 @@ const TokenListContainer: React.FC = () => {
             tokenB: {
               path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
               name: getGnotPath(tempTokenB?.[0]).name,
-              symbol:  getGnotPath(tempTokenB?.[0]).symbol,
-              logoURI:  getGnotPath(tempTokenB?.[0]).logoURI,
+              symbol: getGnotPath(tempTokenB?.[0]).symbol,
+              logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
             },
           },
           feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
         },
-        last7days: [...(transferData?.last7d?.map(item => Number(item.price || 0)) || []), Number(transferData?.pricesBefore?.latestPrice)],
+        last7days: [
+          ...(transferData?.last7d?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(item => Number(item.price || 0)) || []),
+          Number(transferData?.pricesBefore?.latestPrice)
+        ],
         marketCap: `$${Math.floor(Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0)).toLocaleString()}`,
         liquidity: `$${Math.floor(Number(transferData.lockedTokensUsd || 0)).toLocaleString()}`,
         volume24h: `$${Math.floor(Number(transferData.volumeUsd24h || 0)).toLocaleString()}`,
-        price: convertLargePrice(usdFormat),
-        priceOf1d: { status: dataToday.status, value:  dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
-        priceOf7d: { status: data7day.status, value:  data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
-        priceOf30d: { status: data30D.status, value:  data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
+        price: toPriceFormat(usdFormat, { usd: true }),
+        priceOf1d: { status: dataToday.status, value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : dataToday.percent, realValue: dataToday.percent === "-" ? -100000000000 : Number(dataToday.percent.replace(/[%]/g, "")) },
+        priceOf7d: { status: data7day.status, value: data7day.percent !== "-" ? data7day.percent.replace(/[+-]/g, "") : data7day.percent, realValue: data7day.percent === "-" ? -100000000000 : Number(data7day.percent.replace(/[%]/g, "")) },
+        priceOf30d: { status: data30D.status, value: data30D.percent !== "-" ? data30D.percent.replace(/[+-]/g, "") : data30D.percent, realValue: data30D.percent === "-" ? -100000000000 : Number(data30D.percent.replace(/[%]/g, "")) },
         idx: 1,
+        graphStatus,
       };
     });
+
     temp.sort((a: Token, b: Token) => Number(b.marketCap.replace(/,/g, "").slice(1)) - Number(a.marketCap.replace(/,/g, "").slice(1)));
     temp = temp.filter((item: Token) => ((item.token.path.includes(grc20))));
-    return temp.map((item: Token, i: number) => ({...item, idx: i}));
-  }, [tokens, tokenPrices, tokenType]);
+    return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
+  }, [tokenType, tokens, wugnotPath, tokenPrices]);
+
   const getDatas = useCallback(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
     const temp = firstData.filter((item: Token) => ((item.token.path.includes(grc20))));
@@ -267,7 +281,7 @@ const TokenListContainer: React.FC = () => {
       return temp.filter((item: Token) => (item.token.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.token.symbol.toLowerCase()).includes(keyword.toLowerCase()));
     }
     if (sortOption) {
-      if(sortOption.key === TABLE_HEAD.NAME) {
+      if (sortOption.key === TABLE_HEAD.NAME) {
         if (sortOption.direction === "asc") {
           temp.sort((a: Token, b: Token) => b.token.name.localeCompare(a.token.name));
         } else {
@@ -326,10 +340,11 @@ const TokenListContainer: React.FC = () => {
     return temp.slice(page * 15, (page + 1) * 15);
   }, [keyword, tokenType, sortOption, firstData, page]);
 
+
   return (
     <TokenList
       tokens={getDatas()}
-      isFetched={isFetched && !isLoadingCommon && !isLoadingTokenPrice}
+      isFetched={isFetched && !isLoadingCommon && isFetchedTokenPrices}
       error={error}
       tokenType={tokenType}
       sortOption={sortOption}

@@ -14,7 +14,7 @@ import { StorageClient } from "@common/clients/storage-client";
 import { NetworkClient } from "@common/clients/network-client";
 import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
 import { customSort } from "@containers/select-token-container/SelectTokenContainer";
-import mockedExchangeRateGraph from  "./mock/token-exchange-rate-graph.json";
+import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export class TokenRepositoryImpl implements TokenRepository {
@@ -70,10 +70,10 @@ export class TokenRepositoryImpl implements TokenRepository {
   };
 
   public getChain = async (): Promise<IChainResponse> => {
-    const response = await this.networkClient.get<IChainResponse>({
+    const response = await this.networkClient.get<{ data: IChainResponse }>({
       url: "/chain",
     });
-    return response.data;
+    return response.data.data;
   };
 
   public getBalancesByAddress = async (

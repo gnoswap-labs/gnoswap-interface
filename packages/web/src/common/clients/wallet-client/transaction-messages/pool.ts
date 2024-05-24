@@ -1,5 +1,6 @@
 import {
   makeApproveMessage,
+  makeGNOTSendAmount,
   makeTransactionMessage,
   PACKAGE_POOL_ADDRESS,
   PACKAGE_ROUTER_ADDRESS,
@@ -38,9 +39,12 @@ export function makeCreateIncentiveMessage(
   startTime: number,
   endTime: number,
   caller: string,
+  isGNOT: boolean,
 ) {
+  const send = makeGNOTSendAmount(isGNOT ? rewardAmount : 0);
+
   return makeTransactionMessage({
-    send: "",
+    send: send,
     func: "CreateExternalIncentive",
     packagePath: PACKAGE_STAKER_PATH,
     args: [

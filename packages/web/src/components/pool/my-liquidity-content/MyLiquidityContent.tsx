@@ -128,13 +128,6 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!isDisplay) {
       return "-";
     }
-    // if (!allBalances) {
-    //   return "$0";
-    // }
-    // const balance = Object.values(allBalances).reduce(
-    //   (acc, current) => (acc += current.balanceUSD),
-    //   0,
-    // );
     const balance = positions.reduce((current, next) => {
       return current + next.usdValue;
     }, 0);
@@ -164,7 +157,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(
             reward.rewardToken,
             Number(reward.totalAmount) *
-            Number(tokenPrices[reward.rewardToken.priceId]?.usd),
+            Number(tokenPrices[reward.rewardToken.priceID]?.usd),
           ) || 0,
         claimableAmount:
           makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) || 0,
@@ -174,9 +167,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       }))
       .forEach(rewardInfo => {
         const existReward =
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
+          infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
         if (existReward) {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
             balance: existReward.balance + rewardInfo.balance,
             balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
@@ -187,7 +180,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             claimableUsdValue: existReward.claimableUsdValue + rewardInfo.claimableUsdValue,
           };
         } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
         }
       });
 
@@ -221,15 +214,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       }))
       .forEach(rewardInfo => {
         const existReward =
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId];
+          infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
         if (existReward) {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = {
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
             ...existReward,
             accuReward1D: existReward.accuReward1D + rewardInfo.accuReward1D,
             apr: existReward.apr + rewardInfo.apr,
           };
         } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceId] = rewardInfo;
+          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = rewardInfo;
         }
       });
     return {
@@ -238,6 +231,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
   }, [isDisplay, positions, tokenPrices]);
+
+  const isShowRewardInfoTooltip = useMemo(() => {
+    return aprRewardInfo !== null && (aprRewardInfo?.EXTERNAL.length !== 0 || aprRewardInfo?.STAKING.length !== 0 || aprRewardInfo?.SWAP_FEE.length !== 0);
+  }, [aprRewardInfo]);
 
   const dailyEarning = useMemo(() => {
     if (!isDisplay) {
@@ -272,7 +269,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           makeDisplayTokenAmount(
             reward.rewardToken,
             Number(reward.totalAmount) *
-            Number(tokenPrices[reward.rewardToken.priceId]?.usd || 0),
+            Number(tokenPrices[reward.rewardToken.priceID]?.usd || 0),
           ) || 0,
         claimableAmount:
           makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) || 0,
@@ -283,9 +280,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       }))
       .forEach(rewardInfo => {
         if (rewardInfo.claimableAmount > 0) {
-          const existReward = infoMap[rewardInfo.token.priceId];
+          const existReward = infoMap[rewardInfo.token.priceID];
           if (existReward) {
-            infoMap[rewardInfo.token.priceId] = {
+            infoMap[rewardInfo.token.priceID] = {
               ...existReward,
               balance: existReward.balance + rewardInfo.balance,
               balanceUSD: existReward.balanceUSD + rewardInfo.balanceUSD,
@@ -295,12 +292,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               // aprOf7d: existReward.aprOf7d + rewardInfo.aprOf7d,
             };
           } else {
-            infoMap[rewardInfo.token.priceId] = rewardInfo;
+            infoMap[rewardInfo.token.priceID] = rewardInfo;
           }
         }
       });
     return Object.values(infoMap);
   }, [isDisplay, positions, tokenPrices]);
+
+  const isShowClaimableRewardInfo = useMemo(() => {
+    return claimableRewardInfo && (claimableRewardInfo?.EXTERNAL.length !== 0 || claimableRewardInfo?.STAKING.length !== 0 || claimableRewardInfo?.SWAP_FEE.length !== 0);
+  }, [claimableRewardInfo]);
+
+  const isShowUnclaimableRewardInfo = useMemo(() => {
+    return unclaimedRewardInfo && unclaimedRewardInfo.length > 0;
+  }, [unclaimedRewardInfo]);
 
   const claimableUSD = useMemo(() => {
     if (!isDisplay) {
@@ -340,14 +345,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const tokenABalance = useMemo(() => {
     if (!positionData) return 0;
     const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.tokenABalance), 0);
-    return makeDisplayTokenAmount(positionData?.tokenA, sum) || 0;
-  }, [positionData?.tokenA, positionData?.tokenABalance]);
+    return sum || 0;
+  }, [positionData, positions]);
 
   const tokenBBalance = useMemo(() => {
     if (!positionData) return 0;
     const sum = positions?.reduce((accumulator, currentValue) => accumulator + Number(currentValue.tokenBBalance), 0);
-    return makeDisplayTokenAmount(positionData?.tokenB, sum) || 0;
-  }, [positionData?.tokenB, positionData?.tokenBBalance]);
+    return sum || 0;
+  }, [positionData, positions]);
 
   const depositRatio = useMemo(() => {
     const sumOfBalances = tokenABalance + tokenBBalance;
@@ -494,12 +499,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       </section>
       <section>
         <h4>Total Daily Earnings</h4>
-        {!loading && aprRewardInfo ? (
+        {!loading && isShowRewardInfoTooltip ? (
           <Tooltip
             placement="top"
             FloatingContent={
               <div>
-                <MyPositionAprContent rewardInfo={aprRewardInfo} />
+                {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+                <MyPositionAprContent rewardInfo={aprRewardInfo!} />
               </div>
             }
           >
@@ -549,7 +555,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               <h4>Total Claimable Rewards</h4>
               {!loading && (
                 <div className="claim-wrap">
-                  {claimableRewardInfo || unclaimedRewardInfo ? (
+                  {(isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
                     <Tooltip
                       placement="top"
                       FloatingContent={
@@ -606,7 +612,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <>
             <h4>Total Claimable Rewards</h4>
             <div className="claim-wrap">
-              {!loading && (claimableRewardInfo || unclaimedRewardInfo) ? (
+              {!loading && (isShowClaimableRewardInfo || isShowUnclaimableRewardInfo) ? (
                 <Tooltip
                   placement="top"
                   FloatingContent={

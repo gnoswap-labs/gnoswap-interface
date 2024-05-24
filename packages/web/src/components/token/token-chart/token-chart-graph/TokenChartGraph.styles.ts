@@ -35,6 +35,7 @@ export const TokenChartGraphWrapper = styled.div<Props>`
       max-width: 800px;
     }
     .xaxis-wrapper {
+      position: relative;
       display: flex;
       flex-direction: row;
       height: 40px;
@@ -44,7 +45,7 @@ export const TokenChartGraphWrapper = styled.div<Props>`
       justify-content: space-between;
       ${fonts.body12};
       color: ${({ theme }) => theme.color.text04};
-      
+
       span {
         ${fonts.body12};
         color: ${({ theme }) => theme.color.text04};
@@ -102,5 +103,25 @@ export const TokenChartGraphWrapper = styled.div<Props>`
         ${fonts.p7}
       }
     }
+  }
+`;
+
+export const TokenChartGraphXLabel = styled.span<{
+  x: number;
+}>`
+  position: absolute;
+  display: block;
+  min-width: 80px;
+  left: ${({ x }) => `${x}px`};
+  ${fonts.body12};
+  color: ${({ theme }) => theme.color.text04};
+  transform: translate(-50%, 0);
+  text-align: center;
+  overflow: visible;
+  word-break: keep-all;
+  white-space: nowrap;
+
+  ${media.mobile} {
+    ${fonts.p4};
   }
 `;

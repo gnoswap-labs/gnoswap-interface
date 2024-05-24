@@ -1,6 +1,6 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
-import React from "react";
+import React, { useMemo } from "react";
 import PoolGraph from "../pool-graph/PoolGraph";
 import { BarAreaGraphWrapper } from "./BarAreaGraph.styles";
 import { PoolModel } from "@models/pool/pool-model";
@@ -51,6 +51,13 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   pool,
   binsMyAmount,
 }) => {
+  const isHideBar = useMemo(() => {
+    const isAllReserveZeroBin40 = pool.bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+    const isAllReserveZeroBin = pool.bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
+
+    return isAllReserveZeroBin40 && isAllReserveZeroBin;
+  }, [pool.bins, pool.bins40]);
+
   return (
     <BarAreaGraphWrapper
       className={className}
@@ -73,6 +80,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         poolPrice={pool?.price || 1}
         isPosition
         binsMyAmount={binsMyAmount || []}
+        showBar={!isHideBar}
       />
     </BarAreaGraphWrapper>
   );

@@ -24,6 +24,9 @@ import { AccountModel } from "@models/account/account-model";
 import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
+import { roundDownDecimalNumber } from "@utils/regex";
+import BigNumber from "bignumber.js";
+import { ITokenResponse } from "@repositories/token";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -75,6 +78,9 @@ interface WalletConnectorMenuProps {
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
   onClickChangeLanguage: () => void;
+  gnotBalance?: number;
+  isLoadingGnotBalance?: boolean;
+  gnotToken?: ITokenResponse;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -87,6 +93,9 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   switchNetwork,
   isSwitchNetwork,
   onClickChangeLanguage,
+  gnotBalance,
+  gnotToken,
+  isLoadingGnotBalance,
 }) => {
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -106,7 +115,18 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const balanceText = useMemo(() => `${(Number(account?.balances[0].amount) / 1000000).toLocaleString(undefined, { maximumFractionDigits: 5 })} GNOT` || "0 GNOT", [account?.balances]);
+  const balanceText = useMemo(() => {
+    const balance = isLoadingGnotBalance ? account?.balances?.[0].amount : gnotBalance;
+
+    const formattedPrice = BigNumber(balance ?? 0)
+      .shiftedBy((gnotToken?.decimals ?? 0) * -1)
+      .toString()
+      .match(roundDownDecimalNumber(6))?.toString() ?? 0;
+
+    const price = BigNumber(formattedPrice).toFormat();
+
+    return `${price} GNOT` || "0 GNOT";
+  }, [account?.balances, gnotBalance]);
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();
@@ -171,7 +191,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             />
           </div>
         )}
-        
+
         <div className="theme-container">
           <ThemeSelector className="mt-16">
             <span>Language</span>

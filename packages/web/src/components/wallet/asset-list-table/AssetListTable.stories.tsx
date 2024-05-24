@@ -1,9 +1,42 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import { dummyAssetList } from "@containers/asset-list-container/AssetListContainer";
 import AssetListTable from "./AssetListTable";
 import { DEVICE_TYPE } from "@styles/media";
+import { Asset } from "@containers/asset-list-container/AssetListContainer";
+
+const dummyAssetList: Asset[] = [
+  {
+    type: "grc20",
+    chainId: "dev",
+    createdAt: "2023-12-12 23:45:12",
+    name: "Bar",
+    path: "gno.land/r/bar",
+    decimals: 6,
+    symbol: "BAR",
+    logoURI:
+      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+    priceID: "gno.land/r/bar",
+    description: "this_is_desc_section",
+    websiteURL: "https://website~~~~",
+    price: "0",
+  },
+  {
+    type: "grc20",
+    chainId: "dev",
+    createdAt: "2023-12-12 23:45:12",
+    name: "Bar",
+    path: "gno.land/r/bar",
+    decimals: 6,
+    symbol: "BAR",
+    logoURI:
+      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+    priceID: "gno.land/r/bar",
+    description: "this_is_desc_section",
+    websiteURL: "https://website~~~~",
+    price: "0",
+  },
+];
 
 export default {
   title: "wallet/AssetList/AssetListTable",

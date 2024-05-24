@@ -7,6 +7,7 @@ import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncenti
 import BigNumber from "bignumber.js";
 import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { roundDownDecimalNumber } from "@utils/regex";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -41,10 +42,10 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       if (token && isNativeToken(token)) {
         const nativeFullBalance = BigNumber(formatValue)
           .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
-          .dividedBy(Math.pow(10, token?.decimals ?? 0)).toString();
+          .toString();
         changeAmount(nativeFullBalance);
       } else {
-        changeAmount(BigNumber(formatValue).dividedBy(Math.pow(10, token?.decimals ?? 0)).toString());
+        changeAmount(BigNumber(formatValue).toString());
       }
     }
   }, [connected, balance, token, changeAmount]);
@@ -52,9 +53,11 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   const balanceADisplay = useMemo(() => {
     if (connected && balance !== "-") {
       if (balance === "0") return 0;
-      return BigNumber(balance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, token?.decimals ?? 0))
-        .toFormat(2);
+
+      const result = BigNumber((balance.replace(/,/g, "")
+        .toString().match(roundDownDecimalNumber(2)))?.toString() ?? 0).toFormat();
+
+      return result;
     }
     return "-";
   }, [balance, connected, token?.decimals]);

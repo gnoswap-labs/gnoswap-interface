@@ -3,7 +3,11 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
-import { prettyNumber, removeTrailingZeros, subscriptFormat } from "@utils/number-utils";
+import {
+  prettyNumber,
+  removeTrailingZeros,
+  subscriptFormat,
+} from "@utils/number-utils";
 import { getLocalizeTime } from "@utils/chart";
 import { convertToKMB } from "@utils/stake-position-utils";
 
@@ -71,8 +75,10 @@ export interface LineGraphProps {
   customData?: { height: number; locationTooltip: number };
   centerLineColor?: string;
   showBaseLine?: boolean;
-  renderBottom?: (baseLineNumberWidth: number) => React.ReactElement
+  renderBottom?: (baseLineNumberWidth: number) => React.ReactElement;
   isShowTooltip?: boolean;
+  onMouseMove?: (LineGraphData?: LineGraphData) => void;
+  onMouseOut?: ((active: boolean) => void);
 }
 
 export interface LineGraphRef {
@@ -139,11 +145,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
   height = VIEWPORT_DEFAULT_HEIGHT,
   point,
   firstPointColor,
-  centerLineColor,
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine,
   renderBottom,
   isShowTooltip = true,
+  onMouseMove: onLineGraphMouseMove,
+  onMouseOut: onLineGraphMouseOut,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -165,6 +172,18 @@ const LineGraph: React.FC<LineGraphProps> = ({
     updatePoints(datas, width, height);
   }, [datas, width, height, baseLineNumberWidth]);
 
+  useEffect(() => {
+    onLineGraphMouseMove?.(datas[currentPointIndex]);
+  }, [currentPointIndex, datas]);
+
+  useEffect(() => {
+    onLineGraphMouseOut?.(activated);
+  }, [activated]);
+
+  const isSameData = useMemo(() => {
+    return datas.length > 0 && datas.every(item => item.value === datas[0].value);
+  }, [datas]);
+
   const updatePoints = (
     datas: LineGraphData[],
     width: number,
@@ -184,34 +203,69 @@ const LineGraph: React.FC<LineGraphProps> = ({
     const minTime = Math.min(...times);
     const maxTime = Math.max(...times);
 
+
+    const minValueBigNumber = BigNumber(minValue);
+    const maxValueBigNumber = BigNumber(maxValue);
+
     let baseLineNumberWidthComputation = 0;
 
-    const minMaxGap = (maxValue - minValue) !== 0 ? (maxValue - minValue) : (maxValue * gapRatio);
+    const minMaxGap = !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
+      ? maxValueBigNumber.minus(minValueBigNumber) : maxValueBigNumber.multipliedBy(gapRatio);
 
     if (showBaseLine) {
-      const baseLineData = new Array(baseLineCount).fill("").map((value, index) => {
+      const baseLineData = new Array(baseLineCount)
+        .fill("")
+        .map((value, index) => {
+          // Gap from lowest value or highest value  to baseline
+          const additionalGap =
+            !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0)
+              ? minMaxGap.multipliedBy(gapRatio / 2)
+              : minMaxGap.dividedBy(2);
+          // Gap between bottom and top base line
+          const baseLineGap =
+            !maxValueBigNumber.minus(minValueBigNumber).isEqualTo(0) ? minMaxGap.multipliedBy(1 + gapRatio) : minMaxGap;
+          // Lowest baseline value
+          const bottomBaseLineValue = minValueBigNumber.minus(additionalGap);
 
-        // Gap from lowest value or highest value  to baseline
-        const additionalGap = (maxValue - minValue !== 0) ? minMaxGap * (gapRatio / 2) : (minMaxGap / 2);
-        // Gap between bottom and top base line
-        const baseLineGap = (maxValue - minValue !== 0) ? minMaxGap * (1 + gapRatio) : minMaxGap;
-        // Lowest baseline value
-        const bottomBaseLineValue = minValue - additionalGap;
+          const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
+          // const currentBaseLineValue =
+          //   bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
 
-        const currentBaseLineValue = bottomBaseLineValue + (index / (baseLineCount - 1)) * baseLineGap;
+          if (currentBaseLineValue.isLessThan(-1)) {
+            return "-" + convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            });
+          }
 
-        if (currentBaseLineValue < 1) {
-          return subscriptFormat(currentBaseLineValue.toString(), { significantDigits: 3, subscriptOffset: 3 });
-        }
+          if (currentBaseLineValue.isGreaterThan(-1) && currentBaseLineValue.isLessThan(0)) {
+            return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
+          }
 
-        if (currentBaseLineValue >= 1 && currentBaseLineValue < 100) {
-          return convertToKMB(currentBaseLineValue.toString(), { maximumFractionDigits: 2, minimumFractionDigits: 2, });
-        }
 
-        const result = Math.round(currentBaseLineValue).toString();
+          if (currentBaseLineValue.isLessThan(1)) {
+            return subscriptFormat(currentBaseLineValue.toString(), {
+              significantDigits: 3,
+              subscriptOffset: 3,
+            });
+          }
 
-        return convertToKMB(result, { maximumFractionDigits: 0, minimumFractionDigits: 0 });
-      });
+          if (currentBaseLineValue.isGreaterThanOrEqualTo(1) && currentBaseLineValue.isLessThan(100)) {
+            return convertToKMB(currentBaseLineValue.toString(), {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            });
+          }
+
+          const result = Math.round(currentBaseLineValue.toNumber()).toString();
+
+          if (currentBaseLineValue.isLessThan(1)) return subscriptFormat(currentBaseLineValue.toFixed());
+
+          return convertToKMB(result, {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          });
+        });
 
       setBaseLineYAxis([...baseLineData]);
 
@@ -227,7 +281,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
           return prev;
         });
 
-        return longestNumber.length / maxLength * 52;
+        return (longestNumber.length / maxLength) * 52;
       })();
 
       setBaseLineNumberWidth(baseLineNumberWidthComputation);
@@ -248,10 +302,15 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
       const result = (() => {
         if (maxValue - minValue === 0) {
-          return topFrontierHeight - ((value - (value * 0.95)) * graphHeight) / minMaxGap;
+          return (
+            topFrontierHeight -
+            ((value - value * 0.95) * graphHeight) / minMaxGap.toNumber()
+          );
         }
 
-        return topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap;
+        return (
+          topFrontierHeight - ((value - minValue) * graphHeight) / minMaxGap.toNumber()
+        );
       })();
 
       return result;
@@ -263,7 +322,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
         .dividedBy(maxTime - minTime)
         .toNumber();
     };
-
 
     const points = mappedDatas.map<Point>(data => ({
       x: optimizeTime(data.time, width) + baseLineNumberWidthComputation,
@@ -403,7 +461,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     // Draw the line chart path
     for (let i = 1; i < points.length; i++) {
-      path += smooth ? bezierCommand(points[i], i, points) : ` L ${points[i].x},${points[i].y}`;
+      path += smooth
+        ? bezierCommand(points[i], i, points)
+        : ` L ${points[i].x},${points[i].y}`;
     }
 
     // Draw a line straight down to the bottom of the chart
@@ -425,7 +485,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
       className={className}
       onMouseMove={onMouseMove}
       onMouseEnter={() => setActivated(true)}
-      onMouseLeave={() => setActivated(false)}
+      onMouseLeave={() => {
+        setActivated(false);
+      }}
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
     >
@@ -440,15 +502,20 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 <span className="date">
                   {parseTimeTVL(datas[currentPointIndex]?.time)?.date || "0"}
                 </span>
-                {location.pathname !== "/dashboard" && <span className="time">
-
-                  {currentPointIndex === datas.length - 1 ? parseTimeTVL(getLocalizeTime(new Date().toString())).time : parseTimeTVL(datas[currentPointIndex]?.time)?.time || "0"}
-                </span>}
+                {location.pathname !== "/dashboard" && (
+                  <span className="time">
+                    {currentPointIndex === datas.length - 1
+                      ? parseTimeTVL(getLocalizeTime(new Date().toString()))
+                        .time
+                      : parseTimeTVL(datas[currentPointIndex]?.time)?.time ||
+                      "0"}
+                  </span>
+                )}
               </div>
               <div className="tooltip-header">
-                <span className="value">{`$${removeTrailingZeros(prettyNumber(
-                  datas[currentPointIndex]?.value || "0",
-                ))}`}</span>
+                <span className="value">{`$${removeTrailingZeros(
+                  prettyNumber(datas[currentPointIndex]?.value || "0"),
+                )}`}</span>
               </div>
             </LineGraphTooltipWrapper>
           ) : null
@@ -461,37 +528,60 @@ const LineGraph: React.FC<LineGraphProps> = ({
               gradientTransform="rotate(90)"
             >
               <stop offset="0%" stopColor={gradientStartColor} />
-              {isLightTheme
-                ? <stop offset="100%" stopColor={"white"} stopOpacity={0} />
-                : <stop offset="100%" stopColor={gradientEndColor} />}
+              {isLightTheme ? (
+                <stop offset="100%" stopColor={"white"} stopOpacity={0} />
+              ) : (
+                <stop offset="100%" stopColor={gradientEndColor} />
+              )}
             </linearGradient>
           </defs>
           <g width={width} className="line-chart-g">
-            {showBaseLine && <>
-              {
-                baseLineYAxis.map((value, index) => {
-                  const currentHeight = height - (height * index / (baseLineCount - 1));
+            {showBaseLine && (
+              <>
+                {baseLineYAxis.map((value, index) => {
+                  const currentHeight =
+                    height - (height * index) / (baseLineCount - 1);
 
-                  return <>
-                    <line x1={baseLineNumberWidth} x2={width} y1={currentHeight} y2={currentHeight} stroke="grey" stroke-width="1" strokeDasharray={3} opacity={0.2} />
-                    <text alignmentBaseline="central" className="y-axis-number" x="" y={currentHeight} fill={theme.color.text04}>{value}</text>
-                  </>;
-                })
-              }
-            </>}
-            <path
+                  return (
+                    <React.Fragment key={index}>
+                      <line
+                        x1={baseLineNumberWidth}
+                        x2={width}
+                        y1={currentHeight}
+                        y2={currentHeight}
+                        stroke="grey"
+                        stroke-width="1"
+                        strokeDasharray={3}
+                        opacity={0.2}
+                      />
+                      <text
+                        alignmentBaseline="central"
+                        className="y-axis-number"
+                        x=""
+                        y={currentHeight}
+                        fill={theme.color.text04}
+                      >
+                        {value}
+                      </text>
+                    </React.Fragment>
+                  );
+                })}
+              </>
+            )}
+            {!isSameData && <path
               fill={`url(#gradient${COMPONENT_ID})`}
               stroke={color}
               strokeWidth={0}
               d={areaPath}
-            />
+            />}
             <path
               fill="none"
               stroke={color}
               strokeWidth={strokeWidth}
               d={getGraphLine(smooth)}
             />
-            {point &&
+            {
+              point &&
               points.map((point, index) => (
                 <circle
                   key={index}
@@ -500,61 +590,70 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   r={1}
                   stroke={color}
                 />
-              ))}
-          </g>
+              ))
+            }
+          </g >
           {
             <g>
-              {firstPointColor && (
-                <line
-                  stroke={firstPointColor ? firstPointColor : color}
-                  strokeWidth={1}
-                  x1={0}
-                  y1={firstPoint.y}
-                  x2={width}
-                  y2={firstPoint.y}
-                  strokeDasharray={3}
-                  className="first-line"
-                />
-              )}
-              {centerLineColor && (
-                <line
-                  stroke={centerLineColor}
-                  strokeWidth={1}
-                  x1={0}
-                  y1={firstPoint.y}
-                  x2={width}
-                  y2={firstPoint.y}
-                  strokeDasharray={0}
-                  className="center-line"
-                />
-              )}
-              {isFocus() && currentPoint && (
-                <line
-                  stroke={color}
-                  strokeWidth={1}
-                  x1={currentPoint.x}
-                  y1={0}
-                  x2={currentPoint.x}
-                  y2={height + (customHeight ? customHeight : 0)}
-                  strokeDasharray={3}
-                />
-              )}
-              {isFocus() && currentPoint && (
-                <circle
-                  cx={currentPoint.x}
-                  cy={currentPoint.y + 24}
-                  r={3}
-                  stroke={color}
-                  fill={color}
-                />
-              )}
-            </g>
+              {
+                firstPointColor && (
+                  <line
+                    stroke={firstPointColor ? firstPointColor : color}
+                    strokeWidth={1}
+                    x1={0}
+                    y1={firstPoint.y}
+                    x2={width}
+                    y2={firstPoint.y}
+                    strokeDasharray={3}
+                    className="first-line"
+                  />
+                )
+              }
+              {/* {
+                centerLineColor && (
+                  <line
+                    stroke={centerLineColor}
+                    strokeWidth={1}
+                    x1={0}
+                    y1={firstPoint.y}
+                    x2={width}
+                    y2={firstPoint.y}
+                    strokeDasharray={0}
+                    className="center-line"
+                  />
+                )
+              } */}
+              {
+                isFocus() && currentPoint && (
+                  <line
+                    stroke={color}
+                    strokeWidth={1}
+                    x1={currentPoint.x}
+                    y1={0}
+                    x2={currentPoint.x}
+                    y2={height + (customHeight ? customHeight : 0)}
+                    strokeDasharray={3}
+                  />
+                )
+              }
+              {
+                isFocus() && currentPoint && (
+                  <circle
+                    cx={currentPoint.x}
+                    cy={currentPoint.y + 24}
+                    r={3}
+                    stroke={color}
+                    fill={color}
+                  />
+                )
+              }
+            </g >
           }
-        </svg>
-      </FloatingTooltip>
+        </svg >
+      </FloatingTooltip >
       <ChartGlobalTooltip />
       {renderBottom && renderBottom(baseLineNumberWidth)}
-    </LineGraphWrapper>
+    </LineGraphWrapper >
   );
 };
 

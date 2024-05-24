@@ -22,6 +22,7 @@ import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { prettyNumber, prettyNumberFloatInteger } from "@utils/number-utils";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { getDateUtcToLocal } from "@common/utils/date-util";
+import { convertToKMB } from "@utils/stake-position-utils";
 
 dayjs.extend(relativeTime);
 
@@ -80,10 +81,10 @@ const PositionInfo: React.FC<PositionInfoProps> = ({
           <span className="position-index">{Number(item.usdValue) < 0.01 && Number(usdValue) ? "<$0.01" : `$${prettyNumber(item.usdValue)}`}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[3]}>
-          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(amountA)}`, true)} ${tokenASymbol}`}</span>
+          <span className="position-index">{`${convertToKMB(amountA.toString())} ${tokenASymbol}`}</span>
         </TableColumn>
         <TableColumn className="right" tdWidth={td[4]}>
-          <span className="position-index">{`${prettyNumberFloatInteger(`${Number(amountB)}`, true)} ${tokenBSymbol}`}</span>
+          <span className="position-index">{`${convertToKMB(amountB.toString())} ${tokenBSymbol}`}</span>
         </TableColumn>
       </HoverSection>
     </PositionInfoWrapper>

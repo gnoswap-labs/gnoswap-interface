@@ -1,4 +1,5 @@
 import {
+  makeGNOTSendAmount,
   makeTransactionMessage,
   PACKAGE_POSITION_PATH,
   PACKAGE_STAKER_PATH,
@@ -25,7 +26,8 @@ export function makePositionMintMessage(
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = 0;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
-  const send = sendAmount ? sendAmount + "ugnot" : "";
+  const send = makeGNOTSendAmount(sendAmount);
+
   return makeTransactionMessage({
     caller,
     send,
@@ -62,7 +64,8 @@ export function makePositionMintWithStakeMessage(
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = 0;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
-  const send = sendAmount ? sendAmount + "ugnot" : "";
+  const send = makeGNOTSendAmount(sendAmount);
+
   return makeTransactionMessage({
     caller,
     send,
@@ -85,14 +88,17 @@ export function makePositionMintWithStakeMessage(
 
 export function makePositionIncreaseLiquidityMessage(
   lpTokenId: string,
-  amount0Desired: number,
-  amount1Desired: number,
-  amount0Min: number,
-  amount1Min: number,
+  amount0Desired: string,
+  amount1Desired: string,
+  amount0Min: string,
+  amount1Min: string,
   caller: string,
+  sendAmount: string | null,
 ) {
+  const send = makeGNOTSendAmount(sendAmount);
+
   return makeTransactionMessage({
-    send: "",
+    send,
     func: "IncreaseLiquidity",
     packagePath: PACKAGE_POSITION_PATH,
     args: [

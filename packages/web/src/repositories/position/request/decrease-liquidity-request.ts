@@ -1,11 +1,13 @@
-export interface DecreaseLiquidityReqeust {
+import { TokenModel } from "@models/token/token-model";
+
+export interface DecreaseLiquidityRequest {
   lpTokenId: string;
 
-  liquidity: string;
+  tokenA: TokenModel;
 
-  amountAMin: string;
+  tokenB: TokenModel;
 
-  amountBMin: string;
+  decreaseRatio: number;
 
   deadline?: string;
 

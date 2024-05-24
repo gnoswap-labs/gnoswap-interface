@@ -22,6 +22,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { formatUsdNumber } from "@utils/stake-position-utils";
 import { useRouter } from "next/router";
 import { isEmptyObject } from "@utils/validation-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 const findKeyByValue = (
   value: string,
@@ -169,18 +170,13 @@ export const useSwapHandler = () => {
     }
 
     if (
-      Number(tokenAAmount) >
-      Number(
-        parseFloat(tokenABalance.replace(/,/g, "")) /
-          Math.pow(10, tokenA.decimals),
-      )
+      Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
     ) {
       return "Insufficient Balance";
     }
     if (
       Number(tokenBAmount) >
-        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) /
-          Math.pow(10, tokenB.decimals) &&
+        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
       type === "EXACT_OUT"
     ) {
       return "Insufficient Balance";
@@ -277,9 +273,15 @@ export const useSwapHandler = () => {
       };
     }
     const targetTokenB = type === "EXACT_IN" ? tokenB : tokenA;
-    const inputAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
     const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
+
+    const tokenAUSDAmount =
+      (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) *
+      Number(tokenAUSDValue);
+    const tokenBUSDAmount =
+      (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) *
+      Number(tokenBUSDValue);
 
     const swapRate =
       swapRateAction === "ATOB"
@@ -289,13 +291,9 @@ export const useSwapHandler = () => {
       type === "EXACT_IN"
         ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
         : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
-    const tokenRate = BigNumber(tokenBUSDValue)
-      .dividedBy(tokenAUSDValue)
-      .toNumber();
-    const expectedAmount = tokenRate * Number(inputAmount);
-    const priceImpactNum = BigNumber(expectedAmount - Number(tokenBAmount))
+    const priceImpactNum = BigNumber(tokenBUSDAmount - tokenAUSDAmount)
       .multipliedBy(100)
-      .dividedBy(expectedAmount);
+      .dividedBy(tokenAUSDAmount);
     const priceImpact = priceImpactNum.isGreaterThan(100)
       ? 100
       : Number(priceImpactNum.toFixed(2));
@@ -751,7 +749,7 @@ export const useSwapHandler = () => {
         }
         setSwapResult({
           success: !!result,
-          hash: ((result as unknown) as SwapRouteResponse)?.hash || "",
+          hash: (result as unknown as SwapRouteResponse)?.hash || "",
         });
       })
       .catch(() => {

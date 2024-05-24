@@ -11,8 +11,7 @@
       "symbol": "BAR",
       "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
       "type": "grc20",
-      "priceID": "gno.land/r/bar",
-      "priceId": "gno.land/r/bar"
+      "priceID": "gno.land/r/bar"
     },
     "tokenB": {
       "chainId": "dev",
@@ -24,8 +23,7 @@
       "symbol": "FOO",
       "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       "type": "grc20",
-      "priceID": "gno.land/r/foo",
-      "priceId": "gno.land/r/foo"
+      "priceID": "gno.land/r/foo"
     },
     "incentiveType": "INCENTIVIZED",
     "tvl": 1182782.0,

@@ -8,6 +8,7 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import ChartScopeSelectTab from "@components/common/chart-scope-select-tab/ChartScopeSelectTab";
 import PairRatio from "@components/common/pair-ratio/PairRatio";
+import { useState } from "react";
 
 interface ExchangeRateGraphProps {
   poolData: PoolModel;
@@ -27,6 +28,8 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   setSelectedScope,
   selectedScope,
 }) => {
+  const [currentPoint, setCurrentPoint] = useState<string | null>();
+  const [active, setActive] = useState<boolean>(false);
 
   return <ExchangeRateGraphWrapper>
     <ExchangeRateGraphHeaderWrapper>
@@ -47,6 +50,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
           pool={poolData}
           loading={isLoading}
           isSwap={isReversed}
+          overrideValue={active ? Number(currentPoint) : undefined}
         />
         <ChartScopeSelectTab
           size={"SMALL"}
@@ -59,7 +63,14 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
     {!isLoading && <ExchangeRateGraphContent
       poolData={poolData}
       selectedScope={selectedScope}
-      isReversed={isReversed} />}
+      isReversed={isReversed}
+      onMouseMove={(data) => {
+        setCurrentPoint(data?.value);
+      }}
+      onMouseOut={(active) => {
+        setActive(active);
+      }}
+    />}
     {isLoading && <LoadingExchangeRateChartWrapper>
       <LoadingSpinner />
     </LoadingExchangeRateChartWrapper>}

@@ -2,7 +2,6 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import React, { useMemo } from "react";
 import { TokenTitleWrapper, TokenValueWrapper, tooltipWrapper, wrapper } from "./SelectLiquidityItem.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -19,7 +18,7 @@ interface SelectLiquidityItemProps {
 
 const TooltipContent: React.FC<{ position: PoolPositionModel }> = ({ position }) => {
   const renderTokenValue = (imgUri: string, tokeSymbol: string, token: TokenModel, tokenBalance: number) => {
-    const tokenBalanceByTokenDecimal = BigNumber(makeDisplayTokenAmount(token, tokenBalance) || 0).toFormat();
+    const tokenBalanceByTokenDecimal = BigNumber(tokenBalance || 0).toFormat();
 
     return <TokenValueWrapper>
       <div className="value">

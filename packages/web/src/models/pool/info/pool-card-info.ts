@@ -36,5 +36,5 @@ export interface PoolCardInfo {
 
   poolPath?: string;
 
-  tvl: number;
+  tvl: string;
 }

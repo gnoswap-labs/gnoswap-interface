@@ -31,7 +31,7 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
       <div className="pool-section">
         <div className="summury-container">{poolPairInformation}</div>
         <div className="positions-container">{liquidity}</div>
-        <div className="staking-container" style={{ marginTop: !isStaking ? "-44px" : "0" }}>
+        <div id="staking-container" className="staking-container" style={{ marginTop: !isStaking ? "-44px" : "0" }}>
           {staking}
           <div className="button">
             <span>Want to {isStaking ? "boost" : "add"} up incentives for this pool?&nbsp;</span>

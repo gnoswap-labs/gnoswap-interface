@@ -12,6 +12,7 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
 import BigNumber from "bignumber.js";
+import { roundDownDecimalNumber } from "@utils/regex";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -122,9 +123,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenABalance !== "-") {
       if (dataTokenInfo.tokenABalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, dataTokenInfo.tokenADecimals ?? 0))
-        .toFormat(2);
+      return BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
     }
     return "-";
   }, [isSwitchNetwork, connected, dataTokenInfo.tokenABalance, dataTokenInfo.tokenADecimals]);
@@ -133,9 +132,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     if (isSwitchNetwork) return "-";
     if (connected && dataTokenInfo.tokenBBalance !== "-") {
       if (dataTokenInfo.tokenBBalance === "0") return 0;
-      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, ""))
-        .dividedBy(Math.pow(10, dataTokenInfo.tokenBDecimals ?? 0))
-        .toFormat(2);
+      return BigNumber(dataTokenInfo.tokenBBalance.replace(/,/g, "").match(roundDownDecimalNumber(2))?.toString() ?? 0).toFormat();
     }
     return "-";
   }, [dataTokenInfo.tokenBBalance, connected, isSwitchNetwork, dataTokenInfo.tokenBDecimals]);

@@ -1,5 +1,7 @@
+import { PoolPositionModel } from "@models/position/pool-position-model";
+
 export interface UnstakePositionsRequest {
-  lpTokenIds: string[];
+  positions: PoolPositionModel[];
 
   caller: string;
 }

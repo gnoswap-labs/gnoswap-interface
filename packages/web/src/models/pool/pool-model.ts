@@ -7,64 +7,64 @@ export interface PoolModel {
   rewards24hUsd: number;
 
   volumeChange24h: number;
-  
+
   incentiveType: INCENTIVE_TYPE;
-  
+
   price: number;
-  
+
   tokenA: TokenModel;
-  
+
   tokenB: TokenModel;
-  
+
   tokenABalance: number;
-  
+
   tokenBBalance: number;
-  
+
   tickSpacing: number;
-  
+
   currentTick: number;
-  
+
   bins: PoolBinModel[];
-  
+
   bins40: PoolBinModel[];
-  
+
   tvl: number;
-  
+
   tvlChange: number;
-  
+
   volume24h: number;
-  
+
   feeUsd24h: number;
-  
+
   fee: string;
-  
+
   apr: number | string | null;
-  
+
   totalApr: number | string | null;
-  
+
   poolPath: string;
-  
+
   rewardTokens: TokenModel[];
-  
+
   feeApr: string;
-  
+
   stakingApr: string;
-  
+
   allTimeVolumeUsd: number;
-  
+
   priceRatio: IPoolPriceRatio;
-  
+
   liquidity: string;
 
   //TODO Remove later
   // feeChange: number;
-  
+
   volumeChange: number;
-  
+
   // totalVolume: number;
-  
+
   id: string;
-  
+
   // path: string;
 
   // name: string;

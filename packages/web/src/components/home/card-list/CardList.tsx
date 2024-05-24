@@ -21,7 +21,7 @@ const CardList: React.FC<CardListProps> = ({
     <CardListWrapper>
       {list.map((item, index) => (
         <CardListItem
-          index={index}
+          index={index + 1}
           key={index}
           item={item}
           isHiddenIndex={isHiddenIndex}

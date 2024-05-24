@@ -1,9 +1,18 @@
-import { DefaultTick, PriceRangeStr, PriceRangeTooltip, PriceRangeType } from "@constants/option.constant";
+import {
+  DefaultTick,
+  PriceRangeStr,
+  PriceRangeTooltip,
+  PriceRangeType,
+} from "@constants/option.constant";
 import React, { useCallback, useMemo, useRef } from "react";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { SelectPriceRangeItemWrapper, SelectPriceRangeWrapper, TooltipContentWrapper } from "./SelectPriceRange.styles";
+import {
+  SelectPriceRangeItemWrapper,
+  SelectPriceRangeWrapper,
+  TooltipContentWrapper,
+} from "./SelectPriceRange.styles";
 import { AddLiquidityPriceRage } from "@containers/earn-add-liquidity-container/EarnAddLiquidityContainer";
 import SelectPriceRangeCustom from "../select-price-range-custom/SelectPriceRangeCustom";
 import { TokenModel } from "@models/token/token-model";
@@ -25,7 +34,9 @@ interface SelectPriceRangeProps {
   isEmptyLiquidity: boolean;
   isKeepToken: boolean;
   setPriceRange: (type?: PriceRangeType) => void;
-  defaultPriceRangeRef?: React.MutableRefObject<[number | null, number | null] | undefined>;
+  defaultPriceRangeRef?: React.MutableRefObject<
+    [number | null, number | null] | undefined
+  >;
   resetPriceRangeTypeTarget: PriceRangeType;
   defaultTicks?: DefaultTick;
   isLoadingSelectPriceRange: boolean;
@@ -50,29 +61,39 @@ const SelectPriceRange: React.FC<SelectPriceRangeProps> = ({
   defaultTicks,
   isLoadingSelectPriceRange,
 }) => {
-  const selectPriceRangeRef = useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
+  const selectPriceRangeRef =
+    useRef<React.ElementRef<typeof SelectPriceRangeCustom>>(null);
   const selectedTokenPair = true;
 
-  const changePriceRangeWithClear = useCallback((priceRange: AddLiquidityPriceRage) => {
-    changePriceRange(priceRange);
-    selectPriceRangeRef.current?.resetRange(priceRange.type);
-  }, [changePriceRange]);
+  const changePriceRangeWithClear = useCallback(
+    (priceRange: AddLiquidityPriceRage) => {
+      changePriceRange(priceRange);
+      selectPriceRangeRef.current?.resetRange(priceRange.type);
+    },
+    [changePriceRange],
+  );
 
   return (
     <SelectPriceRangeWrapper className={opened ? "open" : ""}>
-      {!selectPool.isCreate && !showDim && <div className="type-selector-wrapper">
-        {priceRanges.map((item, index) => (
-          <SelectPriceRangeItem
-            key={index}
-            selected={item.type === priceRange?.type}
-            tooltip={PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]}
-            priceRangeStr={PriceRangeStr[selectPool.feeTier || "NONE"][item.type]}
-            priceRange={item}
-            changePriceRange={changePriceRangeWithClear}
-          />
-        ))}
-      </div>}
-      {(selectedTokenPair && tokenA && tokenB && isFetchedPools) && (
+      {!selectPool.isCreate && !showDim && (
+        <div className="type-selector-wrapper">
+          {priceRanges.map((item, index) => (
+            <SelectPriceRangeItem
+              key={index}
+              selected={item.type === priceRange?.type}
+              tooltip={
+                PriceRangeTooltip[selectPool.feeTier || "NONE"][item.type]
+              }
+              priceRangeStr={
+                PriceRangeStr[selectPool.feeTier || "NONE"][item.type]
+              }
+              priceRange={item}
+              changePriceRange={changePriceRangeWithClear}
+            />
+          ))}
+        </div>
+      )}
+      {selectedTokenPair && tokenA && tokenB && isFetchedPools && (
         <SelectPriceRangeCustom
           tokenA={tokenA}
           tokenB={tokenB}
@@ -110,7 +131,6 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   changePriceRange,
   priceRangeStr,
 }) => {
-
   const aprStr = useMemo(() => {
     const apr = priceRange.apr;
     if (apr) {
@@ -124,24 +144,32 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   }, [priceRange, changePriceRange]);
 
   return (
-    <SelectPriceRangeItemWrapper className={selected ? "selected" : ""} onClick={onClickItem}>
+    <SelectPriceRangeItemWrapper
+      className={selected ? "selected" : ""}
+      onClick={onClickItem}
+    >
       <strong className="item-title">{priceRange.type}</strong>
       {priceRange.text && <p>{priceRangeStr}</p>}
       {tooltip && (
         <div className="tooltip-wrap">
           <Tooltip
             placement="top"
-            FloatingContent={<TooltipContentWrapper dangerouslySetInnerHTML={{ __html: tooltip }}></TooltipContentWrapper>}
+            FloatingContent={
+              <TooltipContentWrapper
+                dangerouslySetInnerHTML={{ __html: tooltip }}
+              ></TooltipContentWrapper>
+            }
           >
             <IconInfo className="tooltip-icon" />
           </Tooltip>
         </div>
       )}
 
-      {aprStr ?
-        <span className="apr">{aprStr}</span> :
+      {aprStr ? (
+        <span className="apr">{aprStr}</span>
+      ) : (
         <IconStrokeArrowRight className="arrow-icon" />
-      }
+      )}
     </SelectPriceRangeItemWrapper>
   );
 };

@@ -59,6 +59,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     volume24h,
     mostLiquidPool,
     last7days,
+    graphStatus,
   } = item;
   const router = useRouter();
 
@@ -139,7 +140,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         tdWidth={TOKEN_TD_WIDTH[10]}
         className="right-padding-12 last7days-graph"
       >
-        <SimpleLineGraph width={100} height={33} datas={last7days} status={priceOf7d.status} />
+        <SimpleLineGraph width={100} height={33} datas={last7days} status={graphStatus} />
         <ChartGlobalTooltip />
       </TableColumn>
     </TokenInfoWrapper>

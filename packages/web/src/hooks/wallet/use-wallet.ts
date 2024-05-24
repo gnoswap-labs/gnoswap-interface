@@ -13,8 +13,10 @@ import {
   GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
 import { DEFAULT_CHAIN_ID } from "@common/clients/wallet-client/transaction-messages";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const CHAIN_ID = DEFAULT_CHAIN_ID;
+const balanceQueryKey = ["token-balance", "ugnot"];
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
@@ -25,9 +27,19 @@ export const useWallet = () => {
   const [loadingConnect, setLoadingConnect] = useAtom(
     WalletState.loadingConnect,
   );
+  const { rpcProvider } = useGnoswapContext();
+  const queryClient = useQueryClient();
+
   const connected = useMemo(() => {
     return walletAccount !== null && walletAccount.address.length > 0;
   }, [walletAccount]);
+
+  const balanceQuery = useQuery({
+    queryKey: balanceQueryKey,
+    queryFn: () => rpcProvider?.getBalance(walletAccount?.address || "", "ugnot"),
+    refetchInterval: 5_000,
+  });
+  const { data: balance, isLoading: isLoadingBalance, isStale: isBalanceStale } = balanceQuery;
 
   const wallet = useMemo(() => {
     if (!connected) {
@@ -138,9 +150,14 @@ export const useWallet = () => {
       return;
     }
     try {
-      walletClient.addEventChangedAccount(() => connectAdenaClient());
+      walletClient.addEventChangedAccount(() => {
+        queryClient.invalidateQueries({
+          queryKey: balanceQueryKey
+        });
+        connectAdenaClient();
+      });
       walletClient.addEventChangedNetwork(() => connectAdenaClient());
-    } catch {}
+    } catch { }
   }
 
   const isSwitchNetwork = useMemo(() => {
@@ -171,5 +188,7 @@ export const useWallet = () => {
     loadingConnect,
     walletClient,
     setLoadingConnect,
+    gnotBalance: balance,
+    isLoadingGnotBalance: isLoadingBalance || isBalanceStale,
   };
 };

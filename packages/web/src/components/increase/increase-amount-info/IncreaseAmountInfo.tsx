@@ -16,25 +16,33 @@ export interface IncreaseAmountInfoProps {
     usdPrice: string;
   };
   feeRate: string;
+  isDepositTokenA: boolean;
+  isDepositTokenB: boolean;
 }
 
 const IncreaseAmountInfo: React.FC<IncreaseAmountInfoProps> = ({
   tokenA,
   tokenB,
+  isDepositTokenA,
+  isDepositTokenB,
 }) => {
   return (
     <IncreaseAmountInfoWrapper>
       <div className="pair-amount">
-        <TokenAmount
-          token={tokenA.info}
-          amount={tokenA.amount}
-          usdPrice={tokenA.usdPrice}
-        />
-        <TokenAmount
-          token={tokenB.info}
-          amount={tokenB.amount}
-          usdPrice={tokenB.usdPrice}
-        />
+        {isDepositTokenA && (
+          <TokenAmount
+            token={tokenA.info}
+            amount={tokenA.amount}
+            usdPrice={tokenA.usdPrice}
+          />
+        )}
+        {isDepositTokenB && (
+          <TokenAmount
+            token={tokenB.info}
+            amount={tokenB.amount}
+            usdPrice={tokenB.usdPrice}
+          />
+        )}
         <div className="icon-wrapper">
           <IconAdd className="icon-add" />
         </div>

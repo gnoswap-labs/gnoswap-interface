@@ -33,7 +33,6 @@ export const initialPool: PoolDetailModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   tokenB: {
     chainId: "",
@@ -46,7 +45,6 @@ export const initialPool: PoolDetailModel = {
     logoURI: "",
     type: "native",
     priceID: "",
-    priceId: "",
   },
   incentiveType: "INCENTIVIZED",
   tvl: 0,
@@ -84,16 +82,23 @@ interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
-const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ address }) => {
+const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({
+  address,
+}) => {
   const router = useRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.query["pool-path"] || "";
-  const { data = initialPool as PoolDetailModel, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
+  const {
+    data = initialPool as PoolDetailModel,
+    isLoading: loading,
+  } = useGetPoolDetailByPath(poolPath as string, { enabled: !!poolPath });
   const { isLoadingCommon } = useLoading();
   const [positions, setPositions] = useState<PoolPositionModel[]>([]);
-  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(address);
+  const { getPositionsByPoolId, loading: loadingPosition } = usePositionData(
+    address,
+  );
   const { connected: connectedWallet, account } = useWallet();
-  const { data: bins = [] } = useGetBinsByPath(poolPath as string, {
+  const { data: bins = [] } = useGetBinsByPath(poolPath as string, 40, {
     enabled: !!poolPath,
   });
   useEffect(() => {
@@ -108,7 +113,6 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       const temp = getPositionsByPoolId(poolPath);
       setPositions(temp);
     }
-
   }, [account?.address, router.query, getPositionsByPoolId, connectedWallet]);
 
   const onClickPath = (path: string) => {
