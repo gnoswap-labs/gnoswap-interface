@@ -32,21 +32,13 @@ export class PoolMapper {
       info => info.fee.toString() === fee,
     );
 
-    function getApr() {
-      if (apr === 0 || apr === "") return "$0";
-
-      if (!apr) return "-";
-
-      return `${BigNumber(apr || 0).toFormat(2)}%`;
-    }
-
     return {
       poolId: id,
       incentiveType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: getApr(),
+      apr: apr !== null ? apr.toString() : "",
       liquidity: `$${BigNumber(liquidity).toFormat(0)}`,
       volume24h: toUnitFormat(volume24h || "0", true, true),
       fees24h: toUnitFormat(feeUsd24h || "0", true, true),
@@ -61,8 +53,9 @@ export class PoolMapper {
 
   public static toPoolSelectItemInfo(pool: PoolModel): PoolSelectItemInfo {
     const feeRate =
-      Object.values(SwapFeeTierInfoMap).find(info => info.fee.toString() === pool.fee)
-        ?.rateStr || "-";
+      Object.values(SwapFeeTierInfoMap).find(
+        info => info.fee.toString() === pool.fee,
+      )?.rateStr || "-";
 
     return {
       poolId: pool.id,
@@ -96,21 +89,13 @@ export class PoolMapper {
       info => `${info.fee}` === fee.toString(),
     );
 
-    function getApr() {
-      if (apr === 0 || apr === "") return "$0";
-
-      if (!apr) return "-";
-
-      return `${BigNumber(apr || 0).toFormat(2)}%`;
-    }
-
     return {
       poolId: id,
       incentiveType,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
-      apr: getApr(),
+      apr: apr !== null ? apr.toString() : "",
       liquidity: toUnitFormat(tvl || "0", true, true),
       volume24h: toUnitFormat(volume24h || "0", true, true),
       fees24h: toUnitFormat(feeUsd24h || "0", true, true),
@@ -135,7 +120,7 @@ export class PoolMapper {
       incentiveType: pool.incentiveType as INCENTIVE_TYPE,
       bins,
       rewardTokens: pool.rewardTokens || [],
-      apr: !pool.apr ? Number(pool.apr) : null,
+      apr: pool.apr,
       bins40: pool.bins40,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
@@ -151,10 +136,10 @@ export class PoolMapper {
       incentiveType: pool.incentiveType as INCENTIVE_TYPE,
       bins: [],
       rewardTokens: pool.rewardTokens || [],
-      apr: !pool.apr ? Number(pool.apr) : null,
-      totalApr: !pool.totalApr ? Number(pool.totalApr) : null,
+      apr: pool.apr,
+      totalApr: pool.totalApr,
       allTimeVolumeUsd: Number(pool.allTimeVolumeUsd),
-      price: Number(pool.price)
+      price: Number(pool.price),
     };
   }
 }
