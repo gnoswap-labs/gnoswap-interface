@@ -119,10 +119,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const currentPrice = useMemo(() => {
     if (flip) {
-      if (price === 0) {
-        return 0;
-      }
-
       return 1 / price;
     }
     return price;

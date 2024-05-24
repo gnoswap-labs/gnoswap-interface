@@ -178,7 +178,7 @@ export const useSelectPool = ({
     feeTier,
     startPrice,
     ZOOL_VALUES[zoomLevel],
-    isReverse,
+    false,
     {
       enabled: !!feeTier && !!startPrice && !!isCreate,
       queryKey: [
@@ -186,7 +186,7 @@ export const useSelectPool = ({
         feeTier,
         startPrice,
         zoomLevel,
-        isReverse,
+        false,
       ],
     },
   );

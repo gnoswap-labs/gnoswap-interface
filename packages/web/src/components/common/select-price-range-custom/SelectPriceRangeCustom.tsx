@@ -112,15 +112,23 @@ const SelectPriceRangeCustom = forwardRef<
       if (!selectPool.compareToken) {
         return false;
       }
+      if (selectPool.startPrice) {
+        return false;
+      }
+
       const compareTokenPaths = [
         checkGnotPath(tokenA.path),
         checkGnotPath(tokenB.path),
-      ];
+      ].sort();
       return (
-        compareTokenPaths.sort()[0] !==
-        checkGnotPath(selectPool.compareToken.path)
+        compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path)
       );
-    }, [selectPool.compareToken, tokenA.path, tokenB.path]);
+    }, [
+      selectPool.compareToken,
+      selectPool.startPrice,
+      tokenA.path,
+      tokenB.path,
+    ]);
 
     const currentTokenA = useMemo(() => {
       return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
@@ -131,6 +139,10 @@ const SelectPriceRangeCustom = forwardRef<
     }, [flip, tokenA, tokenB]);
 
     const currentPrice = useMemo(() => {
+      if (selectPool.startPrice) {
+        return selectPool.startPrice;
+      }
+
       if (flip) {
         if (!selectPool.currentPrice) {
           return 0;
@@ -138,7 +150,7 @@ const SelectPriceRangeCustom = forwardRef<
         return 1 / selectPool.currentPrice;
       }
       return selectPool.currentPrice;
-    }, [flip, selectPool.currentPrice]);
+    }, [flip, selectPool.currentPrice, selectPool.startPrice]);
 
     const currentPriceStr = useMemo(() => {
       if (!currentPrice) {
@@ -387,7 +399,7 @@ const SelectPriceRangeCustom = forwardRef<
     ]);
 
     const selectTokenPair = useMemo(() => {
-      if (isKeepToken) {
+      if (!isKeepToken) {
         return [getGnotPath(tokenB).symbol, getGnotPath(tokenA).symbol];
       }
 
@@ -535,11 +547,7 @@ const SelectPriceRangeCustom = forwardRef<
                         height={GRAPH_HEIGHT}
                         position="top"
                         offset={selectPool.bins?.length}
-                        price={
-                          selectPool.startPrice
-                            ? selectPool.startPrice
-                            : selectPool.currentPrice || 1
-                        }
+                        price={currentPrice || 1}
                         flip={flip}
                         fullRange={selectPool.selectedFullRange}
                         zoomLevel={selectPool.zoomLevel}
