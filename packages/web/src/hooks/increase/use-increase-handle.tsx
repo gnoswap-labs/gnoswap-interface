@@ -48,8 +48,6 @@ export const useIncreaseHandle = () => {
   const [priceRange, setPriceRange] = useState<AddLiquidityPriceRage | null>({
     type: "Custom",
   });
-  const { displayBalanceMap } = useTokenData();
-
   const loading = useMemo(() => {
     return !selectedPosition;
   }, [selectedPosition]);
@@ -297,10 +295,12 @@ export const useIncreaseHandle = () => {
     ) {
       return "ENTER_AMOUNT";
     }
+
     if (
-      (isDepositTokenA && !!tokenA && Number(tokenAAmountInput.amount) > (displayBalanceMap?.[tokenA.priceID] ?? 0))
-      || (isDepositTokenB && !!tokenB && Number(tokenBAmountInput.amount) > (displayBalanceMap?.[tokenB.priceID] ?? 0))
+      (isDepositTokenA && !!tokenA && Number(tokenAAmountInput.amount) > Number(tokenAAmountInput.balance.replace(/,/g, "")))
+      || (isDepositTokenB && !!tokenB && Number(tokenBAmountInput.amount) > Number(tokenBAmountInput.balance.replace(/,/g, "")))
     ) {
+
       return "INSUFFICIENT_BALANCE";
     }
 

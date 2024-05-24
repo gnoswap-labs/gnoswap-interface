@@ -106,6 +106,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
       </article>
       <Button
         onClick={activatedSubmit ? onSubmit : undefined}
+        disabled={!activatedSubmit}
         text={textButton}
         style={{
           hierarchy: activatedSubmit
@@ -114,7 +115,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
 
           fullWidth: true,
         }}
-        className="button-confirm"
+        className={"button-confirm"}
       />
     </IncreaseLiquidityWrapper>
   );

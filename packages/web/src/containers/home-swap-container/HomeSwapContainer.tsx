@@ -122,7 +122,7 @@ const HomeSwapContainer: React.FC = () => {
       );
     } else {
       router.push(
-        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_OUT`
+        `/swap?from=${tokenA?.path}&to=${tokenB?.path}&direction=EXACT_IN`
       );
     }
   }, [router, swapDirection, tokenA, tokenB, tokenAAmount]);
