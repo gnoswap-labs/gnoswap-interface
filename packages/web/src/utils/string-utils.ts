@@ -53,6 +53,39 @@ export function numberToFormat(
   return isNumber(Number(num)) ? BigNumber(num).toFormat(decimal || 0) : "0";
 }
 
+export function numberToRate(
+  num: string | number | null | undefined,
+  options?: { decimals?: number; minLimit?: number; errorText?: string },
+) {
+  const { decimal, minLimit, errorText } = {
+    decimal: 1,
+    minLimit: 0.1,
+    errorText: "-",
+    ...(options || {}),
+  };
+
+  if (
+    num === null ||
+    num === undefined ||
+    num === "" ||
+    BigNumber(num).isNaN()
+  ) {
+    return errorText;
+  }
+
+  const numBN = BigNumber(num);
+
+  if (numBN.isZero()) {
+    return "0%";
+  }
+
+  if (numBN.isLessThan(minLimit)) {
+    return `<${BigNumber(minLimit).toFormat()}%`;
+  }
+
+  return `${numBN.toFormat(decimal)}%`;
+}
+
 export function numberToString(num: string | number, decimals?: number) {
   const decimal = Number.isInteger(Number(num)) ? 0 : decimals;
   return BigNumber(num).toFixed(decimal || 0);
