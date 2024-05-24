@@ -1,8 +1,11 @@
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import RepositionModal from "@components/common/reposition-modal/RepositionModal";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { IPriceRange } from "@hooks/reposition/use-reposition-handle";
 import { TokenModel } from "@models/token/token-model";
+import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
+import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 import React, { useCallback } from "react";
 
 interface Props {
@@ -24,6 +27,11 @@ interface Props {
   rangeStatus: RANGE_STATUS_OPTION;
   aprFee: number;
   priceRangeSummary: IPriceRange;
+  currentAmounts: { amountA: number; amountB: number } | null;
+  repositionAmounts: { amountA: number; amountB: number } | null;
+  removePosition: () => Promise<WalletResponse | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
+  addPosition: () => Promise<WalletResponse<AddLiquidityResponse> | null>;
 }
 
 const RepositionModalContainer: React.FC<Props> = ({
@@ -33,6 +41,11 @@ const RepositionModalContainer: React.FC<Props> = ({
   rangeStatus,
   aprFee,
   priceRangeSummary,
+  currentAmounts,
+  repositionAmounts,
+  removePosition,
+  swapRemainToken,
+  addPosition,
 }) => {
   const clearModal = useClearModal();
 
@@ -49,6 +62,11 @@ const RepositionModalContainer: React.FC<Props> = ({
       rangeStatus={rangeStatus}
       priceRangeSummary={priceRangeSummary}
       aprFee={aprFee}
+      currentAmounts={currentAmounts}
+      repositionAmounts={repositionAmounts}
+      removePosition={removePosition}
+      swapRemainToken={swapRemainToken}
+      addPosition={addPosition}
     />
   );
 };

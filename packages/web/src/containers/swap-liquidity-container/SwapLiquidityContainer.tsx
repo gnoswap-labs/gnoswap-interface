@@ -95,7 +95,7 @@ const SwapLiquidityContainer: React.FC = () => {
           ..._,
           volume: `${toUnitFormat(Number(poolItem[0].volume24h), true, true)}`,
           liquidity: `$${convertToKMB(poolItem[0].tvl.toString(), { maximumFractionDigits: 2 })}`,
-          apr: !poolItem[0].apr ? "-" : `${Number(poolItem[0].apr).toFixed(2)}%`,
+          apr: poolItem[0].apr === null ? "" : poolItem[0].apr.toString(),
           active: true,
           id: poolItem[0].id,
         };

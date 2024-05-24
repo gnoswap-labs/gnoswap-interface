@@ -9,12 +9,22 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 export interface TransactionConfirmModalResponse {
   openModal: () => void;
   closeModal: () => void;
+  update: (
+    status: CommonState.TransactionConfirmStatus,
+    description: string | null,
+    scannerURL: string | null,
+    callback?: (() => void) | undefined,
+  ) => void;
 }
 
-export const useTransactionConfirmModal = (callback?: () => void): TransactionConfirmModalResponse => {
+export const useTransactionConfirmModal = (
+  callback?: () => void,
+): TransactionConfirmModalResponse => {
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
-  const [transactionModalData, setTransactionModalData] = useAtom(CommonState.transactionModalData);
+  const [transactionModalData, setTransactionModalData] = useAtom(
+    CommonState.transactionModalData,
+  );
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
 
@@ -23,15 +33,37 @@ export const useTransactionConfirmModal = (callback?: () => void): TransactionCo
     setModalContent(null);
     setTransactionModalData(null);
     callback?.();
-  }, [setModalContent, setOpenedModal, setTransactionModalData, transactionModalData]);
+  }, [
+    setModalContent,
+    setOpenedModal,
+    setTransactionModalData,
+    transactionModalData,
+  ]);
 
   const confirm = useCallback(() => {
     closeModal();
-    forceRefect({queryKey: [QUERY_KEY.positions, account?.address || ""]});
+    forceRefect({ queryKey: [QUERY_KEY.positions, account?.address || ""] });
     if (transactionModalData?.callback) {
       transactionModalData?.callback();
     }
   }, [closeModal, transactionModalData, account]);
+
+  const update = useCallback(
+    (
+      status: CommonState.TransactionConfirmStatus,
+      description: string | null,
+      scannerURL: string | null,
+      callback?: (() => void) | undefined,
+    ) => {
+      setTransactionModalData({
+        status,
+        description,
+        scannerURL,
+        callback,
+      });
+    },
+    [],
+  );
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
@@ -46,18 +78,23 @@ export const useTransactionConfirmModal = (callback?: () => void): TransactionCo
           scannerURL={transactionModalData.scannerURL}
           confirm={confirm}
           close={confirm}
-        />
+        />,
       );
     }
-    return () => { setModalContent(null); };
+    return () => {
+      setModalContent(null);
+    };
   }, [closeModal, setModalContent, transactionModalData]);
 
   useEffect(() => {
-    return () => { closeModal(); };
+    return () => {
+      closeModal();
+    };
   }, []);
 
   return {
     openModal,
     closeModal,
+    update,
   };
 };

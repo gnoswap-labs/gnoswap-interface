@@ -1,10 +1,14 @@
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import IncreaseMaxMin from "@components/increase/increase-max-min/IncreaseMaxMin";
 import BalanceChange from "@components/reposition/balance-change/BalanceChange";
+import RepositionBroadcastProgress from "@components/reposition/reposition-broadcast-progress/RepositionBroadcastProgress";
 import RepositionInfo from "@components/reposition/reposition-info/RepositionInfo";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
-import React, { useCallback } from "react";
+import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
+import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
+import React, { useCallback, useState } from "react";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
 import { RepositionModalWrapper } from "./RepositionModal.styles";
@@ -29,6 +33,11 @@ interface Props {
   rangeStatus: RANGE_STATUS_OPTION;
   priceRangeSummary: IPriceRange;
   aprFee: number;
+  currentAmounts: { amountA: number; amountB: number } | null;
+  repositionAmounts: { amountA: number; amountB: number } | null;
+  removePosition: () => Promise<WalletResponse | null>;
+  swapRemainToken: () => Promise<WalletResponse<SwapRouteResponse> | null>;
+  addPosition: () => Promise<WalletResponse<AddLiquidityResponse> | null>;
 }
 
 const RepositionModal: React.FC<Props> = ({
@@ -39,7 +48,18 @@ const RepositionModal: React.FC<Props> = ({
   rangeStatus,
   priceRangeSummary,
   aprFee,
+  currentAmounts,
+  repositionAmounts,
+  removePosition,
+  swapRemainToken,
+  addPosition,
 }) => {
+  const [confirm, setConfirm] = useState(false);
+
+  const onClickConfirm = useCallback(() => {
+    setConfirm(true);
+  }, []);
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -69,18 +89,33 @@ const RepositionModal: React.FC<Props> = ({
           <BalanceChange
             tokenA={amountInfo?.tokenA?.info}
             tokenB={amountInfo?.tokenB?.info}
+            currentAmounts={currentAmounts}
+            repositionAmounts={repositionAmounts}
           />
-          <div>
-            <Button
-              onClick={close}
-              text="Confirm Reposition"
-              style={{
-                hierarchy: ButtonHierarchy.Primary,
-                fullWidth: true,
-              }}
-              className="button-confirm"
-            />
-          </div>
+
+          {confirm ? (
+            <React.Fragment>
+              <hr />
+              <RepositionBroadcastProgress
+                removePosition={removePosition}
+                swapRemainToken={swapRemainToken}
+                addPosition={addPosition}
+                closeModal={close}
+              />
+            </React.Fragment>
+          ) : (
+            <div className="confirm-area">
+              <Button
+                onClick={onClickConfirm}
+                text="Confirm Reposition"
+                style={{
+                  hierarchy: ButtonHierarchy.Primary,
+                  fullWidth: true,
+                }}
+                className="button-confirm"
+              />
+            </div>
+          )}
         </div>
       </div>
     </RepositionModalWrapper>

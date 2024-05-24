@@ -384,7 +384,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     // Make Approve messages that can be managed by a Pool package of tokens.
     const approveMessages = tokenPaths.map(tokenPath =>
       makeApproveMessage(
-        tokenPath,
+        checkGnotPath(tokenPath),
         [PACKAGE_POOL_ADDRESS, MAX_INT64.toString()],
         caller,
       ),

@@ -13,6 +13,7 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DEVICE_TYPE } from "@styles/media";
+import { numberToRate } from "@utils/string-utils";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -59,19 +60,25 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_TD_WIDTH_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-        ? POOL_TD_WIDTH_SMALL_TABLET
-        : breakpoint === DEVICE_TYPE.TABLET
-          ? POOL_TD_WIDTH_TABLET
-          : POOL_TD_WIDTH;
+      ? POOL_TD_WIDTH_SMALL_TABLET
+      : breakpoint === DEVICE_TYPE.TABLET
+      ? POOL_TD_WIDTH_TABLET
+      : POOL_TD_WIDTH;
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = bins40.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const isAllReserveZeroBin = bins.every(item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0);
-    const liquidityNotZero = !!liquidity && liquidity !== "$0" && liquidity !== "0";
+    const isAllReserveZeroBin40 = bins40.every(
+      item =>
+        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+    );
+    const isAllReserveZeroBin = bins.every(
+      item =>
+        Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
+    );
+    const liquidityNotZero =
+      !!liquidity && liquidity !== "$0" && liquidity !== "0";
 
     return (isAllReserveZeroBin40 && isAllReserveZeroBin) || !liquidityNotZero;
   }, [bins, bins40, liquidity]);
-
 
   return (
     <PoolInfoWrapper onClick={() => routeItem(poolId)}>
@@ -100,7 +107,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
       </TableColumn>
       {/* APR */}
       <TableColumn tdWidth={tdWidth[4]}>
-        <span className="apr">{apr}</span>
+        <span className="apr">{numberToRate(apr)}</span>
       </TableColumn>
       <TableColumn tdWidth={tdWidth[5]}>{rewardImage}</TableColumn>
       <TableColumn tdWidth={tdWidth[6]} onClick={e => e.stopPropagation()}>

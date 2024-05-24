@@ -28,9 +28,13 @@ export interface PoolRepository {
     count?: number,
   ) => Promise<PoolBinModel[]>;
 
-  createPool: (request: CreatePoolRequest) => Promise<CreatePoolResponse>;
+  createPool: (
+    request: CreatePoolRequest,
+  ) => Promise<WalletResponse<CreatePoolResponse>>;
 
-  addLiquidity: (request: AddLiquidityRequest) => Promise<AddLiquidityResponse>;
+  addLiquidity: (
+    request: AddLiquidityRequest,
+  ) => Promise<WalletResponse<AddLiquidityResponse>>;
 
   getPoolDetailByPath: (poolPath: string) => Promise<IPoolDetailResponse>;
 

@@ -1,3 +1,4 @@
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { EstimateSwapRouteRequest } from "./request/estimate-swap-route-request";
 import { SwapRouteRequest } from "./request/swap-route-request";
@@ -13,7 +14,9 @@ export interface SwapRouterRepository {
     request: EstimateSwapRouteRequest,
   ) => Promise<EstimateSwapRouteResponse>;
 
-  swapRoute: (request: SwapRouteRequest) => Promise<SwapRouteResponse>;
+  swapRoute: (
+    request: SwapRouteRequest,
+  ) => Promise<WalletResponse<SwapRouteResponse>>;
 
   wrapToken: (request: WrapTokenRequest) => Promise<string>;
 

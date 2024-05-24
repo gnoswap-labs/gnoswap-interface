@@ -6,6 +6,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { numberToRate } from "@utils/string-utils";
 import React from "react";
 import {
   DepositRatioWrapper,
@@ -50,7 +51,8 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
             </Tooltip>
           </div>
           <p className="value">
-            {priceRangeSummary.tokenARatioStr}{"% "}
+            {priceRangeSummary.tokenARatioStr}
+            {"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenA?.symbol}
@@ -61,7 +63,8 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
             ) : (
               `${tokenA?.symbol}`
             )}{" "}
-            / {priceRangeSummary.tokenBRatioStr}{"% "}
+            / {priceRangeSummary.tokenBRatioStr}
+            {"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenB?.symbol}
@@ -81,7 +84,9 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.
+                  The multiplier calculated based on the concentration of your
+                  range. This indicates how much more rewards you can earn
+                  compared to a full range position with the same capital.
                 </ToolTipContentWrapper>
               }
             >
@@ -97,14 +102,15 @@ const DepositRatio: React.FC<DepositRatioProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The estimated APR from swap fees is calculated based on the selected price range of the position.
+                  The estimated APR from swap fees is calculated based on the
+                  selected price range of the position.
                 </ToolTipContentWrapper>
               }
             >
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">{aprFee}%</p>
+          <p className="value">{numberToRate(aprFee)}</p>
         </div>
       </div>
     </DepositRatioWrapper>

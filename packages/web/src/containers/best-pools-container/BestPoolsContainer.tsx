@@ -15,6 +15,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useLoading } from "@hooks/common/use-loading";
 import { toUnitFormat } from "@utils/number-utils";
+import { numberToRate } from "@utils/string-utils";
 
 export interface BestPool {
   tokenPair: TokenPairInfo;
@@ -97,7 +98,7 @@ const BestPoolsContainer: React.FC = () => {
         id: temp?.id || "",
         feeRate: `FEE_${item.fee}` as SwapFeeTierType,
         tvl: `${toUnitFormat(item.tvlUsd, true, true)}`,
-        apr: `${item.apr === "" ? "-" : `${Number(item.apr).toFixed(2)}%`}`,
+        apr: numberToRate(item.apr),
       };
     });
   }, [bestPools, pools.toString(), gnot, wugnotPath]);

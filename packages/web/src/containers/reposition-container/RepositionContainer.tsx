@@ -31,6 +31,11 @@ const RepositionContainer: React.FC = () => {
     selectPool,
     priceRange,
     changePriceRange,
+    currentAmounts,
+    repositionAmounts,
+    removePosition,
+    swapRemainToken,
+    addPosition,
   } = useRepositionHandle();
 
   const { openModal } = useRepositionModalContainer({
@@ -44,6 +49,11 @@ const RepositionContainer: React.FC = () => {
     rangeStatus,
     priceRangeSummary,
     aprFee,
+    currentAmounts,
+    repositionAmounts,
+    removePosition,
+    swapRemainToken,
+    addPosition,
   });
 
   const onSubmit = () => {
@@ -75,6 +85,8 @@ const RepositionContainer: React.FC = () => {
       priceRanges={PRICE_RANGES}
       changePriceRange={changePriceRange}
       priceRange={priceRange}
+      currentAmounts={currentAmounts}
+      repositionAmounts={repositionAmounts}
     />
   );
 };

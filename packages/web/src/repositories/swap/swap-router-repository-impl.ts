@@ -19,7 +19,10 @@ import {
   makeWithdrawMessage,
 } from "@common/clients/wallet-client/transaction-messages/token";
 import { makePoolTokenApproveMessage } from "@common/clients/wallet-client/transaction-messages/pool";
-import { SendTransactionSuccessResponse } from "@common/clients/wallet-client/protocols";
+import {
+  SendTransactionSuccessResponse,
+  WalletResponse,
+} from "@common/clients/wallet-client/protocols";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { TokenError } from "@common/errors/token";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
@@ -118,7 +121,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
   public swapRoute = async (
     request: SwapRouteRequest,
-  ): Promise<SwapRouteResponse> => {
+  ): Promise<WalletResponse<SwapRouteResponse>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -206,11 +209,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         sendTokenAmount.toString(),
       )?.toString() || "0";
     return {
-      hash: data.hash,
-      height: data.height,
-      resultToken,
-      resultAmount: resultAmount,
-      slippageAmount,
+      ...response,
+      data: {
+        hash: data.hash,
+        height: data.height,
+        resultToken,
+        resultAmount: resultAmount,
+        slippageAmount,
+      },
     };
   };
 

@@ -25,6 +25,7 @@ import { CreatePoolResponse } from "@repositories/pool/response/create-pool-resp
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { convertToKMB } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -50,7 +51,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: string;
     withStaking?: boolean;
-  }) => Promise<CreatePoolResponse | null>;
+  }) => Promise<WalletResponse<CreatePoolResponse> | null>;
 
   addLiquidity: (params: {
     tokenAAmount: string;
@@ -60,7 +61,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: string;
     withStaking?: boolean;
-  }) => Promise<AddLiquidityResponse | null>;
+  }) => Promise<WalletResponse<AddLiquidityResponse> | null>;
 }
 export interface SelectTokenModalModel {
   openAddPositionModal: () => void;
@@ -188,9 +189,8 @@ export const useEarnAddLiquidityConfirmModal = ({
       };
     }
 
-    const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[
-      selectPool.feeTier || "NONE"
-    ];
+    const { minPrice, maxPrice } =
+      SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
@@ -224,18 +224,20 @@ export const useEarnAddLiquidityConfirmModal = ({
       inRange,
       minPrice: minPriceStr,
       maxPrice: maxPriceStr,
-      priceLabelMin: `1 ${tokenASymbol} = ${minPriceStr === "∞"
+      priceLabelMin: `1 ${tokenASymbol} = ${
+        minPriceStr === "∞"
           ? minPriceStr
           : convertToKMB(Number(minPriceStr).toFixed(4), {
-            maximumFractionDigits: 4,
-          })
-        } ${tokenBSymbol}`,
-      priceLabelMax: `1 ${tokenASymbol} = ${maxPriceStr === "∞"
+              maximumFractionDigits: 4,
+            })
+      } ${tokenBSymbol}`,
+      priceLabelMax: `1 ${tokenASymbol} = ${
+        maxPriceStr === "∞"
           ? maxPriceStr
           : convertToKMB(Number(maxPriceStr).toFixed(4), {
-            maximumFractionDigits: 4,
-          })
-        } ${tokenBSymbol}`,
+              maximumFractionDigits: 4,
+            })
+      } ${tokenBSymbol}`,
       feeBoost,
       estimatedAPR: "N/A",
     };
@@ -263,66 +265,89 @@ export const useEarnAddLiquidityConfirmModal = ({
     }
   }, [close, router]);
 
-  const confirm = useCallback((options?: { withStaking?: boolean }) => {
-    if (!tokenA || !tokenB || !swapFeeTier) {
-      return;
-    }
-
-    const minTickMod = Math.abs(MIN_TICK) % selectPool.tickSpacing;
-    const maxTickMod = Math.abs(MAX_TICK) % selectPool.tickSpacing;
-    let minTick = MIN_TICK + minTickMod;
-    let maxTick = MAX_TICK - maxTickMod;
-
-    if (selectPool.minPrice != null && selectPool.maxPrice != null) {
-      if (!selectPool.selectedFullRange) {
-        minTick = priceToNearTick(selectPool.minPrice, selectPool.tickSpacing);
-        maxTick = priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing);
+  const confirm = useCallback(
+    (options?: { withStaking?: boolean }) => {
+      if (!tokenA || !tokenB || !swapFeeTier) {
+        return;
       }
-    }
 
-    broadcastLoading(
-      makeBroadcastAddLiquidityMessage("pending", {
-        tokenASymbol: tokenA.symbol,
-        tokenBSymbol: tokenB.symbol,
-        tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-          maximumFractionDigits: 6,
-        }),
-        tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-          maximumFractionDigits: 6,
-        }),
-      }),
-    );
+      const minTickMod = Math.abs(MIN_TICK) % selectPool.tickSpacing;
+      const maxTickMod = Math.abs(MAX_TICK) % selectPool.tickSpacing;
+      let minTick = MIN_TICK + minTickMod;
+      let maxTick = MAX_TICK - maxTickMod;
 
-    const transaction = selectPool.isCreate
-      ? createPool({
-        tokenAAmount,
-        tokenBAmount,
-        minTick,
-        maxTick,
-        slippage,
-        startPrice: `${selectPool.startPrice || 1}`,
-        swapFeeTier,
-        withStaking: options?.withStaking,
-      })
-      : addLiquidity({
-        tokenAAmount,
-        tokenBAmount,
-        minTick,
-        maxTick,
-        slippage,
-        swapFeeTier,
-        withStaking: options?.withStaking,
-      });
-    transaction
-      .then(result => {
-        if (result) {
-          if (result.code === 0) {
-            broadcastPending();
-            setTimeout(() => {
-              broadcastSuccess(
-                makeBroadcastAddLiquidityMessage("success", {
-                  tokenASymbol: result.tokenA.symbol,
-                  tokenBSymbol: result.tokenB.symbol,
+      if (selectPool.minPrice != null && selectPool.maxPrice != null) {
+        if (!selectPool.selectedFullRange) {
+          minTick = priceToNearTick(
+            selectPool.minPrice,
+            selectPool.tickSpacing,
+          );
+          maxTick = priceToNearTick(
+            selectPool.maxPrice,
+            selectPool.tickSpacing,
+          );
+        }
+      }
+
+      broadcastLoading(
+        makeBroadcastAddLiquidityMessage("pending", {
+          tokenASymbol: tokenA.symbol,
+          tokenBSymbol: tokenB.symbol,
+          tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+            maximumFractionDigits: 6,
+          }),
+          tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+            maximumFractionDigits: 6,
+          }),
+        }),
+      );
+
+      const transaction = selectPool.isCreate
+        ? createPool({
+            tokenAAmount,
+            tokenBAmount,
+            minTick,
+            maxTick,
+            slippage,
+            startPrice: `${selectPool.startPrice || 1}`,
+            swapFeeTier,
+            withStaking: options?.withStaking,
+          })
+        : addLiquidity({
+            tokenAAmount,
+            tokenBAmount,
+            minTick,
+            maxTick,
+            slippage,
+            swapFeeTier,
+            withStaking: options?.withStaking,
+          });
+      transaction
+        .then(result => {
+          if (result) {
+            if (result.code === 0) {
+              broadcastPending();
+              setTimeout(() => {
+                broadcastSuccess(
+                  makeBroadcastAddLiquidityMessage("success", {
+                    tokenASymbol: result.data?.tokenA.symbol || "",
+                    tokenBSymbol: result.data?.tokenB.symbol || "",
+                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: 6,
+                    }),
+                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: 6,
+                    }),
+                  }),
+                  moveToBack,
+                );
+              }, 1000);
+              return true;
+            } else if (result.code === 4000) {
+              broadcastRejected(
+                makeBroadcastAddLiquidityMessage("error", {
+                  tokenASymbol: tokenA.symbol,
+                  tokenBSymbol: tokenB.symbol,
                   tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                     maximumFractionDigits: 6,
                   }),
@@ -330,62 +355,48 @@ export const useEarnAddLiquidityConfirmModal = ({
                     maximumFractionDigits: 6,
                   }),
                 }),
-                moveToBack,
               );
-            }, 1000);
-            return true;
-          } else if (result.code === 4000) {
-            broadcastRejected(
-              makeBroadcastAddLiquidityMessage("error", {
-                tokenASymbol: tokenA.symbol,
-                tokenBSymbol: tokenB.symbol,
-                tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                  maximumFractionDigits: 6,
-                }),
-                tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                  maximumFractionDigits: 6,
-                }),
-              }),
-            );
-            return true;
+              return true;
+            }
           }
-        }
-        return false;
-      })
-      .catch(() => false)
-      .then(broadcasted => {
-        if (broadcasted) {
-          return;
-        }
-        broadcastError(
-          makeBroadcastAddLiquidityMessage("error", {
-            tokenASymbol: tokenA.symbol,
-            tokenBSymbol: tokenB.symbol,
-            tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-              maximumFractionDigits: 6,
+          return false;
+        })
+        .catch(() => false)
+        .then(broadcasted => {
+          if (broadcasted) {
+            return;
+          }
+          broadcastError(
+            makeBroadcastAddLiquidityMessage("error", {
+              tokenASymbol: tokenA.symbol,
+              tokenBSymbol: tokenB.symbol,
+              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                maximumFractionDigits: 6,
+              }),
+              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                maximumFractionDigits: 6,
+              }),
             }),
-            tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-              maximumFractionDigits: 6,
-            }),
-          }),
-        );
-      });
-  }, [
-    tokenA,
-    tokenB,
-    swapFeeTier,
-    selectPool.tickSpacing,
-    selectPool.minPrice,
-    selectPool.maxPrice,
-    selectPool.isCreate,
-    selectPool.selectedFullRange,
-    selectPool.startPrice,
-    addLiquidity,
-    tokenAAmount,
-    tokenBAmount,
-    slippage,
-    createPool,
-  ]);
+          );
+        });
+    },
+    [
+      tokenA,
+      tokenB,
+      swapFeeTier,
+      selectPool.tickSpacing,
+      selectPool.minPrice,
+      selectPool.maxPrice,
+      selectPool.isCreate,
+      selectPool.selectedFullRange,
+      selectPool.startPrice,
+      addLiquidity,
+      tokenAAmount,
+      tokenBAmount,
+      slippage,
+      createPool,
+    ],
+  );
 
   const openAddPositionModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {
