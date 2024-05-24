@@ -98,7 +98,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       },
     });
 
-    if (response.status !== 200) {
+    if (response.status !== 201) {
       throw new SwapError("SWAP_FAILED");
     }
 
@@ -178,7 +178,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         exactType,
         `${routesQuery}`,
         `${quotes}`,
-        tokenAmountLimitRaw.toString(),
+        exactType === "EXACT_IN" ? "0" : MAX_UINT64.toString(), // slippage: tokenAmountLimitRaw.toString(),
       ],
     };
 
