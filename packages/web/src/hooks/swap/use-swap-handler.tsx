@@ -175,13 +175,6 @@ export const useSwapHandler = () => {
       return "Insufficient Balance";
     }
     if (
-      Number(tokenBAmount) >
-        Number(parseFloat(tokenBBalance.replace(/,/g, ""))) &&
-      type === "EXACT_OUT"
-    ) {
-      return "Insufficient Balance";
-    }
-    if (
       Number(tokenAAmount) > 0 &&
       tokenBAmount === "0" &&
       type === "EXACT_IN"
