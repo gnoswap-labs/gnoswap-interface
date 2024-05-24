@@ -22,7 +22,7 @@ import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
-import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
+import { GnoProvider, GnoWSProvider } from "@gnolang/gno-js-client";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 import ChainNetworkInfos from "@resources/chains.json";
 import { SwapRouterRepository } from "@repositories/swap/swap-router-repository";
@@ -143,7 +143,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       network ||
       ChainNetworkInfos.find(info => info.chainId === defaultChainId);
     if (currentNetwork) {
-      const provider = new GnoJSONRPCProvider(currentNetwork.rpcUrl);
+      const provider = new GnoWSProvider(currentNetwork.wsUrl);
       setRPCProvider(provider);
     }
   }, [network]);
@@ -218,7 +218,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({
       ChainNetworkInfos.find(info => info.chainId === defaultChainId);
     if (currentNetwork) {
       try {
-        const provider = new GnoJSONRPCProvider(currentNetwork.rpcUrl);
+        const provider = new GnoWSProvider(currentNetwork.wsUrl);
         setRPCProvider(provider);
         return true;
       } catch (error) {
