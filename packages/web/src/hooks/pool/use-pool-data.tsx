@@ -9,6 +9,7 @@ import { PoolState } from "@states/index";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
+import { numberToRate } from "@utils/string-utils";
 
 const PATH_60SECOND = "/wallet";
 
@@ -19,7 +20,12 @@ export const usePoolData = () => {
     isLoading: loading,
     isFetched: isFetchedPools,
   } = useGetPoolList({
-    refetchInterval: router.pathname === "/" ? 10 * 1000 : router.pathname === PATH_60SECOND ? 60 * 1000 : false,
+    refetchInterval:
+      router.pathname === "/"
+        ? 10 * 1000
+        : router.pathname === PATH_60SECOND
+        ? 60 * 1000
+        : false,
   });
 
   const forceRefetch = useForceRefetchQuery();
@@ -35,24 +41,23 @@ export const usePoolData = () => {
         ...item,
         tokenA: item.tokenA
           ? {
-            ...item.tokenA,
-            symbol: getGnotPath(item.tokenA).symbol,
-            logoURI: getGnotPath(item.tokenA).logoURI,
-            name: getGnotPath(item.tokenA).name,
-          }
+              ...item.tokenA,
+              symbol: getGnotPath(item.tokenA).symbol,
+              logoURI: getGnotPath(item.tokenA).logoURI,
+              name: getGnotPath(item.tokenA).name,
+            }
           : item.tokenA,
         tokenB: item.tokenB
           ? {
-            ...item.tokenB,
-            symbol: getGnotPath(item.tokenB).symbol,
-            logoURI: getGnotPath(item.tokenB).logoURI,
-            name: getGnotPath(item.tokenB).name,
-          }
+              ...item.tokenB,
+              symbol: getGnotPath(item.tokenB).symbol,
+              logoURI: getGnotPath(item.tokenB).logoURI,
+              name: getGnotPath(item.tokenB).name,
+            }
           : item.tokenB,
       };
     });
   }, [pools, wugnotPath, gnot]);
-
 
   const higestAPRs: CardListPoolInfo[] = useMemo(() => {
     const sortedTokens = pools
@@ -79,7 +84,7 @@ export const usePoolData = () => {
         },
       },
       upDown: "none",
-      content: !pool.apr ? "-" : `${pool.apr || 0}%`,
+      content: numberToRate(pool.apr),
     }));
   }, [pools]);
 

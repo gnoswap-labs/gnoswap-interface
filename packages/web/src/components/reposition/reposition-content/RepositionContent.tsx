@@ -39,6 +39,8 @@ interface RepositionContentProps {
   priceRanges: AddLiquidityPriceRage[];
   priceRange: AddLiquidityPriceRage;
   changePriceRange: (priceRange: AddLiquidityPriceRage) => void;
+  currentAmounts: { amountA: number; amountB: number } | null;
+  repositionAmounts: { amountA: number; amountB: number } | null;
 }
 
 const RepositionContent: React.FC<RepositionContentProps> = ({
@@ -55,6 +57,8 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
   priceRange,
   priceRanges,
   changePriceRange,
+  currentAmounts,
+  repositionAmounts,
 }) => {
   return (
     <RepositionContentWrapper>
@@ -64,7 +68,9 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
           placement="top"
           FloatingContent={
             <ToolTipContentWrapper>
-              This will remove this position and create a new one with the underlying tokens by swapping them proportionally to the new range.
+              This will remove this position and create a new one with the
+              underlying tokens by swapping them proportionally to the new
+              range.
             </ToolTipContentWrapper>
           }
         >
@@ -104,6 +110,8 @@ const RepositionContent: React.FC<RepositionContentProps> = ({
         <BalanceChange
           tokenA={tokenA}
           tokenB={tokenB}
+          currentAmounts={currentAmounts}
+          repositionAmounts={repositionAmounts}
           isHiddenCurrentBalance={false}
         />
       </article>

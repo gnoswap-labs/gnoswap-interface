@@ -23,6 +23,7 @@ import { SelectPriceRangeCustomWrapper } from "./SelectPriceRangeCustom.styles";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
+import { subscriptFormat } from "@utils/number-utils";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -63,25 +64,70 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     Array.isArray(selectPool.liquidityOfTickPoints) &&
     selectPool.renderState() === "DONE";
 
-  const comparedTokenA = selectPool.compareToken?.symbol !== tokenB.symbol;
+  const flip = useMemo(() => {
+    if (!selectPool.compareToken) {
+      return false;
+    }
+    if (selectPool.startPrice) {
+      return false;
+    }
+
+    const compareTokenPaths = [
+      checkGnotPath(tokenA.path),
+      checkGnotPath(tokenB.path),
+    ].sort();
+    return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path);
+  }, [
+    selectPool.compareToken,
+    selectPool.startPrice,
+    tokenA.path,
+    tokenB.path,
+  ]);
 
   const currentTokenA = useMemo(() => {
-    return comparedTokenA ? getGnotPath(tokenA) : getGnotPath(tokenB);
-  }, [comparedTokenA, tokenA, tokenB]);
+    return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
+  }, [flip, tokenA, tokenB]);
 
   const currentTokenB = useMemo(() => {
-    return comparedTokenA ? getGnotPath(tokenB) : getGnotPath(tokenA);
-  }, [comparedTokenA, tokenA, tokenB]);
+    return flip ? getGnotPath(tokenA) : getGnotPath(tokenB);
+  }, [flip, tokenA, tokenB]);
+
+  const currentPrice = useMemo(() => {
+    if (selectPool.startPrice) {
+      return selectPool.startPrice;
+    }
+
+    if (flip) {
+      if (!selectPool.currentPrice) {
+        return 0;
+      }
+      return 1 / selectPool.currentPrice;
+    }
+    return selectPool.currentPrice;
+  }, [flip, selectPool.currentPrice, selectPool.startPrice]);
 
   const currentPriceStr = useMemo(() => {
-    if (!selectPool.currentPrice) {
+    if (!currentPrice) {
       return "-";
     }
-    const currentPrice = convertToKMB(selectPool.currentPrice.toFixed(4), {
-      maximumFractionDigits: 4,
-    });
-    return `1 ${currentTokenA.symbol} = ${currentPrice} ${currentTokenB.symbol}`;
-  }, [currentTokenA.symbol, currentTokenB.symbol, selectPool.currentPrice]);
+
+    if (currentPrice > 1) {
+      return (
+        <>
+          1 {currentTokenA.symbol} =&nbsp;
+          {convertToKMB(currentPrice.toString())}&nbsp;
+          {currentTokenB.symbol}
+        </>
+      );
+    }
+
+    return (
+      <>
+        1 {currentTokenA.symbol} =&nbsp;
+        {subscriptFormat(currentPrice)}&nbsp;{currentTokenB.symbol}
+      </>
+    );
+  }, [currentTokenA.symbol, currentTokenB.symbol, currentPrice]);
 
   const currentPriceStrReverse = useMemo(() => {
     if (!selectPool.currentPrice) {
@@ -150,7 +196,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   const onClickTabItem = useCallback(
     (symbol: string) => {
-      const compareToken = tokenA.symbol === symbol ? tokenA : tokenB;
+      const compareToken =
+        getGnotPath(tokenA).symbol === symbol ? tokenA : tokenB;
       selectPool.setCompareToken(compareToken);
       const { minPosition, maxPosition } = selectPool;
       if (minPosition !== null) {
@@ -161,7 +208,7 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
       }
       handleSwapValue();
     },
-    [selectPool, tokenA, tokenB, handleSwapValue],
+    [tokenA, tokenB, selectPool],
   );
 
   const selectFullRange = useCallback(() => {
@@ -170,29 +217,21 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
 
   function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
     const currentPriceRangeType = inputPriceRangeType || priceRangeType;
-    const currentPrice = selectPool.isCreate
-      ? selectPool.startPrice
-      : selectPool.currentPrice;
-    if (
-      currentPrice &&
-      selectPool.feeTier &&
-      currentPriceRangeType &&
-      !selectPool.isChangeMinMax
-    ) {
+
+    if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
       const priceRange =
         SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
       const minRateAmount = currentPrice * (priceRange.min / 100);
       const maxRateAmount = currentPrice * (priceRange.max / 100);
       selectPool.setMinPosition(currentPrice + minRateAmount);
       selectPool.setMaxPosition(currentPrice + maxRateAmount);
-    } else if (selectPool.isChangeMinMax) {
-      selectPool.setMinPosition(selectPool.minPrice);
-      selectPool.setMaxPosition(selectPool.maxPrice);
+      return;
     }
   }
 
   function resetRange(priceRangeType?: PriceRangeType | null) {
     selectPool.resetRange();
+    setShiftPosition(0);
     initPriceRange(priceRangeType);
   }
 
@@ -223,6 +262,14 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
     selectPool.startPrice,
   ]);
 
+  const selectTokenPair = useMemo(() => {
+    if (isKeepToken) {
+      return [getGnotPath(tokenB).symbol, getGnotPath(tokenA).symbol];
+    }
+
+    return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
+  }, [tokenA, tokenB, isKeepToken]);
+
   if (selectPool.renderState() === "NONE") {
     return <></>;
   }
@@ -242,21 +289,16 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   selectType={
                     getGnotPath(selectPool.compareToken)?.symbol || ""
                   }
-                  list={[
-                    !isKeepToken
-                      ? getGnotPath(tokenA).symbol
-                      : getGnotPath(tokenB).symbol,
-                    isKeepToken
-                      ? getGnotPath(tokenA).symbol
-                      : getGnotPath(tokenB).symbol,
-                  ]}
+                  list={selectTokenPair}
                   onClick={onClickTabItem}
                 />
                 <div className="button-option-contaier">
                   <div className="graph-option-wrapper">
                     <span
                       className={`graph-option-item decrease ${
-                        isLoading || showDim ? "disabled-option" : ""
+                        isLoading || showDim || !availMoveLeft
+                          ? "disabled-option"
+                          : ""
                       }`}
                       onClick={moveLeft}
                     >
@@ -264,7 +306,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     </span>
                     <span
                       className={`graph-option-item increase ${
-                        isLoading || showDim ? "disabled-option" : ""
+                        isLoading || showDim || !availMoveRight
+                          ? "disabled-option"
+                          : ""
                       }`}
                       onClick={moveRight}
                     >
@@ -274,7 +318,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                   <div className="graph-option-wrapper">
                     <span
                       className={`graph-option-item decrease ${
-                        isLoading || showDim ? "disabled-option" : ""
+                        isLoading || showDim || !availZoomOut
+                          ? "disabled-option"
+                          : ""
                       }`}
                       onClick={zoomOut}
                     >
@@ -282,7 +328,9 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                     </span>
                     <span
                       className={`graph-option-item increase ${
-                        isLoading || showDim ? "disabled-option" : ""
+                        isLoading || showDim || !availZoomIn
+                          ? "disabled-option"
+                          : ""
                       }`}
                       onClick={zoomIn}
                     >
@@ -330,17 +378,8 @@ const SelectPriceRangeCustom: React.FC<SelectPriceRangeCustomProps> = ({
                       height={GRAPH_HEIGHT}
                       position="top"
                       offset={selectPool.bins?.length}
-                      price={
-                        selectPool.startPrice
-                          ? selectPool.startPrice
-                          : selectPool.currentPrice || 1
-                      }
-                      flip={
-                        [
-                          checkGnotPath(tokenA.path),
-                          checkGnotPath(tokenB.path),
-                        ].sort()[0] !== checkGnotPath(tokenA.path)
-                      }
+                      price={selectPool.currentPrice || 1}
+                      flip={flip}
                       fullRange={selectPool.selectedFullRange}
                       zoomLevel={selectPool.zoomLevel}
                       minPrice={selectPool.minPrice}

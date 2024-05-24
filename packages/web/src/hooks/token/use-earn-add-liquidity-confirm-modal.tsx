@@ -25,6 +25,7 @@ import { CreatePoolResponse } from "@repositories/pool/response/create-pool-resp
 import { AddLiquidityResponse } from "@repositories/pool/response/add-liquidity-response";
 import { convertToKMB } from "@utils/stake-position-utils";
 import OneClickStakingModal from "@components/common/one-click-staking-modal/OneClickStakingModal";
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -50,7 +51,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: string;
     withStaking?: boolean;
-  }) => Promise<CreatePoolResponse | null>;
+  }) => Promise<WalletResponse<CreatePoolResponse> | null>;
 
   addLiquidity: (params: {
     tokenAAmount: string;
@@ -60,7 +61,7 @@ export interface EarnAddLiquidityConfirmModalProps {
     maxTick: number;
     slippage: string;
     withStaking?: boolean;
-  }) => Promise<AddLiquidityResponse | null>;
+  }) => Promise<WalletResponse<AddLiquidityResponse> | null>;
 }
 export interface SelectTokenModalModel {
   openAddPositionModal: () => void;
@@ -329,8 +330,8 @@ export const useEarnAddLiquidityConfirmModal = ({
               setTimeout(() => {
                 broadcastSuccess(
                   makeBroadcastAddLiquidityMessage("success", {
-                    tokenASymbol: result.tokenA.symbol,
-                    tokenBSymbol: result.tokenB.symbol,
+                    tokenASymbol: result.data?.tokenA.symbol || "",
+                    tokenBSymbol: result.data?.tokenB.symbol || "",
                     tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                       maximumFractionDigits: 6,
                     }),

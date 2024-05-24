@@ -3,7 +3,11 @@
 import Header from "@components/common/header/Header";
 import { useRouter } from "next/router";
 import React, { useState, useCallback, useMemo } from "react";
-import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
+import {
+  MATH_NEGATIVE_TYPE,
+  SwapFeeTierInfoMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
 import { type TokenInfo } from "@models/token/token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useWallet } from "@hooks/wallet/use-wallet";
@@ -20,7 +24,12 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { useGetTokenPrices, useGetTokensList } from "@query/token";
-import { formatUsdNumber3Digits, toPriceFormat, toUnitFormat } from "@utils/number-utils";
+import {
+  formatUsdNumber3Digits,
+  toPriceFormat,
+  toUnitFormat,
+} from "@utils/number-utils";
+import { numberToRate } from "@utils/string-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -59,7 +68,8 @@ export const RecentdummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+      logoURI:
+        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     fee: "0.03%",
     isLiquid: true,
@@ -83,10 +93,11 @@ export const RecentdummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+      logoURI:
+        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     liquidity: 0,
-    fee: "0.03%"
+    fee: "0.03%",
   },
   {
     path: Math.floor(Math.random() * 50 + 1).toString(),
@@ -106,7 +117,8 @@ export const RecentdummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "GNOT",
       symbol: "GNOT",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+      logoURI:
+        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     fee: "0.03%",
     liquidity: 0,
@@ -121,7 +133,8 @@ export const PopulardummyToken: Token[] = [
       path: "gno.land/r/demo/gns",
       name: "Gnoland",
       symbol: "GNOT",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
+      logoURI:
+        "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg",
     },
     price: "$12,090.09",
     priceOf1d: {
@@ -133,8 +146,13 @@ export const PopulardummyToken: Token[] = [
   },
 ];
 
-const filterByLiquidityPool = (data: Record<string, TokenPriceModel>, targetLiquidityPool?: string): TokenPriceModel | null => {
-  const filteredItem = Object.entries(data).find(([key, value]) => value.mostLiquidityPool === targetLiquidityPool);
+const filterByLiquidityPool = (
+  data: Record<string, TokenPriceModel>,
+  targetLiquidityPool?: string,
+): TokenPriceModel | null => {
+  const filteredItem = Object.entries(data).find(
+    ([key, value]) => value.mostLiquidityPool === targetLiquidityPool,
+  );
   return filteredItem ? filteredItem[1] : null;
 };
 
@@ -145,13 +163,30 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { account, connected, disconnectWallet, switchNetwork, isSwitchNetwork, loadingConnect, isLoadingGnotBalance, gnotBalance } = useWallet();
+  const {
+    account,
+    connected,
+    disconnectWallet,
+    switchNetwork,
+    isSwitchNetwork,
+    loadingConnect,
+    isLoadingGnotBalance,
+    gnotBalance,
+  } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
-  const { data: poolList = [] } = useGetPoolList({ enabled: !!searchMenuToggle });
-  const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokensList({ enabled: !!searchMenuToggle });
-  const { data: tokenPrices = {} } = useGetTokenPrices({ enabled: !!searchMenuToggle });
+  const { data: poolList = [] } = useGetPoolList({
+    enabled: !!searchMenuToggle,
+  });
+  const {
+    data: { tokens: listTokens = [] } = {},
+    isFetched,
+    error,
+  } = useGetTokensList({ enabled: !!searchMenuToggle });
+  const { data: tokenPrices = {} } = useGetTokenPrices({
+    enabled: !!searchMenuToggle,
+  });
   const recents = useMemo(() => {
     const storageData = parseJson(recentsData ? recentsData : "[]");
     return storageData.map((item: any) => {
@@ -160,7 +195,10 @@ const HeaderContainer: React.FC = () => {
         const isGnot = item?.token?.path === "gnot";
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : temp;
-        const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
+        const dataToday = checkPositivePrice(
+          transferData.pricesBefore?.latestPrice,
+          transferData.pricesBefore?.priceToday,
+        );
         const usdFormat = formatUsdNumber3Digits(transferData.usd);
         const price = toPriceFormat(usdFormat || "0", { usd: true });
         return {
@@ -168,16 +206,29 @@ const HeaderContainer: React.FC = () => {
           price: price,
           priceOf1d: {
             status: dataToday.status,
-            value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
+            value:
+              dataToday.percent !== "-"
+                ? dataToday.percent.replace(/[+-]/g, "")
+                : "0.00%",
           },
-        }
+        };
       } else {
-        const item_ = poolList.filter((_) => _.tokenA.symbol === item.token.symbol && _.tokenB.symbol === item.tokenB.symbol)?.[0];
+        const item_ = poolList.filter(
+          _ =>
+            _.tokenA.symbol === item.token.symbol &&
+            _.tokenB.symbol === item.tokenB.symbol,
+        )?.[0];
         if (!item_) return item;
         const price = toPriceFormat(item_?.tvl || "0", { usd: true });
         return {
           ...item,
-          apr: `${!item_.apr ? "-" : Number(item_.apr) > 10 ? `${item_.apr}% APR` : `${Number(item_.apr).toFixed(2)}% APR`}`,
+          apr: `${
+            !item_.apr
+              ? "-"
+              : Number(item_.apr) > 10
+              ? `${item_.apr}% APR`
+              : `${Number(item_.apr).toFixed(2)}% APR`
+          }`,
           price: price,
         };
       }
@@ -187,41 +238,46 @@ const HeaderContainer: React.FC = () => {
   const mostLiquidity = useMemo(() => {
     let temp = poolList;
     if (keyword) {
-      temp = poolList.filter((item: PoolModel) => (item.tokenA.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenA.symbol.toLowerCase()).includes(keyword.toLowerCase())
-        || (item.tokenB.name.toLowerCase()).includes(keyword.toLowerCase()) || (item.tokenB.symbol.toLowerCase()).includes(keyword.toLowerCase())
+      temp = poolList.filter(
+        (item: PoolModel) =>
+          item.tokenA.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.tokenB.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase()),
       );
     }
 
+    return temp
+      .map((item: PoolModel) => {
+        const price = toPriceFormat(item.tvl || "0", { usd: true });
+        const aprRate = numberToRate(item.apr);
 
-    return temp.map((item: PoolModel) => {
-      const price = toPriceFormat(item.tvl || "0", { usd: true });
-
-      return {
-        path: "",
-        searchType: "popular",
-        token: {
-          path: item.tokenA.path,
-          name: item.tokenA.name,
-          symbol: getGnotPath(item.tokenA).symbol,
-          logoURI: getGnotPath(item.tokenA).logoURI,
-        },
-        price: price,
-        priceOf1d: {
-          status: MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: "",
-        },
-        tokenB: {
-          path: item.tokenB.path,
-          name: item.tokenB.name,
-          symbol: getGnotPath(item.tokenB).symbol,
-          logoURI: getGnotPath(item.tokenB).logoURI,
-        },
-        fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
-        isLiquid: true,
-        apr: `${!item.apr ? "-" : Number(item.apr) > 10 ? `${item.apr}% APR` : `${Number(item.apr).toFixed(2)}% APR`}`,
-        liquidity: Number(item ? item.tvl : "0"),
-      };
-    })
+        return {
+          path: "",
+          searchType: "popular",
+          token: {
+            path: item.tokenA.path,
+            name: item.tokenA.name,
+            symbol: getGnotPath(item.tokenA).symbol,
+            logoURI: getGnotPath(item.tokenA).logoURI,
+          },
+          price: price,
+          priceOf1d: {
+            status: MATH_NEGATIVE_TYPE.NEGATIVE,
+            value: "",
+          },
+          tokenB: {
+            path: item.tokenB.path,
+            name: item.tokenB.name,
+            symbol: getGnotPath(item.tokenB).symbol,
+            logoURI: getGnotPath(item.tokenB).logoURI,
+          },
+          fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
+          isLiquid: true,
+          apr: aprRate === "-" ? aprRate : `${aprRate} APR`,
+          liquidity: Number(item ? item.tvl : "0"),
+        };
+      })
       .sort((a, b) => b.liquidity - a.liquidity)
       .slice(0, 3);
   }, [poolList, keyword, tokenPrices, gnot]);
@@ -229,46 +285,57 @@ const HeaderContainer: React.FC = () => {
   const popularTokens = useMemo(() => {
     let temp = listTokens;
     if (keyword) {
-      temp = listTokens.filter((item: TokenModel) => (item.name.toLowerCase()).includes(keyword.toLowerCase())
-        || (item.symbol.toLowerCase()).includes(keyword.toLowerCase())
-        || (item.path.toLowerCase()).includes(keyword.toLowerCase())
+      temp = listTokens.filter(
+        (item: TokenModel) =>
+          item.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
+          item.path.toLowerCase().includes(keyword.toLowerCase()),
       );
     }
-    return temp.map((item: TokenModel) => {
-      const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
-      const isGnot = item.path === "gnot";
-      const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
-      const transferData = isGnot ? tempWuGnot : temp;
-      const dataToday = checkPositivePrice((transferData.pricesBefore?.latestPrice), (transferData.pricesBefore?.priceToday));
-      const usdFormat = formatUsdNumber3Digits(transferData.usd);
-      const price = toPriceFormat(usdFormat || "0", { usd: true });
+    return temp
+      .map((item: TokenModel) => {
+        const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
+        const isGnot = item.path === "gnot";
+        const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
+        const transferData = isGnot ? tempWuGnot : temp;
+        const dataToday = checkPositivePrice(
+          transferData.pricesBefore?.latestPrice,
+          transferData.pricesBefore?.priceToday,
+        );
+        const usdFormat = formatUsdNumber3Digits(transferData.usd);
+        const price = toPriceFormat(usdFormat || "0", { usd: true });
 
-      return {
-        path: "",
-        searchType: "",
-        token: {
-          path: item.path,
-          name: item.name,
-          symbol: item.symbol,
-          logoURI: item.logoURI,
-        },
-        price: price,
-        priceOf1d: {
-          status: dataToday.status,
-          value: dataToday.percent !== "-" ? dataToday.percent.replace(/[+-]/g, "") : "0.00%",
-        },
-        tokenB: {
+        return {
           path: "",
-          name: "",
-          symbol: "",
-          logoURI: "",
-        },
-        fee: "",
-        isLiquid: false,
-        volume: transferData.volume ?? "0",
-        liquidity: 0,
-      };
-    }).sort((a, b) => Number(b.volume) - Number(a.volume)).slice(0, keyword ? 6 : 6 - recents.length);
+          searchType: "",
+          token: {
+            path: item.path,
+            name: item.name,
+            symbol: item.symbol,
+            logoURI: item.logoURI,
+          },
+          price: price,
+          priceOf1d: {
+            status: dataToday.status,
+            value:
+              dataToday.percent !== "-"
+                ? dataToday.percent.replace(/[+-]/g, "")
+                : "0.00%",
+          },
+          tokenB: {
+            path: "",
+            name: "",
+            symbol: "",
+            logoURI: "",
+          },
+          fee: "",
+          isLiquid: false,
+          volume: transferData.volume ?? "0",
+          liquidity: 0,
+        };
+      })
+      .sort((a, b) => Number(b.volume) - Number(a.volume))
+      .slice(0, keyword ? 6 : 6 - recents.length);
   }, [listTokens, recents.length, keyword, tokenPrices]);
 
   const { openModal } = useConnectWalletModal();
@@ -276,7 +343,7 @@ const HeaderContainer: React.FC = () => {
   const handleESC = () => {
     setKeyword("");
     setSearchMenuToggle(false);
-  }
+  };
   useEscCloseModal(handleESC);
 
   const onSideMenuToggle = (value: boolean) => {
@@ -296,11 +363,11 @@ const HeaderContainer: React.FC = () => {
 
   const handleConnectWallet = useCallback(() => {
     openModal();
-  }, [openModal])
+  }, [openModal]);
 
   const movePage = useCallback((path: string) => {
     push(path);
-  }, [])
+  }, []);
 
   return (
     <Header

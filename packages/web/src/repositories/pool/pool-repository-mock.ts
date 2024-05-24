@@ -9,7 +9,10 @@ import { IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import {
+  SendTransactionResponse,
+  WalletResponse,
+} from "@common/clients/wallet-client/protocols";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 export class PoolRepositoryMock implements PoolRepository {
   getPools = async (): Promise<PoolModel[]> => {
@@ -48,7 +51,9 @@ export class PoolRepositoryMock implements PoolRepository {
     return PoolDetailDataByPath as IPoolDetailResponse;
   };
 
-  createExternalIncentive = async (): Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null> => {
+  createExternalIncentive = async (): Promise<WalletResponse<
+    SendTransactionResponse<string[] | null>
+  > | null> => {
     return null;
   };
 

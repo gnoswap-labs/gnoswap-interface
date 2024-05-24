@@ -7,7 +7,7 @@ import {
 } from "./PoolPairInfoContent.styles";
 import IconStar from "@components/common/icons/IconStar";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { numberToFormat } from "@utils/string-utils";
+import { numberToFormat, numberToRate } from "@utils/string-utils";
 import { SkeletonEarnDetailWrapper } from "@layouts/pool-layout/PoolLayout.styles";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { convertToKMB } from "@utils/stake-position-utils";
@@ -26,7 +26,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { toUnitFormat } from "@utils/number-utils";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
-import BigNumber from "bignumber.js";
+
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
@@ -77,13 +77,12 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.volume24h]);
 
   const aprValue = useMemo(() => {
-    if (!pool.totalApr) {
-      return "-";
+    const aprStr = numberToRate(pool.totalApr);
+    const totalAPR = pool.totalApr || 0;
+    if (Number(totalAPR) >= 100) {
+      return <><IconStar />{aprStr}</>;
     }
-    if (Number(pool.totalApr) >= 100) {
-      return <><IconStar />{`${pool.totalApr}%`}</>;
-    }
-    return `${pool.totalApr}%`;
+    return aprStr;
   }, [pool.totalApr]);
 
   const liquidityChangedStr = useMemo((): string => {
@@ -202,8 +201,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <Tooltip
               placement="top"
               FloatingContent={<TooltipAPR
-                feeAPR={(Number(pool?.feeApr) === 0) ? "0" : BigNumber(pool?.feeApr ?? 0).toFixed(2)}
-                stakingAPR={(Number(pool?.stakingApr) === 0) ? "0" : BigNumber(pool?.stakingApr ?? 0).toFixed(2)}
+                feeAPR={pool?.feeApr}
+                stakingAPR={pool?.stakingApr}
                 feeLogo={feeLogo}
                 stakeLogo={stakeLogo} />}
             >

@@ -4,7 +4,7 @@ import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { EarnAddConfirmPriceRangeInfoSection, EarnAddConfirmPriceRangeInfoWrapper, ToolTipContentWrapper } from "./EarnAddConfirmPriceRangeInfo.styles";
-import { numberToFormat } from "@utils/string-utils";
+import { numberToFormat, numberToRate } from "@utils/string-utils";
 import { EarnAddConfirmAmountInfoProps } from "../earn-add-confirm-amount-info/EarnAddConfirmAmountInfo";
 import IconSwap from "@components/common/icons/IconSwap";
 
@@ -94,7 +94,7 @@ const EarnAddConfirmPriceRangeInfo: React.FC<
                 <IconInfo />
               </Tooltip>
             </div>
-            <span className="value">{estimatedAPR}</span>
+            <span className="value">{numberToRate(estimatedAPR)}</span>
           </div>
           {isShowStaking && <div className="row">
             <div className="title-wrapper">

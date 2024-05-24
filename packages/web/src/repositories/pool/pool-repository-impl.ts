@@ -149,7 +149,7 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   createPool = async (
     request: CreatePoolRequest,
-  ): Promise<CreatePoolResponse> => {
+  ): Promise<WalletResponse<CreatePoolResponse>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -205,8 +205,6 @@ export class PoolRepositoryImpl implements PoolRepository {
         ),
       );
     }
-    console.log(tokenAAmountRaw);
-    console.log(tokenBAmountRaw);
     if (BigNumber(tokenBAmountRaw).isGreaterThan(0)) {
       approveMessages.push(
         PoolRepositoryImpl.makeApproveTokenMessage(
@@ -267,12 +265,15 @@ export class PoolRepositoryImpl implements PoolRepository {
       data.data.length < 4
     ) {
       return {
-        code: result.code,
-        hash: data.hash,
-        tokenA,
-        tokenB,
-        tokenAAmount: "0",
-        tokenBAmount: "0",
+        ...result,
+        data: {
+          code: result.code,
+          hash: data.hash,
+          tokenA,
+          tokenB,
+          tokenAAmount: "0",
+          tokenBAmount: "0",
+        },
       };
     }
     const resultTokenAAmount =
@@ -280,18 +281,21 @@ export class PoolRepositoryImpl implements PoolRepository {
     const resultTokenBAmount =
       makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
     return {
-      code: result.code,
-      hash: data.hash,
-      tokenA,
-      tokenB,
-      tokenAAmount: resultTokenAAmount.toString(),
-      tokenBAmount: resultTokenBAmount.toString(),
+      ...result,
+      data: {
+        code: result.code,
+        hash: data.hash,
+        tokenA,
+        tokenB,
+        tokenAAmount: resultTokenAAmount.toString(),
+        tokenBAmount: resultTokenBAmount.toString(),
+      },
     };
   };
 
   addLiquidity = async (
     request: AddLiquidityRequest,
-  ): Promise<AddLiquidityResponse> => {
+  ): Promise<WalletResponse<AddLiquidityResponse>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -390,12 +394,15 @@ export class PoolRepositoryImpl implements PoolRepository {
       data.data.length < 4
     ) {
       return {
-        code: result.code,
-        hash: data.hash,
-        tokenA,
-        tokenB,
-        tokenAAmount: "0",
-        tokenBAmount: "0",
+        ...result,
+        data: {
+          code: result.code,
+          hash: data.hash,
+          tokenA,
+          tokenB,
+          tokenAAmount: "0",
+          tokenBAmount: "0",
+        },
       };
     }
     const resultTokenAAmount =
@@ -403,12 +410,15 @@ export class PoolRepositoryImpl implements PoolRepository {
     const resultTokenBAmount =
       makeDisplayTokenAmount(tokenA, data.data[3]) || 0;
     return {
-      code: result.code,
-      hash: data.hash,
-      tokenA,
-      tokenB,
-      tokenAAmount: resultTokenAAmount.toString(),
-      tokenBAmount: resultTokenBAmount.toString(),
+      ...result,
+      data: {
+        code: result.code,
+        hash: data.hash,
+        tokenA,
+        tokenB,
+        tokenAAmount: resultTokenAAmount.toString(),
+        tokenBAmount: resultTokenBAmount.toString(),
+      },
     };
   };
 

@@ -34,7 +34,8 @@ export default function Pool() {
     return address;
   }, [initializedData]);
 
-  const { isFetchedPosition, loading, getPositionsByPoolId, positions } = usePositionData(address);
+  const { isFetchedPosition, loading, getPositionsByPoolId, positions } =
+    usePositionData(address);
 
   const isStaking = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
@@ -50,10 +51,14 @@ export default function Pool() {
     }
     return false;
   }, [data?.incentiveType]);
-  console.log(hash, "hash");
 
   useEffect(() => {
-    if (hash === "staking" && isFetchedPosition && !loading && !isLoadingCommon) {
+    if (
+      hash === "staking" &&
+      isFetchedPosition &&
+      !loading &&
+      !isLoadingCommon
+    ) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
@@ -66,7 +71,12 @@ export default function Pool() {
   }, [hash, isFetchedPosition, isLoadingCommon, loading, positions]);
 
   useEffect(() => {
-    if (hash === "staking" && !loading && isFetchedPosition && positions.length === 0) {
+    if (
+      hash === "staking" &&
+      !loading &&
+      isFetchedPosition &&
+      positions.length === 0
+    ) {
       const positionContainerElement = document.getElementById("staking");
       const topPosition = positionContainerElement?.offsetTop;
       if (!topPosition) {
