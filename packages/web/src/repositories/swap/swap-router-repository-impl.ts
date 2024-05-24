@@ -76,11 +76,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       ? outputToken.wrappedPath
       : outputToken.path;
 
+    const tokenAmountRaw =
+      exactType === "EXACT_IN"
+        ? makeRawTokenAmount(inputToken, tokenAmount)
+        : makeRawTokenAmount(inputToken, tokenAmount);
+
     const queryParameter = makeQueryParameter({
-      inputTokenPath: inputTokenPath,
-      outputTokenPath: outputTokenPath,
-      exactType,
-      tokenAmount,
+      tokenIn: inputTokenPath,
+      tokenOut: outputTokenPath,
+      tradeType: exactType === "EXACT_IN" ? "EXACT_INPUT" : "EXACT_OUTPUT",
+      amount: tokenAmountRaw?.toString() || "0",
     });
 
     const response = await this.networkClient.get<EstimateSwapRouteResponse>({
