@@ -24,16 +24,17 @@ import { usePool } from "@hooks/pool/use-pool";
 import { useSelectPool } from "@hooks/pool/use-select-pool";
 import BigNumber from "bignumber.js";
 import {
+  getDepositAmountsByAmountA,
+  getDepositAmountsByAmountB,
   makeSwapFeeTier,
-  priceToNearTick,
   priceToTick,
-  tickToPrice,
 } from "@utils/swap-utils";
 import { useRouter } from "next/router";
 import { PoolModel } from "@models/pool/pool-model";
 import { useLoading } from "@hooks/common/use-loading";
 import { makeQueryString } from "@hooks/common/use-url-param";
 import { isNumber } from "@utils/number-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
 export interface AddLiquidityPriceRage {
   type: PriceRangeType;
@@ -282,13 +283,22 @@ const EarnAddLiquidityContainer: React.FC = () => {
     [pools],
   );
 
-  const changePriceRange = useCallback((priceRange: AddLiquidityPriceRage) => {
-    setPriceRange(priceRange);
-    if (priceRange.type !== "Custom") {
-      selectPool.setIsChangeMinMax(false);
-      selectPool.setFullRange(false);
-    }
-  }, []);
+  const changePriceRange = useCallback(
+    (priceRange: AddLiquidityPriceRage) => {
+      setPriceRange(priceRange);
+
+      if (priceRange.type !== "Custom") {
+        selectPool.setIsChangeMinMax(false);
+        selectPool.setFullRange(false);
+      }
+
+      // If you've already set a starting price, update it to apply tick spacing.
+      if (createOption.isCreate && createOption.startPrice) {
+        changeStartingPrice(createOption.startPrice.toString());
+      }
+    },
+    [createOption],
+  );
 
   useEffect(() => {
     if (selectPool.isChangeMinMax) {
@@ -364,7 +374,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback(
     (price: string) => {
-      if (price === "") {
+      if (price === "" || !swapFeeTier) {
         setCreateOption(prev => ({
           ...prev,
           startPrice: null,
@@ -379,14 +389,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
-      const nearStartPrice = tickToPrice(tick);
+
       setCreateOption(prev => ({
         ...prev,
-        startPrice: nearStartPrice,
+        startPrice: priceNum,
       }));
     },
-    [selectPool.tickSpacing],
+    [swapFeeTier],
   );
 
   const updateTokenBAmountByTokenA = useCallback(
@@ -394,51 +403,41 @@ const EarnAddLiquidityContainer: React.FC = () => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
-      if (selectPool.currentPrice === null) {
+      if (!selectPool.currentPrice) {
         return;
       }
+
       if (/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
         tokenBAmountInput.changeAmount("0");
         return;
       }
-      const ordered = tokenA?.symbol === selectPool.compareToken?.symbol;
-      const currentPrice = ordered
-        ? selectPool.currentPrice
-        : 1 / selectPool.currentPrice;
-      const depositRatioA = selectPool.depositRatio;
-      if (
-        selectPool.minPrice === null ||
-        selectPool.maxPrice === null ||
-        depositRatioA === null
-      ) {
-        tokenBAmountInput.changeAmount(
-          BigNumber(amount).multipliedBy(currentPrice).toFixed(0),
-        );
-      } else {
-        const isZero = ordered ? depositRatioA === 100 : depositRatioA === 0;
-        if (isZero) {
-          tokenBAmountInput.changeAmount("0");
-          return;
-        }
 
-        const depositRatioB = 100 - depositRatioA;
-        const ratio = ordered
-          ? depositRatioB / depositRatioA
-          : depositRatioA / depositRatioB;
-        const changedAmount = BigNumber(amount).multipliedBy(
-          currentPrice * ratio,
-        );
-        tokenBAmountInput.changeAmount(
-          changedAmount.toFixed(tokenB?.decimals || 0, BigNumber.ROUND_FLOOR),
-        );
+      if (!amount || !tokenA || !tokenB) {
+        return;
       }
+
+      if (!selectPool.minPrice || !selectPool.maxPrice) {
+        return;
+      }
+
+      const decimals = tokenB.decimals - tokenA.decimals;
+      const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
+      const { amountB } = getDepositAmountsByAmountA(
+        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        BigInt(amountRaw),
+      );
+      const expectedTokenAmount =
+        makeDisplayTokenAmount(tokenB, amountB) || "0";
+      tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
-      selectPool.compareToken?.symbol,
       selectPool.currentPrice,
+      selectPool.compareToken?.symbol,
+      selectPool.minPrice,
+      selectPool.maxPrice,
       tokenA?.symbol,
-      tokenBAmountInput,
-      selectPool.depositRatio,
     ],
   );
 
@@ -447,51 +446,37 @@ const EarnAddLiquidityContainer: React.FC = () => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
-      if (selectPool.currentPrice === null) {
-        return;
-      }
-      if (/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
-        tokenAAmountInput.changeAmount("0");
-        return;
-      }
-      const ordered = tokenB?.symbol === selectPool.compareToken?.symbol;
-      const currentPrice = ordered
-        ? selectPool.currentPrice
-        : 1 / selectPool.currentPrice;
-      const depositRatioA = selectPool.depositRatio;
 
-      if (
-        !selectPool.minPrice ||
-        !selectPool.maxPrice ||
-        depositRatioA === null
-      ) {
-        tokenAAmountInput.changeAmount(
-          BigNumber(amount).multipliedBy(currentPrice).toFixed(0),
-        );
-      } else {
-        const isZero = ordered ? depositRatioA === 100 : depositRatioA === 0;
-        if (isZero) {
-          tokenAAmountInput.changeAmount("0");
-          return;
-        }
-        const depositRatioB = 100 - depositRatioA;
-        const ratio = ordered
-          ? depositRatioB / depositRatioA
-          : depositRatioA / depositRatioB;
-        const changedAmount = BigNumber(amount).multipliedBy(
-          currentPrice * ratio,
-        );
-        tokenAAmountInput.changeAmount(
-          changedAmount.toFixed(tokenA?.decimals || 0, BigNumber.ROUND_FLOOR),
-        );
+      if (!selectPool.currentPrice) {
+        return;
       }
+
+      if (!amount || !tokenA || !tokenB) {
+        return;
+      }
+
+      if (!selectPool.minPrice || !selectPool.maxPrice) {
+        return;
+      }
+
+      const decimals = tokenB.decimals - tokenA.decimals;
+      const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
+      const { amountA } = getDepositAmountsByAmountB(
+        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
+        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        BigInt(amountRaw),
+      );
+      const expectedTokenAmount =
+        makeDisplayTokenAmount(tokenA, amountA) || "0";
+      tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
-      selectPool.compareToken?.symbol,
       selectPool.currentPrice,
-      tokenAAmountInput,
+      selectPool.compareToken?.symbol,
+      selectPool.minPrice,
+      selectPool.maxPrice,
       tokenB?.symbol,
-      selectPool.depositRatio,
     ],
   );
 
@@ -600,6 +585,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       updateBalances();
     }
   }, [account?.address]);
+
   useEffect(() => {
     if (tokens.length === 0 || Object.keys(router.query).length === 0) {
       return;

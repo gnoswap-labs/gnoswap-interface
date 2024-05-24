@@ -763,8 +763,8 @@ export const useSwapHandler = () => {
           });
           setTimeout(() => {
             if (!!result) {
-              if (typeof result !== "boolean") {
-                unwrapBySwapResposne(result);
+              if (typeof result !== "boolean" && result.data) {
+                unwrapBySwapResposne(result.data);
               }
               setNotice(
                 {

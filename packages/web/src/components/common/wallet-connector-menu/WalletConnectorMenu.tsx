@@ -26,6 +26,7 @@ import IconFailed from "../icons/IconFailed";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
 import { roundDownDecimalNumber } from "@utils/regex";
 import BigNumber from "bignumber.js";
+import { ITokenResponse } from "@repositories/token";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
 
@@ -79,6 +80,7 @@ interface WalletConnectorMenuProps {
   onClickChangeLanguage: () => void;
   gnotBalance?: number;
   isLoadingGnotBalance?: boolean;
+  gnotToken?: ITokenResponse;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -92,6 +94,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   isSwitchNetwork,
   onClickChangeLanguage,
   gnotBalance,
+  gnotToken,
+  isLoadingGnotBalance,
 }) => {
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -112,9 +116,12 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const balanceText = useMemo(() => {
-    const balance = gnotBalance || account?.balances?.[0].amount;
+    const balance = isLoadingGnotBalance ? account?.balances?.[0].amount : gnotBalance;
 
-    const formattedPrice = ((balance ?? 0) / 1000000).toString().match(roundDownDecimalNumber(6))?.toString() ?? 0;
+    const formattedPrice = BigNumber(balance ?? 0)
+      .shiftedBy((gnotToken?.decimals ?? 0) * -1)
+      .toString()
+      .match(roundDownDecimalNumber(6))?.toString() ?? 0;
 
     const price = BigNumber(formattedPrice).toFormat();
 

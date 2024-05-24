@@ -1,4 +1,6 @@
-import React, { useLayoutEffect, useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 export interface PortalProps {
@@ -12,7 +14,7 @@ const GnoswapModalProvider: React.FC<PortalProps> = ({
 }) => {
   const [element, setElement] = useState<HTMLElement | null>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setElement(document.getElementById(selector ?? "portal-root"));
   }, [selector]);
 

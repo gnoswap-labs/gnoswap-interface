@@ -28,32 +28,32 @@ interface ActivityInfoProps {
   key?: number;
 }
 
-const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
+const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
   const timeFormat = getDateUtcToLocal(time);
   return (
-    <TokenInfoWrapper key={key}>
+    <TokenInfoWrapper>
       <HoverSection>
         <TableColumn className="left" tdWidth={ACTIVITY_TD_WIDTH[0]}>
           <span className="token-index">
             {action.split(" ").some(i => adjective.includes(i))
               ? action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ||
-                    idx === action.split(" ").length - 3 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })
+                return idx === action.split(" ").length - 1 ||
+                  idx === action.split(" ").length - 3 ? (
+                  <span key={idx} className="symbol-text">{text}</span>
+                ) : (
+                  text + " "
+                );
+              })
               : action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })}
+                return idx === action.split(" ").length - 1 ? (
+                  <span key={idx} className="symbol-text">{text}</span>
+                ) : (
+                  text + " "
+                );
+              })}
             <IconButton
               onClick={() => {
                 window.open(item.explorerUrl, "_blank");
@@ -104,33 +104,32 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item, idx, key }) => {
 export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({
   item,
   idx,
-  key,
 }) => {
   const { action, totalValue, tokenAmountOne, tokenAmountTwo, account, time } =
     item;
   const adjective = ["for", "and"];
   const timeFormat = getDateUtcToLocal(time);
   return (
-    <TokenInfoWrapper key={key}>
+    <TokenInfoWrapper>
       <HoverSection>
         <TableColumn className="left" tdWidth={MOBILE_ACTIVITY_TD_WIDTH[0]}>
           <span className="token-index">
             {action.split(" ").some(i => adjective.includes(i))
               ? action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ||
-                    idx === action.split(" ").length - 3 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })
+                return idx === action.split(" ").length - 1 ||
+                  idx === action.split(" ").length - 3 ? (
+                  <span key={idx} className="symbol-text">{text}</span>
+                ) : (
+                  text + " "
+                );
+              })
               : action.split(" ").map((text, idx) => {
-                  return idx === action.split(" ").length - 1 ? (
-                    <span className="symbol-text">{text}</span>
-                  ) : (
-                    text + " "
-                  );
-                })}
+                return idx === action.split(" ").length - 1 ? (
+                  <span key={idx} className="symbol-text">{text}</span>
+                ) : (
+                  text + " "
+                );
+              })}
             <IconButton
               onClick={() => {
                 alert("open Link");

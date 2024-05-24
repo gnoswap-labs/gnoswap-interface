@@ -40,6 +40,7 @@ import ExchangeRate from "../exchange-rate/ExchangeRate";
 import { subscriptFormat } from "@utils/number-utils";
 import PoolSelectionGraph from "../pool-selection-graph/PoolSelectionGraph";
 import { ZOOL_VALUES } from "@constants/graph.constant";
+import { checkGnotPath } from "@utils/common";
 
 export interface SelectPriceRangeCustomProps {
   tokenA: TokenModel;
@@ -107,15 +108,35 @@ const SelectPriceRangeCustom = forwardRef<
       Array.isArray(selectPool.liquidityOfTickPoints) &&
       selectPool.renderState() === "DONE";
 
-    const comparedTokenA = selectPool.compareToken?.symbol !== tokenB.symbol;
+    const flip = useMemo(() => {
+      if (!selectPool.compareToken) {
+        return false;
+      }
+      if (selectPool.startPrice) {
+        return false;
+      }
+
+      const compareTokenPaths = [
+        checkGnotPath(tokenA.path),
+        checkGnotPath(tokenB.path),
+      ].sort();
+      return (
+        compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken.path)
+      );
+    }, [
+      selectPool.compareToken,
+      selectPool.startPrice,
+      tokenA.path,
+      tokenB.path,
+    ]);
 
     const currentTokenA = useMemo(() => {
-      return comparedTokenA ? getGnotPath(tokenA) : getGnotPath(tokenB);
-    }, [comparedTokenA, tokenA, tokenB]);
+      return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
+    }, [flip, tokenA, tokenB]);
 
     const currentTokenB = useMemo(() => {
-      return comparedTokenA ? getGnotPath(tokenB) : getGnotPath(tokenA);
-    }, [comparedTokenA, tokenA, tokenB]);
+      return flip ? getGnotPath(tokenA) : getGnotPath(tokenB);
+    }, [flip, tokenA, tokenB]);
 
     const currentPriceStr = useMemo(() => {
       if (!selectPool.currentPrice) {
@@ -206,6 +227,7 @@ const SelectPriceRangeCustom = forwardRef<
 
     const selectFullRange = useCallback(() => {
       selectPool.selectFullRange();
+      setShiftPosition(0);
     }, [selectPool]);
 
     function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
@@ -244,6 +266,7 @@ const SelectPriceRangeCustom = forwardRef<
 
     function resetRange(priceRangeType?: PriceRangeType | null) {
       selectPool.resetRange();
+      setShiftPosition(0);
       initPriceRange(priceRangeType);
     }
 
@@ -362,7 +385,7 @@ const SelectPriceRangeCustom = forwardRef<
     ]);
 
     const selectTokenPair = useMemo(() => {
-      if (isKeepToken) {
+      if (!isKeepToken) {
         return [getGnotPath(tokenB).symbol, getGnotPath(tokenA).symbol];
       }
 
@@ -506,14 +529,8 @@ const SelectPriceRangeCustom = forwardRef<
                         height={GRAPH_HEIGHT}
                         position="top"
                         offset={selectPool.bins?.length}
-                        price={
-                          selectPool.startPrice
-                            ? selectPool.startPrice
-                            : selectPool.currentPrice || 1
-                        }
-                        flip={
-                          [tokenA.path, tokenB.path].sort()[0] !== tokenA.path
-                        }
+                        price={selectPool.currentPrice || 1}
+                        flip={flip}
                         fullRange={selectPool.selectedFullRange}
                         zoomLevel={selectPool.zoomLevel}
                         minPrice={selectPool.minPrice}

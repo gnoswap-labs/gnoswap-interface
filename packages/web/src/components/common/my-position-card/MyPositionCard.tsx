@@ -25,6 +25,7 @@ import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../icons/IconStrokeArrowDown";
 import { toUnitFormat } from "@utils/number-utils";
+import { numberToRate } from "@utils/string-utils";
 
 interface MyPositionCardProps {
   position: PoolPositionModel;
@@ -80,8 +81,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [position.positionUsdValue]);
 
   const aprStr = useMemo(() => {
-    return "-";
-    // return position.apr === "" ? "-" : `${numberToFormat(position.apr, 2)}%`;
+    return numberToRate(position.apr);
   }, [position.apr]);
 
   const currentPrice = useMemo(() => {
@@ -92,7 +92,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       return 0;
     }
     const minPrice = tickToPrice(position.tickLower);
-    return (((currentPrice - minPrice) / currentPrice) * 100);
+    return ((currentPrice - minPrice) / currentPrice) * 100;
   }, [currentPrice, position.tickLower]);
 
   const maxTickRate = useMemo(() => {
@@ -245,7 +245,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return maxTickRate > 0 ? "positive" : "negative";
   }, [getMaxTick, maxTickRate]);
   const claimableUSD = useMemo(() => {
-    const temp = position.reward.reduce((acc, cur) => Number(cur.claimableUsd) + acc, 0);
+    const temp = position.reward.reduce(
+      (acc, cur) => Number(cur.claimableUsd) + acc,
+      0,
+    );
     return toUnitFormat(temp, true, true);
   }, [position.reward]);
   return (

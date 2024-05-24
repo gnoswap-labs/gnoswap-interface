@@ -166,6 +166,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({
     setIsShowClosedPosition(!isShowClosePosition);
   };
 
+
   return (
     <MyLiquidity
       address={address || account?.address || null}

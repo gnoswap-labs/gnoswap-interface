@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { numberToRate } from "@utils/string-utils";
 
 interface SwapLiquidityProps {
   liquiditys: LiquidityInfo[];
@@ -97,7 +98,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({
                   </span>
                   <span className="volume">{liquidity.volume}</span>
                   <span className="liquidity">{liquidity.liquidity}</span>
-                  <span className="apr">{liquidity.apr}</span>
+                  <span className="apr">{numberToRate(liquidity.apr)}</span>
                 </div>
               </Link>
             );

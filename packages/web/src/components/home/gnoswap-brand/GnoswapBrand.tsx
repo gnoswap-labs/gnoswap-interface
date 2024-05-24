@@ -2,6 +2,7 @@ import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconTwitter from "@components/common/icons/social/IconTwitter";
+import IconDiscord from "@components/common/icons/social/IconDiscord";
 import { DeviceSize } from "@styles/media";
 import React, { useCallback } from "react";
 import { ValuesType } from "utility-types";
@@ -13,7 +14,6 @@ import {
   DescriptionTitle,
   DescriptionContainer,
 } from "./GnoswapBrand.styles";
-import IconDiscode from "@components/common/icons/social/IconDiscode";
 
 export const SNS_TYPE = {
   GITHUB: "github",
@@ -44,11 +44,7 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
     [onClickSns],
   );
 
-  // const onClickTelegram = useCallback(
-  //   () => onClickSns(SNS_TYPE.TELEGRAM),
-  //   [onClickSns],
-  // );
-  const onCickDiscord = useCallback(
+  const onClickDiscord = useCallback(
     () => onClickSns(SNS_TYPE.DISCORD),
     [onClickSns],
   );
@@ -82,8 +78,8 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
             <button onClick={onClickGitbook}>
               <IconGitbook className="icon" />
             </button>
-            <button onClick={onCickDiscord}>
-              <IconDiscode className="icon" />
+            <button onClick={onClickDiscord}>
+              <IconDiscord className="icon" />
             </button>
             <button onClick={onClickMedium}>
               <IconMedium className="icon" />
@@ -96,9 +92,9 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({
             The first Concentrated Liquidity AMM DEX built using Gnolang <br />
             to offer the most simplified and user-friendly DeFi experience for traders.
           </DescriptionTitle>
-        </DescriptionContainer>
+        </DescriptionContainer >
       )}
-    </GnoswapBrandWrapper>
+    </GnoswapBrandWrapper >
   );
 };
 

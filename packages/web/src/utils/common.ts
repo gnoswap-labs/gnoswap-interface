@@ -166,6 +166,10 @@ export const checkGnotPath = (path: string) => {
   }
 };
 
+export const isGNOTPath = (path: string) => {
+  return path === WRAPPED_GNOT_PATH || path === "gnot";
+};
+
 export const isWrapped = (path: string) => {
   return path === WRAPPED_GNOT_PATH;
 };

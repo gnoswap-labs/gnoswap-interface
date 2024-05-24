@@ -109,37 +109,57 @@ const GainerAndLoserContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const gainersList = useMemo(() => {
-    return (gainers ?? [])?.map((item: IGainer) => {
-      const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
+    return gainers?.slice(0, 3).map((item: IGainer) => {
+      const isGnotPath = item.tokenPath === wugnotPath;
+      const priceChange = item.tokenPrice24hChange || 0;
+      const temp: TokenModel =
+        tokens.filter(
+          (token: TokenModel) => token.path === item.tokenPath,
+        )?.[0] || {};
       return {
-        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
-        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
-        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
-        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
+        path: isGnotPath ? gnot?.path || "" : item.tokenPath,
+        name: isGnotPath ? gnot?.name || "" : temp.name,
+        symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
+        logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
         price: `${(toPriceFormat(BigNumber(item.tokenPrice).toFormat(), { usd: true }))}`,
         change: {
-          status: Number(item.tokenPrice24hChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${Number(item.tokenPrice24hChange) >= 0 ? "+" : ""}${Number(item.tokenPrice24hChange).toFixed(2)}%`,
-        }
+          status:
+            Number(priceChange) >= 0
+              ? MATH_NEGATIVE_TYPE.POSITIVE
+              : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
+            priceChange,
+          ).toFixed(2)}%`,
+        },
       };
-    }).slice(0, 3);
+    });
   }, [tokens, gainers]);
 
   const loserList = useMemo(() => {
-    return (losers ?? [])?.map((item: IGainer) => {
-      const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
+    return losers?.slice(0, 3)?.map((item: IGainer) => {
+      const isGnotPath = item.tokenPath === wugnotPath;
+      const priceChange = item.tokenPrice24hChange || 0;
+      const temp: TokenModel =
+        tokens.filter(
+          (token: TokenModel) => token.path === item.tokenPath,
+        )?.[0] || {};
       return {
-        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
-        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
-        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
-        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
+        path: isGnotPath ? gnot?.path || "" : item.tokenPath,
+        name: isGnotPath ? gnot?.name || "" : temp.name,
+        symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
+        logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
         price: `${toPriceFormat(BigNumber(item.tokenPrice).toFormat(), { usd: true })}`,
         change: {
-          status: Number(item.tokenPrice24hChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${Number(item.tokenPrice24hChange) >= 0 ? "+" : ""}${Number(item.tokenPrice24hChange).toFixed(2)}%`,
-        }
+          status:
+            Number(priceChange) >= 0
+              ? MATH_NEGATIVE_TYPE.POSITIVE
+              : MATH_NEGATIVE_TYPE.NEGATIVE,
+          value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
+            priceChange,
+          ).toFixed(2)}%`,
+        },
       };
-    }).slice(0, 3);
+    });
   }, [tokens, losers]);
 
   return (

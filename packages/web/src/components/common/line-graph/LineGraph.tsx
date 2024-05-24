@@ -352,7 +352,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     const optimizeTime = function (time: number, width: number) {
       return new BigNumber(time - minTime)
-        .multipliedBy(width - baseLineNumberWidthComputation)
+        .multipliedBy((width) - baseLineNumberWidthComputation)
         .dividedBy(maxTime - minTime)
         .toNumber();
     };

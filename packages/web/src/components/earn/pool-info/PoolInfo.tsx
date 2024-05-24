@@ -13,6 +13,7 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import OverlapLogo from "@components/common/overlap-logo/OverlapLogo";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 import { DEVICE_TYPE } from "@styles/media";
+import { numberToRate } from "@utils/string-utils";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -98,7 +99,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({
       </TableColumn>
       {/* APR */}
       <TableColumn tdWidth={tdWidth[4]}>
-        <span className="apr">{apr}</span>
+        <span className="apr">{numberToRate(apr)}</span>
       </TableColumn>
       <TableColumn tdWidth={tdWidth[5]}>{rewardImage}</TableColumn>
       <TableColumn tdWidth={tdWidth[6]} onClick={e => e.stopPropagation()}>

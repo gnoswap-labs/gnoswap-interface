@@ -19,6 +19,26 @@ export const PoolSelectionGraphWrapper = styled.div`
 
   svg {
     overflow: overlay;
+
+    text {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 15px;
+      color: #e0e8f4;
+    }
+
+    .x-axis {
+      color: ${({ theme }) => theme.color.border05};
+
+      .tick {
+        text {
+          font-size: 9px;
+          font-weight: 400;
+          line-height: 11px;
+          color: ${({ theme }) => theme.color.border05};
+        }
+      }
+    }
   }
 
   .bar {
@@ -169,4 +189,12 @@ export const PoolSelectionGraphTooltipWrapper = styled.div`
       max-width: 336px;
     }
   }
+`;
+
+export const EventBlocker = styled.div`
+  position: absolute;
+  top: 0;
+  height: 0;
+  width: 100%;
+  height: 100%;
 `;

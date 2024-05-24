@@ -9,6 +9,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { IPriceRange } from "@hooks/increase/use-increase-handle";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { numberToRate } from "@utils/string-utils";
 import React from "react";
 import {
   IncreaseSelectPositionWrapper,
@@ -16,8 +17,8 @@ import {
 } from "./IncreaseSelectPosition.styles";
 
 export interface IncreaseSelectPositionProps {
-  tokenA: TokenModel
-  tokenB: TokenModel
+  tokenA: TokenModel;
+  tokenB: TokenModel;
   fee: string;
   maxPriceStr: string;
   minPriceStr: string;
@@ -99,7 +100,8 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  The deposit ratio of the two tokens is determined based on the current price and the set price range.
+                  The deposit ratio of the two tokens is determined based on the
+                  current price and the set price range.
                 </ToolTipContentWrapper>
               }
             >
@@ -107,7 +109,8 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
             </Tooltip>
           </div>
           <p className="value">
-            {priceRangeSummary.tokenARatioStr}{"% "}
+            {priceRangeSummary.tokenARatioStr}
+            {"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenA?.symbol}
@@ -118,7 +121,8 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
             ) : (
               `${tokenA?.symbol}`
             )}{" "}
-            / {priceRangeSummary.tokenBRatioStr}{"% "}
+            / {priceRangeSummary.tokenBRatioStr}
+            {"% "}
             {isMobile ? (
               <MissingLogo
                 symbol={tokenB?.symbol}
@@ -161,7 +165,7 @@ const IncreaseSelectPosition: React.FC<IncreaseSelectPositionProps> = ({
               <IconInfo />
             </Tooltip>
           </div>
-          <p className="value">{aprFee}%</p>
+          <p className="value">{numberToRate(aprFee)}</p>
         </div>
       </div>
     </IncreaseSelectPositionWrapper>

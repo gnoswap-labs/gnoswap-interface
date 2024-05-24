@@ -25,10 +25,11 @@ import { useAtom } from "jotai";
 import { useLoading } from "@hooks/common/use-loading";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { checkGnotPath, encryptId } from "@utils/common";
-import { QUERY_KEY, useGetBinsByPath } from "@query/pools";
+import { QUERY_KEY, useGetBinsByPath, useInitializeBins } from "@query/pools";
 import BigNumber from "bignumber.js";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ZOOL_VALUES } from "@constants/graph.constant";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -163,8 +164,30 @@ export const useSelectPool = ({
     calculatedPoolPath || "",
     ZOOL_VALUES[zoomLevel],
     {
-      enabled: !!calculatedPoolPath,
-      queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel],
+      enabled: !!calculatedPoolPath && !isCreate,
+      queryKey: [
+        "useSelectPool/getBins",
+        calculatedPoolPath,
+        zoomLevel,
+        isCreate,
+      ],
+    },
+  );
+
+  const { data: initializeBins } = useInitializeBins(
+    feeTier,
+    startPrice,
+    ZOOL_VALUES[zoomLevel],
+    false,
+    {
+      enabled: !!feeTier && !!startPrice && !!isCreate,
+      queryKey: [
+        QUERY_KEY.initializeBins,
+        feeTier,
+        startPrice,
+        zoomLevel,
+        false,
+      ],
     },
   );
 
@@ -263,9 +286,8 @@ export const useSelectPool = ({
   }, [defaultPriceRange]);
 
   const poolPath = useMemo(() => {
-    setCurrentPoolPath(latestPoolPath);
     return latestPoolPath;
-  }, [latestPoolPath, setCurrentPoolPath]);
+  }, [latestPoolPath]);
 
   const renderState = useCallback(
     (isIgnoreDefaultLoading = false) => {
@@ -329,25 +351,22 @@ export const useSelectPool = ({
   }, [fullRange, maxPosition]);
 
   const depositRatio = useMemo(() => {
-    if (minPrice === null || maxPrice === null) {
+    if (
+      !tokenA ||
+      !tokenB ||
+      minPrice === null ||
+      maxPrice === null ||
+      !compareToken
+    ) {
       return null;
     }
-    const currentPrice = isCreate ? startPrice : price;
-    if (currentPrice === undefined || currentPrice === null) {
+
+    const ordered =
+      checkGnotPath(compareToken.path) === checkGnotPath(tokenA.path);
+    const currentPrice = isCreate ? startPrice : ordered ? price : 1 / price;
+    if (!currentPrice) {
       return null;
     }
-
-    const currentMinPrice = fullRange ? MIN_PRICE : minPrice;
-    const currentMaxPrice = fullRange ? MAX_PRICE : maxPrice;
-
-    const adjustAmountA = 1_000_000_000n;
-
-    const { amountA, amountB } = getDepositAmountsByAmountA(
-      currentPrice,
-      currentMinPrice,
-      currentMaxPrice,
-      adjustAmountA,
-    );
 
     if (maxPrice < currentPrice) {
       return 0;
@@ -357,12 +376,37 @@ export const useSelectPool = ({
       return 100;
     }
 
-    const sumOfAmounts = amountA + amountB;
-    return BigNumber(amountA.toString())
+    const currentMinPrice = fullRange ? MIN_PRICE : minPrice;
+    const currentMaxPrice = fullRange ? MAX_PRICE : maxPrice;
+
+    const adjustAmountA = 1_000_000_000n;
+
+    const decimals = tokenB.decimals - tokenA.decimals;
+    const { amountA, amountB } = getDepositAmountsByAmountA(
+      BigNumber(currentPrice).shiftedBy(decimals).toNumber(),
+      BigNumber(currentMinPrice).shiftedBy(decimals).toNumber(),
+      BigNumber(currentMaxPrice).shiftedBy(decimals).toNumber(),
+      adjustAmountA,
+    );
+
+    const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || 0;
+    const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || 0;
+
+    const sumOfAmounts = tokenAAmount + tokenBAmount;
+    return BigNumber(tokenAAmount.toString())
       .dividedBy(sumOfAmounts.toString())
       .multipliedBy(100)
       .toNumber();
-  }, [maxPrice, minPrice, price, fullRange, startPrice, isCreate]);
+  }, [
+    tokenA,
+    tokenB,
+    minPrice,
+    maxPrice,
+    isCreate,
+    startPrice,
+    price,
+    fullRange,
+  ]);
 
   console.log("🚀 ~ depositRatio ~ depositRatio:", depositRatio);
 
@@ -499,7 +543,7 @@ export const useSelectPool = ({
 
   const selectFullRange = useCallback(() => {
     const maxPriceRange = SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
-    setZoomLevel(9);
+    setZoomLevel(0);
     setMinPosition(maxPriceRange.minPrice);
     setMaxPosition(maxPriceRange.maxPrice);
     setFullRange(true);
@@ -544,9 +588,13 @@ export const useSelectPool = ({
     }
   }, [options, feeTier]);
 
+  useEffect(() => {
+    setCurrentPoolPath(latestPoolPath);
+  }, [poolPath]);
+
   return {
     startPrice,
-    bins,
+    bins: isCreate ? initializeBins : bins,
     poolPath,
     renderState,
     feeTier,

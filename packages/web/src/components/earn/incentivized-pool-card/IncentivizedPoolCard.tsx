@@ -6,18 +6,21 @@ import {
 } from "./IncentivizedPoolCard.styles";
 import { PoolCardInfo } from "@models/pool/info/pool-card-info";
 import { useMemo } from "react";
-import { INCENTIVE_TYPE_MAPPER, SwapFeeTierInfoMap } from "@constants/option.constant";
+import {
+  INCENTIVE_TYPE_MAPPER,
+  SwapFeeTierInfoMap,
+} from "@constants/option.constant";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { numberToFormat } from "@utils/string-utils";
+import { numberToFormat, numberToRate } from "@utils/string-utils";
 import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
 
 export interface IncentivizedPoolCardProps {
   pool: PoolCardInfo;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
-  checkStakedPool: (poolPath: string | null) => boolean
+  checkStakedPool: (poolPath: string | null) => boolean;
 }
 
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
@@ -44,7 +47,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
 
   const rewardTokensInfo = useMemo(() => {
     const allRewardTokens = pool.rewardTokens;
-    const temp = allRewardTokens.map((item) => {
+    const temp = allRewardTokens.map(item => {
       return {
         ...item,
         logoURI: getGnotPath(item).logoURI,
@@ -91,26 +94,25 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                   {incentivizedLabel && (
                     <Badge
                       type={BADGE_TYPE.DARK_DEFAULT}
-                      text={<OverlapTokenLogo tokens={rewardTokensInfo} size={16} />}
+                      text={
+                        <OverlapTokenLogo tokens={rewardTokensInfo} size={16} />
+                      }
                     />
                   )}
                 </div>
               </div>
-
             </div>
             <div className="list-wrapper">
               <div className="list-header">
-                <span className="label-text">
-                  {POOL_CONTENT_TITLE.TVL}
-                </span>
+                <span className="label-text">{POOL_CONTENT_TITLE.TVL}</span>
                 <span className="label-text">{POOL_CONTENT_TITLE.APR}</span>
               </div>
               <div className="list-content">
                 <span className="value-text">{pool.liquidity}</span>
-                <span className="value-text">{pool.apr}</span>
-              </div>
-            </div>
-          </div>
+                <span className="value-text">{numberToRate(pool.apr)}</span>
+              </div >
+            </div >
+          </div >
           <div className="volume-container">
             <div className="volume-header">
               <div className="volume-title">
@@ -122,7 +124,12 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 <span className="value-text">{pool.fees24h}</span>
               </div>
             </div>
-            <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+            <div
+              className="pool-content"
+              onClick={(e: React.MouseEvent<HTMLDivElement>) =>
+                e.stopPropagation()
+              }
+            >
               <PoolGraph
                 tokenA={pool.tokenA}
                 tokenB={pool.tokenB}
@@ -138,16 +145,16 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({
                 showBar={!isHideBar}
               />
               <div className="price-section">
-                <span className="label-text">
-                  {"Current Price"}
-                </span>
-                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, { decimals: 2 })} ${pool.tokenB.symbol}`}</span>
+                <span className="label-text">{"Current Price"}</span>
+                <span className="label-text">{`1 ${pool.tokenA.symbol
+                  } = ${numberToFormat(pool.price, { decimals: 2 })} ${pool.tokenB.symbol
+                  }`}</span>
               </div>
             </div>
           </div>
-        </PoolCardWrapper>
-      </div>
-    </PoolCardWrapperWrapperBorder>
+        </PoolCardWrapper >
+      </div >
+    </PoolCardWrapperWrapperBorder >
   );
 };
 

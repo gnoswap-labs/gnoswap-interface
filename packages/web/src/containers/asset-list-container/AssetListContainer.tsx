@@ -61,39 +61,6 @@ export const ASSET_FILTER_TYPE = {
 
 export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 
-export const dummyAssetList: Asset[] = [
-  {
-    type: "grc20",
-    chainId: "dev",
-    createdAt: "2023-12-12 23:45:12",
-    name: "Bar",
-    path: "gno.land/r/bar",
-    decimals: 6,
-    symbol: "BAR",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
-    priceID: "gno.land/r/bar",
-    description: "this_is_desc_section",
-    websiteURL: "https://website~~~~",
-    price: "0",
-  },
-  {
-    type: "grc20",
-    chainId: "dev",
-    createdAt: "2023-12-12 23:45:12",
-    name: "Bar",
-    path: "gno.land/r/bar",
-    decimals: 6,
-    symbol: "BAR",
-    logoURI:
-      "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
-    priceID: "gno.land/r/bar",
-    description: "this_is_desc_section",
-    websiteURL: "https://website~~~~",
-    price: "0",
-  },
-];
-
 function filterZeroBalance(asset: Asset) {
   const balance = BigNumber(asset?.balance ?? 0);
   return balance.isGreaterThan(0);

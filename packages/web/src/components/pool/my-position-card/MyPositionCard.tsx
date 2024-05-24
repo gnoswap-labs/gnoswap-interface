@@ -783,13 +783,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <div className="convert-price">
               <div>
                 1
-                {(!isSwap ? tokenA : tokenB)?.symbol} =&nbsp;
-                <ExchangeRate value={minPriceStr} />&nbsp;
-                {(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;(
+                {(!isSwap ? tokenA : tokenB)?.symbol} =& nbsp;
+                <ExchangeRate value={minPriceStr} /> & nbsp;
+                {(!isSwap ? tokenB : tokenA)?.symbol}& nbsp; (
                 <span className={startClass}>
                   {!isSwap ? minTickLabel : maxTickLabel}
                 </span>
-                )&nbsp;
+                ) & nbsp;
                 <Tooltip
                   placement="top"
                   FloatingContent={
@@ -802,11 +802,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 >
                   <IconInfo />
                 </Tooltip>
-                &nbsp;
-              </div>
+                & nbsp;
+              </div >
               <div>
-                ~&nbsp;
-                <ExchangeRate value={maxPriceStr} /> &nbsp;{(!isSwap ? tokenB : tokenA)?.symbol}&nbsp;
+                ~& nbsp;
+                <ExchangeRate value={maxPriceStr} /> & nbsp; {(!isSwap ? tokenB : tokenA)?.symbol}& nbsp;
                 (<span className={endClass}>
                   {!isSwap ? maxTickLabel : minTickLabel}
                 </span>)&nbsp;
@@ -823,9 +823,9 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                   <IconInfo />
                 </Tooltip>
               </div>
-            </div>
+            </div >
           )}
-        </div>
+        </div >
         <PositionHistory position={position} isClosed={isClosed} tokenA={tokenA} tokenB={tokenB} />
       </MyPositionCardWrapper >
     </>

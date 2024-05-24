@@ -255,14 +255,29 @@ const EarnAddLiquidity: React.FC<EarnAddLiquidityProps> = ({
 
   const isShowOutRange = useMemo(() => {
     if (!tokenA || !tokenB) return false;
+
+    if (!selectPool.selectedFullRange) {
+      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
+        return false;
+      }
+    }
+
     const { minPrice, maxPrice, currentPrice } = selectPool;
+
     return (
       ((minPrice || 0) > (currentPrice || 0) &&
         (maxPrice || 0) > (currentPrice || 0)) ||
       ((minPrice || 0) < (currentPrice || 0) &&
         (maxPrice || 0) < (currentPrice || 0))
     );
-  }, [selectPool, tokenA, tokenB]);
+  }, [
+    selectPool.selectedFullRange,
+    selectPool.minPrice,
+    selectPool.maxPrice,
+    selectPool.currentPrice,
+    tokenA,
+    tokenB,
+  ]);
 
   const isLoading = useMemo(
     () => selectPool.renderState() === "LOADING" || isLoadingCommon,

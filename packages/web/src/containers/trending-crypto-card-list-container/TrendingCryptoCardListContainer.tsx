@@ -62,20 +62,34 @@ const TrendingCryptoCardListContainer: React.FC = () => {
   const { isLoadingCommon } = useLoading();
 
   const trendingCryptoList = useMemo(() => {
-    return (trending ?? [])?.map((item: ITrending) => {
-      const temp: TokenModel = tokens.filter((token: TokenModel) => token.path === item.tokenPath)?.[0] || {};
-      return {
-        path: item.tokenPath === wugnotPath ? (gnot?.path || "") : item.tokenPath,
-        name: item.tokenPath === wugnotPath ? (gnot?.name || "") : temp.name,
-        symbol: item.tokenPath === wugnotPath ? (gnot?.symbol || "") : temp.symbol,
-        logoURI: item.tokenPath === wugnotPath ? (gnot?.logoURI || "") : temp.logoURI,
-        price: `${(toPriceFormat(item.tokenPrice, { usd: true }))}`,
-        change: {
-          status: Number(item.tokenPrice24hChange) >= 0 ? MATH_NEGATIVE_TYPE.POSITIVE : MATH_NEGATIVE_TYPE.NEGATIVE,
-          value: `${Number(item.tokenPrice24hChange) >= 0 ? "+" : ""}${Number(item.tokenPrice24hChange).toFixed(2)}%`,
-        }
-      };
-    }).slice(0, 5);
+    return (trending ?? [])
+      ?.map((item: ITrending) => {
+        const temp: TokenModel =
+          tokens.filter(
+            (token: TokenModel) => token.path === item.tokenPath,
+          )?.[0] || {};
+        const priceChange = item.tokenPrice24hChange || 0;
+        return {
+          path:
+            item.tokenPath === wugnotPath ? gnot?.path || "" : item.tokenPath,
+          name: item.tokenPath === wugnotPath ? gnot?.name || "" : temp.name,
+          symbol:
+            item.tokenPath === wugnotPath ? gnot?.symbol || "" : temp.symbol,
+          logoURI:
+            item.tokenPath === wugnotPath ? gnot?.logoURI || "" : temp.logoURI,
+          price: `${(toPriceFormat(item.tokenPrice, { usd: true }))}`,
+          change: {
+            status:
+              Number(priceChange) >= 0
+                ? MATH_NEGATIVE_TYPE.POSITIVE
+                : MATH_NEGATIVE_TYPE.NEGATIVE,
+            value: `${Number(priceChange) >= 0 ? "+" : ""}${Number(
+              priceChange,
+            ).toFixed(2)}%`,
+          },
+        };
+      })
+      .slice(0, 5);
   }, [tokens, trending, gnot, wugnotPath]);
 
   return (

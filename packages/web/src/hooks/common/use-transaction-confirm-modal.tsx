@@ -9,6 +9,12 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 export interface TransactionConfirmModalResponse {
   openModal: () => void;
   closeModal: () => void;
+  update: (
+    status: CommonState.TransactionConfirmStatus,
+    description: string | null,
+    scannerURL: string | null,
+    callback?: (() => void) | undefined,
+  ) => void;
 }
 
 export interface UseTransactionConfirmModalProps {
@@ -19,7 +25,9 @@ export interface UseTransactionConfirmModalProps {
 export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalProps): TransactionConfirmModalResponse => {
   const [, setOpenedModal] = useAtom(CommonState.openedTransactionModal);
   const [, setModalContent] = useAtom(CommonState.transactionModalContent);
-  const [transactionModalData, setTransactionModalData] = useAtom(CommonState.transactionModalData);
+  const [transactionModalData, setTransactionModalData] = useAtom(
+    CommonState.transactionModalData,
+  );
   const forceRefect = useForceRefetchQuery();
   const { account } = useWallet();
 
@@ -39,6 +47,23 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
     }
   }, [closeModal, transactionModalData, account]);
 
+  const update = useCallback(
+    (
+      status: CommonState.TransactionConfirmStatus,
+      description: string | null,
+      scannerURL: string | null,
+      callback?: (() => void) | undefined,
+    ) => {
+      setTransactionModalData({
+        status,
+        description,
+        scannerURL,
+        callback,
+      });
+    },
+    [],
+  );
+
   const openModal = useCallback(() => {
     setOpenedModal(true);
   }, [setOpenedModal]);
@@ -52,18 +77,23 @@ export const useTransactionConfirmModal = (props?: UseTransactionConfirmModalPro
           scannerURL={transactionModalData.scannerURL}
           confirm={confirm}
           close={confirm}
-        />
+        />,
       );
     }
-    return () => { setModalContent(null); };
+    return () => {
+      setModalContent(null);
+    };
   }, [closeModal, setModalContent, transactionModalData]);
 
   useEffect(() => {
-    return () => { closeModal(); };
+    return () => {
+      closeModal();
+    };
   }, []);
 
   return {
     openModal,
     closeModal,
+    update,
   };
 };

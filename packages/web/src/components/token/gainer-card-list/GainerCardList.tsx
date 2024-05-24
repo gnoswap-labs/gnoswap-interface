@@ -12,7 +12,7 @@ interface GainerCardListProps {
   loadingGain: boolean;
 }
 
-const GainerCardList: React.FC<GainerCardListProps> = ({ gainers, loadingGain }) => {
+const GainerCardList: React.FC<GainerCardListProps> = ({ gainers = [], loadingGain }) => {
   return (
     <section css={cardStyle}>
       <h2 className="card-title">Top 3 Gainers</h2>

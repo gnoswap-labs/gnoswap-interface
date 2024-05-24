@@ -1,3 +1,4 @@
+import { numberToRate } from "@utils/string-utils";
 import React from "react";
 import IconInfo from "../icons/IconInfo";
 import Tooltip from "../tooltip/Tooltip";
@@ -47,7 +48,7 @@ const SelectPriceRangeSummary: React.FC<SelectPriceRangeSummaryProps> = ({
             <IconInfo />
           </Tooltip>
         </div>
-        <span className="value">{estimatedApr}</span>
+        <span className="value">{numberToRate(estimatedApr)}</span>
       </div>
     </SelectPriceRangeSummaryWrapper>
   );

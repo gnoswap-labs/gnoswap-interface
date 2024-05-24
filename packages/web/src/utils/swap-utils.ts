@@ -8,6 +8,7 @@ import BigNumber from "bignumber.js";
 import {
   liquidityAmountsGetAmount0ForLiquidity,
   liquidityAmountsGetAmount1ForLiquidity,
+  liquidityAmountsGetAmountsForLiquidity,
   liquidityAmountsGetLiquidityForAmount0,
   liquidityAmountsGetLiquidityForAmount1,
 } from "./liquidity-utils";
@@ -145,7 +146,7 @@ export function tickToPriceStr(
   return convertToKMB(result.replace(/,/g, ""));
 }
 
-export function feeBoostRateByPrices(
+export function feeBoostByPrices(
   minPrice: number | null,
   maxPrice: number | null,
 ) {
@@ -158,7 +159,19 @@ export function feeBoostRateByPrices(
     .abs();
   return BigNumber(1)
     .dividedBy(1 - sqrt4Value.toNumber())
-    .toFixed(2);
+    .toNumber();
+}
+
+export function feeBoostRateByPrices(
+  minPrice: number | null,
+  maxPrice: number | null,
+) {
+  const feeBoost = feeBoostByPrices(minPrice, maxPrice);
+  if (feeBoost === null) {
+    return null;
+  }
+
+  return BigNumber(feeBoost).toFixed(2);
 }
 
 export function sqrtPriceX96ToTick(priceX96: number | BigInt) {
@@ -192,9 +205,22 @@ export function getDepositAmountsByAmountA(
   maxPrice: number,
   amount: bigint,
 ) {
-  const currentPriceX96 = priceToSqrtX96(currentPrice);
-  const minPriceX96 = priceToSqrtX96(minPrice);
-  const maxPriceX96 = priceToSqrtX96(maxPrice);
+  if (maxPrice < currentPrice) {
+    return {
+      amountA: 0,
+      amountB: amount,
+    };
+  }
+  if (minPrice > currentPrice) {
+    return {
+      amountA: amount,
+      amountB: 0,
+    };
+  }
+
+  const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
+  const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
+  const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
   const liquidity = liquidityAmountsGetLiquidityForAmount0(
     currentPriceX96,
@@ -220,9 +246,22 @@ export function getDepositAmountsByAmountB(
   maxPrice: number,
   amount: bigint,
 ) {
-  const currentPriceX96 = priceToSqrtX96(currentPrice);
-  const minPriceX96 = priceToSqrtX96(minPrice);
-  const maxPriceX96 = priceToSqrtX96(maxPrice);
+  if (maxPrice < currentPrice) {
+    return {
+      amountA: 0,
+      amountB: amount,
+    };
+  }
+  if (minPrice > currentPrice) {
+    return {
+      amountA: amount,
+      amountB: 0,
+    };
+  }
+
+  const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
+  const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
+  const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
   const liquidity = liquidityAmountsGetLiquidityForAmount1(
     currentPriceX96,
@@ -239,5 +278,28 @@ export function getDepositAmountsByAmountB(
   return {
     amountA,
     amountB: amount,
+  };
+}
+
+export function getDepositAmountsByLiquidity(
+  currentPrice: number,
+  minPrice: number,
+  maxPrice: number,
+  liquidity: bigint,
+) {
+  const currentPriceX96 = priceToSqrtX96(currentPrice);
+  const minPriceX96 = priceToSqrtX96(minPrice);
+  const maxPriceX96 = priceToSqrtX96(maxPrice);
+
+  const { amount0, amount1 } = liquidityAmountsGetAmountsForLiquidity(
+    currentPriceX96,
+    minPriceX96,
+    maxPriceX96,
+    liquidity,
+  );
+
+  return {
+    amountA: amount0,
+    amountB: amount1,
   };
 }

@@ -50,7 +50,6 @@ export default function Pool() {
     }
     return false;
   }, [data?.incentiveType]);
-  console.log(hash, "hash");
 
   useEffect(() => {
     if (hash === "staking" && isFetchedPosition && !loading && !isLoadingCommon) {
