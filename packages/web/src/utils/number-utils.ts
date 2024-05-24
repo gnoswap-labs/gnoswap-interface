@@ -145,11 +145,13 @@ export const toPriceFormat = (
     isKMB?: boolean,
     isFormat?: boolean,
     isSmallValueShorten?: boolean,
+    isRounding?: boolean,
   } | undefined = {
       usd: false,
       isKMB: false,
       isFormat: true,
       isSmallValueShorten: false,
+      isRounding: true
     }): string => {
   if (!isNumber(value)) {
     // TODO : Error Check
@@ -192,14 +194,33 @@ export const toPriceFormat = (
   if (bigNumber.isLessThan(0.01) && bigNumber.isGreaterThan(0) && options.isSmallValueShorten) {
     return (options.usd ? "<$" : "<$") + "0.01";
   }
+
   if (Number(bigNumber) === 0) {
     return (options.usd ? "$" : "") + bigNumber.decimalPlaces(2).toFixed();
   }
+
   if (Number(bigNumber) < 1) {
+    if (!options.isRounding) {
+      const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
+        maximumSignificantDigits: 4,
+        minimumSignificantDigits: 4,
+      });
+      return (options.usd ? "$" : "") + tempNum.substring(0, tempNum.length - 1);
+    }
 
     return (options.usd ? "$" : "") + bigNumber.toNumber().toLocaleString("en-US", {
-      maximumSignificantDigits: 3
+      maximumSignificantDigits: 3,
     });
+  }
+
+  const tempNum = bigNumber.toNumber().toLocaleString("en-US", {
+    maximumSignificantDigits: 3,
+    minimumFractionDigits: 3,
+  });
+  const [, decimalPart] = tempNum.split(".");
+
+  if (!options.isRounding && !bigNumber.isInteger() && decimalPart?.length >= 3) {
+    return (options.usd ? "$" : "") + tempNum.substring(0, tempNum.length - 2);
   }
 
   return (options.usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });

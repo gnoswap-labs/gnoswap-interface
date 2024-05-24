@@ -24,7 +24,7 @@ import { AccountModel } from "@models/account/account-model";
 import IconPolygon from "../icons/IconPolygon";
 import IconFailed from "../icons/IconFailed";
 import IconStrokeArrowRight from "../icons/IconStrokeArrowRight";
-import { cutDecimalNumberWithoutRounding } from "@utils/regex";
+import { roundDownDecimalNumber } from "@utils/regex";
 import BigNumber from "bignumber.js";
 
 const URL_REDIRECT = "https://gnoscan.io/accounts/";
@@ -114,7 +114,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const balanceText = useMemo(() => {
     const balance = gnotBalance || account?.balances?.[0].amount;
 
-    const formattedPrice = ((balance ?? 0) / 1000000).toString().match(cutDecimalNumberWithoutRounding(6))?.toString() ?? 0;
+    const formattedPrice = ((balance ?? 0) / 1000000).toString().match(roundDownDecimalNumber(6))?.toString() ?? 0;
 
     const price = BigNumber(formattedPrice).toFormat();
 

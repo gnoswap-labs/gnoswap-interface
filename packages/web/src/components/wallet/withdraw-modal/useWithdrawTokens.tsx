@@ -35,11 +35,13 @@ const useWithdrawTokens = () => {
 
     const tokenSymbol = request?.token?.symbol || "";
     const tokenAmount = makeDisplayTokenAmount(request.token, request.tokenAmount)?.toString() || "0";
+    console.log("🚀 ~ onSubmit ~ tokenAmount:", tokenAmount);
 
     broadcastLoading(makeBroadcastWithdrawMessage("pending", {
       tokenSymbol,
       tokenAmount
     }));
+
     callAction
       .then(response => {
         if (response) {
@@ -53,7 +55,7 @@ const useWithdrawTokens = () => {
               tokenAmount
             }));
           }, 1000);
-          
+
           return true;
         }
         broadcastError(makeBroadcastWithdrawMessage("error", {

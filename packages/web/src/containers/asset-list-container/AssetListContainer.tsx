@@ -19,6 +19,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
+import { toPriceFormat } from "@utils/number-utils";
 
 export interface AssetSortOption {
   key: ASSET_HEAD;
@@ -307,7 +308,7 @@ const AssetListContainer: React.FC = () => {
         const checkPrice = price.isGreaterThan(0) && price.isLessThan(0.01);
         return {
           ...item,
-          price: isSwitchNetwork ? "-" : checkPrice ? "<$0.01" : price.toFormat(2),
+          price: isSwitchNetwork ? "-" : checkPrice ? "<$0.01" : toPriceFormat(price, { isFormat: false }),
           balance: isSwitchNetwork ? "0" : BigNumber(displayBalanceMap[item.path] ?? 0).toString(),
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),

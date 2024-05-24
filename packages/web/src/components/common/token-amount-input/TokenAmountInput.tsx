@@ -7,7 +7,7 @@ import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncenti
 import BigNumber from "bignumber.js";
 import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { cutDecimalNumberWithoutRounding } from "@utils/regex";
+import { roundDownDecimalNumber } from "@utils/regex";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -55,7 +55,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       if (balance === "0") return 0;
 
       const result = BigNumber((balance.replace(/,/g, "")
-        .toString().match(cutDecimalNumberWithoutRounding(2)))?.toString() ?? 0).toFormat();
+        .toString().match(roundDownDecimalNumber(2)))?.toString() ?? 0).toFormat();
 
       return result;
     }

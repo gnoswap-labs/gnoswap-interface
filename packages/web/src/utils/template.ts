@@ -1,12 +1,13 @@
 export const mapMessageByTemplate = (template: string, data: object) => {
-    let mappedTemplate = template;
-    // Replace placeholders in the template with data values
-    for (const [key, value] of Object.entries(data)) {
-      mappedTemplate = mappedTemplate.replace(`{${key}}`, value);
-    }
-    return mappedTemplate;
-  };
-  
+  console.log("🚀 ~ mapMessageByTemplate ~ data:", data);
+  let mappedTemplate = template;
+  // Replace placeholders in the template with data values
+  for (const [key, value] of Object.entries(data)) {
+    mappedTemplate = mappedTemplate.replace(`{${key}}`, value);
+  }
+  return mappedTemplate;
+};
+
 export const PEDING_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE = `
   <div>
     Claiming 
@@ -25,7 +26,7 @@ export const ERROR_NOTIFICATION_CLAIM_MESSAGE_TEMPLATE = `
     <span>{amount}</span>
   </div>
   `;
-  /* SWAP */
+/* SWAP */
 export const PEDING_NOTIFICATION_SWAP_MESSAGE_TEMPLATE = `
   <div>
     Swapping 
@@ -56,8 +57,8 @@ export const ERROR_NOTIFICATION_SWAP_MESSAGE_TEMPLATE = `
     <span>{tokenBSymbol}</span>
   </div>
   `;
-  
-  /* STAKE */
+
+/* STAKE */
 export const PEDING_NOTIFICATION_STAKE_MESSAGE_TEMPLATE = `
   <div>
     Staking 
@@ -88,8 +89,8 @@ export const ERROR_NOTIFICATION_STAKE_MESSAGE_TEMPLATE = `
     <span>{tokenBSymbol}</span>
   </div>
   `;
-  
-  /* UNSTAKE */
+
+/* UNSTAKE */
 export const PEDING_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE = `
   <div>
     Unstaking 
@@ -120,8 +121,8 @@ export const ERROR_NOTIFICATION_UNSTAKE_MESSAGE_TEMPLATE = `
     <span>{tokenBSymbol}</span>
   </div>
   `;
-  
-  /* REMOVE */
+
+/* REMOVE */
 export const PEDING_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE = `
   <div>
     Removing 
@@ -152,8 +153,8 @@ export const ERROR_NOTIFICATION_REMOVE_MESSAGE_TEMPLATE = `
     <span>{tokenBSymbol}</span>
   </div>
   `;
-  
-  /* ADD_INCENTIVIZE */
+
+/* ADD_INCENTIVIZE */
 export const PEDING_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE = `
   <div>
     Adding 
@@ -178,8 +179,8 @@ export const ERROR_NOTIFICATION_ADD_INCENTIVIZE_MESSAGE_TEMPLATE = `
     as incentives
   </div>
   `;
-  
-  /* WITHDRAW */
+
+/* WITHDRAW */
 export const PEDING_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE = `
   <div>
     Sending 
@@ -201,8 +202,8 @@ export const ERROR_NOTIFICATION_WITHDRAW_MESSAGE_TEMPLATE = `
     <span>{tokenSymbol}</span>
   </div>
   `;
-  
-  /* ADD_LIQUIDITY */
+
+/* ADD_LIQUIDITY */
 export const PEDING_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
   Adding 
     <span>{tokenAAmount}</span> 
@@ -231,4 +232,3 @@ export const ERROR_NOTIFICATION_ADD_LIQUIDITY_MESSAGE_TEMPLATE = `
     <span>{tokenBSymbol}</span>
   </div>
   `;
-  
