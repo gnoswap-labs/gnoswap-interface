@@ -63,7 +63,7 @@ describe("make swap route query", () => {
     const routeKey = makeRoutesQuery(estimatedRoutes, "gno.land/r/bar");
 
     expect(routeKey).toBe(
-      "gno.land/r/bar:gno.land/r/baz:500*POOL*gno.land/r/baz:gno.land/r/qux:500,gno.land/r/bar:gno.land/r/foo:500*POOL*gno.land/r/foo:gno.land/r/qux:500",
+      "gno.land/r/bar:gno.land/r/baz:100*POOL*gno.land/r/baz:gno.land/r/qux:100,gno.land/r/bar:gno.land/r/foo:100*POOL*gno.land/r/foo:gno.land/r/qux:100",
     );
   });
 });
