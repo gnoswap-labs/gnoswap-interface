@@ -7,12 +7,11 @@ import { useWallet } from "@hooks/wallet/use-wallet";
 import { AmountModel } from "@models/common/amount-model";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
-import { SwapState } from "@states/index";
+import { CommonState, SwapState } from "@states/index";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSwap } from "./use-swap";
-import { SwapRouteResponse } from "@repositories/swap/response/swap-route-response";
 import { TNoticeType } from "src/context/NoticeContext";
 import { checkGnotPath, makeRandomId } from "@utils/common";
 import { matchInputNumber } from "@utils/number-utils";
@@ -23,13 +22,13 @@ import { formatUsdNumber } from "@utils/stake-position-utils";
 import { useRouter } from "next/router";
 import { isEmptyObject } from "@utils/validation-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-
-const findKeyByValue = (
-  value: string,
-  record: Record<string, string>,
-): string | undefined => {
-  return Object.keys(record).find(key => record[key] === value);
-};
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import {
+  makeBroadcastSwapMessage,
+  useBroadcastHandler,
+} from "@hooks/common/use-broadcast-handler";
+import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
+import { ERROR_VALUE } from "@common/errors/adena";
 
 function handleAmount(changed: string, token: TokenModel | null) {
   let value = changed;
@@ -51,10 +50,9 @@ function handleAmount(changed: string, token: TokenModel | null) {
 }
 
 export const useSwapHandler = () => {
-  const [memorizeTokenSwap, setMemorizeTokenSwap] = useAtom(
-    SwapState.memorizeTokenSwap,
-  );
   const router = useRouter();
+  const [, setOpenedModal] = useAtom(CommonState.openedModal);
+  const [, setModalContent] = useAtom(CommonState.modalContent);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const {
     tokenA = null,
@@ -78,7 +76,7 @@ export const useSwapHandler = () => {
     amount: 0.000001,
     currency: "GNOT",
   });
-  const [openedConfirmModal, setOpenedConfirModal] = useState(false);
+  const [openedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { setNotice } = useNotice();
   const {
@@ -88,8 +86,6 @@ export const useSwapHandler = () => {
   } = useWallet();
   const {
     tokens,
-    isChangeBalancesToken,
-    setIsChangeBalancesToken,
     tokenPrices,
     displayBalanceMap,
     updateTokens,
@@ -102,6 +98,7 @@ export const useSwapHandler = () => {
   const {
     isSameToken,
     estimatedRoutes,
+    estimatedAmount,
     tokenAmountLimit,
     swapState,
     swap,
@@ -113,7 +110,17 @@ export const useSwapHandler = () => {
     slippage,
   });
 
-  usePreventScroll(openedConfirmModal || submitted);
+  const { openModal: openTransactionConfirmModal } =
+    useTransactionConfirmModal();
+  const {
+    broadcastSuccess,
+    broadcastLoading,
+    broadcastPending,
+    broadcastError,
+    broadcastRejected,
+  } = useBroadcastHandler();
+
+  usePreventScroll(openedConfirmModal);
 
   const swapRouteInfos: SwapRouteInfo[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -343,7 +350,9 @@ export const useSwapHandler = () => {
   ]);
 
   const isAvailSwap = useMemo(() => {
-    if (isLoading) return false;
+    if (swapState !== "SUCCESS") {
+      return false;
+    }
     if (!connectedWallet) {
       return false;
     }
@@ -391,31 +400,47 @@ export const useSwapHandler = () => {
     }
     return true;
   }, [
-    isLoading,
+    swapState,
     connectedWallet,
     isSwitchNetwork,
     tokenA,
     tokenB,
     tokenAAmount,
     tokenBAmount,
-    type,
     tokenABalance,
     tokenBBalance,
+    type,
   ]);
 
   const openConfirmModal = useCallback(() => {
-    setOpenedConfirModal(true);
-  }, []);
+    if (!swapSummaryInfo) {
+      return;
+    }
+    setOpenedModal(true);
+    setModalContent(
+      <ConfirmSwapModal
+        submitted={true}
+        swapTokenInfo={swapTokenInfo}
+        swapSummaryInfo={swapSummaryInfo}
+        swapResult={swapResult}
+        swap={executeSwap}
+        close={closeModal}
+      />,
+    );
+  }, [submitted, swapResult, swapSummaryInfo, swapTokenInfo]);
 
   const openConnectWallet = useCallback(() => {
     openModal();
   }, [openModal]);
 
   const closeModal = useCallback(() => {
-    setSubmitted(false);
+    setOpenedModal(false);
+    setModalContent(null);
     setSwapResult(null);
-    setOpenedConfirModal(false);
-    updateBalances();
+  }, []);
+
+  const onFinishSwap = useCallback(() => {
+    closeModal();
     setTokenAAmount("0");
     setTokenBAmount("0");
   }, []);
@@ -433,16 +458,7 @@ export const useSwapHandler = () => {
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
-
-      const memoryzeTokenB =
-        memorizeTokenSwap?.[`${tokenA?.symbol}:${value}:${tokenB?.symbol}`];
-      if (memoryzeTokenB) {
-        setTokenAAmount(value);
-        if (!BigNumber(memoryzeTokenB.split(":")[1]).isZero()) {
-          setTokenBAmount(memoryzeTokenB.split(":")[1]);
-          return;
-        }
-      }
+      estimateSwapRoute(value);
 
       if (isSameToken) {
         setTokenAAmount(value);
@@ -468,13 +484,14 @@ export const useSwapHandler = () => {
       } else {
         setTokenBAmount("0");
       }
+
       setSwapValue(prev => ({
         ...prev,
         type: "EXACT_IN",
       }));
       setTokenAAmount(value);
     },
-    [isSameToken, memorizeTokenSwap, tokenA, tokenB?.symbol],
+    [isSameToken, setSwapValue, tokenA, tokenB?.symbol],
   );
 
   useEffect(() => {
@@ -488,43 +505,30 @@ export const useSwapHandler = () => {
   const changeTokenBAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
-      const memoryzeTokenA =
-        memorizeTokenSwap?.[`${tokenB?.symbol}:${value}:${tokenB?.symbol}`];
-      if (memoryzeTokenA) {
-        setTokenBAmount(value);
-        setTokenAAmount(memoryzeTokenA.split(":")[1]);
-        return;
-      }
-      if (isSameToken) {
-        setTokenAAmount(value);
-        setTokenBAmount(value);
-        setSwapValue(prev => ({
-          ...prev,
-          tokenAAmount: value,
-          tokenBAmount: value,
-          type: "EXACT_IN",
-        }));
-        return;
-      }
+
       if (none) {
         setIsLoading(false);
         return;
       }
+
       if (!matchInputNumber(value)) {
         return;
       }
+
       if (!!Number(value) && tokenA?.symbol) {
         setIsLoading(true);
       } else {
         setTokenAAmount("0");
       }
+
       setSwapValue(prev => ({
         ...prev,
         type: "EXACT_OUT",
       }));
+      estimateSwapRoute(value);
       setTokenBAmount(value);
     },
-    [isSameToken, memorizeTokenSwap, tokenA, tokenB?.symbol],
+    [isSameToken, tokenA, tokenB?.symbol],
   );
 
   const changeTokenA = useCallback(
@@ -586,28 +590,6 @@ export const useSwapHandler = () => {
       tokenB: preTokenA,
       type: changedSwapDirection,
     }));
-    if (type === "EXACT_IN") {
-      const keyForValue =
-        findKeyByValue(
-          `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`,
-          memorizeTokenSwap,
-        ) ?? "";
-      if (memorizeTokenSwap?.[keyForValue]) {
-        setTokenAAmount(keyForValue?.split(":")?.[1]);
-        setTokenBAmount(memorizeTokenSwap?.[keyForValue]?.split(":")?.[1]);
-        return;
-      }
-    } else {
-      const keyForValue = `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`;
-      if (memorizeTokenSwap?.[keyForValue]) {
-        setTokenAAmount(tokenBAmount);
-        setTokenBAmount(memorizeTokenSwap?.[keyForValue]?.split(":")?.[1]);
-        return;
-      }
-    }
-    if (!!Number(tokenAAmount || 0) && !!Number(tokenBAmount || 0)) {
-      setIsLoading(true);
-    }
     if (changedSwapDirection === "EXACT_IN") {
       setTokenAAmount(tokenBAmount);
       if (!preTokenA || !preTokenB) {
@@ -619,15 +601,7 @@ export const useSwapHandler = () => {
         setTokenAAmount(tokenBAmount);
       }
     }
-  }, [
-    isSameToken,
-    tokenA,
-    tokenB,
-    type,
-    tokenAAmount,
-    tokenBAmount,
-    memorizeTokenSwap,
-  ]);
+  }, [isSameToken, tokenA, tokenB, type, tokenBAmount, tokenAAmount]);
 
   const copyURL = async () => {
     try {
@@ -713,69 +687,66 @@ export const useSwapHandler = () => {
       }, 1000);
       return;
     }
-    const swapAmount = type === "EXACT_IN" ? tokenAAmount : tokenBAmount;
+
+    const isExactIn = type === "EXACT_IN";
+    const swapAmount = isExactIn ? tokenAAmount : tokenBAmount;
+
+    const broadcastMessage = {
+      tokenASymbol: tokenA.symbol,
+      tokenBSymbol: tokenB.symbol,
+      tokenAAmount: isExactIn
+        ? tokenAAmount
+        : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() ||
+          "0",
+      tokenBAmount: isExactIn
+        ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() ||
+          "0"
+        : tokenBAmount,
+    };
+
+    broadcastLoading(makeBroadcastSwapMessage("pending", broadcastMessage));
+    openTransactionConfirmModal();
+
     swap(estimatedRoutes, swapAmount)
-      .then(result => {
-        if (result !== false) {
-          setNotice(null, {
-            timeout: 50000,
-            type: "pending",
-            closeable: true,
-            id: makeRandomId(),
-          });
-          setTimeout(() => {
-            if (!!result) {
-              setNotice(
-                {
-                  title: "Swap",
-                  description: `Swapped <span>${Number(
-                    swapTokenInfo.tokenAAmount,
-                  ).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  })}</span> <span>${
-                    swapTokenInfo?.tokenA?.symbol
-                  }</span> for <span>${Number(
-                    swapTokenInfo.tokenBAmount,
-                  ).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
-                },
-                {
-                  timeout: 50000,
-                  type: "success" as TNoticeType,
-                  closeable: true,
-                  id: makeRandomId(),
-                },
+      .then(response => {
+        console.log(response);
+        if (response) {
+          if (response.code === 0) {
+            broadcastPending();
+            setTimeout(() => {
+              const tokenAAmountStr = isExactIn
+                ? tokenAAmount
+                : response.data?.resultAmount;
+              const tokenBAmountStr = isExactIn
+                ? response.data?.resultAmount
+                : tokenBAmount;
+              broadcastSuccess(
+                makeBroadcastSwapMessage("success", {
+                  ...broadcastMessage,
+                  tokenAAmount: tokenAAmountStr || "0",
+                  tokenBAmount: tokenBAmountStr || "0",
+                }),
+                onFinishSwap,
               );
-            } else {
-              setNotice(
-                {
-                  title: "Swap",
-                  description: `Failed swapping <span>${Number(
-                    swapTokenInfo.tokenAAmount,
-                  ).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  })}</span> <span>${
-                    swapTokenInfo?.tokenA?.symbol
-                  }</span> for <span>${Number(
-                    swapTokenInfo.tokenBAmount,
-                  ).toLocaleString("en-US", {
-                    maximumFractionDigits: 6,
-                  })}</span> <span>${swapTokenInfo?.tokenB?.symbol}</span>`,
-                },
-                {
-                  timeout: 50000,
-                  type: "error" as TNoticeType,
-                  closeable: true,
-                  id: makeRandomId(),
-                },
-              );
-            }
-          }, 1000);
+            }, 1000);
+            openTransactionConfirmModal();
+          } else if (response.type === ERROR_VALUE.TRANSACTION_REJECTED.type) {
+            broadcastRejected(
+              makeBroadcastSwapMessage("error", broadcastMessage),
+            );
+            openTransactionConfirmModal();
+          } else {
+            broadcastError(
+              makeBroadcastSwapMessage("error", broadcastMessage),
+              onFinishSwap,
+            );
+            openTransactionConfirmModal();
+          }
         }
+
         setSwapResult({
-          success: !!result,
-          hash: (result as unknown as SwapRouteResponse)?.hash || "",
+          success: response?.code === 0,
+          hash: response?.data?.hash || "",
         });
       })
       .catch(() => {
@@ -785,6 +756,24 @@ export const useSwapHandler = () => {
         });
       });
   }
+
+  useEffect(() => {
+    if (!tokenA || !tokenB) {
+      return;
+    }
+
+    if (swapState !== "SUCCESS" && estimatedAmount === null) {
+      return;
+    }
+
+    if (type === "EXACT_IN") {
+      const amount = makeDisplayTokenAmount(tokenB, estimatedAmount || 0) || 0;
+      setTokenBAmount(amount.toString());
+    } else {
+      const amount = makeDisplayTokenAmount(tokenA, estimatedAmount || 0) || 0;
+      setTokenAAmount(amount.toString());
+    }
+  }, [swapState, estimatedAmount, type, tokenA, tokenB]);
 
   useEffect(() => {
     updateTokens();
@@ -799,22 +788,6 @@ export const useSwapHandler = () => {
     if (!tokenA?.symbol || !tokenB?.symbol) {
       return;
     }
-    if (
-      memorizeTokenSwap?.[
-        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
-      ] &&
-      type === "EXACT_IN"
-    ) {
-      return;
-    }
-    if (
-      memorizeTokenSwap?.[
-        `${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`
-      ] &&
-      type === "EXACT_OUT"
-    ) {
-      return;
-    }
 
     if (
       (defaultTokenAAmount || defaultTokenBAmount) &&
@@ -825,7 +798,6 @@ export const useSwapHandler = () => {
   }, [
     defaultTokenBAmount,
     defaultTokenAAmount,
-    memorizeTokenSwap,
     tokenA?.symbol,
     tokenAAmount,
     tokenBAmount,
@@ -833,144 +805,6 @@ export const useSwapHandler = () => {
     tokenB?.symbol,
   ]);
 
-  useEffect(() => {
-    if (!tokenA || !tokenB) {
-      return;
-    }
-
-    const memorized =
-      memorizeTokenSwap?.[
-        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
-      ] || null;
-
-    if (memorized && type === "EXACT_IN") {
-      const amount = memorized.split(":")[1];
-      if (!BigNumber(amount).isZero()) {
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    if (
-      memorizeTokenSwap?.[
-        `${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`
-      ] &&
-      type === "EXACT_OUT"
-    ) {
-      setIsLoading(false);
-      return;
-    }
-
-    if (isSameToken) {
-      setIsLoading(() => false);
-      return;
-    }
-
-    const isExactIn = type === "EXACT_IN";
-    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
-    if (
-      Number.isNaN(changedAmount) ||
-      BigNumber(changedAmount).isLessThanOrEqualTo(0)
-    ) {
-      return;
-    }
-
-    const timeout = setTimeout(() => {
-      estimateSwapRoute(changedAmount).then(result => {
-        const isError = result === null;
-        const resultToken = isExactIn ? tokenB : tokenA;
-        const expectedAmount = isError
-          ? ""
-          : `${makeDisplayTokenAmount(resultToken, result.amount) || 0}`;
-        if (isError) {
-          if (isExactIn) {
-            setTokenBAmount("0");
-          } else {
-            setTokenAAmount("0");
-          }
-        } else {
-          if (isExactIn) {
-            setTokenBAmount(expectedAmount);
-          } else {
-            setTokenAAmount(expectedAmount);
-          }
-        }
-        setIsLoading(() => false);
-      });
-    }, 2000);
-
-    if (!isLoading && tokenA && tokenB && tokenAAmount && tokenBAmount) {
-      if (
-        isExactIn &&
-        !!Number(tokenAAmount || 0) &&
-        !!Number(tokenBAmount || 0)
-      ) {
-        setMemorizeTokenSwap(prev => ({
-          ...prev,
-          [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
-        }));
-        setIsChangeBalancesToken(false);
-      } else {
-        setIsChangeBalancesToken(false);
-        setMemorizeTokenSwap(prev => ({
-          ...prev,
-          [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
-        }));
-      }
-    }
-    return () => clearTimeout(timeout);
-  }, [
-    type,
-    tokenA,
-    tokenAAmount,
-    tokenB,
-    tokenBAmount,
-    isSameToken,
-    memorizeTokenSwap,
-  ]);
-
-  useEffect(() => {
-    if (
-      !Number(tokenAAmount) ||
-      !Number(tokenBAmount) ||
-      !tokenA?.symbol ||
-      !tokenB?.symbol ||
-      !isChangeBalancesToken
-    )
-      return;
-    const isExactIn = type === "EXACT_IN";
-    const changedAmount = isExactIn ? tokenAAmount : tokenBAmount;
-    const resultToken = isExactIn ? tokenA : tokenB;
-    estimateSwapRoute(changedAmount).then(result => {
-      const isError = result === null;
-      const expectedAmount = isError
-        ? ""
-        : `${makeDisplayTokenAmount(resultToken, result.amount) || 0}`;
-      if (!isError) {
-        if (isExactIn) {
-          setTokenBAmount(expectedAmount);
-          setMemorizeTokenSwap(prev => ({
-            ...prev,
-            [`${tokenA?.symbol}:${tokenAAmount}:${tokenB?.symbol}`]: `${tokenB?.symbol}:${tokenBAmount}`,
-          }));
-        } else {
-          setMemorizeTokenSwap(prev => ({
-            ...prev,
-            [`${tokenB?.symbol}:${tokenBAmount}:${tokenA?.symbol}`]: `${tokenA?.symbol}:${tokenAAmount}`,
-          }));
-          setTokenAAmount(expectedAmount);
-        }
-        setIsChangeBalancesToken(false);
-      }
-    });
-  }, [
-    tokenAAmount,
-    tokenBAmount,
-    type,
-    tokenA?.symbol,
-    tokenB?.symbol,
-    isChangeBalancesToken,
-  ]);
   return {
     slippage,
     connectedWallet,
@@ -996,7 +830,7 @@ export const useSwapHandler = () => {
     executeSwap,
     isSwitchNetwork,
     switchNetwork,
-    isLoading,
+    isLoading: swapState === "LOADING",
     setSwapValue,
     tokenA,
     tokenB,

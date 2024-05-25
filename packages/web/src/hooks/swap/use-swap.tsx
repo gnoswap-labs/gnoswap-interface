@@ -7,6 +7,7 @@ import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";
+import { useEstimateSwap } from "@query/router";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -17,12 +18,8 @@ interface UseSwapProps {
 
 export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
   const { account } = useWallet();
-  const { poolRepository, swapRouterRepository } = useGnoswapContext();
-  const [estimatedRoutes, setEstimatedRoutes] = useState<EstimatedRoute[]>([]);
-  const [estimatedAmount, setEstimatedAmount] = useState<string | null>(null);
-  const [swapState, setSwapState] = useState<
-    "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS"
-  >("NONE");
+  const { swapRouterRepository } = useGnoswapContext();
+  const [swapAmount, setSwapAmount] = useState<string | null>(null);
   const { slippage } = useSlippage();
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
@@ -39,6 +36,77 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
     }
     return false;
   }, [tokenA, tokenB]);
+
+  const currentSwapAmount = useMemo(() => {
+    if (!swapAmount || BigNumber(swapAmount).isZero()) {
+      return 0;
+    }
+    return BigNumber(swapAmount).toNumber();
+  }, [swapAmount]);
+
+  const {
+    data: estimatedSwapResult,
+    isLoading: isEstimatedSwapLoading,
+    error,
+  } = useEstimateSwap(
+    {
+      inputToken: tokenA,
+      outputToken: tokenB,
+      exactType: direction,
+      tokenAmount: currentSwapAmount,
+    },
+    {
+      enabled: currentSwapAmount > 0 && !!tokenA && !!tokenB,
+    },
+  );
+
+  const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" =
+    useMemo(() => {
+      if (!selectedTokenPair || !currentSwapAmount) {
+        return "NONE";
+      }
+
+      if (isSameToken) {
+        return "NONE";
+      }
+
+      if (isEstimatedSwapLoading) {
+        return "LOADING";
+      }
+
+      if (!!error || !estimatedSwapResult?.amount) {
+        return "NO_LIQUIDITY";
+      }
+
+      return "SUCCESS";
+    }, [
+      currentSwapAmount,
+      error,
+      estimatedSwapResult?.amount,
+      isEstimatedSwapLoading,
+      isSameToken,
+      selectedTokenPair,
+    ]);
+
+  const estimatedRoutes: EstimatedRoute[] = useMemo(() => {
+    if (swapState !== "SUCCESS" || !estimatedSwapResult || !currentSwapAmount) {
+      return [];
+    }
+
+    return estimatedSwapResult.estimatedRoutes;
+  }, [swapState, estimatedSwapResult, currentSwapAmount]);
+
+  const estimatedAmount: string | null = useMemo(() => {
+    if (!currentSwapAmount || error) {
+      return "0";
+    }
+
+    if (swapState !== "SUCCESS" || !estimatedSwapResult) {
+      return null;
+    }
+
+    return estimatedSwapResult.amount;
+  }, [currentSwapAmount, error, swapState, estimatedSwapResult]);
 
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(Number(slippage))) {
@@ -65,72 +133,27 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
     return 0;
   }, [direction, estimatedAmount, slippage, tokenA]);
 
-  const estimateSwapRoute = async (amount: string) => {
-    if (!selectedTokenPair) {
-      setSwapState("NONE");
-      return null;
-    }
-    if (Number.isNaN(amount)) {
-      setSwapState("NONE");
-      return null;
-    }
-    if (isSameToken) {
-      setSwapState("NONE");
-      return null;
-    }
-
-    setSwapState("LOADING");
-    const pools = await poolRepository.getRPCPools().catch(() => []);
-    swapRouterRepository.updatePools(pools);
-
-    return swapRouterRepository
-      .estimateSwapRoute({
-        inputToken: tokenA,
-        outputToken: tokenB,
-        exactType: direction,
-        tokenAmount: Number(amount),
-      })
-      .then(response => {
-        if (response.amount === "0" || response.amount === "") {
-          setSwapState("NO_LIQUIDITY");
-          setEstimatedRoutes([]);
-          setEstimatedAmount(null);
-          return null;
-        } else {
-          setSwapState("SUCCESS");
-        }
-        setEstimatedRoutes(response.estimatedRoutes);
-        setEstimatedAmount(response.amount);
-        return response;
-      })
-      .catch(e => {
-        console.error(e);
-        setEstimatedRoutes([]);
-        setEstimatedAmount(null);
-        setSwapState("NONE");
-        return null;
-      });
-  };
+  const estimateSwapRoute = useCallback((amount: string) => {
+    setSwapAmount(amount || "0");
+  }, []);
 
   const swap = useCallback(
     async (estimatedRoutes: EstimatedRoute[], tokenAmount: string) => {
       if (!account) {
-        return false;
+        return null;
       }
       if (!selectedTokenPair) {
-        return false;
+        return null;
       }
-      const response = await swapRouterRepository
-        .swapRoute({
-          inputToken: tokenA,
-          outputToken: tokenB,
-          estimatedRoutes,
-          exactType: direction,
-          tokenAmount: Number(tokenAmount),
-          tokenAmountLimit,
-        })
-        .catch(() => false);
-      return response;
+
+      return swapRouterRepository.swapRoute({
+        inputToken: tokenA,
+        outputToken: tokenB,
+        estimatedRoutes,
+        exactType: direction,
+        tokenAmount: Number(tokenAmount),
+        tokenAmountLimit,
+      });
     },
     [
       account,
@@ -146,6 +169,7 @@ export const useSwap = ({ tokenA, tokenB, direction }: UseSwapProps) => {
   return {
     isSameToken,
     tokenAmountLimit,
+    estimatedAmount,
     estimatedRoutes,
     swapState,
     swap,

@@ -185,15 +185,34 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       memo: "",
     });
     if (response.code !== 0 || !response.data) {
-      throw new SwapError("SWAP_FAILED");
+      return {
+        ...response,
+        data: null,
+      };
     }
     const data = response.data as SendTransactionSuccessResponse<string[]>;
     if (data.data === null || data.data.length === 0) {
-      throw new SwapError("SWAP_FAILED");
+      return {
+        ...response,
+        data: {
+          hash: data.hash,
+          height: data.height,
+          resultToken,
+          resultAmount: "0",
+          slippageAmount: "0",
+        },
+      };
     }
 
+    // XXX: log swap result
+    console.log("[SWAP RESULT]", response.data);
+
+    const result = exactType === "EXACT_IN" ? data.data[1] : data.data[0];
     const resultAmount =
-      makeDisplayTokenAmount(resultToken, data.data[0])?.toString() || "0";
+      makeDisplayTokenAmount(
+        resultToken,
+        BigNumber(result).abs().toString(),
+      )?.toString() || "0";
     const slippageAmount =
       makeDisplayTokenAmount(
         resultToken,
