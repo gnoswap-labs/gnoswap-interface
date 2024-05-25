@@ -13,7 +13,12 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSwap } from "./use-swap";
 import { TNoticeType } from "src/context/NoticeContext";
-import { checkGnotPath, makeRandomId } from "@utils/common";
+import {
+  checkGnotPath,
+  isGNOTPath,
+  makeRandomId,
+  toNativePath,
+} from "@utils/common";
 import { matchInputNumber } from "@utils/number-utils";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
@@ -29,6 +34,7 @@ import {
 } from "@hooks/common/use-broadcast-handler";
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 
 function handleAmount(changed: string, token: TokenModel | null) {
   let value = changed;
@@ -187,12 +193,11 @@ export const useSwapHandler = () => {
     }
     if (
       (Number(tokenAAmount) < 0.000001 && type === "EXACT_IN") ||
-      (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT")
+      (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT") ||
+      (isGNOTPath(toNativePath(tokenA.path)) &&
+        BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
     ) {
       return "Amount Too Low";
-    }
-    if (!isSameToken && swapState === "NO_LIQUIDITY") {
-      return "Insufficient Liquidity";
     }
 
     if (
@@ -200,6 +205,10 @@ export const useSwapHandler = () => {
       Number(tokenAAmount) > Number(parseFloat(tokenABalance.replace(/,/g, "")))
     ) {
       return "Insufficient Balance";
+    }
+
+    if (!isSameToken && swapState === "NO_LIQUIDITY") {
+      return "Insufficient Liquidity";
     }
     if (
       Number(tokenAAmount) > 0 &&
@@ -367,7 +376,9 @@ export const useSwapHandler = () => {
     }
     if (
       (Number(tokenAAmount) !== 0 && Number(tokenAAmount) < 0.000001) ||
-      Number(tokenBAmount) < 0.000001
+      Number(tokenBAmount) < 0.000001 ||
+      (isGNOTPath(toNativePath(tokenA.path)) &&
+        BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
     ) {
       return false;
     }
