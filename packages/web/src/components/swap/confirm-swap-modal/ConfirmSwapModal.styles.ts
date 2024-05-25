@@ -12,33 +12,34 @@ export const ConfirmSwapModalBackground = styled.div`
   bottom: 0px;
   left: 0px;
   right: 0px;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
 `;
 
 export const ConfirmModal = styled.div`
+  position: relative;
   pointer-events: initial;
-  ${mixins.flexbox("column", "flex-start", "flex-start")};
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   width: 460px;
+  padding: 23px;
+  height: auto;
   padding: 23px 0px;
   gap: 16px;
-  ${mixins.positionCenter}
   border-radius: 8px;
   box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
   border: 1px solid ${({ theme }) => theme.color.border02};
   background-color: ${({ theme }) => theme.color.background06};
+
   &.modal-body-wrapper {
     gap: 24px;
     ${media.mobile} {
-      ${mixins.positionCenter}
       padding: 12px 0px;
     }
   }
   ${media.mobile} {
     width: 328px;
-    ${mixins.positionCenter}
     padding: 15px 0px;
   }
 
@@ -186,8 +187,10 @@ export const ConfirmModal = styled.div`
         border: 1px solid ${({ theme }) => theme.color.border02};
         .coin-info {
           ${mixins.flexbox("row", "center", "flex-start")};
+          width: 100%;
           gap: 4px;
           .gnos-price {
+            display: flex;
             ${fonts.body12};
             ${media.mobile} {
               ${fonts.p2};

@@ -3,7 +3,6 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { SwapCardWrapper } from "./SwapCard.styles";
 import SwapCardHeader from "../swap-card-header/SwapCardHeader";
 import SwapCardContent from "../swap-card-content/SwapCardContent";
-import ConfirmSwapModal from "../confirm-swap-modal/ConfirmSwapModal";
 import { TokenModel } from "@models/token/token-model";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
@@ -22,7 +21,7 @@ interface SwapCardProps {
   swapResult: SwapResultInfo | null;
   openedConfirmModal: boolean;
   themeKey: "dark" | "light";
-  isSwitchNetwork: boolean,
+  isSwitchNetwork: boolean;
   isLoading: boolean;
 
   changeTokenA: (token: TokenModel) => void;
@@ -49,9 +48,6 @@ const SwapCard: React.FC<SwapCardProps> = ({
   swapRouteInfos,
   isAvailSwap,
   swapButtonText,
-  submitted,
-  swapResult,
-  openedConfirmModal,
   changeTokenA,
   changeTokenAAmount,
   changeTokenB,
@@ -60,16 +56,13 @@ const SwapCard: React.FC<SwapCardProps> = ({
   switchSwapDirection,
   openConfirmModal,
   openConnectWallet,
-  closeModal,
   copyURL,
-  swap,
   themeKey,
   isSwitchNetwork,
   switchNetwork,
   isLoading,
   setSwapRateAction,
 }) => {
-
   return (
     <>
       <SwapCardWrapper>
@@ -106,17 +99,6 @@ const SwapCard: React.FC<SwapCardProps> = ({
           />
         </div>
       </SwapCardWrapper>
-
-      {openedConfirmModal && swapSummaryInfo && (
-        <ConfirmSwapModal
-          submitted={submitted}
-          swapTokenInfo={swapTokenInfo}
-          swapSummaryInfo={swapSummaryInfo}
-          swapResult={swapResult}
-          swap={swap}
-          close={closeModal}
-        />
-      )}
     </>
   );
 };
@@ -141,7 +123,6 @@ const SwapButton: React.FC<SwapButtonProps> = ({
   isSwitchNetwork,
   switchNetwork,
 }) => {
-
   const defaultStyle = {
     fullWidth: true,
     hierarchy: ButtonHierarchy.Primary,
@@ -175,7 +156,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         text={text}
         style={{
           ...defaultStyle,
-          hierarchy: ButtonHierarchy.Gray
+          hierarchy: ButtonHierarchy.Gray,
         }}
       />
     );
