@@ -97,7 +97,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
       }
 
       return current;
-    });
+    }, "");
   }, [yAxisLabels]);
   const xAxisRange = useMemo(() => {
     const times = datas.map(d => new Date(d.time).getTime());
