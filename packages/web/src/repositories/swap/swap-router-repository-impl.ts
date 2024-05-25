@@ -68,12 +68,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new SwapError("INVALID_PARAMS");
     }
 
-    const inputTokenPath = isNativeToken(inputToken)
-      ? inputToken.wrappedPath
-      : inputToken.path;
-    const outputTokenPath = isNativeToken(outputToken)
-      ? outputToken.wrappedPath
-      : outputToken.path;
+    const inputTokenPath = checkGnotPath(inputToken.path);
+    const outputTokenPath = checkGnotPath(outputToken.path);
 
     const tokenAmountRaw =
       exactType === "EXACT_IN"

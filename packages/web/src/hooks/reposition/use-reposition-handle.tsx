@@ -30,6 +30,8 @@ import { useRouter } from "next/router";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { checkGnotPath } from "@utils/common";
+import { useEstimateSwap } from "@query/router";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -269,6 +271,81 @@ export const useRepositionHandle = () => {
     tokenB,
   ]);
 
+  const estimateSwapRequestByAmounts = useMemo(() => {
+    if (!currentAmounts || !repositionAmounts || !selectedPosition) {
+      return null;
+    }
+
+    const { amountA, amountB } = currentAmounts;
+    const { amountA: repositionAmountA, amountB: repositionAmountB } =
+      repositionAmounts;
+
+    const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
+    if (isSwapTokenA) {
+      return {
+        inputToken: selectedPosition.pool.tokenA,
+        outputToken: selectedPosition.pool.tokenB,
+        tokenAmount: amountA - repositionAmountA,
+        exactType: "EXACT_IN" as const,
+      };
+    }
+    return {
+      inputToken: selectedPosition.pool.tokenB,
+      outputToken: selectedPosition.pool.tokenA,
+      tokenAmount: amountB - repositionAmountB,
+      exactType: "EXACT_IN" as const,
+    };
+  }, [currentAmounts, repositionAmounts, selectedPosition]);
+
+  const { data: estimatedRemainSwap, isLoading: isEstimatedRemainSwapLoading } =
+    useEstimateSwap(estimateSwapRequestByAmounts, {
+      enabled: !!estimateSwapRequestByAmounts,
+    });
+
+  const estimatedRepositionAmounts = useMemo(() => {
+    if (!currentAmounts || !repositionAmounts || !selectedPosition) {
+      return null;
+    }
+
+    const { amountA, amountB } = currentAmounts;
+    const { amountA: repositionAmountA, amountB: repositionAmountB } =
+      repositionAmounts;
+
+    const isSwapTokenA = BigNumber(amountA).isGreaterThan(repositionAmountA);
+    const isEstimated = !!estimatedRemainSwap && !isEstimatedRemainSwapLoading;
+    const tokenA = selectedPosition.pool.tokenA;
+    const tokenB = selectedPosition.pool.tokenB;
+
+    const estimatedResult =
+      makeDisplayTokenAmount(
+        isSwapTokenA ? tokenB : tokenA,
+        estimatedRemainSwap?.amount || 0,
+      ) || 0;
+
+    if (isSwapTokenA) {
+      const estimatedAmountA = repositionAmountA;
+      const estimatedAmountB = isEstimated ? estimatedResult + amountB : null;
+
+      return {
+        amountA: estimatedAmountA,
+        amountB: estimatedAmountB,
+      };
+    }
+
+    const estimatedAmountA = isEstimated ? estimatedResult + amountA : null;
+    const estimatedAmountB = repositionAmountB;
+
+    return {
+      amountA: estimatedAmountA,
+      amountB: estimatedAmountB,
+    };
+  }, [
+    currentAmounts,
+    estimatedRemainSwap,
+    isEstimatedRemainSwapLoading,
+    repositionAmounts,
+  ]);
+
   const changeTokenAAmount = useCallback(
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
@@ -313,38 +390,29 @@ export const useRepositionHandle = () => {
 
   const swapRemainToken =
     useCallback(async (): Promise<WalletResponse<SwapRouteResponse> | null> => {
-      if (!address || !selectedPosition || !tokenA || !tokenB) {
+      if (!address || !estimatedRemainSwap || !estimateSwapRequestByAmounts) {
         return null;
       }
 
-      const estimated = await swapRouterRepository.estimateSwapRoute({
-        inputToken: tokenA,
-        outputToken: tokenB,
-        exactType: "EXACT_IN",
-        tokenAmount: Number(tokenAAmountInput.amount),
-      });
-
       return swapRouterRepository
         .swapRoute({
-          inputToken: tokenA,
-          outputToken: tokenB,
-          estimatedRoutes: estimated.estimatedRoutes,
-          exactType: "EXACT_IN",
-          tokenAmount: Number(tokenAAmountInput.amount),
-          tokenAmountLimit: Number(tokenAAmountInput.amount),
+          ...estimateSwapRequestByAmounts,
+          estimatedRoutes: estimatedRemainSwap.estimatedRoutes,
+          tokenAmountLimit: Number(estimateSwapRequestByAmounts.tokenAmount),
         })
         .catch(() => null);
     }, [
       address,
-      selectedPosition,
-      tokenA,
-      tokenB,
+      estimateSwapRequestByAmounts,
+      estimatedRemainSwap,
       swapRouterRepository,
-      tokenAAmountInput.amount,
     ]);
 
-  const addPosition =
-    useCallback(async (): Promise<WalletResponse<AddLiquidityResponse> | null> => {
+  const addPosition = useCallback(
+    async (
+      swapToken: TokenModel,
+      swapAmount: string,
+    ): Promise<WalletResponse<AddLiquidityResponse> | null> => {
       if (
         !address ||
         !selectedPosition ||
@@ -353,6 +421,7 @@ export const useRepositionHandle = () => {
         !selectPool.feeTier ||
         selectPool.minPrice === null ||
         selectPool.maxPrice === null ||
+        currentAmounts === null ||
         repositionAmounts === null ||
         repositionAmounts.amountA === null ||
         repositionAmounts.amountB === null
@@ -360,12 +429,22 @@ export const useRepositionHandle = () => {
         return null;
       }
 
+      const isSwappedTokenA =
+        checkGnotPath(selectedPosition.pool.tokenA.path) ===
+        checkGnotPath(swapToken.path);
+      const tokenAAmount = isSwappedTokenA
+        ? BigNumber(currentAmounts.amountA).plus(swapAmount).toString()
+        : repositionAmounts.amountA.toString();
+      const tokenBAmount = isSwappedTokenA
+        ? repositionAmounts.amountB.toString()
+        : BigNumber(currentAmounts.amountB).plus(swapAmount).toString();
+
       return poolRepository
         .addLiquidity({
           tokenA,
           tokenB,
-          tokenAAmount: repositionAmounts.amountA.toString(),
-          tokenBAmount: repositionAmounts.amountB.toString(),
+          tokenAAmount,
+          tokenBAmount,
           slippage: Number(MAX_UINT64),
           feeTier: selectPool.feeTier,
           minTick: priceToNearTick(
@@ -388,7 +467,8 @@ export const useRepositionHandle = () => {
           return result;
         })
         .catch(() => null);
-    }, [
+    },
+    [
       address,
       selectedPosition,
       tokenA,
@@ -398,7 +478,8 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       repositionAmounts,
       poolRepository,
-    ]);
+    ],
+  );
 
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId) {
@@ -446,7 +527,7 @@ export const useRepositionHandle = () => {
     priceRange,
     changePriceRange,
     currentAmounts,
-    repositionAmounts,
+    repositionAmounts: estimatedRepositionAmounts,
     removePosition,
     swapRemainToken,
     addPosition,

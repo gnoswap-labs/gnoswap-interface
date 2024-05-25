@@ -5,6 +5,7 @@ import { BalanceChangeWrapper } from "./BalanceChange.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToFormat } from "@utils/string-utils";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 export interface BalanceChangeProps {
   tokenA: TokenModel;
@@ -12,7 +13,7 @@ export interface BalanceChangeProps {
   title?: string;
   isHiddenCurrentBalance?: boolean;
   currentAmounts: { amountA: number; amountB: number } | null;
-  repositionAmounts: { amountA: number; amountB: number } | null;
+  repositionAmounts: { amountA: number | null; amountB: number | null } | null;
 }
 
 const BalanceChange: React.FC<BalanceChangeProps> = ({
@@ -50,6 +51,11 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
     if (!repositionAmounts) {
       return "-";
     }
+
+    if (repositionAmounts.amountA === null) {
+      return null;
+    }
+
     return numberToFormat(repositionAmounts.amountA, {
       decimals: 2,
       forceDecimals: true,
@@ -60,6 +66,11 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
     if (!repositionAmounts) {
       return "-";
     }
+
+    if (repositionAmounts.amountB === null) {
+      return null;
+    }
+
     return numberToFormat(repositionAmounts.amountB, {
       decimals: 2,
       forceDecimals: true,
@@ -120,7 +131,16 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
             {tokenA?.symbol}
           </p>
           <p className="label">{currentTokenAAmount}</p>
-          <p className="label new-balance">{repositionTokenAAmount}</p>
+          <p className="label new-balance">
+            {repositionTokenAAmount !== null ? (
+              repositionTokenAAmount
+            ) : (
+              <div
+                css={pulseSkeletonStyle({ w: 80, h: 18 })}
+                className="loading-skeleton"
+              />
+            )}
+          </p>
         </div>
         <div className="table-balance-change">
           <p className="value">
@@ -132,7 +152,16 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
             {tokenB?.symbol}
           </p>
           <p className="label">{currentTokenBAmount}</p>
-          <p className="label new-balance">{repositionTokenBAmount}</p>
+          <p className="label new-balance">
+            {repositionTokenBAmount !== null ? (
+              repositionTokenBAmount
+            ) : (
+              <div
+                css={pulseSkeletonStyle({ w: 80, h: 18 })}
+                className="loading-skeleton"
+              />
+            )}
+          </p>
         </div>
       </div>
     </BalanceChangeWrapper>
