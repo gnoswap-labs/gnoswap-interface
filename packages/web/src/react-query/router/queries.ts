@@ -44,14 +44,19 @@ export const useEstimateSwap = (
       const outputToken = request.outputToken;
       const tokenAmount = Number(request.tokenAmount);
 
-      const result = await wait<EstimateSwapRouteResponse>(
+      const result = await wait<EstimateSwapRouteResponse | null>(
         async () =>
-          swapRouterRepository.estimateSwapRoute({
-            inputToken,
-            outputToken,
-            exactType: request.exactType,
-            tokenAmount,
-          }),
+          swapRouterRepository
+            .estimateSwapRoute({
+              inputToken,
+              outputToken,
+              exactType: request.exactType,
+              tokenAmount,
+            })
+            .catch(e => {
+              console.error(e);
+              return null;
+            }),
         300,
       );
 
